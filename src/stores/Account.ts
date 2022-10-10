@@ -1,5 +1,5 @@
 import { createStore } from 'pinia';
-import { Account } from '@nimiq/hub-api';
+import HubApi, { Account, AccountType as AccountTypeEnumType } from '@nimiq/hub-api';
 import { useAddressStore } from './Address';
 import { CryptoCurrency } from '../lib/Constants';
 
@@ -9,12 +9,10 @@ export type AccountState = {
     activeCurrency: CryptoCurrency,
 }
 
-// Mirror of Hub WalletType, which is not exported
-export enum AccountType {
-    LEGACY = 1,
-    BIP39 = 2,
-    LEDGER = 3,
-}
+// Reconstruct AccountType enum by typescript declaration merging of enum values and enum type
+const { AccountType } = HubApi; // AccountType enum values
+type AccountType = AccountTypeEnumType; // AccountType enum type
+export { AccountType };
 
 export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'addresses' | 'uid'> & {
     id: string,
@@ -37,20 +35,21 @@ export const useAccountStore = createStore({
             ? state.accountInfos[state.activeAccountId]
             : null,
         activeCurrency: (state) => state.activeCurrency,
+        hasBitcoinAddresses: (state, { activeAccountInfo }) =>
+            Boolean((activeAccountInfo.value as AccountInfo | null)?.btcAddresses?.external.length),
     },
     actions: {
         selectAccount(accountId: string) {
             this.state.activeAccountId = accountId;
 
             // If the selected account does not support Bitcoin (or has it not enabled), switch active currency to NIM
-            const activeAccountInfo = this.activeAccountInfo.value!;
-            if (!activeAccountInfo.btcAddresses || !activeAccountInfo.btcAddresses.external.length) {
+            if (!this.hasBitcoinAddresses.value) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
             }
 
             const { selectAddress } = useAddressStore();
             // FIXME: Instead of always selecting the first address, store which address was selected per account.
-            selectAddress(activeAccountInfo.addresses[0]);
+            selectAddress(this.activeAccountInfo.value!.addresses[0]);
         },
         addAccountInfo(accountInfo: AccountInfo, selectIt = true) {
             // Need to assign whole object for change detection of new accounts.
@@ -60,7 +59,7 @@ export const useAccountStore = createStore({
                 [accountInfo.id]: accountInfo,
             };
 
-            if (selectIt) this.state.activeAccountId = accountInfo.id;
+            if (selectIt) this.selectAccount(accountInfo.id);
         },
         setAccountInfos(accountInfos: AccountInfo[]) {
             const newAccountInfos: {[id: string]: AccountInfo} = {};
@@ -72,9 +71,12 @@ export const useAccountStore = createStore({
             this.state.accountInfos = newAccountInfos;
 
             // If no account selected yet, or selected account does not exist anymore, select the first available.
-            // TODO: Replace with account selection screen?
             if (!this.state.activeAccountId || !this.state.accountInfos[this.state.activeAccountId]) {
-                this.state.activeAccountId = accountInfos[0] ? accountInfos[0].id : null;
+                if (accountInfos[0]) {
+                    this.selectAccount(accountInfos[0].id);
+                } else {
+                    this.state.activeAccountId = null;
+                }
             }
         },
         patchAccount(accountId, patch: Partial<AccountInfo>) {

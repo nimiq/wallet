@@ -41,12 +41,15 @@
 
                 <span v-if="data" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
+                    <TransactionListOasisPayoutStatus
+                        v-if="swapData && swapData.asset === SwapAsset.EUR"
+                        :data="swapData"/>
                 </span>
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="transaction.value" value-mask/>
-            <transition name="fade">
+            <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
@@ -57,6 +60,11 @@
                     <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
+            <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
+                :amount="(swapData.amount / 100)
+                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
+                    * (isIncoming ? 1 : -1)"
+                :currency="swapData.asset.toLowerCase()" value-mask/>
         </div>
     </button>
 </template>
@@ -73,6 +81,7 @@ import {
 } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import { useAddressStore } from '../stores/Address';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
@@ -91,6 +100,8 @@ import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/C
 import { isProxyData, ProxyType } from '../lib/ProxyDetection';
 import { useProxyStore } from '../stores/Proxy';
 import { useSwapsStore } from '../stores/Swaps';
+import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
+import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({
     props: {
@@ -131,6 +142,7 @@ export default defineComponent({
                 ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
                 : null));
         const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        useOasisPayoutStatusUpdater(swapData);
         // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
         // related to our address, always holds the proxy data.
         const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
@@ -148,14 +160,23 @@ export default defineComponent({
                 const { state: proxies$ } = useProxyStore();
                 const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
                 const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
-                return hubCashlink ? hubCashlink.message : '';
+                if (hubCashlink && hubCashlink.message) return hubCashlink.message;
             }
 
             if (swapData.value && !isCancelledSwap.value) {
-                return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                const message = context.root.$t('Sent {fromAsset} – Received {toAsset}', {
                     fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
                     toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
                 }) as string;
+
+                // The TransactionListOasisPayoutStatus takes care of the second half of the message
+                if (
+                    swapData.value.asset === SwapAsset.EUR
+                    && swapData.value.htlc?.settlement
+                    && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
+                ) return `${message.split('–')[0]} –`;
+
+                return message;
             }
 
             if ('hashRoot' in props.transaction.data
@@ -290,6 +311,7 @@ export default defineComponent({
         BitcoinIcon,
         BankIcon,
         SwapSmallIcon,
+        TransactionListOasisPayoutStatus,
     },
 });
 </script>
@@ -349,12 +371,12 @@ svg {
     .pending,
     .new,
     .invalid {
-        /deep/ svg {
+        ::v-deep svg {
             margin: 0 auto;
         }
     }
 
-    /deep/ .circle-spinner {
+    ::v-deep .circle-spinner {
         display: block;
     }
 
@@ -422,7 +444,7 @@ svg {
         .time-and-message {
             font-size: var(--small-size);
             font-weight: 600;
-            opacity: .5;
+            color: var(--text-50);
             white-space: nowrap;
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 

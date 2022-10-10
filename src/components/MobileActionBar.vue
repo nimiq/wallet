@@ -18,16 +18,20 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
-import { useAddressStore } from '../stores/Address';
+import { AddressType, useAddressStore } from '../stores/Address';
 import { useAccountStore } from '../stores/Account';
 import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useWindowSize } from '../composables/useWindowSize';
+import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobileColumn';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeAddressInfo } = useAddressStore();
-        const { activeCurrency } = useAccountStore();
+        const { activeAddressInfo, addressInfos } = useAddressStore();
+        const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
         const { accountBalance } = useBtcAddressStore();
+        const { isMobile } = useWindowSize();
+        const { activeMobileColumn } = useActiveMobileColumn();
 
         function nimOrBtc<T>(nim: T, btc: T): T {
             switch (activeCurrency.value) {
@@ -37,15 +41,37 @@ export default defineComponent({
             }
         }
 
+        const hasMultipleReceivableAddresses = computed(() => (
+            addressInfos.value.filter(({ type }) => type === AddressType.BASIC).length > 1));
+
         function receive() {
-            context.root.$router.push(nimOrBtc('/receive', '/btc-receive'));
+            if (isMobile.value
+                && activeMobileColumn.value !== ColumnType.ADDRESS
+                && (hasMultipleReceivableAddresses.value || hasBitcoinAddresses.value)
+            ) {
+                // redirect to the address selector
+                context.root.$router.push('/receive');
+            } else {
+                context.root.$router.push(nimOrBtc('/receive/nim', '/receive/btc'));
+            }
         }
+
+        const hasMultipleSendableAddresses = computed(() =>
+            activeAccountInfo.value && activeAccountInfo.value.addresses.length > 1);
 
         function send() {
-            context.root.$router.push(nimOrBtc('/send', '/btc-send'));
+            if (isMobile.value
+                && activeMobileColumn.value !== ColumnType.ADDRESS
+                && (hasMultipleSendableAddresses.value || hasBitcoinAddresses.value)
+            ) {
+                // redirect to the address selector
+                context.root.$router.push('/send');
+            } else {
+                context.root.$router.push(nimOrBtc('/send/nim', '/send/btc'));
+            }
         }
 
-        const sendDisabled = computed(() => nimOrBtc(
+        const sendDisabled = computed(() => context.root.$route.path !== '/' && nimOrBtc(
             !activeAddressInfo.value || !activeAddressInfo.value.balance,
             !accountBalance.value,
         ));
@@ -67,7 +93,9 @@ export default defineComponent({
 .mobile-action-bar {
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
     padding: 2rem;
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
     background: white;
 
     display: none;

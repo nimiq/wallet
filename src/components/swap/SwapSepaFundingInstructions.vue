@@ -43,14 +43,15 @@
                             <label v-if="bic" class="nq-label bic">{{ bic }}</label>
                         </div>
                         <div class="line flex-row">
-                            <strong>{{ iban | formatIntoGroups(4, ' ', 2) }}</strong>
+                            <strong>{{ iban | formatIntoGroups(4, ' ') }}</strong>
                         </div>
                     </Copyable>
                 </div>
-                <div class="row flex-row">
+                <div class="row flex-row purpose">
                     <Copyable :text="reference" class="glass flex-column flex-grow">
                         <div class="line flex-row">
-                            <label class="nq-label">{{ $t('Reference') }}</label>
+                            <label class="nq-label">{{ $t('Purpose') }}</label>
+                            <strong class="nq-orange nq-label">{{ $t('Required') }}</strong>
                         </div>
                         <div class="line flex-row">
                             <strong class="reference">{{ reference | formatIntoGroups(4, ' ', 1) }}</strong>
@@ -101,10 +102,8 @@
             </div>
             <div v-else-if="page === Pages.PROCESSING" class="processing">
                 <h2 class="nq-h2">
-                    {{ $t(
-                        'The bank is processing your transaction.\nThis might take up to {min} minutes.',
-                        { min: EXPECTED_DETECTION_DURATION},
-                    ) }}
+                    {{ $t('The bank is processing your transaction.') }}<br>
+                    {{ $t('This might take up to {min} minutes.', { min: OASIS_EUR_DETECTION_DELAY }) }}
                 </h2>
                 <p v-if="!takesLongerThanUsual" class="nq-gray">
                     {{ $t('This service will soon be sped up significantly by banks updating their infrastructure.') }}
@@ -131,6 +130,7 @@
 <script lang="ts">
 import { defineComponent, onUnmounted, ref } from '@vue/composition-api';
 import { Copyable, FiatAmount, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { OASIS_EUR_DETECTION_DELAY } from '../../lib/Constants';
 
 enum Pages {
     PAYMENT_DETAILS = 'payment-details',
@@ -141,8 +141,6 @@ export enum Events {
     CANCEL = 'cancel',
     PAID = 'paid',
 }
-
-const EXPECTED_DETECTION_DURATION = 4; // minutes
 
 export default defineComponent({
     props: {
@@ -197,7 +195,7 @@ export default defineComponent({
                 seconds.toString().padStart(2, '0'),
             ].join(':');
 
-            takesLongerThanUsual.value = hours > 0 || minutes >= EXPECTED_DETECTION_DURATION;
+            takesLongerThanUsual.value = hours > 0 || minutes >= OASIS_EUR_DETECTION_DELAY;
         }
 
         onUnmounted(() => {
@@ -213,7 +211,7 @@ export default defineComponent({
             onPaid,
             timer,
             showCancelConfirmation,
-            EXPECTED_DETECTION_DURATION,
+            OASIS_EUR_DETECTION_DELAY,
             takesLongerThanUsual,
         };
     },
@@ -229,7 +227,9 @@ export default defineComponent({
                 text = `${firstGroup}${separator}${text}`;
             }
             // Remove separator behind last group
-            text = text.substr(0, text.length - separator.length);
+            if (text.substring(text.length - separator.length) === separator) {
+                text = text.substr(0, text.length - separator.length);
+            }
             return text;
         },
     },
@@ -284,7 +284,7 @@ export default defineComponent({
         color: white !important;
     }
 
-    /deep/ .background {
+    ::v-deep .background {
         pointer-events: none;
         background: white;
     }
@@ -332,6 +332,10 @@ export default defineComponent({
     word-spacing: -0.2em;
 }
 
+.purpose .nq-label.nq-orange {
+    font-size: var(--small-label-size);
+}
+
 .instant-warning {
     justify-content: center;
     align-items: center;
@@ -339,8 +343,16 @@ export default defineComponent({
 
     .text {
         font-weight: 600;
-        opacity: 0.5;
         margin-right: 1rem;
+    }
+
+    .text,
+    .tooltip ::v-deep .trigger {
+        color: var(--nimiq-orange);
+
+        .nq-icon {
+            opacity: 1;
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners" emitClose>
+    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="$modal">
         <PageHeader :backArrow="page > 1" @back="page -= 1">
             <template v-if="page === 1">
                 {{ $t('Great, you’re here!') }}
@@ -54,7 +54,7 @@
                 </p>
             </div>
             <div class="visual browser-network">
-                <img src="../../assets/slides/browser-network-half.png" key="browser-network">
+                <img src="../../assets/slides/browser-network-half.png" key="browser-network" alt="Browser Network">
             </div>
         </PageBody>
 
@@ -65,12 +65,13 @@
             </button>
             <div v-if="page === 1" class="flex-row flags">
                 <Tooltip v-for="lang in Languages" :key="lang.code"
-                    :preferredPosition="width > 700 ? 'bottom' : 'top'"
+                    :preferredPosition="isMobile ? 'top' : 'bottom'"
                     :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
                     @click="setLanguage(lang.code)"
                 >
                     <img slot="trigger" :src="require(`../../assets/languages/${lang.code}.svg`)"
-                        class="flag" :class="{'active': settings$.language === lang.code}">
+                        class="flag" :class="{'active': settings$.language === lang.code}"
+                        :alt="`Flag-${lang.code.toUpperCase()}`">
                     {{ lang.name }}
                 </Tooltip>
             </div>
@@ -80,41 +81,54 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter, Tooltip, CaretRightSmallIcon, Identicon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter, Tooltip, Identicon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
+        const { state: settings$, setLanguage } = useSettingsStore();
+        const { activeAccountInfo } = useAccountStore();
+        const { activeAddress } = useAddressStore();
+        const { isMobile } = useWindowSize();
+
+        const $modal = ref<any | null>(null);
         const page = ref(1);
 
-        async function onButtonClick() {
-            if (page.value === 2) {
-                context.root.$router.back();
-            } else {
+        async function onButtonClick(event: MouseEvent) {
+            if (page.value < 2) {
                 page.value += 1;
+                const target = (event.target as HTMLButtonElement | null);
+                if (target) target.blur();
+            } else {
+                window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
+                await $modal.value!.forceClose();
+                if (activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEGACY
+                    && !activeAccountInfo.value.btcAddresses?.external.length) {
+                    // After adding an account that supports Bitcoin without it being activated yet, offer to activate
+                    // it. This is especially for Ledger logins where Bitcoin is not automatically activated as it
+                    // requires the Bitcoin app.
+                    await context.root.$router.push('/btc-activation');
+                }
             }
         }
 
-        const { state: settings$, setLanguage } = useSettingsStore();
-
-        const { activeAddress } = useAddressStore();
-
-        const { width } = useWindowSize();
-
         return {
+            $modal,
             page,
             onButtonClick,
             Languages,
             settings$,
             setLanguage,
             activeAddress,
-            width,
+            isMobile,
         };
     },
     components: {
@@ -123,7 +137,6 @@ export default defineComponent({
         PageBody,
         PageFooter,
         Tooltip,
-        CaretRightSmallIcon,
         Identicon,
         BitcoinIcon,
     },
@@ -163,7 +176,7 @@ export default defineComponent({
     }
 
     .page-body.network-page {
-        max-height: 39.5rem;
+        max-height: 41.5rem;
     }
 
     .text,

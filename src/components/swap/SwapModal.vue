@@ -39,25 +39,6 @@
                             {{ $t('fees') }}
                         </div>
                     </SwapFeesTooltip>
-                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom right" class="early-access">
-                        <span class="trigger flex-row" slot="trigger">
-                            <FlameIcon/>
-                            {{ $t('Early Access') }}
-                        </span>
-                        <p>{{ $t('Early Access means that there are limits in place for swaps.' +
-                            ' They will be increased gradually.') }}</p>
-                        <div class="price-breakdown">
-                            <label>{{ $t('Per-Swap Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.perSwap.luna" currency="nim" roundDown/>
-                        </div>
-                        <div class="price-breakdown">
-                            <label>{{ $t('30-day Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.monthly.luna" currency="nim" roundDown/>
-                            <span v-else>{{ $t('loading...') }}</span>
-                        </div>
-                    </Tooltip>
                     <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
                         ref="$limitsTooltip">
                         <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
@@ -71,11 +52,6 @@
                             </template>
                         </div>
                         <div class="price-breakdown">
-                            <label>{{ $t('Per-Swap Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.perSwap.luna" currency="nim" roundDown/>
-                        </div>
-                        <div class="price-breakdown">
                             <label>{{ $t('30-day Limit') }}</label>
                             <FiatConvertedAmount v-if="limits"
                                 :amount="limits.monthly.luna" currency="nim" roundDown/>
@@ -87,8 +63,8 @@
                         </i18n>
                         <div></div>
                         <p class="explainer">
-                            {{ $t('During early access, these limits apply.') }}
-                            {{ $t('They will be increased gradually.') }}
+                            {{ $t('Nimiq is working on a PRO feature with '
+                                + 'increased limits after user registration.') }}
                         </p>
                     </Tooltip>
                 </div>
@@ -110,12 +86,15 @@
                 >
                     <AmountInput
                         :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
+                        @focus="onFocus(SwapAsset.NIM, $event)"
                         @input="onInput(SwapAsset.NIM, $event)"
+                        @blur="onBlur($event)"
                         :class="{
                             'positive-value': wantNim > 0 || capDecimals(getNim, SwapAsset.NIM) > 0,
                             'negative-value': wantNim < 0 || capDecimals(getNim, SwapAsset.NIM) < 0,
                         }"
-                        :maxFontSize="2.5" :decimals="5" placeholder="± 0" preserveSign>
+                        :placeholder="getPlaceholder(SwapAsset.NIM)"
+                        :maxFontSize="2.5" :decimals="5" preserveSign>
                     </AmountInput>
                     <FiatConvertedAmount :amount="Math.abs(wantNim || getNim)" currency="nim"/>
                 </div>
@@ -125,12 +104,15 @@
                 >
                     <AmountInput
                         :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
+                        @focus="onFocus(SwapAsset.BTC, $event)"
                         @input="onInput(SwapAsset.BTC, $event)"
+                        @blur="onBlur($event)"
                         :class="{
                             'positive-value': wantBtc > 0 || capDecimals(getBtc, SwapAsset.BTC) > 0,
                             'negative-value': wantBtc < 0 || capDecimals(getBtc, SwapAsset.BTC) < 0,
                         }"
-                        :maxFontSize="2.5" :decimals="btcUnit.decimals" placeholder="± 0" preserveSign>
+                        :placeholder="getPlaceholder(SwapAsset.BTC)"
+                        :maxFontSize="2.5" :decimals="btcUnit.decimals" preserveSign>
                         <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
                     </AmountInput>
                     <FiatConvertedAmount :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
@@ -152,6 +134,7 @@
         <SwapModalFooter
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
+            requireBothNetworks
             @click="sign"
         >
             <template v-slot:cta>{{ $t('Confirm') }}</template>
@@ -215,13 +198,9 @@ import { defineComponent, ref, computed, onMounted, watch } from '@vue/compositi
 import {
     PageHeader,
     PageBody,
-    PageFooter,
     Tooltip,
     FiatAmount,
-    AlertTriangleIcon,
     CircleSpinner,
-    CheckmarkIcon,
-    ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 import {
     SetupSwapRequest,
@@ -245,15 +224,10 @@ import {
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import Modal from '../modals/Modal.vue';
-import BtcAddressInput from '../BtcAddressInput.vue';
-import BtcLabelInput from '../BtcLabelInput.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
-import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import ShortAddress from '../ShortAddress.vue';
 import SwapBalanceBar from './SwapBalanceBar.vue';
-import FlameIcon from '../icons/FlameIcon.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import LightningIcon from '../icons/LightningIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
@@ -271,9 +245,10 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
-import SwapSepaFundingInstructions from './SwapSepaFundingInstructions.vue';
 import SwapModalFooter from './SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
+import { getNetworkClient } from '../../network';
+import { getElectrumClient } from '../../electrum';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -638,7 +613,7 @@ export default defineComponent({
                 }
 
                 estimate.value = newEstimate;
-            } catch (err) {
+            } catch (err: any) {
                 console.error(err); // eslint-disable-line no-console
                 estimateError.value = err.message;
             }
@@ -673,6 +648,11 @@ export default defineComponent({
                 wantNim.value = Math.min(limit, Math.max(-limit, amount));
                 wantBtc.value = 0;
 
+                // If user has 0 assets in BTC, then only accept negative values
+                if (accountBtcBalance.value === 0 && wantNim.value > 0) {
+                    wantNim.value *= -1;
+                }
+
                 isLimitReached.value = Math.abs(originalAmount || wantNim.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
@@ -685,12 +665,61 @@ export default defineComponent({
                 wantBtc.value = Math.min(limit, Math.max(-limit, amount));
                 wantNim.value = 0;
 
+                // If user has 0 assets in NIM, then only accept negative values
+                if (activeAddressInfo.value?.balance === 0 && wantBtc.value > 0) {
+                    wantBtc.value *= -1;
+                }
+
                 isLimitReached.value = Math.abs(originalAmount || wantBtc.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
 
             if (!amount) {
                 updateEstimate(); // Skip debounce and update instantly
+            }
+        }
+
+        // If user only has one asset, then we know that there is only one available operation,
+        // so we show only one icon: '-' or '+' depending on the asset
+        function getPlaceholder(asset: SwapAsset) {
+            if (asset === SwapAsset.NIM) {
+                if (accountBtcBalance.value === 0) {
+                    return '- 0';
+                }
+                if (activeAddressInfo.value?.balance === 0) {
+                    return '+ 0';
+                }
+            }
+            if (asset === SwapAsset.BTC) {
+                if (activeAddressInfo.value?.balance === 0) {
+                    return '- 0';
+                }
+                if (accountBtcBalance.value === 0) {
+                    return '+ 0';
+                }
+            }
+            return '± 0';
+        }
+
+        function onFocus(asset: SwapAsset, input: HTMLInputElement) {
+            // If user has selected NIM and has 0 assets in BTC, then the input should start with a - symbol,
+            // and viceversa
+
+            // If user has already changed the input, do nothing
+            if (input.value !== '') return;
+
+            if (
+                // eslint-disable-next-line operator-linebreak
+                (asset === SwapAsset.NIM && accountBtcBalance.value === 0) ||
+                (asset === SwapAsset.BTC && activeAddressInfo.value?.balance === 0)
+            ) {
+                input.value = '-';
+            }
+        }
+
+        function onBlur(input: HTMLInputElement) {
+            if (input.value === '-') {
+                input.value = '';
             }
         }
 
@@ -762,7 +791,7 @@ export default defineComponent({
         });
 
         const serviceSwapFeePercentage = computed(() => {
-            if (!estimate.value) return 0;
+            if (!estimate.value) return Config.fastspot.feePercentage * 100;
 
             const data = swap.value || estimate.value;
             return Math.round(data.serviceFeePercentage * 10000) / 100;
@@ -817,6 +846,8 @@ export default defineComponent({
          */
 
         async function sign() {
+            if (!canSign.value) return;
+
             currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
@@ -853,13 +884,17 @@ export default defineComponent({
                     swapSuggestion.from.fee = fundingFee;
                     swapSuggestion.to.fee = settlementFee;
 
+                    if (swapSuggestion.to.amount - swapSuggestion.to.fee <= 0) {
+                        throw new Error(`${swapSuggestion.to.asset} output value is 0`);
+                    }
+
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                    swapError.value = null;
-                } catch (error) {
+                } catch (error: any) {
                     console.error(error); // eslint-disable-line no-console
-                    swapError.value = error.message;
+                    estimateError.value = error.message;
+                    if (swapSuggestion!) cancelSwap(swapSuggestion);
                     reject(error);
                     return;
                 }
@@ -869,7 +904,19 @@ export default defineComponent({
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
 
-                const validityStartHeight = useNetworkStore().height.value;
+                const nimiqClient = await getNetworkClient();
+                await nimiqClient.waitForConsensusEstablished();
+                const headHeight = await nimiqClient.getHeadHeight();
+                if (headHeight > 100) {
+                    useNetworkStore().state.height = headHeight;
+                } else {
+                    throw new Error('Invalid network state, try please reloading the app');
+                }
+
+                const electrumClient = await getElectrumClient();
+                await electrumClient.waitForConsensusEstablished();
+
+                const validityStartHeight = useNetworkStore().state.height;
 
                 if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     fund = {
@@ -934,7 +981,7 @@ export default defineComponent({
                     redeem = {
                         type: 'NIM',
                         recipient: nimAddress, // My address, must be redeem address of HTLC
-                        value: swapSuggestion.to.amount, // Luna
+                        value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
                         fee: swapSuggestion.to.fee, // Luna
                         validityStartHeight,
                     };
@@ -963,8 +1010,14 @@ export default defineComponent({
                     fiatCurrency: currency.value,
                     fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value]!,
                     redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value]!,
-                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    fundFees: {
+                        processing: 0,
+                        redeeming: swapSuggestion.from.serviceNetworkFee,
+                    },
+                    redeemFees: {
+                        funding: swapSuggestion.to.serviceNetworkFee,
+                        processing: 0,
+                    },
                     serviceSwapFee,
                     nimiqAddresses: addressInfos.value.map((addressInfo) => ({
                         address: addressInfo.address,
@@ -978,10 +1031,11 @@ export default defineComponent({
                 resolve(request);
             });
 
-            let signedTransactions: SetupSwapResult | null = null;
+            let signedTransactions: SetupSwapResult | void | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
-            } catch (error) {
+                if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
+            } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
@@ -1023,6 +1077,21 @@ export default defineComponent({
                     throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
                 }
                 confirmedSwap = swapOrPreSwap;
+
+                // Apply the correct local fees from the swap request
+                const request = await hubRequest;
+                confirmedSwap.from.fee = request.fund.type === SwapAsset.NIM
+                    ? request.fund.fee
+                    : request.fund.type === SwapAsset.BTC
+                        ? request.fund.inputs.reduce((sum, input) => sum + input.value, 0)
+                            - request.fund.output.value
+                            - (request.fund.changeOutput?.value || 0)
+                        : 0;
+                confirmedSwap.to.fee = request.redeem.type === SwapAsset.NIM
+                    ? request.redeem.fee
+                    : request.redeem.type === SwapAsset.BTC
+                        ? request.redeem.input.value - request.redeem.output.value
+                        : 0;
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -1163,7 +1232,10 @@ export default defineComponent({
             serviceSwapFeeFiat,
             serviceSwapFeePercentage,
             isHighRelativeFees,
+            getPlaceholder,
             onInput,
+            onFocus,
+            onBlur,
             onSwapBalanceBarChange,
             newNimBalance,
             newBtcBalance,
@@ -1195,35 +1267,25 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
-        BtcAddressInput,
-        BtcLabelInput,
         Amount,
         AmountInput,
-        FeeSelector,
         FiatConvertedAmount,
         Tooltip,
         FiatAmount,
-        AlertTriangleIcon,
         CircleSpinner,
-        CheckmarkIcon,
-        ShortAddress,
-        ArrowRightSmallIcon,
         SwapBalanceBar,
-        FlameIcon,
         MinimizeIcon,
         LightningIcon,
         SwapFeesTooltip,
         AddressList,
         SwapAnimation,
-        SwapSepaFundingInstructions,
         SwapModalFooter,
     },
 });
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .small-page {
+.modal ::v-deep .small-page {
     width: 63.5rem;
     // height: 74.5rem;
     font-size: var(--body-size);
@@ -1288,7 +1350,7 @@ export default defineComponent({
         color: rgb(234, 166, 23);
         box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
-        /deep/ svg {
+        ::v-deep svg {
             margin-left: 0.75rem;
             height: 1.75rem;
             width: 1.75rem;
@@ -1299,34 +1361,6 @@ export default defineComponent({
     &.limit-reached {
         color: var(--nimiq-red);
         box-shadow: inset 0 0 0 1.5px rgba(216, 65, 51, 0.7);
-    }
-}
-
-.early-access {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    margin: 0 !important;
-
-    .trigger.flex-row {
-        display: flex;
-        align-items: center;
-        font-size: 12px;
-        font-weight: bold;
-        color: #EAA617;
-
-        svg {
-            margin-right: 0.75rem;
-        }
-    }
-
-    /deep/ > .trigger {
-        display: block;
-    }
-
-    /deep/ .tooltip-box {
-        text-align: left;
-        transform: translate(-5rem, 2rem);
     }
 }
 
@@ -1357,12 +1391,12 @@ export default defineComponent({
     margin-top: 1.5rem;
 }
 
-.amount-input /deep/ form input.nq-input {
+.amount-input ::v-deep form input.nq-input {
     padding: 0.25rem;
 }
 
 .amount-input.has-value {
-    &.positive-value /deep/ form{
+    &.positive-value ::v-deep form {
         .nq-input {
             color: var(--nimiq-green);
             --border-color: rgba(33,188,165,0.3); /* Based on Nimiq Green */
@@ -1374,7 +1408,7 @@ export default defineComponent({
         }
     }
 
-    &.negative-value /deep/ form{
+    &.negative-value ::v-deep form{
         .nq-input {
             color: var(--nimiq-blue);
         }
@@ -1387,7 +1421,7 @@ export default defineComponent({
     }
 
     &.focussed {
-        &.positive-value /deep/ {
+        &.positive-value ::v-deep {
             .ticker {
                 color: var(--nimiq-green);
             }
@@ -1398,7 +1432,7 @@ export default defineComponent({
             }
         }
 
-        &.negative-value /deep/ {
+        &.negative-value ::v-deep {
             .ticker {
                 color: var(--nimiq-light-blue);
             }
@@ -1417,26 +1451,33 @@ export default defineComponent({
     }
 }
 
-.amount-input,
-.new-balances .amount {
+.swap-modal {
     --size: var(--h2-size);
-    font-size: var(--size);
-    font-weight: bold;
 
-    /deep/ .ticker {
-        // Sometimes this class gets lower priority than the ticker's native class, so we need to force these styles
-        font-size: inherit !important;
-        line-height: 1 !important;
-        margin-left: 0.5rem !important;
+    & ::v-deep .amount-input {
+        font-size: var(--size);
+        font-weight: bold;
+
+        .ticker {
+            line-height: 1;
+            margin-left: 0.5rem;
+            font-size: var(--size);
+        }
     }
 
-    .nq-green & {
-        color: var(--nimiq-green);
+    .new-balances ::v-deep .amount {
+        font-size: var(--size);
+        font-weight: bold;
+
+        .nq-green & {
+            color: var(--nimiq-green);
+        }
+
+        .nq-blue & {
+            color: var(--nimiq-blue);
+        }
     }
 
-    .nq-blue & {
-        color: var(--nimiq-blue);
-    }
 }
 
 .new-balances .fiat-amount {
@@ -1472,7 +1513,7 @@ export default defineComponent({
     .tooltip {
         text-align: left;
 
-        /deep/ .trigger {
+        ::v-deep .trigger {
             display: block;
             font-size: 1.75rem;
             margin-left: 0.5rem;
@@ -1484,7 +1525,7 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay .animation-overlay + .close-button {
+.modal ::v-deep .overlay .animation-overlay + .close-button {
     display: none;
 }
 
@@ -1537,27 +1578,12 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .modal /deep/ .small-page {
+    .modal ::v-deep .small-page {
         overflow-y: auto;
     }
 
     .page-body {
         padding-top: 0;
-    }
-
-    .early-access {
-        top: 1.25rem;
-        left: 1.25rem;
-
-        /deep/ .tooltip-box {
-            transform: translate(-3rem, 2rem);
-        }
-    }
-}
-
-@media (max-width: 450px) { // Vue-components breakpoint
-    .page-header {
-        padding-top: 4rem; // Increase space between Early Access notice and modal title
     }
 }
 </style>

@@ -8,11 +8,12 @@ import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Con
 import { useBtcAddressStore } from './BtcAddress';
 import { isHtlcFunding, isHtlcRefunding, isHtlcSettlement, HTLC_ADDRESS_LENGTH } from '../lib/BtcHtlcDetection';
 import { useSwapsStore } from './Swaps';
+import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
     outputs: (PlainOutput & {
-        fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE | undefined },
+        fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
     })[],
 };
 
@@ -74,6 +75,45 @@ export const useBtcTransactionsStore = createStore({
                                 timeoutTimestamp: fundingData.timeoutTimestamp,
                             },
                         });
+
+                        if (!useSwapsStore().state.swaps[fundingData.hash].out) {
+                            // Check this swap with the Fastspot API to detect if this was a EUR swap
+                            const htlcAddress = plain.outputs
+                                .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
+                                .address;
+                            if (htlcAddress) {
+                                getContract(SwapAsset.BTC, htlcAddress).then((contractWithEstimate) => {
+                                    if (contractWithEstimate.to.asset === SwapAsset.EUR) {
+                                        const exchangeRate = {
+                                            [CryptoCurrency.BTC]: {
+                                                [FiatCurrency.EUR]: getEurPerCrypto(
+                                                    SwapAsset.BTC,
+                                                    contractWithEstimate,
+                                                ),
+                                            },
+                                        };
+                                        const fiatFees = getFiatFees(
+                                            contractWithEstimate,
+                                            CryptoCurrency.BTC,
+                                            exchangeRate,
+                                            FiatCurrency.EUR,
+                                            null,
+                                        );
+
+                                        useSwapsStore().addSettlementData(fundingData.hash, {
+                                            asset: SwapAsset.EUR,
+                                            amount: contractWithEstimate.to.amount,
+                                            // We cannot get bank info or EUR HTLC details from this.
+                                        }, {
+                                            fees: {
+                                                totalFee: fiatFees.funding.total,
+                                                asset: SwapAsset.EUR,
+                                            },
+                                        });
+                                    }
+                                }).catch(() => undefined);
+                            }
+                        }
                     }
                     // HTLC Refunding
                     const refundingData = await isHtlcRefunding(plain); // eslint-disable-line no-await-in-loop
@@ -97,10 +137,28 @@ export const useBtcTransactionsStore = createStore({
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
                             getContract(SwapAsset.BTC, plain.inputs[0].address!).then((contractWithEstimate) => {
                                 if (contractWithEstimate.from.asset === SwapAsset.EUR) {
+                                    const exchangeRate = {
+                                        [CryptoCurrency.BTC]: {
+                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.BTC, contractWithEstimate),
+                                        },
+                                    };
+                                    const fiatFees = getFiatFees(
+                                        contractWithEstimate,
+                                        CryptoCurrency.BTC,
+                                        exchangeRate,
+                                        FiatCurrency.EUR,
+                                        null,
+                                    );
+
                                     useSwapsStore().addFundingData(settlementData.hash, {
                                         asset: SwapAsset.EUR,
                                         amount: contractWithEstimate.from.amount,
                                         // We cannot get bank info or EUR HTLC details from this.
+                                    }, {
+                                        fees: {
+                                            totalFee: fiatFees.settlement.total,
+                                            asset: SwapAsset.EUR,
+                                        },
                                     });
                                 }
                             }).catch(() => undefined);
@@ -138,20 +196,52 @@ export const useBtcTransactionsStore = createStore({
             // revertTransactionsFromUtxos(revertedTransactions, this.state.transactions);
         },
 
-        async calculateFiatAmounts(fiat?: FiatCurrency) {
+        async calculateFiatAmounts(fiatCurrency?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
-            const fiatCurrency = fiat || useFiatStore().currency.value;
+            const fiatStore = useFiatStore();
+            fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
+            const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
-                !!tx.timestamp && tx.outputs.some((output) => !output.fiatValue || !(fiatCurrency in output.fiatValue)),
+                // BTC transactions don't need to be filtered by age,
+                // as the BTC price is available far enough into the past.
+                tx.timestamp && tx.outputs.some((output) =>
+                    typeof output.fiatValue?.[fiatCurrency!] !== 'number',
+                ),
             ) as Array<Omit<Transaction, 'timestamp'> & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
 
-            const timestamps = transactionsToUpdate.map((tx) => tx.timestamp * 1000);
-            const historicExchangeRates = await getHistoricExchangeRates(CryptoCurrency.BTC, fiatCurrency, timestamps);
+            const exchangeRates = new Map</* timestamp in ms */ number, /* exchange rate */ number | undefined>();
+            const historicTimestamps: number[] = [];
+
+            // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
+            // historic rates, which also only get updated every few minutes and might not include the newest rates yet.
+            // If the user's time is not set correctly, this will gracefully fall back to fetching rates for new
+            // transactions as historic exchange rates; old transactions at the user's system's time might be
+            // interpreted as current though.
+            for (let { timestamp } of transactionsToUpdate) {
+                timestamp *= 1000;
+                if (Math.abs(timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000 && currentRate) {
+                    exchangeRates.set(timestamp, currentRate);
+                } else {
+                    historicTimestamps.push(timestamp);
+                }
+            }
+
+            if (historicTimestamps.length) {
+                const historicExchangeRates = await getHistoricExchangeRates(
+                    CryptoCurrency.BTC,
+                    fiatCurrency,
+                    historicTimestamps,
+                );
+                for (const [timestamp, exchangeRate] of historicExchangeRates) {
+                    exchangeRates.set(timestamp, exchangeRate);
+                }
+            }
 
             for (const tx of transactionsToUpdate) {
-                const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
+                const exchangeRate = exchangeRates.get(tx.timestamp * 1000);
                 for (const output of tx.outputs) {
                     // Set via Vue.set to let vue setup the reactivity.
                     // TODO this might be not necessary anymore with Vue3

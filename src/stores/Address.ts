@@ -1,5 +1,6 @@
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
+import { useTransactionsStore } from './Transactions';
 
 export type AddressState = {
     addressInfos: {[id: string]: AddressInfo},
@@ -40,17 +41,35 @@ export const useAddressStore = createStore({
     } as AddressState),
     getters: {
         addressInfos: (state): AddressInfo[] => {
-            const accountStore = useAccountStore();
-            return accountStore.activeAccountInfo.value
-                ? accountStore.activeAccountInfo.value.addresses
-                    .map((addr) => state.addressInfos[addr])
-                    .filter((addrInfo) => !!addrInfo)
-                : [];
+            const { activeAccountInfo } = useAccountStore();
+            if (!activeAccountInfo.value) return [];
+
+            const { pendingTransactionsBySender } = useTransactionsStore();
+
+            return activeAccountInfo.value.addresses
+                .map((addr) => state.addressInfos[addr])
+                .filter((ai) => Boolean(ai))
+                .map((ai) => {
+                    const pendingTxs = pendingTransactionsBySender.value[ai.address] || [];
+                    const outgoingPendingAmount = pendingTxs
+                        // Do not consider pending transactions to our own addresses, to prevent the account
+                        // balance from getting reduced when sending between own accounts.
+                        .filter((tx) => !activeAccountInfo.value!.addresses.includes(tx.recipient))
+                        .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
+                    return {
+                        ...ai,
+                        balance: Math.max(0, (ai.balance || 0) - outgoingPendingAmount),
+                    };
+                });
         },
         activeAddress: (state) => state.activeAddress,
-        activeAddressInfo: (state) => state.activeAddress ? state.addressInfos[state.activeAddress] : null,
+        activeAddressInfo: (state, { addressInfos }) => state.activeAddress
+            ? (addressInfos.value as AddressInfo[]).find((ai) => ai.address === state.activeAddress)
+            : null,
         accountBalance: (state, { addressInfos }) =>
             (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + ((!!acc && acc.balance) || 0), 0),
+        accountAddresses: (state, { addressInfos }) =>
+            (addressInfos.value as AddressInfo[]).map((ai) => ai.address),
     },
     actions: {
         selectAddress(address: string) {

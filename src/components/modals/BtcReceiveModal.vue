@@ -3,29 +3,31 @@
         :showOverlay="addressQrCodeOverlayOpened || receiveLinkOverlayOpened"
         @close-overlay="closeOverlay"
     >
-        <Tooltip class="info-tooltip" preferredPosition="bottom right">
-            <InfoCircleSmallIcon slot="trigger"/>
-            <div class="flex-column">
-                <p>{{ $t('With Bitcoin, a new address is used for every transaction to improve privacy.'
-                    + ' Reuse of addresses does not result in a loss of funds.') }}</p>
-                <div class="flex-column">
-                    <div class="flex-row">
-                        <RefreshIcon />
-                        <p>{{ $t('Don’t reuse addresses and create a new one for every transaction.') }}</p>
-                    </div>
-                    <div class="flex-row">
-                        <BracketsIcon />
-                        <p>{{
-                            $t('Use labels instead of contacts to easily identify transactions in your history.')
-                        }}</p>
-                    </div>
-                </div>
-            </div>
-        </Tooltip>
-
-        <PageHeader>
+        <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
             {{ $t('Receive BTC') }}
-            <div slot="more">{{ $t('Share a single-use address with the sender.') }}</div>
+            <div slot="more" class="subheader">
+                {{ $t('Share a single-use address with the sender.') }}
+                <Tooltip class="info-tooltip" preferredPosition="bottom left">
+                    <InfoCircleSmallIcon slot="trigger"/>
+                    <div class="flex-column">
+                        <p>{{
+                            $t('With Bitcoin, a new address can be used for every transaction to improve privacy.')
+                        }}</p>
+                        <div class="flex-column">
+                            <div class="flex-row">
+                                <RefreshIcon />
+                                <p>{{ $t('Create a new address for every transaction.') }}</p>
+                            </div>
+                            <div class="flex-row">
+                                <BracketsIcon />
+                                <p>
+                                    {{ $t('Use labels to easily identify transactions.') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </Tooltip>
+            </div>
         </PageHeader>
         <PageBody class="flex-column">
             <Copyable class="address"
@@ -50,10 +52,9 @@
                         >
                             <template slot="trigger"><InfoCircleSmallIcon /></template>
                             <span class="header">
-                                {{ $t('Use a new Bitcoin address for every transaction to improve privacy.') }}
+                                {{ $t('Improve your privacy by creating a new address for every transaction. '
+                                    + 'Old addresses still work.') }}
                             </span>
-                            <p class="explainer">{{ $t('Although reusing addresses won’t result in a loss of funds,'
-                                + ' it is highly recommended not to do so.') }}</p>
                         </Tooltip>
                     </div>
 
@@ -98,7 +99,7 @@
 
             <footer class="flex-row">
                 <button class="nq-button-s" @click="receiveLinkOverlayOpened = true">
-                    {{ $t('Create payment link') }}
+                    {{ $t('Create request link') }}
                 </button>
                 <button class="reset qr-button" @click="addressQrCodeOverlayOpened = true;">
                     <QrCodeIcon/>
@@ -121,19 +122,16 @@ import { defineComponent, computed, watch, ref, Ref, onUnmounted, onMounted } fr
 import {
     PageBody,
     PageHeader,
-    PageFooter,
     Copyable,
     Tooltip,
     InfoCircleSmallIcon,
     QrCodeIcon,
-    QrCode,
 } from '@nimiq/vue-components';
-import Modal from './Modal.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import BracketsIcon from '../icons/BracketsIcon.vue';
-import AmountInput from '../AmountInput.vue';
 import BtcCopiedAddress, { BtcCopiedAddressInfo } from '../BtcCopiedAddress.vue';
 import { BTC_MAX_COPYABLE_ADDRESSES, BTC_UNCOPYABLE_ADDRESS_GAP } from '../../lib/Constants';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
@@ -175,13 +173,13 @@ export default defineComponent({
             }
             if (difference < 1 * hour) {
                 return context.root.$tc(
-                    'Created {count} minute ago | Created {count} minutes ago',
+                    'Created {count} minute ago | Created {count} minutes ago',
                     Math.trunc(difference / minute),
                 );
             }
             if (difference < 1 * day) {
                 return context.root.$tc(
-                    'Created {count} hour ago | Created {count} hours ago',
+                    'Created {count} hour ago | Created {count} hours ago',
                     Math.trunc(difference / hour),
                 );
             }
@@ -191,7 +189,7 @@ export default defineComponent({
                 return context.root.$t('Created yesterday') as string;
             }
             return context.root.$tc(
-                'Created {count} day ago | Created {count} days ago',
+                'Created {count} day ago | Created {count} days ago',
                 Math.trunc(difference / day),
             );
         }
@@ -300,10 +298,10 @@ export default defineComponent({
             addressFontSizeScaleFactor.value = 1;
             await context.root.$nextTick();
 
-            const width = $addressWidthFinder.value.clientWidth;
+            const addressWidth = $addressWidthFinder.value.clientWidth;
             const maxWidth = $availableAddressCopyable.value.$el.clientWidth - (addressPadding * 2);
 
-            addressFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
+            addressFontSizeScaleFactor.value = Math.min(maxWidth / addressWidth, 1);
 
             return addressFontSizeScaleFactor.value;
         }
@@ -316,6 +314,11 @@ export default defineComponent({
         onUnmounted(() => {
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
+
+        function back() {
+            disableNextModalTransition();
+            context.root.$router.back();
+        }
 
         return {
             addressQrCodeOverlayOpened,
@@ -332,19 +335,17 @@ export default defineComponent({
             $addressWidthFinder,
             addressFontSizeScaleFactor,
             BTC_MAX_COPYABLE_ADDRESSES,
+            back,
         };
     },
     components: {
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
         Copyable,
         Tooltip,
         InfoCircleSmallIcon,
         QrCodeIcon,
-        QrCode,
-        AmountInput,
         RefreshIcon,
         BracketsIcon,
         BtcCopiedAddress,
@@ -362,12 +363,73 @@ export default defineComponent({
 .page-header {
     padding-bottom: 0;
 
-    div {
+    .subheader {
+        margin-top: 1.5rem;
         font-size: var(--body-size);
         line-height: 1.4;
         font-weight: 600;
-        opacity: 0.6;
-        margin-top: 2rem;
+        color: var(--text-60);
+
+        > .info-tooltip {
+            margin-left: 0.25rem;
+            z-index: 4;
+
+            ::v-deep .trigger svg {
+                height: 2rem;
+                color: var(--text-60);
+                transition: color var(--short-transition-duration) var(--nimiq-ease);
+            }
+
+            & ::v-deep .trigger:hover svg,
+            & ::v-deep .trigger:focus svg,
+            &.shown ::v-deep .trigger svg {
+                color: var(--text-80);
+            }
+
+            ::v-deep .tooltip-box {
+                width: 26.25rem;
+                font-size: var(--small-size);
+                font-weight: 600;
+                transform: translate(1rem, 2rem);
+
+                @media (max-width: 700px) { // Full mobile breakpoint
+                    transform: translate(0, 2rem);
+                }
+
+                p {
+                    margin: 0;
+                }
+
+                p:first-child,
+                .flex-row:first-child {
+                    margin-bottom: 1rem;
+                }
+
+                .flex-row {
+                    align-items: flex-start;
+
+                    p {
+                        flex-basis: 80%;
+                        margin-left: 1.25rem;
+                    }
+
+                    svg {
+                        opacity: 0.6;
+                    }
+
+                    &:first-child svg {
+                        width: 2.75rem;
+                        height: 2.75rem;
+                        margin-top: 0.25rem;
+                    }
+                    &:last-child svg {
+                        width: 2.25rem;
+                        height: 2.25rem;
+                        margin: 0.25rem 0.25rem 0;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -397,6 +459,7 @@ export default defineComponent({
     color: var(--text-100);
     height: calc(var(--body-size) + 4px + (var(--padding) * 2));
     padding: 0;
+    overflow: hidden;
 
     transition: {
         property: background-color, color, font-size;
@@ -414,11 +477,11 @@ export default defineComponent({
         background-color: transparent;
     }
 
-    &:hover /deep/ .background {
+    &:hover ::v-deep .background {
         opacity: 0.1;
     }
 
-    & /deep/ > span {
+    & ::v-deep > span {
         position: relative;
         overflow: hidden;
         display: flex;
@@ -507,7 +570,7 @@ export default defineComponent({
     .tooltip {
         z-index: 3;
 
-        /deep/ .trigger .nq-icon {
+        ::v-deep .trigger .nq-icon {
             margin-left: 0.75rem;
         }
 
@@ -588,75 +651,6 @@ footer {
         &:hover,
         &:focus {
             opacity: 0.8;
-        }
-    }
-}
-
-.info-tooltip {
-    position: absolute;
-    top: 2rem;
-    left: 2rem;
-    z-index: 3;
-
-    /deep/ .trigger svg {
-        height: 2rem;
-        opacity: .3;
-
-        transition: opacity var(--short-transition-duration) var(--nimiq-ease);
-    }
-
-    & /deep/ .trigger:hover svg,
-    & /deep/ .trigger:focus svg,
-    &.shown /deep/ .trigger svg {
-        opacity: .6;
-    }
-
-    /deep/ .tooltip-box {
-        width: 26.25rem;
-        font-size: var(--small-size);
-        font-weight: 600;
-        transform: translate(-2rem, 2rem);
-
-        @media (max-width: 700px) { // Full mobile breakpoint
-            transform: translate(0.5rem, 2rem);
-        }
-
-        p {
-            margin: 0;
-        }
-
-        p:first-child,
-        .flex-row:first-child {
-            margin-bottom: 1rem;
-        }
-
-        .flex-row {
-            align-items: flex-start;
-
-            p {
-                flex-basis: 80%;
-                margin-left: 1.25rem;
-            }
-
-            svg {
-                opacity: 0.6;
-            }
-        }
-
-        .flex-row:first-child {
-            svg {
-                width: 2.75rem;
-                height: 2.75rem;
-                margin-top: 0.25rem;
-            }
-        }
-
-        .flex-row:last-child {
-            svg {
-                width: 2.25rem;
-                height: 2.25rem;
-                margin: 0.25rem 0.25rem 0;
-            }
         }
     }
 }

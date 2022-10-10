@@ -1,30 +1,44 @@
 <template>
     <div class="groundfloor flex-row">
-        <transition name="fade">
-            <keep-alive>
-                <router-view name="accountOverview"/>
-            </keep-alive>
-        </transition>
 
-        <transition name="fade">
-            <router-view name="settings"/>
-        </transition>
+        <div>
+            <transition :name="preventNextTransition ? 'none' : 'fade'">
+                <keep-alive>
+                    <router-view name="accountOverview"/>
+                </keep-alive>
+            </transition>
+            <transition :name="preventNextTransition ? 'none' : 'fade'">
+                <router-view name="settings"/>
+            </transition>
+        </div>
 
-        <transition name="slide-right">
-            <keep-alive>
-                <router-view name="addressOverview"/>
-            </keep-alive>
-        </transition>
+        <div>
+            <transition name="slide-right">
+                <keep-alive>
+                    <router-view name="addressOverview"/>
+                </keep-alive>
+            </transition>
+        </div>
 
         <div class="mobile-tap-area" @click="$router.back()"></div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 
 export default defineComponent({
+    setup(props, context) {
+        const preventNextTransition = ref(false);
 
+        watch(() => context.root.$route, (to) => {
+            preventNextTransition.value = to.name === 'network';
+        }, { lazy: true });
+
+        return {
+            preventNextTransition,
+        };
+    },
 });
 </script>
 
@@ -41,6 +55,7 @@ export default defineComponent({
 
 .settings {
     position: relative; // iOS Safari fix to make settings fill the screen width
+    width: calc(100vw - var(--sidebar-width));
 }
 
 @media (max-width: 1160px) { // Half mobile breakpoint
@@ -56,6 +71,10 @@ export default defineComponent({
         pointer-events: none;
 
         transition: opacity var(--transition-time) var(--nimiq-ease);
+    }
+
+    .settings {
+        width: 100vw;
     }
 }
 </style>

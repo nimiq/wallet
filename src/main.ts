@@ -4,6 +4,7 @@ import VueCompositionApi from '@vue/composition-api';
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
+import { init as initOasisApi } from '@nimiq/oasis-api';
 
 import Config from 'config';
 import App from './App.vue';
@@ -12,11 +13,14 @@ import { initStorage } from './storage';
 import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { launchElectrum } from './electrum';
+import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
 import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
+import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
+import { initPwa } from './composables/usePwaInstallPrompt';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -34,22 +38,28 @@ Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
 
 async function start() {
+    initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     await initHubApi(); // Must be called after VueCompositionApi has been enabled
     syncFromHub(); // Can run parallel to Vue initialization
 
     serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 
-    // Update exchange rates every 2 minutes. If the last update was
-    // less than 2 minutes ago, wait the remaining time first.
-    const { timestamp: lastExchangeRateUpdateTime, updateExchangeRates } = useFiatStore();
-    window.setTimeout(
-        () => {
-            updateExchangeRates();
-            setInterval(() => updateExchangeRates(), 2 * 60 * 1000); // update every 2 min
-        },
-        Math.max(0, lastExchangeRateUpdateTime.value + 2 * 60 * 1000 - Date.now()),
-    );
+    // Update exchange rates every 2 minutes. If an update takes longer than 2 minutes due to CoinGecko's rate limit,
+    // wait until the update succeeds before queueing the next update. If the last update before page load was less than
+    // 2 minutes ago, wait the remaining time first.
+    const { timestamp: { value: lastExchangeRateUpdateTime }, updateExchangeRates } = useFiatStore();
+    let exchangeRateUpdateStart = lastExchangeRateUpdateTime;
+    const TWO_MINUTES = 2 * 60 * 1000;
+    function queueExchangeRateUpdate() {
+        setTimeout(async () => {
+            exchangeRateUpdateStart = Date.now(); // in contrast to fiatStore.timestamp set before the update
+            await updateExchangeRates(/* failGracefully */ true); // silently ignores errors
+            queueExchangeRateUpdate();
+        // Also add 2 minutes as upper bound to be immune to the user's system clock being wrong.
+        }, Math.max(0, Math.min(exchangeRateUpdateStart + TWO_MINUTES - Date.now(), TWO_MINUTES)));
+    }
+    queueExchangeRateUpdate();
 
     // Fetch language file
     const { language } = useSettingsStore();
@@ -57,43 +67,38 @@ async function start() {
 
     startSentry();
 
-    if (Config.fastspot.apiKey) {
+    if (Config.fastspot.apiEndpoint && Config.fastspot.apiKey) {
         initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
     }
 
-    const app = new Vue({
+    if (Config.oasis.apiEndpoint) {
+        initOasisApi(Config.oasis.apiEndpoint);
+    }
+
+    // Make config accessible in components
+    Vue.prototype.$config = Config;
+
+    new Vue({
         router,
         i18n,
         render: (h) => h(App),
     }).$mount('#app');
 
-    router.afterEach((to, from) => {
-        // console.debug('route-changed', from, to);
-        app.$emit('route-changed', to, from);
-    });
-
     launchNetwork();
-    launchElectrum(); // TODO: Only launch BTC stuff when configured and/or necessary
 
-    router.onReady(() => {
-        // console.debug(router.currentRoute, window.history.state);
-
-        // Vue-Router sets a history.state. If a state exists, this means this was
-        // a page-reload and we don't need to set up the initial routing anymore.
-        if (window.history.state) return;
-
-        if (router.currentRoute.path !== '/') {
-            const startRoute = router.currentRoute.fullPath;
-            app.$once('route-changed', () => Vue.nextTick().then(() => {
-                // Use push, so the user is able to use the OS' back button.
-                // Use fullpath to also capture query params, like used in payment links.
-                router.push(startRoute);
-            }));
-        }
-        router.replace('/').catch(() => { /* ignore */ }); // Make sure to remove any query params, like ?sidebar.
-    });
+    if (Config.enableBitcoin) {
+        launchElectrum();
+    } else {
+        useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
+    }
 }
 start();
+
+declare module 'vue/types/vue' {
+    interface Vue {
+        $config: typeof Config;
+    }
+}
 
 declare module '@vue/composition-api/dist/component/component' {
     interface SetupContext {

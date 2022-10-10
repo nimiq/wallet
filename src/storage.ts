@@ -2,6 +2,7 @@
 
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
 import { captureException } from '@sentry/vue';
+import idbReady from 'safari-14-idb-fix';
 import Config from 'config';
 import { useTransactionsStore, Transaction } from './stores/Transactions';
 import { useAddressStore, AddressState } from './stores/Address';
@@ -14,6 +15,7 @@ import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
 import { useSwapsStore, SwapsState } from './stores/Swaps';
+import { useBankStore, BankState } from './stores/Bank';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -26,6 +28,7 @@ const StorageKeys = {
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
+    BANK: 'wallet_bank_v01',
 };
 
 const PersistentStorageKeys = {
@@ -42,12 +45,25 @@ interface StorageBackend {
 }
 
 class IndexedDBStorage {
+    private static lastError = '';
+
     static async get<ResultType>(key: string) {
         return idbGet<ResultType>(key);
     }
 
     static async set(key: string, value: any) {
-        return idbSet(key, value);
+        try {
+            return await idbSet(key, value);
+        } catch (error) {
+            // TODO: Handle quota-errors with a user notification
+            const message = error instanceof Error ? error.message : error as string;
+
+            if (this.lastError !== message) {
+                this.lastError = message;
+                throw error;
+            }
+            return undefined;
+        }
     }
 
     static async del(key: string) {
@@ -56,6 +72,8 @@ class IndexedDBStorage {
 }
 
 class LocalStorageStorage {
+    private static lastError = '';
+
     static async get<ResultType>(key: string) {
         const stored = localStorage.getItem(key);
         if (!stored) return undefined;
@@ -63,7 +81,18 @@ class LocalStorageStorage {
     }
 
     static async set(key: string, value: any) {
-        return localStorage.setItem(key, JSON.stringify(value));
+        try {
+            return localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+            // TODO: Handle quota-errors with a user notification
+            const message = error instanceof Error ? error.message : error as string;
+
+            if (this.lastError !== message) {
+                this.lastError = message;
+                throw error;
+            }
+            return undefined;
+        }
     }
 
     static async del(key: string) {
@@ -75,6 +104,7 @@ let Storage: StorageBackend;
 
 export async function initStorage() {
     try {
+        await idbReady();
         await migrateToIdb();
         Storage = IndexedDBStorage;
     } catch (error) {
@@ -144,6 +174,7 @@ export async function initStorage() {
         settingsStore.patch({
             ...storedSettings,
             updateAvailable: false,
+            btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
         });
     }
 
@@ -259,6 +290,19 @@ export async function initStorage() {
 
     unsubscriptions.push(
         swapsStore.subscribe(() => Storage.set(StorageKeys.SWAPS, swapsStore.state)),
+    );
+
+    /**
+     * Bank
+     */
+    const bankStore = useBankStore();
+    const storedBankState = await Storage.get<BankState>(StorageKeys.BANK);
+    if (storedBankState) {
+        bankStore.patch(storedBankState);
+    }
+
+    unsubscriptions.push(
+        bankStore.subscribe(() => Storage.set(StorageKeys.BANK, bankStore.state)),
     );
 }
 

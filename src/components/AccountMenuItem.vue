@@ -34,6 +34,7 @@ import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore, BtcAddressSet } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
+import { Transaction, useTransactionsStore } from '../stores/Transactions';
 
 export default defineComponent({
     props: {
@@ -49,12 +50,27 @@ export default defineComponent({
     setup(props) {
         const { accountInfos } = useAccountStore();
         const { state: addressState } = useAddressStore();
+        const { pendingTransactionsBySender } = useTransactionsStore();
 
         const accountInfo = computed(() => accountInfos.value[props.id]);
         const addressInfos = computed(() => accountInfo.value.addresses.map((addr) => addressState.addressInfos[addr]));
         const firstAddressInfo = computed(() => addressInfos.value[0]);
         const backgroundClass = computed(() => getBackgroundClass(firstAddressInfo.value.address));
-        const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, acc) => sum + (acc.balance || 0), 0));
+        const outgoingPendingAmount = computed(() => {
+            const pendingTxs: Transaction[] = [];
+            const addresses: string[] = [];
+            for (const ai of addressInfos.value) {
+                pendingTxs.push(...(pendingTransactionsBySender.value[ai.address] || []));
+                addresses.push(ai.address);
+            }
+            return pendingTxs
+                // Do not consider pending transactions to our own addresses, to prevent the account
+                // balance from getting reduced when sending between own accounts.
+                .filter((tx) => !addresses.includes(tx.recipient))
+                .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
+        });
+        const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, ai) =>
+            sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0));
 
         const addressSet = computed(() => {
             if (accountInfo.value.type === AccountType.LEGACY) return [];
@@ -160,7 +176,6 @@ export default defineComponent({
 .nq-icon {
     font-size: 2.75rem;
     color: var(--nimiq-orange);
-    margin-right: 1.5rem;
     flex-shrink: 0;
 }
 

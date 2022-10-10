@@ -1,36 +1,36 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" class="btc-activation-modal">
+    <Modal v-bind="$attrs" v-on="$listeners" class="btc-activation-modal" ref="$modal">
         <PageBody class="flex-column">
             <BitcoinIcon/>
 
-            <h1 v-if="isActivated" class="nq-h1">{{ $t('Your account now\nsupports Bitcoin!') }}</h1>
+            <h1 v-if="hasBitcoinAddresses" class="nq-h1">{{ $t('Your account now\nsupports Bitcoin!') }}</h1>
             <h1 v-else class="nq-h1">{{ $t('Add Bitcoin\nto your account') }}</h1>
 
             <p class="nq-text">
                 {{ $t('Easily swap between NIM, the super performant payment coin '
                     + 'and BTC, the gold standard of crypto.') }}
             </p>
-            <p class="nq-text nq-gray">
-                {{ $t('Buy and sell BTC by bank transfer.\nComing soon!') }}
+            <p class="nq-text">
+                {{ $t('Or buy BTC directly in the wallet.') }}
             </p>
 
             <div class="flex-grow"></div>
 
-            <button v-if="isActivated" class="nq-button light-blue" @click="$router.back()" @mousedown.prevent>
+            <button v-if="hasBitcoinAddresses" class="nq-button light-blue" @click="close" @mousedown.prevent>
                 {{ $t('Got it') }}
             </button>
             <button v-else class="nq-button light-blue" @click="enableBitcoin" @mousedown.prevent>
                 {{ $t('Activate Bitcoin') }}
             </button>
 
-            <a v-if="!isActivated" class="nq-link" @click="$router.back()">{{ $t('Skip for now') }}</a>
+            <a v-if="!hasBitcoinAddresses" class="nq-link" @click="close">{{ $t('Skip for now') }}</a>
         </PageBody>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -40,35 +40,46 @@ import { useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
-    props: {
-        isActivated: {
-            // Note: this prop has no type on purpose, as it can be a string or a boolean passed from vue-router
-            default: false,
-        },
-    },
     setup(props, context) {
-        const { activeAccountId, setActiveCurrency } = useAccountStore();
+        const { activeAccountId, setActiveCurrency, hasBitcoinAddresses } = useAccountStore();
 
-        const { width } = useWindowSize();
+        const { isMobile } = useWindowSize();
 
-        let activated = false;
+        const $modal = ref<any | null>(null);
 
         async function enableBitcoin() {
-            activated = await activateBitcoin(activeAccountId.value!);
-            if (activated) {
-                setActiveCurrency(CryptoCurrency.BTC);
-                context.root.$router.back(); // Close modal
+            await activateBitcoin(activeAccountId.value!);
+            if (!hasBitcoinAddresses.value) return;
+            setActiveCurrency(CryptoCurrency.BTC);
+            await close();
+        }
+
+        async function close() {
+            // check for a redirect set by the Bitcoin activation navigation guard in router.ts
+            let redirect: string | undefined;
+            try {
+                const hashParams = new URLSearchParams(context.root.$route.hash.substring(1));
+                redirect = decodeURIComponent(hashParams.get('redirect') || '');
+            } catch (e) {} // eslint-disable-line no-empty
+
+            if (hasBitcoinAddresses.value && redirect) {
+                // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
+                // a malicious link.
+                await context.root.$router.push(redirect);
+            } else {
+                await $modal.value!.forceClose();
+                if (!isMobile.value || !hasBitcoinAddresses.value) return;
+                // On mobile, forward to the Bitcoin transactions overview, after Bitcoin got activated and the
+                // redirects by forceClose finished.
+                await context.root.$router.push('/transactions');
             }
         }
 
-        onUnmounted(() => {
-            if (activated && width.value <= 700) { // Full mobile breakpoint
-                context.root.$router.push('/transactions');
-            }
-        });
-
         return {
+            hasBitcoinAddresses,
+            $modal,
             enableBitcoin,
+            close,
         };
     },
     components: {
@@ -81,7 +92,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-    /deep/ .small-page {
+    ::v-deep .small-page {
         // height: auto;
         text-align: center;
         background-image: url('../../assets/bitcoin-activation-background.png');
@@ -91,7 +102,7 @@ export default defineComponent({
         width: 91rem; // 728px
     }
 
-    /deep/ .close-button {
+    ::v-deep .close-button {
         display: none;
     }
 }
@@ -122,10 +133,6 @@ svg {
     white-space: pre-line;
 }
 
-.nq-gray {
-    opacity: 0.6;
-}
-
 .nq-link {
     font-weight: 600;
     font-size: var(--small-size);
@@ -141,7 +148,7 @@ svg {
 
 @media (max-width: 730px) {
     .modal {
-        /deep/ .small-page {
+        ::v-deep .small-page {
             width: 52.5rem; // reset
             background-image: none;
         }

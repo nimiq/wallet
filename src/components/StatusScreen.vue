@@ -229,7 +229,7 @@ export default defineComponent({
                 // reset transitioning state for new change
                 isTransitioningStatus.value = false;
                 await context.root.$nextTick();
-                await new Promise((resolve) => requestAnimationFrame(resolve)); // await style update
+                await new Promise((resolve) => { requestAnimationFrame(resolve); }); // await style update
                 currentStatus.value = nextStatus.value;
             }
 

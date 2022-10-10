@@ -31,12 +31,20 @@
         <transition name="modal">
             <NetworkInfoModal v-if="showNetworkInfo" emitClose @close="onNetworkInfoClosed"/>
         </transition>
+
+        <Portal>
+            <transition name="modal">
+                <router-view name="modal"/>
+            </transition>
+        </Portal>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleIcon } from '@nimiq/vue-components';
+// @ts-expect-error missing types for this package
+import { Portal } from '@linusborg/vue-simple-portal';
 import NetworkMap from '../NetworkMap.vue';
 import NetworkStats from '../NetworkStats.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
@@ -82,6 +90,7 @@ export default defineComponent({
         InfoCircleIcon,
         NetworkInfoModal,
         AttentionDot,
+        Portal,
     },
 });
 </script>

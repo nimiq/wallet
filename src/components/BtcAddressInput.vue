@@ -12,7 +12,23 @@
                 <ScanQrCodeIcon/>
             </button>
         </transition>
-        <span class="invalid-address nq-orange">{{ $t('This is not a valid address') }}</span>
+        <span class="notice"
+            :class="{
+                'resolving': isResolvingUnstoppableDomain,
+                'nq-orange': resolverError || invalid,
+            }"
+            :style="{'opacity': invalid || isResolvingUnstoppableDomain ? 1 : 0}"
+        >
+            <template v-if="isResolvingUnstoppableDomain">
+                {{ $t('Resolving Unstoppable Domain...') }}
+            </template>
+            <template v-else-if="resolverError">
+                {{ resolverError }}
+            </template>
+            <template v-else-if="invalid">
+                {{ $t('This is not a valid address') }}
+            </template>
+        </span>
     </div>
 </template>
 
@@ -23,6 +39,10 @@ import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
 import { parseBitcoinUrl, validateAddress } from '../lib/BitcoinTransactionUtils';
+import {
+    isValidDomain as isValidUnstoppableDomain,
+    resolve as resolveUnstoppableDomain,
+} from '../lib/UnstoppableDomains';
 
 export default defineComponent({
     props: {
@@ -43,26 +63,67 @@ export default defineComponent({
         const address = ref('');
         const invalid = ref(false);
 
-        let checkingAddress = false;
+        const isResolvingUnstoppableDomain = ref(false);
+        const resolverError = ref('');
 
         function checkAddress() {
+            resolverError.value = '';
+
+            // Detect unstoppable domains
+            if (isValidUnstoppableDomain(address.value)) {
+                isResolvingUnstoppableDomain.value = true;
+                const domain = address.value;
+                const ticker = Config.environment === ENV_MAIN ? 'BTC' : 'TBTC';
+                resolveUnstoppableDomain(domain, ticker)
+                    .then((resolvedAddress) => {
+                        doValidateAddress(resolvedAddress!, () => {
+                            context.emit('domain-address', domain, resolvedAddress);
+                            invalid.value = false;
+                        }, () => {
+                            resolverError.value = context.root.$t(
+                                'Domain does not resolve to a valid address') as string;
+                            invalid.value = true;
+                        });
+                    })
+                    .catch((error: Error) => {
+                        console.debug(error); // eslint-disable-line no-console
+                        let { message } = error;
+                        message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
+                        resolverError.value = message;
+                        invalid.value = true;
+                    })
+                    .finally(() => isResolvingUnstoppableDomain.value = false);
+
+                return;
+            }
+
             // BTC addresses are at least 26 characters long
             if (address.value.length < 26) {
                 invalid.value = false;
                 return;
             }
 
-            if (checkingAddress) return;
-            checkingAddress = true;
+            const addressToCheck = address.value;
+            doValidateAddress(addressToCheck, () => {
+                context.emit('address', addressToCheck);
+                invalid.value = false;
+            }, () => {
+                invalid.value = true;
+            });
+        }
 
+        function doValidateAddress(
+            addressToCheck: string,
+            validCallback: () => void,
+            invalidCallback: () => void,
+        ) {
             loadBitcoinJS().then(() => {
-                const isValid = validateAddress(address.value, Config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
+                const isValid = validateAddress(addressToCheck, Config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
                 if (isValid) {
-                    context.emit('address', address.value);
+                    validCallback();
+                } else {
+                    invalidCallback();
                 }
-                invalid.value = !isValid;
-
-                checkingAddress = false;
             });
         }
 
@@ -107,7 +168,7 @@ export default defineComponent({
                 const { recipient } = parseBitcoinUrl(pastedData);
                 event.preventDefault();
                 address.value = recipient;
-                checkAddress();
+                onUpdate();
             } catch (err) {
                 // Ignore
             }
@@ -124,10 +185,11 @@ export default defineComponent({
             $input,
             address,
             invalid,
-            checkAddress,
             onPaste,
             onInput,
             inputFontSizeScaleFactor,
+            isResolvingUnstoppableDomain,
+            resolverError,
         };
     },
     methods: {
@@ -151,7 +213,7 @@ export default defineComponent({
     .label-input {
         font-family: 'Fira Mono', monospace;
 
-        /deep/ input {
+        ::v-deep input {
             width: 100% !important;
             padding: 1.75rem 2rem;
             line-height: 2.5rem;
@@ -167,6 +229,10 @@ export default defineComponent({
                 --border-color: rgba(252, 135, 2, 0.4);
                 color: var(--nimiq-orange);
             }
+        }
+
+        ::v-deep .width-finder {
+            padding: 0 2rem;
         }
     }
 
@@ -185,7 +251,7 @@ export default defineComponent({
         }
     }
 
-    .invalid-address {
+    .notice {
         display: block;
         margin-top: 0.75rem;
         opacity: 0;
@@ -193,8 +259,9 @@ export default defineComponent({
 
         transition: opacity 0.3s var(--nimiq-ease);
 
-        .invalid & {
-            opacity: 1;
+        &.resolving {
+            font-size: var(--small-size);
+            opacity: 0.5 !important;
         }
     }
 </style>

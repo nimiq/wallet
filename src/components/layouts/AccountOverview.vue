@@ -4,30 +4,32 @@
             v-if="activeAccountInfo && activeAccountInfo.type === AccountType.BIP39 && !activeAccountInfo.fileExported"
             class="backup-warning file nq-orange-bg flex-row"
         >
-            <AlertTriangleIcon class="alert-icon"/>
-            <span class="alert-text">{{ $t('Your account is not safe yet!') }}</span>
-            <div class="flex-grow"></div>
+            <span class="alert-text">
+                <AlertTriangleIcon class="alert-icon"/>
+                {{ $t('Your account is not safe yet!') }}
+            </span>
             <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)" @mousedown.prevent>
-                {{ $t('Save now') }}<ArrowRightSmallIcon/>
+                {{ $t('Login File') }}<ArrowRightSmallIcon/>
             </button>
         </div>
         <div
             v-else-if="activeAccountInfo && !activeAccountInfo.wordsExported"
             class="backup-warning words nq-orange flex-row"
         >
-            <AlertTriangleIcon class="alert-icon"/>
-            <span class="alert-text">{{ $t('There is no ‘forgot password’') }}</span>
-            <div class="flex-grow"></div>
+            <span class="alert-text">
+                <AlertTriangleIcon class="alert-icon"/>
+                {{ $t('There is no ‘forgot password’') }}
+            </span>
             <button
                 class="nq-button-pill orange"
                 @click="backup(activeAccountInfo.id, { wordsOnly: true })" @mousedown.prevent
             >
-                {{ $t('Backup') }}<ArrowRightSmallIcon/>
+                {{ $t('Recovery Words') }}<ArrowRightSmallIcon/>
             </button>
         </div>
 
         <div class="mobile-menu-bar flex-row">
-            <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: true}})">
+            <button class="reset menu-button" @click="$router.push({name: 'root', query: {sidebar: 'true'}})">
                 <MenuIcon/>
                 <AttentionDot v-if="updateAvailable"/>
             </button>
@@ -49,7 +51,7 @@
                 @add-address="addAddress(activeAccountId)"
             />
 
-            <div v-if="canHaveMultipleAddresses" class="bitcoin-account flex-column">
+            <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" class="bitcoin-account flex-column">
                 <button
                     class="bitcoin-account-item reset flex-row"
                     :class="{
@@ -83,7 +85,7 @@
                     <div v-if="hasBitcoinAddresses" class="mobile-arrow"></div>
                 </button>
             </div>
-            <div v-else>
+            <div v-else-if="!canHaveMultipleAddresses">
                 <LegacyAccountUpgradeButton/>
                 <p class="future-notice">
                     {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}
@@ -100,6 +102,12 @@
                     emitClose @close="showModalLegacyAccountNotice = false"/>
             </transition>
         </Portal>
+
+        <!-- <Portal>
+            <transition name="modal">
+                <OasisLaunchModal/>
+            </transition>
+        </Portal> -->
     </div>
 </template>
 
@@ -119,6 +127,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';
 import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
+// import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
 import AttentionDot from '../AttentionDot.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
@@ -128,12 +137,16 @@ import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useSettingsStore } from '../../stores/Settings';
 
-const BTC_ACTIVATION_SHOWN_STORAGE_KEY = 'btc-activation-modal-shown';
-
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
-        const { activeAccountInfo, activeAccountId, setActiveCurrency, activeCurrency } = useAccountStore();
+        const {
+            activeAccountInfo,
+            activeAccountId,
+            setActiveCurrency,
+            activeCurrency,
+            hasBitcoinAddresses,
+        } = useAccountStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -142,16 +155,12 @@ export default defineComponent({
         const canHaveMultipleAddresses = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type !== AccountType.LEGACY);
 
-        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
-            && (activeAccountInfo.value.btcAddresses || false)
-            && activeAccountInfo.value.btcAddresses.external.length > 0);
-
-        const { width } = useWindowSize();
+        const { isMobile, isTablet } = useWindowSize();
 
         function onAddressSelected() {
             setActiveCurrency(CryptoCurrency.NIM);
 
-            if (width.value <= 700) { // Full mobile breakpoint
+            if (isMobile.value) {
                 context.root.$router.push('/transactions');
             }
         }
@@ -159,7 +168,7 @@ export default defineComponent({
         function selectBitcoin() {
             setActiveCurrency(CryptoCurrency.BTC);
 
-            if (width.value <= 700) { // Full mobile breakpoint
+            if (isMobile.value) {
                 context.root.$router.push('/transactions');
             }
         }
@@ -167,33 +176,16 @@ export default defineComponent({
         const showFullLegacyAccountNotice = computed(() =>
             isLegacyAccount.value
             && activeAccountInfo.value!.addresses.length === 1
-            && width.value > 960); // Tablet breakpoint
+            && !isTablet.value);
 
         const showModalLegacyAccountNotice = ref(false);
 
         function determineIfShowModalLegacyAccountNotice() {
-            showModalLegacyAccountNotice.value = isLegacyAccount.value && width.value <= 960; // Tablet breakpoint
-        }
-
-        function determineIfShowBtcActivationModal() {
-            if (!activeAccountInfo.value) return;
-
-            // Showing the modal after login is handled in hub.ts
-            if (hasBitcoinAddresses.value) return;
-
-            const isEligibleAccountType = activeAccountInfo.value.type === AccountType.BIP39;
-            if (!isEligibleAccountType) return;
-
-            const alreadyShown = localStorage.getItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY) || '0';
-            if (alreadyShown === '1') return;
-
-            context.root.$router.push('/btc-activation');
-            localStorage.setItem(BTC_ACTIVATION_SHOWN_STORAGE_KEY, '1');
+            showModalLegacyAccountNotice.value = isLegacyAccount.value && isTablet.value;
         }
 
         function determineModalToShow() {
             determineIfShowModalLegacyAccountNotice();
-            determineIfShowBtcActivationModal();
         }
 
         watch(activeAccountInfo, determineModalToShow);
@@ -233,6 +225,7 @@ export default defineComponent({
         LegacyAccountNotice,
         LegacyAccountUpgradeButton,
         LegacyAccountNoticeModal,
+        // OasisLaunchModal,
         Portal,
         Amount,
         FiatConvertedAmount,
@@ -297,22 +290,25 @@ export default defineComponent({
 }
 
 .backup-warning {
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    flex-shrink: 0;
     padding: 0.625rem 1rem;
     border-radius: 0.75rem;
     font-size: var(--body-size);
 
-    .alert-icon {
-        width: calc(1.0625 * var(--body-size)); // 1.0625 * 16px = 17px
-        margin: 0 calc(1rem - 0.0625 * var(--body-size)) 0 1rem;
-        flex-shrink: 0;
-    }
-
     .alert-text {
-        margin: 0.625rem 0;
+        margin: 0.625rem 0 0.625rem 1rem;
         font-weight: bold;
         line-height: 3.375rem; // Same height as .nq-button-s
+
+        .alert-icon {
+            width: calc(1.0625 * var(--body-size)); // 1.0625 * 16px = 17px
+            margin-bottom: -0.125em;
+            flex-shrink: 0;
+            display: inline;
+        }
     }
 
     button {
@@ -351,6 +347,7 @@ export default defineComponent({
 
 .bitcoin-account {
     height: 15rem;
+    flex-shrink: 0;
     padding: 3rem 2rem;
     margin: 0 -2rem;
     color: var(--text-70);
@@ -532,7 +529,7 @@ export default defineComponent({
                 color: var(--text-30);
             }
 
-            /deep/ svg {
+            ::v-deep svg {
                 width: 3.25rem;
                 height: 3rem;
             }

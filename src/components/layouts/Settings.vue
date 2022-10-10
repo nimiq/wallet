@@ -25,6 +25,21 @@
                 </div>
             </section>
 
+            <section v-if="canInstallPwa && pwaInstallationChoice === 'pending'">
+                <div class="setting pwa-install">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Install Web App') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Use the Nimiq Wallet as a web app outside the browser.') }}
+                        </p>
+                    </div>
+
+                    <button class="nq-button-pill green" @click="callAndConsumePwaInstallPrompt" @mousedown.prevent>
+                        {{ $t('Install') }}
+                    </button>
+                </div>
+            </section>
+
             <section>
                 <h2 class="nq-label">{{ $t('General') }}</h2>
 
@@ -100,7 +115,7 @@
                 </div> -->
             </section>
 
-            <section>
+            <section v-if="$config.enableBitcoin">
                 <h2 class="nq-label">{{ $t('Bitcoin') }}</h2>
 
                 <div class="setting">
@@ -113,7 +128,7 @@
 
                     <select id="btc-decimals" @input="setBtcDecimals(parseInt($event.target.value))">
                         <option value="0" :selected="btcDecimals === 0">{{ $t('None') }}</option>
-                        <option value="3" :selected="btcDecimals === 3">3</option>
+                        <option value="5" :selected="btcDecimals === 5">5</option>
                         <option value="8" :selected="btcDecimals === 8">{{ $t('all') }}</option>
                     </select>
                 </div>
@@ -135,6 +150,42 @@
 
             <section>
                 <h2 class="nq-label">{{ $t('Advanced') }}</h2>
+
+                <div class="setting swiping-setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Swiping Gestures') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Enable experimental support for swiping gestures on mobile.') }}
+                        </p>
+                    </div>
+
+                    <select id="enable-swiping" @input="setSwipingEnabled(parseInt($event.target.value))">
+                        <option value="-1" :selected="swipingEnabled === -1">{{ $t('When ready') }}</option>
+                        <option value="1" :selected="swipingEnabled === 1">{{ $t('On') }}</option>
+                        <option value="0" :selected="swipingEnabled === 0">{{ $t('Off') }}</option>
+                    </select>
+                </div>
+
+                <div class="setting hub-behavior-setting">
+                    <div class="description">
+                        <label class="nq-h2">{{ $t('Keyguard Mode') }}</label>
+                        <p class="nq-text">
+                            {{ $t('Overwrite how the Keyguard is opened.') }}
+                            {{ $t('Redirect mode does not yet support swaps.') }}
+                        </p>
+                        <p class="nq-text">
+                            {{ $t('Automatic mode uses {behavior}.', {
+                                behavior: shouldUseRedirects() ? $t('redirects') : $t('popups'),
+                            }) }}
+                        </p>
+                    </div>
+
+                    <select id="hub-behavior" @input="setHubBehavior($event.target.value)">
+                        <option value="auto" :selected="hubBehavior === 'auto'">{{ $t('Auto') }}</option>
+                        <option value="popup" :selected="hubBehavior === 'popup'">{{ $t('Popups') }}</option>
+                        <option value="redirect" :selected="hubBehavior === 'redirect'">{{ $t('Redirects') }}</option>
+                    </select>
+                </div>
 
                 <div v-if="showVestingSetting" class="setting">
                     <div class="description">
@@ -182,7 +233,7 @@
                         class="reset currency"
                         @click="setCurrency(currencyOption)"
                     >
-                        <img :src="require(`../../assets/currencies/${currencyOption}.svg`)"/>
+                        <CountryFlag :code="currencyOption.substring(0, 2)"/>
                         {{currencyOption.toUpperCase()}}
                     </button>
                 </div>
@@ -190,7 +241,11 @@
         </div>
 
         <div class="copyright">
-            &copy; {{ Math.max(2020, new Date().getFullYear()) }} Nimiq Foundation
+            <span>&copy; 2017-{{ copyrightYear }} Nimiq Foundation</span>
+            <strong>&middot;</strong>
+            <span>{{ VERSION }}</span>
+            <strong>&middot;</strong>
+            <router-link :to="{name: 'settings-release-notes'}">{{ $t('Release Notes') }}</router-link>
             <strong>&middot;</strong>
             <router-link to="disclaimer">{{ $t('Disclaimer') }}</router-link>
         </div>
@@ -211,10 +266,12 @@ import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
-import { useSettingsStore, ColorMode, Trial } from '../../stores/Settings';
+import CountryFlag from '../CountryFlag.vue';
+import { useSettingsStore, ColorMode/* , Trial */ } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
-import { addVestingContract } from '../../hub';
+import { addVestingContract, shouldUseRedirects } from '../../hub';
+import { usePwaInstallPrompt } from '../../composables/usePwaInstallPrompt';
 import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
@@ -227,7 +284,7 @@ declare global {
 // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#Converting_a_digest_to_a_hex_string
 // Exposed globally to create passwords for new trials.
 window.digestMessage = async function (message: string): Promise<string> { // eslint-disable-line func-names
-    const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+    const msgUint8 = new TextEncoder().encode(message.toLowerCase()); // encode as (utf-8) Uint8Array
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
     const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
     const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
@@ -239,6 +296,8 @@ export default defineComponent({
         const settings = useSettingsStore();
 
         const { currency, setCurrency } = useFiatStore();
+
+        const { canInstallPwa, callAndConsumePwaInstallPrompt, pwaInstallationChoice } = usePwaInstallPrompt();
 
         async function clearCache() {
             /* eslint-disable-next-line no-restricted-globals, no-alert */
@@ -309,18 +368,16 @@ export default defineComponent({
             let hash: string;
             try {
                 hash = await window.digestMessage(el.value);
-            } catch (error) {
+            } catch (error: any) {
                 el.value = error.message;
                 return;
             }
 
             switch (hash) {
-                case '301bc5e02f0cf97c5efd61c78c3cfe6ee443cdfd4d17703e7515dccbcc618c3c':
-                    settings.enableTrial(Trial.BUY_WITH_EURO); break;
-                default: el.value = 'Nope, no cookie for you'; return;
+                default: el.value = 'Nope, no cookie for you'; // return;
             }
 
-            el.value = 'OK, trial enabled';
+            // el.value = 'OK, trial enabled!';
         }
 
         const applyingWalletUpdate = ref(false);
@@ -338,6 +395,11 @@ export default defineComponent({
         // @ts-expect-error Property 'enableVestingSetting' does not exist on type 'Window & typeof globalThis'
         window.enableVestingSetting = enableVestingSetting;
 
+        const copyrightYear = Math.max(
+            Number.parseInt(process.env.VUE_APP_COPYRIGHT_YEAR!, 10), // build year
+            new Date().getFullYear(), // user year
+        );
+
         return {
             addVestingContract,
             clearCache,
@@ -353,6 +415,12 @@ export default defineComponent({
             onTrialPassword,
             applyWalletUpdate,
             applyingWalletUpdate,
+            canInstallPwa,
+            callAndConsumePwaInstallPrompt,
+            pwaInstallationChoice,
+            shouldUseRedirects,
+            copyrightYear,
+            VERSION: process.env.VERSION,
         };
     },
     components: {
@@ -360,6 +428,7 @@ export default defineComponent({
         Portal,
         CrossCloseButton,
         CircleSpinner,
+        CountryFlag,
     },
 });
 </script>
@@ -379,7 +448,6 @@ export default defineComponent({
     overflow-y: auto;
 
     @extend %custom-scrollbar;
-    @include ios-flex;
 
     section:first-child {
         padding-top: 2rem;
@@ -435,7 +503,7 @@ section {
     }
 }
 
-.update-available /deep/ .circle-spinner {
+.update-available ::v-deep .circle-spinner {
     margin: 0.375rem;
 }
 
@@ -556,11 +624,10 @@ input[type="file"] {
                     0px 0.5rem 2rem rgba(0, 0, 0, 0.07);
     }
 
-    img {
-        border-radius: 50%;
+    .country-flag {
         margin-right: 1.25rem;
-        width: 3.5rem;
-        height: 3.5rem;
+        --size: 3.5rem;
+        flex-shrink: 0;
     }
 }
 
@@ -578,8 +645,7 @@ input[type="file"] {
     opacity: 0.6;
 
     strong {
-        margin-left: 0.5rem;
-        margin-right: 1rem;
+        margin: 0 0.75rem;
     }
 
     a {
@@ -630,6 +696,18 @@ input[type="file"] {
     }
 }
 
+@media (min-width: 1160px) { // Half mobile breakpoint
+    .hub-behavior-setting {
+        display: none;
+    }
+}
+
+@media (min-width: 700px) { // Full mobile breakpoint
+    .swiping-setting {
+        display: none;
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .settings {
         width: 100vw;
@@ -638,6 +716,8 @@ input[type="file"] {
         flex-direction: column;
         align-items: stretch;
         flex-wrap: nowrap;
+
+        touch-action: pan-y;
 
         .description {
             margin-right: 3rem;

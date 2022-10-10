@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction-list flex-row" ref="$el">
+    <div class="transaction-list flex-row" ref="root">
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
@@ -56,12 +56,12 @@
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
-                    <p class="nq-text">
-                        {{ $t('Invite a friend with a') }}
-                        <a href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
-                        {{ $t('or visit an exchange and get more.') }}
-                    </p>
-                    <router-link to="trade" class="nq-button light-blue">
+                    <i18n path="Invite a friend with a {cashlink} or buy more here in the wallet."
+                        tag="p" class="nq-text"
+                    >
+                        <a slot="cashlink" href="#cashlink" @click.prevent="onCreateCashlink">{{ $t('Cashlink') }}</a>
+                    </i18n>
+                    <router-link to="buy" class="nq-button light-blue">
                         {{ $t('Buy NIM') }}
                     </router-link>
                 </div>
@@ -86,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, /* onMounted, onBeforeUnmount, */ watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
@@ -117,8 +117,8 @@ function getLocaleMonthStringFromDate(
     date: Date,
     locale: string,
     options: {
-        month?: string,
-        year?: string,
+        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow',
+        year?: 'numeric' | '2-digit',
     },
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);
@@ -163,11 +163,8 @@ export default defineComponent({
         const scrollerBuffer = 300;
 
         // Height of items in pixel
-        const { width: windowWidth } = useWindowSize();
-        const itemSize = computed(() => windowWidth.value > 700 // Full mobile breakpoint
-            ? 72
-            : 68, // 64px + 4px margin between items
-        );
+        const { isMobile } = useWindowSize();
+        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
 
         // Get all transactions for the active address
         const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
@@ -244,7 +241,7 @@ export default defineComponent({
             const transactionsWithMonths: any[] = [];
             let isLatestMonth = true;
 
-            let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
+            const { month: currentMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
             let hasThisMonthLabel = false;
 
@@ -270,10 +267,12 @@ export default defineComponent({
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
             let txDate: Date;
 
-            if (!hasThisMonthLabel && txMonth === currentTxMonth && txYear === currentYear) {
+            if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
                 transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
                 isLatestMonth = false;
             }
+
+            let displayedMonthYear = `${currentMonth}.${currentYear}`;
 
             while (n < txs.length) {
                 // Skip expired & invalidated txs
@@ -284,30 +283,25 @@ export default defineComponent({
                 }
 
                 ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
+                const txMonthYear = `${txMonth}.${txYear}`;
 
-                if (txYear !== currentYear && (isLatestMonth || txMonth !== currentTxMonth)) {
+                if (txMonthYear !== displayedMonthYear) {
+                    // Inject a month label
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
                             context.root.$i18n.locale,
-                            { month: 'long', year: 'numeric' },
+                            {
+                                month: 'long',
+                                year: txYear !== currentYear ? 'numeric' : undefined,
+                            },
                         ),
                         isLatestMonth,
                     });
                     isLatestMonth = false;
-                } else if (txMonth !== currentTxMonth) {
-                    transactionsWithMonths.push({
-                        transactionHash: getLocaleMonthStringFromDate(
-                            txDate,
-                            context.root.$i18n.locale,
-                            { month: 'long' },
-                        ),
-                        isLatestMonth,
-                    });
-                    isLatestMonth = false;
+                    displayedMonthYear = txMonthYear;
                 }
 
-                currentTxMonth = txMonth;
                 transactionsWithMonths.push(txs[n]);
                 n++;
             }
@@ -318,7 +312,7 @@ export default defineComponent({
         // listening for DOM changes for animations in the virtual scroll
         // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
         // only runs on transaction hash change.
-        const $el: Ref<null | HTMLElement> = ref(null);
+        const root: Ref<null | HTMLElement> = ref(null);
         // (() => {
         //     let txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
         //     const config = { characterData: true, childList: true, subtree: true };
@@ -362,7 +356,7 @@ export default defineComponent({
         //
         //     const observer = new MutationObserver(callback);
         //
-        //     onMounted(() => observer.observe($el.value!, config));
+        //     onMounted(() => observer.observe(root.value!, config));
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
@@ -375,16 +369,36 @@ export default defineComponent({
         // Scroll to top when
         // - Active address changes
         // - Unclaimed Cashlinks list is opened
-        const scroller = ref<{ scrollToPosition(position: number, smooth?: boolean): void } | null>(null);
+        const scroller = ref<{
+            scrollToPosition(position: number, smooth?: boolean): void,
+            $el: HTMLDivElement,
+                } | null>(null);
+
         watch(activeAddress, () => {
             if (scroller.value) {
                 scroller.value.scrollToPosition(0, false); // No smooth scrolling on address change
             }
         });
+
         watch(() => props.showUnclaimedCashlinkList, (show) => {
             if (show && scroller.value) {
                 scroller.value.scrollToPosition(0, true);
             }
+        });
+
+        function onScroll() {
+            context.emit('scroll');
+        }
+
+        // @scroll / @scroll.native doesn't seem to work, so using standard event system
+        onMounted(() => {
+            if (!scroller.value) return;
+            scroller.value.$el.addEventListener('scroll', onScroll);
+        });
+
+        onUnmounted(() => {
+            if (!scroller.value) return;
+            scroller.value.$el.removeEventListener('scroll', onScroll);
         });
 
         return {
@@ -393,7 +407,7 @@ export default defineComponent({
             itemSize,
             txCount,
             transactions,
-            $el,
+            root,
             isFetchingTxHistory,
             isMainnet,
             unclaimedCashlinkTxs,
@@ -443,6 +457,8 @@ export default defineComponent({
     padding-left: calc(2rem + var(--padding));
     padding-bottom: var(--padding, 4rem);
 
+    touch-action: pan-y;
+
     @extend %custom-scrollbar;
 }
 
@@ -457,7 +473,7 @@ export default defineComponent({
         top: 1.5rem;
         right: 1.5rem;
 
-        /deep/ svg {
+        ::v-deep svg {
             opacity: 0.5;
         }
     }

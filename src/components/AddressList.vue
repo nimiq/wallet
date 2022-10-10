@@ -6,14 +6,8 @@
             :addressInfo="addressInfo"
             :class="{ 'active': activeAddress === addressInfo.address && activeCurrency === CryptoCurrency.NIM }"
             @click="selectAddress(addressInfo.address);"
-            :ref="`address-button-${addressInfo.address}`"/>
-        <hr class="separator" v-if="showBitcoin"/>
-        <AddressListItem
-            v-if="showBitcoin"
-            :addressInfo="btcInfos"
-            :class="{ 'active': activeCurrency === CryptoCurrency.BTC }"
-            @click="selectBtcAddress()"
-            :ref="`address-button-${btcInfos.address}`"/>
+            :ref="`address-button-${addressInfo.address}`"
+            :disabled="requiredBalance > (addressInfo.balance || 0)"/>
         <button
             v-if="showAddAddressButton"
             class="address-button add-address-button reset flex-row"
@@ -24,18 +18,25 @@
             </div>
             <span class="label add-address-label">{{ $t('Add\u00a0address') }}</span>
         </button>
+        <div class="scroll-mask bottom"></div>
+        <hr class="separator" v-if="showBitcoin"/>
+        <AddressListItem
+            v-if="showBitcoin"
+            :addressInfo="btcInfos"
+            :class="{ 'active': activeCurrency === CryptoCurrency.BTC }"
+            @click="selectBtcAddress()"
+            :ref="`address-button-${btcInfos.address}`"/>
         <div v-if="!embedded"
             class="active-box"
             :class="{ enabled: activeCurrency === CryptoCurrency.NIM }"
             :style="`--backgroundYScale: ${backgroundYScale}; --backgroundYOffset: ${backgroundYOffset}px`"
         ></div>
-        <div class="scroll-mask bottom"></div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onActivated } from '@vue/composition-api';
 
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
@@ -45,6 +46,7 @@ import { useAccountStore } from '../stores/Account';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
+import { useSettingsStore } from '../stores/Settings';
 
 export default defineComponent({
     props: {
@@ -60,12 +62,17 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        requiredBalance: {
+            type: Number,
+            default: 0, // enables all addresses
+        },
     },
     setup(props, context) {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
         const { availableExternalAddresses, accountBalance } = useBtcAddressStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
+        const { amountsHidden } = useSettingsStore();
 
         function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
             if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
@@ -122,15 +129,16 @@ export default defineComponent({
             /* context.root.$nextTick works here except for Opera browser. Using setTimeout instead fix it. */
             /* TODO: find a better way to do it. */
             setTimeout(() => {
-                if (activeAddress.value) {
-                    adjustBackgroundOffsetAndScale(activeAddress.value);
-                }
+                if (activeAddress.value) adjustBackgroundOffsetAndScale(activeAddress.value);
             }, 0);
 
             watch(addressInfos, () => {
                 scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
             });
         });
+
+        onActivated(() => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
+        watch(amountsHidden, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
 
         function selectNimAddress(address: string) {
             adjustBackgroundOffsetAndScale(address);
@@ -212,13 +220,17 @@ export default defineComponent({
     }
 
     .address-list {
+        height: 100%;
         display: flex;
         flex-direction: column;
         position: relative;
         overflow-y: auto;
+        overflow-x: hidden;
         padding-right: var(--padding-sides);
         margin: 0 calc(-1 * var(--padding-sides));
         color: var(--text-70);
+
+        touch-action: pan-y;
 
         // To make space for the .active-box leftside box-shadow
         padding-left: var(--padding-sides);
@@ -227,6 +239,7 @@ export default defineComponent({
 
         hr.separator {
             margin: 15px 0 15px 0;
+            margin-top: auto;
             border-top: 1.5px solid var(--nimiq-blue);
             opacity: 0.14;
         }
@@ -354,7 +367,7 @@ export default defineComponent({
         }
     }
 
-    .embedded /deep/ .mobile-arrow {
+    .embedded ::v-deep .mobile-arrow {
         display: none;
     }
 
@@ -375,6 +388,10 @@ export default defineComponent({
 
         .add-address-button {
             padding: 1.5rem;
+        }
+
+        .embedded ::v-deep .mobile-arrow {
+            display: inherit;
         }
     }
 </style>

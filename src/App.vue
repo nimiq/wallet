@@ -1,6 +1,6 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <main :class="routeClass">
+        <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>
 
             <transition name="delay">
@@ -25,61 +25,122 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
-
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
-import router, { provideRouter, Columns } from './router';
+import router, { provideRouter } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
+import { useWindowSize } from './composables/useWindowSize';
+import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
+import { useSwipes } from './composables/useSwipes';
 
 export default defineComponent({
     name: 'app',
     setup(props, context) {
         provideRouter(router);
 
-        const routeClass = ref('');
-
-        watch(() => context.root.$route.meta, (meta) => {
-            if (!meta) return;
-            // Using a watcher, because the routeClass should only change when a route is visited
-            // that may require a column navigation. When opening modals, we don't want to change
-            // column.
-            switch (meta.column) {
-                case Columns.DYNAMIC:
-                    switch (context.root.$route.path) {
-                        case '/': routeClass.value = 'column-account'; break;
-                        case '/transactions': routeClass.value = 'column-address'; break;
-                        default: break; // Don't change column
-                    }
-                    break;
-                case Columns.ACCOUNT: routeClass.value = 'column-account'; break;
-                case Columns.ADDRESS: routeClass.value = 'column-address'; break;
-                default: break;
-            }
-        });
-
-        watch(() => context.root.$route.query, (newQuery, oldQuery) => {
-            if (!newQuery) return;
-            if (newQuery.sidebar) {
-                routeClass.value = 'column-sidebar';
-            } else if (oldQuery && oldQuery.sidebar) {
-                routeClass.value = 'column-account';
-            }
-        });
+        const { activeMobileColumn } = useActiveMobileColumn();
 
         const { accountInfos } = useAccountStore();
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
-        const { amountsHidden } = useSettingsStore();
+        const { amountsHidden, swipingEnabled } = useSettingsStore();
+
+        // Swiping
+        const $main = ref<HTMLDivElement>(null);
+        let $mobileTapArea: HTMLDivElement | null = null;
+        const { width, isMobile } = useWindowSize();
+
+        async function updateSwipeRestPosition(
+            velocityDistance: number,
+            velocityTime: number,
+            initialXPosition: number,
+            currentXPosition: number,
+        ) {
+            if (velocityDistance && velocityTime) {
+                const swipeFactor = 10;
+                const velocity = (velocityDistance / velocityTime) * 1000 * swipeFactor; // px/s
+                const remainingXDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
+                // console.log(`Travelled ${velocity}px/s, will travel ${remainingXDistance}px more`);
+                currentXPosition += remainingXDistance;
+            }
+
+            const sidebarBarrier = -192 / 2;
+            const transactionsBarrier = -(window.innerWidth / 2 + 192);
+
+            if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
+                // Go to sidebar
+                await context.root.$router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
+            } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
+                // Go to transactions
+                if (context.root.$route.name === 'root') {
+                    await context.root.$router.push('/transactions');
+                }
+            } else if (
+                (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
+                && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
+            ) {
+                // Go back to root (addresses)
+                context.root.$router.back();
+                await context.root.$nextTick();
+            }
+        }
+
+        function onSwipeFrame(position: number) {
+            if (position <= -192) return;
+            if (!$mobileTapArea) {
+                $mobileTapArea = document.querySelector('.mobile-tap-area') as HTMLDivElement;
+            }
+            $mobileTapArea!.style.transition = 'initial';
+            $mobileTapArea!.style.opacity = `${1 - (position / -192)}`;
+        }
+
+        function resetStyles() {
+            if (!$mobileTapArea) return;
+            $mobileTapArea!.style.transition = '';
+            $mobileTapArea!.style.opacity = '';
+            $mobileTapArea = null;
+        }
+
+        const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+            onSwipeEnded: updateSwipeRestPosition,
+            // TODO: clamp movement to smaller area on settings and network view
+            clampMovement: computed<[number, number]>(() => {
+                if (context.root.$route.path === '/transactions') {
+                    // Allow swiping back from transactions to address list, but not all the way to sidebar
+                    return [-width.value - 192, -192];
+                }
+                // Otherwise only allow swiping between main column and sidebar
+                return [-192, 0];
+            }),
+            onFrame: onSwipeFrame,
+            reset: resetStyles,
+            excludeSelector: '.scroller, .scroller *',
+        });
+
+        watch([isMobile, swipingEnabled], ([isMobileNow, newSwiping], [wasMobile, oldSwiping]) => {
+            if (!$main.value) return;
+
+            if ((isMobileNow && !wasMobile) || (newSwiping === 1 && oldSwiping !== 1)) {
+                attachSwipe();
+            } else if (!isMobileNow || newSwiping !== 1) {
+                detachSwipe();
+            }
+        }, { lazy: true });
+
+        onMounted(() => {
+            if (isMobile.value && swipingEnabled.value === 1) attachSwipe();
+        });
 
         return {
-            routeClass,
+            activeMobileColumn,
             hasAccounts,
             amountsHidden,
+            $main,
         };
     },
     components: {
@@ -95,12 +156,13 @@ export default defineComponent({
 @import './scss/mixins.scss';
 #app {
     @include flex-full-height;
-    @include ios-flex;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
+    touch-action: pan-y;
 
     /* Default: >= 1500px */
     --sidebar-width: 24rem;
     --account-column-width: 70rem;
+    --settings-width: 131rem;
     --address-column-width: 150rem;
 
     @media (max-width: 1499px) {
@@ -153,20 +215,24 @@ export default defineComponent({
             position: relative;
         }
 
-        /deep/ .account-overview {
+        ::v-deep .account-overview {
             width: var(--account-column-width);
             flex-shrink: 0;
             z-index: 2;
         }
 
-        /deep/ .address-overview {
-            width: var(--address-column-width);
+        ::v-deep .address-overview {
+            width: clamp(
+                        0px,
+                        calc(100vw - var(--sidebar-width) - var(--account-column-width)),
+                        var(--address-column-width)
+                    );
             min-width: 0;
             z-index: 3;
         }
 
-        /deep/ .mobile-tap-area {
-            z-index: 4;
+        ::v-deep .mobile-tap-area {
+            z-index: 100;
         }
 
         .network {
@@ -202,7 +268,7 @@ export default defineComponent({
             }
 
             &.column-sidebar {
-                /deep/ .mobile-tap-area {
+                ::v-deep .mobile-tap-area {
                     opacity: 1;
                     pointer-events: all;
                 }
@@ -212,6 +278,14 @@ export default defineComponent({
             &.column-address {
                 // Account column
                 transform: translateX(calc(-1 * var(--sidebar-width)));
+            }
+
+            ::v-deep .address-overview {
+                width: clamp(
+                        0px,
+                        calc(100vw - var(--account-column-width)),
+                        var(--address-column-width)
+                    );
             }
         }
     }
@@ -224,8 +298,9 @@ export default defineComponent({
                 width: 100%;
             }
 
-            /deep/ .address-overview {
+            ::v-deep .address-overview {
                 min-width: unset;
+                width: 100vw;
             }
 
             &.column-address {
@@ -234,12 +309,59 @@ export default defineComponent({
             }
         }
     }
+
+    @media (min-width: 2070px) {
+        ::v-deep .groundfloor {
+            display: flex;
+            justify-content: center;
+
+            // Size of both columns
+            --columns-width: calc(var(--account-column-width) + var(--address-column-width));
+
+            // Margin between columns and edges of the groundfloor
+            --columns-lateral-margin: calc((100% - var(--columns-width)) / 2);
+
+            & > div {
+                position: relative;
+
+                .account-overview {
+                    position: absolute;
+                    width: var(--account-column-width);
+                    right: calc(var(--columns-lateral-margin) + var(--address-column-width));
+                    height: 100%;
+                }
+
+                .settings {
+                    position: absolute;
+                    width: var(--settings-width);
+                    height: 100%;
+                    margin-left: calc(var(--settings-width) / -2);
+                }
+
+                .address-overview {
+                    position: absolute;
+                    width: var(--address-column-width);
+                    left: calc(var(--columns-lateral-margin) + var(--account-column-width));
+                    height: 100%;
+                }
+            }
+        }
+    }
 }
 </style>
 
 <style lang="scss">
+html, body {
+    // Disable viewport overscrolling on iOS
+    // https://www.bram.us/2016/05/02/prevent-overscroll-bounce-in-ios-mobilesafari-pure-css/
+    position: fixed;
+    overflow: hidden;
+    width: 100vw;
+}
+
 body {
-    overscroll-behavior-y: contain; // Disable pull-to-refresh
+    overscroll-behavior: contain; // Disable pull-to-refresh
+    font-size: 14px; // Affects the font-size of the testnet branch-selector banner
 }
 
 :root {
@@ -255,6 +377,10 @@ body {
 .identicon img,
 .nq-icon {
     display: block;
+}
+
+.nq-card {
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .fade-enter-active, .fade-leave-active {

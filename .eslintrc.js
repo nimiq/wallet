@@ -17,6 +17,7 @@ module.exports = {
     ],
     parserOptions: {
         ecmaVersion: 2020,
+        parser: '@typescript-eslint/parser',
     },
     root: true,
     rules: {
@@ -41,10 +42,16 @@ module.exports = {
         'no-nested-ternary': 'off',
         'no-restricted-syntax': ['error', ...noRestrictedSyntax],
 
+        'vuejs-accessibility/click-events-have-key-events': 'off',
+        'vuejs-accessibility/form-control-has-label': 'off',
+        'vuejs-accessibility/label-has-for': 'off',
+        'vue/multi-word-component-names': 'off',
+
         '@typescript-eslint/member-delimiter-style': ['error', memberDelimiterStyleOverrides],
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': 'off', // Do not require explicit function return value typings
+        // Do not require explicit function return value typings
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
 
         'no-useless-constructor': 'off',
         '@typescript-eslint/no-useless-constructor': 'error',
@@ -61,16 +68,14 @@ module.exports = {
         // 'import/no-unresolved': 'off',
     },
     overrides: [{
-            files: ['src/components/icons/**/*', 'src/components/Avatar.vue'],
-            rules: {
-                'max-len': 'off',
-            },
+        files: ['src/components/icons/**/*', 'src/components/Avatar.vue'],
+        rules: {
+            'max-len': 'off',
         },
-        {
-            files: ['src/lib/NetworkMap.ts'],
-            rules: {
-                'max-classes-per-file': 'off',
-            },
+    }, {
+        files: ['src/lib/NetworkMap.ts'],
+        rules: {
+            'max-classes-per-file': 'off',
         },
-    ],
+    }],
 };

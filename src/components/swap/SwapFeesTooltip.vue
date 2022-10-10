@@ -20,7 +20,18 @@
             </div>
             <p v-if="oasisFeePercentage !== undefined" class="explainer">
                 {{ $t('{perc}% of swap value.', { perc: oasisFeePercentage }) }}
+                <i18n v-if="oasisMinFeeFiat" path="min {amount}" tag="span" class="capitalize">
+                    <FiatAmount slot="amount" :amount="oasisMinFeeFiat" :currency="currency"/>
+                </i18n>
             </p>
+        </template>
+
+        <template v-if="sepaFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('SEPA Instant fee') }}</label>
+                <FiatAmount :amount="sepaFeeFiat" :currency="currency"/>
+            </div>
+            <!-- <p class="explainer">{{ $t('Banking network fee') }}</p> -->
         </template>
 
         <template v-if="nimFeeFiat !== undefined">
@@ -47,6 +58,7 @@
                 :amount="
                     (btcFeeFiat || 0)
                     + (oasisFeeFiat || 0)
+                    + (sepaFeeFiat || 0)
                     + (nimFeeFiat || 0)
                     + serviceSwapFeeFiat"
                 :currency="currency"/>
@@ -73,6 +85,14 @@ export default defineComponent({
             type: Number,
             required: false,
         },
+        oasisMinFeeFiat: {
+            type: Number,
+            required: false,
+        },
+        sepaFeeFiat: {
+            type: Number,
+            required: false,
+        },
         nimFeeFiat: {
             type: Number,
             required: false,
@@ -95,6 +115,10 @@ hr {
     border: unset;
     border-top: 1px solid currentColor;
     opacity: .2;
+}
+
+.capitalize {
+    text-transform: capitalize;
 }
 
 .total-fees {

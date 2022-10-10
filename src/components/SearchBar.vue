@@ -35,20 +35,16 @@ export default defineComponent({
         const searchBarInput = ref<HTMLInputElement | null>(null);
         const width = ref(1000);
 
-        // FIXME: Remove when Typescript supports ResizeObserver
-        type ResizeObserver = any;
-
         let observer: ResizeObserver;
 
         onMounted(() => {
             if ('ResizeObserver' in window && searchBarInput.value) {
-                // @ts-expect-error ResizeObserver not supported by Typescript yet
                 observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                     const entry = entries[0];
                     width.value = entry.contentBoxSize
-                        ? (Array.isArray(entry.contentBoxSize)
+                        ? ('length' in entry.contentBoxSize
                             ? entry.contentBoxSize[0].inlineSize
-                            : entry.contentBoxSize.inlineSize)
+                            : (entry.contentBoxSize as any).inlineSize)
                         : entry.contentRect.width;
                 });
                 observer.observe(searchBarInput.value);

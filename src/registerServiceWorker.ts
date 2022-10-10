@@ -48,14 +48,17 @@ export const serviceWorkerHasUpdate = new Promise<true>((resolve) => {
 });
 
 let isReloading = false;
+let updateTriggeredHere = false;
 export async function updateServiceWorker() {
     const registration = await navigator.serviceWorker.getRegistration();
     if (!registration || !registration.waiting) return; // TODO: Show feedback to user
 
+    updateTriggeredHere = true;
+
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!'); // eslint-disable-line no-console
         if (isReloading) return;
         isReloading = true;
+        console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!'); // eslint-disable-line no-console
         // Must wait to reload to give cache enough time to be updated
         setTimeout(() => window.location.href = window.location.origin, 1500);
     });
@@ -63,4 +66,16 @@ export async function updateServiceWorker() {
     // Sending this message to the waiting service-worker activates it,
     // which in turn triggers the `controllerchange` event subscribed above.
     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+}
+
+if (navigator.serviceWorker) {
+    // Handle service worker update in secondary open tabs
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (updateTriggeredHere) return;
+        if (isReloading) return;
+        isReloading = true;
+        console.debug('NEW SERVICEWORKER ACTIVATED, RELOADING!'); // eslint-disable-line no-console
+        // Must wait to reload to give cache enough time to be updated
+        setTimeout(() => window.location.href = window.location.origin, 1500);
+    });
 }

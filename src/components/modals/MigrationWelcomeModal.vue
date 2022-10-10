@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners">
+    <Modal v-bind="$attrs" v-on="$listeners" :swipeToClose="false">
         <PageHeader :backArrow="page > 1" @back="page -= 1" progressIndicator :numberSteps="3" :step="page">
             <template v-if="page === 1">
                 {{ $t('One Account, many Addresses') }}
@@ -41,7 +41,7 @@
                 </i18n>
             </div>
             <div class="visual address-ring">
-                <img src="../../assets/slides/account-ring-half.svg" key="account-ring">
+                <img src="../../assets/slides/account-ring-half.svg" key="account-ring" alt="Addresses">
             </div>
         </PageBody>
 
@@ -62,7 +62,7 @@
                 </p>
             </div>
             <div class="visual login-file">
-                <img src="../../assets/slides/login-file-half.svg" key="login-file">
+                <img src="../../assets/slides/login-file-half.svg" key="login-file" alt="LoginFile">
             </div>
         </PageBody>
 
@@ -78,7 +78,7 @@
                 </p>
             </div>
             <div class="visual account-menu">
-                <img src="../../assets/slides/old-account-menu-half.svg" key="old-account-menu">
+                <img src="../../assets/slides/old-account-menu-half.svg" key="old-account-menu" alt="Account-Menu">
             </div>
         </PageBody>
 

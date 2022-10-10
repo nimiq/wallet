@@ -20,24 +20,44 @@
 
         <div class="price-chart-wrapper">
             <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
-            <PriceChart currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
+            <PriceChart v-if="$config.enableBitcoin"
+                currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
         </div>
 
         <div class="trade-actions" v-show="!isLegacyAccount">
-            <template v-if="isDev || trials.includes(Trial.BUY_WITH_EURO)">
-                <button class="nq-button-s inverse"
-                    @click="$router.push('/buy?sidebar=true')" @mousedown.prevent
-                    :disabled="$route.name !== 'root' || hasActiveSwap"
-                >{{ $t('Buy') }}</button>
-                <button class="nq-button-s inverse"
-                    @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
-                    :disabled="$route.name !== 'root'"
-                >{{ $t('Sell') }}</button>
-            </template>
-            <button v-else class="nq-button-s inverse"
-                @click="$router.push('/trade?sidebar=true')" @mousedown.prevent
-                :disabled="$route.name !== 'root'"
-            >{{ $t('Buy & Sell') }}</button>
+            <button v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
+                class="nq-button-pill light-blue inverse"
+                @click="$router.push('/buy?sidebar=true')" @mousedown.prevent="$refs.sellTooltip.hide()"
+                :disabled="$route.name !== 'root' || hasActiveSwap"
+            >{{ $t('Buy') }}</button>
+
+            <Tooltip v-if="$config.fastspot.enabled"
+                preferredPosition="top right" :styles="{minWidth: '25rem'}" theme="inverse"
+                :disabled="!isOasisUnderMaintenance && canUseSwaps && !hasActiveSwap"
+                ref="sellTooltip"
+            >
+                <template #trigger>
+                    <button class="nq-button-s inverse"
+                        @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
+                        :disabled="$route.name !== 'root' || isOasisUnderMaintenance || !canUseSwaps || hasActiveSwap"
+                    >{{ $t('Sell') }}</button>
+                </template>
+                <template v-if="isOasisUnderMaintenance" #default>
+                    {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
+                        + ' This might take some time. Please try again later.') }}
+                    <br>
+                    <a href="https://forum.nimiq.community/t/oasis-infrastructure-update/1810"
+                        target="_blank" rel="noopener"
+                        class="nq-blue"
+                    >{{ $t('Learn more.') }}</a>
+                </template>
+                <template v-else-if="!canUseSwaps || hasActiveSwap" #default>{{
+                    hasActiveSwap ? $t('Please wait for your current swap to finish before starting a new swap.')
+                        /* Re-using existing, translated strings already used by BuyOptionsModal */
+                        : $t('Not available in your browser') + '. '
+                            + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
+                }}</template>
+            </Tooltip>
         </div>
 
         <div class="flex-grow"></div>
@@ -87,12 +107,11 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 
 export default defineComponent({
-    name: 'sidebar',
     setup(props, context) {
-        const { width } = useWindowSize();
+        const { isMobile } = useWindowSize();
 
         function navigateTo(path: string) {
-            if (width.value <= 700) { // Full mobile breakpoint
+            if (isMobile.value) {
                 context.root.$router.replace(path);
             } else {
                 context.root.$router.push(path).catch(() => { /* ignore */ });
@@ -120,7 +139,7 @@ export default defineComponent({
             }
         }
 
-        const { trials, updateAvailable } = useSettingsStore();
+        const { updateAvailable, trials, canUseSwaps } = useSettingsStore();
 
         const { activeAccountInfo } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
@@ -136,10 +155,12 @@ export default defineComponent({
             priceChartTimeRange,
             switchPriceChartTimeRange,
             isLegacyAccount,
-            trials,
-            Trial,
             updateAvailable,
             hasActiveSwap,
+            trials,
+            Trial,
+            canUseSwaps,
+            isOasisUnderMaintenance: Config.oasis.underMaintenance,
         };
     },
     components: {
@@ -170,6 +191,7 @@ export default defineComponent({
     --padding-bottom: 2rem;
 
     padding: var(--padding-top) var(--padding-sides) var(--padding-bottom);
+    padding-bottom: max(var(--padding-bottom), env(safe-area-inset-bottom));
 }
 
 .testnet-notice {
@@ -203,11 +225,11 @@ export default defineComponent({
     }
 
     .tooltip {
-        /deep/ .trigger {
+        ::v-deep .trigger {
             display: block;
         }
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             width: 20.5rem;
             padding: 1.25rem 1.5rem;
         }
@@ -263,7 +285,7 @@ export default defineComponent({
     width: 100%;
     padding: 1.5rem;
 
-    /deep/ .timespan {
+    ::v-deep .timespan {
         left: 1.5rem;
         top: 1.5rem;
     }
@@ -271,17 +293,30 @@ export default defineComponent({
 
 .trade-actions {
     margin-bottom: 2rem;
-    text-align: center;
-}
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
-.trade-actions .nq-button-s {
-    margin: 0.5rem .625rem 1rem;
-    background: rgba(255, 255, 255, .1);
+    button {
+        margin: 0.5rem .625rem 1rem;
 
-    &:active,
-    &:focus,
-    &:hover {
-        background: rgba(255, 255, 255, .2);
+        &:disabled {
+            pointer-events: none;
+        }
+    }
+
+    .nq-button-s {
+        background: rgba(255, 255, 255, .1);
+
+        &:active,
+        &:focus,
+        &:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+    }
+
+    .nq-button-pill:disabled {
+        opacity: 0.5;
     }
 }
 

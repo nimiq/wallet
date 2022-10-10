@@ -1,29 +1,17 @@
 <template>
-    <Modal class="btc-activation-modal"
+    <Modal class="buy-crypto-modal"
         :class="{'wider-overlay': !!swap}"
-        :showOverlay="page === Pages.BANK_CHECK
-            || addressListOpened
-            || !!swap
-            || (!isDev && !trials.includes(Trial.BUY_WITH_EURO))"
+        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
+        :swipePadding="page !== Pages.WELCOME"
     >
         <transition duration="650">
             <PageBody class="flex-column welcome" v-if="page === Pages.WELCOME">
-                <!-- eslint-disable max-len -->
-                <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83" stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
-                    <path d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
-                    <path d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
-                </svg>
-                <!-- eslint-enable max-len -->
                 <div class="welcome-text">
-                    <span class="early-access flex-row">
-                        <FlameIcon />
-                        {{ $t('Early Access') }}
-                    </span>
                     <h1 class="nq-h1">{{ $t('Buy Crypto with Fiat') }}</h1>
 
                     <p class="nq-text">
-                        {{ $t('Welcome to the first fiat-to-crypto atomic swap.\n'
+                        {{ $t('Welcome to the first fiat-to-crypto atomic swap. '
                             + 'It’s simple, fast and decentralized.') }}
                     </p>
                 </div>
@@ -39,8 +27,8 @@
                 </button>
             </PageBody>
 
-            <div v-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="userBank ? false : true" @back="goBack">
+            <div v-else-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
+                <PageHeader :backArrow="banks.sepa ? false : true" @back="goBack">
                     {{ $t('Buy Crypto') }}
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
@@ -51,7 +39,7 @@
                             <div v-else slot="trigger" class="pill exchange-rate">
                                 1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur"/>
                             </div>
-                            <span>{{ $t('This rate includes the swap fee.') }}</span>
+                            <!-- <span>{{ $t('This rate includes the swap fee.') }}</span> -->
                             <p class="explainer">
                                 {{ $t('The rate might change depending on the swap volume.') }}
                             </p>
@@ -61,6 +49,7 @@
                             :btcFeeFiat="fiatFees.btcFeeFiat"
                             :oasisFeeFiat="fiatFees.oasisFeeFiat"
                             :oasisFeePercentage="fiatFees.oasisFeePercentage"
+                            :oasisMinFeeFiat="fiatFees.oasisMinFeeFiat"
                             :nimFeeFiat="fiatFees.nimFeeFiat"
                             :serviceSwapFeeFiat="fiatFees.serviceSwapFeeFiat"
                             :serviceSwapFeePercentage="fiatFees.serviceSwapFeePercentage"
@@ -85,72 +74,71 @@
                                     <CircleSpinner/>
                                 </template>
                             </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('Per-Swap Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.perSwap.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
-                            </div>
-                            <div class="price-breakdown">
-                                <label>{{ $t('30-day Limit') }}</label>
-                                <FiatConvertedAmount v-if="limits"
-                                    :amount="limits.monthly.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
-                                <span v-else>{{ $t('loading...') }}</span>
-                            </div>
-                            <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                                <FiatConvertedAmount slot="value"
-                                    :amount="limits.remaining.luna" roundDown
-                                    currency="nim" :fiat="selectedFiatCurrency"/>
-                            </i18n>
-                            <div></div>
+                            <template v-if="limits && 'eur' in limits.current && limits.current.eur < Infinity">
+                                <div class="price-breakdown">
+                                    <label>{{ $t('Initial Swap Limit') }}</label>
+                                    <FiatAmount :amount="100" currency="eur" hideDecimals/>
+                                </div>
+                                <i18n class="explainer" path="{value} remaining" tag="p">
+                                    <FiatAmount slot="value" :amount="currentLimitFiat" currency="eur" hideDecimals/>
+                                </i18n>
+                                <div class="price-breakdown">
+                                    <label>{{ $t('After 72 hours') }}</label>
+                                    <FiatConvertedAmount v-if="limits"
+                                        :amount="limits.monthly.luna" roundDown
+                                        currency="nim" :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxFreeAmount"/>
+                                    <span v-else>{{ $t('loading...') }}</span>
+                                </div>
+                                <div></div>
+                                <p class="explainer">
+                                    {{ $t('72 hours after your first buy, '
+                                        + 'your limit will be increased automatically.')
+                                    }}
+                                </p>
+                            </template>
+                            <template v-else>
+                                <div class="price-breakdown">
+                                    <label>{{ $t('30-day Limit') }}</label>
+                                    <FiatConvertedAmount v-if="limits"
+                                        :amount="limits.monthly.luna" roundDown
+                                        currency="nim" :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxFreeAmount"/>
+                                    <span v-else>{{ $t('loading...') }}</span>
+                                </div>
+                                <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                                    <FiatConvertedAmount slot="value"
+                                        :amount="limits.remaining.luna" roundDown
+                                        currency="nim" :fiat="selectedFiatCurrency"
+                                        :max="oasisMaxFreeAmount"/>
+                                </i18n>
+                                <div></div>
+                            </template>
                             <p class="explainer">
-                                {{ $t('Limits are tied to accounts and IBANs.') }}
+                                {{ $t('Nimiq is working on a PRO feature with '
+                                    + 'increased limits after user registration.') }}
                             </p>
-                            <p class="explainer">
-                                {{ $t('During early access, these limits apply. They will be increased gradually.') }}
-                            </p>
-
                         </Tooltip>
                     </div>
                 </PageHeader>
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
-                        <button class="reset bank-infos flex-column" @click="page = Pages.BANK_CHECK">
-                            <BankIcon/>
-                            <label>{{ userBank ? userBank.name : '' }}</label>
-                        </button>
+                        <BankIconButton
+                            :bankName="banks.sepa ? banks.sepa.name : ''"
+                            @click="page = Pages.BANK_CHECK"/>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
                         </div>
-                        <button class="reset identicon-stack flex-column" @click="addressListOpened = true">
-                        <!-- TODO move it in a IdenticonStack component, since it's & will be used in multiple places-->
-                            <Identicon class="secondary"
-                                v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
-
-                            <BitcoinIcon class="secondary"
-                                v-if="hasBitcoinAddresses && activeCurrency !== CryptoCurrency.BTC" />
-
-                            <Identicon class="secondary"
-                                v-else-if="backgroundAddresses[1]"
-                                :address="backgroundAddresses[1]"/>
-
-                            <Identicon class="primary"
-                                v-if="activeCurrency === CryptoCurrency.NIM"
-                                :address="activeAddressInfo.address"/>
-
-                            <BitcoinIcon class="primary"
-                                v-else-if="activeCurrency === CryptoCurrency.BTC" />
-                            <label>
-                                {{ activeCurrency === CryptoCurrency.BTC ? 'Bitcoin' : activeAddressInfo.label }}
-                            </label>
-                        </button>
+                        <div class="flex-column">
+                            <IdenticonStack @click="addressListOpened = true" />
+                            <InteractiveShortAddress v-if="activeCurrency === CryptoCurrency.NIM"
+                                :address="activeAddressInfo.address" tooltipPosition="left"/>
+                        </div>
                     </section>
 
-                    <section class="amount-section">
+                    <section class="amount-section" :class="{ orange: insufficientLimit || isBelowOasisMinimum }">
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="fiatAmount"
-                                :max="currentLimitFiat ? currentLimitFiat * 1e2 : undefined"
                                 :decimals="fiatCurrencyInfo.decimals"
                                 placeholder="0.00" ref="$eurAmountInput"
                             >
@@ -165,7 +153,6 @@
                                 </g>
                             </svg>
                             <AmountInput v-model="cryptoAmount"
-                                :max="currentLimitCrypto ? currentLimitCrypto : undefined"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
                                 <span class="ticker" slot="suffix">
                                     {{ activeCurrency === CryptoCurrency.BTC
@@ -175,6 +162,31 @@
                             </AmountInput>
                         </span>
                     </section>
+
+                    <MessageTransition class="message-section">
+                        <template v-if="insufficientLimit">
+                            <!-- TEMP: wording TBD -->
+                            <i18n path="Max swappable amount is {amount}">
+                                <FiatAmount slot="amount"
+                                    :amount="currentLimitFiat"
+                                    currency="eur"
+                                    hideDecimals
+                                />
+                            </i18n><br />
+                            <a @click="buyMax">{{ $t('Buy max') }}</a>
+                        </template>
+                        <template v-else-if="isBelowOasisMinimum">
+                            <!-- TEMP: wording TBD -->
+                            <i18n path="Minimum buy amount is {amount}">
+                                <FiatAmount slot="amount"
+                                    :amount="$config.oasis.minBuyAmount"
+                                    currency="eur"
+                                    hideDecimals
+                                />
+                            </i18n><br />
+                            <a @click="buyMin">{{ $t('Set minimum') }}</a>
+                        </template>
+                    </MessageTransition>
                 </PageBody>
 
                 <SwapModalFooter
@@ -224,7 +236,7 @@
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
                     :manualFunding="true"
-                    :oasisLimitExceeded="oasisLimitExceeded"
+                    :oasisLimitExceeded="oasisBuyLimitExceeded"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 >
@@ -261,29 +273,6 @@
             />
         </div>
 
-        <div v-else-if="!isDev && !trials.includes(Trial.BUY_WITH_EURO)"
-            slot="overlay" class="page flex-column closed-beta"
-        >
-            <!-- eslint-disable max-len -->
-            <svg class="welcome-euro-logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 82 83" stroke="#21BCA5" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
-                <path d="M50 60c-12.116 0-22-2.813-22-18 0-15.188 9.884-19 22-19M23 47h19M23 38h22" />
-                <path d="M79 41.5a38.94 38.94 0 01-2.893 14.733 38.538 38.538 0 01-8.237 12.49 37.972 37.972 0 01-12.328 8.346A37.572 37.572 0 0141 80c-4.99 0-9.932-.996-14.542-2.93a37.972 37.972 0 01-12.328-8.346 38.538 38.538 0 01-8.237-12.49A38.94 38.94 0 013 41.5a38.94 38.94 0 012.893-14.733 38.537 38.537 0 018.237-12.49A37.972 37.972 0 0126.458 5.93 37.572 37.572 0 0141 3c4.99 0 9.932.996 14.542 2.93 4.61 1.935 8.8 4.771 12.328 8.346a38.538 38.538 0 018.237 12.49A38.94 38.94 0 0179 41.5h0z" />
-            </svg>
-            <!-- eslint-enable max-len -->
-            <PageHeader>Private Testing</PageHeader>
-            <PageBody>
-                <p>
-                    EUR swaps are currently in closed-beta and require unlocking to access.
-                    Please contact Max if you wish to try it out now:
-                </p>
-                <p>
-                    Telegram: <a href="https://t.me/Max_Nimiq" class="nq-link"
-                        target="_blank" rel="noopener"
-                    >@Max_Nimiq</a>
-                </p>
-            </PageBody>
-        </div>
-
         <BuyCryptoBankCheckOverlay slot="overlay"
             v-else-if="page === Pages.BANK_CHECK"
             @bank-selected="onBankSelected"
@@ -292,7 +281,8 @@
         <div v-else-if="addressListOpened" slot="overlay" class="page flex-column address-list-overlay">
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
-                <AddressList embedded @address-selected="addressListOpened = false" :showBitcoin="true"/>
+                <AddressList embedded @address-selected="addressListOpened = false"
+                    :showBitcoin="$config.enableBitcoin && hasBitcoinAddresses"/>
             </PageBody>
         </div>
     </Modal>
@@ -303,19 +293,13 @@ import { defineComponent, ref, computed, watch, onMounted } from '@vue/compositi
 import {
     PageHeader,
     PageBody,
-    PageFooter,
-    Identicon,
     Tooltip,
     FiatAmount,
     Timer,
     CircleSpinner,
-    AlertTriangleIcon,
 } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
-import { CurrencyInfo } from '@nimiq/utils';
 import {
-    Estimate,
-    getEstimate,
     RequestAsset,
     SwapAsset,
     PreSwap,
@@ -323,58 +307,65 @@ import {
     cancelSwap,
     getSwap,
     Swap,
-    AssetList,
-    getAssets,
 } from '@nimiq/fastspot-api';
+import {
+    getHtlc,
+    Htlc as OasisHtlc,
+    HtlcStatus,
+    sandboxMockClearHtlc,
+    TransactionType,
+    SepaClearingInstruction,
+} from '@nimiq/oasis-api';
 import Config from 'config';
 import {
+    EuroHtlcCreationInstructions,
     HtlcCreationInstructions,
     HtlcSettlementInstructions,
     SetupSwapRequest,
     SetupSwapResult,
 } from '@nimiq/hub-api';
-import { NetworkClient } from '@nimiq/network-client';
 import { captureException } from '@sentry/vue';
 import { getNetworkClient } from '@/network';
-import { BankInfos, SwapState, useSwapsStore } from '@/stores/Swaps';
+import { SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
 import { useAccountStore } from '@/stores/Account';
-import { useSettingsStore, Trial } from '@/stores/Settings';
+import { useSettingsStore } from '@/stores/Settings';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { CryptoCurrency, ENV_DEV, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
-import {
-    init as initOasisApi,
-    getHtlc,
-    Htlc,
-    HtlcStatus,
-    sandboxMockClearHtlc,
-    TransactionType,
-    SepaClearingInstruction,
-    ClearingStatus,
-    ClearingInfo,
-    DeniedReason,
-} from '@/lib/OasisApi';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
-import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
-import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import AmountInput from '../AmountInput.vue';
-import BankIcon from '../icons/BankIcon.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
-import Amount from '../Amount.vue';
-import FlameIcon from '../icons/FlameIcon.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
-import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { useWindowSize } from '../../composables/useWindowSize';
+import IdenticonStack from '../IdenticonStack.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
+import BankIconButton from '../BankIconButton.vue';
+import MessageTransition from '../MessageTransition.vue';
+import {
+    calculateFees,
+    capDecimals,
+    useCurrentLimitCrypto,
+    useCurrentLimitFiat,
+    useSwapEstimate,
+    eurPerBtc,
+    eurPerNim,
+    fetchAssets,
+    fiatCurrencyInfo,
+    getFiatSwapParameters,
+    fiatFees,
+} from '../../lib/swap/utils/CommonUtils';
+import { oasisBuyLimitExceeded, updateBuyEstimate } from '../../lib/swap/utils/BuyUtils';
+import { Bank, useBankStore } from '../../stores/Bank';
 
 enum Pages {
     WELCOME,
@@ -387,17 +378,24 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup(props, context) {
-        const { activeAccountInfo, activeCurrency } = useAccountStore();
-        const { addressInfos, activeAddressInfo, activeAddress } = useAddressStore();
-        const { activeSwap: swap, userBank, setUserBank } = useSwapsStore();
+        const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
+        const { activeAddressInfo, activeAddress } = useAddressStore();
+        const { exchangeRates } = useFiatStore();
         const { btcUnit } = useSettingsStore();
+        const { activeSwap: swap } = useSwapsStore();
+        const { banks, setBank } = useBankStore();
+
+        const { isMobile } = useWindowSize();
+        const { limits } = useSwapLimits({ nimAddress: activeAddress.value!, isFiatToCrypto: true });
+        const currentLimitFiat = useCurrentLimitFiat(limits);
+        const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
+        const { estimate } = useSwapEstimate();
+
+        const $eurAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
-        const estimate = ref<Estimate>(null);
-        const page = ref(userBank.value ? Pages.SETUP_BUY : Pages.WELCOME);
-
-        const assets = ref<AssetList>(null);
+        const page = ref(banks.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);
@@ -434,74 +432,37 @@ export default defineComponent({
             },
         });
 
-        const isDev = Config.environment === ENV_DEV;
+        // Does not need to be reactive, as the config doesn't change during runtime.
+        const isMainnet = Config.environment === ENV_MAIN;
+
+        const insufficientLimit = computed(() => (
+            (_cryptoAmount.value > (currentLimitCrypto.value || 0))
+            || (_fiatAmount.value > (currentLimitFiat.value || 0) * 1e2)
+        ));
+
+        const isBelowOasisMinimum = computed(() => (
+            _fiatAmount.value > 0 && _fiatAmount.value < Config.oasis.minBuyAmount * 1e2
+        ));
 
         const canSign = computed(() =>
-            (isDev || trials.value.includes(Trial.BUY_WITH_EURO))
-            && fiatAmount.value
+            fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
-            && userBank.value
+            && banks.value.sepa
             && limits.value?.current.usd
-            && !fetchingEstimate.value,
+            && !fetchingEstimate.value
+            && !insufficientLimit.value
+            && !isBelowOasisMinimum.value,
         );
-
-        const { width } = useWindowSize();
 
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
-                if (width.value > 700) {
-                    // @ts-expect-error Property 'focus' does not exist on type 'VueProxy<AmountInput>'
-                    if ($eurAmountInput.value) $eurAmountInput.value.focus();
+                if (!isMobile.value && $eurAmountInput.value) {
+                    $eurAmountInput.value.focus();
                 }
             }
         });
-
-        const { exchangeRates } = useFiatStore();
-
-        const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
-            nimAddress: activeAddress.value!,
-        });
-
-        // Re-run limit calculation when address changes
-        watch([activeCurrency, activeAddress], ([currency, address]) => {
-            if (currency === CryptoCurrency.NIM) {
-                limitsNimAddress.value = address || undefined;
-            } else {
-                limitsNimAddress.value = undefined;
-            }
-        }, { lazy: true });
-
-        // Re-run limit calculation when exchange rates change
-        watch(exchangeRates, () => {
-            if (limits.value) recalculateLimits();
-        }, { lazy: true, deep: true });
-
-        const currentLimitFiat = computed(() => {
-            if (!limits.value) return null;
-
-            const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
-            if (!nimRate) return null;
-
-            return Math.floor((limits.value.current.luna / 1e5) * nimRate);
-        });
-
-        const currentLimitCrypto = computed(() => {
-            if (!currentLimitFiat.value) return null;
-
-            const rate = exchangeRates.value[activeCurrency.value][selectedFiatCurrency.value];
-            if (!rate) return null;
-
-            return capDecimals(
-                (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8),
-                activeCurrency.value.toUpperCase() as SwapAsset,
-            );
-        });
-
-        async function fetchAssets() {
-            assets.value = await getAssets();
-        }
 
         function onClose() {
             if (addressListOpened.value === true) {
@@ -513,209 +474,10 @@ export default defineComponent({
             }
         }
 
-        function onBankSelected(bank: BankInfos) {
-            setUserBank(bank);
+        function onBankSelected(bank: Bank) {
+            setBank(bank);
             page.value = Pages.SETUP_BUY;
             addressListOpened.value = false;
-        }
-
-        const backgroundAddresses = computed(() =>
-            addressInfos.value
-                .slice(0, 3)
-                .filter((addressInfo) => activeCurrency.value !== CryptoCurrency.NIM
-                    || addressInfo.address !== activeAddressInfo.value!.address)
-                .slice(0, 2)
-                .map((addressInfo) => addressInfo.address),
-        );
-
-        const fiatCurrencyInfo = computed(() =>
-            new CurrencyInfo(selectedFiatCurrency.value),
-        );
-
-        const eurPerNim = computed(() => {
-            const data = estimate.value;
-            if (data && data.to.asset === SwapAsset.NIM) {
-                const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
-                const nim = data.to.amount + data.to.serviceNetworkFee;
-
-                return (eur / 100) / (nim / 1e5);
-            }
-
-            return exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
-        });
-
-        const eurPerBtc = computed(() => {
-            const data = estimate.value;
-            if (data && data.to.asset === SwapAsset.BTC) {
-                const eur = data.from.amount - data.from.serviceEscrowFee - data.from.serviceNetworkFee;
-                const btc = data.to.amount + data.to.serviceNetworkFee;
-
-                return (eur / 100) / (btc / 1e8);
-            }
-
-            return exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value];
-        });
-
-        const fiatFees = computed(() => {
-            const data = estimate.value;
-            if (!data) {
-                // Predict fees
-
-                const oasisFeeFiat = 0;
-                const oasisFeePercentage = Config.oasis.feePercentage * 100;
-
-                let nimFeeFiat: number | undefined;
-                if (activeCurrency.value === CryptoCurrency.NIM) {
-                    // Settlement
-                    const perFee = 0
-                        || (estimate.value && estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
-                        || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-                        || 0;
-                    // 135 extra weight units for BTC HTLC settlement tx
-                    const myFee = perFee * 233; // 233 = NIM HTLC settlement tx size);
-                    const serviceFee = perFee * 244; // 244 = NIM HTLC funding tx size
-
-                    nimFeeFiat = ((myFee + serviceFee) / 1e5)
-                        * (exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value] || 0);
-                }
-
-                let btcFeeFiat: number | undefined;
-                if (activeCurrency.value === CryptoCurrency.BTC) {
-                    // Settlement
-                    const perFee = 0
-                        || (estimate.value && estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
-                        || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-                        || 1;
-                    // 135 extra weight units for BTC HTLC settlement tx
-                    const myFee = estimateFees(1, 1, perFee, 135);
-                    const serviceFee = perFee * 154; // The vsize Fastspot charges for a funding tx
-
-                    btcFeeFiat = ((myFee + serviceFee) / 1e8)
-                        * (exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value] || 0);
-                }
-
-                const serviceSwapFeePercentage = 0.2;
-                const serviceSwapFeeFiat = 0;
-
-                return {
-                    btcFeeFiat,
-                    oasisFeeFiat,
-                    oasisFeePercentage,
-                    nimFeeFiat,
-                    serviceSwapFeePercentage,
-                    serviceSwapFeeFiat,
-                    total: (btcFeeFiat || 0) + oasisFeeFiat + (nimFeeFiat || 0) + serviceSwapFeeFiat,
-                    isHigh: false,
-                };
-            }
-
-            const myEurFee = data.from.fee;
-            const theirEurFee = data.from.serviceEscrowFee + data.from.serviceNetworkFee;
-
-            const oasisFeeFiat = (myEurFee + theirEurFee) / 100;
-            const oasisFeePercentage = Math.round((oasisFeeFiat / (data.from.amount / 100)) * 1000) / 10;
-
-            const myCryptoFee = data.to.fee;
-            const theirCryptoFee = data.to.serviceNetworkFee;
-
-            const btcFeeFiat = data.to.asset === SwapAsset.BTC
-                ? ((myCryptoFee + theirCryptoFee) / 1e8)
-                    * exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value]!
-                : undefined;
-            const nimFeeFiat = data.to.asset === SwapAsset.NIM
-                ? ((myCryptoFee + theirCryptoFee) / 1e5)
-                    * exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value]!
-                : undefined;
-
-            const serviceSwapFeePercentage = Math.round(data.serviceFeePercentage * 10000) / 100;
-            const serviceSwapFeeFiat = ((data.from.amount - theirEurFee) * data.serviceFeePercentage) / 100;
-
-            const total = (btcFeeFiat || 0) + (oasisFeeFiat || 0) + (nimFeeFiat || 0) + serviceSwapFeeFiat;
-
-            return {
-                btcFeeFiat,
-                oasisFeeFiat,
-                oasisFeePercentage,
-                nimFeeFiat,
-                serviceSwapFeePercentage,
-                serviceSwapFeeFiat,
-                total,
-                isHigh: false,
-            };
-        });
-
-        function calculateFees(feesPerUnit = { eur: 0, nim: 0, btc: 0 }): {
-            fundingFee: number,
-            settlementFee: number,
-        } {
-            let fundingFee: number | null = null;
-            let settlementFee: number | null = null;
-
-            // EUR
-            fundingFee = feesPerUnit.eur
-                || (estimate.value && estimate.value.from.asset === SwapAsset.EUR && estimate.value.from.fee)
-                || 0;
-
-            if (activeCurrency.value === CryptoCurrency.NIM) {
-                const perFee = feesPerUnit.nim
-                    || (estimate.value && estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
-                    || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-                    || 0;
-                // 233 = NIM HTLC settlement tx size
-                settlementFee = perFee * 233;
-            }
-
-            if (activeCurrency.value === CryptoCurrency.BTC) {
-                const perFee = feesPerUnit.btc
-                    || (estimate.value && estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
-                    || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-                    || 1;
-                // 135 extra weight units for BTC HTLC settlement tx
-                settlementFee = estimateFees(1, 1, perFee, 135);
-            }
-
-            if (fundingFee === null || settlementFee === null) throw new Error('Invalid swap direction');
-
-            return {
-                fundingFee,
-                settlementFee,
-            };
-        }
-
-        function getSwapParameters() {
-            const toSwapAsset = activeCurrency.value === CryptoCurrency.BTC
-                ? SwapAsset.BTC
-                : SwapAsset.NIM;
-
-            const fees = calculateFees();
-
-            if (_fiatAmount.value) {
-                return {
-                    from: { [SwapAsset.EUR]: (fiatAmount.value - fees.fundingFee) / 100 },
-                    to: toSwapAsset,
-                } as {
-                    from: RequestAsset<SwapAsset.EUR>,
-                    to: SwapAsset.NIM | SwapAsset.BTC,
-                };
-            }
-
-            if (toSwapAsset === SwapAsset.BTC) {
-                return {
-                    from: SwapAsset.EUR,
-                    to: { [toSwapAsset]: (cryptoAmount.value + fees.settlementFee) / 1e8 },
-                } as {
-                    from: SwapAsset.EUR,
-                    to: RequestAsset<SwapAsset.BTC>,
-                };
-            }
-
-            return {
-                from: SwapAsset.EUR,
-                to: { [toSwapAsset]: (cryptoAmount.value + fees.settlementFee) / 1e5 },
-            } as {
-                from: SwapAsset.EUR,
-                to: RequestAsset<SwapAsset.NIM>,
-            };
         }
 
         async function updateEstimate() {
@@ -723,63 +485,21 @@ export default defineComponent({
 
             fetchingEstimate.value = true;
 
-            try {
-                const { from, to } = getSwapParameters();
-
-                const newEstimate = await getEstimate(
-                    // Need to force one of the function signatures
-                    from as RequestAsset<SwapAsset>,
-                    to as SwapAsset,
-                );
-
-                if (!newEstimate.from || !newEstimate.to) {
-                    throw new Error('UNEXPECTED: EUR or crypto price not present in estimate');
-                }
-
-                // Update local fees with latest feePerUnit values
-                const { fundingFee, settlementFee } = calculateFees({
-                    eur: newEstimate.from.fee || 0,
-                    nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit! : 0,
-                    btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit! : 0,
-                });
-
-                newEstimate.from.fee = fundingFee;
-                newEstimate.to.fee = settlementFee;
-
-                // Check against minimums
-                if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
-                    // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
-                    if (newEstimate.to.asset === SwapAsset.BTC) {
-                        // Note: This currently only checks BTC fees!
-                        const btcPrice = newEstimate.to;
-                        const toCoinsFactor = 1e8;
-                        const minimumFiat = ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
-                            * exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value]!;
-                        estimateError.value = context.root.$t(
-                            'The fees (currently {amount}) determine the minimum amount.',
-                            { amount: `${selectedFiatCurrency.value.toUpperCase()} ${minimumFiat.toFixed(2)}` },
-                        ) as string;
-                    } else {
-                        estimateError.value = context.root.$t('The fees determine the minimum amount.') as string;
-                    }
-                } // eslint-disable-line brace-style
-
-                else {
-                    estimateError.value = null;
-                }
-
-                estimate.value = newEstimate;
-            } catch (error) {
-                console.error(error); // eslint-disable-line no-console
+            await updateBuyEstimate(_fiatAmount.value
+                ? { fiatAmount: fiatAmount.value }
+                : { cryptoAmount: cryptoAmount.value },
+            ).then(() => {
+                estimateError.value = null;
+            }).catch((error) => {
+                console.warn(error); // eslint-disable-line no-console
                 estimateError.value = error.message;
-            }
+            });
+
             fetchingEstimate.value = false;
         }
 
-        const { trials } = useSettingsStore();
-
         async function sign() {
-            if (!isDev && !trials.value.includes(Trial.BUY_WITH_EURO)) return;
+            if (!canSign.value) return;
 
             // currentlySigning.value = true;
 
@@ -792,7 +512,10 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    const { from, to } = getSwapParameters();
+                    const { from, to } = getFiatSwapParameters(_fiatAmount.value
+                        ? { from: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
+                        : { to: { amount: cryptoAmount.value } },
+                    );
 
                     swapSuggestion = await createSwap(
                         // Need to force one of the function signatures
@@ -801,22 +524,26 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { fundingFee, settlementFee } = calculateFees({
+                    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, undefined, {
                         eur: swapSuggestion.from.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit! : 0,
                     });
 
-                    swapSuggestion.from.fee = fundingFee;
+                    swapSuggestion.from.fee = 0; // User's SEPA Instant fees are not considered
                     swapSuggestion.to.fee = settlementFee;
+
+                    if (swapSuggestion.to.amount - swapSuggestion.to.fee <= 0) {
+                        throw new Error(`${swapSuggestion.to.asset} output value is 0`);
+                    }
 
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
                     console.debug('Swap:', swapSuggestion); // eslint-disable-line no-console
-                    swapError.value = null;
-                } catch (error) {
+                } catch (error: any) {
                     console.error(error); // eslint-disable-line no-console
-                    swapError.value = error.message;
+                    estimateError.value = error.message;
+                    if (swapSuggestion!) cancelSwap(swapSuggestion);
                     reject(error);
                     return;
                 }
@@ -829,10 +556,16 @@ export default defineComponent({
                 // Await Nimiq and Bitcoin consensus
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
+
                     if (useNetworkStore().state.consensus !== 'established') {
-                        await new Promise<void>((res) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                            if (state === 'established') res();
-                        }));
+                        await nimiqClient.waitForConsensusEstablished();
+                    }
+
+                    const headHeight = await nimiqClient.getHeadHeight();
+                    if (headHeight > 100) {
+                        useNetworkStore().state.height = headHeight;
+                    } else {
+                        throw new Error('Invalid network state, try please reloading the app');
                     }
                 }
                 if (activeCurrency.value === CryptoCurrency.BTC) {
@@ -845,7 +578,7 @@ export default defineComponent({
                         type: SwapAsset.EUR,
                         value: swapSuggestion.from.amount - swapSuggestion.from.serviceEscrowFee,
                         fee: swapSuggestion.from.fee + swapSuggestion.from.serviceEscrowFee,
-                        bankLabel: userBank.value!.name,
+                        bankLabel: banks.value.sepa!.name,
                     };
                 }
 
@@ -853,7 +586,7 @@ export default defineComponent({
                     redeem = {
                         type: SwapAsset.NIM,
                         recipient: nimAddress, // My address, must be redeem address of HTLC
-                        value: swapSuggestion.to.amount, // Luna
+                        value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
                         fee: swapSuggestion.to.fee, // Luna
                         validityStartHeight: useNetworkStore().state.height,
                     };
@@ -892,18 +625,25 @@ export default defineComponent({
                     fundingFiatRate: 1, // 1 EUR = 1 EUR
                     redeemingFiatRate:
                         exchangeRates.value[swapSuggestion.to.asset.toLowerCase()][selectedFiatCurrency.value]!,
-                    serviceFundingFee: swapSuggestion.from.serviceNetworkFee,
-                    serviceRedeemingFee: swapSuggestion.to.serviceNetworkFee,
+                    fundFees: {
+                        processing: 0, // The OASIS fee is already part of the `fund` object
+                        redeeming: swapSuggestion.from.serviceNetworkFee,
+                    },
+                    redeemFees: {
+                        funding: swapSuggestion.to.serviceNetworkFee,
+                        processing: 0,
+                    },
                     serviceSwapFee,
                 };
 
                 resolve(request);
             });
 
-            let signedTransactions: SetupSwapResult | null = null;
+            let signedTransactions: SetupSwapResult | void | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
-            } catch (error) {
+                if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
+            } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
@@ -945,6 +685,16 @@ export default defineComponent({
                     throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
                 }
                 confirmedSwap = swapOrPreSwap;
+
+                // Apply the correct local fees from the swap request
+                const request = await hubRequest;
+                confirmedSwap.from.fee = (request.fund as EuroHtlcCreationInstructions).fee
+                    - confirmedSwap.from.serviceEscrowFee;
+                confirmedSwap.to.fee = request.redeem.type === SwapAsset.NIM
+                    ? request.redeem.fee
+                    : request.redeem.type === SwapAsset.BTC
+                        ? request.redeem.input.value - request.redeem.output.value
+                        : 0;
             } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -969,8 +719,7 @@ export default defineComponent({
             });
 
             // Fetch OASIS HTLC to get clearing instructions
-            initOasisApi(Config.oasis.apiEndpoint);
-            let oasisHtlc: Htlc<HtlcStatus>;
+            let oasisHtlc: OasisHtlc;
             try {
                 // TODO: Retry getting the HTLC if first time fails
                 oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
@@ -1009,13 +758,16 @@ export default defineComponent({
                 return;
             }
 
-            const fundingInstructions = (oasisHtlc as Htlc<HtlcStatus.PENDING>).clearing.options
+            const fundingInstructions = (oasisHtlc as OasisHtlc<HtlcStatus.PENDING>).clearing.options
                 .find((clearing) => clearing.type === TransactionType.SEPA) as SepaClearingInstruction | undefined;
 
             // Add swap details to swap store
             setSwap(confirmedSwap.hash, {
                 id: confirmedSwap.id,
-                // fees: swapFees,
+                fees: {
+                    totalFee: fiatFees.value.settlement.total,
+                    asset: confirmedSwap.from.asset,
+                },
             });
 
             setActiveSwap({
@@ -1045,6 +797,7 @@ export default defineComponent({
                         endpoint: new URL(Config.fastspot.apiEndpoint).host,
                         apikey: Config.fastspot.apiKey,
                         redeem: settlementSerializedTx,
+                        // ...(signedTransactions.refundTx ? { refund: signedTransactions.refundTx } : {}),
                     }),
                 }).then(async (response) => {
                     if (!response.ok) {
@@ -1071,7 +824,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = userBank.value ? Pages.SETUP_BUY : Pages.WELCOME;
+                    page.value = banks.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME;
                     break;
                 default:
                     break;
@@ -1101,24 +854,6 @@ export default defineComponent({
             fetchingEstimate.value = true;
         }
 
-        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
-            && (activeAccountInfo.value.btcAddresses || false)
-            && activeAccountInfo.value.btcAddresses.external.length > 0);
-
-        function capDecimals(amount: number, asset: SwapAsset) {
-            if (!amount) return 0;
-
-            const numberSign = amount / Math.abs(amount); // 1 or -1
-
-            amount = Math.abs(amount);
-
-            const currencyDecimals = asset === SwapAsset.NIM ? 5 : btcUnit.value.decimals;
-            const displayDecimals = calculateDisplayedDecimals(amount, asset.toLowerCase() as CryptoCurrency);
-            const roundingFactor = 10 ** (currencyDecimals - displayDecimals);
-
-            return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
-        }
-
         // Update estimate on currency switch
         watch(activeCurrency, () => {
             if (_fiatAmount.value || _cryptoAmount.value) {
@@ -1126,11 +861,11 @@ export default defineComponent({
             }
         }, { lazy: true });
 
-        // Does not need to be reactive, as the config doesn't change during runtime.
-        const isMainnet = Config.environment === ENV_MAIN;
-
         function onPaid() {
-            if (!isMainnet) sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
+            if (!swap.value!.fundingInstructions || swap.value!.fundingInstructions.type !== 'sepa') {
+                // We are in a test environment
+                sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
+            }
 
             if (!swap.value!.stateEnteredAt) {
                 const { setActiveSwap } = useSwapsStore();
@@ -1141,39 +876,31 @@ export default defineComponent({
             }
         }
 
-        const oasisLimitExceeded = computed(() => {
-            if (!swap.value) return false;
-            if (!swap.value.fundingTx) return false;
-            const htlc = swap.value.fundingTx as Htlc<HtlcStatus>;
+        function buyMax() {
+            fiatAmount.value = (currentLimitFiat.value || 0) * 1e2;
+        }
 
-            if (htlc.status !== HtlcStatus.PENDING) return false;
-            const pendingHtlc = htlc as Htlc<HtlcStatus.PENDING>;
-
-            if (pendingHtlc.clearing.status !== ClearingStatus.DENIED) return false;
-            const deniedClearingInfo = pendingHtlc.clearing as ClearingInfo<ClearingStatus.DENIED>;
-
-            return deniedClearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
-        });
-
-        const $eurAmountInput = ref<typeof AmountInput>(null);
+        function buyMin() {
+            fiatAmount.value = Config.oasis.minBuyAmount * 1e2;
+        }
 
         return {
+            $eurAmountInput,
             addressListOpened,
             onClose,
             onBankSelected,
             Pages,
             page,
-            backgroundAddresses,
             activeAddressInfo,
+            hasBitcoinAddresses,
             canSign,
             fiatAmount,
             fiatCurrencyInfo,
-            userBank,
+            banks,
             SwapAsset,
             SwapState,
             finishSwap,
             updateEstimate,
-            estimate,
             cryptoAmount,
             swap,
             sign,
@@ -1182,9 +909,8 @@ export default defineComponent({
             CryptoCurrency,
             eurPerNim,
             eurPerBtc,
-            fiatFees,
+            fiatFees: computed(() => fiatFees.value.settlement),
             limits,
-            hasBitcoinAddresses,
             activeCurrency,
             btcUnit,
             currentLimitFiat,
@@ -1193,44 +919,42 @@ export default defineComponent({
             swapError,
             isMainnet,
             onPaid,
-            isDev,
-            trials,
-            Trial,
-            oasisLimitExceeded,
-            $eurAmountInput,
+            oasisBuyLimitExceeded,
+            insufficientLimit,
+            isBelowOasisMinimum,
+            buyMax,
+            buyMin,
+            oasisMaxFreeAmount: Config.oasis.maxFreeAmount,
         };
     },
     components: {
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
         Tooltip,
         BuyCryptoBankCheckOverlay,
         AmountInput,
-        Identicon,
         AddressList,
         FiatConvertedAmount,
-        BankIcon,
         SwapAnimation,
-        Amount,
-        FlameIcon,
         FiatAmount,
         SwapFeesTooltip,
         Timer,
         MinimizeIcon,
-        BitcoinIcon,
         SwapSepaFundingInstructions,
         CircleSpinner,
-        AlertTriangleIcon,
         SwapModalFooter,
+        IdenticonStack,
+        InteractiveShortAddress,
+        BankIconButton,
+        MessageTransition,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 .modal {
-    &.wider-overlay /deep/ .overlay {
+    &.wider-overlay ::v-deep .overlay {
         width: 63.5rem;
         margin-left: calc((63.5rem - 52.5rem) / -2);
 
@@ -1245,22 +969,12 @@ export default defineComponent({
     }
 }
 
-.modal /deep/ .overlay .animation-overlay + .close-button {
+.modal ::v-deep .overlay .animation-overlay + .close-button {
     display: none;
 }
 
 .page {
     font-size: var(--body-size);
-}
-
-.page.closed-beta {
-    text-align: center;
-    align-items: center;
-
-    svg.welcome-euro-logo {
-        margin-top: 8rem;
-        margin-bottom: 2rem;
-    }
 }
 
 .page-body {
@@ -1269,31 +983,25 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-svg.welcome-euro-logo {
-    width: 10.5rem;
-    height: 10.5rem;
-    margin-bottom: 3rem;
-}
-
 .welcome.page-body {
-    padding-top: 6.25rem;
     width: 52.5rem;
     max-width: 100%;
+    border-radius: 1.25rem;
+    padding: {
+        top: 26rem;
+        bottom: 4rem;
+        left: 5rem;
+        right: 6rem;
+    };
+    background: {
+        image: url('../../assets/buy-welcome-background.svg');
+        repeat: no-repeat;
+        position: top center;
+        size: 100% auto;
+    };
 
     .welcome-text {
         text-align: center;
-
-        .early-access {
-            justify-content: center;
-            align-items: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: #EAA617;
-
-            svg {
-                margin-right: 0.75rem;
-            }
-        }
 
         .nq-h1 {
             margin-top: 1rem;
@@ -1368,7 +1076,7 @@ svg.welcome-euro-logo {
         --padding-sides: 2rem;
         max-height: 100%;
 
-        /deep/ .scroll-mask.bottom {
+        ::v-deep .scroll-mask.bottom {
             bottom: -1px;
         }
     }
@@ -1426,7 +1134,7 @@ svg.welcome-euro-logo {
             color: rgb(234, 166, 23);
             box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
-            /deep/ svg {
+            ::v-deep svg {
                 margin-left: 0.75rem;
                 height: 1.75rem;
                 width: 1.75rem;
@@ -1444,19 +1152,20 @@ svg.welcome-euro-logo {
 
     .identicon-section {
         justify-content: space-around;
-        align-items: center;
+        align-items: stretch;
         align-self: stretch;
         margin-bottom: 3.5rem;
 
-        label {
-            margin-top: 1.875rem;
-            text-align: center;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            width: 100%;
-            cursor: inherit;
-            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        & > .flex-column {
+            align-items: center;
+
+            .identicon-stack {
+                padding-bottom: 4rem;
+            }
+
+            .interactive-short-address {
+                margin-top: -3.5rem;
+            }
         }
 
         .separator-wrapper {
@@ -1469,6 +1178,7 @@ svg.welcome-euro-logo {
 
             position: relative;
             flex-grow: 1;
+            align-self: center;
             overflow: hidden;
             mask: radial-gradient(circle at center, white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
@@ -1490,94 +1200,35 @@ svg.welcome-euro-logo {
         }
     }
 
-    .bank-infos {
-        align-items: center;
-        width: 18rem;
-        border-radius: 0.75rem;
-        padding: 1rem;
-
-        &:hover,
-        &:focus {
-            background: var(--nimiq-highlight-bg);
-        }
-
-        svg {
-            width: 9rem;
-            height: 9rem;
-        }
-    }
-
-    .identicon-stack {
-        align-items: stretch;
-        border-radius: 0.75rem;
-        padding: 1rem;
-        position: relative;
-        width: 18rem;
-
-        svg.bitcoin {
-            color: var(--bitcoin-orange);
-            background: radial-gradient(circle at center, white 40%, transparent, transparent);
-            border-radius: 50%;
-        }
-
-        .primary {
-            position: relative;
-            width: 9rem;
-            height: 9rem;
-            margin: -0.5rem auto 0;
-        }
-
-        .secondary {
-            width: 7.5rem;
-            position: absolute;
-            top: 1.375rem;
-            opacity: 0.4;
-
-            transition:
-                transform var(--movement-duration) var(--nimiq-ease),
-                opacity var(--movement-duration) var(--nimiq-ease);
-
-            &:first-child {
-                left: 3rem;
-            }
-
-            &:nth-child(2) {
-                right: 3rem;
-
-                &.bitcoin {
-                    right: 3.25rem;
-                }
-            }
-
-            &.bitcoin {
-                height: 7rem;
-                width: 7rem;
-                margin-top: 0.25rem;
-            }
-        }
-
-        &:hover,
-        &:focus {
-            background: var(--nimiq-highlight-bg);
-
-            .secondary:first-child {
-                transform: translateX(-0.375rem) scale(1.05);
-                opacity: 0.5;
-            }
-
-            .secondary:nth-child(2) {
-                transform: translateX(0.375rem) scale(1.05);
-                opacity: 0.5;
-            }
-        }
-
-        label {
-            cursor: pointer;
-        }
-    }
-
     .amount-section {
         text-align: center;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+
+        &.orange {
+            color: var(--nimiq-orange);
+            transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+            .amount-input {
+                &, &:hover, &:focus {
+                    color: var(--nimiq-orange);
+                    transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+                    ::v-deep .nq-input,
+                    ::v-deep .label-input + span,
+                    ::v-deep .label-input:focus-within + span {
+                        --border-color: rgba(252, 135, 2, 0.3); // --nimiq-orange 0.3 opacity
+                        color: var(--nimiq-orange);
+
+                        transition: {
+                            property: border, color;
+                            duration: 200ms;
+                            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+                        }
+                    }
+                }
+            }
+        }
 
         .primary-amount {
             align-items: flex-end;
@@ -1589,12 +1240,12 @@ svg.welcome-euro-logo {
                 max-width: 100%;
                 font-weight: bold;
 
-                /deep/ .ticker {
+                ::v-deep .ticker {
                     font-size: 2.5rem;
                     margin-left: 1.25rem;
                 }
 
-                /deep/ .label-input * {
+                ::v-deep .label-input * {
                     font-weight: 600;
                     font-size: 4rem !important;
                     padding: .5rem 1rem;
@@ -1618,16 +1269,41 @@ svg.welcome-euro-logo {
                     color: var(--text-60);
                 }
 
-                /deep/ .ticker {
+                ::v-deep .ticker {
                     font-weight: bold;
                     font-size: 2rem;
                 }
 
-                /deep/ .label-input * {
+                ::v-deep .label-input * {
                     font-weight: 600;
                     font-size: 2.5rem !important;
                     padding: 0.375rem 0.75rem;
                 }
+            }
+        }
+    }
+
+    .message-section.message-transition {
+        width: 100%;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 21px;
+        text-align: center;
+        color: var(--nimiq-orange);
+        --message-transition-duration: 200ms;
+
+        a {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        & ::v-deep {
+            .fadeY-enter {
+                transform: translateY(calc(21px / 4)) !important;
+            }
+
+            .fadeY-leave-to {
+                transform: translateY(calc(-21px / 4)) !important;
             }
         }
     }
@@ -1667,7 +1343,7 @@ svg.welcome-euro-logo {
         top: 2.5rem;
         right: 2.5rem;
 
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             font-size: var(--small-size);
             padding: 1.25rem 1.5rem;
         }
@@ -1676,7 +1352,7 @@ svg.welcome-euro-logo {
 
 @media (max-width: 730px) {
     .modal {
-        /deep/ .small-page {
+        ::v-deep .small-page {
             width: 52.5rem; // reset
             background-image: none;
         }

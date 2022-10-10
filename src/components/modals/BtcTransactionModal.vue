@@ -11,13 +11,11 @@
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
-                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
+                    <label>{{ $t('Euro') }}</label>
                 </template>
 
                 <template v-else v-slot:address>?</template>
@@ -25,13 +23,11 @@
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 9)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
-                    <label><i>&nbsp;</i>{{ $t('Euro') }}</label>
+                    <label>{{ $t('Euro') }}</label>
                 </template>
 
                 <template v-else v-slot:address>?</template>
@@ -39,22 +35,23 @@
 
             <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 6)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 6) }}</label>
                 </template>
             </i18n>
 
             <i18n v-else path="Transaction to {address}" :tag="false">
                 <template v-slot:address>
-                    <label><i>&nbsp;</i>{{
-                        peerLabel || peerAddresses[0].substring(0, 6)
-                    }}</label>
+                    <label>{{ peerLabel || peerAddresses[0].substring(0, 6) }}</label>
                 </template>
             </i18n>
 
+            <TransactionDetailOasisPayoutStatus
+                v-if="swapData && swapData.asset === SwapAsset.EUR && swapData.htlc
+                    && swapData.htlc.settlement && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED"
+                :data="swapData"
+            />
             <span
-                v-if="state === TransactionState.NEW || state === TransactionState.PENDING"
+                v-else-if="state === TransactionState.NEW || state === TransactionState.PENDING"
                 slot="more"
                 class="nq-light-blue flex-row"
             >
@@ -70,12 +67,12 @@
                 {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
             </span>
             <span v-else slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
-                <i18n v-if="isIncoming" path="received at {dateAndTime}" :tag="false">
+                <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
                     <template v-slot:dateAndTime>
                         {{ datum }} <strong>&middot;</strong> {{ time }}
                     </template>
                 </i18n>
-                <i18n v-else path="sent at {dateAndTime}" :tag="false">
+                <i18n v-else path="Sent at {dateAndTime}" :tag="false">
                     <template v-slot:dateAndTime>
                         {{ datum }} <strong>&middot;</strong> {{ time }}
                     </template>
@@ -189,7 +186,25 @@
                 }" currency="btc" value-mask/>
 
                 <div class="flex-row">
-                    <transition name="fade">
+                    <div v-if="
+                        swapData && swapData.asset === SwapAsset.EUR
+                        && swapInfo && swapInfo.fees && swapInfo.fees.totalFee
+                    " class="fiat-amount">
+                        <Tooltip>
+                            <template slot="trigger">
+                                <FiatAmount :amount="(swapData.amount / 100)
+                                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
+                                    * (isIncoming ? 1 : -1)" :currency="swapData.asset.toLowerCase()"
+                                />
+                            </template>
+                            <span>{{ $t('Historic value') }}</span>
+                            <p class="explainer">
+                                {{ $t('This historic value is based on an average of cross-exchange prices.'
+                                    + ' It might vary due to market volatility and liquidity.') }}
+                            </p>
+                        </Tooltip>
+                    </div>
+                    <transition v-else-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                         <FiatConvertedAmount
                             v-if="state === TransactionState.PENDING"
                             :amount="isIncoming ? amountReceived : amountSent"
@@ -208,12 +223,20 @@
                                         :currency="fiatCurrency"
                                         value-mask/>
                                 </template>
-                                {{ $t('Historic value') }}
+                                <span>{{ $t('Historic value') }}</span>
+                                <p class="explainer">
+                                    {{ $t('This historic value is based on an average of cross-exchange prices.'
+                                        + ' It might vary due to market volatility and liquidity.') }}
+                                </p>
                             </Tooltip>
                         </div>
                     </transition>
                     <template v-if="swapData && (swapTransaction || swapData.asset === SwapAsset.EUR)">
-                        <svg viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot">
+                        <svg v-if="
+                            swapData.asset !== SwapAsset.EUR
+                            || (swapInfo && swapInfo.fees && swapInfo.fees.totalFee)"
+                            viewBox="0 0 3 3" width="3" height="3" xmlns="http://www.w3.org/2000/svg" class="dot"
+                        >
                             <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                         </svg>
                         <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction
@@ -284,13 +307,13 @@ import {
     Tooltip,
     InfoCircleSmallIcon,
     CircleSpinner,
-    LabelInput,
     CrossIcon,
     Identicon,
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -302,9 +325,7 @@ import ShortAddress from '../ShortAddress.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
-import FastspotIcon from '../icons/FastspotIcon.vue';
 import BankIcon from '../icons/BankIcon.vue';
-import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -322,6 +343,7 @@ import { estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { refundSwap } from '../../hub';
 import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
+import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 
 export default defineComponent({
     name: 'btc-transaction-modal',
@@ -449,7 +471,7 @@ export default defineComponent({
                     }
                     return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
                 }
-                if (swapData.value.asset === SwapAsset.EUR) return [constants.BANK_ADDRESS];
+                if (swapData.value.asset === SwapAsset.EUR) return [swapData.value.iban || ''];
             }
 
             return (isIncoming.value
@@ -625,6 +647,7 @@ export default defineComponent({
             isCancelledSwap,
             showRefundButton,
             refundHtlc,
+            SettlementStatus,
         };
     },
     components: {
@@ -642,23 +665,21 @@ export default defineComponent({
         InfoCircleSmallIcon,
         CircleSpinner,
         CrossIcon,
-        LabelInput,
         // HistoricValueIcon,
         BlueLink,
         GroundedArrowUpIcon,
         GroundedArrowDownIcon,
-        FastspotIcon,
         BankIcon,
         Identicon,
         SwapMediumIcon,
-        SwapFeesTooltip,
+        TransactionDetailOasisPayoutStatus,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 .page-header {
-    /deep/ .nq-h1 {
+    ::v-deep .nq-h1 {
         margin-left: 2rem;
         margin-right: 2rem;
         max-width: calc(100% - 4rem);
@@ -678,7 +699,7 @@ export default defineComponent({
             display: block;
         }
 
-        /deep/ .circle-spinner,
+        ::v-deep .circle-spinner,
         &.failed svg {
             margin-right: 1rem;
         }
@@ -688,7 +709,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
 
-        /deep/ .nq-h1 {
+        ::v-deep .nq-h1 {
             align-self: center;
         }
     }
@@ -831,7 +852,7 @@ export default defineComponent({
     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
-.address-info .tooltip /deep/ {
+.address-info .tooltip ::v-deep {
     .tooltip-box {
         padding: 1rem;
         font-size: var(--small-size);
@@ -847,7 +868,6 @@ export default defineComponent({
         padding: 0.5rem 1rem;
         border-radius: 0.5rem;
         transition: background 300ms var(--nimiq-ease);
-        margin-bottom: .5rem;
 
         &:hover,
         &:focus,
@@ -861,11 +881,11 @@ export default defineComponent({
     }
 }
 
-.tooltip.left-aligned /deep/ .tooltip-box {
+.tooltip.left-aligned ::v-deep .tooltip-box {
     transform: translate(-9.25rem, 2rem);
 }
 
-.tooltip.right-aligned /deep/ .tooltip-box {
+.tooltip.right-aligned ::v-deep .tooltip-box {
     transform: translate(9.25rem, 2rem);
 }
 
@@ -885,7 +905,7 @@ export default defineComponent({
         line-height: 1;
         margin-bottom: 0.5rem;
 
-        /deep/ .currency {
+        ::v-deep .currency {
             font-size: 0.5em;
             font-weight: bold;
             margin-right: -1.9em;
@@ -920,7 +940,7 @@ export default defineComponent({
         line-height: 1;
 
         .tooltip {
-            /deep/ .trigger {
+            ::v-deep .trigger {
                 .fiat-amount {
                     transition: color 0.2s var(--nimiq-ease);
                 }
@@ -936,14 +956,12 @@ export default defineComponent({
                 }
             }
 
-            /deep/ .tooltip-box {
-                white-space: nowrap;
-                line-height: 1;
-                padding: 1rem;
-                transform: translateY(-1.5rem);
+            ::v-deep .tooltip-box {
+                width: 28rem;
+                transform: translate(-10rem, -1.5rem);
             }
 
-            /deep/ [value-mask]::after{
+            ::v-deep [value-mask]::after{
                 margin-right: 0;
             }
         }
@@ -993,9 +1011,11 @@ export default defineComponent({
     position: absolute;
     left: 2rem;
     top: 2rem;
+    z-index: 3; // To be above .swipe-handle
 
-    /deep/ .trigger {
+    ::v-deep .trigger {
         color: rgba(31, 35, 72, 0.25);
+        font-size: 2.25rem;
 
         transition: color 0.3s var(--nimiq-ease);
 
@@ -1016,7 +1036,7 @@ export default defineComponent({
         }
     }
 
-    /deep/ .tooltip-box {
+    ::v-deep .tooltip-box {
         font-size: var(--small-size);
         white-space: nowrap;
         line-height: 1.3;
@@ -1043,16 +1063,16 @@ export default defineComponent({
 
 @media (max-width: 700px) { // Full mobile breakpoint
     .page-header {
-        /deep/ .nq-h1 {
+        ::v-deep .nq-h1 {
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
         }
 
-        &.inline-header /deep/ .nq-h1 {
+        &.inline-header ::v-deep .nq-h1 {
             align-self: unset;
         }
 
         &:not(.inline-header) {
-            /deep/ .nq-h1 {
+            ::v-deep .nq-h1 {
                 white-space: normal;
             }
 
@@ -1066,16 +1086,16 @@ export default defineComponent({
         flex-shrink: 0;
     }
 
-    .tooltip.left-aligned /deep/ .tooltip-box {
+    .tooltip.left-aligned ::v-deep .tooltip-box {
         transform: translate(-7.75rem, 2rem);
     }
 
-    .tooltip.right-aligned /deep/ .tooltip-box {
+    .tooltip.right-aligned ::v-deep .tooltip-box {
         transform: translate(7.75rem, 2rem);
     }
 
     .tooltip {
-        /deep/ .tooltip-box {
+        ::v-deep .tooltip-box {
             transform: translate(1rem, 2rem);
         }
     }
@@ -1083,7 +1103,7 @@ export default defineComponent({
 
 @media (max-width: 450px) { // Nimiq Style breakpoint for smaller .nq-card-header padding
     .page-header {
-        /deep/ .nq-h1 {
+        ::v-deep .nq-h1 {
             margin-left: 3rem;
             margin-right: 3rem;
             // max-width: calc(100% - 6rem);

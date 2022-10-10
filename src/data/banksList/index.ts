@@ -1,7 +1,7 @@
-import { BankInfos } from '@/stores/Swaps';
+import { Bank } from '../../stores/Bank';
 
 async function loadBankList() {
-    return (await import(/* webpackChunkName: "bank-list" */'./generated/banksList.json')).default as BankInfos[];
+    return (await import(/* webpackChunkName: "bank-list" */'./generated/banksList.json')).default as Bank[];
 }
 
 export default loadBankList;

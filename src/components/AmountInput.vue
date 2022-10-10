@@ -8,8 +8,10 @@
             <input type="text" inputmode="decimal" class="nq-input" :class="{ vanishing }"
                 :placeholder="placeholder"
                 :style="{width: `${width}px`, fontSize: `${fontSize}rem`}"
-                :value="liveValue" @input="onInput"
-                @focus="isFocussed = true" @blur="isFocussed = false"
+                :value="liveValue"
+                @input="onInput"
+                @focus="onToggleFocus(true)"
+                @blur="onToggleFocus(false)"
                 ref="$input">
         </form>
         <slot v-if="$slots.suffix" name="suffix"/>
@@ -84,6 +86,17 @@ export default defineComponent({
         watch(liveValue, updateWidth);
 
         function formatValue(val: string) {
+            // Handle exponential decimal notation
+            if (val.includes('e-')) {
+                val = parseFloat(val).toFixed(props.decimals);
+                while (val.length > 1 && val.endsWith('0')) {
+                    val = val.substring(0, val.length - 1);
+                }
+                if (val.endsWith('.')) {
+                    val = val.substring(0, val.length - 1);
+                }
+            }
+
             const regExp = new RegExp(`([-+])?(\\d*)(\\.\\d{0,${props.decimals}})?`, 'g'); // Backslashes are escaped
             const regExpResult = regExp.exec(val)!;
             if (regExpResult[1] || regExpResult[2] || regExpResult[3]) {
@@ -124,6 +137,11 @@ export default defineComponent({
             }
         }
 
+        function onToggleFocus(_isFocussed: boolean) {
+            isFocussed.value = _isFocussed;
+            context.emit(_isFocussed ? 'focus' : 'blur', context.refs.$input);
+        }
+
         watch(() => props.value, (newValue: number | undefined) => {
             if (newValue === valueInLuna.value) return;
             lastEmittedValue.value = newValue || 0;
@@ -146,6 +164,7 @@ export default defineComponent({
             liveValue,
             fontSize,
             onInput,
+            onToggleFocus,
             $fullWidth,
             $input,
             $widthPlaceholder,

@@ -5,6 +5,9 @@
         @close="isShown = false"
     >
         {{ $t('An update to the Wallet is available.') }}
+        <router-link :to="{name: `${$route.name}-release-notes`}" class="nq-link">
+            {{ $t('Release Notes') }}
+        </router-link>
         <div class="flex-grow"></div>
         <CircleSpinner v-if="applyingWalletUpdate"/>
         <button v-else
@@ -59,27 +62,38 @@ export default defineComponent({
 
     @media (max-width: 450px) {
         padding: 1rem 1.5rem;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
         border-radius: 1rem 1rem 0 0;
     }
 
-    /deep/ .close-button {
+    ::v-deep .close-button {
         position: relative;
         top: 0;
         right: 0;
     }
 
-    &.hide-close-button /deep/ .close-button {
+    &.hide-close-button ::v-deep .close-button {
         display: none;
     }
+
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    @media (max-width: 912px) { bottom: max(1.5rem, env(safe-area-inset-bottom)); }
+    @media (max-width: 450px) { bottom: 0; }
+}
+
+.nq-link {
+    margin-left: 1rem;
+    color: inherit;
+    text-decoration: underline;
 }
 
 .nq-button-s,
-/deep/ svg {
+::v-deep svg {
     margin-left: 1.5rem;
     white-space: nowrap;
 }
 
-/deep/ svg.circle-spinner path {
+::v-deep svg.circle-spinner path {
     stroke: white;
 }
 </style>

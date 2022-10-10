@@ -1,7 +1,7 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
-import { Htlc, HtlcStatus, SepaClearingInstruction } from '../lib/OasisApi';
+import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '@nimiq/oasis-api';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -46,17 +46,30 @@ export type SwapEurData = {
     asset: SwapAsset.EUR,
     bankLabel?: string,
     bankLogo?: string,
+    iban?: string,
     amount: number,
     htlc?: {
         id: string,
         timeoutTimestamp: number,
+        settlement?: {
+            status: SettlementStatus,
+            eta?: number,
+            reason?: DeniedReason | string,
+            lastUpdated?: number,
+        },
     },
 };
 
+export type SwapData = SwapNimData | SwapBtcData | SwapEurData;
+
 export type Swap = {
     id?: string,
-    in?: SwapNimData | SwapBtcData | SwapEurData,
-    out?: SwapNimData | SwapBtcData | SwapEurData,
+    in?: SwapData,
+    out?: SwapData,
+    fees?: {
+        totalFee: number,
+        asset: SwapAsset,
+    },
 };
 
 export type ActiveSwap = SwapObject & {
@@ -67,38 +80,18 @@ export type ActiveSwap = SwapObject & {
     fundingSerializedTx?: string,
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
-    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
-    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
+    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
+    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
     secret?: string,
-    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | Htlc<HtlcStatus>,
+    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
     error?: string,
-}
-
-export enum SEPA_INSTANT_SUPPORT {
-    FULL = 'full-support',
-    PARTIAL = 'partial-support',
-    NONE = 'no-support',
-    UNKNOWN = 'unknown-support',
-}
-
-export type BankInfos = {
-    name: string,
-    BIC: string,
-    country: string, // ISO 3166-1 alpha-2 country code
-    support: {
-        sepa: {
-            inbound: SEPA_INSTANT_SUPPORT,
-            outbound: SEPA_INSTANT_SUPPORT,
-        },
-        // swift?
-    },
 }
 
 export type SwapsState = {
     swaps: { [hash: string]: Swap },
     swapByTransaction: { [transactionHash: string]: string },
     activeSwap: ActiveSwap | null,
-    userBank: BankInfos | null,
+    promoBoxVisible: boolean,
 };
 
 export const useSwapsStore = createStore({
@@ -107,7 +100,7 @@ export const useSwapsStore = createStore({
         swaps: {},
         swapByTransaction: {},
         activeSwap: null,
-        userBank: null,
+        promoBoxVisible: false,
     }),
     getters: {
         getSwap: (state): ((hash: string) => Swap | undefined) => (hash: string): Readonly<Swap> =>
@@ -119,7 +112,7 @@ export const useSwapsStore = createStore({
                 return state.swaps[swapHash] || null;
             },
         activeSwap: (state): Readonly<ActiveSwap | null> => state.activeSwap,
-        userBank: (state): Readonly<BankInfos | null> => state.userBank,
+        promoBoxVisible: (state): Readonly<boolean> => state.promoBoxVisible,
     },
     actions: {
         setSwap(hash: string, swap: Swap) {
@@ -152,8 +145,8 @@ export const useSwapsStore = createStore({
         setActiveSwap(swap: ActiveSwap | null) {
             this.state.activeSwap = swap;
         },
-        setUserBank(bank: BankInfos) {
-            this.state.userBank = bank;
+        setPromoBoxVisible(visible: boolean) {
+            this.state.promoBoxVisible = visible;
         },
     },
 });

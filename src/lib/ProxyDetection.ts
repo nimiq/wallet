@@ -42,7 +42,10 @@ export function isProxyData(
     const directionsToCheck = transactionDirection
         ? [transactionDirection]
         : [ProxyTransactionDirection.FUND, ProxyTransactionDirection.REDEEM];
-    return proxyTypesToCheck.some((type) => directionsToCheck.some((dir) => ProxyExtraData[type][dir] === data));
+    return proxyTypesToCheck.some((type) => directionsToCheck.some((dir) =>
+        type === ProxyType.HTLC_PROXY && dir === ProxyTransactionDirection.FUND
+            ? data.startsWith(ProxyExtraData[type][dir]) // htlc proxy funding tx data can include additional public key
+            : ProxyExtraData[type][dir] === data));
 }
 
 // map proxy address -> transaction hashes -> transaction; indexed by hash to avoid duplicates
@@ -167,8 +170,7 @@ export function detectProxyTransactions(
         }
     }
 
-    if (!needToTriggerNetwork) return;
-    triggerNetwork();
+    if (needToTriggerNetwork) triggerNetwork();
 }
 
 function isHtlcTransaction(tx: Transaction): boolean {

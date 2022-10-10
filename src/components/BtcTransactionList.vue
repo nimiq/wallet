@@ -1,5 +1,5 @@
 <template>
-    <div class="transaction-list flex-row" ref="$el">
+    <div class="transaction-list flex-row" ref="root">
         <RecycleScroller
             v-if="isFetchingTxHistory || transactions.length"
             :items="transactions"
@@ -53,9 +53,10 @@
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
-                    <!-- <router-link to="trade" class="nq-button light-blue">
+                    <p class="nq-text">{{ $t('Buy more here in the wallet.') }}</p>
+                    <router-link to="buy" class="nq-button light-blue">
                         {{ $t('Buy BTC') }}
-                    </router-link> -->
+                    </router-link>
                 </div>
             </template>
         </RecycleScroller>
@@ -107,10 +108,7 @@ function processTimestamp(timestamp: number) {
 function getLocaleMonthStringFromDate(
     date: Date,
     locale: string,
-    options: {
-        month?: string,
-        year?: string,
-    },
+    options: Intl.DateTimeFormatOptions,
 ) {
     return new Intl.DateTimeFormat(locale, options).format(date);
 }
@@ -149,11 +147,8 @@ export default defineComponent({
         const scrollerBuffer = 300;
 
         // Height of items in pixel
-        const { width: windowWidth } = useWindowSize();
-        const itemSize = computed(() => windowWidth.value > 700 // Full mobile breakpoint
-            ? 72
-            : 68, // 64px + 4px margin between items
-        );
+        const { isMobile } = useWindowSize();
+        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
 
         // Get all transactions for the active addresses
         const txsForActiveAddress = computed(() => Object.values(btcTransactions$.transactions)
@@ -232,7 +227,7 @@ export default defineComponent({
             const transactionsWithMonths: any[] = [];
             let isLatestMonth = true;
 
-            let { month: currentTxMonth, year: currentYear } = processTimestamp(Date.now());
+            const { month: currentMonth, year: currentYear } = processTimestamp(Date.now());
             let n = 0;
             let hasThisMonthLabel = false;
 
@@ -258,10 +253,12 @@ export default defineComponent({
             let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp! * 1000);
             let txDate: Date;
 
-            if (!hasThisMonthLabel && txMonth === currentTxMonth && txYear === currentYear) {
+            if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
                 transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
                 isLatestMonth = false;
             }
+
+            let displayedMonthYear = `${currentMonth}.${currentYear}`;
 
             while (n < txs.length) {
                 // // Skip expired & invalidated txs
@@ -272,30 +269,25 @@ export default defineComponent({
                 // }
 
                 ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp! * 1000));
+                const txMonthYear = `${txMonth}.${txYear}`;
 
-                if (txYear !== currentYear && (isLatestMonth || txMonth !== currentTxMonth)) {
+                if (txMonthYear !== displayedMonthYear) {
+                    // Inject a month label
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
                             context.root.$i18n.locale,
-                            { month: 'long', year: 'numeric' },
+                            {
+                                month: 'long',
+                                year: txYear !== currentYear ? 'numeric' : undefined,
+                            },
                         ),
                         isLatestMonth,
                     });
                     isLatestMonth = false;
-                } else if (txMonth !== currentTxMonth) {
-                    transactionsWithMonths.push({
-                        transactionHash: getLocaleMonthStringFromDate(
-                            txDate,
-                            context.root.$i18n.locale,
-                            { month: 'long' },
-                        ),
-                        isLatestMonth,
-                    });
-                    isLatestMonth = false;
+                    displayedMonthYear = txMonthYear;
                 }
 
-                currentTxMonth = txMonth;
                 transactionsWithMonths.push(txs[n]);
                 n++;
             }
@@ -306,7 +298,7 @@ export default defineComponent({
         // listening for DOM changes for animations in the virtual scroll
         // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
         // only runs on transaction hash change.
-        const $el: Ref<null | HTMLElement> = ref(null);
+        const root: Ref<null | HTMLElement> = ref(null);
         // (() => {
         //     let txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
         //     const config = { characterData: true, childList: true, subtree: true };
@@ -350,7 +342,7 @@ export default defineComponent({
         //
         //     const observer = new MutationObserver(callback);
         //
-        //     onMounted(() => observer.observe($el.value!, config));
+        //     onMounted(() => observer.observe(root.value!, config));
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
@@ -370,7 +362,7 @@ export default defineComponent({
             itemSize,
             txCount,
             transactions,
-            $el,
+            root,
             isFetchingTxHistory,
             // isMainnet,
             scroller,
@@ -416,6 +408,8 @@ export default defineComponent({
     padding-right: calc(2rem + var(--padding) - 6px);
     padding-left: calc(2rem + var(--padding));
     padding-bottom: var(--padding, 4rem);
+
+    touch-action: pan-y;
 
     @extend %custom-scrollbar;
 }

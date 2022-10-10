@@ -75,7 +75,7 @@
                         <Copyable v-if="activeCurrency === 'nim'"
                             :text="activeAddressInfo.address" :key="activeAddressInfo.address"
                         >
-                            <div class="address" v-responsive="{'masked': el => el.width < addressMaskedWidth}">
+                            <div class="address" ref="$address" :class="{ 'masked': addressMasked  }">
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
@@ -104,14 +104,14 @@
                 </button>
 
                 <button class="send nq-button-pill light-blue flex-row"
-                    @click="$router.push(activeCurrency === 'nim' ? '/send' : '/btc-send')" @mousedown.prevent
+                    @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                     :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                         || (activeCurrency === 'btc' && !btcAccountBalance)"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
                 <button class="receive nq-button-s flex-row"
-                    @click="$router.push(activeCurrency === 'nim' ? '/receive' : '/btc-receive')" @mousedown.prevent
+                    @click="$router.push(`/receive/${activeCurrency}`)" @mousedown.prevent
                 >
                     <ArrowRightSmallIcon />{{ $t('Receive') }}
                 </button>
@@ -123,6 +123,7 @@
                 :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                 @unclaimed-cashlink-count="setUnclaimedCashlinkCount"
                 @close-unclaimed-cashlink-list="hideUnclaimedCashlinkList"
+                @scroll="onTransactionListScroll"
             />
             <BtcTransactionList
                 v-else
@@ -130,11 +131,25 @@
             />
         </template>
         <template v-else>
-            <img :src="'https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/'
-                + 'illustrations/To_the_stars_qhyy.svg'"/>
             <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
-            <button class="nq-button" @click="onboard" @mousedown.prevent>{{ $t('Signup') }}</button>
+            <button class="nq-button" @click="onboard(false)" @mousedown.prevent>{{ $t('Signup') }}</button>
         </template>
+
+        <transition name="fadeY">
+            <div class="promo-box flex-column" v-if="promoBoxVisible && !showUnclaimedCashlinkList && !searchString">
+                <div class="flex-row">
+                    <h2 class="nq-h2">
+                        <!-- <CrossCloseButton @click="setPromoBoxVisible(false)"/> -->
+                        {{ $t('Your swap was successful!') }}
+                    </h2>
+                    <HighFiveIcon />
+                </div>
+                <p>{{ $t('All swaps are part of your transaction history and feature a small swap icon.') }}</p>
+                <a class="nq-button-s inverse light-blue flex-row" @click="setPromoBoxVisible(false)">
+                    {{ $t('Close') }}
+                </a>
+            </div>
+        </transition>
 
         <MobileActionBar/>
 
@@ -143,16 +158,29 @@
                 <router-view name="modal"/>
             </transition>
         </Portal>
+
+        <Portal>
+            <transition name="modal">
+                <keep-alive>
+                    <router-view name="persistent-modal"/>
+                </keep-alive>
+            </transition>
+        </Portal>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
-import { Identicon, GearIcon, Copyable, ArrowRightSmallIcon, ArrowLeftIcon, MenuDotsIcon } from '@nimiq/vue-components';
+import { defineComponent, ref, watch } from '@vue/composition-api';
+import {
+    Identicon,
+    GearIcon,
+    Copyable,
+    ArrowRightSmallIcon,
+    ArrowLeftIcon,
+    MenuDotsIcon,
+} from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
-// @ts-expect-error missing types for this package
-import { ResponsiveDirective } from 'vue-responsive-components';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import Amount from '../Amount.vue';
@@ -168,9 +196,12 @@ import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { onboard, rename } from '../../hub';
+import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
+import HighFiveIcon from '../icons/HighFiveIcon.vue';
+import { useSwapsStore } from '../../stores/Swaps';
 
 export default defineComponent({
     name: 'address-overview',
@@ -178,11 +209,29 @@ export default defineComponent({
         const { activeAccountId, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
         const searchString = ref('');
 
         const unclaimedCashlinkCount = ref(0);
         const showUnclaimedCashlinkList = ref(false);
+
+        const $address = ref<HTMLDivElement>(null);
+        const addressMasked = ref<boolean>(false);
+
+        const { isMobile, isFullDesktop } = useWindowSize();
+
+        useElementResize($address, () => {
+            let addressWidth: number;
+            if (isMobile.value) {
+                addressWidth = 322;
+            } else if (isFullDesktop.value) {
+                addressWidth = 396;
+            } else {
+                addressWidth = 372; // Tablet
+            }
+            addressMasked.value = $address.value!.clientWidth < addressWidth;
+        });
 
         function hideUnclaimedCashlinkList() {
             showUnclaimedCashlinkList.value = false;
@@ -197,18 +246,20 @@ export default defineComponent({
             searchString.value = '';
         }
 
-        watch(activeAddress, () => {
+        watch(activeAddress, (address, oldAddress) => {
             hideUnclaimedCashlinkList();
             clearSearchString();
+
+            if (address !== oldAddress && promoBoxVisible) {
+                setPromoBoxVisible(false);
+            }
         });
 
-        const { width: windowWidth } = useWindowSize();
-
-        const addressMaskedWidth = computed(() => windowWidth.value > 1160
-            ? 396
-            : windowWidth.value > 700
-                ? 372
-                : 322);
+        watch(activeCurrency, (currency, oldCurrency) => {
+            if (currency !== oldCurrency && promoBoxVisible) {
+                setPromoBoxVisible(false);
+            }
+        });
 
         function rescan() {
             const { addressSet } = useBtcAddressStore();
@@ -220,6 +271,19 @@ export default defineComponent({
                 console.error, // eslint-disable-line no-console
                 true,
             );
+            checkHistory(
+                addressSet.value.internal,
+                [],
+                0,
+                5,
+                console.error, // eslint-disable-line no-console
+                true,
+            );
+        }
+
+        function onTransactionListScroll() {
+            if (!promoBoxVisible.value) return;
+            setPromoBoxVisible(false);
         }
 
         return {
@@ -234,9 +298,13 @@ export default defineComponent({
             setUnclaimedCashlinkCount,
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
-            addressMaskedWidth,
             btcAccountBalance,
             CryptoCurrency,
+            promoBoxVisible,
+            setPromoBoxVisible,
+            onTransactionListScroll,
+            $address,
+            addressMasked,
         };
     },
     components: {
@@ -256,9 +324,7 @@ export default defineComponent({
         MenuDotsIcon,
         MobileActionBar,
         Portal,
-    },
-    directives: {
-        responsive: ResponsiveDirective,
+        HighFiveIcon,
     },
 });
 </script>
@@ -287,6 +353,7 @@ export default defineComponent({
     background: var(--bg-primary);
     flex-direction: column;
     box-shadow: -0.75rem 0 12rem rgba(0, 0, 0, 0.05);
+    position: relative;
 
     /* Default: 1440px */
     --padding: 4rem;
@@ -424,6 +491,17 @@ export default defineComponent({
 
         &.masked {
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
+
+        &::after {
+            /* Preload the 500 weight by using it, hidden */
+            content: "preload";
+            font-weight: 500;
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            pointer-events: none;
         }
     }
 
@@ -624,6 +702,132 @@ export default defineComponent({
     flex-grow: 1;
 }
 
+.promo-box {
+    @include blue-tooltip(bottom);
+    @include blue-tooltip_open(bottom);
+    --blueTooltipPadding: 2rem;
+
+    align-items: flex-start;
+    position: absolute;
+    width: 25.625rem;
+    border-radius: 0.75rem;
+    padding-top: 1.5rem;
+
+    --promoBoxTop: 37rem;
+    --promoBoxLeft: 14.5rem;
+
+    top: calc(var(--promoBoxTop) + var(--padding) + var(--padding-bottom));
+    left: calc(var(--promoBoxLeft) + var(--padding));
+
+    div.flex-row {
+        align-items: center;
+        justify-content: flex-start;
+
+        .nq-h2 {
+            font-size: 16px;
+            margin: 0;
+            line-height: 130%;
+        }
+
+        svg {
+            width: auto;
+            height: 35px;
+            flex-shrink: 0;
+        }
+    }
+
+    // ul {
+        // padding-left: 2.25rem;
+        // margin: 0;
+
+        // li {
+        //     padding-top: 1.5rem;
+
+        //     svg.nq-icon {
+        //         margin-right: 1rem;
+        //     }
+
+        //     &.flex-row {
+        //         margin-left: -2.25rem;
+        //         list-style-type: none;
+        //         position: relative;
+        //         align-items: flex-start;
+
+        //         .nq-icon {
+        //             opacity: .7;
+        //             width: 12px;
+        //             height: auto;
+        //             padding-top: 6px;
+        //         }
+
+        //         .nq-button-s {
+        //             font-size: 14px;
+        //             line-height: 18px;
+        //             margin-left: 2rem;
+
+        //             &:hover,
+        //             &:focus,
+        //             &:active {
+        //                 color: white;
+        //             }
+
+        //             svg {
+        //                 width: 15px;
+        //                 height: auto;
+        //             }
+        //         }
+        //     }
+
+        //     &::marker {
+        //         color: rgba(white, .7);
+        //         transform: translateX(2px);
+        //         font-size: 12px;
+        //     }
+        // }
+    // }
+
+    p, li {
+        font-size: 14px;
+        color: rgba(white, 0.8);
+        font-weight: 600;
+    }
+
+    // .cross-close-button {
+        // position: absolute;
+        // top: 1rem;
+        // right: 1rem;
+        // opacity: .7;
+    // }
+
+    a.nq-button-s {
+        flex-grow: 0;
+        align-items: center;
+        svg {
+            margin-right: 1rem;
+        }
+    }
+
+    &.fadeY-enter-active, &.fadeY-leave-active {
+        will-change: opacity, transform;
+        transition: {
+            property: opacity, transform;
+            duration: 200ms;
+            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
+        }
+    }
+
+    &.fadeY-leave,
+    &.fadeY-enter-to {
+        transform: translateY(0) translateX(-50%);
+    }
+
+    &.fadeY-enter,
+    &.fadeY-leave-to {
+        opacity: 0;
+        transform: translateY(1rem) translateX(-50%);
+    }
+}
+
 @media (max-width: 700px) { // Full mobile breakpoint
     .address-overview {
         position: relative;
@@ -648,7 +852,7 @@ export default defineComponent({
             opacity: 0.3;
             font-size: 2.5rem;
 
-            /deep/ svg {
+            ::v-deep svg {
                 display: block;
             }
         }
@@ -708,6 +912,15 @@ export default defineComponent({
             0px 0px 12.5187px rgba(31, 35, 72, 0.045),
             0px 0px 32.0004px rgba(31, 35, 72, 0.058643),
             0px 0px 80px rgba(31, 35, 72, 0.07);
+    }
+
+    .promo-box {
+        top: 35rem;
+        left: 15rem;
+
+        &::after {
+            left: 40%;
+        }
     }
 }
 </style>

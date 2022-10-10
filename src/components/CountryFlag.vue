@@ -7,6 +7,7 @@
 
     <img v-else class="country-flag"
         :src="require(`../assets/flags/square/flag-${code.toUpperCase()}.svg`)"
+        loading="lazy"
         :alt="code"/>
 </template>
 

@@ -7,7 +7,7 @@ import HubApi, {
 } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Config from 'config';
-import { useAccountStore, AccountInfo } from './stores/Account';
+import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
@@ -17,27 +17,96 @@ import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
+import { useSettingsStore } from './stores/Settings';
+import { guessUserCurrency, useFiatStore } from './stores/Fiat';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
+import { useGeoIp } from './composables/useGeoIp';
 
+export function shouldUseRedirects(): boolean {
+    const { canInstallPwa } = usePwaInstallPrompt();
+    // When not in PWA (which we are if PWA can be installed), don't use redirects
+    if (canInstallPwa.value) return false;
+
+    // Use redirect in Samsung Browser PWA, because hub popups opened from the PWA don't get the request ("invalid
+    // request" error), while popups opened from the regular Samsung Browser work fine.
+    if (navigator.userAgent.includes('SamsungBrowser')) return true;
+
+    // Firefox does not reliably provide the beforeinstallprompt event, preventing detection of PWA installed status
+    // // Firefox Mobile
+    // if (navigator.userAgent.includes('Firefox') && navigator.userAgent.includes('Android')) return true;
+
+    return false;
+}
+
+function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
+    const { hubBehavior } = useSettingsStore();
+
+    if (hubBehavior.value === 'popup') return undefined;
+    if (hubBehavior.value === 'redirect' || shouldUseRedirects()) {
+        return new HubApi.RedirectRequestBehavior(window.location.href, localState);
+    }
+
+    return undefined;
+}
 const hubApi = new HubApi(Config.hubEndpoint);
 
-let welcomeRoute = '';
-
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
-    // Store the returned account(s). For first-time signups on iOS/Safari, this is the only time
-    // that we receive the BTC addresses (as they are not listed in the Hub iframe cookie).
+    // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
+    // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
+    // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
-    const accountStore = useAccountStore();
+    const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
-    if (Object.keys(accountStore.state.accountInfos).length === 1) {
-        welcomeRoute = '/welcome';
-    } else if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
-        welcomeRoute = '/btc-activation/activated';
+    if (!welcomeModalAlreadyShown) {
+        router.onReady(() => router.push('/welcome'));
+
+        // Get location from GeoIP service to set fiat currency
+        useGeoIp().locate().then((location) => {
+            if (location.country) {
+                useFiatStore().state.currency = guessUserCurrency(location.country);
+            }
+        }).catch((error: Error) => {
+            // eslint-disable-next-line no-console
+            console.debug(`Failed to locate user for fiat currency: ${error.message}`);
+        });
+    } else if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length) {
+        // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
+        // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
+        // If instead the welcome modal was shown above, the welcome modal offers the bitcoin activation on close.
+        router.onReady(() => router.push('/btc-activation'));
     }
 });
 
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
-    welcomeRoute = '/migration-welcome';
+    router.onReady(() => router.push('/migration-welcome'));
+});
+
+hubApi.on(HubApi.RequestType.SIGN_TRANSACTION, async (tx) => {
+    // TODO: Show status notification
+    await sendTx(tx);
+});
+
+hubApi.on(HubApi.RequestType.SIGN_BTC_TRANSACTION, async (tx) => {
+    // TODO: Show status notification
+    await sendBtcTx(tx);
+});
+
+hubApi.on(HubApi.RequestType.CREATE_CASHLINK, (cashlink) => {
+    const proxyStore = useProxyStore();
+    // TODO: Show status notification
+    proxyStore.addHubCashlink(cashlink);
+});
+
+hubApi.on(HubApi.RequestType.MANAGE_CASHLINK, (cashlink) => {
+    const proxyStore = useProxyStore();
+    proxyStore.addHubCashlink(cashlink);
+});
+
+hubApi.on(HubApi.RequestType.SETUP_SWAP, (swapResult) => {
+    // TODO: Start swap process
+    console.log({ swapResult }); // eslint-disable-line no-console
 });
 
 export async function initHubApi() {
@@ -116,7 +185,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
                 btcAddressInfos.push({
                     address: btcAddress,
-                    used: existingAddressInfo.used || false,
+                    txoCount: existingAddressInfo.txoCount || 0,
                     utxos: existingAddressInfo.utxos || [],
                 });
             }
@@ -137,7 +206,6 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         accountInfos.push({
             id: account.accountId,
-            // @ts-expect-error Type 'WalletType' is not assignable to type 'AccountType'. (WalletType is not exported.)
             type: account.type,
             label: account.label,
             fileExported: account.fileExported,
@@ -179,7 +247,7 @@ export async function syncFromHub() {
         // throwing a "Must call init() first" error (which then fails both requests).
         listedAccounts = await hubApi.list();
         listedCashlinks = await hubApi.cashlinks();
-    } catch (error) {
+    } catch (error: any) {
         if (error.message === 'MIGRATION_REQUIRED') {
             const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
             hubApi.migrate(behavior);
@@ -204,29 +272,27 @@ export async function syncFromHub() {
         const proxyStore = useProxyStore();
         proxyStore.setHubCashlinks(listedCashlinks);
     }
-
-    if (welcomeRoute) {
-        router.push(welcomeRoute);
-    }
 }
 
 export async function onboard(asRedirect = false) {
-    if (asRedirect === true) {
-        const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
+    if (asRedirect) {
+        const behavior = new HubApi.RedirectRequestBehavior(window.location.href);
         hubApi.onboard({
             appName: APP_NAME,
             disableBack: true,
-        }, behavior);
+        }, behavior as RequestBehavior<BehaviorType.REDIRECT>);
         return null;
     }
 
-    const accounts = await hubApi.onboard({ appName: APP_NAME }).catch(onError);
+    const accounts = await hubApi.onboard({ appName: APP_NAME }, getBehavior()).catch(onError);
     if (!accounts) return false;
 
-    processAndStoreAccounts(accounts);
+    processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
 
-    if (accounts[0].btcAddresses && accounts[0].btcAddresses.external.length > 0) {
-        router.push('/btc-activation/activated');
+    if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length) {
+        // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
+        // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
+        await router.push('/btc-activation');
     }
 
     return true;
@@ -236,7 +302,7 @@ export async function addAddress(accountId: string) {
     const addedAddress = await hubApi.addAddress({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!addedAddress) return false;
 
     const addressInfo: AddressInfo = {
@@ -261,7 +327,7 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
         appName: APP_NAME,
         accountId,
         ...options,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!exportResult) return false;
 
     const accountStore = useAccountStore();
@@ -274,7 +340,7 @@ export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
         ...tx,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!signedTransaction) return null;
 
     return sendTx(signedTransaction);
@@ -285,7 +351,8 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
         appName: APP_NAME,
         senderAddress,
         senderBalance,
-    }).catch(onError);
+        fiatCurrency: useFiatStore().state.currency,
+    }, getBehavior()).catch(onError);
     if (!cashlink) return false;
 
     // Handle cashlink
@@ -299,7 +366,7 @@ export async function manageCashlink(cashlinkAddress: string) {
     const cashlink = await hubApi.manageCashlink({
         appName: APP_NAME,
         cashlinkAddress,
-    }).catch(onError).catch((error: null | Error) => {
+    }, getBehavior()).catch(onError).catch((error: null | Error) => {
         if (!error) return null;
         if (error.message.startsWith('Could not find Cashlink for address')) {
             return {
@@ -324,7 +391,7 @@ export async function rename(accountId: string, address?: string) {
         appName: APP_NAME,
         accountId,
         address,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!account) return false;
 
     const accountStore = useAccountStore();
@@ -341,7 +408,7 @@ export async function rename(accountId: string, address?: string) {
 export async function addVestingContract() {
     const account = await hubApi.addVestingContract({
         appName: APP_NAME,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!account) return false;
 
     processAndStoreAccounts([account]);
@@ -353,14 +420,14 @@ export async function changePassword(accountId: string) {
     await hubApi.changePassword({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
 }
 
 export async function logout(accountId: string) {
     const loggedOut = await hubApi.logout({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!loggedOut) return false;
 
     if (!loggedOut.success) return false;
@@ -445,7 +512,7 @@ export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'ap
     const signedTransaction = await hubApi.signBtcTransaction({
         appName: APP_NAME,
         ...tx,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!signedTransaction) return null;
 
     return sendBtcTx(signedTransaction);
@@ -455,7 +522,7 @@ export async function activateBitcoin(accountId: string) {
     const account = await hubApi.activateBitcoin({
         appName: APP_NAME,
         accountId,
-    }).catch(onError);
+    }, getBehavior()).catch(onError);
     if (!account) return false;
 
     processAndStoreAccounts([account]);
@@ -486,7 +553,7 @@ export async function addBtcAddresses(accountId: string, chain: 'internal' | 'ex
 
     const btcAddressInfos: BtcAddressInfo[] = newAddresses.map((address) => ({
         address,
-        used: false,
+        txoCount: 0,
         utxos: [],
     }));
 
@@ -514,7 +581,7 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
             ...request,
             appName: APP_NAME,
         })).catch(reject);
-    })).catch(onError);
+    }), getBehavior()).catch(onError);
 }
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
@@ -523,5 +590,5 @@ export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest,
             ...request,
             appName: APP_NAME,
         })).catch(reject);
-    })).catch(onError);
+    }), getBehavior()).catch(onError);
 }

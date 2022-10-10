@@ -1,17 +1,21 @@
 <template>
     <div class="swap-animation flex-column"
-        :class="{'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING}"
+        :class="{
+            'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING,
+            'to-funding-delay': toFundingDurationMins && state === SwapState.AWAIT_INCOMING,
+            'to-limit-exceeded': oasisLimitExceeded && toAsset === SwapAsset.EUR,
+        }"
     >
         <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
             <CheckmarkIcon/>
-            <h1 class="title nq-h1">{{ $t('Swap successful!') }}</h1>
+            <h1 class="title nq-h1">{{ $t('Atomic Swap successful!') }}</h1>
         </div>
 
         <div class="expired-background flex-column nq-orange-bg" :class="{'visible': state === SwapState.EXPIRED}">
             <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
             <div class="flex-grow"></div>
             <StopwatchIcon/>
-            <h1 class="title nq-h1">{{ $t('The Swap expired') }}</h1>
+            <h1 class="title nq-h1">{{ $t('The swap expired') }}</h1>
             <p class="expired-text">
                 {{ $t('No funds were received so the swap expired.') }}<br>
                 <template v-if="fromAsset === SwapAsset.EUR">
@@ -34,7 +38,9 @@
             <Copyable class="expired-swap-id">{{ swapId }}</Copyable>
         </div>
 
-        <div class="oasis-limit-exceeded-background flex-column nq-orange-bg" :class="{'visible': oasisLimitExceeded}">
+        <div class="oasis-limit-exceeded-background flex-column nq-orange-bg"
+            :class="{'visible': oasisLimitExceeded && fromAsset === SwapAsset.EUR}"
+        >
             <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
             <div class="flex-grow"></div>
             <OverflowingCup/>
@@ -49,7 +55,7 @@
         </div>
 
         <div class="nq-card-header">
-            <h1 class="nq-h1">{{ $t('Performing Swap') }}</h1>
+            <h1 class="nq-h1">{{ $t('Performing Atomic Swap') }}</h1>
             <div class="nq-notice nq-gray">{{ $t('This swap is as decentralized as the blockchain itself.') }}</div>
         </div>
 
@@ -59,9 +65,53 @@
             </div>
         </transition>
 
+        <transition name="fade">
+            <div v-if="toFundingDurationMins && state === SwapState.AWAIT_INCOMING" class="to-funding-delay-notice">
+                <h2 class="nq-h2">
+                    {{ $t('Setting up the {currency} side of the swap.', { currency: toAsset} ) }}<br>
+                    {{ $t('This might take up to {min} minutes.', { min: toFundingDurationMins} ) }}
+                </h2>
+                <p class="nq-gray flex-row action-row">
+                    <span class="timer">{{ timer }}</span>
+                </p>
+            </div>
+        </transition>
+
+        <transition name="fade">
+            <div v-if="oasisLimitExceeded && toAsset === SwapAsset.EUR"
+                class="to-limit-exceeded-container flex-column"
+            >
+                <div class="header flex-row">
+                    <strong class="nq-green flex-row">
+                        <CheckmarkIcon/>
+                        {{ $t('Atomic Swap complete') }}
+                    </strong>
+                    <button class="nq-button-s inverse lighter" @click="$emit('cancel')" @mousedown.prevent>
+                        {{ $t('Close') }}
+                    </button>
+                </div>
+                <div>
+                    <h2 class="nq-h2">
+                        {{ $t('You have exceeded your OASIS limit.') }}
+                    </h2>
+                    <p class="nq-gray">
+                        {{ $t('Your EUR will be transferred to your bank account as soon as new limit is available.') }}
+                    </p>
+                </div>
+            </div>
+        </transition>
+
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
-            <Tooltip class="left" :class="leftAsset.toLowerCase()" :preferredPosition="`${manualFunding && state === SwapState.CREATE_OUTGOING ? 'bottom' : 'top'} right`">
+            <Tooltip class="left" :class="leftAsset.toLowerCase()"
+                :preferredPosition="`${
+                    (manualFunding && state === SwapState.CREATE_OUTGOING)
+                        || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
+                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
+                    ? 'bottom'
+                    : 'top'
+                } right`"
+            >
                 <div slot="trigger" class="piece-container">
                     <svg v-if="leftAsset === SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -129,7 +179,15 @@
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-            <Tooltip class="right" :class="rightAsset.toLowerCase()" :preferredPosition="`${manualFunding && state === SwapState.CREATE_OUTGOING ? 'bottom' : 'top'} right`">
+            <Tooltip class="right" :class="rightAsset.toLowerCase()"
+                :preferredPosition="`${
+                    (manualFunding && state === SwapState.CREATE_OUTGOING)
+                        || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
+                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
+                    ? 'bottom'
+                    : 'top'
+                } right`"
+            >
                 <div slot="trigger" class="piece-container">
                     <svg v-if="rightAsset !== SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
@@ -149,7 +207,7 @@
                             <path d="M161.99 81l0 2" stroke-width="1.5"/>
                         </g>
                         <g class="logo" fill="none" opacity="1">
-                            <path fill="currentColor" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
+                            <path :fill="rightAsset === SwapAsset.EUR ? bankColor : 'currentColor'" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                             <image :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : (bankLogo || BankSvg)" x="92" y="22" width="52" height="52" />
                         </g>
                     </svg>
@@ -194,27 +252,47 @@
         </div>
 
         <div class="nq-card-footer">
-            <div v-if="state === SwapState.SIGN_SWAP" class="nq-h2">1/5 {{ $t('Setting up swap') }}</div>
+            <div v-if="state === SwapState.SIGN_SWAP" class="nq-h2">
+                1/5 {{ $t('Setting up atomic swap') }}
+            </div>
             <div v-if="state === SwapState.AWAIT_INCOMING" class="nq-h2">
                 2/5 {{ $t('Locking up {asset}', {asset: toAsset}) }}
             </div>
             <div v-if="state === SwapState.CREATE_OUTGOING" class="nq-h2">
                 3/5 {{ $t('Locking up {asset}', {asset: fromAsset}) }}
             </div>
-            <div v-if="state === SwapState.AWAIT_SECRET" class="nq-h2">4/5 {{ $t('Awaiting swap secret') }}</div>
-            <div v-if="state === SwapState.SETTLE_INCOMING" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
-            <div v-if="state === SwapState.COMPLETE" class="nq-h2">5/5 {{ $t('Finalizing swap') }}</div>
+            <div v-if="state === SwapState.AWAIT_SECRET" class="nq-h2">
+                4/5 {{ $t('Awaiting swap secret') }}
+            </div>
+            <div v-if="state === SwapState.SETTLE_INCOMING || state === SwapState.COMPLETE" class="nq-h2">
+                <template v-if="toAsset === SwapAsset.EUR">
+                    5/5 {{ $t('Processing payout') }}
+                </template>
+                <template v-else>
+                    5/5 {{ $t('Finalizing swap') }}
+                </template>
+            </div>
 
             <MessageTransition>
-                <template v-if="manualFunding && state <= SwapState.CREATE_OUTGOING">
+                <template v-if="fromAsset === SwapAsset.EUR && state <= SwapState.CREATE_OUTGOING">
                     <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
                         class="dont-close-wallet-notice nq-light-blue">{{
                         $t('You will finalize your purchase by bank transfer.')
                     }}</div>
                     <div v-else class="dont-close-wallet-notice nq-gray">{{
                         $t('This usually takes {time} seconds.', {
-                            time: toAsset === SwapAsset.NIM ? '30-60' : '10',
+                            time: toAsset === SwapAsset.NIM ? '60-90' : '10',
                         })
+                    }}</div>
+                </template>
+
+                <template v-else-if="toAsset === SwapAsset.EUR && state === SwapState.SETTLE_INCOMING">
+                    <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
+                        class="dont-close-wallet-notice nq-orange">{{
+                        $t('Don\'t close your wallet until the swap is complete!')
+                    }}</div>
+                    <div v-else class="dont-close-wallet-notice nq-gray">{{
+                        $t('This might take up to {min} minutes.', { min: 5 })
                     }}</div>
                 </template>
 
@@ -313,6 +391,10 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        toFundingDurationMins: {
+            type: Number,
+            default: 0,
+        },
         manualFunding: {
             type: Boolean,
             default: false,
@@ -320,6 +402,10 @@ export default defineComponent({
         oasisLimitExceeded: {
             type: Boolean,
             default: false,
+        },
+        stateEnteredAt: {
+            type: Number,
+            required: false,
         },
     },
     setup(props, context) {
@@ -355,6 +441,8 @@ export default defineComponent({
         });
 
         const rightColor = computed(() => {
+            if (props.oasisLimitExceeded && rightAsset.value === SwapAsset.EUR) return 'white';
+
             switch (rightAsset.value) {
                 case SwapAsset.NIM: {
                     if (!props.nimAddress) return '';
@@ -382,6 +470,10 @@ export default defineComponent({
         // Swap Direction
         const swapDirection = computed(() => props.switchSides ? 'right-to-left' : 'left-to-right');
 
+        // To-side funding timer
+        const timer = ref('00:00');
+        let timerInterval = 0;
+
         // Swap State
         const state = ref(SwapState.SIGN_SWAP);
         const stateChanges: SwapState[] = [];
@@ -395,6 +487,12 @@ export default defineComponent({
             processingStateChange = true;
 
             state.value = stateChanges.shift()!;
+
+            if (state.value === SwapState.AWAIT_INCOMING && props.toFundingDurationMins) {
+                startTimer();
+            } else {
+                stopTimer();
+            }
 
             // Wait for the animation of this step to finish
             let delay: number; // Seconds
@@ -442,11 +540,39 @@ export default defineComponent({
         });
 
         enum BottomNoticeMessage { FIRST, SECOND }
-        const bottomNoticeInterval = ref<number | null>(null);
+        let bottomNoticeInterval = 0;
         const bottomNoticeMsg = ref<BottomNoticeMessage>(BottomNoticeMessage.FIRST);
 
+        function startTimer() {
+            if (timerInterval) return;
+            timerInterval = window.setInterval(timerTick, 1000);
+            timerTick();
+        }
+
+        function stopTimer() {
+            window.clearInterval(timerInterval);
+            timerInterval = 0;
+        }
+
+        function timerTick() {
+            if (!props.stateEnteredAt) {
+                timer.value = '';
+                return;
+            }
+
+            const diff = new Date(Date.now() - props.stateEnteredAt);
+            const hours = diff.getUTCHours();
+            const minutes = diff.getUTCMinutes();
+            const seconds = diff.getUTCSeconds();
+            timer.value = [
+                ...(hours ? [hours.toString().padStart(2, '0')] : []),
+                minutes.toString().padStart(2, '0'),
+                seconds.toString().padStart(2, '0'),
+            ].join(':');
+        }
+
         onMounted(() => {
-            bottomNoticeInterval.value = window.setInterval(() => {
+            bottomNoticeInterval = window.setInterval(() => {
                 bottomNoticeMsg.value = BottomNoticeMessage[bottomNoticeMsg.value + 1]
                     ? BottomNoticeMessage[BottomNoticeMessage[bottomNoticeMsg.value + 1] as 'FIRST' | 'SECOND']
                     : BottomNoticeMessage.FIRST;
@@ -454,7 +580,8 @@ export default defineComponent({
         });
 
         onUnmounted(() => {
-            if (bottomNoticeInterval.value) window.clearInterval(bottomNoticeInterval.value);
+            window.clearInterval(bottomNoticeInterval);
+            stopTimer();
         });
 
         return {
@@ -476,6 +603,7 @@ export default defineComponent({
             BankSvg,
             BottomNoticeMessage,
             bottomNoticeMsg,
+            timer,
         };
     },
     components: {
@@ -552,13 +680,13 @@ export default defineComponent({
     padding: 2rem 2rem 1rem;
 
     .close-button {
-        /deep/ svg {
+        ::v-deep svg {
             opacity: 0.6;
         }
 
         &:hover,
         &:focus {
-            /deep/ svg {
+            ::v-deep svg {
                 opacity: 0.8;
             }
         }
@@ -603,7 +731,7 @@ export default defineComponent({
         text-align: center;
         margin: 0.5rem 0.5rem 0;
 
-        /deep/ .background {
+        ::v-deep .background {
             border-radius: inherit;
             background: white;
         }
@@ -633,16 +761,16 @@ export default defineComponent({
 }
 
 .tooltip {
-    /deep/ .trigger::after {
+    ::v-deep .trigger::after {
         background: white;
         left: 6.5rem;
     }
 
-    &.right /deep/ .trigger::after {
+    &.right ::v-deep .trigger::after {
         left: 13.5rem;
     }
 
-    /deep/ .tooltip-box {
+    ::v-deep .tooltip-box {
         background: white;
         color: var(--nimiq-blue);
         left: 0 !important;
@@ -650,7 +778,7 @@ export default defineComponent({
         transform-origin: 50% calc(100% + 7rem);
     }
 
-    &.right /deep/ .tooltip-box {
+    &.right ::v-deep .tooltip-box {
         left: auto !important;
         right: 0 !important;
     }
@@ -671,7 +799,7 @@ export default defineComponent({
         font-size: var(--small-size);
         margin-top: 1rem;
 
-        /deep/ .nq-icon {
+        ::v-deep .nq-icon {
             margin-left: 0.25rem;
         }
     }
@@ -714,7 +842,7 @@ export default defineComponent({
             align-items: center;
             font-weight: 600;
             opacity: 0.3;
-            // Negative bottom margin is to reduce gap to bottom-positioned tooltip (during manual-funding)
+            // Negative bottom margin is to reduce gap to bottom-positioned tooltip (when puzzle piece is zoomed into)
             margin: 1rem 1rem -3rem;
             transition: opacity 0.5s var(--nimiq-ease);
 
@@ -869,6 +997,17 @@ export default defineComponent({
         .spinner {
             transform: rotate(-32deg); // Position of the puzzle piece holes
         }
+
+        &.left-to-right .right.eur,
+        &.right-to-left .left.eur {
+            .lines {
+                opacity: 0;
+            }
+
+            .fill {
+                animation: pulsate-opaque 1.5s ease-out infinite;
+            }
+        }
     }
 
     &.settle-incoming,
@@ -890,13 +1029,13 @@ export default defineComponent({
         //     transform-origin: 33.33% 50%;
         // }
 
-        // .tooltip /deep/ .tooltip-box {
+        // .tooltip ::v-deep .tooltip-box {
         //     // animation: tooltip-box-rotate 3.2s 1 var(--nimiq-ease) forwards;
         //     transform: rotate(180deg);
         //     transition: opacity .3s var(--nimiq-ease), transform 1.2s ease 1s;
         // }
 
-        // .tooltip /deep/ .trigger::after {
+        // .tooltip ::v-deep .trigger::after {
         //     // animation: tooltip-arrow-rotate 3.2s 1 var(--nimiq-ease) forwards;
         //     transform: scale(-1) /* rotate(-180deg) */ translateY(14rem);
         //     transition: opacity .3s var(--nimiq-ease) 16ms, visibility .3s, transform 1.2s ease 1s;
@@ -932,6 +1071,12 @@ export default defineComponent({
     0% { opacity: .25; }
     50% { opacity: .5; }
     100% { opacity: .25; }
+}
+
+@keyframes pulsate-opaque {
+    0% { opacity: 1; }
+    50% { opacity: .5; }
+    100% { opacity: 1; }
 }
 
 @keyframes strokeColorChange {
@@ -979,6 +1124,16 @@ export default defineComponent({
 //     100%   { transform: translate3d(+15rem, 0, 0); }
 // }
 
+@keyframes piece-right-oasis-limit-exceeded {
+    0%     { transform: translate3d(-7.25rem, 0, 0); }
+    to     { transform: translate3d(+2.5rem, 5rem, 0); }
+}
+
+@keyframes piece-right-oasis-limit-exceeded-fill {
+    0%     { opacity: 1; }
+    to     { opacity: 0.1; }
+}
+
 .nq-card-footer {
     margin-top: 3rem;
     text-align: center;
@@ -1019,6 +1174,21 @@ export default defineComponent({
     }
 }
 
+.manual-funding,
+.to-funding-delay,
+.to-limit-exceeded {
+    .animation {
+        --upscale: 1.58;
+
+        .tooltip ::v-deep {
+            .trigger::after,
+            .tooltip-box {
+                transform: scale(calc(1 / var(--upscale)));
+            }
+        }
+    }
+}
+
 .manual-funding {
     .nq-card-header,
     .nq-card-footer,
@@ -1033,38 +1203,168 @@ export default defineComponent({
     }
 
     .animation {
-        --upscale: 1.58;
-
         &.left-to-right {
-            transform: translate(28.75rem, -19.5rem) scale(var(--upscale));
+            transform: translate(28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip /deep/ .tooltip-box {
+            .tooltip ::v-deep .tooltip-box {
                 transform-origin: 5rem 4.25rem;
             }
         }
 
         &.right-to-left {
-            transform: translate(-28.75rem, -19.5rem) scale(var(--upscale));
+            transform: translate(-28.75rem, -18rem) scale(var(--upscale));
 
-            .tooltip /deep/ .tooltip-box {
+            .tooltip ::v-deep .tooltip-box {
                 transform-origin: 13rem 4.25rem;
-            }
-        }
-
-        .tooltip /deep/ {
-            .trigger::after,
-            .tooltip-box {
-                transform: scale(calc(1 / var(--upscale)));
             }
         }
     }
 }
 
-.manual-funding-instructions {
+.to-funding-delay,
+.to-limit-exceeded {
+    .nq-card-header,
+    .animation .spinner,
+    .animation.left-to-right .left,
+    .animation.right-to-left .right,
+    .animation.left-to-right .right .swap-amount,
+    .animation.right-to-left .left .swap-amount {
+        opacity: 0;
+        pointer-events: none;
+        animation: none;
+    }
+
+    .animation {
+        &.left-to-right {
+            transform: translate(-28.75rem, -18rem) scale(var(--upscale));
+
+            .tooltip ::v-deep .tooltip-box {
+                transform-origin: 13rem 4.25rem;
+            }
+        }
+
+        &.right-to-left {
+            transform: translate(28.75rem, -18rem) scale(var(--upscale));
+
+            .tooltip ::v-deep .tooltip-box {
+                transform-origin: 5rem 4.25rem;
+            }
+        }
+    }
+}
+
+.to-limit-exceeded {
+    .nq-card-footer {
+        opacity: 0 !important;
+        pointer-events: none;
+        animation: none;
+    }
+
+    .animation.settle-incoming {
+        transition-delay: 0s;
+
+        .right { // Move puzzle piece to center position
+            animation: piece-right-oasis-limit-exceeded 1.2s 1 var(--nimiq-ease) forwards !important;
+
+            .piece {
+                transition: color 1.2s var(--nimiq-ease);
+            }
+
+            .fill {
+                animation: piece-right-oasis-limit-exceeded-fill 1.2s 1 var(--nimiq-ease) forwards !important;
+            }
+
+            .logo {
+                transition: opacity 1.2s var(--nimiq-ease);
+                opacity: 0.6;
+            }
+        }
+    }
+}
+
+.to-funding-delay-notice,
+.to-limit-exceeded-container {
+    text-align: center;
+    justify-content: space-between;
+    align-items: center;
+
+    .nq-h2 {
+        font-weight: normal;
+        white-space: pre-line;
+        padding: 0 3rem;
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            padding: 0 2rem;
+        }
+    }
+
+    .nq-gray {
+        font-size: var(--body-size);
+        font-weight: 600;
+        max-width: 46rem;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.5;
+    }
+
+    .header {
+        align-self: stretch;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2.25rem;
+
+        strong {
+            align-items: center;
+            margin-top: -1rem;
+
+            svg {
+                font-size: 1.5rem;
+                margin-right: 1.25rem;
+
+                path {
+                    stroke-width: 3.2;
+                }
+            }
+        }
+    }
+
+    .action-row {
+        justify-content: center;
+        align-items: center;
+
+        .timer {
+            font-variant-numeric: tabular-nums;
+            line-height: 1.7;
+        }
+    }
+}
+
+.manual-funding-instructions,
+.to-funding-delay-notice,
+.to-limit-exceeded-container {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.to-funding-delay-notice {
+    bottom: 15rem;
+    height: 19rem;
+}
+
+.to-limit-exceeded-container {
+    top: 0;
+    padding-bottom: 12rem;
+}
+
+.nq-button-s.inverse.lighter {
+    background: rgba(255, 255, 255, 0.1);
+
+    &:hover,
+    &:focus {
+        background: rgba(255, 255, 255, 0.15);
+    }
 }
 
 /* mobile - animation downscale - starting at 500px width */

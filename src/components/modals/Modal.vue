@@ -1,7 +1,13 @@
 <template>
-    <div class="modal backdrop flex-column" @mousedown.self="close" @touchstart.self="close">
-        <div class="wrapper flex-column" @mousedown.self="close" @touchstart.self="close">
-            <SmallPage class="main" :class="{'smallen': showOverlay}">
+    <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
+        <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
+            <SmallPage
+                class="main"
+                :class="{ 'smallen': showOverlay, 'swipe-padding': showSwipeHandle && swipePadding }"
+            >
+                <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="$handle">
+                    <div class="swipe-bar"></div>
+                </div>
                 <slot/>
                 <CloseButton class="top-right" :class="{'inverse': closeButtonInverse}" @click="close"/>
                 <transition name="fade">
@@ -20,8 +26,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
+import { useWindowSize } from '../../composables/useWindowSize';
+import { useSwipes } from '../../composables/useSwipes';
+import { useSettingsStore } from '../../stores/Settings';
+import { pointerdown } from '../../directives/PointerEvents';
+
+export function enableModalTransition() {
+    document.body.classList.remove('modal-transition-disabled');
+}
+
+export function disableNextModalTransition() {
+    document.body.classList.add('modal-transition-disabled');
+    // the modal transitions are enabled again in onMounted in the next modal component instance
+}
 
 export default defineComponent({
     props: {
@@ -37,6 +56,14 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        swipeToClose: {
+            type: Boolean,
+            default: true,
+        },
+        swipePadding: {
+            type: Boolean,
+            default: true,
+        },
     },
     setup(props, context) {
         function close() {
@@ -48,7 +75,26 @@ export default defineComponent({
             if (props.emitClose) {
                 context.emit('close');
             } else {
+                forceClose();
+            }
+        }
+
+        async function forceClose() {
+            // Ensures that we close all the modals that we navigated through, so flows that opens multiple modals in
+            // different steps are closed one after the other.
+            // For example: choose a sender via AddressSelectorModal -> open qr scanner from SendModal -> after scan in
+            // ScanQrModal return to SendModal -> abort the action in SendModal
+
+            while (context.root.$route.matched.find((routeRecord) => 'modal' in routeRecord.components
+                || 'persistent-modal' in routeRecord.components
+                || Object.values(routeRecord.components).some((component) => /modal/i.test(component.name || '')))
+            ) {
                 context.root.$router.back();
+
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise((resolve) => {
+                    window.addEventListener('popstate', resolve, { once: true });
+                });
             }
         }
 
@@ -64,9 +110,92 @@ export default defineComponent({
             document.removeEventListener('keydown', onEscape);
         });
 
+        // Swiping
+        const $main = ref<HTMLDivElement>(null);
+        const $handle = ref<HTMLDivElement>(null);
+        const showSwipeHandle = ref(false);
+
+        async function updateSwipeRestPosition(
+            velocityDistance: number,
+            velocityTime: number,
+            initialYPosition: number,
+            currentYPosition: number,
+        ) {
+            if (velocityDistance && velocityTime) {
+                const swipeFactor = 10;
+                const velocity = (velocityDistance / velocityTime) * 1000 * swipeFactor; // px/s
+                const remainingYDistance = Math.sqrt(Math.abs(velocity)) * (velocity / Math.abs(velocity));
+                currentYPosition += remainingYDistance;
+            }
+
+            const closeBarrier = 160; // 20rem = 160px
+
+            if (currentYPosition >= closeBarrier && initialYPosition < closeBarrier) {
+                // Close modal
+                close();
+                await context.root.$nextTick();
+            }
+        }
+
+        if (props.swipeToClose) {
+            const { isMobile, height } = useWindowSize();
+            const { swipingEnabled } = useSettingsStore();
+
+            const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+                onSwipeEnded: updateSwipeRestPosition,
+                clampMovement: computed<[number, number]>(() => [0, height.value]),
+                vertical: true,
+                handle: $handle as Ref<HTMLDivElement>,
+            });
+
+            watch(isMobile, (isMobileNow, wasMobile) => {
+                if (!$main.value) return;
+
+                if (isMobileNow && !wasMobile && swipingEnabled.value === 1) {
+                    showSwipeHandle.value = true;
+                    context.root.$nextTick(attachSwipe);
+                } else if (!isMobileNow && showSwipeHandle.value) {
+                    detachSwipe();
+                    showSwipeHandle.value = false;
+                }
+            }, { lazy: true });
+
+            if (isMobile.value && swipingEnabled.value === 1) {
+                showSwipeHandle.value = true;
+                onMounted(attachSwipe);
+            }
+        }
+
+        // Backdrop click handling
+        let touchStartedOnBackdrop = false;
+
+        function checkTouchStart(e: Event) {
+            touchStartedOnBackdrop = !!e.target && (e.target as HTMLDivElement).matches('.backdrop, .wrapper');
+        }
+
+        function onBackdropClick() {
+            if (!touchStartedOnBackdrop) return;
+            close();
+        }
+
+        onMounted(() => {
+            setTimeout(() => {
+                enableModalTransition();
+            }, 100);
+        });
+
         return {
             close,
+            forceClose, // used by other components
+            $main,
+            $handle,
+            showSwipeHandle,
+            checkTouchStart,
+            onBackdropClick,
         };
+    },
+    directives: {
+        pointerdown,
     },
     components: {
         SmallPage,
@@ -152,7 +281,7 @@ export default defineComponent({
 
         overflow-y: auto;
 
-        /deep/ .page-body {
+        ::v-deep .page-body {
             overflow-y: unset;
         }
     }
@@ -164,6 +293,33 @@ export default defineComponent({
         &.smallen {
             transform: scale(0.942857143) translateY(-1.5rem);
         }
+
+        &.swipe-padding {
+            padding-top: 0.5rem;
+        }
+    }
+
+    .swipe-handle {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 4rem;
+        touch-action: none; // To let Javascript handle touch events
+        justify-content: center;
+        z-index: 1; // To be above .page-header
+
+        .swipe-bar {
+            width: 5rem;
+            height: 0.5rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            background: var(--text-14);
+        }
+    }
+
+    .close-button {
+        z-index: 2; // To be above .swipe-handle
     }
 }
 </style>
@@ -174,14 +330,18 @@ export default defineComponent({
     --overlay-transition-time: 0.65s;
 }
 
+.modal-transition-disabled {
+    --modal-transition-time: 0;
+}
+
+.wrapper {
+    transition:
+        opacity calc(0.55 * var(--modal-transition-time)) cubic-bezier(0.4, 0, 0.2, 1),
+        transform var(--modal-transition-time) var(--nimiq-ease);
+}
+
 .modal-enter-active, .modal-leave-active {
     transition: background-color var(--modal-transition-time) cubic-bezier(0.4, 0, 0.2, 1);
-
-    .wrapper {
-        transition:
-            opacity calc(0.55 * var(--modal-transition-time)) cubic-bezier(0.4, 0, 0.2, 1),
-            transform var(--modal-transition-time) var(--nimiq-ease);
-    }
 }
 
 .modal-leave-active, .modal-leave-to {

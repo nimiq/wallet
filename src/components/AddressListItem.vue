@@ -20,14 +20,16 @@
                 :currency="currentCurrency"
                 value-mask/>
         </div>
-        <div v-else class="balances">???</div>
+        <div v-else class="balances">
+            <CircleSpinner/>
+        </div>
         <div class="mobile-arrow"></div>
     </button>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { Identicon, LockLockedIcon } from '@nimiq/vue-components';
+import { Identicon, LockLockedIcon, CircleSpinner } from '@nimiq/vue-components';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import VestingIcon from './icons/VestingIcon.vue';
@@ -61,6 +63,7 @@ export default defineComponent({
         FiatConvertedAmount,
         VestingIcon,
         BitcoinIcon,
+        CircleSpinner,
     },
 });
 </script>
@@ -71,6 +74,10 @@ export default defineComponent({
     align-items: center;
     padding: 2rem;
     border-radius: 0.75rem;
+
+    &:disabled {
+        opacity: 0.4;
+    }
 }
 
 .identicon,
@@ -102,14 +109,20 @@ export default defineComponent({
 
 .label {
     font-weight: 600;
-    margin: 0 2rem;
-    flex-grow: 1;
+    padding: 0 2rem;
     text-align: left;
+    flex-shrink: 1;
+    overflow: hidden;
+    mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
 }
 
 .balances {
     text-align: right;
-    flex-shrink: 0;
+    flex-grow: 1;
+
+    ::v-deep .circle-spinner {
+        display: block;
+    }
 }
 
 .crypto-balance {

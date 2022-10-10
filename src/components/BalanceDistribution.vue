@@ -2,23 +2,30 @@
     <div class="balance-distribution">
         <div class="currency flex-column nim" :style="{width: Math.max(0.12, balanceDistribution.nim) * 100 + '%'}">
             <div class="distribution" >
-                <div v-for="account of nimBalanceDistribution"
+                <div v-for="(account, i) of nimBalanceDistribution"
                     :key="account.addressInfo.address"
                     :style="{width: (nimPercentageSum < 0.99
                         ? 1 / nimBalanceDistribution.length
                         : account.percentage
                     ) * 100 + '%'}">
                     <Tooltip
+                        class="nim"
                         preferredPosition="top right"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
+                        @show="highlightBar(i)"
+                        @hide="resetBar(i)"
                     >
                         <div
                             class="bar"
                             :class="[
                                 getBackgroundClass(account.addressInfo.address),
-                                {'empty': !account.addressInfo.balance},
+                                {
+                                    'empty': !account.addressInfo.balance,
+                                    'faded': highlightedBar !== null && i !== highlightedBar,
+                                },
                             ]"
-                            slot="trigger"></div>
+                            slot="trigger"
+                        ></div>
                         <div class="flex-row">
                             <Identicon :address="account.addressInfo.address"/>
                             <div class="flex-column">
@@ -43,30 +50,44 @@
                     : false }"
                 value-mask/>
         </div>
-        <div v-if="hasBitcoinAddresses" class="exchange" ref="$exchange">
-            <Tooltip preferredPosition="top right" :disabled="hasActiveSwap" ref="swapTooltip" noFocus>
+
+        <div v-if="hasBitcoinAddresses && $config.enableBitcoin && $config.fastspot.enabled"
+            class="exchange" ref="$exchange"
+        >
+            <Tooltip preferredPosition="top right" noFocus ref="swapTooltip">
                 <button
-                    :disabled="!totalFiatAccountBalance || hasActiveSwap"
+                    :disabled="!totalFiatAccountBalance || !canUseSwaps || hasActiveSwap"
                     @focus.stop="$refs.swapTooltip.show()"
                     @blur.stop="$refs.swapTooltip.hide()"
                     class="nq-button-s" @click="$router.push('/swap')" @mousedown.prevent slot="trigger"
                 ><SwapIcon/></button>
-                 <i18n path="Swap NIM {arrow} BTC" tag="span" class="nq-text-s">
-                    <template v-slot:arrow>
+                <i18n path="Swap NIM {arrow} BTC" tag="span" class="swap-tooltip-headline nq-text-s">
+                    <template #arrow>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8" width="12" height="8" fill="none"
                             stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                         ><path d="M3.6 6.6l-3-3 3-3M8.4.6l3 3-3 3M1 3.6h10"/></svg>
                     </template>
                 </i18n>
+                <div v-if="!totalFiatAccountBalance || !canUseSwaps || hasActiveSwap"
+                    class="nq-text-s swap-tooltip-help"
+                >{{
+                    !totalFiatAccountBalance ? $t('Fund your Wallet with NIM or BTC first to be able to swap.')
+                        : hasActiveSwap ? $t('Please wait for your current swap to finish before starting a new one.')
+                        /* Re-using existing, translated strings already used by BuyOptionsModal */
+                        : $t('Not available in your browser') + '. '
+                            + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
+                }}</div>
             </Tooltip>
         </div>
-        <div v-if="hasBitcoinAddresses"
+        <div v-else-if="hasBitcoinAddresses && $config.enableBitcoin" class="separator"></div>
+
+        <div v-if="hasBitcoinAddresses && $config.enableBitcoin"
             class="currency flex-column btc"
             :style="{width: Math.max(0.12, balanceDistribution.btc) * 100 + '%'}"
         >
             <div class="distribution">
                 <div style="width: 100%">
-                    <Tooltip
+                    <Tooltip class="btc"
                         preferredPosition="top left"
                         :container="$el ? {$el: $el.parentNode.parentNode} : undefined"
                     >
@@ -101,6 +122,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
+import Config from 'config';
 import { getBackgroundClass } from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
@@ -116,15 +138,11 @@ import { useSwapsStore } from '../stores/Swaps';
 export default defineComponent({
     name: 'balance-distribution',
     setup() {
-        const { activeAccountInfo } = useAccountStore();
+        const { hasBitcoinAddresses } = useAccountStore();
         const { addressInfos, accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
-        const { btcUnit } = useSettingsStore();
-
-        const hasBitcoinAddresses = computed(() => (activeAccountInfo.value || false)
-            && (activeAccountInfo.value.btcAddresses || false)
-            && activeAccountInfo.value.btcAddresses.external.length > 0);
+        const { btcUnit, canUseSwaps } = useSettingsStore();
 
         const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
@@ -133,10 +151,13 @@ export default defineComponent({
             ? (accountBalance.value / 1e5) * nimExchangeRate.value
             : undefined,
         );
-        const btcFiatAccountBalance = computed(() => btcExchangeRate.value !== undefined
-            ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
-            : undefined,
-        );
+        const btcFiatAccountBalance = computed(() => {
+            if (!Config.enableBitcoin) return 0;
+
+            return btcExchangeRate.value !== undefined
+                ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                : undefined;
+        });
 
         const totalFiatAccountBalance = computed(() => {
             if (nimFiatAccountBalance.value === undefined || btcFiatAccountBalance.value === undefined) {
@@ -148,7 +169,7 @@ export default defineComponent({
         const balanceDistribution = computed((): { btc: number, nim: number } => ({
             nim: totalFiatAccountBalance.value
                 ? (nimFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
-                : 0.5,
+                : (Config.enableBitcoin ? 0.5 : 1),
             btc: totalFiatAccountBalance.value
                 ? (btcFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
                 : 0.5,
@@ -182,6 +203,21 @@ export default defineComponent({
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
 
+        const highlightedBar = ref<number>(null);
+
+        // When user hovers over a NIM balance distribution bar, we want to highlight it fading the rest of
+        // NIM addresses bars
+        function highlightBar(index: number) {
+            highlightedBar.value = index;
+        }
+
+        // Remove all faded classes from NIM balance distribution bars
+        function resetBar(index: number) {
+            if (highlightedBar.value === index) {
+                highlightedBar.value = null;
+            }
+        }
+
         return {
             getBackgroundClass,
             totalFiatAccountBalance,
@@ -197,6 +233,10 @@ export default defineComponent({
             $btcAmount,
             doElsTouch,
             hasActiveSwap,
+            canUseSwaps,
+            highlightBar,
+            resetBar,
+            highlightedBar,
         };
     },
     components: {
@@ -259,11 +299,26 @@ export default defineComponent({
             }
         }
 
-        .tooltip /deep/ .tooltip-box {
+        .tooltip ::v-deep .tooltip-box {
             padding: 1rem;
             transform: translate(calc(26px - 50%), -2rem);
+        }
+
+        .tooltip .swap-tooltip-headline {
             white-space: nowrap;
         }
+        .tooltip .swap-tooltip-help {
+            min-width: 40rem;
+        }
+    }
+
+    .separator {
+        width: 0.25rem;
+        background: var(--nimiq-highlight-bg);
+        margin: 0.5rem 0.75rem 0 1rem;
+        height: 4rem;
+        border-radius: 1rem;
+        flex-shrink: 0;
     }
 
     .currency {
@@ -279,7 +334,6 @@ export default defineComponent({
             width: 100%;
 
             > div {
-                padding-right: 0.5rem;
                 min-width: 1rem;
 
                 &:last-child {
@@ -294,17 +348,18 @@ export default defineComponent({
             .tooltip {
                 width: 100%;
 
-                /deep/ .trigger {
-                    display: block;
+                ::v-deep .trigger {
+                    display: flex;
+                    height: 8px;
+                    padding: 0 0.25rem;
                 }
 
-                /deep/ .trigger::after {
-                    background: white;
+                &.nim ::v-deep .trigger::after {
+                    background: #1F2046; // Color at the bottom left of the tooltip
                 }
 
-                /deep/ .tooltip-box {
-                    background: white;
-                    color: var(--nimiq-blue);
+                ::v-deep .tooltip-box {
+                    padding: 1.5rem;
                 }
 
                 .flex-row {
@@ -329,7 +384,6 @@ export default defineComponent({
                     --size: var(--small-label-size);
                     font-size: var(--small-label-size);
                     opacity: .6;
-                    font-weight: 600;
                     text-align: left;
                 }
             }
@@ -340,6 +394,11 @@ export default defineComponent({
                 border-radius: .5rem;
                 height: 0.5rem;
                 min-width: 0.5rem;
+                transition: opacity var(--transition-time) var(--nimiq-ease);
+
+                &.faded {
+                    opacity: 0.4;
+                }
 
                 &.btc {
                     background: var(--bitcoin-orange);
@@ -361,9 +420,10 @@ export default defineComponent({
             cursor: default;
             background-color: var(--bg-base);
             padding: 0.5rem;
-            margin-top: -0.5rem;
+            margin-top: -0.125rem;
             margin-left: -0.375rem;
             margin-right: -0.375rem;
+            line-height: 1;
 
             position: absolute;
             z-index: 3;

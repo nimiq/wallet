@@ -3,10 +3,26 @@
         <PageBody class="flex-column">
             <header>
                 <h1 class="nq-h1">{{ $t('Buy NIM & BTC') }}</h1>
+                <p class="nq-text">
+                    {{ $t('Depending on your country of residence,\ndifferent options are available.') }}
+                </p>
+                <CountrySelector @select="c => country = c">
+                    <div slot="trigger" class="pill flex-row">
+                        <CountryFlag v-if="country" :code="country.code" />
+                        <CircleSpinner v-else/>
+                        <span v-if="country">{{ country.name }}</span>
+                        <span v-else>{{ $t('Loading...') }}</span>
+                        <img src="../../assets/arrow-down.svg" alt="open"/>
+                    </div>
+                </CountrySelector>
             </header>
-            <div class="featured-exchanges flex-row">
-                <router-link to="/buy-crypto?sidebar=true" replace class="option oasis flex-column">
-                    <div class="top flex-column">
+            <div class="featured-options flex-row">
+                <Component :is="isOasisAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'buy-crypto', query: $route.query }" replace
+                    class="option oasis flex-column"
+                    :class="{disabled: !isOasisAvailable}"
+                >
+                    <div class="upper-content flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Bank Transfer') }}</h2>
 
                         <div class="pill flex-row">
@@ -19,11 +35,11 @@
                         </div>
 
                         <p class="nq-text">
-                            {{ $t('Pay by bank transfer. No registration – not even email.') }}
+                            {{ $t('No registration – not even email.') }}
                         </p>
                     </div>
 
-                    <div class="bottom flex-column">
+                    <div class="lower-content flex-column">
                         <div class="fees">
                             <span class="percentage flex-row">
                                 1.25%
@@ -31,37 +47,76 @@
                                     <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                                 </svg>
                                 <i18n path="min {amount}" tag="span">
-                                    <FiatAmount slot="amount" :amount="0.10" currency="eur"/>
+                                    <FiatAmount slot="amount" :amount="0.50" currency="eur"/>
                                 </i18n>
                             </span>
                             {{ $t('+ network fees') }}
                         </div>
 
-                        <footer class="flex-row">
+                        <footer v-if="isOasisAvailable" class="flex-row">
                             <FlameIcon/>
                             {{ $t('Innovation\nby Nimiq') }}
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
                         </footer>
+                        <footer v-else-if="isOasisUnderMaintenance" class="flex-row">
+                            <MaintenanceIcon/>
+                            {{ $t('Currently under maintenance') }}
+                            <div class="flex-grow"></div>
+                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
+                                    + ' This might take some time. Please try again later.') }}
+                                <a
+                                    href="https://forum.nimiq.community/t/oasis-infrastructure-update/1810"
+                                    target="_blank" rel="noopener"
+                                >{{ $t('Learn more.') }}</a>
+                            </Tooltip>
+                        </footer>
+                        <footer v-else-if="!canUseSwaps" class="flex-row">
+                            <ForbiddenIcon/>
+                            {{ $t('Not available in your browser') }}
+                            <div class="flex-grow"></div>
+                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                {{ $t('Your browser does not support Keyguard popups, '
+                                    + 'or they are disabled in the Settings.') }}
+                            </Tooltip>
+                        </footer>
+                        <footer v-else class="flex-row">
+                            <ForbiddenIcon/>
+                            {{ $t('Not available in your country') }}
+                            <div class="flex-grow"></div>
+                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                {{ $t('Bank Transfer is only supported in the EU’s SEPA area.') }}
+                                <!-- {{ $t('Bank Transfer is only supported in the EU’s SEPA area, '
+                                    + 'or in Central Americas SIMPE Banks.') }} -->
+                                <!-- <p class="explainer">
+                                    {{ $t('If you have contacts to a banking partner in your country, '
+                                        + 'check out our application form')}}
+                                </p> -->
+                            </Tooltip>
+                        </footer>
                     </div>
-                </router-link>
+                </Component>
 
-                <router-link to="/moonpay?sidebar=true" replace class="option credit-card flex-column">
-                    <div class="top flex-column">
+                <Component :is="isCreditCardAvailable ? 'router-link' : 'span'"
+                    :to="{ name: isMoonpayAvailable ? 'moonpay' : 'simplex', query: $route.query }" replace
+                    class="option credit-card flex-column"
+                    :class="{disabled: !isCreditCardAvailable}"
+                >
+                    <div class="upper-content flex-column">
                         <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
 
-                        <div class="pill flex-row">
-                            {{ $t('Almost everywhere') }}
-                        </div>
-
                         <p class="nq-text">
-                            {{ $t('Pay with credit card. Full KYC required, high availability.') }}
+                            {{ $t('Full KYC required, high availability.') }}
                         </p>
                     </div>
 
-                    <div class="bottom flex-column">
+                    <div class="lower-content flex-column">
                         <div class="fees">
-                            <span class="percentage flex-row">
+                            <span v-if="isMoonpayAvailable" class="percentage flex-row">
                                 4.5%
                                 <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
                                     <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
@@ -75,56 +130,69 @@
                                     />
                                 </i18n>
                             </span>
+                            <span v-else-if="isSimplexAvailable" class="percentage flex-row">
+                                ~8%
+                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
+                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
+                                </svg>
+                                <i18n path="min {amount}" tag="span">
+                                    <FiatAmount slot="amount" :amount="5.00" :currency="FiatCurrency.USD" />
+                                </i18n>
+                            </span>
                             {{ $t('+ network fees') }}
                         </div>
 
-                        <footer class="flex-row">
-                            <img src="../../assets/exchanges/moonpay-full.svg">
+                        <footer v-if="isMoonpayAvailable" class="moonpay flex-row">
+                            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay">
                             <CaretRightIcon/>
                         </footer>
+                        <footer v-else-if="isSimplexAvailable" class="simplex flex-row">
+                            <img src="../../assets/exchanges/simplex-full.png" alt="Simplex">
+                            <CaretRightIcon/>
+                        </footer>
+                        <footer v-else class="flex-row">
+                            <ForbiddenIcon/>
+                            {{ $t('Not available in your country') }}
+                        </footer>
                     </div>
-                </router-link>
+                </Component>
             </div>
 
-            <p class="nq-text exchanges-note">{{ $t('Buy NIM on a crypto exchange:') }}</p>
-            <div class="exchange-logos flex-row">
+            <p class="nq-text exchanges-note" :class="{'only-option': !isOasisAvailable && !isCreditCardAvailable}">
+                {{ $t('Buy NIM on a crypto exchange:') }}
+            </p>
+            <div class="exchange-logos flex-row" :class="{'only-option': !isOasisAvailable && !isCreditCardAvailable}">
                 <!-- eslint-disable max-len -->
                 <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/kucoin.svg">
+                    <img src="../../assets/exchanges/kucoin.svg" alt="KuCoin">
                 </a>
                 <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/hitbtc.svg">
+                    <img src="../../assets/exchanges/hitbtc.svg" alt="HitBTC">
                 </a>
-                <a href="https://bitmax.io" title="BitMax" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/bitmax.svg">
+                <a href="https://ascendex.com" title="AscendEX (BitMax)" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/ascendex.png" alt="AscendEX">
+                </a>
+                <a href="https://stealthex.io/?to=NIM" title="StealthEx" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/stealthex.svg" alt="StealthEx">
                 </a>
                 <a href="https://changelly.com/exchange/btc/nim?ref_id=v06xmpbqj5lpftuj"
                     title="Changelly" target="_blank" rel="noopener"
-                ><img src="../../assets/exchanges/changelly.svg">
+                ><img src="../../assets/exchanges/changelly.svg" alt="Changelly">
                 </a>
-                <a href="https://www.bitladon.com/nimiq?r=100038211" title="Bitladon" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/bitladon.svg">
-                </a>
-                <a href="https://changehero.io/?to=nim" title="Changehero" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/changehero.svg">
-                </a>
-                <a href="https://btc-alpha.com/coin/NIM/" title="BTC-Alpha" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/btcalpha.svg">
+                <a href="https://changehero.io/?to=NIM" title="Changehero" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/changehero.svg" alt="Changehero">
                 </a>
                 <a href="https://coinswitch.co/?to=nim&ref=7OTBVXHK23" title="Coinswitch" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/coinswitch.svg">
-                </a>
-                <a href="https://coindcx.com/trade/NIMBTC" title="CoinDCX" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/coindcx.svg">
+                    <img src="../../assets/exchanges/coinswitch.svg" alt="Coinswitch">
                 </a>
                 <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/swapzone.svg">
+                    <img src="../../assets/exchanges/swapzone.svg" alt="Swapzone">
                 </a>
                 <a href="https://swapspace.co/?to=nim" title="SwapSpace" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/swapspace.svg">
+                    <img src="../../assets/exchanges/swapspace.svg" alt="SwapSpace">
                 </a>
                 <a href="https://www.coinspot.com.au/buy/nim" title="CoinSpot" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/coinspot.svg">
+                    <img src="../../assets/exchanges/coinspot.svg" alt="CoinSpot">
                 </a>
                 <!-- eslint-enable max-len -->
             </div>
@@ -133,22 +201,83 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import { PageBody, FiatAmount } from '@nimiq/vue-components';
+import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { PageBody, FiatAmount, Tooltip, InfoCircleSmallIcon, CircleSpinner } from '@nimiq/vue-components';
+import Config from 'config';
 import Modal from './Modal.vue';
+import CountrySelector from '../CountrySelector.vue';
+import CountryFlag from '../CountryFlag.vue';
 import FlameIcon from '../icons/FlameIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
+import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
+import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { FiatCurrency } from '../../lib/Constants';
+import { ENV_TEST, FiatCurrency } from '../../lib/Constants';
+import { useGeoIp } from '../../composables/useGeoIp';
+import I18nDisplayNames from '../../lib/I18nDisplayNames';
+import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
+import { useSettingsStore } from '../../stores/Settings';
+
+type Country = {
+    code: string,
+    name: string,
+}
 
 export default defineComponent({
     name: 'buy-options-modal',
     setup() {
         const { currency } = useFiatStore();
+        const { canUseSwaps } = useSettingsStore();
+
+        const country = ref<Country>(null);
+
+        const isOasisAvailable = computed(() => {
+            if (!Config.fastspot.enabled) return false;
+            if (!canUseSwaps.value) return false;
+            if (Config.oasis.underMaintenance) return false;
+            if (!country.value) return true;
+            if (Config.environment === ENV_TEST) return true;
+            return SEPA_COUNTRY_CODES.includes(country.value.code);
+        });
+
+        const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
+            if (!Config.moonpay.enabled) return false;
+            if (!country.value) return true;
+            return MOONPAY_COUNTRY_CODES.includes(country.value.code);
+        });
+
+        const isSimplexAvailable = computed(() => { // eslint-disable-line arrow-body-style
+            if (!Config.simplex.enabled) return false;
+            if (!country.value) return true;
+            return SIMPLEX_COUNTRY_CODES.includes(country.value.code);
+        });
+
+        const isCreditCardAvailable = computed(() => isMoonpayAvailable.value || isSimplexAvailable.value);
+
+        const i18nCountryName = new I18nDisplayNames('region');
+
+        onMounted(async () => {
+            const { locate } = useGeoIp();
+            const geo = await locate();
+            const code = geo.country;
+            if (!code) return;
+
+            country.value = {
+                code,
+                name: i18nCountryName.of(code) || '',
+            };
+        });
 
         return {
+            country,
+            isOasisAvailable,
+            isOasisUnderMaintenance: Config.oasis.underMaintenance,
+            isCreditCardAvailable,
+            isMoonpayAvailable,
+            isSimplexAvailable,
             currency,
             FiatCurrency,
+            canUseSwaps,
         };
     },
     components: {
@@ -156,13 +285,20 @@ export default defineComponent({
         PageBody,
         FiatAmount,
         CaretRightIcon,
+        CountrySelector,
+        CircleSpinner,
+        CountryFlag,
         FlameIcon,
+        MaintenanceIcon,
+        Tooltip,
+        InfoCircleSmallIcon,
+        ForbiddenIcon,
     },
 });
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .small-page {
+.modal ::v-deep .small-page {
     width: 63.5rem !important;
     min-height: 63.5rem !important;
     max-width: 100vw;
@@ -171,30 +307,83 @@ export default defineComponent({
 .page-body {
     padding: 2rem;
     align-items: center;
+}
 
-    header {
-        text-align: center;
-    }
+header {
+    text-align: center;
 
     .nq-h1 {
-        margin: 2rem 0 3rem;
-        font-size: var(--h1-size);
+        margin: 2rem 0 1.25rem;
+    }
+
+    .nq-text {
+        white-space: pre-line;
+        margin-top: 0;
+        margin-bottom: 1.25rem;
+        color: var(--text-100);
+    }
+
+    .country-selector {
+        z-index: 100;
+        display: inline-block;
+        margin-bottom: 3rem;
+
+        ::v-deep .trigger {
+            &:hover,
+            &:focus {
+                .pill {
+                    box-shadow: 0 0 0 1.5px var(--text-40);
+                    color: var(--text-100);
+                }
+            }
+        }
+    }
+
+    .country-flag,
+    ::v-deep .circle-spinner {
+        width: 2rem;
+        height: 2rem;
+        margin: 0.25rem 0.625rem 0.25rem -0.75rem;
+    }
+
+    img:last-child {
+        margin-left: 0.5rem;
+        margin-right: -0.5rem;
+        margin-bottom: -0.25rem;
     }
 }
 
-.featured-exchanges {
+.pill {
+    align-self: flex-start;
+    align-items: center;
+    font-size: var(--small-size);
+    font-weight: 600;
+    border-radius: 5rem;
+    padding: 0.25rem 1.25rem;
+
+    box-shadow: 0 0 0 1.5px var(--text-20);
+    color: var(--text-60);
+
+    transition:
+        box-shadow 0.2s var(--nimiq-ease),
+        color 0.2s var(--nimiq-ease);
+}
+
+.featured-options {
     flex-grow: 1;
     align-self: stretch;
 }
 
 .option {
     width: 50%;
+    height: 36rem;
     justify-content: flex-start;
     align-items: stretch;
     margin: 1rem;
     border-radius: 0.75rem;
-    padding: 2.5rem 3rem;
+    padding: 2.5rem;
     text-decoration: none;
+    color: white;
 
     transition:
         transform 0.3s var(--nimiq-ease),
@@ -202,73 +391,65 @@ export default defineComponent({
         background-color 0.3s var(--nimiq-ease);
     will-change: transform, box-shadow;
 
+    &::before {
+        position: absolute;
+        content: "";
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: inherit;
+        z-index: -1;
+        transition: opacity 0.3s var(--nimiq-ease);
+        opacity: 0;
+    }
+
     &:hover,
     &:focus {
         transform: translate3D(0, -0.5rem, 0);
+        box-shadow:
+            0px 18px 38px rgba(31, 35, 72, 0.07),
+            0px 7px 8.5px rgba(31, 35, 72, 0.04),
+            0px 2px 2.5px rgba(31, 35, 72, 0.02);
+
+        &::before {
+            opacity: 1;
+        }
     }
 
     &.oasis {
-        background-color: var(--nimiq-light-blue);
-        background-image: var(--nimiq-light-blue-bg);
-        color: white;
-        z-index: 1;
+        background-color: var(--nimiq-blue);
+        background-image: var(--nimiq-blue-bg);
 
         &::before {
-            position: absolute;
-            content: "";
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            border-radius: inherit;
-            background-color: var(--nimiq-light-blue-darkened);
-            background-image: var(--nimiq-light-blue-bg-darkened);
-            z-index: -1;
-            transition: opacity 0.3s var(--nimiq-ease);
-            opacity: 0;
-        }
-
-        &:hover,
-        &:focus {
-            box-shadow:
-                0px 18px 38px rgba(31, 35, 72, 0.07),
-                0px 7px 8.5px rgba(31, 35, 72, 0.04),
-                0px 2px 2.5px rgba(31, 35, 72, 0.02);
-
-            &::before {
-                opacity: 1;
-            }
+            background-color: var(--nimiq-blue-darkened);
+            background-image: var(--nimiq-blue-bg-darkened);
         }
     }
 
     &.credit-card {
-        background-color: var(--nimiq-highlight-bg);
-        color: inherit;
+        background-color: var(--nimiq-light-blue);
+        background-image: var(--nimiq-light-blue-bg);
 
-        &:hover,
-        &:focus {
-            background-color: rgba(31, 35, 72, 0.1); /* Based on Nimiq Blue */
+        &::before {
+            position: absolute;
+            background-color: var(--nimiq-light-blue-darkened);
+            background-image: var(--nimiq-light-blue-bg-darkened);
         }
     }
 
     .nq-h1 {
         align-items: center;
-        margin: 0 0 1.5rem;
+        margin: 0;
         line-height: 1.3;
         font-weight: bold;
         font-size: var(--h1-size);
     }
 
     .pill {
-        align-self: flex-start;
-        align-items: center;
-        font-size: var(--small-size);
-        font-weight: 600;
+        margin-top: 1.5rem;
         box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.3);
         color: rgba(255, 255, 255, 0.8);
-        border-radius: 5rem;
-        padding: 0.25rem 1.25rem;
-        white-space: nowrap;
     }
 
     .nq-text {
@@ -277,11 +458,15 @@ export default defineComponent({
         line-height: 1.25;
     }
 
-    .top {
+    .nq-h1 + .nq-text {
+        margin-top: 1rem;
+    }
+
+    .upper-content {
         flex-grow: 1;
     }
 
-    .bottom {
+    .lower-content {
         justify-content: space-between;
     }
 
@@ -290,6 +475,7 @@ export default defineComponent({
         font-weight: 600;
         color: rgba(255, 255, 255, 0.8);
         margin-bottom: 3rem;
+        hyphens: manual;
 
         .percentage {
             align-items: center;
@@ -308,13 +494,20 @@ export default defineComponent({
     footer {
         align-items: center;
         font-size: var(--small-label-size);
+        line-height: 1;
         font-weight: bold;
         color: rgba(255, 255, 255, 0.65);
         height: 3.25rem;
         margin-bottom: 0.25rem;
         white-space: pre-line;
 
-        svg:last-child {
+        .flex-grow {
+            @media (min-width: 700px) { // Full mobile breakpoint
+                min-width: 2rem;
+            }
+        }
+
+        > svg:last-child {
             color: rgba(255, 255, 255, 0.6);
             flex-shrink: 0;
             margin-left: 0.5rem;
@@ -325,7 +518,7 @@ export default defineComponent({
 
     &:hover,
     &:focus {
-        footer svg:last-child {
+        footer > svg:last-child {
             color: rgba(255, 255, 255, 0.8);
             transform: translateX(0.25rem);
         }
@@ -335,10 +528,11 @@ export default defineComponent({
 .oasis {
     .pill svg {
         margin: 0 0.5rem 0 -0.5rem;
+        flex-shrink: 0;
     }
 
     footer {
-        svg:first-child {
+        > svg:first-child {
             width: 1.75rem;
             height: 2.5rem;
             margin-right: 1rem;
@@ -352,43 +546,61 @@ export default defineComponent({
 }
 
 .credit-card {
-    .pill {
-        box-shadow: 0 0 0 1.5px var(--text-20);
-    }
-
-    .pill,
-    .nq-text,
-    .fees,
-    footer {
-        color: var(--text-60);
-    }
-
-    .fees {
-        .percentage {
-            color: var(--text-100);
-        }
-    }
-
     footer {
         justify-content: space-between;
 
         img {
             width: 10.5rem;
-            margin-top: -0.75rem;
-            opacity: 0.55;
-            // Generated with https://codepen.io/sosuke/full/Pjoqqp to make black into ~nimiq-blue
-            filter: invert(13%) sepia(8%) saturate(5326%) hue-rotate(199deg) brightness(99%) contrast(96%);
         }
 
-        svg:last-child {
-            color: var(--text-40);
+        &.moonpay img {
+            margin-top: -0.75rem;
+            opacity: 0.6;
+            filter: invert(100%); // Black logo into white
+        }
+
+        &.simplex img {
+            opacity: 0.7;
+            filter: brightness(0) invert(1);; // Colored logo into white
         }
     }
+}
 
-    &:hover,
-    &:focus {
-        footer svg:last-child {
-            color: var(--text-80);
+.option.disabled {
+    transition: none;
+    transform: none;
+    box-shadow: 0 0 0 1.5px var(--text-10);
+    background: none;
+    color: var(--text-25);
+
+    &::before {
+        display: none;
+    }
+
+    * {
+        color: inherit !important;
+    }
+
+    .pill {
+        box-shadow: 0 0 0 1.5px var(--text-10);
+    }
+
+    footer {
+        color: var(--text-40) !important;
+
+        > svg:first-child {
+            width: 2.5rem;
+            height: 2.5rem;
+            flex-shrink: 0;
+            margin-right: 1rem;
+
+            // To prevent overlapping opacities in ForbiddenIcon
+            color: var(--text-100) !important;
+            opacity: 0.4;
+        }
+
+        .tooltip {
+            font-size: 2.25rem;
         }
     }
 }
@@ -397,6 +609,10 @@ export default defineComponent({
     color: var(--text-50);
     font-size: var(--small-size);
     font-weight: 600;
+
+    &.only-option {
+        color: var(--text-100);
+    }
 }
 
 .exchange-logos {
@@ -405,7 +621,7 @@ export default defineComponent({
     align-items: center;
     padding: 0 2rem 2rem;
 
-    a {
+    &:not(.only-option) a {
         filter: saturate(0);
         opacity: 0.6;
 
@@ -413,18 +629,18 @@ export default defineComponent({
             filter 0.2s var(--nimiq-ease),
             opacity 0.2s var(--nimiq-ease);
 
-        img {
-            width: 3rem;
-            max-width: 3rem;
-            max-height: 3rem;
-            display: block;
-        }
-
         &:hover,
         &:focus {
             filter: saturate(1);
             opacity: 1;
         }
+    }
+
+    img {
+        width: 3rem;
+        max-width: 3rem;
+        max-height: 3rem;
+        display: block;
     }
 }
 
@@ -432,11 +648,11 @@ export default defineComponent({
     .option {
         flex-direction: row;
 
-        .top {
+        .upper-content {
             margin-right: 2rem;
         }
 
-        .bottom {
+        .lower-content {
             width: 13rem;
             flex-shrink: 0;
         }
@@ -454,22 +670,22 @@ export default defineComponent({
                 display: none;
             }
         }
-    }
 
-    &.credit-card {
-        footer {
-            margin-bottom: 0;
+        &.credit-card {
+            footer {
+                margin-bottom: 0;
 
-            img {
-                width: 9.5rem;
-                margin-top: -0.625rem;
+                img {
+                    width: 9.5rem;
+                    margin-top: -0.625rem;
+                }
             }
         }
     }
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .modal /deep/ .small-page {
+    .modal ::v-deep .small-page {
         // Regular Modal size (iOS scrolling inside the BuyOptionsModal does not work without a fixed height)
         min-height: unset !important;
     }
@@ -478,16 +694,17 @@ export default defineComponent({
         padding: 1.5rem;
         flex-direction: column;
         mask: linear-gradient(0deg , white, white calc(100% - 3.75rem), rgba(255,255,255, 0) calc(100% - 0.75rem));
-        padding: 2.25rem 1.25rem;
+        padding: 1rem 1.25rem 2.25rem;
     }
 
-    .featured-exchanges {
+    .featured-options {
         flex-direction: column;
     }
 
     .option {
         margin: 1rem;
         width: unset;
+        height: unset;
     }
 
     .exchange-logos {

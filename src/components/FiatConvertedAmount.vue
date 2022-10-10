@@ -1,7 +1,7 @@
 <template>
     <transition name="fade" mode="out-in">
         <FiatAmount v-if="fiatAmount !== undefined"
-            :amount="roundDown ? Math.floor(fiatAmount) : fiatAmount"
+            :amount="Math.min(roundDown ? Math.floor(fiatAmount) : fiatAmount, max || Infinity)"
             :hideDecimals="roundDown"
             :currency="fiatCurrency"/>
         <div v-else class="fiat-amount placeholder"></div>
@@ -32,6 +32,10 @@ export default defineComponent({
         },
         fiat: {
             type: String as () => FiatCurrency,
+            required: false,
+        },
+        max: {
+            type: Number,
             required: false,
         },
     },

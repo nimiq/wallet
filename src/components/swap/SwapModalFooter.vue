@@ -27,27 +27,38 @@ import { useBtcNetworkStore } from '@/stores/BtcNetwork';
 import { useNetworkStore } from '@/stores/Network';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
 import { computed, defineComponent } from '@vue/composition-api';
+import { CryptoCurrency } from '../../lib/Constants';
+import { useAccountStore } from '../../stores/Account';
 import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
     props: {
         error: String,
         disabled: Boolean,
+        requireBothNetworks: Boolean,
     },
     setup(props, context) {
+        const { activeCurrency } = useAccountStore();
+
         const networkState = computed(() => {
-            const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
-            const { consensus: btcConsensus } = useBtcNetworkStore();
             let message: string | null = null;
 
-            if (nimiqConsensus.value !== 'established' && btcConsensus.value !== 'established') {
-                message = context.root.$i18n.t('Connecting to Nimiq & Bitcoin networks') as string;
-            } else if (nimiqConsensus.value !== 'established') {
-                message = context.root.$i18n.t('Connecting to Nimiq network') as string;
-            } else if (btcConsensus.value !== 'established') {
-                message = context.root.$i18n.t('Connecting to Bitcoin network') as string;
-            } else if (!nimiqHeight.value) {
-                message = context.root.$i18n.t('Waiting for Nimiq network informations') as string;
+            if (activeCurrency.value === CryptoCurrency.BTC || props.requireBothNetworks) {
+                const { consensus: btcConsensus } = useBtcNetworkStore();
+
+                if (btcConsensus.value !== 'established') {
+                    message = context.root.$i18n.t('Connecting to Bitcoin network') as string;
+                }
+            }
+
+            if (activeCurrency.value === CryptoCurrency.NIM || props.requireBothNetworks) {
+                const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
+
+                if (nimiqConsensus.value !== 'established') {
+                    message = context.root.$i18n.t('Connecting to Nimiq network') as string;
+                } else if (!nimiqHeight.value) {
+                    message = context.root.$i18n.t('Waiting for Nimiq network informations') as string;
+                }
             }
 
             return {
@@ -87,19 +98,22 @@ export default defineComponent({
     .footer-notice {
         font-weight: 600;
         font-size: var(--small-size);
+        justify-content: center;
+        text-align: center;
 
-        /deep/ .nq-link {
+        ::v-deep .nq-link {
             color: inherit;
             text-decoration: underline;
         }
 
-        /deep/ .circle-spinner {
+        ::v-deep .circle-spinner {
             margin-right: 1rem;
         }
     }
 
     .nq-orange {
         text-align: left;
+        align-items: center;
     }
 
     .nq-gray {

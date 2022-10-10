@@ -1,16 +1,17 @@
 <template>
     <transition :name="swapIsComplete ? 'slide' : 'minimize'">
-        <button v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto'"
+        <button
+            v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto' && $route.name !== 'sell-crypto'"
             class="reset swap-notification flex-row" :class="{
                 'complete': swapIsComplete,
                 'expired': swapIsExpired,
-                'errored': swapIsErrored && !swapIsExpired,
+                'errored': (swapIsErrored && !swapIsExpired) || oasisPayoutFailed,
             }"
             @click="openSwap"
         >
             <div class="icon">
                 <StopwatchIcon v-if="swapIsExpired" />
-                <AlertTriangleIcon v-else-if="swapIsErrored"/>
+                <AlertTriangleIcon v-else-if="swapIsErrored || oasisLimitExceeded || oasisPayoutFailed"/>
                 <CheckmarkIcon v-else-if="swapIsComplete"/>
                 <LoadingSpinner v-else/>
             </div>
@@ -18,7 +19,7 @@
                 <div v-if="swapIsExpired" class="status">
                     {{ $t('Swap has expired') }}
                 </div>
-                <div v-else-if="swapIsErrored" class="status">
+                <div v-else-if="swapIsErrored || oasisLimitExceeded || oasisPayoutFailed" class="status">
                     {{ $t('There\'s a problem') }}
                 </div>
                 <div v-else-if="swapIsComplete" class="status">
@@ -28,7 +29,10 @@
                     {{ $t('Performing swap {progress}/5', { progress: (activeSwap ? activeSwap.state : 0) + 1 }) }}
                 </div>
 
-                <span v-if="swapIsExpired || swapIsErrored" class="closing-notice">
+                <span
+                    v-if="swapIsExpired || swapIsErrored || oasisLimitExceeded || oasisPayoutFailed"
+                    class="closing-notice"
+                >
                     {{ $t('Click for more information') }}
                 </span>
                 <span v-else-if="swapIsComplete" class="closing-notice">
@@ -46,20 +50,30 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
-import { NetworkClient } from '@nimiq/network-client';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
+import {
+    ClearingInfo,
+    ClearingStatus,
+    DeniedReason,
+    getHtlc,
+    Htlc as OasisHtlc,
+    HtlcStatus,
+    settleHtlc,
+    SettlementInfo,
+    SettlementStatus,
+} from '@nimiq/oasis-api';
+import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
-import { useSwapsStore, SwapState, ActiveSwap } from '../../stores/Swaps';
+import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { getNetworkClient } from '../../network';
-import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '../../lib/swap/SwapHandler';
-import { ClearingStatus, getHtlc, Htlc, HtlcStatus, settleHtlc, SettlementStatus } from '../../lib/OasisApi';
 import Time from '../../lib/Time';
+import { useBankStore } from '../../stores/Bank';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -68,7 +82,16 @@ enum SwapError {
 
 export default defineComponent({
     setup(props, context) {
-        const { activeSwap, setActiveSwap, addFundingData, userBank } = useSwapsStore();
+        const {
+            activeSwap,
+            setActiveSwap,
+            addFundingData,
+            addSettlementData,
+            setPromoBoxVisible,
+            state: swap$,
+        } = useSwapsStore();
+
+        const { banks, bankAccounts } = useBankStore();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
@@ -213,12 +236,15 @@ export default defineComponent({
 
         async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
             switch (asset) {
-                case SwapAsset.NIM: return getNetworkClient();
+                case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
                 case SwapAsset.EUR: return { getHtlc, settleHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
         }
+
+        const oasisLimitExceeded = ref(false);
+        const oasisPayoutFailed = ref(false);
 
         async function processSwap() {
             if (!activeSwap.value || !activeSwap.value.id || !activeSwap.value.from) {
@@ -238,9 +264,7 @@ export default defineComponent({
             // Await Nimiq and Bitcoin consensus
             if (swapsNim && useNetworkStore().state.consensus !== 'established') {
                 const nimiqClient = await getNetworkClient();
-                await new Promise<void>((resolve) => nimiqClient.on(NetworkClient.Events.CONSENSUS, (state) => {
-                    if (state === 'established') resolve();
-                }));
+                await nimiqClient.waitForConsensusEstablished();
             }
             if (swapsBtc && useBtcNetworkStore().state.consensus !== 'established') {
                 const electrum = await getElectrumClient();
@@ -285,6 +309,8 @@ export default defineComponent({
                             if (state.activeSwap.state === SwapState.AWAIT_INCOMING) resolve(true);
                         });
                     }).finally(() => unsubscribe());
+                    // The swap may have updated
+                    swapHandler.setSwap(activeSwap.value as unknown as GenericSwap<SwapAsset, SwapAsset>);
                 }
                 case SwapState.AWAIT_INCOMING: {
                     if (await checkExpired()) break;
@@ -318,27 +344,33 @@ export default defineComponent({
                                 fundingTx: htlc,
                             });
 
-                            if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
+                            if ((htlc as OasisHtlc).status === HtlcStatus.EXPIRED) {
                                 checkExpired();
                                 return;
                             }
 
-                            if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.PARTIAL) {
+                            if ((htlc as OasisHtlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.PARTIAL) {
                                 // TODO: Handle partial funding
                             }
 
-                            if ((htlc as Htlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED) {
-                                // TODO: Handle limit excess
+                            if ((htlc as OasisHtlc<HtlcStatus.PENDING>).clearing.status === ClearingStatus.DENIED) {
+                                const clearingInfo = (htlc as OasisHtlc<HtlcStatus.PENDING>)
+                                    .clearing as ClearingInfo<ClearingStatus.DENIED>;
+                                oasisLimitExceeded.value = clearingInfo.detail.reason === DeniedReason.LIMIT_EXCEEDED;
+                            } else {
+                                oasisLimitExceeded.value = false;
                             }
                         }) as Transaction<SwapAsset.EUR>;
+
+                        oasisLimitExceeded.value = false;
 
                         // As EUR payments are not otherwise detected by the Wallet, we use this
                         // place to persist the relevant information in our store.
                         addFundingData(fundingTx.hash.value, {
                             asset: SwapAsset.EUR,
-                            bankLabel: userBank.value?.name,
+                            bankLabel: banks.value.sepa?.name,
                             // bankLogo?: string,
-                            amount: fundingTx.amount,
+                            amount: fundingTx.amount + fundingTx.fee,
                             htlc: {
                                 id: fundingTx.id,
                                 timeoutTimestamp: fundingTx.expires,
@@ -375,7 +407,7 @@ export default defineComponent({
                                 stateEnteredAt: Date.now(),
                                 fundingTx,
                             });
-                        } catch (error) {
+                        } catch (error: any) {
                             if (error.message === SwapError.EXPIRED) return;
                             if (error.message === SwapError.DELETED) return;
 
@@ -390,7 +422,7 @@ export default defineComponent({
                 }
                 case SwapState.AWAIT_SECRET: {
                     let interval: number;
-                    const secret = await Promise.race<Promise<string>>([
+                    const secret = await Promise.race<string>([
                         swapHandler.awaitSecret(),
                         new Promise((resolve, reject) => {
                             interval = window.setInterval(async () => {
@@ -432,20 +464,100 @@ export default defineComponent({
                         }
 
                         if (activeSwap.value!.to.asset === SwapAsset.EUR) {
-                            await swapHandler.awaitIncomingConfirmation((htlc) => {
-                                if ((htlc as Htlc<HtlcStatus>).status === HtlcStatus.EXPIRED) {
-                                    checkExpired();
-                                    return;
-                                }
+                            let htlc = settlementTx as OasisHtlc<HtlcStatus.SETTLED>;
 
-                                if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.DENIED) {
-                                    // TODO: Handle limit excess
-                                }
+                            // As EUR payments are not otherwise detected by the Wallet, we use this
+                            // place to persist the relevant information in our store.
+                            const swapData: SwapEurData = {
+                                asset: SwapAsset.EUR,
+                                bankLabel: banks.value.sepa?.name,
+                                // bankLogo?: string,
+                                iban: bankAccounts.value.sepa?.iban,
+                                amount: htlc.amount,
+                                htlc: {
+                                    id: htlc.id,
+                                    timeoutTimestamp: htlc.expires,
+                                    settlement: {
+                                        status: htlc.settlement.status,
+                                    },
+                                },
+                            };
 
-                                if ((htlc as Htlc<HtlcStatus.SETTLED>).settlement.status === SettlementStatus.FAILED) {
-                                    // TODO: Handle failed payout
-                                }
-                            });
+                            if (htlc.settlement.status === SettlementStatus.PENDING) {
+                                // Add swap data to store so the tx history already shows the tx as a swap
+                                // while we wait for payout acceptance.
+                                addSettlementData(htlc.hash.value, swapData);
+
+                                htlc = await swapHandler.awaitIncomingConfirmation((tx) => {
+                                    // eslint-disable-next-line @typescript-eslint/no-shadow
+                                    const htlc = tx as OasisHtlc<HtlcStatus.SETTLED>;
+
+                                    updateSwap({
+                                        settlementTx: htlc,
+                                    });
+
+                                    if (htlc.settlement.status === SettlementStatus.DENIED) {
+                                        const settlement = htlc.settlement as SettlementInfo<SettlementStatus.DENIED>;
+                                        const { reason } = settlement.detail;
+                                        oasisLimitExceeded.value = reason === DeniedReason.LIMIT_EXCEEDED;
+
+                                        swapData.htlc!.settlement = {
+                                            status: settlement.status,
+                                            reason: settlement.detail.reason,
+                                            lastUpdated: Date.now(),
+                                        };
+                                        addSettlementData(htlc.hash.value, swapData);
+                                    } else {
+                                        oasisLimitExceeded.value = false;
+                                    }
+
+                                    if (htlc.settlement.status === SettlementStatus.FAILED) {
+                                        const settlement = htlc.settlement as SettlementInfo<SettlementStatus.FAILED>;
+                                        oasisPayoutFailed.value = true;
+
+                                        swapData.htlc!.settlement = {
+                                            status: settlement.status,
+                                            reason: settlement.detail.reason,
+                                            lastUpdated: Date.now(),
+                                        };
+                                        addSettlementData(htlc.hash.value, swapData);
+                                    } else {
+                                        oasisPayoutFailed.value = false;
+                                    }
+                                }) as OasisHtlc<HtlcStatus.SETTLED>;
+
+                                oasisLimitExceeded.value = false;
+                                oasisPayoutFailed.value = false;
+                            }
+
+                            // As EUR payments are not otherwise detected by the Wallet, we use this
+                            // place to persist the relevant information in our store.
+                            swapData.htlc!.settlement = {
+                                status: htlc.settlement.status,
+                                ...(htlc.settlement.status === SettlementStatus.ACCEPTED
+                                    ? {
+                                        ...((htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>).detail?.eta
+                                            ? { eta: new Date(
+                                                (htlc.settlement as SettlementInfo<SettlementStatus.ACCEPTED>)
+                                                    .detail!.eta!).getTime() }
+                                            : {}
+                                        ),
+                                        lastUpdated: Date.now(),
+                                    }
+                                    : {}
+                                ),
+                                ...(htlc.settlement.status === SettlementStatus.DENIED
+                                    || htlc.settlement.status === SettlementStatus.FAILED
+                                    ? {
+                                        reason: (htlc.settlement as SettlementInfo<
+                                            SettlementStatus.DENIED | SettlementStatus.FAILED
+                                        >).detail.reason,
+                                        lastUpdated: Date.now(),
+                                    }
+                                    : {}
+                                ),
+                            };
+                            addSettlementData(htlc.hash.value, swapData);
                         }
 
                         updateSwap({
@@ -453,7 +565,7 @@ export default defineComponent({
                             stateEnteredAt: Date.now(),
                             settlementTx,
                         });
-                    } catch (error) {
+                    } catch (error: any) {
                         if (error.message === SwapError.EXPIRED) return;
                         if (error.message === SwapError.DELETED) return;
 
@@ -466,9 +578,12 @@ export default defineComponent({
                     currentError.value = null;
                 }
                 case SwapState.COMPLETE: {
+                    if (Object.keys(swap$.swaps).length === 1) {
+                        setPromoBoxVisible(true);
+                    }
                     setTimeout(() => {
-                        // Hide notification after a timeout, if not in the SwapModal.
-                        if (['swap', 'buy-crypto'].includes(context.root.$route.name!)) return;
+                        // Hide notification after a timeout, if not in a swap modal
+                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(context.root.$route.name!)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }
@@ -488,6 +603,8 @@ export default defineComponent({
                 context.root.$router.push('/swap');
             } else if (activeSwap.value.from.asset === SwapAsset.EUR) {
                 context.root.$router.push('/buy-crypto');
+            } else if (activeSwap.value.to.asset === SwapAsset.EUR) {
+                context.root.$router.push('/sell-crypto');
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');
             }
@@ -498,6 +615,8 @@ export default defineComponent({
             swapIsComplete,
             swapIsExpired,
             swapIsErrored,
+            oasisLimitExceeded,
+            oasisPayoutFailed,
             openSwap,
         };
     },

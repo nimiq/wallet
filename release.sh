@@ -19,6 +19,9 @@ if [[ `git status --porcelain` ]]; then
     exit 1
 fi
 
+# Build Nginx path allowlist
+yarn utils:makeNginxAllowlist &&
+
 # Tag current commit
 git tag $1 &&
 

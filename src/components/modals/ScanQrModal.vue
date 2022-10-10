@@ -1,5 +1,5 @@
 <template>
-    <Modal class="scan-qr-modal">
+    <Modal class="scan-qr-modal" :swipePadding="false">
         <PageBody>
             <QrScanner @result="checkResult" @cancel="$router.back()" />
         </PageBody>
@@ -68,12 +68,14 @@ export default defineComponent({
                 return;
             }
 
-            const { activeAccountInfo } = useAccountStore();
-            if (
-                activeAccountInfo.value
-                && activeAccountInfo.value.btcAddresses
-                && activeAccountInfo.value.btcAddresses.external.length > 0
-            ) {
+            // Nimiq-controlled short-links
+            if (/https:\/\/nim\.id\/.+/.test(result)) {
+                window.location.href = result;
+                return;
+            }
+
+            const { hasBitcoinAddresses } = useAccountStore();
+            if (hasBitcoinAddresses.value) {
                 await loadBitcoinJS();
 
                 // BTC Address
@@ -86,7 +88,7 @@ export default defineComponent({
                 try {
                     parseBitcoinUrl(result);
                     // If the above does not throw, we have a valid BTC request link
-                    router.replace(`/${result}}`);
+                    router.replace(`/${result}`);
                     return; // eslint-disable-line no-useless-return
                 } catch (error) {
                     // Ignore
@@ -107,7 +109,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .close-button {
+.modal ::v-deep .close-button {
     display: none;
 }
 
@@ -124,12 +126,18 @@ export default defineComponent({
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
-    .modal /deep/ {
+    .modal ::v-deep {
         .wrapper,
         .small-page {
             height: 100%;
             max-height: 100%;
             border-radius: 0;
+            min-width: 100vw;
+        }
+
+        .swipe-bar {
+            background: var(--text-20);
+            backdrop-filter: invert(1);
         }
     }
 
@@ -140,8 +148,12 @@ export default defineComponent({
     .qr-scanner {
         border-radius: 0;
 
-        /deep/ .cancel-button {
+        ::v-deep .cancel-button {
             bottom: 6rem;
+        }
+
+        ::v-deep .access-denied-instructions {
+            bottom: 13rem;
         }
     }
 }

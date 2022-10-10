@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable import/no-extraneous-dependencies */
 
-const https = require('https');
-const http = require('http');
-const fs = require('fs');
+const fs = require('fs/promises');
 const xlsx = require('xlsx');
-const scraperjs = require('scraperjs'); // https://github.com/ruipgil/scraperjs
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 const DATA_FOLDER_PATH = './src/data/banksList';
 
@@ -13,100 +12,79 @@ const EBA_RT1_XLSX_FILE_PATH = `${DATA_FOLDER_PATH}/generated/EBA_RT1.xlsx`;
 const EBA_RT1_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/EBA_RT1.json`;
 const CUSTOM_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/customBanksList.json`;
 const OUTPUT_JSON_FILE_PATH = `${DATA_FOLDER_PATH}/generated/banksList.json`;
+const OUTPUT_SEPA_COUNTRIES_FILE_PATH = `${DATA_FOLDER_PATH}/generated/sepaBankCountries.json`;
 
 const EBA_CLEARING_BASEURL = 'https://www.ebaclearing.eu';
-const EBA_CLEARING_PAGE = `${EBA_CLEARING_BASEURL}/services/instant-payments/participants/`;
+const EBA_CLEARING_PAGE = `${EBA_CLEARING_BASEURL}/services/rt1/participants/`;
 
-function readFile(path) {
-    return new Promise((resolve, reject) => {
-        fs.readFile(path, { encoding: 'utf8' }, (err, data) => {
-            if (err) return reject(err);
-            return resolve(JSON.parse(data));
-        });
-    });
+async function readFile(path) {
+    let data;
+
+    if (path.startsWith('http')) {
+        data = await fetch(path).then(res => res.text());
+    } else {
+        data = await fs.readFile(path, { encoding: 'utf8' });
+    }
+
+    return JSON.parse(data);
 }
 
 function writeFile(path, data) {
-    return new Promise((resolve, reject) => {
-        fs.writeFile(path, JSON.stringify(data), (err) => {
-            if (err) return reject(err);
-            return resolve(data);
-        });
-    });
+    return fs.writeFile(path, JSON.stringify(data));
 }
 
 function download(url, filePath) {
-    const proto = !url.charAt(4).localeCompare('s') ? https : http;
-
-    return new Promise((resolve, reject) => {
-        const file = fs.createWriteStream(filePath);
-        let fileInfo = null;
-
-        const request = proto.get(url, (response) => {
-            if (response.statusCode !== 200) {
-                reject(new Error(`Failed to get '${url}' (${response.statusCode})`));
-                return;
-            }
-
-            fileInfo = {
-                mime: response.headers['content-type'],
-                size: parseInt(response.headers['content-length'], 10),
-            };
-
-            response.pipe(file);
-        });
-
-        file.on('finish', () => resolve(fileInfo));
-
-        request.on('error', (err) => fs.unlink(filePath, () => reject(err)));
-        file.on('error', (err) => fs.unlink(filePath, () => reject(err)));
-
-        request.end();
-    });
+    return fetch(url)
+        .then(x => x.arrayBuffer())
+        .then(x => fs.writeFile(filePath, Buffer.from(x)));
 }
 
-function getBankListUrl() {
-    return new Promise((resolve, reject) => {
-        scraperjs.StaticScraper
-            .create(EBA_CLEARING_PAGE)
-            .scrape(($) => {
-                const obj = $('.text-rte:not(.clear) a');
+async function getBankListUrl() {
+    /** @type {string} */
+    const html = await fetch(EBA_CLEARING_PAGE).then(res => res.text());
 
-                if (!obj || obj.length === 0) {
-                    reject(Error('Scraper error: BankListUrl not found, please update css selector.'));
-                    return null;
-                }
+    const $ = cheerio.load(html);
+    const obj = $('.text-rte:not(.clear) a');
 
-                return EBA_CLEARING_BASEURL + obj[0].attribs.href;
-            })
-            .catch(reject)
-            .then(resolve);
-    });
+    if (!obj || obj.length === 0) {
+        throw new Error('Scraper error: BankListUrl not found, please update css selector.');
+    }
+
+    return EBA_CLEARING_BASEURL + obj[0].attribs.href;
 }
 
 async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {
+    // console.log("Reading xlsx file");
     const workbook = xlsx.readFile(xlsxFilePath);
     const jsonFile = {};
 
+    // console.log("Converting to JSON");
     xlsx.utils
         .sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: ['BIC', 'name'] })
         .slice(2)
         .forEach((bank) => {
-            if (jsonFile[bank.BIC]) {
+            // console.log("Converting", bank);
+            let { BIC } = bank;
+
+            if (BIC.length > 8 && BIC.endsWith('XXX')) {
+                BIC = BIC.substring(0, 8);
+            }
+
+            if (jsonFile[BIC]) {
                 process.stdout.write(`\x1b[33mWarning:\x1b[0m Duplicate entries for BIC \x1b[36m${bank.BIC}\x1b[0m\n`);
             }
-            jsonFile[bank.BIC] = {
+            jsonFile[BIC] = {
                 name: bank.name
                     .split(' ')
                     .filter((word) => word)
                     .map((word) => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase())
                     .join(' '),
-                country: bank.BIC.slice(4, 6),
+                country: bank.BIC.substring(4, 6),
                 support: {
                     sepa: {
                         // We assume that banks at least fully support inbound sepa instant if they are part of the list
-                        inbound: 'full-support',
-                        outbound: 'partial-support',
+                        inbound: 'full',
+                        outbound: 'partial',
                     },
                 },
             };
@@ -127,8 +105,14 @@ async function mergeJson() {
     for (const BIC of ebaRt1BanksBicList) ebaRt1Banks[BIC].BIC = BIC;
 
     for (const BIC of customBanksBicList) {
-        if (!ebaRt1Banks[BIC]) ebaRt1Banks[BIC] = { ...customBanks[BIC], BIC };
-        else {
+        if (!ebaRt1Banks[BIC]) {
+            const bank = { ...customBanks[BIC], BIC };
+            if (!bank.name || !bank.country || !bank.support.sepa.inbound || !bank.support.sepa.outbound) {
+                console.error('Incomplete info for', BIC, bank); // eslint-disable-line no-console
+                continue;
+            }
+            ebaRt1Banks[BIC] = bank;
+        } else {
             ebaRt1Banks[BIC].BIC = customBanks[BIC].BIC || BIC;
             ebaRt1Banks[BIC].name = customBanks[BIC].name || ebaRt1Banks[BIC].name;
             ebaRt1Banks[BIC].country = customBanks[BIC].country || ebaRt1Banks[BIC].country;
@@ -159,6 +143,11 @@ async function mergeJson() {
     const mergedJsonArray = Object.values(ebaRt1Banks);
     await writeFile(OUTPUT_JSON_FILE_PATH, mergedJsonArray);
 
+    const sepaCountries = [...new Set(mergedJsonArray
+        .filter((bank) => Boolean(bank.support.sepa))
+        .map((bank) => bank.country))];
+    await writeFile(OUTPUT_SEPA_COUNTRIES_FILE_PATH, sepaCountries);
+
     return mergedJsonArray.length;
 }
 
@@ -176,8 +165,6 @@ async function main() {
         process.stdout.write(`> Merge:\n  > ${EBA_RT1_JSON_FILE_PATH}\n  > ${CUSTOM_JSON_FILE_PATH}\n`);
         process.stdout.write(`  > To:\n   > ${OUTPUT_JSON_FILE_PATH}\n`);
         const itemCount = await mergeJson();
-
-        // TODO?: generate 1 file per country, so we load only banks that we need to display
 
         process.stdout.write(`> Done!\n> ${itemCount} banks imported.\n`);
         process.exit(0);

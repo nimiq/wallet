@@ -1,17 +1,18 @@
 # 
 # Translators:
-# Rhody Lugo, 2020
-# Daniel, 2020
-# Sören Schwert <hello@soerenschwert.de>, 2020
-# Ricardo Barquero Carranza <richy@nimiq.com>, 2021
+# Rhody Lugo, 2021
+# Max, 2022
+# Daniel, 2022
+# Sören Schwert <hello@soerenschwert.de>, 2022
+# Ricardo Barquero Carranza <richy@nimiq.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2021\n"
+"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2022\n"
 "Language-Team: Spanish (https://www.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
@@ -21,8 +22,12 @@ msgstr "{accounts} conservan, manejan y agregan direcciones."
 msgid "{addresses} send and receive transactions."
 msgstr "{addresses} envían y reciben transacciones."
 
-#: src/components/modals/BtcTransactionModal.vue:264
-#: src/components/modals/TransactionModal.vue:274
+#: src/components/BankCheckInput.vue:71 src/components/BankCheckInput.vue:77
+msgid "{bankName} offers generic and individual IBANs."
+msgstr "{bankName} ofrece IBANs genéricos e individuales."
+
+#: src/components/modals/BtcTransactionModal.vue:287
+#: src/components/modals/TransactionModal.vue:282
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Confirmación | {count} Confirmaciones"
 
@@ -35,37 +40,54 @@ msgstr "{count} Par | {count} Pares"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink en trámite | {count} Cashlinks en trámite"
 
-#: src/components/modals/TransactionModal.vue:276
+#: src/components/TransactionDetailOasisPayoutStatus.vue:25
+msgid "{currency} could not be paid out"
+msgstr "{currency} no pudo pagarse"
+
+#: src/components/TransactionListOasisPayoutStatus.vue:11
+msgid "{currency} not paid out"
+msgstr "{currency} no se ha pagado"
+
+#: src/components/TransactionDetailOasisPayoutStatus.vue:6
+#: src/components/TransactionListOasisPayoutStatus.vue:5
+msgid "{currency} payout pending"
+msgstr "{currency} pago pendiente"
+
+#: src/components/modals/TransactionModal.vue:284
 msgid "{fee} fee"
 msgstr "{fee} cuota"
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:38
+#: src/components/swap/SwapFeesTooltip.vue:49
 msgid "{perc}% of swap value."
 msgstr "{perc}% del valor del intercambio."
 
-#: src/components/modals/BuyCryptoModal.vue:101
-#: src/components/swap/SwapModal.vue:84
+#: src/components/modals/BuyCryptoModal.vue:109
+#: src/components/modals/BuyCryptoModal.vue:82
+#: src/components/modals/SellCryptoModal.vue:85
+#: src/components/swap/SwapModal.vue:60
 msgid "{value} remaining"
 msgstr "{value} restante"
 
-#: src/components/BankCheckInput.vue:82
+#: src/components/BankCheckInput.vue:84
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} más | + {count} más"
 
-#: src/components/modals/BuyOptionsModal.vue:37
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:142
+#: src/components/modals/BuyOptionsModal.vue:53
 msgid "+ network fees"
-msgstr ""
+msgstr "+ cuotas de red"
 
-#: src/components/modals/BtcTransactionModal.vue:117
-#: src/components/modals/BtcTransactionModal.vue:132
-#: src/components/modals/BtcTransactionModal.vue:147
-#: src/components/modals/BtcTransactionModal.vue:179
+#: src/components/modals/BtcTransactionModal.vue:114
+#: src/components/modals/BtcTransactionModal.vue:129
+#: src/components/modals/BtcTransactionModal.vue:144
+#: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr "+{n} más"
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:20
+#: src/components/modals/SellCryptoModal.vue:19
 msgid "1"
 msgstr "1"
 
@@ -73,7 +95,8 @@ msgstr "1"
 msgid "15m"
 msgstr "15m"
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:21
+#: src/components/modals/SellCryptoModal.vue:20
 msgid "2"
 msgstr "2"
 
@@ -83,14 +106,16 @@ msgstr "2-4h"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Support"
-msgstr ""
+msgstr "Soporte 24/7"
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:22
+#: src/components/modals/SellCryptoModal.vue:21
 msgid "3"
 msgstr "3"
 
-#: src/components/modals/BuyCryptoModal.vue:95
-#: src/components/swap/SwapModal.vue:55 src/components/swap/SwapModal.vue:79
+#: src/components/modals/BuyCryptoModal.vue:102
+#: src/components/modals/SellCryptoModal.vue:78
+#: src/components/swap/SwapModal.vue:55
 msgid "30-day Limit"
 msgstr "Límite de 30 días"
 
@@ -98,7 +123,14 @@ msgstr "Límite de 30 días"
 msgid "6h+"
 msgstr "6h+"
 
-#: src/components/layouts/Settings.vue:285
+#: src/components/modals/BuyCryptoModal.vue:95
+msgid ""
+"72 hours after your first buy, your limit will be increased automatically."
+msgstr ""
+"Después de 72 horas tras tu primera compra, tu límite será aumentado "
+"automáticamente."
+
+#: src/components/layouts/Settings.vue:341
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -118,7 +150,7 @@ msgstr ""
 msgid "Accounts"
 msgstr "Cuentas"
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:84
 msgid "Activate"
 msgstr "Activar"
 
@@ -126,7 +158,7 @@ msgstr "Activar"
 msgid "Activate Bitcoin"
 msgstr "Activar Bitcoin"
 
-#: src/components/layouts/Settings.vue:147
+#: src/components/layouts/Settings.vue:198
 msgid "Add"
 msgstr "Agregar"
 
@@ -138,25 +170,25 @@ msgstr ""
 "Agrega una etiqueta para encontrar rápidamente la transacción en su "
 "historial una vez que fue enviada."
 
-#: src/components/BtcLabelInput.vue:19
+#: src/components/BtcLabelInput.vue:20
 msgid "Add a label to quickly find the transaction in your history."
 msgstr ""
 "Agrega una etiqueta para encontrar rápidamente la transacción en el "
 "historial."
 
-#: src/components/modals/SendModal.vue:143
+#: src/components/modals/SendModal.vue:181
 msgid "Add a public message..."
 msgstr "Agrega un mensaje público..."
 
-#: src/components/AccountMenu.vue:70
+#: src/components/modals/AccountMenuModal.vue:43
 msgid "Add account"
 msgstr "Agregar cuenta"
 
-#: src/components/AddressList.vue:25
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr "Agregar dirección"
 
-#: src/components/layouts/Settings.vue:143
+#: src/components/layouts/Settings.vue:194
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Agregar un contrato vesting existente a su billetera"
 
@@ -168,12 +200,12 @@ msgstr ""
 "Agregar Bitcoin\n"
 "a su cuenta"
 
-#: src/components/modals/TransactionModal.vue:117
-#: src/components/modals/TransactionModal.vue:169
+#: src/components/modals/TransactionModal.vue:110
+#: src/components/modals/TransactionModal.vue:155
 msgid "Add contact"
 msgstr "Agregar Contacto"
 
-#: src/components/modals/SendModal.vue:28
+#: src/components/modals/SendModal.vue:50
 msgid "Address unavailable?"
 msgstr "Dirección no disponible?"
 
@@ -181,16 +213,20 @@ msgstr "Dirección no disponible?"
 msgid "Addresses"
 msgstr "Direcciones"
 
-#: src/components/layouts/Settings.vue:137
+#: src/components/layouts/Settings.vue:152
 msgid "Advanced"
 msgstr "Avanzado"
 
-#: src/components/layouts/Settings.vue:117
-#: src/components/layouts/Settings.vue:57
+#: src/components/modals/BuyCryptoModal.vue:86
+msgid "After 72 hours"
+msgstr "Tras 72 horas."
+
+#: src/components/layouts/Settings.vue:132
+#: src/components/layouts/Settings.vue:72
 msgid "all"
 msgstr "todo"
 
-#: src/components/BankCheckInput.vue:182
+#: src/components/CountrySelector.vue:117
 msgid "All countries"
 msgstr "Todos los países"
 
@@ -198,7 +234,7 @@ msgstr "Todos los países"
 msgid "All in one easy place."
 msgstr "Todo en un mismo lugar"
 
-#: src/components/layouts/AccountOverview.vue:89
+#: src/components/layouts/AccountOverview.vue:91
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -207,6 +243,14 @@ msgstr ""
 "Todas las nuevas características son exclusivas para nuevas cuentas. Mejora "
 "a la nueva versión ahora, solo toma unos segundos."
 
+#: src/components/layouts/AddressOverview.vue:147
+msgid ""
+"All swaps are part of your transaction history and feature a small swap "
+"icon."
+msgstr ""
+"Todos los intercambios son parte del historial de sus transacciones y se "
+"incluirán con un icono de intercambio."
+
 #: src/components/modals/DisclaimerModal.vue:21
 msgid ""
 "All translations are for information purposes only. The English text is the "
@@ -214,19 +258,6 @@ msgid ""
 msgstr ""
 "Todas las traducciones son únicamente de carácter. Ingles es el texto "
 "principal."
-
-#: src/components/modals/BuyOptionsModal.vue:54
-msgid "Almost everywhere"
-msgstr ""
-
-#: src/components/modals/BtcReceiveModal.vue:55
-#: src/components/modals/BtcSendModal.vue:34
-msgid ""
-"Although reusing addresses won’t result in a loss of funds, it is highly "
-"recommended not to do so."
-msgstr ""
-"Aunque re-usar direcciones no provocara perdida de fondos, es altamente "
-"recomendable que no lo haga."
 
 #: src/components/modals/DisclaimerModal.vue:7
 msgid "Always backup your Recovery Words, Password and Login Files."
@@ -251,13 +282,13 @@ msgstr ""
 msgid "Android and iOS App"
 msgstr "App de Android y iOS."
 
-#: src/components/swap/SwapAnimation.vue:18
+#: src/components/swap/SwapAnimation.vue:22
 msgid "Any funds sent will be refunded within 1-3 days."
-msgstr ""
+msgstr "Cualquier dinero enviado será reembolsado en 1-3 días."
 
-#: src/components/swap/SwapAnimation.vue:21
+#: src/components/swap/SwapAnimation.vue:25
 msgid "Any funds sent will be refunded."
-msgstr ""
+msgstr "Cualquier dinero enviado será reembolsado."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:34
 msgid ""
@@ -265,15 +296,31 @@ msgid ""
 "In case of a problem or a time-out, your payment will be returned to your "
 "bank account."
 msgstr ""
-"Tan pronto como su crypto este disponible, su Euro es procesado al vendedor."
-" En case de un problema o un error, su pago será devuelto a su cuenta "
+"Tan pronto como su cripto este disponible, su Euro es procesado al vendedor."
+" En caso de un problema o un error, su pago será devuelto a su cuenta "
 "bancaria."
+
+#: src/components/swap/SwapAnimation.vue:87
+msgid "Atomic Swap complete"
+msgstr "¡Intercambio Atómico completado!"
+
+#: src/components/swap/SwapAnimation.vue:11
+msgid "Atomic Swap successful!"
+msgstr "¡Intercambio Atómico existoso!"
 
 #: src/components/swap/SwapFeesTooltip.vue:12
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Los intercambios atómicos requieren dos transacciones BTC."
 
-#: src/components/swap/SwapAnimation.vue:204
+#: src/components/layouts/Settings.vue:184
+msgid "Auto"
+msgstr "Automático"
+
+#: src/components/layouts/Settings.vue:177
+msgid "Automatic mode uses {behavior}."
+msgstr "El modo automático usa {behavior}."
+
+#: src/components/swap/SwapAnimation.vue:265
 msgid "Awaiting swap secret"
 msgstr "Esperando el intercambio del secreto"
 
@@ -281,42 +328,43 @@ msgstr "Esperando el intercambio del secreto"
 msgid "Back to addresses"
 msgstr "Volver a las direcciones"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:124
+#: src/components/swap/SwapSepaFundingInstructions.vue:123
 msgid "Back to Bank Details"
 msgstr "Volver a los Detalles del Banco"
 
-#: src/components/layouts/AccountOverview.vue:25
-msgid "Backup"
-msgstr "Respaldar"
-
-#: src/components/BtcTransactionListItem.vue:235
-#: src/components/modals/BtcTransactionModal.vue:472
-#: src/components/modals/TransactionModal.vue:525
-#: src/components/TransactionListItem.vue:215
+#: src/components/BtcTransactionListItem.vue:256
+#: src/components/modals/BtcTransactionModal.vue:494
+#: src/components/modals/TransactionModal.vue:532
+#: src/components/TransactionListItem.vue:236
 msgid "Bank Account"
 msgstr "Cuenta Bancaria"
 
-#: src/components/modals/BuyOptionsModal.vue:10
+#: src/components/modals/BuyOptionsModal.vue:26
 msgid "Bank Transfer"
-msgstr ""
+msgstr "Transferencia Bancaria"
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:18
+#: src/components/modals/BuyOptionsModal.vue:92
+msgid "Bank Transfer is only supported in the EU’s SEPA area."
+msgstr "Transferencias Bancarias son solo soportadas en el area SEPA de UE."
+
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:19
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:27
 msgid "BIC works, too."
 msgstr "BIC también funciona."
 
-#: src/components/BalanceDistribution.vue:77
-#: src/components/layouts/AccountOverview.vue:62
+#: src/components/BalanceDistribution.vue:89
+#: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
-#: src/components/layouts/Settings.vue:104
+#: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
-#: src/components/modals/BtcTransactionModal.vue:122
-#: src/components/modals/BtcTransactionModal.vue:138
-#: src/components/modals/TransactionModal.vue:521
-#: src/components/TransactionListItem.vue:211
+#: src/components/modals/BtcTransactionModal.vue:119
+#: src/components/modals/BtcTransactionModal.vue:135
+#: src/components/modals/TransactionModal.vue:528
+#: src/components/TransactionListItem.vue:232
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
-#: src/components/modals/BtcSendModal.vue:126
+#: src/components/modals/BtcSendModal.vue:112
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -325,19 +373,19 @@ msgstr ""
 "contactos, En su lugar utilice etiquetas para encontrar transacciones en su "
 "historial fácilmente."
 
-#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:138
 msgid "Bitcoin Unit"
 msgstr "Unidad Bitcoin"
 
-#: src/components/modals/BtcTransactionModal.vue:261
-#: src/components/modals/TransactionModal.vue:271
+#: src/components/modals/BtcTransactionModal.vue:284
+#: src/components/modals/TransactionModal.vue:279
 msgid "Block #{height}"
 msgstr "Bloque #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:271
-#: src/components/modals/TransactionModal.vue:283
-#: src/components/swap/SwapAnimation.vue:121
-#: src/components/swap/SwapAnimation.vue:189
+#: src/components/modals/BtcTransactionModal.vue:294
+#: src/components/modals/TransactionModal.vue:291
+#: src/components/swap/SwapAnimation.vue:171
+#: src/components/swap/SwapAnimation.vue:247
 msgid "Block explorer"
 msgstr "Explorador de Bloques"
 
@@ -345,40 +393,48 @@ msgstr "Explorador de Bloques"
 msgid "Block height"
 msgstr "Número de Bloque"
 
-#: src/components/NetworkMap.vue:29
-msgid "Browser"
-msgstr "Navegador"
+#: src/components/NetworkMapPeerList.vue:15
+msgid "Browser | {count} Browsers"
+msgstr "Navegador | {count} Navegadores"
 
 #: src/components/swap/SwapFeesTooltip.vue:8
 msgid "BTC network fee"
 msgstr "Cuotas de red de BTC"
 
-#: src/components/layouts/Sidebar.vue:31
+#: src/components/layouts/Sidebar.vue:32
 msgid "Buy"
 msgstr "Comprar"
 
-#: src/components/layouts/Sidebar.vue:40
-msgid "Buy & Sell"
-msgstr "Comprar y vender"
-
-#: src/components/modals/BtcActivationModal.vue:15
+#: src/components/swap/OasisLaunchModal.vue:7
 msgid ""
-"Buy and sell BTC by bank transfer.\n"
-"Coming soon!"
+"Buy and sell crypto for EUR. Simply by bank transfer and from inside your "
+"wallet."
 msgstr ""
-"Compre y venda BTC por medio de una transferencia Bancaria.\n"
-"¡Muy pronto!"
+"Compra y venda cripto por EUR. Con una simple transferencia bancaria y desde"
+" su billetera."
 
-#: src/components/modals/BuyCryptoModal.vue:185
-#: src/components/modals/BuyCryptoModal.vue:190
-#: src/components/modals/BuyCryptoModal.vue:204
-#: src/components/modals/BuyCryptoModal.vue:44
+#: src/components/BtcTransactionList.vue:58
+msgid "Buy BTC"
+msgstr "Comprar BTC"
+
+#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:216
+#: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
-msgstr "Comprar Crypto"
+msgstr "Comprar Cripto"
 
-#: src/components/modals/BuyCryptoModal.vue:23
+#: src/components/modals/BuyCryptoModal.vue:11
 msgid "Buy Crypto with Fiat"
-msgstr "Comprar Crypto con Fiat"
+msgstr "Comprar Cripto con Fiat"
+
+#: src/components/modals/BuyCryptoModal.vue:176
+msgid "Buy max"
+msgstr "Compre el máximo"
+
+#: src/components/BtcTransactionList.vue:56
+msgid "Buy more here in the wallet."
+msgstr "Comprar más aquí en las billetera."
 
 #: src/components/TransactionList.vue:65
 msgid "Buy NIM"
@@ -386,21 +442,25 @@ msgstr "Comprar NIM"
 
 #: src/components/modals/BuyOptionsModal.vue:5
 msgid "Buy NIM & BTC"
-msgstr ""
+msgstr "Comprar NIM & BTC"
 
-#: src/components/AnnouncementBox.vue:32
-msgid "Buy NIM & BTC with Credit Card!"
-msgstr "¡Comprar NIM & BTC con tarjeta de Credito!"
+#: src/components/AnnouncementBox.vue:27
+msgid "Buy NIM & BTC with OASIS!"
+msgstr "Comprar NIM & BTC con OASIS!"
 
-#: src/components/modals/BuyOptionsModal.vue:89
+#: src/components/modals/BuyOptionsModal.vue:162
 msgid "Buy NIM on a crypto exchange:"
-msgstr ""
+msgstr "Comprar NIM en una casa de intercambio cripto:"
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:24
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
 msgstr "Comprar con Credit Card"
 
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SimplexModal.vue:4
+msgid "Buy with Simplex"
+msgstr "Compre con Simplex"
+
+#: src/components/modals/SendModal.vue:207
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -408,103 +468,121 @@ msgstr ""
 "Al agregar una cuota a la transacción, puede influenciar que tan rápidamente"
 " será procesada."
 
-#: src/components/modals/BuyCryptoModal.vue:187
-#: src/components/swap/SwapModal.vue:159
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/SellCryptoModal.vue:181
+#: src/components/swap/SwapModal.vue:142
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "Al hacer click en '{text}', usted esta aceptando a los términos de servicio "
 "de {Fastspot} y {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:201
-#: src/components/swap/SwapModal.vue:171
+#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/swap/SwapModal.vue:154
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Al hacer click en '{text}', usted esta aceptando a los términos de servicio "
 "de {Fastspot}."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:79
+#: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:95
+#: src/components/swap/SwapSepaFundingInstructions.vue:96
 msgid "Cancel Swap"
 msgstr "Cancelar Intercambio"
 
-#: src/components/BtcTransactionListItem.vue:225
-#: src/components/modals/BtcTransactionModal.vue:462
+#: src/components/BtcTransactionListItem.vue:246
+#: src/components/modals/BtcTransactionModal.vue:484
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
-#: src/components/modals/TransactionModal.vue:516
-#: src/components/TransactionListItem.vue:206
+#: src/components/modals/TransactionModal.vue:523
+#: src/components/TransactionListItem.vue:227
 msgid "Cancelled Swap"
-msgstr ""
+msgstr "Intercambio Cancelado"
 
-#: src/components/layouts/Settings.vue:265
+#: src/components/layouts/Settings.vue:321
 msgid "Cannot import contacts, wrong file format."
 msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 
-#: src/components/modals/TransactionModal.vue:534
-#: src/components/TransactionList.vue:61
-#: src/components/TransactionListItem.vue:224
+#: src/components/modals/TransactionModal.vue:541
+#: src/components/TransactionList.vue:62
+#: src/components/TransactionListItem.vue:245
 msgid "Cashlink"
 msgstr "Cashlink"
 
-#: src/components/modals/TransactionModal.vue:43
+#: src/components/modals/TransactionModal.vue:37
 msgid "Cashlink from {address}"
 msgstr "Cashlink proveniente de {address}"
 
-#: src/components/modals/TransactionModal.vue:51
+#: src/components/modals/TransactionModal.vue:43
 msgid "Cashlink to {address}"
 msgstr "Cashlink hacia {address}"
 
-#: src/components/AccountMenu.vue:50
+#: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
 msgstr "Cambiar contraseña"
 
-#: src/components/layouts/Settings.vue:35
+#: src/components/layouts/Settings.vue:50
 msgid "Change your language setting."
 msgstr "Cambiar ajustes de lenguaje."
 
-#: src/components/modals/SendModal.vue:40
+#: src/components/modals/AddressSelectorModal.vue:8
+#: src/components/modals/SendModal.vue:62
 msgid "Choose a Recipient"
 msgstr "Elija un Destinatario"
 
-#: src/components/modals/BuyCryptoModal.vue:293
-#: src/components/modals/SendModal.vue:159
-#: src/components/swap/SwapModal.vue:205
+#: src/components/modals/AddressSelectorModal.vue:5
+msgid "Choose a Sender"
+msgstr "Seleccione un Emisor"
+
+#: src/components/modals/AddressSelectorModal.vue:11
+#: src/components/modals/BuyCryptoModal.vue:282
+#: src/components/modals/SellCryptoModal.vue:247
+#: src/components/modals/SendModal.vue:197
+#: src/components/swap/SwapModal.vue:188
 msgid "Choose an Address"
 msgstr "Elija una Dirección"
 
 #: src/lib/DataFormatting.ts:18
 msgid "Claiming Cashlink"
-msgstr ""
+msgstr "Reclamando Cashlink"
 
-#: src/components/layouts/Settings.vue:159
+#: src/components/layouts/Settings.vue:210
 msgid "Clear"
 msgstr "Borrar"
 
-#: src/components/layouts/Settings.vue:153
+#: src/components/layouts/Settings.vue:204
 msgid "Clear Cache"
 msgstr "Borrar Cache"
 
-#: src/components/swap/SwapNotification.vue:32
+#: src/components/swap/SwapNotification.vue:36
 msgid "Click for more information"
 msgstr "Haga click para obtener más información"
 
-#: src/components/swap/SwapAnimation.vue:26
+#: src/components/swap/SwapAnimation.vue:30
 msgid "Click on ‘Troubleshooting’ to learn more."
-msgstr ""
+msgstr "Haga click en ‘Solución de problemas’ para aprender más."
+
+#: src/components/layouts/AddressOverview.vue:149
+#: src/components/swap/SwapAnimation.vue:90
+msgid "Close"
+msgstr "Cerrar"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "Próximamente"
 
-#: src/components/swap/SwapModal.vue:157 src/components/swap/SwapModal.vue:162
-#: src/components/swap/SwapModal.vue:174
+#: src/components/swap/SwapModal.vue:140 src/components/swap/SwapModal.vue:145
+#: src/components/swap/SwapModal.vue:157
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Confirmar"
+
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
+msgid "Confirm account"
+msgstr "Confirme cuenta"
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
@@ -527,15 +605,11 @@ msgstr "Conectado a"
 msgid "connecting"
 msgstr "conectando"
 
-#: src/components/swap/SwapModalFooter.vue:48
+#: src/components/swap/SwapModalFooter.vue:50
 msgid "Connecting to Bitcoin network"
 msgstr "Conectando a la red Bitcoin"
 
-#: src/components/swap/SwapModalFooter.vue:44
-msgid "Connecting to Nimiq & Bitcoin networks"
-msgstr "Conectando a las redes Nimiq y Bitcoin"
-
-#: src/components/swap/SwapModalFooter.vue:46
+#: src/components/swap/SwapModalFooter.vue:58
 msgid "Connecting to Nimiq network"
 msgstr "Conectándose a la red Nimiq"
 
@@ -547,7 +621,7 @@ msgstr "Conexión perdida"
 msgid "Consensus"
 msgstr "Consenso"
 
-#: src/components/BankCheckInput.vue:77
+#: src/components/BankCheckInput.vue:58
 msgid "Contact your bank to find out if your account is eligible."
 msgstr "Contacte a su banco para averiguar si su cuenta es soportada."
 
@@ -556,15 +630,30 @@ msgid "Contacts"
 msgstr "Contactos"
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
+#: src/components/modals/SendModal.vue:88
 #: src/components/modals/WelcomeModal.vue:63
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:92
+#: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
 msgstr "Continuar Intercambio"
 
-#: src/components/modals/SendModal.vue:30
+#: src/components/modals/SimplexModal.vue:39
+msgid ""
+"Copy\n"
+"over"
+msgstr "Copiar"
+
+#: src/components/modals/SimplexModal.vue:15
+msgid ""
+"Copy and paste your address into\n"
+"the Simplex interface below."
+msgstr ""
+"Copie y pegue la información de su dirección en\n"
+"la interfaz Simplex debajo."
+
+#: src/components/modals/SendModal.vue:52
 msgid "Create a Cashlink"
 msgstr "Crear un Cashlink"
 
@@ -580,92 +669,89 @@ msgstr ""
 "Cree una nueva cuenta y transfiera sus fondos. Nuevas características y "
 "posibilidades le esperan."
 
-#: src/components/modals/BtcReceiveModal.vue:63
+#: src/components/modals/BtcReceiveModal.vue:19
+msgid "Create a new address for every transaction."
+msgstr "Crear una nueva dirección para cada transacción"
+
+#: src/components/modals/BtcReceiveModal.vue:64
 msgid "Create a new single-use address."
 msgstr "Crear una nueva dirección de un único uso."
 
-#: src/components/AccountMenu.vue:39
-msgid "Create backup"
-msgstr "Crear respaldo"
-
-#: src/components/modals/BtcReceiveModal.vue:101
+#: src/components/modals/BtcReceiveModal.vue:102
 #: src/components/modals/ReceiveModal.vue:28
-msgid "Create payment link"
-msgstr "Crear un link de pago"
+msgid "Create request link"
+msgstr "Cree un link de pedido de pago."
 
-#: src/components/modals/BtcReceiveModal.vue:193
-msgid "Created {count} day ago | Created {count} days ago"
-msgstr "Creada hace {count} días | Creada hace {count} días."
+#: src/components/modals/BtcReceiveModal.vue:191
+msgid "Created {count} day ago | Created {count} days ago"
+msgstr "Creada hace {count} días | Creada hace {count} días."
 
-#: src/components/modals/BtcReceiveModal.vue:183
-msgid "Created {count} hour ago | Created {count} hours ago"
+#: src/components/modals/BtcReceiveModal.vue:181
+msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr "Creada hace {count} horas | Creada hace {count} horas."
 
-#: src/components/modals/BtcReceiveModal.vue:177
-msgid "Created {count} minute ago | Created {count} minutes ago"
+#: src/components/modals/BtcReceiveModal.vue:175
+msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr "Creada hace {count} minutos | Creada hace {count} minutos."
 
-#: src/components/modals/BtcReceiveModal.vue:174
+#: src/components/modals/BtcReceiveModal.vue:172
 msgid "Created just now"
 msgstr "Recién creada"
 
-#: src/components/modals/BtcReceiveModal.vue:191
+#: src/components/modals/BtcReceiveModal.vue:189
 msgid "Created yesterday"
 msgstr "Creado ayer"
 
-#: src/components/modals/BuyOptionsModal.vue:51
+#: src/components/modals/BuyOptionsModal.vue:110
 msgid "Credit Card"
-msgstr ""
+msgstr "Tarjeta de Crédito"
 
-#: src/components/layouts/Settings.vue:195
+#: src/components/modals/BuyOptionsModal.vue:64
+msgid "Currently under maintenance"
+msgstr "Actualmente en mantenimiento"
+
+#: src/components/modals/BuyOptionsModal.vue:7
+msgid ""
+"Depending on your country of residence,\n"
+"different options are available."
+msgstr ""
+"Dependiendo del país de residencia,\n"
+"diferentes opciones están disponibles."
+
+#: src/components/swap/OasisLaunchModal.vue:19
+msgid "Developer resources"
+msgstr "Recursos de desarrolladores"
+
+#: src/components/layouts/Settings.vue:250
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Aviso legal"
 
-#: src/components/swap/SwapAnimation.vue:222
+#: src/components/BtcAddressInput.vue:85
+#: src/components/modals/SendModal.vue:355
+msgid "Domain does not resolve to a valid address"
+msgstr "El dominio no se resuelve a una dirección válida"
+
+#: src/components/swap/SwapAnimation.vue:292
+#: src/components/swap/SwapAnimation.vue:300
 msgid "Don't close your wallet until the swap is complete!"
 msgstr "¡No cierre la billetera hasta que el intercambio se haya completado!"
 
-#: src/components/swap/SwapNotification.vue:38
+#: src/components/swap/SwapNotification.vue:42
 msgid "Don't close your wallet!"
 msgstr "¡No cierre su billetera!"
 
-#: src/components/modals/BtcReceiveModal.vue:14
-msgid "Don’t reuse addresses and create a new one for every transaction."
-msgstr ""
-"No reutilice sus direcciones y cree una nueva por cada nueva transacción."
+#: src/components/BankCheckInput.vue:76
+msgid "Don’t use a generic IBAN!"
+msgstr "No utilice IBAN genéricos!"
 
 #: src/components/ContactBook.vue:49
 msgid "Done"
 msgstr "Listo"
 
-#: src/components/modals/BtcSendModal.vue:112
+#: src/components/modals/BtcSendModal.vue:98
 msgid "Duration and fees are estimates."
 msgstr "La duración y las cuotas son estimados."
-
-#: src/components/swap/SwapModal.vue:90
-msgid "During early access, these limits apply."
-msgstr "Durante el acceso preliminar, estos limites aplican."
-
-#: src/components/modals/BuyCryptoModal.vue:111
-msgid ""
-"During early access, these limits apply. They will be increased gradually."
-msgstr ""
-"Durante el acceso temprano, estos limites aplican. Serán incrementados "
-"gradualmente."
-
-#: src/components/modals/BuyCryptoModal.vue:21
-#: src/components/swap/SwapModal.vue:45
-msgid "Early Access"
-msgstr "Acceso Preliminar"
-
-#: src/components/swap/SwapModal.vue:47
-msgid ""
-"Early Access means that there are limits in place for swaps. They will be "
-"increased gradually."
-msgstr ""
-"Acceso Preliminar significa que hay limites para intercambios. Los mismos "
-"serán incrementados gradualmente."
 
 #: src/components/modals/BtcActivationModal.vue:11
 msgid ""
@@ -679,38 +765,56 @@ msgstr ""
 msgid "Edit contacts"
 msgstr "Editar contactos"
 
-#: src/components/layouts/Settings.vue:110
+#: src/components/layouts/Settings.vue:125
 msgid "Edit the amount of decimals visible for BTC values."
 msgstr "Edite la cantidad de decimales visibles para valores en BTC."
 
-#: src/components/layouts/Settings.vue:50
+#: src/components/layouts/Settings.vue:65
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Editar la cantidad de decimales visibles para valores en NIM"
 
-#: src/components/modals/BtcSendModal.vue:435
-#: src/components/modals/SendModal.vue:504
+#: src/components/modals/BtcSendModal.vue:438
+#: src/components/modals/SendModal.vue:606
 msgid "Edit transaction"
 msgstr "Editar transacción"
 
-#: src/components/modals/SendModal.vue:20
+#: src/components/layouts/Settings.vue:158
+msgid "Enable experimental support for swiping gestures on mobile."
+msgstr "Habilita soporte para gestos en el teléfono celular."
+
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:35
+msgid "Enter account holder name"
+msgstr "Ingrese el nombre del dueño de la cuenta"
+
+#: src/components/modals/SendModal.vue:24
 msgid "Enter address"
 msgstr "Insertar dirección"
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:13
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:14
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:15
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:22
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:23
 msgid "Enter bank name"
 msgstr "Ingrese el nombre del banco"
 
-#: src/components/modals/BtcSendModal.vue:15
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:44
+msgid "Enter IBAN"
+msgstr "Ingrese IBAN"
+
+#: src/components/modals/BtcSendModal.vue:18
 msgid "Enter recipient address..."
 msgstr "Ingrese la dirección del destinatario..."
 
-#: src/components/layouts/Settings.vue:167
+#: src/components/layouts/Settings.vue:218
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Ingrese la contraseña de la prueba que desea activar, luego presione enter."
 
-#: src/components/swap/SwapAnimation.vue:228
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
+msgid "Enter your bank details"
+msgstr "Ingrese los detalles de su banco"
+
+#: src/components/swap/SwapAnimation.vue:306
 msgid "Error:"
 msgstr "Error:"
 
@@ -718,10 +822,10 @@ msgstr "Error:"
 msgid "established"
 msgstr "establecido"
 
-#: src/components/modals/BtcTransactionModal.vue:20
-#: src/components/modals/BtcTransactionModal.vue:34
-#: src/components/modals/TransactionModal.vue:17
-#: src/components/modals/TransactionModal.vue:31
+#: src/components/modals/BtcTransactionModal.vue:18
+#: src/components/modals/BtcTransactionModal.vue:30
+#: src/components/modals/TransactionModal.vue:15
+#: src/components/modals/TransactionModal.vue:27
 msgid "Euro"
 msgstr "Euro"
 
@@ -730,45 +834,46 @@ msgstr "Euro"
 msgid "expired"
 msgstr "expirado"
 
-#: src/components/modals/BtcTransactionModal.vue:70
-#: src/components/modals/TransactionModal.vue:90
+#: src/components/modals/BtcTransactionModal.vue:67
+#: src/components/modals/TransactionModal.vue:83
 msgid "Expired"
 msgstr "Expirado"
 
-#: src/components/modals/SendModal.vue:360
+#: src/components/modals/SendModal.vue:454
 msgid "express"
 msgstr "rápido"
 
-#: src/components/modals/BtcTransactionModal.vue:70
-#: src/components/modals/TransactionModal.vue:90
+#: src/components/modals/BtcTransactionModal.vue:67
+#: src/components/modals/TransactionModal.vue:83
 msgid "Failed"
 msgstr "Fallido"
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
 msgstr "Error en el faucet - intente de nuevo por favor."
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:83
 msgid "Faucet is empty"
 msgstr "Aplicación grifo esta vacia"
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:87
 msgid "Faucet is not available from your location"
 msgstr "La aplicación grifo no esta disponible desde su ubicación"
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:94
 msgid "Faucet unavailable"
 msgstr "Aplicación grifo no disponible"
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet unavailable (wrong network)"
 msgstr "Aplicación grifo no disponible (red errónea)"
 
-#: src/components/modals/SendModal.vue:125
+#: src/components/modals/SendModal.vue:163
 msgid "fee"
 msgstr "cuota"
 
-#: src/components/modals/BuyCryptoModal.vue:73
+#: src/components/modals/BuyCryptoModal.vue:62
+#: src/components/modals/SellCryptoModal.vue:62
 #: src/components/swap/SwapModal.vue:39
 msgid "fees"
 msgstr "cuotas"
@@ -778,22 +883,21 @@ msgstr "cuotas"
 msgid "Fetching"
 msgstr "Recolectando"
 
-#: src/components/BtcTransactionListItem.vue:62
+#: src/components/BtcTransactionListItem.vue:65
 #: src/components/modals/TransactionModal.vue:210
-#: src/components/TransactionListItem.vue:53
+#: src/components/TransactionListItem.vue:56
 msgid "Fiat value unavailable"
 msgstr "Valor en moneda fiduciaria no disponible"
 
-#: src/components/layouts/Settings.vue:271
+#: src/components/layouts/Settings.vue:327
 msgid "File contains no contacts."
 msgstr "El archivo no contiene contactos."
 
-#: src/components/modals/BuyCryptoModal.vue:34
+#: src/components/modals/BuyCryptoModal.vue:22
 msgid "Finalize the swap by bank transfer."
 msgstr "Finalice el intercambio por medio de transferencia bancaria"
 
-#: src/components/swap/SwapAnimation.vue:205
-#: src/components/swap/SwapAnimation.vue:206
+#: src/components/swap/SwapAnimation.vue:272
 msgid "Finalizing swap"
 msgstr "Finalizar intercambio"
 
@@ -801,19 +905,23 @@ msgstr "Finalizar intercambio"
 msgid "For beginners"
 msgstr "Para novatos"
 
-#: src/components/modals/SendModal.vue:350
+#: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "gratis"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/modals/BuyOptionsModal.vue:113
+msgid "Full KYC required, high availability."
+msgstr "Se requiere KYC completo, alta disponibilidad."
+
+#: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Nodo Completo"
 
 #: src/lib/DataFormatting.ts:15
 msgid "Funding Cashlink"
-msgstr ""
+msgstr "Financiando Cashlink"
 
-#: src/components/layouts/Settings.vue:29
+#: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr "General"
 
@@ -822,7 +930,9 @@ msgstr "General"
 msgid "Get NIM"
 msgstr "Obtener NIM"
 
+#: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
+#: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
 msgstr "Lo tengo"
 
@@ -842,43 +952,49 @@ msgstr ""
 "Manejar múltiples direcciones es ahora fácil y conveniente – con una sola "
 "contraseña y información de sesión compartida."
 
-#: src/components/modals/BtcTransactionModal.vue:211
+#: src/components/modals/BtcTransactionModal.vue:200
+#: src/components/modals/BtcTransactionModal.vue:226
+#: src/components/modals/TransactionModal.vue:196
 #: src/components/modals/TransactionModal.vue:221
 msgid "Historic value"
 msgstr "Valor histórico"
 
-#: src/components/BtcTransactionListItem.vue:185
-#: src/components/modals/BtcTransactionModal.vue:426
-#: src/components/modals/TransactionModal.vue:464
-#: src/components/TransactionListItem.vue:163 src/lib/DataFormatting.ts:21
+#: src/components/BtcTransactionListItem.vue:206
+#: src/components/modals/BtcTransactionModal.vue:448
+#: src/components/modals/TransactionModal.vue:471
+#: src/components/TransactionListItem.vue:184 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "Creación de HTLC"
 
-#: src/components/BtcTransactionListItem.vue:185
-#: src/components/modals/BtcTransactionModal.vue:426
-#: src/components/modals/TransactionModal.vue:475
-#: src/components/TransactionListItem.vue:174
+#: src/components/BtcTransactionListItem.vue:206
+#: src/components/modals/BtcTransactionModal.vue:448
+#: src/components/modals/TransactionModal.vue:482
+#: src/components/TransactionListItem.vue:195
 msgid "HTLC Refund"
 msgstr "Reembolso de HTLC"
 
-#: src/components/modals/TransactionModal.vue:468
-#: src/components/TransactionListItem.vue:167
+#: src/components/modals/TransactionModal.vue:475
+#: src/components/TransactionListItem.vue:188
 msgid "HTLC Settlement"
 msgstr "Establecimiento del HTLC"
 
 #: src/lib/DataFormatting.ts:25
 msgid "HTLC Settlement or Refund"
-msgstr ""
+msgstr "Establecimiento o Reembolso de HTLC"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:81
+#: src/components/swap/SwapSepaFundingInstructions.vue:82
 msgid "I paid"
 msgstr "Pagué"
+
+#: src/components/BankCheckInput.vue:88
+msgid "I understand that I have to send a {sepaInstantLink}."
+msgstr "Entiendo que tengo que enviar un {sepaInstantLink}."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
 msgstr "IBAN"
 
-#: src/components/swap/SwapNotification.vue:180
+#: src/components/swap/SwapNotification.vue:203
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -886,11 +1002,11 @@ msgstr ""
 "Si este error persiste, revise su conexión a Internet o recargue la pantalla"
 " para re-conectarse."
 
-#: src/components/layouts/Settings.vue:63
+#: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
 msgstr "Importar Contactos"
 
-#: src/components/layouts/Settings.vue:65
+#: src/components/layouts/Settings.vue:80
 msgid "Import contacts that you exported from the Safe."
 msgstr "Importe contactos que exporto de la Nimiq Safe"
 
@@ -901,11 +1017,27 @@ msgstr ""
 "Importelo a cualquier navegador e ingrese su contraseña para usar la misma "
 "dirección."
 
+#: src/components/modals/BtcReceiveModal.vue:55
+msgid ""
+"Improve your privacy by creating a new address for every transaction. Old "
+"addresses still work."
+msgstr ""
+"Mejore la privacidad al crear una nueva dirección para cada transacción. "
+"Direcciones antiguas aún funcionan."
+
 #: src/components/modals/MigrationWelcomeModal.vue:12
 msgid "Improved Accessibility"
 msgstr "Accesibilidad Mejorada"
 
-#: src/components/modals/BtcSendModal.vue:108
+#: src/components/BankCheckInput.vue:72
+msgid ""
+"In case of any issues, like exceeded limits or insufficient amounts, the "
+"automatic refunds will only work for individual IBAN addresses."
+msgstr ""
+"En caso de problemas como limites excedidos o fondos insuficientes, el "
+"reembolso automático funciona solo en direcciones IBAN individuales."
+
+#: src/components/modals/BtcSendModal.vue:94
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -913,14 +1045,29 @@ msgstr ""
 "Incremente la velocidad de sus transacciones al pagar una mayor cuota de "
 "red. Las cuotas van directamente a mineros."
 
-#: src/components/modals/BuyOptionsModal.vue:42
+#: src/components/modals/BuyCryptoModal.vue:79
+msgid "Initial Swap Limit"
+msgstr "Límite del Intercambio inicial."
+
+#: src/components/modals/BuyOptionsModal.vue:58
 msgid ""
 "Innovation\n"
 "by Nimiq"
 msgstr ""
+"Innovación\n"
+"por Nimiq"
 
-#: src/components/modals/BtcSendModal.vue:90
-#: src/components/modals/SendModal.vue:133
+#: src/components/layouts/Settings.vue:38
+msgid "Install"
+msgstr "Instalar"
+
+#: src/components/layouts/Settings.vue:31
+msgid "Install Web App"
+msgstr "Instalar la Aplicación Web"
+
+#: src/components/modals/BtcSendModal.vue:75
+#: src/components/modals/SellCryptoModal.vue:169
+#: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Balance insuficiente."
 
@@ -929,9 +1076,10 @@ msgstr "Balance insuficiente."
 msgid "invalid"
 msgstr "invalido"
 
-#: src/components/TransactionList.vue:60
-msgid "Invite a friend with a"
-msgstr "Invite a un amigo a"
+#: src/components/TransactionList.vue:59
+msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
+msgstr ""
+"Invite a un amigo con un {cashlink} o compre más aquí en la billetera."
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:4
 msgid "Is your bank eligible?"
@@ -941,15 +1089,19 @@ msgstr "¿Es su banco soportado?"
 msgid "It is fast, safe and makes you truly independent."
 msgstr "Es rápido, seguro y le hace realmente independiente."
 
-#: src/components/swap/SwapNotification.vue:35
+#: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr "Es seguro cerrar su billetera ahora"
+
+#: src/components/layouts/Settings.vue:171
+msgid "Keyguard Mode"
+msgstr "Modo Keyguard"
 
 #: src/components/BtcCopiedAddress.vue:9
 msgid "Label the sender"
 msgstr "Etiquetar al emisor"
 
-#: src/components/layouts/Settings.vue:33
+#: src/components/layouts/Settings.vue:48
 msgid "Language"
 msgstr "Idioma"
 
@@ -961,11 +1113,17 @@ msgstr "Aprenda más"
 msgid "Learn more here"
 msgstr "Aprenda más aquí"
 
-#: src/components/layouts/AddressOverview.vue:135
+#: src/components/layouts/Sidebar.vue:44
+#: src/components/modals/BuyOptionsModal.vue:73
+msgid "Learn more."
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:134
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "¡Comencemos! Cree su cuenta Nimiq:"
 
-#: src/components/modals/BuyCryptoModal.vue:38
+#: src/components/modals/BuyCryptoModal.vue:26
+#: src/components/modals/SellCryptoModal.vue:25
 msgid "Let's go"
 msgstr "Adelante"
 
@@ -973,23 +1131,19 @@ msgstr "Adelante"
 msgid "Let's go!"
 msgstr "¡Vamos!"
 
-#: src/components/NetworkMap.vue:29
+#: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
 msgstr "Nodo Ligero"
 
-#: src/components/modals/BtcReceiveModal.vue:66
+#: src/components/modals/BtcReceiveModal.vue:67
 msgid "Limit of copied addresses reached."
 msgstr "Se ha alcanzado el límite de direcciones."
 
-#: src/components/modals/BuyCryptoModal.vue:108
-msgid "Limits are tied to accounts and IBANs."
-msgstr "Los límites están ligados a cuentas y IBANs"
-
-#: src/components/modals/TransactionModal.vue:189
+#: src/components/modals/TransactionModal.vue:171
 msgid "Link not available in this browser"
 msgstr "El vínculo no esta disponible en este navegador"
 
-#: src/components/layouts/Settings.vue:70
+#: src/components/layouts/Settings.vue:85
 msgid "Load file"
 msgstr "Cargar archivo"
 
@@ -997,13 +1151,20 @@ msgstr "Cargar archivo"
 msgid "Loading Moonpay..."
 msgstr "Cargando Moonpay..."
 
-#: src/components/modals/BuyCryptoModal.vue:99
-#: src/components/swap/SwapModal.vue:58 src/components/swap/SwapModal.vue:82
+#: src/components/modals/BuyCryptoModal.vue:107
+#: src/components/modals/BuyCryptoModal.vue:91
+#: src/components/modals/SellCryptoModal.vue:83
+#: src/components/swap/SwapModal.vue:58
 msgid "loading..."
 msgstr "cargando..."
 
-#: src/components/swap/SwapAnimation.vue:199
-#: src/components/swap/SwapAnimation.vue:202
+#: src/components/modals/BuyOptionsModal.vue:14
+#: src/components/modals/ReleaseNotesModal.vue:5
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: src/components/swap/SwapAnimation.vue:259
+#: src/components/swap/SwapAnimation.vue:262
 msgid "Locking up {asset}"
 msgstr "Encerrando {asset}"
 
@@ -1015,7 +1176,11 @@ msgstr ""
 "Inicie sesión en sus dispositivos con los nuevos\n"
 "Archivos de Sesión Nimiq."
 
-#: src/components/AccountMenu.vue:53
+#: src/components/layouts/AccountOverview.vue:12
+msgid "Login File"
+msgstr "Archivo de Sesión"
+
+#: src/components/modals/AccountMenuModal.vue:26
 msgid "Logout"
 msgstr "Cerrar Sesión"
 
@@ -1023,20 +1188,33 @@ msgstr "Cerrar Sesión"
 msgid "lost"
 msgstr "perdida"
 
-#: src/components/modals/BuyCryptoModal.vue:79
-#: src/components/modals/BuyCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:65 src/components/swap/SwapModal.vue:69
+#: src/components/modals/BuyCryptoModal.vue:169
+#: src/components/modals/SellCryptoModal.vue:159
+msgid "Max swappable amount is {amount}"
+msgstr "El monto máximo intercambiable es {amount}"
+
+#: src/components/modals/BuyCryptoModal.vue:68
+#: src/components/modals/BuyCryptoModal.vue:73
+#: src/components/modals/SellCryptoModal.vue:68
+#: src/components/modals/SellCryptoModal.vue:73
+#: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
 msgid "Max."
 msgstr "Max."
 
-#: src/components/modals/BuyOptionsModal.vue:33
-#: src/components/modals/BuyOptionsModal.vue:69
+#: src/components/modals/BuyOptionsModal.vue:124
+#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
-msgstr ""
+msgstr "min {amount}"
 
-#: src/components/BankCheckInput.vue:36
-msgid "More locations will be supported soon."
-msgstr "Más localizaciones serán soportadas pronto."
+#: src/components/modals/BuyCryptoModal.vue:180
+msgid "Minimum buy amount is {amount}"
+msgstr "El monto mínimo de intercambio es {amount}"
+
+#: src/components/BankCheckInput.vue:9
+msgid "More locations will be supported in the future."
+msgstr "Mas lugares serán soportados en el futuro."
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -1050,11 +1228,11 @@ msgstr ""
 "Direcciones múltiples y Archivos de Sesión\n"
 "son soportados únicamente por cuentas nuevas."
 
-#: src/components/modals/SendModal.vue:54
+#: src/components/modals/SendModal.vue:76
 msgid "Name this contact..."
 msgstr "De un nombre a este contacto..."
 
-#: src/components/modals/BtcSendModal.vue:10
+#: src/components/modals/BtcSendModal.vue:12
 msgid "Name this recipient..."
 msgstr "De nombre a este receptor..."
 
@@ -1062,15 +1240,15 @@ msgstr "De nombre a este receptor..."
 msgid "Name your contact"
 msgstr "De un nombre a su contacto"
 
-#: src/components/layouts/Sidebar.vue:55
+#: src/components/layouts/Sidebar.vue:65
 msgid "Network"
 msgstr "Red"
 
-#: src/components/modals/BtcSendModal.vue:105
+#: src/components/modals/BtcSendModal.vue:91
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Cuota de red: {sats} sat/vByte"
 
-#: src/components/swap/SwapFeesTooltip.vue:28
+#: src/components/swap/SwapFeesTooltip.vue:39
 msgid "NIM network fee"
 msgstr "Cuota de red NIM"
 
@@ -1084,58 +1262,101 @@ msgstr ""
 "hub.nimiq.com & keyguard.nimiq.com, y algunas de las librerías subyacentes "
 "están bajo continuo desarrollo."
 
-#: src/components/modals/BtcSendModal.vue:128
+#: src/components/modals/BuyCryptoModal.vue:118
+#: src/components/modals/SellCryptoModal.vue:93
+#: src/components/swap/SwapModal.vue:66
+msgid ""
+"Nimiq is working on a PRO feature with increased limits after user "
+"registration."
+msgstr ""
+"Nimiq esta trabajando en una versión PRO con mayores límites que se pueden "
+"acceder después de registrarse."
+
+#: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "La billetera Nimiq no soporta mensajes en transacciones para Bitcoin."
 
-#: src/components/swap/SwapNotification.vue:179
+#: src/components/swap/SwapNotification.vue:202
 msgid "No connection to {chain} network."
 msgstr "No hay conexión a la red {chain}."
 
-#: src/components/swap/SwapAnimation.vue:16
+#: src/components/swap/SwapAnimation.vue:20
 msgid "No funds were received so the swap expired."
-msgstr ""
+msgstr "No se han recibido fondos, entonces el intercambio ha espirado."
 
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
-msgstr ""
+msgstr "No registro"
 
-#: src/components/BtcTransactionList.vue:79
+#: src/components/modals/BuyOptionsModal.vue:38
+msgid "No registration – not even email."
+msgstr "Sin registrarse – ni siquiera con correo electrónico."
+
+#: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
 msgid "No transactions found"
 msgstr "No se encontraron transacciones"
 
-#: src/components/layouts/Settings.vue:115
-#: src/components/layouts/Settings.vue:55
+#: src/components/layouts/Settings.vue:130
+#: src/components/layouts/Settings.vue:70
 msgid "None"
 msgstr "Ninguna"
 
-#: src/components/BankCheckInput.vue:76
+#: src/components/BankCheckInput.vue:57
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 "No todas la cuentas que son proveídas por este banco soportan transacciones "
 "instantáneas."
+
+#: src/components/modals/BuyOptionsModal.vue:78
+msgid "Not available in your browser"
+msgstr "No disponible en tu navegador"
+
+#: src/components/modals/BuyOptionsModal.vue:155
+#: src/components/modals/BuyOptionsModal.vue:88
+msgid "Not available in your country"
+msgstr "No disponible en su país"
 
 #: src/components/BtcTransactionListItem.vue:42
 #: src/components/TransactionListItem.vue:36
 msgid "not sent"
 msgstr "no enviado"
 
-#: src/components/swap/SwapAnimation.vue:41
+#: src/components/swap/OasisLaunchModal.vue:4
+msgid "OASIS is finally here!"
+msgstr "¡OASIS por fin esta aquí!"
+
+#: src/components/swap/SwapAnimation.vue:47
+#: src/components/TransactionDetailOasisPayoutStatus.vue:15
 msgid "OASIS limit exceeded"
-msgstr ""
+msgstr "limite de OASIS excedido"
 
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "OASIS service fee"
 msgstr "Cuota de servicio de OASIS"
 
-#: src/components/layouts/Settings.vue:294
+#: src/components/layouts/Sidebar.vue:38
+#: src/components/modals/BuyOptionsModal.vue:68
+msgid ""
+"OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
+" some time. Please try again later."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:165
+msgid "Off"
+msgstr "Apagado"
+
+#: src/components/layouts/Settings.vue:350
 msgid "OK! Contacts imported successfully."
 msgstr "¡OK! Los Contactos fueron importados exitosamente."
 
 #: src/components/modals/MigrationWelcomeModal.vue:19
 msgid "Old and new Accounts"
 msgstr "Cuentas viejas y nuevas"
+
+#: src/components/layouts/Settings.vue:164
+msgid "On"
+msgstr "Encendido"
 
 #: src/components/LegacyAccountNotice.vue:15
 msgid "One account can now have multiple addresses."
@@ -1145,17 +1366,13 @@ msgstr "Una cuenta ahora puede tener múltiples direcciones."
 msgid "One Account, many Addresses"
 msgstr "Una Cuenta, muchas Direcciones"
 
-#: src/components/TransactionList.vue:62
-msgid "or visit an exchange and get more."
-msgstr "O visite una casa de cambio y consiga más."
+#: src/components/modals/BtcActivationModal.vue:15
+msgid "Or buy BTC directly in the wallet."
+msgstr "O compre BTC directamente en la billetera."
 
-#: src/components/modals/BuyOptionsModal.vue:22
-msgid "Pay by bank transfer. No registration – not even email."
-msgstr ""
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid "Pay with credit card. Full KYC required, high availability."
-msgstr ""
+#: src/components/layouts/Settings.vue:173
+msgid "Overwrite how the Keyguard is opened."
+msgstr "Sobreescribe como se abre el Keyguard."
 
 #: src/components/BtcTransactionListItem.vue:43
 #: src/components/TransactionListItem.vue:37
@@ -1166,21 +1383,20 @@ msgstr "en trámite"
 msgid "Pending Cashlinks"
 msgstr "Cashlinks en trámite"
 
-#: src/components/modals/BtcTransactionModal.vue:62
-#: src/components/modals/TransactionModal.vue:82
+#: src/components/modals/BtcTransactionModal.vue:59
+#: src/components/modals/TransactionModal.vue:75
 msgid "Pending..."
 msgstr "En trámite..."
 
-#: src/components/modals/BuyCryptoModal.vue:89
-#: src/components/swap/SwapModal.vue:50 src/components/swap/SwapModal.vue:74
-msgid "Per-Swap Limit"
-msgstr "Límite por intercambio"
+#: src/components/swap/OasisLaunchModal.vue:12
+msgid "Per-swap limits raised to {amount}"
+msgstr "límites por intercambio se han incrementado a {amount}"
 
-#: src/components/swap/SwapAnimation.vue:52
-msgid "Performing Swap"
-msgstr "Ejecutando Intercambio"
+#: src/components/swap/SwapAnimation.vue:58
+msgid "Performing Atomic Swap"
+msgstr "Realizando Intercambio Atómico."
 
-#: src/components/swap/SwapNotification.vue:28
+#: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
 msgstr "Ejecutando intercambio {progress}/5"
 
@@ -1188,14 +1404,14 @@ msgstr "Ejecutando intercambio {progress}/5"
 msgid "Please do not use your Mainnet accounts!"
 msgstr "¡Por favor no use cuentas de Mainnet!"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:69
+#: src/components/swap/SwapSepaFundingInstructions.vue:70
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr "Por favor asegúrese que esta enviando transacciones instantáneas."
 
-#: src/components/swap/SwapAnimation.vue:33
-#: src/components/swap/SwapAnimation.vue:47
+#: src/components/swap/SwapAnimation.vue:37
+#: src/components/swap/SwapAnimation.vue:53
 msgid "Please keep your Swap ID for reference."
-msgstr ""
+msgstr "Por favor conserve el ID de su intercambio como referencia."
 
 #: src/components/modals/DisclaimerModal.vue:13
 msgid ""
@@ -1217,14 +1433,40 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Por favor transfiera"
 
+#: src/components/layouts/Settings.vue:178
+msgid "popups"
+msgstr "ventana emergente"
+
+#: src/components/layouts/Settings.vue:185
+msgid "Popups"
+msgstr "Ventanas emergentes"
+
+#: src/components/TransactionDetailOasisPayoutStatus.vue:30
+msgid "Proceed to the troubleshooting page to find out what to do next."
+msgstr ""
+"Proceda a la página de solución de problemas para encontrar que hacer a "
+"continuación."
+
+#: src/components/swap/SwapAnimation.vue:269
+msgid "Processing payout"
+msgstr "Procesando pago"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:53
+msgid "Purpose"
+msgstr "Propósito"
+
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Recibir"
 
-#: src/components/modals/BtcReceiveModal.vue:27
+#: src/components/modals/BtcReceiveModal.vue:7
 msgid "Receive BTC"
 msgstr "Recibir BTC"
+
+#: src/components/modals/SellCryptoModal.vue:21
+msgid "Receive fiat to your bank account."
+msgstr "Reciba fiat en su cuenta bancaria"
 
 #: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
 msgid "Receive free NIM"
@@ -1238,19 +1480,19 @@ msgstr "Reciba NIM"
 msgid "Receive some free NIM to get started."
 msgstr "Reciba algunos NIM gratis para comenzar"
 
-#: src/components/modals/BtcTransactionModal.vue:73
-#: src/components/modals/TransactionModal.vue:93
-msgid "received at {dateAndTime}"
-msgstr "recibido en {dateAndTime}"
+#: src/components/modals/BtcTransactionModal.vue:70
+#: src/components/modals/TransactionModal.vue:86
+msgid "Received at {dateAndTime}"
+msgstr "Recibido en {dateAndTime}"
 
-#: src/components/modals/BtcReceiveModal.vue:74
+#: src/components/modals/BtcReceiveModal.vue:75
 msgid ""
 "Recent addresses will be listed here, until they receive a transaction."
 msgstr ""
 "Direcciones recientes serán listadas aquí, hasta que reciban una "
 "transacción."
 
-#: src/components/modals/BtcReceiveModal.vue:77
+#: src/components/modals/BtcReceiveModal.vue:78
 msgid "Recently copied"
 msgstr "Copiada recientemente"
 
@@ -1258,20 +1500,36 @@ msgstr "Copiada recientemente"
 msgid "Recipient"
 msgstr "Receptor"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:53
-msgid "Reference"
-msgstr "Referencia"
+#: src/components/layouts/AccountOverview.vue:27
+msgid "Recovery Words"
+msgstr "Palabras de recuperación"
 
-#: src/components/layouts/Settings.vue:176
+#: src/components/layouts/Settings.vue:174
+msgid "Redirect mode does not yet support swaps."
+msgstr "El modo Redirección no soporta intercambios todavía."
+
+#: src/components/layouts/Settings.vue:178
+msgid "redirects"
+msgstr "redirecciona"
+
+#: src/components/layouts/Settings.vue:186
+msgid "Redirects"
+msgstr "Redirecciona"
+
+#: src/components/layouts/Settings.vue:227
 msgid "Reference currency"
 msgstr "Moneda de referencia"
 
-#: src/components/modals/BtcTransactionModal.vue:254
-#: src/components/modals/TransactionModal.vue:264
+#: src/components/modals/SimplexModal.vue:32
+msgid "Refresh the page to continue."
+msgstr "Refresque la página para continuar."
+
+#: src/components/modals/BtcTransactionModal.vue:277
+#: src/components/modals/TransactionModal.vue:272
 msgid "Refund"
 msgstr "Reembolso"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:71
+#: src/components/swap/SwapSepaFundingInstructions.vue:72
 msgid ""
 "Regular transactions are too slow and will not process. Your bank might use "
 "another name, like ‘real-time transactions’ i.a."
@@ -1279,43 +1537,53 @@ msgstr ""
 "Transacciones regulares son lentas y no serán procesadas. Su banco puede "
 "utilizar otro nombre, como 'transacciones en tiempo real'"
 
-#: src/components/AccountMenu.vue:43
+#: src/components/layouts/Settings.vue:248
+#: src/components/UpdateNotification.vue:9
+msgid "Release Notes"
+msgstr "Notas de Lanzamiento"
+
 #: src/components/layouts/AddressOverview.vue:30
 #: src/components/layouts/AddressOverview.vue:54
+#: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Renombrar"
 
-#: src/components/TestnetFaucet.vue:142 src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:145 src/components/TestnetFaucet.vue:151
 msgid "Request failed"
 msgstr "Petición fallida"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:54
+msgid "Required"
+msgstr "Requerido"
 
 #: src/components/layouts/AddressOverview.vue:36
 #: src/components/layouts/AddressOverview.vue:60
 msgid "Rescan"
 msgstr "Volver a escanear"
 
-#: src/components/layouts/Settings.vue:155
+#: src/components/layouts/Settings.vue:206
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 "Reinicialice los ajustes de su billetera y recargue los datos de la cadena "
 "de bloques."
 
-#: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:503
+#: src/components/BtcAddressInput.vue:23
+#: src/components/modals/SendModal.vue:39
+msgid "Resolving Unstoppable Domain..."
+msgstr "Resolviendo dominio imparable..."
+
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:605
 msgid "Retry"
 msgstr "Intente de nuevo"
 
-#: src/components/swap/SwapAnimation.vue:230
+#: src/components/swap/SwapAnimation.vue:308
 msgid "Retrying..."
 msgstr "Intentando de nuevo..."
 
-#: src/components/AccountMenu.vue:34
+#: src/components/modals/AccountMenuModal.vue:7
 msgid "Save Login File"
 msgstr "Guarde el Archivo de Sesión"
-
-#: src/components/layouts/AccountOverview.vue:11
-msgid "Save now"
-msgstr "Guardar ahora"
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:10
 msgid ""
@@ -1325,7 +1593,7 @@ msgstr ""
 "Escanee el código para enviar\n"
 "dinero a esta dirección"
 
-#: src/components/BankCheckInput.vue:22 src/components/SearchBar.vue:18
+#: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:18
 msgid "Search"
 msgstr "Buscar"
 
@@ -1337,25 +1605,59 @@ msgstr "Buscar transacciones"
 msgid "Search transactions by contact, address, etc."
 msgstr "Buscar transacciones por contacto, dirección, etc."
 
-#: src/components/modals/BuyCryptoModal.vue:32
+#: src/components/modals/BuyCryptoModal.vue:20
+#: src/components/modals/SellCryptoModal.vue:19
 msgid "Select a currency and an amount."
 msgstr "Seleccione una moneda y un monto."
 
-#: src/components/layouts/Settings.vue:125
+#: src/components/layouts/Settings.vue:140
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Seleccione en que unidad desea mostrar montos en Bitcoin"
 
-#: src/components/layouts/Sidebar.vue:35
+#: src/components/layouts/Sidebar.vue:37 src/components/layouts/Sidebar.vue:50
 msgid "Sell"
 msgstr "Vender"
+
+#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:184
+#: src/components/modals/SellCryptoModal.vue:198
+#: src/components/modals/SellCryptoModal.vue:31
+msgid "Sell Crypto"
+msgstr "Vender Cripto"
+
+#: src/components/modals/SellCryptoModal.vue:11
+msgid "Sell Crypto for Fiat"
+msgstr "Vender Cripto por Fiat"
+
+#: src/components/modals/SellCryptoModal.vue:137
+#: src/components/modals/SellCryptoModal.vue:166
+#: src/components/modals/SellCryptoModal.vue:169
+msgid "Sell max"
+msgstr "Vender el máximo"
+
+#: src/components/modals/SellCryptoModal.vue:14
+msgid ""
+"Sell NIM and BTC directly to your\n"
+"SEPA bank account."
+msgstr ""
+"Venda NIM y BTC directamente a\n"
+"su cuenta bancaria SEPA."
+
+#: src/components/BankCheckInput.vue:78
+msgid "Selling and refunds will not work with a generic IBAN!"
+msgstr "¡Ventas y reembolsos no funcionan con IBAN genéricos!"
+
+#: src/components/swap/OasisLaunchModal.vue:11
+msgid "Selling now available"
+msgstr "Ventas ahora disponibles"
 
 #: src/components/layouts/AddressOverview.vue:111
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Enviar"
 
-#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:92
-#: src/components/modals/SendModal.vue:135
+#: src/components/AmountMenu.vue:13 src/components/modals/BtcSendModal.vue:77
+#: src/components/modals/SendModal.vue:173
 msgid "Send all"
 msgstr "Enviar todo"
 
@@ -1370,10 +1672,14 @@ msgstr ""
 "Envíe y reciba NIM sin ningún intermediario y disfrute de verdadera "
 "descentralización."
 
-#: src/components/modals/BtcSendModal.vue:122
-#: src/components/modals/BtcSendModal.vue:4
-#: src/components/modals/SendModal.vue:11
-#: src/components/modals/SendModal.vue:154
+#: src/components/modals/SellCryptoModal.vue:20
+msgid "Send crypto to a smart contract."
+msgstr "Vender cripto a un contrato inteligente."
+
+#: src/components/modals/BtcSendModal.vue:108
+#: src/components/modals/BtcSendModal.vue:5
+#: src/components/modals/SendModal.vue:14
+#: src/components/modals/SendModal.vue:192
 msgid "Send Transaction"
 msgstr "Enviar Transacción"
 
@@ -1381,43 +1687,51 @@ msgstr "Enviar Transacción"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envíe, reciba y almacene BTC en su billetera."
 
-#: src/components/modals/BtcSendModal.vue:431
-#: src/components/modals/SendModal.vue:500
+#: src/components/modals/BtcSendModal.vue:434
+#: src/components/modals/SendModal.vue:602
 msgid "Sending Transaction"
 msgstr "Enviando Transacción"
 
-#: src/components/modals/BtcSendModal.vue:489
+#: src/components/modals/BtcSendModal.vue:495
 msgid "Sent {btc} BTC"
 msgstr "Enviar {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:485
+#: src/components/modals/BtcSendModal.vue:491
 msgid "Sent {btc} BTC to {name}"
 msgstr "Enviar {btc} BTC a {name}"
 
-#: src/components/BtcTransactionListItem.vue:179
-#: src/components/TransactionListItem.vue:155
+#: src/components/BtcTransactionListItem.vue:191
+#: src/components/TransactionListItem.vue:167
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Enviado {fromAsset} – Recibido {toAsset}"
 
-#: src/components/modals/SendModal.vue:535
+#: src/components/modals/SendModal.vue:641
 msgid "Sent {nim} NIM"
 msgstr "Se enviaron {nim} NIM"
 
-#: src/components/modals/SendModal.vue:531
+#: src/components/modals/SendModal.vue:637
 msgid "Sent {nim} NIM to {name}"
 msgstr "Se enviaron {nim} NIM a {name}"
 
-#: src/components/modals/BtcTransactionModal.vue:78
-#: src/components/modals/TransactionModal.vue:98
-msgid "sent at {dateAndTime}"
-msgstr "enviado el {dateAndTime}"
+#: src/components/modals/BtcTransactionModal.vue:75
+#: src/components/modals/TransactionModal.vue:91
+msgid "Sent at {dateAndTime}"
+msgstr "Enviado el {dateAndTime}"
 
-#: src/components/modals/BuyOptionsModal.vue:18
+#: src/components/swap/SwapFeesTooltip.vue:31
+msgid "SEPA Instant fee"
+msgstr "Cuota de SEPA Instantáneo"
+
+#: src/components/modals/BuyOptionsModal.vue:34
 msgid "SEPA Instant only"
-msgstr ""
+msgstr "Solo SEPA Instantáneo."
 
-#: src/components/modals/SendModal.vue:65
-#: src/components/modals/SendModal.vue:76
+#: src/components/BankCheckInput.vue:90
+msgid "SEPA Instant transaction"
+msgstr "Transacción SEPA Instantánea"
+
+#: src/components/modals/SendModal.vue:101
+#: src/components/modals/SendModal.vue:89
 msgid "Set Amount"
 msgstr "Ingrese el Monto"
 
@@ -1425,15 +1739,23 @@ msgstr "Ingrese el Monto"
 msgid "Set fee"
 msgstr "Ingrese la cuota"
 
-#: src/components/swap/SwapAnimation.vue:197
-msgid "Setting up swap"
-msgstr "Estableciendo intercambio"
+#: src/components/modals/BuyCryptoModal.vue:187
+msgid "Set minimum"
+msgstr "Configurar el mínimo"
 
-#: src/components/layouts/Sidebar.vue:63
+#: src/components/swap/SwapAnimation.vue:256
+msgid "Setting up atomic swap"
+msgstr "Configurando intercambio atómico"
+
+#: src/components/swap/SwapAnimation.vue:71
+msgid "Setting up the {currency} side of the swap."
+msgstr "Configurando el lado {currency} del intercambio."
+
+#: src/components/layouts/Sidebar.vue:73
 msgid "Settings"
 msgstr "Ajustes"
 
-#: src/components/modals/BtcReceiveModal.vue:28
+#: src/components/modals/BtcReceiveModal.vue:9
 msgid "Share a single-use address with the sender."
 msgstr "Compartir una dirección de un solo uso con el remitente."
 
@@ -1450,27 +1772,31 @@ msgid "Share your address with the sender."
 msgstr "Comparta la dirección con el destinatario"
 
 #: src/components/modals/overlays/PaymentLinkOverlay.vue:4
-msgid "Share your Payment Link"
-msgstr "Comparta su Link de Pago"
+msgid "Share your Request Link"
+msgstr "Comparta su Link de Pedido de Pago"
 
 #: src/components/ContactBook.vue:14
 msgid "Show all my addresses"
 msgstr "Mostrar todas mis cuentas"
 
-#: src/components/layouts/Settings.vue:108
-#: src/components/layouts/Settings.vue:48
+#: src/components/layouts/Settings.vue:123
+#: src/components/layouts/Settings.vue:63
 msgid "Show Decimals"
 msgstr "Mostrar Decimales"
 
-#: src/components/modals/TransactionModal.vue:187
+#: src/components/modals/TransactionModal.vue:169
 msgid "Show Link"
 msgstr "Mostrar Enlace"
 
-#: src/components/layouts/AddressOverview.vue:136
+#: src/components/modals/AccountMenuModal.vue:12
+msgid "Show Recovery Words"
+msgstr "Mostrar Palabras de Recuperación"
+
+#: src/components/layouts/AddressOverview.vue:135
 msgid "Signup"
 msgstr "Regístrate"
 
-#: src/components/modals/BuyCryptoModal.vue:248
+#: src/components/modals/BuyCryptoModal.vue:260
 msgid "Simulate EUR payment"
 msgstr "Simular pago en EUR"
 
@@ -1478,12 +1804,16 @@ msgstr "Simular pago en EUR"
 msgid "Skip for now"
 msgstr "Saltar por ahora"
 
-#: src/components/modals/BtcSendModal.vue:500
-#: src/components/modals/SendModal.vue:546
+#: src/components/modals/BtcSendModal.vue:506
+#: src/components/modals/SendModal.vue:653
 msgid "Something went wrong"
 msgstr "Algo ha salido mal"
 
-#: src/components/modals/SendModal.vue:167
+#: src/components/TransactionDetailOasisPayoutStatus.vue:28
+msgid "Something went wrong with your transaction"
+msgstr "Algo salio mal con su transacción"
+
+#: src/components/modals/SendModal.vue:205
 msgid "Speed up your Transaction"
 msgstr "Acelere su Transacción"
 
@@ -1497,7 +1827,7 @@ msgstr ""
 msgid "Staking"
 msgstr "Participación"
 
-#: src/components/modals/SendModal.vue:355
+#: src/components/modals/SendModal.vue:449
 msgid "standard"
 msgstr "Estándar"
 
@@ -1506,16 +1836,16 @@ msgid "Store, send and receive NIM."
 msgstr "Almacene, envíe y reciba NIM."
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/BtcTransactionListItem.vue:231
-#: src/components/modals/BtcTransactionModal.vue:468
+#: src/components/BtcTransactionListItem.vue:252
+#: src/components/modals/BtcTransactionModal.vue:490
 #: src/components/modals/BtcTransactionModal.vue:9
-#: src/components/modals/TransactionModal.vue:512
+#: src/components/modals/TransactionModal.vue:519
 #: src/components/modals/TransactionModal.vue:7
-#: src/components/TransactionListItem.vue:202
+#: src/components/TransactionListItem.vue:223
 msgid "Swap"
-msgstr ""
+msgstr "Intercambio"
 
-#: src/components/swap/SwapFeesTooltip.vue:34
+#: src/components/swap/SwapFeesTooltip.vue:45
 msgid "Swap fee"
 msgstr "Cuota del intercambio"
 
@@ -1524,27 +1854,30 @@ msgstr "Cuota del intercambio"
 msgid "Swap from {address}"
 msgstr "Intercambiar desde {address}"
 
-#: src/components/swap/SwapNotification.vue:19
+#: src/components/swap/SwapNotification.vue:20
 msgid "Swap has expired"
 msgstr "El intercambio ha expirado"
 
-#: src/components/BalanceDistribution.vue:54
+#: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
-msgstr ""
+msgstr "Intercambiar NIM {arrow} BTC"
 
 #: src/components/swap/SwapModal.vue:7
 msgid "Swap NIM and BTC"
 msgstr "Intercambiar NIM y BTC"
 
-#: src/components/swap/SwapAnimation.vue:7
-#: src/components/swap/SwapNotification.vue:25
+#: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "¡Intercambio exitoso!"
 
-#: src/components/modals/BtcTransactionModal.vue:26
-#: src/components/modals/TransactionModal.vue:23
+#: src/components/modals/BtcTransactionModal.vue:24
+#: src/components/modals/TransactionModal.vue:21
 msgid "Swap to {address}"
 msgstr "Intercambio a {address}"
+
+#: src/components/layouts/Settings.vue:156
+msgid "Swiping Gestures"
+msgstr "Gestos de deslizamiento"
 
 #: src/components/NetworkStats.vue:45
 msgid "syncing"
@@ -1558,22 +1891,22 @@ msgstr "TEN31 Bank provee una cuenta bancaria para guardar su pago."
 msgid "Testnet"
 msgstr "Testnet"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:104
-msgid ""
-"The bank is processing your transaction.\n"
-"This might take up to {min} minutes."
-msgstr ""
-"El banco esta procesando su transacción \n"
-"Esto puede tomar {min} minutos."
+#: src/components/swap/SwapSepaFundingInstructions.vue:105
+msgid "The bank is processing your transaction."
+msgstr "El banco esta procesando su transacción."
 
-#: src/components/modals/BuyCryptoModal.vue:758
-#: src/components/swap/SwapModal.vue:630
+#: src/components/swap/SwapModal.vue:605 src/lib/swap/utils/BuyUtils.ts:90
+#: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Las cuotas (actualmente {amount}) determinan el monto mínimo."
 
-#: src/components/modals/BuyCryptoModal.vue:763
+#: src/lib/swap/utils/BuyUtils.ts:95 src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Las cuotas determinan el monto mínimo."
+
+#: src/components/TransactionDetailOasisPayoutStatus.vue:18
+msgid "The limit on your IBAN has been reached"
+msgstr "El límite de su cuenta IBAN ha sido alcanzado"
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -1596,17 +1929,22 @@ msgid "The Nimiq wallet is more than a web-wallet, it is a network node."
 msgstr ""
 "La billetera Nimiq es mas que una billetera web, es un nodo de la red."
 
-#: src/components/modals/BuyCryptoModal.vue:56
+#: src/components/modals/BuyCryptoModal.vue:44
+#: src/components/modals/SellCryptoModal.vue:43
 #: src/components/swap/SwapModal.vue:19
 msgid "The rate might change depending on the swap volume."
 msgstr ""
 "La taza de cambio puede cambiar dependiendo del volumen del intercambio."
 
-#: src/components/swap/SwapAnimation.vue:14
-msgid "The Swap expired"
-msgstr ""
+#: src/components/modals/SendModal.vue:124
+msgid "The sender and recipient cannot be identical."
+msgstr "El emisor y receptor no pueden ser idénticos."
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/swap/SwapAnimation.vue:18
+msgid "The swap expired"
+msgstr "El intercambio ha expirado"
+
+#: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr "Actualmente no hay NIM gratis disponibles."
 
@@ -1618,55 +1956,72 @@ msgstr ""
 "Existen muchas opciones, use una tarjeta de credito o intercambie sus "
 "criptomonedas. Puede encontrar mas casas de cambio en {link}"
 
-#: src/components/layouts/AccountOverview.vue:19
+#: src/components/layouts/AccountOverview.vue:21
 msgid "There is no ‘forgot password’"
 msgstr "No hay opción de \"Olvidé mi contraseña\""
 
-#: src/components/swap/SwapNotification.vue:22
+#: src/components/swap/SwapNotification.vue:23
 msgid "There's a problem"
 msgstr "Hay un problema"
 
-#: src/components/swap/SwapModal.vue:91
-msgid "They will be increased gradually."
-msgstr "Serán incrementados gradualmente."
+#: src/components/modals/BtcTransactionModal.vue:202
+#: src/components/modals/BtcTransactionModal.vue:228
+#: src/components/modals/TransactionModal.vue:198
+#: src/components/modals/TransactionModal.vue:223
+msgid ""
+"This historic value is based on an average of cross-exchange prices. It "
+"might vary due to market volatility and liquidity."
+msgstr ""
+"Este valor histórico se basa en una media de los precios de las casas de "
+"cambio. Puede variar debido a la volatilidad y liquidez del mercado."
 
-#: src/components/modals/BtcSendModal.vue:27
-msgid "This address has already been used"
-msgstr "La dirección ya ha sido usada"
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:54
+msgid "This IBAN is for a different country than the bank"
+msgstr "El IBAN es de un país diferente que el banco"
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
 msgid "This is a Legacy Account"
 msgstr "Esta es una Cuenta Versión Antigua"
 
-#: src/components/modals/BtcReceiveModal.vue:47
+#: src/components/modals/BtcReceiveModal.vue:49
 msgid "This is a single-use address"
 msgstr "Esta es una dirección de un solo uso"
 
-#: src/components/BtcAddressInput.vue:15
+#: src/components/BtcAddressInput.vue:29
 msgid "This is not a valid address"
 msgstr "Este no es una dirección válida"
 
-#: src/components/BtcTransactionList.vue:240
-#: src/components/BtcTransactionList.vue:262
-#: src/components/TransactionList.vue:252
-#: src/components/TransactionList.vue:274
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:51
+msgid "This is not a valid IBAN"
+msgstr "Este no es un IBAN válido"
+
+#: src/components/swap/SwapAnimation.vue:295
+#: src/components/swap/SwapAnimation.vue:72
+#: src/components/swap/SwapSepaFundingInstructions.vue:106
+msgid "This might take up to {min} minutes."
+msgstr "Esto puede tomar {min} minutos."
+
+#: src/components/BtcTransactionList.vue:235
+#: src/components/BtcTransactionList.vue:257
+#: src/components/TransactionList.vue:249
+#: src/components/TransactionList.vue:271
 msgid "This month"
 msgstr "Este mes"
 
-#: src/components/modals/BuyCryptoModal.vue:54
 #: src/components/swap/SwapModal.vue:17
 msgid "This rate includes the swap fee."
 msgstr "Esta taza de cambio incluye la cuota del intercambio"
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:131
 msgid "This service is currently not available in your region."
 msgstr "El servicio actualmente no esta disponible en tu región."
 
 #: src/components/modals/MoonpayModal.vue:6
+#: src/components/modals/SimplexModal.vue:8
 msgid "This service is operated by {link}"
 msgstr "El servicio es operado por {link}"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:110
+#: src/components/swap/SwapSepaFundingInstructions.vue:109
 msgid ""
 "This service will soon be sped up significantly by banks updating their "
 "infrastructure."
@@ -1674,15 +2029,18 @@ msgstr ""
 "Este servicio pronto sera acelerado significativamente por bancos "
 "actualizando su infrastructura."
 
-#: src/components/swap/SwapAnimation.vue:53
+#: src/components/swap/SwapAnimation.vue:59
 msgid "This swap is as decentralized as the blockchain itself."
 msgstr "El intercambio es tan decentralizado como la cadena de bloques."
 
-#: src/components/swap/SwapAnimation.vue:215
+#: src/components/swap/SwapAnimation.vue:283
 msgid "This usually takes {time} seconds."
-msgstr ""
+msgstr "Esto usualmente toma {time} segundos."
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/TransactionDetailOasisPayoutStatus.vue:10
+msgid "This usually takes between one and two working days."
+msgstr "Esto usualmente toma entre uno y dos días hábiles."
+
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
 msgid "To {exchange}"
@@ -1692,25 +2050,25 @@ msgstr "Hacia {exchange}"
 msgid "Total Balance"
 msgstr "Balance Total"
 
-#: src/components/swap/SwapFeesTooltip.vue:44
+#: src/components/swap/SwapFeesTooltip.vue:55
 msgid "Total fees"
 msgstr "Cuotas totales"
 
 #: src/components/modals/TradeModal.vue:7
 msgid "Trade NIM and BTC"
-msgstr ""
+msgstr "Intercambie NIM y BTC"
 
-#: src/components/modals/BtcTransactionModal.vue:40
-#: src/components/modals/TransactionModal.vue:59
+#: src/components/modals/BtcTransactionModal.vue:36
+#: src/components/modals/TransactionModal.vue:49
 msgid "Transaction from {address}"
 msgstr "Transacción desde {address}"
 
-#: src/components/modals/BtcTransactionModal.vue:48
-#: src/components/modals/TransactionModal.vue:67
+#: src/components/modals/BtcTransactionModal.vue:42
+#: src/components/modals/TransactionModal.vue:55
 msgid "Transaction to {address}"
 msgstr "Transacción para {address}"
 
-#: src/components/modals/BtcSendModal.vue:129
+#: src/components/modals/BtcSendModal.vue:115
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 "Las transacciones toman >10 min. debido al tiempo por bloque de Bitcoin."
@@ -1719,28 +2077,32 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "Transferir fondos"
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:216
 msgid "Trials"
 msgstr "Pruebas"
 
-#: src/components/swap/SwapAnimation.vue:30
-#: src/components/swap/SwapSepaFundingInstructions.vue:121
+#: src/components/swap/SwapAnimation.vue:34
+#: src/components/swap/SwapSepaFundingInstructions.vue:120
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Solución de problemas"
+
+#: src/components/AnnouncementBox.vue:28
+msgid "Try it now"
+msgstr "Pruébelo ahora"
 
 #: src/components/NetworkStats.vue:23
 msgid "Tweet your map!"
 msgstr "¡Twitea tu mapa!"
 
-#: src/components/modals/TransactionModal.vue:535
-#: src/components/TransactionListItem.vue:225
+#: src/components/modals/TransactionModal.vue:542
+#: src/components/TransactionListItem.vue:246
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink no canjeado"
 
-#: src/components/modals/BtcTransactionModal.vue:104
-#: src/components/modals/BtcTransactionModal.vue:162
-#: src/components/modals/BtcTransactionModal.vue:167
-#: src/components/modals/BtcTransactionModal.vue:99
+#: src/components/modals/BtcTransactionModal.vue:101
+#: src/components/modals/BtcTransactionModal.vue:159
+#: src/components/modals/BtcTransactionModal.vue:164
+#: src/components/modals/BtcTransactionModal.vue:96
 msgid "Unknown"
 msgstr "Deconocido"
 
@@ -1749,7 +2111,7 @@ msgid "Update Available"
 msgstr "Actualización Disponible"
 
 #: src/components/layouts/Settings.vue:24
-#: src/components/UpdateNotification.vue:13
+#: src/components/UpdateNotification.vue:16
 msgid "Update now"
 msgstr "Actualizar ahora"
 
@@ -1757,64 +2119,84 @@ msgstr "Actualizar ahora"
 msgid "Use {NIM}, the super performant and browser- based payment coin."
 msgstr "Use {NIM}, la moneda con super rendimiento y nativa al navegador."
 
-#: src/components/modals/BtcReceiveModal.vue:53
-#: src/components/modals/BtcSendModal.vue:31
-msgid "Use a new Bitcoin address for every transaction to improve privacy."
-msgstr ""
-"Use una nueva dirección Bitcoin por cada transacción para mejorar la "
-"privacidad."
+#: src/components/TransactionDetailOasisPayoutStatus.vue:11
+msgid "Use a SEPA Instant account to get payouts in minutes."
+msgstr "Use una cuenta SEPA-Instantáneo para obtener pagos en minutos."
 
-#: src/components/modals/BtcReceiveModal.vue:19
-msgid ""
-"Use labels instead of contacts to easily identify transactions in your "
-"history."
-msgstr ""
-"Use etiquetas en lugar de contactos para identificar fácilmente "
-"transacciones en su historial."
+#: src/components/modals/BtcReceiveModal.vue:24
+msgid "Use labels to easily identify transactions."
+msgstr "Utilice etiquetas para identificar transacciones fácilmente."
+
+#: src/components/layouts/Settings.vue:33
+msgid "Use the Nimiq Wallet as a web app outside the browser."
+msgstr "Use la Billetera Nimiq como una aplicación web afuera del navegador."
 
 #: src/components/swap/SwapModal.vue:10
 msgid "Use the slider or edit values to set up a swap."
 msgstr "Use el selector o edite los valores para establecer un intercambio."
 
-#: src/components/layouts/Settings.vue:141
+#: src/components/layouts/Settings.vue:192
 msgid "Vesting Contract"
 msgstr "Contracto Vesting"
 
-#: src/components/modals/BuyCryptoModal.vue:33
+#: src/components/modals/BuyCryptoModal.vue:21
 msgid "Wait for the swap to be set up."
 msgstr "Espere a que el intercambio sea configurado."
 
-#: src/components/swap/SwapModalFooter.vue:50
+#: src/components/TransactionListOasisPayoutStatus.vue:8
+msgid "Waiting for {currency}"
+msgstr "Esperando por {currency}"
+
+#: src/components/swap/SwapModalFooter.vue:60
 msgid "Waiting for Nimiq network informations"
 msgstr "Esperando información de la red Nimiq"
 
-#: src/components/modals/BuyCryptoModal.vue:26
+#: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
-"Welcome to the first fiat-to-crypto atomic swap.\n"
-"It’s simple, fast and decentralized."
+"Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and "
+"decentralized."
 msgstr ""
-"Bienvenido al primer intercambio atómico fiat-crypto.\n"
-"Es simple, rápido y decentralizado."
+"Bienvenido al primer intercambio atómico fiat-a-cripto. Es muy simple, "
+"rápido y decentralizado."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
 msgstr "¿Qué más?"
 
-#: src/components/modals/BtcReceiveModal.vue:9
-msgid ""
-"With Bitcoin, a new address is used for every transaction to improve "
-"privacy. Reuse of addresses does not result in a loss of funds."
-msgstr ""
-"Con Bitcoin, una nueva dirección es usada en cada nueva transacción para "
-"mejorar la privacidad. Reutilizar direcciones no provoca la perdida de "
-"fondos."
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:6
+msgid "What is your bank called?"
+msgstr "Como se llama su banco?"
 
-#: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:20
+#: src/components/layouts/Settings.vue:163
+msgid "When ready"
+msgstr "Cuando este listo"
+
+#: src/components/modals/BtcReceiveModal.vue:14
+msgid ""
+"With Bitcoin, a new address can be used for every transaction to improve "
+"privacy."
+msgstr ""
+"En Bitcoin, es posible usar una nueva dirección en cada transacción para "
+"incrementar la privacidad."
+
+#: src/components/BtcCopiedAddress.vue:16 src/components/BtcLabelInput.vue:21
 msgid ""
 "With Bitcoin, there are no contacts, since addresses are only used once."
 msgstr ""
 "Con Bitcoin no hay contactos, ya que las direcciones son utilizadas solo una"
 " vez."
+
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:13
+msgid ""
+"Without a SEPA instant bank account your money will take 1-3 business days "
+"to arrive."
+msgstr ""
+"Sin una cuenta bancaria SEPA-Instantáneo, su dinero tardaría 1-3 días en "
+"llegar."
+
+#: src/components/BankCheckInput.vue:70
+msgid "Without an individual IBAN, refunds are impossible!"
+msgstr "¡Sin un IBAN individual los reembolsos son imposibles!"
 
 #: src/components/modals/NetworkInfoModal.vue:10
 msgid "You are a part of the Nimiq Blockchain."
@@ -1828,15 +2210,22 @@ msgstr "Se esta conectando a las Testnet de Nimiq y Bitcoin."
 msgid "You are using a Legacy Account "
 msgstr "Esta usando una Cuenta versión antigua "
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Puedes recibir más NIM gratis en {waitTime} horas."
 
-#: src/components/swap/SwapAnimation.vue:43
+#: src/components/swap/SwapAnimation.vue:49
 msgid ""
 "You exceeded the 30-day limit of your bank account and will be refunded. "
 "Please note that network fees may be deducted from your funds."
 msgstr ""
+"Ha excedido el limite de 30-días para su cuenta bancaria y su transacción "
+"será reembolsada. Por favor note que las cuotas de red podrías ser deducidas"
+" de sus fondos."
+
+#: src/components/swap/SwapAnimation.vue:95
+msgid "You have exceeded your OASIS limit."
+msgstr "Ha excedido su límite en OASIS"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:6
 msgid "You need a SEPA account that supports instant transactions."
@@ -1847,19 +2236,19 @@ msgstr "Necesita una cuenta SEPA que soporte transacciones instantáneas."
 msgid "You now own crypto!"
 msgstr "¡Ahora posee criptomonedas!"
 
-#: src/components/swap/SwapAnimation.vue:212
+#: src/components/swap/SwapAnimation.vue:280
 msgid "You will finalize your purchase by bank transfer."
 msgstr "Usted finalizará su compra por medio de transferencia bancaria."
 
-#: src/components/modals/BtcSendModal.vue:83
+#: src/components/modals/BtcSendModal.vue:68
 msgid "You will send {amount}"
 msgstr "Va a enviar {amount}"
 
-#: src/components/modals/SendModal.vue:129
+#: src/components/modals/SendModal.vue:167
 msgid "You will send {amount} NIM"
 msgstr "Va a enviar {amount} NIM"
 
-#: src/components/layouts/AccountOverview.vue:8
+#: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
 msgstr "¡Su cuenta no esta segura aún!"
 
@@ -1879,19 +2268,11 @@ msgstr ""
 "Sus cuentas son ahora cuentas versión antigua. Facilmente cambie, edite y "
 "cree cuentas con el nuevo seleccionador de cuentas."
 
-#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:22
+#: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:23
 msgid "Your bank is not eligible?"
 msgstr "¿Su banco no es soportado?"
 
-#: src/components/BankCheckInput.vue:86
-msgid ""
-"Your bank needs to support SEPA Instant out transactions. Some banks don’t "
-"support it yet, but are likely to do so in the future."
-msgstr ""
-"Su banco necesita soportar transacciones SEPA instantáneas. Algunos bancos "
-"aún no las soporta, pero probablemente lo hagan en el futuro"
-
-#: src/components/NetworkMap.vue:22
+#: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
 msgstr "Su navegador"
 
@@ -1904,11 +2285,28 @@ msgstr ""
 "Esto lo convierte en un usuario de primera categoría de la cadena de "
 "bloques."
 
+#: src/components/modals/BuyOptionsModal.vue:82
+msgid ""
+"Your browser does not support Keyguard popups, or they are disabled in the "
+"Settings."
+msgstr ""
+"Su navegador no soporta las ventanas emergentes de Keyguard, o están "
+"desactivadas en la Configuración."
+
 #: src/components/modals/WelcomeModal.vue:13
 msgid "Your browser is a Node"
 msgstr "Su navegador es un Nodo"
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:88
+#: src/components/swap/SwapAnimation.vue:98
+#: src/components/TransactionDetailOasisPayoutStatus.vue:20
+msgid ""
+"Your EUR will be transferred to your bank account as soon as new limit is "
+"available."
+msgstr ""
+"Sus EUR serán transferidos a su cuenta bancaria tan pronto como nuevos "
+"límites estén disponibles."
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:89
 msgid ""
 "Your monthly purchase limit will still\n"
 "be reduced, even if you cancel now."
@@ -1924,15 +2322,23 @@ msgstr ""
 "Sus NIM están almacenados en una cuenta de versión antigua. Transfiéralos a "
 "una cuenta regular para beneficiarse de las nuevas características."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:113
+#: src/components/swap/SwapSepaFundingInstructions.vue:112
 msgid "Your payment has not been received yet. There might be an issue."
-msgstr ""
+msgstr "Su pago aún no se ha recibido. Puede que haya un problema."
 
-#: src/components/swap/SwapSepaFundingInstructions.vue:61
+#: src/components/TransactionDetailOasisPayoutStatus.vue:9
+msgid "Your payout is on its way"
+msgstr "Su pago esta de camino"
+
+#: src/components/layouts/AddressOverview.vue:143
+msgid "Your swap was successful!"
+msgstr "¡Su intercambio fue exitoso!"
+
+#: src/components/swap/SwapSepaFundingInstructions.vue:62
 msgid "Your transaction must be SEPA Instant"
 msgstr "Su transacción debe ser SEPA Instantáneo"
 
-#: src/components/BtcTransactionList.vue:64
+#: src/components/BtcTransactionList.vue:65
 #: src/components/TransactionList.vue:72
 msgid "Your transactions will appear here"
 msgstr "Sus transacciones van a mostrarse aquí"

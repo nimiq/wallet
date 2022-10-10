@@ -7,13 +7,15 @@
                     <a slot="link" href="https://moonpay.com" target="_blank" rel="noopener">moonpay.com</a>
                 </i18n>
             </Tooltip>
-            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay">
+            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay Logo">
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
         <div v-if="!url" class="placeholder flex-column flex-grow">{{ $t('Loading Moonpay...') }}</div>
         <!-- Iframe allow list from Moonpay docs -->
-        <iframe v-else :src="url" allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0">
+        <iframe v-else :src="url"
+            allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0" title="Moonpay"
+        >
             <p>Your browser does not support iframes.</p>
         </iframe>
     </Modal>
@@ -21,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { Tooltip, InfoCircleSmallIcon, PageFooter } from '@nimiq/vue-components';
+import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import Config from 'config';
 import Modal from './Modal.vue';
 import { useSettingsStore } from '../../stores/Settings';
@@ -72,7 +74,6 @@ export default defineComponent({
         };
     },
     components: {
-        PageFooter,
         Modal,
         Tooltip,
         InfoCircleSmallIcon,
@@ -81,7 +82,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal /deep/ .small-page {
+.modal ::v-deep .small-page {
     height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
 }
 
@@ -90,7 +91,7 @@ header {
     align-items: center;
     padding: 2rem 3rem;
 
-    .tooltip /deep/ {
+    .tooltip ::v-deep {
         .trigger {
             color: var(--text-30);
         }

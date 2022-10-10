@@ -47,13 +47,16 @@
 
                 <span v-if="data" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
+                    <TransactionListOasisPayoutStatus
+                        v-if="swapData && swapData.asset === SwapAsset.EUR"
+                        :data="swapData"/>
                 </span>
             </div>
 
         </div>
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="isIncoming ? amountReceived : amountSent" currency="btc" value-mask/>
-            <transition name="fade">
+            <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING"
                     :amount="isIncoming ? amountReceived : amountSent" currency="btc" value-mask
                 />
@@ -66,6 +69,11 @@
                     <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
+            <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
+                :amount="(swapData.amount / 100)
+                    - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
+                    * (isIncoming ? 1 : -1)"
+                :currency="swapData.asset.toLowerCase()" value-mask/>
         </div>
     </button>
 </template>
@@ -81,6 +89,7 @@ import {
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { SettlementStatus } from '@nimiq/oasis-api';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { Transaction } from '../stores/BtcTransactions';
@@ -97,6 +106,8 @@ import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { useSwapsStore } from '../stores/Swaps';
 import { useTransactionsStore } from '../stores/Transactions';
 import { useAddressStore } from '../stores/Address';
+import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
+import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({
     props: {
@@ -152,6 +163,7 @@ export default defineComponent({
         const { getSwapByTransactionHash } = useSwapsStore();
         const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash));
         const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        useOasisPayoutStatusUpdater(swapData);
         const isCancelledSwap = computed(() =>
             swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset);
 
@@ -176,10 +188,19 @@ export default defineComponent({
         const data = computed(() => {
             if (swapData.value) {
                 if (!isCancelledSwap.value) {
-                    return context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+                    const message = context.root.$t('Sent {fromAsset} – Received {toAsset}', {
                         fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.BTC,
                         toAsset: isIncoming.value ? SwapAsset.BTC : swapData.value.asset,
                     }) as string;
+
+                    // The TransactionListOasisPayoutStatus takes care of the second half of the message
+                    if (
+                        swapData.value.asset === SwapAsset.EUR
+                        && swapData.value.htlc?.settlement
+                        && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
+                    ) return `${message.split('–')[0]} –`;
+
+                    return message;
                 }
 
                 return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
@@ -330,6 +351,7 @@ export default defineComponent({
         Identicon,
         BankIcon,
         SwapSmallIcon,
+        TransactionListOasisPayoutStatus,
     },
 });
 </script>
@@ -387,12 +409,12 @@ svg {
     .pending,
     .new,
     .invalid {
-        /deep/ svg {
+        ::v-deep svg {
             margin: 0 auto;
         }
     }
 
-    /deep/ .circle-spinner {
+    ::v-deep .circle-spinner {
         display: block;
     }
 

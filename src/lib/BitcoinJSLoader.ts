@@ -7,11 +7,13 @@ export async function loadBitcoinJS(): Promise<boolean> {
             script.addEventListener('load', async () => {
                 // Wait for script to be parsed: check if global 'BitcoinJS' variable is available yet
                 while (typeof BitcoinJS === 'undefined') {
-                    await new Promise((res) => setTimeout(res, 100)); // eslint-disable-line no-await-in-loop
+                    await new Promise((res) => { setTimeout(res, 50); }); // eslint-disable-line no-await-in-loop
                 }
                 resolve(true);
             });
             script.addEventListener('error', reject);
+            script.integrity = process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH!; // defined in vue.config.js
+            script.crossOrigin = 'anonymous';
             script.src = '/bitcoin/BitcoinJS.min.js';
             document.body.appendChild(script);
         })

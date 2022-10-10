@@ -1,5 +1,5 @@
 import { createStore } from 'pinia';
-import { Account } from '@nimiq/hub-api';
+import HubApi, { Account, AccountType as AccountTypeEnumType } from '@nimiq/hub-api';
 import { useAddressStore } from './Address';
 import { CryptoCurrency } from '../lib/Constants';
 
@@ -9,12 +9,10 @@ export type AccountState = {
     activeCurrency: CryptoCurrency,
 }
 
-// Mirror of Hub WalletType, which is not exported
-export enum AccountType {
-    LEGACY = 1,
-    BIP39 = 2,
-    LEDGER = 3,
-}
+// Reconstruct AccountType enum by typescript declaration merging of enum values and enum type
+const { AccountType } = HubApi; // AccountType enum values
+type AccountType = AccountTypeEnumType; // AccountType enum type
+export { AccountType };
 
 export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'addresses' | 'uid'> & {
     id: string,

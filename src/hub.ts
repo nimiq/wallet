@@ -71,7 +71,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
             // eslint-disable-next-line no-console
             console.debug(`Failed to locate user for fiat currency: ${error.message}`);
         });
-    } else if (accounts[0].type !== (AccountType.LEGACY as number) && !accounts[0].btcAddresses?.external.length) {
+    } else if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length) {
         // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
         // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
         // If instead the welcome modal was shown above, the welcome modal offers the bitcoin activation on close.
@@ -206,7 +206,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         accountInfos.push({
             id: account.accountId,
-            type: account.type as number, // casting because Type 'WalletType' is not assignable to type 'AccountType'.
+            type: account.type,
             label: account.label,
             fileExported: account.fileExported,
             wordsExported: account.wordsExported,
@@ -289,7 +289,7 @@ export async function onboard(asRedirect = false) {
 
     processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
 
-    if (accounts[0].type !== (AccountType.LEGACY as number) && !accounts[0].btcAddresses?.external.length) {
+    if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length) {
         // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
         // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
         await router.push('/btc-activation');

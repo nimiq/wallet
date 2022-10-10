@@ -1505,7 +1505,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/translations":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#d5261278da689d022fa61c673798832b3a5c6249"
+  resolved "https://github.com/nimiq/vue-components#144c79ee280de174c2684097e029929bb8be0515"
   dependencies:
     "@nimiq/iqons" "^1.6.0"
     "@nimiq/style" "^0.8.2"
@@ -1513,7 +1513,7 @@
     big-integer "^1.6.44"
     input-format "^0.2.8"
     qr-creator "^1.0.0"
-    qr-scanner "^1.3.0"
+    qr-scanner "^1.4.1"
     vue "^2.6.11"
     vue-property-decorator "^8.4.0"
 
@@ -1853,6 +1853,11 @@
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==
+
+"@types/offscreencanvas@^2019.6.4":
+  version "2019.7.0"
+  resolved "https://registry.yarnpkg.com/@types/offscreencanvas/-/offscreencanvas-2019.7.0.tgz#e4a932069db47bb3eabeb0b305502d01586fa90d"
+  integrity sha512-PGcyveRIpL1XIqK8eBsmRBt76eFgtzuPiSTyKHZxnGemp2yzGzWpjYKAfK3wIMiU7eH+851yEpiuP8JZerTmWg==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -2883,9 +2888,9 @@ bech32@^1.1.2:
   integrity sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==
 
 big-integer@^1.6.44:
-  version "1.6.49"
-  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.49.tgz#f6817d3ea5d4f3fb19e24df9f4b1b4471a8328ce"
-  integrity sha512-KJ7VhqH+f/BOt9a3yMwJNmcZjG53ijWMTjSAGMveQWyLwqIiwkjNP5PFgDob3Snnx86SjDj6I89fIbv0dkQeNw==
+  version "1.6.51"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
+  integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
 big-integer@^1.6.48:
   version "1.6.48"
@@ -7828,13 +7833,13 @@ promise.prototype.finally@^3.1.3:
     es-abstract "^1.19.1"
 
 prop-types@^15.7.2:
-  version "15.7.2"
-  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
-  integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
+  version "15.8.1"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
+  integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
   dependencies:
     loose-envify "^1.4.0"
     object-assign "^4.1.1"
-    react-is "^16.8.1"
+    react-is "^16.13.1"
 
 proxy-addr@~2.0.5:
   version "2.0.6"
@@ -7906,10 +7911,12 @@ qr-creator@^1.0.0:
   resolved "https://registry.yarnpkg.com/qr-creator/-/qr-creator-1.0.0.tgz#f350a8f0b5be02bd1fc1ef133a038a06ef8bc5ef"
   integrity sha512-C0cqfbS1P5hfqN4NhsYsUXePlk9BO+a45bAQ3xLYjBL3bOIFzoVEjs79Fado9u9BPBD3buHi3+vY+C8tHh4qMQ==
 
-qr-scanner@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/qr-scanner/-/qr-scanner-1.3.0.tgz#5a7cc7ae8edefc3ad0053a5473f591fb113f91ff"
-  integrity sha512-xNXlZaKOW0nihHaV7KPrMYJHNp1YX9z+NTqFrbNoibGIzQpPLeIocP9187lxihU/EbgplMm7sQ4hI9jG9+zYHg==
+qr-scanner@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/qr-scanner/-/qr-scanner-1.4.1.tgz#31a1bf7f9927f0eb1e3c0909fe66fec97a3b3701"
+  integrity sha512-xiR90NONHTfTwaFgW/ihlqjGMIZg6ExHDOvGQRba1TvV+WVw7GoDArIOt21e+RO+9WiO4AJJq+mwc5f4BnGH3w==
+  dependencies:
+    "@types/offscreencanvas" "^2019.6.4"
 
 qs@6.7.0:
   version "6.7.0"
@@ -7963,7 +7970,7 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-is@^16.8.1:
+react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==

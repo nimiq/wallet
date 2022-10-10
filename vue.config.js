@@ -99,10 +99,8 @@ module.exports = {
                         from: 'node_modules/@nimiq/vue-components/dist/iqons.min.*.svg',
                         to: './img/[name][ext]',
                     }, {
-                        from: 'node_modules/@nimiq/vue-components/dist/qr-scanner-worker.min.*.js',
-                        to: './js/[name][ext]',
-                    }, {
-                        from: 'node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js',
+                        // Copy over any unnamed js chunks (currently the qr scanner worker) and the languge files
+                        from: 'node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.+([0-9]|lang-*).js',
                         to({ absoluteFilename }) {
                             const segments = absoluteFilename.split('/');
                             const fileName = segments[segments.length - 1];

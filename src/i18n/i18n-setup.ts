@@ -21,6 +21,9 @@ export const Languages = [{
     code: 'fr',
     name: 'Français',
 }, {
+    code: 'pt',
+    name: 'Português',
+}, {
     code: 'ru',
     name: 'Русский',
 }, {

@@ -50,7 +50,12 @@ async function getBankListUrl() {
         throw new Error('Scraper error: BankListUrl not found, please update css selector.');
     }
 
-    return EBA_CLEARING_BASEURL + obj[0].attribs.href;
+    // The url links to the web version of Microsoft Excel. Extract the file url from the Excel url.
+    const bankListUrl = new URL(obj[0].attribs.href).searchParams.get('src');
+    if (!bankListUrl) {
+        throw new Error('Scraper error: BankListUrl format has changed, please update the url extraction.');
+    }
+    return bankListUrl;
 }
 
 async function convertXlsxToJson(xlsxFilePath, jsonFilePath) {

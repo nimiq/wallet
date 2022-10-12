@@ -99,9 +99,6 @@ module.exports = {
                         from: 'node_modules/@nimiq/vue-components/dist/iqons.min.*.svg',
                         to: './img/[name][ext]',
                     }, {
-                        from: 'node_modules/@nimiq/vue-components/dist/qr-scanner-worker.min.*.js',
-                        to: './js/[name][ext]',
-                    }, {
                         from: 'node_modules/@nimiq/vue-components/dist/NimiqVueComponents.umd.min.lang-*.js',
                         to({ absoluteFilename }) {
                             const segments = absoluteFilename.split('/');

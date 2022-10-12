@@ -128,7 +128,7 @@ msgid ""
 msgstr ""
 "Через 72 години після першої покупки ваш ліміт буде автоматично збільшено."
 
-#: src/components/layouts/Settings.vue:341
+#: src/components/layouts/Settings.vue:344
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -346,7 +346,7 @@ msgstr "Банківський переказ підтримується лиш�
 msgid "BIC works, too."
 msgstr "BIC працює також."
 
-#: src/components/BalanceDistribution.vue:89
+#: src/components/BalanceDistribution.vue:98
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -494,7 +494,7 @@ msgstr "Скасувати обмін"
 msgid "Cancelled Swap"
 msgstr "Обмін скасовано"
 
-#: src/components/layouts/Settings.vue:321
+#: src/components/layouts/Settings.vue:324
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не вдається імпортувати контакти, неправильний формат файлу."
 
@@ -721,7 +721,7 @@ msgstr "Ресурси для розробників"
 msgid "Disclaimer"
 msgstr "Застереження"
 
-#: src/components/BtcAddressInput.vue:85
+#: src/components/BtcAddressInput.vue:83
 #: src/components/modals/SendModal.vue:355
 msgid "Domain does not resolve to a valid address"
 msgstr "Домен не дозволяється на дійсну адресу"
@@ -885,7 +885,7 @@ msgstr "Завантаження"
 msgid "Fiat value unavailable"
 msgstr "Сума у валюті недоступна"
 
-#: src/components/layouts/Settings.vue:327
+#: src/components/layouts/Settings.vue:330
 msgid "File contains no contacts."
 msgstr "Файл не містить контактів."
 
@@ -912,6 +912,10 @@ msgstr "Потрібна повна ідентифікація, висока д�
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Повноцінний вузол"
+
+#: src/components/BalanceDistribution.vue:74
+msgid "Fund your Wallet with NIM or BTC first to be able to swap."
+msgstr ""
 
 #: src/lib/DataFormatting.ts:15
 msgid "Funding Cashlink"
@@ -1109,7 +1113,7 @@ msgstr "Дізнайтеся більше"
 msgid "Learn more here"
 msgstr "Дізнайтеся більше тут"
 
-#: src/components/layouts/Sidebar.vue:44
+#: src/components/layouts/Sidebar.vue:52
 #: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr ""
@@ -1236,7 +1240,7 @@ msgstr "Вкажіть ім'я відправника..."
 msgid "Name your contact"
 msgstr "Назвіть контакт"
 
-#: src/components/layouts/Sidebar.vue:65
+#: src/components/layouts/Sidebar.vue:75
 msgid "Network"
 msgstr "Мережа"
 
@@ -1302,6 +1306,8 @@ msgstr "Ні"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не всі рахунки, надані цим банком, підтримують миттєві операції."
 
+#: src/components/BalanceDistribution.vue:77
+#: src/components/layouts/Sidebar.vue:57
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
 msgstr "Недоступно у вашому веб-оглядачі"
@@ -1329,7 +1335,7 @@ msgstr "Перевищено ліміт OASIS"
 msgid "OASIS service fee"
 msgstr "Комісія OASIS"
 
-#: src/components/layouts/Sidebar.vue:38
+#: src/components/layouts/Sidebar.vue:46
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid ""
 "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
@@ -1340,7 +1346,7 @@ msgstr ""
 msgid "Off"
 msgstr "Вимк."
 
-#: src/components/layouts/Settings.vue:350
+#: src/components/layouts/Settings.vue:353
 msgid "OK! Contacts imported successfully."
 msgstr "Контакти було додано успішно."
 
@@ -1425,6 +1431,15 @@ msgstr ""
 #: src/components/swap/SwapSepaFundingInstructions.vue:7
 msgid "Please transfer"
 msgstr "Будь ласка, перекажіть"
+
+#: src/components/BalanceDistribution.vue:75
+msgid "Please wait for your current swap to finish before starting a new one."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:55
+msgid ""
+"Please wait for your current swap to finish before starting a new swap."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:178
 msgid "popups"
@@ -1603,7 +1618,7 @@ msgstr "Виберіть валюту та суму."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Обрати у яких одиницях відображати Біткоїн."
 
-#: src/components/layouts/Sidebar.vue:37 src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:43
 msgid "Sell"
 msgstr "Продати"
 
@@ -1740,7 +1755,7 @@ msgstr "Атомарний обмін налаштовується"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Налаштування сторони обміну {currency}."
 
-#: src/components/layouts/Sidebar.vue:73
+#: src/components/layouts/Sidebar.vue:83
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -2270,6 +2285,8 @@ msgstr ""
 "Ваш веб-оглядач напряму під'єднується до списку пірів з усього світу. Таким "
 "чином ви є повноцінним учасником блокчейну."
 
+#: src/components/BalanceDistribution.vue:78
+#: src/components/layouts/Sidebar.vue:58
 #: src/components/modals/BuyOptionsModal.vue:82
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "

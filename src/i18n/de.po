@@ -130,7 +130,7 @@ msgid ""
 msgstr ""
 "72 Stunden nach deinem ersten Kauf wird dein Limit automatisch erhöht."
 
-#: src/components/layouts/Settings.vue:341
+#: src/components/layouts/Settings.vue:344
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -348,7 +348,7 @@ msgstr "Banküberweisung wird nur in der SEPA-Region der EU unterstützt."
 msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
-#: src/components/BalanceDistribution.vue:89
+#: src/components/BalanceDistribution.vue:98
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -498,7 +498,7 @@ msgstr "Tausch abbrechen"
 msgid "Cancelled Swap"
 msgstr "Abgebrochener Tausch"
 
-#: src/components/layouts/Settings.vue:321
+#: src/components/layouts/Settings.vue:324
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
@@ -726,7 +726,7 @@ msgstr "Entwickler-Resourcen"
 msgid "Disclaimer"
 msgstr "Haftungsausschluss"
 
-#: src/components/BtcAddressInput.vue:85
+#: src/components/BtcAddressInput.vue:83
 #: src/components/modals/SendModal.vue:355
 msgid "Domain does not resolve to a valid address"
 msgstr "Domain beinhaltet keine gültige Adresse."
@@ -890,7 +890,7 @@ msgstr "Lade"
 msgid "Fiat value unavailable"
 msgstr "Fiatwert nicht verfügbar"
 
-#: src/components/layouts/Settings.vue:327
+#: src/components/layouts/Settings.vue:330
 msgid "File contains no contacts."
 msgstr "Datei enthält keine Kontakte."
 
@@ -917,6 +917,10 @@ msgstr "Identitätsnachweis erforderlich, hohe Verfügbarkeit."
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Full Node"
+
+#: src/components/BalanceDistribution.vue:74
+msgid "Fund your Wallet with NIM or BTC first to be able to swap."
+msgstr ""
 
 #: src/lib/DataFormatting.ts:15
 msgid "Funding Cashlink"
@@ -1116,7 +1120,7 @@ msgstr "Mehr erfahren"
 msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
-#: src/components/layouts/Sidebar.vue:44
+#: src/components/layouts/Sidebar.vue:52
 #: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr ""
@@ -1243,7 +1247,7 @@ msgstr "Benenne den Empfänger..."
 msgid "Name your contact"
 msgstr "Benenne deinen Kontakt"
 
-#: src/components/layouts/Sidebar.vue:65
+#: src/components/layouts/Sidebar.vue:75
 msgid "Network"
 msgstr "Netzwerk"
 
@@ -1309,6 +1313,8 @@ msgstr "Keine"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
 
+#: src/components/BalanceDistribution.vue:77
+#: src/components/layouts/Sidebar.vue:57
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
 msgstr "Nicht verfügbar in deinem Browser"
@@ -1336,7 +1342,7 @@ msgstr "OASIS-Obergrenze überschritten"
 msgid "OASIS service fee"
 msgstr "OASIS-Servicegebühr"
 
-#: src/components/layouts/Sidebar.vue:38
+#: src/components/layouts/Sidebar.vue:46
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid ""
 "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
@@ -1347,7 +1353,7 @@ msgstr ""
 msgid "Off"
 msgstr "Aus"
 
-#: src/components/layouts/Settings.vue:350
+#: src/components/layouts/Settings.vue:353
 msgid "OK! Contacts imported successfully."
 msgstr "OK! Deine Kontakte wurden erfolgreich importiert."
 
@@ -1434,6 +1440,15 @@ msgstr ""
 #: src/components/swap/SwapSepaFundingInstructions.vue:7
 msgid "Please transfer"
 msgstr "Bitte überweise"
+
+#: src/components/BalanceDistribution.vue:75
+msgid "Please wait for your current swap to finish before starting a new one."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:55
+msgid ""
+"Please wait for your current swap to finish before starting a new swap."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:178
 msgid "popups"
@@ -1615,7 +1630,7 @@ msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 "Wähle aus, in welcher Einheit Bitcoin-Beträge angezeigt werden sollen."
 
-#: src/components/layouts/Sidebar.vue:37 src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:43
 msgid "Sell"
 msgstr "Verkaufen"
 
@@ -1753,7 +1768,7 @@ msgstr "Sicherer Tausch wird vorbereitet"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Die {currency}-Seite des Tauschs wird vorbereitet."
 
-#: src/components/layouts/Sidebar.vue:73
+#: src/components/layouts/Sidebar.vue:83
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -2291,6 +2306,8 @@ msgstr ""
 "Teilnehmern aus der ganzen Welt her. Dies macht dich persönlich zu einem "
 "wirklichen Mitglied der Blockchain-Welt."
 
+#: src/components/BalanceDistribution.vue:78
+#: src/components/layouts/Sidebar.vue:58
 #: src/components/modals/BuyOptionsModal.vue:82
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "

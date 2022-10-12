@@ -4,12 +4,12 @@
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2021
 # Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
-# Robinson BARAIS, 2022
 # Matheo <matheo@nimiq.com>, 2022
+# Robinson BARAIS, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2022\n"
+"Last-Translator: Robinson BARAIS, 2022\n"
 "Language-Team: French (https://www.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -131,7 +131,7 @@ msgstr ""
 "72 heures après votre premier achat, votre limite sera augmentée "
 "automatiquement."
 
-#: src/components/layouts/Settings.vue:341
+#: src/components/layouts/Settings.vue:344
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -353,7 +353,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr "Le BIC fonctionne aussi."
 
-#: src/components/BalanceDistribution.vue:89
+#: src/components/BalanceDistribution.vue:98
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -500,7 +500,7 @@ msgstr "Annuler le Swap"
 msgid "Cancelled Swap"
 msgstr "Swap annulé"
 
-#: src/components/layouts/Settings.vue:321
+#: src/components/layouts/Settings.vue:324
 msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer des contacts, format de fichier incorrect."
 
@@ -727,7 +727,7 @@ msgstr "Ressources pour les développeurs"
 msgid "Disclaimer"
 msgstr "Avertissement"
 
-#: src/components/BtcAddressInput.vue:85
+#: src/components/BtcAddressInput.vue:83
 #: src/components/modals/SendModal.vue:355
 msgid "Domain does not resolve to a valid address"
 msgstr "Le domaine ne correspond pas à une adresse valide"
@@ -892,7 +892,7 @@ msgstr "Récupération"
 msgid "Fiat value unavailable"
 msgstr "Valeur du FIAT indisponible"
 
-#: src/components/layouts/Settings.vue:327
+#: src/components/layouts/Settings.vue:330
 msgid "File contains no contacts."
 msgstr "Le fichier ne contient aucun contact."
 
@@ -919,6 +919,10 @@ msgstr "KYC requis pour les montants importants."
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Noeud Complet"
+
+#: src/components/BalanceDistribution.vue:74
+msgid "Fund your Wallet with NIM or BTC first to be able to swap."
+msgstr ""
 
 #: src/lib/DataFormatting.ts:15
 msgid "Funding Cashlink"
@@ -1116,10 +1120,10 @@ msgstr "En apprendre plus"
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
-#: src/components/layouts/Sidebar.vue:44
+#: src/components/layouts/Sidebar.vue:52
 #: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
-msgstr ""
+msgstr "En savoir plus."
 
 #: src/components/layouts/AddressOverview.vue:134
 msgid "Let's get started! Create your Nimiq account:"
@@ -1243,7 +1247,7 @@ msgstr "Nommez ce destinataire..."
 msgid "Name your contact"
 msgstr "Nommez votre contact"
 
-#: src/components/layouts/Sidebar.vue:65
+#: src/components/layouts/Sidebar.vue:75
 msgid "Network"
 msgstr "Réseau"
 
@@ -1312,6 +1316,8 @@ msgstr ""
 "Tous les comptes fournis par cette banque ne supportent pas forcément les "
 "transactions instantanées."
 
+#: src/components/BalanceDistribution.vue:77
+#: src/components/layouts/Sidebar.vue:57
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
 msgstr "Pas disponible sur votre navigateur"
@@ -1339,18 +1345,20 @@ msgstr "Limite d'utilisation d'OASIS dépassée "
 msgid "OASIS service fee"
 msgstr "frais de service OASIS"
 
-#: src/components/layouts/Sidebar.vue:38
+#: src/components/layouts/Sidebar.vue:46
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid ""
 "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
 " some time. Please try again later."
 msgstr ""
+"L'infrastructure de la banque TEN31 d'OASIS est en cours de mise à jour. "
+"Cela peut prendre un certain temps. Merci de réessayer ultérieurement."
 
 #: src/components/layouts/Settings.vue:165
 msgid "Off"
 msgstr "Inactif"
 
-#: src/components/layouts/Settings.vue:350
+#: src/components/layouts/Settings.vue:353
 msgid "OK! Contacts imported successfully."
 msgstr "OK ! Les contacts ont été importés avec succès."
 
@@ -1436,6 +1444,15 @@ msgstr ""
 #: src/components/swap/SwapSepaFundingInstructions.vue:7
 msgid "Please transfer"
 msgstr "Veuillez transférer"
+
+#: src/components/BalanceDistribution.vue:75
+msgid "Please wait for your current swap to finish before starting a new one."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:55
+msgid ""
+"Please wait for your current swap to finish before starting a new swap."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:178
 msgid "popups"
@@ -1617,7 +1634,7 @@ msgstr "Sélectionnez une devise et un montant."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Sélectionnez l'unité dans laquelle afficher les montants en Bitcoin."
 
-#: src/components/layouts/Sidebar.vue:37 src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:43
 msgid "Sell"
 msgstr "Vendre"
 
@@ -1756,7 +1773,7 @@ msgstr "Configuration du Swap atomique"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Configuration de la partie {currency} du Swap."
 
-#: src/components/layouts/Sidebar.vue:73
+#: src/components/layouts/Sidebar.vue:83
 msgid "Settings"
 msgstr "Réglages"
 
@@ -2295,6 +2312,8 @@ msgstr ""
 "Votre navigateur se connecte directement à un ensemble de pairs du monde "
 "entier. Cela fait de vous un citoyen de première classe de la blockchain."
 
+#: src/components/BalanceDistribution.vue:78
+#: src/components/layouts/Sidebar.vue:58
 #: src/components/modals/BuyOptionsModal.vue:82
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "

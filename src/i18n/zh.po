@@ -127,7 +127,7 @@ msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr "首次购买后的72 小时，你的限额将自动更新。"
 
-#: src/components/layouts/Settings.vue:341
+#: src/components/layouts/Settings.vue:344
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -333,7 +333,7 @@ msgstr "仅支持欧盟SEPA区域的银行转账"
 msgid "BIC works, too."
 msgstr "BIC适用"
 
-#: src/components/BalanceDistribution.vue:89
+#: src/components/BalanceDistribution.vue:98
 #: src/components/layouts/AccountOverview.vue:64
 #: src/components/layouts/AddressOverview.vue:68
 #: src/components/layouts/Settings.vue:119
@@ -472,7 +472,7 @@ msgstr "取消交换"
 msgid "Cancelled Swap"
 msgstr "取消交换"
 
-#: src/components/layouts/Settings.vue:321
+#: src/components/layouts/Settings.vue:324
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人"
 
@@ -695,7 +695,7 @@ msgstr "开发者资源"
 msgid "Disclaimer"
 msgstr "免责声明"
 
-#: src/components/BtcAddressInput.vue:85
+#: src/components/BtcAddressInput.vue:83
 #: src/components/modals/SendModal.vue:355
 msgid "Domain does not resolve to a valid address"
 msgstr "域名不能解析为有效地址"
@@ -854,7 +854,7 @@ msgstr "正在取得更新"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:327
+#: src/components/layouts/Settings.vue:330
 msgid "File contains no contacts."
 msgstr "文件中没有任何联系人"
 
@@ -881,6 +881,10 @@ msgstr "需要完整的KYC，可用性高"
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "完整节点"
+
+#: src/components/BalanceDistribution.vue:74
+msgid "Fund your Wallet with NIM or BTC first to be able to swap."
+msgstr ""
 
 #: src/lib/DataFormatting.ts:15
 msgid "Funding Cashlink"
@@ -1065,7 +1069,7 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/Sidebar.vue:44
+#: src/components/layouts/Sidebar.vue:52
 #: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr ""
@@ -1192,7 +1196,7 @@ msgstr "命名此收件人..."
 msgid "Name your contact"
 msgstr "为你的联系人命名"
 
-#: src/components/layouts/Sidebar.vue:65
+#: src/components/layouts/Sidebar.vue:75
 msgid "Network"
 msgstr "网络"
 
@@ -1255,6 +1259,8 @@ msgstr "无"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "此银行提供的帐户并非全部都支持即时交易"
 
+#: src/components/BalanceDistribution.vue:77
+#: src/components/layouts/Sidebar.vue:57
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
 msgstr "在你的浏览器中无法使用"
@@ -1282,7 +1288,7 @@ msgstr "超出OASIS限制"
 msgid "OASIS service fee"
 msgstr "OASIS服务费"
 
-#: src/components/layouts/Sidebar.vue:38
+#: src/components/layouts/Sidebar.vue:46
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid ""
 "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
@@ -1293,7 +1299,7 @@ msgstr ""
 msgid "Off"
 msgstr "关"
 
-#: src/components/layouts/Settings.vue:350
+#: src/components/layouts/Settings.vue:353
 msgid "OK! Contacts imported successfully."
 msgstr "好的，联系人已成功导入"
 
@@ -1376,6 +1382,15 @@ msgstr ""
 #: src/components/swap/SwapSepaFundingInstructions.vue:7
 msgid "Please transfer"
 msgstr "请转账"
+
+#: src/components/BalanceDistribution.vue:75
+msgid "Please wait for your current swap to finish before starting a new one."
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:55
+msgid ""
+"Please wait for your current swap to finish before starting a new swap."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:178
 msgid "popups"
@@ -1550,7 +1565,7 @@ msgstr "请选择货币和金额"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "选择显示比特币金额的单位"
 
-#: src/components/layouts/Sidebar.vue:37 src/components/layouts/Sidebar.vue:50
+#: src/components/layouts/Sidebar.vue:43
 msgid "Sell"
 msgstr "卖出"
 
@@ -1685,7 +1700,7 @@ msgstr "设置原子交换"
 msgid "Setting up the {currency} side of the swap."
 msgstr "设置交换的 {currency} "
 
-#: src/components/layouts/Sidebar.vue:73
+#: src/components/layouts/Sidebar.vue:83
 msgid "Settings"
 msgstr "设置"
 
@@ -2190,6 +2205,8 @@ msgid ""
 "This makes you a first-class citizen of the blockchain."
 msgstr "你的浏览器直接连接到一组在世界他处的端点，这将让你成为区块链的头等公民"
 
+#: src/components/BalanceDistribution.vue:78
+#: src/components/layouts/Sidebar.vue:58
 #: src/components/modals/BuyOptionsModal.vue:82
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "

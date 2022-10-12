@@ -14,6 +14,10 @@ yarn i18n:sync
 # Get up-to-date EBA RT1 bank list
 yarn utils:getBankList
 
+# Get up-to-date browsers support list from caniuse.
+# The browserslist utility is meant to run via npx, even when usually using yarn, and is compatible with yarn.lock.
+npx browserslist@latest --update-db
+
 if [[ `git status --porcelain` ]]; then
     echo "ERROR: The repository has changes. Commit them first, then run again."
     exit 1

@@ -29,9 +29,12 @@
             </ul>
         </PageBody>
         <PageFooter>
-            <button class="nq-button light-blue" @click="connect">
-                {{ $t('Go to {provider}', { provider }) }}
+            <button v-if="isInOasisProTrial" class="nq-button light-blue" @click="connect">
+                {{ $t('Connect to {provider}', { provider }) }}
             </button>
+            <a v-else href="https://t.me/OASISProPrivateTesting" target="_blank" rel="noopener"
+                class="nq-button light-blue"
+            >Join Private Testing</a>
             <i18n tag="div" path="{provider} is provided by {companyLogo}" class="provider-info">
                 <template #provider>{{ provider }}</template>
                 <template #companyLogo>
@@ -43,11 +46,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import KycIcon from '../icons/KycIcon.vue';
 import { KycProvider } from '../../stores/Kyc';
 import { connectKyc } from '../../lib/KycConnection';
+import { useSettingsStore } from '../../stores/Settings';
+import { Trial } from '../../lib/Trials';
 
 export default defineComponent({
     setup(props, { emit }) {
@@ -59,10 +64,14 @@ export default defineComponent({
             emit('connected');
         }
 
+        const { trials } = useSettingsStore();
+        const isInOasisProTrial = computed(() => trials.value.includes(Trial.TEN31Pass));
+
         return {
             KycProvider,
             provider,
             connect,
+            isInOasisProTrial,
         };
     },
     components: {
@@ -162,6 +171,11 @@ export default defineComponent({
 }
 
 .page-footer {
+    .ten31-pass-private-testing-notice {
+        text-align: center;
+        margin-bottom: -0.5rem;
+    }
+
     .nq-button {
         margin-left: auto;
         margin-right: auto;

@@ -1440,10 +1440,10 @@
   version "1.6.1"
   resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/3583c53769215f20cd3b1156456e678a6e882e7a"
 
-"@nimiq/hub-api@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.6.0.tgz#77f7108cbccb82001944bedf5a3d9f3796c5bbdf"
-  integrity sha512-UAkdw6RiLejSrCOLtu2cQrANUZIec+jQgJwzpdsiN37rnsd5FMWW02crXlwWSxNGDz2s0X9YnEEo9Rzgp4RWnQ==
+"@nimiq/hub-api@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.6.1.tgz#1db93714767bb829a2fd39a8eedd9b2c8d346826"
+  integrity sha512-dAuv2y+Xg3+eUDJ2nxhU+Tz5fZcglASXRBC+UUjLRY6iiIo1X1JfomE7qVYnnbokxqgoIj8E6kPNpbxyXeLU7w==
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/fastspot-api" "^1.5.2"

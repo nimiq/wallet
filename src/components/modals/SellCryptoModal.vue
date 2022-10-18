@@ -80,14 +80,14 @@
                                 <FiatConvertedAmount v-if="limits"
                                     :amount="limits.monthly.luna" roundDown
                                     currency="nim" :fiat="selectedFiatCurrency"
-                                    :max="oasisMaxFreeAmount"/>
+                                    :max="oasisMaxAmountEur"/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                             <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
                                 <FiatConvertedAmount slot="value"
                                     :amount="limits.remaining.luna" roundDown
                                     currency="nim" :fiat="selectedFiatCurrency"
-                                    :max="oasisMaxFreeAmount"/>
+                                    :max="oasisMaxAmountEur"/>
                             </i18n>
                             <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                         </Tooltip>
@@ -953,6 +953,10 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
+        const oasisMaxAmountEur = computed(
+            () => kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+        );
+
         return {
             $cryptoAmountInput,
             addressListOpened,
@@ -996,7 +1000,7 @@ export default defineComponent({
             OASIS_EUR_DETECTION_DELAY,
             insufficientBalance,
             insufficientLimit,
-            oasisMaxFreeAmount: Config.oasis.maxFreeAmount,
+            oasisMaxAmountEur,
             kycUser,
             kycOverlayOpened,
         };

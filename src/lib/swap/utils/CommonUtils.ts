@@ -12,11 +12,13 @@ import { estimateFees, selectOutputs } from '../../BitcoinTransactionUtils';
 import { useBtcAddressStore } from '../../../stores/BtcAddress';
 import { btcMaxSendableAmount } from './SellUtils';
 import { FundingFees, getEurPerCrypto, getFeePerUnit, getFiatFees, SettlementFees } from './Functions';
+import { useKycStore } from '../../../stores/Kyc';
 
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
 const { btcUnit } = useSettingsStore();
 const { accountUtxos } = useBtcAddressStore();
+const { connectedUser: kycUser } = useKycStore();
 
 /**
  * Common - everything common to Buy and Sell crypto
@@ -47,7 +49,7 @@ export function useCurrentLimitFiat(limits: Ref<SwapLimits | undefined>) {
 
         const regularLimitFiat = Math.min(
             Math.floor((limits.value.current.luna / 1e5) * nimRate),
-            Config.oasis.maxFreeAmount,
+            kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
         );
 
         if (selectedFiatCurrency.value === FiatCurrency.EUR && limits.value.current.eur < Infinity) {

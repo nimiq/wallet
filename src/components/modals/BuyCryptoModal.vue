@@ -88,7 +88,7 @@
                                     <FiatConvertedAmount v-if="limits"
                                         :amount="limits.monthly.luna" roundDown
                                         currency="nim" :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxFreeAmount"/>
+                                        :max="oasisMaxAmountEur"/>
                                     <span v-else>{{ $t('loading...') }}</span>
                                 </div>
                                 <div></div>
@@ -104,14 +104,14 @@
                                     <FiatConvertedAmount v-if="limits"
                                         :amount="limits.monthly.luna" roundDown
                                         currency="nim" :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxFreeAmount"/>
+                                        :max="oasisMaxAmountEur"/>
                                     <span v-else>{{ $t('loading...') }}</span>
                                 </div>
                                 <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
                                     <FiatConvertedAmount slot="value"
                                         :amount="limits.remaining.luna" roundDown
                                         currency="nim" :fiat="selectedFiatCurrency"
-                                        :max="oasisMaxFreeAmount"/>
+                                        :max="oasisMaxAmountEur"/>
                                 </i18n>
                             </template>
                             <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
@@ -900,6 +900,10 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
+        const oasisMaxAmountEur = computed(
+            () => kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+        );
+
         return {
             $eurAmountInput,
             addressListOpened,
@@ -940,7 +944,7 @@ export default defineComponent({
             isBelowOasisMinimum,
             buyMax,
             buyMin,
-            oasisMaxFreeAmount: Config.oasis.maxFreeAmount,
+            oasisMaxAmountEur,
             kycUser,
             kycOverlayOpened,
         };

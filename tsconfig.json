@@ -30,6 +30,9 @@
       "scripthost"
     ]
   },
+  "vueCompilerOptions": {
+    "target": 2,
+  },
   "include": [
     "types/*",
     "src/**/*.ts",

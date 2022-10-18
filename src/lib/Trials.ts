@@ -43,9 +43,11 @@ export async function enableTrial(password: string): Promise<boolean> {
         return false;
     }
 
+    /* eslint-disable quote-props */
     const trialToEnable = {
-        b4b46a343208fe0402af998c42da122f2c2a5af9b2ad3663f2602420ceadf85d: Trial.TEN31Pass,
+        'd8082502f1f6cf61125f9d87b1a848590a5c56aa593abcb59f5d3225afdfc8b0': Trial.TEN31Pass,
     }[hash];
+    /* eslint-enable quote-props */
 
     if (!trialToEnable) return false;
 

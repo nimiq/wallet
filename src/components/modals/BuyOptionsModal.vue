@@ -59,7 +59,7 @@
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
                         </footer>
-                        <footer v-else-if="isOasisUnderMaintenance" class="flex-row">
+                        <footer v-else-if="isOasisUnderMaintenance && !isInOasisProTrial" class="flex-row">
                             <MaintenanceIcon/>
                             {{ $t('Currently under maintenance') }}
                             <div class="flex-grow"></div>
@@ -217,6 +217,7 @@ import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
 import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
 import { useSettingsStore } from '../../stores/Settings';
+import { Trial } from '../../lib/Trials';
 
 type Country = {
     code: string,
@@ -227,17 +228,19 @@ export default defineComponent({
     name: 'buy-options-modal',
     setup() {
         const { currency } = useFiatStore();
-        const { canUseSwaps } = useSettingsStore();
+        const { canUseSwaps, trials } = useSettingsStore();
 
         const country = ref<Country>(null);
+
+        const isInOasisProTrial = computed(() => trials.value.includes(Trial.TEN31Pass));
 
         const isOasisAvailable = computed(() => {
             if (!Config.fastspot.enabled) return false;
             if (!canUseSwaps.value) return false;
-            if (Config.oasis.underMaintenance) return false;
-            if (!country.value) return true;
+            if (Config.oasis.underMaintenance && !isInOasisProTrial.value) return false;
+
             if (Config.environment === ENV_TEST) return true;
-            return SEPA_COUNTRY_CODES.includes(country.value.code);
+            return !country.value || SEPA_COUNTRY_CODES.includes(country.value.code);
         });
 
         const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
@@ -272,6 +275,7 @@ export default defineComponent({
             country,
             isOasisAvailable,
             isOasisUnderMaintenance: Config.oasis.underMaintenance,
+            isInOasisProTrial,
             isCreditCardAvailable,
             isMoonpayAvailable,
             isSimplexAvailable,

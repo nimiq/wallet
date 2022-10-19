@@ -12,7 +12,6 @@ const SUPPORTED_TLDS = [
     'nft',
     'blockchain',
     'bitcoin',
-    'coin',
     'wallet',
     '888',
     'dao',

@@ -438,7 +438,7 @@
     "PASCITMM": { "name": "Banca Monte dei Paschi di Siena" },
     "PBNKDEFF": { "name": "Deutsche Bank, formerly Deutsche Postbank Bonn", "support": { "sepa": { "outbound": "full" } } },
     "REVOGB21": { "support": { "sepa": { "outbound": "no" } } },
-    "REVOLT21": { "support": { "sepa": { "outbound": "no" } } },
+    "REVOLT21": { "support": { "sepa": { "outbound": "full" } } },
     "RVSAAT2S": { "support": { "sepa": { "outbound": "full" } } },
     "RZOOAT2L": { "support": { "sepa": { "outbound": "full" } } },
     "SAKSDE55": { "support": { "sepa": { "outbound": "full" } } },

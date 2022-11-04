@@ -23,7 +23,7 @@ import { startSentry } from './lib/Sentry';
 import { initPwa } from './composables/usePwaInstallPrompt';
 import { init as initKycConnection } from './lib/KycConnection';
 import { init as initTrials } from './lib/Trials';
-import { exportTransactions } from './lib/TransactionExport';
+import { exportTransactions } from './lib/export/TransactionExport';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';

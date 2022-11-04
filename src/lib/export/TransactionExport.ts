@@ -1,9 +1,15 @@
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useTransactionsStore } from '../../stores/Transactions';
-import { BlockPitFormat } from './BlockPitFormat';
+import { BlockpitAppFormat } from './BlockpitAppFormat';
+import { GenericFormat } from './GenericFormat';
 
-export function exportTransactions(accountId: string, year: number) {
+export enum ExportFormat {
+    GENERIC = 'generic',
+    BLOCKPIT = 'blockpit',
+}
+
+export async function exportTransactions(accountId: string, year: number, format = ExportFormat.GENERIC) {
     const { state: accounts$ } = useAccountStore();
     const account = accounts$.accountInfos[accountId];
     if (!account) throw new Error('Account ID not found');
@@ -33,10 +39,16 @@ export function exportTransactions(accountId: string, year: number) {
         .sort((a, b) => a.timestamp! - b.timestamp!) // Sort ascending
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
+    // TODO: Get receipts from block explorer and compare if we have all transactions
+
     if (!transactions.length) {
         console.log('No txs'); // eslint-disable-line no-console
         return;
     }
 
-    new BlockPitFormat(account, addresses, transactions, year).export();
+    switch (format) {
+        case ExportFormat.GENERIC: new GenericFormat(account, addresses, transactions, year).export(); break;
+        case ExportFormat.BLOCKPIT: new BlockpitAppFormat(account, addresses, transactions, year).export(); break;
+        default: throw new Error('Unknown export format');
+    }
 }

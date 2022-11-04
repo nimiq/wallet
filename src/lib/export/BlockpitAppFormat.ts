@@ -3,7 +3,7 @@ import { AddressInfo } from '../../stores/Address';
 import { Transaction } from '../../stores/Transactions';
 import { Format } from './Format';
 
-export class BlockPitFormat extends Format {
+export class BlockpitAppFormat extends Format {
     private static HEADERS = [
         'id',
         'exchange_name',
@@ -21,18 +21,8 @@ export class BlockPitFormat extends Format {
     ];
 
     private static formatDate(timestamp: number) {
-        const txDate = Format.getTxDate(timestamp);
-        const date = [
-            (txDate.date).toString().padStart(2, '0'),
-            (txDate.month).toString().padStart(2, '0'),
-            txDate.year,
-        ].join('/');
-        const time = [
-            (txDate.hour).toString().padStart(2, '0'),
-            (txDate.minute).toString().padStart(2, '0'),
-            (txDate.second).toString().padStart(2, '0'),
-        ].join(':');
-        return `${date} ${time}`;
+        const txDate = Format.getTxDate(timestamp, true);
+        return txDate.dateObj.toISOString();
     }
 
     private readonly EXCHANGE_NAME = 'Nimiq Wallet';
@@ -45,21 +35,22 @@ export class BlockPitFormat extends Format {
         public transactions: Transaction[],
         public year: number,
     ) {
-        super(BlockPitFormat.HEADERS, account, addresses, transactions, year, 'NIM');
+        super(BlockpitAppFormat.HEADERS, account, addresses, transactions, year, 'NIM');
     }
 
     public export() {
         for (const tx of this.transactions) {
             const sender = this.getAddressInfo(tx.sender);
             const recipient = this.getAddressInfo(tx.recipient);
-            let id: number | undefined;
+
+            if (sender && recipient) continue; // Skip transfers
 
             if (sender) {
-                id = this.addRow(sender.label, tx, 'withdrawal');
+                this.addRow(tx, 'withdrawal');
             }
 
             if (recipient) {
-                this.addRow(recipient.label, tx, 'deposit', id);
+                this.addRow(tx, 'deposit');
             }
         }
 
@@ -67,7 +58,6 @@ export class BlockPitFormat extends Format {
     }
 
     private addRow(
-        depotName: string,
         tx: Transaction,
         type: 'withdrawal' | 'deposit',
         linkedTransaction?: number,
@@ -75,14 +65,14 @@ export class BlockPitFormat extends Format {
         this.rows.push([
             (++this.id).toString(),
             this.EXCHANGE_NAME,
-            depotName,
-            BlockPitFormat.formatDate(tx.timestamp!),
+            this.account.label,
+            BlockpitAppFormat.formatDate(tx.timestamp!),
             type === 'deposit' ? this.asset : '',
             type === 'deposit' ? Format.formatAmount(tx.value) : '',
             type === 'withdrawal' ? this.asset : '',
             type === 'withdrawal' ? Format.formatAmount(tx.value) : '',
-            this.asset,
-            Format.formatAmount(tx.fee),
+            tx.fee > 0 ? this.asset : '',
+            tx.fee > 0 ? Format.formatAmount(tx.fee) : '',
             type,
             Format.formatData(tx, false),
             linkedTransaction ? linkedTransaction.toString() : '',

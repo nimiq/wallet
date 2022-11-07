@@ -10,19 +10,22 @@ export enum SEPA_INSTANT_SUPPORT {
 }
 
 export enum BANK_NETWORK {
-    SEPA = 'sepa',
+    RT1 = 'rt1',
+    TIPS = 'tips',
+}
+
+type DirectionSupport = {
+    inbound: SEPA_INSTANT_SUPPORT,
+    outbound: SEPA_INSTANT_SUPPORT,
 }
 
 export type Bank = {
     name: string,
     BIC: string,
     country: string, // ISO 3166-1 alpha-2 country code
-    support: {
-        sepa: {
-            inbound: SEPA_INSTANT_SUPPORT,
-            outbound: SEPA_INSTANT_SUPPORT,
-        },
-        // swift?
+    support: { // TODO: change this to be at least one, and not both optional (and remove ! in the code once it's done)
+        rt1?: DirectionSupport,
+        tips?: DirectionSupport,
     },
 }
 
@@ -39,8 +42,8 @@ export type BankState = {
 export const useBankStore = createStore({
     id: 'bank',
     state: (): BankState => ({
-        banks: { sepa: null },
-        bankAccounts: { sepa: null },
+        banks: { rt1: null, tips: null },
+        bankAccounts: { rt1: null, tips: null },
     }),
     getters: {
         banks: (state): Readonly<Record<BANK_NETWORK, Bank | null>> => state.banks,
@@ -48,7 +51,7 @@ export const useBankStore = createStore({
             state.bankAccounts,
     },
     actions: {
-        setBank(bank: Bank, network: BANK_NETWORK = BANK_NETWORK.SEPA) {
+        setBank(bank: Bank, network: BANK_NETWORK = BANK_NETWORK.RT1) {
             if (bank.BIC !== this.state.banks[network]?.BIC) {
                 // TODO: Simply set new bank in Vue 3.
                 this.state.bankAccounts = { ...this.state.bankAccounts, [network]: null };
@@ -58,7 +61,7 @@ export const useBankStore = createStore({
         },
         setBankAccount(
             bankAccount: BankAccount,
-            network: BANK_NETWORK = BANK_NETWORK.SEPA,
+            network: BANK_NETWORK = BANK_NETWORK.RT1,
         ) {
             // TODO: Simply set new bankAccount in Vue 3.
             this.state.bankAccounts = { ...this.state.bankAccounts, [network]: bankAccount };

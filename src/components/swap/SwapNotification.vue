@@ -368,7 +368,7 @@ export default defineComponent({
                         // place to persist the relevant information in our store.
                         addFundingData(fundingTx.hash.value, {
                             asset: SwapAsset.EUR,
-                            bankLabel: banks.value.sepa?.name,
+                            bankLabel: banks.value.rt1?.name || banks.value.tips?.name,
                             // bankLogo?: string,
                             amount: fundingTx.amount + fundingTx.fee,
                             htlc: {
@@ -470,9 +470,9 @@ export default defineComponent({
                             // place to persist the relevant information in our store.
                             const swapData: SwapEurData = {
                                 asset: SwapAsset.EUR,
-                                bankLabel: banks.value.sepa?.name,
+                                bankLabel: banks.value.rt1?.name || banks.value.tips?.name,
                                 // bankLogo?: string,
-                                iban: bankAccounts.value.sepa?.iban,
+                                iban: bankAccounts.value.rt1?.iban || bankAccounts.value.tips?.iban,
                                 amount: htlc.amount,
                                 htlc: {
                                     id: htlc.id,

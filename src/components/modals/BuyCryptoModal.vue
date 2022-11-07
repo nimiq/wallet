@@ -28,7 +28,7 @@
             </PageBody>
 
             <div v-else-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="banks.sepa ? false : true" @back="goBack">
+                <PageHeader :backArrow="(banks.rt1 || banks.tips) ? false : true" @back="goBack">
                     {{ $t('Buy Crypto') }}
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
@@ -124,7 +124,7 @@
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
                         <BankIconButton
-                            :bankName="banks.sepa ? banks.sepa.name : ''"
+                            :bankName="banks.rt1 ? banks.rt1.name : (banks.tips ? bank.tips.name : '')"
                             @click="page = Pages.BANK_CHECK"/>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
@@ -395,7 +395,7 @@ export default defineComponent({
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
-        const page = ref(banks.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME);
+        const page = ref((banks.value.rt1 || banks.value.tips) ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);
@@ -448,7 +448,7 @@ export default defineComponent({
             fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
-            && banks.value.sepa
+            && (banks.value.rt1 || banks.value.tips)
             && limits.value?.current.usd
             && !fetchingEstimate.value
             && !insufficientLimit.value
@@ -578,7 +578,7 @@ export default defineComponent({
                         type: SwapAsset.EUR,
                         value: swapSuggestion.from.amount - swapSuggestion.from.serviceEscrowFee,
                         fee: swapSuggestion.from.fee + swapSuggestion.from.serviceEscrowFee,
-                        bankLabel: banks.value.sepa!.name,
+                        bankLabel: banks.value.rt1!.name || banks.value.tips!.name,
                     };
                 }
 
@@ -824,7 +824,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = banks.value.sepa ? Pages.SETUP_BUY : Pages.WELCOME;
+                    page.value = (banks.value.rt1 || banks.value.tips) ? Pages.SETUP_BUY : Pages.WELCOME;
                     break;
                 default:
                     break;

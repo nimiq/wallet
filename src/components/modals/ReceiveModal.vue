@@ -29,7 +29,10 @@
             </button>
         </PageBody>
 
-        <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="activeAddressInfo.address"/>
+        <QrCodeOverlay v-if="addressQrCodeOverlayOpened"
+            slot="overlay"
+            :address="activeAddressInfo.address" currency="nim"
+        />
 
         <PaymentLinkOverlay slot="overlay"
             v-if="receiveLinkOverlayOpened"

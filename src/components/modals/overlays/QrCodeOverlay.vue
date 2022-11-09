@@ -1,13 +1,18 @@
 <template>
     <div class="qr-code-overlay">
         <PageBody class="flex-column">
-            <QrCode
-                :data="address"
-                :size="520"
-                :fill="'#1F2348' /* nimiq-blue */"
-                class="qr-code"
-            />
-            <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\nmoney to this address') }}</p>
+            <div class="flex-column">
+                <QrCode
+                    :data="address"
+                    :size="520"
+                    :fill="'#1F2348' /* nimiq-blue */"
+                    class="qr-code"
+                />
+                <ShortAddress :address="address" />
+            </div>
+            <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\n{currency} to this address', {
+                currency: currency.toUpperCase(),
+            }) }}</p>
         </PageBody>
     </div>
 </template>
@@ -15,6 +20,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageBody, QrCode } from '@nimiq/vue-components';
+import ShortAddress from '../../ShortAddress.vue';
 
 export default defineComponent({
     props: {
@@ -22,10 +28,15 @@ export default defineComponent({
             type: String,
             required: true,
         },
+        currency: {
+            type: String,
+            required: true,
+        },
     },
     components: {
         PageBody,
         QrCode,
+        ShortAddress,
     },
 });
 </script>
@@ -61,5 +72,10 @@ export default defineComponent({
         white-space: pre;
         text-align: center;
     }
+}
+
+.short-address {
+    align-self: center;
+    margin-top: 2rem;
 }
 </style>

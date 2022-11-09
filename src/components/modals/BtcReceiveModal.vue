@@ -107,7 +107,10 @@
             </footer>
         </PageBody>
 
-        <QrCodeOverlay slot="overlay" v-if="addressQrCodeOverlayOpened" :address="currentlyShownAddress"/>
+        <QrCodeOverlay v-if="addressQrCodeOverlayOpened"
+            slot="overlay"
+            :address="currentlyShownAddress" currency="btc"
+        />
 
         <PaymentLinkOverlay slot="overlay"
             v-if="receiveLinkOverlayOpened"

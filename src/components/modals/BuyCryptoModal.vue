@@ -205,7 +205,7 @@
                             <a href="https://go.fastspot.io/terms"
                                 target="_blank" rel="noopener" class="nq-link">Fastspot GO</a>
                         </span>
-                        <a slot="FastspotGO" href="https://www.ten31.com/oasis/terms"
+                        <a slot="FastspotGO" href="https://digital.ten31.com/oasis/terms"
                             target="_blank" rel="noopener" class="nq-link">OASIS</a>
                     </i18n>
                     <i18n v-else

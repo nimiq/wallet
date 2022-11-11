@@ -23,9 +23,12 @@ export type Bank = {
     name: string,
     BIC: string,
     country: string, // ISO 3166-1 alpha-2 country code
-    support: { // TODO: change this to be at least one, and not both optional (and remove ! in the code once it's done)
-        rt1?: DirectionSupport,
+    support: {
+        rt1: DirectionSupport,
         tips?: DirectionSupport,
+    } | {
+        rt1?: DirectionSupport,
+        tips: DirectionSupport,
     },
 }
 

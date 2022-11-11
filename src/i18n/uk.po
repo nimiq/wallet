@@ -1,14 +1,13 @@
 # 
 # Translators:
 # Petro M <petro.matsyburka@outlook.com>, 2022
-# Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
+# Daniel, 2022
 # Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2022
-# Petro M <petro.matsyburka@outlook.com>, 2022
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Petro M <petro.matsyburka@outlook.com>, 2022\n"
+"Last-Translator: Oleksandr Turchyn <oleksandr.turchyn@outlook.com>, 2022\n"
 "Language-Team: Ukrainian (https://www.transifex.com/nimiq-foundation/teams/110181/uk/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: uk\n"
@@ -40,6 +39,10 @@ msgstr "{count} Піра | {count} Пірів"
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} активний чек | {count} активні чеки"
 
+#: src/components/modals/overlays/QrCodeOverlay.vue:3
+msgid "{currency} Address"
+msgstr ""
+
 #: src/components/TransactionDetailOasisPayoutStatus.vue:25
 msgid "{currency} could not be paid out"
 msgstr "Платіж в {currency} неможливий"
@@ -62,10 +65,14 @@ msgstr "{fee} комісія"
 msgid "{perc}% of swap value."
 msgstr "{perc}% вартості обміну."
 
-#: src/components/modals/BuyCryptoModal.vue:109
-#: src/components/modals/BuyCryptoModal.vue:82
-#: src/components/modals/SellCryptoModal.vue:85
-#: src/components/swap/SwapModal.vue:60
+#: src/components/kyc/KycOverlay.vue:38
+msgid "{provider} is provided by {companyLogo}"
+msgstr "{provider} надається {companyLogo}"
+
+#: src/components/modals/BuyCryptoModal.vue:110
+#: src/components/modals/BuyCryptoModal.vue:83
+#: src/components/modals/SellCryptoModal.vue:86
+#: src/components/swap/SwapModal.vue:63
 msgid "{value} remaining"
 msgstr "{value} залишок"
 
@@ -113,9 +120,9 @@ msgstr "Підтримка 24/7"
 msgid "3"
 msgstr "3"
 
-#: src/components/modals/BuyCryptoModal.vue:102
-#: src/components/modals/SellCryptoModal.vue:78
-#: src/components/swap/SwapModal.vue:55
+#: src/components/modals/BuyCryptoModal.vue:103
+#: src/components/modals/SellCryptoModal.vue:79
+#: src/components/swap/SwapModal.vue:58
 msgid "30-day Limit"
 msgstr "30-денний ліміт"
 
@@ -123,13 +130,13 @@ msgstr "30-денний ліміт"
 msgid "6h+"
 msgstr "6+ год."
 
-#: src/components/modals/BuyCryptoModal.vue:95
+#: src/components/modals/BuyCryptoModal.vue:96
 msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 "Через 72 години після першої покупки ваш ліміт буде автоматично збільшено."
 
-#: src/components/layouts/Settings.vue:344
+#: src/components/layouts/Settings.vue:367
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -154,7 +161,7 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:152
 msgid "Account Limits"
-msgstr ""
+msgstr "Ліміти рахунку"
 
 #: src/components/modals/MigrationWelcomeModal.vue:34
 msgid "Accounts"
@@ -168,7 +175,7 @@ msgstr "Активувати"
 msgid "Activate Bitcoin"
 msgstr "Активувати Біткоїн"
 
-#: src/components/layouts/Settings.vue:225
+#: src/components/layouts/Settings.vue:229
 msgid "Add"
 msgstr "Додати"
 
@@ -196,7 +203,7 @@ msgstr "Додати рахунок"
 msgid "Add address"
 msgstr "Додати адресу"
 
-#: src/components/layouts/Settings.vue:221
+#: src/components/layouts/Settings.vue:225
 msgid "Add an existing vesting contract to your wallet."
 msgstr "Додайте існуючий розподільний контракт до вашого гаманця."
 
@@ -221,7 +228,7 @@ msgstr "Адреса недоступна?"
 msgid "Addresses"
 msgstr "Адреси"
 
-#: src/components/layouts/Settings.vue:179
+#: src/components/layouts/Settings.vue:183
 msgid "Advanced"
 msgstr "Розширені"
 
@@ -273,9 +280,9 @@ msgstr ""
 "Завжди створюйте резервні копії ваших секретних слів, паролів та файлів для "
 "входу."
 
-#: src/swap-kyc-handler.ts:282
+#: src/swap-kyc-handler.ts:281
 msgid "An error occurred: {message}"
-msgstr ""
+msgstr "Сталася помилка: {message}"
 
 #: src/components/layouts/Settings.vue:17
 msgid "An update to the Wallet is available, update now!"
@@ -323,11 +330,15 @@ msgstr "Атомарний обмін вдалий!"
 msgid "Atomic swaps require two BTC transactions."
 msgstr "Атомарні обміни потребують дві BTC транзакції."
 
-#: src/components/layouts/Settings.vue:211
+#: src/components/kyc/KycOverlay.vue:27
+msgid "Authenticator app"
+msgstr "Додаток автентифікатора"
+
+#: src/components/layouts/Settings.vue:215
 msgid "Auto"
 msgstr "Авто"
 
-#: src/components/layouts/Settings.vue:204
+#: src/components/layouts/Settings.vue:208
 msgid "Automatic mode uses {behavior}."
 msgstr "Автоматичний режим використовує {behavior}."
 
@@ -427,9 +438,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr "Купити BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:197
-#: src/components/modals/BuyCryptoModal.vue:202
-#: src/components/modals/BuyCryptoModal.vue:216
+#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/modals/BuyCryptoModal.vue:215
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "Купити крипту"
@@ -438,7 +449,7 @@ msgstr "Купити крипту"
 msgid "Buy Crypto with Fiat"
 msgstr "Купляйте крипту через традиційні гроші"
 
-#: src/components/modals/BuyCryptoModal.vue:176
+#: src/components/modals/BuyCryptoModal.vue:173
 msgid "Buy max"
 msgstr "Купити максимум"
 
@@ -478,18 +489,18 @@ msgstr ""
 "Додавши комісію за переказ, ви можете вплинути на те, як швидко він буде "
 "оброблений."
 
-#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:198
 #: src/components/modals/SellCryptoModal.vue:181
-#: src/components/swap/SwapModal.vue:142
+#: src/components/swap/SwapModal.vue:146
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot} та"
 " {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/BuyCryptoModal.vue:212
 #: src/components/modals/SellCryptoModal.vue:195
-#: src/components/swap/SwapModal.vue:154
+#: src/components/swap/SwapModal.vue:158
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot}."
@@ -511,7 +522,7 @@ msgstr "Скасувати обмін"
 msgid "Cancelled Swap"
 msgstr "Обмін скасовано"
 
-#: src/components/layouts/Settings.vue:324
+#: src/components/layouts/Settings.vue:347
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не вдається імпортувати контакти, неправильний формат файлу."
 
@@ -548,7 +559,7 @@ msgstr "Виберіть відправника"
 
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:282
-#: src/components/modals/SellCryptoModal.vue:247
+#: src/components/modals/SellCryptoModal.vue:248
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
@@ -558,11 +569,11 @@ msgstr "Виберіть адресу"
 msgid "Claiming Cashlink"
 msgstr "получаємо Чек"
 
-#: src/components/layouts/Settings.vue:237
+#: src/components/layouts/Settings.vue:241
 msgid "Clear"
 msgstr "Очистити"
 
-#: src/components/layouts/Settings.vue:231
+#: src/components/layouts/Settings.vue:235
 msgid "Clear Cache"
 msgstr "Очистити кеш"
 
@@ -589,7 +600,7 @@ msgstr "Незабаром"
 msgid "Confirm"
 msgstr "Підтвердити"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:73
 msgid "Confirm account"
 msgstr "Підтвердіть рахунок"
 
@@ -598,9 +609,9 @@ msgstr "Підтвердіть рахунок"
 msgid "Congrats"
 msgstr "Вітаємо"
 
-#: src/components/layouts/Settings.vue:174
+#: src/components/layouts/Settings.vue:178
 msgid "Connect"
-msgstr ""
+msgstr "Підключитися"
 
 #: src/components/modals/WelcomeModal.vue:15
 msgid ""
@@ -610,13 +621,13 @@ msgstr ""
 "Підключіться безпосередньо до блокчейну Nimiq. Будьте незалежними від будь-"
 "якого посередника."
 
-#: src/components/kyc/KycOverlay.vue:24
+#: src/components/kyc/KycOverlay.vue:33
 msgid "Connect to {provider}"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:159
 msgid "Connect to TEN31 Pass for higher swap limits."
-msgstr ""
+msgstr "Підключіться до TEN31 Pass, щоб отримати вищі ліміти обміну."
 
 #: src/components/NetworkStats.vue:8
 msgid "Connected to"
@@ -705,23 +716,23 @@ msgstr "Створити нову одноразову адресу."
 msgid "Create request link"
 msgstr "Створити запит-посилання"
 
-#: src/components/modals/BtcReceiveModal.vue:191
+#: src/components/modals/BtcReceiveModal.vue:194
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr "Створено {count} день тому | Створено {count} дня/днів тому"
 
-#: src/components/modals/BtcReceiveModal.vue:181
+#: src/components/modals/BtcReceiveModal.vue:184
 msgid "Created {count} hour ago | Created {count} hours ago"
 msgstr "Створено {count} годину тому | Створено {count} годин/години тому"
 
-#: src/components/modals/BtcReceiveModal.vue:175
+#: src/components/modals/BtcReceiveModal.vue:178
 msgid "Created {count} minute ago | Created {count} minutes ago"
 msgstr "Створено {count} хвилину тому | Створено {count} хвилин/хвилини тому"
 
-#: src/components/modals/BtcReceiveModal.vue:172
+#: src/components/modals/BtcReceiveModal.vue:175
 msgid "Created just now"
 msgstr "Створено щойно"
 
-#: src/components/modals/BtcReceiveModal.vue:189
+#: src/components/modals/BtcReceiveModal.vue:192
 msgid "Created yesterday"
 msgstr "Створено вчора"
 
@@ -745,10 +756,14 @@ msgstr ""
 msgid "Developer resources"
 msgstr "Ресурси для розробників"
 
-#: src/components/layouts/Settings.vue:277
+#: src/components/layouts/Settings.vue:281
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
 msgstr "Застереження"
+
+#: src/components/layouts/Settings.vue:170
+msgid "Disconnect"
+msgstr "Відключити"
 
 #: src/components/BtcAddressInput.vue:83
 #: src/components/modals/SendModal.vue:355
@@ -801,7 +816,7 @@ msgstr "Змінити кількість знаків після коми дл�
 msgid "Edit transaction"
 msgstr "Редагувати переказ"
 
-#: src/components/layouts/Settings.vue:185
+#: src/components/layouts/Settings.vue:189
 msgid "Enable experimental support for swiping gestures on mobile."
 msgstr ""
 "Увімкнути експериментальну підтримку жестів гортання на мобільному пристрої."
@@ -829,7 +844,7 @@ msgstr "Введіть IBAN"
 msgid "Enter recipient address..."
 msgstr "Вкажіть адресу отримувача..."
 
-#: src/components/layouts/Settings.vue:245
+#: src/components/layouts/Settings.vue:249
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Введіть пароль пробної версії, яку потрібно увімкнути, а потім натисніть "
@@ -914,7 +929,7 @@ msgstr "Завантаження"
 msgid "Fiat value unavailable"
 msgstr "Сума у валюті недоступна"
 
-#: src/components/layouts/Settings.vue:330
+#: src/components/layouts/Settings.vue:353
 msgid "File contains no contacts."
 msgstr "Файл не містить контактів."
 
@@ -961,17 +976,18 @@ msgstr "Отримати NIM"
 
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
-msgstr ""
+msgstr "Розпочнемо"
 
 #: src/components/kyc/KycPrompt.vue:6
 msgid "Get TEN31-verified for higher limits"
-msgstr ""
+msgstr "Отримати TEN31-верифікацію для вищих лімітів"
 
-#: src/components/kyc/KycOverlay.vue:7
+#: src/components/kyc/KycOverlay.vue:8
 msgid ""
-"Get verified with TEN31 for higher limits with SuperSimpleSwap, Fastspot and"
-" TEN31-related products and services."
+"Get verified for higher limits by authenticating with {provider}. These are "
+"the requirements:"
 msgstr ""
+"Пройдіть автентифікацію в {provider}, щоб підвищити ліміти. Ось вимоги:"
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
@@ -1113,7 +1129,7 @@ msgid "Install Web App"
 msgstr "Встановити веб-додаток"
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:169
+#: src/components/modals/SellCryptoModal.vue:167
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Недостатньо коштів."
@@ -1140,7 +1156,7 @@ msgstr "Це швидко, безпечно і робить вас дійсно 
 msgid "It's safe to close your wallet now"
 msgstr "Тепер можна закрити веб-оглядач"
 
-#: src/components/layouts/Settings.vue:198
+#: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
 msgstr "Keyguard режим"
 
@@ -1198,10 +1214,10 @@ msgstr "Завантажити"
 msgid "Loading Moonpay..."
 msgstr "Завантажуємо Moonpay..."
 
-#: src/components/modals/BuyCryptoModal.vue:107
-#: src/components/modals/BuyCryptoModal.vue:91
-#: src/components/modals/SellCryptoModal.vue:83
-#: src/components/swap/SwapModal.vue:58
+#: src/components/modals/BuyCryptoModal.vue:108
+#: src/components/modals/BuyCryptoModal.vue:92
+#: src/components/modals/SellCryptoModal.vue:84
+#: src/components/swap/SwapModal.vue:61
 msgid "loading..."
 msgstr "завантаження..."
 
@@ -1235,18 +1251,10 @@ msgstr "Вийти"
 msgid "lost"
 msgstr "Втрачено"
 
-#: src/components/modals/BuyCryptoModal.vue:169
-#: src/components/modals/SellCryptoModal.vue:159
+#: src/components/modals/BuyCryptoModal.vue:166
+#: src/components/modals/SellCryptoModal.vue:157
 msgid "Max swappable amount is {amount}"
 msgstr "Максимальна сума, яку можна обміняти: {amount}"
-
-#: src/components/modals/BuyCryptoModal.vue:68
-#: src/components/modals/BuyCryptoModal.vue:73
-#: src/components/modals/SellCryptoModal.vue:68
-#: src/components/modals/SellCryptoModal.vue:73
-#: src/components/swap/SwapModal.vue:46 src/components/swap/SwapModal.vue:50
-msgid "Max."
-msgstr "Макс."
 
 #: src/components/modals/BuyOptionsModal.vue:124
 #: src/components/modals/BuyOptionsModal.vue:138
@@ -1255,7 +1263,7 @@ msgstr "Макс."
 msgid "min {amount}"
 msgstr "мін {amount}"
 
-#: src/components/modals/BuyCryptoModal.vue:180
+#: src/components/modals/BuyCryptoModal.vue:177
 msgid "Minimum buy amount is {amount}"
 msgstr "Мінімальна сума обміну {amount}"
 
@@ -1313,16 +1321,6 @@ msgstr ""
 "hub.nimiq.com і keyguard.nimiq.com, а також інші бібліотеки є на стадії "
 "активної розробки."
 
-#: src/components/modals/BuyCryptoModal.vue:118
-#: src/components/modals/SellCryptoModal.vue:93
-#: src/components/swap/SwapModal.vue:66
-msgid ""
-"Nimiq is working on a PRO feature with increased limits after user "
-"registration."
-msgstr ""
-"Nimiq працює над функцією PRO зі збільшеними лімітами після реєстрації "
-"користувача."
-
 #: src/components/modals/BtcSendModal.vue:114
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Гаманець Німік не підтримує повідомлень у переказах."
@@ -1343,9 +1341,9 @@ msgstr "Без реєстрації"
 msgid "No registration – not even email."
 msgstr "Без реєстрації – навіть без електронної пошти."
 
-#: src/swap-kyc-handler.ts:122
+#: src/swap-kyc-handler.ts:119
 msgid "No request received."
-msgstr ""
+msgstr "Запит не отримано."
 
 #: src/components/BtcTransactionList.vue:80
 #: src/components/TransactionList.vue:83
@@ -1397,11 +1395,11 @@ msgid ""
 " some time. Please try again later."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr "Вимк."
 
-#: src/components/layouts/Settings.vue:353
+#: src/components/layouts/Settings.vue:376
 msgid "OK! Contacts imported successfully."
 msgstr "Контакти було додано успішно."
 
@@ -1409,7 +1407,7 @@ msgstr "Контакти було додано успішно."
 msgid "Old and new Accounts"
 msgstr "Нові і старі рахунки"
 
-#: src/components/layouts/Settings.vue:191
+#: src/components/layouts/Settings.vue:195
 msgid "On"
 msgstr "Увімк."
 
@@ -1425,7 +1423,7 @@ msgstr "Один рахунок - багато адрес"
 msgid "Or buy BTC directly in the wallet."
 msgstr "Або купіть BTC прямо в гаманці."
 
-#: src/components/layouts/Settings.vue:200
+#: src/components/layouts/Settings.vue:204
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Перезаписати спосіб відкриття Keyguard."
 
@@ -1496,11 +1494,11 @@ msgid ""
 "Please wait for your current swap to finish before starting a new swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:209
 msgid "popups"
 msgstr "спливаючі вікна"
 
-#: src/components/layouts/Settings.vue:212
+#: src/components/layouts/Settings.vue:216
 msgid "Popups"
 msgstr "Спливаючі вікна"
 
@@ -1519,7 +1517,7 @@ msgstr "Призначення"
 
 #: src/components/kyc/KycOverlay.vue:5 src/components/kyc/KycPrompt.vue:5
 msgid "Raise your limits"
-msgstr ""
+msgstr "Підніміть свої обмеження"
 
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/MobileActionBar.vue:4
@@ -1569,19 +1567,19 @@ msgstr "Одержувач"
 msgid "Recovery Words"
 msgstr "Секретні слова"
 
-#: src/components/layouts/Settings.vue:201
+#: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
 msgstr "Режим переадресації ще не підтримує обміни."
 
-#: src/components/layouts/Settings.vue:205
+#: src/components/layouts/Settings.vue:209
 msgid "redirects"
 msgstr "переадресації"
 
-#: src/components/layouts/Settings.vue:213
+#: src/components/layouts/Settings.vue:217
 msgid "Redirects"
 msgstr "Переадресації"
 
-#: src/components/layouts/Settings.vue:254
+#: src/components/layouts/Settings.vue:258
 msgid "Reference currency"
 msgstr "Основна валюта"
 
@@ -1602,7 +1600,7 @@ msgstr ""
 "Звичайні перекази занадто повільні і не обробляються. Ваш банк може "
 "використовувати іншу назву, наприклад, \"операції в режимі реального часу\"."
 
-#: src/components/layouts/Settings.vue:275
+#: src/components/layouts/Settings.vue:279
 #: src/components/UpdateNotification.vue:9
 msgid "Release Notes"
 msgstr "Примітки до випуску"
@@ -1626,7 +1624,7 @@ msgstr "Необхідний"
 msgid "Rescan"
 msgstr "Пересканувати"
 
-#: src/components/layouts/Settings.vue:233
+#: src/components/layouts/Settings.vue:237
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr "Скинути налаштування веб-оглядача і перезавантажити дані з блокчейну."
 
@@ -1648,13 +1646,11 @@ msgstr "Пробуємо ще..."
 msgid "Save Login File"
 msgstr "Зберегти файл-ключ"
 
-#: src/components/modals/overlays/QrCodeOverlay.vue:10
+#: src/components/modals/overlays/QrCodeOverlay.vue:14
 msgid ""
 "Scan the code to send\n"
-"money to this address"
+"{currency} to this address"
 msgstr ""
-"Відскануйте код щоб вислати\n"
-"кошти на цю адресу"
 
 #: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:18
 msgid "Search"
@@ -1692,9 +1688,9 @@ msgstr "Продати криптовалюту"
 msgid "Sell Crypto for Fiat"
 msgstr "Продати криптовалюту за фіат"
 
-#: src/components/modals/SellCryptoModal.vue:137
-#: src/components/modals/SellCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:169
+#: src/components/modals/SellCryptoModal.vue:135
+#: src/components/modals/SellCryptoModal.vue:164
+#: src/components/modals/SellCryptoModal.vue:167
 msgid "Sell max"
 msgstr "Продати максимум"
 
@@ -1802,7 +1798,7 @@ msgstr "Вкажіть суму"
 msgid "Set fee"
 msgstr "Задати комісію"
 
-#: src/components/modals/BuyCryptoModal.vue:187
+#: src/components/modals/BuyCryptoModal.vue:184
 msgid "Set minimum"
 msgstr "Встановити мінімум"
 
@@ -1921,7 +1917,7 @@ msgstr "Обмін розтеміновано"
 
 #: src/components/kyc/KycPrompt.vue:9
 msgid "Swap more per 30 days."
-msgstr ""
+msgstr "Обмінюйте більше протягом 30 днів."
 
 #: src/components/BalanceDistribution.vue:64
 msgid "Swap NIM {arrow} BTC"
@@ -1942,9 +1938,9 @@ msgstr "Обмін на {address}"
 
 #: src/components/kyc/KycPrompt.vue:11
 msgid "Swap up to {limit} per 30 days."
-msgstr ""
+msgstr "Обмінюйте до {limit} протягом 30 днів."
 
-#: src/components/layouts/Settings.vue:183
+#: src/components/layouts/Settings.vue:187
 msgid "Swiping Gestures"
 msgstr "Свайп-жести"
 
@@ -1955,6 +1951,14 @@ msgstr "синхронізую"
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31 Bank надає банківський рахунок для блокування платежу."
+
+#: src/swap-kyc-handler.ts:208 src/swap-kyc-handler.ts:225
+msgid "TEN31 Pass didn't return expected grants."
+msgstr "TEN31 Pass не повернув очікуваних грантів."
+
+#: src/components/layouts/Settings.vue:157
+msgid "TEN31 Verification"
+msgstr "TEN31 Перевірка"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "Testnet"
@@ -2144,7 +2148,7 @@ msgstr ""
 msgid "Transfer funds"
 msgstr "Переказати кошти"
 
-#: src/components/layouts/Settings.vue:243
+#: src/components/layouts/Settings.vue:247
 msgid "Trials"
 msgstr "Пробні версії"
 
@@ -2166,11 +2170,13 @@ msgstr "Поширте карту у Твітері!"
 msgid "Unclaimed Cashlink"
 msgstr "Активний чек"
 
-#: src/swap-kyc-handler.ts:215
+#: src/swap-kyc-handler.ts:214
 msgid ""
-"Unexpected user. The Wallet is currently connected to the TEN31 Pass of "
+"Unexpected user. This account is currently connected to the TEN31 Pass of "
 "{userName}."
 msgstr ""
+"Неочікуваний користувач. Зараз цей обліковий запис підключено до TEN31 Pass "
+"користувача {userName}."
 
 #: src/components/modals/BtcTransactionModal.vue:101
 #: src/components/modals/BtcTransactionModal.vue:159
@@ -2179,13 +2185,13 @@ msgstr ""
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: src/swap-kyc-handler.ts:151 src/swap-kyc-handler.ts:160
+#: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
-msgstr ""
+msgstr "Непідтримувана валюта"
 
-#: src/swap-kyc-handler.ts:243
+#: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
-msgstr ""
+msgstr "Непідтримуваний постачальник {provider} для повної ідентифікації."
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -2218,7 +2224,7 @@ msgid "Use the slider or edit values to set up a swap."
 msgstr ""
 "Використовуйте повзунок або редагуйте значення, щоб задати параметри обміну."
 
-#: src/components/layouts/Settings.vue:219
+#: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "Контракт Наділення Прав"
 
@@ -2250,7 +2256,7 @@ msgstr "Щось ще?"
 msgid "What is your bank called?"
 msgstr "Як називається ваш банк?"
 
-#: src/components/layouts/Settings.vue:190
+#: src/components/layouts/Settings.vue:194
 msgid "When ready"
 msgstr "Коли готово"
 

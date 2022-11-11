@@ -16,7 +16,7 @@
 ^\/nimiq\:([^\/#\?]+?)[\/#\?]?$
 ^\/welcome[\/#\?]?$
 ^\/migration-welcome[\/#\?]?$
-^\/btc-activation(?:\/([^\/#\?]+?))?[\/#\?]?$
+^\/btc-activation[\/#\?]?$
 ^\/btc-transaction(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/bitcoin\:([^\/#\?]+?)[\/#\?]?$
 ^\/swap[\/#\?]?$

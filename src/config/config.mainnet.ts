@@ -22,8 +22,8 @@ export default {
         underMaintenance: true,
         apiEndpoint: 'https://oasis.ten31.com/v1',
         feePercentage: 0.01, // 1%
-        minFee: 0.50, // Euro
-        minBuyAmount: 35, // Euro
+        minFee: 1, // Euro
+        minBuyAmount: 5, // Euro
         maxFreeAmount: 999, // Euro
         maxKycAmount: 4999, // Euro
     },

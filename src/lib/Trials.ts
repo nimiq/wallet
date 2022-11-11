@@ -17,6 +17,7 @@ window.digestMessage = async function (message: string): Promise<string> { // es
 };
 
 export enum Trial {
+    OASIS2 = 'OASIS2',
     TEN31Pass = 'TEN31Pass',
 }
 
@@ -45,6 +46,7 @@ export async function enableTrial(password: string): Promise<boolean> {
 
     /* eslint-disable quote-props */
     const trialToEnable = {
+        'a3c06b88640ae4a5344a94238aa12746b032634bba1431163137129fe6ee1230': Trial.OASIS2,
         'd8082502f1f6cf61125f9d87b1a848590a5c56aa593abcb59f5d3225afdfc8b0': Trial.TEN31Pass,
     }[hash];
     /* eslint-enable quote-props */

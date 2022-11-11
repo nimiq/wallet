@@ -47,7 +47,7 @@
                                     <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
                                 </svg>
                                 <i18n path="min {amount}" tag="span">
-                                    <FiatAmount slot="amount" :amount="0.50" currency="eur"/>
+                                    <FiatAmount slot="amount" :amount="$config.oasis.minFee" currency="eur"/>
                                 </i18n>
                             </span>
                             {{ $t('+ network fees') }}
@@ -59,7 +59,7 @@
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
                         </footer>
-                        <footer v-else-if="isOasisUnderMaintenance && !isInOasisProTrial" class="flex-row">
+                        <footer v-else-if="isOasisUnderMaintenance && !isInOasis2Trial" class="flex-row">
                             <MaintenanceIcon/>
                             {{ $t('Currently under maintenance') }}
                             <div class="flex-grow"></div>
@@ -232,12 +232,14 @@ export default defineComponent({
 
         const country = ref<Country>(null);
 
-        const isInOasisProTrial = computed(() => trials.value.includes(Trial.TEN31Pass));
+        const isInOasis2Trial = computed(
+            () => trials.value.includes(Trial.OASIS2) || trials.value.includes(Trial.TEN31Pass),
+        );
 
         const isOasisAvailable = computed(() => {
             if (!Config.fastspot.enabled) return false;
             if (!canUseSwaps.value) return false;
-            if (Config.oasis.underMaintenance && !isInOasisProTrial.value) return false;
+            if (Config.oasis.underMaintenance && !isInOasis2Trial.value) return false;
 
             if (Config.environment === ENV_TEST) return true;
             return !country.value || SEPA_COUNTRY_CODES.includes(country.value.code);
@@ -275,7 +277,7 @@ export default defineComponent({
             country,
             isOasisAvailable,
             isOasisUnderMaintenance: Config.oasis.underMaintenance,
-            isInOasisProTrial,
+            isInOasis2Trial,
             isCreditCardAvailable,
             isMoonpayAvailable,
             isSimplexAvailable,

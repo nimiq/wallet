@@ -51,10 +51,14 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:109
-#: src/components/modals/BuyCryptoModal.vue:82
-#: src/components/modals/SellCryptoModal.vue:85
-#: src/components/swap/SwapModal.vue:60
+#: src/components/kyc/KycOverlay.vue:38
+msgid "{provider} is provided by {companyLogo}"
+msgstr ""
+
+#: src/components/modals/BuyCryptoModal.vue:110
+#: src/components/modals/BuyCryptoModal.vue:83
+#: src/components/modals/SellCryptoModal.vue:86
+#: src/components/swap/SwapModal.vue:63
 msgid "{value} remaining"
 msgstr ""
 
@@ -102,9 +106,9 @@ msgstr ""
 msgid "3"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:102
-#: src/components/modals/SellCryptoModal.vue:78
-#: src/components/swap/SwapModal.vue:59
+#: src/components/modals/BuyCryptoModal.vue:103
+#: src/components/modals/SellCryptoModal.vue:79
+#: src/components/swap/SwapModal.vue:58
 msgid "30-day Limit"
 msgstr ""
 
@@ -112,11 +116,11 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:95
+#: src/components/modals/BuyCryptoModal.vue:96
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:344
+#: src/components/layouts/Settings.vue:367
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
@@ -379,9 +383,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:197
-#: src/components/modals/BuyCryptoModal.vue:202
-#: src/components/modals/BuyCryptoModal.vue:216
+#: src/components/modals/BuyCryptoModal.vue:196
+#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/modals/BuyCryptoModal.vue:215
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr ""
@@ -390,7 +394,7 @@ msgstr ""
 msgid "Buy Crypto with Fiat"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:176
+#: src/components/modals/BuyCryptoModal.vue:173
 msgid "Buy max"
 msgstr ""
 
@@ -426,15 +430,15 @@ msgstr ""
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:199
-#: src/components/modals/SellCryptoModal.vue:182
-#: src/components/swap/SwapModal.vue:142
+#: src/components/modals/BuyCryptoModal.vue:198
+#: src/components/modals/SellCryptoModal.vue:181
+#: src/components/swap/SwapModal.vue:146
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:213
-#: src/components/modals/SellCryptoModal.vue:196
-#: src/components/swap/SwapModal.vue:154
+#: src/components/modals/BuyCryptoModal.vue:212
+#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/swap/SwapModal.vue:158
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -455,7 +459,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:324
+#: src/components/layouts/Settings.vue:347
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -551,6 +555,10 @@ msgstr ""
 msgid ""
 "Connect directly to the Nimiq blockchain.\n"
 "Be independent from any middleman."
+msgstr ""
+
+#: src/components/kyc/KycOverlay.vue:33
+msgid "Connect to {provider}"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:159
@@ -677,6 +685,10 @@ msgstr ""
 #: src/components/layouts/Settings.vue:281
 #: src/components/modals/DisclaimerModal.vue:5
 msgid "Disclaimer"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:170
+msgid "Disconnect"
 msgstr ""
 
 #: src/components/BtcAddressInput.vue:83
@@ -836,7 +848,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:330
+#: src/components/layouts/Settings.vue:353
 msgid "File contains no contacts."
 msgstr ""
 
@@ -891,10 +903,6 @@ msgstr ""
 
 #: src/components/kyc/KycOverlay.vue:8
 msgid "Get verified for higher limits by authenticating with {provider}. These are the requirements:"
-msgstr ""
-
-#: src/components/kyc/KycOverlay.vue:33
-msgid "Go to {provider}"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:94
@@ -1013,7 +1021,7 @@ msgid "Install Web App"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:170
+#: src/components/modals/SellCryptoModal.vue:167
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr ""
@@ -1097,10 +1105,10 @@ msgstr ""
 msgid "Loading Moonpay..."
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:107
-#: src/components/modals/BuyCryptoModal.vue:91
-#: src/components/modals/SellCryptoModal.vue:83
-#: src/components/swap/SwapModal.vue:58
+#: src/components/modals/BuyCryptoModal.vue:108
+#: src/components/modals/BuyCryptoModal.vue:92
+#: src/components/modals/SellCryptoModal.vue:84
+#: src/components/swap/SwapModal.vue:61
 msgid "loading..."
 msgstr ""
 
@@ -1132,17 +1140,9 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:169
-#: src/components/modals/SellCryptoModal.vue:160
+#: src/components/modals/BuyCryptoModal.vue:166
+#: src/components/modals/SellCryptoModal.vue:157
 msgid "Max swappable amount is {amount}"
-msgstr ""
-
-#: src/components/modals/BuyCryptoModal.vue:68
-#: src/components/modals/BuyCryptoModal.vue:73
-#: src/components/modals/SellCryptoModal.vue:68
-#: src/components/modals/SellCryptoModal.vue:73
-#: src/components/swap/SwapModal.vue:54
-msgid "Max."
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:124
@@ -1152,7 +1152,7 @@ msgstr ""
 msgid "min {amount}"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:180
+#: src/components/modals/BuyCryptoModal.vue:177
 msgid "Minimum buy amount is {amount}"
 msgstr ""
 
@@ -1200,12 +1200,6 @@ msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:17
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
-msgstr ""
-
-#: src/components/modals/BuyCryptoModal.vue:118
-#: src/components/modals/SellCryptoModal.vue:93
-#: src/components/swap/SwapModal.vue:66
-msgid "Nimiq is working on a PRO feature with increased limits after user registration."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:114
@@ -1280,11 +1274,11 @@ msgstr ""
 msgid "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take some time. Please try again later."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:165
+#: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:353
+#: src/components/layouts/Settings.vue:376
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1367,7 +1361,7 @@ msgstr ""
 msgid "Please wait for your current swap to finish before starting a new swap."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:178
+#: src/components/layouts/Settings.vue:209
 msgid "popups"
 msgstr ""
 
@@ -1547,9 +1541,9 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:180
-#: src/components/modals/SellCryptoModal.vue:185
-#: src/components/modals/SellCryptoModal.vue:199
+#: src/components/modals/SellCryptoModal.vue:179
+#: src/components/modals/SellCryptoModal.vue:184
+#: src/components/modals/SellCryptoModal.vue:198
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr ""
@@ -1558,9 +1552,9 @@ msgstr ""
 msgid "Sell Crypto for Fiat"
 msgstr ""
 
-#: src/components/modals/SellCryptoModal.vue:138
+#: src/components/modals/SellCryptoModal.vue:135
+#: src/components/modals/SellCryptoModal.vue:164
 #: src/components/modals/SellCryptoModal.vue:167
-#: src/components/modals/SellCryptoModal.vue:170
 msgid "Sell max"
 msgstr ""
 
@@ -1664,7 +1658,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:187
+#: src/components/modals/BuyCryptoModal.vue:184
 msgid "Set minimum"
 msgstr ""
 
@@ -1814,6 +1808,15 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
+msgstr ""
+
+#: src/swap-kyc-handler.ts:208
+#: src/swap-kyc-handler.ts:225
+msgid "TEN31 Pass didn't return expected grants."
+msgstr ""
+
+#: src/components/layouts/Settings.vue:157
+msgid "TEN31 Verification"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:5

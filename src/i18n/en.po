@@ -29,6 +29,10 @@ msgstr ""
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr ""
 
+#: src/components/modals/overlays/QrCodeOverlay.vue:3
+msgid "{currency} Address"
+msgstr ""
+
 #: src/components/TransactionDetailOasisPayoutStatus.vue:25
 msgid "{currency} could not be paid out"
 msgstr ""
@@ -1509,7 +1513,7 @@ msgstr ""
 msgid "Save Login File"
 msgstr ""
 
-#: src/components/modals/overlays/QrCodeOverlay.vue:13
+#: src/components/modals/overlays/QrCodeOverlay.vue:14
 msgid ""
 "Scan the code to send\n"
 "{currency} to this address"

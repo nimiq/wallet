@@ -1,5 +1,6 @@
 <template>
     <div class="qr-code-overlay">
+        <PageHeader>{{ $t('{currency} Address', { currency: currency.toUpperCase() }) }}</PageHeader>
         <PageBody class="flex-column">
             <div class="flex-column">
                 <QrCode
@@ -19,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { PageBody, QrCode } from '@nimiq/vue-components';
+import { PageBody, PageHeader, QrCode } from '@nimiq/vue-components';
 import ShortAddress from '../../ShortAddress.vue';
 
 export default defineComponent({
@@ -35,6 +36,7 @@ export default defineComponent({
     },
     components: {
         PageBody,
+        PageHeader,
         QrCode,
         ShortAddress,
     },
@@ -42,9 +44,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.qr-code-overlay,
-.qr-code-overlay .page-body {
-    height: 100%;
+.qr-code-overlay {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .qr-code-overlay .page-body {

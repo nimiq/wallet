@@ -56,7 +56,9 @@
                         </template>
                     </DoubleInput>
                     <div class="bank flex-row" @click="currentStep = Step.BANK_CHECK">
-                        <BankIcon/><a class="nq-link nq-blue">{{ banks.sepa.name }}</a>
+                        <BankIcon/><a class="nq-link nq-blue">
+                            {{ banks.rt1 ? banks.rt1.name : banks.tips ? banks.tips.name : '' }}
+                        </a>
                     </div>
                 </template>
             </MessageTransition>
@@ -98,13 +100,15 @@ export default defineComponent({
         const $ibanInput = ref<typeof LabelInput & { focus(): void } | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
-        const bankName = ref(banks.value.sepa?.name || '');
-        const accountName = ref(bankAccounts.value.sepa?.accountName || '');
-        const iban = ref(bankAccounts.value.sepa?.iban || '');
+        const bankName = ref(banks.value.rt1?.name || banks.value.tips?.name || '');
+        const accountName = ref(bankAccounts.value.rt1?.accountName || bankAccounts.value.tips?.accountName || '');
+        const iban = ref(bankAccounts.value.rt1?.iban || bankAccounts.value.tips?.iban || '');
 
         const isIbanValid = computed(() => iban.value.length < 5 || IBAN.isValid(iban.value));
         const isIbanCountryValid = computed(() => iban.value.length < 2
-            || iban.value.substr(0, 2).toUpperCase() === banks.value.sepa?.country.toUpperCase());
+            || iban.value.substr(0, 2).toUpperCase() === banks.value.rt1?.country.toUpperCase()
+            || iban.value.substr(0, 2).toUpperCase() === banks.value.tips?.country.toUpperCase(),
+        );
 
         const writing = computed(() => bankName.value.length !== 0);
         const canConfirm = computed(() =>
@@ -124,8 +128,8 @@ export default defineComponent({
         });
 
         watch(banks, () => {
-            accountName.value = bankAccounts.value.sepa?.accountName || '';
-            iban.value = bankAccounts.value.sepa?.iban || '';
+            accountName.value = bankAccounts.value.rt1?.accountName || bankAccounts.value.tips?.accountName || '';
+            iban.value = bankAccounts.value.rt1?.iban || bankAccounts.value.tips?.iban || '';
         });
 
         function onBankSelected(bank: Bank) {

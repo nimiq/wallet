@@ -15,7 +15,7 @@
             <li class="bank"
                 v-for="(bank, index) in visibleBanks" :key="index"
                 :class="{ selected: bankToConfirm || selectedBankIndex === index }"
-                :disabled="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.NONE"
+                :disabled="getBankSupport(bank) === SEPA_INSTANT_SUPPORT.NONE"
                 :title="bank.name"
                 @mouseenter="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
                 @focusin="selectedBankIndex = index; bank.tooltip && !bank.tooltip.isShown && bank.tooltip.show()"
@@ -24,7 +24,7 @@
                 @click="selectBank(bank)"
                 @mousedown.prevent
             >
-                <BankIcon v-if="bank.support.sepa[direction] !== SEPA_INSTANT_SUPPORT.NONE"/>
+                <BankIcon v-if="getBankSupport(bank) !== SEPA_INSTANT_SUPPORT.NONE"/>
                 <ForbiddenIcon v-else />
 
                 <div class="flex-column">
@@ -44,10 +44,10 @@
                     <CrossIcon/>
                 </button>
                 <CaretRightSmallIcon class="caret-right-small-icon"
-                    v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL"/>
+                    v-else-if="checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL)"/>
                 <Tooltip
-                    v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.PARTIAL
-                        || bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.UNKNOWN"
+                    v-else-if="checkBankSupport(bank, SEPA_INSTANT_SUPPORT.PARTIAL)
+                        || checkBankSupport(bank, SEPA_INSTANT_SUPPORT.UNKNOWN)"
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
@@ -58,7 +58,7 @@
                     <p>{{ $t('Contact your bank to find out if your account is eligible.') }}</p>
                 </Tooltip>
                 <Tooltip
-                    v-else-if="bank.support.sepa[direction] === SEPA_INSTANT_SUPPORT.FULL_OR_SHARED"
+                    v-else-if="checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL_OR_SHARED)"
                     class="alert-triangle-icon"
                     preferredPosition="bottom left"
                     theme="inverse"
@@ -101,12 +101,12 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
-import loadBankList from '@/data/banksList';
+import loadBankList from '@/data/bankList';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountrySelector from './CountrySelector.vue';
-import { Bank, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
+import { Bank, BANK_NETWORK, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
 import { SEPA_COUNTRY_CODES } from '../lib/Countries';
 
 type CountryInfo = {
@@ -165,7 +165,7 @@ export default defineComponent({
         /* Lazy-load the complete bank lists */
         const banks = ref<Bank[]>([]);
         onMounted(() => {
-            loadBankList().then((BANKS) => banks.value = BANKS);
+            loadBankList().then((BANKS: Bank[]) => banks.value = BANKS);
         });
 
         /* List of available banks in the currently selected country */
@@ -224,7 +224,7 @@ export default defineComponent({
             if ($tooltips.value.length === 0) return b;
 
             for (let i = 0, tIndex = 0; i < b.length; i++) {
-                if (b[i].support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.FULL_OR_SHARED) {
+                if (checkBankSupport(b[i], SEPA_INSTANT_SUPPORT.FULL_OR_SHARED)) {
                     b[i].tooltip = $tooltips.value[tIndex];
                     tIndex++;
                 }
@@ -236,7 +236,7 @@ export default defineComponent({
         /* Show warning if any visible bank is not fully supporting SEPA instant */
         const showWarning = computed(() =>
             matchingBanks.value.some(
-                (bank: Bank) => bank.support.sepa[props.direction] !== SEPA_INSTANT_SUPPORT.FULL),
+                (bank: Bank) => !checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL)),
         );
 
         /* Reset the selectedBankIndex to 0 on text input */
@@ -310,7 +310,7 @@ export default defineComponent({
             if (bankToConfirm.value?.BIC === bank.BIC) return;
 
             // Only continue if the selected bank supports the wanted direction
-            if (bank.support.sepa[props.direction] === SEPA_INSTANT_SUPPORT.NONE) {
+            if (getBankSupport(bank) === SEPA_INSTANT_SUPPORT.NONE) {
                 if ($bankSearchInput.value) $bankSearchInput.value.focus();
                 return;
             }
@@ -333,6 +333,34 @@ export default defineComponent({
         function setBank(bank: Bank & { tooltip?: Tooltip }) {
             localValue.value = bank.name;
             context.emit('bank-selected', { ...bank, tooltip: undefined } as Bank);
+        }
+
+        /**
+         * Return `true` if one of the bank network match the `instantSupportType` arg.
+         * For example: if a bank fully supports TIPS (`FULL`) but does not support RT1 (`NONE`),
+         * it will return `true` for `FULL` and `NONE` support.
+         * To check for the higher support capability please use the `getBankSupport` function.
+         */
+        function checkBankSupport(
+            bank: Bank,
+            instantSupportType: SEPA_INSTANT_SUPPORT,
+        ): boolean {
+            return Object.values(BANK_NETWORK).some(
+                (network) => bank.support[network] && bank.support[network]![props.direction] === instantSupportType,
+            );
+        }
+
+        /**
+         * Return the higher support capability of the bank, no matter the network.
+         * For example: if a bank supports TIPS (`FULL`) but does not support RT1 (`NONE`),
+         * it will still return `FULL` since at least one network is fully supported.
+         */
+        function getBankSupport(bank: Bank) {
+            if (checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL)) return SEPA_INSTANT_SUPPORT.FULL;
+            if (checkBankSupport(bank, SEPA_INSTANT_SUPPORT.FULL_OR_SHARED)) return SEPA_INSTANT_SUPPORT.FULL_OR_SHARED;
+            if (checkBankSupport(bank, SEPA_INSTANT_SUPPORT.PARTIAL)) return SEPA_INSTANT_SUPPORT.PARTIAL;
+            if (checkBankSupport(bank, SEPA_INSTANT_SUPPORT.UNKNOWN)) return SEPA_INSTANT_SUPPORT.UNKNOWN;
+            return SEPA_INSTANT_SUPPORT.NONE;
         }
 
         /* set a country as the currently selected one */
@@ -402,6 +430,8 @@ export default defineComponent({
             selectBank,
             bankToConfirm,
             confirmBank,
+            checkBankSupport,
+            getBankSupport,
 
             showWarning,
             getMatchPrefix,

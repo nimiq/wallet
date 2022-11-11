@@ -56,9 +56,7 @@
                         </template>
                     </DoubleInput>
                     <div class="bank flex-row" @click="currentStep = Step.BANK_CHECK">
-                        <BankIcon/><a class="nq-link nq-blue">
-                            {{ banks.rt1 ? banks.rt1.name : banks.tips ? banks.tips.name : '' }}
-                        </a>
+                        <BankIcon/><a class="nq-link nq-blue">{{ bank ? bank.name : '' }}</a>
                     </div>
                 </template>
             </MessageTransition>
@@ -93,21 +91,20 @@ enum Step {
 
 export default defineComponent({
     setup(props, context) {
-        const { banks, bankAccounts } = useBankStore();
+        const { bank, bankAccount } = useBankStore();
 
         const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
         const $accountNameInput = ref<typeof LabelInput & { focus(): void } | null>(null);
         const $ibanInput = ref<typeof LabelInput & { focus(): void } | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
-        const bankName = ref(banks.value.rt1?.name || banks.value.tips?.name || '');
-        const accountName = ref(bankAccounts.value.rt1?.accountName || bankAccounts.value.tips?.accountName || '');
-        const iban = ref(bankAccounts.value.rt1?.iban || bankAccounts.value.tips?.iban || '');
+        const bankName = ref(bank.value?.name || '');
+        const accountName = ref(bankAccount.value?.accountName || '');
+        const iban = ref(bankAccount.value?.iban || '');
 
         const isIbanValid = computed(() => iban.value.length < 5 || IBAN.isValid(iban.value));
         const isIbanCountryValid = computed(() => iban.value.length < 2
-            || iban.value.substr(0, 2).toUpperCase() === banks.value.rt1?.country.toUpperCase()
-            || iban.value.substr(0, 2).toUpperCase() === banks.value.tips?.country.toUpperCase(),
+            || iban.value.substr(0, 2).toUpperCase() === bank.value?.country.toUpperCase(),
         );
 
         const writing = computed(() => bankName.value.length !== 0);
@@ -127,13 +124,13 @@ export default defineComponent({
             }
         });
 
-        watch(banks, () => {
-            accountName.value = bankAccounts.value.rt1?.accountName || bankAccounts.value.tips?.accountName || '';
-            iban.value = bankAccounts.value.rt1?.iban || bankAccounts.value.tips?.iban || '';
+        watch(bank, () => {
+            accountName.value = bankAccount.value?.accountName || '';
+            iban.value = bankAccount.value?.iban || '';
         });
 
-        function onBankSelected(bank: Bank) {
-            context.emit('bank-selected', bank);
+        function onBankSelected(selectedBank: Bank) {
+            context.emit('bank-selected', selectedBank);
             currentStep.value = Step.IBAN_CHECK;
         }
 
@@ -148,12 +145,12 @@ export default defineComponent({
         }
 
         function confirm() {
-            const bankAccount: BankAccount = {
+            const newBankAccount: BankAccount = {
                 accountName: accountName.value,
                 iban: iban.value,
             };
 
-            context.emit('details-entered', bankAccount);
+            context.emit('details-entered', newBankAccount);
         }
 
         return {
@@ -163,7 +160,7 @@ export default defineComponent({
             $accountNameInput,
             $ibanInput,
 
-            banks,
+            bank,
             bankName,
             writing,
             currentStep,

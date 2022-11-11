@@ -91,7 +91,7 @@ export default defineComponent({
             state: swap$,
         } = useSwapsStore();
 
-        const { banks, bankAccounts } = useBankStore();
+        const { bank, bankAccount } = useBankStore();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
@@ -368,7 +368,7 @@ export default defineComponent({
                         // place to persist the relevant information in our store.
                         addFundingData(fundingTx.hash.value, {
                             asset: SwapAsset.EUR,
-                            bankLabel: banks.value.rt1?.name || banks.value.tips?.name,
+                            bankLabel: bank.value!.name,
                             // bankLogo?: string,
                             amount: fundingTx.amount + fundingTx.fee,
                             htlc: {
@@ -471,9 +471,9 @@ export default defineComponent({
                             // place to persist the relevant information in our store.
                             const swapData: SwapEurData = {
                                 asset: SwapAsset.EUR,
-                                bankLabel: banks.value.rt1?.name || banks.value.tips?.name,
+                                bankLabel: bank.value!.name,
                                 // bankLogo?: string,
-                                iban: bankAccounts.value.rt1?.iban || bankAccounts.value.tips?.iban,
+                                iban: bankAccount.value!.iban,
                                 amount: htlc.amount,
                                 htlc: {
                                     id: htlc.id,

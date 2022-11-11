@@ -27,7 +27,7 @@
             </PageBody>
 
             <div v-else-if="page === Pages.SETUP_BUY" class="setup-buy flex-column" @click="amountMenuOpened = false">
-                <PageHeader :backArrow="(banks.rt1 || banks.tips) ? false : true" @back="goBack">
+                <PageHeader :backArrow="bank ? false : true" @back="goBack">
                     {{ $t('Sell Crypto') }}
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
@@ -106,11 +106,10 @@
                         </div>
                         <div class="flex-column">
                             <BankIconButton
-                                :bankName="banks.rt1 ? banks.rt1.name : banks.tips ? banks.tips.name : ''"
+                                :bankName="bank ? bank.name : ''"
                                 @click="page = Pages.BANK_CHECK"/>
                             <InteractiveShortAddress
-                                :address="bankAccounts.rt1 ? bankAccounts.rt1.iban :
-                                        bankAccounts.tips ? bankAccounts.tips.iban : ''"
+                                :address="bankAccount ? bankAccount.iban : ''"
                                 tooltipPosition="left"/>
                         </div>
                     </section>
@@ -360,10 +359,10 @@ export default defineComponent({
         const { btcUnit } = useSettingsStore();
         const { activeSwap: swap } = useSwapsStore();
         const {
-            banks,
+            bank,
             setBank,
             setBankAccount,
-            bankAccounts,
+            bankAccount,
         } = useBankStore();
         const { connectedUser: kycUser } = useKycStore();
 
@@ -377,10 +376,7 @@ export default defineComponent({
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
-        const page = ref(
-            ((banks.value.rt1 && bankAccounts.value.rt1)
-            || (banks.value.tips && bankAccounts.value.tips))
-                ? Pages.SETUP_BUY : Pages.WELCOME);
+        const page = ref((bank.value && bankAccount.value) ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);
@@ -442,8 +438,7 @@ export default defineComponent({
             fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
-            && ((banks.value.rt1 && bankAccounts.value.rt1)
-                || (banks.value.tips && bankAccounts.value.tips))
+            && bank.value && bankAccount.value
             && limits.value?.current.usd
             && !fetchingEstimate.value
             && !insufficientBalance.value
@@ -471,13 +466,13 @@ export default defineComponent({
             }
         }
 
-        function onBankSelected(bank: Bank) {
-            setBank(bank);
+        function onBankSelected(selectedBank: Bank) {
+            setBank(selectedBank);
             addressListOpened.value = false;
         }
 
-        async function onBankDetailsEntered(bankAccount: BankAccount) {
-            setBankAccount(bankAccount);
+        async function onBankDetailsEntered(newBankAccount: BankAccount) {
+            setBankAccount(newBankAccount);
             page.value = Pages.SETUP_BUY;
             await context.root.$nextTick();
             if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
@@ -628,30 +623,18 @@ export default defineComponent({
                 }
 
                 if (swapSuggestion.to.asset === SwapAsset.EUR) {
-                    let recipient;
-
-                    if (bankAccounts.value.rt1) {
-                        recipient = {
-                            name: bankAccounts.value.rt1!.accountName,
-                            iban: bankAccounts.value.rt1!.iban,
-                            bic: banks.value.rt1!.BIC,
-                        };
-                    } else {
-                        recipient = {
-                            name: bankAccounts.value.tips!.accountName,
-                            iban: bankAccounts.value.tips!.iban,
-                            bic: banks.value.tips!.BIC,
-                        };
-                    }
-
                     redeem = {
                         type: SwapAsset.EUR,
                         value: swapSuggestion.to.amount,
                         fee: swapSuggestion.to.fee,
-                        bankLabel: banks.value.rt1?.name || banks.value.tips?.name,
+                        bankLabel: bank.value?.name,
                         settlement: Config.environment === ENV_MAIN ? {
                             type: OasisTransactionType.SEPA,
-                            recipient,
+                            recipient: {
+                                name: bankAccount.value!.accountName,
+                                iban: bankAccount.value!.iban,
+                                bic: bank.value!.BIC,
+                            },
                         } : {
                             type: OasisTransactionType.MOCK,
                         },
@@ -906,10 +889,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = ((banks.value.rt1 && bankAccounts.value.rt1)
-                            || (banks.value.tips && bankAccounts.value.tips))
-                        ? Pages.SETUP_BUY
-                        : Pages.WELCOME;
+                    page.value = (bank.value && bankAccount.value) ? Pages.SETUP_BUY : Pages.WELCOME;
                     break;
                 default:
                     break;
@@ -986,7 +966,7 @@ export default defineComponent({
             canSign,
             fiatAmount,
             fiatCurrencyInfo,
-            banks,
+            bank,
             SwapAsset,
             SwapState,
             finishSwap,
@@ -1011,7 +991,7 @@ export default defineComponent({
             isMainnet,
             oasisSellLimitExceeded,
             onBankDetailsEntered,
-            bankAccounts,
+            bankAccount,
             amountMenuOpened,
             sellMax,
             OASIS_EUR_DETECTION_DELAY,

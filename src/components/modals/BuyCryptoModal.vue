@@ -28,7 +28,7 @@
             </PageBody>
 
             <div v-else-if="page === Pages.SETUP_BUY" class="setup-buy flex-column">
-                <PageHeader :backArrow="(banks.rt1 || banks.tips) ? false : true" @back="goBack">
+                <PageHeader :backArrow="bank ? false : true" @back="goBack">
                     {{ $t('Buy Crypto') }}
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
@@ -121,7 +121,7 @@
                 <PageBody class="flex-column">
                     <section class="identicon-section flex-row">
                         <BankIconButton
-                            :bankName="banks.rt1 ? banks.rt1.name : (banks.tips ? bank.tips.name : '')"
+                            :bankName="bank ? bank.name : ''"
                             @click="page = Pages.BANK_CHECK"/>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
@@ -129,7 +129,8 @@
                         <div class="flex-column">
                             <IdenticonStack @click="addressListOpened = true" />
                             <InteractiveShortAddress v-if="activeCurrency === CryptoCurrency.NIM"
-                                :address="activeAddressInfo.address" tooltipPosition="left"/>
+                                :address="activeAddressInfo.address"
+                                tooltipPosition="left"/>
                         </div>
                     </section>
 
@@ -390,7 +391,7 @@ export default defineComponent({
         const { exchangeRates } = useFiatStore();
         const { btcUnit } = useSettingsStore();
         const { activeSwap: swap } = useSwapsStore();
-        const { banks, setBank } = useBankStore();
+        const { bank, setBank } = useBankStore();
         const { connectedUser: kycUser } = useKycStore();
 
         const { isMobile } = useWindowSize();
@@ -403,7 +404,7 @@ export default defineComponent({
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
-        const page = ref((banks.value.rt1 || banks.value.tips) ? Pages.SETUP_BUY : Pages.WELCOME);
+        const page = ref(bank.value ? Pages.SETUP_BUY : Pages.WELCOME);
 
         const estimateError = ref<string>(null);
         const swapError = ref<string>(null);
@@ -456,7 +457,7 @@ export default defineComponent({
             fiatAmount.value
             && !estimateError.value && !swapError.value
             && estimate.value
-            && (banks.value.rt1 || banks.value.tips)
+            && bank.value
             && limits.value?.current.usd
             && !fetchingEstimate.value
             && !insufficientLimit.value
@@ -484,8 +485,8 @@ export default defineComponent({
             }
         }
 
-        function onBankSelected(bank: Bank) {
-            setBank(bank);
+        function onBankSelected(selectedBank: Bank) {
+            setBank(selectedBank);
             page.value = Pages.SETUP_BUY;
             addressListOpened.value = false;
         }
@@ -592,7 +593,7 @@ export default defineComponent({
                         type: SwapAsset.EUR,
                         value: swapSuggestion.from.amount - swapSuggestion.from.serviceEscrowFee,
                         fee: swapSuggestion.from.fee + swapSuggestion.from.serviceEscrowFee,
-                        bankLabel: banks.value.rt1!.name || banks.value.tips!.name,
+                        bankLabel: bank.value!.name,
                     };
                 }
 
@@ -838,7 +839,7 @@ export default defineComponent({
                     page.value = Pages.BANK_CHECK;
                     break;
                 case Pages.BANK_CHECK:
-                    page.value = (banks.value.rt1 || banks.value.tips) ? Pages.SETUP_BUY : Pages.WELCOME;
+                    page.value = bank.value ? Pages.SETUP_BUY : Pages.WELCOME;
                     break;
                 default:
                     break;
@@ -916,7 +917,7 @@ export default defineComponent({
             canSign,
             fiatAmount,
             fiatCurrencyInfo,
-            banks,
+            bank,
             SwapAsset,
             SwapState,
             finishSwap,

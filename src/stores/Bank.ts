@@ -35,36 +35,29 @@ export type BankAccount = {
 }
 
 export type BankState = {
-    banks: Record<BANK_NETWORK, Bank | null>,
-    bankAccounts: Record<BANK_NETWORK, BankAccount | null>,
+    bank: Bank | null,
+    bankAccount: BankAccount | null,
 }
 
 export const useBankStore = createStore({
     id: 'bank',
     state: (): BankState => ({
-        banks: { rt1: null, tips: null },
-        bankAccounts: { rt1: null, tips: null },
+        bank: null,
+        bankAccount: null,
     }),
     getters: {
-        banks: (state): Readonly<Record<BANK_NETWORK, Bank | null>> => state.banks,
-        bankAccounts: (state): Readonly<Record<BANK_NETWORK, BankAccount | null>> =>
-            state.bankAccounts,
+        bank: (state): Readonly<Bank | null> => state.bank,
+        bankAccount: (state): Readonly<BankAccount | null> => state.bankAccount,
     },
     actions: {
-        setBank(bank: Bank, network: BANK_NETWORK = BANK_NETWORK.RT1) {
-            if (bank.BIC !== this.state.banks[network]?.BIC) {
-                // TODO: Simply set new bank in Vue 3.
-                this.state.bankAccounts = { ...this.state.bankAccounts, [network]: null };
+        setBank(bank: Bank) {
+            if (bank.BIC !== this.state.bank?.BIC) {
+                this.state.bankAccount = null;
             }
-            // TODO: Simply set new bank in Vue 3.
-            this.state.banks = { ...this.state.banks, [network]: bank };
+            this.state.bank = bank;
         },
-        setBankAccount(
-            bankAccount: BankAccount,
-            network: BANK_NETWORK = BANK_NETWORK.RT1,
-        ) {
-            // TODO: Simply set new bankAccount in Vue 3.
-            this.state.bankAccounts = { ...this.state.bankAccounts, [network]: bankAccount };
+        setBankAccount(bankAccount: BankAccount) {
+            this.state.bankAccount = bankAccount;
         },
     },
 });

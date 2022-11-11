@@ -59,7 +59,7 @@
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
                         </footer>
-                        <footer v-else-if="$config.oasis.underMaintenance && !isInOasis2Trial" class="flex-row">
+                        <footer v-else-if="$config.oasis.underMaintenance" class="flex-row">
                             <MaintenanceIcon/>
                             {{ $t('Currently under maintenance') }}
                             <div class="flex-grow"></div>
@@ -233,14 +233,10 @@ export default defineComponent({
 
         const country = ref<Country>(null);
 
-        const isInOasis2Trial = computed(
-            () => trials.value.includes(Trial.OASIS2) || trials.value.includes(Trial.TEN31Pass),
-        );
-
         const isOasisAvailable = computed(() => {
             if (!config.fastspot.enabled) return false;
             if (!canUseSwaps.value) return false;
-            if (config.oasis.underMaintenance && !isInOasis2Trial.value) return false;
+            if (config.oasis.underMaintenance) return false;
 
             if (config.environment === ENV_TEST) return true;
             return !country.value || SEPA_COUNTRY_CODES.includes(country.value.code);
@@ -277,7 +273,6 @@ export default defineComponent({
         return {
             country,
             isOasisAvailable,
-            isInOasis2Trial,
             isCreditCardAvailable,
             isMoonpayAvailable,
             isSimplexAvailable,

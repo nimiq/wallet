@@ -27,6 +27,9 @@ export function init() {
 
     for (const trial of trials.value) {
         switch (trial) { // eslint-disable-line default-case
+            case Trial.OASIS2:
+                reactiveConfig.oasis.underMaintenance = false;
+                break;
             case Trial.TEN31Pass:
                 if (reactiveConfig.ten31Pass.enabled) break;
                 reactiveConfig.ten31Pass.enabled = true;

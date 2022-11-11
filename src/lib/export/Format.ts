@@ -1,7 +1,8 @@
 import { AccountInfo } from '../../stores/Account';
 import { AddressInfo } from '../../stores/Address';
 import { useProxyStore } from '../../stores/Proxy';
-import { Transaction } from '../../stores/Transactions';
+import { Transaction as NimTx } from '../../stores/Transactions';
+import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { parseData } from '../DataFormatting';
 import { isProxyData, ProxyType } from '../ProxyDetection';
 
@@ -20,11 +21,15 @@ export class Format {
         };
     }
 
-    protected static formatAmount(lunas: number) {
+    protected static formatLunas(lunas: number) {
         return (lunas / 1e5).toString();
     }
 
-    protected static formatData(transaction: Transaction, isIncoming: boolean) {
+    protected static formatSatoshis(satoshis: number) {
+        return (satoshis / 1e8).toString();
+    }
+
+    protected static formatNimiqData(transaction: NimTx, isIncoming: boolean) {
         if (isProxyData(transaction.data.raw, ProxyType.CASHLINK)) {
             const { state: proxies$ } = useProxyStore();
             const cashlinkAddress = isIncoming ? transaction.sender : transaction.recipient;
@@ -45,14 +50,14 @@ export class Format {
     constructor(
         private headers: string[],
         public account: AccountInfo,
-        public addresses: Map<string, AddressInfo>,
-        public transactions: Transaction[],
+        public nimAddresses: Map<string, AddressInfo>,
+        public btcAddresses: { internal: string[], external: string[] },
+        public transactions: (NimTx | BtcTx)[],
         public year: number,
-        public asset: 'NIM',
     ) {}
 
-    protected getAddressInfo(address: string) {
-        return this.addresses.get(address);
+    protected getNimiqAddressInfo(address: string) {
+        return this.nimAddresses.get(address);
     }
 
     protected download() {

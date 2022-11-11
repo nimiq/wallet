@@ -1,8 +1,10 @@
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
-import { GenericFormat } from './GenericFormat';
+// import { GenericFormat } from './GenericFormat';
 
 export enum ExportFormat {
     GENERIC = 'generic',
@@ -25,21 +27,36 @@ export async function exportTransactions(accountId: string, year: number, format
     const endTimestamp = endDate.getTime() / 1e3;
 
     const { state: addresses$ } = useAddressStore();
-    const addresses = new Map(account.addresses.map((address) => ([
+    const nimAddresses = new Map(account.addresses.map((address) => ([
         address,
         addresses$.addressInfos[address],
     ])));
 
-    const { state: transactions$ } = useTransactionsStore();
-    const transactions = Object.values(transactions$.transactions)
+    const btcAddresses = [
+        ...account.btcAddresses.internal,
+        ...account.btcAddresses.external,
+    ];
+
+    const { state: nimTransactions$ } = useTransactionsStore();
+    const nimTransactions = Object.values(nimTransactions$.transactions)
         .filter( // Only account transactions
             (tx) => account.addresses.includes(tx.sender) || account.addresses.includes(tx.recipient),
         )
         .filter((tx) => tx.timestamp) // Only confirmed transactions
-        .sort((a, b) => a.timestamp! - b.timestamp!) // Sort ascending
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
     // TODO: Get receipts from block explorer and compare if we have all transactions
+
+    const { state: btcTransactions$ } = useBtcTransactionsStore();
+    const btcTransactions = Object.values(btcTransactions$.transactions)
+        .filter((tx) => tx.addresses.some((address) => btcAddresses.includes(address))) // Only account transactions
+        .filter((tx) => tx.timestamp) // Only confirmed transactions
+        .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
+
+    const transactions = [
+        ...nimTransactions,
+        ...btcTransactions,
+    ].sort((a, b) => a.timestamp! - b.timestamp!); // Sort ascending;
 
     if (!transactions.length) {
         console.log('No txs'); // eslint-disable-line no-console
@@ -47,8 +64,11 @@ export async function exportTransactions(accountId: string, year: number, format
     }
 
     switch (format) {
-        case ExportFormat.GENERIC: new GenericFormat(account, addresses, transactions, year).export(); break;
-        case ExportFormat.BLOCKPIT: new BlockpitAppFormat(account, addresses, transactions, year).export(); break;
-        default: throw new Error('Unknown export format');
+        // case ExportFormat.GENERIC:
+        //     new GenericFormat(account, nimAddresses, account.btcAddresses, transactions, year).export(); break;
+        case ExportFormat.BLOCKPIT:
+            new BlockpitAppFormat(account, nimAddresses, account.btcAddresses, transactions, year).export(); break;
+        default:
+            throw new Error('Unknown export format');
     }
 }

@@ -233,7 +233,7 @@ export default defineComponent({
         const country = ref<Country>(null);
 
         const isInOasis2Trial = computed(
-            () => trials.value.includes(Trial.OASIS2) || trials.value.includes(Trial.TEN31Pass),
+            () => false, // trials.value.includes(Trial.OASIS2) || trials.value.includes(Trial.TEN31Pass),
         );
 
         const isOasisAvailable = computed(() => {

@@ -1,7 +1,7 @@
 <template>
     <Modal class="sell-crypto-modal"
         :class="{'wider-overlay': !!swap}"
-        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || !!swap"
+        :showOverlay="page === Pages.BANK_CHECK || addressListOpened || kycOverlayOpened || !!swap"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
         :swipePadding="page !== Pages.WELCOME"
     >
@@ -62,15 +62,16 @@
                                 {{ $t('fees') }}
                             </div>
                         </SwapFeesTooltip>
-                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this">
-                            <div slot="trigger" class="pill limits flex-row">
-                                <span v-if="limits">
-                                    {{ $t('Max.') }}
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                            class="limits-tooltip" :class="{ 'kyc-connected': kycUser }">
+                            <div slot="trigger" class="pill limits flex-row" :class="{ 'kyc-connected': kycUser }">
+                                <LimitIcon />
+                                <template v-if="limits">
                                     <FiatAmount :amount="currentLimitFiat"
                                         :currency="selectedFiatCurrency" hideDecimals/>
-                                </span>
+                                    <KycIcon v-if="kycUser" />
+                                </template>
                                 <template v-else>
-                                    {{ $t('Max.') }}
                                     <CircleSpinner/>
                                 </template>
                             </div>
@@ -79,20 +80,16 @@
                                 <FiatConvertedAmount v-if="limits"
                                     :amount="limits.monthly.luna" roundDown
                                     currency="nim" :fiat="selectedFiatCurrency"
-                                    :max="oasisMaxFreeAmount"/>
+                                    :max="oasisMaxAmountEur"/>
                                 <span v-else>{{ $t('loading...') }}</span>
                             </div>
                             <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
                                 <FiatConvertedAmount slot="value"
                                     :amount="limits.remaining.luna" roundDown
                                     currency="nim" :fiat="selectedFiatCurrency"
-                                    :max="oasisMaxFreeAmount"/>
+                                    :max="oasisMaxAmountEur"/>
                             </i18n>
-                            <div></div>
-                            <p class="explainer">
-                                {{ $t('Nimiq is working on a PRO feature with '
-                                    + 'increased limits after user registration.') }}
-                            </p>
+                            <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                         </Tooltip>
                     </div>
                 </PageHeader>
@@ -172,6 +169,8 @@
                 </PageBody>
 
                 <SwapModalFooter
+                    v-if="!insufficientLimit || !$config.ten31Pass.enabled || kycUser"
+                    :isKycConnected="Boolean(kycUser)"
                     :disabled="!canSign"
                     :error="estimateError || swapError"
                     @click="sign"
@@ -201,6 +200,7 @@
                         >Fastspot</a>
                     </i18n>
                 </SwapModalFooter>
+                <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
             </div>
         </transition>
 
@@ -250,6 +250,8 @@
                     :showBitcoin="$config.enableBitcoin && hasBitcoinAddresses"/>
             </PageBody>
         </div>
+
+        <KycOverlay v-else-if="kycOverlayOpened" slot="overlay" @connected="kycOverlayOpened = false" />
     </Modal>
 </template>
 
@@ -268,12 +270,14 @@ import {
     RequestAsset,
     SwapAsset,
     PreSwap,
+    Swap,
     createSwap,
     cancelSwap,
     getSwap,
 } from '@nimiq/fastspot-api';
 import {
     getHtlc,
+    exchangeAuthorizationToken,
     HtlcStatus,
     TransactionType as OasisTransactionType,
 } from '@nimiq/oasis-api';
@@ -306,6 +310,8 @@ import BankIconButton from '../BankIconButton.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
+import LimitIcon from '../icons/LimitIcon.vue';
+import KycIcon from '../icons/KycIcon.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import IdenticonStack from '../IdenticonStack.vue';
@@ -330,6 +336,11 @@ import {
     oasisSellLimitExceeded,
     updateSellEstimate,
 } from '../../lib/swap/utils/SellUtils';
+import { useKycStore } from '../../stores/Kyc';
+import KycPrompt from '../kyc/KycPrompt.vue';
+import KycOverlay from '../kyc/KycOverlay.vue';
+
+type KycResult = import('../../swap-kyc-handler').SetupSwapWithKycResult['kyc'];
 
 enum Pages {
     WELCOME,
@@ -353,6 +364,7 @@ export default defineComponent({
             setBankAccount,
             bankAccounts,
         } = useBankStore();
+        const { connectedUser: kycUser } = useKycStore();
 
         const { isMobile } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
@@ -446,6 +458,8 @@ export default defineComponent({
         function onClose() {
             if (addressListOpened.value === true) {
                 addressListOpened.value = false;
+            } else if (kycOverlayOpened.value === true) {
+                kycOverlayOpened.value = false;
             } else if (page.value === Pages.BANK_CHECK) {
                 goBack();
             } else {
@@ -531,11 +545,6 @@ export default defineComponent({
                     return;
                 }
 
-                // TODO: Validate swap data against estimate
-
-                let fund: HtlcCreationInstructions | null = null;
-                let redeem: EuroHtlcSettlementInstructions | null = null;
-
                 // Await Nimiq and Bitcoin consensus
                 if (activeCurrency.value === CryptoCurrency.NIM) {
                     const nimiqClient = await getNetworkClient();
@@ -557,6 +566,15 @@ export default defineComponent({
                 }
 
                 const validityStartHeight = useNetworkStore().height.value;
+
+                // Convert the swapSuggestion to the Hub request.
+                // Note that swap-kyc-handler.ts recalculates the original swapSuggestion amounts that we got from
+                // createSwap, therefore if you change the calculation here, you'll likely also want to change it there.
+
+                // TODO: Validate swap data against estimate
+
+                let fund: HtlcCreationInstructions | null = null;
+                let redeem: EuroHtlcSettlementInstructions | null = null;
 
                 if (swapSuggestion.from.asset === SwapAsset.NIM) {
                     fund = {
@@ -657,10 +675,16 @@ export default defineComponent({
                 resolve(request);
             });
 
-            let signedTransactions: SetupSwapResult | void | null = null;
+            let signedTransactions: SetupSwapResult | null;
+            let kycGrantTokens: KycResult | undefined;
             try {
-                signedTransactions = await setupSwap(hubRequest);
-                if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
+                const setupSwapResult = await setupSwap(hubRequest);
+                if (setupSwapResult === undefined) return; // Using Hub redirects
+                if (setupSwapResult && 'kyc' in setupSwapResult) {
+                    ({ kyc: kycGrantTokens, ...signedTransactions } = setupSwapResult);
+                } else {
+                    signedTransactions = setupSwapResult; // can be null if the hub popup was cancelled
+                }
             } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -692,12 +716,38 @@ export default defineComponent({
                 return;
             }
 
-            console.log('Signed:', signedTransactions); // eslint-disable-line no-console
+            console.log('Signed:', signedTransactions, 'KYC tokens', kycGrantTokens); // eslint-disable-line no-console
 
-            // Fetch contract from Fastspot and confirm that it's confirmed
-            const confirmedSwap = await getSwap(swapId);
-            if (!('contracts' in confirmedSwap)) {
-                const error = new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+            // Fetch contract from Fastspot and confirm that it's confirmed.
+            // In parallel convert OASIS KYC grant token to OASIS authorization token for OASIS settlements (for OASIS
+            // clearings, this is already happening in the Hub at Fastspot swap confirmation).
+            let confirmedSwap: Swap;
+            let settlementAuthorizationToken: string | undefined;
+            try {
+                const request = await hubRequest; // already resolved
+                // TODO: Retry getting the swap if first time fails
+                let swapOrPreSwap: Swap | PreSwap;
+                [swapOrPreSwap, settlementAuthorizationToken] = await Promise.all([
+                    getSwap(swapId),
+                    request.redeem.type === SwapAsset.EUR && kycGrantTokens?.oasisGrantToken
+                        ? exchangeAuthorizationToken(kycGrantTokens.oasisGrantToken)
+                        : undefined,
+                ]);
+                if (!('contracts' in swapOrPreSwap)) {
+                    throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
+                }
+                confirmedSwap = swapOrPreSwap;
+
+                // Apply the correct local fees from the swap request
+                confirmedSwap.from.fee = request.fund.type === SwapAsset.NIM
+                    ? request.fund.fee
+                    : request.fund.type === SwapAsset.BTC
+                        ? request.fund.inputs.reduce((sum, input) => sum + input.value, 0)
+                            - request.fund.output.value
+                            - (request.fund.changeOutput?.value || 0)
+                        : 0;
+                confirmedSwap.to.fee = (request.redeem as EuroHtlcSettlementInstructions).fee;
+            } catch (error) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid swap state, swap aborted!';
@@ -707,23 +757,9 @@ export default defineComponent({
                 return;
             }
 
-            // Apply the correct local fees from the swap request
-            const request = await hubRequest;
-            confirmedSwap.from.fee = request.fund.type === SwapAsset.NIM
-                ? request.fund.fee
-                : request.fund.type === SwapAsset.BTC
-                    ? request.fund.inputs.reduce((sum, input) => sum + input.value, 0)
-                        - request.fund.output.value
-                        - (request.fund.changeOutput?.value || 0)
-                    : 0;
-            confirmedSwap.to.fee = (request.redeem as EuroHtlcSettlementInstructions).fee;
-
             const { setActiveSwap, setSwap } = useSwapsStore();
 
-            let nimHtlcAddress: string | undefined;
-            if (signedTransactions.nim) {
-                nimHtlcAddress = signedTransactions.nim.raw.recipient;
-            }
+            const nimHtlcAddress = signedTransactions.nim?.raw.recipient;
 
             setActiveSwap({
                 ...confirmedSwap,
@@ -745,6 +781,7 @@ export default defineComponent({
                     ? signedTransactions.nim!.serializedTx
                     : signedTransactions.btc!.serializedTx,
                 settlementSerializedTx: signedTransactions.eur,
+                settlementAuthorizationToken,
             });
 
             // Fetch OASIS HTLC to get clearing instructions
@@ -814,7 +851,13 @@ export default defineComponent({
                 // Send redeem transaction to watchtower
                 fetch(`${Config.fastspot.watchtowerEndpoint}/`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(swap.value!.to.asset === 'EUR' && settlementAuthorizationToken
+                            ? { 'X-OASIS-Settle-Token': settlementAuthorizationToken }
+                            : null
+                        ),
+                    },
                     body: JSON.stringify({
                         id: confirmedSwap.id,
                         endpoint: new URL(Config.fastspot.apiEndpoint).host,
@@ -908,6 +951,12 @@ export default defineComponent({
             }
         }
 
+        const kycOverlayOpened = ref(false);
+
+        const oasisMaxAmountEur = computed(
+            () => kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+        );
+
         return {
             $cryptoAmountInput,
             addressListOpened,
@@ -951,7 +1000,9 @@ export default defineComponent({
             OASIS_EUR_DETECTION_DELAY,
             insufficientBalance,
             insufficientLimit,
-            oasisMaxFreeAmount: Config.oasis.maxFreeAmount,
+            oasisMaxAmountEur,
+            kycUser,
+            kycOverlayOpened,
         };
     },
     components: {
@@ -969,12 +1020,16 @@ export default defineComponent({
         SwapFeesTooltip,
         Timer,
         MinimizeIcon,
+        LimitIcon,
+        KycIcon,
         CircleSpinner,
         SwapModalFooter,
         IdenticonStack,
         InteractiveShortAddress,
         BankIconButton,
         MessageTransition,
+        KycPrompt,
+        KycOverlay,
     },
 });
 </script>
@@ -1163,11 +1218,41 @@ export default defineComponent({
             color: rgb(234, 166, 23);
             box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
-            ::v-deep svg {
+            &.kyc-connected {
+                color: var(--nimiq-purple);
+                box-shadow: inset 0 0 0 1.5px rgba(95, 75, 139, 0.7);
+            }
+
+            ::v-deep .circle-spinner {
                 margin-left: 0.75rem;
                 height: 1.75rem;
                 width: 1.75rem;
             }
+
+            .limit-icon {
+                margin-right: 0.75rem;
+                opacity: 0.8;
+            }
+
+            .kyc-icon {
+                margin: 0 -0.75rem 0 0.75rem;
+            }
+        }
+    }
+
+    .limits-tooltip {
+        &.kyc-connected {
+            ::v-deep .trigger::after {
+                background: #5f4b8b;
+            }
+
+            ::v-deep .tooltip-box {
+                background: var(--nimiq-purple-bg);
+            }
+        }
+
+        .kyc-prompt {
+            margin: 0 -1.25rem -1rem;
         }
     }
 
@@ -1395,6 +1480,10 @@ export default defineComponent({
         & ::v-deep .fadeY-leave-to {
             transform: translateY(-25%) !important;
         }
+    }
+
+    > .kyc-prompt {
+        margin: 0.5rem 0.75rem 0.75rem;
     }
 }
 

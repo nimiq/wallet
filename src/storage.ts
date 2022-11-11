@@ -16,6 +16,7 @@ import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
 import { useSwapsStore, SwapsState } from './stores/Swaps';
 import { useBankStore, BankState } from './stores/Bank';
+import { KycState, useKycStore } from './stores/Kyc';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -29,6 +30,7 @@ const StorageKeys = {
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
+    KYC: 'wallet_kyc_v00',
 };
 
 const PersistentStorageKeys = {
@@ -303,6 +305,22 @@ export async function initStorage() {
 
     unsubscriptions.push(
         bankStore.subscribe(() => Storage.set(StorageKeys.BANK, bankStore.state)),
+    );
+
+    /**
+     * KYC
+     */
+    const kycStore = useKycStore();
+    const storedKycState = await Storage.get<KycState>(StorageKeys.KYC);
+    if (storedKycState) {
+        kycStore.patch({
+            ...storedKycState,
+            kycLimits: null,
+        });
+    }
+
+    unsubscriptions.push(
+        kycStore.subscribe(() => Storage.set(StorageKeys.KYC, kycStore.state)),
     );
 }
 

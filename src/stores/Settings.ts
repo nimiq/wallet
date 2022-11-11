@@ -1,6 +1,7 @@
 import { createStore } from 'pinia';
 import { shouldUseRedirects } from '../hub';
 import { detectLanguage, loadLanguage } from '../i18n/i18n-setup';
+import { Trial } from '../lib/Trials';
 
 export enum ColorMode {
     AUTOMATIC = 'automatic',
@@ -26,8 +27,6 @@ export const BtcUnits: {[unit: string]: BtcUnit} = {
         unitToCoins: 1e8,
     },
 };
-
-export enum Trial {}
 
 export type NimDecimals = 0 | 2 | 5;
 export type BtcDecimals = 0 | 3 | 5 | 8;

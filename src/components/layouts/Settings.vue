@@ -75,7 +75,7 @@
 
                 <div class="setting">
                     <div class="description">
-                        <label class="nq-h2" for="contact-import">{{ $t('Import Contacts') }}</label>
+                        <label class="nq-h2">{{ $t('Import Contacts') }}</label>
                         <p class="nq-text">
                             {{ $t('Import contacts that you exported from the Safe.') }}
                         </p>
@@ -145,6 +145,37 @@
                         <option value="btc" :selected="btcUnit.ticker === 'BTC'">BTC</option>
                         <option value="mbtc" :selected="btcUnit.ticker === 'mBTC'">mBTC</option>
                     </select>
+                </div>
+            </section>
+
+            <section v-if="showAccountLimitsSection">
+                <h2 class="nq-label">{{ $t('Account Limits') }}</h2>
+
+                <div class="setting kyc-connection">
+                    <div class="kyc-container">
+                        <div class="description">
+                            <label class="nq-h2">{{ $t('TEN31 Verification') }}</label>
+                            <p class="nq-text">
+                                {{ $t('Connect to TEN31 Pass for higher swap limits.') }}
+                            </p>
+                        </div>
+
+                        <div v-if="kycUser" class="flex-row connected-user">
+                            <div class="display-name-container">
+                                <strong class="display-name">
+                                    {{ kycUser.name }}
+                                    <KycIcon />
+                                </strong>
+                            </div>
+                            <button class="nq-button-s" @click="disconnectKyc">{{ $t('Disconnect') }}</button>
+                        </div>
+                    </div>
+
+                    <button
+                        v-if="!kycUser"
+                        class="nq-button-pill light-blue"
+                        @click="() => connectKyc()" @mousedown.prevent
+                    >{{ $t('Connect') }}</button>
                 </div>
             </section>
 
@@ -264,10 +295,11 @@ import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
+import Config from 'config';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
-import { useSettingsStore, ColorMode/* , Trial */ } from '../../stores/Settings';
+import { useSettingsStore, ColorMode } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { addVestingContract, shouldUseRedirects } from '../../hub';
@@ -276,24 +308,15 @@ import { clearStorage } from '../../storage';
 import { Languages } from '../../i18n/i18n-setup';
 import { useContactsStore } from '../../stores/Contacts';
 import { updateServiceWorker } from '../../registerServiceWorker';
-
-declare global {
-    function digestMessage(message: string): Promise<string>;
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#Converting_a_digest_to_a_hex_string
-// Exposed globally to create passwords for new trials.
-window.digestMessage = async function (message: string): Promise<string> { // eslint-disable-line func-names
-    const msgUint8 = new TextEncoder().encode(message.toLowerCase()); // encode as (utf-8) Uint8Array
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8); // hash the message
-    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-    return hashHex;
-};
+import { connectKyc, disconnectKyc } from '../../lib/KycConnection';
+import { enableTrial } from '../../lib/Trials';
+import { useKycStore } from '../../stores/Kyc';
+import KycIcon from '../icons/KycIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
         const settings = useSettingsStore();
+        const { connectedUser: kycUser } = useKycStore();
 
         const { currency, setCurrency } = useFiatStore();
 
@@ -365,19 +388,14 @@ export default defineComponent({
         }
 
         async function onTrialPassword(el: HTMLInputElement) {
-            let hash: string;
-            try {
-                hash = await window.digestMessage(el.value);
-            } catch (error: any) {
-                el.value = error.message;
-                return;
-            }
+            if (await enableTrial(el.value)) {
+                el.value = 'OK, trial enabled!';
 
-            switch (hash) {
-                default: el.value = 'Nope, no cookie for you'; // return;
+                // Ensure UI is shown after trial was enabled
+                showAccountLimitsSection.value = Config.ten31Pass.enabled;
+            } else {
+                el.value = 'Nope, no cookie for you';
             }
-
-            // el.value = 'OK, trial enabled!';
         }
 
         const applyingWalletUpdate = ref(false);
@@ -400,6 +418,8 @@ export default defineComponent({
             new Date().getFullYear(), // user year
         );
 
+        const showAccountLimitsSection = ref(Config.ten31Pass.enabled);
+
         return {
             addVestingContract,
             clearCache,
@@ -419,8 +439,12 @@ export default defineComponent({
             callAndConsumePwaInstallPrompt,
             pwaInstallationChoice,
             shouldUseRedirects,
+            kycUser,
+            connectKyc,
+            disconnectKyc,
             copyrightYear,
             VERSION: process.env.VERSION,
+            showAccountLimitsSection,
         };
     },
     components: {
@@ -429,6 +453,7 @@ export default defineComponent({
         CrossCloseButton,
         CircleSpinner,
         CountryFlag,
+        KycIcon,
     },
 });
 </script>
@@ -444,7 +469,7 @@ export default defineComponent({
 
 .column {
     justify-content: flex-start;
-    max-height: 100%;
+    max-height: calc(100% - 4rem); // for Copyright / Disclamer link
     overflow-y: auto;
 
     @extend %custom-scrollbar;
@@ -460,7 +485,6 @@ export default defineComponent({
     &.left-column {
         flex-shrink: 1;
         border-right: 0.25rem solid var(--text-10);
-        max-height: calc(100% - 4rem); // for Copyright / Disclamer link
 
         section {
             padding-left: 3rem;
@@ -498,7 +522,7 @@ section {
 
     &:disabled {
         filter: grayscale(100%);
-        cursor: normal;
+        cursor: default;
         pointer-events: none;
     }
 }
@@ -536,11 +560,46 @@ section {
     }
 }
 
+.kyc-connection {
+    .kyc-container {
+        max-width: 100%;
+        flex-shrink: 1;
+    }
+
+    .connected-user {
+        margin-top: 3rem;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    .display-name-container {
+        padding-right: 2.75rem; // kyc-icon size + left space
+    }
+
+    .display-name {
+        position: relative;
+        font-size: 2rem;
+
+        .kyc-icon {
+            position: absolute; // position at the end of the last line; avoiding it breaking alone into a new line
+            left: calc(100% + .75rem); // .display-name is an inline element, thus 100% refers to length of last line
+            bottom: .125rem;
+            color: var(--nimiq-purple);
+        }
+    }
+
+    .nq-button-s {
+        padding: 0.5rem 2rem;
+        border-radius: 3.75rem;
+        font-size: var(--body-size);
+        white-space: nowrap;
+    }
+}
+
 select {
-    font-size: inherit;
+    font-size: var(--body-size);
     font-family: inherit;
     font-weight: bold;
-    font-size: var(--body-size);
     line-height: inherit;
     color: inherit;
     border: none;
@@ -636,9 +695,11 @@ input[type="file"] {
 }
 
 .copyright {
+    display: flex;
     position: absolute;
     left: 3.25rem;
     bottom: 3.25rem;
+    flex-wrap: wrap;
 
     font-size: var(--small-size);
     font-weight: 600;

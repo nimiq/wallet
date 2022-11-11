@@ -1,6 +1,6 @@
 <template>
     <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
-        :showOverlay="!!swap || addressListOverlayOpened"
+        :showOverlay="!!swap || addressListOverlayOpened || kycOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <PageHeader>
@@ -40,14 +40,17 @@
                         </div>
                     </SwapFeesTooltip>
                     <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                        ref="$limitsTooltip">
-                        <div slot="trigger" class="pill limits flex-row" :class="{'limit-reached': isLimitReached}">
-                            <span v-if="limits">
-                                {{ $t('Max.') }}
+                        class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
+                        <div slot="trigger" class="pill limits flex-row" :class="{
+                            'limit-reached': isLimitReached,
+                            'kyc-connected': kycUser,
+                        }">
+                            <LimitIcon />
+                            <template v-if="limits">
                                 <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
-                            </span>
+                                <KycIcon v-if="kycUser" />
+                            </template>
                             <template v-else>
-                                {{ $t('Max.') }}
                                 <CircleSpinner/>
                             </template>
                         </div>
@@ -61,11 +64,10 @@
                             <FiatConvertedAmount slot="value"
                                 :amount="limits.remaining.luna" currency="nim" roundDown/>
                         </i18n>
-                        <div></div>
-                        <p class="explainer">
-                            {{ $t('Nimiq is working on a PRO feature with '
-                                + 'increased limits after user registration.') }}
-                        </p>
+                        <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
+                            {{ $t('Settings') }}
+                        </router-link> -->
+                        <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
                     </Tooltip>
                 </div>
             </div>
@@ -132,6 +134,8 @@
         </PageBody>
 
         <SwapModalFooter
+            v-if="!isLimitReached || !$config.ten31Pass.enabled || kycUser"
+            :isKycConnected="Boolean(kycUser)"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
             requireBothNetworks
@@ -160,6 +164,7 @@
                 >Fastspot</a>
             </i18n>
         </SwapModalFooter>
+        <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
 
         <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
             <PageBody style="padding: 0.75rem;" class="flex-column">
@@ -190,6 +195,8 @@
                 <AddressList embedded :showAddAddressButton="false" @address-selected="onAddressSelected"/>
             </PageBody>
         </div>
+
+        <KycOverlay v-else-if="kycOverlayOpened" slot="overlay" @connected="kycOverlayOpened = false" />
     </Modal>
 </template>
 
@@ -229,6 +236,8 @@ import AmountInput from '../AmountInput.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SwapBalanceBar from './SwapBalanceBar.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
+import LimitIcon from '../icons/LimitIcon.vue';
+import KycIcon from '../icons/KycIcon.vue';
 import LightningIcon from '../icons/LightningIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -241,6 +250,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
+import { useKycStore } from '../../stores/Kyc';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
@@ -249,6 +259,8 @@ import SwapModalFooter from './SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
+import KycPrompt from '../kyc/KycPrompt.vue';
+import KycOverlay from '../kyc/KycOverlay.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -269,6 +281,7 @@ export default defineComponent({
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
         const { exchangeRates, currency } = useFiatStore();
+        const { connectedUser: kycUser } = useKycStore();
 
         onMounted(() => {
             if (!swap.value) {
@@ -828,6 +841,8 @@ export default defineComponent({
         function onClose() {
             if (addressListOverlayOpened.value === true) {
                 addressListOverlayOpened.value = false;
+            } else if (kycOverlayOpened.value === true) {
+                kycOverlayOpened.value = false;
             } else {
                 context.root.$router.back();
             }
@@ -899,11 +914,6 @@ export default defineComponent({
                     return;
                 }
 
-                // TODO: Validate swap data against estimate
-
-                let fund: HtlcCreationInstructions | null = null;
-                let redeem: HtlcSettlementInstructions | null = null;
-
                 const nimiqClient = await getNetworkClient();
                 await nimiqClient.waitForConsensusEstablished();
                 const headHeight = await nimiqClient.getHeadHeight();
@@ -917,6 +927,15 @@ export default defineComponent({
                 await electrumClient.waitForConsensusEstablished();
 
                 const validityStartHeight = useNetworkStore().state.height;
+
+                // Convert the swapSuggestion to the Hub request.
+                // Note that swap-kyc-handler.ts recalculates the original swapSuggestion amounts that we got from
+                // createSwap, therefore if you change the calculation here, you'll likely also want to change it there.
+
+                // TODO: Validate swap data against estimate
+
+                let fund: HtlcCreationInstructions | null = null;
+                let redeem: HtlcSettlementInstructions | null = null;
 
                 if (swapSuggestion.to.asset === SwapAsset.BTC) {
                     fund = {
@@ -1034,7 +1053,7 @@ export default defineComponent({
             let signedTransactions: SetupSwapResult | void | null = null;
             try {
                 signedTransactions = await setupSwap(hubRequest);
-                if (typeof signedTransactions === 'undefined') return; // Using Hub redirects
+                if (signedTransactions === undefined) return; // Using Hub redirects
             } catch (error: any) {
                 if (Config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -1215,6 +1234,8 @@ export default defineComponent({
         // Does not need to be reactive, as the config doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
+        const kycOverlayOpened = ref(false);
+
         return {
             onClose,
             satsPerNim,
@@ -1261,6 +1282,8 @@ export default defineComponent({
             onAddressSelected,
             isMainnet,
             activeAddressInfo,
+            kycUser,
+            kycOverlayOpened,
         };
     },
     components: {
@@ -1275,11 +1298,15 @@ export default defineComponent({
         CircleSpinner,
         SwapBalanceBar,
         MinimizeIcon,
+        LimitIcon,
+        KycIcon,
         LightningIcon,
         SwapFeesTooltip,
         AddressList,
         SwapAnimation,
         SwapModalFooter,
+        KycPrompt,
+        KycOverlay,
     },
 });
 </script>
@@ -1289,6 +1316,10 @@ export default defineComponent({
     width: 63.5rem;
     // height: 74.5rem;
     font-size: var(--body-size);
+
+    > .kyc-prompt {
+        margin: 0.5rem 0.75rem 0.75rem;
+    }
 }
 
 .page-header {
@@ -1350,10 +1381,24 @@ export default defineComponent({
         color: rgb(234, 166, 23);
         box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
 
-        ::v-deep svg {
+        &.kyc-connected {
+            color: var(--nimiq-purple);
+            box-shadow: inset 0 0 0 1.5px rgba(95, 75, 139, 0.7);
+        }
+
+        ::v-deep .circle-spinner {
             margin-left: 0.75rem;
             height: 1.75rem;
             width: 1.75rem;
+        }
+
+        .limit-icon {
+            margin-right: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .kyc-icon {
+            margin: 0 -0.75rem 0 0.75rem;
         }
     }
 
@@ -1361,6 +1406,22 @@ export default defineComponent({
     &.limit-reached {
         color: var(--nimiq-red);
         box-shadow: inset 0 0 0 1.5px rgba(216, 65, 51, 0.7);
+    }
+}
+
+.limits-tooltip {
+    &.kyc-connected {
+        ::v-deep .trigger::after {
+            background: #5f4b8b;
+        }
+
+        ::v-deep .tooltip-box {
+            background: var(--nimiq-purple-bg);
+        }
+    }
+
+    .kyc-prompt {
+        margin: 0 -1.25rem -1rem;
     }
 }
 

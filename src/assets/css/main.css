@@ -78,6 +78,27 @@ button.reset:disabled {
     margin-bottom: 0;
 }
 
+.nq-button.purple:not(:disabled) {
+    background: var(--nimiq-purple);
+    background-image: var(--nimiq-purple-bg);
+}
+
+.nq-button.purple:not(:disabled)::before {
+    /*
+    theme colors:
+    light-blue-bg       from hsl(221, 70%, 50%) to hsl(202, 95%, 41%)
+    light-blue-darkened:from hsl(221, 70%, 45%) to hsl(205, 100%, 38%)
+
+    purple-bg:          from hsl(241, 33%, 44%) to hsl(259, 30%, 42%)
+
+    applying the changes between light-blue normal and darkened, deriving purple darkened variation:
+    purple-bg-darkened: from hsl(241, 33%, 39%) to hsl(262, 35%, 39%)
+    */
+    --nimiq-purple-darkened: hsl(262, 35%, 37%);
+    --nimiq-purple-bg-darkened: radial-gradient(100% 100% at bottom right, hsl(241, 33%, 37%), var(--nimiq-purple-darkened));
+    background-image: var(--nimiq-purple-bg-darkened);
+}
+
 
 /* Font Sizes */
 

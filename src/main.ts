@@ -21,6 +21,8 @@ import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
 import { initPwa } from './composables/usePwaInstallPrompt';
+import { init as initKycConnection } from './lib/KycConnection';
+import { init as initTrials } from './lib/Trials';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -40,6 +42,7 @@ Vue.use(VueVirtualScroller);
 async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
+    initTrials(); // Must be called after storage was initialized, can affect Config
     await initHubApi(); // Must be called after VueCompositionApi has been enabled
     syncFromHub(); // Can run parallel to Vue initialization
 
@@ -73,6 +76,10 @@ async function start() {
 
     if (Config.oasis.apiEndpoint) {
         initOasisApi(Config.oasis.apiEndpoint);
+    }
+
+    if (Config.ten31Pass.enabled) {
+        initKycConnection();
     }
 
     // Make config accessible in components

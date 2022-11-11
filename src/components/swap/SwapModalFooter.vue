@@ -1,7 +1,7 @@
 <template>
     <PageFooter class="swap-modal-footer">
         <button
-            class="nq-button light-blue"
+            class="nq-button" :class="isKycConnected ? 'purple' : 'light-blue'"
             :disabled="disabled || !networkState.isReady"
             @click="emitClick"
             @mousedown.prevent
@@ -36,6 +36,7 @@ export default defineComponent({
         error: String,
         disabled: Boolean,
         requireBothNetworks: Boolean,
+        isKycConnected: Boolean,
     },
     setup(props, context) {
         const { activeCurrency } = useAccountStore();

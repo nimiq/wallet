@@ -424,7 +424,7 @@ export default defineComponent({
                     let interval: number;
                     const secret = await Promise.race<string>([
                         swapHandler.awaitSecret(),
-                        new Promise((resolve, reject) => {
+                        new Promise<string>((resolve, reject) => {
                             interval = window.setInterval(async () => {
                                 if (!activeSwap.value || activeSwap.value.state === SwapState.EXPIRED) {
                                     window.clearInterval(interval);
@@ -457,6 +457,7 @@ export default defineComponent({
                         const settlementTx = await swapHandler.settleIncoming(
                             activeSwap.value!.settlementSerializedTx!,
                             activeSwap.value!.secret!,
+                            activeSwap.value!.settlementAuthorizationToken,
                         );
 
                         if (activeSwap.value!.to.asset === SwapAsset.BTC) {

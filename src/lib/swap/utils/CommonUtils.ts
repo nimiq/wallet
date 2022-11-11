@@ -1,7 +1,7 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
 import { computed, onUnmounted, ref, getCurrentInstance, Ref } from '@vue/composition-api';
-import Config from 'config';
+import { useConfig } from '../../../composables/useConfig';
 import { SwapLimits } from '../../../composables/useSwapLimits';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
@@ -19,6 +19,7 @@ const { activeCurrency } = useAccountStore();
 const { btcUnit } = useSettingsStore();
 const { accountUtxos } = useBtcAddressStore();
 const { connectedUser: kycUser } = useKycStore();
+const { config } = useConfig();
 
 /**
  * Common - everything common to Buy and Sell crypto
@@ -49,7 +50,7 @@ export function useCurrentLimitFiat(limits: Ref<SwapLimits | undefined>) {
 
         const regularLimitFiat = Math.min(
             Math.floor((limits.value.current.luna / 1e5) * nimRate),
-            kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+            kycUser.value ? config.oasis.maxKycAmount : config.oasis.maxFreeAmount,
         );
 
         if (selectedFiatCurrency.value === FiatCurrency.EUR && limits.value.current.eur < Infinity) {

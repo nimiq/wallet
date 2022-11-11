@@ -1,5 +1,7 @@
 import { ENV_MAIN } from '../lib/Constants';
 
+// Note: in components, computed props and watchers you'll usually want to use the reactive variant exported by
+// useConfig instead of the plain Config object.
 export default {
     hubEndpoint: 'https://hub.nimiq.com',
     environment: ENV_MAIN,

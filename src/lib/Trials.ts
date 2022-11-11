@@ -1,5 +1,5 @@
-import Config from 'config';
 import { useSettingsStore } from '../stores/Settings';
+import { useConfig } from '../composables/useConfig';
 import { init as initKycConnection } from './KycConnection';
 
 declare global {
@@ -23,12 +23,13 @@ export enum Trial {
 
 export function init() {
     const { trials } = useSettingsStore();
+    const { config: reactiveConfig } = useConfig();
 
     for (const trial of trials.value) {
         switch (trial) { // eslint-disable-line default-case
             case Trial.TEN31Pass:
-                if (Config.ten31Pass.enabled) break;
-                Config.ten31Pass.enabled = true;
+                if (reactiveConfig.ten31Pass.enabled) break;
+                reactiveConfig.ten31Pass.enabled = true;
                 initKycConnection();
                 break;
         }

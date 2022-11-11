@@ -6,7 +6,6 @@ import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-comp
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
 import { init as initOasisApi } from '@nimiq/oasis-api';
 
-import Config from 'config';
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
@@ -20,6 +19,7 @@ import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
+import { useConfig } from './composables/useConfig';
 import { initPwa } from './composables/usePwaInstallPrompt';
 import { init as initKycConnection } from './lib/KycConnection';
 import { init as initTrials } from './lib/Trials';
@@ -70,20 +70,21 @@ async function start() {
 
     startSentry();
 
-    if (Config.fastspot.apiEndpoint && Config.fastspot.apiKey) {
-        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
+    const { config } = useConfig();
+    if (config.fastspot.apiEndpoint && config.fastspot.apiKey) {
+        initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
     }
 
-    if (Config.oasis.apiEndpoint) {
-        initOasisApi(Config.oasis.apiEndpoint);
+    if (config.oasis.apiEndpoint) {
+        initOasisApi(config.oasis.apiEndpoint);
     }
 
-    if (Config.ten31Pass.enabled) {
+    if (config.ten31Pass.enabled) {
         initKycConnection();
     }
 
-    // Make config accessible in components
-    Vue.prototype.$config = Config;
+    // Make reactive config accessible in components
+    Vue.prototype.$config = config;
 
     new Vue({
         router,
@@ -93,7 +94,7 @@ async function start() {
 
     launchNetwork();
 
-    if (Config.enableBitcoin) {
+    if (config.enableBitcoin) {
         launchElectrum();
     } else {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
@@ -103,7 +104,7 @@ start();
 
 declare module 'vue/types/vue' {
     interface Vue {
-        $config: typeof Config;
+        $config: ReturnType<typeof useConfig>['config'];
     }
 }
 

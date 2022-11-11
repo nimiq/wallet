@@ -1,5 +1,7 @@
 import { ENV_DEV } from '../lib/Constants';
 
+// Note: in components, computed props and watchers you'll usually want to use the reactive variant exported by
+// useConfig instead of the plain Config object.
 export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,

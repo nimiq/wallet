@@ -33,16 +33,17 @@
 
             <Tooltip v-if="$config.fastspot.enabled"
                 preferredPosition="top right" :styles="{minWidth: '25rem'}" theme="inverse"
-                :disabled="!isOasisUnderMaintenance && canUseSwaps && !hasActiveSwap"
+                :disabled="!$config.oasis.underMaintenance && canUseSwaps && !hasActiveSwap"
                 ref="sellTooltip"
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"
+                        :disabled="$route.name !== 'root' || $config.oasis.underMaintenance || !canUseSwaps
+                            || hasActiveSwap"
                         @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
-                        :disabled="$route.name !== 'root' || isOasisUnderMaintenance || !canUseSwaps || hasActiveSwap"
                     >{{ $t('Sell') }}</button>
                 </template>
-                <template v-if="isOasisUnderMaintenance" #default>
+                <template v-if="$config.oasis.underMaintenance" #default>
                     {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
                         + ' This might take some time. Please try again later.') }}
                     <br>
@@ -158,7 +159,6 @@ export default defineComponent({
             updateAvailable,
             hasActiveSwap,
             canUseSwaps,
-            isOasisUnderMaintenance: Config.oasis.underMaintenance,
         };
     },
     components: {

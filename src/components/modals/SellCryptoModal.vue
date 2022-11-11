@@ -314,6 +314,7 @@ import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import LimitIcon from '../icons/LimitIcon.vue';
 import KycIcon from '../icons/KycIcon.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
+import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
@@ -367,6 +368,7 @@ export default defineComponent({
         } = useBankStore();
         const { connectedUser: kycUser } = useKycStore();
 
+        const { config: reactiveConfig } = useConfig();
         const { isMobile } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
         const currentLimitFiat = useCurrentLimitFiat(limits);
@@ -423,7 +425,7 @@ export default defineComponent({
             },
         });
 
-        // Does not need to be reactive, as the config doesn't change during runtime.
+        // Does not need to be reactive, as the environment doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
         const insufficientBalance = computed(() => (
@@ -971,7 +973,7 @@ export default defineComponent({
         const kycOverlayOpened = ref(false);
 
         const oasisMaxAmountEur = computed(
-            () => kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+            () => kycUser.value ? reactiveConfig.oasis.maxKycAmount : reactiveConfig.oasis.maxFreeAmount,
         );
 
         return {

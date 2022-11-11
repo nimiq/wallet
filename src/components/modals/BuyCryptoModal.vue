@@ -349,6 +349,7 @@ import LimitIcon from '../icons/LimitIcon.vue';
 import KycIcon from '../icons/KycIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
+import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { useWindowSize } from '../../composables/useWindowSize';
 import IdenticonStack from '../IdenticonStack.vue';
@@ -393,6 +394,7 @@ export default defineComponent({
         const { banks, setBank } = useBankStore();
         const { connectedUser: kycUser } = useKycStore();
 
+        const { config: reactiveConfig } = useConfig();
         const { isMobile } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value!, isFiatToCrypto: true });
         const currentLimitFiat = useCurrentLimitFiat(limits);
@@ -440,7 +442,7 @@ export default defineComponent({
             },
         });
 
-        // Does not need to be reactive, as the config doesn't change during runtime.
+        // Does not need to be reactive, as the environment doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
         const insufficientLimit = computed(() => (
@@ -449,7 +451,7 @@ export default defineComponent({
         ));
 
         const isBelowOasisMinimum = computed(() => (
-            _fiatAmount.value > 0 && _fiatAmount.value < Config.oasis.minBuyAmount * 1e2
+            _fiatAmount.value > 0 && _fiatAmount.value < reactiveConfig.oasis.minBuyAmount * 1e2
         ));
 
         const canSign = computed(() =>
@@ -901,7 +903,7 @@ export default defineComponent({
         const kycOverlayOpened = ref(false);
 
         const oasisMaxAmountEur = computed(
-            () => kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+            () => kycUser.value ? reactiveConfig.oasis.maxKycAmount : reactiveConfig.oasis.maxFreeAmount,
         );
 
         return {

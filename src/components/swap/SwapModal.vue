@@ -256,6 +256,7 @@ import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 import SwapModalFooter from './SwapModalFooter.vue';
+import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
@@ -289,6 +290,7 @@ export default defineComponent({
             }
         });
 
+        const { config: responsiveConfig } = useConfig();
         const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
             nimAddress: activeAddress.value!,
         });
@@ -804,7 +806,7 @@ export default defineComponent({
         });
 
         const serviceSwapFeePercentage = computed(() => {
-            if (!estimate.value) return Config.fastspot.feePercentage * 100;
+            if (!estimate.value) return responsiveConfig.fastspot.feePercentage * 100;
 
             const data = swap.value || estimate.value;
             return Math.round(data.serviceFeePercentage * 10000) / 100;
@@ -1231,7 +1233,7 @@ export default defineComponent({
             addressListOverlayOpened.value = false;
         }
 
-        // Does not need to be reactive, as the config doesn't change during runtime.
+        // Does not need to be reactive, as the environment doesn't change during runtime.
         const isMainnet = Config.environment === ENV_MAIN;
 
         const kycOverlayOpened = ref(false);

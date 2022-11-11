@@ -122,7 +122,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Identicon, Tooltip, Amount } from '@nimiq/vue-components';
-import Config from 'config';
 import { getBackgroundClass } from '../lib/AddressColor';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
@@ -134,10 +133,12 @@ import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useSettingsStore } from '../stores/Settings';
 import { useSwapsStore } from '../stores/Swaps';
+import { useConfig } from '../composables/useConfig';
 
 export default defineComponent({
     name: 'balance-distribution',
     setup() {
+        const { config } = useConfig();
         const { hasBitcoinAddresses } = useAccountStore();
         const { addressInfos, accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
@@ -152,7 +153,7 @@ export default defineComponent({
             : undefined,
         );
         const btcFiatAccountBalance = computed(() => {
-            if (!Config.enableBitcoin) return 0;
+            if (!config.enableBitcoin) return 0;
 
             return btcExchangeRate.value !== undefined
                 ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
@@ -169,7 +170,7 @@ export default defineComponent({
         const balanceDistribution = computed((): { btc: number, nim: number } => ({
             nim: totalFiatAccountBalance.value
                 ? (nimFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
-                : (Config.enableBitcoin ? 0.5 : 1),
+                : (config.enableBitcoin ? 0.5 : 1),
             btc: totalFiatAccountBalance.value
                 ? (btcFiatAccountBalance.value ?? 0) / totalFiatAccountBalance.value
                 : 0.5,

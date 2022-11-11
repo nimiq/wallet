@@ -59,7 +59,7 @@
                             <div class="flex-grow"></div>
                             <CaretRightIcon/>
                         </footer>
-                        <footer v-else-if="isOasisUnderMaintenance && !isInOasis2Trial" class="flex-row">
+                        <footer v-else-if="$config.oasis.underMaintenance && !isInOasis2Trial" class="flex-row">
                             <MaintenanceIcon/>
                             {{ $t('Currently under maintenance') }}
                             <div class="flex-grow"></div>
@@ -203,7 +203,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageBody, FiatAmount, Tooltip, InfoCircleSmallIcon, CircleSpinner } from '@nimiq/vue-components';
-import Config from 'config';
 import Modal from './Modal.vue';
 import CountrySelector from '../CountrySelector.vue';
 import CountryFlag from '../CountryFlag.vue';
@@ -213,6 +212,7 @@ import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
 import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
 import { ENV_TEST, FiatCurrency } from '../../lib/Constants';
+import { useConfig } from '../../composables/useConfig';
 import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
 import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
@@ -229,6 +229,7 @@ export default defineComponent({
     setup() {
         const { currency } = useFiatStore();
         const { canUseSwaps, trials } = useSettingsStore();
+        const { config } = useConfig();
 
         const country = ref<Country>(null);
 
@@ -237,22 +238,22 @@ export default defineComponent({
         );
 
         const isOasisAvailable = computed(() => {
-            if (!Config.fastspot.enabled) return false;
+            if (!config.fastspot.enabled) return false;
             if (!canUseSwaps.value) return false;
-            if (Config.oasis.underMaintenance && !isInOasis2Trial.value) return false;
+            if (config.oasis.underMaintenance && !isInOasis2Trial.value) return false;
 
-            if (Config.environment === ENV_TEST) return true;
+            if (config.environment === ENV_TEST) return true;
             return !country.value || SEPA_COUNTRY_CODES.includes(country.value.code);
         });
 
         const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            if (!Config.moonpay.enabled) return false;
+            if (!config.moonpay.enabled) return false;
             if (!country.value) return true;
             return MOONPAY_COUNTRY_CODES.includes(country.value.code);
         });
 
         const isSimplexAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            if (!Config.simplex.enabled) return false;
+            if (!config.simplex.enabled) return false;
             if (!country.value) return true;
             return SIMPLEX_COUNTRY_CODES.includes(country.value.code);
         });
@@ -276,7 +277,6 @@ export default defineComponent({
         return {
             country,
             isOasisAvailable,
-            isOasisUnderMaintenance: Config.oasis.underMaintenance,
             isInOasis2Trial,
             isCreditCardAvailable,
             isMoonpayAvailable,

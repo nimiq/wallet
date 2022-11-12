@@ -328,6 +328,7 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import { captureException } from '@sentry/vue';
+import { Bank } from '@nimiq/oasis-bank-list';
 import { getNetworkClient } from '@/network';
 import { SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
@@ -338,6 +339,8 @@ import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
+import { useSwapLimits } from '@/composables/useSwapLimits';
+import { useWindowSize } from '@/composables/useWindowSize';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
@@ -350,8 +353,6 @@ import LimitIcon from '../icons/LimitIcon.vue';
 import KycIcon from '../icons/KycIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
-import { useSwapLimits } from '../../composables/useSwapLimits';
-import { useWindowSize } from '../../composables/useWindowSize';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import BankIconButton from '../BankIconButton.vue';
@@ -370,7 +371,7 @@ import {
     fiatFees,
 } from '../../lib/swap/utils/CommonUtils';
 import { oasisBuyLimitExceeded, updateBuyEstimate } from '../../lib/swap/utils/BuyUtils';
-import { Bank, useBankStore } from '../../stores/Bank';
+import { useBankStore } from '../../stores/Bank';
 import { useKycStore } from '../../stores/Kyc';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';

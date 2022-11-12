@@ -77,12 +77,13 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
+import { Bank } from '@nimiq/oasis-bank-list';
 import IBAN from 'iban';
+import { BankAccount, useBankStore } from '@/stores/Bank';
 import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
 import DoubleInput from '../../DoubleInput.vue';
 import BankIcon from '../../icons/BankIcon.vue';
-import { Bank, BankAccount, useBankStore } from '../../../stores/Bank';
 
 enum Step {
     BANK_CHECK = 'bank-check-step',

@@ -1,36 +1,5 @@
+import { Bank } from '@nimiq/oasis-bank-list';
 import { createStore } from 'pinia';
-
-export enum SEPA_INSTANT_SUPPORT {
-    FULL = 'full',
-    PARTIAL = 'partial', // some accounts support it, some don't, in the same bank
-    NONE = 'no',
-    UNKNOWN = 'unknown',
-
-    FULL_OR_SHARED = 'full-or-shared', // all accounts support it, but some are using generic iban, some individual ones
-}
-
-export enum BANK_NETWORK {
-    RT1 = 'rt1',
-    TIPS = 'tips',
-}
-
-type DirectionSupport = {
-    inbound: SEPA_INSTANT_SUPPORT,
-    outbound: SEPA_INSTANT_SUPPORT,
-}
-
-export type Bank = {
-    name: string,
-    BIC: string,
-    country: string, // ISO 3166-1 alpha-2 country code
-    support: {
-        rt1: DirectionSupport,
-        tips?: DirectionSupport,
-    } | {
-        rt1?: DirectionSupport,
-        tips: DirectionSupport,
-    },
-}
 
 export type BankAccount = {
     accountName: string,

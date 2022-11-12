@@ -101,12 +101,11 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
 import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
-import loadBankList from '@/data/bankList';
+import { Bank, BANK_NETWORK, SEPA_INSTANT_SUPPORT, loadBankList } from '@nimiq/oasis-bank-list';
 import BankIcon from './icons/BankIcon.vue';
 import CircledQuestionMarkIcon from './icons/CircledQuestionMark.vue';
 import ForbiddenIcon from './icons/ForbiddenIcon.vue';
 import CountrySelector from './CountrySelector.vue';
-import { Bank, BANK_NETWORK, SEPA_INSTANT_SUPPORT } from '../stores/Bank';
 import { SEPA_COUNTRY_CODES } from '../lib/Countries';
 
 type CountryInfo = {

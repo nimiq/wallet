@@ -16,7 +16,7 @@
     "pre": "yarn i18n:extract && test -e public/bitcoin/BitcoinJS.min.js || yarn build:bitcoinjs",
     "release": "./release.sh",
     "test": "echo 'No tests'",
-    "utils:getBankList": "node ./scripts/getBankList.js",
+    "utils:getBankList": "oasis-bank-list-update",
     "utils:makeNginxAllowlist": "node ./scripts/makeNginxAllowlist.js"
   },
   "main": "src/main.ts",
@@ -30,6 +30,7 @@
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "^1.1.1",
     "@nimiq/oasis-api": "^1.1.1",
+    "@nimiq/oasis-bank-list": "https://github.com/nimiq/oasis-bank-list#main",
     "@nimiq/rpc": "^0.4.1",
     "@nimiq/style": "^0.8.2",
     "@nimiq/ten31-pass-api": "^1.1.0",
@@ -70,19 +71,16 @@
     "@vue/eslint-config-typescript": "^9.1.0",
     "bitcoinjs-lib": "5.2.0",
     "browserify": "^16.5.0",
-    "cheerio": "^1.0.0-rc.6",
     "common-shakeify": "^0.6.2",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-vue": "^8.0.3",
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
-    "node-fetch": "^2.6.7",
     "path-to-regexp": "^6.2.1",
     "sass": "^1.46.0",
     "sass-loader": "^8.0.2",
     "typescript": "~4.5.5",
-    "vue-template-compiler": "^2.6.11",
-    "xlsx": "^0.17.0"
+    "vue-template-compiler": "^2.6.11"
   },
   "license": "Apache-2.0"
 }

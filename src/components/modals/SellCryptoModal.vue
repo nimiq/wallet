@@ -289,6 +289,7 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import { captureException } from '@sentry/vue';
+import { Bank } from '@nimiq/oasis-bank-list';
 import { getNetworkClient } from '../../network';
 import { SwapState, useSwapsStore } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -318,7 +319,7 @@ import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import { useWindowSize } from '../../composables/useWindowSize';
 import MessageTransition from '../MessageTransition.vue';
-import { BankAccount, Bank, useBankStore } from '../../stores/Bank';
+import { BankAccount, useBankStore } from '../../stores/Bank';
 import {
     calculateFees,
     capDecimals,

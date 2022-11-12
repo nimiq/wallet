@@ -32,6 +32,7 @@ export function init() {
                 break;
             case Trial.TEN31Pass:
                 if (reactiveConfig.ten31Pass.enabled) break;
+                reactiveConfig.oasis.underMaintenance = false;
                 reactiveConfig.ten31Pass.enabled = true;
                 initKycConnection();
                 break;

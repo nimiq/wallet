@@ -1,13 +1,30 @@
 import { AccountInfo } from '../../stores/Account';
-import { AddressInfo } from '../../stores/Address';
+import { useAddressStore } from '../../stores/Address';
 import { useProxyStore } from '../../stores/Proxy';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { parseData } from '../DataFormatting';
 import { isProxyData, ProxyType } from '../ProxyDetection';
 
+/* eslint-disable class-methods-use-this */
+
 export class Format {
-    protected static getTxDate(timestamp: number, utc = false) {
+    protected rows: string[][] = [];
+
+    constructor(
+        private headers: string[],
+        public account: AccountInfo,
+        public nimAddresses: string[],
+        public btcAddresses: { internal: string[], external: string[] },
+        public transactions: (NimTx | BtcTx)[],
+        public year: number,
+    ) {}
+
+    protected getNimiqAddressInfo(address: string) {
+        return useAddressStore().state.addressInfos[address];
+    }
+
+    protected getTxDate(timestamp: number, utc = false) {
         const dateObj = new Date(timestamp * 1e3);
 
         return {
@@ -21,15 +38,15 @@ export class Format {
         };
     }
 
-    protected static formatLunas(lunas: number) {
+    protected formatLunas(lunas: number) {
         return (lunas / 1e5).toString();
     }
 
-    protected static formatSatoshis(satoshis: number) {
+    protected formatSatoshis(satoshis: number) {
         return (satoshis / 1e8).toString();
     }
 
-    protected static formatNimiqData(transaction: NimTx, isIncoming: boolean) {
+    protected formatNimiqData(transaction: NimTx, isIncoming: boolean) {
         if (isProxyData(transaction.data.raw, ProxyType.CASHLINK)) {
             const { state: proxies$ } = useProxyStore();
             const cashlinkAddress = isIncoming ? transaction.sender : transaction.recipient;
@@ -43,21 +60,6 @@ export class Format {
         if ('creator' in transaction.proof) return 'HTLC Refund';
 
         return parseData(transaction.data.raw);
-    }
-
-    protected rows: string[][] = [];
-
-    constructor(
-        private headers: string[],
-        public account: AccountInfo,
-        public nimAddresses: Map<string, AddressInfo>,
-        public btcAddresses: { internal: string[], external: string[] },
-        public transactions: (NimTx | BtcTx)[],
-        public year: number,
-    ) {}
-
-    protected getNimiqAddressInfo(address: string) {
-        return this.nimAddresses.get(address);
     }
 
     protected download() {

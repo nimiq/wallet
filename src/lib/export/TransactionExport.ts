@@ -1,6 +1,4 @@
 import { useAccountStore } from '../../stores/Account';
-import { useAddressStore } from '../../stores/Address';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
@@ -26,12 +24,7 @@ export async function exportTransactions(accountId: string, year: number, format
     const startTimestamp = startDate.getTime() / 1e3;
     const endTimestamp = endDate.getTime() / 1e3;
 
-    const { state: addresses$ } = useAddressStore();
-    const nimAddresses = new Map(account.addresses.map((address) => ([
-        address,
-        addresses$.addressInfos[address],
-    ])));
-
+    const nimAddresses = account.addresses;
     const btcAddresses = [
         ...account.btcAddresses.internal,
         ...account.btcAddresses.external,

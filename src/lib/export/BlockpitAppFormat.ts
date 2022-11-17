@@ -1,8 +1,11 @@
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { AccountInfo } from '../../stores/Account';
-import { AddressInfo } from '../../stores/Address';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx, useBtcTransactionsStore } from '../../stores/BtcTransactions';
+import { useSwapsStore } from '../../stores/Swaps';
 import { Format } from './Format';
+
+/* eslint-disable class-methods-use-this */
 
 export class BlockpitAppFormat extends Format {
     private static HEADERS = [
@@ -21,26 +24,13 @@ export class BlockpitAppFormat extends Format {
         'linked_transaction',
     ];
 
-    private static formatDate(timestamp: number) {
-        const txDate = Format.getTxDate(timestamp, true);
-        return txDate.dateObj.toISOString();
-    }
-
-    private static getTxAsset(tx: BtcTx | NimTx) {
-        return 'sender' in tx ? 'NIM' : 'BTC';
-    }
-
-    private static formatAmount(asset: 'NIM' | 'BTC', value: number) {
-        return asset === 'NIM' ? Format.formatLunas(value) : Format.formatSatoshis(value);
-    }
-
     private readonly EXCHANGE_NAME = 'Nimiq Wallet';
 
     private id = 0;
 
     constructor(
         public account: AccountInfo,
-        public nimAddresses: Map<string, AddressInfo>,
+        public nimAddresses: string[],
         public btcAddresses: { internal: string[], external: string[] },
         public transactions: (NimTx | BtcTx)[],
         public year: number,
@@ -49,16 +39,57 @@ export class BlockpitAppFormat extends Format {
     }
 
     public export() {
+        const alreadyProcessedTransactionHashes: string[] = [];
+
         for (const tx of this.transactions) {
-            // TODO: Detect swaps with findSwapByTransactionHash() add them in the same row
+            if (alreadyProcessedTransactionHashes.includes(tx.transactionHash)) continue;
+
+            let messageOverride: string | undefined;
+
+            // Detect swaps and add them in the same row
+            const swapInfo = useSwapsStore().getSwapByTransactionHash.value(tx.transactionHash);
+            if (swapInfo) {
+                const isIncoming = 'sender' in tx
+                    ? this.nimAddresses.includes(tx.recipient)
+                    : Boolean(tx.outputs.some(
+                        (output) => output.address
+                            && this.btcAddresses.external.includes(output.address)));
+
+                const otherSideSwapData = isIncoming ? swapInfo.in : swapInfo.out;
+
+                if (swapInfo.in && swapInfo.out) {
+                    messageOverride = `Swap ${swapInfo.in.asset} to ${swapInfo.out.asset}`;
+                }
+
+                if (otherSideSwapData?.asset !== SwapAsset.EUR) {
+                    const otherTransaction = this.transactions.find(
+                        (t) => t.transactionHash === otherSideSwapData?.transactionHash,
+                    );
+
+                    if (otherTransaction) {
+                        // Skip this transaction when it's its turn
+                        alreadyProcessedTransactionHashes.push(otherTransaction.transactionHash);
+
+                        // Ignore cancelled/refunded swaps
+                        if (swapInfo.in?.asset === swapInfo.out?.asset) continue;
+
+                        this.addRow(
+                            isIncoming ? tx : otherTransaction,
+                            isIncoming ? otherTransaction : tx,
+                            messageOverride,
+                        );
+                        continue;
+                    }
+                }
+            }
 
             if ('sender' in tx) { // Nimiq
-                const sender = this.getNimiqAddressInfo(tx.sender);
-                const recipient = this.getNimiqAddressInfo(tx.recipient);
+                const isSender = this.nimAddresses.includes(tx.sender);
+                const isRecipient = this.nimAddresses.includes(tx.recipient);
 
-                if (sender && recipient) continue; // Skip self-transfers
-                if (sender) this.addRow(tx.value, undefined, tx, tx.fee);
-                if (recipient) this.addRow(tx.value, tx);
+                if (isSender && isRecipient) continue; // Skip self-transfers
+                if (isSender) this.addRow(undefined, tx, messageOverride);
+                if (isRecipient) this.addRow(tx, undefined, messageOverride);
             } else { // Bitcoin
                 const isSender = tx.inputs.some(
                     (input) => input.address && (this.btcAddresses.internal.includes(input.address)
@@ -69,42 +100,8 @@ export class BlockpitAppFormat extends Format {
                         && this.btcAddresses.external.includes(output.address));
 
                 if (isSender && isRecipient) continue; // Skip self-transfers
-                if (isSender) {
-                    let sumInputs = 0;
-                    const { state: btcTransactions$ } = useBtcTransactionsStore();
-                    for (const input of tx.inputs) {
-                        const value = btcTransactions$
-                            .transactions[input.transactionHash]?.outputs[input.outputIndex]?.value;
-                        if (!value) {
-                            sumInputs = 0;
-                            break;
-                        }
-                        sumInputs += value;
-                    }
-
-                    const [sumOutputs, value] = tx.outputs.reduce(([total, mySum], output) => {
-                        total += output.value;
-                        // Sum outputs that are not change
-                        if (!output.address || !this.btcAddresses.internal.includes(output.address)) {
-                            mySum += output.value;
-                        }
-                        return [total, mySum];
-                    }, [0, 0]);
-
-                    const fee = sumInputs > 0 ? sumInputs - sumOutputs : 0;
-
-                    this.addRow(value, undefined, tx, fee);
-                }
-                if (isRecipient) {
-                    // Sum outputs that are ours
-                    const value = tx.outputs.reduce((sum, output) => {
-                        if (output.address && this.btcAddresses.external.includes(output.address)) {
-                            return sum + output.value;
-                        }
-                        return sum;
-                    }, 0);
-                    this.addRow(value, tx);
-                }
+                if (isSender) this.addRow(undefined, tx, messageOverride);
+                if (isRecipient) this.addRow(tx, undefined, messageOverride);
             }
         }
 
@@ -112,37 +109,114 @@ export class BlockpitAppFormat extends Format {
     }
 
     private addRow(
-        value: number,
-        incomingTx?: BtcTx | NimTx,
-        outgoingTx?: BtcTx | NimTx,
-        outgoingFee?: number,
+        txIn?: BtcTx | NimTx,
+        txOut?: BtcTx | NimTx,
+        messageOverride?: string,
         linkedTransaction?: number,
     ) {
-        if (!incomingTx && !outgoingTx) return;
+        if (!txIn && !txOut) return;
 
-        const timestamp = Math.min(incomingTx?.timestamp || Infinity, outgoingTx?.timestamp || Infinity);
+        const timestamp = Math.min(txIn?.timestamp || Infinity, txOut?.timestamp || Infinity);
+
+        let valueIn: number | undefined;
+        let valueOut: number | undefined;
+        let feeOut = 0;
+
+        if (txIn) ({ value: valueIn } = this.getValue(txIn, true));
+        if (txOut) ({ value: valueOut, outgoingFee: feeOut } = this.getValue(txOut, false));
 
         this.rows.push([
             (++this.id).toString(),
             this.EXCHANGE_NAME,
             this.account.label,
-            BlockpitAppFormat.formatDate(timestamp),
-            incomingTx ? BlockpitAppFormat.getTxAsset(incomingTx) : '',
-            incomingTx ? BlockpitAppFormat.formatAmount(BlockpitAppFormat.getTxAsset(incomingTx), value) : '',
-            outgoingTx ? BlockpitAppFormat.getTxAsset(outgoingTx) : '',
-            outgoingTx ? BlockpitAppFormat.formatAmount(BlockpitAppFormat.getTxAsset(outgoingTx), value) : '',
-            outgoingTx && outgoingFee
-                ? BlockpitAppFormat.getTxAsset(outgoingTx)
+            this.formatDate(timestamp),
+            txIn ? this.getTxAsset(txIn) : '',
+            txIn && valueIn ? this.formatAmount(this.getTxAsset(txIn), valueIn) : '',
+            txOut ? this.getTxAsset(txOut) : '',
+            txOut && valueOut ? this.formatAmount(this.getTxAsset(txOut), valueOut) : '',
+            txOut && feeOut
+                ? this.getTxAsset(txOut)
                 : '',
-            outgoingTx && outgoingFee
-                ? BlockpitAppFormat.formatAmount(BlockpitAppFormat.getTxAsset(outgoingTx), outgoingFee)
+            txOut && feeOut
+                ? this.formatAmount(this.getTxAsset(txOut), feeOut)
                 : '',
-            incomingTx && outgoingTx ? 'swap' : incomingTx ? 'deposit' : 'withdrawal',
-            (incomingTx && 'sender' in incomingTx && !outgoingTx)
-            || (outgoingTx && 'sender' in outgoingTx && !incomingTx)
-                ? Format.formatNimiqData(incomingTx || outgoingTx!, !!incomingTx)
-                : '',
+            txIn && txOut ? 'trade' : txIn ? 'deposit' : 'withdrawal',
+            messageOverride || (
+                (txIn && 'sender' in txIn && !txOut) || (txOut && 'sender' in txOut && !txIn)
+                    ? this.formatNimiqData(txIn || txOut!, !!txIn)
+                    : ''
+            ),
             linkedTransaction ? linkedTransaction.toString() : '',
         ]);
+    }
+
+    private formatDate(timestamp: number) {
+        const txDate = this.getTxDate(timestamp, true);
+        return txDate.dateObj.toISOString();
+    }
+
+    private getTxAsset(tx: BtcTx | NimTx) {
+        return 'sender' in tx ? 'NIM' : 'BTC';
+    }
+
+    private formatAmount(asset: 'NIM' | 'BTC', value: number) {
+        return asset === 'NIM' ? this.formatLunas(value) : this.formatSatoshis(value);
+    }
+
+    private getValue(tx: BtcTx | NimTx, isIncoming: boolean): { value: number, outgoingFee: number } {
+        // Nimiq
+        if ('sender' in tx) {
+            return {
+                value: tx.value,
+                outgoingFee: isIncoming ? 0 : tx.fee,
+            };
+        } else { // eslint-disable-line no-else-return
+            // Bitcoin
+            if (isIncoming) { // eslint-disable-line no-lonely-if
+                // Sum outputs that are ours
+                const value = tx.outputs.reduce((sum, output) => {
+                    if (output.address && this.btcAddresses.external.includes(output.address)) {
+                        return sum + output.value;
+                    }
+                    return sum;
+                }, 0);
+
+                return {
+                    value,
+                    outgoingFee: 0,
+                };
+            } else { // eslint-disable-line no-else-return
+                // Sum up all inputs, if we have all parent transactions
+                let sumInputs = 0;
+                const { state: btcTransactions$ } = useBtcTransactionsStore();
+                for (const input of tx.inputs) {
+                    const value = btcTransactions$
+                        .transactions[input.transactionHash]?.outputs[input.outputIndex]?.value;
+                    if (!value) {
+                        sumInputs = 0;
+                        break;
+                    }
+                    sumInputs += value;
+                }
+
+                // Sum up all outputs, and non-change outputs
+                const [sumOutputs, value] = tx.outputs.reduce(([total, mySum], output) => {
+                    total += output.value;
+                    // Sum outputs that are not change
+                    if (!output.address || !this.btcAddresses.internal.includes(output.address)) {
+                        mySum += output.value;
+                    }
+                    return [total, mySum];
+                }, [0, 0]);
+
+                // If we have the input sum, we can determine the fee
+                const fee = sumInputs > 0 ? sumInputs - sumOutputs : 0;
+
+                return {
+                    value,
+                    outgoingFee: fee,
+                };
+            }
+        }
     }
 }

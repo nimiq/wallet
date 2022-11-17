@@ -6,6 +6,8 @@
 // import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 // import { Format } from './Format';
 
+/* eslint-disable class-methods-use-this */
+
 // export class GenericFormat extends Format {
 //     private static HEADERS = [
 //         'transaction_hash',

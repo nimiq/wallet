@@ -52,7 +52,7 @@ export async function exportTransactions(accountId: string, year: number, format
             // Wait 1 second more for each retry, starting at 0 seconds, up to 5 seconds
             await new Promise((res) => { window.setTimeout(res, 1000 * i); });
             // nimiq.watch is on adblocker lists, so use nimiqwatch.com to avoid getting blocked
-            const apiUrl = `https://api${Config.environment === ENV_MAIN ? '' : '-test'}.nimiqwatch.com`;
+            const apiUrl = `https://${Config.environment === ENV_MAIN ? '' : 'test-'}api.nimiqwatch.com`;
             const receipts = await fetch(`${apiUrl}/account-receipts/${address}/${year}`)
                 .then((res) => res.json() as Promise<Receipt[]>)
                 .catch(() => undefined);
@@ -103,10 +103,10 @@ export async function exportTransactions(accountId: string, year: number, format
         ...btcTransactions,
     ].sort((a, b) => a.timestamp! - b.timestamp!); // Sort ascending;
 
-    if (!transactions.length) {
-        console.log('No txs'); // eslint-disable-line no-console
-        return;
-    }
+    // if (!transactions.length) {
+    //     console.log('No txs'); // eslint-disable-line no-console
+    //     return;
+    // }
 
     switch (format) {
         // case ExportFormat.GENERIC:

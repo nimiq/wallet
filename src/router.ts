@@ -37,6 +37,8 @@ const DisclaimerModal = () =>
     import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
 const ReleaseNotesModal = () =>
     import(/* webpackChunkName: "release-notes-modal" */ './components/modals/ReleaseNotesModal.vue');
+const HistoryExportModal = () =>
+    import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
 
 // Bitcoin Modals
 const BtcActivationModal = () =>
@@ -260,6 +262,14 @@ const routes: RouteConfig[] = [{
             name: 'root-release-notes',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/export-history',
+            components: {
+                modal: HistoryExportModal,
+            },
+            name: 'export-history',
+            // props: { modal: true },
+            meta: { column: Columns.ADDRESS },
         }],
     }, {
         path: '/settings',

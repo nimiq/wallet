@@ -23,7 +23,6 @@ import { startSentry } from './lib/Sentry';
 import { initPwa } from './composables/usePwaInstallPrompt';
 import { init as initKycConnection } from './lib/KycConnection';
 import { init as initTrials } from './lib/Trials';
-import { ExportFormat, exportTransactions } from './lib/export/TransactionExport';
 
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
@@ -101,13 +100,6 @@ async function start() {
     }
 }
 start();
-
-// @ts-expect-error temporary
-window.exportTransactions = (year: number, format: ExportFormat) => exportTransactions(
-    useAccountStore().activeAccountId.value!,
-    year,
-    format,
-);
 
 declare module 'vue/types/vue' {
     interface Vue {

@@ -438,9 +438,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr "Купити BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:196
-#: src/components/modals/BuyCryptoModal.vue:201
-#: src/components/modals/BuyCryptoModal.vue:215
+#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:216
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "Купити крипту"
@@ -449,7 +449,7 @@ msgstr "Купити крипту"
 msgid "Buy Crypto with Fiat"
 msgstr "Купляйте крипту через традиційні гроші"
 
-#: src/components/modals/BuyCryptoModal.vue:173
+#: src/components/modals/BuyCryptoModal.vue:174
 msgid "Buy max"
 msgstr "Купити максимум"
 
@@ -489,8 +489,8 @@ msgstr ""
 "Додавши комісію за переказ, ви можете вплинути на те, як швидко він буде "
 "оброблений."
 
-#: src/components/modals/BuyCryptoModal.vue:198
-#: src/components/modals/SellCryptoModal.vue:181
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/SellCryptoModal.vue:180
 #: src/components/swap/SwapModal.vue:146
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
@@ -498,8 +498,8 @@ msgstr ""
 "Натискаючи \"{text}\", ви погоджуєтесь із умовами використання {Fastspot} та"
 " {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:212
-#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/SellCryptoModal.vue:194
 #: src/components/swap/SwapModal.vue:158
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
@@ -558,8 +558,8 @@ msgid "Choose a Sender"
 msgstr "Виберіть відправника"
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:282
-#: src/components/modals/SellCryptoModal.vue:248
+#: src/components/modals/BuyCryptoModal.vue:283
+#: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
@@ -600,7 +600,7 @@ msgstr "Незабаром"
 msgid "Confirm"
 msgstr "Підтвердити"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:73
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
 msgid "Confirm account"
 msgstr "Підтвердіть рахунок"
 
@@ -1129,7 +1129,7 @@ msgid "Install Web App"
 msgstr "Встановити веб-додаток"
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Недостатньо коштів."
@@ -1251,8 +1251,8 @@ msgstr "Вийти"
 msgid "lost"
 msgstr "Втрачено"
 
-#: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:157
+#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:156
 msgid "Max swappable amount is {amount}"
 msgstr "Максимальна сума, яку можна обміняти: {amount}"
 
@@ -1263,7 +1263,7 @@ msgstr "Максимальна сума, яку можна обміняти: {am
 msgid "min {amount}"
 msgstr "мін {amount}"
 
-#: src/components/modals/BuyCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:178
 msgid "Minimum buy amount is {amount}"
 msgstr "Мінімальна сума обміну {amount}"
 
@@ -1677,9 +1677,9 @@ msgstr "Обрати у яких одиницях відображати Біт�
 msgid "Sell"
 msgstr "Продати"
 
-#: src/components/modals/SellCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:184
-#: src/components/modals/SellCryptoModal.vue:198
+#: src/components/modals/SellCryptoModal.vue:178
+#: src/components/modals/SellCryptoModal.vue:183
+#: src/components/modals/SellCryptoModal.vue:197
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "Продати криптовалюту"
@@ -1688,9 +1688,9 @@ msgstr "Продати криптовалюту"
 msgid "Sell Crypto for Fiat"
 msgstr "Продати криптовалюту за фіат"
 
-#: src/components/modals/SellCryptoModal.vue:135
-#: src/components/modals/SellCryptoModal.vue:164
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:134
+#: src/components/modals/SellCryptoModal.vue:163
+#: src/components/modals/SellCryptoModal.vue:166
 msgid "Sell max"
 msgstr "Продати максимум"
 
@@ -1798,7 +1798,7 @@ msgstr "Вкажіть суму"
 msgid "Set fee"
 msgstr "Задати комісію"
 
-#: src/components/modals/BuyCryptoModal.vue:184
+#: src/components/modals/BuyCryptoModal.vue:185
 msgid "Set minimum"
 msgstr "Встановити мінімум"
 
@@ -1855,7 +1855,7 @@ msgstr "Показати секретні слова"
 msgid "Signup"
 msgstr "Приєднатися"
 
-#: src/components/modals/BuyCryptoModal.vue:260
+#: src/components/modals/BuyCryptoModal.vue:261
 msgid "Simulate EUR payment"
 msgstr "Імітуйте оплату в євро"
 

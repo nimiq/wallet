@@ -421,9 +421,9 @@ msgstr "仅需银行转帐和你的钱包，即可在钱包内以欧元买卖加
 msgid "Buy BTC"
 msgstr "购买比特币"
 
-#: src/components/modals/BuyCryptoModal.vue:196
-#: src/components/modals/BuyCryptoModal.vue:201
-#: src/components/modals/BuyCryptoModal.vue:215
+#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:216
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "购买加密货币"
@@ -432,7 +432,7 @@ msgstr "购买加密货币"
 msgid "Buy Crypto with Fiat"
 msgstr "用法币购买加密货币"
 
-#: src/components/modals/BuyCryptoModal.vue:173
+#: src/components/modals/BuyCryptoModal.vue:174
 msgid "Buy max"
 msgstr "全数购买"
 
@@ -470,15 +470,15 @@ msgid ""
 "will be processed."
 msgstr "你可以通过增加交易费用，提升交易的处理速度"
 
-#: src/components/modals/BuyCryptoModal.vue:198
-#: src/components/modals/SellCryptoModal.vue:181
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/SellCryptoModal.vue:180
 #: src/components/swap/SwapModal.vue:146
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "点击“ {text}”，即表示你同意{Fastspot}和{FastspotGO}的服务条款"
 
-#: src/components/modals/BuyCryptoModal.vue:212
-#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/SellCryptoModal.vue:194
 #: src/components/swap/SwapModal.vue:158
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "点击“ {text}”，即表示你同意{Fastspot}的服务条款"
@@ -536,8 +536,8 @@ msgid "Choose a Sender"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:282
-#: src/components/modals/SellCryptoModal.vue:248
+#: src/components/modals/BuyCryptoModal.vue:283
+#: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
@@ -578,7 +578,7 @@ msgstr "即将推出"
 msgid "Confirm"
 msgstr "确认"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:73
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
 msgid "Confirm account"
 msgstr "确认账户"
 
@@ -1085,7 +1085,7 @@ msgid "Install Web App"
 msgstr "安裝网络应用程序"
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "余额不足"
@@ -1206,8 +1206,8 @@ msgstr "登出"
 msgid "lost"
 msgstr "遗失"
 
-#: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:157
+#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:156
 msgid "Max swappable amount is {amount}"
 msgstr "最大可交换金额为 {amount}"
 
@@ -1218,7 +1218,7 @@ msgstr "最大可交换金额为 {amount}"
 msgid "min {amount}"
 msgstr "最低{amount}"
 
-#: src/components/modals/BuyCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:178
 msgid "Minimum buy amount is {amount}"
 msgstr "最低交换金额为{amount}"
 
@@ -1625,9 +1625,9 @@ msgstr "选择显示比特币金额的单位"
 msgid "Sell"
 msgstr "卖出"
 
-#: src/components/modals/SellCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:184
-#: src/components/modals/SellCryptoModal.vue:198
+#: src/components/modals/SellCryptoModal.vue:178
+#: src/components/modals/SellCryptoModal.vue:183
+#: src/components/modals/SellCryptoModal.vue:197
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "售出加密货币"
@@ -1636,9 +1636,9 @@ msgstr "售出加密货币"
 msgid "Sell Crypto for Fiat"
 msgstr "出售加密货币到法币"
 
-#: src/components/modals/SellCryptoModal.vue:135
-#: src/components/modals/SellCryptoModal.vue:164
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:134
+#: src/components/modals/SellCryptoModal.vue:163
+#: src/components/modals/SellCryptoModal.vue:166
 msgid "Sell max"
 msgstr ""
 
@@ -1744,7 +1744,7 @@ msgstr "设置金额"
 msgid "Set fee"
 msgstr "设置费用"
 
-#: src/components/modals/BuyCryptoModal.vue:184
+#: src/components/modals/BuyCryptoModal.vue:185
 msgid "Set minimum"
 msgstr ""
 
@@ -1801,7 +1801,7 @@ msgstr "显示恢复字"
 msgid "Signup"
 msgstr "注册"
 
-#: src/components/modals/BuyCryptoModal.vue:260
+#: src/components/modals/BuyCryptoModal.vue:261
 msgid "Simulate EUR payment"
 msgstr "模拟欧元付款"
 

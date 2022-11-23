@@ -43,7 +43,7 @@ msgstr "{count} Cashlink | {count} Cashlinks"
 
 #: src/components/modals/overlays/QrCodeOverlay.vue:3
 msgid "{currency} Address"
-msgstr ""
+msgstr "Addresse {currency}"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:25
 msgid "{currency} could not be paid out"
@@ -446,9 +446,9 @@ msgstr ""
 msgid "Buy BTC"
 msgstr "Acheter du BTC"
 
-#: src/components/modals/BuyCryptoModal.vue:196
-#: src/components/modals/BuyCryptoModal.vue:201
-#: src/components/modals/BuyCryptoModal.vue:215
+#: src/components/modals/BuyCryptoModal.vue:197
+#: src/components/modals/BuyCryptoModal.vue:202
+#: src/components/modals/BuyCryptoModal.vue:216
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "Acheter de la Crypto"
@@ -457,7 +457,7 @@ msgstr "Acheter de la Crypto"
 msgid "Buy Crypto with Fiat"
 msgstr "Acheter de la Crypto avec des Fiats"
 
-#: src/components/modals/BuyCryptoModal.vue:173
+#: src/components/modals/BuyCryptoModal.vue:174
 msgid "Buy max"
 msgstr "Acheter le maximum"
 
@@ -497,16 +497,16 @@ msgstr ""
 "Ajouter des frais peut augmenter la rapidité d'exécution de votre "
 "transaction."
 
-#: src/components/modals/BuyCryptoModal.vue:198
-#: src/components/modals/SellCryptoModal.vue:181
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/SellCryptoModal.vue:180
 #: src/components/swap/SwapModal.vue:146
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 "En cliquant '{text}', vous acceptez les CGU de {Fastspot} et {FastspotGO}."
 
-#: src/components/modals/BuyCryptoModal.vue:212
-#: src/components/modals/SellCryptoModal.vue:195
+#: src/components/modals/BuyCryptoModal.vue:213
+#: src/components/modals/SellCryptoModal.vue:194
 #: src/components/swap/SwapModal.vue:158
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
@@ -564,8 +564,8 @@ msgid "Choose a Sender"
 msgstr "Choisir un expéditeur"
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:282
-#: src/components/modals/SellCryptoModal.vue:248
+#: src/components/modals/BuyCryptoModal.vue:283
+#: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
 #: src/components/swap/SwapModal.vue:193
 msgid "Choose an Address"
@@ -606,7 +606,7 @@ msgstr "Bientôt disponible"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:73
+#: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:71
 msgid "Confirm account"
 msgstr "Confirmer le compte"
 
@@ -1140,7 +1140,7 @@ msgid "Install Web App"
 msgstr "Installer l'application web"
 
 #: src/components/modals/BtcSendModal.vue:75
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
 msgid "Insufficient balance."
 msgstr "Solde insuffisant."
@@ -1261,8 +1261,8 @@ msgstr "Déconnexion"
 msgid "lost"
 msgstr "perdu"
 
-#: src/components/modals/BuyCryptoModal.vue:166
-#: src/components/modals/SellCryptoModal.vue:157
+#: src/components/modals/BuyCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:156
 msgid "Max swappable amount is {amount}"
 msgstr "Le montant maximum Swappable est de {amount}"
 
@@ -1273,7 +1273,7 @@ msgstr "Le montant maximum Swappable est de {amount}"
 msgid "min {amount}"
 msgstr "min {amount}"
 
-#: src/components/modals/BuyCryptoModal.vue:177
+#: src/components/modals/BuyCryptoModal.vue:178
 msgid "Minimum buy amount is {amount}"
 msgstr "Le montant minimum à swap est {amount}"
 
@@ -1674,6 +1674,8 @@ msgid ""
 "Scan the code to send\n"
 "{currency} to this address"
 msgstr ""
+"Scannez le code pour envoyer \n"
+"{currency} à cette adresse"
 
 #: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:18
 msgid "Search"
@@ -1700,9 +1702,9 @@ msgstr "Sélectionnez l'unité dans laquelle afficher les montants en Bitcoin."
 msgid "Sell"
 msgstr "Vendre"
 
-#: src/components/modals/SellCryptoModal.vue:179
-#: src/components/modals/SellCryptoModal.vue:184
-#: src/components/modals/SellCryptoModal.vue:198
+#: src/components/modals/SellCryptoModal.vue:178
+#: src/components/modals/SellCryptoModal.vue:183
+#: src/components/modals/SellCryptoModal.vue:197
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "Vendre de la Crypto"
@@ -1711,9 +1713,9 @@ msgstr "Vendre de la Crypto"
 msgid "Sell Crypto for Fiat"
 msgstr "Vendre de la Crypto pour du Fiat"
 
-#: src/components/modals/SellCryptoModal.vue:135
-#: src/components/modals/SellCryptoModal.vue:164
-#: src/components/modals/SellCryptoModal.vue:167
+#: src/components/modals/SellCryptoModal.vue:134
+#: src/components/modals/SellCryptoModal.vue:163
+#: src/components/modals/SellCryptoModal.vue:166
 msgid "Sell max"
 msgstr "Vendre le maximum"
 
@@ -1823,7 +1825,7 @@ msgstr "Définir le montant"
 msgid "Set fee"
 msgstr "Définir les frais"
 
-#: src/components/modals/BuyCryptoModal.vue:184
+#: src/components/modals/BuyCryptoModal.vue:185
 msgid "Set minimum"
 msgstr "Vendre le minimum"
 
@@ -1880,7 +1882,7 @@ msgstr "Montrer les mots de récupération"
 msgid "Signup"
 msgstr "S'inscrire"
 
-#: src/components/modals/BuyCryptoModal.vue:260
+#: src/components/modals/BuyCryptoModal.vue:261
 msgid "Simulate EUR payment"
 msgstr "Simuler le paiement en Euro"
 

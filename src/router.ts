@@ -263,12 +263,12 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/export-history',
+            path: '/export-history/:type',
             components: {
                 modal: HistoryExportModal,
             },
             name: 'export-history',
-            // props: { modal: true },
+            props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }],
     }, {

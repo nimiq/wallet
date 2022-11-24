@@ -37,7 +37,7 @@
                         </button>
                         <button
                             class="reset flex-row"
-                            @mousedown="$router.push('/export-history')"
+                            @mousedown="$router.push('/export-history/address')"
                         >
                             <BoxedArrowUpIcon />{{ $t('Export History') }}
                         </button>
@@ -67,7 +67,7 @@
                             </button>
                             <button
                                 class="reset flex-row"
-                                @mousedown="$router.push('/export-history')"
+                                @mousedown="$router.push('/export-history/address')"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>

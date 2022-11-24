@@ -2,8 +2,11 @@
     <Modal class="history-export-modal">
         <PageHeader>
             {{ $t('Export your history') }}
-            <div slot="more" class="subtitle">
+            <div v-if="type === 'address'" slot="more" class="subtitle">
                 {{ $t('Download all transactions of this address as a file, for tax reasons or other.') }}
+            </div>
+            <div v-if="type === 'account'" slot="more" class="subtitle">
+                {{ $t('Download all transactions of this account as a file, for tax reasons or other.') }}
             </div>
         </PageHeader>
         <PageBody>
@@ -26,18 +29,51 @@ import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
 import { ExportFormat, exportTransactions } from '../../lib/export/TransactionExport';
 import { useAccountStore } from '../../stores/Account';
 import Modal from './Modal.vue';
+import { CryptoCurrency } from '../../lib/Constants';
+import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
     name: 'history-export-modal',
-    setup() {
+    props: {
+        type: {
+            type: String,
+            default: 'account',
+        },
+    },
+    setup(props) {
         const years = Array(new Date().getFullYear() + 1 - 2018).fill(0).map((_, i) => (2018 + i).toString()).reverse();
         const selectedYear = ref((new Date().getFullYear() - 1).toString());
 
         async function download() {
-            const { activeAccountId } = useAccountStore();
-            if (!activeAccountId.value) return;
+            const { activeAccountInfo } = useAccountStore();
+            if (!activeAccountInfo.value) return;
 
-            exportTransactions(activeAccountId.value, parseInt(selectedYear.value, 10), ExportFormat.BLOCKPIT);
+            let nimAddresses = [] as string[];
+            let btcAddresses = {
+                internal: [] as string[],
+                external: [] as string[],
+            };
+
+            if (props.type === 'address') {
+                const { activeCurrency } = useAccountStore();
+                if (activeCurrency.value === CryptoCurrency.NIM) {
+                    const address = useAddressStore().state.activeAddress;
+                    if (!address) return;
+                    nimAddresses = [address];
+                } else if (activeCurrency.value === CryptoCurrency.BTC) {
+                    btcAddresses = activeAccountInfo.value.btcAddresses;
+                }
+            } else {
+                nimAddresses = activeAccountInfo.value.addresses;
+                btcAddresses = activeAccountInfo.value.btcAddresses;
+            }
+
+            exportTransactions(
+                nimAddresses,
+                btcAddresses,
+                parseInt(selectedYear.value, 10),
+                ExportFormat.BLOCKPIT,
+            );
         }
 
         return {

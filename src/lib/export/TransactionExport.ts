@@ -14,11 +14,12 @@ export enum ExportFormat {
     BLOCKPIT = 'blockpit',
 }
 
-export async function exportTransactions(accountId: string, year: number, format = ExportFormat.GENERIC) {
-    const { state: accounts$ } = useAccountStore();
-    const account = accounts$.accountInfos[accountId];
-    if (!account) throw new Error('Account ID not found');
-
+export async function exportTransactions(
+    nimAddresses: string[],
+    btcAddresses: { internal: string[], external: string[] },
+    year: number,
+    format = ExportFormat.GENERIC,
+) {
     const startDate = new Date();
     startDate.setFullYear(year, 0, 1);
     startDate.setHours(0, 0, 0, 0);
@@ -28,17 +29,15 @@ export async function exportTransactions(accountId: string, year: number, format
 
     const startTimestamp = startDate.getTime() / 1e3;
     const endTimestamp = endDate.getTime() / 1e3;
-
-    const nimAddresses = account.addresses;
-    const btcAddresses = [
-        ...account.btcAddresses.internal,
-        ...account.btcAddresses.external,
+    const btcAddressesList = [
+        ...btcAddresses.internal,
+        ...btcAddresses.external,
     ];
 
     const { state: nimTransactions$, addTransactions } = useTransactionsStore();
-    const nimTransactions = Object.values(nimTransactions$.transactions)
+    const nimTransactions = nimAddresses.length === 0 ? [] : Object.values(nimTransactions$.transactions)
         .filter( // Only account transactions
-            (tx) => account.addresses.includes(tx.sender) || account.addresses.includes(tx.recipient),
+            (tx) => nimAddresses.includes(tx.sender) || nimAddresses.includes(tx.recipient),
         )
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
@@ -93,8 +92,8 @@ export async function exportTransactions(accountId: string, year: number, format
     /* eslint-enable no-await-in-loop */
 
     const { state: btcTransactions$ } = useBtcTransactionsStore();
-    const btcTransactions = Object.values(btcTransactions$.transactions)
-        .filter((tx) => tx.addresses.some((address) => btcAddresses.includes(address))) // Only account transactions
+    const btcTransactions = btcAddressesList.length === 0 ? [] : Object.values(btcTransactions$.transactions)
+        .filter((tx) => tx.addresses.some((address) => btcAddressesList.includes(address))) // Only account transactions
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
@@ -110,9 +109,9 @@ export async function exportTransactions(accountId: string, year: number, format
 
     switch (format) {
         // case ExportFormat.GENERIC:
-        //     new GenericFormat(account, nimAddresses, account.btcAddresses, transactions, year).export(); break;
+        //     new GenericFormat(nimAddresses, btcAddresses, transactions, year).export(); break;
         case ExportFormat.BLOCKPIT:
-            new BlockpitAppFormat(account, nimAddresses, account.btcAddresses, transactions, year).export(); break;
+            new BlockpitAppFormat(nimAddresses, btcAddresses, transactions, year).export(); break;
         default:
             throw new Error('Unknown export format');
     }

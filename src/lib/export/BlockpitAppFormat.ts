@@ -1,9 +1,10 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { AccountInfo } from '../../stores/Account';
+import { AccountInfo, useAccountStore } from '../../stores/Account';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx, useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useSwapsStore } from '../../stores/Swaps';
 import { Format } from './Format';
+import { useAddressStore } from '../../stores/Address';
 
 /* eslint-disable class-methods-use-this */
 
@@ -27,15 +28,30 @@ export class BlockpitAppFormat extends Format {
     private readonly EXCHANGE_NAME = 'Nimiq Wallet';
 
     private id = 0;
+    private depotLabel = '';
 
     constructor(
-        public account: AccountInfo,
         public nimAddresses: string[],
         public btcAddresses: { internal: string[], external: string[] },
         public transactions: (NimTx | BtcTx)[],
         public year: number,
     ) {
-        super(BlockpitAppFormat.HEADERS, account, nimAddresses, btcAddresses, transactions, year);
+        super(BlockpitAppFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
+
+        if (
+            this.nimAddresses.length === 1
+            && this.btcAddresses.internal.length === 0
+            && this.btcAddresses.external.length === 0
+        ) {
+            // We are exporting one NIM address only
+            this.depotLabel = useAddressStore().state.addressInfos[this.nimAddresses[0]].label;
+        } else {
+            // We are exporting all addresses, or the BTC account
+            this.depotLabel = Object.values(useAccountStore().state.accountInfos).find((accountInfo) => {
+                if (this.nimAddresses[0]) return accountInfo.addresses.includes(this.nimAddresses[0]);
+                return accountInfo.btcAddresses.external[0] === this.btcAddresses.external[0];
+            })!.label;
+        }
     }
 
     public export() {
@@ -128,7 +144,7 @@ export class BlockpitAppFormat extends Format {
         this.rows.push([
             (++this.id).toString(),
             this.EXCHANGE_NAME,
-            this.account.label,
+            this.depotLabel,
             this.formatDate(timestamp),
             txIn ? this.getTxAsset(txIn) : '',
             txIn && valueIn ? this.formatAmount(this.getTxAsset(txIn), valueIn) : '',

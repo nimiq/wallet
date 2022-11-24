@@ -13,7 +13,6 @@ export class Format {
 
     constructor(
         private headers: string[],
-        public account: AccountInfo,
         public nimAddresses: string[],
         public btcAddresses: { internal: string[], external: string[] },
         public transactions: (NimTx | BtcTx)[],
@@ -77,7 +76,7 @@ export class Format {
         // Create a link to download it
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `Transactions.${this.account.label}.${this.year}.csv`);
+        link.setAttribute('download', `Nimiq-Wallet-History-Export-${this.year}.csv`);
         link.click();
     }
 }

@@ -187,7 +187,7 @@ class SelfHexagon extends Hexagon {
 
     public nodeCount = 'YOU!';
 
-    public draw(dc: CanvasRenderingContext2D, timeDelta: number): boolean {
+    public override draw(dc: CanvasRenderingContext2D, timeDelta: number): boolean {
         this._animation = Math.min(this._animation + timeDelta / SelfHexagon.ANIMATION_TIME, 1);
 
         dc.fillStyle! = this.createGradient(
@@ -282,7 +282,7 @@ export class NodeHexagon extends Hexagon {
         return this._connections.size > 0 || 1 - this._animation.connection > Number.EPSILON;
     }
 
-    public draw(dc: CanvasRenderingContext2D, timeDelta: number): boolean {
+    public override draw(dc: CanvasRenderingContext2D, timeDelta: number): boolean {
         // nothing to render and animation finished.
         if (this.nodeCount === 0 && 1 - this._animation.hexagon < Number.EPSILON) return false;
 

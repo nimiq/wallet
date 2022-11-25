@@ -72,7 +72,7 @@ export default defineComponent({
                 nimAddresses,
                 btcAddresses,
                 parseInt(selectedYear.value, 10),
-                ExportFormat.BLOCKPIT,
+                ExportFormat.GENERIC,
             );
         }
 

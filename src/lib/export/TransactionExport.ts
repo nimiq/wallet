@@ -1,13 +1,12 @@
 import { shim as shimAllSettled } from 'promise.allsettled';
 import Config from 'config';
 import { getNetworkClient } from '../../network';
-import { useAccountStore } from '../../stores/Account';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
 import { Transaction, useTransactionsStore } from '../../stores/Transactions';
 import { ENV_MAIN } from '../Constants';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
-// import { GenericFormat } from './GenericFormat';
+import { GenericFormat } from './GenericFormat';
 
 export enum ExportFormat {
     GENERIC = 'generic',
@@ -18,7 +17,7 @@ export async function exportTransactions(
     nimAddresses: string[],
     btcAddresses: { internal: string[], external: string[] },
     year: number,
-    format = ExportFormat.GENERIC,
+    format: ExportFormat,
 ) {
     const startDate = new Date();
     startDate.setFullYear(year, 0, 1);
@@ -108,8 +107,8 @@ export async function exportTransactions(
     // }
 
     switch (format) {
-        // case ExportFormat.GENERIC:
-        //     new GenericFormat(nimAddresses, btcAddresses, transactions, year).export(); break;
+        case ExportFormat.GENERIC:
+            new GenericFormat(nimAddresses, btcAddresses, transactions, year).export(); break;
         case ExportFormat.BLOCKPIT:
             new BlockpitAppFormat(nimAddresses, btcAddresses, transactions, year).export(); break;
         default:

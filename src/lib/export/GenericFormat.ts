@@ -1,105 +1,111 @@
-// import { CurrencyInfo } from '@nimiq/utils';
-// import { AccountInfo } from '../../stores/Account';
-// import { AddressInfo } from '../../stores/Address';
-// import { useFiatStore } from '../../stores/Fiat';
-// import { Transaction as NimTx } from '../../stores/Transactions';
-// import { Transaction as BtcTx } from '../../stores/BtcTransactions';
-// import { Format } from './Format';
+import { CurrencyInfo } from '@nimiq/utils';
+import { useFiatStore } from '../../stores/Fiat';
+import { Transaction as NimTx } from '../../stores/Transactions';
+import { Transaction as BtcTx } from '../../stores/BtcTransactions';
+import { Format } from './Format';
 
 /* eslint-disable class-methods-use-this */
 
-// export class GenericFormat extends Format {
-//     private static HEADERS = [
-//         'transaction_hash',
-//         'transaction_date',
-//         'transaction_time',
-//         'account_address',
-//         'asset_in',
-//         'amount_in',
-//         'asset_out',
-//         'amount_out',
-//         'asset_fee',
-//         'amount_fee',
-//         'message',
-//         'asset_reference',
-//         'amount_reference',
-//     ];
+export class GenericFormat extends Format {
+    private static HEADERS = [
+        // 'transaction_hash',
+        'transaction_date',
+        'transaction_time',
+        // 'account_address',
+        'asset_in',
+        'amount_in',
+        'asset_out',
+        'amount_out',
+        'asset_fee',
+        'amount_fee',
+        'message',
+        'fiat_asset_in',
+        'fiat_amount_in',
+        'fiat_asset_out',
+        'fiat_amount_out',
+    ];
 
-//     private static formatDate(timestamp: number) {
-//         const txDate = Format.getTxDate(timestamp);
-//         const date = [
-//             txDate.year,
-//             (txDate.month).toString().padStart(2, '0'),
-//             (txDate.date).toString().padStart(2, '0'),
-//         ].join('/');
-//         const time = [
-//             (txDate.hour).toString().padStart(2, '0'),
-//             (txDate.minute).toString().padStart(2, '0'),
-//             (txDate.second).toString().padStart(2, '0'),
-//         ].join(':');
-//         return {
-//             date,
-//             time,
-//         };
-//     }
+    private referenceAsset: string;
+    private referenceDecimals: number;
 
-//     private referenceAsset: string;
-//     private referenceDecimals: number;
+    constructor(
+        public override nimAddresses: string[],
+        public override btcAddresses: { internal: string[], external: string[] },
+        public override transactions: (NimTx | BtcTx)[],
+        public override year: number,
+    ) {
+        super(GenericFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
 
-//     constructor(
-//         public account: AccountInfo,
-//         public nimAddresses: Map<string, AddressInfo>,
-//         public btcAddresses: { internal: string[], external: string[] },
-//         public transactions: (NimTx | BtcTx)[],
-//         public year: number,
-//     ) {
-//         super(GenericFormat.HEADERS, account, nimAddresses, btcAddresses, transactions, year, 'NIM');
+        this.referenceAsset = useFiatStore().state.currency;
+        this.referenceDecimals = new CurrencyInfo(this.referenceAsset.toUpperCase()).decimals;
+    }
 
-//         this.referenceAsset = useFiatStore().state.currency.toUpperCase();
-//         this.referenceDecimals = new CurrencyInfo(this.referenceAsset).decimals;
-//     }
+    protected override addRow(
+        txIn?: BtcTx | NimTx,
+        txOut?: BtcTx | NimTx,
+        messageOverride?: string,
+    ) {
+        if (!txIn && !txOut) return;
 
-//     public export() {
-//         for (const tx of this.transactions) {
-//             const sender = this.getNimiqAddressInfo(tx.sender);
-//             const recipient = this.getNimiqAddressInfo(tx.recipient);
+        const timestamp = Math.min(txIn?.timestamp || Infinity, txOut?.timestamp || Infinity);
 
-//             if (sender && recipient) continue; // Skip transfers
+        let valueIn: number | undefined;
+        let valueOut: number | undefined;
+        let feeOut = 0;
+        let fiatIn: number | undefined;
+        let fiatOut: number | undefined;
 
-//             if (sender) {
-//                 this.addRow(sender.address, tx, 'out');
-//             }
+        if (txIn) {
+            ({
+                value: valueIn,
+                fiatValue: fiatIn,
+            } = this.getValue(txIn, true, this.referenceAsset));
+        }
+        if (txOut) {
+            ({
+                value: valueOut,
+                outgoingFee: feeOut,
+                fiatValue: fiatOut,
+            } = this.getValue(txOut, false, this.referenceAsset));
+        }
 
-//             if (recipient) {
-//                 this.addRow(recipient.address, tx, 'in');
-//             }
-//         }
+        this.rows.push([
+            // (txIn || txOut)!.transactionHash,
+            ...Object.values(this.formatDate(timestamp)),
+            // address?
+            txIn && valueIn ? this.getTxAsset(txIn) : '',
+            txIn && valueIn ? this.formatAmount(this.getTxAsset(txIn), valueIn) : '',
+            txOut && valueOut ? this.getTxAsset(txOut) : '',
+            txOut && valueOut ? this.formatAmount(this.getTxAsset(txOut), valueOut) : '',
+            txOut && feeOut ? this.getTxAsset(txOut) : '',
+            txOut && feeOut ? this.formatAmount(this.getTxAsset(txOut), feeOut) : '',
+            messageOverride || (
+                (txIn && 'sender' in txIn && !txOut) || (txOut && 'sender' in txOut && !txIn)
+                    ? this.formatNimiqData(txIn || txOut!, !!txIn)
+                    : ''
+            ),
+            txIn && fiatIn ? this.referenceAsset.toUpperCase() : '',
+            txIn && fiatIn ? fiatIn.toFixed(this.referenceDecimals) : '',
+            txOut && fiatOut ? this.referenceAsset.toUpperCase() : '',
+            txOut && fiatOut ? fiatOut.toFixed(this.referenceDecimals) : '',
+        ]);
+    }
 
-//         this.download();
-//     }
-
-//     private addRow(
-//         address: string,
-//         tx: NimTx | BtcTx,
-//         direction: 'in' | 'out',
-//     ) {
-//         const { date, time } = GenericFormat.formatDate(tx.timestamp!);
-//         const referenceAmount = tx.fiatValue && (tx.fiatValue[this.referenceAsset.toLowerCase()] || undefined);
-
-//         this.rows.push([
-//             tx.transactionHash,
-//             date,
-//             time,
-//             address,
-//             direction === 'in' ? this.asset : '',
-//             direction === 'in' ? Format.formatLunas(tx.value) : '',
-//             direction === 'out' ? this.asset : '',
-//             direction === 'out' ? Format.formatLunas(tx.value) : '',
-//             this.asset,
-//             Format.formatLunas(tx.fee),
-//             Format.formatNimiqData(tx, false),
-//             referenceAmount !== undefined ? this.referenceAsset : '',
-//             referenceAmount !== undefined ? referenceAmount.toFixed(this.referenceDecimals) : '',
-//         ]);
-//     }
-// }
+    private formatDate(timestamp: number) {
+        const txDate = this.getTxDate(timestamp);
+        const date = [
+            txDate.year,
+            (txDate.month).toString().padStart(2, '0'),
+            (txDate.date).toString().padStart(2, '0'),
+        ].join('/');
+        const time = [
+            (txDate.hour).toString().padStart(2, '0'),
+            (txDate.minute).toString().padStart(2, '0'),
+            (txDate.second).toString().padStart(2, '0'),
+        ].join(':');
+        return {
+            date,
+            time,
+        };
+    }
+}

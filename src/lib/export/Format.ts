@@ -6,6 +6,7 @@ import { Transaction as BtcTx, useBtcTransactionsStore } from '../../stores/BtcT
 import { parseData } from '../DataFormatting';
 import { isProxyData, ProxyType } from '../ProxyDetection';
 import { useSwapsStore } from '../../stores/Swaps';
+import { ExportFormat } from './TransactionExport';
 
 /* eslint-disable class-methods-use-this */
 
@@ -13,6 +14,7 @@ export abstract class Format {
     protected rows: string[][] = [];
 
     constructor(
+        private format: ExportFormat,
         private headers: string[],
         public nimAddresses: string[],
         public btcAddresses: { internal: string[], external: string[] },
@@ -47,22 +49,36 @@ export abstract class Format {
     }
 
     protected formatNimiqData(transaction: NimTx, isIncoming: boolean) {
+        let message = '';
         if (isProxyData(transaction.data.raw, ProxyType.CASHLINK)) {
             const { state: proxies$ } = useProxyStore();
             const cashlinkAddress = isIncoming ? transaction.sender : transaction.recipient;
             const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
-            if (hubCashlink && hubCashlink.message) return hubCashlink.message;
+            if (hubCashlink && hubCashlink.message) {
+                message = hubCashlink.message;
+            }
+        } else if ('hashRoot' in transaction.data) {
+            message = 'HTLC Creation';
+        } else if ('hashRoot' in transaction.proof) {
+            message = 'HTLC Settlement';
+        } else if ('creator' in transaction.proof) {
+            message = 'HTLC Refund';
+        } else {
+            message = parseData(transaction.data.raw);
         }
 
-        // TODO: Handle swaps with proper message
-        if ('hashRoot' in transaction.data) return 'HTLC Creation';
-        if ('hashRoot' in transaction.proof) return 'HTLC Settlement';
-        if ('creator' in transaction.proof) return 'HTLC Refund';
+        // Escape message for use in CSV
+        if (message.includes(',')) {
+            // Escape any double quotes inside the message
+            message = message.replace(/"/g, '""');
+            // Then enclose the message in double quotes
+            message = `"${message}"`;
+        }
 
-        return parseData(transaction.data.raw);
+        return message;
     }
 
-    public export() {
+    public export(filename?: string) {
         const alreadyProcessedTransactionHashes: string[] = [];
 
         for (const tx of this.transactions) {
@@ -129,7 +145,7 @@ export abstract class Format {
             }
         }
 
-        this.download();
+        this.download(filename);
     }
 
     protected abstract addRow(
@@ -138,7 +154,7 @@ export abstract class Format {
         messageOverride?: string,
     ): void
 
-    protected download() {
+    protected download(filename?: string) {
         const file = [
             this.headers,
             ...this.rows,
@@ -153,7 +169,7 @@ export abstract class Format {
         // Create a link to download it
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `Nimiq-Wallet-History-Export-${this.year}.csv`);
+        link.setAttribute('download', `${filename || 'Nimiq-Wallet-History-Export'}.${this.format}.${this.year}.csv`);
         link.click();
     }
 

@@ -3,6 +3,7 @@ import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { Format } from './Format';
 import { useAddressStore } from '../../stores/Address';
+import { ExportFormat } from './TransactionExport';
 
 /* eslint-disable class-methods-use-this */
 
@@ -34,7 +35,7 @@ export class BlockpitAppFormat extends Format {
         public override transactions: (NimTx | BtcTx)[],
         public override year: number,
     ) {
-        super(BlockpitAppFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
+        super(ExportFormat.BLOCKPIT, BlockpitAppFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
 
         if (
             this.nimAddresses.length === 1

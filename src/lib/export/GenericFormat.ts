@@ -3,6 +3,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { Format } from './Format';
+import { ExportFormat } from './TransactionExport';
 
 /* eslint-disable class-methods-use-this */
 
@@ -34,7 +35,7 @@ export class GenericFormat extends Format {
         public override transactions: (NimTx | BtcTx)[],
         public override year: number,
     ) {
-        super(GenericFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
+        super(ExportFormat.GENERIC, GenericFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
 
         this.referenceAsset = useFiatStore().state.currency;
         this.referenceDecimals = new CurrencyInfo(this.referenceAsset.toUpperCase()).decimals;

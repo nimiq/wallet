@@ -18,6 +18,7 @@ export async function exportTransactions(
     btcAddresses: { internal: string[], external: string[] },
     year: number,
     format: ExportFormat,
+    filename?: string,
 ) {
     const startDate = new Date();
     startDate.setFullYear(year, 0, 1);
@@ -110,9 +111,9 @@ export async function exportTransactions(
 
     switch (format) {
         case ExportFormat.GENERIC:
-            new GenericFormat(nimAddresses, btcAddresses, transactions, year).export(); break;
+            new GenericFormat(nimAddresses, btcAddresses, transactions, year).export(filename); break;
         case ExportFormat.BLOCKPIT:
-            new BlockpitAppFormat(nimAddresses, btcAddresses, transactions, year).export(); break;
+            new BlockpitAppFormat(nimAddresses, btcAddresses, transactions, year).export(filename); break;
         default:
             throw new Error('Unknown export format');
     }

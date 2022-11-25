@@ -67,6 +67,8 @@ export default defineComponent({
         // why we use negative margins on all sides (130px = 260px / 2).
         transform: scale(0.5);
         margin: -130px;
+
+        height: 520px; // Must set fixed height for iOS 16 to display correctly
     }
 
     .qr-info-text {

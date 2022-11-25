@@ -34,7 +34,7 @@ msgstr "{count}个确认 | {count}个确认"
 msgid "{count} Peer | {count} Peers"
 msgstr "{count}个端点 | {count}个端点"
 
-#: src/components/layouts/AddressOverview.vue:100
+#: src/components/layouts/AddressOverview.vue:112
 #: src/components/layouts/AddressOverview.vue:15
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count}个待处理现金链接 | {count}个待处理的现金链接"
@@ -193,7 +193,7 @@ msgstr "添加标签，在你的历史记录中快速检索交易"
 msgid "Add a public message..."
 msgstr "添加公开信息..."
 
-#: src/components/modals/AccountMenuModal.vue:43
+#: src/components/modals/AccountMenuModal.vue:50
 msgid "Add account"
 msgstr "添加账户"
 
@@ -254,7 +254,7 @@ msgid ""
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟"
 
-#: src/components/layouts/AddressOverview.vue:147
+#: src/components/layouts/AddressOverview.vue:159
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -363,7 +363,7 @@ msgstr "BIC适用"
 
 #: src/components/BalanceDistribution.vue:98
 #: src/components/layouts/AccountOverview.vue:64
-#: src/components/layouts/AddressOverview.vue:68
+#: src/components/layouts/AddressOverview.vue:80
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
@@ -563,7 +563,7 @@ msgstr "点击了解更多信息"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
-#: src/components/layouts/AddressOverview.vue:149
+#: src/components/layouts/AddressOverview.vue:161
 #: src/components/swap/SwapAnimation.vue:90
 msgid "Close"
 msgstr "关闭"
@@ -761,6 +761,22 @@ msgstr "不要使用通用的IBAN！"
 msgid "Done"
 msgstr "完成"
 
+#: src/components/modals/HistoryExportModal.vue:24
+msgid "Download .csv file"
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:9
+msgid ""
+"Download all transactions of this account as a file, for tax reasons or "
+"other."
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:6
+msgid ""
+"Download all transactions of this address as a file, for tax reasons or "
+"other."
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:98
 msgid "Duration and fees are estimates."
 msgstr "工作时间和费用均为估计值"
@@ -847,6 +863,16 @@ msgstr "已过期"
 #: src/components/modals/TransactionModal.vue:83
 msgid "Expired"
 msgstr "已过期"
+
+#: src/components/layouts/AddressOverview.vue:42
+#: src/components/layouts/AddressOverview.vue:72
+#: src/components/modals/AccountMenuModal.vue:30
+msgid "Export History"
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:4
+msgid "Export your history"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:454
 msgid "express"
@@ -937,6 +963,10 @@ msgstr "充值现金链接"
 #: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr "一般设置"
+
+#: src/components/modals/HistoryExportModal.vue:50
+msgid "Generic"
+msgstr ""
 
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
@@ -1136,7 +1166,7 @@ msgstr "在这里了解更多"
 msgid "Learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:134
+#: src/components/layouts/AddressOverview.vue:146
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
 
@@ -1198,7 +1228,7 @@ msgstr ""
 msgid "Login File"
 msgstr "登录文件"
 
-#: src/components/modals/AccountMenuModal.vue:26
+#: src/components/modals/AccountMenuModal.vue:33
 msgid "Logout"
 msgstr "登出"
 
@@ -1470,7 +1500,7 @@ msgstr "目的"
 msgid "Raise your limits"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:116
+#: src/components/layouts/AddressOverview.vue:128
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "接收"
@@ -1554,7 +1584,7 @@ msgid "Release Notes"
 msgstr "发行说明"
 
 #: src/components/layouts/AddressOverview.vue:30
-#: src/components/layouts/AddressOverview.vue:54
+#: src/components/layouts/AddressOverview.vue:60
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "重新命名"
@@ -1568,7 +1598,7 @@ msgid "Required"
 msgstr "必要的"
 
 #: src/components/layouts/AddressOverview.vue:36
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:66
 msgid "Rescan"
 msgstr "重新扫描"
 
@@ -1658,7 +1688,7 @@ msgstr "销售和退款不适用于通用 IBAN！"
 msgid "Selling now available"
 msgstr "出售功能现在可用了"
 
-#: src/components/layouts/AddressOverview.vue:111
+#: src/components/layouts/AddressOverview.vue:123
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "发送"
@@ -1797,7 +1827,7 @@ msgstr "显示链接"
 msgid "Show Recovery Words"
 msgstr "显示恢复字"
 
-#: src/components/layouts/AddressOverview.vue:135
+#: src/components/layouts/AddressOverview.vue:147
 msgid "Signup"
 msgstr "注册"
 
@@ -2049,6 +2079,10 @@ msgstr "这通常需要{time}秒"
 #: src/components/TransactionDetailOasisPayoutStatus.vue:10
 msgid "This usually takes between one and two working days."
 msgstr "这通常需要一到两个工作日"
+
+#: src/components/modals/HistoryExportModal.vue:15
+msgid "Timeframe"
+msgstr ""
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -2332,7 +2366,7 @@ msgstr "尚未收到你的付款。 可能出现问题"
 msgid "Your payout is on its way"
 msgstr "你的付款正在处理中"
 
-#: src/components/layouts/AddressOverview.vue:143
+#: src/components/layouts/AddressOverview.vue:155
 msgid "Your swap was successful!"
 msgstr "你的交换成功了！"
 

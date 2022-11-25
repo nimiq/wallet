@@ -23,6 +23,7 @@
 ^\/moonpay[\/#\?]?$
 ^\/simplex[\/#\?]?$
 ^\/release-notes[\/#\?]?$
+^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/settings[\/#\?]?$
 ^\/accounts[\/#\?]?$
 ^\/disclaimer[\/#\?]?$

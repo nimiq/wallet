@@ -36,7 +36,7 @@ msgstr "{count} Confirmation | {count} Confirmations"
 msgid "{count} Peer | {count} Peers"
 msgstr "{count} Pair | {count} Pairs"
 
-#: src/components/layouts/AddressOverview.vue:100
+#: src/components/layouts/AddressOverview.vue:112
 #: src/components/layouts/AddressOverview.vue:15
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} Cashlink | {count} Cashlinks"
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Add a public message..."
 msgstr "Ajouter un message public..."
 
-#: src/components/modals/AccountMenuModal.vue:43
+#: src/components/modals/AccountMenuModal.vue:50
 msgid "Add account"
 msgstr "Ajouter un compte"
 
@@ -264,7 +264,7 @@ msgstr ""
 "Les nouvelles fonctionnalités sont exclusives aux comptes multi-adresses. "
 "Essayez-les, cela ne prend que quelques secondes."
 
-#: src/components/layouts/AddressOverview.vue:147
+#: src/components/layouts/AddressOverview.vue:159
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -383,7 +383,7 @@ msgstr "Le BIC fonctionne aussi."
 
 #: src/components/BalanceDistribution.vue:98
 #: src/components/layouts/AccountOverview.vue:64
-#: src/components/layouts/AddressOverview.vue:68
+#: src/components/layouts/AddressOverview.vue:80
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
@@ -591,7 +591,7 @@ msgstr "Cliquez pour plus d'informations"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Cliquez sur \"Résolution des problèmes\" pour en apprendre plus."
 
-#: src/components/layouts/AddressOverview.vue:149
+#: src/components/layouts/AddressOverview.vue:161
 #: src/components/swap/SwapAnimation.vue:90
 msgid "Close"
 msgstr "Fermer"
@@ -793,6 +793,22 @@ msgstr "N'utilisez pas d'IBAN générique !"
 msgid "Done"
 msgstr "Terminé"
 
+#: src/components/modals/HistoryExportModal.vue:24
+msgid "Download .csv file"
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:9
+msgid ""
+"Download all transactions of this account as a file, for tax reasons or "
+"other."
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:6
+msgid ""
+"Download all transactions of this address as a file, for tax reasons or "
+"other."
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:98
 msgid "Duration and fees are estimates."
 msgstr "La durée et les frais sont des estimations."
@@ -886,6 +902,16 @@ msgstr "expiré"
 msgid "Expired"
 msgstr "Expiré"
 
+#: src/components/layouts/AddressOverview.vue:42
+#: src/components/layouts/AddressOverview.vue:72
+#: src/components/modals/AccountMenuModal.vue:30
+msgid "Export History"
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:4
+msgid "Export your history"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:454
 msgid "express"
 msgstr "express"
@@ -977,6 +1003,10 @@ msgstr "Financement du Cashlink"
 #: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr "Général"
+
+#: src/components/modals/HistoryExportModal.vue:50
+msgid "Generic"
+msgstr ""
 
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
@@ -1191,7 +1221,7 @@ msgstr "En apprendre plus"
 msgid "Learn more."
 msgstr "En savoir plus."
 
-#: src/components/layouts/AddressOverview.vue:134
+#: src/components/layouts/AddressOverview.vue:146
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Commençons ! Créez votre compte Nimiq :"
 
@@ -1253,7 +1283,7 @@ msgstr ""
 msgid "Login File"
 msgstr "Fichier de connexion"
 
-#: src/components/modals/AccountMenuModal.vue:26
+#: src/components/modals/AccountMenuModal.vue:33
 msgid "Logout"
 msgstr "Déconnexion"
 
@@ -1538,7 +1568,7 @@ msgstr "Motif"
 msgid "Raise your limits"
 msgstr "Augmentez vos limites"
 
-#: src/components/layouts/AddressOverview.vue:116
+#: src/components/layouts/AddressOverview.vue:128
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Recevoir"
@@ -1627,7 +1657,7 @@ msgid "Release Notes"
 msgstr "Notes de mise à jour"
 
 #: src/components/layouts/AddressOverview.vue:30
-#: src/components/layouts/AddressOverview.vue:54
+#: src/components/layouts/AddressOverview.vue:60
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Renommer"
@@ -1641,7 +1671,7 @@ msgid "Required"
 msgstr "Requis"
 
 #: src/components/layouts/AddressOverview.vue:36
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:66
 msgid "Rescan"
 msgstr "Re-scanner"
 
@@ -1737,7 +1767,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Vente maintenant disponible"
 
-#: src/components/layouts/AddressOverview.vue:111
+#: src/components/layouts/AddressOverview.vue:123
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Envoyer"
@@ -1878,7 +1908,7 @@ msgstr "Afficher le lien"
 msgid "Show Recovery Words"
 msgstr "Montrer les mots de récupération"
 
-#: src/components/layouts/AddressOverview.vue:135
+#: src/components/layouts/AddressOverview.vue:147
 msgid "Signup"
 msgstr "S'inscrire"
 
@@ -2140,6 +2170,10 @@ msgstr "Cette opération prend généralement {time} secondes."
 #: src/components/TransactionDetailOasisPayoutStatus.vue:10
 msgid "This usually takes between one and two working days."
 msgstr "Cela met en général un à deux jours ouvrés."
+
+#: src/components/modals/HistoryExportModal.vue:15
+msgid "Timeframe"
+msgstr ""
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -2458,7 +2492,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Votre paiement est en chemin"
 
-#: src/components/layouts/AddressOverview.vue:143
+#: src/components/layouts/AddressOverview.vue:155
 msgid "Your swap was successful!"
 msgstr "Votre swap a été un succès !"
 

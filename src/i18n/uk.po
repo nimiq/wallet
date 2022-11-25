@@ -34,7 +34,7 @@ msgstr "{count} Підтвердження | {count} Підтверджень"
 msgid "{count} Peer | {count} Peers"
 msgstr "{count} Піра | {count} Пірів"
 
-#: src/components/layouts/AddressOverview.vue:100
+#: src/components/layouts/AddressOverview.vue:112
 #: src/components/layouts/AddressOverview.vue:15
 msgid "{count} pending Cashlink | {count} pending Cashlinks"
 msgstr "{count} активний чек | {count} активні чеки"
@@ -195,7 +195,7 @@ msgstr "Додайте назву, щоб швидко знайти перека
 msgid "Add a public message..."
 msgstr "Додати публічне повідомлення..."
 
-#: src/components/modals/AccountMenuModal.vue:43
+#: src/components/modals/AccountMenuModal.vue:50
 msgid "Add account"
 msgstr "Додати рахунок"
 
@@ -258,7 +258,7 @@ msgstr ""
 "Усі нові можливості працюють виключно для нових рахунків. Оновіть зараз, це "
 "займе лише кілька секунди."
 
-#: src/components/layouts/AddressOverview.vue:147
+#: src/components/layouts/AddressOverview.vue:159
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -376,7 +376,7 @@ msgstr "BIC працює також."
 
 #: src/components/BalanceDistribution.vue:98
 #: src/components/layouts/AccountOverview.vue:64
-#: src/components/layouts/AddressOverview.vue:68
+#: src/components/layouts/AddressOverview.vue:80
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:119
@@ -585,7 +585,7 @@ msgstr "Натисніть для отримання додаткової інф
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Натисніть ‘Усунення несправностей’, щоб дізнатися більше."
 
-#: src/components/layouts/AddressOverview.vue:149
+#: src/components/layouts/AddressOverview.vue:161
 #: src/components/swap/SwapAnimation.vue:90
 msgid "Close"
 msgstr "Закрити"
@@ -787,6 +787,22 @@ msgstr "Не використовуйте загальний IBAN!"
 msgid "Done"
 msgstr "Готово"
 
+#: src/components/modals/HistoryExportModal.vue:24
+msgid "Download .csv file"
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:9
+msgid ""
+"Download all transactions of this account as a file, for tax reasons or "
+"other."
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:6
+msgid ""
+"Download all transactions of this address as a file, for tax reasons or "
+"other."
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:98
 msgid "Duration and fees are estimates."
 msgstr "Тривалість і комісія є приблизними."
@@ -879,6 +895,16 @@ msgstr "прострочений"
 msgid "Expired"
 msgstr "Прострочений"
 
+#: src/components/layouts/AddressOverview.vue:42
+#: src/components/layouts/AddressOverview.vue:72
+#: src/components/modals/AccountMenuModal.vue:30
+msgid "Export History"
+msgstr ""
+
+#: src/components/modals/HistoryExportModal.vue:4
+msgid "Export your history"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:454
 msgid "express"
 msgstr "швидкий"
@@ -968,6 +994,10 @@ msgstr "Поповнення Чеку"
 #: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr "Загальні"
+
+#: src/components/modals/HistoryExportModal.vue:50
+msgid "Generic"
+msgstr ""
 
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
@@ -1181,7 +1211,7 @@ msgstr "Дізнайтеся більше тут"
 msgid "Learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:134
+#: src/components/layouts/AddressOverview.vue:146
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Розпочнемо! Створіть рахунок у мережі Німік."
 
@@ -1243,7 +1273,7 @@ msgstr ""
 msgid "Login File"
 msgstr "Файл-ключ"
 
-#: src/components/modals/AccountMenuModal.vue:26
+#: src/components/modals/AccountMenuModal.vue:33
 msgid "Logout"
 msgstr "Вийти"
 
@@ -1519,7 +1549,7 @@ msgstr "Призначення"
 msgid "Raise your limits"
 msgstr "Підніміть свої обмеження"
 
-#: src/components/layouts/AddressOverview.vue:116
+#: src/components/layouts/AddressOverview.vue:128
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Отримати"
@@ -1606,7 +1636,7 @@ msgid "Release Notes"
 msgstr "Примітки до випуску"
 
 #: src/components/layouts/AddressOverview.vue:30
-#: src/components/layouts/AddressOverview.vue:54
+#: src/components/layouts/AddressOverview.vue:60
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Перейменувати"
@@ -1620,7 +1650,7 @@ msgid "Required"
 msgstr "Необхідний"
 
 #: src/components/layouts/AddressOverview.vue:36
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:66
 msgid "Rescan"
 msgstr "Пересканувати"
 
@@ -1710,7 +1740,7 @@ msgstr "Продаж і повернення коштів не працюват�
 msgid "Selling now available"
 msgstr "Продаж зараз доступний"
 
-#: src/components/layouts/AddressOverview.vue:111
+#: src/components/layouts/AddressOverview.vue:123
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Відправити"
@@ -1851,7 +1881,7 @@ msgstr "Показати"
 msgid "Show Recovery Words"
 msgstr "Показати секретні слова"
 
-#: src/components/layouts/AddressOverview.vue:135
+#: src/components/layouts/AddressOverview.vue:147
 msgid "Signup"
 msgstr "Приєднатися"
 
@@ -2110,6 +2140,10 @@ msgstr "Зазвичай це займаєs {time} секунд."
 #: src/components/TransactionDetailOasisPayoutStatus.vue:10
 msgid "This usually takes between one and two working days."
 msgstr "Зазвичай це займає від одного до двох робочих днів."
+
+#: src/components/modals/HistoryExportModal.vue:15
+msgid "Timeframe"
+msgstr ""
 
 #: src/components/modals/TradeModal.vue:36
 #: src/components/modals/TradeModal.vue:56
@@ -2421,7 +2455,7 @@ msgstr "Ваш платіж ще не отримано. Можливо вини�
 msgid "Your payout is on its way"
 msgstr "Ваша виплата вже в дорозі"
 
-#: src/components/layouts/AddressOverview.vue:143
+#: src/components/layouts/AddressOverview.vue:155
 msgid "Your swap was successful!"
 msgstr "Ваш обмін пройшов успішно!"
 

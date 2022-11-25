@@ -35,6 +35,12 @@
                         >
                             <RefreshIcon/>{{ $t('Rescan') }}
                         </button>
+                        <button
+                            class="reset flex-row"
+                            @mousedown="$router.push('/export-history/address')"
+                        >
+                            <BoxedArrowUpIcon />{{ $t('Export History') }}
+                        </button>
                     </div>
                 </button>
             </div>
@@ -58,6 +64,12 @@
                                 @mousedown="rescan"
                             >
                                 <RefreshIcon/>{{ $t('Rescan') }}
+                            </button>
+                            <button
+                                class="reset flex-row"
+                                @mousedown="$router.push('/export-history/address')"
+                            >
+                                <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
                         </div>
                     </button>
@@ -202,6 +214,7 @@ import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
+import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -325,6 +338,7 @@ export default defineComponent({
         MobileActionBar,
         Portal,
         HighFiveIcon,
+        BoxedArrowUpIcon,
     },
 });
 </script>
@@ -578,6 +592,7 @@ export default defineComponent({
             border-radius: 0.25rem;
             transition: background-color .3s var(--nimiq-ease);
             white-space: nowrap;
+            width: 100%;
 
             svg {
                 width: 2.75rem;

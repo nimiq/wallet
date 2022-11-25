@@ -77,7 +77,7 @@
                 class="nq-button green"
                 @mousedown.prevent
             >{{ $t('Receive free NIM') }}</a>
-            <TestnetFaucet v-else :address="activeAddress" :key="activeAddress"/>
+            <TestnetFaucet v-else-if="activeAddress" :address="activeAddress" :key="activeAddress"/>
         </div>
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>

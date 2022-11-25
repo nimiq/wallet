@@ -22,6 +22,13 @@
             >
                 <ChangePasswordIcon/>{{ $t('Change password') }}
             </button>
+
+            <button
+                class="item reset flex-row"
+                @mousedown="$router.push('/export-history/account')"
+            >
+                <BoxedArrowUpIcon />{{ $t('Export History') }}
+            </button>
             <button class="item reset logout flex-row" @click="logout(activeAccountId)">
                 <LogoutArrowIcon/>{{ $t('Logout') }}
             </button>
@@ -59,6 +66,7 @@ import LogoutArrowIcon from '../icons/AccountMenu/LogoutArrowIcon.vue';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -108,6 +116,7 @@ export default defineComponent({
         RenameIcon,
         ChangePasswordIcon,
         LogoutArrowIcon,
+        BoxedArrowUpIcon,
     },
 });
 </script>

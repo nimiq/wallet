@@ -19,7 +19,8 @@
             </section>
         </PageBody>
         <PageFooter>
-            <button class="nq-button light-blue" @click="download" @mousedown.prevent>
+            <button class="nq-button light-blue" :disabled="isExporting" @click="download" @mousedown.prevent>
+                <CircleSpinner v-if="isExporting" />
                 {{ $t('Download .csv file') }}
             </button>
         </PageFooter>
@@ -28,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
+import { PageBody, PageHeader, PageFooter, CircleSpinner } from '@nimiq/vue-components';
 import { ExportFormat, exportTransactions } from '../../lib/export/TransactionExport';
 import { useAccountStore } from '../../stores/Account';
 import Modal from './Modal.vue';
@@ -52,6 +53,8 @@ export default defineComponent({
         const format = ref(ExportFormat.GENERIC);
         const years = Array(new Date().getFullYear() + 1 - 2018).fill(0).map((_, i) => (2018 + i).toString()).reverse();
         const selectedYear = ref((new Date().getFullYear() - 1).toString());
+
+        const isExporting = ref(false);
 
         async function download() {
             const { activeAccountInfo } = useAccountStore();
@@ -77,12 +80,16 @@ export default defineComponent({
                 btcAddresses = activeAccountInfo.value.btcAddresses;
             }
 
-            exportTransactions(
+            isExporting.value = true;
+
+            await exportTransactions(
                 nimAddresses,
                 btcAddresses,
                 parseInt(selectedYear.value, 10),
                 format.value,
             );
+
+            isExporting.value = false;
         }
 
         return {
@@ -91,6 +98,7 @@ export default defineComponent({
             years,
             selectedYear,
             download,
+            isExporting,
         };
     },
     components: {
@@ -99,6 +107,7 @@ export default defineComponent({
         PageFooter,
         Modal,
         ButtonGroup,
+        CircleSpinner,
     },
 });
 </script>
@@ -149,5 +158,12 @@ select.nq-input {
     border-radius: 5rem;
     font-size: var(--small-size);
     font-weight: 600;
+}
+
+.page-footer .nq-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
 }
 </style>

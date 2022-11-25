@@ -56,6 +56,7 @@ export default defineComponent({
 .nq-button-s.white {
     background: none;
     color: rgba(31, 35, 72, 0.5);
+    margin: 0; // Safari adds margin by default to buttons
 
     &:hover,
     &:focus {

@@ -589,6 +589,7 @@ export default defineComponent({
         button {
             align-items: center;
             padding: 1rem 1.5rem 1rem 1rem;
+            margin: 0; // Safari adds margin by default to all buttons
             border-radius: 0.25rem;
             transition: background-color .3s var(--nimiq-ease);
             white-space: nowrap;

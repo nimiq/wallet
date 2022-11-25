@@ -217,7 +217,7 @@ import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
 import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
 import { useSettingsStore } from '../../stores/Settings';
-import { Trial } from '../../lib/Trials';
+// import { Trial } from '../../lib/Trials';
 
 type Country = {
     code: string,
@@ -228,7 +228,7 @@ export default defineComponent({
     name: 'buy-options-modal',
     setup() {
         const { currency } = useFiatStore();
-        const { canUseSwaps, trials } = useSettingsStore();
+        const { canUseSwaps/* , trials */ } = useSettingsStore();
 
         const country = ref<Country>(null);
 

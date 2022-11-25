@@ -10,15 +10,18 @@
             </div>
         </PageHeader>
         <PageBody>
-            <div class="row">
+            <ButtonGroup :options="formats" v-model="format" />
+            <section class="row">
                 <label>{{ $t('Timeframe') }}</label>
                 <select v-model="selectedYear" class="nq-input">
                     <option v-for="year of years" :key="year">{{ year }}</option>
                 </select>
-            </div>
+            </section>
         </PageBody>
         <PageFooter>
-            <button class="nq-button light-blue" @click="download">{{ $t('Download .csv file') }}</button>
+            <button class="nq-button light-blue" @click="download" @mousedown.prevent>
+                {{ $t('Download .csv file') }}
+            </button>
         </PageFooter>
     </Modal>
 </template>
@@ -31,6 +34,7 @@ import { useAccountStore } from '../../stores/Account';
 import Modal from './Modal.vue';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore } from '../../stores/Address';
+import ButtonGroup from '../ButtonGroup.vue';
 
 export default defineComponent({
     name: 'history-export-modal',
@@ -40,7 +44,12 @@ export default defineComponent({
             default: 'account',
         },
     },
-    setup(props) {
+    setup(props, context) {
+        const formats = {
+            [ExportFormat.GENERIC]: context.root.$t('Generic') as string,
+            [ExportFormat.BLOCKPIT]: 'Blockpit',
+        };
+        const format = ref(ExportFormat.GENERIC);
         const years = Array(new Date().getFullYear() + 1 - 2018).fill(0).map((_, i) => (2018 + i).toString()).reverse();
         const selectedYear = ref((new Date().getFullYear() - 1).toString());
 
@@ -72,11 +81,13 @@ export default defineComponent({
                 nimAddresses,
                 btcAddresses,
                 parseInt(selectedYear.value, 10),
-                ExportFormat.GENERIC,
+                format.value,
             );
         }
 
         return {
+            formats,
+            format,
             years,
             selectedYear,
             download,
@@ -87,6 +98,7 @@ export default defineComponent({
         PageHeader,
         PageFooter,
         Modal,
+        ButtonGroup,
     },
 });
 </script>
@@ -97,6 +109,19 @@ export default defineComponent({
     font-size: var(--body-size);
 }
 
+.page-header {
+    padding-bottom: 3rem;
+}
+
+.page-body {
+    padding-top: 0;
+}
+
+.button-group {
+    margin-bottom: 4rem;
+    text-align: center;
+}
+
 .row {
     box-shadow: 0 0 0 1.5px rgba(31, 35, 72, 0.1);
     padding: 2rem;
@@ -104,12 +129,12 @@ export default defineComponent({
     align-items: center;
     justify-content: space-between;
 
-    &:first-child {
+    &:first-of-type {
         border-top-left-radius: 1rem;
         border-top-right-radius: 1rem;
     }
 
-    &:last-child {
+    &:last-of-type {
         border-bottom-left-radius: 1rem;
         border-bottom-right-radius: 1rem;
     }

@@ -336,12 +336,12 @@ const routes: RouteConfig[] = [{
             if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
                 // old safe links are in this format: /#_request/NQ208P9L3YMDGQYT1TAA8D0GMC125HBQ1Q8A/100_
                 // new wallet links are in this format: /nimiq:NQ208P9L3YMDGQYT1TAA8D0GMC125HBQ1Q8A?amount=100
-                const results = to.hash.match(/^#_request\/(.+)\/(\d+)_$/);
+                const results = to.hash.match(/^#_request\/([A-Z0-9]+)\/?(\d+)?_$/);
                 const address = results?.[1];
-                const amount = results?.[2];
+                const amount = results?.[2] ? `?amount=${results?.[2]}` : '';
                 next({
                     name: 'send-via-uri',
-                    hash: `nimiq:${address}?amount=${amount}`,
+                    hash: `nimiq:${address}${amount}`,
                     replace: true,
                 });
             } else {

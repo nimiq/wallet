@@ -332,6 +332,22 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }],
+        beforeEnter: (to, from, next) => {
+            if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
+                // old safe links are in this format: /#_request/NQ208P9L3YMDGQYT1TAA8D0GMC125HBQ1Q8A/100_
+                // new wallet links are in this format: /nimiq:NQ208P9L3YMDGQYT1TAA8D0GMC125HBQ1Q8A?amount=100
+                const results = to.hash.match(/^#_request\/(.+)\/(\d+)_$/);
+                const address = results?.[1];
+                const amount = results?.[2];
+                next({
+                    name: 'send-via-uri',
+                    hash: `nimiq:${address}?amount=${amount}`,
+                    replace: true,
+                });
+            } else {
+                next();
+            }
+        },
     }, {
         path: '/settings',
         components: {

@@ -37,13 +37,19 @@ export const useAccountStore = createStore({
         activeCurrency: (state) => state.activeCurrency,
         hasBitcoinAddresses: (state, { activeAccountInfo }) =>
             Boolean((activeAccountInfo.value as AccountInfo | null)?.btcAddresses?.external.length),
+        hasUsdcAddresses: (state, { activeAccountInfo }) =>
+            Boolean((activeAccountInfo.value as AccountInfo | null)?.polygonAddresses?.length),
     },
     actions: {
         selectAccount(accountId: string) {
             this.state.activeAccountId = accountId;
 
-            // If the selected account does not support Bitcoin (or has it not enabled), switch active currency to NIM
-            if (!this.hasBitcoinAddresses.value) {
+            // If the selected account does not support Bitcoin or USDC (or has them not enabled),
+            // switch active currency to NIM
+            if (
+                (this.activeCurrency.value === CryptoCurrency.BTC && !this.hasBitcoinAddresses.value)
+                || (this.activeCurrency.value === CryptoCurrency.USDC && !this.hasUsdcAddresses.value)
+            ) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
             }
 

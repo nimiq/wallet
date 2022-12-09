@@ -1,7 +1,9 @@
 <template>
     <div class="address-overview"
-        :class="{ 'no-accounts flex-column': !activeAddressInfo && activeCurrency !== CryptoCurrency.BTC }">
-        <template v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC">
+        :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }">
+        <template
+            v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC || activeCurrency === CryptoCurrency.USDC"
+        >
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <SearchBar v-model="searchString"/>
@@ -17,7 +19,7 @@
                         unclaimedCashlinkCount,
                     ) }}
                 </button>
-                <button
+                <button v-if="activeCurrency !== 'usdc'"
                     class="reset icon-button"
                     @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                 >
@@ -47,8 +49,9 @@
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
-                    <BitcoinIcon v-else/>
-                    <button class="reset identicon-menu flex-row"
+                    <BitcoinIcon v-if="activeCurrency === 'btc'"/>
+                    <UsdcIcon v-if="activeCurrency === 'usdc'"/>
+                    <button class="reset identicon-menu flex-row" v-if="activeCurrency !== 'usdc'"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
                         <GearIcon/>
@@ -77,9 +80,12 @@
                 <div class="meta">
                     <div class="flex-row">
                         <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
-                        <div v-else class="label bitcoin">{{ $t('Bitcoin') }}</div>
+                        <div v-if="activeCurrency === 'btc'" class="label bitcoin">{{ $t('Bitcoin') }}</div>
+                        <div v-if="activeCurrency === 'usdc'" class="label usdc">{{ $t('USD Coin') }}</div>
                         <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
-                        <Amount v-else :amount="btcAccountBalance" currency="btc" value-mask/>
+                        <Amount v-if="activeCurrency === 'btc'" :amount="btcAccountBalance" currency="btc" value-mask/>
+                        <Amount v-if="activeCurrency === 'usdc'"
+                            :amount="usdcAccountBalance" currency="usdc" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -91,11 +97,24 @@
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
+                        <Copyable v-if="activeCurrency === 'usdc'"
+                            :text="usdcAddressInfo.address" :key="usdcAddressInfo.address"
+                        >
+                            <div class="address" ref="$address" :class="{ 'masked': addressMasked  }">
+                                {{usdcAddressInfo.address}}
+                            </div>
+                        </Copyable>
+
                         <FiatConvertedAmount v-if="activeCurrency === 'nim' && activeAddressInfo.balance !== null"
-                            :amount="activeAddressInfo.balance" value-mask/>
+                            :amount="activeAddressInfo.balance" currency="nim" value-mask/>
                         <span v-else-if="activeCurrency === 'nim'" class="fiat-amount"></span>
-                        <FiatConvertedAmount v-else
+
+                        <FiatConvertedAmount v-if="activeCurrency === 'btc'"
                             :amount="btcAccountBalance" currency="btc" value-mask/>
+
+                        <FiatConvertedAmount v-if="activeCurrency === 'usdc' && usdcAddressInfo.balance !== null"
+                            :amount="usdcAddressInfo.balance" currency="usdc" value-mask/>
+                        <span v-else-if="activeCurrency === 'usdc'" class="fiat-amount"></span>
                     </div>
                 </div>
             </div>
@@ -118,7 +137,8 @@
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                     :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
-                        || (activeCurrency === 'btc' && !btcAccountBalance)"
+                        || (activeCurrency === 'btc' && !btcAccountBalance)
+                        || (activeCurrency === 'usdc' && (!usdcAddressInfo || !usdcAddressInfo.balance))"
                 >
                     <ArrowRightSmallIcon />{{ $t('Send') }}
                 </button>
@@ -138,9 +158,13 @@
                 @scroll="onTransactionListScroll"
             />
             <BtcTransactionList
-                v-else
+                v-if="activeCurrency === CryptoCurrency.BTC"
                 :searchString="searchString"
             />
+            <!-- <UsdcTransactionList
+                v-if="activeCurrency === CryptoCurrency.USDC"
+                :searchString="searchString"
+            /> -->
         </template>
         <template v-else>
             <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
@@ -195,6 +219,7 @@ import {
 import { Portal } from '@linusborg/vue-simple-portal';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import UsdcIcon from '../icons/UsdcIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
@@ -207,6 +232,7 @@ import RefreshIcon from '../icons/RefreshIcon.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { onboard, rename } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -222,6 +248,7 @@ export default defineComponent({
         const { activeAccountId, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { accountBalance: usdcAccountBalance, addressInfo: usdcAddressInfo } = useUsdcAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
         const searchString = ref('');
@@ -312,6 +339,8 @@ export default defineComponent({
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
             btcAccountBalance,
+            usdcAccountBalance,
+            usdcAddressInfo,
             CryptoCurrency,
             promoBoxVisible,
             setPromoBoxVisible,
@@ -339,6 +368,7 @@ export default defineComponent({
         Portal,
         HighFiveIcon,
         BoxedArrowUpIcon,
+        UsdcIcon,
     },
 });
 </script>
@@ -443,9 +473,16 @@ export default defineComponent({
         > svg {
             width: 10.5rem;
             height: 10.5rem;
-            color: var(--bitcoin-orange);
             margin: -0.25rem 0.375rem;
             display: block;
+
+            &.bitcoin {
+                color: var(--bitcoin-orange);
+            }
+
+            &.usdc {
+                color: var(--usdc-blue);
+            }
         }
     }
 

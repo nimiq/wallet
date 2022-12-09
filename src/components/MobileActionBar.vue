@@ -24,19 +24,22 @@ import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useWindowSize } from '../composables/useWindowSize';
 import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobileColumn';
+import { useUsdcAddressStore } from '../stores/UsdcAddress';
 
 export default defineComponent({
     setup(props, context) {
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
-        const { accountBalance } = useBtcAddressStore();
+        const { accountBalance: btcBalance } = useBtcAddressStore();
+        const { addressInfo: usdcAddressInfo } = useUsdcAddressStore();
         const { isMobile } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        function nimOrBtc<T>(nim: T, btc: T): T {
+        function nimOrBtcOrUsdc<T>(nim: T, btc: T, usdc: T): T {
             switch (activeCurrency.value) {
                 case CryptoCurrency.NIM: return nim;
                 case CryptoCurrency.BTC: return btc;
+                case CryptoCurrency.USDC: return usdc;
                 default: throw new Error('Invalid active currency');
             }
         }
@@ -52,7 +55,7 @@ export default defineComponent({
                 // redirect to the address selector
                 context.root.$router.push('/receive');
             } else {
-                context.root.$router.push(nimOrBtc('/receive/nim', '/receive/btc'));
+                context.root.$router.push(nimOrBtcOrUsdc('/receive/nim', '/receive/btc', '/receive/usdc'));
             }
         }
 
@@ -67,13 +70,14 @@ export default defineComponent({
                 // redirect to the address selector
                 context.root.$router.push('/send');
             } else {
-                context.root.$router.push(nimOrBtc('/send/nim', '/send/btc'));
+                context.root.$router.push(nimOrBtcOrUsdc('/send/nim', '/send/btc', '/send/usdc'));
             }
         }
 
-        const sendDisabled = computed(() => context.root.$route.path !== '/' && nimOrBtc(
+        const sendDisabled = computed(() => context.root.$route.path !== '/' && nimOrBtcOrUsdc(
             !activeAddressInfo.value || !activeAddressInfo.value.balance,
-            !accountBalance.value,
+            !btcBalance.value,
+            !usdcAddressInfo.value || !usdcAddressInfo.value.balance,
         ));
 
         return {

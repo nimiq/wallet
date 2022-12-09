@@ -5,7 +5,8 @@ export default {
     environment: ENV_DEV,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     reportToSentry: false,
-    enableBitcoin: true,
+    enableBitcoin: false,
+    enableUsdc: true,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
     fastspot: {

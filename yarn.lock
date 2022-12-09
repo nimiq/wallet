@@ -1445,16 +1445,9 @@
   version "1.6.1"
   resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/3583c53769215f20cd3b1156456e678a6e882e7a"
 
-"@nimiq/hub-api@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.6.1.tgz#1db93714767bb829a2fd39a8eedd9b2c8d346826"
-  integrity sha512-dAuv2y+Xg3+eUDJ2nxhU+Tz5fZcglASXRBC+UUjLRY6iiIo1X1JfomE7qVYnnbokxqgoIj8E6kPNpbxyXeLU7w==
-  dependencies:
-    "@nimiq/core-web" "^1.5.8"
-    "@nimiq/fastspot-api" "^1.5.2"
-    "@nimiq/rpc" "^0.4.0"
-    "@nimiq/utils" "^0.5.0"
-    big-integer "^1.6.48"
+"@nimiq/hub-api@link:../hub/client":
+  version "0.0.0"
+  uid ""
 
 "@nimiq/iqons@^1.5.2", "@nimiq/iqons@^1.6.0":
   version "1.6.0"
@@ -1511,17 +1504,17 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/utils@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.6.0.tgz#d5c5964d6b88f7be2d69e82474326edac1f5ed24"
-  integrity sha512-pDdQmc5jJRX0vODvbZ27XNiIjW0IYLAj6A4XFmvnYoVtRLtEecFirMw5kGEuRKRAWBUOp93MQ2xJpkNZ4CjrOw==
-  dependencies:
-    big-integer "^1.6.44"
-
 "@nimiq/utils@^0.8.2":
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.8.2.tgz#f332100e83b7bb2f74690ce5608ada00898c7c19"
   integrity sha512-IosO1XdULYW7tSYUBYjHZ312ksW/APcuP54U0GBpyja+EfVFNx2IWE0Ke8AXJodM9FhuMNtgD4jGCgU7yBUBKw==
+  dependencies:
+    big-integer "^1.6.44"
+
+"@nimiq/utils@^0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.8.3.tgz#e088ad4ec874d2f6ec10437700f23197fd2e7600"
+  integrity sha512-fDZR3z/l7G39XbtkbnMvyxkrw/o1DKahxg3Scdn+Ib0/s98H1Uk8P3JJ1DZd+D0bApuCMcQRJnCiJ61r9LUNgg==
   dependencies:
     big-integer "^1.6.44"
 

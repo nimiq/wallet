@@ -13,6 +13,7 @@ import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
+import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useProxyStore, Cashlink } from './stores/Proxy';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
@@ -136,10 +137,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
     const btcAddressInfos: BtcAddressInfo[] = [];
+    const usdcAddressInfos: UsdcAddressInfo[] = [];
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const btcAddressStore = useBtcAddressStore();
+    const usdcAddressStore = useUsdcAddressStore();
 
     for (const account of accounts) {
         const addresses: string[] = [];
@@ -147,13 +150,11 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const address of account.addresses) {
             addresses.push(address.address);
 
-            const balance = addressStore.state.addressInfos[address.address]?.balance;
-
             addressInfos.push({
                 address: address.address,
                 type: AddressType.BASIC,
                 label: address.label,
-                balance: balance || (balance === 0 ? 0 : null),
+                balance: addressStore.state.addressInfos[address.address]?.balance ?? null,
             });
         }
 
@@ -177,7 +178,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
             addressInfos.push({
                 ...contract,
-                balance: addressStore.state.addressInfos[contract.address]?.balance || null,
+                balance: addressStore.state.addressInfos[contract.address]?.balance ?? null,
             });
         }
 
@@ -207,6 +208,14 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             };
         }
 
+        for (const polygonAddress of account.polygonAddresses) {
+            usdcAddressInfos.push({
+                address: polygonAddress,
+                balance: usdcAddressStore.state.addressInfos[polygonAddress]?.balance ?? null,
+                matic: usdcAddressStore.state.addressInfos[polygonAddress]?.matic ?? null,
+            });
+        }
+
         accountInfos.push({
             id: account.accountId,
             type: account.type,
@@ -215,6 +224,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             wordsExported: account.wordsExported,
             addresses,
             btcAddresses: { ...account.btcAddresses },
+            polygonAddresses: [...account.polygonAddresses],
             uid: account.uid || existingAccount?.uid,
         });
     }
@@ -229,11 +239,17 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
     if (replaceState) {
         addressStore.setAddressInfos(addressInfos);
+        usdcAddressStore.setAddressInfos(usdcAddressInfos);
+        // Accounts set last, so all their address infos exist already
         accountStore.setAccountInfos(accountInfos);
     } else {
         for (const addressInfo of addressInfos) {
             addressStore.addAddressInfo(addressInfo);
         }
+        for (const usdcAddressInfo of usdcAddressInfos) {
+            usdcAddressStore.addAddressInfo(usdcAddressInfo);
+        }
+        // Accounts set last, so all their address infos exist already
         for (const accountInfo of accountInfos) {
             accountStore.addAccountInfo(accountInfo);
         }
@@ -523,6 +539,18 @@ export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'ap
 
 export async function activateBitcoin(accountId: string) {
     const account = await hubApi.activateBitcoin({
+        appName: APP_NAME,
+        accountId,
+    }, getBehavior()).catch(onError);
+    if (!account) return false;
+
+    processAndStoreAccounts([account]);
+
+    return true;
+}
+
+export async function activateUsdc(accountId: string) {
+    const account = await hubApi.activatePolygon({
         appName: APP_NAME,
         accountId,
     }, getBehavior()).catch(onError);

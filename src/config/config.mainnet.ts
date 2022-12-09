@@ -6,6 +6,7 @@ export default {
     nimiqScript: 'https://cdn.nimiq.com/v1.5.8/web.js',
     reportToSentry: false,
     enableBitcoin: true,
+    enableUsdc: true,
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes
 
     fastspot: {

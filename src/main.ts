@@ -93,9 +93,20 @@ async function start() {
 
     launchNetwork();
 
+    const { state: { activeCurrency } } = useAccountStore();
+
     if (Config.enableBitcoin) {
         launchElectrum();
-    } else {
+    }
+
+    if (Config.enableUsdc) {
+        // launchPolygon(); // TODO USDC
+    }
+
+    if (
+        (activeCurrency === CryptoCurrency.BTC && !Config.enableBitcoin)
+        || (activeCurrency === CryptoCurrency.USDC && !Config.enableUsdc)
+    ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }
 }

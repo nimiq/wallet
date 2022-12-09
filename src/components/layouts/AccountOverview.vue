@@ -85,7 +85,48 @@
                     <div v-if="hasBitcoinAddresses" class="mobile-arrow"></div>
                 </button>
             </div>
-            <div v-else-if="!canHaveMultipleAddresses">
+
+            <div v-if="canHaveMultipleAddresses && $config.enableUsdc" class="usdc-account flex-column">
+                <button
+                    class="usdc-account-item reset flex-row"
+                    :class="{
+                        'active': activeCurrency === CryptoCurrency.USDC,
+                        'requires-activation': !hasUsdcAddresses,
+                    }"
+                    @click="selectUsdc"
+                >
+                    <UsdcIcon/>
+                    {{ $t('USD Coin') }}
+                    <div class="flex-grow"></div>
+                    <div class="balances" v-if="hasUsdcAddresses">
+                        <template v-if="usdcAccountBalance !== null">
+                            <div class="flex-row">
+                                <AlertTriangleIcon v-if="usdcConsensus === 'connecting'" />
+                                <Amount
+                                    :amount="usdcAccountBalance"
+                                    :currency="CryptoCurrency.USDC"
+                                    value-mask
+                                />
+                            </div>
+                            <FiatConvertedAmount class="fiat-balance"
+                                :amount="usdcAccountBalance"
+                                :currency="CryptoCurrency.USDC"
+                                value-mask
+                            />
+                        </template>
+                        <template v-else>
+                            <CircleSpinner />
+                        </template>
+                    </div>
+                    <button v-else
+                        class="nq-button-pill light-blue"
+                        @click.stop="$router.push('/usdc-activation')" @mousedown.prevent
+                    >{{ $t('Activate') }}</button>
+                    <div v-if="hasUsdcAddresses" class="mobile-arrow"></div>
+                </button>
+            </div>
+
+            <div v-if="!canHaveMultipleAddresses">
                 <LegacyAccountUpgradeButton/>
                 <p class="future-notice">
                     {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}
@@ -113,12 +154,13 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import { ArrowRightSmallIcon, AlertTriangleIcon } from '@nimiq/vue-components';
+import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import UsdcIcon from '../icons/UsdcIcon.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -132,10 +174,12 @@ import AttentionDot from '../AttentionDot.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useSettingsStore } from '../../stores/Settings';
+import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 
 export default defineComponent({
     name: 'account-overview',
@@ -146,8 +190,10 @@ export default defineComponent({
             setActiveCurrency,
             activeCurrency,
             hasBitcoinAddresses,
+            hasUsdcAddresses,
         } = useAccountStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { accountBalance: usdcAccountBalance } = useUsdcAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
@@ -173,6 +219,14 @@ export default defineComponent({
             }
         }
 
+        function selectUsdc() {
+            setActiveCurrency(CryptoCurrency.USDC);
+
+            if (isMobile.value) {
+                context.root.$router.push('/transactions');
+            }
+        }
+
         const showFullLegacyAccountNotice = computed(() =>
             isLegacyAccount.value
             && activeAccountInfo.value!.addresses.length === 1
@@ -191,6 +245,7 @@ export default defineComponent({
         watch(activeAccountInfo, determineModalToShow);
 
         const { consensus: btcConsensus } = useBtcNetworkStore();
+        const { consensus: usdcConsensus } = useUsdcNetworkStore();
 
         const { updateAvailable } = useSettingsStore();
 
@@ -203,13 +258,17 @@ export default defineComponent({
             activeAccountId,
             onAddressSelected,
             btcAccountBalance,
+            usdcAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
             selectBitcoin,
+            selectUsdc,
             activeCurrency,
             CryptoCurrency,
             hasBitcoinAddresses,
+            hasUsdcAddresses,
             btcConsensus,
+            usdcConsensus,
             updateAvailable,
         };
     },
@@ -219,6 +278,7 @@ export default defineComponent({
         AccountBalance,
         AddressList,
         BitcoinIcon,
+        UsdcIcon,
         MenuIcon,
         ConsensusIcon,
         MobileActionBar,
@@ -230,6 +290,7 @@ export default defineComponent({
         Amount,
         FiatConvertedAmount,
         AttentionDot,
+        CircleSpinner,
     },
 });
 </script>
@@ -345,7 +406,8 @@ export default defineComponent({
     margin-bottom: 1rem;
 }
 
-.bitcoin-account {
+.bitcoin-account,
+.usdc-account {
     height: 15rem;
     flex-shrink: 0;
     padding: 3rem 2rem;
@@ -360,7 +422,8 @@ export default defineComponent({
         margin: 0 -1rem;
     }
 
-    .bitcoin-account-item {
+    .bitcoin-account-item,
+    .usdc-account-item {
         position: relative;
         width: 100%;
         padding: 0 2rem;
@@ -423,7 +486,8 @@ export default defineComponent({
         &.disabled {
             color: var(--text-40);
 
-            svg.bitcoin {
+            svg.bitcoin,
+            svg.usdc {
                 color: var(--text-20);
             }
 
@@ -439,9 +503,18 @@ export default defineComponent({
         }
     }
 
-    svg.bitcoin {
-        color: var(--bitcoin-orange);
+    svg {
         margin-right: 2rem;
+        width: 5.25rem;
+        height: 5.25rem;
+
+        &.bitcoin {
+            color: var(--bitcoin-orange);
+        }
+
+        &.usdc {
+            color: var(--usdc-blue);
+        }
     }
 
     .balances {

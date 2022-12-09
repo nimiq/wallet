@@ -3,6 +3,7 @@ import { getExchangeRates } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { useTransactionsStore } from './Transactions';
 import { useBtcTransactionsStore } from './BtcTransactions';
+// import { useUsdcTransactionsStore } from './UsdcTransactions'; // TODO USDC
 
 export type FiatState = {
     currency: FiatCurrency,
@@ -67,11 +68,12 @@ export const useFiatStore = createStore({
             this.updateExchangeRates();
             useTransactionsStore().calculateFiatAmounts();
             useBtcTransactionsStore().calculateFiatAmounts();
+            // useUsdcTransactionsStore().calculateFiatAmounts(); // TODO USDC
         },
         async updateExchangeRates(failGracefully = true) {
             try {
                 this.state.exchangeRates = await getExchangeRates(
-                    [CryptoCurrency.NIM, CryptoCurrency.BTC],
+                    [CryptoCurrency.NIM, CryptoCurrency.BTC, CryptoCurrency.USDC],
                     Object.values(FiatCurrency),
                 );
                 this.state.timestamp = Date.now();

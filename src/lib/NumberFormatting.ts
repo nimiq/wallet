@@ -9,7 +9,7 @@ export function twoDigit(value: number) {
 export function calculateDisplayedDecimals(amount: number | null, currency: CryptoCurrency) {
     if (amount === null) return 0;
 
-    const { decimals, btcDecimals, btcUnit } = useSettingsStore();
+    const { decimals, btcDecimals, usdcDecimals, btcUnit } = useSettingsStore();
 
     if (currency === CryptoCurrency.BTC) {
         const maxDecimals = Math.min(btcDecimals.value, btcUnit.value.decimals);
@@ -34,6 +34,18 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
             if (amount < 100 * 1e8) return Math.max(maxDecimals, 1);
         }
         return maxDecimals;
+    }
+
+    if (currency === CryptoCurrency.USDC) {
+        // For USDC, make sure that 2 significant digits are always displayed
+        if (amount === 0) return usdcDecimals.value;
+        if (amount < 0.0001 * 1e6) return 6;
+        if (amount < 0.001 * 1e6) return Math.max(usdcDecimals.value, 5);
+        if (amount < 0.01 * 1e6) return Math.max(usdcDecimals.value, 4);
+        if (amount < 0.1 * 1e6) return Math.max(usdcDecimals.value, 3);
+        if (amount < 1 * 1e6) return Math.max(usdcDecimals.value, 2);
+        if (amount < 10 * 1e6) return Math.max(usdcDecimals.value, 1);
+        return usdcDecimals.value;
     }
 
     // For NIM, make sure that 2 significant digits are always displayed

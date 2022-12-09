@@ -14,6 +14,8 @@ import { useProxyStore, ProxyState } from './stores/Proxy';
 import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
+import { UsdcAddressState, useUsdcAddressStore } from './stores/UsdcAddress';
+import { useUsdcContactsStore } from './stores/UsdcContacts';
 import { useSwapsStore, SwapsState } from './stores/Swaps';
 import { useBankStore, BankState } from './stores/Bank';
 import { KycState, useKycStore } from './stores/Kyc';
@@ -28,6 +30,7 @@ const StorageKeys = {
     PROXIES: 'wallet_proxies_v01',
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
+    USDCADDRESSINFOS: 'wallet_usdcaddresses_v01',
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
     KYC: 'wallet_kyc_v00',
@@ -36,6 +39,7 @@ const StorageKeys = {
 const PersistentStorageKeys = {
     CONTACTS: 'wallet_contacts_v01',
     BTCLABELS: 'wallet_btclabels_v01',
+    USDCCONTACTS: 'wallet_usdccontacts_v01',
 };
 
 const unsubscriptions: (() => void)[] = [];
@@ -279,6 +283,39 @@ export async function initStorage() {
 
     unsubscriptions.push(
         btcLabelsStore.subscribe(() => Storage.set(PersistentStorageKeys.BTCLABELS, btcLabelsStore.state)),
+    );
+
+    /**
+     * USDC ADDRESSES
+     */
+    const usdcAddressStore = useUsdcAddressStore();
+
+    // Load addresses from storage
+    const storedUsdcAddressState = await Storage.get<UsdcAddressState>(StorageKeys.USDCADDRESSINFOS);
+    if (storedUsdcAddressState) {
+        usdcAddressStore.patch(storedUsdcAddressState);
+    }
+
+    unsubscriptions.push(
+        // Write addresses to storage when updated
+        usdcAddressStore.subscribe(() => Storage.set(StorageKeys.USDCADDRESSINFOS, usdcAddressStore.state)),
+    );
+
+    /**
+     * USDC CONTACTS
+     */
+    const usdcContactsStore = useUsdcContactsStore();
+    const storedUsdcContacts = await Storage.get<{[address: string]: string}>(PersistentStorageKeys.USDCCONTACTS);
+    if (storedUsdcContacts) {
+        usdcContactsStore.patch({
+            contacts: storedUsdcContacts,
+        });
+    }
+
+    unsubscriptions.push(
+        usdcContactsStore.subscribe(() =>
+            Storage.set(PersistentStorageKeys.USDCCONTACTS, usdcContactsStore.state.contacts),
+        ),
     );
 
     /**

@@ -28,11 +28,13 @@
 import Vue from 'vue';
 import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
+import Config from 'config';
 import BalanceDistribution from './BalanceDistribution.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import { useSettingsStore } from '../stores/Settings';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useFiatStore } from '../stores/Fiat';
@@ -42,22 +44,39 @@ export default defineComponent({
     setup(props, context) {
         const { accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { accountBalance: usdcAccountBalance } = useUsdcAddressStore();
 
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
 
         const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
+        const usdcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value]);
         const fiatAmount = computed(() => {
+            let amount = 0;
+
             const nimFiatAmount = nimExchangeRate.value !== undefined
                 ? (accountBalance.value / 1e5) * nimExchangeRate.value
                 : undefined;
-            const btcFiatAmount = btcExchangeRate.value !== undefined
-                ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
-                : undefined;
+            if (nimFiatAmount === undefined) return undefined;
+            amount += nimFiatAmount;
 
-            if (nimFiatAmount === undefined || btcFiatAmount === undefined) return undefined;
+            if (Config.enableBitcoin) {
+                const btcFiatAmount = btcExchangeRate.value !== undefined
+                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                    : undefined;
+                if (btcFiatAmount === undefined) return undefined;
+                amount += btcFiatAmount;
+            }
 
-            return nimFiatAmount + btcFiatAmount;
+            if (Config.enableUsdc) {
+                const usdcFiatAmount = usdcExchangeRate.value !== undefined
+                    ? (usdcAccountBalance.value / 1e6) * usdcExchangeRate.value
+                    : undefined;
+                if (usdcFiatAmount === undefined) return undefined;
+                amount += usdcFiatAmount;
+            }
+
+            return amount;
         });
 
         const $fiatAmountContainer = ref<HTMLDivElement>(null);

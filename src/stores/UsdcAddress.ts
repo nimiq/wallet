@@ -30,7 +30,7 @@ export const useUsdcAddressStore = createStore({
         },
         accountBalance: (state, { addressInfo }) => {
             const ai = addressInfo.value as UsdcAddressInfo | undefined;
-            if (!ai || ai.balance === null) return null;
+            if (!ai || ai.balance === null) return 0;
             return ai.balance;
         },
     },

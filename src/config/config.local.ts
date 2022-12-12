@@ -33,7 +33,7 @@ export default {
         apiEndpoint: window.sessionStorage['use-local-kyc-server'] // switch that can be set to use local kyc server
             // Note that locally signed grants are not actually eligible for higher limits on the deployed Fastspot and
             // OASIS test instances because they don't exist in the deployed TEN31 Pass's database.
-            ? 'http://localhost:8082'
+            ? `http://${window.location.hostname}:8082`
             : 'https://test.pass.ten31.com',
         appId: window.location.protocol === 'https:'
             ? 'ecf6f03e-7af0-4af8-a4a8-c3a8cc16e168'

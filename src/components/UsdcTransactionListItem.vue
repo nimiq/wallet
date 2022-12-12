@@ -2,7 +2,7 @@
     <button
         class="reset transaction"
         :class="state"
-        @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
+        @click="$router.push({name: 'usdc-transaction', params: {hash: transaction.transactionHash}})"
         :key="`tx-${transaction.transactionHash}`"
     >
         <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
@@ -22,12 +22,11 @@
             <AlertTriangleIcon/>
         </div>
         <div class="identicon">
-            <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
-            <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
-            <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-            <Identicon v-else :address="peerAddress" />
-            <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
-            <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
+            <!-- <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/> -->
+            <!-- <Identicon v-else-if="swapData && swapData.asset === SwapAsset.NIM" :address="peerAddress" /> -->
+            <!-- <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/> -->
+            <UsdcIcon />
+            <!-- <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div> -->
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
@@ -41,15 +40,15 @@
 
                 <span v-if="data" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
-                    <TransactionListOasisPayoutStatus
+                    <!-- <TransactionListOasisPayoutStatus
                         v-if="swapData && swapData.asset === SwapAsset.EUR"
-                        :data="swapData"/>
+                        :data="swapData"/> -->
                 </span>
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="transaction.value" value-mask/>
-            <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
+            <Amount :amount="transaction.value" currency="usdc" value-mask/>
+            <transition v-if="true /* !swapData || swapData.asset !== SwapAsset.EUR */" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
@@ -60,11 +59,11 @@
                     <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
-            <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
+            <!-- <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
                 :amount="(swapData.amount / 100)
                     - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
                     * (isIncoming ? 1 : -1)"
-                :currency="swapData.asset.toLowerCase()" value-mask/>
+                :currency="swapData.asset.toLowerCase()" value-mask/> -->
         </div>
     </button>
 </template>
@@ -74,34 +73,30 @@ import { defineComponent, computed } from '@vue/composition-api';
 import {
     CircleSpinner,
     AlertTriangleIcon,
-    CashlinkXSmallIcon,
-    Identicon,
+    // Identicon,
     FiatAmount,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { AddressBook } from '@nimiq/utils';
-import { SwapAsset } from '@nimiq/fastspot-api';
-import { SettlementStatus } from '@nimiq/oasis-api';
-import { useAddressStore } from '../stores/Address';
+// import { SwapAsset } from '@nimiq/fastspot-api';
+// import { SettlementStatus } from '@nimiq/oasis-api';
+import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
-import { Transaction, TransactionState, useTransactionsStore } from '../stores/Transactions';
+import { Transaction, TransactionState, useUsdcTransactionsStore } from '../stores/UsdcTransactions';
 import { twoDigit } from '../lib/NumberFormatting';
-import { parseData } from '../lib/DataFormatting';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
-import BitcoinIcon from './icons/BitcoinIcon.vue';
-import BankIcon from './icons/BankIcon.vue';
-import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { useContactsStore } from '../stores/Contacts';
+// import BitcoinIcon from './icons/BitcoinIcon.vue';
+// import BankIcon from './icons/BankIcon.vue';
+// import SwapSmallIcon from './icons/SwapSmallIcon.vue';
+import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
-import { isProxyData, ProxyType } from '../lib/ProxyDetection';
-import { useProxyStore } from '../stores/Proxy';
-import { useSwapsStore } from '../stores/Swaps';
-import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
-import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
+import { useAccountStore } from '../stores/Account';
+import UsdcIcon from './icons/UsdcIcon.vue';
+// import { useSwapsStore } from '../stores/Swaps';
+// import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
+// import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({
     props: {
@@ -110,11 +105,11 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS };
 
-        const { activeAddress, state: addresses$ } = useAddressStore();
-        const { getLabel } = useContactsStore();
+        const { addressInfo, state: addresses$ } = useUsdcAddressStore();
+        const { getLabel } = useUsdcContactsStore();
 
         const state = computed(() => props.transaction.state);
 
@@ -126,136 +121,127 @@ export default defineComponent({
             // if (!haveSender && haveRecipient) return true;
 
             // Fall back to comparing with active address
-            return props.transaction.recipient === activeAddress.value;
+            return props.transaction.recipient === addressInfo.value?.address;
         });
 
         // Related Transaction
-        const { state: transactions$ } = useTransactionsStore();
+        const { state: transactions$ } = useUsdcTransactionsStore();
         const relatedTx = computed(() => {
             if (!props.transaction.relatedTransactionHash) return null;
             return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
         });
 
-        const { getSwapByTransactionHash } = useSwapsStore();
-        const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash)
-            || (props.transaction.relatedTransactionHash
-                ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
-                : null));
-        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
-        useOasisPayoutStatusUpdater(swapData);
-        // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
-        // related to our address, always holds the proxy data.
-        const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
-        const isCancelledSwap = computed(() =>
-            (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
-            // Funded proxy and then refunded without creating an actual htlc?
-            || (isSwapProxy.value && (isIncoming.value
-                ? props.transaction.recipient === relatedTx.value?.sender
-                : props.transaction.sender === relatedTx.value?.recipient)));
+        /* eslint-disable max-len */
+        // const { getSwapByTransactionHash } = useSwapsStore();
+        // const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash)
+        //     || (props.transaction.relatedTransactionHash
+        //         ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
+        //         : null));
+        // const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
+        // useOasisPayoutStatusUpdater(swapData);
+        // // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
+        // // related to our address, always holds the proxy data.
+        // const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
+        // const isCancelledSwap = computed(() =>
+        //     (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
+        //     // Funded proxy and then refunded without creating an actual htlc?
+        //     || (isSwapProxy.value && (isIncoming.value
+        //         ? props.transaction.recipient === relatedTx.value?.sender
+        //         : props.transaction.sender === relatedTx.value?.recipient)));
+        /* eslint-enable max-len */
 
         // Data
-        const isCashlink = computed(() => isProxyData(props.transaction.data.raw, ProxyType.CASHLINK));
-        const data = computed(() => {
-            if (isCashlink.value) {
-                const { state: proxies$ } = useProxyStore();
-                const cashlinkAddress = isIncoming.value ? props.transaction.sender : props.transaction.recipient;
-                const hubCashlink = proxies$.hubCashlinks[cashlinkAddress];
-                if (hubCashlink && hubCashlink.message) return hubCashlink.message;
-            }
+        const data = computed(() => { // eslint-disable-line arrow-body-style
+            /* eslint-disable max-len */
+            // if (swapData.value && !isCancelledSwap.value) {
+            //     const message = context.root.$t('Sent {fromAsset} – Received {toAsset}', {
+            //         fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
+            //         toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
+            //     }) as string;
 
-            if (swapData.value && !isCancelledSwap.value) {
-                const message = context.root.$t('Sent {fromAsset} – Received {toAsset}', {
-                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
-                    toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
-                }) as string;
+            //     // The TransactionListOasisPayoutStatus takes care of the second half of the message
+            //     if (
+            //         swapData.value.asset === SwapAsset.EUR
+            //         && swapData.value.htlc?.settlement
+            //         && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
+            //     ) return `${message.split('–')[0]} –`;
 
-                // The TransactionListOasisPayoutStatus takes care of the second half of the message
-                if (
-                    swapData.value.asset === SwapAsset.EUR
-                    && swapData.value.htlc?.settlement
-                    && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
-                ) return `${message.split('–')[0]} –`;
+            //     return message;
+            // }
 
-                return message;
-            }
+            // if ('hashRoot' in props.transaction.data
+            //     || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
+            //     return context.root.$t('HTLC Creation') as string;
+            // }
+            // if ('hashRoot' in props.transaction.proof
+            //     || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
+            //     return context.root.$t('HTLC Settlement') as string;
+            // }
+            // if ('creator' in props.transaction.proof
+            //     || (relatedTx.value && 'creator' in relatedTx.value.proof)
+            //     // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
+            //     // tx are regular transactions and we regard the tx from the proxy as refund
+            //     || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
+            //     return context.root.$t('HTLC Refund') as string;
+            // }
+            /* eslint-enable max-len */
 
-            if ('hashRoot' in props.transaction.data
-                || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
-                return context.root.$t('HTLC Creation') as string;
-            }
-            if ('hashRoot' in props.transaction.proof
-                || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
-                return context.root.$t('HTLC Settlement') as string;
-            }
-            if ('creator' in props.transaction.proof
-                || (relatedTx.value && 'creator' in relatedTx.value.proof)
-                // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
-                // tx are regular transactions and we regard the tx from the proxy as refund
-                || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
-                return context.root.$t('HTLC Refund') as string;
-            }
-
-            return parseData(props.transaction.data.raw);
+            return null;
         });
 
         // Peer
         const peerAddress = computed(() => {
-            if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.BTC) return 'bitcoin';
-                if (swapData.value.asset === SwapAsset.EUR) return constants.BANK_ADDRESS;
-            }
+            // if (swapData.value) {
+            //     if (swapData.value.asset === SwapAsset.BTC) return 'bitcoin';
+            //     if (swapData.value.asset === SwapAsset.EUR) return constants.BANK_ADDRESS;
+            // }
 
-            // For Cashlinks and swap proxies
+            // For swap proxies
             if (relatedTx.value) {
                 return isIncoming.value
                     ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
                     : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
             }
 
-            if (isSwapProxy.value) return ''; // avoid displaying proxy address identicon until we know related address
-
-            if (isCashlink.value) return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
+            // eslint-disable-next-line max-len
+            // if (isSwapProxy.value) return ''; // avoid displaying proxy address identicon until we know related address
 
             return isIncoming.value ? props.transaction.sender : props.transaction.recipient;
         });
         const peerLabel = computed(() => {
-            if (isSwapProxy.value && !relatedTx.value) {
-                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
-            }
+            /* eslint-disable max-len */
+            // if (isSwapProxy.value && !relatedTx.value) {
+            //     return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
+            // }
 
-            if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap');
-            }
+            // if (isCancelledSwap.value) {
+            //     return context.root.$t('Cancelled Swap');
+            // }
 
-            if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.BTC) {
-                    return context.root.$t('Bitcoin') as string;
-                }
+            // if (swapData.value) {
+            //     if (swapData.value.asset === SwapAsset.BTC) {
+            //         return context.root.$t('Bitcoin') as string;
+            //     }
 
-                if (swapData.value.asset === SwapAsset.EUR) {
-                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
-                }
+            //     if (swapData.value.asset === SwapAsset.EUR) {
+            //         return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
+            //     }
 
-                return swapData.value.asset.toUpperCase();
-            }
-
-            // Label cashlinks
-            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
-                return isIncoming.value
-                    ? context.root.$t('Cashlink') as string
-                    : context.root.$t('Unclaimed Cashlink') as string;
-            }
+            //     return swapData.value.asset.toUpperCase();
+            // }
+            /* eslint-enable max-len */
 
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
-            if (ownedAddressInfo) return ownedAddressInfo.label;
+            if (ownedAddressInfo) {
+                // Find account label
+                const { accountInfos } = useAccountStore();
+                return Object.values(accountInfos.value)
+                    .find((accountInfo) => accountInfo.polygonAddresses.includes(ownedAddressInfo.address))?.label;
+            }
 
             // Search contacts
             if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value)!;
-
-            // Search global address book
-            const globalLabel = AddressBook.getLabel(peerAddress.value);
-            if (globalLabel) return globalLabel;
 
             return false;
         });
@@ -287,14 +273,13 @@ export default defineComponent({
             data,
             fiatCurrency,
             fiatValue,
-            isCashlink,
             isIncoming,
-            isSwapProxy,
+            // isSwapProxy,
             peerAddress,
             peerLabel,
-            SwapAsset,
-            swapInfo,
-            swapData,
+            // SwapAsset,
+            // swapInfo,
+            // swapData,
         };
     },
     components: {
@@ -303,15 +288,9 @@ export default defineComponent({
         AlertTriangleIcon,
         Amount,
         FiatConvertedAmount,
-        CashlinkXSmallIcon,
-        Identicon,
+        // Identicon,
         FiatAmount,
-        UnclaimedCashlinkIcon,
-        // HistoricValueIcon,
-        BitcoinIcon,
-        BankIcon,
-        SwapSmallIcon,
-        TransactionListOasisPayoutStatus,
+        UsdcIcon,
     },
 });
 </script>
@@ -402,6 +381,10 @@ svg {
 
             &.bitcoin {
                 color: var(--bitcoin-orange);
+            }
+
+            &.usdc {
+                color: var(--usdc-blue);
             }
         }
 

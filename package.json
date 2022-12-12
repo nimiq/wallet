@@ -39,6 +39,7 @@
     "@sentry/vue": "^6.0.0",
     "@unstoppabledomains/resolution": "^8.3.3",
     "@vue/composition-api": "^0.4.0",
+    "ethers": "^5.7.2",
     "iban": "^0.0.14",
     "idb-keyval": "^6.1.0",
     "pinia": "^0.0.5",

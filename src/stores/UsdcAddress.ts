@@ -54,7 +54,7 @@ export const useUsdcAddressStore = createStore({
 
             // TODO: Remove transactions that became obsolete because their address was removed?
         },
-        patchAddress(address: string, patch: Partial<Omit<UsdcAddressInfo, 'type'>>) {
+        patchAddress(address: string, patch: Partial<UsdcAddressInfo>) {
             if (!this.state.addressInfos[address]) return;
 
             this.state.addressInfos[address] = {

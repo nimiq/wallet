@@ -13,6 +13,7 @@ import { initStorage } from './storage';
 import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { launchElectrum } from './electrum';
+import { launchPolygon } from './ethers';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
@@ -100,7 +101,7 @@ async function start() {
     }
 
     if (Config.enableUsdc) {
-        // launchPolygon(); // TODO USDC
+        launchPolygon();
     }
 
     if (

@@ -161,10 +161,10 @@
                 v-if="activeCurrency === CryptoCurrency.BTC"
                 :searchString="searchString"
             />
-            <!-- <UsdcTransactionList
+            <UsdcTransactionList
                 v-if="activeCurrency === CryptoCurrency.USDC"
                 :searchString="searchString"
-            /> -->
+            />
         </template>
         <template v-else>
             <span class="opacity-75">{{ $t('Let\'s get started! Create your Nimiq account:') }}</span>
@@ -225,6 +225,7 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
 import BtcTransactionList from '../BtcTransactionList.vue';
+import UsdcTransactionList from '../UsdcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
@@ -362,6 +363,7 @@ export default defineComponent({
         SearchBar,
         TransactionList,
         BtcTransactionList,
+        UsdcTransactionList,
         ArrowLeftIcon,
         MenuDotsIcon,
         MobileActionBar,

@@ -247,7 +247,7 @@ export const useBtcTransactionsStore = createStore({
                     // TODO this might be not necessary anymore with Vue3
                     if (!output.fiatValue) Vue.set(output, 'fiatValue', {});
                     Vue.set(output.fiatValue!, fiatCurrency, exchangeRate !== undefined
-                        ? (exchangeRate * output.value) / 1e8
+                        ? exchangeRate * (output.value / 1e8)
                         : FIAT_PRICE_UNAVAILABLE,
                     );
                 }

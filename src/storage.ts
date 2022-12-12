@@ -16,6 +16,7 @@ import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores
 import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
 import { UsdcAddressState, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useUsdcContactsStore } from './stores/UsdcContacts';
+import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from './stores/UsdcTransactions';
 import { useSwapsStore, SwapsState } from './stores/Swaps';
 import { useBankStore, BankState } from './stores/Bank';
 import { KycState, useKycStore } from './stores/Kyc';
@@ -31,6 +32,7 @@ const StorageKeys = {
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     USDCADDRESSINFOS: 'wallet_usdcaddresses_v01',
+    USDCTRANSACTIONS: 'wallet_usdctransactions_v01',
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
     KYC: 'wallet_kyc_v00',
@@ -315,6 +317,27 @@ export async function initStorage() {
     unsubscriptions.push(
         usdcContactsStore.subscribe(() =>
             Storage.set(PersistentStorageKeys.USDCCONTACTS, usdcContactsStore.state.contacts),
+        ),
+    );
+
+    /**
+     * USDC TRANSACTIONS
+     */
+    const usdcTransactionsStore = useUsdcTransactionsStore();
+
+    // Load transactions from storage
+    const storedUsdcTxs = await Storage.get<{[hash: string]: UsdcTransaction}>(StorageKeys.USDCTRANSACTIONS);
+    if (storedUsdcTxs) {
+        usdcTransactionsStore.patch({
+            transactions: storedUsdcTxs,
+        });
+        usdcTransactionsStore.calculateFiatAmounts();
+    }
+
+    unsubscriptions.push(
+        // Write transactions to storage when updated
+        usdcTransactionsStore.subscribe(
+            () => Storage.set(StorageKeys.USDCTRANSACTIONS, usdcTransactionsStore.state.transactions),
         ),
     );
 

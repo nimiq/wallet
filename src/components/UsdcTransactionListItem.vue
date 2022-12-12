@@ -25,7 +25,7 @@
             <!-- <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/> -->
             <!-- <Identicon v-else-if="swapData && swapData.asset === SwapAsset.NIM" :address="peerAddress" /> -->
             <!-- <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/> -->
-            <UsdcIcon />
+            <Avatar :label="peerLabel || ''"/>
             <!-- <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div> -->
         </div>
         <div class="data">
@@ -84,6 +84,7 @@ import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
 import { Transaction, TransactionState, useUsdcTransactionsStore } from '../stores/UsdcTransactions';
 import { twoDigit } from '../lib/NumberFormatting';
+import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
@@ -93,7 +94,6 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
 import { useAccountStore } from '../stores/Account';
-import UsdcIcon from './icons/UsdcIcon.vue';
 // import { useSwapsStore } from '../stores/Swaps';
 // import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
 // import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
@@ -286,11 +286,11 @@ export default defineComponent({
         CircleSpinner,
         CrossIcon,
         AlertTriangleIcon,
+        Avatar,
         Amount,
         FiatConvertedAmount,
         // Identicon,
         FiatAmount,
-        UsdcIcon,
     },
 });
 </script>

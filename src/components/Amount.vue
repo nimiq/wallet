@@ -50,6 +50,6 @@ export default defineComponent({
     },
     components: {
         Amount,
-    } as any,
+    },
 });
 </script>

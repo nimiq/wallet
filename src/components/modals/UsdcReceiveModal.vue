@@ -4,79 +4,75 @@
         @close-overlay="closeOverlays"
     >
         <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
-            {{ $t('Receive NIM') }}
+            {{ $t('Receive USDC') }}
             <div slot="more">{{ $t('Share your address with the sender.') }}</div>
         </PageHeader>
         <PageBody class="flex-column address-page">
             <button
-                v-if="activeAddressInfo.type === AddressType.BASIC"
                 @click="addressQrCodeOverlayOpened = true"
                 class="reset qr-button"
             >
                 <QrCodeIcon/>
             </button>
-            <Identicon :address="activeAddressInfo.address"/>
-            <AddressDisplay :address="activeAddressInfo.address" :copyable="true"/>
-            <button
-                v-if="activeAddressInfo.type === AddressType.BASIC"
+            <UsdcIcon />
+            <AddressDisplay :address="address" format="ethereum" :copyable="true"/>
+
+            <div></div> <!-- spacer until another element comes at the bottom -->
+            <!-- <button
                 @click="receiveLinkOverlayOpened = true"
                 @mousedown.prevent
                 class="nq-button-s"
             >
                 {{ $t('Create request link') }}
-            </button>
+            </button> -->
         </PageBody>
 
-        <QrCodeOverlay v-if="addressQrCodeOverlayOpened"
+        <QrCodeOverlay v-if="addressQrCodeOverlayOpened && address"
             slot="overlay"
-            :address="activeAddressInfo.address" currency="nim"
+            qrPrefix="polygon:" :address="address" currency="usdc"
         />
 
-        <PaymentLinkOverlay slot="overlay"
-            v-if="receiveLinkOverlayOpened"
-            currency="nim"
-            :address="activeAddressInfo.address"
-        />
+        <!-- <PaymentLinkOverlay slot="overlay"
+            v-if="receiveLinkOverlayOpened && address"
+            currency="usdc"
+            :address="address"
+        /> -->
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
-    Identicon,
     AddressDisplay,
     QrCodeIcon,
 } from '@nimiq/vue-components';
 import Modal, { disableNextModalTransition } from './Modal.vue';
-import { useAddressStore, AddressType } from '../../stores/Address';
-import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+// import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
+import UsdcIcon from '../icons/UsdcIcon.vue';
 
 export default defineComponent({
-    name: 'receive-modal',
+    name: 'usdc-receive-modal',
     setup(props, context) {
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
-
-        const { activeAddressInfo } = useAddressStore();
-
+        const { addressInfo } = useUsdcAddressStore();
+        const address = computed(() => addressInfo.value?.address);
         function closeOverlays() {
             addressQrCodeOverlayOpened.value = false;
             receiveLinkOverlayOpened.value = false;
         }
-
         function back() {
             disableNextModalTransition();
             context.root.$router.back();
         }
-
         return {
-            activeAddressInfo,
+            address,
             addressQrCodeOverlayOpened,
             receiveLinkOverlayOpened,
-            AddressType,
             closeOverlays,
             back,
         };
@@ -85,11 +81,11 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        Identicon,
         AddressDisplay,
         QrCodeIcon,
-        PaymentLinkOverlay,
+        // PaymentLinkOverlay,
         QrCodeOverlay,
+        UsdcIcon,
     },
 });
 </script>
@@ -119,9 +115,10 @@ export default defineComponent({
         }
     }
 
-    .identicon {
-        width: 18rem;
+    .usdc {
+        width: 16rem;
         margin-top: 3rem;
+        color: var(--usdc-blue);
     }
 
     .copyable {

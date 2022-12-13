@@ -100,13 +100,13 @@ async function start() {
         launchElectrum();
     }
 
-    if (Config.enableUsdc) {
+    if (Config.usdc.enabled) {
         launchPolygon();
     }
 
     if (
         (activeCurrency === CryptoCurrency.BTC && !Config.enableBitcoin)
-        || (activeCurrency === CryptoCurrency.USDC && !Config.enableUsdc)
+        || (activeCurrency === CryptoCurrency.USDC && !Config.usdc.enabled)
     ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }

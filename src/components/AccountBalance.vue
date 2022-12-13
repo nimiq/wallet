@@ -68,7 +68,7 @@ export default defineComponent({
                 amount += btcFiatAmount;
             }
 
-            if (Config.enableUsdc) {
+            if (Config.usdc.enabled) {
                 const usdcFiatAmount = usdcExchangeRate.value !== undefined
                     ? (usdcAccountBalance.value / 1e6) * usdcExchangeRate.value
                     : undefined;

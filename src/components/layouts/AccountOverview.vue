@@ -86,7 +86,7 @@
                 </button>
             </div>
 
-            <div v-if="canHaveMultipleAddresses && $config.enableUsdc" class="usdc-account flex-column">
+            <div v-if="canHaveMultipleAddresses && $config.usdc.enabled" class="usdc-account flex-column">
                 <button
                     class="usdc-account-item reset flex-row"
                     :class="{

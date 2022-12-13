@@ -2,6 +2,7 @@
 import { ref, watch } from '@vue/composition-api';
 import type { BigNumber, Contract, Event, EventFilter, providers } from 'ethers';
 import type { Block } from '@ethersproject/abstract-provider'; // eslint-disable-line import/no-extraneous-dependencies
+import Config from 'config';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useUsdcNetworkStore } from './stores/UsdcNetwork';
 import { useUsdcTransactionsStore, Transaction as PlainTransaction, TransactionState } from './stores/UsdcTransactions';
@@ -28,18 +29,20 @@ export async function getPolygonClient(): Promise<PolygonClient> {
 
     const ethers = await import(/* webpackChunkName: "ethers-js" */ 'ethers');
     const provider = new ethers.providers.JsonRpcProvider(
-        'https://matic-mumbai.chainstacklabs.com',
-        ethers.providers.getNetwork('maticmum'), // MATIC Mumbai Testnet
+        Config.usdc.rpcEndoint,
+        ethers.providers.getNetwork(Config.usdc.networkId),
     );
 
     await provider.ready;
     console.log('Polygon connection established');
 
-    const usdcContract = new ethers.Contract('0x0FA8781a83E46826621b3BC094Ea2A0212e71B23', USDC_CONTRACT_ABI, provider);
+    const usdcContract = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
+    // const openGsnContract = new ethers.Contract(Config.usdc.openGsnContract, OPENGSN_CONTRACT_ABI, provider);
 
     resolver!({
         jsonRpc: provider,
         usdc: usdcContract,
+        // openGsn: openGsnContract,
     });
 
     return clientPromise;
@@ -179,8 +182,7 @@ export async function launchPolygon() {
 
         const lastConfirmedHeight = knownTxs
             .filter((tx) => Boolean(tx.blockHeight))
-            // TODO block height to start at must be from Config and dependent on network
-            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 29621817);
+            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), Config.usdc.startHistoryScanHeight);
 
         network$.fetchingTxHistory++;
 
@@ -283,3 +285,5 @@ const USDC_CONTRACT_ABI = [
     // 'function transferFrom(address sender, address recipient, uint256 amount) returns (bool)',
     // 'function withdraw(uint256 amount)',
 ];
+
+// const OPENGSN_CONTRACT_ABI = [];

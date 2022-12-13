@@ -6,8 +6,17 @@ export default {
     nimiqScript: 'https://cdn.nimiq.com/v1.5.8/web.js',
     reportToSentry: false,
     enableBitcoin: true,
-    enableUsdc: true,
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes
+
+    usdc: {
+        enabled: true,
+        networkId: 137 as number | string, // Can also be 'matic'
+        rpcEndoint: 'https://polygon-rpc.com',
+        usdcContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+        openGsnContract: '',
+        explorer: 'https://polygonscan.com',
+        startHistoryScanHeight: 36774144, // From which block to fetch transaction history
+    },
 
     fastspot: {
         enabled: true,

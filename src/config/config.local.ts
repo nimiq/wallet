@@ -6,8 +6,29 @@ export default {
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     reportToSentry: false,
     enableBitcoin: false,
-    enableUsdc: true,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
+
+    usdc: {
+        enabled: true,
+        networkId: 80001 as number | string, // Can also be 'maticmum'
+        rpcEndoint: 'https://matic-mumbai.chainstacklabs.com',
+        usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
+        openGsnContract: '',
+        explorer: 'https://mumbai.polygonscan.com',
+        /**
+         * From which block to fetch transaction history
+         *
+         * When asking the RPC node to scan for logs from block 0, the request times out.
+         * So we need to set a block height that is still acceptable for the RPC node and
+         * returns results. We therefore set the height to the current block height at the
+         * first deployment of the Wallet in the respective network. This will not display
+         * any potential transactions on the USDC account before that block, which should
+         * not matter for almost all users. Most likely users to encounter missing txs
+         * could be Ledger users who used their USDC account before. This is a trade-off
+         * we have to make. The balance displayed for all users will be correct, however.
+         */
+        startHistoryScanHeight: 29621817,
+    },
 
     fastspot: {
         enabled: true,

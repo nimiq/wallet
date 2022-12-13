@@ -6,8 +6,17 @@ export default {
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     reportToSentry: false,
     enableBitcoin: true,
-    enableUsdc: true,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
+
+    usdc: {
+        enabled: true,
+        networkId: 80001 as number | string, // Can also be 'maticmum'
+        rpcEndoint: 'https://matic-mumbai.chainstacklabs.com',
+        usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
+        openGsnContract: '',
+        explorer: 'https://mumbai.polygonscan.com',
+        startHistoryScanHeight: 29621817, // From which block to fetch transaction history
+    },
 
     fastspot: {
         enabled: true,

@@ -92,10 +92,11 @@ const fetchedAddresses = new Set<string>();
 let currentSubscriptionFilter: EventFilter | undefined;
 function subscribe(addresses: string[]) {
     getPolygonClient().then((client) => {
-        const newFilter = client.usdc.filters.Transfer(null, [...subscribedAddresses]);
-        client.usdc.on(newFilter, transactionListener);
+        // Only subscribe to incoming logs
+        const newFilterIncoming = client.usdc.filters.Transfer(null, [...subscribedAddresses]);
+        client.usdc.on(newFilterIncoming, transactionListener);
         if (currentSubscriptionFilter) client.usdc.off(currentSubscriptionFilter, transactionListener);
-        currentSubscriptionFilter = newFilter;
+        currentSubscriptionFilter = newFilterIncoming;
     });
     updateBalances(addresses);
     return true;
@@ -189,14 +190,21 @@ export async function launchPolygon() {
         updateBalances([address]);
 
         console.log('Fetching USDC transaction history for', address, knownTxs);
-        const filter = client.usdc.filters.Transfer(null, address);
-        client.usdc.queryFilter(filter, lastConfirmedHeight - 10)
-            .then((logs) => {
+        // EventFilters only allow to query with an AND condition between arguments (topics). So while
+        // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
+        // OR two AND pairs. That requires two separate requests.
+        const filterIncoming = client.usdc.filters.Transfer(null, address);
+        const filterOutgoing = client.usdc.filters.Transfer(address);
+        Promise.all([
+            client.usdc.queryFilter(filterIncoming, lastConfirmedHeight - 10),
+            client.usdc.queryFilter(filterOutgoing, lastConfirmedHeight - 10),
+        ])
+            .then(([logsIn, logsOut]) => {
                 // Filter known txs
                 const knownHashes = knownTxs.map(
                     (tx) => `${tx.transactionHash}:${tx.logIndex}`,
                 );
-                const newLogs = logs.filter((log) => {
+                const newLogs = logsIn.concat(logsOut).filter((log) => {
                     const hash = `${log.transactionHash}:${log.logIndex}`;
                     return !knownHashes.includes(hash);
                 }) as TransferEvent[];

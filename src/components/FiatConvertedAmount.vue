@@ -61,7 +61,9 @@ export default defineComponent({
             fiatCurrency,
         };
     },
-    components: { FiatAmount } as any,
+    components: {
+        FiatAmount,
+    },
 });
 </script>
 

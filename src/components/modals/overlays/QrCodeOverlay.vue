@@ -4,7 +4,7 @@
         <PageBody class="flex-column">
             <div class="flex-column">
                 <QrCode
-                    :data="address"
+                    :data="`${qrPrefix}${address}`"
                     :size="520"
                     :fill="'#1F2348' /* nimiq-blue */"
                     class="qr-code"
@@ -25,6 +25,10 @@ import ShortAddress from '../../ShortAddress.vue';
 
 export default defineComponent({
     props: {
+        qrPrefix: {
+            type: String,
+            default: '',
+        },
         address: {
             type: String,
             required: true,

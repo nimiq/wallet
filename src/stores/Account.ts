@@ -23,11 +23,11 @@ export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'ad
 
 export const useAccountStore = createStore({
     id: 'accounts',
-    state: () => ({
+    state: (): AccountState => ({
         accountInfos: {},
         activeAccountId: null,
         activeCurrency: CryptoCurrency.NIM,
-    } as AccountState),
+    }),
     getters: {
         accountInfos: (state) => state.accountInfos,
         activeAccountId: (state) => state.activeAccountId,

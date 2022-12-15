@@ -173,11 +173,9 @@ export async function initStorage() {
     // Load user settings from storage
     const storedSettings = await Storage.get<SettingsState>(StorageKeys.SETTINGS);
     if (storedSettings) {
-        settingsStore.patch({
-            ...storedSettings,
-            updateAvailable: false,
-            btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
-        });
+        storedSettings.updateAvailable = false;
+        storedSettings.btcDecimals = storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals;
+        settingsStore.patch(storedSettings);
     }
 
     unsubscriptions.push(
@@ -222,10 +220,8 @@ export async function initStorage() {
         || await Storage.get<ProxyState>(StorageKeys.DEPRECATED_CASHLINKS);
     await Storage.del(StorageKeys.DEPRECATED_CASHLINKS);
     if (storedProxyState) {
-        proxyStore.patch({
-            ...storedProxyState,
-            networkTrigger: 0,
-        });
+        storedProxyState.networkTrigger = 0;
+        proxyStore.patch(storedProxyState);
     }
 
     unsubscriptions.push(
@@ -313,10 +309,8 @@ export async function initStorage() {
     const kycStore = useKycStore();
     const storedKycState = await Storage.get<KycState>(StorageKeys.KYC);
     if (storedKycState) {
-        kycStore.patch({
-            ...storedKycState,
-            kycLimits: null,
-        });
+        storedKycState.kycLimits = null;
+        kycStore.patch(storedKycState);
     }
 
     unsubscriptions.push(

@@ -1,25 +1,29 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <main :class="activeMobileColumn" ref="$main">
-            <Sidebar/>
+        <template v-if="hasAccounts">
+            <main :class="activeMobileColumn" ref="$main">
+                <Sidebar/>
 
-            <transition name="delay">
-                <router-view name="basement"/>
-            </transition>
+                <transition name="delay">
+                    <router-view name="basement"/>
+                </transition>
 
-            <transition name="slide-right">
-                <keep-alive>
-                    <router-view name="groundfloor"/>
-                </keep-alive>
-            </transition>
-        </main>
+                <transition name="slide-right">
+                    <keep-alive>
+                        <router-view name="groundfloor"/>
+                    </keep-alive>
+                </transition>
+            </main>
 
-        <SwapNotification/>
+            <SwapNotification/>
 
-        <UpdateNotification/>
+            <UpdateNotification/>
+        </template>
 
-        <div v-if="!hasAccounts" class="loader flex-row">
-            <LoadingSpinner/>
+        <div v-else class="loader flex-row">
+            <router-view name="onboarding">
+                <LoadingSpinner/>
+            </router-view>
         </div>
     </div><!-- #app -->
 </template>
@@ -254,7 +258,6 @@ export default defineComponent({
         justify-content: center;
         align-items: center;
         background: var(--nimiq-gray);
-        z-index: 100;
     }
 
     @media (max-width: 1160px) { // Half mobile breakpoint

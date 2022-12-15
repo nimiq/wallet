@@ -8,6 +8,7 @@ import { provide, inject } from '@vue/composition-api';
 import Groundfloor from './components/layouts/Groundfloor.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
+import OnboardingModal from './components/modals/OnboardingModal.vue';
 
 import { AccountType, useAccountStore } from './stores/Account';
 
@@ -70,6 +71,12 @@ export enum Columns {
 }
 
 const routes: RouteConfig[] = [{
+    path: '/onboarding',
+    components: {
+        onboarding: OnboardingModal,
+    },
+    name: 'onboarding',
+}, {
     path: '/',
     components: {
         groundfloor: Groundfloor,

@@ -79,6 +79,8 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
         // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
         // If instead the welcome modal was shown above, the welcome modal offers the bitcoin activation on close.
         router.onReady(() => router.push('/btc-activation'));
+    } else {
+        router.onReady(() => router.replace('/'));
     }
 });
 
@@ -265,7 +267,7 @@ export async function syncFromHub() {
     }
 
     if (!listedAccounts.length) {
-        onboard(true);
+        goToOnboardingMenu();
         return;
     }
 
@@ -277,6 +279,13 @@ export async function syncFromHub() {
     }
 }
 
+function goToOnboardingMenu() {
+    // router.replace('/onboarding').catch(console.debug); // eslint-disable-line no-console
+}
+
+/**
+ * @deprecated
+ */
 export async function onboard(asRedirect = false) {
     if (asRedirect) {
         const behavior = new HubApi.RedirectRequestBehavior(window.location.href);
@@ -504,7 +513,7 @@ export async function logout(accountId: string) {
     accountStore.removeAccount(accountId);
 
     if (!Object.values(accountStore.state.accountInfos).length) {
-        onboard(true);
+        goToOnboardingMenu();
         return null;
     }
 

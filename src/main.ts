@@ -91,11 +91,19 @@ async function start() {
         render: (h) => h(App),
     }).$mount('#app');
 
-    launchNetwork();
+    const { state: { activeCurrency, accountInfos } } = useAccountStore();
 
-    if (Config.enableBitcoin) {
-        launchElectrum();
-    } else {
+    if (Object.keys(accountInfos).length > 0) {
+        launchNetwork();
+
+        if (Config.enableBitcoin) {
+            launchElectrum();
+        }
+    }
+
+    if (
+        (activeCurrency === CryptoCurrency.BTC && !Config.enableBitcoin)
+    ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }
 }

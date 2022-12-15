@@ -2,12 +2,15 @@ import { SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
 import { ENV_MAIN } from './Constants';
 
-export function explorerTxLink(asset: SwapAsset, hash: string) {
+// TODO Use SwapAsset.USDC instead of 'USDC'
+export function explorerTxLink(asset: SwapAsset | 'USDC', hash: string) {
     switch (asset) {
         case SwapAsset.NIM:
             return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${hash}`;
         case SwapAsset.BTC:
             return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
+        case 'USDC':
+            return `https://${Config.environment === ENV_MAIN ? '' : 'mumbai.'}polygonscan.com/tx/${hash}`;
         default: throw new Error('Invalid asset');
     }
 }

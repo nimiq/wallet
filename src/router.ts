@@ -52,6 +52,9 @@ const BtcTransactionModal = () =>
 // USDC Modals
 const UsdcReceiveModal = () =>
     import(/* webpackChunkName: "usdc-receive-modal" */ './components/modals/UsdcReceiveModal.vue');
+const UsdcTransactionModal = () =>
+    import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdcTransactionModal.vue');
+
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
 const BuyCryptoModal = () =>
@@ -143,6 +146,14 @@ const routes: RouteConfig[] = [{
             },
             name: 'receive-usdc',
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/usdc-transaction/:hash',
+            components: {
+                modal: UsdcTransactionModal,
+            },
+            name: 'usdc-transaction',
+            props: { modal: true },
+            meta: { column: Columns.ADDRESS },
         }, {
             path: '/transaction/:hash',
             components: {

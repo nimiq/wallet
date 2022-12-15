@@ -24,7 +24,8 @@ export default defineComponent({
         let action: string | (() => LocaleMessage) | (() => void) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
-        text = () => context.root.$t('Buy NIM & BTC with OASIS!');
+        // text = () => context.root.$t('Buy NIM & BTC with OASIS!');
+        text = () => ''; // Disables AnnouncementBox
         cta = () => context.root.$t('Try it now');
         action = () => context.root.$router.push('buy');
         storageKey = 'buy-with-oasis-1';

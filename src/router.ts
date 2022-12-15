@@ -50,6 +50,8 @@ const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
 // USDC Modals
+const UsdcActivationModal = () =>
+    import(/* webpackChunkName: "usdc-activation-modal" */ './components/modals/UsdcActivationModal.vue');
 const UsdcReceiveModal = () =>
     import(/* webpackChunkName: "usdc-receive-modal" */ './components/modals/UsdcReceiveModal.vue');
 const UsdcTransactionModal = () =>
@@ -146,6 +148,14 @@ const routes: RouteConfig[] = [{
             },
             name: 'receive-usdc',
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/usdc-activation',
+            components: {
+                modal: UsdcActivationModal,
+            },
+            name: 'usdc-activation',
+            props: { modal: true },
+            meta: { column: Columns.ACCOUNT },
         }, {
             path: '/usdc-transaction/:hash',
             components: {
@@ -420,6 +430,38 @@ router.beforeEach((to, from, next) => {
             name: 'btc-activation',
             // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams in
             // BtcActivationModal and also by the RPC api in case that the Hub BTC activation request is executed as
+            // redirect.
+            hash: `#redirect=${encodeURIComponent(to.fullPath)}`,
+            replace: true,
+        });
+    }
+});
+
+// Offer to activate USDC if a route requires it, but it's not activated yet
+const viewsRequiringActivatedUsdc = new Set<Component>([/** TODO UsdcSendModal, */UsdcReceiveModal]);
+router.beforeEach((to, from, next) => {
+    const requiresActivatedUsdc = to.matched.some(({ components }) =>
+        Object.values(components).some((view) => viewsRequiringActivatedUsdc.has(view)));
+    const {
+        activeAccountInfo: { value: activeAccount },
+        hasUsdcAddresses: { value: isUsdcActivated },
+    } = useAccountStore();
+    const isLegacyAccount = !!activeAccount && activeAccount.type === AccountType.LEGACY;
+    if (!requiresActivatedUsdc || isUsdcActivated) {
+        // can continue to the requested view
+        next();
+    } else if (isLegacyAccount) {
+        // legacy accounts don't support Usdc; go to main view
+        next({
+            name: 'root',
+            replace: true,
+        });
+    } else {
+        // open Usdc activation modal; store original target route in hash
+        next({
+            name: 'usdc-activation',
+            // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams in
+            // UsdcActivationModal and also by the RPC api in case that the Hub USDC activation request is executed as
             // redirect.
             hash: `#redirect=${encodeURIComponent(to.fullPath)}`,
             replace: true,

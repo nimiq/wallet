@@ -14,7 +14,6 @@ export default {
         rpcEndoint: 'https://polygon-rpc.com',
         usdcContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         openGsnContract: '',
-        explorer: 'https://polygonscan.com',
         startHistoryScanHeight: 36774144, // From which block to fetch transaction history
     },
 

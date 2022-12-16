@@ -287,7 +287,7 @@
                     </template>
                 </i18n>
 
-                <BlueLink :href="explorerTxLink('NIM', transaction.transactionHash)" target="_blank" rel="noopener">
+                <BlueLink :href="blockExplorerLink" target="_blank" rel="noopener">
                     {{ $t('Block explorer') }}
                 </BlueLink>
             </Tooltip>
@@ -334,7 +334,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, CryptoCurrency } from '../../lib/Constants';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
@@ -594,6 +594,9 @@ export default defineComponent({
             && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
+        const blockExplorerLink = computed(() =>
+            explorerTxLink(CryptoCurrency.NIM, transaction.value.transactionHash));
+
         async function refundHtlc() {
             const htlcDetails = (swapInfo.value?.in as SwapNimData | undefined)?.htlc;
             if (!htlcDetails && !isSwapProxy.value) throw new Error('Unexpected: unknown HTLC refund details');
@@ -656,8 +659,8 @@ export default defineComponent({
             swapTransaction,
             SwapAsset,
             showRefundButton,
+            blockExplorerLink,
             refundHtlc,
-            explorerTxLink,
             SettlementStatus,
         };
     },

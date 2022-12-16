@@ -87,22 +87,26 @@
 </template>
 
 <script lang="ts">
-import { explorerTxLink } from '@/lib/ExplorerUtils';
-import { twoDigit } from '@/lib/NumberFormatting';
-import { useAccountStore } from '@/stores/Account';
-import { useAddressStore } from '@/stores/Address';
-import { useFiatStore } from '@/stores/Fiat';
-import { useSettingsStore } from '@/stores/Settings';
-import { useUsdcContactsStore } from '@/stores/UsdcContacts';
-import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
+import { computed, defineComponent } from '@vue/composition-api';
 import {
     Amount,
-    ArrowRightIcon, FiatAmount, InfoCircleSmallIcon, PageBody,
+    ArrowRightIcon,
+    FiatAmount,
+    InfoCircleSmallIcon,
+    PageBody,
     PageHeader,
     Tooltip,
 } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
-import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { explorerTxLink } from '@/lib/ExplorerUtils';
+import { twoDigit } from '@/lib/NumberFormatting';
+import { CryptoCurrency } from '@/lib/Constants';
+import { useAccountStore } from '@/stores/Account';
+import { useUsdcAddressStore } from '@/stores/UsdcAddress';
+import { useFiatStore } from '@/stores/Fiat';
+import { useSettingsStore } from '@/stores/Settings';
+import { useUsdcTransactionsStore } from '@/stores/UsdcTransactions';
+import { useUsdcContactsStore } from '@/stores/UsdcContacts';
+import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
 import Avatar from '../Avatar.vue';
 import BlueLink from '../BlueLink.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
@@ -117,9 +121,9 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const { amountsHidden } = useSettingsStore();
-        const { state: addresses$ } = useAddressStore();
+        const { state: addresses$ } = useUsdcAddressStore();
 
         const transaction = computed(() => useUsdcTransactionsStore().state.transactions[props.hash]);
 
@@ -161,7 +165,8 @@ export default defineComponent({
         const { height: blockHeight } = useUsdcNetworkStore();
         const confirmations = computed(() =>
             transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
-        const blockExplorerLink = computed(() => explorerTxLink('USDC', transaction.value.transactionHash));
+        const blockExplorerLink = computed(() =>
+            explorerTxLink(CryptoCurrency.USDC, transaction.value.transactionHash));
 
         return {
             amountsHidden,

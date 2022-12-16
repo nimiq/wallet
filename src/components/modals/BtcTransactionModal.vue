@@ -334,7 +334,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS, CryptoCurrency } from '../../lib/Constants';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
@@ -569,7 +569,8 @@ export default defineComponent({
             && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
-        const blockExplorerLink = computed(() => explorerTxLink(SwapAsset.BTC, transaction.value.transactionHash));
+        const blockExplorerLink = computed(() =>
+            explorerTxLink(CryptoCurrency.BTC, transaction.value.transactionHash));
 
         async function refundHtlc() {
             const swapIn = swapInfo.value!.in as SwapBtcData;

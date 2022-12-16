@@ -28,7 +28,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     });
 
     const ethers = await import(/* webpackChunkName: "ethers-js" */ 'ethers');
-    const provider = new ethers.providers.JsonRpcProvider(
+    const provider = new ethers.providers.StaticJsonRpcProvider(
         Config.usdc.rpcEndoint,
         ethers.providers.getNetwork(Config.usdc.networkId),
     );

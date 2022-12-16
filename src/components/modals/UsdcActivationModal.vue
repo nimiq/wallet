@@ -9,11 +9,11 @@
 
             <p class="nq-text">
                 {{ $t('Easily swap between NIM, the super performant payment coin '
-                    + 'and BTC, the gold standard of crypto.') }}
+                    + 'and USDC, the USD-pegged stable-coin.') }}
             </p>
-            <p class="nq-text">
-                {{ $t('Or buy BTC directly in the wallet.') }}
-            </p>
+            <!-- <p class="nq-text">
+                {{ $t('Or buy USDC directly in the wallet.') }}
+            </p> -->
 
             <div class="flex-grow"></div>
 

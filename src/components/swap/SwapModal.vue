@@ -254,7 +254,6 @@ import { useKycStore } from '../../stores/Kyc';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
-import { explorerTxLink, explorerAddrLink } from '../../lib/ExplorerUtils';
 import SwapModalFooter from './SwapModalFooter.vue';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
@@ -1267,8 +1266,6 @@ export default defineComponent({
             sign,
             cancel,
             SwapState,
-            explorerTxLink,
-            explorerAddrLink,
             finishSwap,
             limits,
             isLimitReached,

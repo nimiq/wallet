@@ -1,15 +1,14 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
-import { ENV_MAIN } from './Constants';
+import { CryptoCurrency, ENV_MAIN } from './Constants';
 
-// TODO Use SwapAsset.USDC instead of 'USDC'
-export function explorerTxLink(asset: SwapAsset | 'USDC', hash: string) {
+export function explorerTxLink(asset: CryptoCurrency, hash: string) {
     switch (asset) {
-        case SwapAsset.NIM:
+        case CryptoCurrency.NIM:
             return `https://${Config.environment === ENV_MAIN ? '' : 'test.'}nimiq.watch/#${hash}`;
-        case SwapAsset.BTC:
+        case CryptoCurrency.BTC:
             return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
-        case 'USDC':
+        case CryptoCurrency.USDC:
             return `https://${Config.environment === ENV_MAIN ? '' : 'mumbai.'}polygonscan.com/tx/${hash}`;
         default: throw new Error('Invalid asset');
     }
@@ -23,6 +22,8 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
         case SwapAsset.BTC:
             return `https://blockstream.info${Config.environment === ENV_MAIN ? '' : '/testnet'}`
                 + `/address/${address}`;
+        // case SwapAsset.USDC:
+        //     return `https://${Config.environment === ENV_MAIN ? '' : 'mumbai.'}polygonscan.com/address/${address}`;
         case SwapAsset.EUR:
             if (Config.environment === ENV_MAIN) return `https://oasis.watch/?id=${address}`;
             return `${Config.oasis.apiEndpoint}/htlc/${address}`;

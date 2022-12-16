@@ -14,7 +14,6 @@ export default {
         rpcEndoint: 'https://matic-mumbai.chainstacklabs.com',
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
         openGsnContract: '',
-        explorer: 'https://mumbai.polygonscan.com',
         startHistoryScanHeight: 29621817, // From which block to fetch transaction history
     },
 

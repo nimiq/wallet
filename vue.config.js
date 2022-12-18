@@ -255,4 +255,17 @@ module.exports = {
             ],
         },
     },
+
+    // For iOS debugging in BrowserStack, BrowserStack's localhost tunnel bs-local.com needs to be used, see
+    // https://www.browserstack.com/docs/live/local-testing/ios-troubleshooting-guide. However, on bs-local.com features
+    // only available on https like crypto.subtle or service workers do not work unless served as https. The Hub also
+    // needs to served with this option and the Keyguard has to be served over https as well. Safari has problems to
+    // open the https page with invalid certificate, but Chrome iOS works and also uses the Safari engine. To be able to
+    // use the dev tools with Chrome iOS on BrowserStack, launch BrowserStack with Safari first, then switch to Chrome.
+    ...(process.env['browserstack-ios-testing'] ? {
+        devServer: {
+            https: true,
+            allowedHosts: 'all',
+        },
+    } : null),
 };

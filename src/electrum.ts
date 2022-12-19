@@ -382,3 +382,6 @@ export async function launchElectrum() {
         subscribeToAddresses([address]);
     });
 }
+
+// @ts-expect-error debugging
+window.gimmeBitcoinClient = async () => getElectrumClient();

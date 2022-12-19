@@ -8,7 +8,7 @@ import { useUsdcNetworkStore } from './stores/UsdcNetwork';
 import { useUsdcTransactionsStore, Transaction as PlainTransaction, TransactionState } from './stores/UsdcTransactions';
 
 interface PolygonClient {
-    jsonRpc: providers.Provider;
+    provider: providers.Provider;
     usdc: Contract;
     // openGsn: Contract;
 }
@@ -36,13 +36,13 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     await provider.ready;
     console.log('Polygon connection established');
 
-    const usdcContract = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
-    // const openGsnContract = new ethers.Contract(Config.usdc.openGsnContract, OPENGSN_CONTRACT_ABI, provider);
+    const usdc = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
+    // const openGsn = new ethers.Contract(Config.usdc.openGsnContract, OPENGSN_CONTRACT_ABI, provider);
 
     resolver!({
-        jsonRpc: provider,
-        usdc: usdcContract,
-        // openGsn: openGsnContract,
+        provider,
+        usdc,
+        // openGsn: openGsn,
     });
 
     return clientPromise;
@@ -131,7 +131,7 @@ export async function launchPolygon() {
     const transactionsStore = useUsdcTransactionsStore();
 
     // Start block listener
-    client.jsonRpc.on('block', (height: number) => {
+    client.provider.on('block', (height: number) => {
         console.log('Polygon is now at', height);
         network$.height = height;
     });
@@ -237,6 +237,9 @@ function logAndBlockToPlain(log: TransferEvent, block: Block): PlainTransaction 
         timestamp: block.timestamp,
     };
 }
+
+// @ts-expect-error debugging
+window.gimmePolygonClient = async () => getPolygonClient();
 
 interface TransferResult extends ReadonlyArray<any> {
     0: string;

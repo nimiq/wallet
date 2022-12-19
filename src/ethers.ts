@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
-import type { BigNumber, Contract, Event, EventFilter, providers } from 'ethers';
+import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 import type { Block } from '@ethersproject/abstract-provider'; // eslint-disable-line import/no-extraneous-dependencies
 import Config from 'config';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
@@ -11,6 +11,7 @@ interface PolygonClient {
     provider: providers.Provider;
     usdc: Contract;
     // openGsn: Contract;
+    ethers: typeof ethers;
 }
 
 let isLaunched = false;
@@ -43,6 +44,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         provider,
         usdc,
         // openGsn: openGsn,
+        ethers,
     });
 
     return clientPromise;
@@ -238,6 +240,20 @@ function logAndBlockToPlain(log: TransferEvent, block: Block): PlainTransaction 
     };
 }
 
+export async function createTransactionRequest(recipient: string, amount: number) {
+    const addressInfo = useUsdcAddressStore().addressInfo.value;
+    if (!addressInfo) throw new Error('No active USDC address');
+    const fromAddress = addressInfo.address;
+
+    const client = await getPolygonClient();
+    const voidSigner = new client.ethers.VoidSigner(fromAddress, client.provider);
+
+    const tx = await client.usdc.populateTransaction.transfer(recipient, amount);
+    tx.gasLimit = await voidSigner.estimateGas(tx); // TODO: Is his enough, or should we add a multiplier?
+
+    return voidSigner.populateTransaction(tx);
+}
+
 // @ts-expect-error debugging
 window.gimmePolygonClient = async () => getPolygonClient();
 
@@ -292,7 +308,7 @@ const USDC_CONTRACT_ABI = [
     // 'function revokeRole(bytes32 role, address account)',
     // 'function symbol() view returns (string)',
     // 'function totalSupply() view returns (uint256)',
-    // 'function transfer(address recipient, uint256 amount) returns (bool)',
+    'function transfer(address recipient, uint256 amount) returns (bool)',
     // 'function transferFrom(address sender, address recipient, uint256 amount) returns (bool)',
     // 'function withdraw(uint256 amount)',
 ];

@@ -1,3 +1,4 @@
+import { Currency, ETHEREUM_CHAINS_ID, SUPPORTED_TOKENS } from '@nimiq/utils';
 import { ENV_DEV } from '../lib/Constants';
 
 export default {
@@ -10,9 +11,11 @@ export default {
 
     usdc: {
         enabled: true,
-        networkId: 80001 as number | string, // Can also be 'maticmum'
+        networkId: ENV_DEV ? ETHEREUM_CHAINS_ID.POLYGON_MUMBAI_TESTNET : ETHEREUM_CHAINS_ID.POLYGON_MAINNET,
+        usdcContract: ENV_DEV
+            ? SUPPORTED_TOKENS[ETHEREUM_CHAINS_ID.POLYGON_MUMBAI_TESTNET][Currency.USDC]
+            : SUPPORTED_TOKENS[ETHEREUM_CHAINS_ID.POLYGON_MAINNET][Currency.USDC],
         rpcEndoint: 'https://matic-mumbai.chainstacklabs.com',
-        usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
         openGsnContract: '',
         /**
          * From which block to fetch transaction history

@@ -17,14 +17,13 @@
             <UsdcIcon />
             <AddressDisplay :address="address" format="ethereum" :copyable="true"/>
 
-            <div></div> <!-- spacer until another element comes at the bottom -->
-            <!-- <button
+            <button
                 @click="receiveLinkOverlayOpened = true"
                 @mousedown.prevent
                 class="nq-button-s"
             >
                 {{ $t('Create request link') }}
-            </button> -->
+            </button>
         </PageBody>
 
         <QrCodeOverlay v-if="addressQrCodeOverlayOpened && address"
@@ -32,11 +31,11 @@
             qrPrefix="polygon:" :address="address" currency="usdc"
         />
 
-        <!-- <PaymentLinkOverlay slot="overlay"
+        <PaymentLinkOverlay slot="overlay"
             v-if="receiveLinkOverlayOpened && address"
             currency="usdc"
             :address="address"
-        /> -->
+        />
     </Modal>
 </template>
 
@@ -50,7 +49,7 @@ import {
 } from '@nimiq/vue-components';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
-// import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
+import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 
@@ -83,7 +82,7 @@ export default defineComponent({
         PageBody,
         AddressDisplay,
         QrCodeIcon,
-        // PaymentLinkOverlay,
+        PaymentLinkOverlay,
         QrCodeOverlay,
         UsdcIcon,
     },

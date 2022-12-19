@@ -1846,10 +1846,9 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/utils@^0.8.2", "@nimiq/utils@^0.8.3":
+"@nimiq/utils@^0.8.2", "@nimiq/utils@file:../nimiq-utils/nimiq-utils-v0.8.3.tgz":
   version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.8.3.tgz#e088ad4ec874d2f6ec10437700f23197fd2e7600"
-  integrity sha512-fDZR3z/l7G39XbtkbnMvyxkrw/o1DKahxg3Scdn+Ib0/s98H1Uk8P3JJ1DZd+D0bApuCMcQRJnCiJ61r9LUNgg==
+  resolved "file:../nimiq-utils/nimiq-utils-v0.8.3.tgz#8fb57ec897a2249e05bfb094c7ee343e38201a36"
   dependencies:
     big-integer "^1.6.44"
 

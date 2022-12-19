@@ -419,7 +419,4 @@ export async function sendTransaction(tx: SignedTransaction | string) {
 }
 
 // @ts-expect-error debugging
-window.gimmeclient = async function gimmeclient() {
-    // @ts-expect-error debugging
-    window.client = await getNetworkClient();
-};
+window.gimmeNimiqClient = async () => getNetworkClient();

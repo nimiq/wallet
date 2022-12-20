@@ -365,6 +365,10 @@ svg {
         height: 6rem;
         flex-shrink: 0;
 
+        .avatar {
+            margin: .375rem;
+        }
+
         img {
             height: 100%
         }

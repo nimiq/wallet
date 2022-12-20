@@ -134,7 +134,7 @@ export async function launchPolygon() {
 
     // Start block listener
     client.provider.on('block', (height: number) => {
-        console.log('Polygon is now at', height);
+        console.debug('Polygon is now at', height);
         network$.height = height;
     });
 
@@ -249,9 +249,26 @@ export async function createTransactionRequest(recipient: string, amount: number
     const voidSigner = new client.ethers.VoidSigner(fromAddress, client.provider);
 
     const tx = await client.usdc.populateTransaction.transfer(recipient, amount);
+    tx.value = client.ethers.BigNumber.from(0);
     tx.gasLimit = await voidSigner.estimateGas(tx); // TODO: Is his enough, or should we add a multiplier?
 
-    return voidSigner.populateTransaction(tx);
+    return voidSigner.populateTransaction(tx) as Promise<{
+        chainId: number,
+        data: string,
+        from: string,
+        gasLimit: ethers.BigNumber,
+        maxFeePerGas: ethers.BigNumber,
+        maxPriorityFeePerGas: ethers.BigNumber,
+        nonce: number,
+        to: string,
+        type: number,
+        value: ethers.BigNumber,
+    }>;
+}
+
+export async function sendTransaction(serializedTx: string) {
+    const client = await getPolygonClient();
+    client.provider.sendTransaction(serializedTx);
 }
 
 // @ts-expect-error debugging

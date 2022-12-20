@@ -5,6 +5,7 @@ import HubApi, {
     SetupSwapRequest,
     SetupSwapResult,
     RefundSwapRequest,
+    SignPolygonTransactionRequest,
 } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
 import Config from 'config';
@@ -17,6 +18,7 @@ import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useProxyStore, Cashlink } from './stores/Proxy';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
+import { createTransactionRequest, sendTransaction as sendUsdcTx } from './ethers';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
@@ -559,6 +561,27 @@ export async function activateUsdc(accountId: string) {
     processAndStoreAccounts([account]);
 
     return true;
+}
+
+export async function sendUsdcTransaction(recipient: string, amount: number, recipientLabel?: string) {
+    // eslint-disable-next-line no-async-promise-executor
+    const request = new Promise<SignPolygonTransactionRequest>(async (resolve) => {
+        const tx = await createTransactionRequest(recipient, amount);
+        resolve({
+            ...tx,
+            appName: APP_NAME,
+            value: tx.value.toNumber(),
+            type: tx.type as 2,
+            gasLimit: tx.gasLimit.toNumber(),
+            maxFeePerGas: tx.maxFeePerGas.toNumber(),
+            maxPriorityFeePerGas: tx.maxPriorityFeePerGas.toNumber(),
+            recipientLabel,
+        });
+    });
+    const signedTransaction = await hubApi.signPolygonTransaction(request, getBehavior()).catch(onError);
+    if (!signedTransaction) return false;
+
+    return sendUsdcTx(signedTransaction.serializedTx);
 }
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {

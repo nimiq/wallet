@@ -36,16 +36,19 @@ export default defineComponent({
         width: 5.25rem;
         height: 5.25rem;
         font-size: 2.5rem;
+
+        &.initial {
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
 
     .initial {
         text-transform: uppercase;
         font-weight: bold;
-        line-height: 2;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        letter-spacing: -0.05em;
         color: white;
     }
 

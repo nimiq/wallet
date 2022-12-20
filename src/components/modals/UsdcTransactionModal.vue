@@ -39,7 +39,7 @@
                        <UsdcIcon class="usdc" />
                     </div>
                     <span class="label">{{ $t('USD Coin') }}</span>
-                    <Tooltip preferredPosition="bottom right" class="left-aligned">
+                    <Tooltip preferredPosition="bottom left" class="right-aligned">
                         <ShortAddress :address="transaction.recipient" slot="trigger"/>
                         {{ transaction.recipient }}
                     </Tooltip>
@@ -379,7 +379,8 @@ export default defineComponent({
     }
 
     .trigger {
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.75rem;
+        line-height: 1.25;
         border-radius: 0.5rem;
         transition: background 300ms var(--nimiq-ease);
 

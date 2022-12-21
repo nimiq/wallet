@@ -56,6 +56,7 @@ const UsdcReceiveModal = () =>
     import(/* webpackChunkName: "usdc-receive-modal" */ './components/modals/UsdcReceiveModal.vue');
 const UsdcTransactionModal = () =>
     import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdcTransactionModal.vue');
+const UsdcSendModal = () => import(/* webpackChunkName: "Usdc-send-modal" */ './components/modals/UsdcSendModal.vue');
 
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
@@ -119,6 +120,13 @@ const routes: RouteConfig[] = [{
                 modal: BtcSendModal,
             },
             name: 'send-btc',
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/send/usdc',
+            components: {
+                modal: UsdcSendModal,
+            },
+            name: 'send-usdc',
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive',
@@ -438,7 +446,7 @@ router.beforeEach((to, from, next) => {
 });
 
 // Offer to activate USDC if a route requires it, but it's not activated yet
-const viewsRequiringActivatedUsdc = new Set<Component>([/** TODO UsdcSendModal, */UsdcReceiveModal]);
+const viewsRequiringActivatedUsdc = new Set<Component>([UsdcSendModal, UsdcReceiveModal]);
 router.beforeEach((to, from, next) => {
     const requiresActivatedUsdc = to.matched.some(({ components }) =>
         Object.values(components).some((view) => viewsRequiringActivatedUsdc.has(view)));

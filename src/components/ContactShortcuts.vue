@@ -30,7 +30,7 @@ import IdenticonButton from './IdenticonButton.vue';
 export default defineComponent({
     props: {
         contacts: {
-            type: Array as () => {address: string, label: string}[],
+            type: Array as () => Readonly<{address: string, label: string}[]>,
             required: false,
         },
         hasAddresses: {

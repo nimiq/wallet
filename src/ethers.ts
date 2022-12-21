@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
-import type { Block } from '@ethersproject/abstract-provider'; // eslint-disable-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies
+import type { Block, Log } from '@ethersproject/abstract-provider';
 import Config from 'config';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useUsdcNetworkStore } from './stores/UsdcNetwork';
@@ -36,6 +37,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
 
     await provider.ready;
     console.log('Polygon connection established');
+    useUsdcNetworkStore().state.consensus = 'established';
 
     const usdc = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
     // const openGsn = new ethers.Contract(Config.usdc.openGsnContract, OPENGSN_CONTRACT_ABI, provider);
@@ -226,7 +228,7 @@ export async function launchPolygon() {
     });
 }
 
-function logAndBlockToPlain(log: TransferEvent, block: Block): PlainTransaction {
+function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block): PlainTransaction {
     return {
         transactionHash: log.transactionHash,
         logIndex: log.logIndex,
@@ -234,9 +236,9 @@ function logAndBlockToPlain(log: TransferEvent, block: Block): PlainTransaction 
         recipient: log.args.to,
         value: log.args.value.toNumber(), // With Javascript numbers we can represent up to 9,007,199,254 USDC
         // fee: number,
-        state: TransactionState.MINED,
-        blockHeight: block.number,
-        timestamp: block.timestamp,
+        state: block ? TransactionState.MINED : TransactionState.PENDING,
+        blockHeight: block?.number,
+        timestamp: block?.timestamp,
     };
 }
 
@@ -268,7 +270,21 @@ export async function createTransactionRequest(recipient: string, amount: number
 
 export async function sendTransaction(serializedTx: string) {
     const client = await getPolygonClient();
-    client.provider.sendTransaction(serializedTx);
+    const txResponse = await client.provider.sendTransaction(serializedTx);
+    const receipt = await txResponse.wait(1);
+    const logs = receipt.logs.map((log) => {
+        const { args, name } = client.usdc.interface.parseLog(log);
+        return {
+            ...log,
+            args,
+            name,
+        };
+    });
+    const relevantLog = logs.find(
+        (log) => log.name === 'Transfer' && 'from' in log.args && log.args.from === txResponse.from,
+    ) as TransferLog;
+    const block = await client.provider.getBlock(relevantLog.blockHash);
+    return logAndBlockToPlain(relevantLog, block);
 }
 
 // @ts-expect-error debugging
@@ -281,6 +297,11 @@ interface TransferResult extends ReadonlyArray<any> {
     from: string;
     to: string;
     value: BigNumber;
+}
+
+interface TransferLog extends Log {
+    args: TransferResult;
+    name: string;
 }
 
 interface TransferEvent extends Event {

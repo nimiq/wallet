@@ -39,8 +39,26 @@ export function isValidDomain(domain: string): boolean {
     return parts.length === 2 && SUPPORTED_TLDS.includes(parts[1]);
 }
 
-export async function resolve(domain: string, currency: 'NIM' | 'BTC' | 'TBTC') {
+export async function resolve(domain: string, currency: 'NIM' | 'BTC' | 'TBTC' | 'USDC') {
     if (!isValidDomain(domain)) return null;
     const resolver = await getResolver();
+
+    if (currency === 'USDC') {
+        const errors: Error[] = [];
+        const [usdcAddress, maticAddress] = await Promise.all([
+            resolver.multiChainAddr(domain, 'USDC', 'MATIC').catch((error) => {
+                errors.push(error);
+                return '';
+            }),
+            resolver.addr(domain, 'MATIC').catch((error) => {
+                errors.push(error);
+                return '';
+            }),
+        ]);
+        if (usdcAddress) return usdcAddress;
+        if (maticAddress) return maticAddress;
+        throw errors[0];
+    }
+
     return resolver.addr(domain, currency);
 }

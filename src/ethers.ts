@@ -11,7 +11,7 @@ import { useUsdcTransactionsStore, Transaction as PlainTransaction, TransactionS
 interface PolygonClient {
     provider: providers.Provider;
     usdc: Contract;
-    // openGsn: Contract;
+    openGsn: Contract;
     ethers: typeof ethers;
 }
 
@@ -40,12 +40,12 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     useUsdcNetworkStore().state.consensus = 'established';
 
     const usdc = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
-    // const openGsn = new ethers.Contract(Config.usdc.openGsnContract, OPENGSN_CONTRACT_ABI, provider);
+    const openGsn = new ethers.Contract(Config.usdc.openGsnContract, OPENGSN_CONTRACT_ABI, provider);
 
     resolver!({
         provider,
         usdc,
-        // openGsn: openGsn,
+        openGsn,
         ethers,
     });
 
@@ -250,11 +250,27 @@ export async function createTransactionRequest(recipient: string, amount: number
     const client = await getPolygonClient();
     const voidSigner = new client.ethers.VoidSigner(fromAddress, client.provider);
 
-    const tx = await client.usdc.populateTransaction.transfer(recipient, amount);
-    tx.value = client.ethers.BigNumber.from(0);
-    tx.gasLimit = await voidSigner.estimateGas(tx); // TODO: Is his enough, or should we add a multiplier?
+    const [gasLimit, tokenNonce] = await Promise.all([
+        client.openGsn.requiredRelayGas() as Promise<ethers.BigNumber>,
+        client.usdc.getNonce(fromAddress) as Promise<ethers.BigNumber>,
+    ]);
 
-    return voidSigner.populateTransaction(tx) as Promise<{
+    const partialTransaction = await client.openGsn.populateTransaction.executeWithApproval(
+        /* address token */ Config.usdc.usdcContract,
+        /* address userAddress */ fromAddress,
+        /* uint256 amount */ amount,
+        /* address target */ recipient,
+        /* uint256 fee */ 0,
+        /* uint256 chainTokenFee */ 0,
+        /* uint256 approval */ amount,
+        /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+        /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+        /* uint8 sigV */ 0,
+    );
+    partialTransaction.value = client.ethers.BigNumber.from(0);
+    partialTransaction.gasLimit = gasLimit;
+
+    const transaction = await voidSigner.populateTransaction(partialTransaction) as {
         chainId: number,
         data: string,
         from: string,
@@ -265,7 +281,20 @@ export async function createTransactionRequest(recipient: string, amount: number
         to: string,
         type: number,
         value: ethers.BigNumber,
-    }>;
+    };
+
+    const approval: {
+        nonce: number,
+    } | undefined = {
+        nonce: tokenNonce.toNumber(),
+    };
+
+    // TODO: Increase maxFeePerGas and/or maxPriorityFeePerGas to avoid "transaction underpriced" errors
+
+    return {
+        transaction,
+        approval,
+    };
 }
 
 export async function sendTransaction(serializedTx: string) {
@@ -308,10 +337,11 @@ interface TransferEvent extends Event {
     args: TransferResult;
 }
 
+/* eslint-disable max-len */
 const USDC_CONTRACT_ABI = [
     // 'constructor()',
-    // 'event Approval(address indexed owner, address indexed spender, uint256 value)',
-    // 'event MetaTransactionExecuted(address userAddress, address relayerAddress, bytes functionSignature)',
+    'event Approval(address indexed owner, address indexed spender, uint256 value)',
+    'event MetaTransactionExecuted(address userAddress, address relayerAddress, bytes functionSignature)',
     // 'event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)',
     // 'event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)',
     // 'event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)',
@@ -329,11 +359,10 @@ const USDC_CONTRACT_ABI = [
     // 'function decimals() view returns (uint8)',
     // 'function decreaseAllowance(address spender, uint256 subtractedValue) returns (bool)',
     // 'function deposit(address user, bytes depositData)',
-    // eslint-disable-next-line max-len
     // 'function executeMetaTransaction(address userAddress, bytes functionSignature, bytes32 sigR, bytes32 sigS, uint8 sigV) payable returns (bytes)',
     // 'function getChainId() pure returns (uint256)',
     // 'function getDomainSeperator() view returns (bytes32)',
-    // 'function getNonce(address user) view returns (uint256 nonce)',
+    'function getNonce(address user) view returns (uint256 nonce)',
     // 'function getRoleAdmin(bytes32 role) view returns (bytes32)',
     // 'function getRoleMember(bytes32 role, uint256 index) view returns (address)',
     // 'function getRoleMemberCount(bytes32 role) view returns (uint256)',
@@ -346,9 +375,52 @@ const USDC_CONTRACT_ABI = [
     // 'function revokeRole(bytes32 role, address account)',
     // 'function symbol() view returns (string)',
     // 'function totalSupply() view returns (uint256)',
-    'function transfer(address recipient, uint256 amount) returns (bool)',
+    // 'function transfer(address recipient, uint256 amount) returns (bool)',
     // 'function transferFrom(address sender, address recipient, uint256 amount) returns (bool)',
     // 'function withdraw(uint256 amount)',
 ];
 
-// const OPENGSN_CONTRACT_ABI = [];
+const OPENGSN_CONTRACT_ABI = [
+    // 'constructor()',
+    // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
+    // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
+    // 'event RequestTypeRegistered(bytes32 indexed typeHash, string typeStr)',
+    // 'function CALLDATA_SIZE_LIMIT() view returns (uint256)',
+    // 'function EIP712_DOMAIN_TYPE() view returns (string)',
+    // 'function domains(bytes32) view returns (bool)',
+    // 'function execute(address token, address userAddress, uint256 amount, address target, uint256 fee, uint256 chainTokenFee)',
+    // 'function execute(tuple(address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) request, bytes32 domainSeparator, bytes32 requestTypeHash, bytes suffixData, bytes signature) payable returns (bool success, bytes ret)',
+    'function executeWithApproval(address token, address userAddress, uint256 amount, address target, uint256 fee, uint256 chainTokenFee, uint256 approval, bytes32 sigR, bytes32 sigS, uint8 sigV)',
+    // 'function getGasAndDataLimits() view returns (tuple(uint256 acceptanceBudget, uint256 preRelayedCallGasLimit, uint256 postRelayedCallGasLimit, uint256 calldataSizeLimit) limits)',
+    // 'function getHubAddr() view returns (address)',
+    // 'function getMinimumRelayFee(tuple(uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) view returns (uint256 amount)',
+    // 'function getNonce(address from) view returns (uint256)',
+    // 'function getRelayHubDeposit() view returns (uint256)',
+    // 'function isRegisteredToken(address token) view returns (bool)',
+    // 'function isTrustedForwarder(address forwarder) view returns (bool)',
+    // 'function owner() view returns (address)',
+    // 'function postRelayedCall(bytes context, bool success, uint256 gasUseWithoutPost, tuple(uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData)',
+    // 'function preApprovedGasDiscount() view returns (uint256)',
+    // 'function preRelayedCall(tuple(tuple(address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) request, tuple(uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) relayRequest, bytes signature, bytes approvalData, uint256 maxPossibleGas) returns (bytes context, bool revertOnRecipientRevert)',
+    // 'function registerDomainSeparator(string name, string version)',
+    // 'function registerRequestType(string typeName, string typeSuffix)',
+    // 'function registerToken(address token, uint24 poolFee)',
+    // 'function renounceOwnership()',
+    'function requiredRelayGas() view returns (uint256 amount)',
+    // 'function setRelayHub(address hub)',
+    // 'function setSwapRouter(address _swapRouter)',
+    // 'function setWrappedChainToken(address _wrappedChainToken)',
+    // 'function swapRouter() view returns (address)',
+    // 'function transferOwnership(address newOwner)',
+    // 'function trustedForwarder() view returns (address forwarder)',
+    // 'function typeHashes(bytes32) view returns (bool)',
+    // 'function unregisterToken(address token)',
+    // 'function updatePreApprovedGasDiscount(uint256 _preApprovedGasDiscount)',
+    // 'function updateRelayGas(uint256 preRelayedCallGasLimit, uint256 postRelayedCallGasLimit, uint256 executeCallGasLimit, uint256 relayOverhead)',
+    // 'function verify(tuple(address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) forwardRequest, bytes32 domainSeparator, bytes32 requestTypeHash, bytes suffixData, bytes signature) view',
+    // 'function versionPaymaster() view returns (string)',
+    // 'function versionRecipient() view returns (string)',
+    // 'function withdraw(uint256 amount, address target)',
+    // 'function withdrawRelayHubDeposit(uint256 amount, address target)',
+    // 'function wrappedChainToken() view returns (address)',
+];

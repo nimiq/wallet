@@ -566,16 +566,18 @@ export async function activateUsdc(accountId: string) {
 export async function sendUsdcTransaction(recipient: string, amount: number, recipientLabel?: string) {
     // eslint-disable-next-line no-async-promise-executor
     const request = new Promise<SignPolygonTransactionRequest>(async (resolve) => {
-        const tx = await createTransactionRequest(recipient, amount);
+        const { transaction, approval } = await createTransactionRequest(recipient, amount);
         resolve({
-            ...tx,
+            ...transaction,
             appName: APP_NAME,
-            value: tx.value.toNumber(),
-            type: tx.type as 2,
-            gasLimit: tx.gasLimit.toNumber(),
-            maxFeePerGas: tx.maxFeePerGas.toNumber(),
-            maxPriorityFeePerGas: tx.maxPriorityFeePerGas.toNumber(),
+            value: transaction.value.toNumber(),
+            type: transaction.type as 2,
+            gasLimit: transaction.gasLimit.toNumber(),
+            maxFeePerGas: transaction.maxFeePerGas.toNumber(),
+            maxPriorityFeePerGas: transaction.maxPriorityFeePerGas.toNumber(),
             recipientLabel,
+
+            tokenApprovalNonce: approval?.nonce,
         });
     });
     const signedTransaction = await hubApi.signPolygonTransaction(request, getBehavior()).catch(onError);

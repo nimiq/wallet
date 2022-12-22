@@ -13,7 +13,7 @@ export default {
         networkId: 80001 as number | string, // Can also be 'maticmum'
         rpcEndoint: 'https://matic-mumbai.chainstacklabs.com',
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
-        openGsnContract: '',
+        openGsnContract: '0x703EC732971cB23183582a6966bA70E164d89ab1',
         /**
          * From which block to fetch transaction history
          *

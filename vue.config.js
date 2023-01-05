@@ -41,7 +41,7 @@ function sri(asset) {
     return `sha384-${hash}`;
 }
 
-// Accesible within client code via process.env.VUE_APP_*,
+// Accessible within client code via process.env.VUE_APP_*,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
 process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = sri(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')));
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
@@ -111,7 +111,7 @@ module.exports = {
                         to({ absoluteFilename }) {
                             const segments = absoluteFilename.split('/');
                             const fileName = segments[segments.length - 1];
-                            // The bundled NimiqVueComponents.umd.js tries to load the the non-minified files
+                            // The bundled NimiqVueComponents.umd.js tries to load the non-minified files
                             return `./js/${fileName.replace('.min', '')}`;
                         },
                     }],

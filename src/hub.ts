@@ -8,7 +8,7 @@ import HubApi, {
     SignPolygonTransactionRequest,
 } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
-import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
+import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
@@ -566,8 +566,13 @@ export async function activateUsdc(accountId: string) {
 
 export async function sendUsdcTransaction(recipient: string, amount: number, recipientLabel?: string) {
     // eslint-disable-next-line no-async-promise-executor
+
+    let relayUrl: string;
+
+    // eslint-disable-next-line no-async-promise-executor
     const request = new Promise<SignPolygonTransactionRequest>(async (resolve) => {
-        const { relayRequest, approval } = await createTransactionRequest(recipient, amount);
+        const { relayRequest, approval, relay } = await createTransactionRequest(recipient, amount);
+        relayUrl = relay.url;
         resolve({
             ...relayRequest,
             appName: APP_NAME,
@@ -579,7 +584,8 @@ export async function sendUsdcTransaction(recipient: string, amount: number, rec
     const signedTransaction = await hubApi.signPolygonTransaction(request, getBehavior()).catch(onError);
     if (!signedTransaction) return false;
 
-    return sendUsdcTx(signedTransaction.message as RelayRequest, signedTransaction.signature);
+    const { relayData, ...relayRequest } = signedTransaction.message;
+    return sendUsdcTx({ request: relayRequest as ForwardRequest, relayData }, signedTransaction.signature, relayUrl!);
 }
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {

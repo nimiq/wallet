@@ -3,7 +3,6 @@ import { ref, watch } from '@vue/composition-api';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log } from '@ethersproject/abstract-provider';
-// import type { RelayTransactionRequest, RelayMetadata } from '@opengsn/common/dist/types/RelayTransactionRequest';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import Config from 'config';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
@@ -282,7 +281,7 @@ export async function createTransactionRequest(recipient: string, amount: number
         gasLimit,
         usdcNonce,
         forwarderNonce,
-        { baseRelayFee, pctRelayFee, relayWorkerAddress, minGasPrice },
+        { baseRelayFee, pctRelayFee, relayWorkerAddress, minGasPrice, url: relayUrl },
         [sqrtPriceX96],
     ] = await Promise.all([
         client.provider.getGasPrice().then((price) => price.mul(110).div(100)),
@@ -341,13 +340,20 @@ export async function createTransactionRequest(recipient: string, amount: number
 
     const approval: {
         tokenNonce: number,
-    } | undefined = {
+    } = {
         tokenNonce: usdcNonce.toNumber(),
+    };
+
+    const relay: {
+        url: string,
+    } = {
+        url: relayUrl,
     };
 
     return {
         relayRequest,
         approval,
+        relay,
     };
 }
 
@@ -514,29 +520,62 @@ type RelayAddr = {
 
 async function getRelayAddr(relayUrl: string): Promise<RelayAddr | false> {
     console.log('Pinging relay server', relayUrl);
-    // TODO: Add short timeout
-    const response = await fetch(`${relayUrl}/getaddr`);
+
+    // Set a 1s timeout
+    const abortController = new AbortController();
+    setTimeout(() => abortController.abort(), 1e3);
+
+    const response = await fetch(`${relayUrl}/getaddr`, {
+        signal: abortController.signal,
+    }).catch(() => ({ ok: false }));
     if (!response.ok) return false;
-    return response.json() as Promise<RelayAddr>;
+    return (response as Response).json() as Promise<RelayAddr>;
 }
 
-export async function sendTransaction(message: RelayRequest, signature: string) {
+export async function sendTransaction(relayRequest: RelayRequest, signature: string, relayUrl: string) {
     const client = await getPolygonClient();
-    // const tx = await client.provider.call(deferable);
-    const txResponse = await client.provider.sendTransaction(serializedTx);
+    const [{ HttpClient, HttpWrapper }, currentNonce] = await Promise.all([
+        import('@opengsn/common'),
+        client.provider.getTransactionCount(relayRequest.relayData.relayWorker),
+    ]);
+    const httpClient = new HttpClient(new HttpWrapper(), console);
+    const relayTx = await httpClient.relayTransaction(relayUrl, {
+        relayRequest,
+        metadata: {
+            approvalData: '0x',
+            relayHubAddress: Config.usdc.relayHubContract,
+            relayMaxNonce: currentNonce + 3,
+            signature,
+        },
+    });
+
+    // TODO: Audit and validate transaction like in
+    // https://github.com/opengsn/gsn/blob/v2.2.5/packages/provider/src/RelayClient.ts#L270
+
+    const txResponse = await client.provider.sendTransaction(relayTx);
     const receipt = await txResponse.wait(1);
     const logs = receipt.logs.map((log) => {
-        const { args, name } = client.usdc.interface.parseLog(log);
-        return {
-            ...log,
-            args,
-            name,
-        };
+        try {
+            const { args, name } = client.usdc.interface.parseLog(log);
+            return {
+                ...log,
+                args,
+                name,
+            };
+        } catch (error) {
+            console.warn(error);
+            return null;
+        }
     });
 
     // TODO There is an error
     const relevantLog = logs.find(
-        (log) => log.name === 'Transfer' && 'from' in log.args && log.args.from === txResponse.from,
+        (log) =>
+            log?.name === 'Transfer'
+            && 'from' in log.args
+            && log.args.from === relayRequest.request.from
+            // TODO: Use the transfer to the nimiqUsdcContract address as the fee
+            && log.args.to !== Config.usdc.nimiqUsdcContract.toLowerCase(),
     ) as TransferLog;
     const block = await client.provider.getBlock(relevantLog.blockHash);
     return logAndBlockToPlain(relevantLog, block);

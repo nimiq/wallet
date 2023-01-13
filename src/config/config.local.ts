@@ -13,7 +13,7 @@ export default {
         networkId: 80001 as number | string, // Can also be 'maticmum'
         rpcEndoint: 'https://matic-mumbai.chainstacklabs.com',
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
-        nimiqUsdc: '0x703EC732971cB23183582a6966bA70E164d89ab1',
+        nimiqUsdcContract: '0x703EC732971cB23183582a6966bA70E164d89ab1',
         relayHubContract: '0x6646cd15d33ce3a6933e36de38990121e8ba2806',
         uniswapFactoryContract: '0x1f98431c8ad98523631ae4a59f267346ea31f984',
         wmaticContract: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',

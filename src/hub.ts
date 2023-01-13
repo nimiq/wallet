@@ -8,6 +8,7 @@ import HubApi, {
     SignPolygonTransactionRequest,
 } from '@nimiq/hub-api';
 import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
+import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import Config from 'config';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
@@ -566,24 +567,19 @@ export async function activateUsdc(accountId: string) {
 export async function sendUsdcTransaction(recipient: string, amount: number, recipientLabel?: string) {
     // eslint-disable-next-line no-async-promise-executor
     const request = new Promise<SignPolygonTransactionRequest>(async (resolve) => {
-        const { transaction, approval } = await createTransactionRequest(recipient, amount);
+        const { relayRequest, approval } = await createTransactionRequest(recipient, amount);
         resolve({
-            ...transaction,
+            ...relayRequest,
             appName: APP_NAME,
-            value: transaction.value.toNumber(),
-            type: transaction.type as 2,
-            gasLimit: transaction.gasLimit.toNumber(),
-            maxFeePerGas: transaction.maxFeePerGas.toNumber(),
-            maxPriorityFeePerGas: transaction.maxPriorityFeePerGas.toNumber(),
             recipientLabel,
 
-            tokenApprovalNonce: approval?.nonce,
+            tokenApprovalNonce: approval.tokenNonce,
         });
     });
     const signedTransaction = await hubApi.signPolygonTransaction(request, getBehavior()).catch(onError);
     if (!signedTransaction) return false;
 
-    return sendUsdcTx(signedTransaction.serializedTx);
+    return sendUsdcTx(signedTransaction.message as RelayRequest, signedTransaction.signature);
 }
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {

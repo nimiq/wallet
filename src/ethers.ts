@@ -552,7 +552,16 @@ export async function sendTransaction(relayRequest: RelayRequest, signature: str
     // TODO: Audit and validate transaction like in
     // https://github.com/opengsn/gsn/blob/v2.2.5/packages/provider/src/RelayClient.ts#L270
 
-    const txResponse = await client.provider.sendTransaction(relayTx);
+    let txResponse = await client.provider.sendTransaction(relayTx)
+        .catch((error) => {
+            console.debug('Failed to also send relay transaction:', error);
+        });
+
+    if (!txResponse) {
+        const tx = client.ethers.utils.parseTransaction(relayTx);
+        txResponse = await client.provider.getTransaction(tx.hash!);
+    }
+
     const receipt = await txResponse.wait(1);
     const logs = receipt.logs.map((log) => {
         try {
@@ -563,19 +572,17 @@ export async function sendTransaction(relayRequest: RelayRequest, signature: str
                 name,
             };
         } catch (error) {
-            console.warn(error);
             return null;
         }
     });
 
-    // TODO There is an error
     const relevantLog = logs.find(
         (log) =>
             log?.name === 'Transfer'
             && 'from' in log.args
             && log.args.from === relayRequest.request.from
             // TODO: Use the transfer to the nimiqUsdcContract address as the fee
-            && log.args.to !== Config.usdc.nimiqUsdcContract.toLowerCase(),
+            && log.args.to !== Config.usdc.nimiqUsdcContract,
     ) as TransferLog;
     const block = await client.provider.getBlock(relevantLog.blockHash);
     return logAndBlockToPlain(relevantLog, block);

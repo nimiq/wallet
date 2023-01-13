@@ -3,6 +3,8 @@ import { ref, watch } from '@vue/composition-api';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log } from '@ethersproject/abstract-provider';
+// import type { RelayTransactionRequest, RelayMetadata } from '@opengsn/common/dist/types/RelayTransactionRequest';
+import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import Config from 'config';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useUsdcNetworkStore } from './stores/UsdcNetwork';
@@ -49,7 +51,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     const FEE = 10000; // TODO should be fetched from usdcContract
 
     const usdc = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
-    const nimiqUsdc = new ethers.Contract(Config.usdc.nimiqUsdc, NIMIQ_USDC_CONTRACT_ABI, provider);
+    const nimiqUsdc = new ethers.Contract(Config.usdc.nimiqUsdcContract, NIMIQ_USDC_CONTRACT_ABI, provider);
     const relayHub = new ethers.Contract(Config.usdc.relayHubContract, RELAY_HUB_CONTRACT_ABI, provider);
 
     const uniswapFactory = new ethers.Contract(
@@ -228,7 +230,7 @@ export async function launchPolygon() {
                     (tx) => `${tx.transactionHash}:${tx.logIndex}`,
                 );
                 const newLogs = logsIn.concat(logsOut).filter((log) => {
-                    if (log.args?.to === Config.usdc.nimiqUsdc) {
+                    if (log.args?.to === Config.usdc.nimiqUsdcContract) {
                         // TODO Store this as the fee
                         return false;
                     }
@@ -275,28 +277,34 @@ export async function createTransactionRequest(recipient: string, amount: number
 
     const client = await getPolygonClient();
 
-    const voidSigner = new client.ethers.VoidSigner(fromAddress, client.provider);
-
-    const [gasPrice, gasLimit, tokenNonce, { pctRelayFee, baseRelayFee }, [sqrtPriceX96]] = await Promise.all([
-        client.provider.getGasPrice(),
-        client.nimiqUsdc.requiredRelayGas() as Promise<ethers.BigNumber>,
-        client.usdc.getNonce(fromAddress) as Promise<ethers.BigNumber>,
-        getRelayer(client),
-        client.uniswapPool.slot0() as [ethers.BigNumber],
+    const [
+        gasPrice,
+        gasLimit,
+        usdcNonce,
+        forwarderNonce,
+        { baseRelayFee, pctRelayFee, relayWorkerAddress, minGasPrice },
+        [sqrtPriceX96],
+    ] = await Promise.all([
+        client.provider.getGasPrice().then((price) => price.mul(110).div(100)),
+        client.nimiqUsdc.requiredRelayGas() as Promise<BigNumber>,
+        client.usdc.getNonce(fromAddress) as Promise<BigNumber>,
+        client.nimiqUsdc.getNonce(fromAddress) as Promise<BigNumber>,
+        getBestRelay(client),
+        client.uniswapPool.slot0() as [BigNumber],
     ]);
 
     // sqrtPriceX96^2 / 2^192 - https://docs.uniswap.org/sdk/v3/guides/fetching-prices#token0price
     const priceToken0 = sqrtPriceX96.mul(sqrtPriceX96).div(client.ethers.BigNumber.from(2).pow(192));
 
+    const actualGasPrice = gasPrice.gte(minGasPrice) ? gasPrice : minGasPrice;
     // (gasPrice * gasLimit) * (1 + pctRelayFee) + baseRelayFee
-    const chainTokenFee = gasPrice.mul(gasLimit).mul(10).mul(pctRelayFee.add(1)).add(baseRelayFee);
-    const chainTokenFeeInUSDC = chainTokenFee.div(priceToken0);
+    const chainTokenFee = actualGasPrice.mul(gasLimit).mul(pctRelayFee.add(100)).div(100).add(baseRelayFee);
 
     // main 10%, test 25% as it is more volatile
     const uniswapBufferPercentage = Config.environment === ENV_MAIN ? 110 : 125;
-    const fee = chainTokenFeeInUSDC.mul(uniswapBufferPercentage).div(100);
+    const fee = chainTokenFee.div(priceToken0).mul(uniswapBufferPercentage).div(100);
 
-    const partialTransaction = await client.nimiqUsdc.populateTransaction.executeWithApproval(
+    const data = await client.nimiqUsdc.interface.encodeFunctionData('executeWithApproval', [
         /* address token */ Config.usdc.usdcContract,
         /* address userAddress */ fromAddress,
         /* uint256 amount */ amount,
@@ -307,52 +315,55 @@ export async function createTransactionRequest(recipient: string, amount: number
         /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
         /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
         /* uint8 sigV */ 0,
-    );
-    partialTransaction.value = client.ethers.BigNumber.from(0);
-    partialTransaction.gasLimit = gasLimit;
+    ]);
 
-    const transaction = await voidSigner.populateTransaction(partialTransaction) as {
-        chainId: number,
-        data: string,
-        from: string,
-        gasLimit: ethers.BigNumber,
-        maxFeePerGas: ethers.BigNumber,
-        maxPriorityFeePerGas: ethers.BigNumber,
-        nonce: number,
-        to: string,
-        type: number,
-        value: ethers.BigNumber,
+    const relayRequest: RelayRequest = {
+        request: {
+            from: fromAddress,
+            to: Config.usdc.nimiqUsdcContract,
+            data,
+            value: '0',
+            nonce: forwarderNonce.toString(),
+            gas: gasLimit.toString(),
+            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * BLOCKS_PER_MINUTE).toString(), // 2 hours
+        },
+        relayData: {
+            gasPrice: actualGasPrice.toString(),
+            pctRelayFee: pctRelayFee.toString(),
+            baseRelayFee: baseRelayFee.toString(),
+            relayWorker: relayWorkerAddress,
+            paymaster: Config.usdc.nimiqUsdcContract,
+            paymasterData: '0x',
+            clientId: Math.floor(Math.random() * 1e6).toString(),
+            forwarder: Config.usdc.nimiqUsdcContract,
+        },
     };
 
     const approval: {
-        nonce: number,
+        tokenNonce: number,
     } | undefined = {
-        nonce: tokenNonce.toNumber(),
+        tokenNonce: usdcNonce.toNumber(),
     };
 
-    // TODO: Increase maxFeePerGas and/or maxPriorityFeePerGas to avoid "transaction underpriced" errors
-
     return {
-        transaction,
+        relayRequest,
         approval,
     };
 }
 
 const MAX_PCT_RELAY_FEE = 70;
 const MAX_BASE_RELAY_FEE = 0;
-async function getRelayer(polygonClient: PolygonClient) {
+async function getBestRelay(polygonClient: PolygonClient) {
     console.log('Finding best relay');
     const relayGen = relayServerRegisterGen(polygonClient);
     const relayServers: RelayServerInfo[] = [];
 
     let bestRelay: RelayServerInfo | undefined;
 
-    while (true) {
+    while (true) { // eslint-disable-line no-constant-condition
         // eslint-disable-next-line no-await-in-loop
         const relay = await relayGen.next();
         if (!relay.value) continue;
-
-        relayServers.push(relay.value);
 
         const { pctRelayFee, baseRelayFee } = relay.value;
 
@@ -371,23 +382,25 @@ async function getRelayer(polygonClient: PolygonClient) {
             bestRelay = relay.value;
         }
 
+        relayServers.push(relay.value);
+
         if (relay.done) break;
     }
+
+    if (bestRelay) return bestRelay;
 
     // With no relay found, we take the one with the lowest fees among the ones we fetched.
     // We could also go again to the contract and fetch more relays, but most likely we will
     // find relays with similar fees and higher probabilities of being offline.
-    if (!bestRelay) {
-        // Sort relays first by lowest baseRelayFee and then by lowest pctRelayFee
-        relayServers.sort((a, b) => {
-            if (a.baseRelayFee.lt(b.baseRelayFee)) return -1;
-            if (a.baseRelayFee.gt(b.baseRelayFee)) return 1;
-            if (a.pctRelayFee.lt(b.pctRelayFee)) return -1;
-            if (a.pctRelayFee.gt(b.pctRelayFee)) return 1;
-            return 0;
-        });
-        [bestRelay] = relayServers;
-    }
+
+    // Sort relays first by lowest baseRelayFee and then by lowest pctRelayFee
+    [bestRelay] = relayServers.sort((a, b) => {
+        if (a.baseRelayFee.lt(b.baseRelayFee)) return -1;
+        if (a.baseRelayFee.gt(b.baseRelayFee)) return 1;
+        if (a.pctRelayFee.lt(b.pctRelayFee)) return -1;
+        if (a.pctRelayFee.gt(b.pctRelayFee)) return 1;
+        return 0;
+    });
 
     if (!bestRelay) throw new Error('No relay found');
 
@@ -398,6 +411,8 @@ interface RelayServerInfo {
     baseRelayFee: BigNumber;
     pctRelayFee: BigNumber;
     url: string;
+    relayWorkerAddress: string;
+    minGasPrice: BigNumber;
 }
 
 const BLOCKS_PER_MINUTE = 60 / 2; // Polygon has 2 second blocks
@@ -409,7 +424,7 @@ const MAX_RELAY_SERVERS_TRIES = 10; // The maximum number of relay servers to tr
 // It yields them one by one. The goal is to find the relay with the lowest fee.
 //   - It will fetch the last OLDEST_BLOCK_TO_FILTER blocks
 //   - in FILTER_BLOCKS_SIZE blocks batches
-async function* relayServerRegisterGen({ provider, relayHub }: PolygonClient) {
+async function* relayServerRegisterGen({ provider, relayHub, ethers }: PolygonClient) {
     let events = [];
 
     const batchBlocks = batchBlocksGen({
@@ -436,14 +451,25 @@ async function* relayServerRegisterGen({ provider, relayHub }: PolygonClient) {
         while (events.length) {
             const relayServer = events.shift();
             if (relayServer?.args?.length !== 4) continue;
+            const [
+                relayManagerAddress, // eslint-disable-line @typescript-eslint/no-unused-vars
+                baseRelayFee,
+                pctRelayFee,
+                url,
+            ] = relayServer.args as [string, BigNumber, BigNumber, string];
             // eslint-disable-next-line no-await-in-loop
-            const isReady = await pingRelayServer(relayServer?.args?.[3] as string);
-            if (!isReady) continue;
-            yield {
-                baseRelayFee: relayServer.args[1] as ethers.BigNumber,
-                pctRelayFee: relayServer.args[2] as ethers.BigNumber,
-                url: relayServer.args[3] as string,
-            } as RelayServerInfo;
+            const relayAddr = await getRelayAddr(url);
+            if (!relayAddr) continue;
+            if (!relayAddr.ready) continue;
+            if (!relayAddr.version.startsWith('2.')) continue; // TODO: Make OpenGSN version used configurable
+            if (relayAddr.networkId !== Config.usdc.networkId.toString()) continue;
+            yield <RelayServerInfo> {
+                baseRelayFee,
+                pctRelayFee,
+                url,
+                relayWorkerAddress: relayAddr.relayWorkerAddress,
+                minGasPrice: ethers.BigNumber.from(relayAddr.minGasPrice),
+            };
 
             if (count++ > MAX_RELAY_SERVERS_TRIES) break;
         }
@@ -473,14 +499,28 @@ async function* batchBlocksGen({ height, untilBlock, batchSize }: BatchBlocksGen
     } while (toBlock > untilBlock);
 }
 
-async function pingRelayServer(relayUrl: string): Promise<boolean> {
-    console.log('Pinging relay server', relayUrl);
-    const response = await fetch(`${relayUrl}/getaddr`);
-    const pingResponseJson = await response.json() as { ready: boolean };
-    return pingResponseJson && pingResponseJson.ready;
+type RelayAddr = {
+    chainId: string, // same as networkId
+    maxAcceptanceBudget: string, // decimal number
+    minGasPrice: string, // decimal number
+    networkId: string, // same as chainId
+    ownerAddress: string,
+    ready: boolean,
+    relayHubAddress: string,
+    relayManagerAddress: string,
+    relayWorkerAddress: string,
+    version: string,
 }
 
-export async function sendTransaction(serializedTx: string) {
+async function getRelayAddr(relayUrl: string): Promise<RelayAddr | false> {
+    console.log('Pinging relay server', relayUrl);
+    // TODO: Add short timeout
+    const response = await fetch(`${relayUrl}/getaddr`);
+    if (!response.ok) return false;
+    return response.json() as Promise<RelayAddr>;
+}
+
+export async function sendTransaction(message: RelayRequest, signature: string) {
     const client = await getPolygonClient();
     // const tx = await client.provider.call(deferable);
     const txResponse = await client.provider.sendTransaction(serializedTx);
@@ -582,7 +622,7 @@ const NIMIQ_USDC_CONTRACT_ABI = [
     // 'function getGasAndDataLimits() view returns (tuple(uint256 acceptanceBudget, uint256 preRelayedCallGasLimit, uint256 postRelayedCallGasLimit, uint256 calldataSizeLimit) limits)',
     // 'function getHubAddr() view returns (address)',
     // 'function getMinimumRelayFee(tuple(uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) view returns (uint256 amount)',
-    // 'function getNonce(address from) view returns (uint256)',
+    'function getNonce(address from) view returns (uint256)',
     // 'function getRelayHubDeposit() view returns (uint256)',
     // 'function isRegisteredToken(address token) view returns (bool)',
     // 'function isTrustedForwarder(address forwarder) view returns (bool)',

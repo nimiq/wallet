@@ -3,11 +3,9 @@ import Config from 'config';
 import { PolygonClient } from '../../ethers';
 import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI } from './ContractABIs';
 
-const POOL_FEE = 1 * 1e4; // 1% // TODO should be fetched from nimiqUsdcContract when it exposes it
-
 let poolPromise: Promise<Contract> | undefined;
 
-export async function getUniswapPool({ ethers, provider }: PolygonClient) {
+export async function getUniswapPool({ ethers, provider, usdcTransfer }: PolygonClient) {
     return poolPromise || (poolPromise = new Promise(async (resolve) => {
         const uniswapFactory = new ethers.Contract(
             Config.usdc.uniswapFactoryContract,
@@ -15,11 +13,13 @@ export async function getUniswapPool({ ethers, provider }: PolygonClient) {
             provider,
         );
 
+        const poolFee = await usdcTransfer.registeredTokenPoolFee(Config.usdc.usdcContract) as BigNumber;
+
         // TODO: Handle error and renew the promise when getPool fails
         const uniswapPoolAddress = await uniswapFactory.getPool(
             Config.usdc.usdcContract,
             Config.usdc.wmaticContract,
-            POOL_FEE,
+            poolFee,
         ) as string;
 
         resolve(new ethers.Contract(uniswapPoolAddress, UNISWAP_POOL_CONTRACT_ABI, provider));

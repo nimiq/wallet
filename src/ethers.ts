@@ -13,14 +13,14 @@ import {
     useUsdcTransactionsStore,
 } from './stores/UsdcTransactions';
 import { ENV_MAIN } from './lib/Constants';
-import { NIMIQ_USDC_CONTRACT_ABI, USDC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
+import { USDC_TRANSFER_CONTRACT_ABI, USDC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
 import { getBestRelay, POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from './lib/usdc/OpenGSN';
 import { getUsdcPrice } from './lib/usdc/Uniswap';
 
 export interface PolygonClient {
     provider: providers.Provider;
     usdc: Contract;
-    nimiqUsdc: Contract;
+    usdcTransfer: Contract;
     ethers: typeof ethers;
 }
 
@@ -49,12 +49,12 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     useUsdcNetworkStore().state.consensus = 'established';
 
     const usdc = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
-    const nimiqUsdc = new ethers.Contract(Config.usdc.nimiqUsdcContract, NIMIQ_USDC_CONTRACT_ABI, provider);
+    const usdcTransfer = new ethers.Contract(Config.usdc.usdcTransferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
 
     resolver!({
         provider,
         usdc,
-        nimiqUsdc,
+        usdcTransfer,
         ethers,
     });
 
@@ -218,7 +218,7 @@ export async function launchPolygon() {
                     (tx) => `${tx.transactionHash}:${tx.logIndex}`,
                 );
                 const newLogs = logsIn.concat(logsOut).filter((log) => {
-                    if (log.args?.to === Config.usdc.nimiqUsdcContract) {
+                    if (log.args?.to === Config.usdc.usdcTransferContract) {
                         // TODO Store this as the fee
                         return false;
                     }
@@ -268,7 +268,7 @@ async function calculateFee(forceRelay?: RelayServerInfo) {
         usdcPrice,
     ] = await Promise.all([
         client.provider.getGasPrice().then((price) => price.mul(110).div(100)),
-        client.nimiqUsdc.requiredRelayGas() as Promise<BigNumber>,
+        client.usdcTransfer.requiredRelayGas() as Promise<BigNumber>,
         forceRelay ?? getBestRelay(client),
         getUsdcPrice(client),
     ]);
@@ -305,13 +305,12 @@ export async function createTransactionRequest(recipient: string, amount: number
         { chainTokenFee, fee, gasPrice, gasLimit, relay },
     ] = await Promise.all([
         client.usdc.getNonce(fromAddress) as Promise<BigNumber>,
-        client.nimiqUsdc.getNonce(fromAddress) as Promise<BigNumber>,
+        client.usdcTransfer.getNonce(fromAddress) as Promise<BigNumber>,
         calculateFee(),
     ]);
 
-    const data = await client.nimiqUsdc.interface.encodeFunctionData('executeWithApproval', [
+    const data = await client.usdcTransfer.interface.encodeFunctionData('transferWithApproval', [
         /* address token */ Config.usdc.usdcContract,
-        /* address userAddress */ fromAddress,
         /* uint256 amount */ amount,
         /* address target */ recipient,
         /* uint256 fee */ fee,
@@ -327,7 +326,7 @@ export async function createTransactionRequest(recipient: string, amount: number
     const relayRequest: RelayRequest = {
         request: {
             from: fromAddress,
-            to: Config.usdc.nimiqUsdcContract,
+            to: Config.usdc.usdcTransferContract,
             data,
             value: '0',
             nonce: forwarderNonce.toString(),
@@ -339,10 +338,10 @@ export async function createTransactionRequest(recipient: string, amount: number
             pctRelayFee: relay.pctRelayFee.toString(),
             baseRelayFee: relay.baseRelayFee.toString(),
             relayWorker: relay.relayWorkerAddress,
-            paymaster: Config.usdc.nimiqUsdcContract,
+            paymaster: Config.usdc.usdcTransferContract,
             paymasterData: '0x',
             clientId: Math.floor(Math.random() * 1e6).toString(),
-            forwarder: Config.usdc.nimiqUsdcContract,
+            forwarder: Config.usdc.usdcTransferContract,
         },
     };
 
@@ -407,7 +406,7 @@ export async function sendTransaction(relayRequest: RelayRequest, signature: str
             && 'from' in log.args
             && log.args.from === relayRequest.request.from
             // TODO: Use the transfer to the nimiqUsdcContract address as the fee
-            && log.args.to !== Config.usdc.nimiqUsdcContract,
+            && log.args.to !== Config.usdc.usdcTransferContract,
     ) as TransferLog;
     const block = await client.provider.getBlock(relevantLog.blockHash);
     return logAndBlockToPlain(relevantLog, block);

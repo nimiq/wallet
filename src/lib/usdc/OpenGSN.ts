@@ -4,10 +4,10 @@ import type { PolygonClient } from '../../ethers';
 import { RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 
-let relayHub: Contract | undefined;
+let relayHubContract: Contract | undefined;
 
 function getRelayHub({ ethers, provider }: PolygonClient) {
-    return relayHub || (relayHub = new ethers.Contract(
+    return relayHubContract || (relayHubContract = new ethers.Contract(
         Config.usdc.relayHubContract,
         RELAY_HUB_CONTRACT_ABI,
         provider,
@@ -26,7 +26,7 @@ export interface RelayServerInfo {
 // const MAX_BASE_RELAY_FEE = 0;
 
 export async function getBestRelay(client: PolygonClient) {
-    console.log('Finding best relay');
+    console.debug('Finding best relay'); // eslint-disable-line no-console
     const relayGen = relayServerRegisterGen(client);
     const relayServers: RelayServerInfo[] = [];
 
@@ -79,10 +79,22 @@ export async function getBestRelay(client: PolygonClient) {
     return bestRelay;
 }
 
-export const POLYGON_BLOCKS_PER_MINUTE = 60 / 2; // Polygon has 2 second blocks
-const FILTER_BLOCKS_SIZE = 3 * POLYGON_BLOCKS_PER_MINUTE; // The number of blocks to filter at a time
-const OLDEST_BLOCK_TO_FILTER = 60 * POLYGON_BLOCKS_PER_MINUTE; // Servers registered more than 1 hour ago, high risk are down
-const MAX_RELAY_SERVERS_TRIES = 10; // The maximum number of relay servers to try
+/**
+ * Polygon has 2-second blocks
+ */
+export const POLYGON_BLOCKS_PER_MINUTE = 60 / 2;
+/**
+ * The number of blocks to filter at a time
+ */
+const FILTER_BLOCKS_SIZE = 3 * POLYGON_BLOCKS_PER_MINUTE;
+/**
+ * Servers registered more than 1 hour ago have a high risk of being down
+ */
+const OLDEST_BLOCK_TO_FILTER = 60 * POLYGON_BLOCKS_PER_MINUTE;
+/**
+ * The maximum number of relay servers to try
+ */
+const MAX_RELAY_SERVERS_TRIES = 10;
 
 // Iteratively fetches RelayServerRegistered events from the RelayHub contract.
 // It yields them one by one. The goal is to find the relay with the lowest fee.
@@ -105,8 +117,8 @@ async function* relayServerRegisterGen(client: PolygonClient) {
         if (!blocks.value) break;
         const { fromBlock, toBlock } = blocks.value;
 
-        // eslint-disable-next-line no-await-in-loop
         const relayHub = getRelayHub(client);
+        // eslint-disable-next-line no-await-in-loop
         events = await relayHub.queryFilter(
             relayHub.filters.RelayServerRegistered(),
             fromBlock,
@@ -178,7 +190,7 @@ type RelayAddr = {
 }
 
 async function getRelayAddr(relayUrl: string) {
-    console.log('Pinging relay server', relayUrl);
+    console.debug('Pinging relay server', relayUrl); // eslint-disable-line no-console
 
     // Set a 1s timeout
     const abortController = new AbortController();

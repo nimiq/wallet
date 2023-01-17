@@ -6,6 +6,7 @@ import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI } from './Contr
 let poolPromise: Promise<Contract> | undefined;
 
 export async function getUniswapPool({ ethers, provider, usdcTransfer }: PolygonClient) {
+    // eslint-disable-next-line no-async-promise-executor
     return poolPromise || (poolPromise = new Promise(async (resolve) => {
         const uniswapFactory = new ethers.Contract(
             Config.usdc.uniswapFactoryContract,

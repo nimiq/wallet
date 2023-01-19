@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
+import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log } from '@ethersproject/abstract-provider';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
@@ -215,15 +216,38 @@ export async function launchPolygon() {
             .then(([logsIn, logsOut]) => {
                 // Filter known txs
                 const knownHashes = knownTxs.map(
-                    (tx) => `${tx.transactionHash}:${tx.logIndex}`,
+                    (tx) => tx.transactionHash,
                 );
-                const newLogs = logsIn.concat(logsOut).filter((log) => {
-                    if (log.args?.to === Config.usdc.usdcTransferContract) {
-                        // TODO Store this as the fee
+
+                console.log('Got', logsIn.length, 'incoming and', logsOut.length, 'outgoing logs');
+
+                const newLogs = logsIn.concat(logsOut).filter((log, index, logs) => {
+                    if (knownHashes.includes(log.transactionHash)) return false;
+                    if (!log.args) return false;
+
+                    // Transfer to the usdcTransferContract is the fee paid to OpenGSN
+                    if (
+                        log.args.to === Config.usdc.usdcTransferContract
+                        || (
+                            Config.environment !== ENV_MAIN
+                            && log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
+                        )
+                    ) {
+                        // Find the main transfer log
+                        const mainTransferLog = logs.find((otherLog, otherIndex) =>
+                            otherLog.transactionHash === log.transactionHash
+                            && otherIndex !== index);
+
+                        if (mainTransferLog && mainTransferLog.args) {
+                            // Write this log's `value` as the main transfer log's `fee`
+                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                        }
+
+                        // Then ignore this log
                         return false;
                     }
-                    const hash = `${log.transactionHash}:${log.logIndex}`;
-                    return !knownHashes.includes(hash);
+
+                    return true;
                 }) as TransferEvent[];
 
                 return Promise.all(newLogs.map(async (log) => ({
@@ -251,7 +275,7 @@ function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block): Pl
         sender: log.args.from,
         recipient: log.args.to,
         value: log.args.value.toNumber(), // With Javascript numbers we can represent up to 9,007,199,254 USDC
-        // fee: number,
+        fee: log.args.fee?.toNumber(),
         state: block ? TransactionState.MINED : TransactionState.PENDING,
         blockHeight: block?.number,
         timestamp: block?.timestamp,
@@ -400,16 +424,40 @@ export async function sendTransaction(relayRequest: RelayRequest, signature: str
         }
     });
 
-    const relevantLog = logs.find(
-        (log) =>
-            log?.name === 'Transfer'
-            && 'from' in log.args
-            && log.args.from === relayRequest.request.from
-            // TODO: Use the transfer to the nimiqUsdcContract address as the fee
-            && log.args.to !== Config.usdc.usdcTransferContract,
-    ) as TransferLog;
+    let fee: BigNumber | undefined;
+
+    const relevantLog = logs.find((log) => {
+        if (!log) return false;
+        if (log.name !== 'Transfer') return false;
+        if (log.args.from !== relayRequest.request.from) return false;
+
+        // Transfer to the usdcTransferContract is the fee paid to OpenGSN
+        if (log.args.to === Config.usdc.usdcTransferContract) {
+            fee = log.args.value;
+            return false;
+        }
+
+        if (fee) {
+            log.args = addFeeToArgs(log.args, fee);
+        }
+
+        return true;
+    }) as TransferLog;
     const block = await client.provider.getBlock(relevantLog.blockHash);
     return logAndBlockToPlain(relevantLog, block);
+}
+
+function addFeeToArgs(readonlyArgs: Result, fee: BigNumber): Result {
+    // Clone args as writeable
+    type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+    const args = [...readonlyArgs] as Writeable<Result>;
+    [args.from, args.to, args.value] = args;
+
+    // Add the fee
+    args.push(fee);
+    args.fee = args[3]; // eslint-disable-line prefer-destructuring
+
+    return Object.freeze(args);
 }
 
 // @ts-expect-error debugging
@@ -419,11 +467,11 @@ interface TransferResult extends ReadonlyArray<any> {
     0: string;
     1: string;
     2: BigNumber;
-    3: BigNumber;
+    3?: BigNumber;
     from: string;
     to: string;
     value: BigNumber;
-    fee: BigNumber;
+    fee?: BigNumber;
 }
 
 interface TransferLog extends Log {

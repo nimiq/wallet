@@ -2,8 +2,8 @@
 
 export const USDC_CONTRACT_ABI = [
     // 'constructor()',
-    'event Approval(address indexed owner, address indexed spender, uint256 value)',
-    'event MetaTransactionExecuted(address userAddress, address relayerAddress, bytes functionSignature)',
+    // 'event Approval(address indexed owner, address indexed spender, uint256 value)',
+    // 'event MetaTransactionExecuted(address userAddress, address relayerAddress, bytes functionSignature)',
     // 'event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)',
     // 'event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)',
     // 'event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)',

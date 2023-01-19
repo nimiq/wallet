@@ -75,7 +75,9 @@
                 <span class="confirmations">
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
-                <!-- <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span> -->
+                <span v-if="transaction.fee" class="fee">
+                    <Amount :amount="transaction.fee" currency="usdc" :currency-decimals="6"/> fee
+                </span>
 
                 <BlueLink
                     :href="blockExplorerLink"
@@ -565,10 +567,10 @@ export default defineComponent({
         opacity: 0.6;
     }
 
-    // .fee {
-    //     display: inline-block;
-    //     margin-top: 1.25rem;
-    // }
+    .fee {
+        display: inline-block;
+        margin-top: 1.25rem;
+    }
 
     .blue-link {
         color: var(--nimiq-light-blue-on-dark);

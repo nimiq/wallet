@@ -18,7 +18,7 @@ export type Transaction = {
     sender: string,
     recipient: string,
     value: number,
-    // fee: number,
+    fee?: number,
     state: TransactionState,
     blockHeight?: number,
     timestamp?: number,

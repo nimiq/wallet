@@ -22,8 +22,9 @@ export interface RelayServerInfo {
     minGasPrice: BigNumber;
 }
 
-// const MAX_PCT_RELAY_FEE = 70;
-// const MAX_BASE_RELAY_FEE = 0;
+// Must be updated for new defaults when switching to OpenGSN v3
+const MAX_PCT_RELAY_FEE = 70;
+const MAX_BASE_RELAY_FEE = 0;
 
 export async function getBestRelay(client: PolygonClient) {
     console.debug('Finding best relay'); // eslint-disable-line no-console
@@ -35,28 +36,18 @@ export async function getBestRelay(client: PolygonClient) {
     while (true) { // eslint-disable-line no-constant-condition
         // eslint-disable-next-line no-await-in-loop
         const relay = await relayGen.next();
+        if (relay.done) break;
         if (!relay.value) continue;
 
         const { pctRelayFee, baseRelayFee } = relay.value;
 
-        // if both fees are 0, we found the best relay
-        if (pctRelayFee.eq(0) && baseRelayFee.eq(0)) {
+        // If both fees are maximally our accepted fees, we found an acceptable relay
+        if (pctRelayFee.lte(MAX_PCT_RELAY_FEE) && baseRelayFee.lte(MAX_BASE_RELAY_FEE)) {
             bestRelay = relay.value;
             break;
         }
 
-        // // Ignore relays with higher fees than the maximum allowed
-        // if (pctRelayFee.gt(MAX_PCT_RELAY_FEE) || baseRelayFee.gt(MAX_BASE_RELAY_FEE)) continue;
-
-        if (!bestRelay
-            || baseRelayFee.lt(bestRelay.baseRelayFee)
-            || pctRelayFee.lt(bestRelay.pctRelayFee)) {
-            bestRelay = relay.value;
-        }
-
         relayServers.push(relay.value);
-
-        if (relay.done) break;
     }
 
     if (bestRelay) return bestRelay;
@@ -111,7 +102,7 @@ async function* relayServerRegisterGen(client: PolygonClient) {
 
     let count = 0;
 
-    while (count <= MAX_RELAY_SERVERS_TRIES && !events.length) {
+    while (count < MAX_RELAY_SERVERS_TRIES && !events.length) {
         // eslint-disable-next-line no-await-in-loop
         const blocks = await batchBlocks.next();
         if (!blocks.value) break;
@@ -148,7 +139,8 @@ async function* relayServerRegisterGen(client: PolygonClient) {
                 minGasPrice: client.ethers.BigNumber.from(relayAddr.minGasPrice),
             };
 
-            if (count++ > MAX_RELAY_SERVERS_TRIES) break;
+            count += 1;
+            if (count >= MAX_RELAY_SERVERS_TRIES) break;
         }
     }
 }

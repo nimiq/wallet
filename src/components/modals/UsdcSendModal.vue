@@ -24,6 +24,8 @@
                     <AddressInput
                         v-model="addressInputValue"
                         :allowDomains="true"
+                        :allowEthAddresses="true"
+                        :allowNimiqAddresses="false"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
                         ref="addressInputRef"/>
@@ -62,7 +64,7 @@
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
                 <div class="flex-grow"></div>
-                <Identicon :address="recipientWithLabel.address"/>
+                <Avatar :label="recipientWithLabel.label"/>
                 <LabelInput
                     v-if="recipientWithLabel.type === RecipientType.CONTACT"
                     v-model="recipientWithLabel.label"
@@ -91,15 +93,17 @@
                 @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
-                <section class="identicon-section flex-row">
-                    <UsdcIcon />
+                <section class="flex-row sender-recipient">
+                    <UsdcAddressInfo
+                        address="0x9F316bE2b4a7839d74863b9c5fc9843ADdb9cbcd"
+                    />
                     <div class="separator-wrapper">
                         <div class="separator"></div>
                     </div>
-                    <IdenticonButton
+                    <UsdcAddressInfo
                         :address="recipientWithLabel.address"
-                        :label="recipientWithLabel.label"
-                        @click="recipientDetailsOpened = true"/>
+                        :editable="true"
+                    />
                 </section>
 
                 <section v-if="!isValidRecipient" class="invalid-recipient-section">
@@ -210,20 +214,18 @@ import {
     PageBody,
     AddressInput,
     ScanQrCodeIcon,
-    Identicon,
     LabelInput,
     AddressDisplay,
     SelectBar,
     // Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, CurrencyInfo } from '@nimiq/utils';
+import { parseRequestLink, CurrencyInfo, AddressBook } from '@nimiq/utils';
 import { utils } from 'ethers';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
-import IdenticonButton from '../IdenticonButton.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -243,7 +245,8 @@ import {
 } from '../../lib/UnstoppableDomains';
 import { useAccountStore } from '../../stores/Account';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import UsdcIcon from '../icons/UsdcIcon.vue';
+import Avatar from '../Avatar.vue';
+import UsdcAddressInfo from '../UsdcAddressInfo.vue';
 
 export enum RecipientType {
     CONTACT,
@@ -345,11 +348,13 @@ export default defineComponent({
             const ownedAddressInfo = addresses$.addressInfos[address];
             const ownAccountLabel = Object.values(useAccountStore().accountInfos.value).find(
                 (ai) => ai.polygonAddresses.includes(address),
-            )!.label;
+            )?.label || '';
+
             if (ownedAddressInfo) {
                 label = ownAccountLabel;
                 type = RecipientType.OWN_ADDRESS;
             }
+
             // Search contacts
             if (getLabel.value(address)) {
                 label = getLabel.value(address)!;
@@ -664,6 +669,7 @@ export default defineComponent({
             isDomain,
             isResolvingUnstoppableDomain,
             resolverError,
+            setContact,
 
             // Amount Input
             resetRecipient,
@@ -715,17 +721,16 @@ export default defineComponent({
         ContactBook,
         AddressInput,
         ScanQrCodeIcon,
-        Identicon,
         LabelInput,
         AddressDisplay,
-        IdenticonButton,
         AmountInput,
         AmountMenu,
         FiatConvertedAmount,
         SelectBar,
         // Amount,
         StatusScreen,
-        UsdcIcon,
+        Avatar,
+        UsdcAddressInfo,
     },
 });
 </script>
@@ -834,9 +839,10 @@ export default defineComponent({
             height: 1.5rem;
         }
 
-        .identicon {
-            width: 18rem;
-            margin: -1rem 0;
+        .avatar {
+            width: 16rem;
+            height: 16rem;
+            font-size: 6.75rem;
         }
 
         .label-input,
@@ -873,20 +879,12 @@ export default defineComponent({
         }
     }
 
-    .identicon-section {
+    .sender-recipient {
         justify-content: center;
         align-items: center;
         align-self: stretch;
         margin-bottom: 3.5rem;
-
-        .identicon-button {
-            width: 14rem;
-
-            ::v-deep .identicon {
-                width: 9rem;
-                height: 9rem;
-            }
-        }
+        padding: 0 3.5rem;
 
         .separator-wrapper {
             --height: 0.25rem;

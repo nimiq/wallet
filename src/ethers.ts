@@ -15,7 +15,7 @@ import {
 } from './stores/UsdcTransactions';
 import { ENV_MAIN } from './lib/Constants';
 import { USDC_TRANSFER_CONTRACT_ABI, USDC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
-import { getBestRelay, POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from './lib/usdc/OpenGSN';
+import { getBestRelay, getRelayHub, POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from './lib/usdc/OpenGSN';
 import { getUsdcPrice } from './lib/usdc/Uniswap';
 
 export interface PolygonClient {
@@ -282,20 +282,43 @@ function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block): Pl
     };
 }
 
-async function calculateFee(forceRelay?: RelayServerInfo) {
+async function calculateFee(
+    method: 'transfer' | 'transferWithApproval' = 'transferWithApproval', // eslint-disable-line default-param-last
+    forceRelay?: RelayServerInfo,
+) {
     const client = await getPolygonClient();
+
+    const dataSize = {
+        transfer: undefined,
+        transferWithApproval: 292,
+    }[method];
+
+    if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);
+
+    let relay = forceRelay;
 
     const [
         networkGasPrice,
         gasLimit,
-        relay,
+        [acceptanceBudget],
+        dataGasCost,
         usdcPrice,
     ] = await Promise.all([
         client.provider.getGasPrice().then((price) => price.mul(110).div(100)),
         client.usdcTransfer.requiredRelayGas() as Promise<BigNumber>,
-        forceRelay ?? getBestRelay(client),
+        relay
+            ? Promise.resolve([client.ethers.BigNumber.from(0)])
+            : client.usdcTransfer.getGasAndDataLimits() as Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>,
+        relay
+            ? Promise.resolve(client.ethers.BigNumber.from(0))
+            : getRelayHub(client).calldataGasCost(dataSize) as Promise<BigNumber>,
         getUsdcPrice(client),
     ]);
+
+    if (!relay) {
+        const requiredMaxAcceptanceBudget = acceptanceBudget.add(dataGasCost);
+        relay = await getBestRelay(client, requiredMaxAcceptanceBudget);
+    }
 
     const { baseRelayFee, pctRelayFee, minGasPrice } = relay;
 
@@ -323,6 +346,8 @@ export async function createTransactionRequest(recipient: string, amount: number
 
     const client = await getPolygonClient();
 
+    const method = 'transferWithApproval' as 'transfer' | 'transferWithApproval';
+
     const [
         usdcNonce,
         forwarderNonce,
@@ -330,21 +355,23 @@ export async function createTransactionRequest(recipient: string, amount: number
     ] = await Promise.all([
         client.usdc.getNonce(fromAddress) as Promise<BigNumber>,
         client.usdcTransfer.getNonce(fromAddress) as Promise<BigNumber>,
-        calculateFee(),
+        calculateFee(method),
     ]);
 
-    const data = await client.usdcTransfer.interface.encodeFunctionData('transferWithApproval', [
+    const data = await client.usdcTransfer.interface.encodeFunctionData(method, [
         /* address token */ Config.usdc.usdcContract,
         /* uint256 amount */ amount,
         /* address target */ recipient,
         /* uint256 fee */ fee,
         /* uint256 chainTokenFee */ chainTokenFee,
-        /* uint256 approval */ fee.add(amount),
+        ...(method === 'transferWithApproval' ? [
+            /* uint256 approval */ fee.add(amount),
 
-        // Dummy values, replaced by real signature bytes in Keyguard
-        /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-        /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-        /* uint8 sigV */ 0,
+            // Dummy values, replaced by real signature bytes in Keyguard
+            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+            /* uint8 sigV */ 0,
+        ] : []),
     ]);
 
     const relayRequest: RelayRequest = {

@@ -339,7 +339,7 @@ async function calculateFee(
     };
 }
 
-export async function createTransactionRequest(recipient: string, amount: number) {
+export async function createTransactionRequest(recipient: string, amount: number, forceRelay?: RelayServerInfo) {
     const addressInfo = useUsdcAddressStore().addressInfo.value;
     if (!addressInfo) throw new Error('No active USDC address');
     const fromAddress = addressInfo.address;
@@ -355,7 +355,7 @@ export async function createTransactionRequest(recipient: string, amount: number
     ] = await Promise.all([
         client.usdc.getNonce(fromAddress) as Promise<BigNumber>,
         client.usdcTransfer.getNonce(fromAddress) as Promise<BigNumber>,
-        calculateFee(method),
+        calculateFee(method, forceRelay),
     ]);
 
     const data = await client.usdcTransfer.interface.encodeFunctionData(method, [

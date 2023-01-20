@@ -574,6 +574,7 @@ export default defineComponent({
                     recipientWithLabel.value!.address,
                     amount.value,
                     recipientWithLabel.value!.label,
+                    // relay, // TODO: Pass relay that was retrieved when fee was calculated
                 );
 
                 if (!tx) {

@@ -29,6 +29,7 @@ import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import { useGeoIp } from './composables/useGeoIp';
+import { RelayServerInfo } from './lib/usdc/OpenGSN';
 
 export function shouldUseRedirects(): boolean {
     const { canInstallPwa } = usePwaInstallPrompt();
@@ -564,14 +565,19 @@ export async function activateUsdc(accountId: string) {
     return true;
 }
 
-export async function sendUsdcTransaction(recipient: string, amount: number, recipientLabel?: string) {
+export async function sendUsdcTransaction(
+    recipient: string,
+    amount: number,
+    recipientLabel?: string,
+    forceRelay?: RelayServerInfo,
+) {
     // eslint-disable-next-line no-async-promise-executor
 
     let relayUrl: string;
 
     // eslint-disable-next-line no-async-promise-executor
     const request = new Promise<SignPolygonTransactionRequest>(async (resolve) => {
-        const { relayRequest, approval, relay } = await createTransactionRequest(recipient, amount);
+        const { relayRequest, approval, relay } = await createTransactionRequest(recipient, amount, forceRelay);
         relayUrl = relay.url;
         resolve({
             ...relayRequest,

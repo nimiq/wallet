@@ -6,7 +6,7 @@ import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 
 let relayHubContract: Contract | undefined;
 
-function getRelayHub({ ethers, provider }: PolygonClient) {
+export function getRelayHub({ ethers, provider }: PolygonClient) {
     return relayHubContract || (relayHubContract = new ethers.Contract(
         Config.usdc.relayHubContract,
         RELAY_HUB_CONTRACT_ABI,
@@ -26,9 +26,9 @@ export interface RelayServerInfo {
 const MAX_PCT_RELAY_FEE = 70;
 const MAX_BASE_RELAY_FEE = 0;
 
-export async function getBestRelay(client: PolygonClient) {
+export async function getBestRelay(client: PolygonClient, requiredMaxAcceptanceBudget: BigNumber) {
     console.debug('Finding best relay'); // eslint-disable-line no-console
-    const relayGen = relayServerRegisterGen(client);
+    const relayGen = relayServerRegisterGen(client, requiredMaxAcceptanceBudget);
     const relayServers: RelayServerInfo[] = [];
 
     let bestRelay: RelayServerInfo | undefined;
@@ -36,8 +36,7 @@ export async function getBestRelay(client: PolygonClient) {
     while (true) { // eslint-disable-line no-constant-condition
         // eslint-disable-next-line no-await-in-loop
         const relay = await relayGen.next();
-        if (relay.done) break;
-        if (!relay.value) continue;
+        if (!relay.value) break;
 
         const { pctRelayFee, baseRelayFee } = relay.value;
 
@@ -91,7 +90,7 @@ const MAX_RELAY_SERVERS_TRIES = 10;
 // It yields them one by one. The goal is to find the relay with the lowest fee.
 //   - It will fetch the last OLDEST_BLOCK_TO_FILTER blocks
 //   - in FILTER_BLOCKS_SIZE blocks batches
-async function* relayServerRegisterGen(client: PolygonClient) {
+async function* relayServerRegisterGen(client: PolygonClient, requiredMaxAcceptanceBudget: BigNumber) {
     let events = [];
 
     const batchBlocks = batchBlocksGen({
@@ -131,6 +130,7 @@ async function* relayServerRegisterGen(client: PolygonClient) {
             if (!relayAddr.ready) continue;
             if (!relayAddr.version.startsWith('2.')) continue; // TODO: Make OpenGSN version used configurable
             if (relayAddr.networkId !== Config.usdc.networkId.toString()) continue;
+            if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) continue;
             yield <RelayServerInfo> {
                 baseRelayFee,
                 pctRelayFee,

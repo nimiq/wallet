@@ -17,33 +17,9 @@
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-row sender-recipient">
-                <div class="address-info flex-column">
-                    <div class="crypto-logo-container">
-                       <Avatar :label="peerLabel || ''"/>
-                    </div>
-                    <input type="text" class="nq-input-s vanishing"
-                        v-if="peerAddress && (peerIsContact || !peerLabel)"
-                        :placeholder="$t('Add contact')"
-                        :value="peerLabel || ''"
-                        @input="setContact(peerAddress, $event.target.value)"
-                    />
-                    <span v-else class="label">{{ peerLabel }}</span>
-                    <Tooltip preferredPosition="bottom right" class="left-aligned">
-                        <ShortAddress :address="peerAddress" slot="trigger"/>
-                        {{ peerAddress }}
-                    </Tooltip>
-                </div>
+                <UsdcAddressInfo :address="peerAddress" tooltipPosition="bottom right" />
                 <ArrowRightIcon class="arrow"/>
-                <div class="address-info flex-column">
-                    <div class="crypto-logo-container">
-                       <UsdcIcon class="usdc" />
-                    </div>
-                    <span class="label">{{ $t('USD Coin') }}</span>
-                    <Tooltip preferredPosition="bottom left" class="right-aligned">
-                        <ShortAddress :address="transaction.recipient" slot="trigger"/>
-                        {{ transaction.recipient }}
-                    </Tooltip>
-                </div>
+                <UsdcAddressInfo :address="transaction.recipient" tooltipPosition="bottom left" />
             </div>
 
             <div class="amount-block flex-column">
@@ -109,11 +85,9 @@ import { useSettingsStore } from '@/stores/Settings';
 import { useUsdcTransactionsStore } from '@/stores/UsdcTransactions';
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
 import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
-import Avatar from '../Avatar.vue';
 import BlueLink from '../BlueLink.vue';
-import UsdcIcon from '../icons/UsdcIcon.vue';
-import ShortAddress from '../ShortAddress.vue';
 import Modal from './Modal.vue';
+import UsdcAddressInfo from '../UsdcAddressInfo.vue';
 
 export default defineComponent({
     name: 'usdc-transaction-modal',
@@ -180,6 +154,7 @@ export default defineComponent({
             peerAddress,
             peerLabel,
             peerIsContact,
+            getLabel,
             setContact,
             time,
             transaction,
@@ -187,7 +162,6 @@ export default defineComponent({
     },
     components: {
         Amount,
-        Avatar,
         ArrowRightIcon,
         BlueLink,
         FiatAmount,
@@ -195,9 +169,8 @@ export default defineComponent({
         Modal,
         PageBody,
         PageHeader,
-        ShortAddress,
         Tooltip,
-        UsdcIcon,
+        UsdcAddressInfo,
     },
 });
 </script>
@@ -293,123 +266,16 @@ export default defineComponent({
     width: 100%;
     padding: 0 1rem;
 
+    .usdc-address-info {
+        width: 19rem;
+    }
+
     .arrow {
         font-size: 3rem;
         margin-top: 2.5rem;
         opacity: 0.4;
         flex-shrink: 0;
     }
-}
-
-.address-info {
-    align-items: center;
-    width: 19rem;
-
-    .nq-link {
-        font-size: var(--small-size);
-        color: inherit;
-        opacity: 0.5;
-    }
-}
-
-.avatar,
-.bank-icon,
-.address-info > svg {
-    position: relative;
-    width: 8rem;
-    height: 8rem;
-    font-size: 3.75rem;
-    display: block;
-}
-
-.address-info > svg {
-    color: var(--bitcoin-orange);
-}
-
-.address-info .crypto-logo-container {
-    position: relative;
-    display: inherit;
-
-    > svg {
-        width: 8rem;
-        height: 8rem;
-
-        &.usdc {
-            color: var(--usdc-blue);
-        }
-    }
-}
-
-.label,
-.nq-input-s {
-    font-size: var(--body-size);
-    font-weight: 600;
-    text-align: center;
-}
-
-.label {
-    margin: 2rem 0 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 100%;
-    mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-
-    &.unlabelled {
-        font-style: italic;
-    }
-}
-
-.nq-input-s {
-    margin: 1.25rem 0 0.375rem;
-    max-width: 100%;
-}
-
-.nq-input-s:not(:focus):not(:hover) {
-    mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
-}
-
-.address-info .tooltip ::v-deep {
-    .tooltip-box {
-        padding: 1rem;
-        font-size: var(--small-size);
-        line-height: 1;
-        font-family: 'Fira Mono', monospace;
-        font-weight: normal;
-        letter-spacing: -0.02em;
-        white-space:nowrap;
-        word-spacing: -0.2em;
-    }
-
-    .trigger {
-        padding: 0.5rem 0.75rem;
-        line-height: 1.25;
-        border-radius: 0.5rem;
-        transition: background 300ms var(--nimiq-ease);
-
-        &:hover,
-        &:focus,
-        &:focus-within {
-            background: var(--text-6);
-
-            .short-address {
-                opacity: .6;
-            }
-        }
-    }
-}
-
-.tooltip.left-aligned ::v-deep .tooltip-box {
-    transform: translate(-9.25rem, 2rem);
-}
-
-.tooltip.right-aligned ::v-deep .tooltip-box {
-    transform: translate(9.25rem, 2rem);
-}
-
-.short-address {
-    font-size: var(--body-size);
-    opacity: 0.5;
-    transition: opacity .3s var(--nimiq-ease);
 }
 
 .amount-block {
@@ -597,18 +463,6 @@ export default defineComponent({
                 white-space: nowrap;
             }
         }
-    }
-
-    .address-info {
-        flex-shrink: 0;
-    }
-
-    .tooltip.left-aligned ::v-deep .tooltip-box {
-        transform: translate(-7.75rem, 2rem);
-    }
-
-    .tooltip.right-aligned ::v-deep .tooltip-box {
-        transform: translate(7.75rem, 2rem);
     }
 
     .tooltip {

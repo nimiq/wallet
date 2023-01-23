@@ -13,7 +13,7 @@
                 {{ $t('Send Transaction') }}
             </PageHeader>
             <PageBody class="page__recipient-input flex-column">
-                <ContactShortcuts
+                <UsdcContactShortcuts
                     :contacts="recentContacts"
                     :hasAddresses="hasOwnAddresses"
                     @contact-list-opened="contactListOpened = true"
@@ -56,7 +56,7 @@
         <div v-if="contactListOpened" slot="overlay" class="page flex-column">
             <PageHeader class="header__contact-list">{{ $t('Choose a Recipient') }}</PageHeader>
             <PageBody class="page__contact-list">
-                <ContactBook @contact-selected="onContactSelected"/>
+                <UsdcContactBook @contact-selected="onContactSelected"/>
             </PageBody>
         </div>
 
@@ -95,14 +95,16 @@
             <PageBody class="page__amount-input flex-column">
                 <section class="flex-row sender-recipient">
                     <UsdcAddressInfo
-                        address="0x9F316bE2b4a7839d74863b9c5fc9843ADdb9cbcd"
+                        :address="addressInfo.address"
                     />
                     <div class="separator-wrapper">
                         <div class="separator"></div>
                     </div>
                     <UsdcAddressInfo
                         :address="recipientWithLabel.address"
-                        :editable="true"
+                        :label="recipientWithLabel.label"
+                        tooltipPosition="bottom left"
+                        :editable="recipientWithLabel.type === RecipientType.CONTACT"
                     />
                 </section>
 
@@ -123,6 +125,7 @@
                         >
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
+                                currency="usdc"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
@@ -135,6 +138,7 @@
                             <span slot="prefix" class="tilde">~</span>
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
+                                currency="usdc"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
@@ -219,13 +223,13 @@ import {
     SelectBar,
     // Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, CurrencyInfo, AddressBook } from '@nimiq/utils';
+import { parseRequestLink, CurrencyInfo } from '@nimiq/utils';
 import { utils } from 'ethers';
 import { captureException } from '@sentry/vue';
 import Config from 'config';
 import Modal, { disableNextModalTransition } from './Modal.vue';
-import ContactShortcuts from '../ContactShortcuts.vue';
-import ContactBook from '../ContactBook.vue';
+import UsdcContactShortcuts from '../UsdcContactShortcuts.vue';
+import UsdcContactBook from '../UsdcContactBook.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -289,7 +293,8 @@ export default defineComponent({
         const contactListOpened = ref(false);
         function onContactSelected(contact: {address: string, label: string}, type = RecipientType.CONTACT) {
             recipientWithLabel.value = {
-                ...contact,
+                address: contact.address,
+                label: contact.label,
                 type,
             };
             contactListOpened.value = false;
@@ -360,12 +365,6 @@ export default defineComponent({
                 label = getLabel.value(address)!;
                 type = RecipientType.CONTACT;
             }
-            // // Search global address book
-            // const globalLabel = AddressBook.getLabel(address);
-            // if (globalLabel) {
-            //     label = globalLabel;
-            //     type = RecipientType.GLOBAL_ADDRESS;
-            // }
 
             recipientWithLabel.value = { address, label, type };
             if (label || skipRecipientDetails) {
@@ -433,7 +432,7 @@ export default defineComponent({
             return new CurrencyInfo(activeCurrency.value);
         });
 
-        const fiatToUsdcDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e5);
+        const fiatToUsdcDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e6);
 
         watch(activeCurrency, (currency) => {
             if (currency === 'usdc') {
@@ -717,8 +716,8 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        ContactShortcuts,
-        ContactBook,
+        UsdcContactShortcuts,
+        UsdcContactBook,
         AddressInput,
         ScanQrCodeIcon,
         LabelInput,

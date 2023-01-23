@@ -67,7 +67,7 @@ export default defineComponent({
         const localLabel = ref(props.label || getLabel.value(props.address) || '');
 
         watch(localLabel, (newLabel) => {
-            if (newLabel) setContact(props.address, newLabel);
+            if (props.editable) setContact(props.address, newLabel);
         });
 
         return {

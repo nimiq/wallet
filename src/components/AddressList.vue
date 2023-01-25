@@ -1,6 +1,6 @@
 <template>
     <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root">
-        <div class="scroll-mask top"></div>
+        <div class="scroll-mask top" v-if="embedded"></div>
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             :addressInfo="addressInfo"
@@ -18,7 +18,7 @@
             </div>
             <span class="label add-address-label">{{ $t('Add\u00a0address') }}</span>
         </button>
-        <div class="scroll-mask bottom"></div>
+        <div class="scroll-mask bottom" v-if="embedded"></div>
         <hr class="separator" v-if="showBitcoin"/>
         <AddressListItem
             v-if="showBitcoin"

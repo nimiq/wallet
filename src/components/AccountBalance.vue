@@ -20,7 +20,7 @@
                 <span v-else class="fiat-amount">&nbsp;</span>
             </div>
         </div>
-        <BalanceDistribution/>
+        <!-- <BalanceDistribution/> -->
     </div>
 </template>
 
@@ -29,7 +29,7 @@ import Vue from 'vue';
 import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import Config from 'config';
-import BalanceDistribution from './BalanceDistribution.vue';
+// import BalanceDistribution from './BalanceDistribution.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
@@ -123,7 +123,7 @@ export default defineComponent({
         };
     },
     components: {
-        BalanceDistribution,
+        // BalanceDistribution,
         FiatAmount,
         PrivacyOffIcon,
         PrivacyOnIcon,

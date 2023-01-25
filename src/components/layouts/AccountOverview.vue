@@ -45,85 +45,86 @@
         <template v-else>
             <AccountBalance />
 
-            <AddressList
-                :showAddAddressButton="canHaveMultipleAddresses"
-                @address-selected="onAddressSelected"
-                @add-address="addAddress(activeAccountId)"
-            />
+            <div class="nimiq-account">
+                <header class="flex-row">
+                    <span class="nq-icon nimiq-logo"></span>
+                    <span>NIM</span>
+                    <button class="add-address reset" @click="addAddress(activeAccountId)"><MiniAddIcon/></button>
+                </header>
+                <AddressList @address-selected="onAddressSelected"/>
+            </div>
 
-            <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" class="bitcoin-account flex-column">
-                <button
-                    class="bitcoin-account-item reset flex-row"
-                    :class="{
-                        'active': activeCurrency === CryptoCurrency.BTC,
-                        'requires-activation': !hasBitcoinAddresses,
-                    }"
-                    @click="selectBitcoin"
-                >
-                    <BitcoinIcon/>
-                    {{ $t('Bitcoin') }}
-                    <div class="flex-grow"></div>
-                    <div class="balances" v-if="hasBitcoinAddresses">
-                        <div class="flex-row">
-                            <AlertTriangleIcon v-if="btcConsensus === 'connecting'" />
-                            <Amount
+            <div class="flex-row">
+                <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" class="bitcoin-account flex-column">
+                    <button
+                        class="bitcoin-account-item reset flex-column"
+                        :class="{
+                            'active': activeCurrency === CryptoCurrency.BTC,
+                            'requires-activation': !hasBitcoinAddresses,
+                        }"
+                        @click="selectBitcoin"
+                    >
+                        <div class="bitcoin-account-item-name flex-row"><BitcoinIcon/>{{ $t('Bitcoin') }}</div>
+                        <!-- <div class="flex-grow"></div> -->
+                        <div class="balances" v-if="hasBitcoinAddresses">
+                            <div class="flex-row">
+                                <AlertTriangleIcon v-if="btcConsensus === 'connecting'" />
+                                <Amount
+                                    :amount="btcAccountBalance"
+                                    :currency="CryptoCurrency.BTC"
+                                    value-mask
+                                />
+                            </div>
+                            <FiatConvertedAmount class="fiat-balance"
                                 :amount="btcAccountBalance"
                                 :currency="CryptoCurrency.BTC"
                                 value-mask
                             />
                         </div>
-                        <FiatConvertedAmount class="fiat-balance"
-                            :amount="btcAccountBalance"
-                            :currency="CryptoCurrency.BTC"
-                            value-mask
-                        />
-                    </div>
-                    <button v-else
-                        class="nq-button-pill light-blue"
-                        @click.stop="$router.push('/btc-activation')" @mousedown.prevent
-                    >{{ $t('Activate') }}</button>
-                    <div v-if="hasBitcoinAddresses" class="mobile-arrow"></div>
-                </button>
-            </div>
+                        <button v-else
+                            class="nq-button-pill light-blue"
+                            @click.stop="$router.push('/btc-activation')" @mousedown.prevent
+                        >{{ $t('Activate') }}</button>
+                    </button>
+                </div>
 
-            <div v-if="canHaveMultipleAddresses && $config.usdc.enabled" class="usdc-account flex-column">
-                <button
-                    class="usdc-account-item reset flex-row"
-                    :class="{
-                        'active': activeCurrency === CryptoCurrency.USDC,
-                        'requires-activation': !hasUsdcAddresses,
-                    }"
-                    @click="selectUsdc"
-                >
-                    <UsdcIcon/>
-                    {{ $t('USD Coin') }}
-                    <div class="flex-grow"></div>
-                    <div class="balances" v-if="hasUsdcAddresses">
-                        <template v-if="usdcAccountBalance !== null">
-                            <div class="flex-row">
-                                <AlertTriangleIcon v-if="usdcConsensus === 'connecting'" />
-                                <Amount
+                <div v-if="canHaveMultipleAddresses && $config.usdc.enabled" class="usdc-account flex-column">
+                    <button
+                        class="usdc-account-item reset flex-column"
+                        :class="{
+                            'active': activeCurrency === CryptoCurrency.USDC,
+                            'requires-activation': !hasUsdcAddresses,
+                        }"
+                        @click="selectUsdc"
+                    >
+                        <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
+                        <!-- <div class="flex-grow"></div> -->
+                        <div class="balances" v-if="hasUsdcAddresses">
+                            <template v-if="usdcAccountBalance !== null">
+                                <div class="flex-row">
+                                    <AlertTriangleIcon v-if="usdcConsensus === 'connecting'" />
+                                    <Amount
+                                        :amount="usdcAccountBalance"
+                                        :currency="CryptoCurrency.USDC"
+                                        value-mask
+                                    />
+                                </div>
+                                <FiatConvertedAmount class="fiat-balance"
                                     :amount="usdcAccountBalance"
                                     :currency="CryptoCurrency.USDC"
                                     value-mask
                                 />
-                            </div>
-                            <FiatConvertedAmount class="fiat-balance"
-                                :amount="usdcAccountBalance"
-                                :currency="CryptoCurrency.USDC"
-                                value-mask
-                            />
-                        </template>
-                        <template v-else>
-                            <CircleSpinner />
-                        </template>
-                    </div>
-                    <button v-else
-                        class="nq-button-pill light-blue"
-                        @click.stop="$router.push('/usdc-activation')" @mousedown.prevent
-                    >{{ $t('Activate') }}</button>
-                    <div v-if="hasUsdcAddresses" class="mobile-arrow"></div>
-                </button>
+                            </template>
+                            <template v-else>
+                                <CircleSpinner />
+                            </template>
+                        </div>
+                        <button v-else
+                            class="nq-button-pill light-blue"
+                            @click.stop="$router.push('/usdc-activation')" @mousedown.prevent
+                        >{{ $t('Activate') }}</button>
+                    </button>
+                </div>
             </div>
 
             <div v-if="!canHaveMultipleAddresses">
@@ -132,6 +133,8 @@
                     {{ $t('All new features are exclusive to new accounts. Upgrade now, it only takes seconds.') }}
                 </p>
             </div>
+
+            <div class="flex-grow"></div>
 
             <MobileActionBar/>
         </template>
@@ -180,6 +183,7 @@ import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useSettingsStore } from '../../stores/Settings';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import MiniAddIcon from '../icons/MiniAddIcon.vue';
 
 export default defineComponent({
     name: 'account-overview',
@@ -291,6 +295,7 @@ export default defineComponent({
         FiatConvertedAmount,
         AttentionDot,
         CircleSpinner,
+        MiniAddIcon,
     },
 });
 </script>
@@ -401,35 +406,88 @@ export default defineComponent({
 }
 
 .address-list {
-    margin-top: calc(var(--item-margin) - 2.5rem);
-    flex-grow: 1;
-    margin-bottom: 1rem;
+    height: auto;
+}
+
+.nimiq-account,
+.bitcoin-account,
+.usdc-account {
+    background-color: var(--text-6);
+    margin-top: 2rem;
+    border-radius: 1.25rem;
+
+    header {
+        font-size: 2rem;
+        font-weight: 600;
+        align-items: center;
+        padding: 3rem;
+
+        .nq-icon {
+            margin-right: 1rem;
+            font-size: 2.75rem;
+        }
+
+        .nq-icon + span {
+            opacity: .7;
+        }
+    }
+}
+
+.nimiq-account {
+    margin-top: 7rem;
+    padding: 0.5rem 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-shrink: 1;
+
+    @extend %custom-scrollbar;
+
+    .add-address {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: auto;
+        height: 3rem;
+        width: 3rem;
+        border-radius: 2.5rem;
+        background-color: var(--text-10);
+
+        svg {
+            width: 8px;
+            height: auto;
+            color: var(--nimiq-blue);
+            opacity: .6;
+
+            path {
+                stroke-width: 2px;
+                stroke-linejoin: round;
+            }
+        }
+    }
+}
+
+.bitcoin-account {
+    margin-right: 2rem;
 }
 
 .bitcoin-account,
 .usdc-account {
-    height: 15rem;
+    flex-basis: content;
     flex-shrink: 0;
-    padding: 3rem 2rem;
-    margin: 0 -2rem;
+    flex-grow: 1;
+    padding: 1rem;
     color: var(--text-70);
     font-size: var(--body-size);
     font-weight: 600;
-    box-shadow: 0 -1.5px 0 var(--text-10);
-
-    @media (max-width: 1319px) {
-        padding: 3rem 1rem;
-        margin: 0 -1rem;
-    }
 
     .bitcoin-account-item,
     .usdc-account-item {
         position: relative;
         width: 100%;
-        padding: 0 2rem;
+        padding: 2rem;
         flex-shrink: 0;
-        flex-grow: 1;
-        align-items: center;
+        // flex-grow: 1;
+        align-items: flex-start;
         border-radius: 0.75rem;
         transition: {
             property: color, background;
@@ -503,22 +561,27 @@ export default defineComponent({
         }
     }
 
-    svg {
-        margin-right: 2rem;
-        width: 5.25rem;
-        height: 5.25rem;
+    .bitcoin-account-item-name,
+    .usdc-account-item-name {
+        align-items: center;
+        margin-bottom: 2rem;
 
-        &.bitcoin {
-            color: var(--bitcoin-orange);
-        }
+        svg {
+            margin-right: 1rem;
+            width: 2.75rem;
+            height: auto;
 
-        &.usdc {
-            color: var(--usdc-blue);
+            &.bitcoin {
+                color: var(--bitcoin-orange);
+            }
+
+            &.usdc {
+                color: var(--usdc-blue);
+            }
         }
     }
 
     .balances {
-        text-align: right;
         flex-shrink: 0;
 
         .nq-icon {
@@ -539,10 +602,6 @@ export default defineComponent({
         font-size: var(--size);
         font-weight: 600;
         opacity: 0.5;
-    }
-
-    .mobile-arrow {
-        display: none;
     }
 }
 
@@ -628,10 +687,6 @@ export default defineComponent({
     .account-balance {
         margin-top: -2rem;
     }
-
-    .bitcoin-account .balances {
-        display: none;
-    }
 }
 
 @media (max-width: 700px) { // Full mobile breakpoint
@@ -639,24 +694,15 @@ export default defineComponent({
         margin-top: 0;
     }
 
+    .nimiq-account {
+        margin-top: 4rem;
+    }
+
     .bitcoin-account {
-        height: 11rem;
-        padding: 0;
-        margin: 0;
         color: var(--text-100);
 
         .bitcoin-account-item::before {
             display: none;
-        }
-
-        .mobile-arrow {
-            display: block;
-            border: 1rem solid transparent;
-            border-width: 0.5rem 0.75rem;
-            border-left-color: inherit;
-            margin-left: 1.5rem;
-            margin-right: -0.75rem;
-            opacity: 0.3;
         }
     }
 

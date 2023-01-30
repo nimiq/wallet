@@ -45,17 +45,20 @@
         <template v-else>
             <AccountBalance />
 
-            <div class="nimiq-account">
+            <div class="nimiq-account" ref="nimiqAccount$">
                 <header class="flex-row">
                     <span class="nq-icon nimiq-logo"></span>
                     <span>NIM</span>
-                    <button class="add-address reset" @click="addAddress(activeAccountId)"><MiniAddIcon/></button>
+                    <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
+                        <MiniAddIcon/>
+                    </button>
                 </header>
                 <AddressList @address-selected="onAddressSelected"/>
             </div>
 
             <div class="flex-row">
-                <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" class="bitcoin-account flex-column">
+                <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" ref="bitcoinAccount$"
+                    class="bitcoin-account flex-column">
                     <button
                         class="bitcoin-account-item reset flex-column"
                         :class="{
@@ -65,7 +68,6 @@
                         @click="selectBitcoin"
                     >
                         <div class="bitcoin-account-item-name flex-row"><BitcoinIcon/>{{ $t('Bitcoin') }}</div>
-                        <!-- <div class="flex-grow"></div> -->
                         <div class="balances" v-if="hasBitcoinAddresses">
                             <div class="flex-row">
                                 <AlertTriangleIcon v-if="btcConsensus === 'connecting'" />
@@ -88,7 +90,8 @@
                     </button>
                 </div>
 
-                <div v-if="canHaveMultipleAddresses && $config.usdc.enabled" class="usdc-account flex-column">
+                <div v-if="canHaveMultipleAddresses && $config.usdc.enabled" ref="usdcAccount$"
+                    class="usdc-account flex-column">
                     <button
                         class="usdc-account-item reset flex-column"
                         :class="{
@@ -98,7 +101,6 @@
                         @click="selectUsdc"
                     >
                         <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
-                        <!-- <div class="flex-grow"></div> -->
                         <div class="balances" v-if="hasUsdcAddresses">
                             <template v-if="usdcAccountBalance !== null">
                                 <div class="flex-row">
@@ -124,6 +126,33 @@
                             @click.stop="$router.push('/usdc-activation')" @mousedown.prevent
                         >{{ $t('Activate') }}</button>
                     </button>
+                </div>
+            </div>
+
+            <div class="account-backgrounds">
+                <div class="nimiq-account-background" :style="getAccountBackgroundPosition('nimiq')"></div>
+                <div class="bitcoin-account-background" :style="getAccountBackgroundPosition('bitcoin')"></div>
+                <div class="usdc-account-background" :style="getAccountBackgroundPosition('usdc')"></div>
+            </div>
+
+            <div class="swap-buttons">
+                <div class="nim-usdc-swap-button"
+                    :style="getSwapButtonPosition('nim-usdc')"
+                    @click="$router.push('/swap')"
+                >
+                    <div class="inner-circle"><DoubleArrowIcon /></div>
+                </div>
+                <div class="nim-btc-swap-button"
+                    :style="getSwapButtonPosition('nim-btc')"
+                    @click="$router.push('/swap')"
+                >
+                    <div class="inner-circle"><DoubleArrowIcon /></div>
+                </div>
+                <div class="btc-usdc-swap-button"
+                    :style="getSwapButtonPosition('btc-usdc')"
+                    @click="$router.push('/swap')"
+                >
+                    <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>
             </div>
 
@@ -156,7 +185,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -184,6 +213,7 @@ import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useSettingsStore } from '../../stores/Settings';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import MiniAddIcon from '../icons/MiniAddIcon.vue';
+import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 
 export default defineComponent({
     name: 'account-overview',
@@ -253,6 +283,88 @@ export default defineComponent({
 
         const { updateAvailable } = useSettingsStore();
 
+        const usdcAccount$ = ref<HTMLElement | null>(null);
+        const nimiqAccount$ = ref<HTMLElement | null>(null);
+        const bitcoinAccount$ = ref<HTMLElement | null>(null);
+        const sidebar$ = ref<HTMLElement | null>(null);
+
+        const forceUpdate = ref(false);
+        const resizeObserver = new ResizeObserver(async () => {
+            await context.root.$nextTick();
+            forceUpdate.value = !forceUpdate.value; // trick to force vue to update the position on component resize
+        });
+
+        onMounted(async () => {
+            sidebar$.value = document.getElementsByClassName('sidebar')[0] as HTMLElement;
+
+            resizeObserver.observe(context.root.$el);
+        });
+
+        onUnmounted(() => resizeObserver.disconnect());
+
+        function getAccountBackgroundPosition(currency: 'usdc' | 'nimiq' | 'bitcoin') {
+            forceUpdate.value = !!forceUpdate.value; // trick to force vue to update the position on component resize
+
+            const el$ = {
+                usdc: usdcAccount$.value,
+                nimiq: nimiqAccount$.value,
+                bitcoin: bitcoinAccount$.value,
+            }[currency];
+
+            if (el$ && sidebar$.value) {
+                const accountPosition = el$.getBoundingClientRect();
+                const sidebarPosition: DOMRect = sidebar$.value.getBoundingClientRect();
+
+                return {
+                    height: `${accountPosition.height}px`,
+                    width: `${accountPosition.width}px`,
+                    top: `${accountPosition.top}px`,
+                    left: `${accountPosition.left - (sidebarPosition.width + sidebarPosition.x)}px`,
+                };
+            }
+            return null;
+        }
+
+        function getSwapButtonPosition(swap: 'nim-btc' | 'nim-usdc' | 'btc-usdc') {
+            forceUpdate.value = !!forceUpdate.value; // trick to force vue to update the position on component resize
+
+            const sidebarPosition: DOMRect | undefined = sidebar$.value?.getBoundingClientRect();
+            const sidebarWidth = sidebarPosition ? (sidebarPosition.width + sidebarPosition.x) : 0;
+
+            if (swap === 'nim-btc' && bitcoinAccount$.value) {
+                const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
+
+                const left = bitcoinAccountPosition.left + (bitcoinAccountPosition.width / 2) - sidebarWidth;
+
+                return {
+                    top: `calc(${bitcoinAccountPosition.top}px - (var(--size) / 2) - 1rem)`,
+                    left: `calc(${left}px - (var(--size) / 2))`,
+                };
+            }
+            if (swap === 'nim-usdc' && usdcAccount$.value) {
+                const usdcAccountPosition = usdcAccount$.value.getBoundingClientRect();
+
+                const left = usdcAccountPosition.left + (usdcAccountPosition.width / 2) - sidebarWidth;
+
+                return {
+                    top: `calc(${usdcAccountPosition.top}px - (var(--size) / 2) - 1rem)`,
+                    left: `calc(${left}px - (var(--size) / 2))`,
+                };
+            }
+            if (swap === 'btc-usdc' && bitcoinAccount$.value) {
+                const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
+
+                const top = bitcoinAccountPosition.top + (bitcoinAccountPosition.height / 2);
+                const left = bitcoinAccountPosition.left + bitcoinAccountPosition.width - sidebarWidth;
+
+                return {
+                    top: `calc(${top}px - (var(--size) / 2))`,
+                    left: `calc(${left}px - (var(--size) / 2) + 1rem)`,
+                };
+            }
+            return null;
+        }
+
         return {
             activeAccountInfo,
             AccountType,
@@ -274,6 +386,12 @@ export default defineComponent({
             btcConsensus,
             usdcConsensus,
             updateAvailable,
+            usdcAccount$,
+            nimiqAccount$,
+            bitcoinAccount$,
+            sidebar$,
+            getAccountBackgroundPosition,
+            getSwapButtonPosition,
         };
     },
     components: {
@@ -296,6 +414,7 @@ export default defineComponent({
         AttentionDot,
         CircleSpinner,
         MiniAddIcon,
+        DoubleArrowIcon,
     },
 });
 </script>
@@ -407,12 +526,14 @@ export default defineComponent({
 
 .address-list {
     height: auto;
+    padding-bottom: .5rem;
+    z-index: 2;
 }
 
 .nimiq-account,
 .bitcoin-account,
 .usdc-account {
-    background-color: var(--text-6);
+    z-index: 3;
     margin-top: 2rem;
     border-radius: 1.25rem;
 
@@ -436,6 +557,7 @@ export default defineComponent({
 .nimiq-account {
     margin-top: 7rem;
     padding: 0.5rem 1rem;
+    padding-bottom: 0px;
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 1;
@@ -479,6 +601,7 @@ export default defineComponent({
     color: var(--text-70);
     font-size: var(--body-size);
     font-weight: 600;
+    position: relative;
 
     .bitcoin-account-item,
     .usdc-account-item {
@@ -603,6 +726,92 @@ export default defineComponent({
         font-weight: 600;
         opacity: 0.5;
     }
+}
+
+.account-backgrounds {
+    div {
+        position: absolute;
+        z-index: 1;
+        border-radius: 1.25rem;
+        background-color: var(--text-6);
+    }
+}
+
+.nim-btc-swap-button,
+.nim-usdc-swap-button,
+.btc-usdc-swap-button {
+    --size: 3.5rem;
+    --transition-duration: 200ms;
+
+    cursor: pointer;
+    height: var(--size);
+    width: var(--size);
+    background-color: var(--bg-base);
+    border-radius: 50%;
+    position: absolute;
+    z-index: 2;
+
+    transition: {
+        property: height, width, top, left;
+        duration: var(--transition-duration);
+        timing-function: var(--nimiq-ease);
+    };
+
+    .inner-circle {
+        --size: 0.5rem;
+
+        height: var(--size);
+        width: var(--size);
+        background-color: var(--text-20);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+
+        transition: {
+            property: height, width, background-color;
+            duration: var(--transition-duration);
+            timing-function: var(--nimiq-ease);
+        };
+
+        svg {
+            opacity: 0;
+            height: 1.5rem;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+
+            transition: opacity var(--transition-duration) var(--nimiq-ease);
+
+            path {
+                transition: d var(--transition-duration) var(--nimiq-ease);
+
+                d: path("m4 7 0 0 0 0m0 0 0 0 0 0");
+            }
+        }
+    }
+
+    &:hover {
+        --size: 5rem;
+
+        .inner-circle {
+            --size: 4rem;
+
+            background-color: var(--text-6);
+
+            svg {
+                opacity: 1;
+
+                path { d: path("m1 4 3-3 3 3m0 6-3 3-3-3") }
+            }
+        }
+    }
+}
+
+.btc-usdc-swap-button .inner-circle svg {
+    transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .future-notice {

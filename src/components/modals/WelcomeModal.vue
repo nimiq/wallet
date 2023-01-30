@@ -354,7 +354,12 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { CryptoCurrency, FiatCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import {
+    CryptoCurrency,
+    FiatCurrency,
+    WELCOME_MODAL_LOCALSTORAGE_KEY,
+    WELCOME_2_MODAL_LOCALSTORAGE_KEY,
+} from '../../lib/Constants';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
@@ -451,7 +456,9 @@ export default defineComponent({
             if (page.value < 5) {
                 page.value += 1;
             } else {
+                // Set both localstorage keys to true
                 window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
+                window.localStorage.setItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY, '1');
                 await $modal.value!.forceClose();
 
                 const account = activeAccountInfo.value;

@@ -25,7 +25,7 @@ import router from './router';
 import { useSettingsStore } from './stores/Settings';
 import { guessUserCurrency, useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
-import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_2_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import { useGeoIp } from './composables/useGeoIp';
@@ -67,9 +67,13 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
 
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
-    if (!welcomeModalAlreadyShown) {
-        router.onReady(() => router.push('/welcome'));
+    // The WelcomeModal changed significantly, now talking about "Think value, not currency".
+    // Thus we want to show the modal to all users again, but we do not want to overwrite the
+    // fiat currency they already set for themselves. So we use a second localstorage key to
+    // separate first-time users from returning users.
+    const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
 
+    if (!welcomeModalAlreadyShown) {
         // Get location from GeoIP service to set fiat currency
         useGeoIp().locate().then((location) => {
             if (location.country) {
@@ -79,6 +83,10 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
             // eslint-disable-next-line no-console
             console.debug(`Failed to locate user for fiat currency: ${error.message}`);
         });
+    }
+
+    if (!welcomeModalAlreadyShown || !welcome2ModalAlreadyShown) {
+        router.onReady(() => router.push('/welcome'));
     } else if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length) {
         // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
         // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
@@ -257,6 +265,11 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const accountInfo of accountInfos) {
             accountStore.addAccountInfo(accountInfo);
         }
+    }
+
+    const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
+    if (!welcome2ModalAlreadyShown) {
+        router.onReady(() => router.push('/welcome'));
     }
 }
 

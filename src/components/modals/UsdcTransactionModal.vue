@@ -1,14 +1,25 @@
 <template>
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader>
-             <i18n path="Transaction from {address}" :tag="false">
+            <i18n v-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
                     <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
             </i18n>
 
-            <span slot="more" class="date nq-green">
-                <i18n path="Received at {dateAndTime}" :tag="false">
+            <i18n v-else-if="!isIncoming" path="Transaction to {address}" :tag="false">
+                <template v-slot:address>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
+                </template>
+            </i18n>
+
+            <span slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
+                <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
+                    <template v-slot:dateAndTime>
+                        {{ datum }} <strong>&middot;</strong> {{ time }}
+                    </template>
+                </i18n>
+                <i18n v-else path="Sent at {dateAndTime}" :tag="false">
                     <template v-slot:dateAndTime>
                         {{ datum }} <strong>&middot;</strong> {{ time }}
                     </template>
@@ -17,14 +28,27 @@
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-row sender-recipient">
-                <UsdcAddressInfo :address="peerAddress" tooltipPosition="bottom right" />
+                <UsdcAddressInfo
+                    :address="transaction.sender"
+                    :label="isIncoming ? peerLabel : undefined"
+                    :editable="isIncoming ? peerIsContact : false"
+                    tooltipPosition="bottom right"
+                />
                 <ArrowRightIcon class="arrow"/>
-                <UsdcAddressInfo :address="transaction.recipient" tooltipPosition="bottom left" />
+                <UsdcAddressInfo
+                    :address="transaction.recipient"
+                    :label="!isIncoming ? peerLabel : undefined"
+                    :editable="!isIncoming ? peerIsContact : false"
+                    tooltipPosition="bottom left"
+                />
             </div>
 
             <div class="amount-block flex-column">
                 <Amount :amount="transaction.value" currency="usdc" value-mask :currency-decimals="6"
-                    class="transaction-value nq-green isIncoming" />
+                    class="transaction-value" :class="{
+                    isIncoming,
+                    'nq-green': isIncoming,
+                }" />
 
                 <div class="flex-row">
                     <div class="fiat-amount">
@@ -99,14 +123,25 @@ export default defineComponent({
     },
     setup(props) {
         const { amountsHidden } = useSettingsStore();
-        const { state: addresses$ } = useUsdcAddressStore();
+        const { state: addresses$, addressInfo } = useUsdcAddressStore();
 
         const transaction = computed(() => useUsdcTransactionsStore().state.transactions[props.hash]);
+
+        const isIncoming = computed(() => {
+            const haveSender = !!addresses$.addressInfos[transaction.value.sender];
+            const haveRecipient = !!addresses$.addressInfos[transaction.value.recipient];
+
+            if (haveSender && !haveRecipient) return false;
+            if (!haveSender && haveRecipient) return true;
+
+            // Fall back to comparing with active address
+            return transaction.value.recipient === addressInfo.value!.address;
+        });
 
         // Peer
         const { getLabel, setContact } = useUsdcContactsStore();
 
-        const peerAddress = computed(() => transaction.value.sender);
+        const peerAddress = computed(() => isIncoming.value ? transaction.value.sender : transaction.value.recipient);
         const peerLabel = computed(() => {
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
@@ -120,7 +155,7 @@ export default defineComponent({
             // Search contacts
             if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value)!;
 
-            return false;
+            return undefined;
         });
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
@@ -146,6 +181,7 @@ export default defineComponent({
 
         return {
             amountsHidden,
+            isIncoming,
             blockExplorerLink,
             confirmations,
             datum,

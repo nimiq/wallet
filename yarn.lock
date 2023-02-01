@@ -1836,12 +1836,15 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.1.1.tgz#b781558c9f94fcde85144cab749bf790aa1b1ebb"
-  integrity sha512-odhR2PqnfuzvmSpVIwNIftXoCHgCfHmxOyKHsq/jkUpeiU7M5Z3pZflyKPI5gUxYBS9CEL1Sss3eebFVQk2vdw==
+"@nimiq/libswap@^1.2.0-beta.0":
+  version "1.2.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.2.0-beta.0.tgz#56dc590839c2a25e5613ba0d704b98709e056a4f"
+  integrity sha512-NfthZPy2aZBovI/SEJBjZDUX+DJkextC1s4JpH6yhGMpwH8c7Kd0hAuWYzXhHT5BWTUbL7YxAHWVv8eITqQ7NA==
   dependencies:
+    "@nimiq/core-web" "^1.5.8"
+    "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
     "@nimiq/oasis-api" "^1.0.1"
+    ethers "^5.7.2"
     promise.prototype.finally "^3.1.3"
 
 "@nimiq/oasis-api@^1.0.1":

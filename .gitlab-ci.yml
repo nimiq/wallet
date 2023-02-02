@@ -6,7 +6,7 @@ stages:
 
 # include private configs for the remaining stages
 include:
-  - project: "it/ci-config"
+  - project: "mirrors/ci-config"
     file: "/testnet/deploy_webapp.yml"
 
 variables:

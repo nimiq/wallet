@@ -15,8 +15,8 @@ export enum SwapState {
 }
 
 export enum SwapDirection {
-    NIM_TO_BTC,
-    BTC_TO_NIM,
+    LEFT_TO_RIGHT,
+    RIGHT_TO_LEFT,
 }
 
 export type SwapNimData = {

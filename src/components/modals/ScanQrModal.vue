@@ -16,17 +16,18 @@ import {
     ValidationUtils,
     createBitcoinRequestLink,
 } from '@nimiq/utils';
-import Config from 'config';
 import Modal from './Modal.vue';
+import { useAccountStore } from '../../stores/Account';
+import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
 import { parseBitcoinUrl, validateAddress } from '../../lib/BitcoinTransactionUtils';
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
-import { useAccountStore } from '../../stores/Account';
 
 export default defineComponent({
     name: 'scan-qr-modal',
     setup() {
+        const { config } = useConfig();
         const router = useRouter();
         const checkResult = async (result: string) => {
             // NIM Address
@@ -79,7 +80,7 @@ export default defineComponent({
                 await loadBitcoinJS();
 
                 // BTC Address
-                if (validateAddress(result, Config.environment === ENV_MAIN ? 'MAIN' : 'TEST')) {
+                if (validateAddress(result, config.environment === ENV_MAIN ? 'MAIN' : 'TEST')) {
                     router.replace(`/${createBitcoinRequestLink(result)}`);
                     return;
                 }

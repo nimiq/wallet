@@ -1,9 +1,11 @@
-import Config from 'config';
+import { useConfig } from '../composables/useConfig';
 
 const libPromises: {[name: string]: Promise<boolean>} = {};
 
 export async function loadNimiqJS(): Promise<boolean> {
-    const result = await loadLib('Nimiq', Config.nimiqScript/* , process.env.NIMIQ_WEB_INTEGRITY_HASH */);
+    const { config } = useConfig();
+    // Changing config.nimiqScript at runtime is not supported.
+    const result = await loadLib('Nimiq', config.nimiqScript/* , process.env.NIMIQ_WEB_INTEGRITY_HASH */);
     await Nimiq.WasmHelper.doImport();
     return result;
 }

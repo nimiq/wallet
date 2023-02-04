@@ -22,9 +22,9 @@
 import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import VueMarkdown from '@adapttive/vue-markdown';
-import Config from 'config';
 import Modal from './Modal.vue';
 import { ENV_MAIN } from '../../lib/Constants';
+import { useConfig } from '../../composables/useConfig';
 
 type Release = {
     app: 'Wallet' | 'Hub' | 'Keyguard',
@@ -36,10 +36,11 @@ type Release = {
 
 export default defineComponent({
     setup() {
+        const { config } = useConfig();
         const releases = ref<Release[]>(null);
 
         onMounted(() => {
-            const network = Config.environment === ENV_MAIN ? 'mainnet' : 'testnet';
+            const network = config.environment === ENV_MAIN ? 'mainnet' : 'testnet';
             fetch(`https://nimiq-frontend-release-notes.netlify.app/${network}_releases.json`)
                 .then((response) => response.json())
                 .then((content) => releases.value = content);

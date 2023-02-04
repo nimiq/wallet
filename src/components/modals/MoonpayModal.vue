@@ -24,13 +24,13 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
-import Config from 'config';
 import Modal from './Modal.vue';
 import { useSettingsStore } from '../../stores/Settings';
 import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useConfig } from '../../composables/useConfig';
 
 export default defineComponent({
     setup() {
@@ -48,8 +48,10 @@ export default defineComponent({
             ...(btcAddress ? { btc: btcAddress } : {}),
         };
 
+        const { config } = useConfig();
+
         const widgetUrl = [
-            Config.moonpay.widgetUrl,
+            config.moonpay.widgetUrl,
             'colorCode=%231F2348',
             `language=${language}`,
             `baseCurrencyCode=${baseCurrencyCode}`,
@@ -59,7 +61,7 @@ export default defineComponent({
 
         const url = ref<string>(null);
 
-        fetch(Config.moonpay.signatureEndpoint, {
+        fetch(config.moonpay.signatureEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

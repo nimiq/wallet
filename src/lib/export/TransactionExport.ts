@@ -1,9 +1,9 @@
 import { shim as shimAllSettled } from 'promise.allsettled';
-import Config from 'config';
 import { getNetworkClient } from '../../network';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
 import { Transaction, useTransactionsStore } from '../../stores/Transactions';
+import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../Constants';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
 import { GenericFormat } from './GenericFormat';
@@ -51,7 +51,7 @@ export async function exportTransactions(
             // Wait 1 second more for each retry, starting at 0 seconds, up to 4 seconds
             await new Promise((res) => { window.setTimeout(res, 1000 * i); });
             // nimiq.watch is on adblocker lists, so use nimiqwatch.com to avoid getting blocked
-            const apiUrl = `https://${Config.environment === ENV_MAIN ? '' : 'test-'}api.nimiqwatch.com`;
+            const apiUrl = `https://${useConfig().config.environment === ENV_MAIN ? '' : 'test-'}api.nimiqwatch.com`;
             const receipts = await fetch(`${apiUrl}/account-receipts/${address}/${year}`)
                 .then((res) => res.json() as Promise<Receipt[]>)
                 .catch(() => undefined);

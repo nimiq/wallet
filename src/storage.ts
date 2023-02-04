@@ -3,7 +3,6 @@
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
 import { captureException } from '@sentry/vue';
 import idbReady from 'safari-14-idb-fix';
-import Config from 'config';
 import { useTransactionsStore, Transaction } from './stores/Transactions';
 import { useAddressStore, AddressState } from './stores/Address';
 import { useAccountStore, AccountState } from './stores/Account';
@@ -20,6 +19,7 @@ import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from './stor
 import { useSwapsStore, SwapsState } from './stores/Swaps';
 import { useBankStore, BankState } from './stores/Bank';
 import { KycState, useKycStore } from './stores/Kyc';
+import { useConfig } from './composables/useConfig';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -116,7 +116,7 @@ export async function initStorage() {
         await migrateToIdb();
         Storage = IndexedDBStorage;
     } catch (error) {
-        if (Config.reportToSentry) captureException(error);
+        if (useConfig().config.reportToSentry) captureException(error);
         else console.error(error); // eslint-disable-line no-console
         Storage = LocalStorageStorage;
     }

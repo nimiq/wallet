@@ -1,7 +1,7 @@
 import { UserLimits } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
-import Config from 'config';
 import { useAccountStore } from './Account';
+import { useConfig } from '../composables/useConfig';
 
 export enum KycProvider {
     TEN31PASS = 'TEN31 Pass',
@@ -32,17 +32,12 @@ export const useKycStore = createStore({
     }),
     getters: {
         connectedUser: (state): Readonly<KycUser | null> => {
+            if (!useConfig().config.ten31Pass.enabled) return null;
+
             const { activeAccountId } = useAccountStore();
             if (!activeAccountId.value) return null;
 
-            // We need to fetch the user from the state here first, to register it as a reactive dependency
-            // for this getter. Otherwise, if ten31Pass is disabled when this getter is first accessed,
-            // execution stops at the config check and dependencies that come later are not registered for
-            // reactivity.
-            const user = state.connectedUsers[activeAccountId.value] || null;
-            if (!Config.ten31Pass.enabled) return null;
-
-            return user;
+            return state.connectedUsers[activeAccountId.value] || null;
         },
         kycLimits: (state): Readonly<UserLimits | null> => state.kycLimits,
     },

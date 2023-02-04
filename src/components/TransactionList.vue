@@ -90,7 +90,6 @@ import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } fr
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
-import Config from 'config';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
@@ -101,6 +100,7 @@ import { parseData } from '../lib/DataFormatting';
 import { ENV_MAIN } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { createCashlink } from '../hub';
+import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 
 function processTimestamp(timestamp: number) {
@@ -158,6 +158,7 @@ export default defineComponent({
         const { state: transactions$ } = useTransactionsStore();
         const { isFetchingTxHistory } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
+        const { config } = useConfig();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
@@ -360,7 +361,8 @@ export default defineComponent({
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
-        const isMainnet = Config.environment === ENV_MAIN;
+        // Does not need to be reactive, as the environment doesn't change during runtime.
+        const isMainnet = config.environment === ENV_MAIN;
 
         function onCreateCashlink() {
             createCashlink(activeAddress.value!, activeAddressInfo.value!.balance || undefined);

@@ -5,7 +5,6 @@ import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log } from '@ethersproject/abstract-provider';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
-import Config from 'config';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useUsdcNetworkStore } from './stores/UsdcNetwork';
 import {
@@ -13,6 +12,7 @@ import {
     TransactionState,
     useUsdcTransactionsStore,
 } from './stores/UsdcTransactions';
+import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
 import { USDC_TRANSFER_CONTRACT_ABI, USDC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
 import { getBestRelay, getRelayHub, POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from './lib/usdc/OpenGSN';
@@ -26,11 +26,12 @@ export interface PolygonClient {
 }
 
 let isLaunched = false;
-let clientPromise: Promise<PolygonClient>;
 
 type Balances = Map<string, number>;
 const balances: Balances = new Map(); // Balances in USDC-base units, excluding pending txs
 
+let clientPromise: Promise<PolygonClient> | null = null;
+let unwatchGetPolygonClientConfig: (() => void) | null = null;
 export async function getPolygonClient(): Promise<PolygonClient> {
     if (clientPromise) return clientPromise;
 
@@ -39,18 +40,32 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         resolver = resolve;
     });
 
+    const { config } = useConfig();
+    unwatchGetPolygonClientConfig = watch(() => [
+        config.usdc.rpcEndoint,
+        config.usdc.networkId,
+        config.usdc.usdcContract,
+        config.usdc.usdcTransferContract,
+    ], () => {
+        // Reset clientPromise when the usdc config changes.
+        clientPromise = null;
+        if (!unwatchGetPolygonClientConfig) return;
+        unwatchGetPolygonClientConfig();
+        unwatchGetPolygonClientConfig = null;
+    }, { lazy: true });
+
     const ethers = await import(/* webpackChunkName: "ethers-js" */ 'ethers');
     const provider = new ethers.providers.StaticJsonRpcProvider(
-        Config.usdc.rpcEndoint,
-        ethers.providers.getNetwork(Config.usdc.networkId),
+        config.usdc.rpcEndoint,
+        ethers.providers.getNetwork(config.usdc.networkId),
     );
 
     await provider.ready;
     console.log('Polygon connection established');
     useUsdcNetworkStore().state.consensus = 'established';
 
-    const usdc = new ethers.Contract(Config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
-    const usdcTransfer = new ethers.Contract(Config.usdc.usdcTransferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
+    const usdc = new ethers.Contract(config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
+    const usdcTransfer = new ethers.Contract(config.usdc.usdcTransferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
 
     resolver!({
         provider,
@@ -143,6 +158,7 @@ export async function launchPolygon() {
 
     const { state: network$ } = useUsdcNetworkStore();
     const transactionsStore = useUsdcTransactionsStore();
+    const { config } = useConfig();
 
     // Start block listener
     client.provider.on('block', (height: number) => {
@@ -185,7 +201,7 @@ export async function launchPolygon() {
 
     // Fetch transactions for active address
     const txFetchTrigger = ref(0);
-    watch([addressStore.addressInfo, txFetchTrigger], ([addressInfo]) => {
+    watch([addressStore.addressInfo, txFetchTrigger, () => config.usdc], ([addressInfo]) => {
         const address = (addressInfo as UsdcAddressInfo | null)?.address;
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
@@ -196,7 +212,7 @@ export async function launchPolygon() {
             .filter((tx) => tx.sender === address || tx.recipient === address);
         const lastConfirmedHeight = knownTxs
             .filter((tx) => Boolean(tx.blockHeight))
-            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), Config.usdc.startHistoryScanHeight);
+            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), config.usdc.startHistoryScanHeight);
 
         network$.fetchingTxHistory++;
 
@@ -227,9 +243,9 @@ export async function launchPolygon() {
 
                     // Transfer to the usdcTransferContract is the fee paid to OpenGSN
                     if (
-                        log.args.to === Config.usdc.usdcTransferContract
+                        log.args.to === config.usdc.usdcTransferContract
                         || (
-                            Config.environment !== ENV_MAIN
+                            config.environment !== ENV_MAIN
                             && log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
                         )
                     ) {
@@ -327,7 +343,7 @@ async function calculateFee(
     const chainTokenFee = gasPrice.mul(gasLimit).mul(pctRelayFee.add(100)).div(100).add(baseRelayFee);
 
     // main 10%, test 25% as it is more volatile
-    const uniswapBufferPercentage = Config.environment === ENV_MAIN ? 110 : 125;
+    const uniswapBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
     const fee = chainTokenFee.div(usdcPrice).mul(uniswapBufferPercentage).div(100);
 
     return {
@@ -344,6 +360,8 @@ export async function createTransactionRequest(recipient: string, amount: number
     if (!addressInfo) throw new Error('No active USDC address');
     const fromAddress = addressInfo.address;
 
+    const { config } = useConfig();
+
     const client = await getPolygonClient();
 
     const method = 'transferWithApproval' as 'transfer' | 'transferWithApproval';
@@ -359,7 +377,7 @@ export async function createTransactionRequest(recipient: string, amount: number
     ]);
 
     const data = await client.usdcTransfer.interface.encodeFunctionData(method, [
-        /* address token */ Config.usdc.usdcContract,
+        /* address token */ config.usdc.usdcContract,
         /* uint256 amount */ amount,
         /* address target */ recipient,
         /* uint256 fee */ fee,
@@ -377,7 +395,7 @@ export async function createTransactionRequest(recipient: string, amount: number
     const relayRequest: RelayRequest = {
         request: {
             from: fromAddress,
-            to: Config.usdc.usdcTransferContract,
+            to: config.usdc.usdcTransferContract,
             data,
             value: '0',
             nonce: forwarderNonce.toString(),
@@ -389,10 +407,10 @@ export async function createTransactionRequest(recipient: string, amount: number
             pctRelayFee: relay.pctRelayFee.toString(),
             baseRelayFee: relay.baseRelayFee.toString(),
             relayWorker: relay.relayWorkerAddress,
-            paymaster: Config.usdc.usdcTransferContract,
+            paymaster: config.usdc.usdcTransferContract,
             paymasterData: '0x',
             clientId: Math.floor(Math.random() * 1e6).toString(),
-            forwarder: Config.usdc.usdcTransferContract,
+            forwarder: config.usdc.usdcTransferContract,
         },
     };
 
@@ -408,6 +426,7 @@ export async function createTransactionRequest(recipient: string, amount: number
 }
 
 export async function sendTransaction(relayRequest: RelayRequest, signature: string, relayUrl: string) {
+    const { config } = useConfig();
     const client = await getPolygonClient();
     const [{ HttpClient, HttpWrapper }, relayNonce] = await Promise.all([
         import('@opengsn/common'),
@@ -418,7 +437,7 @@ export async function sendTransaction(relayRequest: RelayRequest, signature: str
         relayRequest,
         metadata: {
             approvalData: '0x',
-            relayHubAddress: Config.usdc.relayHubContract,
+            relayHubAddress: config.usdc.relayHubContract,
             relayMaxNonce: relayNonce + 3,
             signature,
         },
@@ -459,7 +478,7 @@ export async function sendTransaction(relayRequest: RelayRequest, signature: str
         if (log.args.from !== relayRequest.request.from) return false;
 
         // Transfer to the usdcTransferContract is the fee paid to OpenGSN
-        if (log.args.to === Config.usdc.usdcTransferContract) {
+        if (log.args.to === config.usdc.usdcTransferContract) {
             fee = log.args.value;
             return false;
         }

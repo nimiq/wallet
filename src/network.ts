@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
-import Config from 'config';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
+import { useConfig } from './composables/useConfig';
 import { loadNimiqJS } from './lib/NimiqJSLoader';
 import { ENV_MAIN } from './lib/Constants';
 
@@ -17,14 +17,15 @@ type Balances = Map<string, number>;
 const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
 
 export async function getNetworkClient() {
-    // eslint-disable-next-line no-async-promise-executor
-    clientPromise = clientPromise || new Promise(async (resolve) => {
+    const { config } = useConfig();
+    clientPromise = clientPromise || (async () => {
+        // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
+        // which never changes at runtime. Changing config.nimiqScript at runtime is not supported.
         await loadNimiqJS();
-        Nimiq.GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
+        Nimiq.GenesisConfig[config.environment === ENV_MAIN ? 'main' : 'test']();
         await Nimiq.WasmHelper.doImport();
-        const client = Nimiq.Client.Configuration.builder().instantiateClient();
-        resolve(client);
-    });
+        return Nimiq.Client.Configuration.builder().instantiateClient();
+    })();
 
     return clientPromise;
 }
@@ -208,7 +209,7 @@ export async function launchNetwork() {
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState !== 'visible') return;
 
-        if (Date.now() - lastVisibilityFetch > Config.pageVisibilityTxRefreshInterval) {
+        if (Date.now() - lastVisibilityFetch > useConfig().config.pageVisibilityTxRefreshInterval) {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
                 invalidateTransactionHistory();
                 lastVisibilityFetch = Date.now();

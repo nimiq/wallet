@@ -1,7 +1,7 @@
 import { AssetList, Estimate, SwapAsset } from '@nimiq/fastspot-api';
-import Config from 'config';
 import { estimateFees } from '../../BitcoinTransactionUtils';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
+import { useConfig } from '../../../composables/useConfig';
 
 export type FundingFees = {
     sepaFeeFiat?: number,
@@ -67,14 +67,16 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
 }, fiatCurrency: FiatCurrency, assetList: AssetList | null) {
     // Predict fees
 
-    const defaultOasisFeeFiat = Config.oasis.minFee;
-    const defaultOasisFeePercentage = Config.oasis.feePercentage * 100;
-    const defaultOasisMinFeeFiat = Config.oasis.minFee;
+    const { config } = useConfig();
+
+    const defaultOasisFeeFiat = config.oasis.minFee;
+    const defaultOasisFeePercentage = config.oasis.feePercentage * 100;
+    const defaultOasisMinFeeFiat = config.oasis.minFee;
 
     /* FUNDING */
     const defaultFunding: FundingFees = {} as FundingFees;
 
-    defaultFunding.sepaFeeFiat = Config.fastspot.sepaFee > 0 ? Config.fastspot.sepaFee : undefined;
+    defaultFunding.sepaFeeFiat = config.fastspot.sepaFee > 0 ? config.fastspot.sepaFee : undefined;
 
     if (cryptoCurrency === CryptoCurrency.NIM) {
         // Funding
@@ -97,7 +99,7 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
             * (exchangeRates[CryptoCurrency.BTC][fiatCurrency] || 0);
     }
 
-    defaultFunding.serviceSwapFeePercentage = Config.fastspot.feePercentage * 100;
+    defaultFunding.serviceSwapFeePercentage = config.fastspot.feePercentage * 100;
     defaultFunding.serviceSwapFeeFiat = 0;
     defaultFunding.oasisFeeFiat = defaultOasisFeeFiat;
     defaultFunding.oasisFeePercentage = defaultOasisFeePercentage;
@@ -134,7 +136,7 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
             * (exchangeRates[CryptoCurrency.BTC][fiatCurrency] || 0);
     }
 
-    defaultSettlement.serviceSwapFeePercentage = Config.fastspot.feePercentage * 100;
+    defaultSettlement.serviceSwapFeePercentage = config.fastspot.feePercentage * 100;
     defaultSettlement.serviceSwapFeeFiat = 0;
     defaultSettlement.oasisFeeFiat = defaultOasisFeeFiat;
     defaultSettlement.oasisFeePercentage = defaultOasisFeePercentage;
@@ -156,10 +158,10 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
         const theirSepaFee = data.to.serviceNetworkFee;
 
         funding.oasisFeeFiat = (myEurFee + theirOasisFee) / 100;
-        funding.oasisFeePercentage = funding.oasisFeeFiat === Config.oasis.minFee
-            ? Config.oasis.feePercentage * 100
+        funding.oasisFeePercentage = funding.oasisFeeFiat === config.oasis.minFee
+            ? config.oasis.feePercentage * 100
             : Math.round((funding.oasisFeeFiat / (data.to.amount / 100)) * 1000) / 10;
-        funding.oasisMinFeeFiat = funding.oasisFeeFiat === Config.oasis.minFee ? Config.oasis.minFee : undefined;
+        funding.oasisMinFeeFiat = funding.oasisFeeFiat === config.oasis.minFee ? config.oasis.minFee : undefined;
 
         funding.sepaFeeFiat = theirSepaFee > 0 ? theirSepaFee / 100 : undefined;
 
@@ -203,10 +205,10 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
         const theirEurFee = data.from.serviceNetworkFee;
 
         settlement.oasisFeeFiat = (myEurFee + theirEurFee) / 100;
-        settlement.oasisFeePercentage = settlement.oasisFeeFiat === Config.oasis.minFee
-            ? Config.oasis.feePercentage * 100
+        settlement.oasisFeePercentage = settlement.oasisFeeFiat === config.oasis.minFee
+            ? config.oasis.feePercentage * 100
             : Math.round((settlement.oasisFeeFiat / (data.from.amount / 100)) * 1000) / 10;
-        settlement.oasisMinFeeFiat = settlement.oasisFeeFiat === Config.oasis.minFee ? Config.oasis.minFee : undefined;
+        settlement.oasisMinFeeFiat = settlement.oasisFeeFiat === config.oasis.minFee ? config.oasis.minFee : undefined;
 
         const myCryptoFee = data.to.fee;
         const theirCryptoFee = data.to.serviceNetworkFee;

@@ -33,16 +33,17 @@
 
             <Tooltip v-if="$config.fastspot.enabled"
                 preferredPosition="top right" :styles="{minWidth: '25rem'}" theme="inverse"
-                :disabled="!isOasisUnderMaintenance && canUseSwaps && !hasActiveSwap"
+                :disabled="!$config.oasis.underMaintenance && canUseSwaps && !hasActiveSwap"
                 ref="sellTooltip"
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"
+                        :disabled="$route.name !== 'root' || $config.oasis.underMaintenance || !canUseSwaps
+                            || hasActiveSwap"
                         @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
-                        :disabled="$route.name !== 'root' || isOasisUnderMaintenance || !canUseSwaps || hasActiveSwap"
                     >{{ $t('Sell') }}</button>
                 </template>
-                <template v-if="isOasisUnderMaintenance" #default>
+                <template v-if="$config.oasis.underMaintenance" #default>
                     {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
                         + ' This might take some time. Please try again later.') }}
                     <br>
@@ -89,9 +90,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
-
-import Config from 'config';
-
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -103,11 +101,13 @@ import { useAddressStore } from '../../stores/Address';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSwapsStore } from '../../stores/Swaps';
+import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
+        const { config } = useConfig();
         const { isMobile } = useWindowSize();
 
         function navigateTo(path: string) {
@@ -118,8 +118,9 @@ export default defineComponent({
             }
         }
 
-        const isTestnet = Config.environment === ENV_TEST || Config.environment === ENV_DEV;
-        const isDev = Config.environment === ENV_DEV;
+        // Note: config.environment should never change at runtime.
+        const isTestnet = config.environment === ENV_TEST || config.environment === ENV_DEV;
+        const isDev = config.environment === ENV_DEV;
 
         const priceChartTimeRange = ref(TimeRange['24h']);
         function switchPriceChartTimeRange() {
@@ -158,7 +159,6 @@ export default defineComponent({
             updateAvailable,
             hasActiveSwap,
             canUseSwaps,
-            isOasisUnderMaintenance: Config.oasis.underMaintenance,
         };
     },
     components: {

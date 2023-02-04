@@ -12,7 +12,7 @@ import { BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import Ten31PassApi, { GrantResponse, ResponseType, ServiceRequest } from '@nimiq/ten31-pass-api';
 import { ResponseStatus, RpcServer, State as RpcServerState } from '@nimiq/rpc';
 import { FormattableNumber } from '@nimiq/utils';
-import Config from 'config';
+import Config from 'config'; // Not using useConfig composable because we try to avoid Vue as dependency here.
 import { KycProvider, KycUser } from './stores/Kyc';
 import { i18n, detectLanguage, loadLanguage } from './i18n/i18n-setup';
 

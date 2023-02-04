@@ -247,7 +247,6 @@ import {
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { captureException } from '@sentry/vue';
-import Config from 'config';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -265,6 +264,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
+import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
 import {
@@ -298,6 +298,7 @@ export default defineComponent({
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
         const { state: network$ } = useNetworkStore();
+        const { config } = useConfig();
 
         const recipientDetailsOpened = ref(false);
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
@@ -645,7 +646,7 @@ export default defineComponent({
                 // Close modal
                 successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
 
                 // Show error screen

@@ -1,5 +1,5 @@
 import { captureException } from '@sentry/vue';
-import Config from 'config';
+import { useConfig } from '../composables/useConfig';
 
 export default class Time {
     private static offset = 0;
@@ -18,7 +18,7 @@ export default class Time {
             this.offset = (unix * 1000) - Date.now();
         } catch (error) {
             console.error(error); // eslint-disable-line no-console
-            if (Config.reportToSentry) captureException(error);
+            if (useConfig().config.reportToSentry) captureException(error);
         }
     }
 }

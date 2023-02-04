@@ -57,6 +57,9 @@ function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | 
 
     return undefined;
 }
+
+// We can't use the reactive config via useConfig() here because that one can only be used after the composition-api
+// plugin has been registered in Vue 2.
 const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {

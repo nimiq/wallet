@@ -61,6 +61,8 @@
             </Tooltip>
         </div>
 
+        <BalanceDistribution v-show="!isLegacyAccount" />
+
         <div class="flex-grow"></div>
 
         <AccountMenu
@@ -93,6 +95,7 @@ import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
+import BalanceDistribution from '../BalanceDistribution.vue';
 import ConsensusIcon from '../ConsensusIcon.vue';
 import StreetconeIcon from '../icons/StreetconeIcon.vue';
 import AttentionDot from '../AttentionDot.vue';
@@ -165,6 +168,7 @@ export default defineComponent({
         AnnouncementBox,
         GearIcon,
         PriceChart,
+        BalanceDistribution,
         AccountMenu,
         ConsensusIcon,
         Tooltip,

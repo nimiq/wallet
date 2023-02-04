@@ -44,7 +44,6 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
-import Config from 'config';
 import Modal from './Modal.vue';
 import ResizingCopyable from '../ResizingCopyable.vue';
 import { useSettingsStore } from '../../stores/Settings';
@@ -52,6 +51,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency, ENV_DEV } from '../../lib/Constants';
 
 declare global {
@@ -105,6 +105,8 @@ export default defineComponent({
             ...(btcAddress ? { btc: btcAddress } : {}),
         };
 
+        const { config } = useConfig();
+
         async function loadScript(src: string, id: string): Promise<void> {
             return new Promise<void>((resolve) => {
                 const $script = document.createElement('script');
@@ -123,7 +125,7 @@ export default defineComponent({
             }
 
             window.simplexAsyncFunction = () => {
-                window.Simplex.init({ public_key: Config.simplex.apiKey });
+                window.Simplex.init({ public_key: config.simplex.apiKey });
 
                 window.Simplex.subscribe('onlineFlowFinished', () => {
                     // Close modal
@@ -132,10 +134,10 @@ export default defineComponent({
             };
 
             return Promise.all([
-                loadScript(Config.simplex.formScriptUrl, 'simplex-form-script'),
-                loadScript(Config.simplex.sdkScriptUrl, 'simplex-sdk-script'),
-                ...(Config.simplex.splxScriptUrl
-                    ? [loadScript(Config.simplex.splxScriptUrl, 'simplex-splx-script')]
+                loadScript(config.simplex.formScriptUrl, 'simplex-form-script'),
+                loadScript(config.simplex.sdkScriptUrl, 'simplex-sdk-script'),
+                ...(config.simplex.splxScriptUrl
+                    ? [loadScript(config.simplex.splxScriptUrl, 'simplex-splx-script')]
                     : []
                 ),
             ]);
@@ -236,7 +238,7 @@ export default defineComponent({
         onMounted(async () => {
             await loadScripts();
 
-            if (Config.environment === ENV_DEV) {
+            if (config.environment === ENV_DEV) {
                 loadStyles();
             }
 

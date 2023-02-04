@@ -148,7 +148,7 @@
                 </div>
             </section>
 
-            <section v-if="showAccountLimitsSection">
+            <section v-if="$config.ten31Pass.enabled">
                 <h2 class="nq-label">{{ $t('Account Limits') }}</h2>
 
                 <div class="setting kyc-connection">
@@ -295,7 +295,6 @@ import { CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
-import Config from 'config';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
@@ -390,9 +389,6 @@ export default defineComponent({
         async function onTrialPassword(el: HTMLInputElement) {
             if (await enableTrial(el.value)) {
                 el.value = 'OK, trial enabled!';
-
-                // Ensure UI is shown after trial was enabled
-                showAccountLimitsSection.value = Config.ten31Pass.enabled;
             } else {
                 el.value = 'Nope, no cookie for you';
             }
@@ -418,8 +414,6 @@ export default defineComponent({
             new Date().getFullYear(), // user year
         );
 
-        const showAccountLimitsSection = ref(Config.ten31Pass.enabled);
-
         return {
             addVestingContract,
             clearCache,
@@ -444,7 +438,6 @@ export default defineComponent({
             disconnectKyc,
             copyrightYear,
             VERSION: process.env.VERSION,
-            showAccountLimitsSection,
         };
     },
     components: {

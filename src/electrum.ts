@@ -2,7 +2,7 @@
 import { watch, computed, ref } from '@vue/composition-api';
 import { ElectrumClient, ElectrumClientOptions, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
-import Config from 'config';
+import { useConfig } from './composables/useConfig';
 
 import { AccountInfo, useAccountStore } from './stores/Account';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
@@ -19,6 +19,10 @@ let clientPromise: Promise<ElectrumClient>;
 export async function getElectrumClient(): Promise<ElectrumClient> {
     if (clientPromise) return clientPromise;
 
+    // We don't have to monitor the config for changes to reset the clientPromise because we only use config.environment
+    // which does never change at runtime.
+    const { config } = useConfig();
+
     let resolver: (client: ElectrumClient) => void;
     clientPromise = new Promise<ElectrumClient>((resolve) => {
         resolver = resolve;
@@ -31,9 +35,9 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
     const { GenesisConfig, ElectrumClient: Client } = await import(
         /* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');
 
-    GenesisConfig[Config.environment === ENV_MAIN ? 'main' : 'test']();
+    GenesisConfig[config.environment === ENV_MAIN ? 'main' : 'test']();
 
-    const options: Partial<ElectrumClientOptions> = Config.environment === ENV_MAIN ? {
+    const options: Partial<ElectrumClientOptions> = config.environment === ENV_MAIN ? {
         extraSeedPeers: [{
             host: 'electrumx.nimiq.com',
             wssPath: 'electrumx',
@@ -177,6 +181,7 @@ export async function launchElectrum() {
     const { activeAccountInfo } = useAccountStore();
     const btcTransactionsStore = useBtcTransactionsStore();
     const btcAddressStore = useBtcAddressStore();
+    const { config } = useConfig();
 
     const fetchedAccounts = new Set<string>();
 
@@ -218,7 +223,7 @@ export async function launchElectrum() {
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState !== 'visible') return;
 
-        if (Date.now() - lastVisibilityFetch > Config.pageVisibilityTxRefreshInterval) {
+        if (Date.now() - lastVisibilityFetch > config.pageVisibilityTxRefreshInterval) {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
                 invalidateTransationHistory();
                 lastVisibilityFetch = Date.now();

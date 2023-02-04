@@ -281,7 +281,6 @@ import {
     HtlcStatus,
     TransactionType as OasisTransactionType,
 } from '@nimiq/oasis-api';
-import Config from 'config';
 import {
     HtlcCreationInstructions,
     EuroHtlcSettlementInstructions,
@@ -314,6 +313,7 @@ import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import LimitIcon from '../icons/LimitIcon.vue';
 import KycIcon from '../icons/KycIcon.vue';
 import SwapModalFooter from '../swap/SwapModalFooter.vue';
+import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
@@ -367,6 +367,7 @@ export default defineComponent({
         } = useBankStore();
         const { connectedUser: kycUser } = useKycStore();
 
+        const { config } = useConfig();
         const { isMobile } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
         const currentLimitFiat = useCurrentLimitFiat(limits);
@@ -420,8 +421,8 @@ export default defineComponent({
             },
         });
 
-        // Does not need to be reactive, as the config doesn't change during runtime.
-        const isMainnet = Config.environment === ENV_MAIN;
+        // Does not need to be reactive, as the environment doesn't change during runtime.
+        const isMainnet = config.environment === ENV_MAIN;
 
         const insufficientBalance = computed(() => (
             (activeCurrency.value === CryptoCurrency.NIM
@@ -629,7 +630,7 @@ export default defineComponent({
                         value: swapSuggestion.to.amount,
                         fee: swapSuggestion.to.fee,
                         bankLabel: bank.value?.name,
-                        settlement: Config.environment === ENV_MAIN ? {
+                        settlement: config.environment === ENV_MAIN ? {
                             type: OasisTransactionType.SEPA,
                             recipient: {
                                 name: bankAccount.value!.accountName,
@@ -686,7 +687,7 @@ export default defineComponent({
                     signedTransactions = setupSwapResult; // can be null if the hub popup was cancelled
                 }
             } catch (error: any) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
@@ -707,7 +708,7 @@ export default defineComponent({
 
             if (typeof signedTransactions.eur !== 'string' || (!signedTransactions.nim && !signedTransactions.btc)) {
                 const error = new Error('Internal error: Hub result did not contain EUR or (NIM|BTC) data');
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
@@ -748,7 +749,7 @@ export default defineComponent({
                         : 0;
                 confirmedSwap.to.fee = (request.redeem as EuroHtlcSettlementInstructions).fee;
             } catch (error) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
@@ -788,7 +789,7 @@ export default defineComponent({
             const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
             if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
                 const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid OASIS contract state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
@@ -813,7 +814,7 @@ export default defineComponent({
                 // we are taking the fee that OASIS reports, so we don't run into an HTLC validation error.
                 swap.value!.to.serviceEscrowFee = oasisHtlc.fee;
             } catch (error) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid OASIS contract, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
@@ -837,7 +838,7 @@ export default defineComponent({
                 stateEnteredAt: Date.now(),
             });
 
-            if (Config.fastspot.watchtowerEndpoint) {
+            if (config.fastspot.watchtowerEndpoint) {
                 let settlementSerializedTx = swap.value!.settlementSerializedTx!;
 
                 // In case of a OASIS settlement instruction, we need to wrap it into a JSON object
@@ -849,7 +850,7 @@ export default defineComponent({
                 }
 
                 // Send redeem transaction to watchtower
-                fetch(`${Config.fastspot.watchtowerEndpoint}/`, {
+                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -860,8 +861,8 @@ export default defineComponent({
                     },
                     body: JSON.stringify({
                         id: confirmedSwap.id,
-                        endpoint: new URL(Config.fastspot.apiEndpoint).host,
-                        apikey: Config.fastspot.apiKey,
+                        endpoint: new URL(config.fastspot.apiEndpoint).host,
+                        apikey: config.fastspot.apiKey,
                         redeem: settlementSerializedTx,
                         ...(signedTransactions.refundTx ? { refund: signedTransactions.refundTx } : {}),
                     }),
@@ -876,7 +877,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (Config.reportToSentry) captureException(error);
+                    if (config.reportToSentry) captureException(error);
                     else console.error(error); // eslint-disable-line no-console
                 });
             }
@@ -952,7 +953,7 @@ export default defineComponent({
         const kycOverlayOpened = ref(false);
 
         const oasisMaxAmountEur = computed(
-            () => kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+            () => kycUser.value ? config.oasis.maxKycAmount : config.oasis.maxFreeAmount,
         );
 
         return {

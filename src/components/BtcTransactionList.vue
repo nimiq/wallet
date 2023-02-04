@@ -86,14 +86,14 @@
 import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
-// import Config from 'config';
+// import { ENV_MAIN } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
-import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountStore } from '../stores/Account';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
-// import { ENV_MAIN } from '../lib/Constants';
+import { useWindowSize } from '../composables/useWindowSize';
+// import { useConfig } from '../composables/useConfig';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -346,7 +346,8 @@ export default defineComponent({
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
-        // const isMainnet = Config.environment === ENV_MAIN;
+        // Does not need to be reactive, as the environment doesn't change during runtime.
+        // const isMainnet = useConfig().config.environment === ENV_MAIN;
 
         // Scroll to top when
         // - Active address changes

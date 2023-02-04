@@ -319,7 +319,6 @@ import {
     TransactionType,
     SepaClearingInstruction,
 } from '@nimiq/oasis-api';
-import Config from 'config';
 import {
     EuroHtlcCreationInstructions,
     HtlcCreationInstructions,
@@ -339,8 +338,9 @@ import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import { setupSwap } from '@/hub';
 import { getElectrumClient } from '@/electrum';
-import { useSwapLimits } from '@/composables/useSwapLimits';
-import { useWindowSize } from '@/composables/useWindowSize';
+import { useConfig } from '../../composables/useConfig';
+import { useSwapLimits } from '../../composables/useSwapLimits';
+import { useWindowSize } from '../../composables/useWindowSize';
 import Modal from './Modal.vue';
 import BuyCryptoBankCheckOverlay from './overlays/BuyCryptoBankCheckOverlay.vue';
 import AddressList from '../AddressList.vue';
@@ -395,6 +395,7 @@ export default defineComponent({
         const { bank, setBank } = useBankStore();
         const { connectedUser: kycUser } = useKycStore();
 
+        const { config } = useConfig();
         const { isMobile } = useWindowSize();
         const { limits } = useSwapLimits({ nimAddress: activeAddress.value!, isFiatToCrypto: true });
         const currentLimitFiat = useCurrentLimitFiat(limits);
@@ -442,8 +443,7 @@ export default defineComponent({
             },
         });
 
-        // Does not need to be reactive, as the config doesn't change during runtime.
-        const isMainnet = Config.environment === ENV_MAIN;
+        const isMainnet = config.environment === ENV_MAIN;
 
         const insufficientLimit = computed(() => (
             (_cryptoAmount.value > (currentLimitCrypto.value || 0))
@@ -451,7 +451,7 @@ export default defineComponent({
         ));
 
         const isBelowOasisMinimum = computed(() => (
-            _fiatAmount.value > 0 && _fiatAmount.value < Config.oasis.minBuyAmount * 1e2
+            _fiatAmount.value > 0 && _fiatAmount.value < config.oasis.minBuyAmount * 1e2
         ));
 
         const canSign = computed(() =>
@@ -660,7 +660,7 @@ export default defineComponent({
                 signedTransactions = await setupSwap(hubRequest);
                 if (signedTransactions === undefined) return; // Using Hub redirects
             } catch (error: any) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
@@ -681,7 +681,7 @@ export default defineComponent({
 
             if (typeof signedTransactions.eur !== 'string' || (!signedTransactions.nim && !signedTransactions.btc)) {
                 const error = new Error('Internal error: Hub result did not contain EUR or (NIM|BTC) data');
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
@@ -712,7 +712,7 @@ export default defineComponent({
                         ? request.redeem.input.value - request.redeem.output.value
                         : 0;
             } catch (error) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
@@ -743,7 +743,7 @@ export default defineComponent({
                     throw new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
                 }
             } catch (error) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid OASIS contract state, swap aborted!';
                 setActiveSwap(null);
@@ -764,7 +764,7 @@ export default defineComponent({
                     throw new Error('OASIS HTLC amount + fee does not match swap amount');
                 }
             } catch (error) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid OASIS contract, swap aborted!';
                 setActiveSwap(null);
@@ -793,7 +793,7 @@ export default defineComponent({
                 fundingInstructions,
             });
 
-            if (Config.fastspot.watchtowerEndpoint) {
+            if (config.fastspot.watchtowerEndpoint) {
                 let settlementSerializedTx = swap.value!.settlementSerializedTx!;
 
                 // In case of a Nimiq tx, we need to replace the dummy swap hash in the tx with the actual swap hash
@@ -805,13 +805,13 @@ export default defineComponent({
                 }
 
                 // Send redeem transaction to watchtower
-                fetch(`${Config.fastspot.watchtowerEndpoint}/`, {
+                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         id: confirmedSwap.id,
-                        endpoint: new URL(Config.fastspot.apiEndpoint).host,
-                        apikey: Config.fastspot.apiKey,
+                        endpoint: new URL(config.fastspot.apiEndpoint).host,
+                        apikey: config.fastspot.apiKey,
                         redeem: settlementSerializedTx,
                         // ...(signedTransactions.refundTx ? { refund: signedTransactions.refundTx } : {}),
                     }),
@@ -826,7 +826,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (Config.reportToSentry) captureException(error);
+                    if (config.reportToSentry) captureException(error);
                     else console.error(error); // eslint-disable-line no-console
                 });
             }
@@ -897,13 +897,13 @@ export default defineComponent({
         }
 
         function buyMin() {
-            fiatAmount.value = Config.oasis.minBuyAmount * 1e2;
+            fiatAmount.value = config.oasis.minBuyAmount * 1e2;
         }
 
         const kycOverlayOpened = ref(false);
 
         const oasisMaxAmountEur = computed(
-            () => kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+            () => kycUser.value ? config.oasis.maxKycAmount : config.oasis.maxFreeAmount,
         );
 
         return {

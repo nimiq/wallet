@@ -1,16 +1,17 @@
 import { watch } from '@vue/composition-api';
 import Ten31PassApi from '@nimiq/ten31-pass-api';
-import Config from 'config';
 import { useAccountStore } from '../stores/Account';
 import { KycProvider, useKycStore } from '../stores/Kyc';
+import { useConfig } from '../composables/useConfig';
 import { i18n } from '../i18n/i18n-setup';
 
 let ten31PassApi: Ten31PassApi;
 
 export function init() {
-    ten31PassApi = new Ten31PassApi(Config.ten31Pass.apiEndpoint);
-
     const { connectedUser } = useKycStore();
+    const { config } = useConfig();
+
+    ten31PassApi = new Ten31PassApi(config.ten31Pass.apiEndpoint);
 
     watch(connectedUser, async (user) => {
         if (!user) return;
@@ -32,7 +33,8 @@ export async function connectKyc(provider = KycProvider.TEN31PASS) {
     const accountId = useAccountStore().activeAccountId.value;
     if (!accountId) return;
 
-    const grantResponse = await ten31PassApi.requestGrants(Config.ten31Pass.appId, undefined, true, {
+    const { config } = useConfig();
+    const grantResponse = await ten31PassApi.requestGrants(config.ten31Pass.appId, undefined, true, {
         popupOverlay: {
             // Text and logo same as in @nimiq/hub-api's PopupRequest
             text: i18n.t('A popup has been opened,\nclick anywhere to bring it back to the front.') as string,

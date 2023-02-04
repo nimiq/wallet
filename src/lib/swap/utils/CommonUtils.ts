@@ -1,18 +1,18 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
 import { computed, onUnmounted, ref, getCurrentInstance, Ref } from '@vue/composition-api';
-import Config from 'config';
-import { SwapLimits } from '../../../composables/useSwapLimits';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSettingsStore } from '../../../stores/Settings';
+import { useBtcAddressStore } from '../../../stores/BtcAddress';
+import { useKycStore } from '../../../stores/Kyc';
+import { useConfig } from '../../../composables/useConfig';
+import { SwapLimits } from '../../../composables/useSwapLimits';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { calculateDisplayedDecimals } from '../../NumberFormatting';
 import { estimateFees, selectOutputs } from '../../BitcoinTransactionUtils';
-import { useBtcAddressStore } from '../../../stores/BtcAddress';
 import { btcMaxSendableAmount } from './SellUtils';
 import { FundingFees, getEurPerCrypto, getFeePerUnit, getFiatFees, SettlementFees } from './Functions';
-import { useKycStore } from '../../../stores/Kyc';
 
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
@@ -47,9 +47,11 @@ export function useCurrentLimitFiat(limits: Ref<SwapLimits | undefined>) {
         const nimRate = exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
         if (!nimRate) return null;
 
+        const { config } = useConfig();
+
         const regularLimitFiat = Math.min(
             Math.floor((limits.value.current.luna / 1e5) * nimRate),
-            kycUser.value ? Config.oasis.maxKycAmount : Config.oasis.maxFreeAmount,
+            kycUser.value ? config.oasis.maxKycAmount : config.oasis.maxFreeAmount,
         );
 
         if (selectedFiatCurrency.value === FiatCurrency.EUR && limits.value.current.eur < Infinity) {

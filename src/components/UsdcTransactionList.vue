@@ -64,12 +64,12 @@
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import UsdcTransactionListItem from '@/components/UsdcTransactionListItem.vue';
-import Config from 'config';
 import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import { useUsdcTransactionsStore /* , Transaction */, TransactionState } from '../stores/UsdcTransactions';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { useUsdcNetworkStore } from '../stores/UsdcNetwork';
 import { ENV_MAIN } from '../lib/Constants';
+import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 
 function processTimestamp(timestamp: number) {
@@ -123,6 +123,7 @@ export default defineComponent({
         const { state: transactions$ } = useUsdcTransactionsStore();
         const { isFetchingTxHistory } = useUsdcNetworkStore();
         const { getLabel: getContactLabel } = useUsdcContactsStore();
+        const { config } = useConfig();
 
         const activeAddress = computed(() => addressInfo.value?.address);
 
@@ -303,7 +304,8 @@ export default defineComponent({
         //     onBeforeUnmount(() => observer.disconnect());
         // })();
 
-        const isMainnet = Config.environment === ENV_MAIN;
+        // Does not need to be reactive, as the environment doesn't change during runtime.
+        const isMainnet = config.environment === ENV_MAIN;
 
         // Scroll to top when
         // - Active address changes

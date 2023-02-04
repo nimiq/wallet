@@ -1,14 +1,14 @@
 import type { BigNumber, Contract } from 'ethers';
-import Config from 'config';
 import type { PolygonClient } from '../../ethers';
 import { RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import { useConfig } from '../../composables/useConfig';
 
 let relayHubContract: Contract | undefined;
 
 export function getRelayHub({ ethers, provider }: PolygonClient) {
     return relayHubContract || (relayHubContract = new ethers.Contract(
-        Config.usdc.relayHubContract,
+        useConfig().config.usdc.relayHubContract,
         RELAY_HUB_CONTRACT_ABI,
         provider,
     ));
@@ -129,7 +129,7 @@ async function* relayServerRegisterGen(client: PolygonClient, requiredMaxAccepta
             if (!relayAddr) continue;
             if (!relayAddr.ready) continue;
             if (!relayAddr.version.startsWith('2.')) continue; // TODO: Make OpenGSN version used configurable
-            if (relayAddr.networkId !== Config.usdc.networkId.toString()) continue;
+            if (relayAddr.networkId !== useConfig().config.usdc.networkId.toString()) continue;
             if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) continue;
             yield <RelayServerInfo> {
                 baseRelayFee,

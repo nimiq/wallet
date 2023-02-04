@@ -1,25 +1,40 @@
 import type { BigNumber, Contract } from 'ethers';
-import Config from 'config';
+import { watch } from '@vue/composition-api';
 import { PolygonClient } from '../../ethers';
 import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI } from './ContractABIs';
+import { useConfig } from '../../composables/useConfig';
 
-let poolPromise: Promise<Contract> | undefined;
+let poolPromise: Promise<Contract> | null = null;
 
+let unwatchGetUniswapPoolConfig: (() => void) | null = null;
 export async function getUniswapPool({ ethers, provider, usdcTransfer }: PolygonClient) {
+    const { config } = useConfig();
+    unwatchGetUniswapPoolConfig = watch(() => [
+        config.usdc.uniswapFactoryContract,
+        config.usdc.usdcContract,
+        config.usdc.wmaticContract,
+    ], () => {
+        // Reset poolPromise when the usdc config changes.
+        poolPromise = null;
+        if (!unwatchGetUniswapPoolConfig) return;
+        unwatchGetUniswapPoolConfig();
+        unwatchGetUniswapPoolConfig = null;
+    }, { lazy: true });
+
     // eslint-disable-next-line no-async-promise-executor
     return poolPromise || (poolPromise = new Promise(async (resolve) => {
         const uniswapFactory = new ethers.Contract(
-            Config.usdc.uniswapFactoryContract,
+            config.usdc.uniswapFactoryContract,
             UNISWAP_FACTORY_CONTRACT_ABI,
             provider,
         );
 
-        const poolFee = await usdcTransfer.registeredTokenPoolFee(Config.usdc.usdcContract) as BigNumber;
+        const poolFee = await usdcTransfer.registeredTokenPoolFee(config.usdc.usdcContract) as BigNumber;
 
         // TODO: Handle error and renew the promise when getPool fails
         const uniswapPoolAddress = await uniswapFactory.getPool(
-            Config.usdc.usdcContract,
-            Config.usdc.wmaticContract,
+            config.usdc.usdcContract,
+            config.usdc.wmaticContract,
             poolFee,
         ) as string;
 

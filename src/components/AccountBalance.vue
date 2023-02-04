@@ -28,7 +28,6 @@
 import Vue from 'vue';
 import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
-import Config from 'config';
 // import BalanceDistribution from './BalanceDistribution.vue';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
@@ -36,8 +35,9 @@ import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import { useSettingsStore } from '../stores/Settings';
-import { useWindowSize } from '../composables/useWindowSize';
 import { useFiatStore } from '../stores/Fiat';
+import { useConfig } from '../composables/useConfig';
+import { useWindowSize } from '../composables/useWindowSize';
 import { CryptoCurrency } from '../lib/Constants';
 
 export default defineComponent({
@@ -45,8 +45,8 @@ export default defineComponent({
         const { accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { accountBalance: usdcAccountBalance } = useUsdcAddressStore();
-
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+        const { config } = useConfig();
 
         const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
@@ -60,7 +60,7 @@ export default defineComponent({
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;
 
-            if (Config.enableBitcoin) {
+            if (config.enableBitcoin) {
                 const btcFiatAmount = btcExchangeRate.value !== undefined
                     ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
                     : undefined;
@@ -68,7 +68,7 @@ export default defineComponent({
                 amount += btcFiatAmount;
             }
 
-            if (Config.usdc.enabled) {
+            if (config.usdc.enabled) {
                 const usdcFiatAmount = usdcExchangeRate.value !== undefined
                     ? (usdcAccountBalance.value / 1e6) * usdcExchangeRate.value
                     : undefined;

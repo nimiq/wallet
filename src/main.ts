@@ -1,12 +1,11 @@
 import Vue from 'vue';
-import VueCompositionApi from '@vue/composition-api';
+import VueCompositionApi, { watch } from '@vue/composition-api';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
 import { init as initOasisApi } from '@nimiq/oasis-api';
 
-import Config from 'config';
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
@@ -21,6 +20,7 @@ import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
+import { useConfig } from './composables/useConfig';
 import { initPwa } from './composables/usePwaInstallPrompt';
 import { init as initKycConnection } from './lib/KycConnection';
 import { init as initTrials } from './lib/Trials';
@@ -71,20 +71,25 @@ async function start() {
 
     startSentry();
 
-    if (Config.fastspot.apiEndpoint && Config.fastspot.apiKey) {
-        initFastspotApi(Config.fastspot.apiEndpoint, Config.fastspot.apiKey);
-    }
+    const { config } = useConfig();
 
-    if (Config.oasis.apiEndpoint) {
-        initOasisApi(Config.oasis.apiEndpoint);
-    }
+    watch(() => {
+        if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
+        initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
+    });
 
-    if (Config.ten31Pass.enabled) {
+    watch(() => {
+        if (!config.oasis.apiEndpoint) return;
+        initOasisApi(config.oasis.apiEndpoint);
+    });
+
+    watch(() => {
+        if (!config.ten31Pass.enabled) return;
         initKycConnection();
-    }
+    });
 
-    // Make config accessible in components
-    Vue.prototype.$config = Config;
+    // Make reactive config accessible in components
+    Vue.prototype.$config = config;
 
     new Vue({
         router,
@@ -96,17 +101,19 @@ async function start() {
 
     const { state: { activeCurrency } } = useAccountStore();
 
-    if (Config.enableBitcoin) {
+    watch(() => {
+        if (!config.enableBitcoin) return;
         launchElectrum();
-    }
+    });
 
-    if (Config.usdc.enabled) {
+    watch(() => {
+        if (!config.usdc.enabled) return;
         launchPolygon();
-    }
+    });
 
     if (
-        (activeCurrency === CryptoCurrency.BTC && !Config.enableBitcoin)
-        || (activeCurrency === CryptoCurrency.USDC && !Config.usdc.enabled)
+        (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
+        || (activeCurrency === CryptoCurrency.USDC && !config.usdc.enabled)
     ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }
@@ -115,7 +122,7 @@ start();
 
 declare module 'vue/types/vue' {
     interface Vue {
-        $config: typeof Config;
+        $config: ReturnType<typeof useConfig>['config'];
     }
 }
 

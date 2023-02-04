@@ -35,7 +35,6 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
-import Config from 'config';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
 import { parseBitcoinUrl, validateAddress } from '../lib/BitcoinTransactionUtils';
@@ -43,6 +42,7 @@ import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../lib/UnstoppableDomains';
+import { useConfig } from '../composables/useConfig';
 
 export default defineComponent({
     props: {
@@ -56,6 +56,8 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { config } = useConfig();
+
         const $input = ref<LabelInput>(null);
         const inputFontSizeScaleFactor = ref(1);
         let inputPadding: number | null = null;
@@ -73,7 +75,7 @@ export default defineComponent({
             if (isValidUnstoppableDomain(address.value)) {
                 isResolvingUnstoppableDomain.value = true;
                 const domain = address.value;
-                const ticker = Config.environment === ENV_MAIN ? 'BTC' : 'TBTC';
+                const ticker = config.environment === ENV_MAIN ? 'BTC' : 'TBTC';
                 resolveUnstoppableDomain(domain, ticker)
                     .then((resolvedAddress) => {
                         doValidateAddress(resolvedAddress!, () => {
@@ -118,7 +120,7 @@ export default defineComponent({
             invalidCallback: () => void,
         ) {
             loadBitcoinJS().then(() => {
-                const isValid = validateAddress(addressToCheck, Config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
+                const isValid = validateAddress(addressToCheck, config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
                 if (isValid) {
                     validCallback();
                 } else {

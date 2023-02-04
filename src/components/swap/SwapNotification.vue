@@ -65,15 +65,15 @@ import {
 } from '@nimiq/oasis-api';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import { captureException } from '@sentry/vue';
-import Config from 'config';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
-import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+import { useBankStore } from '../../stores/Bank';
+import { useConfig } from '../../composables/useConfig';
+import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { getNetworkClient } from '../../network';
 import Time from '../../lib/Time';
-import { useBankStore } from '../../stores/Bank';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -90,8 +90,8 @@ export default defineComponent({
             setPromoBoxVisible,
             state: swap$,
         } = useSwapsStore();
-
         const { bank, bankAccount } = useBankStore();
+        const { config } = useConfig();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
@@ -439,7 +439,7 @@ export default defineComponent({
                                         resolve(swap.secret);
                                     }
                                 } catch (error) {
-                                    if (Config.reportToSentry) captureException(error);
+                                    if (config.reportToSentry) captureException(error);
                                     else console.error(error); // eslint-disable-line no-console
                                 }
                             }, 5 * 1000); // Every 5 seconds

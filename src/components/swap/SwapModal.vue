@@ -229,7 +229,6 @@ import {
     Swap,
 } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
-import Config from 'config';
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -255,6 +254,7 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import SwapModalFooter from './SwapModalFooter.vue';
+import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
@@ -288,6 +288,7 @@ export default defineComponent({
             }
         });
 
+        const { config } = useConfig();
         const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
             nimAddress: activeAddress.value!,
         });
@@ -803,7 +804,7 @@ export default defineComponent({
         });
 
         const serviceSwapFeePercentage = computed(() => {
-            if (!estimate.value) return Config.fastspot.feePercentage * 100;
+            if (!estimate.value) return config.fastspot.feePercentage * 100;
 
             const data = swap.value || estimate.value;
             return Math.round(data.serviceFeePercentage * 10000) / 100;
@@ -1054,7 +1055,7 @@ export default defineComponent({
                 signedTransactions = await setupSwap(hubRequest);
                 if (signedTransactions === undefined) return; // Using Hub redirects
             } catch (error: any) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
@@ -1075,7 +1076,7 @@ export default defineComponent({
 
             if (!signedTransactions.nim || !signedTransactions.btc) {
                 const error = new Error('Internal error: Hub result did not contain NIM or BTC data');
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
@@ -1111,7 +1112,7 @@ export default defineComponent({
                         ? request.redeem.input.value - request.redeem.output.value
                         : 0;
             } catch (error) {
-                if (Config.reportToSentry) captureException(error);
+                if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
@@ -1156,7 +1157,7 @@ export default defineComponent({
                     : undefined,
             });
 
-            if (Config.fastspot.watchtowerEndpoint) {
+            if (config.fastspot.watchtowerEndpoint) {
                 let settlementSerializedTx = swap.value!.settlementSerializedTx!;
 
                 // In case of a Nimiq tx, we need to replace the dummy swap hash in the tx with the actual swap hash
@@ -1168,13 +1169,13 @@ export default defineComponent({
                 }
 
                 // Send redeem transaction to watchtower
-                fetch(`${Config.fastspot.watchtowerEndpoint}/`, {
+                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         id: confirmedSwap.id,
-                        endpoint: new URL(Config.fastspot.apiEndpoint).host,
-                        apikey: Config.fastspot.apiKey,
+                        endpoint: new URL(config.fastspot.apiEndpoint).host,
+                        apikey: config.fastspot.apiKey,
                         redeem: settlementSerializedTx,
                         ...(signedTransactions.refundTx ? { refund: signedTransactions.refundTx } : {}),
                     }),
@@ -1189,7 +1190,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (Config.reportToSentry) captureException(error);
+                    if (config.reportToSentry) captureException(error);
                     else console.error(error); // eslint-disable-line no-console
                 });
             }
@@ -1230,8 +1231,8 @@ export default defineComponent({
             addressListOverlayOpened.value = false;
         }
 
-        // Does not need to be reactive, as the config doesn't change during runtime.
-        const isMainnet = Config.environment === ENV_MAIN;
+        // Does not need to be reactive, as the environment doesn't change during runtime.
+        const isMainnet = config.environment === ENV_MAIN;
 
         const kycOverlayOpened = ref(false);
 

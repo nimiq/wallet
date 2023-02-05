@@ -1,4 +1,5 @@
 <template>
+    <!-- eslint-disable vuejs-accessibility/mouse-events-have-key-events -->
     <div class="balance-distribution">
         <svg ref="svg$" xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${svgSize} ${svgSize}`">
             <circle v-for="arc in currencyArcs" :key="arc.currency"
@@ -6,12 +7,16 @@
                 :stroke-width="STROKE_WIDTH"
                 :stroke-dasharray="`${arc.length} ${arc.spacing}`"
                 :stroke-dashoffset="arc.offset"
-                class="arc" :class="[arc.currency, { 'has-no-balance': arc.hasNoBalance }]"
+                class="arc" :class="[arc.currency, { 'inactive': arc.inactive }]"
+                @mouseenter="highlightedCurrency = !arc.inactive ? arc.currency : null"
+                @mouseleave="highlightedCurrency = null"
             />
         </svg>
         <ul class="breakdown">
             <li v-for="record in breakdown" :key="record.currency"
-                :class="{ 'has-no-balance': record.hasNoBalance }">
+                :class="{ 'inactive': record.inactive }"
+                @mouseenter="highlightedCurrency = !record.inactive ? record.currency : null"
+                @mouseleave="highlightedCurrency = null">
                 <div class="currency">{{ record.currency }}</div>
                 <div class="percentage">{{ record.percentage }}</div>
             </li>
@@ -35,7 +40,7 @@ interface CurrencyArc {
     length: number;
     spacing: number;
     offset: number;
-    hasNoBalance: boolean;
+    inactive: boolean;
 }
 
 export default defineComponent({
@@ -54,6 +59,8 @@ export default defineComponent({
         const svg$ = ref<SVGElement>(null);
         const svgSize = ref(0);
         const fullCircleLength = ref(0);
+        const highlightedCurrency = ref<SupportedCurrency>(null);
+
         const radius = computed(() => Math.max(0, (svgSize.value - STROKE_WIDTH) / 2));
 
         const resizeObserver = new ResizeObserver(async ([{ borderBoxSize, contentRect }]) => {
@@ -122,8 +129,9 @@ export default defineComponent({
                     ? balanceDistribution.value[currency] * availableLength
                     : availableLength / arcCurrencies.length;
                 const spacing = fullCircleLength.value - length;
-                const hasNoBalance = !balanceDistribution.value[currency];
-                result[currency] = { currency, length, spacing, offset, hasNoBalance };
+                const inactive = !balanceDistribution.value[currency]
+                    || (!!highlightedCurrency.value && highlightedCurrency.value !== currency);
+                result[currency] = { currency, length, spacing, offset, inactive };
                 offset -= length + 2 * STROKE_WIDTH; // arc length + line caps + gap
             }
             return result;
@@ -134,12 +142,13 @@ export default defineComponent({
                 currency,
                 percentage: `${(balanceDistribution.value[currency] * 100).toFixed(
                     !balanceDistribution.value[currency] || balanceDistribution.value[currency] >= .01 ? 0 : 1)}%`,
-                hasNoBalance: !balanceDistribution.value[currency],
+                inactive: !balanceDistribution.value[currency]
+                    || (!!highlightedCurrency.value && highlightedCurrency.value !== currency),
             }))
-            .sort((recordA, recordB) => {
+            .sort(({ currency: currencyA }, { currency: currencyB }) => {
                 // Sort 0 balances to the end.
-                if (recordA.hasNoBalance === recordB.hasNoBalance) return 0;
-                return recordA.hasNoBalance ? 1 : -1;
+                if (!!balanceDistribution.value[currencyA] === !!balanceDistribution.value[currencyB]) return 0;
+                return balanceDistribution.value[currencyA] ? -1 : 1;
             }));
 
         return {
@@ -149,6 +158,7 @@ export default defineComponent({
             radius,
             currencyArcs,
             breakdown,
+            highlightedCurrency,
             testFiatBalances, // for testing the component from the browser's dev tools
         };
     },
@@ -159,7 +169,7 @@ export default defineComponent({
 .balance-distribution {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 svg {
@@ -172,6 +182,7 @@ svg {
     cy: 50%;
     fill: none;
     stroke-linecap: round;
+    cursor: pointer;
 
     &.nim {
         stroke: var(--nimiq-gold);
@@ -182,27 +193,36 @@ svg {
     &.usdc {
         stroke: var(--usdc-blue);
     }
-    &.has-no-balance {
+    &.inactive {
         stroke: rgba(255, 255, 255, .2);
+        cursor: default;
     }
 }
 
 .breakdown {
     padding: 0;
     margin: 0;
-    min-width: 10.25rem;
+    min-width: 10.75rem;
 
     li {
         display: flex;
+        padding-left: .5rem;
         justify-content: space-between;
         font-size: 1.75rem;
         font-weight: 700;
         line-height: 1;
         color: white;
         list-style: none;
+        cursor: default;
 
+        &:not(:first-child) {
+            padding-top: .5rem;
+        }
         &:not(:last-child) {
-            margin-bottom: 1rem;
+            padding-bottom: .5rem;
+        }
+        &:not(.inactive) {
+            cursor: pointer;
         }
 
         .currency {
@@ -212,7 +232,7 @@ svg {
             margin-left: 1.5rem; // for maintaining a minimum distance to the currency label
             opacity: .5;
         }
-        &.has-no-balance * {
+        &.inactive * {
             opacity: .3;
         }
     }

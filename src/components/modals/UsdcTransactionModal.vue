@@ -31,14 +31,14 @@
                 <UsdcAddressInfo
                     :address="transaction.sender"
                     :label="isIncoming ? peerLabel : undefined"
-                    :editable="isIncoming ? peerIsContact : false"
+                    :editable="isIncoming ? (peerIsContact || !peerLabel) : false"
                     tooltipPosition="bottom right"
                 />
                 <ArrowRightIcon class="arrow"/>
                 <UsdcAddressInfo
                     :address="transaction.recipient"
                     :label="!isIncoming ? peerLabel : undefined"
-                    :editable="!isIncoming ? peerIsContact : false"
+                    :editable="!isIncoming ? (peerIsContact || !peerLabel) : false"
                     tooltipPosition="bottom left"
                 />
             </div>

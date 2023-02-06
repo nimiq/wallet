@@ -7,7 +7,7 @@ import HubApi, {
     RefundSwapRequest,
     SignPolygonTransactionRequest,
 } from '@nimiq/hub-api';
-import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
+import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';

@@ -8,7 +8,7 @@
 
 import type VueI18n from 'vue-i18n';
 import HubApi, { SetupSwapRequest, SetupSwapResult } from '@nimiq/hub-api';
-import { BehaviorType } from '@nimiq/hub-api/dist/src/client/RequestBehavior.d';
+import { BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import Ten31PassApi, { GrantResponse, ResponseType, ServiceRequest } from '@nimiq/ten31-pass-api';
 import { ResponseStatus, RpcServer, State as RpcServerState } from '@nimiq/rpc';
 import { FormattableNumber } from '@nimiq/utils';

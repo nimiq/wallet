@@ -42,7 +42,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
 
     const { config } = useConfig();
     unwatchGetPolygonClientConfig = watch(() => [
-        config.usdc.rpcEndoint,
+        config.usdc.rpcEndpoint,
         config.usdc.networkId,
         config.usdc.usdcContract,
         config.usdc.usdcTransferContract,
@@ -55,10 +55,20 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     }, { lazy: true });
 
     const ethers = await import(/* webpackChunkName: "ethers-js" */ 'ethers');
-    const provider = new ethers.providers.StaticJsonRpcProvider(
-        config.usdc.rpcEndoint,
-        ethers.providers.getNetwork(config.usdc.networkId),
-    );
+    let provider: providers.BaseProvider;
+    if (config.usdc.rpcEndpoint.substring(0, 4) === 'http') {
+        provider = new ethers.providers.StaticJsonRpcProvider(
+            config.usdc.rpcEndpoint,
+            ethers.providers.getNetwork(config.usdc.networkId),
+        );
+    } else if (config.usdc.rpcEndpoint.substring(0, 2) === 'ws') {
+        provider = new ethers.providers.WebSocketProvider(
+            config.usdc.rpcEndpoint,
+            ethers.providers.getNetwork(config.usdc.networkId),
+        );
+    } else {
+        throw new Error('Invalid RPC endpoint URL');
+    }
 
     await provider.ready;
     console.log('Polygon connection established');
@@ -298,15 +308,22 @@ function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block): Pl
     };
 }
 
+type ContractMethods = 'transfer' | 'transferWithApproval' | 'open' | 'openWithApproval' | 'redeemWithSecretInData';
+
 export async function calculateFee(
-    method: 'transfer' | 'transferWithApproval' = 'transferWithApproval', // eslint-disable-line default-param-last
+    method: ContractMethods = 'transferWithApproval', // eslint-disable-line default-param-last
     forceRelay?: RelayServerInfo,
+    contract?: Contract,
 ) {
     const client = await getPolygonClient();
+    if (!contract) contract = client.usdcTransfer;
 
     const dataSize = {
         transfer: undefined,
         transferWithApproval: 292,
+        open: undefined,
+        openWithApproval: 420,
+        redeemWithSecretInData: 132,
     }[method];
 
     if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);
@@ -321,10 +338,10 @@ export async function calculateFee(
         usdcPrice,
     ] = await Promise.all([
         client.provider.getGasPrice().then((price) => price.mul(110).div(100)),
-        client.usdcTransfer.requiredRelayGas() as Promise<BigNumber>,
+        contract.requiredRelayGas() as Promise<BigNumber>,
         relay
             ? Promise.resolve([client.ethers.BigNumber.from(0)])
-            : client.usdcTransfer.getGasAndDataLimits() as Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>,
+            : contract.getGasAndDataLimits() as Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>,
         relay
             ? Promise.resolve(client.ethers.BigNumber.from(0))
             : getRelayHub(client).calldataGasCost(dataSize) as Promise<BigNumber>,
@@ -352,6 +369,7 @@ export async function calculateFee(
         gasPrice,
         gasLimit,
         relay,
+        usdcPrice,
     };
 }
 
@@ -376,7 +394,7 @@ export async function createTransactionRequest(recipient: string, amount: number
         calculateFee(method, forceRelay),
     ]);
 
-    const data = await client.usdcTransfer.interface.encodeFunctionData(method, [
+    const data = client.usdcTransfer.interface.encodeFunctionData(method, [
         /* address token */ config.usdc.usdcContract,
         /* uint256 amount */ amount,
         /* address target */ recipient,
@@ -400,7 +418,8 @@ export async function createTransactionRequest(recipient: string, amount: number
             value: '0',
             nonce: forwarderNonce.toString(),
             gas: gasLimit.toString(),
-            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE).toString(), // 2 hours
+            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
+                .toString(10),
         },
         relayData: {
             gasPrice: gasPrice.toString(),
@@ -409,7 +428,7 @@ export async function createTransactionRequest(recipient: string, amount: number
             relayWorker: relay.relayWorkerAddress,
             paymaster: config.usdc.usdcTransferContract,
             paymasterData: '0x',
-            clientId: Math.floor(Math.random() * 1e6).toString(),
+            clientId: Math.floor(Math.random() * 1e6).toString(10),
             forwarder: config.usdc.usdcTransferContract,
         },
     };
@@ -425,7 +444,12 @@ export async function createTransactionRequest(recipient: string, amount: number
     };
 }
 
-export async function sendTransaction(relayRequest: RelayRequest, signature: string, relayUrl: string) {
+export async function sendTransaction(
+    relayRequest: RelayRequest,
+    signature: string,
+    relayUrl: string,
+    approvalData = '0x',
+) {
     const { config } = useConfig();
     const client = await getPolygonClient();
     const [{ HttpClient, HttpWrapper }, relayNonce] = await Promise.all([
@@ -436,7 +460,7 @@ export async function sendTransaction(relayRequest: RelayRequest, signature: str
     const relayTx = await httpClient.relayTransaction(relayUrl, {
         relayRequest,
         metadata: {
-            approvalData: '0x',
+            approvalData,
             relayHubAddress: config.usdc.relayHubContract,
             relayMaxNonce: relayNonce + 3,
             signature,

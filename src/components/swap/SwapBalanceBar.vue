@@ -13,8 +13,12 @@
                 <label>{{ activeAddressInfo.label }}</label>
             </button>
             <div v-if="leftAsset === SwapAsset.BTC" class="left bitcoin flex-row">
-                <BitcoinIcon ref="$bitcoinIcon"/>
+                <BitcoinIcon />
                 <label>Bitcoin</label>
+            </div>
+            <div v-if="leftAsset === SwapAsset.USDC" class="left usdc flex-row">
+                <UsdcIcon />
+                <label>USD Coin</label>
             </div>
             <button v-if="rightAsset === SwapAsset.NIM" class="reset right nimiq flex-row"
                 :class="{ single: backgroundAddresses.length === 0 }"
@@ -29,7 +33,11 @@
             </button>
             <div v-if="rightAsset === SwapAsset.BTC" class="right bitcoin flex-row">
                 <label>Bitcoin</label>
-                <BitcoinIcon ref="$bitcoinIcon"/>
+                <BitcoinIcon />
+            </div>
+            <div v-if="rightAsset === SwapAsset.USDC" class="right usdc flex-row">
+                <label>USD Coin</label>
+                <UsdcIcon />
             </div>
         </div>
         <div class="connecting-lines">
@@ -114,6 +122,7 @@ import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
 import { getColorClass } from '../../lib/AddressColor';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import UsdcIcon from '../icons/UsdcIcon.vue';
 
 type BarDefinition = {
     readonly address: string,
@@ -604,6 +613,7 @@ export default defineComponent({
         Identicon,
         CurvedLine,
         SlideHint,
+        UsdcIcon,
     },
 });
 </script>
@@ -626,6 +636,11 @@ export default defineComponent({
             font-weight: 600;
             line-height: 2.625rem;
         }
+    }
+
+    svg {
+        width: 5.25rem;
+        height: 5.25rem;
     }
 }
 
@@ -689,11 +704,8 @@ export default defineComponent({
     }
 }
 
-.balance-bar-header .bitcoin {
-    svg {
-        color: var(--bitcoin-orange);
-    }
-
+.balance-bar-header .bitcoin,
+.balance-bar-header .usdc {
     &.left {
         svg {
             margin-right: 2rem;
@@ -707,6 +719,14 @@ export default defineComponent({
             margin-left: 2rem;
         }
     }
+}
+
+.balance-bar-header .bitcoin svg {
+    color: var(--bitcoin-orange);
+}
+
+.balance-bar-header .usdc svg {
+    color: var(--usdc-blue);
 }
 
 .identicon-stack {
@@ -819,6 +839,11 @@ export default defineComponent({
     &.bitcoin {
         background-color: var(--bitcoin-orange);
         border: .25rem solid var(--bitcoin-orange);
+    }
+
+    &.usdc {
+        background-color: var(--usdc-blue);
+        border: .25rem solid var(--usdc-blue);
     }
 
     .change {

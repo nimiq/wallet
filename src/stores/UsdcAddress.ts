@@ -28,6 +28,8 @@ export const useUsdcAddressStore = createStore({
             // Only supports one USDC address per account for now
             return state.addressInfos[activeAccountInfo.value.polygonAddresses[0]];
         },
+        activeAddress: (state, { addressInfo }): string | undefined =>
+            (addressInfo.value as UsdcAddressInfo | undefined)?.address,
         accountBalance: (state, { addressInfo }) => {
             const ai = addressInfo.value as UsdcAddressInfo | undefined;
             if (!ai || ai.balance === null) return 0;

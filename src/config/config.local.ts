@@ -14,9 +14,12 @@ export default {
     usdc: {
         enabled: true,
         networkId: 80001 as number | string, // Can also be 'maticmum'
-        rpcEndoint: 'https://matic-mumbai.chainstacklabs.com',
+        // rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
+        // eslint-disable-next-line max-len
+        rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
         usdcTransferContract: '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c',
+        htlcContract: '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936',
         relayHubContract: '0x6646cD15d33cE3a6933e36de38990121e8ba2806',
         uniswapFactoryContract: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
         uniswapQuoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',

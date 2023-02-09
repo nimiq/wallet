@@ -1,15 +1,19 @@
 <template>
-    <div class="sidebar padding flex-column" ref="sidebar">
+    <div class="sidebar padding flex-column">
         <div v-if="isTestnet" class="testnet-notice flex-row">
             <StreetconeIcon/>
             <span class="nq-label">{{ $t('Testnet') }}</span>
             <div class="flex-grow"></div>
-            <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{ transform: 'translate(0.5rem, 2rem)' }">
+            <Tooltip preferredPosition="bottom left"
+                theme="inverse"
+                :styles="{ transform: 'translate(0.5rem, 2rem)' }"
+                ref="testnetTooltip"
+            >
                 <template #trigger>
                     <InfoCircleIcon/>
                 </template>
                 <template #default>
-                    <p>{{ $t('You are connecting to the Nimiq and Bitcoin Testnets.') }}</p>
+                    <p>{{ $t('You are connecting to the Nimiq, Bitcoin and Polygon (USDC) Testnets.') }}</p>
                     <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
                 </template>
             </Tooltip>
@@ -29,13 +33,25 @@
         </div>
 
         <div class="trade-actions" v-if="!isLegacyAccount">
-            <button v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
-                class="nq-button-s inverse"
-                :disabled="$route.name !== 'root' || hasActiveSwap"
-                @click="$router.push('/buy?sidebar=true')"
-                @mousedown.prevent="/* need to hide tooltips manually due to the .prevent */
-                    $refs.sellTooltip.hide(); $refs.swapTooltip.hide()"
-            >{{ $t('Buy') }}</button>
+            <Tooltip v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
+                preferredPosition="top right"
+                theme="inverse"
+                :styles="{ minWidth: '25rem' }"
+                :disabled="!hasActiveSwap"
+                ref="buyTooltip"
+            >
+                <template #trigger>
+                    <button
+                        class="nq-button-s inverse"
+                        :disabled="$route.name !== 'root' || hasActiveSwap"
+                        @click="$router.push('/buy?sidebar=true')"
+                        @mousedown.prevent="hideTooltips"
+                    >{{ $t('Buy') }}</button>
+                </template>
+                <template #default>{{
+                    $t('Please wait for your current swap to finish before starting a new one.')
+                }}</template>
+            </Tooltip>
 
             <Tooltip v-if="$config.fastspot.enabled"
                 preferredPosition="top right"
@@ -49,7 +65,7 @@
                         :disabled="$route.name !== 'root' || $config.oasis.underMaintenance || !canUseSwaps
                             || hasActiveSwap"
                         @click="$router.push('/sell-crypto?sidebar=true')"
-                        @mousedown.prevent="/* need to hide manually due to .prevent */ $refs.swapTooltip.hide()"
+                        @mousedown.prevent="hideTooltips"
                     >{{ $t('Sell') }}</button>
                 </template>
                 <template v-if="$config.oasis.underMaintenance" #default>
@@ -61,11 +77,13 @@
                         class="nq-blue"
                     >{{ $t('Learn more.') }}</a>
                 </template>
-                <template v-else-if="!canUseSwaps || hasActiveSwap" #default>{{
-                    hasActiveSwap ? $t('Please wait for your current swap to finish before starting a new swap.')
-                        /* Re-using existing, translated strings already used by BuyOptionsModal */
-                        : $t('Not available in your browser') + '. '
-                            + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
+                <template v-else-if="!canUseSwaps" #default>{{
+                    /* Re-using existing, translated strings already used by BuyOptionsModal */
+                    $t('Not available in your browser') + '. '
+                    + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
+                }}</template>
+                <template v-else-if="hasActiveSwap" #default>{{
+                    $t('Please wait for your current swap to finish before starting a new one.')
                 }}</template>
             </Tooltip>
         </div>
@@ -74,11 +92,11 @@
 
         <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
             preferredPosition="bottom right"
-            ref="swapTooltip"
             :disabled="activatedCurrencies.length > 1 && hasBalance && canUseSwaps && !hasActiveSwap"
             theme="inverse"
             class="swap-tooltip"
             :styles="{ minWidth: '25rem' }"
+            ref="swapTooltip"
         >
             <template #trigger>
                 <button
@@ -86,7 +104,7 @@
                         || !canUseSwaps || hasActiveSwap"
                     class="nq-button-s inverse"
                     @click="$router.push('/swap?sidebar=true')"
-                    @mousedown.prevent="/* need to hide tooltips manually due to .prevent */ $refs.sellTooltip.hide()"
+                    @mousedown.prevent="hideTooltips"
                 >{{ $t('Swap') }}</button>
             </template>
             <template v-if="activatedCurrencies.length <= 1" #default>{{
@@ -203,6 +221,15 @@ export default defineComponent({
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
 
+        // The Sidebar's buttons have mousedown.prevent to circumvent focus issues on iOS. As this also causes focused
+        // tooltips to not lose focus and close if such a button is clicked, we close them manually.
+        function hideTooltips() {
+            for (const refComponent of Object.values(context.refs)) {
+                if (!(refComponent instanceof Tooltip)) continue;
+                refComponent.hide();
+            }
+        }
+
         return {
             navigateTo,
             resetState,
@@ -216,6 +243,7 @@ export default defineComponent({
             hasActiveSwap,
             canUseSwaps,
             updateAvailable,
+            hideTooltips,
         };
     },
     components: {

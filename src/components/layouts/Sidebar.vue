@@ -4,10 +4,14 @@
             <StreetconeIcon/>
             <span class="nq-label">{{ $t('Testnet') }}</span>
             <div class="flex-grow"></div>
-            <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{transform: 'translate(0.5rem, 2rem)'}">
-                <InfoCircleIcon slot="trigger"/>
-                <p>{{ $t('You are connecting to the Nimiq and Bitcoin Testnets.') }}</p>
-                <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
+            <Tooltip preferredPosition="bottom left" theme="inverse" :styles="{ transform: 'translate(0.5rem, 2rem)' }">
+                <template #trigger>
+                    <InfoCircleIcon/>
+                </template>
+                <template #default>
+                    <p>{{ $t('You are connecting to the Nimiq and Bitcoin Testnets.') }}</p>
+                    <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
+                </template>
             </Tooltip>
         </div>
 
@@ -24,15 +28,19 @@
                 currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
         </div>
 
-        <div class="trade-actions" v-show="!isLegacyAccount">
+        <div class="trade-actions" v-if="!isLegacyAccount">
             <button v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
-                class="nq-button-pill light-blue inverse"
-                @click="$router.push('/buy?sidebar=true')" @mousedown.prevent="$refs.sellTooltip.hide()"
+                class="nq-button-s inverse"
                 :disabled="$route.name !== 'root' || hasActiveSwap"
+                @click="$router.push('/buy?sidebar=true')"
+                @mousedown.prevent="/* need to hide tooltips manually due to the .prevent */
+                    $refs.sellTooltip.hide(); $refs.swapTooltip.hide()"
             >{{ $t('Buy') }}</button>
 
             <Tooltip v-if="$config.fastspot.enabled"
-                preferredPosition="top right" :styles="{minWidth: '25rem'}" theme="inverse"
+                preferredPosition="top right"
+                theme="inverse"
+                :styles="{ minWidth: '25rem' }"
                 :disabled="!$config.oasis.underMaintenance && canUseSwaps && !hasActiveSwap"
                 ref="sellTooltip"
             >
@@ -40,7 +48,8 @@
                     <button class="nq-button-s inverse"
                         :disabled="$route.name !== 'root' || $config.oasis.underMaintenance || !canUseSwaps
                             || hasActiveSwap"
-                        @click="$router.push('/sell-crypto?sidebar=true')" @mousedown.prevent
+                        @click="$router.push('/sell-crypto?sidebar=true')"
+                        @mousedown.prevent="/* need to hide manually due to .prevent */ $refs.swapTooltip.hide()"
                     >{{ $t('Sell') }}</button>
                 </template>
                 <template v-if="$config.oasis.underMaintenance" #default>
@@ -61,7 +70,38 @@
             </Tooltip>
         </div>
 
-        <BalanceDistribution v-show="!isLegacyAccount" />
+        <BalanceDistribution v-if="!isLegacyAccount" />
+
+        <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
+            preferredPosition="bottom right"
+            ref="swapTooltip"
+            :disabled="activatedCurrencies.length > 1 && hasBalance && canUseSwaps && !hasActiveSwap"
+            theme="inverse"
+            class="swap-tooltip"
+            :styles="{ minWidth: '25rem' }"
+        >
+            <template #trigger>
+                <button
+                    :disabled="$route.name !== 'root' || activatedCurrencies.length <= 1 || !hasBalance
+                        || !canUseSwaps || hasActiveSwap"
+                    class="nq-button-s inverse"
+                    @click="$router.push('/swap?sidebar=true')"
+                    @mousedown.prevent="/* need to hide tooltips manually due to .prevent */ $refs.sellTooltip.hide()"
+                >{{ $t('Swap') }}</button>
+            </template>
+            <template v-if="activatedCurrencies.length <= 1" #default>{{
+                $t('Please activate BTC or USDC in your account first to be able to swap to these currencies.')
+            }}</template>
+            <template v-else-if="!hasBalance" #default>{{ $t('You currently have no balance to swap.') }}</template>
+            <template v-else-if="!canUseSwaps" #default>{{
+                /* Re-using existing, translated strings already used by BuyOptionsModal */
+                $t('Not available in your browser') + '. '
+                + $t('Your browser does not support Keyguard popups, or they are disabled in the Settings.')
+            }}</template>
+            <template v-else-if="hasActiveSwap" #default>{{
+                $t('Please wait for your current swap to finish before starting a new one.')
+            }}</template>
+        </Tooltip>
 
         <div class="flex-grow"></div>
 
@@ -101,12 +141,14 @@ import StreetconeIcon from '../icons/StreetconeIcon.vue';
 import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
+import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { ENV_TEST, ENV_DEV } from '../../lib/Constants';
+import { ENV_TEST, ENV_DEV, CryptoCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
@@ -145,8 +187,18 @@ export default defineComponent({
 
         const { updateAvailable, canUseSwaps } = useSettingsStore();
 
-        const { activeAccountInfo } = useAccountStore();
+        const { activeAccountInfo, hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
+
+        const activatedCurrencies = computed(() => [
+            CryptoCurrency.NIM, // NIM is always activated
+            ...(config.enableBitcoin && hasBitcoinAddresses.value ? [CryptoCurrency.BTC] : []),
+            ...(config.usdc.enabled && hasUsdcAddresses.value ? [CryptoCurrency.USDC] : []),
+        ]);
+
+        const hasBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore].some((useStore) =>
+            !!useStore().accountBalance.value,
+        ));
 
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
@@ -159,9 +211,11 @@ export default defineComponent({
             priceChartTimeRange,
             switchPriceChartTimeRange,
             isLegacyAccount,
-            updateAvailable,
+            activatedCurrencies,
+            hasBalance,
             hasActiveSwap,
             canUseSwaps,
+            updateAvailable,
         };
     },
     components: {
@@ -278,7 +332,7 @@ export default defineComponent({
     }
 
     &::-webkit-scrollbar {
-        width: 0px;
+        width: 0;
     }
 }
 
@@ -293,21 +347,17 @@ export default defineComponent({
     }
 }
 
-.trade-actions {
-    margin-bottom: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+.trade-actions,
+.swap-tooltip {
+    align-self: stretch; // wider than in the designs to better accommodate long translations
 
-    button {
-        margin: 0.5rem .625rem 1rem;
-
-        &:disabled {
-            pointer-events: none;
-        }
+    ::v-deep .trigger,
+    ::v-deep .trigger .nq-button-s {
+        width: 100%;
     }
 
     .nq-button-s {
+        height: 3.25rem;
         background: rgba(255, 255, 255, .1);
 
         &:active,
@@ -315,15 +365,26 @@ export default defineComponent({
         &:hover {
             background: rgba(255, 255, 255, .2);
         }
-    }
-
-    .nq-button-pill:disabled {
-        opacity: 0.5;
+        &:disabled {
+            pointer-events: none;
+        }
     }
 }
 
-button > :first-child {
-    flex-shrink: 0;
+.trade-actions {
+    margin-bottom: 5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    > * {
+        flex-grow: 1; // make buttons span available space and full width if they break into two lines
+    }
+}
+
+.balance-distribution,
+.swap-tooltip {
+    margin-bottom: 2.5rem;
 }
 
 .account-menu,
@@ -348,6 +409,10 @@ button > :first-child {
     transition:
         background 0.2s var(--nimiq-ease),
         color 0.2s var(--nimiq-ease);
+
+    > :first-child {
+        flex-shrink: 0;
+    }
 
     .label {
         margin-left: 2rem;

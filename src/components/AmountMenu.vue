@@ -182,6 +182,7 @@ export default defineComponent({
             width: 50%;
             opacity: 0.4;
             font-weight: bold;
+            white-space: nowrap;
 
             &.active {
                 opacity: 1;

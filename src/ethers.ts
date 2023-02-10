@@ -298,7 +298,7 @@ function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block): Pl
     };
 }
 
-async function calculateFee(
+export async function calculateFee(
     method: 'transfer' | 'transferWithApproval' = 'transferWithApproval', // eslint-disable-line default-param-last
     forceRelay?: RelayServerInfo,
 ) {

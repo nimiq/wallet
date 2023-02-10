@@ -179,12 +179,12 @@ export const UNISWAP_POOL_CONTRACT_ABI = [
 ];
 
 export const UNISWAP_QUOTER_ABI = [
-    // 'constructor(address,address) nonpayable',
+    // 'constructor(address _factory, address _WETH9) nonpayable',
     // 'function WETH9() view returns (address)',
     // 'function factory() view returns (address)',
-    // 'function quoteExactInput(bytes,uint256) returns (uint256)',
-    // 'function quoteExactInputSingle(address,address,uint24,uint256,uint160) returns (uint256)',
-    // 'function quoteExactOutput(bytes,uint256) returns (uint256)',
-    'function quoteExactOutputSingle(address,address,uint24,uint256,uint160) returns (uint256)',
-    // 'function uniswapV3SwapCallback(int256,int256,bytes) view'
+    // 'function quoteExactInput(bytes path, uint256 amountIn) returns (uint256 amountOut)',
+    'function quoteExactInputSingle(address tokenIn, address tokenOut, uint24 fee, uint256 amountIn, uint160 sqrtPriceLimitX96) returns (uint256 amountOut)',
+    // 'function quoteExactOutput(bytes path, uint256 amountOut) returns (uint256 amountIn)',
+    // 'function quoteExactOutputSingle(address tokenIn, address tokenOut, uint24 fee, uint256 amountOut, uint160 sqrtPriceLimitX96) returns (uint256 amountIn)',
+    // 'function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes path) view'
 ];

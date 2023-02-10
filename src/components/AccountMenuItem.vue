@@ -23,18 +23,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import { AlertTriangleIcon, Identicon, FiatAmount } from '@nimiq/vue-components';
-
-import LoginFileIcon from './icons/LoginFileIcon.vue';
-import LedgerIcon from './icons/LedgerIcon.vue';
+import { useConfig } from '@/composables/useConfig';
+import { useUsdcAddressStore } from '@/stores/UsdcAddress';
+import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components';
+import { computed, defineComponent } from '@vue/composition-api';
 import { getBackgroundClass } from '../lib/AddressColor';
-import { useAccountStore, AccountType } from '../stores/Account';
-import { useAddressStore } from '../stores/Address';
-import { useBtcAddressStore, BtcAddressSet } from '../stores/BtcAddress';
-import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency } from '../lib/Constants';
+import { AccountType, useAccountStore } from '../stores/Account';
+import { useAddressStore } from '../stores/Address';
+import { BtcAddressSet, useBtcAddressStore } from '../stores/BtcAddress';
+import { useFiatStore } from '../stores/Fiat';
 import { Transaction, useTransactionsStore } from '../stores/Transactions';
+import LedgerIcon from './icons/LedgerIcon.vue';
+import LoginFileIcon from './icons/LoginFileIcon.vue';
 
 export default defineComponent({
     props: {
@@ -48,6 +49,7 @@ export default defineComponent({
         },
     },
     setup(props) {
+        const { config } = useConfig();
         const { accountInfos } = useAccountStore();
         const { state: addressState } = useAddressStore();
         const { pendingTransactionsBySender } = useTransactionsStore();
@@ -101,21 +103,37 @@ export default defineComponent({
             return internalBalance + externalBalance;
         });
 
+        const { state: usdcAddressState } = useUsdcAddressStore();
+        const polygonAddress = computed(() => accountInfo.value.polygonAddresses[0]);
+        const usdcAccountBalance = computed(() => usdcAddressState.addressInfos[polygonAddress.value]?.balance || 0);
+
         // TODO: Dedupe double code with AccountBalance
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
         const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
+        const usdcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value]);
         const fiatAccountBalance = computed(() => {
+            let amount = 0;
             const nimFiatAmount = nimExchangeRate.value !== undefined
                 ? (nimAccountBalance.value / 1e5) * nimExchangeRate.value
                 : undefined;
-            const btcFiatAmount = btcExchangeRate.value !== undefined
-                ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
-                : undefined;
-
-            if (nimFiatAmount === undefined || btcFiatAmount === undefined) return 0;
-
-            return nimFiatAmount + btcFiatAmount;
+            if (nimFiatAmount === undefined) return undefined;
+            amount += nimFiatAmount;
+            if (config.enableBitcoin) {
+                const btcFiatAmount = btcExchangeRate.value !== undefined
+                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                    : undefined;
+                if (btcFiatAmount === undefined) return undefined;
+                amount += btcFiatAmount;
+            }
+            if (config.usdc.enabled) {
+                const usdcFiatAmount = usdcExchangeRate.value !== undefined
+                    ? (usdcAccountBalance.value / 1e6) * usdcExchangeRate.value
+                    : undefined;
+                if (usdcFiatAmount === undefined) return undefined;
+                amount += usdcFiatAmount;
+            }
+            return amount;
         });
 
         return {

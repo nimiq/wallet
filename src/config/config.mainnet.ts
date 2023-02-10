@@ -19,6 +19,7 @@ export default {
         usdcTransferContract: '',
         relayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
         uniswapFactoryContract: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+        uniswapQuoter: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wmaticContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
         startHistoryScanHeight: 36774144, // From which block to fetch transaction history
     },

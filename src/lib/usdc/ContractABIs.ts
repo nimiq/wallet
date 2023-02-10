@@ -154,7 +154,7 @@ export const UNISWAP_POOL_CONTRACT_ABI = [
     // 'function collect(address recipient, int24 tickLower, int24 tickUpper, uint128 amount0Requested, uint128 amount1Requested) returns (uint128 amount0, uint128 amount1)',
     // 'function collectProtocol(address recipient, uint128 amount0Requested, uint128 amount1Requested) returns (uint128 amount0, uint128 amount1)',
     // 'function factory() view returns (address)',
-    // 'function fee() view returns (uint24)',
+    'function fee() view returns (uint24)',
     // 'function feeGrowthGlobal0X128() view returns (uint256)',
     // 'function feeGrowthGlobal1X128() view returns (uint256)',
     // 'function flash(address recipient, uint256 amount0, uint256 amount1, bytes data)',
@@ -174,6 +174,17 @@ export const UNISWAP_POOL_CONTRACT_ABI = [
     // 'function tickBitmap(int16 wordPosition) view returns (uint256)',
     // 'function tickSpacing() view returns (int24)',
     // 'function ticks(int24 tick) view returns (uint128 liquidityGross, int128 liquidityNet, uint256 feeGrowthOutside0X128, uint256 feeGrowthOutside1X128, int56 tickCumulativeOutside, uint160 secondsPerLiquidityOutsideX128, uint32 secondsOutside, bool initialized)',
-    // 'function token0() view returns (address)',
-    // 'function token1() view returns (address)',
+    'function token0() view returns (address)',
+    'function token1() view returns (address)',
+];
+
+export const UNISWAP_QUOTER_ABI = [
+    // 'constructor(address,address) nonpayable',
+    // 'function WETH9() view returns (address)',
+    // 'function factory() view returns (address)',
+    // 'function quoteExactInput(bytes,uint256) returns (uint256)',
+    // 'function quoteExactInputSingle(address,address,uint24,uint256,uint160) returns (uint256)',
+    // 'function quoteExactOutput(bytes,uint256) returns (uint256)',
+    'function quoteExactOutputSingle(address,address,uint24,uint256,uint160) returns (uint256)',
+    // 'function uniswapV3SwapCallback(int256,int256,bytes) view'
 ];

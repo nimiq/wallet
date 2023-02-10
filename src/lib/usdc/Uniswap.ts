@@ -1,8 +1,8 @@
-import type { BigNumber, Contract } from 'ethers';
+import { useConfig } from '@/composables/useConfig';
 import { watch } from '@vue/composition-api';
+import { BigNumber, Contract } from 'ethers';
 import { PolygonClient } from '../../ethers';
-import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI } from './ContractABIs';
-import { useConfig } from '../../composables/useConfig';
+import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI, UNISWAP_QUOTER_ABI } from './ContractABIs';
 
 let poolPromise: Promise<Contract> | null = null;
 
@@ -42,11 +42,30 @@ export async function getUniswapPool({ ethers, provider, usdcTransfer }: Polygon
     }));
 }
 
+// https://docs.uniswap.org/sdk/v3/guides/quoting
 export async function getUsdcPrice(client: PolygonClient) {
-    const [sqrtPriceX96] = await getUniswapPool(client).then((pool) => pool.slot0()) as [BigNumber];
+    const pool = await getUniswapPool(client);
+    const [usdc, wmatic, fee] = await Promise.all([
+        pool.token0(),
+        pool.token1(),
+        pool.fee(),
+    ]);
 
-    // sqrtPriceX96^2 / 2^192 - https://docs.uniswap.org/sdk/v3/guides/fetching-prices#token0price
-    const priceToken0 = sqrtPriceX96.mul(sqrtPriceX96).div(client.ethers.BigNumber.from(2).pow(192));
+    const { config } = useConfig();
 
-    return priceToken0;
+    const quoterContract = new client.ethers.Contract(
+        config.usdc.uniswapQuoter,
+        UNISWAP_QUOTER_ABI,
+        client.provider,
+    );
+
+    const quotedAmountOut = await quoterContract.callStatic.quoteExactOutputSingle(
+        usdc, // in
+        wmatic, // out
+        fee,
+        '1000000', // 1 USDC
+        0,
+    ) as BigNumber;
+
+    return quotedAmountOut;
 }

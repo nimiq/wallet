@@ -59,13 +59,17 @@ export async function getUsdcPrice(client: PolygonClient) {
         client.provider,
     );
 
-    const quotedAmountOut = await quoterContract.callStatic.quoteExactOutputSingle(
+    // MATIC amount that would be received for swapping 1 USDC
+    const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
         usdc, // in
         wmatic, // out
         fee,
-        '1000000', // 1 USDC
+        1_000_000, // 1 USDC
         0,
-    ) as BigNumber;
+    );
 
-    return quotedAmountOut;
+    // Convert to USDC smallest unit. We cannot get directly the USDC price for
+    // USDC smallest unit because is so small that the result is 0, which is
+    // not true.
+    return usdcPrice.div(1_000_000);
 }

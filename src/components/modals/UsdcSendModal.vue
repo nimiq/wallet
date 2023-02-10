@@ -1,7 +1,6 @@
 <template>
     <Modal :showOverlay="contactListOpened
         || recipientDetailsOpened
-        || feeSelectionOpened
         || statusScreenOpened"
         @close-overlay="onCloseOverlay"
         class="send-modal"
@@ -129,7 +128,7 @@
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
-                                @fee-selection="feeSelectionOpened = true"
+                                :feeOption="false"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
@@ -142,7 +141,7 @@
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
-                                @fee-selection="feeSelectionOpened = true"
+                                :feeOption="false"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
@@ -152,16 +151,34 @@
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === 'usdc'" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="usdc"/>
-                            <!-- <span v-if="fee">
-                                +<Amount :amount="fee"
-                                    currency="usdc" :currencyDecimals="6"
-                                    :minDecimals="0" :maxDecimals="6"
-                                /> {{ $t('fee') }}
-                            </span> -->
+                            <span class="fee">
+                                <svg data-v-3d79c726="" class="dot" viewBox="0 0 3 3"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <circle data-v-3d79c726="" cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
+                                </svg>
+                                +<FiatConvertedAmount :amount="fee" currency="usdc"/> {{ $t('fee') }}
+                            </span>
+                            <Tooltip class="info-tooltip" preferredPosition="bottom left">
+                                <InfoCircleSmallIcon slot="trigger"/>
+                                <div>
+                                    {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
+                                </div>
+                            </Tooltip>
                         </span>
-                        <span v-else key="usdc-amount">
-                            {{ $t('You will send {amount} USDC', { amount: amount / 1e6 }) }}
-                        </span>
+                        <div v-else key="usdc-amount" class="usdc-amount">
+                            <span>
+                                {{ $t('You will send {amount} USDC', { amount: amount / 1e6 }) }}
+                            </span>
+                            <div>
+                                <span class="fee">
+                                    +<FiatConvertedAmount :amount="fee" currency="usdc"/> {{ $t('fee') }}
+                                </span>
+                                <Tooltip class="info-tooltip" preferredPosition="bottom left">
+                                    <InfoCircleSmallIcon slot="trigger"/>
+                                    {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
+                                </Tooltip>
+                            </div>
+                        </div>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
@@ -177,22 +194,6 @@
                     @click="sign"
                     @mousedown.prevent
                 >{{ $t('Send Transaction') }}</button>
-            </PageBody>
-        </div>
-
-        <div v-if="feeSelectionOpened" slot="overlay" class="page flex-column">
-            <PageBody class="page__fee-selection fee-selection flex-column">
-                <h1 class="nq-h1">{{ $t('Speed up your Transaction') }}</h1>
-                <p class="nq-text">
-                    {{ $t('By adding a transaction fee, you can influence ' +
-                    'how fast your transaction will be processed.') }}
-                </p>
-                <SelectBar
-                    :options="feeOptions"
-                    :selectedValue="feePerByte"
-                    @changed="updateFee"
-                />
-                <!-- <Amount :amount="fee" currency="usdc" :currencyDecimals="6" :minDecimals="0" :maxDecimals="6"/> -->
             </PageBody>
         </div>
 
@@ -212,45 +213,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onBeforeUnmount } from '@vue/composition-api';
+import { calculateFee } from '@/ethers';
+import { RelayServerInfo } from '@/lib/usdc/OpenGSN';
+import { CurrencyInfo, parseRequestLink } from '@nimiq/utils';
 import {
-    PageHeader,
-    PageBody,
-    AddressInput,
-    ScanQrCodeIcon,
-    LabelInput,
     AddressDisplay,
-    SelectBar,
-    // Amount,
+    AddressInput,
+    LabelInput,
+    PageBody,
+    PageHeader,
+    ScanQrCodeIcon,
+    InfoCircleSmallIcon,
+    Tooltip,
 } from '@nimiq/vue-components';
-import { parseRequestLink, CurrencyInfo } from '@nimiq/utils';
-import { utils } from 'ethers';
 import { captureException } from '@sentry/vue';
-import Modal, { disableNextModalTransition } from './Modal.vue';
-import UsdcContactShortcuts from '../UsdcContactShortcuts.vue';
-import UsdcContactBook from '../UsdcContactBook.vue';
-import AmountInput from '../AmountInput.vue';
-import AmountMenu from '../AmountMenu.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import { useUsdcContactsStore } from '../../stores/UsdcContacts';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
-import { useFiatStore } from '../../stores/Fiat';
-import { useSettingsStore } from '../../stores/Settings';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
-import { sendUsdcTransaction } from '../../hub';
+import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
+import { utils } from 'ethers';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { i18n } from '../../i18n/i18n-setup';
+import { sendUsdcTransaction } from '../../hub';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../../lib/UnstoppableDomains';
 import { useAccountStore } from '../../stores/Account';
+import { useFiatStore } from '../../stores/Fiat';
+import { useSettingsStore } from '../../stores/Settings';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { useUsdcContactsStore } from '../../stores/UsdcContacts';
+import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import AmountInput from '../AmountInput.vue';
+import AmountMenu from '../AmountMenu.vue';
 import Avatar from '../Avatar.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import UsdcAddressInfo from '../UsdcAddressInfo.vue';
+import UsdcContactBook from '../UsdcContactBook.vue';
+import UsdcContactShortcuts from '../UsdcContactShortcuts.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 
 export enum RecipientType {
     CONTACT,
@@ -390,33 +392,15 @@ export default defineComponent({
             }
         }
 
-        const amount = ref(0);
-        const feePerByte = ref(0);
-        // const message = ref('');
+        const feeIntervalId = ref<ReturnType<typeof setInterval> | undefined>();
 
-        // const fee = computed(() => feePerByte.value * 138);
+        const amount = ref(0);
+        const fee = ref<number>(0);
+        const relay = ref<RelayServerInfo | undefined>();
 
         const maxSendableAmount = computed(() => Math.max((addressInfo.value!.balance || 0) /* - fee.value */, 0));
 
         const amountMenuOpened = ref(false);
-        const feeSelectionOpened = ref(false);
-
-        const feeOptions: SelectBar.SelectBarOption[] = [{
-            color: 'nq-light-blue-bg',
-            get text() { return i18n.t('free') as string; },
-            value: 0,
-            index: 0,
-        }, {
-            color: 'nq-green-bg',
-            get text() { return i18n.t('standard') as string; },
-            value: 1,
-            index: 1,
-        }, {
-            color: 'nq-gold-bg',
-            get text() { return i18n.t('express') as string; },
-            value: 2,
-            index: 2,
-        }];
 
         const activeCurrency = ref('usdc' as CryptoCurrency.USDC | FiatCurrency);
         const fiatAmount = ref(0);
@@ -464,12 +448,6 @@ export default defineComponent({
             // race condition between the amount assignment and the fiatAmount watcher.
             await context.root.$nextTick();
             amount.value = maxSendableAmount.value;
-        }
-
-        function updateFee(newFeePerByte: number) {
-            const isSendingMax = amount.value === maxSendableAmount.value;
-            feePerByte.value = newFeePerByte;
-            if (isSendingMax) sendMax();
         }
 
         const hasHeight = computed(() => !!network$.height);
@@ -579,7 +557,7 @@ export default defineComponent({
                     recipientWithLabel.value!.address,
                     amount.value,
                     recipientWithLabel.value!.label,
-                    // relay, // TODO: Pass relay that was retrieved when fee was calculated
+                    relay.value,
                 );
 
                 if (!tx) {
@@ -628,7 +606,6 @@ export default defineComponent({
             if (recipientDetailsOpened.value) {
                 closeRecipientDetails();
             }
-            feeSelectionOpened.value = false;
 
             // Do nothing when the success status overlay is shown, it will be closed by successCloseTimeout
         }
@@ -644,6 +621,26 @@ export default defineComponent({
 
         onBeforeUnmount(() => {
             window.clearTimeout(successCloseTimeout);
+        });
+
+        // watching amount or every 20 seconds
+        const FEE_REFRESH_INTERVAL = 20 * 1000;
+
+        async function setFeeInformation() {
+            const feeInformation = await calculateFee('transferWithApproval');
+            fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
+            console.log('fee', fee.value);
+            relay.value = feeInformation.relay;
+        }
+
+        watch([page, statusScreenOpened], async ([newPage]) => {
+            if (newPage === Pages.AMOUNT_INPUT && !statusScreenOpened.value) {
+                // USDC fee does not depend on the amount, therefore it is not reactive to amount
+                await setFeeInformation();
+                feeIntervalId.value = setInterval(setFeeInformation, FEE_REFRESH_INTERVAL);
+            } else if (feeIntervalId.value) {
+                clearInterval(feeIntervalId.value);
+            }
         });
 
         return {
@@ -675,17 +672,13 @@ export default defineComponent({
             resetRecipient,
             addressInfo,
             amount,
-            feePerByte,
-            // fee,
+            fee,
             maxSendableAmount,
             amountMenuOpened,
-            feeSelectionOpened,
-            feeOptions,
             activeCurrency,
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,
-            updateFee,
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             canSend,
@@ -726,11 +719,11 @@ export default defineComponent({
         AmountInput,
         AmountMenu,
         FiatConvertedAmount,
-        SelectBar,
-        // Amount,
         StatusScreen,
         Avatar,
         UsdcAddressInfo,
+        InfoCircleSmallIcon,
+        Tooltip,
     },
 });
 </script>
@@ -965,11 +958,54 @@ export default defineComponent({
 
         .secondary-amount {
             font-weight: 600;
-            opacity: 0.5;
 
             .fiat-amount,
             .amount {
                 margin-left: -0.2em;
+            }
+
+            & > .usdc-amount > span,
+            & > .usdc-amount .fee,
+            & > span > *:not(.info-tooltip) {
+                opacity: 0.5;
+            }
+
+            .usdc-amount {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .fee svg.dot {
+                position: relative;
+                width: 3px;
+                bottom: 3px;
+                margin-left: 8px;
+                margin-right: 8px;
+            }
+
+            .info-tooltip {
+                bottom: -2px;
+                z-index: 4;
+
+                ::v-deep .trigger svg {
+                    opacity: 0.3;
+                    height: 20px;
+                    color: var(--text-60);
+                    transition: color var(--short-transition-duration) var(--nimiq-ease);
+                }
+
+                & ::v-deep .trigger:hover svg,
+                & ::v-deep .trigger:focus svg,
+                &.shown ::v-deep .trigger svg {
+                    color: var(--text-80);
+                }
+
+                ::v-deep .tooltip-box {
+                    width: 26.25rem;
+                    font-size: var(--small-size);
+                    font-weight: 600;
+                }
             }
         }
 
@@ -999,22 +1035,6 @@ export default defineComponent({
         align-self: stretch;
         text-align: center;
         margin-bottom: 4rem;
-    }
-
-    .fee-selection {
-        .nq-h1 {
-            text-align: center;
-        }
-
-        p {
-            text-align: center;
-            margin-top: 0.5rem;
-            margin-bottom: 4rem;
-        }
-
-        .amount {
-            margin-top: 3rem;
-        }
     }
 
     @media (min-width: 420px) {

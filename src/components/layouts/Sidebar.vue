@@ -43,8 +43,8 @@
                 <template #trigger>
                     <button
                         class="nq-button-s inverse"
-                        :disabled="$route.name !== 'root' || hasActiveSwap"
-                        @click="$router.push('/buy?sidebar=true')"
+                        :disabled="hasActiveSwap"
+                        @click="openModal('buy')"
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Buy') }}</button>
                 </template>
@@ -62,9 +62,8 @@
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"
-                        :disabled="$route.name !== 'root' || $config.oasis.underMaintenance || !canUseSwaps
-                            || hasActiveSwap"
-                        @click="$router.push('/sell-crypto?sidebar=true')"
+                        :disabled="$config.oasis.underMaintenance || !canUseSwaps || hasActiveSwap"
+                        @click="openModal('sell-crypto')"
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Sell') }}</button>
                 </template>
@@ -100,10 +99,9 @@
         >
             <template #trigger>
                 <button
-                    :disabled="$route.name !== 'root' || activatedCurrencies.length <= 1 || !hasBalance
-                        || !canUseSwaps || hasActiveSwap"
+                    :disabled="activatedCurrencies.length <= 1 || !hasBalance || !canUseSwaps || hasActiveSwap"
                     class="nq-button-s inverse"
-                    @click="$router.push('/swap?sidebar=true')"
+                    @click="openModal('swap')"
                     @mousedown.prevent="hideTooltips"
                 >{{ $t('Swap') }}</button>
             </template>
@@ -173,12 +171,30 @@ export default defineComponent({
         const { config } = useConfig();
         const { isMobile } = useWindowSize();
 
-        function navigateTo(path: string) {
+        async function navigateTo(path: string) {
             if (isMobile.value) {
-                context.root.$router.replace(path);
-            } else {
-                context.root.$router.push(path).catch(() => { /* ignore */ });
+                return context.root.$router.replace(path);
             }
+            return context.root.$router.push(path).catch(() => { /* ignore */ });
+        }
+
+        async function openModal(routeName: string) {
+            // Each modal is expected to be sitting above a specific parent route / background page. If we're not
+            // currently on that route, navigate to it first, such that the modal can be closed later by a simple back
+            // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
+            // current route, but with the modal still open on top.
+            const modalRoute = context.root.$router.resolve({ name: routeName }).route;
+            const expectedParentRoute = modalRoute.matched.find(({ name }) => !!name && name !== routeName);
+            if (expectedParentRoute && context.root.$route.name !== expectedParentRoute.name) {
+                // Don't keep the sidebar open for this navigation on mobile because closing it would be a back
+                // navigation on the parent page, leading back to the route we're currently on, instead of closing the
+                // sidebar.
+                await navigateTo(expectedParentRoute.path);
+            }
+            return context.root.$router.push({
+                name: routeName,
+                query: { sidebar: 'true' }, // on mobile keep sidebar open in background
+            }).catch(() => { /* ignore */ });
         }
 
         // Note: config.environment should never change at runtime.
@@ -244,6 +260,7 @@ export default defineComponent({
             canUseSwaps,
             updateAvailable,
             hideTooltips,
+            openModal,
         };
     },
     components: {

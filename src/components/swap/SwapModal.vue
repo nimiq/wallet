@@ -187,13 +187,19 @@
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="swap.contracts[swap.from.asset].htlc.address"
+                    :fromAddress="'contract' in swap.contracts[swap.from.asset].htlc
+                        ? swap.contracts[swap.from.asset].htlc.contract
+                        : swap.contracts[swap.from.asset].htlc.address"
                     :toAsset="swap.to.asset"
                     :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="swap.contracts[swap.to.asset].htlc.address"
+                    :toAddress="'contract' in swap.contracts[swap.to.asset].htlc
+                        ? swap.contracts[swap.to.asset].htlc.contract
+                        : swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
+                    :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
                     :switchSides="swap.from.asset === rightAsset"
+                    :stateEnteredAt="swap.stateEnteredAt"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 />

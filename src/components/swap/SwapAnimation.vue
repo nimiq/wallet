@@ -4,6 +4,7 @@
             'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING,
             'to-funding-delay': toFundingDurationMins && state === SwapState.AWAIT_INCOMING,
             'to-limit-exceeded': oasisLimitExceeded && toAsset === SwapAsset.EUR,
+            'from-funding-delay': fromFundingDurationMins && state === SwapState.CREATE_OUTGOING,
         }"
     >
         <div class="success-background flex-column nq-green-bg" :class="{'visible': state === SwapState.COMPLETE}">
@@ -78,6 +79,20 @@
         </transition>
 
         <transition name="fade">
+            <div v-if="fromFundingDurationMins && state === SwapState.CREATE_OUTGOING"
+                class="from-funding-delay-notice"
+            >
+                <h2 class="nq-h2">
+                    {{ $t('Setting up the {currency} side of the swap.', { currency: fromAsset} ) }}<br>
+                    {{ $t('This might take up to {min} minutes.', { min: fromFundingDurationMins} ) }}
+                </h2>
+                <p class="nq-gray flex-row action-row">
+                    <span class="timer">{{ timer }}</span>
+                </p>
+            </div>
+        </transition>
+
+        <transition name="fade">
             <div v-if="oasisLimitExceeded && toAsset === SwapAsset.EUR"
                 class="to-limit-exceeded-container flex-column"
             >
@@ -107,6 +122,7 @@
                 :preferredPosition="`${
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
+                        || (fromFundingDurationMins && state === SwapState.CREATE_OUTGOING)
                         || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
                     ? 'bottom'
                     : 'top'
@@ -154,7 +170,10 @@
                         </g>
                         <g class="logo" fill="none" opacity="1">
                             <path fill="currentColor" d="M84.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z"/>
-                            <image :href="leftAsset === SwapAsset.BTC ? BitcoinSvg : (bankLogo || BankSvg)" x="33" y="22" width="52" height="52" />
+                            <image
+                                :href="leftAsset === SwapAsset.BTC ? BitcoinSvg : leftAsset === SwapAsset.USDC ? UsdcSvg : (bankLogo || BankSvg)"
+                                x="33" y="22" width="52" height="52"
+                            />
                         </g>
                     </svg>
                     <div class="flex-row swap-amount">
@@ -183,6 +202,7 @@
                 :preferredPosition="`${
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
+                        || (fromFundingDurationMins && state === SwapState.CREATE_OUTGOING)
                         || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
                     ? 'bottom'
                     : 'top'
@@ -208,7 +228,10 @@
                         </g>
                         <g class="logo" fill="none" opacity="1">
                             <path :fill="rightAsset === SwapAsset.EUR ? bankColor : 'currentColor'" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
-                            <image :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : (bankLogo || BankSvg)" x="92" y="22" width="52" height="52" />
+                            <image
+                                :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : rightAsset === SwapAsset.USDC ? UsdcSvg : (bankLogo || BankSvg)"
+                                x="92" y="22" width="52" height="52"
+                            />
                         </g>
                     </svg>
                     <svg v-else xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
@@ -334,6 +357,7 @@ import { SwapState } from '../../stores/Swaps';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
 import BitcoinSvg from './animation/bitcoin.svg';
+import UsdcSvg from './animation/usdc.svg';
 import BankSvg from './animation/bank.svg';
 import MessageTransition from '../MessageTransition.vue';
 
@@ -395,6 +419,10 @@ export default defineComponent({
             type: Number,
             default: 0,
         },
+        fromFundingDurationMins: {
+            type: Number,
+            default: 0,
+        },
         manualFunding: {
             type: Boolean,
             default: false,
@@ -435,6 +463,7 @@ export default defineComponent({
                     return `var(--${className.replace('nq-', 'nimiq-')})`;
                 }
                 case SwapAsset.BTC: return '#f7931a';
+                case SwapAsset.USDC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
                 default: return '';
             }
@@ -453,6 +482,7 @@ export default defineComponent({
                     return `var(--${className.replace('nq-', 'nimiq-')})`;
                 }
                 case SwapAsset.BTC: return '#f7931a';
+                case SwapAsset.USDC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
                 default: return '';
             }
@@ -462,6 +492,7 @@ export default defineComponent({
             switch (asset) {
                 case SwapAsset.NIM: return 'Nimiq';
                 case SwapAsset.BTC: return 'Bitcoin';
+                case SwapAsset.USDC: return 'USD Coin';
                 case SwapAsset.EUR: return 'Euro';
                 default: throw new Error(`Invalid asset ${asset}`);
             }
@@ -488,7 +519,10 @@ export default defineComponent({
 
             state.value = stateChanges.shift()!;
 
-            if (state.value === SwapState.AWAIT_INCOMING && props.toFundingDurationMins) {
+            if (
+                (state.value === SwapState.AWAIT_INCOMING && props.toFundingDurationMins)
+                || (state.value === SwapState.CREATE_OUTGOING && props.fromFundingDurationMins)
+            ) {
                 startTimer();
             } else {
                 stopTimer();
@@ -600,6 +634,7 @@ export default defineComponent({
             explorerAddrLink,
             SwapAsset,
             BitcoinSvg,
+            UsdcSvg,
             BankSvg,
             BottomNoticeMessage,
             bottomNoticeMsg,
@@ -1176,6 +1211,7 @@ export default defineComponent({
 
 .manual-funding,
 .to-funding-delay,
+.from-funding-delay,
 .to-limit-exceeded {
     .animation {
         --upscale: 1.58;
@@ -1253,6 +1289,37 @@ export default defineComponent({
     }
 }
 
+.from-funding-delay {
+    .nq-card-header,
+    .animation .spinner,
+    .animation.right-to-left .left,
+    .animation.left-to-right .right,
+    .animation.right-to-left .right .swap-amount,
+    .animation.left-to-right .left .swap-amount {
+        opacity: 0;
+        pointer-events: none;
+        animation: none;
+    }
+
+    .animation {
+        &.right-to-left {
+            transform: translate(-28.75rem, -18rem) scale(var(--upscale));
+
+            .tooltip ::v-deep .tooltip-box {
+                transform-origin: 13rem 4.25rem;
+            }
+        }
+
+        &.left-to-right {
+            transform: translate(28.75rem, -18rem) scale(var(--upscale));
+
+            .tooltip ::v-deep .tooltip-box {
+                transform-origin: 5rem 4.25rem;
+            }
+        }
+    }
+}
+
 .to-limit-exceeded {
     .nq-card-footer {
         opacity: 0 !important;
@@ -1283,6 +1350,7 @@ export default defineComponent({
 }
 
 .to-funding-delay-notice,
+.from-funding-delay-notice,
 .to-limit-exceeded-container {
     text-align: center;
     justify-content: space-between;
@@ -1341,6 +1409,7 @@ export default defineComponent({
 
 .manual-funding-instructions,
 .to-funding-delay-notice,
+.from-funding-delay-notice,
 .to-limit-exceeded-container {
     position: absolute;
     bottom: 0;
@@ -1348,7 +1417,8 @@ export default defineComponent({
     right: 0;
 }
 
-.to-funding-delay-notice {
+.to-funding-delay-notice,
+.from-funding-delay-notice {
     bottom: 15rem;
     height: 19rem;
 }

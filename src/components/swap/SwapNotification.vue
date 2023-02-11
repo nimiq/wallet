@@ -64,6 +64,8 @@ import {
     SettlementStatus,
 } from '@nimiq/oasis-api';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
+import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
+import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
@@ -74,6 +76,11 @@ import { useConfig } from '../../composables/useConfig';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { getNetworkClient } from '../../network';
 import Time from '../../lib/Time';
+import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import { getPolygonClient, sendTransaction as sendPolygonTransaction } from '../../ethers';
+import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { USDC_HTLC_CONTRACT_ABI } from '../../lib/usdc/ContractABIs';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -139,8 +146,9 @@ export default defineComponent({
                         break;
                     }
                     case SwapAsset.BTC:
+                    case SwapAsset.USDC:
                     case SwapAsset.EUR: {
-                        const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.EUR>);
+                        const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.USDC | SwapAsset.EUR>);
                         if (timeout <= timestamp) return true;
                         remainingTimes.push(timeout - timestamp);
                         break;
@@ -198,7 +206,7 @@ export default defineComponent({
         const processingError = computed(() => {
             if (currentError.value) return currentError.value;
 
-            const consensusErrorMsg = (chain: 'Nimiq' | 'Bitcoin') => `
+            const consensusErrorMsg = (chain: 'Nimiq' | 'Bitcoin' | 'Polygon') => `
                 ${context.root.$t('No connection to {chain} network.', { chain })}
                 ${context.root.$t('If this error persists, check your internet connection or '
                     + 'reload the page to reconnect.')}
@@ -214,6 +222,9 @@ export default defineComponent({
                     if (swap.to.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
                         return consensusErrorMsg('Bitcoin');
                     }
+                    if (swap.to.asset === SwapAsset.USDC && useUsdcNetworkStore().state.consensus !== 'established') {
+                        return consensusErrorMsg('Polygon');
+                    }
                 }
 
                 if ([SwapState.CREATE_OUTGOING, SwapState.AWAIT_SECRET].includes(swap.state)) {
@@ -222,6 +233,9 @@ export default defineComponent({
                     }
                     if (swap.from.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
                         return consensusErrorMsg('Bitcoin');
+                    }
+                    if (swap.from.asset === SwapAsset.USDC && useUsdcNetworkStore().state.consensus !== 'established') {
+                        return consensusErrorMsg('Polygon');
                     }
                 }
             }
@@ -234,10 +248,34 @@ export default defineComponent({
             updateSwap({ error });
         });
 
-        async function getClient(asset: SwapAsset): Promise<Client<SwapAsset>> {
+        async function getClient(asset: SwapAsset, swap: ActiveSwap): Promise<Client<SwapAsset>> {
             switch (asset) {
                 case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
+                case SwapAsset.USDC: {
+                    const client = await getPolygonClient();
+
+                    const { timeout } = swap.contracts.USDC!;
+                    const secondsUntilTimeout = timeout - Math.floor(Date.now() / 1e3);
+                    const blocksUntilTimeout = Math.ceil((secondsUntilTimeout / 60) * POLYGON_BLOCKS_PER_MINUTE);
+
+                    const currentHeight = useUsdcNetworkStore().state.height;
+                    const blockHeightAtTimeout = currentHeight + blocksUntilTimeout;
+                    const blocksOfValidity = 3 /* hours */ * 60 * POLYGON_BLOCKS_PER_MINUTE;
+                    const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
+
+                    const htlcContract = new client.ethers.Contract(
+                        config.usdc.htlcContract,
+                        USDC_HTLC_CONTRACT_ABI,
+                        client.provider,
+                    );
+
+                    return {
+                        htlcContract,
+                        startBlock: blockHeightAtStart,
+                        endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
+                    };
+                }
                 case SwapAsset.EUR: return { getHtlc, settleHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
@@ -259,6 +297,7 @@ export default defineComponent({
 
             const swapsNim = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.NIM);
             const swapsBtc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.BTC);
+            const swapsUsdc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.USDC);
             // const swapsEur = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.EUR);
 
             // Await Nimiq and Bitcoin consensus
@@ -270,11 +309,14 @@ export default defineComponent({
                 const electrum = await getElectrumClient();
                 await electrum.waitForConsensusEstablished();
             }
+            if (swapsUsdc && useUsdcNetworkStore().state.consensus !== 'established') {
+                await getPolygonClient();
+            }
 
             swapHandler = new SwapHandler(
                 activeSwap.value as unknown as GenericSwap<SwapAsset, SwapAsset>,
-                await getClient(activeSwap.value!.from.asset as SwapAsset),
-                await getClient(activeSwap.value!.to.asset as SwapAsset),
+                await getClient(activeSwap.value!.from.asset as SwapAsset, activeSwap.value),
+                await getClient(activeSwap.value!.to.asset as SwapAsset, activeSwap.value),
             );
 
             window.addEventListener('beforeunload', onUnload);
@@ -382,6 +424,33 @@ export default defineComponent({
                             stateEnteredAt: Date.now(),
                             fundingTx,
                         });
+                    } else if (activeSwap.value!.from.asset === SwapAsset.USDC) {
+                        // Start listener
+                        const fundingTxPromise = swapHandler.awaitOutgoing((/* event */) => {
+                            // const openEvent = event as PolygonEvent<PolygonEventType.OPEN>;
+                            // ...
+                        });
+
+                        const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
+                        const { relayData, ...relayRequest } = request;
+
+                        // TODO: Handle failure
+                        const tx = await sendPolygonTransaction(
+                            { request: relayRequest as ForwardRequest, relayData },
+                            signature,
+                            relayUrl,
+                        );
+                        // This is an outgoing transfer, so it won't be detected automatically.
+                        // We need to add it to the store ourselves.
+                        useUsdcTransactionsStore().addTransactions([tx]);
+
+                        const fundingTx = await fundingTxPromise as PolygonEvent<PolygonEventType.OPEN>;
+
+                        updateSwap({
+                            state: SwapState.AWAIT_SECRET,
+                            stateEnteredAt: Date.now(),
+                            fundingTx,
+                        });
                     } else {
                         // Send HTLC funding transaction
                         try {
@@ -453,6 +522,30 @@ export default defineComponent({
                     });
                 }
                 case SwapState.SETTLE_INCOMING: {
+                    if (activeSwap.value.to.asset === SwapAsset.USDC) {
+                        // Start listener
+                        const settlementTxPromise = swapHandler.awaitIncomingConfirmation();
+
+                        const { request, signature, relayUrl } = JSON.parse(activeSwap.value.settlementSerializedTx!);
+                        const { relayData, ...relayRequest } = request;
+
+                        // TODO: Handle failure
+                        await sendPolygonTransaction(
+                            { request: relayRequest as ForwardRequest, relayData },
+                            signature,
+                            relayUrl,
+                            `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
+                        );
+
+                        const settlementTx = await settlementTxPromise as PolygonEvent<PolygonEventType.REDEEM>;
+
+                        updateSwap({
+                            state: SwapState.COMPLETE,
+                            stateEnteredAt: Date.now(),
+                            settlementTx,
+                        });
+                    }
+
                     try {
                         const settlementTx = await swapHandler.settleIncoming(
                             activeSwap.value!.settlementSerializedTx!,

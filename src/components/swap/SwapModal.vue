@@ -248,6 +248,7 @@ import {
 import { captureException } from '@sentry/vue';
 import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
+import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -1648,6 +1649,20 @@ export default defineComponent({
                         '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925',
                         `${confirmedSwap.hash}`,
                     );
+                }
+
+                // In case of a Polygon signed message, we need to restructre the `request` format
+                if (confirmedSwap.to.asset === 'USDC') {
+                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
+                    const { relayData, ...relayRequest } = request;
+                    settlementSerializedTx = JSON.stringify({
+                        request: {
+                            request: relayRequest as ForwardRequest,
+                            relayData,
+                        },
+                        signature,
+                        relayUrl,
+                    });
                 }
 
                 // Send redeem transaction to watchtower

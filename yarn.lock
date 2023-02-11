@@ -1815,9 +1815,9 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.5.2", "@nimiq/fastspot-api@nimiq/fastspot-api#build/usdc":
+"@nimiq/fastspot-api@^1.5.2", "@nimiq/fastspot-api@nimiq/fastspot-api#69440f47fdaf52552b190f10d52c11736d0d685c":
   version "1.6.1"
-  resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/7ab8ed8491a95381ba73b68fbd3ad8cdee636de1"
+  resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/69440f47fdaf52552b190f10d52c11736d0d685c"
 
 "@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?bfddf024f4148226be9c4ea44d27c8d0c647ca9e&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
   version "1.6.1"
@@ -1836,10 +1836,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.2.0-beta.0":
-  version "1.2.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.2.0-beta.0.tgz#56dc590839c2a25e5613ba0d704b98709e056a4f"
-  integrity sha512-NfthZPy2aZBovI/SEJBjZDUX+DJkextC1s4JpH6yhGMpwH8c7Kd0hAuWYzXhHT5BWTUbL7YxAHWVv8eITqQ7NA==
+"@nimiq/libswap@^1.2.0-beta.1":
+  version "1.2.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.2.0-beta.1.tgz#3c32d27a0aa326aa58e5e451ffaabf19fd90cb1e"
+  integrity sha512-l2OB7V8U+LRNNSdQ53Tia64WDNsoIg2nvfzT9d3avXePWt337lbOfQ6mVj/wMs60AiKg5H/ghpggh07hiukDgQ==
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"

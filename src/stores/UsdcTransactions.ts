@@ -9,6 +9,29 @@ import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Con
 // import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { UsdcAddressInfo, useUsdcAddressStore } from './UsdcAddress';
 
+type HtlcOpenEvent = {
+    name: 'Open',
+    id: string,
+    token: string,
+    amount: number,
+    recipient: string,
+    hash: string,
+    timeout: number,
+};
+
+type HtlcRedeemEvent = {
+    name: 'Redeem',
+    id: string,
+    secret: string,
+};
+
+type HtlcRefundEvent = {
+    name: 'Refund',
+    id: string,
+};
+
+export type HtlcEvent = HtlcOpenEvent | HtlcRedeemEvent | HtlcRefundEvent;
+
 // This is a simplified transaction, only storing the token transfer.
 // It is NOT a full Ethereum/Polygon transaction.
 // Might be better named `UsdcTokenTransfer`...
@@ -19,6 +42,7 @@ export type Transaction = {
     recipient: string,
     value: number,
     fee?: number,
+    event?: HtlcEvent,
     state: TransactionState,
     blockHeight?: number,
     timestamp?: number,

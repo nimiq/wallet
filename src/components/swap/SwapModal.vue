@@ -300,7 +300,7 @@ export default defineComponent({
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
 
-        const leftAsset = ref(SwapAsset.BTC);
+        const leftAsset = ref(SwapAsset.NIM);
         const rightAsset = ref(SwapAsset.USDC);
 
         const fixedAsset = ref<SwapAsset>(leftAsset.value);

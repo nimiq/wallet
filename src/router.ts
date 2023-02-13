@@ -10,6 +10,7 @@ import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
 
 import { AccountType, useAccountStore } from './stores/Account';
+import { WELCOME_2_MODAL_LOCALSTORAGE_KEY, WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 
 // Main views
 const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
@@ -455,7 +456,16 @@ router.beforeEach((to, from, next) => {
         hasUsdcAddresses: { value: isUsdcActivated },
     } = useAccountStore();
     const isLegacyAccount = !!activeAccount && activeAccount.type === AccountType.LEGACY;
+    const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
+    const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
+
     if (!requiresActivatedUsdc || isUsdcActivated) {
+        if (!welcomeModalAlreadyShown || !welcome2ModalAlreadyShown) {
+            next({
+                name: 'welcome',
+                replace: true,
+            });
+        }
         // can continue to the requested view
         next();
     } else if (isLegacyAccount) {

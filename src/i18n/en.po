@@ -2,10 +2,6 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/WelcomeModal.vue:147
-msgid "‘Digital gold’, the original crypto"
-msgstr ""
-
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
 msgstr ""
@@ -385,7 +381,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:38
+#: src/components/layouts/Sidebar.vue:49
 msgid "Buy"
 msgstr ""
 
@@ -441,7 +437,6 @@ msgid "Buy with Simplex"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:207
-#: src/components/modals/UsdcSendModal.vue:187
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
@@ -492,7 +487,7 @@ msgstr ""
 msgid "Cashlink to {address}"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:102
+#: src/components/modals/WelcomeModal.vue:110
 msgid "Censorship-resistant network connection"
 msgstr ""
 
@@ -506,7 +501,7 @@ msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:57
+#: src/components/modals/UsdcSendModal.vue:56
 msgid "Choose a Recipient"
 msgstr ""
 
@@ -548,15 +543,18 @@ msgid "Close"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
-#: src/components/modals/WelcomeModal.vue:118
 msgid "Coming soon"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:237
+#: src/components/modals/WelcomeModal.vue:113
+msgid "COMING SOON"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:245
 msgid "Comparably centralized"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:177
+#: src/components/modals/WelcomeModal.vue:179
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
@@ -623,7 +621,7 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/SendModal.vue:88
-#: src/components/modals/UsdcSendModal.vue:81
+#: src/components/modals/UsdcSendModal.vue:80
 msgid "Continue"
 msgstr ""
 
@@ -688,7 +686,7 @@ msgstr ""
 msgid "Created yesterday"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:117
+#: src/components/modals/WelcomeModal.vue:112
 msgid "Creates staking rewards"
 msgstr ""
 
@@ -713,7 +711,7 @@ msgstr ""
 #: src/components/modals/WelcomeModal.vue:10
 msgid ""
 "Different currencies can do different things.\n"
-"Use value your way and make the most of it."
+"Use them your way and make the most of it."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:281
@@ -727,7 +725,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:335
+#: src/components/modals/UsdcSendModal.vue:337
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -788,7 +786,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:568
+#: src/components/modals/UsdcSendModal.vue:546
 msgid "Edit transaction"
 msgstr ""
 
@@ -801,7 +799,7 @@ msgid "Enter account holder name"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:24
-#: src/components/modals/UsdcSendModal.vue:23
+#: src/components/modals/UsdcSendModal.vue:22
 msgid "Enter address"
 msgstr ""
 
@@ -824,7 +822,7 @@ msgstr ""
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:329
+#: src/components/modals/WelcomeModal.vue:338
 msgid "Enter the wallet"
 msgstr ""
 
@@ -869,7 +867,6 @@ msgid "Export your history"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:455
-#: src/components/modals/UsdcSendModal.vue:416
 msgid "express"
 msgstr ""
 
@@ -899,6 +896,8 @@ msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:163
+#: src/components/modals/UsdcSendModal.vue:159
+#: src/components/modals/UsdcSendModal.vue:174
 msgid "fee"
 msgstr ""
 
@@ -933,7 +932,7 @@ msgstr ""
 msgid "Finalizing swap"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:130
+#: src/components/modals/WelcomeModal.vue:124
 msgid ""
 "For a decentralized\n"
 "store of value"
@@ -949,14 +948,13 @@ msgstr ""
 msgid "For beginners"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:69
+#: src/components/modals/WelcomeModal.vue:57
 msgid ""
 "For fast and low-fee\n"
 "crypto payments"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:445
-#: src/components/modals/UsdcSendModal.vue:406
 msgid "free"
 msgstr ""
 
@@ -1000,7 +998,7 @@ msgstr ""
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
 #: src/components/modals/UsdcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:325
+#: src/components/modals/WelcomeModal.vue:334
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
 msgstr ""
@@ -1013,7 +1011,7 @@ msgstr ""
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:162
+#: src/components/modals/WelcomeModal.vue:178
 msgid "Highest degree of decentralization"
 msgstr ""
 
@@ -1118,7 +1116,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:167
+#: src/components/modals/UsdcSendModal.vue:184
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1160,7 +1158,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:62
+#: src/components/layouts/Sidebar.vue:77
 #: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr ""
@@ -1264,7 +1262,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:71
+#: src/components/modals/UsdcSendModal.vue:70
 msgid "Name this contact..."
 msgstr ""
 
@@ -1277,7 +1275,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:118
+#: src/components/layouts/Sidebar.vue:134
 msgid "Network"
 msgstr ""
 
@@ -1332,8 +1330,8 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:67
-#: src/components/layouts/Sidebar.vue:98
+#: src/components/layouts/Sidebar.vue:114
+#: src/components/layouts/Sidebar.vue:81
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
 msgstr ""
@@ -1362,7 +1360,7 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:56
+#: src/components/layouts/Sidebar.vue:71
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take some time. Please try again later."
 msgstr ""
@@ -1399,11 +1397,11 @@ msgstr ""
 msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:326
+#: src/components/modals/WelcomeModal.vue:335
 msgid "Payments, got it"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:222
+#: src/components/modals/WelcomeModal.vue:244
 msgid "Pegged 1:1 to the U.S. Dollar"
 msgstr ""
 
@@ -1438,11 +1436,11 @@ msgstr ""
 msgid "Performing swap {progress}/5"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:93
+#: src/components/layouts/Sidebar.vue:109
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:13
+#: src/components/layouts/Sidebar.vue:17
 msgid "Please do not use your Mainnet accounts!"
 msgstr ""
 
@@ -1463,12 +1461,10 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:102
+#: src/components/layouts/Sidebar.vue:118
+#: src/components/layouts/Sidebar.vue:52
+#: src/components/layouts/Sidebar.vue:85
 msgid "Please wait for your current swap to finish before starting a new one."
-msgstr ""
-
-#: src/components/layouts/Sidebar.vue:65
-msgid "Please wait for your current swap to finish before starting a new swap."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:209
@@ -1608,13 +1604,13 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:23
 #: src/components/modals/SendModal.vue:39
-#: src/components/modals/UsdcSendModal.vue:40
+#: src/components/modals/UsdcSendModal.vue:39
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:567
+#: src/components/modals/UsdcSendModal.vue:545
 msgid "Retry"
 msgstr ""
 
@@ -1658,7 +1654,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:53
+#: src/components/layouts/Sidebar.vue:68
 msgid "Sell"
 msgstr ""
 
@@ -1701,7 +1697,7 @@ msgstr ""
 #: src/components/AmountMenu.vue:23
 #: src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:169
+#: src/components/modals/UsdcSendModal.vue:186
 msgid "Send all"
 msgstr ""
 
@@ -1717,8 +1713,8 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:5
 #: src/components/modals/SendModal.vue:14
 #: src/components/modals/SendModal.vue:192
-#: src/components/modals/UsdcSendModal.vue:13
-#: src/components/modals/UsdcSendModal.vue:179
+#: src/components/modals/UsdcSendModal.vue:12
+#: src/components/modals/UsdcSendModal.vue:196
 msgid "Send Transaction"
 msgstr ""
 
@@ -1728,7 +1724,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:564
+#: src/components/modals/UsdcSendModal.vue:542
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1753,11 +1749,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:601
+#: src/components/modals/UsdcSendModal.vue:579
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:597
+#: src/components/modals/UsdcSendModal.vue:575
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -1781,8 +1777,8 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:101
 #: src/components/modals/SendModal.vue:89
-#: src/components/modals/UsdcSendModal.vue:82
-#: src/components/modals/UsdcSendModal.vue:94
+#: src/components/modals/UsdcSendModal.vue:81
+#: src/components/modals/UsdcSendModal.vue:93
 msgid "Set Amount"
 msgstr ""
 
@@ -1802,7 +1798,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:126
+#: src/components/layouts/Sidebar.vue:142
 msgid "Settings"
 msgstr ""
 
@@ -1843,8 +1839,8 @@ msgstr ""
 msgid "Show Recovery Words"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:314
-msgid "Show values in {currency}"
+#: src/components/modals/WelcomeModal.vue:322
+msgid "Show values as {currency}"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:171
@@ -1862,7 +1858,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:613
+#: src/components/modals/UsdcSendModal.vue:591
 msgid "Something went wrong"
 msgstr ""
 
@@ -1871,7 +1867,6 @@ msgid "Something went wrong with your transaction"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:205
-#: src/components/modals/UsdcSendModal.vue:185
 msgid "Speed up your Transaction"
 msgstr ""
 
@@ -1879,11 +1874,7 @@ msgstr ""
 msgid "Stability"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:207
-msgid "Stability mixed with self-custody"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:328
+#: src/components/modals/WelcomeModal.vue:337
 msgid "Stable like USD, got it"
 msgstr ""
 
@@ -1896,21 +1887,22 @@ msgid "Staking"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:450
-#: src/components/modals/UsdcSendModal.vue:411
 msgid "standard"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:327
+#: src/components/modals/WelcomeModal.vue:336
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:84
+#: src/components/modals/WelcomeModal.vue:109
+#: src/components/modals/WelcomeModal.vue:177
+#: src/components/modals/WelcomeModal.vue:243
 msgid "Super low fees, super fast payments"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:252
-#: src/components/layouts/Sidebar.vue:90
+#: src/components/layouts/Sidebar.vue:106
 #: src/components/modals/BtcTransactionModal.vue:490
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:519
@@ -1988,6 +1980,11 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
+#: src/components/modals/UsdcSendModal.vue:164
+#: src/components/modals/UsdcSendModal.vue:178
+msgid "The fee covers network costs to ensure secure transfer of USDC."
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:618
 #: src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
@@ -2020,7 +2017,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:124
-#: src/components/modals/UsdcSendModal.vue:113
+#: src/components/modals/UsdcSendModal.vue:112
 msgid "The sender and recipient cannot be identical."
 msgstr ""
 
@@ -2045,7 +2042,7 @@ msgid "There's a problem"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:8
-msgid "Think value, not currency"
+msgid "Think features, not currency"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:202
@@ -2291,8 +2288,8 @@ msgstr ""
 msgid "You are a part of the Nimiq Blockchain."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:12
-msgid "You are connecting to the Nimiq and Bitcoin Testnets."
+#: src/components/layouts/Sidebar.vue:16
+msgid "You are connecting to the Nimiq, Bitcoin and Polygon (USDC) Testnets."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
@@ -2303,7 +2300,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:95
+#: src/components/layouts/Sidebar.vue:111
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -2336,7 +2333,7 @@ msgstr ""
 msgid "You will send {amount} NIM"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:163
+#: src/components/modals/UsdcSendModal.vue:170
 msgid "You will send {amount} USDC"
 msgstr ""
 
@@ -2372,8 +2369,8 @@ msgstr ""
 msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:68
-#: src/components/layouts/Sidebar.vue:99
+#: src/components/layouts/Sidebar.vue:115
+#: src/components/layouts/Sidebar.vue:82
 #: src/components/modals/BuyOptionsModal.vue:82
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""

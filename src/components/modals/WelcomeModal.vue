@@ -321,25 +321,28 @@
         </PageBody>
 
         <PageFooter>
-            <button class="nq-button light-blue" @click="onButtonClick" @mousedown.prevent>
+            <button class="nq-button light-blue" :class="{'mb-40': page === 1}"
+                @click="onButtonClick" @mousedown.prevent>
                 <template v-if="page === 1">{{ $t('Got it') }}</template>
                 <template v-if="page === 2"> {{ $t('Payments, got it') }}</template>
                 <template v-if="page === 3"> {{ $t('Store of value, got it') }}</template>
                 <template v-if="page === 4"> {{ $t('Stable like USD, got it') }}</template>
                 <template v-if="page === 5"> {{ $t('Enter the wallet') }}</template>
             </button>
-            <div class="flex-row flags">
-                <Tooltip v-for="lang in Languages" :key="lang.code"
-                    :preferredPosition="isMobile ? 'top' : 'bottom'"
-                    :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
-                    @click="setLanguage(lang.code)"
-                >
-                    <img slot="trigger" :src="require(`../../assets/languages/${lang.code}.svg`)"
-                        class="flag" :class="{'active': settings$.language === lang.code}"
-                        :alt="`Flag-${lang.code.toUpperCase()}`">
-                    {{ lang.name }}
-                </Tooltip>
-            </div>
+            <transition name="fadeY">
+                <div class="flex-row flags" v-if="page === 1">
+                    <Tooltip v-for="(lang, i) in Languages" :key="lang.code"
+                        :preferredPosition="isMobile ? 'top' : 'bottom'"
+                        :styles="{'white-space': 'nowrap', 'padding': '0.75rem 1.25rem'}"
+                        @click="setLanguage(lang.code)"
+                    >
+                        <img slot="trigger" :src="require(`../../assets/languages/${lang.code}.svg`)"
+                            class="flag" :class="{'active': settings$.language === lang.code}"
+                            :alt="`Flag-${lang.code.toUpperCase()}`" :style="`--index: ${i}`">
+                        {{ lang.name }}
+                    </Tooltip>
+                </div>
+            </transition>
         </PageFooter>
     </Modal>
 </template>
@@ -545,6 +548,7 @@ export default defineComponent({
     .modal {
         font-size: var(--body-size);
         font-weight: 600;
+        overflow: hidden;
     }
 
     .modal ::v-deep .close-button {
@@ -554,7 +558,6 @@ export default defineComponent({
     .page-header {
         white-space: pre-line;
         padding-bottom: 2.5rem;
-        overflow: hidden;
 
         .nq-notice {
             margin-top: 1.5rem;
@@ -1067,15 +1070,54 @@ export default defineComponent({
     }
 
     .page-footer {
+        position: relative;
+
         .nq-button {
             margin-top: 0 !important;
+            transition: margin 0.5s var(--nimiq-ease);
+            transition-delay: 200ms;
+
+            &.mb-40 {
+                transition-delay: 50ms;
+                margin-bottom: 40px !important;
+            }
         }
 
         .flags {
+            position: absolute;
+            bottom: 0;
+            width: calc(100% - 16px);
+            display: flex;
             justify-content: center;
             align-items: center;
             margin-top: -1rem;
             margin-bottom: 1rem;
+        }
+
+        .fadeY-enter-active,
+        .fadeY-leave-active {
+            will-change: opacity, transform;
+            transition: {
+                property: opacity, transform;
+                duration: 500ms;
+                timing-function: var(--nimiq-ease);
+            }
+        }
+
+        .fadeY-enter-active {
+            z-index: 2;
+        }
+
+        .fadeY-leave,
+        .fadeY-enter-to {
+            transition-delay: 700ms;
+            transform: translateY(0);
+        }
+
+        .fadeY-enter,
+        .fadeY-leave-to {
+            opacity: 0;
+            transform: translateY(50%);
         }
 
         .tooltip {

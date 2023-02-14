@@ -24,6 +24,7 @@
         <div class="identicon">
             <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
             <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
+            <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
@@ -93,6 +94,7 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import UsdcIcon from './icons/UsdcIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { useContactsStore } from '../stores/Contacts';
@@ -232,6 +234,10 @@ export default defineComponent({
                     return context.root.$t('Bitcoin') as string;
                 }
 
+                if (swapData.value.asset === SwapAsset.USDC) {
+                    return context.root.$t('USD Coin') as string;
+                }
+
                 if (swapData.value.asset === SwapAsset.EUR) {
                     return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
                 }
@@ -309,6 +315,7 @@ export default defineComponent({
         UnclaimedCashlinkIcon,
         // HistoricValueIcon,
         BitcoinIcon,
+        UsdcIcon,
         BankIcon,
         SwapSmallIcon,
         TransactionListOasisPayoutStatus,
@@ -402,6 +409,10 @@ svg {
 
             &.bitcoin {
                 color: var(--bitcoin-orange);
+            }
+
+            &.usdc {
+                color: var(--usdc-blue);
             }
         }
 

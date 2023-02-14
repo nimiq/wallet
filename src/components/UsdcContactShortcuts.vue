@@ -50,18 +50,17 @@ export default defineComponent({
         width: calc(100% + 2rem);
         margin-left: -1rem;
         margin-right: -1rem;
+        display: grid;
+        grid-template-columns: auto auto 1fr 1fr 1fr;
     }
 
     .avatar-button {
-        margin-right: 0.25rem;
-        width: 0;
-        flex-grow: 1;
+        margin-right: 0.5rem;
 
         &:last-child {
             margin-right: 0;
         }
     }
-
     .contact-list-button {
         align-items: stretch;
         border-radius: 0.75rem;
@@ -104,7 +103,8 @@ export default defineComponent({
 
     .separator {
         width: 0.25rem;
-        margin: 0 0.75rem;
+        margin-left: 0.75rem;
+        margin-right: 1.75rem;
         flex-shrink: 0;
         box-shadow: inset 1.5px 0 0 var(--text-14);
     }

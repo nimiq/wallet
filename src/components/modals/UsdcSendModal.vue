@@ -155,35 +155,44 @@
                                 xmlns="http://www.w3.org/2000/svg">
                                 <circle data-v-3d79c726="" cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
                             </svg>
-                            <i18n tag="span" path="< {amount} fee" class="fee">
-                                <template #amount>
-                                    <FiatAmount :amount="roundedUpFiatFee" :hideDecimals="false"
-                                        :currency="fiatCurrency"/>
-                                </template>
-                            </i18n>
-                            <Tooltip class="info-tooltip" preferredPosition="bottom left">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                <div>
-                                    {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
-                                </div>
-                            </Tooltip>
-                        </span>
-                        <div v-else key="usdc-amount" class="usdc-amount">
-                            <span>
-                                {{ $t('You will send {amount} USDC', { amount: amount / 1e6 }) }}
-                            </span>
-                            <div>
+                            <template v-if="feeLoading">
+                                <CircleSpinner />
+                            </template>
+                            <template v-else>
                                 <i18n tag="span" path="< {amount} fee" class="fee">
                                     <template #amount>
                                         <FiatAmount :amount="roundedUpFiatFee" :hideDecimals="false"
                                         :currency="fiatCurrency"/>
                                     </template>
                                 </i18n>
-
                                 <Tooltip class="info-tooltip" preferredPosition="bottom left">
                                     <InfoCircleSmallIcon slot="trigger"/>
-                                    {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
+                                    <div>
+                                        {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
+                                    </div>
                                 </Tooltip>
+                            </template>
+                        </span>
+                        <div v-else key="usdc-amount" class="usdc-amount">
+                            <span>
+                                {{ $t('You will send {amount} USDC', { amount: amount / 1e6 }) }}
+                            </span>
+                            <div>
+                                <template v-if="feeLoading">
+                                    <CircleSpinner />
+                                </template>
+                                <template v-else>
+                                    <i18n tag="span" path="< {amount} fee" class="fee">
+                                        <template #amount>
+                                            <FiatAmount :amount="roundedUpFiatFee" :hideDecimals="false"
+                                            :currency="fiatCurrency"/>
+                                        </template>
+                                    </i18n>
+                                    <Tooltip class="info-tooltip" preferredPosition="bottom left">
+                                        <InfoCircleSmallIcon slot="trigger"/>
+                                        {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
+                                    </Tooltip>
+                                </template>
                             </div>
                         </div>
                     </span>
@@ -233,6 +242,7 @@ import {
     InfoCircleSmallIcon,
     Tooltip,
     FiatAmount,
+    CircleSpinner,
 } from '@nimiq/vue-components';
 import { captureException } from '@sentry/vue';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
@@ -404,9 +414,11 @@ export default defineComponent({
 
         const amount = ref(0);
         const fee = ref<number>(0);
+        const feeLoading = ref(true);
+
         const relay = ref<RelayServerInfo | undefined>();
 
-        const maxSendableAmount = computed(() => Math.max((addressInfo.value!.balance || 0) /* - fee.value */, 0));
+        const maxSendableAmount = computed(() => Math.max((addressInfo.value!.balance || 0) - fee.value, 0));
 
         const amountMenuOpened = ref(false);
 
@@ -638,10 +650,11 @@ export default defineComponent({
             const feeInformation = await calculateFee('transferWithApproval');
             fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
             relay.value = feeInformation.relay;
+            feeLoading.value = false;
         }
 
-        watch([page, statusScreenOpened], async ([newPage]) => {
-            if (newPage === Pages.AMOUNT_INPUT && !statusScreenOpened.value) {
+        watch([page, statusScreenOpened], async () => {
+            if (!statusScreenOpened.value) {
                 // USDC fee does not depend on the amount, therefore it is not reactive to amount
                 await setFeeInformation();
                 feeIntervalId.value = setInterval(setFeeInformation, FEE_REFRESH_INTERVAL);
@@ -693,6 +706,7 @@ export default defineComponent({
             addressInfo,
             amount,
             fee,
+            feeLoading,
             roundedUpFiatFee,
             maxSendableAmount,
             amountMenuOpened,
@@ -746,6 +760,7 @@ export default defineComponent({
         InfoCircleSmallIcon,
         Tooltip,
         FiatAmount,
+        CircleSpinner,
     },
 });
 </script>
@@ -988,6 +1003,12 @@ export default defineComponent({
 
             [data-amount]:not([data-amount="0"])::before {
                 content: "~";
+            }
+
+            & ::v-deep .circle-spinner {
+                width: 13px;
+                margin-bottom: -3px;
+                margin-left: 3px;
             }
 
             & > .usdc-amount > span,

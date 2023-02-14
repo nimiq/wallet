@@ -150,14 +150,17 @@
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === 'usdc'" key="fiat-amount">
-                            {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount" currency="usdc"/>
-                            <span class="fee">
-                                <svg data-v-3d79c726="" class="dot" viewBox="0 0 3 3"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <circle data-v-3d79c726="" cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
-                                </svg>
-                                +<FiatConvertedAmount :amount="fee" currency="usdc"/> {{ $t('fee') }}
-                            </span>
+                            <FiatConvertedAmount :data-amount="amount" :amount="amount" currency="usdc"/>
+                            <svg data-v-3d79c726="" class="dot" viewBox="0 0 3 3"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle data-v-3d79c726="" cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
+                            </svg>
+                            <i18n tag="span" path="< {amount} fee" class="fee">
+                                <template #amount>
+                                    <FiatAmount :amount="roundedUpFiatFee" :hideDecimals="false"
+                                        :currency="fiatCurrency"/>
+                                </template>
+                            </i18n>
                             <Tooltip class="info-tooltip" preferredPosition="bottom left">
                                 <InfoCircleSmallIcon slot="trigger"/>
                                 <div>
@@ -170,9 +173,13 @@
                                 {{ $t('You will send {amount} USDC', { amount: amount / 1e6 }) }}
                             </span>
                             <div>
-                                <span class="fee">
-                                    +<FiatConvertedAmount :amount="fee" currency="usdc"/> {{ $t('fee') }}
-                                </span>
+                                <i18n tag="span" path="< {amount} fee" class="fee">
+                                    <template #amount>
+                                        <FiatAmount :amount="roundedUpFiatFee" :hideDecimals="false"
+                                        :currency="fiatCurrency"/>
+                                    </template>
+                                </i18n>
+
                                 <Tooltip class="info-tooltip" preferredPosition="bottom left">
                                     <InfoCircleSmallIcon slot="trigger"/>
                                     {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
@@ -225,6 +232,7 @@ import {
     ScanQrCodeIcon,
     InfoCircleSmallIcon,
     Tooltip,
+    FiatAmount,
 } from '@nimiq/vue-components';
 import { captureException } from '@sentry/vue';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
@@ -629,7 +637,6 @@ export default defineComponent({
         async function setFeeInformation() {
             const feeInformation = await calculateFee('transferWithApproval');
             fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
-            console.log('fee', fee.value);
             relay.value = feeInformation.relay;
         }
 
@@ -642,6 +649,19 @@ export default defineComponent({
                 clearInterval(feeIntervalId.value);
             }
         });
+
+        const fiatSmallestUnit = computed(() => {
+            const currencyInfo = new CurrencyInfo(fiat$.currency);
+            return 1 / 10 ** currencyInfo.decimals;
+        });
+
+        const feeInFiat = computed(() => {
+            const exchangeRatio = fiat$.exchangeRates.usdc[fiat$.currency]!;
+            return fee.value * 1e-6 * exchangeRatio;
+        });
+
+        const roundedUpFiatFee = computed(() =>
+            Math.ceil(feeInFiat.value / fiatSmallestUnit.value) * fiatSmallestUnit.value);
 
         return {
             // General
@@ -673,6 +693,7 @@ export default defineComponent({
             addressInfo,
             amount,
             fee,
+            roundedUpFiatFee,
             maxSendableAmount,
             amountMenuOpened,
             activeCurrency,
@@ -724,6 +745,7 @@ export default defineComponent({
         UsdcAddressInfo,
         InfoCircleSmallIcon,
         Tooltip,
+        FiatAmount,
     },
 });
 </script>
@@ -964,6 +986,10 @@ export default defineComponent({
                 margin-left: -0.2em;
             }
 
+            [data-amount]:not([data-amount="0"])::before {
+                content: "~";
+            }
+
             & > .usdc-amount > span,
             & > .usdc-amount .fee,
             & > span > *:not(.info-tooltip) {
@@ -976,7 +1002,7 @@ export default defineComponent({
                 align-items: center;
             }
 
-            .fee svg.dot {
+            .dot {
                 position: relative;
                 width: 3px;
                 bottom: 3px;
@@ -986,6 +1012,7 @@ export default defineComponent({
 
             .info-tooltip {
                 bottom: -2px;
+                margin-left: 1rem;
                 z-index: 4;
 
                 ::v-deep .trigger svg {

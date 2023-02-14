@@ -1836,10 +1836,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.2.0-beta.3":
-  version "1.2.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.2.0-beta.3.tgz#242880fd12c973405d6722dbe8f5808e61ee77d8"
-  integrity sha512-SFoXqafsSpApM2jZRqq9vzDCcVIeZKSPP9w1YM1VN7gv0oyWHPf2FpNd7BgZ2HCkKE+iUCPzSwvrZeliBGtRNw==
+"@nimiq/libswap@^1.2.0-beta.4":
+  version "1.2.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.2.0-beta.4.tgz#116e7191cbf0c3f57589ab4fbc43d42d86a91a7f"
+  integrity sha512-XYsWftU2zPihvP+mHJtboDB4HFe3rgZNpwGf7PyxfkkySzDbt9nthE+yl/wTxz5Mdhr3bEwH2hZVDHbyCrqtLw==
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"

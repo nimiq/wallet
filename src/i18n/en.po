@@ -60,10 +60,6 @@ msgstr ""
 msgid "{provider} is provided by {companyLogo}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:175
-msgid "{symbol}{amount} fee"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
@@ -89,6 +85,7 @@ msgid "+{n} more"
 msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:158
+#: src/components/modals/UsdcSendModal.vue:176
 msgid "< {amount} fee"
 msgstr ""
 
@@ -733,7 +730,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:346
+#: src/components/modals/UsdcSendModal.vue:345
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -794,7 +791,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:555
+#: src/components/modals/UsdcSendModal.vue:554
 msgid "Edit transaction"
 msgstr ""
 
@@ -1122,7 +1119,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:193
+#: src/components/modals/UsdcSendModal.vue:191
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1616,7 +1613,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:554
+#: src/components/modals/UsdcSendModal.vue:553
 msgid "Retry"
 msgstr ""
 
@@ -1703,7 +1700,7 @@ msgstr ""
 #: src/components/AmountMenu.vue:23
 #: src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:195
+#: src/components/modals/UsdcSendModal.vue:193
 msgid "Send all"
 msgstr ""
 
@@ -1720,7 +1717,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:14
 #: src/components/modals/SendModal.vue:192
 #: src/components/modals/UsdcSendModal.vue:12
-#: src/components/modals/UsdcSendModal.vue:205
+#: src/components/modals/UsdcSendModal.vue:203
 msgid "Send Transaction"
 msgstr ""
 
@@ -1730,7 +1727,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:551
+#: src/components/modals/UsdcSendModal.vue:550
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1755,11 +1752,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:588
+#: src/components/modals/UsdcSendModal.vue:587
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:584
+#: src/components/modals/UsdcSendModal.vue:583
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -1864,7 +1861,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:600
+#: src/components/modals/UsdcSendModal.vue:599
 msgid "Something went wrong"
 msgstr ""
 
@@ -1986,8 +1983,8 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:166
-#: src/components/modals/UsdcSendModal.vue:187
+#: src/components/modals/UsdcSendModal.vue:167
+#: src/components/modals/UsdcSendModal.vue:185
 msgid "The fee covers network costs to ensure secure transfer of USDC."
 msgstr ""
 
@@ -2339,7 +2336,7 @@ msgstr ""
 msgid "You will send {amount} NIM"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:172
+#: src/components/modals/UsdcSendModal.vue:173
 msgid "You will send {amount} USDC"
 msgstr ""
 

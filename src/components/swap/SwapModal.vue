@@ -8,13 +8,13 @@
             <div slot="more" class="flex-column">
                 <div class="pair-selection flex-row">
                     <ButtonGroup
-                        :options="Object.fromEntries(supportedAssets.map((asset) => [asset, asset]))"
+                        :options="Object.fromEntries(SUPPORTED_ASSETS.map((asset) => [asset, asset]))"
                         :value="leftAsset"
                         @input="setLeftAsset"
                     />
                     <SwapIcon />
                     <ButtonGroup
-                        :options="Object.fromEntries(supportedAssets.map((asset) => [asset, asset]))"
+                        :options="Object.fromEntries(SUPPORTED_ASSETS.map((asset) => [asset, asset]))"
                         :value="rightAsset"
                         @input="setRightAsset"
                     />
@@ -309,14 +309,31 @@ import SwapIcon from '../icons/SwapIcon.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
+const SUPPORTED_ASSETS = [
+    SwapAsset.NIM,
+    SwapAsset.BTC,
+    SwapAsset.USDC,
+];
+
 export default defineComponent({
     name: 'swap-modal',
+    props: {
+        pair: {
+            type: String,
+            default: `${SwapAsset.NIM}-${SwapAsset.BTC}`,
+            validator: (value) => {
+                const [left, right] = value.split('-');
+                return SUPPORTED_ASSETS.includes(left) && SUPPORTED_ASSETS.includes(right);
+            },
+        },
+    },
+    // @ts-expect-error Cannot derive types of props and context
     setup(props, context) {
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
 
-        const leftAsset = ref(SwapAsset.NIM);
-        const rightAsset = ref(SwapAsset.USDC);
+        const leftAsset = ref(props.pair.split('-')[0] as SwapAsset);
+        const rightAsset = ref(props.pair.split('-')[1] as SwapAsset);
 
         const fixedAsset = ref<SwapAsset>(leftAsset.value);
 
@@ -1735,23 +1752,17 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
-        const supportedAssets = [
-            SwapAsset.NIM,
-            SwapAsset.BTC,
-            SwapAsset.USDC,
-        ];
-
         function setLeftAsset(asset: SwapAsset) {
             leftAsset.value = asset;
             if (rightAsset.value === asset) {
-                rightAsset.value = supportedAssets.find((a) => a !== asset)!;
+                rightAsset.value = SUPPORTED_ASSETS.find((a) => a !== asset)!;
             }
         }
 
         function setRightAsset(asset: SwapAsset) {
             rightAsset.value = asset;
             if (leftAsset.value === asset) {
-                leftAsset.value = supportedAssets.find((a) => a !== asset)!;
+                leftAsset.value = SUPPORTED_ASSETS.find((a) => a !== asset)!;
             }
         }
 
@@ -1804,7 +1815,7 @@ export default defineComponent({
             activeAddressInfo,
             kycUser,
             kycOverlayOpened,
-            supportedAssets,
+            SUPPORTED_ASSETS,
             setLeftAsset,
             setRightAsset,
         };

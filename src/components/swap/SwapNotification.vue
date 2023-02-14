@@ -78,7 +78,7 @@ import { getNetworkClient } from '../../network';
 import Time from '../../lib/Time';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import { getPolygonClient, receiptToTransaction, sendTransaction as sendPolygonTransaction } from '../../ethers';
-import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { USDC_HTLC_CONTRACT_ABI } from '../../lib/usdc/ContractABIs';
 
@@ -451,16 +451,28 @@ export default defineComponent({
                             const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
                             const { relayData, ...relayRequest } = request;
 
-                            const fundingTx = await sendPolygonTransaction(
-                                { request: relayRequest as ForwardRequest, relayData },
-                                signature,
-                                relayUrl,
-                            );
+                            let fundingTx: UsdcTransaction;
+                            try {
+                                fundingTx = await sendPolygonTransaction(
+                                    { request: relayRequest as ForwardRequest, relayData },
+                                    signature,
+                                    relayUrl,
+                                );
+                            } catch (error) {
+                                const err = error as Error;
+                                if (err.message.includes('invalid nonce')) {
+                                    const event = await fundingPromise as PolygonEvent<PolygonEventType.OPEN>;
+                                    fundingTx = await receiptToTransaction(await event.getTransactionReceipt());
+                                } else {
+                                    throw error;
+                                }
+                            }
+
                             // This is an outgoing transfer, so it won't be detected automatically.
                             // We need to add it to the store ourselves.
                             useUsdcTransactionsStore().addTransactions([fundingTx]);
 
-                            await fundingPromise as PolygonEvent<PolygonEventType.OPEN>;
+                            await fundingPromise;
 
                             updateSwap({
                                 state: SwapState.AWAIT_SECRET,
@@ -562,14 +574,25 @@ export default defineComponent({
                             } = JSON.parse(activeSwap.value.settlementSerializedTx!);
                             const { relayData, ...relayRequest } = request;
 
-                            const settlementTx = await sendPolygonTransaction(
-                                { request: relayRequest as ForwardRequest, relayData },
-                                signature,
-                                relayUrl,
-                                `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
-                            );
+                            let settlementTx: UsdcTransaction;
+                            try {
+                                settlementTx = await sendPolygonTransaction(
+                                    { request: relayRequest as ForwardRequest, relayData },
+                                    signature,
+                                    relayUrl,
+                                    `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
+                                );
+                            } catch (error) {
+                                const err = error as Error;
+                                if (err.message.includes('invalid nonce')) {
+                                    const event = await settlementPromise as PolygonEvent<PolygonEventType.REDEEM>;
+                                    settlementTx = await receiptToTransaction(await event.getTransactionReceipt());
+                                } else {
+                                    throw error;
+                                }
+                            }
 
-                            await settlementPromise as PolygonEvent<PolygonEventType.REDEEM>;
+                            await settlementPromise;
 
                             updateSwap({
                                 state: SwapState.COMPLETE,
@@ -577,7 +600,6 @@ export default defineComponent({
                                 settlementTx,
                             });
                         } catch (error: any) {
-                            console.error(error);
                             if (error.message === SwapError.EXPIRED) return;
                             if (error.message === SwapError.DELETED) return;
 

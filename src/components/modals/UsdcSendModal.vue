@@ -161,8 +161,8 @@
                             <template v-else>
                                 <i18n tag="span" path="< {amount} fee" class="fee">
                                     <template #amount>
-                                        <FiatAmount :amount="roundedUpFiatFee" :hideDecimals="false"
-                                        :currency="fiatCurrency"/>
+                                        <FiatAmount :amount="feeSmallerThanSmUnit ? fiatSmUnit : roundedUpFiatFee"
+                                            :hideDecimals="false" :currency="fiatCurrency"/>
                                     </template>
                                 </i18n>
                                 <Tooltip class="info-tooltip" preferredPosition="bottom left">
@@ -182,10 +182,10 @@
                                     <CircleSpinner />
                                 </template>
                                 <template v-else>
-                                    <i18n tag="span" path="< {amount} fee" class="fee">
+                                    <i18n tag="span" :path="`${feeSmallerThanSmUnit && '< '}{amount} fee`" class="fee">
                                         <template #amount>
-                                            <FiatAmount :amount="roundedUpFiatFee" :hideDecimals="false"
-                                            :currency="fiatCurrency"/>
+                                            <FiatAmount :amount="feeSmallerThanSmUnit ? fiatSmUnit : roundedUpFiatFee"
+                                                :hideDecimals="false" :currency="fiatCurrency"/>
                                         </template>
                                     </i18n>
                                     <Tooltip class="info-tooltip" preferredPosition="bottom left">
@@ -663,7 +663,7 @@ export default defineComponent({
             }
         });
 
-        const fiatSmallestUnit = computed(() => {
+        const fiatSmUnit = computed(() => {
             const currencyInfo = new CurrencyInfo(fiat$.currency);
             return 1 / 10 ** currencyInfo.decimals;
         });
@@ -674,7 +674,9 @@ export default defineComponent({
         });
 
         const roundedUpFiatFee = computed(() =>
-            Math.ceil(feeInFiat.value / fiatSmallestUnit.value) * fiatSmallestUnit.value);
+            Math.ceil(feeInFiat.value / fiatSmUnit.value) * fiatSmUnit.value);
+
+        const feeSmallerThanSmUnit = computed(() => roundedUpFiatFee.value < fiatSmUnit.value);
 
         return {
             // General
@@ -708,6 +710,8 @@ export default defineComponent({
             fee,
             feeLoading,
             roundedUpFiatFee,
+            feeSmallerThanSmUnit,
+            fiatSmUnit,
             maxSendableAmount,
             amountMenuOpened,
             activeCurrency,

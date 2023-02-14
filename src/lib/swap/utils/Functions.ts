@@ -29,11 +29,12 @@ export type SettlementFees = {
     isHigh: boolean,
 }
 
-export function getEurPerCrypto(asset: SwapAsset.NIM | SwapAsset.BTC, estimate: Estimate) {
+export function getEurPerCrypto(asset: SwapAsset.NIM | SwapAsset.BTC | SwapAsset.USDC, estimate: Estimate) {
     let coinFactor: number;
     switch (asset) { // eslint-disable-line default-case
         case SwapAsset.NIM: coinFactor = 1e5; break;
         case SwapAsset.BTC: coinFactor = 1e8; break;
+        case SwapAsset.USDC: coinFactor = 1e6; break;
     }
 
     if (estimate.from.asset === asset) {

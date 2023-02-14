@@ -43,6 +43,17 @@ export type SwapBtcData = {
     },
 };
 
+export type SwapUsdcData = {
+    asset: SwapAsset.USDC,
+    transactionHash: string,
+    htlc?: {
+        address?: string,
+        refundAddress: string,
+        redeemAddress: string,
+        timeoutTimestamp: number,
+    },
+};
+
 export type SwapEurData = {
     asset: SwapAsset.EUR,
     bankLabel?: string,
@@ -61,7 +72,7 @@ export type SwapEurData = {
     },
 };
 
-export type SwapData = SwapNimData | SwapBtcData | SwapEurData;
+export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | SwapEurData;
 
 export type Swap = {
     id?: string,
@@ -134,7 +145,7 @@ export const useSwapsStore = createStore({
                 ...(swap.out && 'transactionHash' in swap.out ? { [swap.out.transactionHash]: hash } : {}),
             };
         },
-        addFundingData(hash: string, data: SwapNimData | SwapBtcData | SwapEurData, newSwapData: Swap = {}) {
+        addFundingData(hash: string, data: SwapData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,
@@ -142,7 +153,7 @@ export const useSwapsStore = createStore({
                 ...newSwapData,
             });
         },
-        addSettlementData(hash: string, data: SwapNimData | SwapBtcData | SwapEurData, newSwapData: Swap = {}) {
+        addSettlementData(hash: string, data: SwapData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,

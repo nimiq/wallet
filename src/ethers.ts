@@ -434,7 +434,11 @@ export async function calculateFee(
 
     const { baseRelayFee, pctRelayFee, minGasPrice } = relay;
 
-    let gasPrice = networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
+    // If a relay is forced, do not consider it's minGasPrice, as it's outdated
+    // TODO: Update relay data here to get it's current minGasPrice?
+    let gasPrice = forceRelay
+        ? networkGasPrice
+        : networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
     // main 10%, test 25% as it is more volatile
     const gasPriceBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
     gasPrice = gasPrice.mul(gasPriceBufferPercentage).div(100);

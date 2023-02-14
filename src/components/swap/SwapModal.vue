@@ -287,7 +287,7 @@ import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
-import { getPolygonClient, calculateFee as calculateUsdcFee } from '../../ethers';
+import { getPolygonClient, calculateFee as calculateUsdcFee, getHtlcContract } from '../../ethers';
 import { USDC_HTLC_CONTRACT_ABI } from '../../lib/usdc/ContractABIs';
 import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
@@ -561,12 +561,17 @@ export default defineComponent({
         // const usdcMaxSendableAmount = computed(() =>
         //     Math.max(accountUsdcBalance.value - usdcFundingFee.value, 0));
 
-        function calculateMyFees(feesPerUnit = { nim: 0, btc: 0 }): {
+        function calculateMyFees(feesPerUnit?: { nim: number, btc: number }): {
             fundingFee: number,
             settlementFee: number,
-        } {
-            let fundingFee: number | null = null;
-            let settlementFee: number | null = null;
+        };
+        function calculateMyFees(feesPerUnit: { nim: number, btc: number } | undefined, asPromise: true): {
+            fundingFee: number | Promise<number>,
+            settlementFee: number | Promise<number>,
+        };
+        function calculateMyFees(feesPerUnit = { nim: 0, btc: 0 }, asPromise = false) {
+            let fundingFee: number | Promise<number> | null = null;
+            let settlementFee: number | Promise<number> | null = null;
 
             const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
                 ? leftAsset.value
@@ -601,7 +606,15 @@ export default defineComponent({
                     break;
                 }
                 case SwapAsset.USDC:
-                    fundingFee = myUsdcFee.value || 0;
+                    if (usdcFeeStuff.value) fundingFee = usdcFeeStuff.value.fee;
+                    else if (!asPromise) fundingFee = 0;
+                    else fundingFee = new Promise<number>((resolve) => { // eslint-disable-line curly
+                        const stop = watch(usdcFeeStuff, (stuff) => {
+                            if (!stuff) return;
+                            resolve(stuff.fee);
+                            stop();
+                        });
+                    });
                     break;
                 default:
                     throw new Error(`Fee calculation not implemented for funding ${fundingAsset}`);
@@ -617,7 +630,15 @@ export default defineComponent({
                     settlementFee = estimateFees(1, 1, feesPerUnit.btc || settlementFeePerUnit, 135);
                     break;
                 case SwapAsset.USDC:
-                    settlementFee = myUsdcFee.value || 0;
+                    if (usdcFeeStuff.value) settlementFee = usdcFeeStuff.value.fee;
+                    else if (!asPromise) settlementFee = 0;
+                    else settlementFee = new Promise<number>((resolve) => { // eslint-disable-line curly
+                        const stop = watch(usdcFeeStuff, (stuff) => {
+                            if (!stuff) return;
+                            resolve(stuff.fee);
+                            stop();
+                        });
+                    });
                     break;
                 default:
                     throw new Error(`Fee calculation not implemented for settling ${settlementAsset}`);
@@ -737,8 +758,7 @@ export default defineComponent({
         }
 
         let usdcRelay = {
-            method: 'openWithApproval' as 'openWithApproval' | 'redeemWithSecretInData',
-            relay: null as RelayServerInfo | null,
+            relay: undefined as RelayServerInfo | undefined,
             timestamp: 0,
         };
 
@@ -755,42 +775,23 @@ export default defineComponent({
             relay: RelayServerInfo,
         };
 
-        async function calculateUsdcHtlcFee(action: 'fund' | 'redeem'): Promise<UsdcFees> {
-            const client = await getPolygonClient();
-            const htlcContract = new client.ethers.Contract(
-                config.usdc.htlcContract,
-                USDC_HTLC_CONTRACT_ABI,
-                client.provider,
-            );
+        const usdcFeeStuff = ref<UsdcFees>(null);
 
-            // let data = htlcContract.interface.encodeFunctionData('openWithApproval', [
-            //     /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-            //     /* address token */ Config.usdc.usdcContract,
-            //     /* uint256 amount */ client.ethers.BigNumber.from('0'),
-            //     /* address refundAddress */ activeUsdcAddress.value!,
-            //     /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
-            //     /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-            //     /* uint256 timeout */ client.ethers.BigNumber.from(Date.now()),
-            //     /* uint256 fee */ client.ethers.BigNumber.from('0'),
-            //     /* uint256 chainTokenFee */ client.ethers.BigNumber.from('0'),
-            //     /* uint256 approval */ client.ethers.BigNumber.from('0'),
-            //     /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-            //     /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-            //     /* uint8 sigV */ 0,
-            // ]);
+        // Used for Fastspot service fee calculation
+        const usdcPriceInWei = ref<number>(null);
+        const usdcGasPrice = ref<number>(null);
 
-            // data = htlcContract.interface.encodeFunctionData('redeemWithSecretInData', [
-            //     /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-            //     /* address target */ activeUsdcAddress.value!,
-            //     /* uint256 fee */ client.ethers.BigNumber.from('0'),
-            //     /* uint256 chainTokenFee */ client.ethers.BigNumber.from('0'),
-            // ]);
+        async function calculateUsdcHtlcFee() {
+            // Prevent changing USDC fees while processing the swap suggestion
+            if (currentlySigning.value) return;
 
-            const method = action === 'fund' ? 'openWithApproval' : 'redeemWithSecretInData';
+            usdcFeeStuff.value = null;
 
-            // Use an existing relay if it was selected for the same method in the last 5 minutes
-            const forceRelay = usdcRelay.method === method && usdcRelay.timestamp > Date.now() - 5 * 60 * 1e3
-                ? usdcRelay.relay!
+            const htlcContract = await getHtlcContract();
+
+            // Use the existing relay if it was selected in the last 10 minutes
+            const forceRelay = usdcRelay.timestamp > Date.now() - 10 * 60 * 1e3
+                ? usdcRelay.relay
                 : undefined;
 
             const {
@@ -800,12 +801,16 @@ export default defineComponent({
                 gasPrice,
                 relay,
                 usdcPrice,
-            } = await calculateUsdcFee(method, forceRelay, htlcContract);
+            } = await calculateUsdcFee('openWithApproval', forceRelay, htlcContract);
+            // We use a fixed method here ^, as the method is only used to calculate the required
+            // acceptance budget for relays. The method 'openWithApproval' has the highest gas cost,
+            // so any relay selected will work for all other methods as well.
+            // This way we do not need to re-run relay selection if the method changes (when swap
+            // direction changes), which is a long wait that we want to spare the user.
 
             if (!forceRelay) {
                 // Store the new relay
                 usdcRelay = {
-                    method,
                     relay,
                     timestamp: Date.now(),
                 };
@@ -814,7 +819,7 @@ export default defineComponent({
             usdcPriceInWei.value = usdcPrice.toNumber();
             usdcGasPrice.value = gasPrice.toNumber();
 
-            return {
+            usdcFeeStuff.value = {
                 chainTokenFee,
                 fee: fee.toNumber(),
                 gasLimit,
@@ -823,25 +828,28 @@ export default defineComponent({
             };
         }
 
-        const myUsdcFee = ref<number>(null);
-        const usdcPriceInWei = ref<number>(null);
-        const usdcGasPrice = ref<number>(null);
+        let usdcFeeUpdateInterval = -1;
 
-        watch([leftAsset, rightAsset], ([left, right]) => {
-            myUsdcFee.value = null;
-            if (left === SwapAsset.USDC) {
-                calculateUsdcHtlcFee(direction.value === SwapDirection.LEFT_TO_RIGHT ? 'fund' : 'redeem')
-                    .then(({ fee }) => {
-                        myUsdcFee.value = fee;
-                    });
-            }
-            if (right === SwapAsset.USDC) {
-                calculateUsdcHtlcFee(direction.value === SwapDirection.RIGHT_TO_LEFT ? 'fund' : 'redeem')
-                    .then(({ fee }) => {
-                        myUsdcFee.value = fee;
-                    });
+        watch([leftAsset, rightAsset], (newAssets, oldAssets) => {
+            const newLeft = newAssets?.[0];
+            const newRight = newAssets?.[1];
+            const oldLeft = oldAssets?.[0];
+            const oldRight = oldAssets?.[1];
+            if ([newLeft, newRight].includes(SwapAsset.USDC) && ![oldLeft, oldRight].includes(SwapAsset.USDC)) {
+                calculateUsdcHtlcFee();
+                usdcFeeUpdateInterval = window.setInterval(calculateUsdcHtlcFee, 30e3); // Update fee every 30s
+            } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
+                window.clearInterval(usdcFeeUpdateInterval);
+                usdcFeeUpdateInterval = -1;
+                usdcFeeStuff.value = null;
             }
         });
+
+        // watch(
+        //     usdcFeeStuff,
+        //     (stuff) => console.log('Got new USDC fee:', stuff?.fee),
+        //     { lazy: true },
+        // );
 
         const fetchingEstimate = ref(false);
 
@@ -863,21 +871,11 @@ export default defineComponent({
             fetchingEstimate.value = true;
 
             try {
-                const fees = calculateMyFees();
-                const { to, from } = calculateRequestData(fees); // TODO Requires USDC fee to be passed in
-
-                // TODO: extract, as is also used the same in sign()
-                let usdcAction: 'fund' | 'redeem' | undefined;
-                if (
-                    (leftAsset.value === SwapAsset.USDC && direction.value === SwapDirection.LEFT_TO_RIGHT)
-                    || (rightAsset.value === SwapAsset.USDC && direction.value === SwapDirection.RIGHT_TO_LEFT)
-                ) usdcAction = 'fund';
-                if (
-                    (leftAsset.value === SwapAsset.USDC && direction.value === SwapDirection.RIGHT_TO_LEFT)
-                    || (rightAsset.value === SwapAsset.USDC && direction.value === SwapDirection.LEFT_TO_RIGHT)
-                ) usdcAction = 'redeem';
-                let usdcFeesPromise: Promise<UsdcFees> | undefined;
-                if (usdcAction) usdcFeesPromise = calculateUsdcHtlcFee(usdcAction);
+                const fees = calculateMyFees(undefined, true);
+                const { to, from } = calculateRequestData({
+                    fundingFee: await fees.fundingFee,
+                    settlementFee: await fees.settlementFee,
+                });
 
                 const newEstimate = await getEstimate(
                     from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
@@ -896,14 +894,10 @@ export default defineComponent({
                         : newEstimate.to.asset === SwapAsset.BTC
                             ? newEstimate.to.feePerUnit!
                             : 0,
-                });
+                }, true);
 
-                newEstimate.from.fee = newEstimate.from.asset === SwapAsset.USDC
-                    ? (await usdcFeesPromise!).fee
-                    : fundingFee;
-                newEstimate.to.fee = newEstimate.to.asset === SwapAsset.USDC
-                    ? (await usdcFeesPromise!).fee
-                    : settlementFee;
+                newEstimate.from.fee = await fundingFee;
+                newEstimate.to.fee = await settlementFee;
 
                 // Check against minimums
                 if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
@@ -1047,7 +1041,7 @@ export default defineComponent({
         const myLeftFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                if (leftAsset.value === SwapAsset.USDC) fee = myUsdcFee.value || 0;
+                if (leftAsset.value === SwapAsset.USDC) fee = usdcFeeStuff.value?.fee || 0;
                 else {
                     const { fundingFee, settlementFee } = calculateMyFees();
                     fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? fundingFee : settlementFee;
@@ -1063,7 +1057,7 @@ export default defineComponent({
         const myRightFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                if (rightAsset.value === SwapAsset.USDC) fee = myUsdcFee.value || 0;
+                if (rightAsset.value === SwapAsset.USDC) fee = usdcFeeStuff.value?.fee || 0;
                 else {
                     const { fundingFee, settlementFee } = calculateMyFees();
                     fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? settlementFee : fundingFee;
@@ -1186,30 +1180,23 @@ export default defineComponent({
         async function sign() {
             if (!canSign.value) return;
 
-            currentlySigning.value = true;
+            // Get up-to-date fees for USDC
+            if ([leftAsset.value, rightAsset.value].includes(SwapAsset.USDC)) {
+                calculateUsdcHtlcFee();
+            }
 
-            let usdcFees: UsdcFees | undefined;
+            currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
 
                 try {
-                    const fees = calculateMyFees();
-                    const { to, from } = calculateRequestData(fees); // TODO Requires USDC fee to be passed in
-
-                    // TODO: extract, as is also used the same in updateEstimate()
-                    let usdcAction: 'fund' | 'redeem' | undefined;
-                    if (
-                        (leftAsset.value === SwapAsset.USDC && direction.value === SwapDirection.LEFT_TO_RIGHT)
-                        || (rightAsset.value === SwapAsset.USDC && direction.value === SwapDirection.RIGHT_TO_LEFT)
-                    ) usdcAction = 'fund';
-                    if (
-                        (leftAsset.value === SwapAsset.USDC && direction.value === SwapDirection.RIGHT_TO_LEFT)
-                        || (rightAsset.value === SwapAsset.USDC && direction.value === SwapDirection.LEFT_TO_RIGHT)
-                    ) usdcAction = 'redeem';
-                    let usdcFeePromise: Promise<UsdcFees> | undefined;
-                    if (usdcAction) usdcFeePromise = calculateUsdcHtlcFee(usdcAction);
+                    const fees = calculateMyFees(undefined, true);
+                    const { to, from } = calculateRequestData({
+                        fundingFee: await fees.fundingFee,
+                        settlementFee: await fees.settlementFee,
+                    });
 
                     swapSuggestion = await createSwap(
                         from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
@@ -1228,12 +1215,10 @@ export default defineComponent({
                             : swapSuggestion.to.asset === SwapAsset.BTC
                                 ? swapSuggestion.to.feePerUnit!
                                 : 0,
-                    });
+                    }, true);
 
-                    if (usdcFeePromise) usdcFees = await usdcFeePromise;
-
-                    swapSuggestion.from.fee = swapSuggestion.from.asset === SwapAsset.USDC ? usdcFees!.fee : fundingFee;
-                    swapSuggestion.to.fee = swapSuggestion.to.asset === SwapAsset.USDC ? usdcFees!.fee : settlementFee;
+                    swapSuggestion.from.fee = await fundingFee;
+                    swapSuggestion.to.fee = await settlementFee;
 
                     if (swapSuggestion.to.amount - swapSuggestion.to.fee <= 0) {
                         throw new Error(`${swapSuggestion.to.asset} output value is 0`);
@@ -1340,7 +1325,7 @@ export default defineComponent({
                         htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
                     ]);
 
-                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFees!;
+                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
 
                     const data = htlcContract.interface.encodeFunctionData('openWithApproval', [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1439,7 +1424,7 @@ export default defineComponent({
 
                     const forwarderNonce = await htlcContract.getNonce(toAddress) as Promise<BigNumber>;
 
-                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFees!;
+                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
 
                     const data = htlcContract.interface.encodeFunctionData('redeemWithSecretInData', [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1474,7 +1459,7 @@ export default defineComponent({
                     redeem = {
                         type: 'USDC',
                         ...relayRequest,
-                        amount: swapSuggestion.to.amount,
+                        amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
                         fee: swapSuggestion.to.fee,
                     };
                 }
@@ -1592,14 +1577,14 @@ export default defineComponent({
                             - fund.output.value
                             - (fund.changeOutput?.value || 0)
                         : fund.type === SwapAsset.USDC
-                            ? usdcFees!.fee
+                            ? usdcFeeStuff.value!.fee
                             : 0;
                 confirmedSwap.to.fee = redeem.type === SwapAsset.NIM
                     ? redeem.fee
                     : redeem.type === SwapAsset.BTC
                         ? redeem.input.value - redeem.output.value
                         : redeem.type === SwapAsset.USDC
-                            ? usdcFees!.fee
+                            ? usdcFeeStuff.value!.fee
                             : 0;
             } catch (error) {
                 if (config.reportToSentry) captureException(error);
@@ -1634,14 +1619,14 @@ export default defineComponent({
                     : JSON.stringify({ // USDC
                         request: fundingSignedTx.message,
                         signature: fundingSignedTx.signature,
-                        relayUrl: usdcFees!.relay.url,
+                        relayUrl: usdcFeeStuff.value!.relay.url,
                     }),
                 settlementSerializedTx: 'serializedTx' in redeemingSignedTx
                     ? redeemingSignedTx.serializedTx // NIM & BTC
                     : JSON.stringify({ // USDC
                         request: redeemingSignedTx.message,
                         signature: redeemingSignedTx.signature,
-                        relayUrl: usdcFees!.relay.url,
+                        relayUrl: usdcFeeStuff.value!.relay.url,
                     }),
                 nimiqProxySerializedTx: signedTransactions.nimProxy?.serializedTx,
             });

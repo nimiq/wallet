@@ -6,6 +6,19 @@
         <PageHeader>
             {{ $t('Swap Currencies') }}
             <div slot="more" class="flex-column">
+                <div class="pair-selection flex-row">
+                    <ButtonGroup
+                        :options="Object.fromEntries(supportedAssets.map((asset) => [asset, asset]))"
+                        :value="leftAsset"
+                        @input="setLeftAsset"
+                    />
+                    <SwapIcon />
+                    <ButtonGroup
+                        :options="Object.fromEntries(supportedAssets.map((asset) => [asset, asset]))"
+                        :value="rightAsset"
+                        @input="setRightAsset"
+                    />
+                </div>
                 <div class="pills flex-row">
                     <Tooltip v-if="rightUnitsPerLeftCoin"
                         :styles="{width: '25.5rem'}"
@@ -291,6 +304,8 @@ import { getPolygonClient, calculateFee as calculateUsdcFee, getHtlcContract } f
 import { USDC_HTLC_CONTRACT_ABI } from '../../lib/usdc/ContractABIs';
 import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import ButtonGroup from '../ButtonGroup.vue';
+import SwapIcon from '../icons/SwapIcon.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1720,6 +1735,26 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
+        const supportedAssets = [
+            SwapAsset.NIM,
+            SwapAsset.BTC,
+            SwapAsset.USDC,
+        ];
+
+        function setLeftAsset(asset: SwapAsset) {
+            leftAsset.value = asset;
+            if (rightAsset.value === asset) {
+                rightAsset.value = supportedAssets.find((a) => a !== asset)!;
+            }
+        }
+
+        function setRightAsset(asset: SwapAsset) {
+            rightAsset.value = asset;
+            if (leftAsset.value === asset) {
+                leftAsset.value = supportedAssets.find((a) => a !== asset)!;
+            }
+        }
+
         return {
             onClose,
             leftAsset,
@@ -1769,6 +1804,9 @@ export default defineComponent({
             activeAddressInfo,
             kycUser,
             kycOverlayOpened,
+            supportedAssets,
+            setLeftAsset,
+            setRightAsset,
         };
     },
     components: {
@@ -1792,6 +1830,8 @@ export default defineComponent({
         SwapModalFooter,
         KycPrompt,
         KycOverlay,
+        ButtonGroup,
+        SwapIcon,
     },
 });
 </script>
@@ -1818,6 +1858,15 @@ export default defineComponent({
     flex-grow: 1;
     padding-bottom: 2rem;
     overflow: visible;
+}
+
+.pair-selection {
+    justify-content: center;
+    margin-top: 4rem;
+
+    svg {
+        opacity: 0.5;
+    }
 }
 
 .pills {

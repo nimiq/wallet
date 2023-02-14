@@ -95,7 +95,7 @@ export default defineComponent({
     ::v-deep .small-page {
         // height: auto;
         text-align: center;
-        background-image: url('../../assets/bitcoin-activation-background.png');
+        background-image: url('../../assets/activation-modal-background.png');
         background-position: bottom right;
         background-repeat: no-repeat;
         background-size: auto 532px;

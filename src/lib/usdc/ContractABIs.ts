@@ -87,6 +87,7 @@ export const USDC_TRANSFER_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
+// TODO add variable names
 export const RELAY_HUB_CONTRACT_ABI = [
     // 'constructor(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)',
     // 'event Deposited(address indexed,address indexed,uint256)',
@@ -96,7 +97,7 @@ export const RELAY_HUB_CONTRACT_ABI = [
     'event RelayServerRegistered(address indexed,uint256,uint256,string)',
     // 'event RelayWorkersAdded(address indexed,address[],uint256)',
     // 'event TransactionRejectedByPaymaster(address indexed,address indexed,address indexed,address,address,bytes4,uint256,bytes)',
-    // 'event TransactionRelayed(address indexed,address indexed,address indexed,address,address,bytes4,uint8,uint256)',
+    'event TransactionRelayed(address indexed,address indexed,address indexed,address,address,bytes4,uint8,uint256)',
     // 'event TransactionResult(uint8,bytes)',
     // 'event Withdrawn(address indexed,address indexed,uint256)',
     // 'function G_NONZERO() view returns (uint256)',
@@ -126,6 +127,7 @@ export const RELAY_HUB_CONTRACT_ABI = [
     // 'function workerToManager(address) view returns (address)'
 ];
 
+// TODO add variable names
 export const UNISWAP_FACTORY_CONTRACT_ABI = [
     // 'constructor()',
     // 'event FeeAmountEnabled(uint24 indexed fee, int24 indexed tickSpacing)',

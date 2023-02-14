@@ -58,8 +58,8 @@
                             </template>
                             <span>{{ $t('Historic value') }}</span>
                             <p class="explainer">
-                                {{ $t('This historic value is based on an average of cross-exchange prices.'
-                                    + ' It might vary due to market volatility and liquidity.') }}
+                                {{ $t('This value is based on the historic exchange rate of the USD and your ' +
+                                    'reference currency.') }}
                             </p>
                         </Tooltip>
                     </div>

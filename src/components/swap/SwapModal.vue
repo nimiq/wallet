@@ -601,7 +601,7 @@ export default defineComponent({
                     break;
                 }
                 case SwapAsset.USDC:
-                    fundingFee = 0; // Unused
+                    fundingFee = myUsdcFee.value || 0;
                     break;
                 default:
                     throw new Error(`Fee calculation not implemented for funding ${fundingAsset}`);
@@ -617,7 +617,7 @@ export default defineComponent({
                     settlementFee = estimateFees(1, 1, feesPerUnit.btc || settlementFeePerUnit, 135);
                     break;
                 case SwapAsset.USDC:
-                    settlementFee = 0; // Unused
+                    settlementFee = myUsdcFee.value || 0;
                     break;
                 default:
                     throw new Error(`Fee calculation not implemented for settling ${settlementAsset}`);

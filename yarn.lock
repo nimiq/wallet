@@ -1819,9 +1819,9 @@
   version "1.6.1"
   resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/69440f47fdaf52552b190f10d52c11736d0d685c"
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?bfddf024f4148226be9c4ea44d27c8d0c647ca9e&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?00a05e824fa1cd99268883d2040d58e6a343e562&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
   version "1.6.1"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?bfddf024f4148226be9c4ea44d27c8d0c647ca9e&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#3ab77164f072cbdc2e8c0fb97a31fa2cbaca0e13"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?00a05e824fa1cd99268883d2040d58e6a343e562&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#5b3266e86d322490fc979f201291a07cb4deedea"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/fastspot-api" "^1.5.2"

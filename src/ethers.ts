@@ -416,7 +416,7 @@ export async function calculateFee(
         dataGasCost,
         usdcPrice,
     ] = await Promise.all([
-        client.provider.getGasPrice().then((price) => price.mul(110).div(100)),
+        client.provider.getGasPrice(),
         contract.requiredRelayGas() as Promise<BigNumber>,
         relay
             ? Promise.resolve([client.ethers.BigNumber.from(0)])
@@ -434,7 +434,10 @@ export async function calculateFee(
 
     const { baseRelayFee, pctRelayFee, minGasPrice } = relay;
 
-    const gasPrice = networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
+    let gasPrice = networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
+    // main 10%, test 25% as it is more volatile
+    const gasPriceBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
+    gasPrice = gasPrice.mul(gasPriceBufferPercentage).div(100);
     // (gasPrice * gasLimit) * (1 + pctRelayFee) + baseRelayFee
     const chainTokenFee = gasPrice.mul(gasLimit).mul(pctRelayFee.add(100)).div(100).add(baseRelayFee);
 
@@ -559,7 +562,11 @@ export async function sendTransaction(
         txResponse = await client.provider.getTransaction(tx.hash!);
     }
 
-    return receiptToTransaction(await txResponse.wait(1), relayRequest.request.from);
+    return receiptToTransaction(
+        await txResponse.wait(1),
+        // If `approvalData` is present, this is an incoming redeem transaction, so should not filter by from address
+        approvalData.length > 2 ? undefined : relayRequest.request.from,
+    );
 }
 
 export async function receiptToTransaction(

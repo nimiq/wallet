@@ -441,32 +441,41 @@ export default defineComponent({
                             fundingTx,
                         });
                     } else if (activeSwap.value!.from.asset === SwapAsset.USDC) {
-                        // Start listener
-                        const fundingPromise = swapHandler.awaitOutgoing((/* event */) => {
-                            // const openEvent = event as PolygonEvent<PolygonEventType.OPEN>;
-                            // ...
-                        });
+                        try {
+                            // Start listener
+                            const fundingPromise = swapHandler.awaitOutgoing((/* event */) => {
+                                // const openEvent = event as PolygonEvent<PolygonEventType.OPEN>;
+                                // ...
+                            });
 
-                        const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
-                        const { relayData, ...relayRequest } = request;
+                            const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
+                            const { relayData, ...relayRequest } = request;
 
-                        // TODO: Handle failure
-                        const fundingTx = await sendPolygonTransaction(
-                            { request: relayRequest as ForwardRequest, relayData },
-                            signature,
-                            relayUrl,
-                        );
-                        // This is an outgoing transfer, so it won't be detected automatically.
-                        // We need to add it to the store ourselves.
-                        useUsdcTransactionsStore().addTransactions([fundingTx]);
+                            const fundingTx = await sendPolygonTransaction(
+                                { request: relayRequest as ForwardRequest, relayData },
+                                signature,
+                                relayUrl,
+                            );
+                            // This is an outgoing transfer, so it won't be detected automatically.
+                            // We need to add it to the store ourselves.
+                            useUsdcTransactionsStore().addTransactions([fundingTx]);
 
-                        await fundingPromise as PolygonEvent<PolygonEventType.OPEN>;
+                            await fundingPromise as PolygonEvent<PolygonEventType.OPEN>;
 
-                        updateSwap({
-                            state: SwapState.AWAIT_SECRET,
-                            stateEnteredAt: Date.now(),
-                            fundingTx,
-                        });
+                            updateSwap({
+                                state: SwapState.AWAIT_SECRET,
+                                stateEnteredAt: Date.now(),
+                                fundingTx,
+                            });
+                        } catch (error: any) {
+                            if (error.message === SwapError.EXPIRED) return;
+                            if (error.message === SwapError.DELETED) return;
+
+                            currentError.value = error.message;
+                            setTimeout(processSwap, 2000); // 2 seconds
+                            cleanUp();
+                            return;
+                        }
                     } else {
                         // Send HTLC funding transaction
                         try {
@@ -542,27 +551,41 @@ export default defineComponent({
                 }
                 case SwapState.SETTLE_INCOMING: {
                     if (activeSwap.value.to.asset === SwapAsset.USDC) {
-                        // Start listener
-                        const settlementPromise = swapHandler.awaitIncomingConfirmation();
+                        try {
+                            // Start listener
+                            const settlementPromise = swapHandler.awaitIncomingConfirmation();
 
-                        const { request, signature, relayUrl } = JSON.parse(activeSwap.value.settlementSerializedTx!);
-                        const { relayData, ...relayRequest } = request;
+                            const {
+                                request,
+                                signature,
+                                relayUrl,
+                            } = JSON.parse(activeSwap.value.settlementSerializedTx!);
+                            const { relayData, ...relayRequest } = request;
 
-                        // TODO: Handle failure
-                        const settlementTx = await sendPolygonTransaction(
-                            { request: relayRequest as ForwardRequest, relayData },
-                            signature,
-                            relayUrl,
-                            `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
-                        );
+                            const settlementTx = await sendPolygonTransaction(
+                                { request: relayRequest as ForwardRequest, relayData },
+                                signature,
+                                relayUrl,
+                                `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
+                            );
 
-                        await settlementPromise as PolygonEvent<PolygonEventType.REDEEM>;
+                            await settlementPromise as PolygonEvent<PolygonEventType.REDEEM>;
 
-                        updateSwap({
-                            state: SwapState.COMPLETE,
-                            stateEnteredAt: Date.now(),
-                            settlementTx,
-                        });
+                            updateSwap({
+                                state: SwapState.COMPLETE,
+                                stateEnteredAt: Date.now(),
+                                settlementTx,
+                            });
+                        } catch (error: any) {
+                            console.error(error);
+                            if (error.message === SwapError.EXPIRED) return;
+                            if (error.message === SwapError.DELETED) return;
+
+                            currentError.value = error.message;
+                            setTimeout(processSwap, 2000); // 2 seconds
+                            cleanUp();
+                            return;
+                        }
                     } else {
                         try {
                             const settlementTx = await swapHandler.settleIncoming(

@@ -243,13 +243,14 @@ export default defineComponent({
         });
         const peerLabel = computed(() => {
             if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap');
+                return context.root.$t('Cancelled Swap') as string;
             }
 
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
                     return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
-                        || context.root.$t('Swap'); // avoid displaying proxy address until we know related peer address
+                        // avoid displaying proxy address until we know related peer address
+                        || context.root.$t('Swap') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {

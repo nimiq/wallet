@@ -7,7 +7,7 @@
             <template v-else-if="isSwapProxy && !swapData">{{ $t('Swap') }}</template>
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.BTC" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.BTC || swapData.asset === SwapAsset.USDC" v-slot:address>
                     <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
 
@@ -19,7 +19,7 @@
             </i18n>
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.BTC" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.BTC || swapData.asset === SwapAsset.USDC" v-slot:address>
                     <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
 
@@ -100,6 +100,7 @@
                 <div class="address-info flex-column">
                     <div class="identicon">
                         <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/>
+                        <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
@@ -145,6 +146,7 @@
                     <div class="identicon">
                         <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
                         <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
+                        <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
@@ -248,6 +250,20 @@
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
+                        <button v-if="swapData.asset === SwapAsset.USDC && swapTransaction"
+                            class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
+                            @click="$router.replace(`/usdc-transaction/${swapTransaction.transactionHash}`)"
+                        >
+                            <div class="icon">
+                                <GroundedArrowUpIcon v-if="isIncoming"/>
+                                <GroundedArrowDownIcon v-else/>
+                            </div>
+                            <Amount
+                                :amount="swapTransaction.value"
+                                :currency="swapData.asset.toLowerCase()"
+                                class="swapped-amount"
+                                value-mask/>
+                        </button>
                         <div v-else-if="swapData.asset === SwapAsset.EUR"
                             class="swap-other-side flex-row" :class="{'incoming': !isIncoming}"
                         >
@@ -322,6 +338,7 @@ import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 // import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import UsdcIcon from '../icons/UsdcIcon.vue';
 import BankIcon from '../icons/BankIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
@@ -339,7 +356,8 @@ import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
 import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
-import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
+import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
+import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { sendTransaction } from '../../network';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
@@ -455,7 +473,13 @@ export default defineComponent({
                 return {
                     ...btcTx,
                     outputs: [btcTx.outputs[swapData.value.outputIndex]],
-                };
+                } as BtcTransaction;
+            }
+
+            if (swapData.value.asset === SwapAsset.USDC) {
+                const usdcTx = useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash];
+                if (!usdcTx) return null;
+                return usdcTx;
             }
 
             return null;
@@ -489,10 +513,18 @@ export default defineComponent({
         const peerAddress = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.BTC) {
-                    return swapTransaction.value
+                    const swapTx = swapTransaction.value as BtcTransaction | null;
+                    return swapTx
                         ? isIncoming.value
-                            ? swapTransaction.value.inputs[0].address!
-                            : swapTransaction.value.outputs[0].address!
+                            ? swapTx.inputs[0].address!
+                            : swapTx.outputs[0].address!
+                        : ''; // we don't know the peer address
+                }
+
+                if (swapData.value.asset === SwapAsset.USDC) {
+                    const swapTx = swapTransaction.value as UsdcTransaction | null;
+                    return swapTx
+                        ? isIncoming.value ? swapTx.sender : swapTx.recipient
                         : ''; // we don't know the peer address
                 }
 
@@ -526,6 +558,10 @@ export default defineComponent({
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.BTC) {
                     return context.root.$t('Bitcoin');
+                }
+
+                if (swapData.value.asset === SwapAsset.USDC) {
+                    return context.root.$t('USD Coin');
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
@@ -684,6 +720,7 @@ export default defineComponent({
         // HistoricValueIcon,
         BlueLink,
         BitcoinIcon,
+        UsdcIcon,
         BankIcon,
         GroundedArrowUpIcon,
         GroundedArrowDownIcon,
@@ -819,6 +856,10 @@ export default defineComponent({
 
         &.bitcoin {
             color: var(--bitcoin-orange);
+        }
+
+        &.usdc {
+            color: var(--usdc-blue);
         }
     }
 

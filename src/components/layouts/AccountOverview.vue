@@ -290,9 +290,20 @@ export default defineComponent({
 
         const forceUpdateRef = ref(false);
         const resizeObserver = new ResizeObserver(forceUpdate);
+        const mutationObserver = new MutationObserver(() => forceUpdate());
 
-        onMounted(async () => resizeObserver.observe(context.root.$el));
-        onUnmounted(() => resizeObserver.disconnect());
+        onMounted(async () => {
+            resizeObserver.observe(context.root.$el);
+            mutationObserver.observe(context.root.$el, { // for account switch & add address
+                attributes: false,
+                childList: true,
+                subtree: true,
+            });
+        });
+        onUnmounted(() => {
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+        });
         onActivated(forceUpdate);
 
         async function forceUpdate() {

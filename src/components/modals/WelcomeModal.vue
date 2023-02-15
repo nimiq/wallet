@@ -1140,7 +1140,7 @@ export default defineComponent({
             padding-bottom: 4rem;
 
             select {
-                margin-left: 1rem;
+                margin-left: 1.5rem;
                 padding: 0 1rem;
             }
         }

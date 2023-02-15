@@ -1815,16 +1815,17 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.5.2", "@nimiq/fastspot-api@nimiq/fastspot-api#69440f47fdaf52552b190f10d52c11736d0d685c":
-  version "1.6.1"
-  resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/69440f47fdaf52552b190f10d52c11736d0d685c"
+"@nimiq/fastspot-api@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.7.0.tgz#eea496f4898139c51971f0b177583c6cc6b06611"
+  integrity sha512-k7vSjYdjAiAQar+21v681Zrp9kN9uHMUw7/dyG2D/IrXqNPHkD133JyrzxPBga+myW411SUR4mtdPQRPQm3d/A==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?00a05e824fa1cd99268883d2040d58e6a343e562&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?7d641080fb8321b55954334dfe4be13e7d7eb196&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
   version "1.6.1"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?00a05e824fa1cd99268883d2040d58e6a343e562&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#5b3266e86d322490fc979f201291a07cb4deedea"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?7d641080fb8321b55954334dfe4be13e7d7eb196&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#f9ce650c4126d3c8627a89104ca9cf4731a62880"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
-    "@nimiq/fastspot-api" "^1.5.2"
+    "@nimiq/fastspot-api" "^1.7.0"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
     big-integer "^1.6.48"

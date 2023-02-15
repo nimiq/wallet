@@ -318,7 +318,7 @@ export default defineComponent({
                 return {
                     height: `${accountPosition.height}px`,
                     width: `${accountPosition.width}px`,
-                    top: `${accountPosition.top}px`,
+                    top: `${accountPosition.top - accountOverviewPosition.top}px`,
                     left: `${accountPosition.left - accountOverviewPosition.left}px`,
                 };
             }
@@ -332,13 +332,15 @@ export default defineComponent({
             const accountOverviewPosition: DOMRect | undefined = root$.value?.getBoundingClientRect();
             const marginLeft = accountOverviewPosition ? accountOverviewPosition.left : 0;
 
+            if (!accountOverviewPosition) return null;
             if (swap === 'nim-btc' && bitcoinAccount$.value) {
                 const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
 
                 const left = bitcoinAccountPosition.left + (bitcoinAccountPosition.width / 2) - marginLeft;
+                const top = bitcoinAccountPosition.top - accountOverviewPosition.top;
 
                 return {
-                    top: `calc(${bitcoinAccountPosition.top}px - (var(--size) / 2) - 1rem)`,
+                    top: `calc(${top}px - (var(--size) / 2) - 1rem)`,
                     left: `calc(${left}px - (var(--size) / 2))`,
                 };
             }
@@ -348,15 +350,16 @@ export default defineComponent({
                 const left = usdcAccountPosition.left + (usdcAccountPosition.width / 2) - marginLeft;
 
                 return {
-                    top: `calc(${usdcAccountPosition.top}px - (var(--size) / 2) - 1rem)`,
+                    top: `calc(${usdcAccountPosition.top - accountOverviewPosition.top}px - (var(--size) / 2) - 1rem)`,
                     left: `calc(${left}px - (var(--size) / 2))`,
                 };
             }
             if (swap === 'btc-usdc' && bitcoinAccount$.value) {
                 const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
 
-                const top = bitcoinAccountPosition.top + (bitcoinAccountPosition.height / 2);
                 const left = bitcoinAccountPosition.left + bitcoinAccountPosition.width - marginLeft;
+                const top = bitcoinAccountPosition.top + (bitcoinAccountPosition.height / 2)
+                    - accountOverviewPosition.top;
 
                 return {
                     top: `calc(${top}px - (var(--size) / 2))`,

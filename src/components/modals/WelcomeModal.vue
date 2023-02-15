@@ -174,7 +174,7 @@
                         </label>
 
                         <div class="features-description">
-                            <p class="first">{{ $t('Super low fees, super fast payments') }}</p>
+                            <p class="first">{{ $t('‘Digital gold’, the original crypto') }}</p>
                             <p class="second">{{ $t('Highest degree of decentralization') }}</p>
                             <p class="third">{{ $t('Comparably high transaction fees/time') }}</p>
                         </div>
@@ -240,7 +240,7 @@
                         </label>
 
                         <div class="features-description">
-                            <p class="first">{{ $t('Super low fees, super fast payments') }}</p>
+                            <p class="first">{{ $t('Stability mixed with self-custody') }}</p>
                             <p class="second">{{ $t('Pegged 1:1 to the U.S. Dollar') }}</p>
                             <p class="third">{{ $t('Comparably centralized') }}</p>
                         </div>
@@ -726,12 +726,12 @@ export default defineComponent({
 
             .body {
                 flex-grow: 1;
-                margin-top: 5rem;
                 transition: opacity 0.75s 0.25s ease;
                 width: 100%;
 
                 display: flex;
                 flex-direction: column;
+                justify-content: flex-end;
                 align-items: center;
             }
 
@@ -750,8 +750,8 @@ export default defineComponent({
                 display: grid;
                 grid-template-rows: 4rem auto;
                 grid-template-columns: 1fr auto 1fr;
-                row-gap: 4rem;
-                column-gap: 3rem;
+                row-gap: 2rem;
+                column-gap: 1.5rem;
                 width: 100%;
 
                 label {
@@ -1020,7 +1020,7 @@ export default defineComponent({
 
             &.label-nim {
                 &.nim {
-                    transform: translate(-14.5rem, -10rem);
+                    transform: translate(-15rem, -10rem);
                 }
 
                 &.btc {
@@ -1137,10 +1137,11 @@ export default defineComponent({
         .fiat-setting {
             display: flex;
             align-items: center;
-            padding-bottom: 4rem;
+            margin-top: -2rem; // To keep the circle aligned with the labels
+            margin-bottom: 2rem;
 
             select {
-                margin-left: 1.5rem;
+                margin-left: 1rem;
                 padding: 0 1rem;
             }
         }
@@ -1167,10 +1168,9 @@ export default defineComponent({
             bottom: 0;
             width: calc(100% - 16px);
             display: flex;
-            justify-content: center;
+            justify-content: space-evenly;
             align-items: center;
-            margin-top: -1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
 
         .fadeY-enter-active,
@@ -1198,10 +1198,6 @@ export default defineComponent({
         .fadeY-leave-to {
             opacity: 0;
             transform: translateY(70%);
-        }
-
-        .tooltip {
-            margin: 0 1rem;
         }
 
         .flag {

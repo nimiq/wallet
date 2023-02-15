@@ -151,7 +151,7 @@
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === 'usdc'" key="fiat-amount">
                             <FiatConvertedAmount :data-amount="amount" :amount="amount" currency="usdc"/>
-                            <svg data-v-3d79c726="" class="dot" viewBox="0 0 3 3"
+                            <svg class="dot" viewBox="0 0 3 3"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <circle data-v-3d79c726="" cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
                             </svg>
@@ -159,9 +159,15 @@
                                 <CircleSpinner />
                             </template>
                             <template v-else>
-                                <i18n tag="span" path="< {amount} fee" class="fee">
+                                <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
                                     <template #amount>
-                                        <FiatAmount :amount="feeSmallerThanSmUnit ? fiatSmUnit : roundedUpFiatFee"
+                                        <FiatAmount :amount="fiatSmUnit"
+                                            :hideDecimals="false" :currency="fiatCurrency"/>
+                                    </template>
+                                </i18n>
+                                <i18n v-else tag="span" path="{amount} fee" class="fee">
+                                    <template #amount>
+                                        <FiatAmount :amount="roundedUpFiatFee"
                                             :hideDecimals="false" :currency="fiatCurrency"/>
                                     </template>
                                 </i18n>
@@ -182,9 +188,15 @@
                                     <CircleSpinner />
                                 </template>
                                 <template v-else>
-                                    <i18n tag="span" :path="`${feeSmallerThanSmUnit && '< '}{amount} fee`" class="fee">
+                                    <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
                                         <template #amount>
-                                            <FiatAmount :amount="feeSmallerThanSmUnit ? fiatSmUnit : roundedUpFiatFee"
+                                            <FiatAmount :amount="fiatSmUnit"
+                                                :hideDecimals="false" :currency="fiatCurrency"/>
+                                        </template>
+                                    </i18n>
+                                    <i18n v-else tag="span" path="{amount} fee" class="fee">
+                                        <template #amount>
+                                            <FiatAmount :amount="roundedUpFiatFee"
                                                 :hideDecimals="false" :currency="fiatCurrency"/>
                                         </template>
                                     </i18n>
@@ -410,13 +422,11 @@ export default defineComponent({
             }
         }
 
-        const feeIntervalId = ref<ReturnType<typeof setInterval> | undefined>();
-
         const amount = ref(0);
         const fee = ref<number>(0);
         const feeLoading = ref(true);
 
-        const relay = ref<RelayServerInfo | undefined>();
+        const relay = ref<RelayServerInfo | null>(null);
 
         const maxSendableAmount = computed(() => Math.max((addressInfo.value!.balance || 0) - fee.value, 0));
 
@@ -577,7 +587,7 @@ export default defineComponent({
                     recipientWithLabel.value!.address,
                     amount.value,
                     recipientWithLabel.value!.label,
-                    relay.value,
+                    relay.value || undefined,
                 );
 
                 if (!tx) {
@@ -643,23 +653,23 @@ export default defineComponent({
             window.clearTimeout(successCloseTimeout);
         });
 
-        // watching amount or every 20 seconds
-        const FEE_REFRESH_INTERVAL = 20 * 1000;
-
         async function setFeeInformation() {
-            const feeInformation = await calculateFee('transferWithApproval');
+            const feeInformation = await calculateFee('transferWithApproval', relay.value || undefined);
             fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
             relay.value = feeInformation.relay;
             feeLoading.value = false;
         }
 
-        watch([page, statusScreenOpened], async () => {
-            if (!statusScreenOpened.value) {
-                // USDC fee does not depend on the amount, therefore it is not reactive to amount
-                await setFeeInformation();
-                feeIntervalId.value = setInterval(setFeeInformation, FEE_REFRESH_INTERVAL);
-            } else if (feeIntervalId.value) {
-                clearInterval(feeIntervalId.value);
+        let feeIntervalId: number | null = null;
+
+        // USDC fee does not depend on the amount, therefore it is not reactive to amount
+        watch(statusScreenOpened, async (statusScreenOpen) => {
+            if (!statusScreenOpen) {
+                setFeeInformation();
+                feeIntervalId = window.setInterval(setFeeInformation, 20e3); // 20 seconds
+            } else if (feeIntervalId) {
+                window.clearInterval(feeIntervalId);
+                feeIntervalId = null;
             }
         });
 
@@ -669,8 +679,8 @@ export default defineComponent({
         });
 
         const feeInFiat = computed(() => {
-            const exchangeRatio = fiat$.exchangeRates.usdc[fiat$.currency]!;
-            return fee.value * 1e-6 * exchangeRatio;
+            const exchangeRate = fiat$.exchangeRates.usdc[fiat$.currency]!;
+            return (fee.value / 1e6) * exchangeRate;
         });
 
         const roundedUpFiatFee = computed(() =>

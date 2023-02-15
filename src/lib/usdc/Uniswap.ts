@@ -2,7 +2,7 @@ import { useConfig } from '@/composables/useConfig';
 import { watch } from '@vue/composition-api';
 import { BigNumber, Contract } from 'ethers';
 import { PolygonClient } from '../../ethers';
-import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI, UNISWAP_QUOTER_ABI } from './ContractABIs';
+import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI, UNISWAP_QUOTER_CONTRACT_ABI } from './ContractABIs';
 
 let poolPromise: Promise<Contract> | null = null;
 
@@ -38,38 +38,41 @@ export async function getUniswapPool({ ethers, provider, usdcTransfer }: Polygon
             poolFee,
         ) as string;
 
-        resolve(new ethers.Contract(uniswapPoolAddress, UNISWAP_POOL_CONTRACT_ABI, provider));
+        const poolContract = new ethers.Contract(
+            uniswapPoolAddress,
+            UNISWAP_POOL_CONTRACT_ABI,
+            provider,
+        );
+
+        // @ts-expect-error Index signature in type 'Contract' only permits reading
+        poolContract.fee = poolFee;
+
+        resolve(poolContract);
     }));
 }
 
 // https://docs.uniswap.org/sdk/v3/guides/quoting
 export async function getUsdcPrice(client: PolygonClient) {
     const pool = await getUniswapPool(client);
-    const [usdc, wmatic, fee] = await Promise.all([
-        pool.token0(),
-        pool.token1(),
-        pool.fee(),
-    ]);
-
     const { config } = useConfig();
 
     const quoterContract = new client.ethers.Contract(
-        config.usdc.uniswapQuoter,
-        UNISWAP_QUOTER_ABI,
+        config.usdc.uniswapQuoterContract,
+        UNISWAP_QUOTER_CONTRACT_ABI,
         client.provider,
     );
 
     // MATIC amount that would be received for swapping 1 USDC
     const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
-        usdc, // in
-        wmatic, // out
-        fee,
+        config.usdc.usdcContract, // in
+        config.usdc.wmaticContract, // out
+        pool.fee,
         1_000_000, // 1 USDC
         0,
-    );
+    ) as BigNumber;
 
     // Convert to USDC smallest unit. We cannot get directly the USDC price for
     // USDC smallest unit because is so small that the result is 0, which is
     // not true.
-    return usdcPrice.div(1_000_000);
+    return usdcPrice.toNumber() / 1_000_000;
 }

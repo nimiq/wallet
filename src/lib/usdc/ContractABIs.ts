@@ -178,7 +178,7 @@ export const UNISWAP_POOL_CONTRACT_ABI = [
     'function token1() view returns (address)',
 ];
 
-export const UNISWAP_QUOTER_ABI = [
+export const UNISWAP_QUOTER_CONTRACT_ABI = [
     // 'constructor(address _factory, address _WETH9) nonpayable',
     // 'function WETH9() view returns (address)',
     // 'function factory() view returns (address)',

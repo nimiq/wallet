@@ -2,6 +2,7 @@ import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
 import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '@nimiq/oasis-api';
+import { Transaction as PolygonTransaction } from './UsdcTransactions';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -14,8 +15,8 @@ export enum SwapState {
 }
 
 export enum SwapDirection {
-    NIM_TO_BTC,
-    BTC_TO_NIM,
+    LEFT_TO_RIGHT,
+    RIGHT_TO_LEFT,
 }
 
 export type SwapNimData = {
@@ -42,6 +43,17 @@ export type SwapBtcData = {
     },
 };
 
+export type SwapUsdcData = {
+    asset: SwapAsset.USDC,
+    transactionHash: string,
+    htlc?: {
+        address?: string,
+        refundAddress: string,
+        redeemAddress: string,
+        timeoutTimestamp: number,
+    },
+};
+
 export type SwapEurData = {
     asset: SwapAsset.EUR,
     bankLabel?: string,
@@ -60,7 +72,7 @@ export type SwapEurData = {
     },
 };
 
-export type SwapData = SwapNimData | SwapBtcData | SwapEurData;
+export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | SwapEurData;
 
 export type Swap = {
     id?: string,
@@ -84,10 +96,13 @@ export type ActiveSwap = SwapObject & {
     settlementAuthorizationToken?: string,
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
-    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
-    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
+    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
+        | PolygonTransaction,
+    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
+        | PolygonTransaction,
     secret?: string,
-    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc,
+    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
+        | PolygonTransaction,
     error?: string,
 }
 
@@ -130,7 +145,7 @@ export const useSwapsStore = createStore({
                 ...(swap.out && 'transactionHash' in swap.out ? { [swap.out.transactionHash]: hash } : {}),
             };
         },
-        addFundingData(hash: string, data: SwapNimData | SwapBtcData | SwapEurData, newSwapData: Swap = {}) {
+        addFundingData(hash: string, data: SwapData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,
@@ -138,7 +153,7 @@ export const useSwapsStore = createStore({
                 ...newSwapData,
             });
         },
-        addSettlementData(hash: string, data: SwapNimData | SwapBtcData | SwapEurData, newSwapData: Swap = {}) {
+        addSettlementData(hash: string, data: SwapData, newSwapData: Swap = {}) {
             const swap: Swap = this.state.swaps[hash] || {};
             this.setSwap(hash, {
                 ...swap,

@@ -4,15 +4,30 @@
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <PageHeader>
-            {{ $t('Swap NIM and BTC') }}
+            {{ $t('Swap Currencies') }}
             <div slot="more" class="flex-column">
-                <div class="nq-notice font-weight-normal">
-                    {{ $t('Use the slider or edit values to set up a swap.') }}
+                <div class="pair-selection flex-row">
+                    <ButtonGroup
+                        :options="Object.fromEntries(SUPPORTED_ASSETS.map((asset) => [asset, asset]))"
+                        :value="leftAsset"
+                        @input="setLeftAsset"
+                    />
+                    <SwapIcon />
+                    <ButtonGroup
+                        :options="Object.fromEntries(SUPPORTED_ASSETS.map((asset) => [asset, asset]))"
+                        :value="rightAsset"
+                        @input="setRightAsset"
+                    />
                 </div>
                 <div class="pills flex-row">
-                    <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
+                    <Tooltip v-if="rightUnitsPerLeftCoin"
+                        :styles="{width: '25.5rem'}"
+                        preferredPosition="bottom right"
+                        :container="this"
+                    >
                         <div slot="trigger" class="pill exchange-rate">
-                            1 NIM = <Amount :amount="Math.round(satsPerNim)" currency="btc"/>
+                            1 {{ leftAsset }} =
+                            <Amount :amount="Math.round(rightUnitsPerLeftCoin)" :currency="rightAsset.toLowerCase()"/>
                         </div>
                         <span>{{ $t('This rate includes the swap fee.') }}</span>
                         <p class="explainer">
@@ -21,8 +36,21 @@
                     </Tooltip>
                     <SwapFeesTooltip
                         preferredPosition="bottom left"
-                        :btcFeeFiat="myBtcFeeFiat + serviceBtcFeeFiat"
-                        :nimFeeFiat="myNimFeeFiat + serviceNimFeeFiat"
+                        :nimFeeFiat="leftAsset === SwapAsset.NIM
+                            ? myLeftFeeFiat + serviceLeftFeeFiat
+                            : rightAsset === SwapAsset.NIM
+                                ? myRightFeeFiat + serviceRightFeeFiat
+                                : undefined"
+                        :btcFeeFiat="leftAsset === SwapAsset.BTC
+                            ? myLeftFeeFiat + serviceLeftFeeFiat
+                            : rightAsset === SwapAsset.BTC
+                                ? myRightFeeFiat + serviceRightFeeFiat
+                                : undefined"
+                        :usdcFeeFiat="leftAsset === SwapAsset.USDC
+                            ? myLeftFeeFiat + serviceLeftFeeFiat
+                            : rightAsset === SwapAsset.USDC
+                                ? myRightFeeFiat + serviceRightFeeFiat
+                                : undefined"
                         :serviceSwapFeeFiat="serviceSwapFeeFiat"
                         :serviceSwapFeePercentage="serviceSwapFeePercentage"
                         :currency="currency"
@@ -30,10 +58,10 @@
                     >
                         <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': isHighRelativeFees}">
                             <LightningIcon v-if="isHighRelativeFees"/>
-                            <FiatAmount :amount="myBtcFeeFiat
-                                + myNimFeeFiat
-                                + serviceBtcFeeFiat
-                                + serviceNimFeeFiat
+                            <FiatAmount :amount="myRightFeeFiat
+                                + myLeftFeeFiat
+                                + serviceRightFeeFiat
+                                + serviceLeftFeeFiat
                                 + serviceSwapFeeFiat"
                                 :currency="currency"/>
                             {{ $t('fees') }}
@@ -74,61 +102,60 @@
         </PageHeader>
         <PageBody class="flex-column">
             <SwapBalanceBar
-                :newNimBalance="newNimBalance"
-                :newBtcBalance="newBtcBalance"
-                :satsPerNim="satsPerNim"
-                :limits="{ fiat: currentLimitFiat }"
+                :leftAsset="leftAsset"
+                :rightAsset="rightAsset"
+                :newLeftBalance="newLeftBalance"
+                :newRightBalance="newRightBalance"
+                :fiatLimit="typeof currentLimitFiat === 'number' ? currentLimitFiat : undefined"
                 @change="onSwapBalanceBarChange"
                 @onActiveAddressClick="addressListOverlayOpened = true"
             />
             <div class="columns swap-amounts flex-row">
-                <div class="left-column" :class="!wantNim && !getNim
+                <div class="left-column" :class="!wantLeft && !getLeft
                     ? 'no-value'
-                    : direction === SwapDirection.NIM_TO_BTC ? 'nq-blue' : 'nq-green'"
+                    : direction === SwapDirection.LEFT_TO_RIGHT ? 'nq-blue' : 'nq-green'"
                 >
                     <AmountInput
-                        :value="wantNim || capDecimals(getNim, SwapAsset.NIM)"
-                        @focus="onFocus(SwapAsset.NIM, $event)"
-                        @input="onInput(SwapAsset.NIM, $event)"
+                        :value="wantLeft || capDecimals(getLeft, leftAsset)"
+                        @focus="onFocus(leftAsset, $event)"
+                        @input="onInput(leftAsset, $event)"
                         @blur="onBlur($event)"
                         :class="{
-                            'positive-value': wantNim > 0 || capDecimals(getNim, SwapAsset.NIM) > 0,
-                            'negative-value': wantNim < 0 || capDecimals(getNim, SwapAsset.NIM) < 0,
+                            'positive-value': wantLeft > 0 || getLeft > 0,
+                            'negative-value': wantLeft < 0 || getLeft < 0,
                         }"
-                        :placeholder="getPlaceholder(SwapAsset.NIM)"
-                        :maxFontSize="2.5" :decimals="5" preserveSign>
+                        :placeholder="getPlaceholder(leftAsset)"
+                        :maxFontSize="2.5" :decimals="effectiveDecimals(leftAsset)" preserveSign>
+                        <span slot="suffix" class="ticker">
+                            {{ leftAsset === SwapAsset.BTC ? btcUnit.ticker : leftAsset }}
+                        </span>
                     </AmountInput>
-                    <FiatConvertedAmount :amount="Math.abs(wantNim || getNim)" currency="nim"/>
+                    <FiatConvertedAmount
+                        :amount="Math.abs(wantLeft || getLeft)"
+                        :currency="leftAsset.toLowerCase()"/>
                 </div>
-                <div class="right-column" :class="!wantBtc && !getBtc
+                <div class="right-column" :class="!wantRight && !getRight
                     ? 'no-value'
-                    : direction === SwapDirection.BTC_TO_NIM ? 'nq-blue' : 'nq-green'"
+                    : direction === SwapDirection.RIGHT_TO_LEFT ? 'nq-blue' : 'nq-green'"
                 >
                     <AmountInput
-                        :value="wantBtc || capDecimals(getBtc, SwapAsset.BTC)"
-                        @focus="onFocus(SwapAsset.BTC, $event)"
-                        @input="onInput(SwapAsset.BTC, $event)"
+                        :value="wantRight || capDecimals(getRight, rightAsset)"
+                        @focus="onFocus(rightAsset, $event)"
+                        @input="onInput(rightAsset, $event)"
                         @blur="onBlur($event)"
                         :class="{
-                            'positive-value': wantBtc > 0 || capDecimals(getBtc, SwapAsset.BTC) > 0,
-                            'negative-value': wantBtc < 0 || capDecimals(getBtc, SwapAsset.BTC) < 0,
+                            'positive-value': wantRight > 0 || getRight > 0,
+                            'negative-value': wantRight < 0 || getRight < 0,
                         }"
-                        :placeholder="getPlaceholder(SwapAsset.BTC)"
-                        :maxFontSize="2.5" :decimals="btcUnit.decimals" preserveSign>
-                        <span slot="suffix" class="ticker">{{ btcUnit.ticker }}</span>
+                        :placeholder="getPlaceholder(rightAsset)"
+                        :maxFontSize="2.5" :decimals="effectiveDecimals(rightAsset)" preserveSign>
+                        <span slot="suffix" class="ticker">
+                            {{ rightAsset === SwapAsset.BTC ? btcUnit.ticker : rightAsset }}
+                        </span>
                     </AmountInput>
-                    <FiatConvertedAmount :amount="Math.abs(wantBtc || getBtc)" currency="btc"/>
-                </div>
-            </div>
-
-            <div class="columns new-balances flex-row">
-                <div class="left-column">
-                    <Amount :amount="newNimBalance" currency="nim" value-mask/>
-                    <FiatConvertedAmount :amount="newNimBalance" currency="nim" value-mask/>
-                </div>
-                <div class="right-column">
-                    <Amount :amount="newBtcBalance" currency="btc" value-mask/>
-                    <FiatConvertedAmount :amount="newBtcBalance" currency="btc" value-mask/>
+                    <FiatConvertedAmount
+                        :amount="Math.abs(wantRight || getRight)"
+                        :currency="rightAsset.toLowerCase()"/>
                 </div>
             </div>
         </PageBody>
@@ -173,13 +200,19 @@
                     :swapState="swap.state"
                     :fromAsset="swap.from.asset"
                     :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="swap.contracts[swap.from.asset].htlc.address"
+                    :fromAddress="'contract' in swap.contracts[swap.from.asset].htlc
+                        ? swap.contracts[swap.from.asset].htlc.contract
+                        : swap.contracts[swap.from.asset].htlc.address"
                     :toAsset="swap.to.asset"
                     :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="swap.contracts[swap.to.asset].htlc.address"
+                    :toAddress="'contract' in swap.contracts[swap.to.asset].htlc
+                        ? swap.contracts[swap.to.asset].htlc.contract
+                        : swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
-                    :switchSides="swap.from.asset === SwapAsset.BTC"
+                    :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
+                    :switchSides="swap.from.asset === rightAsset"
+                    :stateEnteredAt="swap.stateEnteredAt"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 />
@@ -214,6 +247,9 @@ import {
     HtlcCreationInstructions,
     HtlcSettlementInstructions,
     SetupSwapResult,
+    SignedTransaction,
+    SignedBtcTransaction,
+    SignedPolygonTransaction,
 } from '@nimiq/hub-api';
 import {
     cancelSwap,
@@ -229,6 +265,9 @@ import {
     Swap,
 } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
+import type { BigNumber } from 'ethers';
+import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
+import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -250,6 +289,7 @@ import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import { useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
@@ -260,15 +300,42 @@ import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
+import { getPolygonClient, calculateFee as calculateUsdcFee, getHtlcContract } from '../../ethers';
+import { USDC_HTLC_CONTRACT_ABI } from '../../lib/usdc/ContractABIs';
+import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
+import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import ButtonGroup from '../ButtonGroup.vue';
+import SwapIcon from '../icons/SwapIcon.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
+const SUPPORTED_ASSETS = [
+    SwapAsset.NIM,
+    SwapAsset.BTC,
+    SwapAsset.USDC,
+];
+
 export default defineComponent({
     name: 'swap-modal',
+    props: {
+        pair: {
+            type: String,
+            default: `${SwapAsset.NIM}-${SwapAsset.BTC}`,
+            validator: (value) => {
+                const [left, right] = value.split('-');
+                return SUPPORTED_ASSETS.includes(left) && SUPPORTED_ASSETS.includes(right);
+            },
+        },
+    },
+    // @ts-expect-error Cannot derive types of props and context
     setup(props, context) {
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
-        const fixedAsset = ref<SwapAsset>(SwapAsset.NIM);
+
+        const leftAsset = ref(props.pair.split('-')[0] as SwapAsset);
+        const rightAsset = ref(props.pair.split('-')[1] as SwapAsset);
+
+        const fixedAsset = ref<SwapAsset>(leftAsset.value);
 
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
@@ -279,6 +346,10 @@ export default defineComponent({
 
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
+        const {
+            activeAddress: activeUsdcAddress,
+            accountBalance: accountUsdcBalance,
+        } = useUsdcAddressStore();
         const { exchangeRates, currency } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
 
@@ -291,9 +362,10 @@ export default defineComponent({
         const { config } = useConfig();
         const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
             nimAddress: activeAddress.value!,
+            usdcAddress: activeUsdcAddress.value,
         });
 
-        // Re-run limit calculation when address changes
+        // Re-run limit calculation when address changes (ony NIM address can change within the active account)
         watch(activeAddress, (address) => {
             limitsNimAddress.value = address || undefined;
         }, { lazy: true });
@@ -324,6 +396,20 @@ export default defineComponent({
             assets.value = await getAssets();
         }
 
+        const DECIMALS = {
+            [SwapAsset.NIM]: 5,
+            [SwapAsset.BTC]: 8,
+            [SwapAsset.USDC]: 6,
+            [SwapAsset.EUR]: 2, // For TS completeness
+        } as const;
+
+        function effectiveDecimals(asset: SwapAsset) {
+            return {
+                ...DECIMALS,
+                [SwapAsset.BTC]: btcUnit.value.decimals,
+            }[asset];
+        }
+
         function capDecimals(amount: number, asset: SwapAsset) {
             if (!amount) return 0;
 
@@ -331,9 +417,8 @@ export default defineComponent({
 
             amount = Math.abs(amount);
 
-            const currencyDecimals = asset === SwapAsset.NIM ? 5 : btcUnit.value.decimals;
             const displayDecimals = calculateDisplayedDecimals(amount, asset.toLowerCase() as CryptoCurrency);
-            const roundingFactor = 10 ** (currencyDecimals - displayDecimals);
+            const roundingFactor = 10 ** (effectiveDecimals(asset) - displayDecimals);
 
             return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
         }
@@ -342,13 +427,23 @@ export default defineComponent({
          * SWAP SETUP
          */
 
-        const satsPerNim = computed<number | undefined>(() => {
-            if (!estimate.value) {
-                const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
-                const btcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
+        const rightUnitsPerLeftCoin = computed<number | undefined>(() => {
+            // Only use estimate to calculate ratio when the estimate is for the two currently selected assets
+            const isEstimateForCurrentPair = !!estimate.value
+                && [
+                    estimate.value.from.asset,
+                    estimate.value.to.asset,
+                ].sort().join() === [
+                    leftAsset.value,
+                    rightAsset.value,
+                ].sort().join();
 
-                if (!nimRate || !btcRate) return undefined;
-                return Math.round((nimRate / btcRate) * 1e8);
+            if (!estimate.value || !isEstimateForCurrentPair) {
+                const leftRate = exchangeRates.value[leftAsset.value.toLowerCase()][currency.value];
+                const rightRate = exchangeRates.value[rightAsset.value.toLowerCase()][currency.value];
+
+                if (!leftRate || !rightRate) return undefined;
+                return Math.round((leftRate / rightRate) * 10 ** DECIMALS[rightAsset.value]);
             }
 
             /**
@@ -363,149 +458,281 @@ export default defineComponent({
              *   own network fees: `to.amount + to.serviceNetworkFee`
              */
 
-            let nim: number;
-            let btc: number;
-            if (estimate.value.from.asset === SwapAsset.NIM) {
+            let leftAmount: number;
+            let rightAmount: number;
+            if (estimate.value.from.asset === leftAsset.value) {
                 const { from, to } = estimate.value;
-                nim = from.amount - from.serviceNetworkFee;
-                btc = to.amount + to.serviceNetworkFee;
+                leftAmount = from.amount - from.serviceNetworkFee;
+                rightAmount = to.amount + to.serviceNetworkFee;
             } else {
                 const { from, to } = estimate.value;
-                btc = from.amount - from.serviceNetworkFee;
-                nim = to.amount + to.serviceNetworkFee;
+                rightAmount = from.amount - from.serviceNetworkFee;
+                leftAmount = to.amount + to.serviceNetworkFee;
             }
 
-            return ((btc / 1e8) / (nim / 1e5)) * 1e8;
+            const leftCoinsToUnits = 10 ** DECIMALS[leftAsset.value];
+            const rightCoinsToUnits = 10 ** DECIMALS[rightAsset.value];
+
+            return ((rightAmount / rightCoinsToUnits) / (leftAmount / leftCoinsToUnits)) * rightCoinsToUnits;
         });
 
-        const wantNim = ref(0);
-        const wantBtc = ref(0);
+        const wantLeft = ref(0);
+        const wantRight = ref(0);
+
+        // Whenever the swap assets change, reset values to 0
+        // Because handling conversions of values between assets is too much of a hassle to be worth it
+        watch([leftAsset, rightAsset], ([newLeft]) => {
+            wantLeft.value = 0;
+            wantRight.value = 0;
+            fixedAsset.value = newLeft;
+        }, { lazy: true });
 
         const direction = computed(() => {
-            if (wantNim.value < 0 || wantBtc.value > 0) return SwapDirection.NIM_TO_BTC;
-            if (wantNim.value > 0 || wantBtc.value < 0) return SwapDirection.BTC_TO_NIM;
-            return SwapDirection.NIM_TO_BTC;
+            if (wantLeft.value < 0 || wantRight.value > 0) return SwapDirection.LEFT_TO_RIGHT;
+            if (wantLeft.value > 0 || wantRight.value < 0) return SwapDirection.RIGHT_TO_LEFT;
+            return SwapDirection.LEFT_TO_RIGHT;
         });
 
-        const getNim = computed(() => {
-            if (!wantBtc.value) return 0;
+        const getLeft = computed(() => {
+            if (!wantRight.value) return 0;
 
-            let btc = wantBtc.value;
+            let right = wantRight.value;
             if (estimate.value) {
-                if (btc < 0) {
+                if (right < 0 && estimate.value.from.asset === rightAsset.value) {
                     /**
                      * When I sell an asset, Fastspot eventually only receives what I spend, minus the network fees.
                      * So we subtract them from what I want to spend (`btc` here is negative, so adding positive
                      * values "reduces" the asset amount towards zero).
                      */
-                    btc += (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
-                } else {
+                    right += estimate.value.from.serviceNetworkFee + estimate.value.from.fee;
+                } else if (right > 0 && estimate.value.to.asset === rightAsset.value) {
                     /**
                      * When I buy an asset, Fastspot also incurs the two network fees as costs, so we add them
                      * to the amount I want to eventually receive.
                      */
-                    btc += (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                    right += estimate.value.to.serviceNetworkFee + estimate.value.to.fee;
                 }
             }
 
-            let delta = satsPerNim.value ? Math.round((btc / satsPerNim.value) * 1e5) * -1 : 0;
+            const leftCoinsToUnits = 10 ** DECIMALS[leftAsset.value];
+            let delta = rightUnitsPerLeftCoin.value
+                ? Math.round((right / rightUnitsPerLeftCoin.value) * leftCoinsToUnits) * -1
+                : 0;
             if (estimate.value) {
-                if (delta < 0) {
+                if (delta < 0 && estimate.value.from.asset === leftAsset.value) {
                     /**
                      * When I sell an asset, I also have to pay for both network fees, so we add them to the already
                      * negative `delta`.
                      */
-                    delta -= (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
-                } else {
+                    delta -= estimate.value.from.serviceNetworkFee + estimate.value.from.fee;
+                } else if (delta > 0 && estimate.value.to.asset === leftAsset.value) {
                     /**
                      * When I buy an asset, Fastspot incurs both network fees on top of their real exchange rate, so we
                      * have to subtract them from the calculated NIM amount I receive.
                      */
-                    delta -= (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                    delta -= estimate.value.to.serviceNetworkFee + estimate.value.to.fee;
                 }
             }
-            if (wantBtc.value < 0) delta = Math.max(delta, 0);
+            if (wantRight.value < 0) delta = Math.max(delta, 0);
 
             return delta;
         });
-        const getBtc = computed(() => {
-            if (!wantNim.value) return 0;
+        const getRight = computed(() => {
+            if (!wantLeft.value) return 0;
 
-            let nim = wantNim.value;
+            let left = wantLeft.value;
             if (estimate.value) {
-                if (nim < 0) {
-                    nim += (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
-                } else {
-                    nim += (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                if (left < 0 && estimate.value.from.asset === leftAsset.value) {
+                    left += estimate.value.from.serviceNetworkFee + estimate.value.from.fee;
+                } else if (left > 0 && estimate.value.to.asset === leftAsset.value) {
+                    left += estimate.value.to.serviceNetworkFee + estimate.value.to.fee;
                 }
             }
 
-            let delta = satsPerNim.value ? Math.round((nim / 1e5) * satsPerNim.value) * -1 : 0;
+            const leftCoinsToUnits = 10 ** DECIMALS[leftAsset.value];
+            let delta = rightUnitsPerLeftCoin.value
+                ? Math.round((left / leftCoinsToUnits) * rightUnitsPerLeftCoin.value) * -1
+                : 0;
             if (estimate.value) {
-                if (delta < 0) {
-                    delta -= (estimate.value.from.serviceNetworkFee + estimate.value.from.fee);
-                } else {
-                    delta -= (estimate.value.to.serviceNetworkFee + estimate.value.to.fee);
+                if (delta < 0 && estimate.value.from.asset === rightAsset.value) {
+                    delta -= estimate.value.from.serviceNetworkFee + estimate.value.from.fee;
+                } else if (delta > 0 && estimate.value.to.asset === rightAsset.value) {
+                    delta -= estimate.value.to.serviceNetworkFee + estimate.value.to.fee;
                 }
             }
 
-            if (wantNim.value < 0) delta = Math.max(delta, 0);
+            if (wantLeft.value < 0) delta = Math.max(delta, 0);
 
             return delta;
         });
 
-        const nimFeePerUnit = computed(() => (estimate.value && (
-            (estimate.value.from.asset === SwapAsset.NIM && estimate.value.from.feePerUnit)
-            || (estimate.value.to.asset === SwapAsset.NIM && estimate.value.to.feePerUnit)
-        ))
-            || (assets.value && assets.value[SwapAsset.NIM].feePerUnit)
-            || 0, // Default zero fees for NIM
-        );
+        function feePerUnit(asset: SwapAsset) {
+            let fee: number | undefined;
+            if (estimate.value) {
+                if (estimate.value.from.asset === asset) fee = estimate.value.from.feePerUnit;
+                if (estimate.value.to.asset === asset) fee = estimate.value.to.feePerUnit;
+            }
+            if (fee) return fee;
 
-        const btcFeePerUnit = computed(() => (estimate.value && (
-            (estimate.value.from.asset === SwapAsset.BTC && estimate.value.from.feePerUnit)
-            || (estimate.value.to.asset === SwapAsset.BTC && estimate.value.to.feePerUnit)
-        ))
-            || (assets.value && assets.value[SwapAsset.BTC].feePerUnit)
-            || 1,
-        );
+            if (assets.value) fee = assets.value[asset].feePerUnit;
+            if (fee) return fee;
+
+            return asset === SwapAsset.NIM
+                ? 0 // 0 NIM
+                : asset === SwapAsset.BTC
+                    ? 1 // 1 sat
+                    : 200e9; // 200 Gwei - For USDC it doesn't matter, since we get the fee from the network anyway
+        }
 
         // 48 extra weight units for BTC HTLC funding tx
-        const btcFeeForSendingAll = computed(() => estimateFees(accountUtxos.value.length, 1, btcFeePerUnit.value, 48));
-        const btcMaxSendableAmount = computed(() => Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
+        const btcFeeForSendingAll = computed(() =>
+            estimateFees(accountUtxos.value.length, 1, feePerUnit(SwapAsset.BTC), 48));
+        const btcMaxSendableAmount = computed(() =>
+            Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
 
-        function calculateFees(feesPerUnit = { nim: 0, btc: 0 }): {
+        // const usdcMaxSendableAmount = computed(() =>
+        //     Math.max(accountUsdcBalance.value - usdcFundingFee.value, 0));
+
+        function calculateMyFees(feesPerUnit?: { nim: number, btc: number }): {
+            fundingFee: number,
+            settlementFee: number,
+        };
+        function calculateMyFees(feesPerUnit: { nim: number, btc: number } | undefined, asPromise: true): {
+            fundingFee: number | Promise<number>,
+            settlementFee: number | Promise<number>,
+        };
+        function calculateMyFees(feesPerUnit = { nim: 0, btc: 0 }, asPromise = false) {
+            let fundingFee: number | Promise<number> | null = null;
+            let settlementFee: number | Promise<number> | null = null;
+
+            const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
+                ? leftAsset.value
+                : rightAsset.value;
+
+            const settlementAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
+                ? rightAsset.value
+                : leftAsset.value;
+
+            const fundingFeePerUnit = feePerUnit(fundingAsset);
+            const settlementFeePerUnit = feePerUnit(settlementAsset);
+
+            switch (fundingAsset) {
+                case SwapAsset.NIM:
+                    // 244 = NIM HTLC funding tx size
+                    fundingFee = (feesPerUnit.nim || fundingFeePerUnit) * 244;
+                    break;
+                case SwapAsset.BTC: {
+                    const wantBtc = rightAsset.value === SwapAsset.BTC ? wantRight.value : wantLeft.value;
+                    const getBtc = rightAsset.value === SwapAsset.BTC ? getRight.value : getLeft.value;
+                    const btcAmount = Math.abs(Math.max(wantBtc, -btcMaxSendableAmount.value) || getBtc);
+                    const selected = selectOutputs(
+                        accountUtxos.value,
+                        btcAmount,
+                        feesPerUnit.btc || fundingFeePerUnit,
+                        48, // 48 extra weight units for BTC HTLC funding tx
+                    );
+                    fundingFee = selected.utxos
+                        .reduce((sum, utxo) => sum + utxo.witness.value, 0)
+                        - btcAmount
+                        - selected.changeAmount;
+                    break;
+                }
+                case SwapAsset.USDC:
+                    if (usdcFeeStuff.value) fundingFee = usdcFeeStuff.value.fee;
+                    else if (!asPromise) fundingFee = 0;
+                    else fundingFee = new Promise<number>((resolve) => { // eslint-disable-line curly
+                        const stop = watch(usdcFeeStuff, (stuff) => {
+                            if (!stuff) return;
+                            resolve(stuff.fee);
+                            stop();
+                        });
+                    });
+                    break;
+                default:
+                    throw new Error(`Fee calculation not implemented for funding ${fundingAsset}`);
+            }
+
+            switch (settlementAsset) {
+                case SwapAsset.NIM:
+                    // 233 = NIM HTLC settlement tx size
+                    settlementFee = (feesPerUnit.nim || settlementFeePerUnit) * 233;
+                    break;
+                case SwapAsset.BTC:
+                    // 135 extra weight units for BTC HTLC settlement tx
+                    settlementFee = estimateFees(1, 1, feesPerUnit.btc || settlementFeePerUnit, 135);
+                    break;
+                case SwapAsset.USDC:
+                    if (usdcFeeStuff.value) settlementFee = usdcFeeStuff.value.fee;
+                    else if (!asPromise) settlementFee = 0;
+                    else settlementFee = new Promise<number>((resolve) => { // eslint-disable-line curly
+                        const stop = watch(usdcFeeStuff, (stuff) => {
+                            if (!stuff) return;
+                            resolve(stuff.fee);
+                            stop();
+                        });
+                    });
+                    break;
+                default:
+                    throw new Error(`Fee calculation not implemented for settling ${settlementAsset}`);
+            }
+
+            if (fundingFee === null || settlementFee === null) throw new Error('Invalid swap direction');
+
+            return {
+                fundingFee,
+                settlementFee,
+            };
+        }
+
+        function calculateServiceFees(feesPerUnit = { nim: 0, btc: 0 }): {
             fundingFee: number,
             settlementFee: number,
         } {
             let fundingFee: number | null = null;
             let settlementFee: number | null = null;
 
-            if (direction.value === SwapDirection.NIM_TO_BTC) {
-                // NIM
-                fundingFee = (feesPerUnit.nim || nimFeePerUnit.value) * 244; // 244 = NIM HTLC funding tx size
+            const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
+                ? rightAsset.value
+                : leftAsset.value;
 
-                // BTC
-                // 135 extra weight units for BTC HTLC settlement tx
-                settlementFee = estimateFees(1, 1, (feesPerUnit.btc || btcFeePerUnit.value), 135);
+            const settlementAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
+                ? leftAsset.value
+                : rightAsset.value;
+
+            const fundingFeePerUnit = feePerUnit(fundingAsset);
+            const settlementFeePerUnit = feePerUnit(settlementAsset);
+
+            switch (fundingAsset) {
+                case SwapAsset.NIM:
+                    // 244 = NIM HTLC funding tx size
+                    fundingFee = (feesPerUnit.nim || fundingFeePerUnit) * 244;
+                    break;
+                case SwapAsset.BTC: {
+                    // Fastspot charges a fixed 154 vsize for BTC funding txs
+                    fundingFee = 154 * (feesPerUnit.btc || fundingFeePerUnit);
+                    break;
+                }
+                case SwapAsset.USDC:
+                    fundingFee = 0; // TODO
+                    break;
+                default:
+                    throw new Error(`Service fee calculation not implemented for funding ${fundingAsset}`);
             }
 
-            if (direction.value === SwapDirection.BTC_TO_NIM) {
-                // BTC
-                const btcAmount = Math.abs(Math.max(wantBtc.value, -btcMaxSendableAmount.value) || getBtc.value);
-                const selected = selectOutputs(
-                    accountUtxos.value,
-                    btcAmount,
-                    (feesPerUnit.btc || btcFeePerUnit.value),
-                    48, // 48 extra weight units for BTC HTLC funding tx
-                );
-                fundingFee = selected.utxos
-                    .reduce((sum, utxo) => sum + utxo.witness.value, 0)
-                    - btcAmount
-                    - selected.changeAmount;
-
-                // NIM
-                settlementFee = (feesPerUnit.nim || nimFeePerUnit.value) * 233; // 233 = NIM HTLC settlement tx size
+            switch (settlementAsset) {
+                case SwapAsset.NIM:
+                    // 233 = NIM HTLC settlement tx size
+                    settlementFee = (feesPerUnit.nim || settlementFeePerUnit) * 233;
+                    break;
+                case SwapAsset.BTC:
+                    // 135 extra weight units for BTC HTLC settlement tx
+                    settlementFee = estimateFees(1, 1, feesPerUnit.btc || settlementFeePerUnit, 135);
+                    break;
+                case SwapAsset.USDC:
+                    settlementFee = 0; // TODO
+                    break;
+                default:
+                    throw new Error(`Service fee calculation not implemented for settling ${settlementAsset}`);
             }
 
             if (fundingFee === null || settlementFee === null) throw new Error('Invalid swap direction');
@@ -526,25 +753,31 @@ export default defineComponent({
             let from: SwapAsset | RequestAsset<SwapAsset> | null = null;
             let to: SwapAsset | RequestAsset<SwapAsset> | null = null;
 
-            if (fixedAsset.value === SwapAsset.NIM) {
-                if (direction.value === SwapDirection.NIM_TO_BTC) {
-                    from = { NIM: (Math.abs(wantNim.value) - fundingFee) / 1e5 };
-                    to = SwapAsset.BTC;
+            if (fixedAsset.value === leftAsset.value) {
+                const unitsToCoins = 10 ** DECIMALS[leftAsset.value];
+                if (direction.value === SwapDirection.LEFT_TO_RIGHT) {
+                    // @ts-expect-error Object key not specific enough?
+                    from = { [leftAsset.value]: (Math.abs(wantLeft.value) - fundingFee) / unitsToCoins };
+                    to = rightAsset.value;
                 }
-                if (direction.value === SwapDirection.BTC_TO_NIM) {
-                    from = SwapAsset.BTC;
-                    to = { NIM: (wantNim.value + settlementFee) / 1e5 };
+                if (direction.value === SwapDirection.RIGHT_TO_LEFT) {
+                    from = rightAsset.value;
+                    // @ts-expect-error Object key not specific enough?
+                    to = { [leftAsset.value]: (wantLeft.value + settlementFee) / unitsToCoins };
                 }
             }
 
-            if (fixedAsset.value === SwapAsset.BTC) {
-                if (direction.value === SwapDirection.BTC_TO_NIM) {
-                    from = { BTC: (Math.abs(wantBtc.value) - fundingFee) / 1e8 };
-                    to = SwapAsset.NIM;
+            if (fixedAsset.value === rightAsset.value) {
+                const unitsToCoins = 10 ** DECIMALS[rightAsset.value];
+                if (direction.value === SwapDirection.RIGHT_TO_LEFT) {
+                    // @ts-expect-error Object key not specific enough?
+                    from = { [rightAsset.value]: (Math.abs(wantRight.value) - fundingFee) / unitsToCoins };
+                    to = leftAsset.value;
                 }
-                if (direction.value === SwapDirection.NIM_TO_BTC) {
-                    from = SwapAsset.NIM;
-                    to = { BTC: (wantBtc.value + settlementFee) / 1e8 };
+                if (direction.value === SwapDirection.LEFT_TO_RIGHT) {
+                    from = leftAsset.value;
+                    // @ts-expect-error Object key not specific enough?
+                    to = { [rightAsset.value]: (wantRight.value + settlementFee) / unitsToCoins };
                 }
             }
 
@@ -556,6 +789,100 @@ export default defineComponent({
             };
         }
 
+        let usdcRelay = {
+            relay: undefined as RelayServerInfo | undefined,
+            timestamp: 0,
+        };
+
+        type UsdcFees = {
+            /** Fee in MATIC units */
+            chainTokenFee: BigNumber,
+            /** Fee in USDC units */
+            fee: number,
+            /** Gas limit in MATIC units */
+            gasLimit: BigNumber,
+            /** Gas price in MATIC units */
+            gasPrice: BigNumber,
+            /** Relay details */
+            relay: RelayServerInfo,
+        };
+
+        const usdcFeeStuff = ref<UsdcFees>(null);
+
+        // Used for Fastspot service fee calculation
+        const usdcPriceInWei = ref<number>(null);
+        const usdcGasPrice = ref<number>(null);
+
+        async function calculateUsdcHtlcFee() {
+            // Prevent changing USDC fees while processing the swap suggestion
+            if (currentlySigning.value) return;
+
+            usdcFeeStuff.value = null;
+
+            const htlcContract = await getHtlcContract();
+
+            // Use the existing relay if it was selected in the last 10 minutes
+            const forceRelay = usdcRelay.timestamp > Date.now() - 10 * 60 * 1e3
+                ? usdcRelay.relay
+                : undefined;
+
+            const {
+                chainTokenFee,
+                fee,
+                gasLimit,
+                gasPrice,
+                relay,
+                usdcPrice,
+            } = await calculateUsdcFee('openWithApproval', forceRelay, htlcContract);
+            // We use a fixed method here ^, as the method is only used to calculate the required
+            // acceptance budget for relays. The method 'openWithApproval' has the highest gas cost,
+            // so any relay selected will work for all other methods as well.
+            // This way we do not need to re-run relay selection if the method changes (when swap
+            // direction changes), which is a long wait that we want to spare the user.
+
+            if (!forceRelay) {
+                // Store the new relay
+                usdcRelay = {
+                    relay,
+                    timestamp: Date.now(),
+                };
+            }
+
+            usdcPriceInWei.value = usdcPrice.toNumber();
+            usdcGasPrice.value = gasPrice.toNumber();
+
+            usdcFeeStuff.value = {
+                chainTokenFee,
+                fee: fee.toNumber(),
+                gasLimit,
+                gasPrice,
+                relay,
+            };
+        }
+
+        let usdcFeeUpdateInterval = -1;
+
+        watch([leftAsset, rightAsset], (newAssets, oldAssets) => {
+            const newLeft = newAssets?.[0];
+            const newRight = newAssets?.[1];
+            const oldLeft = oldAssets?.[0];
+            const oldRight = oldAssets?.[1];
+            if ([newLeft, newRight].includes(SwapAsset.USDC) && ![oldLeft, oldRight].includes(SwapAsset.USDC)) {
+                calculateUsdcHtlcFee();
+                usdcFeeUpdateInterval = window.setInterval(calculateUsdcHtlcFee, 30e3); // Update fee every 30s
+            } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
+                window.clearInterval(usdcFeeUpdateInterval);
+                usdcFeeUpdateInterval = -1;
+                usdcFeeStuff.value = null;
+            }
+        });
+
+        // watch(
+        //     usdcFeeStuff,
+        //     (stuff) => console.log('Got new USDC fee:', stuff?.fee),
+        //     { lazy: true },
+        // );
+
         const fetchingEstimate = ref(false);
 
         let debounce: number | null = null;
@@ -566,7 +893,7 @@ export default defineComponent({
                 debounce = null;
             }
 
-            if (!wantNim.value && !wantBtc.value) {
+            if (!wantLeft.value && !wantRight.value) {
                 estimate.value = null;
                 fetchingEstimate.value = false;
                 estimateError.value = null;
@@ -576,52 +903,39 @@ export default defineComponent({
             fetchingEstimate.value = true;
 
             try {
-                const fees = calculateFees();
-                const { to, from } = calculateRequestData(fees);
+                const fees = calculateMyFees(undefined, true);
+                const { to, from } = calculateRequestData({
+                    fundingFee: await fees.fundingFee,
+                    settlementFee: await fees.settlementFee,
+                });
 
                 const newEstimate = await getEstimate(
                     from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
                     to as SwapAsset,
                 );
 
-                const nimPrice = newEstimate.from.asset === SwapAsset.NIM
-                    ? newEstimate.from
-                    : newEstimate.to.asset === SwapAsset.NIM
-                        ? newEstimate.to
-                        : null;
-                const btcPrice = newEstimate.from.asset === SwapAsset.BTC
-                    ? newEstimate.from
-                    : newEstimate.to.asset === SwapAsset.BTC
-                        ? newEstimate.to
-                        : null;
-
-                if (!nimPrice || !btcPrice) {
-                    throw new Error('UNEXPECTED: NIM or BTC price not present in estimate');
-                }
-
                 // Update local fees with latest feePerUnit values
-                const { fundingFee, settlementFee } = calculateFees({
-                    nim: nimPrice.feePerUnit!,
-                    btc: btcPrice.feePerUnit!,
-                });
+                const { fundingFee, settlementFee } = calculateMyFees({
+                    nim: newEstimate.from.asset === SwapAsset.NIM
+                        ? newEstimate.from.feePerUnit!
+                        : newEstimate.to.asset === SwapAsset.NIM
+                            ? newEstimate.to.feePerUnit!
+                            : 0,
+                    btc: newEstimate.from.asset === SwapAsset.BTC
+                        ? newEstimate.from.feePerUnit!
+                        : newEstimate.to.asset === SwapAsset.BTC
+                            ? newEstimate.to.feePerUnit!
+                            : 0,
+                }, true);
 
-                newEstimate.from.fee = fundingFee;
-                newEstimate.to.fee = settlementFee;
+                newEstimate.from.fee = await fundingFee;
+                newEstimate.to.fee = await settlementFee;
 
                 // Check against minimums
                 if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
                     // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
-                    // Note: This currently only checks BTC fees!
-                    const toCoinsFactor = 1e8;
-                    const minimumFiat = ((btcPrice.fee + btcPrice.serviceNetworkFee) / toCoinsFactor)
-                        * exchangeRates.value[CryptoCurrency.BTC][currency.value]!;
-                    estimateError.value = context.root.$t(
-                        'The fees (currently {amount}) determine the minimum amount.',
-                        { amount: `${currency.value.toUpperCase()} ${minimumFiat.toFixed(2)}` },
-                    ) as string;
-                } // eslint-disable-line brace-style
-
-                else {
+                    estimateError.value = context.root.$t('The fees determine the minimum amount.') as string;
+                } else {
                     estimateError.value = null;
                 }
 
@@ -640,6 +954,15 @@ export default defineComponent({
 
         const isLimitReached = ref(false);
 
+        function accountBalance(asset: SwapAsset): number { // eslint-disable-line consistent-return
+            switch (asset) { // eslint-disable-line default-case
+                case SwapAsset.NIM: return activeAddressInfo.value?.balance ?? 0;
+                case SwapAsset.BTC: return accountBtcBalance.value;
+                case SwapAsset.USDC: return accountUsdcBalance.value;
+                case SwapAsset.EUR: return 0;
+            }
+        }
+
         function onInput(asset: SwapAsset, amount: number, originalAmount?: number) {
             if (debounce) {
                 clearTimeout(debounce);
@@ -652,38 +975,38 @@ export default defineComponent({
                 debounce = null;
             }
 
-            if (asset === SwapAsset.NIM) {
-                fixedAsset.value = SwapAsset.NIM;
-                const nimRate = exchangeRates.value[CryptoCurrency.NIM][currency.value];
-                const limit = nimRate && currentLimitFiat.value !== null
-                    ? Math.floor((currentLimitFiat.value / nimRate) * 1e5)
+            if (asset === leftAsset.value) {
+                fixedAsset.value = leftAsset.value;
+                const leftRate = exchangeRates.value[leftAsset.value.toLowerCase()][currency.value];
+                const limit = leftRate && currentLimitFiat.value !== null
+                    ? Math.floor((currentLimitFiat.value / leftRate) * 10 ** DECIMALS[leftAsset.value])
                     : Infinity;
-                wantNim.value = Math.min(limit, Math.max(-limit, amount));
-                wantBtc.value = 0;
+                wantLeft.value = Math.min(limit, Math.max(-limit, amount));
+                wantRight.value = 0;
 
-                // If user has 0 assets in BTC, then only accept negative values
-                if (accountBtcBalance.value === 0 && wantNim.value > 0) {
-                    wantNim.value *= -1;
+                // If user has 0 value in the other asset, then only accept negative values
+                if (!accountBalance(rightAsset.value) && wantLeft.value > 0) {
+                    wantLeft.value *= -1;
                 }
 
-                isLimitReached.value = Math.abs(originalAmount || wantNim.value) === limit;
+                isLimitReached.value = Math.abs(originalAmount || wantLeft.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
-            if (asset === SwapAsset.BTC) {
-                fixedAsset.value = SwapAsset.BTC;
-                const btcRate = exchangeRates.value[CryptoCurrency.BTC][currency.value];
-                const limit = btcRate && currentLimitFiat.value !== null
-                    ? Math.floor((currentLimitFiat.value / btcRate) * 1e8)
+            if (asset === rightAsset.value) {
+                fixedAsset.value = rightAsset.value;
+                const rightRate = exchangeRates.value[rightAsset.value.toLowerCase()][currency.value];
+                const limit = rightRate && currentLimitFiat.value !== null
+                    ? Math.floor((currentLimitFiat.value / rightRate) * 10 ** DECIMALS[rightAsset.value])
                     : Infinity;
-                wantBtc.value = Math.min(limit, Math.max(-limit, amount));
-                wantNim.value = 0;
+                wantRight.value = Math.min(limit, Math.max(-limit, amount));
+                wantLeft.value = 0;
 
-                // If user has 0 assets in NIM, then only accept negative values
-                if (activeAddressInfo.value?.balance === 0 && wantBtc.value > 0) {
-                    wantBtc.value *= -1;
+                // If user has 0 value in the other asset, then only accept negative values
+                if (!accountBalance(leftAsset.value) && wantRight.value > 0) {
+                    wantRight.value *= -1;
                 }
 
-                isLimitReached.value = Math.abs(originalAmount || wantBtc.value) === limit;
+                isLimitReached.value = Math.abs(originalAmount || wantRight.value) === limit;
                 if (limit === 0) openLimitsTooltip();
             }
 
@@ -692,116 +1015,144 @@ export default defineComponent({
             }
         }
 
+        function otherAsset(asset: SwapAsset) {
+            if (asset === leftAsset.value) return rightAsset.value;
+            if (asset === rightAsset.value) return leftAsset.value;
+            throw new Error(`Cannot get other asset to ${asset} as it's not currently selected`);
+        }
+
         // If user only has one asset, then we know that there is only one available operation,
         // so we show only one icon: '-' or '+' depending on the asset
         function getPlaceholder(asset: SwapAsset) {
-            if (asset === SwapAsset.NIM) {
-                if (accountBtcBalance.value === 0) {
-                    return '- 0';
-                }
-                if (activeAddressInfo.value?.balance === 0) {
-                    return '+ 0';
-                }
+            if (!accountBalance(otherAsset(asset))) {
+                return '- 0';
             }
-            if (asset === SwapAsset.BTC) {
-                if (activeAddressInfo.value?.balance === 0) {
-                    return '- 0';
-                }
-                if (accountBtcBalance.value === 0) {
-                    return '+ 0';
-                }
+            if (!accountBalance(asset)) {
+                return '+ 0';
             }
             return '± 0';
         }
 
         function onFocus(asset: SwapAsset, input: HTMLInputElement) {
-            // If user has selected NIM and has 0 assets in BTC, then the input should start with a - symbol,
-            // and viceversa
+            // If user has 0 assets in the other asset than the one selected, the input should start with a - symbol
 
             // If user has already changed the input, do nothing
             if (input.value !== '') return;
 
-            if (
-                // eslint-disable-next-line operator-linebreak
-                (asset === SwapAsset.NIM && accountBtcBalance.value === 0) ||
-                (asset === SwapAsset.BTC && activeAddressInfo.value?.balance === 0)
-            ) {
+            if (!accountBalance(otherAsset(asset))) {
                 input.value = '-';
             }
         }
 
         function onBlur(input: HTMLInputElement) {
             if (input.value === '-') {
-                input.value = '';
+                input.value = ''; // TODO: Doesn't work
             }
         }
 
-        const newNimBalance = computed(() => {
-            if (!activeAddressInfo.value) return 0;
-            return (activeAddressInfo.value.balance || 0) + (wantNim.value || getNim.value);
-        });
+        const newLeftBalance = computed(() => accountBalance(leftAsset.value) + (wantLeft.value || getLeft.value));
 
-        watch(newNimBalance, () => {
-            if (newNimBalance.value < 0) {
-                fixedAsset.value = SwapAsset.NIM;
-                wantNim.value = -(activeAddressInfo.value?.balance || 0);
-                wantBtc.value = 0;
+        watch(newLeftBalance, () => {
+            if (newLeftBalance.value < 0) {
+                fixedAsset.value = leftAsset.value;
+                wantLeft.value = -accountBalance(leftAsset.value);
+                wantRight.value = 0;
             }
         }, { lazy: true });
 
-        const newBtcBalance = computed(() => accountBtcBalance.value + (wantBtc.value || getBtc.value));
+        const newRightBalance = computed(() => accountBalance(rightAsset.value) + (wantRight.value || getRight.value));
 
-        watch(newBtcBalance, () => {
-            if (newBtcBalance.value < 0) {
-                fixedAsset.value = SwapAsset.BTC;
-                wantBtc.value = -accountBtcBalance.value;
-                wantNim.value = 0;
+        watch(newRightBalance, () => {
+            if (newRightBalance.value < 0) {
+                fixedAsset.value = rightAsset.value;
+                wantRight.value = -accountBalance(rightAsset.value);
+                wantLeft.value = 0;
             }
         }, { lazy: true });
 
-        const myNimFeeFiat = computed(() => {
+        const myLeftFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                fee = nimFeePerUnit.value * 244; // 244 = NIM HTLC funding tx size
+                if (leftAsset.value === SwapAsset.USDC) fee = usdcFeeStuff.value?.fee || 0;
+                else {
+                    const { fundingFee, settlementFee } = calculateMyFees();
+                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? fundingFee : settlementFee;
+                }
             } else {
                 const data = swap.value || estimate.value;
-                fee = data.from.asset === SwapAsset.NIM ? data.from.fee : data.to.fee;
+                fee = data.from.asset === leftAsset.value ? data.from.fee : data.to.fee;
             }
-            return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
+            const unitsToCoins = 10 ** DECIMALS[leftAsset.value];
+            return (fee / unitsToCoins) * (exchangeRates.value[leftAsset.value.toLowerCase()][currency.value] || 0);
         });
 
-        const myBtcFeeFiat = computed(() => {
+        const myRightFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                fee = estimateFees(1, 2, btcFeePerUnit.value, 48); // 48 extra weight units for BTC HTLC funding tx
+                if (rightAsset.value === SwapAsset.USDC) fee = usdcFeeStuff.value?.fee || 0;
+                else {
+                    const { fundingFee, settlementFee } = calculateMyFees();
+                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? settlementFee : fundingFee;
+                }
             } else {
                 const data = swap.value || estimate.value;
-                fee = data.from.asset === SwapAsset.BTC ? data.from.fee : data.to.fee;
+                fee = data.from.asset === rightAsset.value ? data.from.fee : data.to.fee;
             }
-            return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+            const unitsToCoins = 10 ** DECIMALS[rightAsset.value];
+            return (fee / unitsToCoins) * (exchangeRates.value[rightAsset.value.toLowerCase()][currency.value] || 0);
         });
 
-        const serviceNimFeeFiat = computed(() => {
+        const serviceLeftFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                fee = nimFeePerUnit.value * 244; // 244 = NIM HTLC funding tx size
+                if (leftAsset.value === SwapAsset.USDC) {
+                    if (!(usdcGasPrice.value || assets.value?.USDC.feePerUnit) || !usdcPriceInWei.value) return 0;
+                    const gasPrice = assets.value?.USDC.feePerUnit || usdcGasPrice.value!;
+
+                    const serviceGasLimit = direction.value === SwapDirection.LEFT_TO_RIGHT ? 150000 : 250000;
+                    fee = Math.ceil((gasPrice * serviceGasLimit) / usdcPriceInWei.value);
+                } else {
+                    const { fundingFee, settlementFee } = calculateServiceFees();
+                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? settlementFee : fundingFee;
+                }
             } else {
                 const data = swap.value || estimate.value;
-                fee = data.from.asset === SwapAsset.NIM ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
+                fee = data.from.asset === leftAsset.value
+                    ? data.from.serviceNetworkFee
+                    : data.to.serviceNetworkFee;
             }
-            return (fee / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0);
+            const unitsToCoins = 10 ** DECIMALS[leftAsset.value];
+            return (fee / unitsToCoins) * (exchangeRates.value[leftAsset.value.toLowerCase()][currency.value] || 0);
         });
 
-        const serviceBtcFeeFiat = computed(() => {
+        const serviceRightFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                fee = btcFeePerUnit.value * 154; // The vsize Fastspot charges for a funding tx
+                if (rightAsset.value === SwapAsset.USDC) {
+                    if (!(usdcGasPrice.value || assets.value?.USDC.feePerUnit) || !usdcPriceInWei.value) return 0;
+                    const gasPrice = assets.value?.USDC.feePerUnit || usdcGasPrice.value!;
+
+                    const serviceGasLimit = direction.value === SwapDirection.RIGHT_TO_LEFT ? 150000 : 250000;
+                    fee = Math.ceil((gasPrice * serviceGasLimit) / usdcPriceInWei.value);
+                } else {
+                    const { fundingFee, settlementFee } = calculateServiceFees();
+                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? fundingFee : settlementFee;
+                }
             } else {
                 const data = swap.value || estimate.value;
-                fee = data.from.asset === SwapAsset.BTC ? data.from.serviceNetworkFee : data.to.serviceNetworkFee;
+                fee = data.from.asset === rightAsset.value
+                    ? data.from.serviceNetworkFee
+                    : data.to.serviceNetworkFee;
             }
-            return (fee / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+            const unitsToCoins = 10 ** DECIMALS[rightAsset.value];
+            return (fee / unitsToCoins) * (exchangeRates.value[rightAsset.value.toLowerCase()][currency.value] || 0);
         });
+
+        // watch([myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat], (prices) => {
+        //     // eslint-disable-next-line @typescript-eslint/no-shadow
+        //     const [myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat] = prices;
+        //     console.log({ myLeftFeeFiat, myRightFeeFiat, serviceLeftFeeFiat, serviceRightFeeFiat });
+        // });
 
         const serviceSwapFeePercentage = computed(() => {
             if (!estimate.value) return config.fastspot.feePercentage * 100;
@@ -815,9 +1166,8 @@ export default defineComponent({
 
             const data = swap.value || estimate.value;
             const feeAmount = (data.from.amount - data.from.serviceNetworkFee) * data.serviceFeePercentage;
-            return data.from.asset === SwapAsset.NIM
-                ? (feeAmount / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
-                : (feeAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+            return (feeAmount / 10 ** DECIMALS[data.from.asset])
+                * (exchangeRates.value[data.from.asset.toLowerCase()][currency.value] || 0);
         });
 
         const isHighRelativeFees = computed(() => {
@@ -825,14 +1175,13 @@ export default defineComponent({
 
             const data = swap.value || estimate.value;
             const fromAmount = data.from.amount - data.from.serviceNetworkFee;
-            const fromFiat = data.from.asset === SwapAsset.NIM
-                ? (fromAmount / 1e5) * (exchangeRates.value[CryptoCurrency.NIM][currency.value] || 0)
-                : (fromAmount / 1e8) * (exchangeRates.value[CryptoCurrency.BTC][currency.value] || 0);
+            const fromFiat = (fromAmount / 10 ** DECIMALS[data.from.asset])
+                * (exchangeRates.value[data.from.asset.toLowerCase()][currency.value] || 0);
 
-            const totalFees = myNimFeeFiat.value
-                + myBtcFeeFiat.value
-                + serviceNimFeeFiat.value
-                + serviceBtcFeeFiat.value
+            const totalFees = myLeftFeeFiat.value
+                + myRightFeeFiat.value
+                + serviceLeftFeeFiat.value
+                + serviceRightFeeFiat.value
                 + serviceSwapFeeFiat.value;
 
             return (totalFees / fromFiat) >= 0.3;
@@ -853,7 +1202,7 @@ export default defineComponent({
             && estimate.value
             && limits.value?.current.usd
             && !fetchingEstimate.value
-            && newNimBalance.value >= 0 && newBtcBalance.value >= 0,
+            && newLeftBalance.value >= 0 && newRightBalance.value >= 0,
         );
 
         /**
@@ -863,19 +1212,23 @@ export default defineComponent({
         async function sign() {
             if (!canSign.value) return;
 
+            // Get up-to-date fees for USDC
+            if ([leftAsset.value, rightAsset.value].includes(SwapAsset.USDC)) {
+                calculateUsdcHtlcFee();
+            }
+
             currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
 
-                const { availableExternalAddresses } = useBtcAddressStore();
-                const nimAddress = activeAddressInfo.value!.address;
-                const btcAddress = availableExternalAddresses.value[0];
-
                 try {
-                    const fees = calculateFees();
-                    const { to, from } = calculateRequestData(fees);
+                    const fees = calculateMyFees(undefined, true);
+                    const { to, from } = calculateRequestData({
+                        fundingFee: await fees.fundingFee,
+                        settlementFee: await fees.settlementFee,
+                    });
 
                     swapSuggestion = await createSwap(
                         from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
@@ -883,7 +1236,7 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { fundingFee, settlementFee } = calculateFees({
+                    const { fundingFee, settlementFee } = calculateMyFees({
                         nim: swapSuggestion.from.asset === SwapAsset.NIM
                             ? swapSuggestion.from.feePerUnit!
                             : swapSuggestion.to.asset === SwapAsset.NIM
@@ -894,10 +1247,10 @@ export default defineComponent({
                             : swapSuggestion.to.asset === SwapAsset.BTC
                                 ? swapSuggestion.to.feePerUnit!
                                 : 0,
-                    });
+                    }, true);
 
-                    swapSuggestion.from.fee = fundingFee;
-                    swapSuggestion.to.fee = settlementFee;
+                    swapSuggestion.from.fee = await fundingFee;
+                    swapSuggestion.to.fee = await settlementFee;
 
                     if (swapSuggestion.to.amount - swapSuggestion.to.fee <= 0) {
                         throw new Error(`${swapSuggestion.to.asset} output value is 0`);
@@ -914,20 +1267,6 @@ export default defineComponent({
                     return;
                 }
 
-                const nimiqClient = await getNetworkClient();
-                await nimiqClient.waitForConsensusEstablished();
-                const headHeight = await nimiqClient.getHeadHeight();
-                if (headHeight > 100) {
-                    useNetworkStore().state.height = headHeight;
-                } else {
-                    throw new Error('Invalid network state, try please reloading the app');
-                }
-
-                const electrumClient = await getElectrumClient();
-                await electrumClient.waitForConsensusEstablished();
-
-                const validityStartHeight = useNetworkStore().state.height;
-
                 // Convert the swapSuggestion to the Hub request.
                 // Note that swap-kyc-handler.ts recalculates the original swapSuggestion amounts that we got from
                 // createSwap, therefore if you change the calculation here, you'll likely also want to change it there.
@@ -937,31 +1276,34 @@ export default defineComponent({
                 let fund: HtlcCreationInstructions | null = null;
                 let redeem: HtlcSettlementInstructions | null = null;
 
-                if (swapSuggestion.to.asset === SwapAsset.BTC) {
+                const { availableExternalAddresses } = useBtcAddressStore();
+                const nimAddress = activeAddressInfo.value!.address;
+                const btcAddress = availableExternalAddresses.value[0];
+                // const usdcAddress = usdcAddressInfo.value!.address;
+
+                if (swapSuggestion.from.asset === SwapAsset.NIM) {
+                    const nimiqClient = await getNetworkClient();
+                    await nimiqClient.waitForConsensusEstablished();
+                    const headHeight = await nimiqClient.getHeadHeight();
+                    if (headHeight > 100) {
+                        useNetworkStore().state.height = headHeight;
+                    } else {
+                        throw new Error('Invalid network state, try please reloading the app');
+                    }
+
                     fund = {
                         type: 'NIM',
                         sender: nimAddress,
                         value: swapSuggestion.from.amount,
                         fee: swapSuggestion.from.fee,
-                        validityStartHeight,
-                    };
-
-                    redeem = {
-                        type: 'BTC',
-                        input: {
-                            // transactionHash: transaction.transactionHash,
-                            // outputIndex: output.index,
-                            // outputScript: output.script,
-                            value: swapSuggestion.to.amount, // Sats
-                        },
-                        output: {
-                            address: btcAddress, // My address, must be redeem address of HTLC
-                            value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
-                        },
+                        validityStartHeight: useNetworkStore().state.height,
                     };
                 }
 
                 if (swapSuggestion.from.asset === SwapAsset.BTC) {
+                    const electrumClient = await getElectrumClient();
+                    await electrumClient.waitForConsensusEstablished();
+
                     // Assemble BTC inputs
                     // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
                     const requiredInputs = selectOutputs(
@@ -996,13 +1338,161 @@ export default defineComponent({
                         } : {}),
                         refundAddress: btcAddress,
                     };
+                }
+
+                if (swapSuggestion.from.asset === SwapAsset.USDC) {
+                    const client = await getPolygonClient();
+                    const htlcContract = new client.ethers.Contract(
+                        config.usdc.htlcContract,
+                        USDC_HTLC_CONTRACT_ABI,
+                        client.provider,
+                    );
+                    const fromAddress = activeUsdcAddress.value!;
+
+                    const [
+                        usdcNonce,
+                        forwarderNonce,
+                    ] = await Promise.all([
+                        client.usdc.getNonce(fromAddress) as Promise<BigNumber>,
+                        htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
+                    ]);
+
+                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
+
+                    const data = htlcContract.interface.encodeFunctionData('openWithApproval', [
+                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                        /* address token */ config.usdc.usdcContract,
+                        /* uint256 amount */ swapSuggestion.from.amount,
+                        /* address refundAddress */ fromAddress,
+                        /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
+                        /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                        /* uint256 timeout */ 0,
+                        /* uint256 fee */ fee,
+                        /* uint256 chainTokenFee */ chainTokenFee,
+                        /* uint256 approval */ swapSuggestion.from.amount + fee,
+                        /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                        /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                        /* uint8 sigV */ 0,
+                    ]);
+
+                    const relayRequest: RelayRequest = {
+                        request: {
+                            from: fromAddress,
+                            to: config.usdc.htlcContract,
+                            data,
+                            value: '0',
+                            nonce: forwarderNonce.toString(),
+                            gas: gasLimit.toString(),
+                            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                                .toString(10), // 2 hours
+                        },
+                        relayData: {
+                            gasPrice: gasPrice.toString(),
+                            pctRelayFee: relay.pctRelayFee.toString(),
+                            baseRelayFee: relay.baseRelayFee.toString(),
+                            relayWorker: relay.relayWorkerAddress,
+                            paymaster: config.usdc.htlcContract,
+                            paymasterData: '0x',
+                            clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            forwarder: config.usdc.htlcContract,
+                        },
+                    };
+
+                    fund = {
+                        type: 'USDC',
+                        ...relayRequest,
+                        approval: {
+                            tokenNonce: usdcNonce.toNumber(),
+                        },
+                    };
+                }
+
+                if (swapSuggestion.to.asset === SwapAsset.NIM) {
+                    const nimiqClient = await getNetworkClient();
+                    await nimiqClient.waitForConsensusEstablished();
+                    const headHeight = await nimiqClient.getHeadHeight();
+                    if (headHeight > 100) {
+                        useNetworkStore().state.height = headHeight;
+                    } else {
+                        throw new Error('Invalid network state, try please reloading the app');
+                    }
 
                     redeem = {
                         type: 'NIM',
                         recipient: nimAddress, // My address, must be redeem address of HTLC
                         value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
                         fee: swapSuggestion.to.fee, // Luna
-                        validityStartHeight,
+                        validityStartHeight: useNetworkStore().state.height,
+                    };
+                }
+
+                if (swapSuggestion.to.asset === SwapAsset.BTC) {
+                    const electrumClient = await getElectrumClient();
+                    await electrumClient.waitForConsensusEstablished();
+
+                    redeem = {
+                        type: 'BTC',
+                        input: {
+                            // transactionHash: transaction.transactionHash,
+                            // outputIndex: output.index,
+                            // outputScript: output.script,
+                            value: swapSuggestion.to.amount, // Sats
+                        },
+                        output: {
+                            address: btcAddress, // My address, must be redeem address of HTLC
+                            value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
+                        },
+                    };
+                }
+
+                if (swapSuggestion.to.asset === SwapAsset.USDC) {
+                    const client = await getPolygonClient();
+                    const htlcContract = new client.ethers.Contract(
+                        config.usdc.htlcContract,
+                        USDC_HTLC_CONTRACT_ABI,
+                        client.provider,
+                    );
+                    const toAddress = activeUsdcAddress.value!;
+
+                    const forwarderNonce = await htlcContract.getNonce(toAddress) as Promise<BigNumber>;
+
+                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
+
+                    const data = htlcContract.interface.encodeFunctionData('redeemWithSecretInData', [
+                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                        /* address target */ toAddress,
+                        /* uint256 fee */ fee,
+                        /* uint256 chainTokenFee */ chainTokenFee,
+                    ]);
+
+                    const relayRequest: RelayRequest = {
+                        request: {
+                            from: toAddress,
+                            to: config.usdc.htlcContract,
+                            data,
+                            value: '0',
+                            nonce: forwarderNonce.toString(),
+                            gas: gasLimit.toString(),
+                            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                                .toString(10), // 2 hours
+                        },
+                        relayData: {
+                            gasPrice: gasPrice.toString(),
+                            pctRelayFee: relay.pctRelayFee.toString(),
+                            baseRelayFee: relay.baseRelayFee.toString(),
+                            relayWorker: relay.relayWorkerAddress,
+                            paymaster: config.usdc.htlcContract,
+                            paymasterData: '0x',
+                            clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            forwarder: config.usdc.htlcContract,
+                        },
+                    };
+
+                    redeem = {
+                        type: 'USDC',
+                        ...relayRequest,
+                        amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
+                        fee: swapSuggestion.to.fee,
                     };
                 }
 
@@ -1026,6 +1516,7 @@ export default defineComponent({
                     redeem,
 
                     layout: 'slider',
+                    direction: leftAsset.value === fund.type ? 'left-to-right' : 'right-to-left',
                     fiatCurrency: currency.value,
                     fundingFiatRate: exchangeRates.value[fund.type.toLowerCase()][currency.value]!,
                     redeemingFiatRate: exchangeRates.value[redeem.type.toLowerCase()][currency.value]!,
@@ -1045,6 +1536,10 @@ export default defineComponent({
                     bitcoinAccount: {
                         balance: accountBtcBalance.value,
                     },
+                    polygonAddresses: activeUsdcAddress.value ? [{
+                        address: activeUsdcAddress.value,
+                        balance: accountUsdcBalance.value,
+                    }] : [],
                 };
 
                 resolve(request);
@@ -1064,7 +1559,7 @@ export default defineComponent({
                 return;
             }
 
-            const { swapId } = (await hubRequest);
+            const { swapId, fund, redeem } = await hubRequest;
 
             if (!signedTransactions) {
                 // Hub popup cancelled
@@ -1074,8 +1569,17 @@ export default defineComponent({
                 return;
             }
 
-            if (!signedTransactions.nim || !signedTransactions.btc) {
-                const error = new Error('Internal error: Hub result did not contain NIM or BTC data');
+            const fundingSignedTx = signedTransactions[
+                fund.type.toLowerCase() as keyof SetupSwapResult
+            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
+            const redeemingSignedTx = signedTransactions[
+                redeem.type.toLowerCase() as keyof SetupSwapResult
+            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
+
+            if (!fundingSignedTx || !redeemingSignedTx) {
+                const error = new Error(
+                    `Internal error: Hub result did not contain ${fund.type} or ${redeem.type} data`,
+                );
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
                 swapError.value = error.message;
@@ -1098,19 +1602,22 @@ export default defineComponent({
                 confirmedSwap = swapOrPreSwap;
 
                 // Apply the correct local fees from the swap request
-                const request = await hubRequest;
-                confirmedSwap.from.fee = request.fund.type === SwapAsset.NIM
-                    ? request.fund.fee
-                    : request.fund.type === SwapAsset.BTC
-                        ? request.fund.inputs.reduce((sum, input) => sum + input.value, 0)
-                            - request.fund.output.value
-                            - (request.fund.changeOutput?.value || 0)
-                        : 0;
-                confirmedSwap.to.fee = request.redeem.type === SwapAsset.NIM
-                    ? request.redeem.fee
-                    : request.redeem.type === SwapAsset.BTC
-                        ? request.redeem.input.value - request.redeem.output.value
-                        : 0;
+                confirmedSwap.from.fee = fund.type === SwapAsset.NIM
+                    ? fund.fee
+                    : fund.type === SwapAsset.BTC
+                        ? fund.inputs.reduce((sum, input) => sum + input.value, 0)
+                            - fund.output.value
+                            - (fund.changeOutput?.value || 0)
+                        : fund.type === SwapAsset.USDC
+                            ? usdcFeeStuff.value!.fee
+                            : 0;
+                confirmedSwap.to.fee = redeem.type === SwapAsset.NIM
+                    ? redeem.fee
+                    : redeem.type === SwapAsset.BTC
+                        ? redeem.input.value - redeem.output.value
+                        : redeem.type === SwapAsset.USDC
+                            ? usdcFeeStuff.value!.fee
+                            : 0;
             } catch (error) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -1126,46 +1633,59 @@ export default defineComponent({
                 id: confirmedSwap.id,
             });
 
-            const nimHtlcAddress = direction.value === SwapDirection.NIM_TO_BTC
-                ? signedTransactions.nim.raw.recipient
-                : signedTransactions.nim.raw.sender;
+            if (SwapAsset.NIM in confirmedSwap.contracts) {
+                // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-BTC swaps
+                const nimHtlcAddress = confirmedSwap.from.asset === SwapAsset.NIM
+                    ? signedTransactions.nim!.raw.recipient
+                    : signedTransactions.nim!.raw.sender;
+                confirmedSwap.contracts[SwapAsset.NIM]!.htlc.address = nimHtlcAddress;
+            }
 
             setActiveSwap({
                 ...confirmedSwap,
-                // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-BTC swaps
-                contracts: {
-                    ...confirmedSwap.contracts,
-                    [SwapAsset.NIM]: {
-                        ...confirmedSwap.contracts[SwapAsset.NIM]!,
-                        htlc: {
-                            ...confirmedSwap.contracts[SwapAsset.NIM]!.htlc,
-                            address: nimHtlcAddress,
-                        },
-                    },
-                },
                 state: SwapState.AWAIT_INCOMING,
                 stateEnteredAt: Date.now(),
                 watchtowerNotified: false,
-                fundingSerializedTx: confirmedSwap.from.asset === SwapAsset.NIM
-                    ? signedTransactions.nim.serializedTx
-                    : signedTransactions.btc.serializedTx,
-                settlementSerializedTx: confirmedSwap.to.asset === SwapAsset.NIM
-                    ? signedTransactions.nim.serializedTx
-                    : signedTransactions.btc.serializedTx,
-                nimiqProxySerializedTx: signedTransactions.nimProxy
-                    ? signedTransactions.nimProxy.serializedTx
-                    : undefined,
+                fundingSerializedTx: 'serializedTx' in fundingSignedTx
+                    ? fundingSignedTx.serializedTx // NIM & BTC
+                    : JSON.stringify({ // USDC
+                        request: fundingSignedTx.message,
+                        signature: fundingSignedTx.signature,
+                        relayUrl: usdcFeeStuff.value!.relay.url,
+                    }),
+                settlementSerializedTx: 'serializedTx' in redeemingSignedTx
+                    ? redeemingSignedTx.serializedTx // NIM & BTC
+                    : JSON.stringify({ // USDC
+                        request: redeemingSignedTx.message,
+                        signature: redeemingSignedTx.signature,
+                        relayUrl: usdcFeeStuff.value!.relay.url,
+                    }),
+                nimiqProxySerializedTx: signedTransactions.nimProxy?.serializedTx,
             });
 
             if (config.fastspot.watchtowerEndpoint) {
                 let settlementSerializedTx = swap.value!.settlementSerializedTx!;
 
                 // In case of a Nimiq tx, we need to replace the dummy swap hash in the tx with the actual swap hash
-                if (swap.value!.to.asset === 'NIM') {
+                if (confirmedSwap.to.asset === 'NIM') {
                     settlementSerializedTx = settlementSerializedTx.replace(
                         '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925',
-                        `${swap.value!.hash}`,
+                        `${confirmedSwap.hash}`,
                     );
+                }
+
+                // In case of a Polygon signed message, we need to restructre the `request` format
+                if (confirmedSwap.to.asset === 'USDC') {
+                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
+                    const { relayData, ...relayRequest } = request;
+                    settlementSerializedTx = JSON.stringify({
+                        request: {
+                            request: relayRequest as ForwardRequest,
+                            relayData,
+                        },
+                        signature,
+                        relayUrl,
+                    });
                 }
 
                 // Send redeem transaction to watchtower
@@ -1211,11 +1731,7 @@ export default defineComponent({
             const { asset, amount } = swapInfo;
 
             // Only cap decimals on the amount when not the whole address/account balance is used
-            const balance = asset === SwapAsset.NIM
-                ? (activeAddressInfo.value!.balance) || 0
-                : accountBtcBalance.value;
-
-            const cappedAmount = Math.abs(amount) < balance
+            const cappedAmount = Math.abs(amount) < accountBalance(asset)
                 ? capDecimals(amount, asset)
                 : undefined;
 
@@ -1236,20 +1752,36 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
+        function setLeftAsset(asset: SwapAsset) {
+            leftAsset.value = asset;
+            if (rightAsset.value === asset) {
+                rightAsset.value = SUPPORTED_ASSETS.find((a) => a !== asset)!;
+            }
+        }
+
+        function setRightAsset(asset: SwapAsset) {
+            rightAsset.value = asset;
+            if (leftAsset.value === asset) {
+                leftAsset.value = SUPPORTED_ASSETS.find((a) => a !== asset)!;
+            }
+        }
+
         return {
             onClose,
-            satsPerNim,
+            leftAsset,
+            rightAsset,
+            rightUnitsPerLeftCoin,
             direction,
             SwapDirection,
-            wantNim,
-            wantBtc,
-            getNim,
-            getBtc,
+            wantLeft,
+            wantRight,
+            getLeft,
+            getRight,
             currency,
-            myNimFeeFiat,
-            myBtcFeeFiat,
-            serviceNimFeeFiat,
-            serviceBtcFeeFiat,
+            myLeftFeeFiat,
+            myRightFeeFiat,
+            serviceLeftFeeFiat,
+            serviceRightFeeFiat,
             serviceSwapFeeFiat,
             serviceSwapFeePercentage,
             isHighRelativeFees,
@@ -1258,8 +1790,8 @@ export default defineComponent({
             onFocus,
             onBlur,
             onSwapBalanceBarChange,
-            newNimBalance,
-            newBtcBalance,
+            newLeftBalance,
+            newRightBalance,
             estimateError,
             swap,
             swapError,
@@ -1273,6 +1805,7 @@ export default defineComponent({
             currentLimitFiat,
             currentlySigning,
             amountsHidden,
+            effectiveDecimals,
             capDecimals,
             SwapAsset,
             btcUnit,
@@ -1282,6 +1815,9 @@ export default defineComponent({
             activeAddressInfo,
             kycUser,
             kycOverlayOpened,
+            SUPPORTED_ASSETS,
+            setLeftAsset,
+            setRightAsset,
         };
     },
     components: {
@@ -1305,6 +1841,8 @@ export default defineComponent({
         SwapModalFooter,
         KycPrompt,
         KycOverlay,
+        ButtonGroup,
+        SwapIcon,
     },
 });
 </script>
@@ -1324,14 +1862,6 @@ export default defineComponent({
     padding-bottom: 3rem;
 }
 
-.page-header .nq-notice {
-    margin-top: 1.25rem;
-
-    &.font-weight-normal {
-        font-weight: normal;
-    }
-}
-
 .page-body {
     --short-transition-duration: 300ms;
 
@@ -1339,6 +1869,15 @@ export default defineComponent({
     flex-grow: 1;
     padding-bottom: 2rem;
     overflow: visible;
+}
+
+.pair-selection {
+    justify-content: center;
+    margin-top: 4rem;
+
+    svg {
+        opacity: 0.5;
+    }
 }
 
 .pills {
@@ -1455,15 +1994,21 @@ export default defineComponent({
 }
 
 .amount-input.has-value {
-    &.positive-value ::v-deep form {
-        .nq-input {
+    &.positive-value ::v-deep {
+        .ticker {
             color: var(--nimiq-green);
-            --border-color: rgba(33,188,165,0.3); /* Based on Nimiq Green */
         }
 
-        .nq-input:focus-within,
-        .nq-input:hover {
-            --border-color: rgba(33,188,165,0.4); /* Based on Nimiq Green */
+        form {
+            .nq-input {
+                color: var(--nimiq-green);
+                --border-color: rgba(33,188,165,0.3); /* Based on Nimiq Green */
+            }
+
+            .nq-input:focus-within,
+            .nq-input:hover {
+                --border-color: rgba(33,188,165,0.4); /* Based on Nimiq Green */
+            }
         }
     }
 
@@ -1481,10 +2026,6 @@ export default defineComponent({
 
     &.focussed {
         &.positive-value ::v-deep {
-            .ticker {
-                color: var(--nimiq-green);
-            }
-
             .nq-input:focus-within,
             .nq-input:hover {
                 --border-color: rgba(33,188,165,0.5); /* Based on Nimiq Green */
@@ -1492,9 +2033,9 @@ export default defineComponent({
         }
 
         &.negative-value ::v-deep {
-            .ticker {
-                color: var(--nimiq-light-blue);
-            }
+            // .ticker {
+            //     color: var(--nimiq-light-blue);
+            // }
 
             .nq-input {
                 color: rgba(5, 130, 202, 0.7);

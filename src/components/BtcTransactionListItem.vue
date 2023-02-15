@@ -26,6 +26,7 @@
                 v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                 :address="peerAddresses[0]"
             />
+            <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
             <SwapSmallIcon/>
@@ -100,6 +101,7 @@ import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
+import UsdcIcon from './icons/UsdcIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
@@ -243,13 +245,18 @@ export default defineComponent({
         });
         const peerLabel = computed(() => {
             if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap');
+                return context.root.$t('Cancelled Swap') as string;
             }
 
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
                     return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
-                        || context.root.$t('Swap'); // avoid displaying proxy address until we know related peer address
+                        // avoid displaying proxy address until we know related peer address
+                        || context.root.$t('Swap') as string;
+                }
+
+                if (swapData.value.asset === SwapAsset.USDC) {
+                    return context.root.$t('USD Coin') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
@@ -349,6 +356,7 @@ export default defineComponent({
         FiatAmount,
         // HistoricValueIcon,
         Identicon,
+        UsdcIcon,
         BankIcon,
         SwapSmallIcon,
         TransactionListOasisPayoutStatus,
@@ -426,6 +434,22 @@ svg {
     .identicon-container {
         position: relative;
 
+        .identicon {
+            width: 6rem;
+            height: 6rem;
+            flex-shrink: 0;
+        }
+
+        > svg {
+            width: 6rem;
+            height: 6rem;
+            padding: 0.375rem;
+
+            &.usdc {
+                color: var(--usdc-blue);
+            }
+        }
+
         > svg:last-child {
             position: absolute;
             right: -0.125rem;
@@ -433,21 +457,11 @@ svg {
 
             width: 2.75rem; // 3rem + border
             height: 2.75rem;
+            padding: 0;
             color: white;
             background: var(--nimiq-blue-bg);
             border-radius: 50%;
             border: 0.375rem solid white;
-        }
-
-        .identicon,
-        svg.bank-icon {
-            width: 6rem;
-            height: 6rem;
-            flex-shrink: 0;
-        }
-
-        svg.bank-icon {
-            padding: 0.375rem;
         }
 
         .avatar {

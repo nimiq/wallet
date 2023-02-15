@@ -131,6 +131,15 @@ async function* relayServerRegisterGen(client: PolygonClient, requiredMaxAccepta
             if (!relayAddr.version.startsWith('2.')) continue; // TODO: Make OpenGSN version used configurable
             if (relayAddr.networkId !== useConfig().config.usdc.networkId.toString()) continue;
             if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) continue;
+
+            // Check if this relay has sent a transaction in the last 48 hours
+            const filter = relayHub.filters.TransactionRelayed(null, relayAddr.relayWorkerAddress);
+            const startBlock = useUsdcNetworkStore().state.height - 48 * 60 * POLYGON_BLOCKS_PER_MINUTE;
+            // TODO: This is 86400 blocks, too big for some RPC providers that limit these checks to 10000 blocks
+            // eslint-disable-next-line no-await-in-loop
+            const logs = await relayHub.queryFilter(filter, startBlock);
+            if (!logs.length) continue;
+
             yield <RelayServerInfo> {
                 baseRelayFee,
                 pctRelayFee,

@@ -1815,16 +1815,17 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.5.2", "@nimiq/fastspot-api@nimiq/fastspot-api#build/kyc":
-  version "1.6.1"
-  resolved "https://codeload.github.com/nimiq/fastspot-api/tar.gz/3583c53769215f20cd3b1156456e678a6e882e7a"
+"@nimiq/fastspot-api@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.7.0.tgz#eea496f4898139c51971f0b177583c6cc6b06611"
+  integrity sha512-k7vSjYdjAiAQar+21v681Zrp9kN9uHMUw7/dyG2D/IrXqNPHkD133JyrzxPBga+myW411SUR4mtdPQRPQm3d/A==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?bfddf024f4148226be9c4ea44d27c8d0c647ca9e&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?7d641080fb8321b55954334dfe4be13e7d7eb196&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
   version "1.6.1"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?bfddf024f4148226be9c4ea44d27c8d0c647ca9e&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#3ab77164f072cbdc2e8c0fb97a31fa2cbaca0e13"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?7d641080fb8321b55954334dfe4be13e7d7eb196&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#f9ce650c4126d3c8627a89104ca9cf4731a62880"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
-    "@nimiq/fastspot-api" "^1.5.2"
+    "@nimiq/fastspot-api" "^1.7.0"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
     big-integer "^1.6.48"
@@ -1836,12 +1837,15 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.1.1.tgz#b781558c9f94fcde85144cab749bf790aa1b1ebb"
-  integrity sha512-odhR2PqnfuzvmSpVIwNIftXoCHgCfHmxOyKHsq/jkUpeiU7M5Z3pZflyKPI5gUxYBS9CEL1Sss3eebFVQk2vdw==
+"@nimiq/libswap@^1.2.0-beta.4":
+  version "1.2.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.2.0-beta.4.tgz#116e7191cbf0c3f57589ab4fbc43d42d86a91a7f"
+  integrity sha512-XYsWftU2zPihvP+mHJtboDB4HFe3rgZNpwGf7PyxfkkySzDbt9nthE+yl/wTxz5Mdhr3bEwH2hZVDHbyCrqtLw==
   dependencies:
+    "@nimiq/core-web" "^1.5.8"
+    "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
     "@nimiq/oasis-api" "^1.0.1"
+    ethers "^5.7.2"
     promise.prototype.finally "^3.1.3"
 
 "@nimiq/oasis-api@^1.0.1":

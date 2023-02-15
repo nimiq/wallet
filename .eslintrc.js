@@ -63,7 +63,7 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': 'off',
 
         // False positives that are checked by TS
-        // 'no-redeclare': 'off',
+        'no-redeclare': 'off',
         // 'no-param-reassign': 'off',
         // 'import/no-unresolved': 'off',
     },

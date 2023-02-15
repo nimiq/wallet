@@ -34,6 +34,13 @@
             <!-- <p class="explainer">{{ $t('Banking network fee') }}</p> -->
         </template>
 
+        <template v-if="usdcFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('USDC network fee') }}</label>
+                <FiatAmount :amount="usdcFeeFiat" :currency="currency"/>
+            </div>
+        </template>
+
         <template v-if="nimFeeFiat !== undefined">
             <div class="price-breakdown">
                 <label>{{ $t('NIM network fee') }}</label>
@@ -94,6 +101,10 @@ export default defineComponent({
             required: false,
         },
         nimFeeFiat: {
+            type: Number,
+            required: false,
+        },
+        usdcFeeFiat: {
             type: Number,
             required: false,
         },

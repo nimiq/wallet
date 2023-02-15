@@ -226,7 +226,7 @@ const routes: RouteConfig[] = [{
             },
             name: 'send-via-uri',
             props: {
-                modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
+                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },
             meta: { column: Columns.DYNAMIC },
         }, {
@@ -266,11 +266,11 @@ const routes: RouteConfig[] = [{
             },
             name: 'send-via-btc-uri',
             props: {
-                modal: (route: Route) => ({ requestUri: route.fullPath.substr(1) }),
+                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/swap',
+            path: '/swap/:pair?',
             components: {
                 modal: SwapModal,
             },

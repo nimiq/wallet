@@ -138,19 +138,19 @@
             <div class="swap-buttons">
                 <div class="nim-usdc-swap-button"
                     :style="getSwapButtonPosition('nim-usdc')"
-                    @click="$router.push('/swap')"
+                    @click="$router.push('/swap/NIM-USDC')"
                 >
                     <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>
                 <div class="nim-btc-swap-button"
                     :style="getSwapButtonPosition('nim-btc')"
-                    @click="$router.push('/swap')"
+                    @click="$router.push('/swap/NIM-BTC')"
                 >
                     <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>
                 <div class="btc-usdc-swap-button"
                     :style="getSwapButtonPosition('btc-usdc')"
-                    @click="$router.push('/swap')"
+                    @click="$router.push('/swap/BTC-USDC')"
                 >
                     <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>

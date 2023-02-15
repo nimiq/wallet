@@ -185,7 +185,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted, onActivated } from '@vue/composition-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -288,20 +288,22 @@ export default defineComponent({
         const nimiqAccount$ = ref<HTMLElement | null>(null);
         const bitcoinAccount$ = ref<HTMLElement | null>(null);
 
-        const forceUpdate = ref(false);
-        const resizeObserver = new ResizeObserver(async () => {
-            await context.root.$nextTick();
-            forceUpdate.value = !forceUpdate.value; // trick to force vue to update the position on component resize
-        });
+        const forceUpdateRef = ref(false);
+        const resizeObserver = new ResizeObserver(forceUpdate);
 
-        onMounted(async () => {
-            resizeObserver.observe(context.root.$el);
-        });
-
+        onMounted(async () => resizeObserver.observe(context.root.$el));
         onUnmounted(() => resizeObserver.disconnect());
+        onActivated(forceUpdate);
+
+        async function forceUpdate() {
+            await context.root.$nextTick();
+            // trick to force vue to update the position on component resize
+            forceUpdateRef.value = !forceUpdateRef.value;
+        }
 
         function getAccountBackgroundPosition(currency: 'usdc' | 'nimiq' | 'bitcoin') {
-            forceUpdate.value = !!forceUpdate.value; // trick to force vue to update the position on component resize
+            // trick to force vue to update the position on component resize
+            forceUpdateRef.value = !!forceUpdateRef.value;
 
             const el$ = {
                 usdc: usdcAccount$.value,
@@ -324,7 +326,8 @@ export default defineComponent({
         }
 
         function getSwapButtonPosition(swap: 'nim-btc' | 'nim-usdc' | 'btc-usdc') {
-            forceUpdate.value = !!forceUpdate.value; // trick to force vue to update the position on component resize
+            // trick to force vue to update the position on component resize
+            forceUpdateRef.value = !!forceUpdateRef.value;
 
             const accountOverviewPosition: DOMRect | undefined = root$.value?.getBoundingClientRect();
             const marginLeft = accountOverviewPosition ? accountOverviewPosition.left : 0;

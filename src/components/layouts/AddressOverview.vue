@@ -97,6 +97,9 @@
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
+                        <!--
+                        Don't show Polygon address. User can see the polygon address in the send/receive flows, so
+                        we can show also the warnings.
                         <Copyable v-if="activeCurrency === 'usdc'"
                             :text="usdcAddressInfo.address" :key="usdcAddressInfo.address"
                         >
@@ -104,6 +107,7 @@
                                 {{usdcAddressInfo.address}}
                             </div>
                         </Copyable>
+                        -->
 
                         <FiatConvertedAmount v-if="activeCurrency === 'nim' && activeAddressInfo.balance !== null"
                             :amount="activeAddressInfo.balance" currency="nim" value-mask/>

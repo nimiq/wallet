@@ -1,5 +1,5 @@
 <template>
-    <div class="account-overview">
+    <div class="account-overview" ref="root$">
         <div
             v-if="activeAccountInfo && activeAccountInfo.type === AccountType.BIP39 && !activeAccountInfo.fileExported"
             class="backup-warning file nq-orange-bg flex-row"
@@ -283,10 +283,10 @@ export default defineComponent({
 
         const { updateAvailable } = useSettingsStore();
 
+        const root$ = ref<HTMLElement | null>(null);
         const usdcAccount$ = ref<HTMLElement | null>(null);
         const nimiqAccount$ = ref<HTMLElement | null>(null);
         const bitcoinAccount$ = ref<HTMLElement | null>(null);
-        const sidebar$ = ref<HTMLElement | null>(null);
 
         const forceUpdate = ref(false);
         const resizeObserver = new ResizeObserver(async () => {
@@ -295,8 +295,6 @@ export default defineComponent({
         });
 
         onMounted(async () => {
-            sidebar$.value = document.getElementsByClassName('sidebar')[0] as HTMLElement;
-
             resizeObserver.observe(context.root.$el);
         });
 
@@ -311,15 +309,15 @@ export default defineComponent({
                 bitcoin: bitcoinAccount$.value,
             }[currency];
 
-            if (el$ && sidebar$.value) {
+            if (el$ && root$.value) {
                 const accountPosition = el$.getBoundingClientRect();
-                const sidebarPosition: DOMRect = sidebar$.value.getBoundingClientRect();
+                const accountOverviewPosition: DOMRect = root$.value.getBoundingClientRect();
 
                 return {
                     height: `${accountPosition.height}px`,
                     width: `${accountPosition.width}px`,
                     top: `${accountPosition.top}px`,
-                    left: `${accountPosition.left - (sidebarPosition.width + sidebarPosition.x)}px`,
+                    left: `${accountPosition.left - accountOverviewPosition.left}px`,
                 };
             }
             return null;
@@ -328,13 +326,13 @@ export default defineComponent({
         function getSwapButtonPosition(swap: 'nim-btc' | 'nim-usdc' | 'btc-usdc') {
             forceUpdate.value = !!forceUpdate.value; // trick to force vue to update the position on component resize
 
-            const sidebarPosition: DOMRect | undefined = sidebar$.value?.getBoundingClientRect();
-            const sidebarWidth = sidebarPosition ? (sidebarPosition.width + sidebarPosition.x) : 0;
+            const accountOverviewPosition: DOMRect | undefined = root$.value?.getBoundingClientRect();
+            const marginLeft = accountOverviewPosition ? accountOverviewPosition.left : 0;
 
             if (swap === 'nim-btc' && bitcoinAccount$.value) {
                 const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
 
-                const left = bitcoinAccountPosition.left + (bitcoinAccountPosition.width / 2) - sidebarWidth;
+                const left = bitcoinAccountPosition.left + (bitcoinAccountPosition.width / 2) - marginLeft;
 
                 return {
                     top: `calc(${bitcoinAccountPosition.top}px - (var(--size) / 2) - 1rem)`,
@@ -344,7 +342,7 @@ export default defineComponent({
             if (swap === 'nim-usdc' && usdcAccount$.value) {
                 const usdcAccountPosition = usdcAccount$.value.getBoundingClientRect();
 
-                const left = usdcAccountPosition.left + (usdcAccountPosition.width / 2) - sidebarWidth;
+                const left = usdcAccountPosition.left + (usdcAccountPosition.width / 2) - marginLeft;
 
                 return {
                     top: `calc(${usdcAccountPosition.top}px - (var(--size) / 2) - 1rem)`,
@@ -355,7 +353,7 @@ export default defineComponent({
                 const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
 
                 const top = bitcoinAccountPosition.top + (bitcoinAccountPosition.height / 2);
-                const left = bitcoinAccountPosition.left + bitcoinAccountPosition.width - sidebarWidth;
+                const left = bitcoinAccountPosition.left + bitcoinAccountPosition.width - marginLeft;
 
                 return {
                     top: `calc(${top}px - (var(--size) / 2))`,
@@ -386,10 +384,10 @@ export default defineComponent({
             btcConsensus,
             usdcConsensus,
             updateAvailable,
+            root$,
             usdcAccount$,
             nimiqAccount$,
             bitcoinAccount$,
-            sidebar$,
             getAccountBackgroundPosition,
             getSwapButtonPosition,
         };

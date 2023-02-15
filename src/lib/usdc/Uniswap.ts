@@ -74,5 +74,5 @@ export async function getUsdcPrice(client: PolygonClient) {
     // Convert to USDC smallest unit. We cannot get directly the USDC price for
     // USDC smallest unit because is so small that the result is 0, which is
     // not true.
-    return usdcPrice.toNumber() / 1_000_000;
+    return usdcPrice.div(1_000_000);
 }

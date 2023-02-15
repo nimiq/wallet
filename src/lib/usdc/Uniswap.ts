@@ -4,7 +4,7 @@ import { BigNumber, Contract } from 'ethers';
 import { PolygonClient } from '../../ethers';
 import { UNISWAP_FACTORY_CONTRACT_ABI, UNISWAP_POOL_CONTRACT_ABI, UNISWAP_QUOTER_CONTRACT_ABI } from './ContractABIs';
 
-let poolPromise: Promise<Contract> | null = null;
+let poolPromise: Promise<{ contract: Contract, fee: BigNumber }> | null = null;
 
 let unwatchGetUniswapPoolConfig: (() => void) | null = null;
 export async function getUniswapPool({ ethers, provider, usdcTransfer }: PolygonClient) {
@@ -44,16 +44,16 @@ export async function getUniswapPool({ ethers, provider, usdcTransfer }: Polygon
             provider,
         );
 
-        // @ts-expect-error Index signature in type 'Contract' only permits reading
-        poolContract.fee = poolFee;
-
-        resolve(poolContract);
+        resolve({
+            contract: poolContract,
+            fee: poolFee,
+        });
     }));
 }
 
 // https://docs.uniswap.org/sdk/v3/guides/quoting
 export async function getUsdcPrice(client: PolygonClient) {
-    const pool = await getUniswapPool(client);
+    const { contract: pool, fee: poolFee } = await getUniswapPool(client);
     const { config } = useConfig();
 
     const quoterContract = new client.ethers.Contract(
@@ -66,7 +66,7 @@ export async function getUsdcPrice(client: PolygonClient) {
     const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
         config.usdc.usdcContract, // in
         config.usdc.wmaticContract, // out
-        pool.fee,
+        poolFee,
         1_000_000, // 1 USDC
         0,
     ) as BigNumber;

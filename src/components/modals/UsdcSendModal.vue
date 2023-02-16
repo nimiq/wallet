@@ -686,7 +686,7 @@ export default defineComponent({
         const roundedUpFiatFee = computed(() =>
             Math.ceil(feeInFiat.value / fiatSmUnit.value) * fiatSmUnit.value);
 
-        const feeSmallerThanSmUnit = computed(() => roundedUpFiatFee.value < fiatSmUnit.value);
+        const feeSmallerThanSmUnit = computed(() => roundedUpFiatFee.value <= fiatSmUnit.value);
 
         return {
             // General

@@ -16,6 +16,7 @@ msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:168
 #: src/components/modals/UsdcSendModal.vue:197
+#: src/components/swap/SwapModal.vue:42
 msgid "{amount} fee"
 msgstr ""
 
@@ -72,7 +73,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:91
+#: src/components/swap/SwapModal.vue:77
 msgid "{value} remaining"
 msgstr ""
 
@@ -95,6 +96,7 @@ msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:162
 #: src/components/modals/UsdcSendModal.vue:191
+#: src/components/swap/SwapModal.vue:36
 msgid "< {amount} fee"
 msgstr ""
 
@@ -127,7 +129,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:86
+#: src/components/swap/SwapModal.vue:72
 msgid "30-day Limit"
 msgstr ""
 
@@ -456,13 +458,13 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:180
-#: src/components/swap/SwapModal.vue:173
+#: src/components/swap/SwapModal.vue:159
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/SellCryptoModal.vue:194
-#: src/components/swap/SwapModal.vue:185
+#: src/components/swap/SwapModal.vue:171
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -528,7 +530,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:283
 #: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:226
+#: src/components/swap/SwapModal.vue:212
 msgid "Choose an Address"
 msgstr ""
 
@@ -573,9 +575,9 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:171
-#: src/components/swap/SwapModal.vue:176
-#: src/components/swap/SwapModal.vue:188
+#: src/components/swap/SwapModal.vue:157
+#: src/components/swap/SwapModal.vue:162
+#: src/components/swap/SwapModal.vue:174
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -609,12 +611,16 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:51
+#: src/components/swap/SwapModalFooter.vue:52
 msgid "Connecting to Bitcoin network"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:59
+#: src/components/swap/SwapModalFooter.vue:60
 msgid "Connecting to Nimiq network"
+msgstr ""
+
+#: src/components/swap/SwapModalFooter.vue:70
+msgid "Connecting to Polygon network"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:45
@@ -912,7 +918,6 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:62
 #: src/components/modals/SellCryptoModal.vue:62
-#: src/components/swap/SwapModal.vue:67
 msgid "fees"
 msgstr ""
 
@@ -1207,7 +1212,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:89
+#: src/components/swap/SwapModal.vue:75
 msgid "loading..."
 msgstr ""
 
@@ -2015,7 +2020,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:937
+#: src/components/swap/SwapModal.vue:941
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -2037,7 +2042,6 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
-#: src/components/swap/SwapModal.vue:34
 msgid "The rate might change depending on the swap volume."
 msgstr ""
 
@@ -2111,10 +2115,6 @@ msgstr ""
 #: src/components/UsdcTransactionList.vue:193
 #: src/components/UsdcTransactionList.vue:215
 msgid "This month"
-msgstr ""
-
-#: src/components/swap/SwapModal.vue:32
-msgid "This rate includes the swap fee."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:131
@@ -2279,7 +2279,7 @@ msgstr ""
 msgid "Waiting for {currency}"
 msgstr ""
 
-#: src/components/swap/SwapModalFooter.vue:61
+#: src/components/swap/SwapModalFooter.vue:62
 msgid "Waiting for Nimiq network informations"
 msgstr ""
 

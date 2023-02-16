@@ -19,61 +19,47 @@
                         @input="setRightAsset"
                     />
                 </div>
-                <div class="pills flex-row">
-                    <Tooltip v-if="rightUnitsPerLeftCoin"
-                        :styles="{width: '25.5rem'}"
-                        preferredPosition="bottom right"
-                        :container="this"
-                    >
-                        <div slot="trigger" class="pill exchange-rate">
-                            1 {{ leftAsset }} =
-                            <Amount :amount="Math.round(rightUnitsPerLeftCoin)" :currency="rightAsset.toLowerCase()"/>
-                        </div>
-                        <span>{{ $t('This rate includes the swap fee.') }}</span>
-                        <p class="explainer">
-                            {{ $t('The rate might change depending on the swap volume.') }}
-                        </p>
-                    </Tooltip>
-                    <SwapFeesTooltip
-                        preferredPosition="bottom left"
-                        :nimFeeFiat="leftAsset === SwapAsset.NIM
-                            ? myLeftFeeFiat + serviceLeftFeeFiat
-                            : rightAsset === SwapAsset.NIM
-                                ? myRightFeeFiat + serviceRightFeeFiat
-                                : undefined"
-                        :btcFeeFiat="leftAsset === SwapAsset.BTC
-                            ? myLeftFeeFiat + serviceLeftFeeFiat
-                            : rightAsset === SwapAsset.BTC
-                                ? myRightFeeFiat + serviceRightFeeFiat
-                                : undefined"
-                        :usdcFeeFiat="leftAsset === SwapAsset.USDC
-                            ? myLeftFeeFiat + serviceLeftFeeFiat
-                            : rightAsset === SwapAsset.USDC
-                                ? myRightFeeFiat + serviceRightFeeFiat
-                                : undefined"
-                        :serviceSwapFeeFiat="serviceSwapFeeFiat"
-                        :serviceSwapFeePercentage="serviceSwapFeePercentage"
-                        :currency="currency"
-                        :container="this"
-                    >
-                        <div slot="trigger" class="pill fees flex-row" :class="{'high-fees': isHighRelativeFees}">
-                            <LightningIcon v-if="isHighRelativeFees"/>
-                            <FiatAmount :amount="myRightFeeFiat
-                                + myLeftFeeFiat
-                                + serviceRightFeeFiat
-                                + serviceLeftFeeFiat
-                                + serviceSwapFeeFiat"
-                                :currency="currency"/>
-                            {{ $t('fees') }}
-                        </div>
-                    </SwapFeesTooltip>
+                <div class="swap-info flex-row">
+                    <template v-if="!feeIsLoading">
+                        <SwapFeesTooltip
+                            preferredPosition="bottom left"
+                            :nimFeeFiat="nimFeeFiat"
+                            :btcFeeFiat="btcFeeFiat"
+                            :usdcFeeFiat="usdcFeeFiat"
+                            :serviceSwapFeeFiat="serviceSwapFeeFiat"
+                            :serviceSwapFeePercentage="serviceSwapFeePercentage"
+                            :currency="currency"
+                            :container="this"
+                        >
+                            <div slot="trigger" class="fees flex-row" :class="{'high-fees': isHighRelativeFees}">
+                                <LightningIcon v-if="isHighRelativeFees"/>
+                                <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
+                                    <template #amount>
+                                        <FiatAmount :amount="fiatSmUnit"
+                                            :hideDecimals="false" :currency="fiatCurrency"/>
+                                    </template>
+                                </i18n>
+                                <i18n v-else tag="span" path="{amount} fee" class="fee">
+                                    <template #amount>
+                                        <FiatAmount :amount="roundedUpFeeFiat"
+                                            :hideDecimals="false" :currency="fiatCurrency"/>
+                                    </template>
+                                </i18n>
+                            </div>
+                        </SwapFeesTooltip>
+                    </template>
+                    <template v-else>
+                        <CircleSpinner/>
+                    </template>
+
+                    <strong class="dot">&middot;</strong>
+
                     <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
                         class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
-                        <div slot="trigger" class="pill limits flex-row" :class="{
+                        <div slot="trigger" class="limits flex-row" :class="{
                             'limit-reached': isLimitReached,
                             'kyc-connected': kycUser,
                         }">
-                            <LimitIcon />
                             <template v-if="limits">
                                 <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
                                 <KycIcon v-if="kycUser" />
@@ -268,6 +254,8 @@ import { captureException } from '@sentry/vue';
 import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
+import { CurrencyInfo } from '@nimiq/utils';
+
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -335,6 +323,10 @@ export default defineComponent({
         const leftAsset = ref(props.pair.split('-')[0] as SwapAsset);
         const rightAsset = ref(props.pair.split('-')[1] as SwapAsset);
 
+        const swapHasNim = computed(() => leftAsset.value === SwapAsset.NIM || rightAsset.value === SwapAsset.NIM);
+        const swapHasBtc = computed(() => leftAsset.value === SwapAsset.BTC || rightAsset.value === SwapAsset.BTC);
+        const swapHasUsdc = computed(() => leftAsset.value === SwapAsset.USDC || rightAsset.value === SwapAsset.USDC);
+
         const fixedAsset = ref<SwapAsset>(leftAsset.value);
 
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
@@ -350,7 +342,7 @@ export default defineComponent({
             activeAddress: activeUsdcAddress,
             accountBalance: accountUsdcBalance,
         } = useUsdcAddressStore();
-        const { exchangeRates, currency } = useFiatStore();
+        const { exchangeRates, currency, state: fiat$ } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
 
         onMounted(() => {
@@ -817,7 +809,7 @@ export default defineComponent({
             // Prevent changing USDC fees while processing the swap suggestion
             if (currentlySigning.value) return;
 
-            usdcFeeStuff.value = null;
+            // usdcFeeStuff.value = null;
 
             const htlcContract = await getHtlcContract();
 
@@ -860,20 +852,30 @@ export default defineComponent({
             };
         }
 
+        const { height: usdcHeight } = useUsdcNetworkStore();
+
         let usdcFeeUpdateInterval = -1;
 
-        watch([leftAsset, rightAsset], (newAssets, oldAssets) => {
-            const newLeft = newAssets?.[0];
-            const newRight = newAssets?.[1];
-            const oldLeft = oldAssets?.[0];
-            const oldRight = oldAssets?.[1];
-            if ([newLeft, newRight].includes(SwapAsset.USDC) && ![oldLeft, oldRight].includes(SwapAsset.USDC)) {
+        watch(
+            [leftAsset, rightAsset, usdcHeight],
+            ([, , newUsdcHeight], [oldLeft, oldRight]) => {
+                if (swapHasUsdc.value && ![oldLeft, oldRight].includes(SwapAsset.USDC)) {
+                    if (!newUsdcHeight) return; // Wait for USDC height to be set
+                    calculateUsdcHtlcFee();
+                    usdcFeeUpdateInterval = window.setInterval(calculateUsdcHtlcFee, 30e3); // Update fee every 30s
+                } else if (!swapHasUsdc.value) {
+                    window.clearInterval(usdcFeeUpdateInterval);
+                    usdcFeeUpdateInterval = -1;
+                    usdcFeeStuff.value = null;
+                }
+            },
+        );
+
+        watch(usdcHeight, (newHeight) => {
+            // once the height is set, and the swap contains USDC, calculate the fee
+            if (newHeight && swapHasUsdc.value) {
                 calculateUsdcHtlcFee();
                 usdcFeeUpdateInterval = window.setInterval(calculateUsdcHtlcFee, 30e3); // Update fee every 30s
-            } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
-                window.clearInterval(usdcFeeUpdateInterval);
-                usdcFeeUpdateInterval = -1;
-                usdcFeeStuff.value = null;
             }
         });
 
@@ -1170,6 +1172,24 @@ export default defineComponent({
                 * (exchangeRates.value[data.from.asset.toLowerCase()][currency.value] || 0);
         });
 
+        const feeFiat = (asset: SwapAsset) => {
+            if (leftAsset.value === asset) return myLeftFeeFiat.value + serviceLeftFeeFiat.value;
+            if (rightAsset.value === asset) return myRightFeeFiat.value + serviceRightFeeFiat.value;
+            return undefined;
+        };
+        const nimFeeFiat = computed(() => feeFiat(SwapAsset.NIM));
+        const btcFeeFiat = computed(() => feeFiat(SwapAsset.BTC));
+        const usdcFeeFiat = computed(() => feeFiat(SwapAsset.USDC));
+        const totalFeeFiat = computed(() =>
+            (nimFeeFiat.value || 0) + (btcFeeFiat.value || 0) + (usdcFeeFiat.value || 0));
+
+        const feeIsLoading = computed(() => {
+            if (swapHasNim.value && !nimFeeFiat.value) return false; // fee is 0 in nim
+            if (swapHasBtc.value && !btcFeeFiat.value) return true;
+            if (swapHasUsdc.value && !usdcFeeFiat.value) return true;
+            return false;
+        });
+
         const isHighRelativeFees = computed(() => {
             if (!estimate.value) return false;
 
@@ -1177,15 +1197,18 @@ export default defineComponent({
             const fromAmount = data.from.amount - data.from.serviceNetworkFee;
             const fromFiat = (fromAmount / 10 ** DECIMALS[data.from.asset])
                 * (exchangeRates.value[data.from.asset.toLowerCase()][currency.value] || 0);
-
-            const totalFees = myLeftFeeFiat.value
-                + myRightFeeFiat.value
-                + serviceLeftFeeFiat.value
-                + serviceRightFeeFiat.value
-                + serviceSwapFeeFiat.value;
-
-            return (totalFees / fromFiat) >= 0.3;
+            return (totalFeeFiat.value / fromFiat) >= 0.3;
         });
+
+        const fiatSmUnit = computed(() => {
+            const currencyInfo = new CurrencyInfo(fiat$.currency);
+            return 1 / 10 ** currencyInfo.decimals;
+        });
+
+        const roundedUpFeeFiat = computed(() =>
+            Math.ceil(totalFeeFiat.value / fiatSmUnit.value) * fiatSmUnit.value);
+
+        const feeSmallerThanSmUnit = computed(() => roundedUpFeeFiat.value <= fiatSmUnit.value);
 
         function onClose() {
             if (addressListOverlayOpened.value === true) {
@@ -1785,6 +1808,15 @@ export default defineComponent({
             serviceSwapFeeFiat,
             serviceSwapFeePercentage,
             isHighRelativeFees,
+            nimFeeFiat,
+            btcFeeFiat,
+            usdcFeeFiat,
+            totalFeeFiat,
+            feeSmallerThanSmUnit,
+            fiatSmUnit,
+            fiatCurrency: currency.value,
+            roundedUpFeeFiat,
+            feeIsLoading,
             getPlaceholder,
             onInput,
             onFocus,
@@ -1824,7 +1856,7 @@ export default defineComponent({
         Modal,
         PageHeader,
         PageBody,
-        Amount,
+        // Amount,
         AmountInput,
         FiatConvertedAmount,
         Tooltip,
@@ -1832,7 +1864,7 @@ export default defineComponent({
         CircleSpinner,
         SwapBalanceBar,
         MinimizeIcon,
-        LimitIcon,
+        // LimitIcon,
         KycIcon,
         LightningIcon,
         SwapFeesTooltip,
@@ -1880,14 +1912,40 @@ export default defineComponent({
     }
 }
 
-.pills {
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 0.75rem;
+.swap-info {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin: 0.75rem auto 0 auto;
+    column-gap: 1rem;
+
+    // select first child of swap-info
+    > :first-child {
+        justify-self: end;
+    }
+
+    & ::v-deep .circle-spinner {
+        width: 14px;
+        margin-bottom: -2px;
+    }
+
+    & .dot {
+        color: var(--text-50);
+    }
 
     .tooltip {
         text-align: left;
         margin-top: 0.75rem;
+
+        & ::v-deep .trigger {
+            color: var(--text-50);
+            transition: 150ms color var(--nimiq-ease) 300ms;
+
+            &:hover {
+                color: var(--text-70);
+                transition-delay: 0ms;
+            }
+        }
     }
 
     .tooltip + .tooltip {
@@ -1896,24 +1954,6 @@ export default defineComponent({
 }
 
 .pill {
-    align-items: center;
-    align-self: center;
-    font-size: var(--small-size);
-    font-weight: 600;
-    color: rgba(31, 35, 72, 0.6);
-    padding: 0.75rem 1.5rem;
-    border-radius: 5rem;
-    box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
-
-    transition: color 0.3s var(--nimiq-ease), box-shadow 0.3s var(--nimiq-ease);
-
-    &.fees {
-        svg,
-        .fiat-amount {
-            margin-right: 0.5rem;
-        }
-    }
-
     &.limits {
         color: rgb(234, 166, 23);
         box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);

@@ -67,8 +67,9 @@
                     + (oasisFeeFiat || 0)
                     + (sepaFeeFiat || 0)
                     + (nimFeeFiat || 0)
+                    + (usdcFeeFiat || 0)
                     + serviceSwapFeeFiat"
-                :currency="currency"/>
+                :currency="currency" :hideDecimals="false"/>
         </div>
     </Tooltip>
 </template>

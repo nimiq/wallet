@@ -1,5 +1,5 @@
 <template>
-    <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root">
+    <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root$">
         <div class="scroll-mask top" v-if="embedded"></div>
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, computed, ref, watch, onMounted, onActivated } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted } from '@vue/composition-api';
 
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
@@ -92,7 +92,7 @@ export default defineComponent({
 
         const backgroundYOffset = ref(4 + 20); // px - Top margin of the address-buttons (0.5rem) + 2.5rem padding-top
         const backgroundYScale = ref(1);
-        function adjustBackgroundOffsetAndScale(address: string) {
+        async function adjustBackgroundOffsetAndScale(address: string) {
             let offset = 0;
             let scalingRatio = 1;
             // TODO: In Vue 3, we will be able to use function refs, but not with the Vue 2 plugin.
@@ -109,10 +109,6 @@ export default defineComponent({
 
         if (!props.embedded) {
             watch(activeAddress, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
-            window.addEventListener(
-                'resize',
-                () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
-            );
             /* Update the .active-box after the decimals setting is changed */
             router.afterEach((to, from) => {
                 if (from.name === 'settings' && from.query.sidebar && to.name === 'root' && activeAddress.value) {
@@ -123,22 +119,32 @@ export default defineComponent({
             });
         }
 
-        const root = ref<HTMLElement>(null);
+        const root$ = ref<HTMLElement | null>(null);
         const scrollbarVisible = ref(false);
+        const resizeObserver = new ResizeObserver(() => {
+            if (activeAddress.value) adjustBackgroundOffsetAndScale(activeAddress.value);
+        });
         onMounted(() => {
             /* context.root.$nextTick works here except for Opera browser. Using setTimeout instead fix it. */
             /* TODO: find a better way to do it. */
-            setTimeout(() => {
+            setTimeout(async () => {
                 if (activeAddress.value) adjustBackgroundOffsetAndScale(activeAddress.value);
             }, 0);
 
             watch(addressInfos, () => {
-                scrollbarVisible.value = !!root.value && root.value.offsetWidth > root.value.scrollWidth;
+                scrollbarVisible.value = !!root$.value && root$.value.offsetWidth > root$.value.scrollWidth;
             });
+
+            if (!props.embedded) {
+                resizeObserver.observe(root$.value!);
+            }
         });
 
         onActivated(() => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
         watch(amountsHidden, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
+        onUnmounted(() => {
+            resizeObserver.disconnect();
+        });
 
         function selectNimAddress(address: string) {
             adjustBackgroundOffsetAndScale(address);
@@ -165,7 +171,7 @@ export default defineComponent({
         }
 
         return {
-            root,
+            root$,
             scrollbarVisible,
             selectAddress: selectNimAddress,
             addressInfos: processedAddressInfos,

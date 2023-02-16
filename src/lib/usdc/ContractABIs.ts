@@ -127,59 +127,6 @@ export const RELAY_HUB_CONTRACT_ABI = [
     // 'function workerToManager(address) view returns (address)'
 ];
 
-// TODO add variable names
-export const UNISWAP_FACTORY_CONTRACT_ABI = [
-    // 'constructor()',
-    // 'event FeeAmountEnabled(uint24 indexed fee, int24 indexed tickSpacing)',
-    // 'event OwnerChanged(address indexed oldOwner, address indexed newOwner)',
-    // 'event PoolCreated(address indexed token0, address indexed token1, uint24 indexed fee, int24 tickSpacing, address pool)',
-    // 'function createPool(address tokenA, address tokenB, uint24 fee) returns (address pool)',
-    // 'function enableFeeAmount(uint24 fee, int24 tickSpacing)',
-    // 'function feeAmountTickSpacing(uint24) view returns (int24)',
-    'function getPool(address, address, uint24) view returns (address)',
-    // 'function owner() view returns (address)',
-    // 'function parameters() view returns (address factory, address token0, address token1, uint24 fee, int24 tickSpacing)',
-    // 'function setOwner(address _owner)',
-];
-
-export const UNISWAP_POOL_CONTRACT_ABI = [
-    // 'event Burn(address indexed owner, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount, uint256 amount0, uint256 amount1)',
-    // 'event Collect(address indexed owner, address recipient, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount0, uint128 amount1)',
-    // 'event CollectProtocol(address indexed sender, address indexed recipient, uint128 amount0, uint128 amount1)',
-    // 'event Flash(address indexed sender, address indexed recipient, uint256 amount0, uint256 amount1, uint256 paid0, uint256 paid1)',
-    // 'event IncreaseObservationCardinalityNext(uint16 observationCardinalityNextOld, uint16 observationCardinalityNextNew)',
-    // 'event Initialize(uint160 sqrtPriceX96, int24 tick)',
-    // 'event Mint(address sender, address indexed owner, int24 indexed tickLower, int24 indexed tickUpper, uint128 amount, uint256 amount0, uint256 amount1)',
-    // 'event SetFeeProtocol(uint8 feeProtocol0Old, uint8 feeProtocol1Old, uint8 feeProtocol0New, uint8 feeProtocol1New)',
-    // 'event Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)',
-    // 'function burn(int24 tickLower, int24 tickUpper, uint128 amount) returns (uint256 amount0, uint256 amount1)',
-    // 'function collect(address recipient, int24 tickLower, int24 tickUpper, uint128 amount0Requested, uint128 amount1Requested) returns (uint128 amount0, uint128 amount1)',
-    // 'function collectProtocol(address recipient, uint128 amount0Requested, uint128 amount1Requested) returns (uint128 amount0, uint128 amount1)',
-    // 'function factory() view returns (address)',
-    'function fee() view returns (uint24)',
-    // 'function feeGrowthGlobal0X128() view returns (uint256)',
-    // 'function feeGrowthGlobal1X128() view returns (uint256)',
-    // 'function flash(address recipient, uint256 amount0, uint256 amount1, bytes data)',
-    // 'function increaseObservationCardinalityNext(uint16 observationCardinalityNext)',
-    // 'function initialize(uint160 sqrtPriceX96)',
-    // 'function liquidity() view returns (uint128)',
-    // 'function maxLiquidityPerTick() view returns (uint128)',
-    // 'function mint(address recipient, int24 tickLower, int24 tickUpper, uint128 amount, bytes data) returns (uint256 amount0, uint256 amount1)',
-    // 'function observations(uint256 index) view returns (uint32 blockTimestamp, int56 tickCumulative, uint160 secondsPerLiquidityCumulativeX128, bool initialized)',
-    // 'function observe(uint32[] secondsAgos) view returns (int56[] tickCumulatives, uint160[] secondsPerLiquidityCumulativeX128s)',
-    // 'function positions(bytes32 key) view returns (uint128 _liquidity, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128, uint128 tokensOwed0, uint128 tokensOwed1)',
-    // 'function protocolFees() view returns (uint128 token0, uint128 token1)',
-    // 'function setFeeProtocol(uint8 feeProtocol0, uint8 feeProtocol1)',
-    'function slot0() view returns (uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext, uint8 feeProtocol, bool unlocked)',
-    // 'function snapshotCumulativesInside(int24 tickLower, int24 tickUpper) view returns (int56 tickCumulativeInside, uint160 secondsPerLiquidityInsideX128, uint32 secondsInside)',
-    // 'function swap(address recipient, bool zeroForOne, int256 amountSpecified, uint160 sqrtPriceLimitX96, bytes data) returns (int256 amount0, int256 amount1)',
-    // 'function tickBitmap(int16 wordPosition) view returns (uint256)',
-    // 'function tickSpacing() view returns (int24)',
-    // 'function ticks(int24 tick) view returns (uint128 liquidityGross, int128 liquidityNet, uint256 feeGrowthOutside0X128, uint256 feeGrowthOutside1X128, int56 tickCumulativeOutside, uint160 secondsPerLiquidityOutsideX128, uint32 secondsOutside, bool initialized)',
-    'function token0() view returns (address)',
-    'function token1() view returns (address)',
-];
-
 export const UNISWAP_QUOTER_CONTRACT_ABI = [
     // 'constructor(address _factory, address _WETH9) nonpayable',
     // 'function WETH9() view returns (address)',

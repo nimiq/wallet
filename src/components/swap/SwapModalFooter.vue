@@ -25,6 +25,7 @@
 <script lang="ts">
 import { useBtcNetworkStore } from '@/stores/BtcNetwork';
 import { useNetworkStore } from '@/stores/Network';
+import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
 import { computed, defineComponent } from '@vue/composition-api';
 import { CryptoCurrency } from '../../lib/Constants';
@@ -59,6 +60,14 @@ export default defineComponent({
                     message = context.root.$i18n.t('Connecting to Nimiq network') as string;
                 } else if (!nimiqHeight.value) {
                     message = context.root.$i18n.t('Waiting for Nimiq network informations') as string;
+                }
+            }
+
+            if (activeCurrency.value === CryptoCurrency.NIM || props.requireBothNetworks) {
+                const { consensus: usdcConsensus } = useUsdcNetworkStore();
+
+                if (usdcConsensus.value !== 'established') {
+                    message = context.root.$i18n.t('Connecting to Polygon network') as string;
                 }
             }
 

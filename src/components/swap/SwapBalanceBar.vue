@@ -885,13 +885,13 @@ export default defineComponent({
     z-index: 2;
 
     .handle {
-        --height: 3rem;
-        --width: 3.25rem;
+        --height: 4rem;
+        --width: 4rem;
 
         height: var(--height);
         width: var(--width);
         background: white url('../../assets/horizontal-double-arrow.svg') no-repeat center;
-        border-radius: 0.5rem;
+        border-radius: 100%;
         box-shadow:
             0px .5rem 2rem rgba(0, 0, 0, 0.07),
             0px .1875rem .375rem rgba(0, 0, 0, 0.05),

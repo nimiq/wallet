@@ -184,7 +184,13 @@ export default defineComponent({
             props.timeRange,
             fiatCurrency.value,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], ([cryptoCurrency, timeRange, fiatCode], oldValues?: any[]) => {
+        ], ([cryptoCurrency, timeRange, fiatCode, lastUpdate], oldValues?: any[]) => {
+            const TWO_MINUTES = 2 * 60 * 1000;
+            // Same algorithm as in main.ts where the exchange rate update is queued
+            const nextUpdateIn = Math.max(0, Math.min(lastUpdate + TWO_MINUTES - Date.now(), TWO_MINUTES));
+            // If the exchange rate will be updated in less than 5 seconds anyway, do not query historic rates yet
+            if (nextUpdateIn < 5e3) return;
+
             const oldTimeRange = oldValues ? oldValues[1] : props.timeRange;
 
             const timeRangeHours = timeRange === TimeRange['24h']

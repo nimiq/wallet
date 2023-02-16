@@ -535,7 +535,7 @@ export default defineComponent({
         margin-right: 3rem;
         mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
-        &.bitcoin {
+        &.bitcoin, &.usdc {
             position: relative;
             top: 1.25rem;
         }

@@ -30,6 +30,12 @@
                             :serviceSwapFeePercentage="serviceSwapFeePercentage"
                             :currency="currency"
                             :container="this"
+                            :exchange-rate="{
+                                from: leftAsset,
+                                amount: 10 ** effectiveDecimals(leftAsset),
+                                to: rightAsset,
+                                rate: rightUnitsPerLeftCoin,
+                            }"
                         >
                             <div slot="trigger" class="fees flex-row" :class="{'high-fees': isHighRelativeFees}">
                                 <LightningIcon v-if="isHighRelativeFees"/>
@@ -41,7 +47,7 @@
                                 </i18n>
                                 <i18n v-else tag="span" path="{amount} fee" class="fee">
                                     <template #amount>
-                                        <FiatAmount :amount="roundedUpFeeFiat"
+                                        <FiatAmount :amount="totalFeeFiat"
                                             :hideDecimals="false" :currency="fiatCurrency"/>
                                     </template>
                                 </i18n>
@@ -54,35 +60,35 @@
 
                     <strong class="dot">&middot;</strong>
 
-                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                        class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
-                        <div slot="trigger" class="limits flex-row" :class="{
-                            'limit-reached': isLimitReached,
-                            'kyc-connected': kycUser,
-                        }">
-                            <template v-if="limits">
+                    <template v-if="limits">
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                            class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
+                            <div slot="trigger" class="limits flex-row" :class="{
+                                'limit-reached': isLimitReached,
+                                'kyc-connected': kycUser,
+                            }">
                                 <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
                                 <KycIcon v-if="kycUser" />
-                            </template>
-                            <template v-else>
-                                <CircleSpinner/>
-                            </template>
-                        </div>
-                        <div class="price-breakdown">
-                            <label>{{ $t('30-day Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.monthly.luna" currency="nim" roundDown/>
-                            <span v-else>{{ $t('loading...') }}</span>
-                        </div>
-                        <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                            <FiatConvertedAmount slot="value"
-                                :amount="limits.remaining.luna" currency="nim" roundDown/>
-                        </i18n>
-                        <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
-                            {{ $t('Settings') }}
-                        </router-link> -->
-                        <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
-                    </Tooltip>
+                            </div>
+                            <div class="price-breakdown">
+                                <label>{{ $t('30-day Limit') }}</label>
+                                <FiatConvertedAmount v-if="limits"
+                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
+                                <span v-else>{{ $t('loading...') }}</span>
+                            </div>
+                            <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                                <FiatConvertedAmount slot="value"
+                                    :amount="limits.remaining.luna" currency="nim" roundDown/>
+                            </i18n>
+                            <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
+                                {{ $t('Settings') }}
+                            </router-link> -->
+                            <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser" @click="kycOverlayOpened = true" />
+                        </Tooltip>
+                    </template>
+                    <template v-else>
+                        <CircleSpinner/>
+                    </template>
                 </div>
             </div>
         </PageHeader>
@@ -858,12 +864,16 @@ export default defineComponent({
 
         watch(
             [leftAsset, rightAsset, usdcHeight],
-            ([, , newUsdcHeight], [oldLeft, oldRight]) => {
-                if (swapHasUsdc.value && ![oldLeft, oldRight].includes(SwapAsset.USDC)) {
-                    if (!newUsdcHeight) return; // Wait for USDC height to be set
+            (newAssets, oldAssets) => {
+                if (!usdcHeight.value) return; // Wait for USDC height to be set
+                const newLeft = newAssets?.[0];
+                const newRight = newAssets?.[1];
+                const oldLeft = oldAssets?.[0];
+                const oldRight = oldAssets?.[1];
+                if ([newLeft, newRight].includes(SwapAsset.USDC) && ![oldLeft, oldRight].includes(SwapAsset.USDC)) {
                     calculateUsdcHtlcFee();
                     usdcFeeUpdateInterval = window.setInterval(calculateUsdcHtlcFee, 30e3); // Update fee every 30s
-                } else if (!swapHasUsdc.value) {
+                } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
                     window.clearInterval(usdcFeeUpdateInterval);
                     usdcFeeUpdateInterval = -1;
                     usdcFeeStuff.value = null;
@@ -1184,9 +1194,9 @@ export default defineComponent({
             (nimFeeFiat.value || 0) + (btcFeeFiat.value || 0) + (usdcFeeFiat.value || 0));
 
         const feeIsLoading = computed(() => {
-            if (swapHasNim.value && !nimFeeFiat.value) return false; // fee is 0 in nim
-            if (swapHasBtc.value && !btcFeeFiat.value) return true;
-            if (swapHasUsdc.value && !usdcFeeFiat.value) return true;
+            if (swapHasNim.value && swapHasBtc.value) return !btcFeeFiat.value;
+            if (swapHasNim.value && swapHasUsdc.value) return !usdcFeeFiat.value;
+            if (swapHasBtc.value && swapHasUsdc.value) return !btcFeeFiat.value || !usdcFeeFiat.value;
             return false;
         });
 
@@ -1824,6 +1834,7 @@ export default defineComponent({
             onSwapBalanceBarChange,
             newLeftBalance,
             newRightBalance,
+            accountBalance,
             estimateError,
             swap,
             swapError,
@@ -1913,6 +1924,7 @@ export default defineComponent({
 }
 
 .swap-info {
+    height: 21px;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
@@ -1922,6 +1934,10 @@ export default defineComponent({
     // select first child of swap-info
     > :first-child {
         justify-self: end;
+    }
+
+    & ::v-deep {
+        font-weight: 700;
     }
 
     & ::v-deep .circle-spinner {
@@ -1951,9 +1967,7 @@ export default defineComponent({
     .tooltip + .tooltip {
         margin-left: 0.75rem;
     }
-}
 
-.pill {
     &.limits {
         color: rgb(234, 166, 23);
         box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);

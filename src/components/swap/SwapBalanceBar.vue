@@ -1,7 +1,7 @@
 <template>
     <div class="swap-balance-bar flex-column" ref="root" :class="{ animating: animatingBars }">
         <div class="balance-bar-header flex-row">
-            <button v-if="leftAsset === SwapAsset.NIM" class="reset left nimiq flex-row"
+            <button v-if="leftAsset === SwapAsset.NIM" class="reset left nimiq currency"
                 :class="{ single: backgroundAddresses.length === 0 }"
                 @click="onActiveAddressClick"
             >
@@ -11,32 +11,38 @@
                     <Identicon class="primary" :address="activeAddressInfo.address"/>
                 </div>
                 <label>{{ activeAddressInfo.label }}</label>
+                <Amount :amount="newLeftBalance" currency="nim" :decimals="0" />
             </button>
-            <div v-if="leftAsset === SwapAsset.BTC" class="left bitcoin flex-row">
+            <div v-if="leftAsset === SwapAsset.BTC" class="currency left bitcoin">
                 <BitcoinIcon />
                 <label>Bitcoin</label>
+                <Amount :amount="newLeftBalance" currency="btc" />
             </div>
-            <div v-if="leftAsset === SwapAsset.USDC" class="left usdc flex-row">
+            <div v-if="leftAsset === SwapAsset.USDC" class="currency left usdc">
                 <UsdcIcon />
                 <label>USD Coin</label>
+                <Amount :amount="newLeftBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
             </div>
-            <button v-if="rightAsset === SwapAsset.NIM" class="reset right nimiq flex-row"
+            <button v-if="rightAsset === SwapAsset.NIM" class="reset right nimiq currency"
                 :class="{ single: backgroundAddresses.length === 0 }"
                 @click="onActiveAddressClick"
             >
                 <label>{{ activeAddressInfo.label }}</label>
-                <div class="identicon-stack" ref="$nimiqIcon">
+                <Amount :amount="newRightBalance" currency="nim" :decimals="0" />
+                 <div class="identicon-stack" ref="$nimiqIcon">
                     <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                     <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                     <Identicon class="primary" :address="activeAddressInfo.address"/>
                 </div>
             </button>
-            <div v-if="rightAsset === SwapAsset.BTC" class="right bitcoin flex-row">
+            <div v-if="rightAsset === SwapAsset.BTC" class="currency right bitcoin">
                 <label>Bitcoin</label>
+                <Amount :amount="newRightBalance" currency="btc" />
                 <BitcoinIcon />
             </div>
-            <div v-if="rightAsset === SwapAsset.USDC" class="right usdc flex-row">
+            <div v-if="rightAsset === SwapAsset.USDC" class="currency right usdc">
                 <label>USD Coin</label>
+                <Amount :amount="newRightBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
                 <UsdcIcon />
             </div>
         </div>
@@ -112,7 +118,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/composition-api';
-import { Identicon } from '@nimiq/vue-components';
+import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
@@ -614,6 +620,7 @@ export default defineComponent({
         CurvedLine,
         SlideHint,
         UsdcIcon,
+        Amount,
     },
 });
 </script>
@@ -627,10 +634,12 @@ export default defineComponent({
 .balance-bar-header {
     --header-height: 5.25rem;
     height: var(--header-height);
+    justify-content: space-between;
+    column-gap: 1rem;
 
     & > * {
-        flex-grow: 1;
-        align-items: center;
+        // flex-grow: 1;
+        // align-items: center;
 
         label {
             font-weight: 600;
@@ -644,11 +653,71 @@ export default defineComponent({
     }
 }
 
-.balance-bar-header .nimiq {
-    flex-grow: 0;
-    max-width: 65%;
-    position: relative;
+.balance-bar-header .currency {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: var(--currency-columns);
+    grid-auto-flow: column;
+    column-gap: var(--column-gap);
 
+    & .identicon-stack,
+    & ::v-deep svg {
+        grid-row: 1 / span 2;
+    }
+
+    & ::v-deep .amount {
+        color: var(--text-50);
+        font-size: var(--small-size);
+        font-weight: 600;
+    }
+
+    &.left  {
+        --currency-columns: 1fr auto;
+    }
+
+    &.right {
+        --currency-columns: auto 1fr;
+
+        & > label,
+        & > span {
+            text-align: right;
+        }
+
+        &.identicon-stack,
+        & ::v-deep svg {
+            grid-column: 2;
+        }
+    }
+
+    &.nimiq {
+        --column-gap: 1.5rem;
+        max-width: 65%;
+        position: relative;
+
+        &.right {
+            margin-right: 1rem;
+        }
+
+        &.left {
+            margin-left: 1rem;
+        }
+
+        & > label {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            cursor: inherit;
+        }
+    }
+
+    &.bitcoin,
+    &.usdc {
+        --column-gap: 2rem;
+    }
+}
+
+// Button style for the nimiq address selector
+.balance-bar-header .nimiq {
     &:not(.single) {
         &:before {
             content: "";
@@ -656,8 +725,8 @@ export default defineComponent({
             position: absolute;
             top: -.5rem;
             bottom: -.5rem;
-            left: -.5rem;
-            right: -.5rem;
+            left: -1.5rem;
+            right: -1.5rem;
             background: transparent;
 
             transition: background 400ms;
@@ -670,54 +739,6 @@ export default defineComponent({
 
     &.single {
         cursor: default;
-    }
-
-    label {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        cursor: inherit;
-    }
-
-    &.left {
-        label {
-            margin-right: 1rem;
-        }
-
-        .identicon-stack {
-            margin-right: 1.5rem;
-            margin-left: 1rem;
-        }
-    }
-
-    &.right {
-        justify-content: flex-end;
-
-        label {
-            margin-left: 1rem;
-        }
-
-        .identicon-stack {
-            margin-right: 1rem;
-            margin-left: 1.5rem;
-        }
-    }
-}
-
-.balance-bar-header .bitcoin,
-.balance-bar-header .usdc {
-    &.left {
-        svg {
-            margin-right: 2rem;
-        }
-    }
-
-    &.right {
-        justify-content: flex-end;
-
-        svg {
-            margin-left: 2rem;
-        }
     }
 }
 

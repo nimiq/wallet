@@ -253,7 +253,6 @@ svg {
         cy: 50%;
         fill: none;
         stroke-linecap: round;
-        cursor: pointer;
         // regular transition while arc is shown and resizes or changes color due to distribution changes.
         transition: stroke-dashoffset var(--transition-time) var(--nimiq-ease),
             stroke-dasharray var(--transition-time) var(--nimiq-ease),
@@ -308,7 +307,7 @@ svg {
         line-height: 1;
         color: white;
         list-style: none;
-        cursor: pointer;
+        cursor: default;
 
         &:not(:first-child) {
             padding-top: .5rem;

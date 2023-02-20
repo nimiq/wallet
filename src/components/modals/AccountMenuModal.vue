@@ -225,6 +225,7 @@ export default defineComponent({
 }
 
 .account-list {
+    min-height: 6rem;
     margin: 1rem 0;
     overflow-y: auto;
 

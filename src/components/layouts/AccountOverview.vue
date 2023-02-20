@@ -163,7 +163,7 @@
                 </p>
             </div>
 
-            <div class="flex-grow"></div>
+            <div class="bottom-spacer"></div>
 
             <MobileActionBar/>
         </template>
@@ -572,7 +572,7 @@ export default defineComponent({
 .nimiq-account {
     margin-top: 7rem;
     padding: 0.5rem 1rem;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 1;
@@ -674,9 +674,9 @@ export default defineComponent({
         &.active::before {
             opacity: 1;
             box-shadow:
-                0px 0.337011px 2px rgba(0, 0, 0, 0.0254662),
-                0px 1.5px 3px rgba(0, 0, 0, 0.05),
-                0px 4px 16px rgba(0, 0, 0, 0.07);
+                0 0.337011px 2px rgba(0, 0, 0, 0.0254662),
+                0 1.5px 3px rgba(0, 0, 0, 0.05),
+                0 4px 16px rgba(0, 0, 0, 0.07);
         }
 
         &.disabled {
@@ -837,6 +837,11 @@ export default defineComponent({
     text-align: center;
 }
 
+.bottom-spacer {
+    min-height: 1rem;
+    flex-grow: 1;
+}
+
 @media (max-width: 1160px) { // Half mobile breakpoint
     .mobile-menu-bar {
         display: flex;
@@ -932,7 +937,25 @@ export default defineComponent({
 
     .mobile-action-bar {
         margin: 0 calc(-1 * var(--padding-sides));
-        box-shadow: 0px 0px 60px rgba(31, 35, 72, 0.07);
+        box-shadow: 0 0 60px rgba(31, 35, 72, 0.07);
+    }
+}
+
+@media (max-height: 520px) { // small mobile
+    .mobile-menu-bar,
+    .bitcoin-account,
+    .usdc-account {
+        padding: 0;
+    }
+
+    .nimiq-account {
+        margin-top: 1rem;
+    }
+}
+
+@media (max-height: 450px) { // tiny mobile
+    .account-balance-container {
+        margin-top: -3rem;
     }
 }
 </style>

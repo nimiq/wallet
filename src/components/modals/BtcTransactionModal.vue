@@ -10,7 +10,7 @@
             }}</template>
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.NIM || swapData.asset === SwapAsset.USDC" v-slot:address>
                     <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
@@ -18,11 +18,11 @@
                     <label>{{ $t('Euro') }}</label>
                 </template>
 
-                <template v-else v-slot:address>?</template>
+                <template v-else v-slot:address>{{ swapData.asset.toUpperCase() }}</template>
             </i18n>
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.NIM && swapTransaction" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.NIM || swapData.asset === SwapAsset.USDC" v-slot:address>
                     <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
@@ -30,7 +30,7 @@
                     <label>{{ $t('Euro') }}</label>
                 </template>
 
-                <template v-else v-slot:address>?</template>
+                <template v-else v-slot:address>{{ swapData.asset.toUpperCase() }}</template>
             </i18n>
 
             <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
@@ -86,6 +86,7 @@
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
+                        <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
@@ -149,6 +150,7 @@
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
+                        <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
@@ -254,6 +256,20 @@
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
+                        <button v-if="swapData.asset === SwapAsset.USDC && swapTransaction"
+                            class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
+                            @click="$router.replace(`/usdc-transaction/${swapTransaction.transactionHash}`)"
+                        >
+                            <div class="icon">
+                                <GroundedArrowUpIcon v-if="isIncoming"/>
+                                <GroundedArrowDownIcon v-else/>
+                            </div>
+                            <Amount
+                                :amount="swapTransaction.value"
+                                :currency="swapData.asset.toLowerCase()"
+                                class="swapped-amount"
+                                value-mask/>
+                        </button>
                         <div v-else-if="swapData.asset === SwapAsset.EUR"
                             class="swap-other-side flex-row" :class="{'incoming': !isIncoming}">
                             <div class="icon">
@@ -344,6 +360,8 @@ import { refundSwap } from '../../hub';
 import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
+import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
+import UsdcIcon from '../icons/UsdcIcon.vue';
 
 export default defineComponent({
     name: 'btc-transaction-modal',
@@ -427,11 +445,20 @@ export default defineComponent({
                 return swapTx || null;
             }
 
+            if (swapData.value.asset === SwapAsset.USDC) {
+                let swapTx = useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash];
+                if (swapTx?.relatedTransactionHash) {
+                    // Avoid showing the swap proxy, instead show our related address.
+                    swapTx = useUsdcTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
+                }
+                return swapTx || null;
+            }
+
             return null;
         });
 
         const usesNimSwapProxy = computed(() => {
-            if (!swapTransaction.value) return false;
+            if (!swapTransaction.value || !('validityStartHeight' in swapTransaction.value)) return false;
             const swapPeerAddress = isIncoming.value
                 ? swapTransaction.value.sender
                 : swapTransaction.value.recipient;
@@ -448,16 +475,6 @@ export default defineComponent({
                 return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
             }
 
-            // if ('hashRoot' in props.transaction.data) {
-            //     return context.root.$t('HTLC Creation');
-            // }
-            // if ('creator' in props.transaction.proof) {
-            //     return context.root.$t('HTLC Refund');
-            // }
-            // if ('hashRoot' in props.transaction.proof) {
-            //     return context.root.$t('HTLC Settlement');
-            // }
-
             return '';
         });
 
@@ -471,6 +488,12 @@ export default defineComponent({
                     }
                     return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
                 }
+
+                if (swapData.value.asset === SwapAsset.USDC && swapTransaction.value) {
+                    const swapTx = swapTransaction.value as UsdcTransaction;
+                    return isIncoming.value ? [swapTx.sender] : [swapTx.recipient];
+                }
+
                 if (swapData.value.asset === SwapAsset.EUR) return [swapData.value.iban || ''];
             }
 
@@ -488,6 +511,10 @@ export default defineComponent({
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
                     return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
                         || context.root.$t('Swap'); // avoid displaying proxy address until we know related peer address
+                }
+
+                if (swapData.value.asset === SwapAsset.USDC) {
+                    return context.root.$t('USD Coin');
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
@@ -674,6 +701,7 @@ export default defineComponent({
         Identicon,
         SwapMediumIcon,
         TransactionDetailOasisPayoutStatus,
+        UsdcIcon,
     },
 });
 </script>
@@ -790,7 +818,7 @@ export default defineComponent({
 
 .avatar,
 .bank-icon,
-.address-info > svg {
+.address-info svg {
     position: relative;
     width: 8rem;
     height: 8rem;
@@ -822,6 +850,10 @@ export default defineComponent({
         width: 9rem;
         height: 9rem;
         margin: -0.5rem 0; // Identicon should be 72x63
+    }
+
+    svg.usdc {
+        color: var(--usdc-blue);
     }
 }
 

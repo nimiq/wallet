@@ -5,6 +5,7 @@
             <span class="nq-label">{{ $t('Testnet') }}</span>
             <div class="flex-grow"></div>
             <Tooltip preferredPosition="bottom left"
+                :container="$parent"
                 theme="inverse"
                 :styles="{ transform: 'translate(0.5rem, 2rem)' }"
                 ref="testnetTooltip"
@@ -26,7 +27,7 @@
 
         <AnnouncementBox/>
 
-        <div class="price-chart-wrapper">
+        <div v-if="windowHeight >= 520" class="price-chart-wrapper">
             <PriceChart currency="nim" @timespan="switchPriceChartTimeRange" :timeRange="priceChartTimeRange"/>
             <PriceChart v-if="$config.enableBitcoin"
                 currency="btc" :showTimespanLabel="false" :timeRange="priceChartTimeRange"/>
@@ -35,6 +36,7 @@
         <div class="trade-actions" v-if="!isLegacyAccount">
             <Tooltip v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
                 preferredPosition="top right"
+                :container="$parent"
                 theme="inverse"
                 :styles="{ minWidth: '25rem' }"
                 :disabled="!hasActiveSwap"
@@ -55,6 +57,7 @@
 
             <Tooltip v-if="$config.fastspot.enabled"
                 preferredPosition="top right"
+                :container="$parent"
                 theme="inverse"
                 :styles="{ minWidth: '25rem' }"
                 :disabled="!$config.oasis.underMaintenance && canUseSwaps && !hasActiveSwap"
@@ -87,10 +90,13 @@
             </Tooltip>
         </div>
 
-        <BalanceDistribution v-if="!isLegacyAccount" />
+        <div v-if="windowHeight >= 450 && !isLegacyAccount" class="balance-distribution-wrapper">
+            <BalanceDistribution />
+        </div>
 
         <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
             preferredPosition="bottom right"
+            :container="$parent"
             :disabled="activatedCurrencies.length > 1 && hasBalance && canUseSwaps && !hasActiveSwap"
             theme="inverse"
             class="swap-tooltip"
@@ -169,7 +175,7 @@ import { ENV_TEST, ENV_DEV, CryptoCurrency } from '../../lib/Constants';
 export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
-        const { isMobile } = useWindowSize();
+        const { isMobile, height: windowHeight } = useWindowSize();
 
         async function navigateTo(path: string) {
             if (isMobile.value) {
@@ -251,6 +257,7 @@ export default defineComponent({
             resetState,
             isTestnet,
             isDev,
+            windowHeight,
             priceChartTimeRange,
             switchPriceChartTimeRange,
             isLegacyAccount,
@@ -280,6 +287,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
+// Breakpoints at which the price charts and balance distribution are shown via v-if. We use v-if and not display: none
+// to avoid unnecessarily mounting and updating them while they're not displayed.
+$price-chart-display-breakpoint: 520px;
+$balance-distribution-display-breakpoint: 450px;
+
 .sidebar {
     @include flex-full-height;
     align-items: center;
@@ -287,7 +299,7 @@ export default defineComponent({
     color: white;
 
     /* Default: 1440px */
-    --padding-top: 3rem;
+    --padding-top: 2.75rem;
     --padding-sides: 1.5rem;
     --padding-bottom: 2rem;
 
@@ -355,26 +367,18 @@ export default defineComponent({
     align-self: stretch;
 }
 
-.price-chart-wrapper {
+.price-chart-wrapper,
+.balance-distribution-wrapper {
     overflow-y: auto;
     width: 100%;
-    min-height: 10rem;
     scrollbar-width: none;
 
-    mask: linear-gradient(0deg ,
+    mask: linear-gradient(0deg,
         rgba(255,255,255, 0),
         white 3rem,
         white calc(100% - 3rem),
         rgba(255,255,255, 0)
     );
-
-    .price-chart:first-child {
-        margin-top: 1rem;
-    }
-
-    .price-chart:last-child {
-        margin-bottom: 1rem;
-    }
 
     &::-webkit-scrollbar {
         width: 0;
@@ -385,6 +389,14 @@ export default defineComponent({
     height: 15rem;
     width: 100%;
     padding: 1.5rem;
+
+    &:first-child {
+        margin-top: 1.25rem;
+    }
+
+    &:last-child {
+        margin-bottom: .75rem;
+    }
 
     ::v-deep .timespan {
         left: 1.5rem;
@@ -417,7 +429,7 @@ export default defineComponent({
 }
 
 .trade-actions {
-    margin-bottom: 5rem;
+    margin-bottom: 1.5rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -425,11 +437,30 @@ export default defineComponent({
     > * {
         flex-grow: 1; // make buttons span available space and full width if they break into two lines
     }
+
+    @media (max-height: $price-chart-display-breakpoint - 1px) {
+        margin-top: 2rem;
+        margin-bottom: .5rem;
+    }
+    @media (max-height: $balance-distribution-display-breakpoint - 1px) {
+        margin-bottom: 2rem;
+    }
 }
 
-.balance-distribution,
+.balance-distribution-wrapper {
+    flex-shrink: 0; // when price-chart-wrapper is visible, shrink that one instead
+
+    @media (max-height: $price-chart-display-breakpoint - 1px) {
+        flex-shrink: 1;
+    }
+}
+
+.balance-distribution {
+    margin: 2.5rem 0;
+}
+
 .swap-tooltip {
-    margin-bottom: 2.5rem;
+    margin-bottom: 4rem;
 }
 
 .account-menu,

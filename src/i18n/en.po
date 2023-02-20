@@ -25,7 +25,7 @@ msgstr ""
 msgid "{bankName} offers generic and individual IBANs."
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:287
+#: src/components/modals/BtcTransactionModal.vue:303
 #: src/components/modals/TransactionModal.vue:298
 #: src/components/modals/UsdcTransactionModal.vue:76
 msgid "{count} Confirmation | {count} Confirmations"
@@ -86,10 +86,10 @@ msgstr ""
 msgid "+ network fees"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:114
-#: src/components/modals/BtcTransactionModal.vue:129
-#: src/components/modals/BtcTransactionModal.vue:144
-#: src/components/modals/BtcTransactionModal.vue:176
+#: src/components/modals/BtcTransactionModal.vue:115
+#: src/components/modals/BtcTransactionModal.vue:130
+#: src/components/modals/BtcTransactionModal.vue:145
+#: src/components/modals/BtcTransactionModal.vue:178
 #: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
 msgstr ""
@@ -327,7 +327,7 @@ msgid "Back to Bank Details"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:263
-#: src/components/modals/BtcTransactionModal.vue:494
+#: src/components/modals/BtcTransactionModal.vue:521
 #: src/components/modals/TransactionModal.vue:568
 #: src/components/TransactionListItem.vue:242
 #: src/components/UsdcTransactionListItem.vue:260
@@ -351,8 +351,8 @@ msgstr ""
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
-#: src/components/modals/BtcTransactionModal.vue:119
-#: src/components/modals/BtcTransactionModal.vue:135
+#: src/components/modals/BtcTransactionModal.vue:120
+#: src/components/modals/BtcTransactionModal.vue:136
 #: src/components/modals/TransactionModal.vue:560
 #: src/components/TransactionListItem.vue:234
 #: src/components/UsdcTransactionListItem.vue:256
@@ -367,13 +367,13 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:284
+#: src/components/modals/BtcTransactionModal.vue:300
 #: src/components/modals/TransactionModal.vue:295
 #: src/components/modals/UsdcTransactionModal.vue:73
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:294
+#: src/components/modals/BtcTransactionModal.vue:310
 #: src/components/modals/TransactionModal.vue:307
 #: src/components/modals/UsdcTransactionModal.vue:85
 #: src/components/swap/SwapAnimation.vue:190
@@ -397,7 +397,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:49
+#: src/components/layouts/Sidebar.vue:51
 msgid "Buy"
 msgstr ""
 
@@ -473,7 +473,7 @@ msgid "Cancel Swap"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:248
-#: src/components/modals/BtcTransactionModal.vue:484
+#: src/components/modals/BtcTransactionModal.vue:507
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:555
@@ -1029,8 +1029,8 @@ msgstr ""
 msgid "Highest degree of decentralization"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:200
-#: src/components/modals/BtcTransactionModal.vue:226
+#: src/components/modals/BtcTransactionModal.vue:202
+#: src/components/modals/BtcTransactionModal.vue:228
 #: src/components/modals/TransactionModal.vue:198
 #: src/components/modals/TransactionModal.vue:223
 #: src/components/modals/UsdcTransactionModal.vue:59
@@ -1038,7 +1038,7 @@ msgid "Historic value"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:448
+#: src/components/modals/BtcTransactionModal.vue:475
 #: src/components/modals/TransactionModal.vue:495
 #: src/components/TransactionListItem.vue:186
 #: src/components/UsdcTransactionListItem.vue:190
@@ -1047,7 +1047,7 @@ msgid "HTLC Creation"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:448
+#: src/components/modals/BtcTransactionModal.vue:475
 #: src/components/modals/TransactionModal.vue:506
 #: src/components/TransactionListItem.vue:197
 #: src/components/UsdcTransactionListItem.vue:201
@@ -1175,7 +1175,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:77
+#: src/components/layouts/Sidebar.vue:80
 #: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr ""
@@ -1296,7 +1296,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:134
+#: src/components/layouts/Sidebar.vue:140
 msgid "Network"
 msgstr ""
 
@@ -1351,8 +1351,8 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:114
-#: src/components/layouts/Sidebar.vue:81
+#: src/components/layouts/Sidebar.vue:120
+#: src/components/layouts/Sidebar.vue:84
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
 msgstr ""
@@ -1381,7 +1381,7 @@ msgstr ""
 msgid "OASIS service fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:71
+#: src/components/layouts/Sidebar.vue:74
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take some time. Please try again later."
 msgstr ""
@@ -1457,11 +1457,11 @@ msgstr ""
 msgid "Performing swap {progress}/5"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:109
+#: src/components/layouts/Sidebar.vue:115
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:17
+#: src/components/layouts/Sidebar.vue:18
 msgid "Please do not use your Mainnet accounts!"
 msgstr ""
 
@@ -1482,9 +1482,9 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:118
-#: src/components/layouts/Sidebar.vue:52
-#: src/components/layouts/Sidebar.vue:85
+#: src/components/layouts/Sidebar.vue:124
+#: src/components/layouts/Sidebar.vue:54
+#: src/components/layouts/Sidebar.vue:88
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 
@@ -1589,7 +1589,7 @@ msgstr ""
 msgid "Refresh the page to continue."
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:277
+#: src/components/modals/BtcTransactionModal.vue:293
 #: src/components/modals/TransactionModal.vue:288
 msgid "Refund"
 msgstr ""
@@ -1679,7 +1679,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:68
+#: src/components/layouts/Sidebar.vue:71
 msgid "Sell"
 msgstr ""
 
@@ -1825,7 +1825,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:142
+#: src/components/layouts/Sidebar.vue:148
 msgid "Settings"
 msgstr ""
 
@@ -1931,8 +1931,8 @@ msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
-#: src/components/layouts/Sidebar.vue:106
-#: src/components/modals/BtcTransactionModal.vue:490
+#: src/components/layouts/Sidebar.vue:112
+#: src/components/modals/BtcTransactionModal.vue:513
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:551
 #: src/components/modals/TransactionModal.vue:7
@@ -2074,8 +2074,8 @@ msgstr ""
 msgid "Think features, not currency"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:202
-#: src/components/modals/BtcTransactionModal.vue:228
+#: src/components/modals/BtcTransactionModal.vue:204
+#: src/components/modals/BtcTransactionModal.vue:230
 #: src/components/modals/TransactionModal.vue:200
 #: src/components/modals/TransactionModal.vue:225
 msgid "This historic value is based on an average of cross-exchange prices. It might vary due to market volatility and liquidity."
@@ -2217,10 +2217,10 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:101
-#: src/components/modals/BtcTransactionModal.vue:159
-#: src/components/modals/BtcTransactionModal.vue:164
-#: src/components/modals/BtcTransactionModal.vue:96
+#: src/components/modals/BtcTransactionModal.vue:102
+#: src/components/modals/BtcTransactionModal.vue:161
+#: src/components/modals/BtcTransactionModal.vue:166
+#: src/components/modals/BtcTransactionModal.vue:97
 msgid "Unknown"
 msgstr ""
 
@@ -2245,6 +2245,7 @@ msgstr ""
 #: src/components/BtcTransactionListItem.vue:259
 #: src/components/layouts/AccountOverview.vue:103
 #: src/components/layouts/AddressOverview.vue:84
+#: src/components/modals/BtcTransactionModal.vue:517
 #: src/components/modals/TransactionModal.vue:564
 #: src/components/TransactionListItem.vue:238
 #: src/components/UsdcAddressInfo.vue:12
@@ -2326,7 +2327,7 @@ msgstr ""
 msgid "You are a part of the Nimiq Blockchain."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:16
+#: src/components/layouts/Sidebar.vue:17
 msgid "You are connecting to the Nimiq, Bitcoin and Polygon (USDC) Testnets."
 msgstr ""
 
@@ -2338,7 +2339,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:111
+#: src/components/layouts/Sidebar.vue:117
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -2407,8 +2408,8 @@ msgstr ""
 msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:115
-#: src/components/layouts/Sidebar.vue:82
+#: src/components/layouts/Sidebar.vue:121
+#: src/components/layouts/Sidebar.vue:85
 #: src/components/modals/BuyOptionsModal.vue:82
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""

@@ -153,8 +153,10 @@ export default defineComponent({
         const breakdown = computed(() => currencies.value
             .map((currency) => ({
                 currency,
-                percentage: `${(balanceDistribution.value[currency] * 100).toFixed(
-                    !balanceDistribution.value[currency] || balanceDistribution.value[currency] >= .01 ? 0 : 1)}%`,
+                percentage: balanceDistribution.value[currency]
+                    ? `${Math.max(balanceDistribution.value[currency] * 100, /* always display at least 0.1% */ 0.1)
+                        .toFixed(/* >=1% after rounding? */ balanceDistribution.value[currency] * 100 >= .95 ? 0 : 1)}%`
+                    : '0%',
                 inactive: !balanceDistribution.value[currency]
                     || (!!highlightedCurrency.value && highlightedCurrency.value !== currency),
             }))

@@ -135,7 +135,7 @@
                 <div class="usdc-account-background" :style="getAccountBackgroundPosition('usdc')"></div>
             </div>
 
-            <div class="swap-buttons">
+            <div class="swap-buttons" :class="{ resize: windowResizing }">
                 <div class="nim-usdc-swap-button"
                     :style="getSwapButtonPosition('nim-usdc')"
                     @click="$router.push('/swap/NIM-USDC')"
@@ -289,8 +289,18 @@ export default defineComponent({
         const bitcoinAccount$ = ref<HTMLElement | null>(null);
 
         const forceUpdateRef = ref(false);
+        const windowResizing = ref(false);
         const resizeObserver = new ResizeObserver(forceUpdate);
         const mutationObserver = new MutationObserver(() => forceUpdate());
+
+        let resizeTimeoutId: any = null;
+        function onWindowResize() {
+            clearTimeout(resizeTimeoutId);
+            windowResizing.value = true;
+            resizeTimeoutId = setTimeout(() => {
+                windowResizing.value = false;
+            }, 100);
+        }
 
         onMounted(async () => {
             resizeObserver.observe(context.root.$el);
@@ -299,10 +309,12 @@ export default defineComponent({
                 childList: true,
                 subtree: true,
             });
+            window.addEventListener('resize', onWindowResize);
         });
         onUnmounted(() => {
             resizeObserver.disconnect();
             mutationObserver.disconnect();
+            window.removeEventListener('resize', onWindowResize);
         });
         onActivated(forceUpdate);
 
@@ -407,6 +419,7 @@ export default defineComponent({
             bitcoinAccount$,
             getAccountBackgroundPosition,
             getSwapButtonPosition,
+            windowResizing,
         };
     },
     components: {
@@ -822,6 +835,10 @@ export default defineComponent({
                 path { d: path("m1 4 3-3 3 3m0 6-3 3-3-3") }
             }
         }
+    }
+
+    .resize & {
+        transition: none;
     }
 }
 

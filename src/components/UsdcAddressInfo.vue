@@ -13,23 +13,21 @@
         <span v-else class="label" :class="{ unlabelled: !localLabel }">
             {{ localLabel || $t('unknown') }}
         </span>
-        <Tooltip :preferredPosition="tooltipPosition"
+        <InteractiveShortAddress :address="address"
+            :tooltipPosition="tooltipPosition === TooltipPosition.BOTTOM_RIGHT ? 'right' : 'left'"
             :class="{
                 'left-aligned': tooltipPosition === TooltipPosition.BOTTOM_RIGHT,
                 'right-aligned': tooltipPosition === TooltipPosition.BOTTOM_LEFT,
-            }">
-            <ShortAddress :address="address" slot="trigger"/>
-            {{ address }}
-        </Tooltip>
+            }"
+        />
     </div>
 </template>
 
 <script lang="ts">
-import { Tooltip } from '@nimiq/vue-components';
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import Avatar from './Avatar.vue';
-import ShortAddress from './ShortAddress.vue';
+import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 
@@ -78,8 +76,7 @@ export default defineComponent({
         };
     },
     components: {
-        Tooltip,
-        ShortAddress,
+        InteractiveShortAddress,
         Avatar,
         UsdcIcon,
     },
@@ -155,67 +152,9 @@ export default defineComponent({
     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
-.usdc-address-info .tooltip ::v-deep {
-    .tooltip-box {
-        padding: 1rem;
-        font-size: var(--small-size);
-        line-height: 1;
-        font-family: 'Fira Mono', monospace;
-        font-weight: normal;
-        letter-spacing: -0.02em;
-        white-space:nowrap;
-        word-spacing: -0.2em;
-    }
-
-    .trigger {
-        padding: 0.5rem 0.75rem;
-        line-height: 1.25;
-        border-radius: 0.5rem;
-        transition: background 300ms var(--nimiq-ease);
-
-        &:hover,
-        &:focus,
-        &:focus-within {
-            background: var(--text-6);
-
-            .short-address {
-                opacity: .6;
-            }
-        }
-    }
-}
-
-.tooltip.left-aligned ::v-deep .tooltip-box {
-    transform: translate(-9.25rem, 2rem);
-}
-
-.tooltip.right-aligned ::v-deep .tooltip-box {
-    transform: translate(9.25rem, 2rem);
-}
-
-.short-address {
-    font-size: var(--body-size);
-    opacity: 0.5;
-    transition: opacity .3s var(--nimiq-ease);
-}
-
 @media (max-width: 700px) { // Full mobile breakpoint
     .usdc-address-info {
         flex-shrink: 0;
-    }
-
-    .tooltip.left-aligned ::v-deep .tooltip-box {
-        transform: translate(-7.75rem, 2rem);
-    }
-
-    .tooltip.right-aligned ::v-deep .tooltip-box {
-        transform: translate(7.75rem, 2rem);
-    }
-
-    .tooltip {
-        ::v-deep .tooltip-box {
-            transform: translate(1rem, 2rem);
-        }
     }
 }
 

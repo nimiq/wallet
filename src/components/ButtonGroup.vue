@@ -4,8 +4,8 @@
         <input type="radio" :name="randomName" :id="`${randomName}-${key}`" :key="`${key}-input`"
             @click="() => setKey(key)" @mousedown.prevent :disabled="option.disabled === true"
             :checked="innerKey === key" />
-        <label :for="`${randomName}-${key}`" :key="`${key}-label`"
-            :class="{ active: innerKey === key, disabled: option.disabled === true }">
+        <label :for="`${randomName}-${key}`" :key="`${key}-label`" :tabindex="option.disabled !== true && '0'"
+            @keyup.enter="() => setKey(key)" :class="{ active: innerKey === key, disabled: option.disabled === true }" >
             {{ option.label }}
         </label>
     </template>
@@ -45,6 +45,7 @@ export default defineComponent({
         });
 
         function setKey(key: string) {
+            if (props.options[key].disabled) return;
             innerKey.value = key;
             emit('input', key);
             setPillPosition();
@@ -80,7 +81,6 @@ export default defineComponent({
         rgba(31, 35, 72, 0.06), rgba(31, 35, 72, 0.06)), #FFFFFF;
     padding: 0.25rem;
     border-radius: 5rem;
-    // ring 1 px of rgba(31, 35, 72, 0.03)
     box-shadow: 0 0 0 1px rgba(31, 35, 72, 0.03);
 
     input {
@@ -93,29 +93,37 @@ export default defineComponent({
         padding: 0 1.5rem;
         font-size: 14px;
         line-height: 3.375rem;
-        cursor: pointer;
         font-weight: bold;
         transition: color 300ms var(--nimiq-ease);
 
-        &:not(.disabled):before {
-            content: '';
-            display: block;
-            position: absolute;
-            inset: -1.5rem;
+       &:not(.active) {
+            color: rgba(31, 35, 72, 0.5);
+
+            &:not(.disabled):before {
+                cursor: pointer;
+                z-index: 1;
+                content: '';
+                display: block;
+                position: absolute;
+                inset: -1.5rem;
+            }
+
+            &:not(.disabled):hover,
+            &:not(.disabled):focus {
+                color: rgba(31, 35, 72, 0.8);
+            }
+
+            &.disabled {
+                cursor: not-allowed;
+                color: rgba(31, 35, 72, 0.3);
+            }
         }
-    }
 
-    label:not(.active) {
-        color: rgba(31, 35, 72, 0.5);
-
-        &:not(.disabled):hover,
-        &:not(.disabled):focus {
-            color: rgba(31, 35, 72, 0.8);
-        }
-
-        &.disabled {
-            cursor: not-allowed;
-            color: rgba(31, 35, 72, 0.3);
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 1px var(--text-20);
+            border-radius: 99px;
+            color: var(--text-80);
         }
     }
 
@@ -125,7 +133,7 @@ export default defineComponent({
         border-radius: 999px;
         position: absolute;
         z-index: 1;
-        transition: left 300ms var(--nimiq-ease), width 200ms var(--nimiq-ease) 200ms;
+        transition: left 300ms var(--nimiq-ease), width 200ms var(--nimiq-ease);
     }
 }
 </style>

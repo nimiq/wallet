@@ -1830,6 +1830,7 @@ export default defineComponent({
                 rightAsset.value = leftAsset.value;
             }
             leftAsset.value = asset;
+            context.root.$router.push(`/swap/${leftAsset.value}-${rightAsset.value}`);
         }
 
         function setRightAsset(asset: SwapAsset) {
@@ -1837,6 +1838,7 @@ export default defineComponent({
                 leftAsset.value = rightAsset.value;
             }
             rightAsset.value = asset;
+            context.root.$router.push(`/swap/${leftAsset.value}-${rightAsset.value}`);
         }
 
         return {

@@ -16,7 +16,7 @@
             <div v-if="leftAsset === SwapAsset.BTC" class="currency left bitcoin">
                 <BitcoinIcon />
                 <label>Bitcoin</label>
-                <Amount :amount="newLeftBalance" currency="btc" />
+                <Amount :amount="newLeftBalance" currency="btc" :currency-decimals="8" />
             </div>
             <div v-if="leftAsset === SwapAsset.USDC" class="currency left usdc">
                 <UsdcIcon />
@@ -37,7 +37,7 @@
             </button>
             <div v-if="rightAsset === SwapAsset.BTC" class="currency right bitcoin">
                 <label>Bitcoin</label>
-                <Amount :amount="newRightBalance" currency="btc" />
+                <Amount :amount="newRightBalance" currency="btc" :currency-decimals="8" />
                 <BitcoinIcon />
             </div>
             <div v-if="rightAsset === SwapAsset.USDC" class="currency right usdc">

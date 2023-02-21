@@ -46,7 +46,8 @@ export default defineComponent({
     }
 
     .trigger {
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.75rem;
+        line-height: 1.25;
         border-radius: 0.5rem;
         transition: background 300ms var(--nimiq-ease);
         margin-bottom: .5rem;

@@ -101,7 +101,7 @@
                     <span v-else class="label" :class="{'unlabelled': !peerLabel}">
                         {{ peerLabel || $t('Unknown') }}
                     </span>
-                    <template v-if="peerAddresses[0] && peerAddresses[0] !== constants.BANK_ADDRESS">
+                    <template v-if="peerAddresses[0]">
                         <Tooltip preferredPosition="bottom right" class="left-aligned"
                             v-for="address in peerAddresses.slice(0, 3)" :key="address"
                         >
@@ -350,7 +350,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS, CryptoCurrency } from '../../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CryptoCurrency } from '../../lib/Constants';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
@@ -372,7 +372,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
+        const constants = { FIAT_PRICE_UNAVAILABLE };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
         // Note that as the transaction modal is typically opened from the active account's transaction history, we base
@@ -504,17 +504,18 @@ export default defineComponent({
         });
         const peerLabel = computed(() => {
             if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap');
+                return context.root.$t('Cancelled Swap') as string;
             }
 
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
                     return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
-                        || context.root.$t('Swap'); // avoid displaying proxy address until we know related peer address
+                        // Avoid displaying proxy address until we know related peer address
+                        || context.root.$t('Swap') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.USDC) {
-                    return context.root.$t('USD Coin');
+                    return context.root.$t('USD Coin') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
@@ -555,7 +556,7 @@ export default defineComponent({
             // const globalLabel = AddressBook.getLabel(peerAddress.value);
             // if (globalLabel) return globalLabel;
 
-            return false;
+            return undefined;
         });
         const senderLabelAddress = computed(() => isIncoming.value
             && (ownAddresses.value.find((address) => !!getSenderLabel.value(address)) || false));

@@ -548,24 +548,25 @@ export default defineComponent({
         });
         const peerLabel = computed(() => {
             if (isSwapProxy.value && !relatedTx.value) {
-                return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
+                // Avoid displaying the proxy address until we know related peer address
+                return context.root.$t('Swap') as string;
             }
 
             if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap');
+                return context.root.$t('Cancelled Swap') as string;
             }
 
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.BTC) {
-                    return context.root.$t('Bitcoin');
+                    return context.root.$t('Bitcoin') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.USDC) {
-                    return context.root.$t('USD Coin');
+                    return context.root.$t('USD Coin') as string;
                 }
 
                 if (swapData.value.asset === SwapAsset.EUR) {
-                    return swapData.value.bankLabel || context.root.$t('Bank Account');
+                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
                 }
 
                 return swapData.value.asset.toUpperCase();
@@ -574,8 +575,8 @@ export default defineComponent({
             // Label cashlinks
             if (peerAddress.value === constants.CASHLINK_ADDRESS) {
                 return isIncoming.value
-                    ? context.root.$t('Cashlink')
-                    : context.root.$t('Unclaimed Cashlink');
+                    ? context.root.$t('Cashlink') as string
+                    : context.root.$t('Unclaimed Cashlink') as string;
             }
 
             // Search other stored addresses
@@ -589,7 +590,7 @@ export default defineComponent({
             const globalLabel = AddressBook.getLabel(peerAddress.value);
             if (globalLabel) return globalLabel;
 
-            return false;
+            return undefined;
         });
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 

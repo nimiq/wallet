@@ -243,35 +243,89 @@ export async function launchPolygon() {
         const lastConfirmedHeight = knownTxs
             .filter((tx) => Boolean(tx.blockHeight))
             .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), config.usdc.startHistoryScanHeight);
+        const earliestHeightToCheck = lastConfirmedHeight - 1000;
 
         network$.fetchingTxHistory++;
 
         updateBalances([address]);
 
         console.log('Fetching USDC transaction history for', address, knownTxs);
+
         // EventFilters only allow to query with an AND condition between arguments (topics). So while
         // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
         // OR two AND pairs. That requires two separate requests.
         const filterIncoming = client.usdc.filters.Transfer(null, address);
         const filterOutgoing = client.usdc.filters.Transfer(address);
+        const filterMetaTx = client.usdc.filters.MetaTransactionExecuted();
+
+        const STEP_BLOCKS = 10_000;
+
         Promise.all([
-            client.usdc.queryFilter(filterIncoming, lastConfirmedHeight - 10),
-            client.usdc.queryFilter(filterOutgoing, lastConfirmedHeight - 10),
-            // TODO Check limitations of start block in the RPC server
-        ])
-            .then(([logsIn, logsOut]) => {
-                // Filter known txs
-                const knownHashes = knownTxs.map(
-                    (tx) => tx.transactionHash,
+            client.usdc.balanceOf(address) as Promise<BigNumber>,
+            client.usdc.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+            client.provider.getTransactionCount(address) as Promise<number>,
+        ]).then(async ([balance, usdcNonce, nonce]) => {
+            let blockHeight = network$.height;
+
+            // To filter known txs
+            const knownHashes = knownTxs.map(
+                (tx) => tx.transactionHash,
+            );
+
+            const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
+
+            // const logsAndBlocks: {
+            //     log: TransferEvent;
+            //     block: Promise<ethers.providers.Block>;
+            //     event?: Promise<HtlcEvent | undefined>;
+            // }[] = [];
+
+            /* eslint-disable max-len */
+            while (blockHeight > earliestHeightToCheck && (balance.gt(0) || usdcNonce > 0 /* || nonce > 0 */)) {
+                const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
+                const endHeight = blockHeight;
+                blockHeight = startHeight;
+
+                console.debug(`Sync start loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}, nonce ${nonce}`);
+
+                console.debug(`Querying logs from ${startHeight} to ${endHeight}`);
+
+                const [logsIn, logsOut, metaTxs] = await Promise.all([ // eslint-disable-line no-await-in-loop
+                    client.usdc.queryFilter(filterIncoming, startHeight, endHeight),
+                    client.usdc.queryFilter(filterOutgoing, startHeight, endHeight),
+                    client.usdc.queryFilter(filterMetaTx, startHeight, endHeight).then((events) =>
+                        // MetaTransactionExecuted events cannot be filtered natively, so we need to filter here
+                        events.filter((ev) => ev.args && ev.args.userAddress === address),
+                    ),
+                ]);
+
+                console.debug(`Got ${logsIn.length} incoming logs, ${logsOut.length} outgoing logs, and ${metaTxs.length} meta tx logs`);
+
+                const allTransferLogs = logsIn.concat(logsOut);
+
+                const metaTxTransactionHashes = new Set(metaTxs.map((ev) => ev.transactionHash));
+                const regularTransactionHashes = new Set(
+                    allTransferLogs
+                        // Ignore all transfers that were caused by meta transactions
+                        .filter((ev) => !metaTxTransactionHashes.has(ev.transactionHash))
+                        // Count only transfers that are outgoing
+                        .filter((ev) => ev.args && ev.args.from === address)
+                        .map((ev) => ev.transactionHash),
                 );
 
-                console.log('Got', logsIn.length, 'incoming and', logsOut.length, 'outgoing logs');
+                console.debug(`Found ${metaTxTransactionHashes.size} metaTxs and ${regularTransactionHashes.size} regular txs`);
 
-                const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
+                usdcNonce -= metaTxTransactionHashes.size;
+                nonce -= regularTransactionHashes.size;
 
-                const newLogs = logsIn.concat(logsOut).filter((log, index, logs) => {
-                    if (knownHashes.includes(log.transactionHash)) return false;
+                // eslint-disable-next-line no-loop-func
+                const newLogs = allTransferLogs.filter((log) => {
                     if (!log.args) return false;
+
+                    if (log.args.from === address) balance = balance.add(log.args.value);
+                    if (log.args.to === address) balance = balance.sub(log.args.value);
+
+                    if (knownHashes.includes(log.transactionHash)) return false;
 
                     // Transfers to the usdcTransferContract are the fees paid to OpenGSN
                     if (
@@ -282,7 +336,7 @@ export async function launchPolygon() {
                         )
                     ) {
                         // Find the main transfer log
-                        const mainTransferLog = logs.find((otherLog) =>
+                        const mainTransferLog = allTransferLogs.find((otherLog) =>
                             otherLog.transactionHash === log.transactionHash
                             && otherLog.logIndex !== log.logIndex);
 
@@ -298,7 +352,7 @@ export async function launchPolygon() {
                     if (log.args.to === config.usdc.htlcContract) {
                         // Determine if this transfer is the fee, by looking for another transfer in this transaction
                         // with a higher `logIndex`, which means that one is the main transfer and this one is the fee.
-                        const mainTransferLog = logs.find((otherLog) =>
+                        const mainTransferLog = allTransferLogs.find((otherLog) =>
                             otherLog.transactionHash === log.transactionHash
                             && otherLog.logIndex > log.logIndex);
 
@@ -372,19 +426,29 @@ export async function launchPolygon() {
                     return true;
                 }) as TransferEvent[];
 
-                return Promise.all(newLogs.map(async (log) => ({
+                const logsAndBlocks = newLogs.map((log) => ({
                     log,
-                    block: await log.getBlock(),
-                    event: await htlcEventsByTransactionHash.get(log.transactionHash),
-                })));
-            })
-            .then((logsAndBlocks) => {
-                transactionsStore.addTransactions(logsAndBlocks.map(
-                    ({ log, block, event }) => logAndBlockToPlain(log, block, event),
-                ));
-            })
+                    block: log.getBlock(),
+                    event: htlcEventsByTransactionHash.get(log.transactionHash),
+                }));
+
+                // TODO: Allow individual fetches to fail, but still add the other transactions?
+                await Promise.all(logsAndBlocks.map( // eslint-disable-line no-await-in-loop
+                    async ({ log, block, event }) => logAndBlockToPlain(
+                        log,
+                        await block,
+                        await event,
+                    ),
+                )).then((transactions) => {
+                    transactionsStore.addTransactions(transactions);
+                });
+
+                console.debug(`Sync end loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}, nonce ${nonce}`);
+            } // End while loop
+            /* eslint-enable max-len */
+        })
             .catch((error) => {
-                console.log('error', error);
+                console.error(error);
                 fetchedAddresses.delete(address);
             })
             .then(() => network$.fetchingTxHistory--);

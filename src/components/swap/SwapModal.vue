@@ -8,16 +8,30 @@
             <div slot="more" class="flex-column">
                 <div class="pair-selection flex-row">
                     <ButtonGroup
+                        v-if="!isMobile"
                         :options="leftButtonGroupOptions"
                         :value="leftAsset"
                         @input="setLeftAsset"
                     />
+                    <select v-else v-model="leftAsset" @input="setLeftAsset($event.target.value)">
+                        <option v-for="[key, option] in Object.entries(leftButtonGroupOptions)" :key="key" :value="key"
+                            :selected="key === leftAsset" :disabled="option.disabled">
+                            {{ option.label }}
+                        </option>
+                    </select>
                     <SwapIcon />
                     <ButtonGroup
+                        v-if="!isMobile"
                         :options="rightButtonGroupOptions"
                         :value="rightAsset"
                         @input="setRightAsset"
                     />
+                    <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
+                        <option v-for="[key, option] in Object.entries(leftButtonGroupOptions)" :key="key" :value="key"
+                            :selected="key === rightAsset" :disabled="option.disabled">
+                            {{ option.label }}
+                        </option>
+                    </select>
                 </div>
                 <div v-if="!feeIsLoading && !!limits" class="swap-info flex-row" >
                     <SwapFeesTooltip
@@ -261,6 +275,7 @@ import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
+import { useWindowSize } from '@/composables/useWindowSize';
 
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
@@ -1838,6 +1853,7 @@ export default defineComponent({
             currency,
             leftButtonGroupOptions,
             rightButtonGroupOptions,
+            isMobile: useWindowSize().isMobile,
             myLeftFeeFiat,
             myRightFeeFiat,
             serviceLeftFeeFiat,
@@ -1948,6 +1964,32 @@ export default defineComponent({
     svg {
         opacity: 0.5;
     }
+
+    select {
+        font-size: var(--body-size);
+        font-family: inherit;
+        font-weight: bold;
+        line-height: inherit;
+        color: inherit;
+        border: none;
+        appearance: none;
+        cursor: pointer;
+
+        border-radius: 2.5rem;
+        padding: {
+            top: 0.625rem;
+            bottom: 0.875rem;
+            left: 2rem;
+            right: 3.5rem;
+        }
+
+        background-color: rgba(31, 35, 72, 0.06);
+        background-image: url('../../assets/arrow-down.svg');
+        background-size: 1.25rem;
+        background-repeat: no-repeat;
+        background-position-x: calc(100% - 1.75rem);
+        background-position-y: 55%;
+    }
 }
 
 .fees-limits-loading {
@@ -1966,6 +2008,7 @@ export default defineComponent({
 .swap-info {
     height: 21px;
     display: grid;
+    margin-top: 2rem;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     margin: 0 auto;

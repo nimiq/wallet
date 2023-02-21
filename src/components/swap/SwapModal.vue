@@ -1398,7 +1398,7 @@ export default defineComponent({
                         usdcNonce,
                         forwarderNonce,
                     ] = await Promise.all([
-                        client.usdc.getNonce(fromAddress) as Promise<BigNumber>,
+                        client.usdc.nonces(fromAddress) as Promise<BigNumber>,
                         htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
                     ]);
 

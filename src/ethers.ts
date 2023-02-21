@@ -268,7 +268,7 @@ export async function launchPolygon() {
                     if (knownHashes.includes(log.transactionHash)) return false;
                     if (!log.args) return false;
 
-                    // Transfer to the usdcTransferContract is the fee paid to OpenGSN
+                    // Transfers to the usdcTransferContract are the fees paid to OpenGSN
                     if (
                         log.args.to === config.usdc.usdcTransferContract
                         || (
@@ -277,9 +277,9 @@ export async function launchPolygon() {
                         )
                     ) {
                         // Find the main transfer log
-                        const mainTransferLog = logs.find((otherLog, otherIndex) =>
+                        const mainTransferLog = logs.find((otherLog) =>
                             otherLog.transactionHash === log.transactionHash
-                            && otherIndex !== index);
+                            && otherLog.logIndex !== log.logIndex);
 
                         if (mainTransferLog && mainTransferLog.args) {
                             // Write this log's `value` as the main transfer log's `fee`
@@ -291,6 +291,20 @@ export async function launchPolygon() {
                     }
 
                     if (log.args.to === config.usdc.htlcContract) {
+                        // Determine if this transfer is the fee, by looking for another transfer in this transaction
+                        // with a higher `logIndex`, which means that one is the main transfer and this one is the fee.
+                        const mainTransferLog = logs.find((otherLog) =>
+                            otherLog.transactionHash === log.transactionHash
+                            && otherLog.logIndex > log.logIndex);
+
+                        if (mainTransferLog && mainTransferLog.args) {
+                            // Write this log's `value` as the main transfer log's `fee`
+                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+
+                            // Then ignore this log
+                            return false;
+                        }
+
                         // Get Open event log
                         const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
                             const htlcContract = await getHtlcContract();
@@ -624,6 +638,12 @@ export async function receiptToTransaction(
 
             // Transfer to the usdcTransferContract is the fee paid to OpenGSN
             if (log.args.to === config.usdc.usdcTransferContract) {
+                fee = log.args.value;
+                return;
+            }
+
+            // The first transfer to the htlcContract is the fee
+            if (log.args.to === config.usdc.htlcContract && !transferLog) {
                 fee = log.args.value;
                 return;
             }

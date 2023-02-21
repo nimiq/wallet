@@ -46,7 +46,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         config.usdc.rpcEndpoint,
         config.usdc.networkId,
         config.usdc.usdcContract,
-        config.usdc.usdcTransferContract,
+        config.usdc.transferContract,
     ], () => {
         // Reset clientPromise when the usdc config changes.
         clientPromise = null;
@@ -84,7 +84,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     });
 
     const usdc = new ethers.Contract(config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
-    const usdcTransfer = new ethers.Contract(config.usdc.usdcTransferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
+    const usdcTransfer = new ethers.Contract(config.usdc.transferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
 
     resolver!({
         provider,
@@ -329,7 +329,7 @@ export async function launchPolygon() {
 
                     // Transfers to the usdcTransferContract are the fees paid to OpenGSN
                     if (
-                        log.args.to === config.usdc.usdcTransferContract
+                        log.args.to === config.usdc.transferContract
                         || (
                             config.environment !== ENV_MAIN
                             && log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
@@ -582,7 +582,7 @@ export async function createTransactionRequest(recipient: string, amount: number
     const relayRequest: RelayRequest = {
         request: {
             from: fromAddress,
-            to: config.usdc.usdcTransferContract,
+            to: config.usdc.transferContract,
             data,
             value: '0',
             nonce: forwarderNonce.toString(),
@@ -595,10 +595,10 @@ export async function createTransactionRequest(recipient: string, amount: number
             pctRelayFee: relay.pctRelayFee.toString(),
             baseRelayFee: relay.baseRelayFee.toString(),
             relayWorker: relay.relayWorkerAddress,
-            paymaster: config.usdc.usdcTransferContract,
+            paymaster: config.usdc.transferContract,
             paymasterData: '0x',
             clientId: Math.floor(Math.random() * 1e6).toString(10),
-            forwarder: config.usdc.usdcTransferContract,
+            forwarder: config.usdc.transferContract,
         },
     };
 
@@ -706,7 +706,7 @@ export async function receiptToTransaction(
             if (filterByFromAddress && log.args.from !== filterByFromAddress) return;
 
             // Transfer to the usdcTransferContract is the fee paid to OpenGSN
-            if (log.args.to === config.usdc.usdcTransferContract) {
+            if (log.args.to === config.usdc.transferContract) {
                 fee = log.args.value;
                 return;
             }

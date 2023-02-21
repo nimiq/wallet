@@ -76,7 +76,12 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     useUsdcNetworkStore().state.consensus = 'established';
 
     // Wait for a block event to make sure we are really connected
-    await new Promise((resolve) => { provider.once('block', resolve); });
+    await new Promise<void>((resolve) => {
+        provider.once('block', (height: number) => {
+            useUsdcNetworkStore().state.height = height;
+            resolve();
+        });
+    });
 
     const usdc = new ethers.Contract(config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
     const usdcTransfer = new ethers.Contract(config.usdc.usdcTransferContract, USDC_TRANSFER_CONTRACT_ABI, provider);

@@ -489,7 +489,7 @@ export async function createTransactionRequest(recipient: string, amount: number
         forwarderNonce,
         { chainTokenFee, fee, gasPrice, gasLimit, relay },
     ] = await Promise.all([
-        client.usdc.getNonce(fromAddress) as Promise<BigNumber>,
+        client.usdc.nonces(fromAddress) as Promise<BigNumber>,
         client.usdcTransfer.getNonce(fromAddress) as Promise<BigNumber>,
         calculateFee(method, forceRelay),
     ]);

@@ -27,7 +27,7 @@
                         @input="setRightAsset"
                     />
                     <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
-                        <option v-for="[key, option] in Object.entries(leftButtonGroupOptions)" :key="key" :value="key"
+                        <option v-for="[key, option] in Object.entries(rightButtonGroupOptions)" :key="key" :value="key"
                             :selected="key === rightAsset" :disabled="option.disabled">
                             {{ option.label }}
                         </option>
@@ -1204,7 +1204,7 @@ export default defineComponent({
         const btcFeeFiat = computed(() => feeFiat(SwapAsset.BTC));
         const usdcFeeFiat = computed(() => feeFiat(SwapAsset.USDC));
         const totalFeeFiat = computed(() =>
-            (nimFeeFiat.value || 0) + (btcFeeFiat.value || 0) + (usdcFeeFiat.value || 0));
+            (nimFeeFiat.value || 0) + (btcFeeFiat.value || 0) + (usdcFeeFiat.value || 0) + serviceSwapFeeFiat.value);
 
         const feeIsLoading = computed(() => {
             if (swapHasBtc.value && !btcFeeFiat.value) return true;
@@ -1963,8 +1963,19 @@ export default defineComponent({
     justify-content: center;
     margin-top: 4rem;
 
+    & ::v-deep .button-group:first-child {
+        margin-right: 0;
+    }
+
+    & ::v-deep .button-group:last-child {
+        margin-left: 0;
+    }
+
     svg {
+        margin: 0 1.5rem;
         opacity: 0.5;
+        height: 32px;
+        width: 12px;
     }
 
     select {

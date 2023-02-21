@@ -47,8 +47,8 @@ export default defineComponent({
     },
     setup(props, context) {
         const formats = {
-            [ExportFormat.GENERIC]: context.root.$t('Generic') as string,
-            [ExportFormat.BLOCKPIT]: 'Blockpit',
+            [ExportFormat.GENERIC]: { label: context.root.$t('Generic') as string },
+            [ExportFormat.BLOCKPIT]: { label: 'Blockpit' },
         };
         const format = ref(ExportFormat.GENERIC);
         const years = Array(new Date().getFullYear() + 1 - 2018).fill(0).map((_, i) => (2018 + i).toString()).reverse();

@@ -23,29 +23,29 @@
 </template>
 
 <script lang="ts">
+import { computed, defineComponent } from '@vue/composition-api';
+import { SwapAsset } from '@nimiq/fastspot-api';
+import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
 import { useBtcNetworkStore } from '@/stores/BtcNetwork';
 import { useNetworkStore } from '@/stores/Network';
 import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
-import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
-import { CryptoCurrency } from '../../lib/Constants';
-import { useAccountStore } from '../../stores/Account';
 import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
     props: {
         error: String,
         disabled: Boolean,
-        requireBothNetworks: Boolean,
+        assets: {
+            type: Array as () => Array<SwapAsset>,
+            required: true,
+        },
         isKycConnected: Boolean,
     },
     setup(props, context) {
-        const { activeCurrency } = useAccountStore();
-
         const networkState = computed(() => {
             let message: string | null = null;
 
-            if (activeCurrency.value === CryptoCurrency.BTC || props.requireBothNetworks) {
+            if (props.assets.includes(SwapAsset.BTC)) {
                 const { consensus: btcConsensus } = useBtcNetworkStore();
 
                 if (btcConsensus.value !== 'established') {
@@ -53,7 +53,7 @@ export default defineComponent({
                 }
             }
 
-            if (activeCurrency.value === CryptoCurrency.NIM || props.requireBothNetworks) {
+            if (props.assets.includes(SwapAsset.NIM)) {
                 const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
 
                 if (nimiqConsensus.value !== 'established') {
@@ -63,11 +63,11 @@ export default defineComponent({
                 }
             }
 
-            if (activeCurrency.value === CryptoCurrency.NIM || props.requireBothNetworks) {
+            if (props.assets.includes(SwapAsset.USDC)) {
                 const { consensus: usdcConsensus } = useUsdcNetworkStore();
 
                 if (usdcConsensus.value !== 'established') {
-                    message = context.root.$i18n.t('Connecting to Polygon network') as string;
+                    message = context.root.$i18n.t('Connecting to USDC on Polygon') as string;
                 }
             }
 

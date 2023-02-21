@@ -72,21 +72,13 @@
                 :currency="currency" :hideDecimals="false"/>
         </div>
 
-        <div v-if="exchangeRate" class="exchange-rate">
-            <span>
-                <Amount :amount="exchangeRate.amount" :currency="exchangeRate.from" :decimals="0" />
-                =
-                <Amount :amount="exchangeRate.rate" :currency="exchangeRate.to" />
-            </span>
-            <label>{{ $t('Exchange rate') }}</label>
-        </div>
+        <slot name="exchange-rate" />
     </Tooltip>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { InfoCircleSmallIcon, Tooltip, FiatAmount, Amount } from '@nimiq/vue-components';
-import { SwapAsset } from '@nimiq/fastspot-api';
+import { InfoCircleSmallIcon, Tooltip, FiatAmount } from '@nimiq/vue-components';
 import { FiatCurrency } from '../../lib/Constants';
 
 export default defineComponent({
@@ -119,15 +111,6 @@ export default defineComponent({
             type: Number,
             required: false,
         },
-        exchangeRate: {
-            type: Object as () => {
-                from: SwapAsset,
-                amount: number,
-                to: SwapAsset,
-                rate: number,
-            },
-            required: false,
-        },
         serviceSwapFeeFiat: Number,
         serviceSwapFeePercentage: Number,
         currency: String as () => FiatCurrency,
@@ -136,7 +119,6 @@ export default defineComponent({
         InfoCircleSmallIcon,
         Tooltip,
         FiatAmount,
-        Amount,
     },
 });
 </script>
@@ -155,23 +137,5 @@ hr {
 
 .total-fees {
     font-weight: bold;
-}
-
-.exchange-rate {
-    margin-top: 2rem;
-    padding-bottom: 0.25rem;
-
-    & > span {
-        display: block;
-
-        & ::v-deep .amount {
-            font-size: 15px;
-        }
-    }
-
-    label {
-        opacity: 0.6;
-        font-size: var(--small-size);
-    }
 }
 </style>

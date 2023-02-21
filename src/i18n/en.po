@@ -16,7 +16,7 @@ msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:168
 #: src/components/modals/UsdcSendModal.vue:197
-#: src/components/swap/SwapModal.vue:48
+#: src/components/swap/SwapModal.vue:41
 msgid "{amount} fee"
 msgstr ""
 
@@ -73,7 +73,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:79
+#: src/components/swap/SwapModal.vue:78
 msgid "{value} remaining"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:162
 #: src/components/modals/UsdcSendModal.vue:191
-#: src/components/swap/SwapModal.vue:42
+#: src/components/swap/SwapModal.vue:35
 msgid "< {amount} fee"
 msgstr ""
 
@@ -129,7 +129,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:74
+#: src/components/swap/SwapModal.vue:73
 msgid "30-day Limit"
 msgstr ""
 
@@ -616,7 +616,7 @@ msgid "Connecting to Nimiq network"
 msgstr ""
 
 #: src/components/swap/SwapModalFooter.vue:70
-msgid "Connecting to Polygon network"
+msgid "Connecting to USDC on Polygon"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:45
@@ -858,7 +858,7 @@ msgstr ""
 msgid "Euro"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:81
+#: src/components/swap/SwapModal.vue:57
 msgid "Exchange rate"
 msgstr ""
 
@@ -1205,6 +1205,10 @@ msgstr ""
 msgid "Load file"
 msgstr ""
 
+#: src/components/swap/SwapModal.vue:91
+msgid "Loading fees and limits"
+msgstr ""
+
 #: src/components/modals/MoonpayModal.vue:14
 msgid "Loading Moonpay..."
 msgstr ""
@@ -1212,7 +1216,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:77
+#: src/components/swap/SwapModal.vue:76
 msgid "loading..."
 msgstr ""
 

@@ -948,11 +948,20 @@ export default defineComponent({
         margin-top: 4rem;
     }
 
-    .bitcoin-account {
+    .bitcoin-account,
+    .usdc-account {
         color: var(--text-100);
 
-        .bitcoin-account-item::before {
+        .bitcoin-account-item::before,
+        .usdc-account-item::before {
             display: none;
+        }
+
+        &.active {
+            &.bitcoin-account ~ .account-backgrounds .bitcoin-account-background,
+            &.usdc-account ~ .account-backgrounds .usdc-account-background {
+                background-color: var(--text-10);
+            }
         }
     }
 

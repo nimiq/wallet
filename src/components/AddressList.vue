@@ -387,9 +387,12 @@ export default defineComponent({
         }
 
         .address-button {
-            background: none !important;
             color: var(--text-100);
             margin: 0.25rem 0;
+
+            &.active {
+                background: var(--nimiq-highlight-bg);
+            }
         }
 
         .add-address-button {

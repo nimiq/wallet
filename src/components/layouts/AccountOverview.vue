@@ -768,9 +768,7 @@ export default defineComponent({
     }
 }
 
-.nim-btc-swap-button,
-.nim-usdc-swap-button,
-.btc-usdc-swap-button {
+.swap-buttons > div {
     --size: 3rem;
     --transition-duration: 200ms;
 
@@ -824,6 +822,10 @@ export default defineComponent({
         }
     }
 
+    &.btc-usdc-swap-button .inner-circle svg {
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+
     &:hover,
     &:focus {
         --size: 4.75rem;
@@ -844,10 +846,6 @@ export default defineComponent({
     .resize & {
         transition: none;
     }
-}
-
-.btc-usdc-swap-button .inner-circle svg {
-    transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .future-notice {
@@ -942,10 +940,12 @@ export default defineComponent({
 @media (max-width: 700px) { // Full mobile breakpoint
     .address-list {
         margin-top: 0;
+        padding-bottom: 0;
     }
 
     .nimiq-account {
         margin-top: 4rem;
+        padding: 1.5rem;
     }
 
     .bitcoin-account,
@@ -961,6 +961,20 @@ export default defineComponent({
             &.bitcoin-account ~ .account-backgrounds .bitcoin-account-background,
             &.usdc-account ~ .account-backgrounds .usdc-account-background {
                 background-color: var(--text-10);
+            }
+        }
+    }
+
+    .swap-buttons > div {
+        --size: 4rem;
+
+        .inner-circle {
+            background: none;
+
+            svg {
+                height: 1.75rem;
+                opacity: .4;
+                path { d: path("m1 4 3-3 3 3m0 6-3 3-3-3") }
             }
         }
     }

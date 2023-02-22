@@ -58,15 +58,13 @@
 
             <div class="flex-row">
                 <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" ref="bitcoinAccount$"
-                    class="bitcoin-account flex-column">
-                    <button
-                        class="bitcoin-account-item reset flex-column"
-                        :class="{
+                    class="bitcoin-account flex-column"
+                    :class="{
                             'active': activeCurrency === CryptoCurrency.BTC,
                             'requires-activation': !hasBitcoinAddresses,
                         }"
-                        @click="selectBitcoin"
                     >
+                    <button class="bitcoin-account-item reset flex-column" @click="selectBitcoin">
                         <div class="bitcoin-account-item-name flex-row"><BitcoinIcon/>{{ $t('Bitcoin') }}</div>
                         <div class="balances" v-if="hasBitcoinAddresses">
                             <div class="flex-row">
@@ -91,15 +89,13 @@
                 </div>
 
                 <div v-if="canHaveMultipleAddresses && $config.usdc.enabled" ref="usdcAccount$"
-                    class="usdc-account flex-column">
-                    <button
-                        class="usdc-account-item reset flex-column"
-                        :class="{
+                    class="usdc-account flex-column"
+                    :class="{
                             'active': activeCurrency === CryptoCurrency.USDC,
                             'requires-activation': !hasUsdcAddresses,
                         }"
-                        @click="selectUsdc"
                     >
+                    <button class="usdc-account-item reset flex-column" @click="selectUsdc">
                         <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
                         <div class="balances" v-if="hasUsdcAddresses">
                             <template v-if="usdcAccountBalance !== null">
@@ -127,12 +123,12 @@
                         >{{ $t('Activate') }}</button>
                     </button>
                 </div>
-            </div>
 
-            <div class="account-backgrounds">
-                <div class="nimiq-account-background" :style="getAccountBackgroundPosition('nimiq')"></div>
-                <div class="bitcoin-account-background" :style="getAccountBackgroundPosition('bitcoin')"></div>
-                <div class="usdc-account-background" :style="getAccountBackgroundPosition('usdc')"></div>
+                <div class="account-backgrounds">
+                    <div class="nimiq-account-background" :style="getAccountBackgroundPosition('nimiq')"></div>
+                    <div class="bitcoin-account-background" :style="getAccountBackgroundPosition('bitcoin')"></div>
+                    <div class="usdc-account-background" :style="getAccountBackgroundPosition('usdc')"></div>
+                </div>
             </div>
 
             <div class="swap-buttons" :class="{ resize: windowResizing }">
@@ -630,6 +626,50 @@ export default defineComponent({
     font-size: var(--body-size);
     font-weight: 600;
     position: relative;
+    transition: color 400ms var(--nimiq-ease);
+
+    &.active {
+        cursor: auto;
+        color: var(--text-100);
+    }
+
+    &.requires-activation {
+        pointer-events: none;
+
+        button {
+            pointer-events: all;
+        }
+    }
+
+    &.disabled {
+        color: var(--text-40);
+
+        svg.bitcoin,
+        svg.usdc {
+            color: var(--text-20);
+        }
+
+        label {
+            text-transform: uppercase;
+            font-size: var(--small-label-size);
+            font-weight: bold;
+            letter-spacing: 0.06em;
+            padding: 0.75rem 1.75rem;
+            box-shadow: 0 0 0 1.5px var(--text-10);
+            border-radius: 500px;
+        }
+    }
+
+    &:not(.active):not(.requires-activation):not(.disabled):hover,
+    &:not(.active):not(.requires-activation):not(.disabled):focus,
+    &:not(.active):not(.requires-activation):not(.disabled):focus-within {
+        color: var(--text-100);
+
+        &.bitcoin-account ~ .account-backgrounds .bitcoin-account-background,
+        &.usdc-account ~ .account-backgrounds .usdc-account-background {
+            background-color: var(--text-10);
+        }
+    }
 
     .bitcoin-account-item,
     .usdc-account-item {
@@ -637,32 +677,8 @@ export default defineComponent({
         width: 100%;
         padding: 2rem;
         flex-shrink: 0;
-        // flex-grow: 1;
         align-items: flex-start;
         border-radius: 0.75rem;
-        transition: {
-            property: color, background;
-            duration: 400ms;
-            timing-function: var(--nimiq-ease);
-        };
-
-        &.active {
-            cursor: auto;
-            color: var(--text-100);
-        }
-
-        &:not(.active):not(.requires-activation):hover {
-            color: var(--text-100);
-            background: var(--nimiq-highlight-bg);
-        }
-
-        &.requires-activation {
-            pointer-events: none;
-
-            button {
-                pointer-events: all;
-            }
-        }
 
         &::before {
             content: "";
@@ -683,31 +699,17 @@ export default defineComponent({
                 timing-function: cubic-bezier(0.4, 0, 0, 1);
             };
         }
+    }
 
-        &.active::before {
-            opacity: 1;
-            box-shadow:
-                0 0.337011px 2px rgba(0, 0, 0, 0.0254662),
-                0 1.5px 3px rgba(0, 0, 0, 0.05),
-                0 4px 16px rgba(0, 0, 0, 0.07);
-        }
-
-        &.disabled {
-            color: var(--text-40);
-
-            svg.bitcoin,
-            svg.usdc {
-                color: var(--text-20);
-            }
-
-            label {
-                text-transform: uppercase;
-                font-size: var(--small-label-size);
-                font-weight: bold;
-                letter-spacing: 0.06em;
-                padding: 0.75rem 1.75rem;
-                box-shadow: 0 0 0 1.5px var(--text-10);
-                border-radius: 500px;
+    &.active {
+        .bitcoin-account-item,
+        .usdc-account-item {
+            &::before {
+                opacity: 1;
+                box-shadow:
+                    0 0.337011px 2px rgba(0, 0, 0, 0.0254662),
+                    0 1.5px 3px rgba(0, 0, 0, 0.05),
+                    0 4px 16px rgba(0, 0, 0, 0.07);
             }
         }
     }
@@ -762,13 +764,14 @@ export default defineComponent({
         z-index: 1;
         border-radius: 1.25rem;
         background-color: var(--text-6);
+        transition: background 400ms var(--nimiq-ease);
     }
 }
 
 .nim-btc-swap-button,
 .nim-usdc-swap-button,
 .btc-usdc-swap-button {
-    --size: 3.5rem;
+    --size: 3rem;
     --transition-duration: 200ms;
 
     cursor: pointer;
@@ -821,8 +824,9 @@ export default defineComponent({
         }
     }
 
-    &:hover {
-        --size: 5rem;
+    &:hover,
+    &:focus {
+        --size: 4.75rem;
 
         .inner-circle {
             --size: 4rem;

@@ -14,7 +14,7 @@ const { AccountType } = HubApi; // AccountType enum values
 type AccountType = AccountTypeEnumType; // AccountType enum type
 export { AccountType };
 
-export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'addresses' | 'uid'> & {
+export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'addresses' | 'uid' | 'requestType'> & {
     id: string,
     type: AccountType,
     addresses: string[],

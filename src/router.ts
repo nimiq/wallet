@@ -446,7 +446,7 @@ router.beforeEach((to, from, next) => {
 });
 
 // Offer to activate USDC if a route requires it, but it's not activated yet
-const viewsRequiringActivatedUsdc = new Set<Component>([UsdcSendModal, UsdcReceiveModal]);
+const viewsRequiringActivatedUsdc = new Set<Component>([UsdcSendModal, UsdcReceiveModal, SwapModal]);
 router.beforeEach((to, from, next) => {
     const requiresActivatedUsdc = to.matched.some(({ components }) =>
         Object.values(components).some((view) => viewsRequiringActivatedUsdc.has(view)));

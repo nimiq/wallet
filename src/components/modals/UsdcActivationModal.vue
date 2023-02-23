@@ -47,7 +47,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { activateUsdc } from '../../hub';
-import { CryptoCurrency } from '../../lib/Constants';
+import { CryptoCurrency, WELCOME_2_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
@@ -80,10 +80,18 @@ export default defineComponent({
                 await context.root.$router.push(redirect);
             } else {
                 await $modal.value!.forceClose();
-                if (!isMobile.value || !hasUsdcAddresses.value) return;
-                // On mobile, forward to the USDC transactions overview, after USDC got activated and the
-                // redirects by forceClose finished.
-                await context.root.$router.push('/transactions');
+                if (!hasUsdcAddresses.value) return;
+
+                if (isMobile.value) {
+                    // On mobile, forward to the USDC transactions overview, after USDC got activated and the
+                    // redirects by forceClose finished.
+                    await context.root.$router.push('/transactions');
+                }
+
+                const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
+                if (!welcome2ModalAlreadyShown) {
+                    await context.root.$router.push('/welcome');
+                }
             }
         }
 

@@ -70,9 +70,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
 
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
-    // The WelcomeModal changed significantly, now talking about "Think value, not currency".
-    // Thus we want to show the modal to all users again, but we do not want to overwrite the
-    // fiat currency they already set for themselves. So we use a second localstorage key to
+    // We do not want to overwrite the fiat currency they already set, so we use a second localstorage key to
     // separate first-time users from returning users.
     const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
 
@@ -88,13 +86,37 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
         });
     }
 
-    if (!welcomeModalAlreadyShown || !welcome2ModalAlreadyShown) {
-        router.onReady(() => router.push('/welcome'));
-    } else if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length) {
-        // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
-        // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
-        // If instead the welcome modal was shown above, the welcome modal offers the bitcoin activation on close.
-        router.onReady(() => router.push('/btc-activation'));
+    const { requestType } = accounts[0];
+
+    switch (requestType) {
+        case HubApi.RequestType.SIGNUP:
+            if (!welcome2ModalAlreadyShown) {
+                // Show regular first-time welcome flow
+                router.onReady(() => router.push('/welcome'));
+            }
+            break;
+        case HubApi.RequestType.LOGIN:
+            if (accounts[0].polygonAddresses.length) {
+                // Show "USDC is now available" modal
+                router.onReady(() => router.push('/usdc-activation'));
+            }
+            break;
+        case HubApi.RequestType.ONBOARD: {
+            // This happens when in Safari the Hub reported no accounts from the cookie, but still had accounts
+            // in the database, which could be accessed and returned in the ONBOARD redirect and directly returned.
+            // Treat this as a regular Hub sync with existing accounts.
+            const { activeAccountInfo } = useAccountStore();
+            if (
+                activeAccountInfo.value?.type === AccountType.BIP39
+                && !activeAccountInfo.value?.polygonAddresses.length
+                && !welcome2ModalAlreadyShown
+            ) {
+                // Prompt for USDC activation, which then leads into the new welcome modal
+                router.onReady(() => router.push('/usdc-activation'));
+            }
+            break;
+        }
+        default: break;
     }
 });
 
@@ -269,11 +291,6 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             accountStore.addAccountInfo(accountInfo);
         }
     }
-
-    const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
-    if (!welcome2ModalAlreadyShown) {
-        router.onReady(() => router.push('/welcome'));
-    }
 }
 
 export async function syncFromHub() {
@@ -311,6 +328,17 @@ export async function syncFromHub() {
         const proxyStore = useProxyStore();
         proxyStore.setHubCashlinks(listedCashlinks);
     }
+
+    const { activeAccountInfo } = useAccountStore();
+    const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
+    if (
+        activeAccountInfo.value?.type === AccountType.BIP39
+        && !activeAccountInfo.value?.polygonAddresses.length
+        && !welcome2ModalAlreadyShown
+    ) {
+        // Prompt for USDC activation, which then leads into the new welcome modal
+        router.onReady(() => router.push('/usdc-activation'));
+    }
 }
 
 export async function onboard(asRedirect = false) {
@@ -327,12 +355,6 @@ export async function onboard(asRedirect = false) {
     if (!accounts) return false;
 
     processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
-
-    if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length) {
-        // After adding an account that supports Bitcoin without it being activated yet, offer to activate it. This is
-        // especially for Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app.
-        await router.push('/btc-activation');
-    }
 
     return true;
 }

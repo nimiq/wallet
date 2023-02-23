@@ -1876,6 +1876,11 @@
   resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.3.tgz#a360c7aa13f1f18d801d7461a32bb28a6bc61c38"
   integrity sha512-NL/JeQ3f3koGqE0c6Q/ZyupAXvJfXGoZTkiCVnTGwgCN3lvUMHCJtp7qQPnvDldBLMORDA4Ck7wGgktKA9Fa9Q==
 
+"@nimiq/style@^0.8.5":
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/@nimiq/style/-/style-0.8.5.tgz#36a8bd8f58d55ee3e8ea5b249e51a116638e3b90"
+  integrity sha512-il2+hrodQ7iL4ARPwfGmGvrEYgtMHAoQSbcyapxEQEG7vDYj5r+ssuhKB+oYmdRUxA1/HvyGDnWG3XenKvQyIA==
+
 "@nimiq/ten31-pass-api@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nimiq/ten31-pass-api/-/ten31-pass-api-1.1.0.tgz#4e013dd23302304965ac032e521d38a25b186a24"
@@ -1897,13 +1902,14 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#2bcebe4e880eced9f75cb1e360f3a0ed62a96d44"
+  resolved "https://github.com/nimiq/vue-components#3b120dac5897cc76cadd73f3b5ddf4b1748155a9"
   dependencies:
     "@nimiq/iqons" "^1.6.0"
-    "@nimiq/style" "^0.8.2"
+    "@nimiq/style" "^0.8.5"
     "@nimiq/utils" "^0.8.2"
     big-integer "^1.6.44"
     input-format "^0.2.8"
+    js-sha3 "^0.8.0"
     qr-creator "^1.0.0"
     qr-scanner "^1.4.2"
     vue "^2.6.11"

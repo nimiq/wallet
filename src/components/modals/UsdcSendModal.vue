@@ -7,9 +7,29 @@
         :class="{'value-masked': amountsHidden}"
         ref="$modal"
     >
+        <div v-if="page === Pages.BEFORE_YOU_START" class="page flex-column" :key="Pages.BEFORE_YOU_START">
+            <PageHeader :backArrow="!!$route.params.canUserGoBack" class="header__before-you-start" @back="back"/>
+            <PageBody class="page__before-you-start flex-column">
+                <StopSignIcon/>
+                <h3 class="nq-h3">{{ $t('Before you start') }}</h3>
+                <h1 class="nq-h1">{{ $t('The Nimiq Wallet uses Polygon USDC for speed and low fees.') }}</h1>
+                <p class="nq-text nq-light-blue">
+                    <AlertCircleIcon/>
+                    {{ $t('Send to Polygon USDC addresses only!') }}
+                </p>
+                <p class="nq-text nq-orange">
+                    <AlertTriangleIcon/>
+                    {{ $t('Funds sent to non-Polygon USDC addresses could be permanently lost.') }}
+                </p>
+                <button class="nq-button light-blue" @click="page = Pages.RECIPIENT_INPUT" @mousedown.prevent>
+                    {{ $t('Got it') }}
+                </button>
+            </PageBody>
+        </div>
+
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
-            <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
-                {{ $t('Send Transaction') }}
+            <PageHeader :backArrow="!!$route.params.canUserGoBack || page !== initialPage" @back="back">
+                {{ $t('Send USDC') }}
             </PageHeader>
             <PageBody class="page__recipient-input flex-column">
                 <UsdcContactShortcuts
@@ -88,8 +108,8 @@
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
-                :backArrow="!gotValidRequestUri"
-                @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
+                :backArrow="!!$route.params.canUserGoBack || page !== initialPage"
+                @back="back"
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
                 <section class="flex-row sender-recipient">
@@ -221,7 +241,7 @@
                     :disabled="!canSend"
                     @click="sign"
                     @mousedown.prevent
-                >{{ $t('Send Transaction') }}</button>
+                >{{ $t('Send USDC') }}</button>
             </PageBody>
         </div>
 
@@ -250,6 +270,8 @@ import {
     LabelInput,
     PageBody,
     PageHeader,
+    AlertCircleIcon,
+    AlertTriangleIcon,
     ScanQrCodeIcon,
     InfoCircleSmallIcon,
     Tooltip,
@@ -274,6 +296,7 @@ import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import StopSignIcon from '../icons/StopSignIcon.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import Avatar from '../Avatar.vue';
@@ -300,17 +323,26 @@ export default defineComponent({
     },
     setup(props, context) {
         enum Pages {
+            BEFORE_YOU_START,
             RECIPIENT_INPUT,
             AMOUNT_INPUT,
         }
-        const page = ref(Pages.RECIPIENT_INPUT);
 
         const $modal = ref<any | null>(null);
 
         const { state: addresses$, addressInfo } = useUsdcAddressStore();
+        const { state: transactions$ } = useUsdcTransactionsStore();
         const { contactsArray: contacts, setContact, getLabel } = useUsdcContactsStore();
         const { state: network$ } = useUsdcNetworkStore();
         const { config } = useConfig();
+
+        // These are non-reactive because we're only interested in whether the user had ever sent USDC when the modal
+        // was initially opened.
+        const normalizedUserAddresses = Object.values(addresses$.addressInfos)
+            .map(({ address }) => address.toLowerCase());
+        const hasEverSentUsdc = Object.values(transactions$.transactions)
+            .some(({ sender }) => normalizedUserAddresses.includes(sender.toLowerCase()));
+        const page = ref(hasEverSentUsdc ? Pages.RECIPIENT_INPUT : Pages.BEFORE_YOU_START);
 
         const recipientDetailsOpened = ref(false);
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
@@ -488,7 +520,6 @@ export default defineComponent({
             && !!amount.value
             && amount.value <= maxSendableAmount.value);
 
-        const gotValidRequestUri = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
             uri = uri.replace(`${window.location.origin}/`, '');
             const parsedRequestLink = parseRequestLink(uri, window.location.origin, true);
@@ -513,8 +544,6 @@ export default defineComponent({
                 // if (parsedRequestLink.message) {
                 //     message.value = parsedRequestLink.message;
                 // }
-
-                gotValidRequestUri.value = true;
             }
         }
 
@@ -643,8 +672,15 @@ export default defineComponent({
         const { amountsHidden } = useSettingsStore();
 
         function back() {
-            disableNextModalTransition();
-            context.root.$router.back();
+            if (page.value === initialPage) {
+                disableNextModalTransition();
+                context.root.$router.back();
+            } else if (page.value === Pages.RECIPIENT_INPUT) {
+                page.value = Pages.BEFORE_YOU_START;
+            } else if (page.value === Pages.AMOUNT_INPUT) {
+                page.value = Pages.RECIPIENT_INPUT;
+                resetRecipient();
+            }
         }
 
         let successCloseTimeout = 0;
@@ -692,11 +728,14 @@ export default defineComponent({
 
         const feeSmallerThanSmUnit = computed(() => roundedUpFiatFee.value <= fiatSmUnit.value);
 
+        const initialPage = page.value;
+
         return {
             // General
             Pages,
             RecipientType,
             page,
+            initialPage,
             $modal,
 
             // Recipient Input
@@ -709,7 +748,6 @@ export default defineComponent({
             recipientDetailsOpened,
             recipientWithLabel,
             closeRecipientDetails,
-            gotValidRequestUri,
             parseRequestUri,
             amountsHidden,
             isDomain,
@@ -765,6 +803,9 @@ export default defineComponent({
         PageBody,
         UsdcContactShortcuts,
         UsdcContactBook,
+        StopSignIcon,
+        AlertCircleIcon,
+        AlertTriangleIcon,
         AddressInput,
         ScanQrCodeIcon,
         LabelInput,
@@ -803,15 +844,75 @@ export default defineComponent({
         position: relative;
     }
 
+    .header__before-you-start ::v-deep .page-header-back-button {
+        z-index: 1; // make back arrow accessible over page body
+    }
+
+    .page__before-you-start {
+        padding-top: 0;
+        margin-top: -3rem;
+
+        .nq-h3 {
+            margin-top: 4.125rem;
+            margin-bottom: 1.5rem;
+            font-size: var(--small-size);
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: 0.1875rem;
+            text-transform: uppercase;
+            color: var(--text-60);
+        }
+
+        .nq-h1 {
+            max-width: 41.25rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        .nq-text {
+            padding: 2rem;
+            margin: 0;
+            border: 1px solid var(--text-16);
+            align-self: stretch;
+            letter-spacing: .1px;
+
+            &:first-of-type {
+                margin-top: auto;
+                border-bottom: none;
+                border-top-left-radius: 1.5rem;
+                border-top-right-radius: 1.5rem;
+            }
+
+            &:last-of-type {
+                margin-bottom: auto;
+                border-bottom-left-radius: 1.5rem;
+                border-bottom-right-radius: 1.5rem;
+            }
+
+            .nq-icon {
+                display: inline-block;
+                margin-bottom: .5rem;
+                margin-right: .375rem;
+                vertical-align: middle;
+            }
+        }
+
+        .nq-button {
+            margin-top: 3rem;
+        }
+    }
+
+    .header__contact-list {
+        padding-bottom: 1.5rem;
+    }
+
     .page__recipient-input,
     .page__contact-list,
     .page__amount-input {
         // 0.375rem to get the distance between the heading and .contact-selection to exact 40px
         padding: 0.375rem 3rem 3rem;
-    }
-
-    .header__contact-list {
-        padding-bottom: 1.5rem;
     }
 
     .page__contact-list {

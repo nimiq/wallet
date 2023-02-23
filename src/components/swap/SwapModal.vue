@@ -5,7 +5,7 @@
     >
         <PageHeader>
             {{ $t('Swap Currencies') }}
-            <div slot="more" class="flex-column">
+            <div slot="more" class="flex-column header-more">
                 <div v-if="!isLedgerAccount" class="pair-selection flex-row">
                     <ButtonGroup
                         v-if="!isMobile"
@@ -1806,11 +1806,17 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
+        const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+
         const buttonGroupOptions = SUPPORTED_ASSETS.reduce((acc, asset) => ({
             ...acc,
             [asset]: {
                 label: asset,
-                disabled: false,
+                disabled: asset === SwapAsset.BTC
+                    ? !hasBitcoinAddresses.value
+                    : asset === SwapAsset.USDC
+                        ? !hasUsdcAddresses.value
+                        : false,
             },
         }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
 
@@ -1826,7 +1832,7 @@ export default defineComponent({
                 ...acc,
                 [asset]: {
                     ...option,
-                    disabled: asset !== currentSide && asset !== otherSide,
+                    disabled: option.disabled || (asset !== currentSide && asset !== otherSide),
                 },
             }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
         }
@@ -1971,17 +1977,13 @@ export default defineComponent({
     overflow: visible;
 }
 
+.header-more {
+    margin-top: 2rem;
+}
+
 .pair-selection {
     justify-content: center;
-    margin-top: 4rem;
-
-    & ::v-deep .button-group:first-child {
-        margin-right: 0;
-    }
-
-    & ::v-deep .button-group:last-child {
-        margin-left: 0;
-    }
+    margin: 2rem 0;
 
     svg {
         margin: 0 1.5rem;
@@ -2059,7 +2061,6 @@ export default defineComponent({
 
     .tooltip {
         text-align: left;
-        margin-top: 0.75rem;
 
         & ::v-deep .trigger {
             color: var(--text-50);

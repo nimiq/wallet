@@ -132,7 +132,7 @@ export default defineComponent({
 }
 
 .button-group {
-    margin-bottom: 4rem;
+    margin: 0 auto 4rem;
     text-align: center;
 }
 

@@ -74,7 +74,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .button-group {
     width: max-content;
-    margin: 0 auto 1.625rem auto;
     display: flex;
     align-items: center;
     background: linear-gradient(0deg,

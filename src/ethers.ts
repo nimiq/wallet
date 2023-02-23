@@ -494,23 +494,28 @@ export async function calculateFee(
         getUsdcPrice(client),
     ]);
 
-    if (!relay) {
-        const requiredMaxAcceptanceBudget = acceptanceBudget.add(dataGasCost);
-        relay = await getBestRelay(client, requiredMaxAcceptanceBudget);
+    function calculateChainTokenFee(baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) {
+        let gasPrice = networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
+
+        // main 10%, test 25% as it is more volatile
+        const gasPriceBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
+        gasPrice = gasPrice.mul(gasPriceBufferPercentage).div(100);
+
+        // (gasPrice * gasLimit) * (1 + pctRelayFee) + baseRelayFee
+        const chainTokenFee = gasPrice.mul(gasLimit).mul(pctRelayFee.add(100)).div(100).add(baseRelayFee);
+
+        return { gasPrice, chainTokenFee };
     }
 
+    if (!relay) {
+        const requiredMaxAcceptanceBudget = acceptanceBudget.add(dataGasCost);
+        relay = await getBestRelay(client, requiredMaxAcceptanceBudget, calculateChainTokenFee);
+    }
+
+    // TODO: Update minGasPrice if relay was forcedRelay, as it might be outdated?
     const { baseRelayFee, pctRelayFee, minGasPrice } = relay;
 
-    // If a relay is forced, do not consider it's minGasPrice, as it's outdated
-    // TODO: Update relay data here to get it's current minGasPrice?
-    let gasPrice = forceRelay
-        ? networkGasPrice
-        : networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
-    // main 10%, test 25% as it is more volatile
-    const gasPriceBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
-    gasPrice = gasPrice.mul(gasPriceBufferPercentage).div(100);
-    // (gasPrice * gasLimit) * (1 + pctRelayFee) + baseRelayFee
-    const chainTokenFee = gasPrice.mul(gasLimit).mul(pctRelayFee.add(100)).div(100).add(baseRelayFee);
+    const { gasPrice, chainTokenFee } = calculateChainTokenFee(baseRelayFee, pctRelayFee, minGasPrice);
 
     // main 10%, test 25% as it is more volatile
     const uniswapBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;

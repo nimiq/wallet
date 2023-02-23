@@ -26,9 +26,16 @@ export interface RelayServerInfo {
 const MAX_PCT_RELAY_FEE = 70;
 const MAX_BASE_RELAY_FEE = 0;
 
-export async function getBestRelay(client: PolygonClient, requiredMaxAcceptanceBudget: BigNumber) {
+export async function getBestRelay(
+    client: PolygonClient,
+    requiredMaxAcceptanceBudget: BigNumber,
+    calculateFee: (baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) => {
+        gasPrice: BigNumber,
+        chainTokenFee: BigNumber,
+    },
+) {
     console.debug('Finding best relay'); // eslint-disable-line no-console
-    const relayGen = relayServerRegisterGen(client, requiredMaxAcceptanceBudget);
+    const relayGen = relayServerRegisterGen(client, requiredMaxAcceptanceBudget, calculateFee);
     const relayServers: RelayServerInfo[] = [];
 
     let bestRelay: RelayServerInfo | undefined;
@@ -90,7 +97,14 @@ const MAX_RELAY_SERVERS_TRIES = 10;
 // It yields them one by one. The goal is to find the relay with the lowest fee.
 //   - It will fetch the last OLDEST_BLOCK_TO_FILTER blocks
 //   - in FILTER_BLOCKS_SIZE blocks batches
-async function* relayServerRegisterGen(client: PolygonClient, requiredMaxAcceptanceBudget: BigNumber) {
+async function* relayServerRegisterGen(
+    client: PolygonClient,
+    requiredMaxAcceptanceBudget: BigNumber,
+    calculateFee: (baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) => {
+        gasPrice: BigNumber,
+        chainTokenFee: BigNumber,
+    },
+) {
     let events = [];
 
     const batchBlocks = batchBlocksGen({
@@ -131,6 +145,11 @@ async function* relayServerRegisterGen(client: PolygonClient, requiredMaxAccepta
             if (!relayAddr.version.startsWith('2.')) continue; // TODO: Make OpenGSN version used configurable
             if (relayAddr.networkId !== useConfig().config.usdc.networkId.toString()) continue;
             if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) continue;
+
+            // Check if this relay has enough balance to cover the fee
+            const { chainTokenFee } = calculateFee(baseRelayFee, pctRelayFee, client.ethers.BigNumber.from(relayAddr.minGasPrice));
+            const relayBalance = await client.provider.getBalance(relayAddr.relayWorkerAddress);
+            if (relayBalance.lt(chainTokenFee)) continue;
 
             // Check if this relay has sent a transaction in the last 48 hours
             const filter = relayHub.filters.TransactionRelayed(

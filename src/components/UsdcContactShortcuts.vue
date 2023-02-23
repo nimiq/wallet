@@ -1,5 +1,5 @@
 <template>
-    <div class="contact-shortcuts flex-row">
+    <div class="contact-shortcuts">
         <button
             class="reset contact-list-button flex-column"
             @click="$emit('contact-list-opened')"
@@ -56,6 +56,7 @@ export default defineComponent({
 
     .avatar-button {
         margin-right: 0.5rem;
+        min-width: 0; // Allow shrinking
 
         &:last-child {
             margin-right: 0;

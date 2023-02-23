@@ -1,6 +1,7 @@
 import { useAccountStore } from '../../stores/Account';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
+import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
 import { Format } from './Format';
 import { useAddressStore } from '../../stores/Address';
 import { ExportFormat } from './TransactionExport';
@@ -32,10 +33,19 @@ export class BlockpitAppFormat extends Format {
     constructor(
         public override nimAddresses: string[],
         public override btcAddresses: { internal: string[], external: string[] },
-        public override transactions: (NimTx | BtcTx)[],
+        public override usdcAddress: string | undefined,
+        public override transactions: (NimTx | BtcTx | UsdcTx)[],
         public override year: number,
     ) {
-        super(ExportFormat.BLOCKPIT, BlockpitAppFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
+        super(
+            ExportFormat.BLOCKPIT,
+            BlockpitAppFormat.HEADERS,
+            nimAddresses,
+            btcAddresses,
+            usdcAddress,
+            transactions,
+            year,
+        );
 
         if (
             this.nimAddresses.length === 1

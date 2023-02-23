@@ -19,7 +19,7 @@
                         unclaimedCashlinkCount,
                     ) }}
                 </button>
-                <button v-if="activeCurrency !== 'usdc'"
+                <button
                     class="reset icon-button"
                     @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                 >
@@ -51,7 +51,7 @@
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
                     <BitcoinIcon v-if="activeCurrency === 'btc'"/>
                     <UsdcIcon v-if="activeCurrency === 'usdc'"/>
-                    <button class="reset identicon-menu flex-row" v-if="activeCurrency !== 'usdc'"
+                    <button class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
                         <GearIcon/>

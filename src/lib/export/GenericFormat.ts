@@ -2,6 +2,7 @@ import { CurrencyInfo } from '@nimiq/utils';
 import { useFiatStore } from '../../stores/Fiat';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
+import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
 import { Format } from './Format';
 import { ExportFormat } from './TransactionExport';
 
@@ -32,18 +33,20 @@ export class GenericFormat extends Format {
     constructor(
         public override nimAddresses: string[],
         public override btcAddresses: { internal: string[], external: string[] },
-        public override transactions: (NimTx | BtcTx)[],
+        public override usdcAddress: string | undefined,
+        public override transactions: (NimTx | BtcTx | UsdcTx)[],
         public override year: number,
     ) {
-        super(ExportFormat.GENERIC, GenericFormat.HEADERS, nimAddresses, btcAddresses, transactions, year);
+        super(
+            ExportFormat.GENERIC, GenericFormat.HEADERS, nimAddresses, btcAddresses, usdcAddress, transactions, year);
 
         this.referenceAsset = useFiatStore().state.currency;
         this.referenceDecimals = new CurrencyInfo(this.referenceAsset.toUpperCase()).decimals;
     }
 
     protected override addRow(
-        txIn?: BtcTx | NimTx,
-        txOut?: BtcTx | NimTx,
+        txIn?: BtcTx | NimTx | UsdcTx,
+        txOut?: BtcTx | NimTx | UsdcTx,
         messageOverride?: string,
     ) {
         if (!txIn && !txOut) return;
@@ -80,11 +83,9 @@ export class GenericFormat extends Format {
             txOut && valueOut ? this.formatAmount(this.getTxAsset(txOut), valueOut) : '',
             txOut && feeOut ? this.getTxAsset(txOut) : '',
             txOut && feeOut ? this.formatAmount(this.getTxAsset(txOut), feeOut) : '',
-            messageOverride || (
-                (txIn && 'sender' in txIn && !txOut) || (txOut && 'sender' in txOut && !txIn)
-                    ? this.formatNimiqData(txIn || txOut!, !!txIn)
-                    : ''
-            ),
+            messageOverride || ((txIn && this.getTxAsset(txIn) && !txOut) || (txOut && this.getTxAsset(txOut) && !txIn))
+                ? this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn)
+                : '',
             txIn && fiatIn ? this.referenceAsset.toUpperCase() : '',
             txIn && fiatIn ? fiatIn.toFixed(this.referenceDecimals) : '',
             txOut && fiatOut ? this.referenceAsset.toUpperCase() : '',

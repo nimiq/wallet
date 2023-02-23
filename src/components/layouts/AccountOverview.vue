@@ -252,6 +252,8 @@ export default defineComponent({
         }
 
         function selectBitcoin() {
+            if (!hasBitcoinAddresses.value) return;
+
             setActiveCurrency(CryptoCurrency.BTC);
 
             if (isMobile.value) {
@@ -260,6 +262,8 @@ export default defineComponent({
         }
 
         function selectUsdc() {
+            if (!hasUsdcAddresses.value) return;
+
             setActiveCurrency(CryptoCurrency.USDC);
 
             if (isMobile.value) {
@@ -622,8 +626,8 @@ export default defineComponent({
     }
 }
 
-.bitcoin-account {
-    margin-right: 2rem;
+.bitcoin-account + .usdc-account {
+    margin-left: 2rem;
 }
 
 .bitcoin-account,
@@ -644,11 +648,14 @@ export default defineComponent({
     }
 
     &.requires-activation {
-        pointer-events: none;
-
         button {
-            pointer-events: all;
+            pointer-events: none;
+
+            button {
+                pointer-events: all;
+            }
         }
+
     }
 
     &.disabled {

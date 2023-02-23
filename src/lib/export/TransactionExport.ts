@@ -1,6 +1,7 @@
 import { shim as shimAllSettled } from 'promise.allsettled';
 import { getNetworkClient } from '../../network';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
+import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
 import { Transaction, useTransactionsStore } from '../../stores/Transactions';
 import { useConfig } from '../../composables/useConfig';
@@ -12,10 +13,10 @@ export enum ExportFormat {
     GENERIC = 'generic',
     BLOCKPIT = 'blockpit',
 }
-
 export async function exportTransactions(
     nimAddresses: string[],
     btcAddresses: { internal: string[], external: string[] },
+    usdcAddress: string | undefined,
     year: number,
     format: ExportFormat,
     filename?: string,
@@ -99,9 +100,15 @@ export async function exportTransactions(
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
+    const { state: usdcTransactions$ } = useUsdcTransactionsStore();
+    const usdcTransactions = !usdcAddress ? [] : Object.values(usdcTransactions$.transactions)
+        .filter((tx) => tx.timestamp) // Only confirmed transactions
+        .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
+
     const transactions = [
         ...nimTransactions,
         ...btcTransactions,
+        ...usdcTransactions,
     ].sort((a, b) => a.timestamp! - b.timestamp!); // Sort ascending;
 
     // if (!transactions.length) {
@@ -111,9 +118,10 @@ export async function exportTransactions(
 
     switch (format) {
         case ExportFormat.GENERIC:
-            new GenericFormat(nimAddresses, btcAddresses, transactions, year).export(filename); break;
+            new GenericFormat(nimAddresses, btcAddresses, usdcAddress, transactions, year).export(filename); break;
         case ExportFormat.BLOCKPIT:
-            new BlockpitAppFormat(nimAddresses, btcAddresses, transactions, year).export(filename); break;
+            new BlockpitAppFormat(nimAddresses, btcAddresses, usdcAddress, transactions, year).export(filename);
+            break;
         default:
             throw new Error('Unknown export format');
     }

@@ -167,8 +167,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:127
-#: src/components/layouts/AccountOverview.vue:89
+#: src/components/layouts/AccountOverview.vue:129
+#: src/components/layouts/AccountOverview.vue:87
 msgid "Activate"
 msgstr ""
 
@@ -245,7 +245,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:162
+#: src/components/layouts/AccountOverview.vue:170
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -348,7 +348,8 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:70
+#: src/components/AddressList.vue:172
+#: src/components/layouts/AccountOverview.vue:68
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -436,10 +437,6 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:5
 msgid "Buy NIM & BTC"
-msgstr ""
-
-#: src/components/AnnouncementBox.vue:27
-msgid "Buy NIM & BTC with OASIS!"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:162
@@ -2039,7 +2036,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:962
+#: src/components/swap/SwapModal.vue:972
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -2216,7 +2213,7 @@ msgstr ""
 msgid "Troubleshooting"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:28
+#: src/components/AnnouncementBox.vue:29
 msgid "Try it now"
 msgstr ""
 
@@ -2262,8 +2259,9 @@ msgstr ""
 msgid "Update now"
 msgstr ""
 
+#: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:103
+#: src/components/layouts/AccountOverview.vue:105
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565

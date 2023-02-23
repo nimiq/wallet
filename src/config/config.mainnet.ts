@@ -16,7 +16,7 @@ export default {
         networkId: 137 as number | string, // Can also be 'matic'
         rpcEndpoint: 'https://polygon-rpc.com',
         usdcContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-        usdcTransferContract: '',
+        transferContract: '',
         htlcContract: '',
         relayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
         uniswapFactoryContract: '0x1F98431c8aD98523631AE4a59f267346ea31F984',

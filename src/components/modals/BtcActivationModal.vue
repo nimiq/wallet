@@ -68,10 +68,13 @@ export default defineComponent({
                 await context.root.$router.push(redirect);
             } else {
                 await $modal.value!.forceClose();
-                if (!isMobile.value || !hasBitcoinAddresses.value) return;
-                // On mobile, forward to the Bitcoin transactions overview, after Bitcoin got activated and the
-                // redirects by forceClose finished.
-                await context.root.$router.push('/transactions');
+                if (!hasBitcoinAddresses.value) return;
+
+                if (isMobile.value) {
+                    // On mobile, forward to the Bitcoin transactions overview, after Bitcoin got activated and the
+                    // redirects by forceClose finished.
+                    await context.root.$router.push('/transactions');
+                }
             }
         }
 

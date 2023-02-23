@@ -362,7 +362,6 @@ import Modal from './Modal.vue';
 
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
-import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
 import {
@@ -378,7 +377,6 @@ import { useFiatStore } from '../../stores/Fiat';
 export default defineComponent({
     setup(props, context) {
         const { state: settings$, setLanguage } = useSettingsStore();
-        const { activeAccountInfo } = useAccountStore();
         const { activeAddress } = useAddressStore();
         const { isMobile } = useWindowSize();
         const { currency, setCurrency } = useFiatStore();
@@ -471,22 +469,6 @@ export default defineComponent({
                 window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
                 window.localStorage.setItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY, '1');
                 await $modal.value!.forceClose();
-
-                const account = activeAccountInfo.value;
-
-                if (account && account.type !== AccountType.LEGACY) {
-                    if (!account.btcAddresses?.external.length) {
-                        // After adding an account that supports Bitcoin without it being activated yet, offer to
-                        // activate it. This is especially for Ledger logins where Bitcoin is not automatically
-                        // activated as it requires the Bitcoin app.
-                        await context.root.$router.push('/btc-activation');
-                    }
-
-                    if (account.type !== AccountType.LEDGER && !account.polygonAddresses?.length) {
-                        // For non-LEDGER accounts, offer to activate USDC if not yet activated.
-                        await context.root.$router.push('/usdc-activation');
-                    }
-                }
             }
         }
 

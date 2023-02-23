@@ -147,7 +147,9 @@ async function* relayServerRegisterGen(
             if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) continue;
 
             // Check if this relay has enough balance to cover the fee
-            const { chainTokenFee } = calculateFee(baseRelayFee, pctRelayFee, client.ethers.BigNumber.from(relayAddr.minGasPrice));
+            const { chainTokenFee } = calculateFee(
+                baseRelayFee, pctRelayFee, client.ethers.BigNumber.from(relayAddr.minGasPrice));
+            // eslint-disable-next-line no-await-in-loop
             const relayBalance = await client.provider.getBalance(relayAddr.relayWorkerAddress);
             if (relayBalance.lt(chainTokenFee)) continue;
 

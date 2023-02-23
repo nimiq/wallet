@@ -133,12 +133,24 @@ async function* relayServerRegisterGen(client: PolygonClient, requiredMaxAccepta
             if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) continue;
 
             // Check if this relay has sent a transaction in the last 48 hours
-            const filter = relayHub.filters.TransactionRelayed(null, relayAddr.relayWorkerAddress);
-            const startBlock = useUsdcNetworkStore().state.height - 48 * 60 * POLYGON_BLOCKS_PER_MINUTE;
-            // TODO: This is 86400 blocks, too big for some RPC providers that limit these checks to 10000 blocks
-            // eslint-disable-next-line no-await-in-loop
-            const logs = await relayHub.queryFilter(filter, startBlock);
-            if (!logs.length) continue;
+            const filter = relayHub.filters.TransactionRelayed(
+                relayAddr.relayManagerAddress,
+                relayAddr.relayWorkerAddress,
+            );
+            let startBlock = useUsdcNetworkStore().state.height;
+            const earliestBlock = startBlock - 48 * 60 * POLYGON_BLOCKS_PER_MINUTE;
+
+            while (startBlock > earliestBlock) {
+                const filterToBlock = startBlock;
+                const filterFromBlock = Math.max(filterToBlock - 3000, earliestBlock);
+
+                // eslint-disable-next-line no-await-in-loop
+                const logs = await relayHub.queryFilter(filter, filterFromBlock, filterToBlock);
+                if (logs.length) break;
+
+                startBlock = filterFromBlock;
+            }
+            if (startBlock === earliestBlock) continue; // Found no logs
 
             yield <RelayServerInfo> {
                 baseRelayFee,

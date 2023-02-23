@@ -139,21 +139,23 @@
 
             <div v-if="canHaveMultipleAddresses" class="swap-buttons" :class="{ resize: windowResizing }">
                 <div
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER"
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses"
                     class="nim-usdc-swap-button"
                     :style="getSwapButtonPosition('nim-usdc')"
                     @click="$router.push('/swap/NIM-USDC')"
                 >
                     <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>
-                <div class="nim-btc-swap-button"
+                <div
+                    v-if="hasBitcoinAddresses"
+                    class="nim-btc-swap-button"
                     :style="getSwapButtonPosition('nim-btc')"
                     @click="$router.push('/swap/NIM-BTC')"
                 >
                     <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>
                 <div
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER"
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasBitcoinAddresses && hasUsdcAddresses"
                     class="btc-usdc-swap-button"
                     :style="getSwapButtonPosition('btc-usdc')"
                     @click="$router.push('/swap/BTC-USDC')"

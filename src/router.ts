@@ -433,6 +433,11 @@ router.beforeEach((to, from, next) => {
             replace: true,
         });
     } else {
+        if (to.name === 'swap' && !to.params.pair.includes('BTC')) {
+            next();
+            return;
+        }
+
         // open Bitcoin activation modal; store original target route in hash
         next({
             name: 'btc-activation',
@@ -465,6 +470,11 @@ router.beforeEach((to, from, next) => {
             replace: true,
         });
     } else {
+        if (to.name === 'swap' && !to.params.pair.includes('USDC')) {
+            next();
+            return;
+        }
+
         // open Usdc activation modal; store original target route in hash
         next({
             name: 'usdc-activation',

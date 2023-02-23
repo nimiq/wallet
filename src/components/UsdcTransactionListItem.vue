@@ -269,8 +269,8 @@ export default defineComponent({
                 // Find account label
                 const { accountInfos } = useAccountStore();
                 return Object.values(accountInfos.value)
-                    .find((accountInfo) => accountInfo.polygonAddresses
-                        .includes(ownedAddressInfo.address))?.label || false;
+                    .find((accountInfo) => accountInfo
+                        .polygonAddresses?.includes(ownedAddressInfo.address))?.label || false;
             }
 
             // Search contacts

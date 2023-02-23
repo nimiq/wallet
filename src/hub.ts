@@ -108,7 +108,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
             const { activeAccountInfo } = useAccountStore();
             if (
                 activeAccountInfo.value?.type === AccountType.BIP39
-                && !activeAccountInfo.value?.polygonAddresses.length
+                && !activeAccountInfo.value?.polygonAddresses?.length
                 && !welcome2ModalAlreadyShown
             ) {
                 // Prompt for USDC activation, which then leads into the new welcome modal
@@ -333,7 +333,7 @@ export async function syncFromHub() {
     const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
     if (
         activeAccountInfo.value?.type === AccountType.BIP39
-        && !activeAccountInfo.value?.polygonAddresses.length
+        && !activeAccountInfo.value?.polygonAddresses?.length
         && !welcome2ModalAlreadyShown
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal

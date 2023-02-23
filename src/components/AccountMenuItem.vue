@@ -104,8 +104,11 @@ export default defineComponent({
         });
 
         const { state: usdcAddressState } = useUsdcAddressStore();
-        const polygonAddress = computed(() => accountInfo.value.polygonAddresses[0]);
-        const usdcAccountBalance = computed(() => usdcAddressState.addressInfos[polygonAddress.value]?.balance || 0);
+        const polygonAddress = computed(() => accountInfo.value.polygonAddresses?.[0] as string | undefined);
+        const usdcAccountBalance = computed(() => polygonAddress.value
+            ? usdcAddressState.addressInfos[polygonAddress.value]?.balance || 0
+            : 0,
+        );
 
         // TODO: Dedupe double code with AccountBalance
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();

@@ -6,7 +6,7 @@
         <PageHeader>
             {{ $t('Swap Currencies') }}
             <div slot="more" class="flex-column">
-                <div class="pair-selection flex-row">
+                <div v-if="!isLedgerAccount" class="pair-selection flex-row">
                     <ButtonGroup
                         v-if="!isMobile"
                         :options="leftButtonGroupOptions"
@@ -33,7 +33,7 @@
                         </option>
                     </select>
                 </div>
-                <div v-if="!feeIsLoading && !!limits" class="swap-info flex-row" >
+                <div v-if="!feeIsLoading && limits" class="swap-info flex-row" >
                     <SwapFeesTooltip
                         preferredPosition="bottom left"
                         :nimFeeFiat="nimFeeFiat"
@@ -294,7 +294,7 @@ import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
-import { useAccountStore } from '../../stores/Account';
+import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
@@ -340,8 +340,18 @@ export default defineComponent({
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
 
-        const leftAsset = ref(props.pair.split('-')[0] as SwapAsset);
-        const rightAsset = ref(props.pair.split('-')[1] as SwapAsset);
+        const { activeAccountInfo } = useAccountStore();
+
+        const leftAsset = ref(
+            activeAccountInfo.value?.type === AccountType.LEDGER
+                ? SwapAsset.NIM
+                : props.pair.split('-')[0] as SwapAsset,
+        );
+        const rightAsset = ref(
+            activeAccountInfo.value?.type === AccountType.LEDGER
+                ? SwapAsset.BTC
+                : props.pair.split('-')[1] as SwapAsset,
+        );
 
         const swapHasBtc = computed(() => leftAsset.value === SwapAsset.BTC || rightAsset.value === SwapAsset.BTC);
         const swapHasUsdc = computed(() => leftAsset.value === SwapAsset.USDC || rightAsset.value === SwapAsset.USDC);
@@ -1552,7 +1562,6 @@ export default defineComponent({
                 );
 
                 const { addressInfos } = useAddressStore();
-                const { activeAccountInfo } = useAccountStore();
 
                 const request: Omit<SetupSwapRequest, 'appName'> = {
                     accountId: activeAccountInfo.value!.id,
@@ -1841,6 +1850,8 @@ export default defineComponent({
             context.root.$router.replace(`/swap/${leftAsset.value}-${rightAsset.value}`);
         }
 
+        const isLedgerAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER);
+
         return {
             onClose,
             leftAsset,
@@ -1906,6 +1917,7 @@ export default defineComponent({
             SUPPORTED_ASSETS,
             setLeftAsset,
             setRightAsset,
+            isLedgerAccount,
         };
     },
     components: {

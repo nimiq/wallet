@@ -88,7 +88,13 @@
                     </button>
                 </div>
 
-                <div v-if="canHaveMultipleAddresses && $config.usdc.enabled" ref="usdcAccount$"
+                <div
+                    v-if="
+                        activeAccountInfo.type !== AccountType.LEDGER
+                        && canHaveMultipleAddresses
+                        && $config.usdc.enabled
+                    "
+                    ref="usdcAccount$"
                     class="usdc-account flex-column"
                     :class="{
                             'active': activeCurrency === CryptoCurrency.USDC,
@@ -131,8 +137,10 @@
                 </div>
             </div>
 
-            <div class="swap-buttons" :class="{ resize: windowResizing }">
-                <div class="nim-usdc-swap-button"
+            <div v-if="canHaveMultipleAddresses" class="swap-buttons" :class="{ resize: windowResizing }">
+                <div
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER"
+                    class="nim-usdc-swap-button"
                     :style="getSwapButtonPosition('nim-usdc')"
                     @click="$router.push('/swap/NIM-USDC')"
                 >
@@ -144,7 +152,9 @@
                 >
                     <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>
-                <div class="btc-usdc-swap-button"
+                <div
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER"
+                    class="btc-usdc-swap-button"
                     :style="getSwapButtonPosition('btc-usdc')"
                     @click="$router.push('/swap/BTC-USDC')"
                 >

@@ -43,21 +43,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { activateUsdc } from '../../hub';
 import { CryptoCurrency, WELCOME_2_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
-import { useAccountStore } from '../../stores/Account';
+import { AccountType, useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeAccountId, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
+        const { activeAccountId, activeAccountInfo, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
 
         const { isMobile } = useWindowSize();
 
         const $modal = ref<any | null>(null);
+
+        onMounted(() => {
+            if (activeAccountInfo.value?.type === AccountType.LEDGER) {
+                close();
+            }
+        });
 
         async function enableUsdc() {
             await activateUsdc(activeAccountId.value!);

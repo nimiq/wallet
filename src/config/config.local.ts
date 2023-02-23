@@ -25,18 +25,20 @@ export default {
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wmaticContract: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
         /**
-         * From which block to fetch transaction history
+         * **At which block to stop the reverse transaction-history scan**
          *
-         * When asking the RPC node to scan for logs from block 0, the request times out.
-         * So we need to set a block height that is still acceptable for the RPC node and
-         * returns results. We therefore set the height to the current block height at the
-         * first deployment of the Wallet in the respective network. This will not display
-         * any potential transactions on the USDC account before that block, which should
-         * not matter for almost all users. Most likely users to encounter missing txs
-         * could be Ledger users who used their USDC account before. This is a trade-off
-         * we have to make. The balance displayed for all users will be correct, however.
+         * Address history is looked up in reverse, stopping when both the address's nonce and balance become zero. To
+         * limit the duration and number of blocks that need to be scanned, we configure this number as the block height
+         * at which the Wallet's USDC-integration was launched in the network that this config is for.
+         *
+         * This means, if an address was already used for USDC-on-Polygon before we launched the USDC-integration, those
+         * transfers will not show up in the transaction history. That should not matter for almost all our users. Most
+         * likely users to encounter missing txs could be Ledger users who used their USDC account before. This is a
+         * trade-off we have to make for performance. The balance displayed for all users will be correct, however.
+         *
+         * Set to `0` to disable early stopping.
          */
-        startHistoryScanHeight: 29621817,
+        earliestHistoryScanHeight: 29621817,
     },
 
     fastspot: {

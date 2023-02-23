@@ -242,8 +242,8 @@ export async function launchPolygon() {
             .filter((tx) => tx.sender === address || tx.recipient === address);
         const lastConfirmedHeight = knownTxs
             .filter((tx) => Boolean(tx.blockHeight))
-            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), config.usdc.startHistoryScanHeight);
-        const earliestHeightToCheck = lastConfirmedHeight - 1000;
+            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+        const earliestHeightToCheck = Math.max(config.usdc.earliestHistoryScanHeight, lastConfirmedHeight - 1000);
 
         network$.fetchingTxHistory++;
 
@@ -263,8 +263,7 @@ export async function launchPolygon() {
         Promise.all([
             client.usdc.balanceOf(address) as Promise<BigNumber>,
             client.usdc.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            client.provider.getTransactionCount(address) as Promise<number>,
-        ]).then(async ([balance, usdcNonce, nonce]) => {
+        ]).then(async ([balance, usdcNonce]) => {
             let blockHeight = network$.height;
 
             // To filter known txs
@@ -274,19 +273,13 @@ export async function launchPolygon() {
 
             const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
 
-            // const logsAndBlocks: {
-            //     log: TransferEvent;
-            //     block: Promise<ethers.providers.Block>;
-            //     event?: Promise<HtlcEvent | undefined>;
-            // }[] = [];
-
             /* eslint-disable max-len */
-            while (blockHeight > earliestHeightToCheck && (balance.gt(0) || usdcNonce > 0 /* || nonce > 0 */)) {
+            while (blockHeight > earliestHeightToCheck && (balance.gt(0) || usdcNonce > 0)) {
                 const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
                 const endHeight = blockHeight;
                 blockHeight = startHeight;
 
-                console.debug(`Sync start loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}, nonce ${nonce}`);
+                console.debug(`Sync start loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}`);
 
                 console.debug(`Querying logs from ${startHeight} to ${endHeight}`);
 
@@ -304,19 +297,10 @@ export async function launchPolygon() {
                 const allTransferLogs = logsIn.concat(logsOut);
 
                 const metaTxTransactionHashes = new Set(metaTxs.map((ev) => ev.transactionHash));
-                const regularTransactionHashes = new Set(
-                    allTransferLogs
-                        // Ignore all transfers that were caused by meta transactions
-                        .filter((ev) => !metaTxTransactionHashes.has(ev.transactionHash))
-                        // Count only transfers that are outgoing
-                        .filter((ev) => ev.args && ev.args.from === address)
-                        .map((ev) => ev.transactionHash),
-                );
 
-                console.debug(`Found ${metaTxTransactionHashes.size} metaTxs and ${regularTransactionHashes.size} regular txs`);
+                console.debug(`Found ${metaTxTransactionHashes.size} metaTxs`);
 
                 usdcNonce -= metaTxTransactionHashes.size;
-                nonce -= regularTransactionHashes.size;
 
                 // eslint-disable-next-line no-loop-func
                 const newLogs = allTransferLogs.filter((log) => {
@@ -327,7 +311,7 @@ export async function launchPolygon() {
 
                     if (knownHashes.includes(log.transactionHash)) return false;
 
-                    // Transfers to the usdcTransferContract are the fees paid to OpenGSN
+                    // Transfers to the transferContract are the fees paid to OpenGSN
                     if (
                         log.args.to === config.usdc.transferContract
                         || (
@@ -443,7 +427,7 @@ export async function launchPolygon() {
                     transactionsStore.addTransactions(transactions);
                 });
 
-                console.debug(`Sync end loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}, nonce ${nonce}`);
+                console.debug(`Sync end loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}`);
             } // End while loop
             /* eslint-enable max-len */
         })
@@ -705,7 +689,7 @@ export async function receiptToTransaction(
         if (log.name === 'Transfer') {
             if (filterByFromAddress && log.args.from !== filterByFromAddress) return;
 
-            // Transfer to the usdcTransferContract is the fee paid to OpenGSN
+            // Transfer to the transferContract is the fee paid to OpenGSN
             if (log.args.to === config.usdc.transferContract) {
                 fee = log.args.value;
                 return;

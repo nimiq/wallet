@@ -19,13 +19,19 @@
             <span class="label add-address-label">{{ $t('Add\u00a0address') }}</span>
         </button>
         <div class="scroll-mask bottom" v-if="embedded"></div>
-        <hr class="separator" v-if="showBitcoin"/>
+        <hr class="separator" v-if="showBitcoin || showUsdc"/>
         <AddressListItem
             v-if="showBitcoin"
-            :addressInfo="btcInfos"
+            :addressInfo="btcInfo"
             :class="{ 'active': activeCurrency === CryptoCurrency.BTC }"
             @click="selectBtcAddress()"
-            :ref="`address-button-${btcInfos.address}`"/>
+            :ref="`address-button-${btcInfo.address}`"/>
+        <AddressListItem
+            v-if="showUsdc"
+            :addressInfo="usdcInfo"
+            :class="{ 'active': activeCurrency === CryptoCurrency.USDC }"
+            @click="selectUsdcAddress()"
+            :ref="`address-button-${usdcInfo.address}`"/>
         <div v-if="!embedded"
             class="active-box"
             :class="{ enabled: activeCurrency === CryptoCurrency.NIM }"
@@ -44,6 +50,7 @@ import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
 import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
 import { useSettingsStore } from '../stores/Settings';
@@ -62,6 +69,10 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        showUsdc: {
+            type: Boolean,
+            default: false,
+        },
         requiredBalance: {
             type: Number,
             default: 0, // enables all addresses
@@ -69,7 +80,8 @@ export default defineComponent({
     },
     setup(props, context) {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
-        const { availableExternalAddresses, accountBalance } = useBtcAddressStore();
+        const { availableExternalAddresses, accountBalance: btcAccountBalance } = useBtcAddressStore();
+        const { addressInfo: usdcAddressInfo, accountBalance: usdcAccountBalance } = useUsdcAddressStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
@@ -155,18 +167,33 @@ export default defineComponent({
             }, 0);
         }
 
-        const btcInfos = computed(() => ({
-            address: availableExternalAddresses.value[0],
-            label: 'Bitcoin',
-            balance: accountBalance.value,
+        const btcInfo = computed(() => ({
+            address: availableExternalAddresses.value[0] || 'bitcoin',
+            label: context.root.$t('Bitcoin') as string,
+            balance: btcAccountBalance.value,
             type: CryptoCurrency.BTC,
         }));
 
+        const usdcInfo = computed(() => ({
+            address: usdcAddressInfo.value?.address || 'usdc',
+            label: context.root.$t('USD Coin') as string,
+            balance: usdcAccountBalance.value,
+            type: CryptoCurrency.USDC,
+        }));
+
         function selectBtcAddress() {
-            adjustBackgroundOffsetAndScale(btcInfos.value.address);
+            adjustBackgroundOffsetAndScale(btcInfo.value.address);
             setTimeout(() => {
                 setActiveCurrency(CryptoCurrency.BTC);
-                context.emit('address-selected', btcInfos.value.address);
+                context.emit('address-selected', btcInfo.value.address);
+            }, 0);
+        }
+
+        function selectUsdcAddress() {
+            adjustBackgroundOffsetAndScale(usdcInfo.value.address);
+            setTimeout(() => {
+                setActiveCurrency(CryptoCurrency.USDC);
+                context.emit('address-selected', usdcInfo.value.address);
             }, 0);
         }
 
@@ -180,8 +207,10 @@ export default defineComponent({
             backgroundYScale,
             activeCurrency,
             CryptoCurrency,
-            btcInfos,
+            btcInfo,
+            usdcInfo,
             selectBtcAddress,
+            selectUsdcAddress,
         };
     },
     components: {

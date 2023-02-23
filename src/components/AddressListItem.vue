@@ -2,6 +2,7 @@
     <button v-on="$listeners" class="address-button reset flex-row">
         <div class="identicon-wrapper">
             <BitcoinIcon v-if="addressInfo.type === CryptoCurrency.BTC"/>
+            <UsdcIcon v-else-if="addressInfo.type === CryptoCurrency.USDC"/>
             <Identicon v-else :address="addressInfo.address"/>
             <VestingIcon v-if="addressInfo.type === AddressType.VESTING"/>
         </div>
@@ -36,19 +37,26 @@ import VestingIcon from './icons/VestingIcon.vue';
 import { AddressInfo, AddressType } from '../stores/Address';
 import { CryptoCurrency } from '../lib/Constants';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
+import UsdcIcon from './icons/UsdcIcon.vue';
 
 export default defineComponent({
     props: {
         addressInfo: {
             type: Object as () => AddressInfo |
-                Pick<AddressInfo, 'address' | 'label' | 'balance'> & { type: CryptoCurrency.BTC },
+                Pick<AddressInfo, 'address' | 'label' | 'balance'> & {
+                    type: CryptoCurrency.BTC | CryptoCurrency.USDC,
+                },
             required: true,
         },
     },
     setup(props) {
-        const currentCurrency = computed(() =>
-            props.addressInfo.type === CryptoCurrency.BTC ? CryptoCurrency.BTC : CryptoCurrency.NIM,
-        );
+        const currentCurrency = computed(() => {
+            switch (props.addressInfo.type) {
+                case CryptoCurrency.BTC: return CryptoCurrency.BTC;
+                case CryptoCurrency.USDC: return CryptoCurrency.USDC;
+                default: return CryptoCurrency.NIM;
+            }
+        });
 
         return {
             AddressType,
@@ -63,6 +71,7 @@ export default defineComponent({
         FiatConvertedAmount,
         VestingIcon,
         BitcoinIcon,
+        UsdcIcon,
         CircleSpinner,
     },
 });
@@ -81,7 +90,8 @@ export default defineComponent({
 }
 
 .identicon,
-.bitcoin {
+.bitcoin,
+.usdc {
     width: 5.75rem !important;
     height: 5.75rem;
     flex-shrink: 0;
@@ -92,10 +102,14 @@ export default defineComponent({
     color: var(--bitcoin-orange);
 }
 
+.usdc {
+    color: var(--usdc-blue);
+}
+
 .identicon-wrapper {
     position: relative;
 
-    > svg:not(.bitcoin) {
+    > svg:not(.bitcoin):not(.usdc) {
         position: absolute;
         right: -1rem;
         bottom: -0.5rem;
@@ -111,6 +125,7 @@ export default defineComponent({
     font-weight: 600;
     padding: 0 2rem;
     text-align: left;
+    flex-grow: 1;
     flex-shrink: 1;
     overflow: hidden;
     mask: linear-gradient(90deg, white, white calc(100% - 3rem), rgba(255, 255, 255, 0));
@@ -118,7 +133,7 @@ export default defineComponent({
 
 .balances {
     text-align: right;
-    flex-grow: 1;
+    flex-shrink: 0;
 
     ::v-deep .circle-spinner {
         display: block;

@@ -14,11 +14,15 @@ const { AccountType } = HubApi; // AccountType enum values
 type AccountType = AccountTypeEnumType; // AccountType enum type
 export { AccountType };
 
-export type AccountInfo = Omit<Account, 'accountId' | 'type' | 'contracts' | 'addresses' | 'uid' | 'requestType'> & {
+export type AccountInfo = Omit<
+    Account,
+    'accountId' | 'type' | 'contracts' | 'addresses' | 'uid' | 'requestType' | 'polygonAddresses'
+> & {
     id: string,
     type: AccountType,
     addresses: string[],
     uid?: string,
+    polygonAddresses?: string[],
 }
 
 export const useAccountStore = createStore({

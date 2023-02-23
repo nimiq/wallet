@@ -385,7 +385,7 @@ export default defineComponent({
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[address];
             const ownAccountLabel = Object.values(useAccountStore().accountInfos.value).find(
-                (ai) => ai.polygonAddresses.includes(address),
+                (ai) => ai.polygonAddresses?.includes(address),
             )?.label || '';
 
             if (ownedAddressInfo) {

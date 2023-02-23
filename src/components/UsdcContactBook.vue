@@ -86,7 +86,7 @@ export default defineComponent({
             .map((addressInfo) => ({
                 ...addressInfo,
                 label: Object.values(accountInfos.value).find((accountInfo) =>
-                    accountInfo.polygonAddresses.includes(addressInfo.address))!.label,
+                    accountInfo.polygonAddresses?.includes(addressInfo.address))!.label,
             } as LabeledUsdcAddressInfo)),
         );
 

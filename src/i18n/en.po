@@ -14,8 +14,8 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:188
-#: src/components/modals/UsdcSendModal.vue:217
+#: src/components/modals/UsdcSendModal.vue:205
+#: src/components/modals/UsdcSendModal.vue:234
 #: src/components/swap/SwapModal.vue:55
 msgid "{amount} fee"
 msgstr ""
@@ -94,8 +94,8 @@ msgstr ""
 msgid "+{n} more"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:182
-#: src/components/modals/UsdcSendModal.vue:211
+#: src/components/modals/UsdcSendModal.vue:199
+#: src/components/modals/UsdcSendModal.vue:228
 #: src/components/swap/SwapModal.vue:49
 msgid "< {amount} fee"
 msgstr ""
@@ -288,6 +288,10 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:34
 msgid "As soon as your crypto is available, your Euro is processed to the seller. In case of a problem or a time-out, your payment will be returned to your bank account."
+msgstr ""
+
+#: src/components/modals/UsdcSendModal.vue:76
+msgid "Ask the receiver to ensure they have a Polygon USDC address."
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:102
@@ -523,7 +527,7 @@ msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:76
+#: src/components/modals/UsdcSendModal.vue:93
 msgid "Choose a Recipient"
 msgstr ""
 
@@ -647,7 +651,7 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:87
 #: src/components/modals/SendModal.vue:88
-#: src/components/modals/UsdcSendModal.vue:100
+#: src/components/modals/UsdcSendModal.vue:117
 msgid "Continue"
 msgstr ""
 
@@ -751,7 +755,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:399
+#: src/components/modals/UsdcSendModal.vue:417
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -808,7 +812,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:605
+#: src/components/modals/UsdcSendModal.vue:623
 msgid "Edit transaction"
 msgstr ""
 
@@ -999,6 +1003,10 @@ msgstr ""
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost."
 msgstr ""
 
+#: src/components/modals/UsdcSendModal.vue:82
+msgid "Funds sent to non-Polygon USDC versions could be permanently lost."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr ""
@@ -1150,7 +1158,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:232
+#: src/components/modals/UsdcSendModal.vue:249
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1304,7 +1312,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:90
+#: src/components/modals/UsdcSendModal.vue:107
 msgid "Name this contact..."
 msgstr ""
 
@@ -1656,7 +1664,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:604
+#: src/components/modals/UsdcSendModal.vue:622
 msgid "Retry"
 msgstr ""
 
@@ -1743,7 +1751,7 @@ msgstr ""
 #: src/components/AmountMenu.vue:23
 #: src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:234
+#: src/components/modals/UsdcSendModal.vue:251
 msgid "Send all"
 msgstr ""
 
@@ -1756,6 +1764,7 @@ msgid "Send crypto to a smart contract."
 msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:18
+#: src/components/modals/UsdcSendModal.vue:70
 msgid "Send to Polygon USDC addresses only!"
 msgstr ""
 
@@ -1766,7 +1775,7 @@ msgstr ""
 msgid "Send Transaction"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:244
+#: src/components/modals/UsdcSendModal.vue:261
 #: src/components/modals/UsdcSendModal.vue:32
 msgid "Send USDC"
 msgstr ""
@@ -1777,7 +1786,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:601
+#: src/components/modals/UsdcSendModal.vue:619
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1803,11 +1812,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:638
+#: src/components/modals/UsdcSendModal.vue:656
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:634
+#: src/components/modals/UsdcSendModal.vue:652
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -1831,8 +1840,8 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:101
 #: src/components/modals/SendModal.vue:89
-#: src/components/modals/UsdcSendModal.vue:101
-#: src/components/modals/UsdcSendModal.vue:113
+#: src/components/modals/UsdcSendModal.vue:118
+#: src/components/modals/UsdcSendModal.vue:130
 msgid "Set Amount"
 msgstr ""
 
@@ -1913,7 +1922,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:650
+#: src/components/modals/UsdcSendModal.vue:668
 msgid "Something went wrong"
 msgstr ""
 
@@ -2054,8 +2063,8 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:197
-#: src/components/modals/UsdcSendModal.vue:225
+#: src/components/modals/UsdcSendModal.vue:214
+#: src/components/modals/UsdcSendModal.vue:242
 msgid "The fee covers network costs to ensure secure transfer of USDC."
 msgstr ""
 
@@ -2094,12 +2103,16 @@ msgid "The rate might change depending on the swap volume."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:124
-#: src/components/modals/UsdcSendModal.vue:132
+#: src/components/modals/UsdcSendModal.vue:149
 msgid "The sender and recipient cannot be identical."
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:19
 msgid "The swap expired"
+msgstr ""
+
+#: src/components/modals/UsdcSendModal.vue:78
+msgid "The USDC stablecoin was originally launched on Ethereum. To avoid high fees and enable fast transactions, this wallet uses the Polygon version."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:136
@@ -2422,7 +2435,7 @@ msgstr ""
 msgid "You will send {amount} NIM"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:204
+#: src/components/modals/UsdcSendModal.vue:221
 msgid "You will send {amount} USDC"
 msgstr ""
 

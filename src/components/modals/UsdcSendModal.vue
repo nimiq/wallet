@@ -5,7 +5,7 @@
         @close-overlay="onCloseOverlay"
         class="send-modal"
         :class="{'value-masked': amountsHidden}"
-        ref="$modal"
+        ref="modal$"
     >
         <div v-if="page === Pages.BEFORE_YOU_START" class="page flex-column" :key="Pages.BEFORE_YOU_START">
             <PageHeader :backArrow="!!$route.params.canUserGoBack" class="header__before-you-start" @back="back"/>
@@ -31,7 +31,7 @@
             <PageHeader :backArrow="!!$route.params.canUserGoBack || page !== initialPage" @back="back">
                 {{ $t('Send USDC') }}
             </PageHeader>
-            <PageBody class="page__recipient-input flex-column">
+            <PageBody ref="pageRecipientInput$" class="page__recipient-input flex-column">
                 <UsdcContactShortcuts
                     :contacts="recentContacts"
                     :hasAddresses="hasOwnAddresses"
@@ -47,7 +47,7 @@
                         :allowNimiqAddresses="false"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
-                        ref="addressInputRef"/>
+                        ref="addressInput$"/>
                     <span class="notice"
                         :class="{
                             'resolving': isResolvingUnstoppableDomain,
@@ -65,6 +65,23 @@
                             &nbsp;
                         </template>
                     </span>
+                </section>
+                <section class="polygon-tooltip-section nq-text-s nq-light-blue">
+                    {{ $t('Send to Polygon USDC addresses only!') }}
+                    <Tooltip :container="pageRecipientInput$" autoWidth :margin="{
+                        left: Math.min(88, .18 * windowWidth),
+                        right: Math.min(88, .18 * windowWidth),
+                    }">
+                        <template #trigger><InfoCircleSmallIcon/></template>
+                        <p>{{ $t('Ask the receiver to ensure they have a Polygon USDC address.') }}</p>
+                        <p class="explainer">
+                            {{ $t('The USDC stablecoin was originally launched on Ethereum. To avoid high fees and '
+                            + 'enable fast transactions, this wallet uses the Polygon version.') }}
+                        </p>
+                        <p class="nq-orange">
+                            {{ $t('Funds sent to non-Polygon USDC versions could be permanently lost.') }}
+                        </p>
+                    </Tooltip>
                 </section>
                 <button class="reset scan-qr-button" @click="$router.push('/scan')">
                     <ScanQrCodeIcon/>
@@ -88,7 +105,7 @@
                     v-if="recipientWithLabel.type === RecipientType.CONTACT"
                     v-model="recipientWithLabel.label"
                     :placeholder="$t('Name this contact...')"
-                    ref="labelInputRef"/>
+                    ref="labelInput$"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
                 <AddressDisplay :address="recipientWithLabel.address" format="ethereum" copyable/>
                 <div class="flex-grow"></div>
@@ -140,7 +157,7 @@
                 >
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'usdc'}">
                         <AmountInput v-if="activeCurrency === 'usdc'"
-                            v-model="amount" :decimals="6" ref="amountInputRef"
+                            v-model="amount" :decimals="6" ref="amountInput$"
                         >
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
@@ -328,7 +345,8 @@ export default defineComponent({
             AMOUNT_INPUT,
         }
 
-        const $modal = ref<any | null>(null);
+        const modal$ = ref<any | null>(null);
+        const pageRecipientInput$ = ref<PageBody>(null);
 
         const { state: addresses$, addressInfo } = useUsdcAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
@@ -560,12 +578,12 @@ export default defineComponent({
             focus(): void;
         }
 
-        const addressInputRef: Ref<AddressInput | null> = ref(null);
-        const labelInputRef: Ref<LabelInput | null> = ref(null);
-        const amountInputRef: Ref<AmountInput | null> = ref(null);
-        // const messageInputRef: Ref<LabelInput | null> = ref(null);
+        const addressInput$: Ref<AddressInput | null> = ref(null);
+        const labelInput$: Ref<LabelInput | null> = ref(null);
+        const amountInput$: Ref<AmountInput | null> = ref(null);
+        // const messageInput$: Ref<LabelInput | null> = ref(null);
 
-        const { isMobile } = useWindowSize();
+        const { isMobile, width: windowWidth } = useWindowSize();
 
         async function focus(elementRef: Ref<AddressInput | LabelInput | AmountInput | null>) {
             // TODO: Detect onscreen keyboards instead?
@@ -578,19 +596,19 @@ export default defineComponent({
 
         watch(page, (currentPage) => {
             if (currentPage === Pages.RECIPIENT_INPUT) {
-                focus(addressInputRef);
+                focus(addressInput$);
             } else if (currentPage === Pages.AMOUNT_INPUT) {
-                focus(amountInputRef);
+                focus(amountInput$);
             }
         });
 
         watch(recipientDetailsOpened, (isOpened) => {
             if (isOpened) {
-                focus(labelInputRef);
+                focus(labelInput$);
             } else if (page.value === Pages.RECIPIENT_INPUT) {
-                focus(addressInputRef);
+                focus(addressInput$);
             } else {
-                focus(amountInputRef);
+                focus(amountInput$);
             }
         });
 
@@ -640,7 +658,7 @@ export default defineComponent({
                     }) as string;
 
                 // Close modal
-                successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => modal$.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -736,9 +754,11 @@ export default defineComponent({
             RecipientType,
             page,
             initialPage,
-            $modal,
+            modal$,
+            windowWidth,
 
             // Recipient Input
+            pageRecipientInput$,
             recentContacts,
             hasOwnAddresses,
             contactListOpened,
@@ -778,9 +798,9 @@ export default defineComponent({
             // onboard,
 
             // DOM refs for autofocus
-            addressInputRef,
-            labelInputRef,
-            amountInputRef,
+            addressInput$,
+            labelInput$,
+            amountInput$,
 
             // Status Screen
             statusScreenOpened,
@@ -940,7 +960,7 @@ export default defineComponent({
     .address-section {
         align-items: center;
         text-align: center;
-        margin: 4rem 0;
+        margin: 2rem 0 4rem;
 
         .nq-label {
             margin: 0;
@@ -963,6 +983,22 @@ export default defineComponent({
 
         .address-input.is-domain ~ .notice {
             margin-top: 1rem;
+        }
+    }
+
+    .polygon-tooltip-section {
+        max-width: 27.25rem;
+        margin: 0;
+        line-height: 1.3;
+        text-align: center;
+
+        .tooltip {
+            margin-left: .25rem;
+            text-align: left;
+
+            p:first-child {
+                margin-bottom: 1rem;
+            }
         }
     }
 

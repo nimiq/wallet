@@ -33,12 +33,12 @@ export class GenericFormat extends Format {
     constructor(
         public override nimAddresses: string[],
         public override btcAddresses: { internal: string[], external: string[] },
-        public override usdcAddress: string | undefined,
+        public override usdcAddresses: string[],
         public override transactions: (NimTx | BtcTx | UsdcTx)[],
         public override year: number,
     ) {
         super(
-            ExportFormat.GENERIC, GenericFormat.HEADERS, nimAddresses, btcAddresses, usdcAddress, transactions, year);
+            ExportFormat.GENERIC, GenericFormat.HEADERS, nimAddresses, btcAddresses, usdcAddresses, transactions, year);
 
         this.referenceAsset = useFiatStore().state.currency;
         this.referenceDecimals = new CurrencyInfo(this.referenceAsset.toUpperCase()).decimals;
@@ -73,20 +73,21 @@ export class GenericFormat extends Format {
             } = this.getValue(txOut, false, this.referenceAsset));
         }
 
+        if (txIn) this.assertCryptoAsset(txIn);
+        if (txOut) this.assertCryptoAsset(txOut);
+
         this.rows.push([
             // (txIn || txOut)!.transactionHash,
             ...Object.values(this.formatDate(timestamp)),
             // address?
-            txIn && valueIn ? this.getTxAsset(txIn) : '',
-            txIn && valueIn ? this.formatAmount(this.getTxAsset(txIn), valueIn) : '',
-            txOut && valueOut ? this.getTxAsset(txOut) : '',
-            txOut && valueOut ? this.formatAmount(this.getTxAsset(txOut), valueOut) : '',
-            txOut && feeOut ? this.getTxAsset(txOut) : '',
-            txOut && feeOut ? this.formatAmount(this.getTxAsset(txOut), feeOut) : '',
-            messageOverride || (
-                (txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
-                || (txOut && this.getTxAsset(txOut) === 'NIM' && !txIn)
-            )
+            txIn && valueIn ? txIn.asset : '',
+            txIn && valueIn ? this.formatAmount(txIn.asset, valueIn) : '',
+            txOut && valueOut ? txOut.asset : '',
+            txOut && valueOut ? this.formatAmount(txOut.asset, valueOut) : '',
+            txOut && feeOut ? txOut.asset : '',
+            txOut && feeOut ? this.formatAmount(txOut.asset, feeOut) : '',
+            messageOverride || ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
+                || (txOut && txOut.asset === 'NIM' && !txIn))
                 ? this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn)
                 : '',
             txIn && fiatIn ? this.referenceAsset.toUpperCase() : '',

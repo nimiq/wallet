@@ -10,6 +10,10 @@ import { useSwapsStore } from '../../stores/Swaps';
 import { ExportFormat } from './TransactionExport';
 
 /* eslint-disable class-methods-use-this */
+/* eslint-disable default-case */
+/* eslint-disable no-case-declarations */
+
+type CryptoAsset = 'NIM' | 'USDC' | 'BTC';
 
 export abstract class Format {
     protected rows: string[][] = [];
@@ -19,7 +23,7 @@ export abstract class Format {
         private headers: string[],
         public nimAddresses: string[],
         public btcAddresses: { internal: string[], external: string[] },
-        public usdcAddress: string | undefined,
+        public usdcAddresses: string[],
         public transactions: (NimTx | BtcTx | UsdcTx)[],
         public year: number,
     ) {}
@@ -84,11 +88,16 @@ export abstract class Format {
         return message;
     }
 
-    private getCryptoAsset(tx: NimTx | BtcTx | UsdcTx) {
-        if ('sender' in tx && 'senderType' in tx) return 'NIM';
-        if ('outputs' in tx) return 'BTC';
-        if ('sender' in tx && 'logIndex' in tx) return 'USDC';
-        return undefined;
+    protected assertCryptoAsset<T extends NimTx | BtcTx | UsdcTx>(tx: T): asserts tx is T & { asset: CryptoAsset } {
+        if ('sender' in tx && 'senderType' in tx) {
+            (tx as NimTx & { asset: 'NIM' }).asset = 'NIM';
+        } else if ('outputs' in tx) {
+            (tx as BtcTx & { asset: 'BTC' }).asset = 'BTC';
+        } else if ('sender' in tx && 'logIndex' in tx) {
+            (tx as UsdcTx & { asset: 'USDC' }).asset = 'USDC';
+        } else {
+            throw new Error('Unable to detect tx asset');
+        }
     }
 
     public export(filename?: string) {
@@ -97,20 +106,19 @@ export abstract class Format {
         for (const tx of this.transactions) {
             if (alreadyProcessedTransactionHashes.includes(tx.transactionHash)) continue;
 
-            const asset = this.getCryptoAsset(tx);
+            this.assertCryptoAsset(tx);
             let messageOverride: string | undefined;
 
             // Detect swaps and add them in the same row
             const swapInfo = useSwapsStore().getSwapByTransactionHash.value(tx.transactionHash);
             if (swapInfo) {
                 let isIncoming = false;
-                switch (asset) {
+                switch (tx.asset) {
                     case 'NIM': isIncoming = this.nimAddresses.includes((tx as NimTx).recipient); break;
-                    case 'USDC': isIncoming = this.usdcAddress === (tx as UsdcTx).recipient; break;
+                    case 'USDC': isIncoming = this.usdcAddresses.includes((tx as UsdcTx).recipient); break;
                     case 'BTC': isIncoming = Boolean((tx as BtcTx).outputs.some((output) =>
                         output.address && (this.btcAddresses.external.includes(output.address))));
                         break;
-                    default: break;
                 }
 
                 const otherSideSwapData = isIncoming ? swapInfo.in : swapInfo.out;
@@ -141,31 +149,36 @@ export abstract class Format {
                 }
             }
 
-            if (asset === 'NIM') { // Nimiq
-                const isSender = this.nimAddresses.includes((tx as NimTx).sender);
-                const isRecipient = this.nimAddresses.includes((tx as NimTx).recipient);
+            // eslint-disable no-case-declarations
+            switch (tx.asset) {
+                case 'NIM':
+                    const nimIsSender = this.nimAddresses.includes((tx as NimTx).sender);
+                    const nimIsRecipient = this.nimAddresses.includes((tx as NimTx).recipient);
 
-                if (isSender && isRecipient) continue; // Skip self-transfers
-                if (isSender) this.addRow(undefined, tx, messageOverride);
-                if (isRecipient) this.addRow(tx, undefined, messageOverride);
-            } else if (asset === 'BTC') { // Bitcoin
-                const isSender = (tx as BtcTx).inputs.some(
-                    (input) => input.address && (this.btcAddresses.internal.includes(input.address)
+                    if (nimIsSender && nimIsRecipient) continue; // Skip self-transfers
+                    if (nimIsSender) this.addRow(undefined, tx, messageOverride);
+                    if (nimIsRecipient) this.addRow(tx, undefined, messageOverride);
+                    break;
+                case 'BTC':
+                    const btcIsSender = (tx as BtcTx).inputs.some(
+                        (input) => input.address && (this.btcAddresses.internal.includes(input.address)
                         || this.btcAddresses.external.includes(input.address)));
 
-                const isRecipient = (tx as BtcTx).outputs.some(
-                    (output) => output.address
-                        && this.btcAddresses.external.includes(output.address));
+                    const btcIsRecipient = (tx as BtcTx).outputs.some(
+                        (output) => output.address
+                    && this.btcAddresses.external.includes(output.address));
 
-                if (isSender && isRecipient) continue; // Skip self-transfers
-                if (isSender) this.addRow(undefined, tx, messageOverride);
-                if (isRecipient) this.addRow(tx, undefined, messageOverride);
-            } if (asset === 'USDC') { // Nimiq
-                const isSender = this.usdcAddress === (tx as UsdcTx).sender;
-                const isRecipient = this.usdcAddress === (tx as UsdcTx).recipient;
+                    if (btcIsSender && btcIsRecipient) continue; // Skip self-transfers
+                    if (btcIsSender) this.addRow(undefined, tx, messageOverride);
+                    if (btcIsRecipient) this.addRow(tx, undefined, messageOverride);
+                    break;
+                case 'USDC':
+                    const usdcIsSender = this.usdcAddresses.includes((tx as UsdcTx).sender);
+                    const usdcIsRecipient = this.usdcAddresses.includes((tx as UsdcTx).recipient);
 
-                if (isSender) this.addRow(undefined, tx, messageOverride);
-                if (isRecipient) this.addRow(tx, undefined, messageOverride);
+                    if (usdcIsSender) this.addRow(undefined, tx, messageOverride);
+                    if (usdcIsRecipient) this.addRow(tx, undefined, messageOverride);
+                    break;
             }
         }
 
@@ -198,10 +211,11 @@ export abstract class Format {
     }
 
     protected getTxAsset(tx: BtcTx | NimTx | UsdcTx) {
-        return this.getCryptoAsset(tx) as 'NIM' | 'BTC' | 'USDC';
+        this.assertCryptoAsset(tx);
+        return tx.asset;
     }
 
-    protected formatAmount(asset: 'NIM' | 'BTC' | 'USDC', value: number) {
+    protected formatAmount(asset: CryptoAsset, value: number): string {
         if (asset === 'NIM') return this.formatLunas(value);
         if (asset === 'BTC') return this.formatSatoshis(value);
         if (asset === 'USDC') return this.formatUsdc(value);
@@ -219,16 +233,15 @@ export abstract class Format {
         fiatValue?: number,
     }
 
+    // eslint-disable-next-line consistent-return
     protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean, fiatAsset?: string): {
         value: number,
         outgoingFee: number,
         fiatValue?: number,
      } {
-        const asset = this.getCryptoAsset(tx);
+        this.assertCryptoAsset(tx);
 
-        if (!asset) throw new Error();
-
-        switch (asset) {
+        switch (tx.asset) {
             case 'NIM':
                 return {
                     value: (tx as NimTx).value,
@@ -296,8 +309,6 @@ export abstract class Format {
                     outgoingFee: (tx as UsdcTx).fee || 0,
                     ...(fiatAsset ? { fiatValue: (tx as UsdcTx).fiatValue?.[fiatAsset] || undefined } : {}),
                 };
-                break;
-            default: throw new Error(''); // TODO handle linter better
         }
     }
 }

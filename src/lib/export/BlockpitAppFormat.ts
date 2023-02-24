@@ -33,7 +33,7 @@ export class BlockpitAppFormat extends Format {
     constructor(
         public override nimAddresses: string[],
         public override btcAddresses: { internal: string[], external: string[] },
-        public override usdcAddress: string | undefined,
+        public override usdcAddresses: string[],
         public override transactions: (NimTx | BtcTx | UsdcTx)[],
         public override year: number,
     ) {
@@ -42,7 +42,7 @@ export class BlockpitAppFormat extends Format {
             BlockpitAppFormat.HEADERS,
             nimAddresses,
             btcAddresses,
-            usdcAddress,
+            usdcAddresses,
             transactions,
             year,
         );
@@ -64,8 +64,8 @@ export class BlockpitAppFormat extends Format {
     }
 
     protected override addRow(
-        txIn?: BtcTx | NimTx,
-        txOut?: BtcTx | NimTx,
+        txIn?: BtcTx | NimTx | UsdcTx,
+        txOut?: BtcTx | NimTx | UsdcTx,
         messageOverride?: string,
         // linkedTransaction?: number,
     ) {
@@ -77,26 +77,31 @@ export class BlockpitAppFormat extends Format {
         let valueOut: number | undefined;
         let feeOut = 0;
 
-        if (txIn) ({ value: valueIn } = this.getValue(txIn, true));
-        if (txOut) ({ value: valueOut, outgoingFee: feeOut } = this.getValue(txOut, false));
+        if (txIn) {
+            this.assertCryptoAsset(txIn);
+            ({ value: valueIn } = this.getValue(txIn, true));
+        }
+        if (txOut) {
+            this.assertCryptoAsset(txOut);
+            ({ value: valueOut, outgoingFee: feeOut } = this.getValue(txOut, false));
+        }
 
         this.rows.push([
             (++this.id).toString(),
             this.EXCHANGE_NAME,
             this.depotLabel,
             this.formatDate(timestamp),
-            txIn && valueIn ? this.getTxAsset(txIn) : '',
-            txIn && valueIn ? this.formatAmount(this.getTxAsset(txIn), valueIn) : '',
-            txOut && valueOut ? this.getTxAsset(txOut) : '',
-            txOut && valueOut ? this.formatAmount(this.getTxAsset(txOut), valueOut) : '',
-            txOut && feeOut ? this.getTxAsset(txOut) : '',
-            txOut && feeOut ? this.formatAmount(this.getTxAsset(txOut), feeOut) : '',
+            txIn && valueIn ? txIn.asset : '',
+            txIn && valueIn ? this.formatAmount(txIn.asset, valueIn) : '',
+            txOut && valueOut ? txOut.asset : '',
+            txOut && valueOut ? this.formatAmount(txOut.asset, valueOut) : '',
+            txOut && feeOut ? txOut.asset : '',
+            txOut && feeOut ? this.formatAmount(txOut.asset, feeOut) : '',
             txIn && txOut ? 'trade' : txIn ? 'deposit' : 'withdrawal',
-            messageOverride || (
-                (txIn && 'sender' in txIn && !txOut) || (txOut && 'sender' in txOut && !txIn)
-                    ? this.formatNimiqData(txIn || txOut!, !!txIn)
-                    : ''
-            ),
+            messageOverride || ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
+                || (txOut && txOut.asset === 'NIM' && !txIn))
+                ? this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn)
+                : '',
             '', // linkedTransaction ? linkedTransaction.toString() : '',
         ]);
     }

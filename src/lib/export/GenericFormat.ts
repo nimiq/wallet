@@ -83,7 +83,10 @@ export class GenericFormat extends Format {
             txOut && valueOut ? this.formatAmount(this.getTxAsset(txOut), valueOut) : '',
             txOut && feeOut ? this.getTxAsset(txOut) : '',
             txOut && feeOut ? this.formatAmount(this.getTxAsset(txOut), feeOut) : '',
-            messageOverride || ((txIn && this.getTxAsset(txIn) && !txOut) || (txOut && this.getTxAsset(txOut) && !txIn))
+            messageOverride || (
+                (txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
+                || (txOut && this.getTxAsset(txOut) === 'NIM' && !txIn)
+            )
                 ? this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn)
                 : '',
             txIn && fiatIn ? this.referenceAsset.toUpperCase() : '',

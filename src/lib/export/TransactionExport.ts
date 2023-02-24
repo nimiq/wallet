@@ -118,7 +118,8 @@ export async function exportTransactions(
 
     switch (format) {
         case ExportFormat.GENERIC:
-            new GenericFormat(nimAddresses, btcAddresses, usdcAddress, transactions, year).export(filename); break;
+            new GenericFormat(nimAddresses, btcAddresses, usdcAddress, transactions, year).export(filename);
+            break;
         case ExportFormat.BLOCKPIT:
             new BlockpitAppFormat(nimAddresses, btcAddresses, usdcAddress, transactions, year).export(filename);
             break;

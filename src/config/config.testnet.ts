@@ -15,6 +15,7 @@ export default {
         enabled: true,
         networkId: 80001 as number | string, // Can also be 'maticmum'
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
+        rpcMaxBlockRange: 10_000,
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
         transferContract: '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c',
         htlcContract: '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936',
@@ -22,7 +23,7 @@ export default {
         uniswapFactoryContract: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wmaticContract: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
-        startHistoryScanHeight: 29621817, // From which block to fetch transaction history
+        startHistoryScanHeight: 29621817,
     },
 
     fastspot: {

@@ -231,7 +231,7 @@ export async function launchPolygon() {
 
     // Fetch transactions for active address
     const txFetchTrigger = ref(0);
-    watch([addressStore.addressInfo, txFetchTrigger, () => config.usdc], ([addressInfo]) => {
+    watch([addressStore.addressInfo, txFetchTrigger, () => config.usdc], ([addressInfo, trigger]) => {
         const address = (addressInfo as UsdcAddressInfo | null)?.address;
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
@@ -247,7 +247,7 @@ export async function launchPolygon() {
 
         network$.fetchingTxHistory++;
 
-        updateBalances([address]);
+        if ((trigger as number) > 0) updateBalances([address]);
 
         console.log('Fetching USDC transaction history for', address, knownTxs);
 
@@ -258,7 +258,7 @@ export async function launchPolygon() {
         const filterOutgoing = client.usdc.filters.Transfer(address);
         const filterMetaTx = client.usdc.filters.MetaTransactionExecuted();
 
-        const STEP_BLOCKS = 10_000;
+        const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
 
         Promise.all([
             client.usdc.balanceOf(address) as Promise<BigNumber>,
@@ -464,12 +464,13 @@ export async function calculateFee(
     const client = await getPolygonClient();
     if (!contract) contract = client.usdcTransfer;
 
+    // The byte size of `data` of the wrapper relay transaction, including the `relayCall` method identifier
     const dataSize = {
         transfer: undefined,
-        transferWithApproval: 292,
+        transferWithApproval: 1252,
         open: undefined,
-        openWithApproval: 420,
-        redeemWithSecretInData: 132,
+        openWithApproval: 1380,
+        redeemWithSecretInData: 1124,
     }[method];
 
     if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);

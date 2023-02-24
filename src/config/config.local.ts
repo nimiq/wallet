@@ -15,6 +15,7 @@ export default {
         enabled: true,
         networkId: 80001 as number | string, // Can also be 'maticmum'
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
+        rpcMaxBlockRange: 10_000,
         // eslint-disable-next-line max-len
         // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',

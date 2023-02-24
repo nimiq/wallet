@@ -240,7 +240,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -904,12 +904,8 @@ export default defineComponent({
             },
         );
 
-        watch(usdcHeight, (newHeight) => {
-            // once the height is set, and the swap contains USDC, calculate the fee
-            if (newHeight && swapHasUsdc.value) {
-                calculateUsdcHtlcFee();
-                usdcFeeUpdateInterval = window.setInterval(calculateUsdcHtlcFee, 30e3); // Update fee every 30s
-            }
+        onBeforeUnmount(() => {
+            window.clearInterval(usdcFeeUpdateInterval);
         });
 
         // watch(

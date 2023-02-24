@@ -305,7 +305,7 @@ export async function launchNetwork() {
     });
 
     // Fetch transactions for active address
-    watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress]) => {
+    watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress, trigger]) => {
         const address = activeAddress as string | null;
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
@@ -321,7 +321,7 @@ export async function launchNetwork() {
 
         network$.fetchingTxHistory++;
 
-        updateBalances([address]);
+        if ((trigger as number) > 0) updateBalances([address]);
 
         // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)

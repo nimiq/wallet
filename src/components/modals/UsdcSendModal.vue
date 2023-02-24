@@ -31,7 +31,7 @@
             <PageHeader :backArrow="!!$route.params.canUserGoBack || page !== initialPage" @back="back">
                 {{ $t('Send USDC') }}
             </PageHeader>
-            <PageBody ref="pageRecipientInput$" class="page__recipient-input flex-column">
+            <PageBody class="page__recipient-input flex-column">
                 <UsdcContactShortcuts
                     :contacts="recentContacts"
                     :hasAddresses="hasOwnAddresses"
@@ -66,27 +66,11 @@
                         </template>
                     </span>
                 </section>
-                <section class="polygon-tooltip-section nq-text-s nq-light-blue">
-                    {{ $t('Send to Polygon USDC addresses only!') }}
-                    <Tooltip :container="pageRecipientInput$" autoWidth :margin="{
-                        left: Math.min(88, .18 * windowWidth),
-                        right: Math.min(88, .18 * windowWidth),
-                    }">
-                        <template #trigger><InfoCircleSmallIcon/></template>
-                        <p>{{ $t('Ask the receiver to ensure they have a Polygon USDC address.') }}</p>
-                        <p class="explainer">
-                            {{ $t('The USDC stablecoin was originally launched on Ethereum. To avoid high fees and '
-                            + 'enable fast transactions, this wallet uses the Polygon version.') }}
-                        </p>
-                        <p class="nq-orange">
-                            {{ $t('Funds sent to non-Polygon USDC versions could be permanently lost.') }}
-                        </p>
-                    </Tooltip>
-                </section>
-                <button class="reset scan-qr-button" @click="$router.push('/scan')">
-                    <ScanQrCodeIcon/>
-                </button>
             </PageBody>
+            <PolygonWarningFooter level="info"/>
+            <button class="reset scan-qr-button" @click="$router.push('/scan')">
+                <ScanQrCodeIcon/>
+            </button>
         </div>
 
         <div v-if="contactListOpened" slot="overlay" class="page flex-column">
@@ -97,9 +81,7 @@
         </div>
 
         <div v-if="recipientDetailsOpened && recipientWithLabel" slot="overlay" class="page flex-column">
-            <PageBody class="page__recipient-overlay recipient-overlay flex-column">
-                <div class="spacing-top"></div>
-                <div class="flex-grow"></div>
+            <PageBody class="page__recipient-overlay flex-column">
                 <Avatar :label="recipientWithLabel.label"/>
                 <LabelInput
                     v-if="recipientWithLabel.type === RecipientType.CONTACT"
@@ -108,16 +90,12 @@
                     ref="labelInput$"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
                 <AddressDisplay :address="recipientWithLabel.address" format="ethereum" copyable/>
-                <div class="flex-grow"></div>
-                <button
-                    class="nq-button light-blue"
-                    @click="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT;"
-                    @mousedown.prevent
-                >
-                    <template v-if="amount > 0">{{ $t('Continue') }}</template>
-                    <template v-else>{{ $t('Set Amount') }}</template>
-                </button>
+                <LongPressButton @long-press="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT">
+                    {{ $t('Save and proceed') }}
+                    <template #subline>{{ $t('Long press to confirm') }}</template>
+                </LongPressButton>
             </PageBody>
+            <PolygonWarningFooter level="warning"/>
         </div>
 
         <div
@@ -285,8 +263,9 @@ import {
     AddressDisplay,
     AddressInput,
     LabelInput,
-    PageBody,
+    LongPressButton,
     PageHeader,
+    PageBody,
     AlertCircleIcon,
     AlertTriangleIcon,
     ScanQrCodeIcon,
@@ -314,6 +293,7 @@ import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import StopSignIcon from '../icons/StopSignIcon.vue';
+import PolygonWarningFooter from '../PolygonWarningFooter.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import Avatar from '../Avatar.vue';
@@ -346,7 +326,6 @@ export default defineComponent({
         }
 
         const modal$ = ref<any | null>(null);
-        const pageRecipientInput$ = ref<PageBody>(null);
 
         const { state: addresses$, addressInfo } = useUsdcAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
@@ -583,7 +562,7 @@ export default defineComponent({
         const amountInput$: Ref<AmountInput | null> = ref(null);
         // const messageInput$: Ref<LabelInput | null> = ref(null);
 
-        const { isMobile, width: windowWidth } = useWindowSize();
+        const { isMobile } = useWindowSize();
 
         async function focus(elementRef: Ref<AddressInput | LabelInput | AmountInput | null>) {
             // TODO: Detect onscreen keyboards instead?
@@ -755,10 +734,8 @@ export default defineComponent({
             page,
             initialPage,
             modal$,
-            windowWidth,
 
             // Recipient Input
-            pageRecipientInput$,
             recentContacts,
             hasOwnAddresses,
             contactListOpened,
@@ -824,11 +801,13 @@ export default defineComponent({
         UsdcContactShortcuts,
         UsdcContactBook,
         StopSignIcon,
+        PolygonWarningFooter,
         AlertCircleIcon,
         AlertTriangleIcon,
         AddressInput,
         ScanQrCodeIcon,
         LabelInput,
+        LongPressButton,
         AddressDisplay,
         AmountInput,
         AmountMenu,
@@ -960,7 +939,7 @@ export default defineComponent({
     .address-section {
         align-items: center;
         text-align: center;
-        margin: 2rem 0 4rem;
+        margin: 4rem 0 8rem;
 
         .nq-label {
             margin: 0;
@@ -986,22 +965,6 @@ export default defineComponent({
         }
     }
 
-    .polygon-tooltip-section {
-        max-width: 27.25rem;
-        margin: 0;
-        line-height: 1.3;
-        text-align: center;
-
-        .tooltip {
-            margin-left: .25rem;
-            text-align: left;
-
-            p:first-child {
-                margin-bottom: 1rem;
-            }
-        }
-    }
-
     .scan-qr-button {
         position: absolute;
         right: 3rem;
@@ -1017,16 +980,15 @@ export default defineComponent({
         }
     }
 
-    .recipient-overlay {
+    .page__recipient-overlay {
+        padding-top: 7rem;
+        padding-bottom: 2rem;
         justify-content: flex-start;
-
-        .spacing-top {
-            height: 1.5rem;
-        }
 
         .avatar {
             width: 16rem;
             height: 16rem;
+            margin-top: auto;
             font-size: 6.75rem;
         }
 
@@ -1034,33 +996,34 @@ export default defineComponent({
         label {
             font-size: var(--h1-size);
             font-weight: 600;
-            margin: 3rem 0;
+            margin: 3rem 0 2.5rem;
+            flex-shrink: 0;
         }
 
         label {
             line-height: 6.25rem; // Same height as the LabelInput
         }
 
-        .copyable {
+        .address-display {
             padding: 0.5rem;
-            margin-bottom: 4rem;
+            margin-bottom: 3.5rem;
 
             ::v-deep .background {
                 border-radius: 0.625rem;
             }
 
-            .address-display {
-                transition: opacity 0.3s var(--nimiq-ease);
+            ::v-deep .chunk {
+                margin: .75rem 0;
             }
+        }
 
-            &:hover,
-            &:focus,
-            &.copied {
-                .address-display {
-                    opacity: 1;
-                    font-weight: 500;
-                }
-            }
+        .long-press-button {
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        & + .polygon-warning-footer {
+            padding-bottom: 2rem;
         }
     }
 

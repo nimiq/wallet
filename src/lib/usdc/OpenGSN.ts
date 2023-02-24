@@ -129,6 +129,8 @@ async function* relayServerRegisterGen(
             toBlock,
         );
 
+        const { config } = useConfig();
+
         while (events.length) {
             const relayServer = events.shift();
             if (relayServer?.args?.length !== 4) continue;
@@ -140,18 +142,46 @@ async function* relayServerRegisterGen(
             ] = relayServer.args as [string, BigNumber, BigNumber, string];
             // eslint-disable-next-line no-await-in-loop
             const relayAddr = await getRelayAddr(url);
-            if (!relayAddr) continue;
-            if (!relayAddr.ready) continue;
-            if (!relayAddr.version.startsWith('2.')) continue; // TODO: Make OpenGSN version used configurable
-            if (relayAddr.networkId !== useConfig().config.usdc.networkId.toString()) continue;
-            if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) continue;
+            if (!relayAddr) {
+                console.debug('Skipping relay: no addr info, timeout');
+                continue;
+            }
+            if (!relayAddr.ready) {
+                console.debug('Skipping relay: not ready');
+                continue;
+            }
+            if (!relayAddr.version.startsWith('2.')) { // TODO: Make OpenGSN version used configurable
+                console.debug('Skipping relay: wrong version:', relayAddr.version);
+                continue;
+            }
+            if (relayAddr.networkId !== config.usdc.networkId.toString()) {
+                console.debug('Skipping relay: wrong networkId:', relayAddr.networkId);
+                continue;
+            }
+            if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) {
+                console.debug(
+                    'Skipping relay: too small acceptance budget:',
+                    relayAddr.maxAcceptanceBudget,
+                    ', required:',
+                    requiredMaxAcceptanceBudget.toString(),
+                );
+                continue;
+            }
 
             // Check if this relay has enough balance to cover the fee
             const { chainTokenFee } = calculateFee(
                 baseRelayFee, pctRelayFee, client.ethers.BigNumber.from(relayAddr.minGasPrice));
             // eslint-disable-next-line no-await-in-loop
             const relayBalance = await client.provider.getBalance(relayAddr.relayWorkerAddress);
-            if (relayBalance.lt(chainTokenFee)) continue;
+            if (relayBalance.lt(chainTokenFee)) {
+                console.debug(
+                    'Skipping relay: not enough balance:',
+                    relayBalance.toString(),
+                    ', required:',
+                    chainTokenFee.toString(),
+                );
+                continue;
+            }
 
             // Check if this relay has sent a transaction in the last 48 hours
             const filter = relayHub.filters.TransactionRelayed(
@@ -161,9 +191,11 @@ async function* relayServerRegisterGen(
             let startBlock = useUsdcNetworkStore().state.height;
             const earliestBlock = startBlock - 48 * 60 * POLYGON_BLOCKS_PER_MINUTE;
 
+            const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
+
             while (startBlock > earliestBlock) {
                 const filterToBlock = startBlock;
-                const filterFromBlock = Math.max(filterToBlock - 3000, earliestBlock);
+                const filterFromBlock = Math.max(filterToBlock - STEP_BLOCKS, earliestBlock);
 
                 // eslint-disable-next-line no-await-in-loop
                 const logs = await relayHub.queryFilter(filter, filterFromBlock, filterToBlock);
@@ -171,7 +203,10 @@ async function* relayServerRegisterGen(
 
                 startBlock = filterFromBlock;
             }
-            if (startBlock === earliestBlock) continue; // Found no logs
+            if (startBlock === earliestBlock) { // Found no logs
+                console.debug('Skipping relay: no recent activity');
+                continue;
+            }
 
             yield <RelayServerInfo> {
                 baseRelayFee,

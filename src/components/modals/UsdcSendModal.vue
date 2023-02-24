@@ -660,17 +660,21 @@ export default defineComponent({
             feeLoading.value = false;
         }
 
-        let feeIntervalId: number | null = null;
+        let feeIntervalId = -1;
 
         // USDC fee does not depend on the amount, therefore it is not reactive to amount
         watch(statusScreenOpened, async (statusScreenOpen) => {
             if (!statusScreenOpen) {
                 setFeeInformation();
                 feeIntervalId = window.setInterval(setFeeInformation, 20e3); // 20 seconds
-            } else if (feeIntervalId) {
+            } else {
                 window.clearInterval(feeIntervalId);
-                feeIntervalId = null;
+                feeIntervalId = -1;
             }
+        });
+
+        onBeforeUnmount(() => {
+            window.clearInterval(feeIntervalId);
         });
 
         const fiatSmUnit = computed(() => {

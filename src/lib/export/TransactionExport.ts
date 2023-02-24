@@ -16,7 +16,7 @@ export enum ExportFormat {
 export async function exportTransactions(
     nimAddresses: string[],
     btcAddresses: { internal: string[], external: string[] },
-    usdcAddress: string | undefined,
+    usdcAddresses: string[],
     year: number,
     format: ExportFormat,
     filename?: string,
@@ -101,7 +101,7 @@ export async function exportTransactions(
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
     const { state: usdcTransactions$ } = useUsdcTransactionsStore();
-    const usdcTransactions = !usdcAddress ? [] : Object.values(usdcTransactions$.transactions)
+    const usdcTransactions = usdcAddresses.length === 0 ? [] : Object.values(usdcTransactions$.transactions)
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
@@ -118,10 +118,10 @@ export async function exportTransactions(
 
     switch (format) {
         case ExportFormat.GENERIC:
-            new GenericFormat(nimAddresses, btcAddresses, usdcAddress, transactions, year).export(filename);
+            new GenericFormat(nimAddresses, btcAddresses, usdcAddresses, transactions, year).export(filename);
             break;
         case ExportFormat.BLOCKPIT:
-            new BlockpitAppFormat(nimAddresses, btcAddresses, usdcAddress, transactions, year).export(filename);
+            new BlockpitAppFormat(nimAddresses, btcAddresses, usdcAddresses, transactions, year).export(filename);
             break;
         default:
             throw new Error('Unknown export format');

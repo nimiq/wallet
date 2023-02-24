@@ -401,6 +401,52 @@ export default defineComponent({
             }
         }
 
+        let featuresCurrencyInterval: (number | null)[] = [null, null, null];
+        function stopFeaturesInterval(i?: number) {
+            if (i === undefined) {
+                featuresCurrencyInterval.forEach((interval) => {
+                    if (interval !== null) window.clearInterval(interval);
+                });
+                featuresCurrencyInterval = [null, null, null];
+            } else if (featuresCurrencyInterval.length > i) {
+                if (featuresCurrencyInterval[i] !== null) window.clearInterval(featuresCurrencyInterval[i]!);
+                featuresCurrencyInterval[i] = null;
+            }
+        }
+
+        // Loop features of each currency. If user clicks on a feature, stop the loop.
+        const loopObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    const otherIndexes = [0, 1, 2].filter((i) => i !== highlightedCurrencyIndex.value);
+                    otherIndexes.forEach((i) => stopFeaturesInterval(i));
+                    return;
+                }
+
+                const loop = entry.target.getAttribute('data-loop');
+                if (loop === 'false') return;
+
+                const radioInputs = Array.from(entry.target.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
+                featuresCurrencyInterval[highlightedCurrencyIndex.value] = window.setInterval(() => {
+                    const currentChecked = radioInputs.findIndex((radio) => radio.checked);
+                    if (currentChecked >= radioInputs.length - 1) {
+                        radioInputs[0].checked = true;
+                    } else {
+                        radioInputs[currentChecked + 1].checked = true;
+                    }
+                }, 2000);
+
+                const clickListener = () => {
+                    stopFeaturesInterval(highlightedCurrencyIndex.value);
+                    entry.target.setAttribute('data-loop', 'false');
+                    entry.target.removeEventListener('click', clickListener);
+                };
+                entry.target.querySelectorAll('label')!.forEach((label) => {
+                    label.addEventListener('click', clickListener);
+                });
+            });
+        }, { threshold: 1 });
+
         watch(page, (p) => {
             if (p === 1 || p === 5) {
                 if (currencyHighlightInterval !== null) return;
@@ -411,14 +457,25 @@ export default defineComponent({
                         highlightedCurrencyIndex.value += 1;
                     }
                 }, 2000);
+                stopFeaturesInterval();
             } else {
                 stopInterval();
                 if (p === 2) {
                     highlightedCurrencyIndex.value = 0;
+                    const nimExplainer = document.querySelector('.explainer-nim .body');
+                    if (nimExplainer) loopObserver.observe(nimExplainer);
                 } else if (p === 3) {
                     highlightedCurrencyIndex.value = 1;
+                    setTimeout(() => {
+                        const btcExplainer = document.querySelector('.explainer-btc .body');
+                        if (btcExplainer) loopObserver.observe(btcExplainer);
+                    }, 500);
                 } else if (p === 4) {
                     highlightedCurrencyIndex.value = 2;
+                    setTimeout(() => {
+                        const usdcExplainer = document.querySelector('.explainer-usdc .body');
+                        if (usdcExplainer) loopObserver.observe(usdcExplainer);
+                    }, 500);
                 }
             }
         });

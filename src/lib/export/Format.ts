@@ -97,7 +97,7 @@ export abstract class Format {
         for (const tx of this.transactions) {
             if (alreadyProcessedTransactionHashes.includes(tx.transactionHash)) continue;
 
-            const asset = this.getCryptoAsset(tx);      
+            const asset = this.getCryptoAsset(tx);
             let messageOverride: string | undefined;
 
             // Detect swaps and add them in the same row

@@ -17,7 +17,7 @@ import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
 import { USDC_TRANSFER_CONTRACT_ABI, USDC_CONTRACT_ABI, USDC_HTLC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
 import { getBestRelay, getRelayHub, POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from './lib/usdc/OpenGSN';
-import { getUsdcPrice } from './lib/usdc/Uniswap';
+import { getPoolAddress, getUsdcPrice } from './lib/usdc/Uniswap';
 
 export interface PolygonClient {
     provider: providers.Provider;
@@ -185,6 +185,7 @@ export async function launchPolygon() {
     isLaunched = true;
 
     const client = await getPolygonClient();
+    const poolAddress = await getPoolAddress(client);
 
     const { state: network$ } = useUsdcNetworkStore();
     const transactionsStore = useUsdcTransactionsStore();
@@ -311,12 +312,16 @@ export async function launchPolygon() {
 
                     if (knownHashes.includes(log.transactionHash)) return false;
 
-                    // Transfers to the transferContract are the fees paid to OpenGSN
+                    // Transfers to the Uniswap pool are the fees paid to OpenGSN
                     if (
-                        log.args.to === config.usdc.transferContract
+                        log.args.to === poolAddress
                         || (
+                            // Before v3, transfers to the transferContract were the fees paid to OpenGSN
                             config.environment !== ENV_MAIN
-                            && log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
+                            && (
+                                log.args.to === '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c' // v2 USDC transfer contract
+                                || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
+                            )
                         )
                     ) {
                         // Find the main transfer log
@@ -467,7 +472,7 @@ export async function calculateFee(
     // The byte size of `data` of the wrapper relay transaction, including the `relayCall` method identifier
     const dataSize = {
         transfer: undefined,
-        transferWithApproval: 1252,
+        transferWithApproval: 1220,
         open: undefined,
         openWithApproval: 1380,
         redeemWithSecretInData: 1124,
@@ -485,7 +490,10 @@ export async function calculateFee(
         usdcPrice,
     ] = await Promise.all([
         client.provider.getGasPrice(),
-        contract.requiredRelayGas() as Promise<BigNumber>,
+        typeof contract.getRequiredRelayGas === 'function'
+            ? contract.getRequiredRelayGas(contract.interface.getSighash(method)) as Promise<BigNumber>
+            // TODO: Remove when HTLC contract is also updated to new ABI
+            : contract.requiredRelayGas() as Promise<BigNumber>,
         relay
             ? Promise.resolve([client.ethers.BigNumber.from(0)])
             : contract.getGasAndDataLimits() as Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>,
@@ -546,7 +554,7 @@ export async function createTransactionRequest(recipient: string, amount: number
     const [
         usdcNonce,
         forwarderNonce,
-        { chainTokenFee, fee, gasPrice, gasLimit, relay },
+        { fee, gasPrice, gasLimit, relay },
     ] = await Promise.all([
         client.usdc.nonces(fromAddress) as Promise<BigNumber>,
         client.usdcTransfer.getNonce(fromAddress) as Promise<BigNumber>,
@@ -558,7 +566,6 @@ export async function createTransactionRequest(recipient: string, amount: number
         /* uint256 amount */ amount,
         /* address target */ recipient,
         /* uint256 fee */ fee,
-        /* uint256 chainTokenFee */ chainTokenFee,
         ...(method === 'transferWithApproval' ? [
             /* uint256 approval */ fee.add(amount),
 
@@ -653,7 +660,11 @@ export async function receiptToTransaction(
 ) {
     const { config } = useConfig();
     const client = await getPolygonClient();
-    const htlcContract = await getHtlcContract();
+
+    const [htlcContract, poolAddress] = await Promise.all([
+        getHtlcContract(),
+        getPoolAddress(client),
+    ]);
 
     const logs = receipt.logs.map((log) => {
         if (log.address === config.usdc.usdcContract) {
@@ -695,14 +706,25 @@ export async function receiptToTransaction(
         if (log.name === 'Transfer') {
             if (filterByFromAddress && log.args.from !== filterByFromAddress) return;
 
-            // Transfer to the transferContract is the fee paid to OpenGSN
-            if (log.args.to === config.usdc.transferContract) {
+            // Transfers to the Uniswap pool are the fees paid to OpenGSN
+            if (
+                log.args.to === poolAddress
+                || (
+                    // Before v3, transfers to the transferContract were the fees paid to OpenGSN
+                    config.environment !== ENV_MAIN
+                    && (
+                        log.args.to === '0x443EAAd5EeAacCdC3887477c188CF2875B3dcf7c' // v2 USDC transfer contract
+                        || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
+                    )
+                )
+            ) {
                 fee = log.args.value;
                 return;
             }
 
+            // TODO: Remove when HTLC contract ABI is also updated
             // The first transfer to the htlcContract is the fee
-            if (log.args.to === config.usdc.htlcContract && !transferLog) {
+            if (log.args.to === config.usdc.htlcContract && !fee) {
                 fee = log.args.value;
                 return;
             }

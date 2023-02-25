@@ -1,16 +1,31 @@
 import { useConfig } from '@/composables/useConfig';
 import type { BigNumber } from 'ethers';
 import { PolygonClient } from '../../ethers';
-import { UNISWAP_QUOTER_CONTRACT_ABI } from './ContractABIs';
+import { UNISWAP_POOL_CONTRACT_ABI, UNISWAP_QUOTER_CONTRACT_ABI } from './ContractABIs';
 
+let poolAddress: string | undefined;
 let poolFee: BigNumber | undefined;
+
+export async function getPoolAddress(client: PolygonClient) {
+    if (!poolAddress) {
+        const { config } = useConfig();
+        poolAddress = await client.usdcTransfer.registeredTokenPool(config.usdc.usdcContract) as string;
+    }
+
+    return poolAddress;
+}
 
 // https://docs.uniswap.org/sdk/v3/guides/quoting
 export async function getUsdcPrice(client: PolygonClient) {
     const { config } = useConfig();
 
     if (!poolFee) {
-        poolFee = await client.usdcTransfer.registeredTokenPoolFee(config.usdc.usdcContract) as BigNumber;
+        const poolContract = new client.ethers.Contract(
+            await getPoolAddress(client),
+            UNISWAP_POOL_CONTRACT_ABI,
+            client.provider,
+        );
+        poolFee = await poolContract.fee() as BigNumber;
     }
 
     const quoterContract = new client.ethers.Contract(

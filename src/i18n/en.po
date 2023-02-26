@@ -1955,8 +1955,8 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:110
-msgid "Swap BTC for USDC"
+#: src/components/layouts/AccountOverview.vue:115
+msgid "Swap BTC {arrowIcon} USDC"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:16
@@ -1988,11 +1988,11 @@ msgid "Swap more per 30 days."
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:64
-msgid "Swap NIM for BTC"
+msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:71
-msgid "Swap NIM for USDC"
+#: src/components/layouts/AccountOverview.vue:74
+msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
 #: src/components/swap/SwapNotification.vue:26

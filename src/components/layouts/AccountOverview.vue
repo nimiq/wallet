@@ -61,14 +61,19 @@
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
-                    {{ $t('Swap NIM for BTC') }}
+                    <i18n path="Swap NIM {arrowIcon} BTC">
+                        <LinkedDoubleArrowIcon slot="arrowIcon" />
+                    </i18n>
                 </Tooltip>
+
                 <Tooltip class="nim-usdc-swap-button" :container="{ $el: root$ }"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
-                    {{ $t('Swap NIM for USDC') }}
+                    <i18n path="Swap NIM {arrowIcon} USDC">
+                        <LinkedDoubleArrowIcon slot="arrowIcon" />
+                    </i18n>
                 </Tooltip>
 
                 <button v-if="canHaveMultipleAddresses && $config.enableBitcoin" ref="bitcoinAccount$"
@@ -107,7 +112,9 @@
                     <button class="reset" slot="trigger" @click="$router.push('/swap/BTC-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
-                    {{ $t('Swap BTC for USDC') }}
+                    <i18n path="Swap BTC {arrowIcon} USDC">
+                        <LinkedDoubleArrowIcon slot="arrowIcon" />
+                    </i18n>
                 </Tooltip>
 
                 <button v-if="activeAccountInfo.type !== AccountType.LEDGER
@@ -213,6 +220,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import MiniAddIcon from '../icons/MiniAddIcon.vue';
 import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
+import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 
 export default defineComponent({
     name: 'account-overview',
@@ -392,6 +400,7 @@ export default defineComponent({
         MiniAddIcon,
         DoubleArrowIcon,
         Tooltip,
+        LinkedDoubleArrowIcon,
     },
 });
 </script>
@@ -855,6 +864,18 @@ export default defineComponent({
             }
         }
     }
+
+    span {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .linked-double-arrow-icon {
+            display: inline;
+            margin: 0 0.5rem;
+        }
+    }
+
 }
 
 .future-notice {

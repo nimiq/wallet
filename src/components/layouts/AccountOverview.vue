@@ -57,7 +57,8 @@
                     <AddressList @address-selected="onAddressSelected"/>
                 </div>
 
-                <Tooltip class="nim-btc-swap-button" :container="{ $el: root$ }" v-if="hasBitcoinAddresses">
+                <Tooltip class="nim-btc-swap-button" :container="{ $el: root$ }"
+                    v-if="hasBitcoinAddresses && $config.enableBitcoin">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
@@ -67,7 +68,7 @@
                 </Tooltip>
 
                 <Tooltip class="nim-usdc-swap-button" :container="{ $el: root$ }"
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses">
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses && $config.usdc.enabled">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
@@ -108,7 +109,9 @@
                 </button>
 
                 <Tooltip class="btc-usdc-swap-button" :container="{ $el: root$ }"
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasBitcoinAddresses && hasUsdcAddresses">
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER
+                        && hasBitcoinAddresses && hasUsdcAddresses
+                        && $config.enableBitcoin && $config.usdc.enabled">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/BTC-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>

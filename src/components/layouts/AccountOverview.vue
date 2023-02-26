@@ -45,26 +45,40 @@
         <template v-else>
             <AccountBalance />
 
-            <div class="nimiq-account" ref="nimiqAccount$">
-                <header class="flex-row">
-                    <span class="nq-icon nimiq-logo"></span>
-                    <span>NIM</span>
-                    <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
-                        <MiniAddIcon/>
-                    </button>
-                </header>
-                <AddressList @address-selected="onAddressSelected"/>
-            </div>
+            <div class=account-grid>
+                <div class="nimiq-account" ref="nimiqAccount$">
+                    <header class="flex-row">
+                        <span class="nq-icon nimiq-logo"></span>
+                        <span>NIM</span>
+                        <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
+                            <MiniAddIcon/>
+                        </button>
+                    </header>
+                    <AddressList @address-selected="onAddressSelected"/>
+                </div>
 
-            <div class="flex-row">
-                <div v-if="canHaveMultipleAddresses && $config.enableBitcoin" ref="bitcoinAccount$"
-                    class="bitcoin-account flex-column"
+                <Tooltip class="nim-btc-swap-button" :container="{ $el: root$ }" v-if="hasBitcoinAddresses">
+                    <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
+                        <div class="inner-circle"><DoubleArrowIcon /></div>
+                    </button>
+                    {{ $t('Swap NIM for BTC') }}
+                </Tooltip>
+                <Tooltip class="nim-usdc-swap-button" :container="{ $el: root$ }"
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses">
+                    <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-USDC')">
+                        <div class="inner-circle"><DoubleArrowIcon /></div>
+                    </button>
+                    {{ $t('Swap NIM for USDC') }}
+                </Tooltip>
+
+                <button v-if="canHaveMultipleAddresses && $config.enableBitcoin" ref="bitcoinAccount$"
+                    class="reset bitcoin-account flex-column"
                     :class="{
                             'active': activeCurrency === CryptoCurrency.BTC,
                             'requires-activation': !hasBitcoinAddresses,
                         }"
                     >
-                    <button class="bitcoin-account-item reset flex-column" @click="selectBitcoin">
+                    <div class="bitcoin-account-item reset flex-column" @click="selectBitcoin">
                         <div class="bitcoin-account-item-name flex-row"><BitcoinIcon/>{{ $t('Bitcoin') }}</div>
                         <div class="balances" v-if="hasBitcoinAddresses">
                             <div class="flex-row">
@@ -85,23 +99,27 @@
                             class="nq-button-pill light-blue"
                             @click.stop="$router.push('/btc-activation')" @mousedown.prevent
                         >{{ $t('Activate') }}</button>
-                    </button>
-                </div>
+                    </div>
+                </button>
 
-                <div
-                    v-if="
-                        activeAccountInfo.type !== AccountType.LEDGER
+                <Tooltip class="btc-usdc-swap-button" :container="{ $el: root$ }"
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasBitcoinAddresses && hasUsdcAddresses">
+                    <button class="reset" slot="trigger" @click="$router.push('/swap/BTC-USDC')">
+                        <div class="inner-circle"><DoubleArrowIcon /></div>
+                    </button>
+                    {{ $t('Swap BTC for USDC') }}
+                </Tooltip>
+
+                <button v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && canHaveMultipleAddresses
-                        && $config.usdc.enabled
-                    "
-                    ref="usdcAccount$"
-                    class="usdc-account flex-column"
+                        && $config.usdc.enabled" ref="usdcAccount$"
+                    class="reset usdc-account flex-column"
                     :class="{
                             'active': activeCurrency === CryptoCurrency.USDC,
                             'requires-activation': !hasUsdcAddresses,
                         }"
                     >
-                    <button class="usdc-account-item reset flex-column" @click="selectUsdc">
+                    <div class="usdc-account-item reset flex-column" @click="selectUsdc">
                         <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
                         <div class="balances" v-if="hasUsdcAddresses">
                             <template v-if="usdcAccountBalance !== null">
@@ -127,40 +145,13 @@
                             class="nq-button-pill light-blue"
                             @click.stop="$router.push('/usdc-activation')" @mousedown.prevent
                         >{{ $t('Activate') }}</button>
-                    </button>
-                </div>
+                    </div>
+                </button>
 
                 <div class="account-backgrounds">
                     <div class="nimiq-account-background" :style="getAccountBackgroundPosition('nimiq')"></div>
                     <div class="bitcoin-account-background" :style="getAccountBackgroundPosition('bitcoin')"></div>
                     <div class="usdc-account-background" :style="getAccountBackgroundPosition('usdc')"></div>
-                </div>
-            </div>
-
-            <div v-if="canHaveMultipleAddresses" class="swap-buttons" :class="{ resize: windowResizing }">
-                <div
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses"
-                    class="nim-usdc-swap-button"
-                    :style="getSwapButtonPosition('nim-usdc')"
-                    @click="$router.push('/swap/NIM-USDC')"
-                >
-                    <div class="inner-circle"><DoubleArrowIcon /></div>
-                </div>
-                <div
-                    v-if="hasBitcoinAddresses"
-                    class="nim-btc-swap-button"
-                    :style="getSwapButtonPosition('nim-btc')"
-                    @click="$router.push('/swap/NIM-BTC')"
-                >
-                    <div class="inner-circle"><DoubleArrowIcon /></div>
-                </div>
-                <div
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasBitcoinAddresses && hasUsdcAddresses"
-                    class="btc-usdc-swap-button"
-                    :style="getSwapButtonPosition('btc-usdc')"
-                    @click="$router.push('/swap/BTC-USDC')"
-                >
-                    <div class="inner-circle"><DoubleArrowIcon /></div>
                 </div>
             </div>
 
@@ -194,7 +185,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted, onActivated } from '@vue/composition-api';
-import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner } from '@nimiq/vue-components';
+import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 import AccountBalance from '../AccountBalance.vue';
@@ -295,25 +286,17 @@ export default defineComponent({
 
         const { updateAvailable } = useSettingsStore();
 
+        // Html refs for backgrounds and swap buttons' positions
         const root$ = ref<HTMLElement | null>(null);
         const usdcAccount$ = ref<HTMLElement | null>(null);
         const nimiqAccount$ = ref<HTMLElement | null>(null);
         const bitcoinAccount$ = ref<HTMLElement | null>(null);
 
         const forceUpdateRef = ref(false);
-        const windowResizing = ref(false);
         const resizeObserver = new ResizeObserver(forceUpdate);
         const mutationObserver = new MutationObserver(() => forceUpdate());
 
-        let resizeTimeoutId: any = null;
-        function onWindowResize() {
-            clearTimeout(resizeTimeoutId);
-            windowResizing.value = true;
-            resizeTimeoutId = setTimeout(() => {
-                windowResizing.value = false;
-            }, 100);
-        }
-
+        // start observing on mount / listen to window resize
         onMounted(async () => {
             resizeObserver.observe(context.root.$el);
             mutationObserver.observe(context.root.$el, { // for account switch & add address
@@ -321,12 +304,11 @@ export default defineComponent({
                 childList: true,
                 subtree: true,
             });
-            window.addEventListener('resize', onWindowResize);
         });
+        // disconnect observers on unmount / remove window resize listener
         onUnmounted(() => {
             resizeObserver.disconnect();
             mutationObserver.disconnect();
-            window.removeEventListener('resize', onWindowResize);
         });
         onActivated(forceUpdate);
 
@@ -360,50 +342,6 @@ export default defineComponent({
             return null;
         }
 
-        function getSwapButtonPosition(swap: 'nim-btc' | 'nim-usdc' | 'btc-usdc') {
-            // trick to force vue to update the position on component resize
-            forceUpdateRef.value = !!forceUpdateRef.value;
-
-            const accountOverviewPosition: DOMRect | undefined = root$.value?.getBoundingClientRect();
-            const marginLeft = accountOverviewPosition ? accountOverviewPosition.left : 0;
-
-            if (!accountOverviewPosition) return null;
-            if (swap === 'nim-btc' && bitcoinAccount$.value) {
-                const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
-
-                const left = bitcoinAccountPosition.left + (bitcoinAccountPosition.width / 2) - marginLeft;
-                const top = bitcoinAccountPosition.top - accountOverviewPosition.top;
-
-                return {
-                    top: `calc(${top}px - (var(--size) / 2) - 1rem)`,
-                    left: `calc(${left}px - (var(--size) / 2))`,
-                };
-            }
-            if (swap === 'nim-usdc' && usdcAccount$.value) {
-                const usdcAccountPosition = usdcAccount$.value.getBoundingClientRect();
-
-                const left = usdcAccountPosition.left + (usdcAccountPosition.width / 2) - marginLeft;
-
-                return {
-                    top: `calc(${usdcAccountPosition.top - accountOverviewPosition.top}px - (var(--size) / 2) - 1rem)`,
-                    left: `calc(${left}px - (var(--size) / 2))`,
-                };
-            }
-            if (swap === 'btc-usdc' && bitcoinAccount$.value) {
-                const bitcoinAccountPosition = bitcoinAccount$.value.getBoundingClientRect();
-
-                const left = bitcoinAccountPosition.left + bitcoinAccountPosition.width - marginLeft;
-                const top = bitcoinAccountPosition.top + (bitcoinAccountPosition.height / 2)
-                    - accountOverviewPosition.top;
-
-                return {
-                    top: `calc(${top}px - (var(--size) / 2))`,
-                    left: `calc(${left}px - (var(--size) / 2) + 1rem)`,
-                };
-            }
-            return null;
-        }
-
         return {
             activeAccountInfo,
             AccountType,
@@ -430,8 +368,6 @@ export default defineComponent({
             nimiqAccount$,
             bitcoinAccount$,
             getAccountBackgroundPosition,
-            getSwapButtonPosition,
-            windowResizing,
         };
     },
     components: {
@@ -455,6 +391,7 @@ export default defineComponent({
         CircleSpinner,
         MiniAddIcon,
         DoubleArrowIcon,
+        Tooltip,
     },
 });
 </script>
@@ -574,7 +511,6 @@ export default defineComponent({
 .bitcoin-account,
 .usdc-account {
     z-index: 3;
-    margin-top: 2rem;
     border-radius: 1.25rem;
 
     header {
@@ -594,8 +530,70 @@ export default defineComponent({
     }
 }
 
-.nimiq-account {
+// grid setup
+.account-grid {
+    --grid-gap: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0px, 1fr) auto auto;
+    gap: var(--grid-gap);
+    align-items: center;
+    min-height: 0;
+
     margin-top: 7rem;
+
+    .nimiq-account {
+        grid-row: 1;
+        grid-column: 1 / 3;
+        margin-bottom: calc(-1 * var(--grid-gap) / 2);
+
+        min-height: 0;
+        height: calc(100% + (var(--grid-gap) / 2));
+    }
+    .nim-btc-swap-button {
+        grid-row: 2;
+        grid-column: 1 / 2;
+    }
+    .nim-usdc-swap-button {
+        grid-row: 2;
+        grid-column: 2 / 3;
+    }
+    .nimiq-account ~ button:first-of-type {
+        grid-column-start: 1;
+    }
+    .nimiq-account ~ button:last-of-type {
+        grid-column-end: 3;
+    }
+    .tooltip:last-of-type {
+        grid-column: 1 / 3;
+    }
+    .bitcoin-account {
+        grid-row: 3;
+        grid-column: 1 / 2;
+
+        margin-top: calc(-1 * var(--grid-gap) / 2);
+    }
+    .btc-usdc-swap-button {
+        grid-row: 3;
+        grid-column: 1 / 3;
+        margin-top: calc(-1 * var(--grid-gap) / 2);
+    }
+    .usdc-account {
+        grid-row: 3;
+        grid-column: 2 / 3;
+
+        margin-top: calc(-1 * var(--grid-gap) / 2);
+    }
+    & > .tooltip {
+        display: flex;
+        justify-content: center;
+        height: 0;
+        justify-self: center;
+        white-space: nowrap;
+    }
+}
+
+.nimiq-account {
     padding: 0.5rem 1rem;
     padding-bottom: 0;
     overflow-y: auto;
@@ -628,15 +626,8 @@ export default defineComponent({
     }
 }
 
-.bitcoin-account + .usdc-account {
-    margin-left: 2rem;
-}
-
 .bitcoin-account,
 .usdc-account {
-    flex-basis: content;
-    flex-shrink: 0;
-    flex-grow: 1;
     padding: 1rem;
     color: var(--text-70);
     font-size: var(--body-size);
@@ -650,14 +641,11 @@ export default defineComponent({
     }
 
     &.requires-activation {
+        pointer-events: none;
+
         button {
-            pointer-events: none;
-
-            button {
-                pointer-events: all;
-            }
+            pointer-events: all;
         }
-
     }
 
     &.disabled {
@@ -787,23 +775,32 @@ export default defineComponent({
     }
 }
 
-.swap-buttons > div {
-    --size: 3rem;
-    --transition-duration: 200ms;
+.nim-usdc-swap-button,
+.nim-btc-swap-button,
+.btc-usdc-swap-button {
+    button {
+        --size: 3rem;
+        --transition-duration: 200ms;
 
-    cursor: pointer;
-    height: var(--size);
-    width: var(--size);
-    background-color: var(--bg-base);
-    border-radius: 50%;
-    position: absolute;
-    z-index: 2;
+        cursor: pointer;
+        height: var(--size);
+        width: var(--size);
+        background-color: var(--bg-base);
+        border-radius: 50%;
+        border: none;
+        position: relative;
+        z-index: 2;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-    transition: {
-        property: height, width, top, left;
-        duration: var(--transition-duration);
-        timing-function: var(--nimiq-ease);
-    };
+        transition: {
+            property: height, width;
+            duration: var(--transition-duration);
+            timing-function: var(--nimiq-ease);
+        };
+    }
 
     .inner-circle {
         --size: 0.5rem;
@@ -811,10 +808,6 @@ export default defineComponent({
         height: var(--size);
         width: var(--size);
         background-color: var(--text-20);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         border-radius: 50%;
 
         transition: {
@@ -845,8 +838,9 @@ export default defineComponent({
         transform: translate(-50%, -50%) rotate(90deg);
     }
 
-    &:hover,
-    &:focus {
+    & button:hover,
+    & button:focus,
+    &.tooltip.shown button {
         --size: 4.75rem;
 
         .inner-circle {
@@ -860,10 +854,6 @@ export default defineComponent({
                 path { d: path("m1 4 3-3 3 3m0 6-3 3-3-3") }
             }
         }
-    }
-
-    .resize & {
-        transition: none;
     }
 }
 
@@ -962,8 +952,11 @@ export default defineComponent({
         padding-bottom: 0;
     }
 
-    .nimiq-account {
+    .account-grid {
         margin-top: 4rem;
+    }
+
+    .nimiq-account {
         padding: 1.5rem;
     }
 
@@ -984,8 +977,10 @@ export default defineComponent({
         }
     }
 
-    .swap-buttons > div {
-        --size: 4rem;
+    .nim-usdc-swap-button,
+    .nim-btc-swap-button,
+    .btc-usdc-swap-button {
+        button { --size: 4rem }
 
         .inner-circle {
             background: none;
@@ -1011,7 +1006,7 @@ export default defineComponent({
         padding: 0;
     }
 
-    .nimiq-account {
+    .account-grid {
         margin-top: 1rem;
     }
 }

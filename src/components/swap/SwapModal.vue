@@ -309,7 +309,6 @@ import { getElectrumClient } from '../../electrum';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
 import { getPolygonClient, calculateFee as calculateUsdcFee, getHtlcContract } from '../../ethers';
-import { USDC_HTLC_CONTRACT_ABI } from '../../lib/usdc/ContractABIs';
 import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import ButtonGroup from '../ButtonGroup.vue';
@@ -1392,12 +1391,10 @@ export default defineComponent({
                 }
 
                 if (swapSuggestion.from.asset === SwapAsset.USDC) {
-                    const client = await getPolygonClient();
-                    const htlcContract = new client.ethers.Contract(
-                        config.usdc.htlcContract,
-                        USDC_HTLC_CONTRACT_ABI,
-                        client.provider,
-                    );
+                    const [client, htlcContract] = await Promise.all([
+                        getPolygonClient(),
+                        getHtlcContract(),
+                    ]);
                     const fromAddress = activeUsdcAddress.value!;
 
                     const [
@@ -1497,12 +1494,7 @@ export default defineComponent({
                 }
 
                 if (swapSuggestion.to.asset === SwapAsset.USDC) {
-                    const client = await getPolygonClient();
-                    const htlcContract = new client.ethers.Contract(
-                        config.usdc.htlcContract,
-                        USDC_HTLC_CONTRACT_ABI,
-                        client.provider,
-                    );
+                    const htlcContract = await getHtlcContract();
                     const toAddress = activeUsdcAddress.value!;
 
                     const forwarderNonce = await htlcContract.getNonce(toAddress) as Promise<BigNumber>;

@@ -257,8 +257,6 @@ export default defineComponent({
                 case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
                 case SwapAsset.USDC: {
-                    const client = await getPolygonClient();
-
                     const { timeout } = swap.contracts.USDC!;
                     const secondsUntilTimeout = timeout - Math.floor(Date.now() / 1e3);
                     const blocksUntilTimeout = Math.ceil((secondsUntilTimeout / 60) * POLYGON_BLOCKS_PER_MINUTE);
@@ -268,10 +266,8 @@ export default defineComponent({
                     const blocksOfValidity = 3 /* hours */ * 60 * POLYGON_BLOCKS_PER_MINUTE;
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
-                    const htlcContract = await getHtlcContract();
-
                     return {
-                        htlcContract,
+                        htlcContract: await getHtlcContract(),
                         currentBlock: () => useUsdcNetworkStore().state.height,
                         startBlock: blockHeightAtStart,
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,

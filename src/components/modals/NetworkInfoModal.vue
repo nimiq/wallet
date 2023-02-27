@@ -7,13 +7,14 @@
             </div>
 
             <div ref="$textDiv">
-                <h1 class="nq-h1">{{ $t('You are a part of the Nimiq Blockchain.') }}</h1>
+                <h1 class="nq-h1">{{ $t('With Nimiq, you\'re a\npart of the Blockchain.') }}</h1>
                 <p>
-                    {{ $t('Your browser connects directly to a set of peers from all around the world. ' +
-                    'This makes you a first-class citizen of the blockchain.') }}
+                    {{ $t('Unlike any other crypto, Nimiq connects your wallet directly to peers from all around' +
+                        ' the world. This makes you a first-class citizen of the blockchain.') }}
                 </p>
                 <p>
-                    {{ $t('Send and receive NIM without a middleman and enjoy true decentralization.') }}
+                    {{ $t('Send and receive NIM to the Blockchain without anyone in-between.' +
+                        ' Be truly censorship-resistant.') }}
                 </p>
                 <BlueLink href="https://www.youtube.com/watch?v=dA40oyDVtqs" target="_blank" rel="noopener">
                     {{ $t('Learn more') }}
@@ -139,6 +140,7 @@ export default defineComponent({
 .nq-h1 {
     margin-top: 0;
     margin-bottom: 2rem;
+    max-width: 20ch;
 }
 
 p, a {
@@ -155,8 +157,6 @@ a {
 
         ::v-deep .wrapper {
             position: absolute;
-            right: 2.25rem;
-            top: 2.25rem;
 
             .small-page {
                 width: 47.25rem;
@@ -172,6 +172,13 @@ a {
 @media (max-width: 700px) { // Full mobile breakpoint
     .image img {
         max-height: 36rem;
+    }
+}
+
+@media screen and (min-width: 700px) {
+    .modal {
+        display: grid;
+        place-items: center;
     }
 }
 </style>

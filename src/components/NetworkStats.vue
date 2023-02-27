@@ -1,88 +1,90 @@
 <template>
     <div class="network-stats flex-row">
-        <div class="stat consensus">
+        <div class="network-info">
+            <h3><slot name="network"/></h3>
+            <slot name="network-info"/>
+        </div>
+        <div v-if="$slots.consensus" class="stat">
             <div class="nq-label">{{ $t('Consensus') }}</div>
-            <div class="value flex-row active"><ConsensusIcon/>{{ getConsensusStateString() }}</div>
+            <div class="value flex-row active"><ConsensusIcon/><slot name="consensus"/></div>
         </div>
-        <div class="stat peers">
+        <div v-if="$slots.peerCount" class="stat">
             <div class="nq-label">{{ $t('Connected to') }}</div>
-            <div class="value">{{ $tc('{count} Peer | {count} Peers', $network.peerCount) }}</div>
+            <div class="value"><slot name="peerCount"/></div>
         </div>
-        <div class="stat consensus">
-            <div class="nq-label">{{ $t('Block height') }}</div>
-            <div class="value">#{{ $network.height }}</div>
+        <div v-if="$slots.consensus || $slots.peerCount" class="vr"></div>
+        <div v-if="$slots.fee" class="stat">
+            <div class="nq-label">{{ $t('Fee') }}</div>
+            <div class="value"><slot name="fee"/></div>
         </div>
-
-        <!-- #NimiqWorldWide -->
-        <div class="tweet-note">
-            <a href="https://twitter.com/intent/tweet?hashtags=NimiqWorldWide" target="_blank" rel="noopener"
-                class="tweet-note--inner"
-            >
-                <EventIcon />
-                <span>
-                    {{ $t('Tweet your map!') }}<br/>
-                    <strong>#NimiqWorldWide</strong>
-                </span>
-            </a>
+        <div v-if="$slots.txTime" class="stat">
+            <div class="nq-label">{{ $t('Tx time') }}</div>
+            <div class="value"><slot name="txTime"/></div>
         </div>
-        <!-- -->
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import ConsensusIcon from './ConsensusIcon.vue';
-import EventIcon from './icons/EventIcon.vue';
-import { useNetworkStore } from '../stores/Network';
 
 export default defineComponent({
-    setup(props, context) {
-        const { state: $network } = useNetworkStore();
-
-        function getConsensusStateString() {
-            return {
-                lost: context.root.$t('lost'),
-                syncing: context.root.$t('syncing'),
-                connecting: context.root.$t('connecting'),
-                established: context.root.$t('established'),
-            }[$network.consensus as 'lost' | 'syncing' | 'connecting' | 'established'];
-        }
-
-        return {
-            $network,
-            getConsensusStateString,
-        };
-    },
     components: {
         ConsensusIcon,
-        EventIcon,
     },
 });
 </script>
 
 <style lang="scss" scoped>
+.network-stats {
+    flex-direction: column;
+    column-gap: 5rem;
+    row-gap: 2rem;
+}
+
+.network-info {
+    display: flex;
+    gap: 1.5rem;
+    margin-right: auto;
+    align-self: self-start;
+
+    h3 {
+        margin: 0;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--nimiq-blue);
+        background: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 13.5px;
+        font-size: 14px;
+        line-height: 18px;
+    }
+}
+
 .stat {
-    padding: 0 2.5rem;
     white-space: nowrap;
-
-    &:first-child {
-        padding-left: 5rem;
-    }
-
-    &:last-child {
-        padding-right: 5rem;
-    }
 }
 
 .nq-label {
     font-size: var(--small-label-size);
     color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
+    margin: 0;
+
+    @media screen and (min-width: 1160px) {
+        margin-top: 0.5rem;
+    }
 }
 
 .value {
     font-size: var(--h1-size);
+    line-height: var(--h1-size);
     text-transform: capitalize;
+    margin-top: 1rem;
+
+    @media screen and (min-width: 1160px) {
+        margin-top: 1rem;
+    }
 
     &.flex-row {
         align-items: center;
@@ -93,66 +95,22 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
-    .stat {
-        padding: 0 1.5rem;
-
-        &:first-child {
-            padding-left: 3rem;
-        }
-
-        &:last-child {
-            padding-right: 3rem;
-        }
-    }
+.vr {
+    display: none;
 }
 
-/* #NimiqWorldWide */
-
-.network-stats {
-    align-items: center;
-}
-
-.tweet-note {
-    padding: 0 3rem 0 2rem;
-    flex: 0 0 auto;
-}
-
-.tweet-note--inner {
-    display: flex;
-    align-items: center;
-    border-radius: 6px;
-    color: rgba(255,255,255,1);
-    text-decoration: none;
-    padding: 1.25rem 1.75rem 1.5rem;
-    margin: -1.25rem 0 -1.5rem;
-    flex: 0 0 auto;
-    transition: background 0.2s var(--nimiq-ease),
-        color 0.2s var(--nimiq-ease);
-
-    svg {
-        height: 4rem;
-        width: 4rem;
-        margin-right: 1.5rem;
-        fill: rgba(255,255,255,0.5);
-        transition: fill 0.2s var(--nimiq-ease);
+@media screen and (min-width: 700px) {
+    .network-stats {
+        align-items: center;
+        flex-direction: row;
     }
 
-    &:hover, &:active, &:focus {
-        background: rgba(255,255,255,0.08);
-        color: rgba(255,255,255,1);
-
-        svg {
-            fill: rgba(255,255,255,0.7);
-        }
-    }
-}
-
-@media (max-width: 700px) {
-    .tweet-note--inner {
-        padding: 1rem 1.5rem 1.25rem;
-        margin: -1rem 0 -1.25rem;
-        font-size: 15px;
+    .vr {
+        display: initial;
+        background: white;
+        opacity: 0.2;
+        align-self: stretch;
+        width: 1.5px;
     }
 }
 </style>

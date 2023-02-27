@@ -259,18 +259,16 @@ section {
     &.nimiq-network {
         grid-column: 1 / -1;
         display: flex;
-        --mapHeight: calc(100vh - 8px - 59px - 8px - 160.85px - 8px - 8px);
 
         @media screen and (max-width: 700px) {
             & ::v-deep .network-stats {
-                position: fixed;
+                position: sticky;
                 background: linear-gradient(90deg, #121533 60.75%, rgba(18, 21, 51, 0) 100%);
-                height: calc(var(--mapHeight) - 2rem);
-                padding: 2rem;
-                padding-right: 4rem;
-                margin-left: -2rem;
-                margin-top: -2rem;
+                left: -2rem;
+                top: 2rem;
+                padding-right: 7rem;
                 z-index: 1;
+                padding-left: 2rem;
             }
         }
 
@@ -295,6 +293,7 @@ section {
                 // Take the screen height, subtract header padding top(16px), header (59px), row-gap header-map (8px),
                 // row-gap map-btc/usdc stats (8px), btc/usdc height (160.85px), and multiply with the ratio between
                 // network map width and height.
+                --mapHeight: calc(100vh - 8px - 59px - 8px - 160.85px - 8px - 8px);
                 width: calc(var(--mapHeight) * (1082 / 502));
             }
         }

@@ -724,7 +724,13 @@ export async function receiptToTransaction(
 
             // TODO: Remove when HTLC contract ABI is also updated
             // The first transfer to the htlcContract is the fee
-            if (log.args.to === config.usdc.htlcContract && !fee) {
+            if (
+                log.args.to === config.usdc.htlcContract
+                && !fee
+                // When Fastspot is funding the HTLC, there's only one Transfer event, which is the `transferLog`,
+                // so don't handle any fee.
+                && logs.filter((l) => l?.name === 'Transfer').length > 1
+            ) {
                 fee = log.args.value;
                 return;
             }

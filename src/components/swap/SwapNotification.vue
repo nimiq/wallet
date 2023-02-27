@@ -77,10 +77,14 @@ import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { getNetworkClient } from '../../network';
 import Time from '../../lib/Time';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
-import { getPolygonClient, receiptToTransaction, sendTransaction as sendPolygonTransaction } from '../../ethers';
+import {
+    getHtlcContract,
+    getPolygonClient,
+    receiptToTransaction,
+    sendTransaction as sendPolygonTransaction,
+} from '../../ethers';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
-import { USDC_HTLC_CONTRACT_ABI } from '../../lib/usdc/ContractABIs';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -264,11 +268,7 @@ export default defineComponent({
                     const blocksOfValidity = 3 /* hours */ * 60 * POLYGON_BLOCKS_PER_MINUTE;
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
-                    const htlcContract = new client.ethers.Contract(
-                        config.usdc.htlcContract,
-                        USDC_HTLC_CONTRACT_ABI,
-                        client.provider,
-                    );
+                    const htlcContract = await getHtlcContract();
 
                     return {
                         htlcContract,

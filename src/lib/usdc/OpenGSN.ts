@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { BigNumber, Contract } from 'ethers';
 import type { PolygonClient } from '../../ethers';
 import { RELAY_HUB_CONTRACT_ABI } from './ContractABIs';

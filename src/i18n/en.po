@@ -20,6 +20,11 @@ msgstr ""
 msgid "{amount} fee"
 msgstr ""
 
+#: src/components/layouts/Network.vue:40
+#: src/components/layouts/Network.vue:55
+msgid "{amount}/tx"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:71
 #: src/components/BankCheckInput.vue:77
 msgid "{bankName} offers generic and individual IBANs."
@@ -31,7 +36,7 @@ msgstr ""
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
-#: src/components/NetworkStats.vue:9
+#: src/components/layouts/Network.vue:27
 msgid "{count} Peer | {count} Peers"
 msgstr ""
 
@@ -100,9 +105,21 @@ msgstr ""
 msgid "< {amount} fee"
 msgstr ""
 
+#: src/components/layouts/Network.vue:28
+msgid "0€/tx"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:20
 #: src/components/modals/SellCryptoModal.vue:19
 msgid "1"
+msgstr ""
+
+#: src/components/layouts/Network.vue:29
+msgid "1 min"
+msgstr ""
+
+#: src/components/layouts/Network.vue:47
+msgid "10 min"
 msgstr ""
 
 #: src/components/FeeSelector.vue:8
@@ -116,6 +133,10 @@ msgstr ""
 
 #: src/components/FeeSelector.vue:7
 msgid "2-4h"
+msgstr ""
+
+#: src/components/layouts/Network.vue:62
+msgid "20 sec"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:29
@@ -167,8 +188,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:129
-#: src/components/layouts/AccountOverview.vue:87
+#: src/components/layouts/AccountOverview.vue:107
+#: src/components/layouts/AccountOverview.vue:157
 msgid "Activate"
 msgstr ""
 
@@ -245,7 +266,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:170
+#: src/components/layouts/AccountOverview.vue:171
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -322,7 +343,7 @@ msgstr ""
 msgid "Awaiting swap secret"
 msgstr ""
 
-#: src/components/layouts/Network.vue:15
+#: src/components/layouts/Network.vue:13
 msgid "Back to addresses"
 msgstr ""
 
@@ -357,7 +378,7 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:68
+#: src/components/layouts/AccountOverview.vue:88
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -390,10 +411,6 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:190
 #: src/components/swap/SwapAnimation.vue:270
 msgid "Block explorer"
-msgstr ""
-
-#: src/components/NetworkStats.vue:12
-msgid "Block height"
 msgstr ""
 
 #: src/components/modals/UsdcActivationModal.vue:27
@@ -612,11 +629,11 @@ msgstr ""
 msgid "Connect to TEN31 Pass for higher swap limits."
 msgstr ""
 
-#: src/components/NetworkStats.vue:8
+#: src/components/NetworkStats.vue:12
 msgid "Connected to"
 msgstr ""
 
-#: src/components/NetworkStats.vue:46
+#: src/components/layouts/Network.vue:106
 msgid "connecting"
 msgstr ""
 
@@ -636,7 +653,7 @@ msgstr ""
 msgid "Connection lost"
 msgstr ""
 
-#: src/components/NetworkStats.vue:4
+#: src/components/NetworkStats.vue:8
 msgid "Consensus"
 msgstr ""
 
@@ -859,7 +876,7 @@ msgstr ""
 msgid "Error:"
 msgstr ""
 
-#: src/components/NetworkStats.vue:47
+#: src/components/layouts/Network.vue:107
 msgid "established"
 msgstr ""
 
@@ -928,6 +945,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:163
 msgid "fee"
+msgstr ""
+
+#: src/components/NetworkStats.vue:17
+msgid "Fee"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:62
@@ -1108,7 +1129,7 @@ msgstr ""
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:211
+#: src/components/swap/SwapNotification.vue:215
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1195,7 +1216,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: src/components/modals/NetworkInfoModal.vue:19
+#: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr ""
 
@@ -1276,7 +1297,7 @@ msgstr ""
 msgid "Long press to confirm"
 msgstr ""
 
-#: src/components/NetworkStats.vue:44
+#: src/components/layouts/Network.vue:104
 msgid "lost"
 msgstr ""
 
@@ -1352,7 +1373,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:210
+#: src/components/swap/SwapNotification.vue:214
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1767,7 +1788,7 @@ msgid "Send all"
 msgstr ""
 
 #: src/components/modals/NetworkInfoModal.vue:16
-msgid "Send and receive NIM without a middleman and enjoy true decentralization."
+msgid "Send and receive NIM to the Blockchain without anyone in-between. Be truly censorship-resistant."
 msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:20
@@ -1990,7 +2011,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:115
+#: src/components/layouts/AccountOverview.vue:118
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr ""
 
@@ -2022,11 +2043,11 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:64
+#: src/components/layouts/AccountOverview.vue:65
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:74
+#: src/components/layouts/AccountOverview.vue:75
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
@@ -2048,7 +2069,7 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/components/NetworkStats.vue:45
+#: src/components/layouts/Network.vue:105
 msgid "syncing"
 msgstr ""
 
@@ -2083,7 +2104,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:968
+#: src/components/swap/SwapModal.vue:967
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -2272,8 +2293,8 @@ msgstr ""
 msgid "Try it now"
 msgstr ""
 
-#: src/components/NetworkStats.vue:23
-msgid "Tweet your map!"
+#: src/components/NetworkStats.vue:21
+msgid "Tx time"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:579
@@ -2296,6 +2317,10 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+#: src/components/modals/NetworkInfoModal.vue:12
+msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
+msgstr ""
+
 #: src/swap-kyc-handler.ts:148
 #: src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
@@ -2316,7 +2341,7 @@ msgstr ""
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:105
+#: src/components/layouts/AccountOverview.vue:133
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565
@@ -2388,16 +2413,18 @@ msgstr ""
 msgid "With Bitcoin, there are no contacts, since addresses are only used once."
 msgstr ""
 
+#: src/components/modals/NetworkInfoModal.vue:10
+msgid ""
+"With Nimiq, you're a\n"
+"part of the Blockchain."
+msgstr ""
+
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:13
 msgid "Without a SEPA instant bank account your money will take 1-3 business days to arrive."
 msgstr ""
 
 #: src/components/BankCheckInput.vue:70
 msgid "Without an individual IBAN, refunds are impossible!"
-msgstr ""
-
-#: src/components/modals/NetworkInfoModal.vue:10
-msgid "You are a part of the Nimiq Blockchain."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:17
@@ -2475,10 +2502,6 @@ msgstr ""
 
 #: src/components/NetworkMapPeerList.vue:4
 msgid "Your browser"
-msgstr ""
-
-#: src/components/modals/NetworkInfoModal.vue:12
-msgid "Your browser connects directly to a set of peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:121

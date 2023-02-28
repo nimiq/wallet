@@ -1,10 +1,10 @@
 [main]
 host = https://www.transifex.com
 
-[nimiq-wallet-20.dictionary-pot]
-file_filter = src/i18n/<lang>.po
+[o:nimiq-foundation:p:nimiq-wallet-20:r:dictionary-pot]
+file_filter  = src/i18n/<lang>.po
+source_file  = src/i18n/en.po
+source_lang  = en
+type         = PO
 minimum_perc = 0
-source_file = src/i18n/en.po
-source_lang = en
-type = PO
 

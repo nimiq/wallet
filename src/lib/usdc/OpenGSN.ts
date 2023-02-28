@@ -31,7 +31,6 @@ export async function getBestRelay(
     client: PolygonClient,
     requiredMaxAcceptanceBudget: BigNumber,
     calculateFee: (baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) => {
-        gasPrice: BigNumber,
         chainTokenFee: BigNumber,
     },
 ) {
@@ -102,7 +101,6 @@ async function* relayServerRegisterGen(
     client: PolygonClient,
     requiredMaxAcceptanceBudget: BigNumber,
     calculateFee: (baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) => {
-        gasPrice: BigNumber,
         chainTokenFee: BigNumber,
     },
 ) {

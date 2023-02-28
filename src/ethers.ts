@@ -342,18 +342,25 @@ export async function launchPolygon() {
                     }
 
                     if (log.args.to === config.usdc.htlcContract) {
-                        // Determine if this transfer is the fee, by looking for another transfer in this transaction
-                        // with a higher `logIndex`, which means that one is the main transfer and this one is the fee.
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex > log.logIndex);
+                        if (
+                            // Before v3, transfers to the HTLC contract were the fees paid to OpenGSN
+                            config.environment !== ENV_MAIN
+                            && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
+                        ) {
+                            // Determine if this transfer is the fee, by looking for another transfer in this
+                            // transaction with a higher `logIndex`, which means that one is the main transfer and this
+                            // one is the fee.
+                            const mainTransferLog = allTransferLogs.find((otherLog) =>
+                                otherLog.transactionHash === log.transactionHash
+                                && otherLog.logIndex > log.logIndex);
 
-                        if (mainTransferLog && mainTransferLog.args) {
-                            // Write this log's `value` as the main transfer log's `fee`
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                            if (mainTransferLog && mainTransferLog.args) {
+                                // Write this log's `value` as the main transfer log's `fee`
+                                mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
 
-                            // Then ignore this log
-                            return false;
+                                // Then ignore this log
+                                return false;
+                            }
                         }
 
                         // Get Open event log
@@ -483,9 +490,9 @@ export async function calculateFee(
         transfer: undefined,
         transferWithApproval: 1220,
         open: undefined,
-        openWithApproval: 1380,
-        redeemWithSecretInData: 1124,
-        refund: 1124,
+        openWithApproval: 1348,
+        redeemWithSecretInData: 1092,
+        refund: 1092,
     }[method];
 
     if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);
@@ -500,10 +507,7 @@ export async function calculateFee(
         usdcPrice,
     ] = await Promise.all([
         client.provider.getGasPrice(),
-        typeof contract.getRequiredRelayGas === 'function'
-            ? contract.getRequiredRelayGas(contract.interface.getSighash(method)) as Promise<BigNumber>
-            // TODO: Remove when HTLC contract is also updated to new ABI
-            : contract.requiredRelayGas() as Promise<BigNumber>,
+        contract.getRequiredRelayGas(contract.interface.getSighash(method)) as Promise<BigNumber>,
         relay
             ? Promise.resolve([client.ethers.BigNumber.from(0)])
             : contract.getGasAndDataLimits() as Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>,
@@ -742,19 +746,17 @@ export async function receiptToTransaction(
                         || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
                     )
                 )
-            ) {
-                fee = log.args.value;
-                return;
-            }
-
-            // TODO: Remove when HTLC contract ABI is also updated
-            // The first transfer to the htlcContract is the fee
-            if (
-                log.args.to === config.usdc.htlcContract
-                && !fee
-                // When Fastspot is funding the HTLC, there's only one Transfer event, which is the `transferLog`,
-                // so don't handle any fee.
-                && logs.filter((l) => l?.name === 'Transfer').length > 1
+                || (
+                    // Before v3, the first transfer to the HTLC contract was the fee paid to OpenGSN
+                    config.environment !== ENV_MAIN
+                    && (
+                        log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
+                        && !fee
+                        // When Fastspot is funding the HTLC, there's only one Transfer event, which is the main
+                        // `transferLog`, so don't handle any fee.
+                        && logs.filter((l) => l?.name === 'Transfer').length > 1
+                    )
+                )
             ) {
                 fee = log.args.value;
                 return;

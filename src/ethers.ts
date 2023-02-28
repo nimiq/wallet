@@ -72,13 +72,13 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     }
 
     await provider.ready;
-    console.log('Polygon connection established');
-    useUsdcNetworkStore().state.consensus = 'established';
 
     // Wait for a block event to make sure we are really connected
     await new Promise<void>((resolve) => {
         provider.once('block', (height: number) => {
             useUsdcNetworkStore().state.height = height;
+            console.log('Polygon connection established');
+            useUsdcNetworkStore().state.consensus = 'established';
             resolve();
         });
     });
@@ -121,7 +121,7 @@ async function updateBalances(addresses: string[] = [...balances.keys()]) {
     }
 
     if (!newBalances.size) return;
-    console.log('Got new USDC balances for', [...newBalances.keys()]);
+    console.debug('Got new USDC balances for', [...newBalances.keys()], [...newBalances.values()]);
     const { patchAddress } = useUsdcAddressStore();
     for (const [address, balance] of newBalances) {
         patchAddress(address, { balance });
@@ -184,17 +184,16 @@ export async function launchPolygon() {
     if (isLaunched) return;
     isLaunched = true;
 
-    const client = await getPolygonClient();
-    const poolAddress = await getPoolAddress(client);
-
     const { state: network$ } = useUsdcNetworkStore();
     const transactionsStore = useUsdcTransactionsStore();
     const { config } = useConfig();
 
     // Start block listener
-    client.provider.on('block', (height: number) => {
-        console.debug('Polygon is now at', height);
-        network$.height = height;
+    getPolygonClient().then((client) => {
+        client.provider.on('block', (height: number) => {
+            console.debug('Polygon is now at', height);
+            network$.height = height;
+        });
     });
 
     // Subscribe to new addresses (for balance updates and transactions)
@@ -226,18 +225,18 @@ export async function launchPolygon() {
 
         if (!newAddresses.length) return;
 
-        console.log('Subscribing USDC addresses', newAddresses);
+        console.debug('Subscribing USDC addresses', newAddresses);
         subscribe(newAddresses);
     });
 
     // Fetch transactions for active address
     const txFetchTrigger = ref(0);
-    watch([addressStore.addressInfo, txFetchTrigger, () => config.usdc], ([addressInfo, trigger]) => {
+    watch([addressStore.addressInfo, txFetchTrigger, () => config.usdc], async ([addressInfo, trigger]) => {
         const address = (addressInfo as UsdcAddressInfo | null)?.address;
         if (!address || fetchedAddresses.has(address)) return;
         fetchedAddresses.add(address);
 
-        console.log('Scheduling USDC transaction fetch for', address);
+        console.debug('Scheduling USDC transaction fetch for', address);
 
         const knownTxs = Object.values(transactionsStore.state.transactions)
             .filter((tx) => tx.sender === address || tx.recipient === address);
@@ -250,14 +249,17 @@ export async function launchPolygon() {
 
         if ((trigger as number) > 0) updateBalances([address]);
 
-        console.log('Fetching USDC transaction history for', address, knownTxs);
+        const client = await getPolygonClient();
+        const poolAddress = await getPoolAddress(client);
+
+        console.debug('Fetching USDC transaction history for', address, knownTxs);
 
         // EventFilters only allow to query with an AND condition between arguments (topics). So while
         // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
         // OR two AND pairs. That requires two separate requests.
         const filterIncoming = client.usdc.filters.Transfer(null, address);
         const filterOutgoing = client.usdc.filters.Transfer(address);
-        const filterMetaTx = client.usdc.filters.MetaTransactionExecuted();
+        // const filterMetaTx = client.usdc.filters.MetaTransactionExecuted();
 
         const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
 
@@ -282,26 +284,27 @@ export async function launchPolygon() {
 
                 console.debug(`Sync start loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}`);
 
-                console.debug(`Querying logs from ${startHeight} to ${endHeight}`);
+                console.debug(`Querying logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
-                const [logsIn, logsOut, metaTxs] = await Promise.all([ // eslint-disable-line no-await-in-loop
+                const [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
                     client.usdc.queryFilter(filterIncoming, startHeight, endHeight),
                     client.usdc.queryFilter(filterOutgoing, startHeight, endHeight),
-                    client.usdc.queryFilter(filterMetaTx, startHeight, endHeight).then((events) =>
-                        // MetaTransactionExecuted events cannot be filtered natively, so we need to filter here
-                        events.filter((ev) => ev.args && ev.args.userAddress === address),
-                    ),
+                    // client.usdc.queryFilter(filterMetaTx, startHeight, endHeight).then((events) =>
+                    //     // MetaTransactionExecuted events cannot be filtered natively, so we need to filter here
+                    //     events.filter((ev) => ev.args && ev.args.userAddress === address),
+                    // ),
                 ]);
 
-                console.debug(`Got ${logsIn.length} incoming logs, ${logsOut.length} outgoing logs, and ${metaTxs.length} meta tx logs`);
+                console.debug(`Got ${logsIn.length} incoming logs, ${logsOut.length} outgoing logs` /* , and ${metaTxs.length} meta tx logs` */);
 
-                const allTransferLogs = logsIn.concat(logsOut);
-
-                const metaTxTransactionHashes = new Set(metaTxs.map((ev) => ev.transactionHash));
+                // const metaTxTransactionHashes = new Set(metaTxs.map((ev) => ev.transactionHash));
+                const metaTxTransactionHashes = new Set(logsOut.map((ev) => ev.transactionHash));
 
                 console.debug(`Found ${metaTxTransactionHashes.size} metaTxs`);
 
                 usdcNonce -= metaTxTransactionHashes.size;
+
+                const allTransferLogs = logsIn.concat(logsOut);
 
                 // eslint-disable-next-line no-loop-func
                 const newLogs = allTransferLogs.filter((log) => {
@@ -431,10 +434,10 @@ export async function launchPolygon() {
                 )).then((transactions) => {
                     transactionsStore.addTransactions(transactions);
                 });
-
-                console.debug(`Sync end loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}`);
             } // End while loop
             /* eslint-enable max-len */
+
+            console.log(`USDC Sync ended at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}`);
         })
             .catch((error) => {
                 console.error(error);
@@ -646,11 +649,21 @@ export async function sendTransaction(
         txResponse = await client.provider.getTransaction(tx.hash!);
     }
 
-    return receiptToTransaction(
+    // If `approvalData` is present, this is an incoming redeem transaction
+    const isHtlcRedeemTx = approvalData.length > 2;
+
+    const tx = await receiptToTransaction(
         await txResponse.wait(1),
-        // If `approvalData` is present, this is an incoming redeem transaction, so should not filter by from address
-        approvalData.length > 2 ? undefined : relayRequest.request.from,
+        // Do not filter by sender for incoming redeem txs
+        isHtlcRedeemTx ? undefined : relayRequest.request.from,
     );
+
+    if (!isHtlcRedeemTx) {
+        // Trigger manual balance update for outgoing transactions
+        updateBalances([relayRequest.request.from]);
+    }
+
+    return tx;
 }
 
 export async function receiptToTransaction(

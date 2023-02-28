@@ -462,7 +462,13 @@ function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block, eve
     };
 }
 
-type ContractMethods = 'transfer' | 'transferWithApproval' | 'open' | 'openWithApproval' | 'redeemWithSecretInData';
+type ContractMethods =
+    'transfer'
+    | 'transferWithApproval'
+    | 'open'
+    | 'openWithApproval'
+    | 'redeemWithSecretInData'
+    | 'refund';
 
 export async function calculateFee(
     method: ContractMethods = 'transferWithApproval', // eslint-disable-line default-param-last
@@ -479,6 +485,7 @@ export async function calculateFee(
         open: undefined,
         openWithApproval: 1380,
         redeemWithSecretInData: 1124,
+        refund: 1124,
     }[method];
 
     if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);
@@ -649,16 +656,21 @@ export async function sendTransaction(
         txResponse = await client.provider.getTransaction(tx.hash!);
     }
 
-    // If `approvalData` is present, this is an incoming redeem transaction
+    // If `approvalData` is present, this is a redeem transaction
     const isHtlcRedeemTx = approvalData.length > 2;
+    const isHtlcRefundTx = relayRequest.request.data.startsWith(
+        (await getHtlcContract()).interface.getSighash('refund'),
+    );
+
+    const isIncomingTx = isHtlcRedeemTx || isHtlcRefundTx;
 
     const tx = await receiptToTransaction(
         await txResponse.wait(1),
-        // Do not filter by sender for incoming redeem txs
-        isHtlcRedeemTx ? undefined : relayRequest.request.from,
+        // Do not filter by sender for incoming txs
+        isIncomingTx ? undefined : relayRequest.request.from,
     );
 
-    if (!isHtlcRedeemTx) {
+    if (!isIncomingTx) {
         // Trigger manual balance update for outgoing transactions
         updateBalances([relayRequest.request.from]);
     }

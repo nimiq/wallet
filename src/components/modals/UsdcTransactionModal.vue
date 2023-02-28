@@ -98,9 +98,8 @@
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
-                    <span class="label">{{ peerLabel }}</span>
-                    <InteractiveShortAddress v-if="swapData && peerAddress"
-                        :address="peerAddress" tooltipPosition="left"/>
+                    <span class="label">{{ peerLabel || (showRefundButton ? $t('Expired HTLC') : '&nbsp;') }}</span>
+                    <InteractiveShortAddress :address="peerAddress" tooltipPosition="left"/>
                 </div>
                 <UsdcAddressInfo v-else
                     :address="transaction.recipient"
@@ -215,7 +214,11 @@
                     </template>
                 </div>
             </div>
-            <div class="flex-spacer"></div>
+
+            <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
+                {{ $t('Refund') }}
+            </button>
+            <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
@@ -251,6 +254,10 @@ import {
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { RefundSwapRequest, SignedPolygonTransaction } from '@nimiq/hub-api';
+import type { BigNumber } from 'ethers';
+import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
+import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
@@ -274,11 +281,15 @@ import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import Avatar from '../Avatar.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
-import { useSwapsStore } from '../../stores/Swaps';
+import { SwapUsdcData, useSwapsStore } from '../../stores/Swaps';
 import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
+import { calculateFee, getHtlcContract, sendTransaction } from '../../ethers';
+import { useConfig } from '../../composables/useConfig';
+import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { refundSwap } from '../../hub';
 
 export default defineComponent({
     name: 'usdc-transaction-modal',
@@ -447,6 +458,99 @@ export default defineComponent({
         const blockExplorerLink = computed(() =>
             explorerTxLink(CryptoCurrency.USDC, transaction.value.transactionHash));
 
+        const showRefundButton = computed(() => !isIncoming.value
+            // funded but not redeemed htlc which is now expired
+            && swapInfo.value?.in?.asset === SwapAsset.USDC
+            && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
+            && !swapInfo.value.out,
+            // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
+            // && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
+        );
+
+        async function refundHtlc() {
+            const htlcDetails = (swapInfo.value?.in as SwapUsdcData | undefined)?.htlc;
+            if (!htlcDetails) throw new Error('Unexpected: unknown HTLC refund details');
+
+            let relayUrl: string;
+
+            // eslint-disable-next-line no-async-promise-executor
+            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
+                const myAddress = transaction.value.sender;
+
+                const { config } = useConfig();
+
+                const method = 'refund';
+
+                const htlcContract = await getHtlcContract();
+
+                const [
+                    forwarderNonce,
+                    { chainTokenFee, fee, gasPrice, gasLimit, relay },
+                ] = await Promise.all([
+                    htlcContract.getNonce(myAddress) as Promise<BigNumber>,
+                    calculateFee(
+                        method,
+                        undefined,
+                        htlcContract,
+                    ),
+                ]);
+
+                relayUrl = relay.url;
+
+                const data = htlcContract.interface.encodeFunctionData(method, [
+                    /** bytes32 id */ htlcDetails.address,
+                    /** address target */ myAddress,
+                    /** uint256 fee */ fee,
+                    /** uint256 chainTokenFee */ chainTokenFee,
+                ]);
+
+                const relayRequest: RelayRequest = {
+                    request: {
+                        from: myAddress,
+                        to: config.usdc.htlcContract,
+                        data,
+                        value: '0',
+                        nonce: forwarderNonce.toString(),
+                        gas: gasLimit.toString(),
+                        validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
+                            .toString(10),
+                    },
+                    relayData: {
+                        gasPrice: gasPrice.toString(),
+                        pctRelayFee: relay.pctRelayFee.toString(),
+                        baseRelayFee: relay.baseRelayFee.toString(),
+                        relayWorker: relay.relayWorkerAddress,
+                        paymaster: config.usdc.htlcContract,
+                        paymasterData: '0x',
+                        clientId: Math.floor(Math.random() * 1e6).toString(10),
+                        forwarder: config.usdc.htlcContract,
+                    },
+                };
+
+                const request: Omit<RefundSwapRequest, 'appName'> = {
+                    accountId: useAccountStore().activeAccountId.value!,
+                    refund: {
+                        type: SwapAsset.USDC,
+                        ...relayRequest,
+                        amount: transaction.value.value - fee.toNumber(),
+                    },
+                };
+
+                resolve(request);
+            });
+
+            const tx = await refundSwap(requestPromise);
+            if (!tx) return;
+            const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
+            const plainTx = await sendTransaction(
+                { request: relayRequest as ForwardRequest, relayData },
+                (tx as SignedPolygonTransaction).signature,
+                relayUrl!,
+            );
+            await context.root.$nextTick();
+            context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
+        }
+
         return {
             amountsHidden,
             isIncoming,
@@ -472,6 +576,8 @@ export default defineComponent({
             // data,
             SettlementStatus,
             constants,
+            showRefundButton,
+            refundHtlc,
         };
     },
     components: {
@@ -627,7 +733,8 @@ export default defineComponent({
                 margin: -0.5rem 0; // Identicon should be 72x63
             }
 
-            svg {
+            svg,
+            .avatar {
                 width: 8rem;
                 height: 8rem;
                 display: block;

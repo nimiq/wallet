@@ -194,7 +194,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:37
+#: src/components/modals/UsdcActivationModal.vue:36
 msgid "Activate USDC"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgstr ""
 msgid "Block explorer"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:27
+#: src/components/modals/UsdcActivationModal.vue:26
 msgid "blog post"
 msgstr ""
 
@@ -537,6 +537,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:50
 msgid "Change your language setting."
+msgstr ""
+
+#: src/components/modals/UsdcActivationModal.vue:33
+msgid "Check the new intro"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:8
@@ -1059,7 +1063,6 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/UsdcActivationModal.vue:34
 #: src/components/modals/UsdcSendModal.vue:25
 #: src/components/modals/WelcomeModal.vue:334
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1302,7 +1305,7 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:21
+#: src/components/modals/UsdcActivationModal.vue:20
 msgid "Many updates like easier address names, more accessible swaps and an improved asset overview await."
 msgstr ""
 
@@ -1571,7 +1574,7 @@ msgstr ""
 msgid "Raise your limits"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:24
+#: src/components/modals/UsdcActivationModal.vue:23
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
@@ -1948,8 +1951,11 @@ msgstr ""
 msgid "Simulate EUR payment"
 msgstr ""
 
+#: src/components/modals/UsdcActivationModal.vue:39
+msgid "Skip"
+msgstr ""
+
 #: src/components/modals/BtcActivationModal.vue:27
-#: src/components/modals/UsdcActivationModal.vue:40
 msgid "Skip for now"
 msgstr ""
 
@@ -2388,7 +2394,7 @@ msgstr ""
 msgid "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and decentralized."
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:18
+#: src/components/modals/UsdcActivationModal.vue:17
 msgid ""
 "Welcome to the updated\n"
 "wallet, now with USDC"
@@ -2486,12 +2492,6 @@ msgstr ""
 msgid ""
 "Your account now\n"
 "supports Bitcoin!"
-msgstr ""
-
-#: src/components/modals/UsdcActivationModal.vue:17
-msgid ""
-"Your account now\n"
-"supports USDC!"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:72

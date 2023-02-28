@@ -1,6 +1,6 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" ref="$modal">
+    <Modal v-bind="$attrs" v-on="$listeners" emit-close ref="$modal">
         <PageBody class="flex-column">
             <!-- eslint-disable max-len -->
             <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,8 +14,7 @@
             </svg>
             <!-- eslint-enable max-len -->
 
-            <h1 v-if="hasUsdcAddresses" class="nq-h1">{{ $t('Your account now\nsupports USDC!') }}</h1>
-            <h1 v-else class="nq-h1">{{ $t('Welcome to the updated\nwallet, now with USDC') }}</h1>
+            <h1 class="nq-h1">{{ $t('Welcome to the updated\nwallet, now with USDC') }}</h1>
 
             <p class="nq-text">
                 {{ $t('Many updates like easier address names, more accessible swaps and an improved '
@@ -24,20 +23,20 @@
             <i18n tag="p" path="Read all about it in this {blog_post} or click below for the new wallet intro."
                 class="nq-text secondary">
                 <template #blog_post>
-                    <a target="_blank" href="https://nimiq.com/blog">{{ $t('blog post') }}</a>
+                    <a target="_blank" href="https://nimiq.com/blog" rel="noopener">{{ $t('blog post') }}</a>
                 </template>
             </i18n>
 
             <div class="flex-grow"></div>
 
-            <button v-if="hasUsdcAddresses" class="nq-button light-blue" @click="close" @mousedown.prevent>
-                {{ $t('Got it') }}
-            </button>
+            <router-link v-if="hasUsdcAddresses" to="/welcome" class="nq-button light-blue" @mousedown.prevent>
+                {{ $t('Check the new intro') }}
+            </router-link>
             <button v-else class="nq-button light-blue" @click="enableUsdc" @mousedown.prevent>
                 {{ $t('Activate USDC') }}
             </button>
 
-            <a v-if="!hasUsdcAddresses" class="nq-link" @click="close">{{ $t('Skip for now') }}</a>
+            <a class="nq-link" @click="close(true)">{{ $t('Skip') }}</a>
         </PageBody>
     </Modal>
 </template>
@@ -47,7 +46,7 @@ import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { activateUsdc } from '../../hub';
-import { CryptoCurrency, WELCOME_2_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import { CryptoCurrency } from '../../lib/Constants';
 import { AccountType, useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
@@ -61,7 +60,7 @@ export default defineComponent({
 
         onMounted(() => {
             if (activeAccountInfo.value?.type === AccountType.LEDGER) {
-                close();
+                close(true);
             }
         });
 
@@ -72,7 +71,7 @@ export default defineComponent({
             await close();
         }
 
-        async function close() {
+        async function close(skipping = false) {
             // check for a redirect set by the USDC activation navigation guard in router.ts
             let redirect: string | undefined;
             try {
@@ -87,6 +86,7 @@ export default defineComponent({
             } else {
                 await $modal.value!.forceClose();
                 if (!hasUsdcAddresses.value) return;
+                if (skipping) return;
 
                 if (isMobile.value) {
                     // On mobile, forward to the USDC transactions overview, after USDC got activated and the
@@ -94,10 +94,10 @@ export default defineComponent({
                     await context.root.$router.push('/transactions');
                 }
 
-                const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
-                if (!welcome2ModalAlreadyShown) {
-                    await context.root.$router.push('/welcome');
-                }
+                // const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
+                // if (!welcome2ModalAlreadyShown) {
+                await context.root.$router.push('/welcome');
+                // }
             }
         }
 

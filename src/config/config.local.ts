@@ -12,7 +12,7 @@ export default {
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
     usdc: {
-        enabled: true,
+        enabled: false,
         networkId: 80001 as number | string, // Can also be 'maticmum'
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
         rpcMaxBlockRange: 10_000,

@@ -1,6 +1,7 @@
 import { useSettingsStore } from '../stores/Settings';
 import { useConfig } from '../composables/useConfig';
-import { init as initKycConnection } from './KycConnection';
+import { WELCOME_2_MODAL_LOCALSTORAGE_KEY } from './Constants';
+import router from '../router';
 
 declare global {
     function digestMessage(message: string): Promise<string>;
@@ -32,7 +33,16 @@ export function init() {
                 config.ten31Pass.enabled = true;
                 break;
             case Trial.USDC:
+                if (config.usdc.enabled) break;
                 config.usdc.enabled = true;
+                // offer USDC activation for previously existing account / show that USDC has been activated for newly
+                // logged-in accounts
+                if (!window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY)) {
+                    router.onReady(async () => {
+                        await router.push('/'); // the usdc activation modal lives on the root page, thus go there first
+                        await router.push('/usdc-activation');
+                    });
+                }
                 break;
         }
     }

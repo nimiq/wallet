@@ -6,104 +6,112 @@
         <PageHeader>
             {{ $t('Swap Currencies') }}
             <div slot="more" class="flex-column header-more">
-                <div v-if="!isLedgerAccount" class="pair-selection flex-row">
-                    <ButtonGroup
-                        v-if="!isMobile"
-                        :options="leftButtonGroupOptions"
-                        :value="leftAsset"
-                        @input="setLeftAsset"
-                    />
-                    <select v-else v-model="leftAsset" @input="setLeftAsset($event.target.value)">
-                        <option v-for="[key, option] in Object.entries(leftButtonGroupOptions)" :key="key" :value="key"
-                            :selected="key === leftAsset" :disabled="option.disabled">
-                            {{ option.label }}
-                        </option>
-                    </select>
-                    <SwapIcon />
-                    <ButtonGroup
-                        v-if="!isMobile"
-                        :options="rightButtonGroupOptions"
-                        :value="rightAsset"
-                        @input="setRightAsset"
-                    />
-                    <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
-                        <option v-for="[key, option] in Object.entries(rightButtonGroupOptions)" :key="key" :value="key"
-                            :selected="key === rightAsset" :disabled="option.disabled">
-                            {{ option.label }}
-                        </option>
-                    </select>
+                <div v-if="isLedgerAccount"  class="swap-disabled-text">
+                    {{ $t('Swap not possible. Ledger accounts are not supported.') }}
                 </div>
-                <div v-if="!feeIsLoading && limits" class="swap-info flex-row" >
-                    <SwapFeesTooltip
-                        preferredPosition="bottom left"
-                        :nimFeeFiat="nimFeeFiat"
-                        :btcFeeFiat="btcFeeFiat"
-                        :usdcFeeFiat="usdcFeeFiat"
-                        :serviceSwapFeeFiat="serviceSwapFeeFiat"
-                        :serviceSwapFeePercentage="serviceSwapFeePercentage"
-                        :currency="currency"
-                        :container="this"
-                    >
-                        <div slot="trigger" class="flex-row" :class="{'high-fees': isHighRelativeFees}">
-                            <LightningIcon v-if="isHighRelativeFees"/>
-                            <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
-                                <template #amount>
-                                    <FiatAmount :amount="fiatSmUnit"
-                                        :hideDecimals="false" :currency="fiatCurrency"/>
-                                </template>
+                <template v-else>
+                    <div class="pair-selection flex-row">
+                        <ButtonGroup
+                            v-if="!isMobile"
+                            :options="leftButtonGroupOptions"
+                            :value="leftAsset"
+                            @input="setLeftAsset"
+                        />
+                        <select v-else v-model="leftAsset" @input="setLeftAsset($event.target.value)">
+                            <option v-for="[key, option] in Object.entries(leftButtonGroupOptions)" :key="key"
+                                :value="key" :selected="key === leftAsset" :disabled="option.disabled">
+                                {{ option.label }}
+                            </option>
+                        </select>
+                        <SwapIcon />
+                        <ButtonGroup
+                            v-if="!isMobile"
+                            :options="rightButtonGroupOptions"
+                            :value="rightAsset"
+                            @input="setRightAsset"
+                        />
+                        <select v-else v-model="rightAsset" @input="setRightAsset($event.target.value)">
+                            <option v-for="[key, option] in Object.entries(rightButtonGroupOptions)" :key="key"
+                                :value="key" :selected="key === rightAsset" :disabled="option.disabled">
+                                {{ option.label }}
+                            </option>
+                        </select>
+                    </div>
+                    <div v-if="disabledSwap" class="swap-disabled-text">
+                        {{ $t('Swap not possible. Your balance is lower than the fee.') }}
+                    </div>
+                    <div v-else-if="!feeIsLoading && limits" class="swap-info flex-row" >
+                        <SwapFeesTooltip
+                            preferredPosition="bottom left"
+                            :nimFeeFiat="nimFeeFiat"
+                            :btcFeeFiat="btcFeeFiat"
+                            :usdcFeeFiat="usdcFeeFiat"
+                            :serviceSwapFeeFiat="serviceSwapFeeFiat"
+                            :serviceSwapFeePercentage="serviceSwapFeePercentage"
+                            :currency="currency"
+                            :container="this"
+                        >
+                            <div slot="trigger" class="flex-row" :class="{'high-fees': isHighRelativeFees}">
+                                <LightningIcon v-if="isHighRelativeFees"/>
+                                <i18n v-if="feeSmallerThanSmUnit" tag="span" path="< {amount} fee" class="fee">
+                                    <template #amount>
+                                        <FiatAmount :amount="fiatSmUnit"
+                                            :hideDecimals="false" :currency="fiatCurrency"/>
+                                    </template>
+                                </i18n>
+                                <i18n v-else tag="span" path="{amount} fee" class="fee">
+                                    <template #amount>
+                                        <FiatAmount :amount="totalFeeFiat"
+                                            :hideDecimals="false" :currency="fiatCurrency"/>
+                                    </template>
+                                </i18n>
+                            </div>
+
+                            <div
+                                v-if="rightUnitsPerLeftCoin !== Infinity && rightUnitsPerLeftCoin !== -Infinity"
+                                slot="exchange-rate" class="exchange-rate">
+                                <span>
+                                    1 {{ leftAsset }} =
+                                    <Amount :amount="Math.round(rightUnitsPerLeftCoin)"
+                                        :currency="rightAsset.toLowerCase()"/>
+                                </span>
+                                <label>{{ $t('Exchange rate') }}</label>
+                            </div>
+                        </SwapFeesTooltip>
+
+                        <strong class="dot">&middot;</strong>
+
+                        <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                            class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
+                            <div slot="trigger" class="limits flex-row" :class="{
+                                'limit-reached': isLimitReached,
+                                'kyc-connected': kycUser,
+                            }">
+                                <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
+                                <KycIcon v-if="kycUser" />
+                            </div>
+                            <div class="price-breakdown">
+                                <label>{{ $t('30-day Limit') }}</label>
+                                <FiatConvertedAmount v-if="limits"
+                                    :amount="limits.monthly.luna" currency="nim" roundDown/>
+                                <span v-else>{{ $t('loading...') }}</span>
+                            </div>
+                            <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
+                                <FiatConvertedAmount slot="value"
+                                    :amount="limits.remaining.luna" currency="nim" roundDown/>
                             </i18n>
-                            <i18n v-else tag="span" path="{amount} fee" class="fee">
-                                <template #amount>
-                                    <FiatAmount :amount="totalFeeFiat"
-                                        :hideDecimals="false" :currency="fiatCurrency"/>
-                                </template>
-                            </i18n>
-                        </div>
-
-                        <div
-                            v-if="rightUnitsPerLeftCoin !== Infinity && rightUnitsPerLeftCoin !== -Infinity"
-                            slot="exchange-rate" class="exchange-rate">
-                            <span>
-                                1 {{ leftAsset }} =
-                                <Amount :amount="Math.round(rightUnitsPerLeftCoin)"
-                                    :currency="rightAsset.toLowerCase()"/>
-                            </span>
-                            <label>{{ $t('Exchange rate') }}</label>
-                        </div>
-                    </SwapFeesTooltip>
-
-                    <strong class="dot">&middot;</strong>
-
-                    <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                        class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
-                        <div slot="trigger" class="limits flex-row" :class="{
-                            'limit-reached': isLimitReached,
-                            'kyc-connected': kycUser,
-                        }">
-                            <FiatAmount :amount="currentLimitFiat" :currency="currency" hideDecimals/>
-                            <KycIcon v-if="kycUser" />
-                        </div>
-                        <div class="price-breakdown">
-                            <label>{{ $t('30-day Limit') }}</label>
-                            <FiatConvertedAmount v-if="limits"
-                                :amount="limits.monthly.luna" currency="nim" roundDown/>
-                            <span v-else>{{ $t('loading...') }}</span>
-                        </div>
-                        <i18n v-if="limits" class="explainer" path="{value} remaining" tag="p">
-                            <FiatConvertedAmount slot="value"
-                                :amount="limits.remaining.luna" currency="nim" roundDown/>
-                        </i18n>
-                        <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
-                            {{ $t('Settings') }}
-                        </router-link> -->
-                        <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser"
-                            @click="kycOverlayOpened = true" />
-                    </Tooltip>
-                </div>
-                <div v-else class="flex-row" :class="{'fees-limits-loading': feeIsLoading || !limits}">
-                    <CircleSpinner/>
-                    {{ $t('Loading fees and limits') }}
-                </div>
+                            <!-- <router-link v-if="kycUser" to="/settings" class="nq-link">
+                                {{ $t('Settings') }}
+                            </router-link> -->
+                            <KycPrompt v-if="$config.ten31Pass.enabled && !kycUser"
+                                @click="kycOverlayOpened = true" />
+                        </Tooltip>
+                    </div>
+                    <div v-else class="flex-row" :class="{'fees-limits-loading': feeIsLoading || !limits}">
+                        <CircleSpinner/>
+                        {{ $t('Loading fees and limits') }}
+                    </div>
+                </template>
             </div>
         </PageHeader>
         <PageBody class="flex-column">
@@ -113,10 +121,11 @@
                 :newLeftBalance="newLeftBalance"
                 :newRightBalance="newRightBalance"
                 :fiatLimit="typeof currentLimitFiat === 'number' ? currentLimitFiat : undefined"
+                :disabled="disabledSwap"
                 @change="onSwapBalanceBarChange"
                 @onActiveAddressClick="addressListOverlayOpened = true"
             />
-            <div class="columns swap-amounts flex-row">
+            <div class="columns swap-amounts flex-row" :class="{ disabled: disabledSwap }">
                 <div class="left-column" :class="!wantLeft && !getLeft
                     ? 'no-value'
                     : direction === SwapDirection.LEFT_TO_RIGHT ? 'nq-blue' : 'nq-green'"
@@ -1845,6 +1854,11 @@ export default defineComponent({
 
         const isLedgerAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER);
 
+        // If fee is higher than the balance in both sides of the swap
+        const disabledSwap = computed(() =>
+            (accountBalance(leftAsset.value) === 0 && accountBalance(rightAsset.value) === 0)
+            || (totalFeeFiat.value > myRightFeeFiat.value && totalFeeFiat.value > myLeftFeeFiat.value));
+
         return {
             onClose,
             leftAsset,
@@ -1876,6 +1890,7 @@ export default defineComponent({
             fiatCurrency: currency.value,
             roundedUpFeeFiat,
             feeIsLoading,
+            disabledSwap,
             getPlaceholder,
             onInput,
             onFocus,
@@ -2017,6 +2032,11 @@ export default defineComponent({
     & ::v-deep .circle-spinner {
         width: 14px;
     }
+}
+
+.swap-disabled-text {
+    color: #D94432;
+    font-weight: 600;
 }
 
 .swap-info {
@@ -2289,6 +2309,16 @@ export default defineComponent({
             svg {
                 opacity: 0.6;
             }
+        }
+    }
+
+    &.disabled ::v-deep .amount-input {
+        pointer-events: none !important;
+
+        & :v-deep input.nq-input {
+            border: 0 !important;
+            pointer-events: none !important;
+            box-shadow: none !important;
         }
     }
 }

@@ -1,11 +1,12 @@
 <template>
-    <div class="swap-balance-bar flex-column" ref="root" :class="{ animating: animatingBars }">
+    <div class="swap-balance-bar flex-column" ref="root" :class="{ animating: animatingBars, disabled }">
         <div class="balance-bar-header flex-row">
             <button v-if="leftAsset === SwapAsset.NIM" class="reset left nimiq currency"
                 :class="{ single: backgroundAddresses.length === 0 }"
                 @click="onActiveAddressClick"
             >
                 <div class="identicon-stack" ref="$nimiqIcon">
+                    <div v-if="disabled" class="disabled"></div>
                     <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                     <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                     <Identicon class="primary" :address="activeAddressInfo.address"/>
@@ -66,14 +67,16 @@
             </div>
             <div class="separator nq-light-blue-bg" ref="$separator">
                 <transition name="fade">
-                    <SlideHint direction="left" v-if="distributionPercents.right <= 2"/>
+                    <SlideHint direction="left" v-if="!disabled && distributionPercents.right <= 2"/>
                 </transition>
                 <div class="handle"
                     @mousedown="onMouseDown"
                     @touchstart="onMouseDown"
-                ></div>
+                >
+                    <div v-if="disabled" class="disabled"></div>
+                </div>
                 <transition name="fade">
-                    <SlideHint direction="right" v-if="distributionPercents.left <= 2"/>
+                    <SlideHint direction="right" v-if="!disabled && distributionPercents.left <= 2"/>
                 </transition>
             </div>
             <div class="bar right flex-row"
@@ -117,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
 import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -166,6 +169,10 @@ export default defineComponent({
         },
         fiatLimit: {
             type: Number,
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props, context) {
@@ -442,21 +449,26 @@ export default defineComponent({
             updateEquiPointVisibility();
         }
 
-        onMounted(() => {
+        function attachEventListeners() {
             document.body.addEventListener('mouseup', onMouseUp);
             document.body.addEventListener('touchend', onMouseUp);
             document.body.addEventListener('mousemove', onMouseMove);
             document.body.addEventListener('touchmove', onMouseMove);
             render();
-        });
+        }
 
-        onUnmounted(() => {
+        function detachEventListeners() {
             document.body.removeEventListener('mouseup', onMouseUp);
             document.body.removeEventListener('touchend', onMouseUp);
             document.body.removeEventListener('mousemove', onMouseMove);
             document.body.removeEventListener('touchmove', onMouseMove);
             cancelAnimationFrame(animationFrameHandle);
-        });
+        }
+
+        watch(() => props.disabled, () => (props.disabled) ? detachEventListeners() : attachEventListeners());
+
+        onMounted(() => attachEventListeners());
+        onUnmounted(() => detachEventListeners());
 
         /* Bars' width */
         const widthToSubstractPercent = computed(() => Math.round(
@@ -629,6 +641,57 @@ export default defineComponent({
 
 .swap-balance-bar {
     position: relative;
+}
+
+.disabled {
+    pointer-events: none !important;
+
+    .currency {
+        color: rgba(31, 35, 72, 0.4) !important;
+
+        & ::v-deep svg {
+            color: rgba(31, 35, 72, 0.4) !important;
+        }
+
+        .identicon-stack .disabled {
+            position: absolute;
+            inset: 0;
+            background: #424242;
+            z-index: 1;
+            left: -2rem;
+            right: -1rem;
+            mix-blend-mode: color;
+        }
+    }
+
+    .bar {
+        background-color: rgba(31, 35, 72, 0.1) !important;
+        border: 0 !important;
+    }
+
+    .separator {
+        background: rgba(31, 35, 72, 0.2) !important;
+        background-image: none !important;
+    }
+
+    .handle {
+        position: relative;
+
+        .disabled {
+            // As the handle is a image, we create a mask to make it look disabled
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0.3;
+            z-index: 5;
+            border-radius: 999px;
+        }
+    }
+
+    .left-total-percent,
+    .right-total-percent {
+        color: rgba(31, 35, 72, 0.4) !important;
+    }
 }
 
 .balance-bar-header {

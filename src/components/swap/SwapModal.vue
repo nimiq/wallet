@@ -1431,8 +1431,8 @@ export default defineComponent({
                             value: '0',
                             nonce: forwarderNonce.toString(),
                             gas: gasLimit.toString(),
-                            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 2 hours
+                            validUntil: (useUsdcNetworkStore().state.height + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
                         },
                         relayData: {
                             gasPrice: gasPrice.toString(),
@@ -1516,8 +1516,8 @@ export default defineComponent({
                             value: '0',
                             nonce: forwarderNonce.toString(),
                             gas: gasLimit.toString(),
-                            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 2 hours
+                            validUntil: (useUsdcNetworkStore().state.height + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
                         },
                         relayData: {
                             gasPrice: gasPrice.toString(),

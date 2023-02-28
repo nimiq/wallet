@@ -16,7 +16,7 @@ msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:183
 #: src/components/modals/UsdcSendModal.vue:212
-#: src/components/swap/SwapModal.vue:55
+#: src/components/swap/SwapModal.vue:62
 msgid "{amount} fee"
 msgstr ""
 
@@ -79,7 +79,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:92
+#: src/components/swap/SwapModal.vue:99
 msgid "{value} remaining"
 msgstr ""
 
@@ -102,7 +102,7 @@ msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:177
 #: src/components/modals/UsdcSendModal.vue:206
-#: src/components/swap/SwapModal.vue:49
+#: src/components/swap/SwapModal.vue:56
 msgid "< {amount} fee"
 msgstr ""
 
@@ -147,7 +147,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:87
+#: src/components/swap/SwapModal.vue:94
 msgid "30-day Limit"
 msgstr ""
 
@@ -479,13 +479,13 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:180
-#: src/components/swap/SwapModal.vue:179
+#: src/components/swap/SwapModal.vue:188
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/SellCryptoModal.vue:194
-#: src/components/swap/SwapModal.vue:191
+#: src/components/swap/SwapModal.vue:200
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -557,7 +557,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:283
 #: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:232
+#: src/components/swap/SwapModal.vue:241
 msgid "Choose an Address"
 msgstr ""
 
@@ -602,9 +602,9 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:177
-#: src/components/swap/SwapModal.vue:182
-#: src/components/swap/SwapModal.vue:194
+#: src/components/swap/SwapModal.vue:186
+#: src/components/swap/SwapModal.vue:191
+#: src/components/swap/SwapModal.vue:203
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr ""
@@ -890,7 +890,7 @@ msgstr ""
 msgid "Euro"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:71
+#: src/components/swap/SwapModal.vue:78
 msgid "Exchange rate"
 msgstr ""
 
@@ -1258,7 +1258,7 @@ msgstr ""
 msgid "Load file"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:105
+#: src/components/swap/SwapModal.vue:112
 msgid "Loading fees and limits"
 msgstr ""
 
@@ -1269,7 +1269,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:90
+#: src/components/swap/SwapModal.vue:97
 msgid "loading..."
 msgstr ""
 
@@ -2059,6 +2059,14 @@ msgstr ""
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
+#: src/components/swap/SwapModal.vue:10
+msgid "Swap not possible. Ledger accounts are not supported."
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:41
+msgid "Swap not possible. Your balance is lower than the fee."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr ""
@@ -2112,7 +2120,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:967
+#: src/components/swap/SwapModal.vue:972
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."

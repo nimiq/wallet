@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/composition-api';
 import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from '../../stores/BtcAddress';

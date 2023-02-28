@@ -465,8 +465,6 @@ export default defineComponent({
             cancelAnimationFrame(animationFrameHandle);
         }
 
-        watch(() => props.disabled, () => (props.disabled) ? detachEventListeners() : attachEventListeners());
-
         onMounted(() => attachEventListeners());
         onUnmounted(() => detachEventListeners());
 

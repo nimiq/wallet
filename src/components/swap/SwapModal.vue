@@ -1854,10 +1854,18 @@ export default defineComponent({
 
         const isLedgerAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER);
 
-        // If fee is higher than the balance in both sides of the swap
-        const disabledSwap = computed(() =>
-            (accountBalance(leftAsset.value) === 0 && accountBalance(rightAsset.value) === 0)
-            || (totalFeeFiat.value > myRightFeeFiat.value && totalFeeFiat.value > myLeftFeeFiat.value));
+        const disabledSwap = computed(() => {
+            const leftRate = exchangeRates.value[leftAsset.value.toLowerCase()][currency.value]!;
+            const rightRate = exchangeRates.value[rightAsset.value.toLowerCase()][currency.value]!;
+
+            const leftBalance = accountBalance(leftAsset.value) * leftRate;
+            const rightBalance = accountBalance(rightAsset.value) * rightRate;
+            if (leftBalance + rightBalance < totalFeeFiat.value) {
+                return true;
+            }
+
+            return false;
+        });
 
         return {
             onClose,

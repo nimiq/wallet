@@ -12,18 +12,18 @@ export default {
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     usdc: {
-        enabled: true,
+        enabled: false,
         networkId: 80001 as number | string, // Can also be 'maticmum'
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
         rpcMaxBlockRange: 10_000,
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
-        transferContract: '0x2805f3187dcDfa424EFA8c55Db6012Cf08Fa6eEc',
+        transferContract: '0x2805f3187dcDfa424EFA8c55Db6012Cf08Fa6eEc', // v3
         htlcContract: '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936',
         relayHubContract: '0x6646cD15d33cE3a6933e36de38990121e8ba2806',
         uniswapFactoryContract: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wmaticContract: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
-        startHistoryScanHeight: 29621817,
+        earliestHistoryScanHeight: 29621817, // see config.local.ts
     },
 
     fastspot: {
@@ -37,17 +37,17 @@ export default {
     },
 
     oasis: {
-        underMaintenance: false,
+        underMaintenance: true,
         apiEndpoint: 'https://api-sandbox.nimiqoasis.com/v1',
         feePercentage: 0.01, // 1%
         minFee: 0.50, // Euro
-        minBuyAmount: 0, // Euro
+        minBuyAmount: 35, // Euro
         maxFreeAmount: 999, // Euro
         maxKycAmount: 4999, // Euro
     },
 
     ten31Pass: {
-        enabled: true,
+        enabled: false,
         apiEndpoint: 'https://test.pass.ten31.com',
         appId: 'e0d5cdbe-bdb6-41a1-83bf-72cf72dc48ac',
         services: {

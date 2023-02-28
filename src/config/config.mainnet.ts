@@ -12,7 +12,7 @@ export default {
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes
 
     usdc: {
-        enabled: true,
+        enabled: false,
         networkId: 137 as number | string, // Can also be 'matic'
         rpcEndpoint: 'https://polygon-rpc.com',
         rpcMaxBlockRange: 3_000,
@@ -23,7 +23,7 @@ export default {
         uniswapFactoryContract: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wmaticContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-        startHistoryScanHeight: 39624290,
+        earliestHistoryScanHeight: 39624290, // see config.local.ts
     },
 
     fastspot: {

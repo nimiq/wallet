@@ -19,20 +19,20 @@
 
         <section class="nimiq-network full-width scroller">
             <NetworkStats>
-                <template slot="network">NIM</template>
-                <template slot="network-info">
+                <template #network>NIM</template>
+                <template #network-info>
                     <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
                 </template>
-                <template slot="consensus">{{getConsensusStateString()}}</template>
-                <template slot="peerCount">{{ $tc('{count} Peer | {count} Peers', $network.peerCount) }}</template>
-                <template slot="fee">
+                <template #consensus>{{getConsensusStateString()}}</template>
+                <template #peerCount>{{ $tc('{count} Peer | {count} Peers', $network.peerCount) }}</template>
+                <template #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
                             <FiatConvertedAmount :amount="0" :currency="CryptoCurrency.NIM" roundDown/>
                         </template>
                     </i18n>
                 </template>
-                <template slot="txTime">{{ $t('1 min') }}</template>
+                <template #txTime>{{ $t('1 min') }}</template>
             </NetworkStats>
             <div class="map flex-column" ref="$map">
                 <NetworkMap @own-x-coordinate="scrollMap"/>
@@ -41,31 +41,31 @@
 
         <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.usdc.enabled}">
             <NetworkStats>
-                <template slot="network">BTC</template>
-                <template v-if="btcFee" slot="fee">
+                <template #network>BTC</template>
+                <template v-if="btcFee" #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
                             <FiatConvertedAmount :amount="btcFee" :currency="CryptoCurrency.BTC"/>
                         </template>
                     </i18n>
                 </template>
-                <template v-else slot="fee"><CircleSpinner /></template>
-                <template slot="txTime">{{ $t('10 min') }}</template>
+                <template v-else #fee><CircleSpinner /></template>
+                <template #txTime>{{ $t('10 min') }}</template>
             </NetworkStats>
         </section>
 
         <section v-if="$config.usdc.enabled" :class="{'full-width': !$config.enableBitcoin}">
             <NetworkStats>
-                <template slot="network">USDC</template>
-                <template v-if="usdcFee" slot="fee">
+                <template #network>USDC</template>
+                <template v-if="usdcFee" #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
                             <FiatConvertedAmount :amount="usdcFee" :currency="CryptoCurrency.USDC"/>
                         </template>
                     </i18n>
                 </template>
-                <template v-else slot="fee"><CircleSpinner /></template>
-                <template slot="txTime">{{ $t('20 sec') }}</template>
+                <template v-else #fee><CircleSpinner /></template>
+                <template #txTime>{{ $t('20 sec') }}</template>
             </NetworkStats>
         </section>
 

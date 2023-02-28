@@ -20,8 +20,9 @@ msgstr ""
 msgid "{amount} fee"
 msgstr ""
 
-#: src/components/layouts/Network.vue:40
-#: src/components/layouts/Network.vue:55
+#: src/components/layouts/Network.vue:29
+#: src/components/layouts/Network.vue:46
+#: src/components/layouts/Network.vue:61
 msgid "{amount}/tx"
 msgstr ""
 
@@ -32,7 +33,7 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:303
 #: src/components/modals/TransactionModal.vue:298
-#: src/components/modals/UsdcTransactionModal.vue:226
+#: src/components/modals/UsdcTransactionModal.vue:229
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -105,20 +106,16 @@ msgstr ""
 msgid "< {amount} fee"
 msgstr ""
 
-#: src/components/layouts/Network.vue:28
-msgid "0€/tx"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:20
 #: src/components/modals/SellCryptoModal.vue:19
 msgid "1"
 msgstr ""
 
-#: src/components/layouts/Network.vue:29
+#: src/components/layouts/Network.vue:35
 msgid "1 min"
 msgstr ""
 
-#: src/components/layouts/Network.vue:47
+#: src/components/layouts/Network.vue:53
 msgid "10 min"
 msgstr ""
 
@@ -135,7 +132,7 @@ msgstr ""
 msgid "2-4h"
 msgstr ""
 
-#: src/components/layouts/Network.vue:62
+#: src/components/layouts/Network.vue:68
 msgid "20 sec"
 msgstr ""
 
@@ -354,7 +351,7 @@ msgstr ""
 #: src/components/BtcTransactionListItem.vue:263
 #: src/components/modals/BtcTransactionModal.vue:522
 #: src/components/modals/TransactionModal.vue:569
-#: src/components/modals/UsdcTransactionModal.vue:408
+#: src/components/modals/UsdcTransactionModal.vue:419
 #: src/components/TransactionListItem.vue:242
 #: src/components/UsdcTransactionListItem.vue:260
 msgid "Bank Account"
@@ -385,7 +382,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:120
 #: src/components/modals/BtcTransactionModal.vue:136
 #: src/components/modals/TransactionModal.vue:561
-#: src/components/modals/UsdcTransactionModal.vue:404
+#: src/components/modals/UsdcTransactionModal.vue:415
 #: src/components/TransactionListItem.vue:234
 #: src/components/UsdcTransactionListItem.vue:256
 msgid "Bitcoin"
@@ -401,13 +398,13 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:300
 #: src/components/modals/TransactionModal.vue:295
-#: src/components/modals/UsdcTransactionModal.vue:223
+#: src/components/modals/UsdcTransactionModal.vue:226
 msgid "Block #{height}"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:310
 #: src/components/modals/TransactionModal.vue:307
-#: src/components/modals/UsdcTransactionModal.vue:235
+#: src/components/modals/UsdcTransactionModal.vue:238
 #: src/components/swap/SwapAnimation.vue:190
 #: src/components/swap/SwapAnimation.vue:270
 msgid "Block explorer"
@@ -505,7 +502,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:556
-#: src/components/modals/UsdcTransactionModal.vue:393
+#: src/components/modals/UsdcTransactionModal.vue:404
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/components/TransactionListItem.vue:229
 #: src/components/UsdcTransactionListItem.vue:245
@@ -633,7 +630,7 @@ msgstr ""
 msgid "Connected to"
 msgstr ""
 
-#: src/components/layouts/Network.vue:106
+#: src/components/layouts/Network.vue:115
 msgid "connecting"
 msgstr ""
 
@@ -876,7 +873,7 @@ msgstr ""
 msgid "Error:"
 msgstr ""
 
-#: src/components/layouts/Network.vue:107
+#: src/components/layouts/Network.vue:116
 msgid "established"
 msgstr ""
 
@@ -902,6 +899,10 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:67
 #: src/components/modals/TransactionModal.vue:83
 msgid "Expired"
+msgstr ""
+
+#: src/components/modals/UsdcTransactionModal.vue:101
+msgid "Expired HTLC"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:44
@@ -1081,8 +1082,8 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:228
 #: src/components/modals/TransactionModal.vue:198
 #: src/components/modals/TransactionModal.vue:223
-#: src/components/modals/UsdcTransactionModal.vue:132
-#: src/components/modals/UsdcTransactionModal.vue:158
+#: src/components/modals/UsdcTransactionModal.vue:131
+#: src/components/modals/UsdcTransactionModal.vue:157
 msgid "Historic value"
 msgstr ""
 
@@ -1297,7 +1298,7 @@ msgstr ""
 msgid "Long press to confirm"
 msgstr ""
 
-#: src/components/layouts/Network.vue:104
+#: src/components/layouts/Network.vue:113
 msgid "lost"
 msgstr ""
 
@@ -1648,6 +1649,7 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:293
 #: src/components/modals/TransactionModal.vue:288
+#: src/components/modals/UsdcTransactionModal.vue:219
 msgid "Refund"
 msgstr ""
 
@@ -2004,7 +2006,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:552
 #: src/components/modals/TransactionModal.vue:7
-#: src/components/modals/UsdcTransactionModal.vue:400
+#: src/components/modals/UsdcTransactionModal.vue:411
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/components/TransactionListItem.vue:225
 #: src/components/UsdcTransactionListItem.vue:252
@@ -2069,7 +2071,7 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/components/layouts/Network.vue:105
+#: src/components/layouts/Network.vue:114
 msgid "syncing"
 msgstr ""
 
@@ -2234,8 +2236,8 @@ msgstr ""
 msgid "This usually takes between one and two working days."
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:134
-#: src/components/modals/UsdcTransactionModal.vue:160
+#: src/components/modals/UsdcTransactionModal.vue:133
+#: src/components/modals/UsdcTransactionModal.vue:159
 msgid "This value is based on the historic exchange rate of the USD and your reference currency."
 msgstr ""
 

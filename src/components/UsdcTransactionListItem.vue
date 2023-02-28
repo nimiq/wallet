@@ -25,7 +25,7 @@
             <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/>
             <Identicon v-else-if="swapData && swapData.asset === SwapAsset.NIM" :address="peerAddress" />
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-            <Avatar v-else :label="peerLabel || ''"/>
+            <Avatar v-else :label="isCancelledSwap ? '' : (peerLabel || '')"/>
             <div v-if="swapInfo /* || isSwapProxy */" class="swap"><SwapSmallIcon/></div>
         </div>
         <div class="data">
@@ -313,6 +313,7 @@ export default defineComponent({
             SwapAsset,
             swapInfo,
             swapData,
+            isCancelledSwap,
         };
     },
     components: {

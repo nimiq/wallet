@@ -1535,7 +1535,6 @@ export default defineComponent({
                         type: 'USDC',
                         ...relayRequest,
                         amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
-                        fee: swapSuggestion.to.fee,
                     };
                 }
 

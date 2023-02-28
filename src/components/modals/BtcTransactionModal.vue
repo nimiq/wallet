@@ -327,7 +327,7 @@ import {
     Identicon,
 } from '@nimiq/vue-components';
 import { TransactionState } from '@nimiq/electrum-client';
-import { RefundSwapRequest } from '@nimiq/hub-api';
+import { RefundSwapRequest, SignedBtcTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import Amount from '../Amount.vue';
@@ -636,7 +636,7 @@ export default defineComponent({
 
             const tx = await refundSwap(requestPromise);
             if (!tx) return;
-            const plainTx = await sendTransaction(tx);
+            const plainTx = await sendTransaction(tx as SignedBtcTransaction);
             await context.root.$nextTick();
             context.root.$router.replace(`/btc-transaction/${plainTx.transactionHash}`);
         }

@@ -39,7 +39,7 @@ const LIST_LENGTH = 7;
 export default defineComponent({
     props: {
         peers: {
-            type: Object,
+            type: Set,
             required: true,
         },
     },

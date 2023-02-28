@@ -272,14 +272,16 @@ section {
         display: flex;
 
         @media screen and (max-width: 700px) {
+            padding-left: 0;
+
             & ::v-deep .network-stats {
                 position: sticky;
-                background: linear-gradient(90deg, #121533 60.75%, rgba(18, 21, 51, 0) 100%);
-                left: -2rem;
+                left: 0;
                 top: 2rem;
-                padding-right: 7rem;
-                z-index: 1;
                 padding-left: 2rem;
+                padding-right: 7rem;
+                background: linear-gradient(90deg, #121533 60.75%, rgba(18, 21, 51, 0) 100%);
+                z-index: 1;
             }
         }
 
@@ -287,7 +289,6 @@ section {
             width: 100%;
             flex-grow: 1;
             flex-shrink: 1;
-            flex: 1;
 
             @media screen and (max-width: 700px) {
                 position: relative;

@@ -485,7 +485,7 @@ export default defineComponent({
 
                 const [
                     forwarderNonce,
-                    { chainTokenFee, fee, gasPrice, gasLimit, relay },
+                    { fee, gasPrice, gasLimit, relay },
                 ] = await Promise.all([
                     htlcContract.getNonce(myAddress) as Promise<BigNumber>,
                     calculateFee(
@@ -501,7 +501,6 @@ export default defineComponent({
                     /** bytes32 id */ htlcDetails.address,
                     /** address target */ myAddress,
                     /** uint256 fee */ fee,
-                    /** uint256 chainTokenFee */ chainTokenFee,
                 ]);
 
                 const relayRequest: RelayRequest = {

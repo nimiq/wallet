@@ -28,7 +28,7 @@
     "@nimiq/fastspot-api": "^1.7.0",
     "@nimiq/hub-api": "https://gitpkg.now.sh/nimiq/hub/client?907ce52aa44c288bc6b8b6662a71a6d333138286&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build",
     "@nimiq/iqons": "^1.5.2",
-    "@nimiq/libswap": "^1.2.0-beta.4",
+    "@nimiq/libswap": "^1.2.0-beta.5",
     "@nimiq/oasis-api": "^1.1.1",
     "@nimiq/oasis-bank-list": "https://github.com/nimiq/oasis-bank-list#main",
     "@nimiq/rpc": "^0.4.1",

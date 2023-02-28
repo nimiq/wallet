@@ -824,8 +824,6 @@ export default defineComponent({
         };
 
         type UsdcFees = {
-            /** Fee in MATIC units */
-            chainTokenFee: BigNumber,
             /** Fee in USDC units */
             fee: number,
             /** Gas limit in MATIC units */
@@ -856,7 +854,6 @@ export default defineComponent({
                 : undefined;
 
             const {
-                chainTokenFee,
                 fee,
                 gasLimit,
                 gasPrice,
@@ -881,7 +878,6 @@ export default defineComponent({
             usdcGasPrice.value = gasPrice.toNumber();
 
             usdcFeeStuff.value = {
-                chainTokenFee,
                 fee: fee.toNumber(),
                 gasLimit,
                 gasPrice,
@@ -1414,7 +1410,7 @@ export default defineComponent({
                         htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
                     ]);
 
-                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
+                    const { fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
 
                     const data = htlcContract.interface.encodeFunctionData('openWithApproval', [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1425,7 +1421,6 @@ export default defineComponent({
                         /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                         /* uint256 timeout */ 0,
                         /* uint256 fee */ fee,
-                        /* uint256 chainTokenFee */ chainTokenFee,
                         /* uint256 approval */ swapSuggestion.from.amount + fee,
                         /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                         /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1508,13 +1503,12 @@ export default defineComponent({
 
                     const forwarderNonce = await htlcContract.getNonce(toAddress) as Promise<BigNumber>;
 
-                    const { chainTokenFee, fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
+                    const { fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
 
                     const data = htlcContract.interface.encodeFunctionData('redeemWithSecretInData', [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                         /* address target */ toAddress,
                         /* uint256 fee */ fee,
-                        /* uint256 chainTokenFee */ chainTokenFee,
                     ]);
 
                     const relayRequest: RelayRequest = {

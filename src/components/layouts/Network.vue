@@ -1,6 +1,6 @@
 <template>
     <div class="network nq-blue-bg">
-        <div class="menu-bar flex-row">
+        <div class="menu-bar full-width flex-row">
             <button class="reset menu-button" @click="$router.push({name: 'network', query: {sidebar: true}})">
                 <MenuIcon/>
                 <AttentionDot v-if="updateAvailable"/>
@@ -17,7 +17,7 @@
             </button>
         </div>
 
-        <section class="nimiq-network scroller">
+        <section class="nimiq-network full-width scroller">
             <NetworkStats>
                 <template slot="network">NIM</template>
                 <template slot="network-info">
@@ -33,7 +33,7 @@
             </div>
         </section>
 
-        <section class="btc-network">
+        <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.usdc.enabled}">
             <NetworkStats>
                 <template slot="network">BTC</template>
                 <template v-if="btcFeeFiat" slot="fee">
@@ -48,7 +48,7 @@
             </NetworkStats>
         </section>
 
-        <section class="polygon-network">
+        <section v-if="$config.usdc.enabled" :class="{'full-width': !$config.enableBitcoin}">
             <NetworkStats>
                 <template slot="network">USDC</template>
                 <template v-if="usdcFeeFiat" slot="fee">
@@ -81,23 +81,25 @@ import { InfoCircleIcon, FiatAmount, CircleSpinner } from '@nimiq/vue-components
 import { calculateFee as calculateUsdcFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '@/electrum';
-import { useFiatStore } from '@/stores/Fiat';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
+import { useFiatStore } from '../../stores/Fiat';
+import { useSettingsStore } from '../../stores/Settings';
+import { useNetworkStore } from '../../stores/Network';
+import { useConfig } from '../../composables/useConfig';
+import { WIDTH } from '../../lib/NetworkMap';
 import NetworkMap from '../NetworkMap.vue';
 import NetworkStats from '../NetworkStats.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
 import AttentionDot from '../AttentionDot.vue';
-import { WIDTH } from '../../lib/NetworkMap';
-import { useSettingsStore } from '../../stores/Settings';
-import { useNetworkStore } from '../../stores/Network';
 
 const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
 export default defineComponent({
     setup(props, context) {
         const { state: $network } = useNetworkStore();
+        const { config } = useConfig();
 
         function getConsensusStateString() {
             return {
@@ -128,19 +130,23 @@ export default defineComponent({
 
         const { currency: fiatCurrency, state: fiat$ } = useFiatStore();
 
-        const btcExchangeRate = fiat$.exchangeRates.btc[fiat$.currency]!;
-        const usdcExchangeRate = fiat$.exchangeRates.usdc[fiat$.currency]!;
-
-        const usdcFeeFiat = ref(0);
         const btcFeeFiat = ref(0);
+        const usdcFeeFiat = ref(0);
 
         onMounted(async () => {
-            const client = await getElectrumClient();
-            await client.waitForConsensusEstablished();
-            const fees = await client.estimateFees([12]);
-            btcFeeFiat.value = (estimateFees(2, 2, fees[12]) / 1e8) * btcExchangeRate;
+            // No need to watch config for reactive changes because it won't change while on the network view.
+            if (config.enableBitcoin) {
+                const client = await getElectrumClient();
+                await client.waitForConsensusEstablished();
+                const fees = await client.estimateFees([/* blocks */12]);
+                const btcExchangeRate = fiat$.exchangeRates.btc?.[fiat$.currency] || 0;
+                btcFeeFiat.value = (estimateFees(2, 2, fees[12]) / 1e8) * btcExchangeRate;
+            }
 
-            usdcFeeFiat.value = ((await calculateUsdcFee()).fee.toNumber() / 1e6) * usdcExchangeRate;
+            if (config.usdc.enabled) {
+                const usdcExchangeRate = fiat$.exchangeRates.usdc?.[fiat$.currency] || 0;
+                usdcFeeFiat.value = ((await calculateUsdcFee()).fee.toNumber() / 1e6) * usdcExchangeRate;
+            }
         });
 
         return {
@@ -187,10 +193,13 @@ export default defineComponent({
     & ::v-deep .page-body {
         overflow: hidden;
     }
+
+    .full-width {
+        grid-column-end: span 2;
+    }
 }
 
 .menu-bar {
-    grid-column: 1 / -1;
     padding: 2rem;
     justify-content: space-between;
     align-items: center;
@@ -257,7 +266,6 @@ section {
     border-radius: 1rem;
 
     &.nimiq-network {
-        grid-column: 1 / -1;
         display: flex;
 
         @media screen and (max-width: 700px) {

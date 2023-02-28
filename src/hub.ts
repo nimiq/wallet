@@ -17,6 +17,7 @@ import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
 import { useProxyStore, Cashlink } from './stores/Proxy';
+import { useConfig } from './composables/useConfig';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
 import { createTransactionRequest, sendTransaction as sendUsdcTx } from './ethers';
@@ -63,10 +64,14 @@ function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | 
 const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
+    const { config } = useConfig();
+
     // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
     // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
     // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
+
+    if (!config.usdc.enabled) return; // do not show usdc related welcome modals
 
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
@@ -294,6 +299,8 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 }
 
 export async function syncFromHub() {
+    const { config } = useConfig();
+
     let listedAccounts: Account[];
     let listedCashlinks: Cashlink[] = [];
     try {
@@ -335,6 +342,7 @@ export async function syncFromHub() {
         activeAccountInfo.value?.type === AccountType.BIP39
         && !activeAccountInfo.value?.polygonAddresses?.length
         && !welcome2ModalAlreadyShown
+        && config.usdc.enabled
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal
         router.onReady(() => router.push('/usdc-activation'));

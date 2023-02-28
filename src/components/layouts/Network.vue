@@ -25,7 +25,13 @@
                 </template>
                 <template slot="consensus">{{getConsensusStateString()}}</template>
                 <template slot="peerCount">{{ $tc('{count} Peer | {count} Peers', $network.peerCount) }}</template>
-                <template slot="fee">{{ $t('0€/tx') }}</template>
+                <template slot="fee">
+                    <i18n tag="span" path="{amount}/tx">
+                        <template #amount>
+                            <FiatConvertedAmount :amount="0" :currency="CryptoCurrency.NIM" roundDown/>
+                        </template>
+                    </i18n>
+                </template>
                 <template slot="txTime">{{ $t('1 min') }}</template>
             </NetworkStats>
             <div class="map flex-column" ref="$map">
@@ -36,10 +42,10 @@
         <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.usdc.enabled}">
             <NetworkStats>
                 <template slot="network">BTC</template>
-                <template v-if="btcFeeFiat" slot="fee">
-                    <i18n tag="span" path="{amount}/tx" class="fee">
+                <template v-if="btcFee" slot="fee">
+                    <i18n tag="span" path="{amount}/tx">
                         <template #amount>
-                            <FiatAmount :amount="btcFeeFiat" :hideDecimals="false" :currency="fiatCurrency"/>
+                            <FiatConvertedAmount :amount="btcFee" :currency="CryptoCurrency.BTC"/>
                         </template>
                     </i18n>
                 </template>
@@ -51,10 +57,10 @@
         <section v-if="$config.usdc.enabled" :class="{'full-width': !$config.enableBitcoin}">
             <NetworkStats>
                 <template slot="network">USDC</template>
-                <template v-if="usdcFeeFiat" slot="fee">
-                    <i18n tag="span" path="{amount}/tx" class="fee">
+                <template v-if="usdcFee" slot="fee">
+                    <i18n tag="span" path="{amount}/tx">
                         <template #amount>
-                            <FiatAmount :amount="usdcFeeFiat" :hideDecimals="false" :currency="fiatCurrency"/>
+                            <FiatConvertedAmount :amount="usdcFee" :currency="CryptoCurrency.USDC"/>
                         </template>
                     </i18n>
                 </template>
@@ -77,22 +83,23 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from '@vue/composition-api';
-import { InfoCircleIcon, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
+import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculateUsdcFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '@/electrum';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
-import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { useConfig } from '../../composables/useConfig';
+import { CryptoCurrency } from '../../lib/Constants';
 import { WIDTH } from '../../lib/NetworkMap';
 import NetworkMap from '../NetworkMap.vue';
 import NetworkStats from '../NetworkStats.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
 import AttentionDot from '../AttentionDot.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 
 const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
@@ -128,10 +135,8 @@ export default defineComponent({
 
         const { updateAvailable } = useSettingsStore();
 
-        const { currency: fiatCurrency, state: fiat$ } = useFiatStore();
-
-        const btcFeeFiat = ref(0);
-        const usdcFeeFiat = ref(0);
+        const btcFee = ref(0);
+        const usdcFee = ref(0);
 
         onMounted(async () => {
             // No need to watch config for reactive changes because it won't change while on the network view.
@@ -139,17 +144,16 @@ export default defineComponent({
                 const client = await getElectrumClient();
                 await client.waitForConsensusEstablished();
                 const fees = await client.estimateFees([/* blocks */12]);
-                const btcExchangeRate = fiat$.exchangeRates.btc?.[fiat$.currency] || 0;
-                btcFeeFiat.value = (estimateFees(2, 2, fees[12]) / 1e8) * btcExchangeRate;
+                btcFee.value = estimateFees(2, 2, fees[12]);
             }
 
             if (config.usdc.enabled) {
-                const usdcExchangeRate = fiat$.exchangeRates.usdc?.[fiat$.currency] || 0;
-                usdcFeeFiat.value = ((await calculateUsdcFee()).fee.toNumber() / 1e6) * usdcExchangeRate;
+                usdcFee.value = (await calculateUsdcFee()).fee.toNumber();
             }
         });
 
         return {
+            CryptoCurrency,
             showNetworkInfo,
             onNetworkInfoClosed,
             $map,
@@ -157,9 +161,8 @@ export default defineComponent({
             updateAvailable,
             $network,
             getConsensusStateString,
-            btcFeeFiat,
-            usdcFeeFiat,
-            fiatCurrency,
+            btcFee,
+            usdcFee,
         };
     },
     components: {
@@ -171,7 +174,7 @@ export default defineComponent({
         AttentionDot,
         Portal,
         CircleSpinner,
-        FiatAmount,
+        FiatConvertedAmount,
     },
 });
 </script>
@@ -313,6 +316,10 @@ section {
         .stats {
             flex-shrink: 0;
         }
+    }
+
+    .fiat-amount {
+        margin-right: -.75rem;
     }
 
     ::v-deep .circle-spinner {

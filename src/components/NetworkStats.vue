@@ -6,11 +6,11 @@
         </div>
         <div v-if="$slots.consensus" class="stat">
             <div class="nq-label">{{ $t('Consensus') }}</div>
-            <div class="value flex-row active"><ConsensusIcon/><slot name="consensus"/></div>
+            <div class="value capitalize flex-row active"><ConsensusIcon/><slot name="consensus"/></div>
         </div>
         <div v-if="$slots.peerCount" class="stat">
             <div class="nq-label">{{ $t('Connected to') }}</div>
-            <div class="value"><slot name="peerCount"/></div>
+            <div class="value capitalize"><slot name="peerCount"/></div>
         </div>
         <div v-if="$slots.consensus || $slots.peerCount" class="vr"></div>
         <div v-if="$slots.fee" class="stat">
@@ -79,11 +79,14 @@ export default defineComponent({
 .value {
     font-size: var(--h1-size);
     line-height: var(--h1-size);
-    text-transform: capitalize;
     margin-top: 1rem;
 
     @media screen and (min-width: 1160px) {
         margin-top: 1rem;
+    }
+
+    &.capitalize {
+        text-transform: capitalize;
     }
 
     &.flex-row {

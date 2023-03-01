@@ -11,8 +11,8 @@ fi
 # Sync language file
 yarn i18n:sync
 
-# Get up-to-date EBA RT1 bank list
-yarn utils:getBankList
+# Get up-to-date EBA RT1 bank list (disabled while OASIS is not available)
+# yarn utils:getBankList
 
 # Get up-to-date browsers support list from caniuse.
 # The browserslist utility is meant to run via npx, even when usually using yarn, and is compatible with yarn.lock.

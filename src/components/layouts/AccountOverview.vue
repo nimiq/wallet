@@ -57,7 +57,7 @@
                     <AddressList @address-selected="onAddressSelected"/>
                 </div>
 
-                <Tooltip class="nim-btc-swap-button" :container="{ $el: root$ }"
+                <Tooltip class="nim-btc-swap-button" :container="root$ && { $el: root$ }"
                     v-if="hasBitcoinAddresses && $config.enableBitcoin">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
@@ -67,7 +67,7 @@
                     </i18n>
                 </Tooltip>
 
-                <Tooltip class="nim-usdc-swap-button" :container="{ $el: root$ }"
+                <Tooltip class="nim-usdc-swap-button" :container="root$ && { $el: root$ }"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses && $config.usdc.enabled">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
@@ -108,7 +108,7 @@
                     </div>
                 </button>
 
-                <Tooltip class="btc-usdc-swap-button" :container="{ $el: root$ }"
+                <Tooltip class="btc-usdc-swap-button" :container="root$ && { $el: root$ }"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && hasUsdcAddresses
                         && $config.enableBitcoin && $config.usdc.enabled">

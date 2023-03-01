@@ -29,7 +29,7 @@ msgstr "{addresses} verzenden en ontvangen transacties."
 
 #: src/components/modals/UsdcSendModal.vue:183
 #: src/components/modals/UsdcSendModal.vue:212
-#: src/components/swap/SwapModal.vue:55
+#: src/components/swap/SwapModal.vue:62
 msgid "{amount} fee"
 msgstr ""
 
@@ -90,7 +90,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:92
+#: src/components/swap/SwapModal.vue:99
 msgid "{value} remaining"
 msgstr "{value} resterend"
 
@@ -113,7 +113,7 @@ msgstr "+{n} meer"
 
 #: src/components/modals/UsdcSendModal.vue:177
 #: src/components/modals/UsdcSendModal.vue:206
-#: src/components/swap/SwapModal.vue:49
+#: src/components/swap/SwapModal.vue:56
 msgid "< {amount} fee"
 msgstr ""
 
@@ -158,7 +158,7 @@ msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:87
+#: src/components/swap/SwapModal.vue:94
 msgid "30-day Limit"
 msgstr "30 dagen limiet"
 
@@ -212,7 +212,7 @@ msgstr "Activeren"
 msgid "Activate Bitcoin"
 msgstr "Activeer Bitcoin"
 
-#: src/components/modals/UsdcActivationModal.vue:37
+#: src/components/modals/UsdcActivationModal.vue:36
 msgid "Activate USDC"
 msgstr ""
 
@@ -459,7 +459,7 @@ msgstr "Block #{height}"
 msgid "Block explorer"
 msgstr "Block verkenner"
 
-#: src/components/modals/UsdcActivationModal.vue:27
+#: src/components/modals/UsdcActivationModal.vue:26
 msgid "blog post"
 msgstr ""
 
@@ -534,7 +534,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:180
-#: src/components/swap/SwapModal.vue:179
+#: src/components/swap/SwapModal.vue:188
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
@@ -543,7 +543,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/SellCryptoModal.vue:194
-#: src/components/swap/SwapModal.vue:191
+#: src/components/swap/SwapModal.vue:200
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Door op '{text}' te klikken, ga je akkoord met de ToS van {Fastspot}."
 
@@ -597,6 +597,10 @@ msgstr "Verander wachtwoord"
 msgid "Change your language setting."
 msgstr "Verander je taalinstelling."
 
+#: src/components/modals/UsdcActivationModal.vue:33
+msgid "Check the new intro"
+msgstr ""
+
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
 #: src/components/modals/UsdcSendModal.vue:77
@@ -611,7 +615,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:283
 #: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:232
+#: src/components/swap/SwapModal.vue:241
 msgid "Choose an Address"
 msgstr "Kies een adres"
 
@@ -656,8 +660,8 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:177 src/components/swap/SwapModal.vue:182
-#: src/components/swap/SwapModal.vue:194
+#: src/components/swap/SwapModal.vue:186 src/components/swap/SwapModal.vue:191
+#: src/components/swap/SwapModal.vue:203
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Bevestigen"
@@ -958,7 +962,7 @@ msgstr "opgezet"
 msgid "Euro"
 msgstr "Euro"
 
-#: src/components/swap/SwapModal.vue:71
+#: src/components/swap/SwapModal.vue:78
 msgid "Exchange rate"
 msgstr ""
 
@@ -1133,7 +1137,6 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/UsdcActivationModal.vue:34
 #: src/components/modals/UsdcSendModal.vue:25
 #: src/components/modals/WelcomeModal.vue:334
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1352,7 +1355,7 @@ msgstr "Link niet beschikbaar in deze browser"
 msgid "Load file"
 msgstr "Bestand laden"
 
-#: src/components/swap/SwapModal.vue:105
+#: src/components/swap/SwapModal.vue:112
 msgid "Loading fees and limits"
 msgstr ""
 
@@ -1363,7 +1366,7 @@ msgstr "Moonpay laden..."
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:90
+#: src/components/swap/SwapModal.vue:97
 msgid "loading..."
 msgstr "laden..."
 
@@ -1401,7 +1404,7 @@ msgstr ""
 msgid "lost"
 msgstr "verloren"
 
-#: src/components/modals/UsdcActivationModal.vue:21
+#: src/components/modals/UsdcActivationModal.vue:20
 msgid ""
 "Many updates like easier address names, more accessible swaps and an "
 "improved asset overview await."
@@ -1694,7 +1697,7 @@ msgstr "Doel"
 msgid "Raise your limits"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:24
+#: src/components/modals/UsdcActivationModal.vue:23
 msgid ""
 "Read all about it in this {blog_post} or click below for the new wallet "
 "intro."
@@ -2081,8 +2084,11 @@ msgstr "Aanmelden"
 msgid "Simulate EUR payment"
 msgstr "Simuleer betaling in EUR"
 
+#: src/components/modals/UsdcActivationModal.vue:39
+msgid "Skip"
+msgstr ""
+
 #: src/components/modals/BtcActivationModal.vue:27
-#: src/components/modals/UsdcActivationModal.vue:40
 msgid "Skip for now"
 msgstr "Sla het over voor nu"
 
@@ -2187,6 +2193,14 @@ msgstr ""
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
+#: src/components/swap/SwapModal.vue:10
+msgid "Swap not possible. Ledger accounts are not supported."
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:41
+msgid "Swap not possible. Your balance is lower than the fee."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
 msgstr "Swap succesvol!"
@@ -2238,7 +2252,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
-#: src/components/swap/SwapModal.vue:967 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:972 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "De kosten bepalen het minimumbedrag."
@@ -2550,7 +2564,7 @@ msgstr ""
 "Welkom bij de eerste fiat-to-crypto atomic swap. Het is eenvoudig, snel en "
 "gedecentraliseerd."
 
-#: src/components/modals/UsdcActivationModal.vue:18
+#: src/components/modals/UsdcActivationModal.vue:17
 msgid ""
 "Welcome to the updated\n"
 "wallet, now with USDC"
@@ -2664,12 +2678,6 @@ msgid ""
 msgstr ""
 "Je account\n"
 "ondersteund nu Bitcoin!"
-
-#: src/components/modals/UsdcActivationModal.vue:17
-msgid ""
-"Your account now\n"
-"supports USDC!"
-msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:72
 msgid ""

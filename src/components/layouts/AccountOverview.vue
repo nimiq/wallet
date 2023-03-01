@@ -602,6 +602,16 @@ export default defineComponent({
         height: 0;
         justify-self: center;
         white-space: nowrap;
+
+        &::v-deep {
+            .tooltip-box {
+                transform: translateY(-3.75rem);
+            }
+
+            &.top .trigger::after {
+                transform: scaleY(-1) translateY(1.85rem);
+            }
+        }
     }
 }
 

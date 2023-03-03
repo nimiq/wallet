@@ -57,7 +57,7 @@
                     <AddressList @address-selected="onAddressSelected"/>
                 </div>
 
-                <Tooltip class="nim-btc-swap-button" :container="root$ && { $el: root$ }"
+                <Tooltip class="nim-btc-swap-button" ref="nimBtcSwapTooltip$" :container="root$ && { $el: root$ }"
                     v-if="hasBitcoinAddresses && $config.enableBitcoin">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
@@ -67,7 +67,7 @@
                     </i18n>
                 </Tooltip>
 
-                <Tooltip class="nim-usdc-swap-button" :container="root$ && { $el: root$ }"
+                <Tooltip class="nim-usdc-swap-button" ref="nimUsdcSwapTooltip$" :container="root$ && { $el: root$ }"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses && $config.usdc.enabled">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
@@ -108,7 +108,7 @@
                     </div>
                 </button>
 
-                <Tooltip class="btc-usdc-swap-button" :container="root$ && { $el: root$ }"
+                <Tooltip class="btc-usdc-swap-button" ref="btcUsdcSwapTooltip$" :container="root$ && { $el: root$ }"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && hasUsdcAddresses
                         && $config.enableBitcoin && $config.usdc.enabled">
@@ -159,9 +159,41 @@
                 </button>
 
                 <div class="account-backgrounds">
-                    <div class="nimiq-account-background" :style="getAccountBackgroundPosition('nimiq')"></div>
-                    <div class="bitcoin-account-background" :style="getAccountBackgroundPosition('bitcoin')"></div>
-                    <div class="usdc-account-background" :style="getAccountBackgroundPosition('usdc')"></div>
+                    <AddressListBackgroundSvg class="nimiq-account-background"
+                        v-if="accountBgPosition.nimiq"
+                        :width="accountBgPosition.nimiq.width"
+                        :height="accountBgPosition.nimiq.height"
+                        :style="accountBgPosition.nimiq"
+                        :cutouts="{
+                            bottom: nimBtcSwapTooltip$ && nimUsdcSwapTooltip$
+                                    ? [nimBtcSwapTooltip$.isShown, nimUsdcSwapTooltip$.isShown]
+                                : nimBtcSwapTooltip$ && !nimUsdcSwapTooltip$
+                                    ? [nimBtcSwapTooltip$.isShown]
+                                : !nimBtcSwapTooltip$ && nimUsdcSwapTooltip$
+                                    ? [nimUsdcSwapTooltip$.isShown]
+                                : undefined
+                        }"
+                    />
+                    <AddressListBackgroundSvg class="bitcoin-account-background"
+                        v-if="accountBgPosition.bitcoin"
+                        :width="accountBgPosition.bitcoin.width"
+                        :height="accountBgPosition.bitcoin.height"
+                        :style="accountBgPosition.bitcoin"
+                        :cutouts="{
+                            top: nimBtcSwapTooltip$ ? [nimBtcSwapTooltip$.isShown] : undefined,
+                            right: btcUsdcSwapTooltip$ ? [btcUsdcSwapTooltip$.isShown] : undefined,
+                        }"
+                    />
+                    <AddressListBackgroundSvg class="usdc-account-background"
+                        v-if="accountBgPosition.usdc"
+                        :width="accountBgPosition.usdc.width"
+                        :height="accountBgPosition.usdc.height"
+                        :style="accountBgPosition.usdc"
+                        :cutouts="{
+                            top: nimUsdcSwapTooltip$ ? [nimUsdcSwapTooltip$.isShown] : undefined,
+                            left: btcUsdcSwapTooltip$ ? [btcUsdcSwapTooltip$.isShown] : undefined,
+                        }"
+                    />
                 </div>
             </div>
 
@@ -224,6 +256,7 @@ import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import MiniAddIcon from '../icons/MiniAddIcon.vue';
 import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
+import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 
 export default defineComponent({
     name: 'account-overview',
@@ -302,10 +335,13 @@ export default defineComponent({
         const usdcAccount$ = ref<HTMLElement | null>(null);
         const nimiqAccount$ = ref<HTMLElement | null>(null);
         const bitcoinAccount$ = ref<HTMLElement | null>(null);
+        const nimBtcSwapTooltip$ = ref<Tooltip | null>(null);
+        const nimUsdcSwapTooltip$ = ref<Tooltip | null>(null);
+        const btcUsdcSwapTooltip$ = ref<Tooltip | null>(null);
 
         const forceUpdateRef = ref(false);
         const resizeObserver = new ResizeObserver(forceUpdate);
-        const mutationObserver = new MutationObserver(() => forceUpdate());
+        const mutationObserver = new MutationObserver(forceUpdate);
 
         // start observing on mount / listen to window resize
         onMounted(async () => {
@@ -329,29 +365,39 @@ export default defineComponent({
             forceUpdateRef.value = !forceUpdateRef.value;
         }
 
-        function getAccountBackgroundPosition(currency: 'usdc' | 'nimiq' | 'bitcoin') {
+        const accountBgPosition = computed(() => {
             // trick to force vue to update the position on component resize
-            forceUpdateRef.value = !!forceUpdateRef.value;
+            // eslint-disable-next-line
+            forceUpdateRef.value;
 
-            const el$ = {
-                usdc: usdcAccount$.value,
-                nimiq: nimiqAccount$.value,
-                bitcoin: bitcoinAccount$.value,
-            }[currency];
+            const currencies = ['usdc', 'nimiq', 'bitcoin'];
+            const ret = currencies.reduce((obj: Record<string, any>, currency) => {
+                obj[currency] = null;
+                return obj;
+            }, {});
 
-            if (el$ && root$.value) {
-                const accountPosition = el$.getBoundingClientRect();
-                const accountOverviewPosition: DOMRect = root$.value.getBoundingClientRect();
+            currencies.forEach((currency) => {
+                const el$ = {
+                    usdc: usdcAccount$.value,
+                    nimiq: nimiqAccount$.value,
+                    bitcoin: bitcoinAccount$.value,
+                }[currency];
 
-                return {
-                    height: `${accountPosition.height}px`,
-                    width: `${accountPosition.width}px`,
-                    top: `${accountPosition.top - accountOverviewPosition.top}px`,
-                    left: `${accountPosition.left - accountOverviewPosition.left}px`,
-                };
-            }
-            return null;
-        }
+                if (el$ && root$.value) {
+                    const accountPosition = el$.getBoundingClientRect();
+                    const accountOverviewPosition: DOMRect = root$.value.getBoundingClientRect();
+
+                    ret[currency] = {
+                        height: accountPosition.height,
+                        width: accountPosition.width,
+                        top: `${accountPosition.top - accountOverviewPosition.top}px`,
+                        left: `${accountPosition.left - accountOverviewPosition.left}px`,
+                    };
+                }
+            });
+
+            return ret;
+        });
 
         return {
             activeAccountInfo,
@@ -378,7 +424,10 @@ export default defineComponent({
             usdcAccount$,
             nimiqAccount$,
             bitcoinAccount$,
-            getAccountBackgroundPosition,
+            nimBtcSwapTooltip$,
+            nimUsdcSwapTooltip$,
+            btcUsdcSwapTooltip$,
+            accountBgPosition,
         };
     },
     components: {
@@ -404,6 +453,7 @@ export default defineComponent({
         DoubleArrowIcon,
         Tooltip,
         LinkedDoubleArrowIcon,
+        AddressListBackgroundSvg,
     },
 });
 </script>
@@ -696,7 +746,7 @@ export default defineComponent({
 
         &.bitcoin-account ~ .account-backgrounds .bitcoin-account-background,
         &.usdc-account ~ .account-backgrounds .usdc-account-background {
-            background-color: var(--text-10);
+            color: var(--text-10);
         }
     }
 
@@ -788,12 +838,17 @@ export default defineComponent({
 }
 
 .account-backgrounds {
-    div {
+    svg {
         position: absolute;
         z-index: 1;
         border-radius: 1.25rem;
-        background-color: var(--text-6);
-        transition: background 400ms var(--nimiq-ease);
+        color: var(--text-6);
+        transition: color 400ms var(--nimiq-ease);
+
+        &::v-deep path {
+            transition: fill 400ms var(--nimiq-ease),
+                        d 200ms var(--nimiq-ease);
+        }
     }
 }
 

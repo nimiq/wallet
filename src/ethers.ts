@@ -632,17 +632,21 @@ export async function sendTransaction(
 ) {
     const { config } = useConfig();
     const client = await getPolygonClient();
+
     const [{ HttpClient, HttpWrapper }, relayNonce] = await Promise.all([
         import('@opengsn/common'),
         client.provider.getTransactionCount(relayRequest.relayData.relayWorker),
     ]);
     const httpClient = new HttpClient(new HttpWrapper(), console);
+
+    const relayNonceMaxGap = config.environment === ENV_MAIN ? 3 : 5;
+
     const relayTx = await httpClient.relayTransaction(relayUrl, {
         relayRequest,
         metadata: {
             approvalData,
             relayHubAddress: config.usdc.relayHubContract,
-            relayMaxNonce: relayNonce + 3,
+            relayMaxNonce: relayNonce + relayNonceMaxGap,
             signature,
         },
     });

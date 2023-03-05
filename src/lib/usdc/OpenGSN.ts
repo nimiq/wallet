@@ -4,6 +4,7 @@ import type { PolygonClient } from '../../ethers';
 import { RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import { useConfig } from '../../composables/useConfig';
+import { ENV_MAIN } from '../Constants';
 
 let relayHubContract: Contract | undefined;
 
@@ -188,7 +189,8 @@ async function* relayServerRegisterGen(
                 relayAddr.relayWorkerAddress,
             );
             let startBlock = useUsdcNetworkStore().state.height;
-            const earliestBlock = startBlock - 48 * 60 * POLYGON_BLOCKS_PER_MINUTE;
+            const hoursToLookBackwards = config.environment === ENV_MAIN ? 48 : 24;
+            const earliestBlock = startBlock - hoursToLookBackwards * 60 * POLYGON_BLOCKS_PER_MINUTE;
 
             const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
 

@@ -721,12 +721,9 @@ export default defineComponent({
             let settlementFee: number | null = null;
 
             const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
-                ? rightAsset.value
-                : leftAsset.value;
-
-            const settlementAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
                 ? leftAsset.value
                 : rightAsset.value;
+            const settlementAsset = otherAsset(fundingAsset);
 
             const fundingFeePerUnit = feePerUnit(fundingAsset);
             const settlementFeePerUnit = feePerUnit(settlementAsset);
@@ -885,28 +882,26 @@ export default defineComponent({
             };
         }
 
-        const { height: usdcHeight } = useUsdcNetworkStore();
-
         let usdcFeeUpdateInterval = -1;
 
-        watch(
-            [leftAsset, rightAsset, usdcHeight],
-            (newAssets, oldAssets) => {
-                if (!usdcHeight.value) return; // Wait for USDC height to be set
-                const newLeft = newAssets?.[0];
-                const newRight = newAssets?.[1];
-                const oldLeft = oldAssets?.[0];
-                const oldRight = oldAssets?.[1];
-                if ([newLeft, newRight].includes(SwapAsset.USDC) && ![oldLeft, oldRight].includes(SwapAsset.USDC)) {
-                    calculateUsdcHtlcFee();
-                    usdcFeeUpdateInterval = window.setInterval(calculateUsdcHtlcFee, 30e3); // Update fee every 30s
-                } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
-                    window.clearInterval(usdcFeeUpdateInterval);
-                    usdcFeeUpdateInterval = -1;
-                    usdcFeeStuff.value = null;
-                }
-            },
-        );
+        watch([leftAsset, rightAsset], (newAssets) => {
+            const newLeft = newAssets?.[0];
+            const newRight = newAssets?.[1];
+            if ([newLeft, newRight].includes(SwapAsset.USDC)) {
+                calculateUsdcHtlcFee();
+
+                // Replace fee-update interval
+                window.clearInterval(usdcFeeUpdateInterval);
+                usdcFeeUpdateInterval = window.setInterval(
+                    () => calculateUsdcHtlcFee(),
+                    30e3, // Update fee every 30s
+                );
+            } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
+                window.clearInterval(usdcFeeUpdateInterval);
+                usdcFeeUpdateInterval = -1;
+                usdcFeeStuff.value = null;
+            }
+        });
 
         onBeforeUnmount(() => {
             window.clearInterval(usdcFeeUpdateInterval);
@@ -1334,7 +1329,6 @@ export default defineComponent({
                 const { availableExternalAddresses } = useBtcAddressStore();
                 const nimAddress = activeAddressInfo.value!.address;
                 const btcAddress = availableExternalAddresses.value[0];
-                // const usdcAddress = usdcAddressInfo.value!.address;
 
                 if (swapSuggestion.from.asset === SwapAsset.NIM) {
                     const nimiqClient = await getNetworkClient();

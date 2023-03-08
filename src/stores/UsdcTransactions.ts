@@ -119,7 +119,7 @@ export const useUsdcTransactionsStore = createStore({
 
                         if (!useSwapsStore().state.swaps[hashRoot].out) {
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            getContract(SwapAsset.USDC, tx.event.id).then((contractWithEstimate) => {
+                            getContract(SwapAsset.USDC, tx.event.id.substring(2)).then((contractWithEstimate) => {
                                 if (contractWithEstimate.to.asset === SwapAsset.EUR) {
                                     const exchangeRate = {
                                         [CryptoCurrency.USDC]: {
@@ -188,7 +188,7 @@ export const useUsdcTransactionsStore = createStore({
 
                         if (!useSwapsStore().state.swaps[hashRoot].in) {
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            getContract(SwapAsset.USDC, tx.sender).then((contractWithEstimate) => {
+                            getContract(SwapAsset.USDC, tx.event.id.substring(2)).then((contractWithEstimate) => {
                                 if (contractWithEstimate.from.asset === SwapAsset.EUR) {
                                     const exchangeRate = {
                                         [CryptoCurrency.USDC]: {

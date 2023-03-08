@@ -186,12 +186,6 @@
                                             :hideDecimals="false" :currency="fiatCurrency"/>
                                     </template>
                                 </i18n>
-                                <Tooltip class="info-tooltip" preferredPosition="bottom left">
-                                    <InfoCircleSmallIcon slot="trigger"/>
-                                    <div>
-                                        {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
-                                    </div>
-                                </Tooltip>
                             </template>
                         </span>
                         <div v-else key="usdc-amount" class="usdc-amount">
@@ -215,10 +209,6 @@
                                                 :hideDecimals="false" :currency="fiatCurrency"/>
                                         </template>
                                     </i18n>
-                                    <Tooltip class="info-tooltip" preferredPosition="bottom left">
-                                        <InfoCircleSmallIcon slot="trigger"/>
-                                        {{ $t('The fee covers network costs to ensure secure transfer of USDC.') }}
-                                    </Tooltip>
                                 </template>
                             </div>
                         </div>
@@ -269,8 +259,6 @@ import {
     AlertCircleIcon,
     AlertTriangleIcon,
     ScanQrCodeIcon,
-    InfoCircleSmallIcon,
-    Tooltip,
     FiatAmount,
     CircleSpinner,
 } from '@nimiq/vue-components';
@@ -815,8 +803,6 @@ export default defineComponent({
         StatusScreen,
         Avatar,
         UsdcAddressInfo,
-        InfoCircleSmallIcon,
-        Tooltip,
         FiatAmount,
         CircleSpinner,
     },
@@ -1131,7 +1117,7 @@ export default defineComponent({
 
             & > .usdc-amount > span,
             & > .usdc-amount .fee,
-            & > span > *:not(.info-tooltip) {
+            & > span > * {
                 opacity: 0.5;
             }
 
@@ -1147,31 +1133,6 @@ export default defineComponent({
                 bottom: 3px;
                 margin-left: 8px;
                 margin-right: 8px;
-            }
-
-            .info-tooltip {
-                bottom: -2px;
-                margin-left: 1rem;
-                z-index: 4;
-
-                ::v-deep .trigger svg {
-                    opacity: 0.3;
-                    height: 20px;
-                    color: var(--text-60);
-                    transition: color var(--short-transition-duration) var(--nimiq-ease);
-                }
-
-                & ::v-deep .trigger:hover svg,
-                & ::v-deep .trigger:focus svg,
-                &.shown ::v-deep .trigger svg {
-                    color: var(--text-80);
-                }
-
-                ::v-deep .tooltip-box {
-                    width: 26.25rem;
-                    font-size: var(--small-size);
-                    font-weight: 600;
-                }
             }
         }
 

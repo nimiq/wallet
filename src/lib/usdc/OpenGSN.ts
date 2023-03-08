@@ -183,7 +183,7 @@ async function* relayServerRegisterGen(
                 continue;
             }
 
-            // Check if this relay has sent a transaction in the last 48 hours
+            // Check if this relay has sent a transaction in the last hours
             const filter = relayHub.filters.TransactionRelayed(
                 relayAddr.relayManagerAddress,
                 relayAddr.relayWorkerAddress,
@@ -261,10 +261,11 @@ type RelayAddr = {
 
 async function getRelayAddr(relayUrl: string) {
     console.debug('Pinging relay server', relayUrl); // eslint-disable-line no-console
+    const { config } = useConfig();
 
     // Set a 1s timeout
     const abortController = new AbortController();
-    setTimeout(() => abortController.abort(), 1e3);
+    setTimeout(() => abortController.abort(), config.environment === ENV_MAIN ? 1e3 : 2e3);
 
     const response = await fetch(`${relayUrl}/getaddr`, {
         signal: abortController.signal,

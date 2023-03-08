@@ -1792,17 +1792,22 @@ export default defineComponent({
 
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
 
-        const buttonGroupOptions = SUPPORTED_ASSETS.reduce((acc, asset) => ({
-            ...acc,
-            [asset]: {
-                label: asset,
-                disabled: asset === SwapAsset.BTC
-                    ? !hasBitcoinAddresses.value
-                    : asset === SwapAsset.USDC
-                        ? !hasUsdcAddresses.value
-                        : false,
-            },
-        }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
+        const buttonGroupOptions = SUPPORTED_ASSETS.reduce((acc, asset) => {
+            if (asset === SwapAsset.BTC && !config.enableBitcoin) return acc;
+            if (asset === SwapAsset.USDC && !config.usdc.enabled) return acc;
+
+            return {
+                ...acc,
+                [asset]: {
+                    label: asset,
+                    disabled: asset === SwapAsset.BTC
+                        ? !hasBitcoinAddresses.value
+                        : asset === SwapAsset.USDC
+                            ? !hasUsdcAddresses.value
+                            : false,
+                },
+            };
+        }, {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
 
         // Only allow swapping between assets that have a balance in one
         // of the sides of the swap.
@@ -2020,13 +2025,14 @@ export default defineComponent({
 .fees-limits-loading {
     justify-content: center;
     align-items: center;
-    font-size: 13px;
+    font-weight: 600;
+    font-size: 1.625rem;
     color: var(--text-50);
     gap: 1rem;
-    line-height: 21px;
 
-    & ::v-deep .circle-spinner {
-        width: 14px;
+    ::v-deep .circle-spinner {
+        width: 1.75rem;
+        height: 1.75rem;
     }
 }
 
@@ -2068,6 +2074,10 @@ export default defineComponent({
         & ::v-deep .trigger {
             color: var(--text-50);
             transition: 150ms color var(--nimiq-ease) 300ms;
+
+            .flex-row {
+                align-items: center;
+            }
 
             &:hover {
                 color: var(--text-70);

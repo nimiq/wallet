@@ -263,10 +263,27 @@ export async function launchPolygon() {
 
         const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
 
+        const MAX_ALLOWANCE = client.ethers
+            .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+
+        // The minimum allowance that should remain so we can be certain the max allowance was ever given.
+        // If the current allowance is below this number, we ignore allowance counting for the history sync.
+        const MIN_ALLOWANCE = client.ethers
+            .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
+
         Promise.all([
             client.usdc.balanceOf(address) as Promise<BigNumber>,
-            client.usdc.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-        ]).then(async ([balance, usdcNonce]) => {
+            client.usdc.allowance(address, config.usdc.transferContract)
+                .then((allowance: BigNumber) => {
+                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+                    return MAX_ALLOWANCE.sub(allowance);
+                }) as Promise<BigNumber>,
+            client.usdc.allowance(address, config.usdc.htlcContract)
+                .then((allowance: BigNumber) => {
+                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+                    return MAX_ALLOWANCE.sub(allowance);
+                }) as Promise<BigNumber>,
+        ]).then(async ([balance, transferAllowanceUsed, htlcAllowanceUsed]) => {
             let blockHeight = network$.height;
 
             // To filter known txs
@@ -277,32 +294,33 @@ export async function launchPolygon() {
             const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
 
             /* eslint-disable max-len */
-            while (blockHeight > earliestHeightToCheck && (balance.gt(0) || usdcNonce > 0)) {
+            while (blockHeight > earliestHeightToCheck && (
+                balance.gt(0)
+                || transferAllowanceUsed.gt(0)
+                || htlcAllowanceUsed.gt(0)
+            )) {
                 const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
                 const endHeight = blockHeight;
                 blockHeight = startHeight;
 
-                console.debug(`Sync start loop at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}`);
+                console.log('USDC Sync start', {
+                    balance: balance.toNumber() / 1e6,
+                    transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                    htlcAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                });
 
                 console.debug(`Querying logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 const [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
                     client.usdc.queryFilter(filterIncoming, startHeight, endHeight),
                     client.usdc.queryFilter(filterOutgoing, startHeight, endHeight),
-                    // client.usdc.queryFilter(filterMetaTx, startHeight, endHeight).then((events) =>
-                    //     // MetaTransactionExecuted events cannot be filtered natively, so we need to filter here
-                    //     events.filter((ev) => ev.args && ev.args.userAddress === address),
-                    // ),
                 ]);
 
                 console.debug(`Got ${logsIn.length} incoming logs, ${logsOut.length} outgoing logs` /* , and ${metaTxs.length} meta tx logs` */);
 
-                // const metaTxTransactionHashes = new Set(metaTxs.map((ev) => ev.transactionHash));
-                const metaTxTransactionHashes = new Set(logsOut.map((ev) => ev.transactionHash));
-
-                console.debug(`Found ${metaTxTransactionHashes.size} metaTxs`);
-
-                usdcNonce -= metaTxTransactionHashes.size;
+                const txsUsingHtlcAllowance = new Set(logsOut
+                    .filter((ev) => ev.args?.to === config.usdc.htlcContract) // Only HTLC fundings are relevant
+                    .map((ev) => ev.transactionHash));
 
                 const allTransferLogs = logsIn.concat(logsOut);
 
@@ -310,8 +328,18 @@ export async function launchPolygon() {
                 const newLogs = allTransferLogs.filter((log) => {
                     if (!log.args) return false;
 
-                    if (log.args.from === address) balance = balance.add(log.args.value);
-                    if (log.args.to === address) balance = balance.sub(log.args.value);
+                    if (log.args.from === address) {
+                        balance = balance.add(log.args.value);
+
+                        if (txsUsingHtlcAllowance.has(log.transactionHash)) {
+                            htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
+                        } else {
+                            transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
+                        }
+                    }
+                    if (log.args.to === address) {
+                        balance = balance.sub(log.args.value);
+                    }
 
                     if (knownHashes.includes(log.transactionHash)) return false;
 
@@ -444,7 +472,11 @@ export async function launchPolygon() {
             } // End while loop
             /* eslint-enable max-len */
 
-            console.log(`USDC Sync ended at ${balance.toNumber() / 1e6} USDC, usdcNonce ${usdcNonce}`);
+            console.log('USDC Sync end', {
+                balance: balance.toNumber() / 1e6,
+                transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                htlcAllowance: transferAllowanceUsed.toNumber() / 1e6,
+            });
         })
             .catch((error) => {
                 console.error(error);

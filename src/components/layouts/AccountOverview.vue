@@ -58,7 +58,8 @@
                 </div>
 
                 <Tooltip class="nim-btc-swap-button" ref="nimBtcSwapTooltip$" :container="root$ && { $el: root$ }"
-                    v-if="hasBitcoinAddresses && $config.enableBitcoin">
+                    v-if="hasBitcoinAddresses && $config.enableBitcoin
+                        && (nimAccountBalance > 0 || btcAccountBalance > 0)">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
@@ -68,7 +69,9 @@
                 </Tooltip>
 
                 <Tooltip class="nim-usdc-swap-button" ref="nimUsdcSwapTooltip$" :container="root$ && { $el: root$ }"
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER && hasUsdcAddresses && $config.usdc.enabled">
+                    v-if="activeAccountInfo.type !== AccountType.LEDGER
+                        && hasUsdcAddresses && $config.usdc.enabled
+                        && (nimAccountBalance > 0 || usdcAccountBalance > 0)">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
@@ -111,7 +114,8 @@
                 <Tooltip class="btc-usdc-swap-button" ref="btcUsdcSwapTooltip$" :container="root$ && { $el: root$ }"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && hasUsdcAddresses
-                        && $config.enableBitcoin && $config.usdc.enabled">
+                        && $config.enableBitcoin && $config.usdc.enabled
+                        && (btcAccountBalance > 0 || usdcAccountBalance > 0)">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/BTC-USDC')">
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
@@ -257,6 +261,7 @@ import MiniAddIcon from '../icons/MiniAddIcon.vue';
 import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
+import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
     name: 'account-overview',
@@ -271,6 +276,7 @@ export default defineComponent({
         } = useAccountStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { accountBalance: usdcAccountBalance } = useUsdcAddressStore();
+        const { accountBalance: nimAccountBalance } = useAddressStore();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
@@ -409,6 +415,7 @@ export default defineComponent({
             onAddressSelected,
             btcAccountBalance,
             usdcAccountBalance,
+            nimAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
             selectBitcoin,

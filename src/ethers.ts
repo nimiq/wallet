@@ -487,9 +487,9 @@ export async function calculateFee(
 
     // The byte size of `data` of the wrapper relay transaction, including the `relayCall` method identifier
     const dataSize = {
-        transfer: undefined,
+        transfer: 1092,
         transferWithApproval: 1220,
-        open: undefined,
+        open: 1220,
         openWithApproval: 1348,
         redeemWithSecretInData: 1092,
         refund: 1092,
@@ -563,17 +563,25 @@ export async function createTransactionRequest(recipient: string, amount: number
 
     const client = await getPolygonClient();
 
-    const method = 'transferWithApproval' as 'transfer' | 'transferWithApproval';
-
     const [
         usdcNonce,
+        usdcAllowance,
         forwarderNonce,
-        { fee, gasPrice, gasLimit, relay },
     ] = await Promise.all([
         client.usdc.nonces(fromAddress) as Promise<BigNumber>,
+        client.usdc.allowance(fromAddress, config.usdc.transferContract) as Promise<BigNumber>,
         client.usdcTransfer.getNonce(fromAddress) as Promise<BigNumber>,
-        calculateFee(method, forceRelay),
     ]);
+
+    // This sets the fee buffer to 10 USDC, which should be enough.
+    const method = usdcAllowance.gte(amount + 10e6) ? 'transfer' : 'transferWithApproval';
+
+    const { fee, gasPrice, gasLimit, relay } = await calculateFee(method, forceRelay);
+
+    // To be safe, we still check that amount + fee fits into the current allowance
+    if (method === 'transfer' && usdcAllowance.lt(fee.add(amount))) {
+        throw new Error('Unexpectedly high fee, not enough allowance on the USDC contract');
+    }
 
     const data = client.usdcTransfer.interface.encodeFunctionData(method, [
         /* address token */ config.usdc.usdcContract,
@@ -581,7 +589,9 @@ export async function createTransactionRequest(recipient: string, amount: number
         /* address target */ recipient,
         /* uint256 fee */ fee,
         ...(method === 'transferWithApproval' ? [
-            /* uint256 approval */ fee.add(amount),
+            // Approve the maximum possible amount so afterwards we can use the `transfer` method for lower fees
+            /* uint256 approval */ client.ethers
+                .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
 
             // Dummy values, replaced by real signature bytes in Keyguard
             /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',

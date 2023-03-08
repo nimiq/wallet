@@ -829,6 +829,8 @@ export default defineComponent({
             gasPrice: BigNumber,
             /** Relay details */
             relay: RelayServerInfo,
+            /** The method that these fees were calculated for */
+            method: 'open' | 'openWithApproval' | 'redeemWithSecretInData',
         };
 
         const usdcFeeStuff = ref<UsdcFees>(null);
@@ -837,18 +839,39 @@ export default defineComponent({
         const usdcPriceInWei = ref<number>(null);
         const usdcGasPrice = ref<number>(null);
 
-        async function calculateUsdcHtlcFee() {
+        async function calculateUsdcHtlcFee(forOpening: boolean) {
             // Prevent changing USDC fees while processing the swap suggestion
             if (currentlySigning.value) return;
 
-            // usdcFeeStuff.value = null;
+            const prevMethod = usdcFeeStuff.value?.method;
 
-            const htlcContract = await getHtlcContract();
+            usdcFeeStuff.value = null;
 
             // Use the existing relay if it was selected in the last 10 minutes
             const forceRelay = usdcRelay.timestamp > Date.now() - 10 * 60 * 1e3
                 ? usdcRelay.relay
                 : undefined;
+
+            let method: 'open' | 'openWithApproval' | 'redeemWithSecretInData' = forOpening
+                ? 'openWithApproval'
+                : 'redeemWithSecretInData';
+
+            if (forOpening) {
+                if (prevMethod === 'open' || prevMethod === 'openWithApproval') {
+                    // Allowance was already checked at the last fee calculation, reuse the previous result
+                    method = prevMethod;
+                } else {
+                    // Otherwise check allowance now
+                    const client = await getPolygonClient();
+                    const allowance = await client.usdc.allowance(
+                        activeUsdcAddress.value!,
+                        config.usdc.htlcContract,
+                    ) as BigNumber;
+                    if (allowance.gte(accountUsdcBalance.value)) method = 'open';
+                }
+            }
+
+            const htlcContract = await getHtlcContract();
 
             const {
                 fee,
@@ -856,12 +879,7 @@ export default defineComponent({
                 gasPrice,
                 relay,
                 usdcPrice,
-            } = await calculateUsdcFee('openWithApproval', forceRelay, htlcContract);
-            // We use a fixed method here ^, as the method is only used to calculate the required
-            // acceptance budget for relays. The method 'openWithApproval' has the highest gas cost,
-            // so any relay selected will work for all other methods as well.
-            // This way we do not need to re-run relay selection if the method changes (when swap
-            // direction changes), which is a long wait that we want to spare the user.
+            } = await calculateUsdcFee(method, forceRelay, htlcContract);
 
             if (!forceRelay) {
                 // Store the new relay
@@ -879,6 +897,7 @@ export default defineComponent({
                 gasLimit,
                 gasPrice,
                 relay,
+                method,
             };
         }
 
@@ -888,12 +907,14 @@ export default defineComponent({
             const newLeft = newAssets?.[0];
             const newRight = newAssets?.[1];
             if ([newLeft, newRight].includes(SwapAsset.USDC)) {
-                calculateUsdcHtlcFee();
+                const forOpening = (direction.value === SwapDirection.LEFT_TO_RIGHT && newLeft === SwapAsset.USDC)
+                    || (direction.value === SwapDirection.RIGHT_TO_LEFT && newRight === SwapAsset.USDC);
+                calculateUsdcHtlcFee(forOpening);
 
                 // Replace fee-update interval
                 window.clearInterval(usdcFeeUpdateInterval);
                 usdcFeeUpdateInterval = window.setInterval(
-                    () => calculateUsdcHtlcFee(),
+                    () => calculateUsdcHtlcFee(forOpening),
                     30e3, // Update fee every 30s
                 );
             } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
@@ -1139,7 +1160,7 @@ export default defineComponent({
                     if (!(usdcGasPrice.value || assets.value?.USDC.feePerUnit) || !usdcPriceInWei.value) return 0;
                     const gasPrice = assets.value?.USDC.feePerUnit || usdcGasPrice.value!;
 
-                    const serviceGasLimit = direction.value === SwapDirection.LEFT_TO_RIGHT ? 150000 : 250000;
+                    const serviceGasLimit = direction.value === SwapDirection.LEFT_TO_RIGHT ? 72548 : 227456;
                     fee = Math.ceil((gasPrice * serviceGasLimit) / usdcPriceInWei.value);
                 } else {
                     const { fundingFee, settlementFee } = calculateServiceFees();
@@ -1162,11 +1183,11 @@ export default defineComponent({
                     if (!(usdcGasPrice.value || assets.value?.USDC.feePerUnit) || !usdcPriceInWei.value) return 0;
                     const gasPrice = assets.value?.USDC.feePerUnit || usdcGasPrice.value!;
 
-                    const serviceGasLimit = direction.value === SwapDirection.RIGHT_TO_LEFT ? 150000 : 250000;
+                    const serviceGasLimit = direction.value === SwapDirection.RIGHT_TO_LEFT ? 72548 : 227456;
                     fee = Math.ceil((gasPrice * serviceGasLimit) / usdcPriceInWei.value);
                 } else {
                     const { fundingFee, settlementFee } = calculateServiceFees();
-                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? fundingFee : settlementFee;
+                    fee = direction.value === SwapDirection.RIGHT_TO_LEFT ? settlementFee : fundingFee;
                 }
             } else {
                 const data = swap.value || estimate.value;
@@ -1264,7 +1285,10 @@ export default defineComponent({
 
             // Get up-to-date fees for USDC
             if ([leftAsset.value, rightAsset.value].includes(SwapAsset.USDC)) {
-                calculateUsdcHtlcFee();
+                calculateUsdcHtlcFee(
+                    (direction.value === SwapDirection.LEFT_TO_RIGHT && leftAsset.value === SwapAsset.USDC)
+                    || (direction.value === SwapDirection.RIGHT_TO_LEFT && rightAsset.value === SwapAsset.USDC),
+                );
             }
 
             currentlySigning.value = true;
@@ -1404,9 +1428,12 @@ export default defineComponent({
                         htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
                     ]);
 
-                    const { fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
+                    const { fee, gasLimit, gasPrice, relay, method } = usdcFeeStuff.value!;
+                    if (method !== 'open' && method !== 'openWithApproval') {
+                        throw new Error('Wrong USDC contract method');
+                    }
 
-                    const data = htlcContract.interface.encodeFunctionData('openWithApproval', [
+                    const data = htlcContract.interface.encodeFunctionData(method, [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                         /* address token */ config.usdc.usdcContract,
                         /* uint256 amount */ swapSuggestion.from.amount,
@@ -1415,10 +1442,16 @@ export default defineComponent({
                         /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                         /* uint256 timeout */ 0,
                         /* uint256 fee */ fee,
-                        /* uint256 approval */ swapSuggestion.from.amount + fee,
-                        /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* uint8 sigV */ 0,
+                        ...(method === 'openWithApproval' ? [
+                            // Approve the maximum possible amount so afterwards we can use the `open` method for
+                            // lower fees
+                            /* uint256 approval */ client.ethers
+                                .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+
+                            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            /* uint8 sigV */ 0,
+                        ] : []),
                     ]);
 
                     const relayRequest: RelayRequest = {
@@ -1497,9 +1530,12 @@ export default defineComponent({
 
                     const forwarderNonce = await htlcContract.getNonce(toAddress) as Promise<BigNumber>;
 
-                    const { fee, gasLimit, gasPrice, relay } = usdcFeeStuff.value!;
+                    const { fee, gasLimit, gasPrice, relay, method } = usdcFeeStuff.value!;
+                    if (method !== 'redeemWithSecretInData') {
+                        throw new Error('Wrong USDC contract method');
+                    }
 
-                    const data = htlcContract.interface.encodeFunctionData('redeemWithSecretInData', [
+                    const data = htlcContract.interface.encodeFunctionData(method, [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                         /* address target */ toAddress,
                         /* uint256 fee */ fee,

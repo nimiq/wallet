@@ -14,8 +14,8 @@ export default {
     usdc: {
         enabled: false,
         networkId: 137 as number | string, // Can also be 'matic'
-        rpcEndpoint: 'https://polygon-rpc.com',
-        rpcMaxBlockRange: 3_000,
+        rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
+        rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
         usdcContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
         htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',

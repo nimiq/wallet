@@ -467,6 +467,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
+
 .account-overview {
     @include flex-full-height;
     max-height: 100%;
@@ -576,29 +577,6 @@ export default defineComponent({
     z-index: 2;
 }
 
-.nimiq-account,
-.bitcoin-account,
-.usdc-account {
-    z-index: 3;
-    border-radius: 1.25rem;
-
-    header {
-        font-size: 2rem;
-        font-weight: 600;
-        align-items: center;
-        padding: 3rem;
-
-        .nq-icon {
-            margin-right: 1rem;
-            font-size: 2.75rem;
-        }
-
-        .nq-icon + span {
-            opacity: .7;
-        }
-    }
-}
-
 // grid setup
 .account-grid {
     --grid-gap: 2rem;
@@ -668,6 +646,29 @@ export default defineComponent({
             &.top .trigger::after {
                 transform: scaleY(-1) translateY(1.85rem);
             }
+        }
+    }
+}
+
+.nimiq-account,
+.bitcoin-account,
+.usdc-account {
+    z-index: 3;
+    border-radius: 1.25rem;
+
+    header {
+        font-size: 2rem;
+        font-weight: 600;
+        align-items: center;
+        padding: 3rem;
+
+        .nq-icon {
+            margin-right: 1rem;
+            font-size: 2.75rem;
+        }
+
+        .nq-icon + span {
+            opacity: .7;
         }
     }
 }
@@ -844,21 +845,6 @@ export default defineComponent({
     }
 }
 
-.account-backgrounds {
-    svg {
-        position: absolute;
-        z-index: 1;
-        border-radius: 1.25rem;
-        color: var(--text-6);
-        transition: color 400ms var(--nimiq-ease);
-
-        &::v-deep path {
-            transition: fill 400ms var(--nimiq-ease),
-                        d 200ms var(--nimiq-ease);
-        }
-    }
-}
-
 .nim-usdc-swap-button,
 .nim-btc-swap-button,
 .btc-usdc-swap-button {
@@ -950,7 +936,21 @@ export default defineComponent({
             margin: 0 0.5rem;
         }
     }
+}
 
+.account-backgrounds {
+    svg {
+        position: absolute;
+        z-index: 1;
+        border-radius: 1.25rem;
+        color: var(--text-6);
+        transition: color 400ms var(--nimiq-ease);
+
+        &::v-deep path {
+            transition: fill 400ms var(--nimiq-ease),
+                        d 200ms var(--nimiq-ease);
+        }
+    }
 }
 
 .future-notice {

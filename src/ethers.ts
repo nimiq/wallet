@@ -18,6 +18,7 @@ import { ENV_MAIN } from './lib/Constants';
 import { USDC_TRANSFER_CONTRACT_ABI, USDC_CONTRACT_ABI, USDC_HTLC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
 import { getBestRelay, getRelayHub, POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from './lib/usdc/OpenGSN';
 import { getPoolAddress, getUsdcPrice } from './lib/usdc/Uniswap';
+import { replaceKey } from './lib/KeyReplacer';
 
 export interface PolygonClient {
     provider: providers.Provider;
@@ -57,14 +58,15 @@ export async function getPolygonClient(): Promise<PolygonClient> {
 
     const ethers = await import(/* webpackChunkName: "ethers-js" */ 'ethers');
     let provider: providers.BaseProvider;
-    if (config.usdc.rpcEndpoint.substring(0, 4) === 'http') {
+    const rpcEndpoint = await replaceKey(config.usdc.rpcEndpoint);
+    if (rpcEndpoint.substring(0, 4) === 'http') {
         provider = new ethers.providers.StaticJsonRpcProvider(
-            config.usdc.rpcEndpoint,
+            rpcEndpoint,
             ethers.providers.getNetwork(config.usdc.networkId),
         );
-    } else if (config.usdc.rpcEndpoint.substring(0, 2) === 'ws') {
+    } else if (rpcEndpoint.substring(0, 2) === 'ws') {
         provider = new ethers.providers.WebSocketProvider(
-            config.usdc.rpcEndpoint,
+            rpcEndpoint,
             ethers.providers.getNetwork(config.usdc.networkId),
         );
     } else {

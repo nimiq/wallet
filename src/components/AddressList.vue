@@ -223,7 +223,6 @@ export default defineComponent({
 <style scoped lang="scss">
     @import '../scss/mixins.scss';
 
-    // TODO: Extract into SCSS mixin or global style
     @include scroll-mask(true, true, true);
 
     .scroll-mask {

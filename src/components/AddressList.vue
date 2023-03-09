@@ -224,34 +224,11 @@ export default defineComponent({
     @import '../scss/mixins.scss';
 
     // TODO: Extract into SCSS mixin or global style
+    @include scroll-mask(true, true, true);
+
     .scroll-mask {
-        position: sticky;
-        height: 3rem;
-        flex-shrink: 0;
-        z-index: 2;
-        pointer-events: none;
         width: calc(100% + 2 * var(--padding-sides));
         margin-left: calc(-1 * var(--padding-sides));
-
-        &.top {
-            top: 0;
-            background: linear-gradient(var(--bg-base), rgba(244, 244, 244, 0));
-            margin-bottom: -0.5rem;
-        }
-
-        &.bottom {
-            bottom: 0;
-            background: linear-gradient(0deg, var(--bg-base), rgba(244, 244, 244, 0));
-            margin-top: -0.5rem;
-        }
-
-        .embedded &.top {
-            background: linear-gradient(var(--bg-primary), rgba(255, 255, 255, 0));
-        }
-
-        .embedded &.bottom {
-            background: linear-gradient(0deg, var(--bg-primary), rgba(255, 255, 255, 0));
-        }
     }
 
     .address-list {

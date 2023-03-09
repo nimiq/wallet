@@ -20,7 +20,6 @@ export default {
         transferContract: '0x2805f3187dcDfa424EFA8c55Db6012Cf08Fa6eEc', // v3
         htlcContract: '0x2EB7cd7791b947A25d629219ead941fCd8f364BF', // v3
         relayHubContract: '0x6646cD15d33cE3a6933e36de38990121e8ba2806',
-        uniswapFactoryContract: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wmaticContract: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
         earliestHistoryScanHeight: 29621817, // see config.local.ts

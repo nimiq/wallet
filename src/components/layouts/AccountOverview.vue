@@ -46,7 +46,8 @@
             <AccountBalance />
 
             <div class=account-grid>
-                <div class="nimiq-account" ref="nimiqAccount$">
+                <div class="nimiq-account" ref="nimiqAccount$"
+                    :class="{ scrolling: nimiqAccount$ && nimiqAccount$.scrollHeight > nimiqAccount$.clientHeight }">
                     <header class="flex-row">
                         <span class="nq-icon nimiq-logo"></span>
                         <span>NIM</span>
@@ -654,7 +655,6 @@ export default defineComponent({
 .bitcoin-account,
 .usdc-account {
     z-index: 3;
-    border-radius: 1.25rem;
 
     header {
         font-size: 2rem;
@@ -674,13 +674,24 @@ export default defineComponent({
 }
 
 .nimiq-account {
+    @extend %custom-scrollbar;
+
     padding: 0.5rem 1rem;
     padding-bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 1;
 
-    @extend %custom-scrollbar;
+    &.scrolling {
+        mask: linear-gradient(to bottom,
+            transparent, transparent 1rem, black 3rem,
+            black calc(100% - 3rem), transparent calc(100% - 1rem), transparent
+        ) left / calc(100% - 0.6rem) 100%,
+        linear-gradient(to left, black 0px, black 0.6rem, transparent 1.2rem, transparent 100%) right / 100% 100%;
+
+        mask-repeat: no-repeat;
+        padding-bottom: 1.5rem;
+    }
 
     .add-address {
         display: flex;
@@ -713,6 +724,7 @@ export default defineComponent({
     font-size: var(--body-size);
     font-weight: 600;
     position: relative;
+    border-radius: 1.25rem;
     transition: color 400ms var(--nimiq-ease);
 
     &.active {

@@ -15,7 +15,7 @@ msgid "{addresses} send and receive transactions."
 msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:183
-#: src/components/modals/UsdcSendModal.vue:212
+#: src/components/modals/UsdcSendModal.vue:206
 #: src/components/swap/SwapModal.vue:62
 msgid "{amount} fee"
 msgstr ""
@@ -101,7 +101,7 @@ msgid "+{n} more"
 msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:177
-#: src/components/modals/UsdcSendModal.vue:206
+#: src/components/modals/UsdcSendModal.vue:200
 #: src/components/swap/SwapModal.vue:56
 msgid "< {amount} fee"
 msgstr ""
@@ -185,8 +185,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:107
-#: src/components/layouts/AccountOverview.vue:157
+#: src/components/layouts/AccountOverview.vue:110
+#: src/components/layouts/AccountOverview.vue:161
 msgid "Activate"
 msgstr ""
 
@@ -263,7 +263,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:171
+#: src/components/layouts/AccountOverview.vue:207
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -375,7 +375,7 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:88
+#: src/components/layouts/AccountOverview.vue:91
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -772,7 +772,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:396
+#: src/components/modals/UsdcSendModal.vue:384
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -829,7 +829,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:602
+#: src/components/modals/UsdcSendModal.vue:590
 msgid "Edit transaction"
 msgstr ""
 
@@ -1186,7 +1186,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:227
+#: src/components/modals/UsdcSendModal.vue:217
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1697,7 +1697,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:601
+#: src/components/modals/UsdcSendModal.vue:589
 msgid "Retry"
 msgstr ""
 
@@ -1788,7 +1788,7 @@ msgstr ""
 #: src/components/AmountMenu.vue:23
 #: src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:229
+#: src/components/modals/UsdcSendModal.vue:219
 msgid "Send all"
 msgstr ""
 
@@ -1812,7 +1812,7 @@ msgstr ""
 msgid "Send Transaction"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:239
+#: src/components/modals/UsdcSendModal.vue:229
 #: src/components/modals/UsdcSendModal.vue:32
 msgid "Send USDC"
 msgstr ""
@@ -1823,7 +1823,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:598
+#: src/components/modals/UsdcSendModal.vue:586
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1849,11 +1849,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:635
+#: src/components/modals/UsdcSendModal.vue:623
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:631
+#: src/components/modals/UsdcSendModal.vue:619
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -1961,7 +1961,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:647
+#: src/components/modals/UsdcSendModal.vue:635
 msgid "Something went wrong"
 msgstr ""
 
@@ -2019,7 +2019,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:118
+#: src/components/layouts/AccountOverview.vue:122
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr ""
 
@@ -2051,11 +2051,11 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:65
+#: src/components/layouts/AccountOverview.vue:66
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:75
+#: src/components/layouts/AccountOverview.vue:78
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
@@ -2110,17 +2110,12 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:192
-#: src/components/modals/UsdcSendModal.vue:220
-msgid "The fee covers network costs to ensure secure transfer of USDC."
-msgstr ""
-
 #: src/lib/swap/utils/BuyUtils.ts:90
 #: src/lib/swap/utils/SellUtils.ts:110
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:972
+#: src/components/swap/SwapModal.vue:988
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -2357,7 +2352,7 @@ msgstr ""
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:133
+#: src/components/layouts/AccountOverview.vue:137
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565
@@ -2488,7 +2483,7 @@ msgstr ""
 msgid "You will send {amount} NIM"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:199
+#: src/components/modals/UsdcSendModal.vue:193
 msgid "You will send {amount} USDC"
 msgstr ""
 

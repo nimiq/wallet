@@ -678,19 +678,25 @@ export default defineComponent({
 
     padding: 0.5rem 1rem;
     padding-bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     flex-shrink: 1;
 
+    &:not(.scrolling) .address-list {
+        overflow: unset;
+    }
+
     &.scrolling {
+        padding-bottom: 1.5rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        mask-repeat: no-repeat;
         mask: linear-gradient(to bottom,
             transparent, transparent 1rem, black 3rem,
             black calc(100% - 3rem), transparent calc(100% - 1rem), transparent
         ) left / calc(100% - 0.6rem) 100%,
-        linear-gradient(to left, black 0px, black 0.6rem, transparent 1.2rem, transparent 100%) right / 100% 100%;
-
-        mask-repeat: no-repeat;
-        padding-bottom: 1.5rem;
+        linear-gradient(to left,
+            black 0px, black 0.6rem, transparent 1.2rem, transparent 100%
+        ) right / 100% 100%;
     }
 
     .add-address {

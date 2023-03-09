@@ -27,8 +27,8 @@ msgstr "{accounts} conserver, gérer et regrouper les adresses."
 msgid "{addresses} send and receive transactions."
 msgstr "{addresses} envoyer et recevoir des transactions"
 
-#: src/components/modals/UsdcSendModal.vue:183
-#: src/components/modals/UsdcSendModal.vue:206
+#: src/components/modals/UsdcSendModal.vue:171
+#: src/components/modals/UsdcSendModal.vue:194
 #: src/components/swap/SwapModal.vue:62
 msgid "{amount} fee"
 msgstr "{amount} de frais"
@@ -111,8 +111,8 @@ msgstr "+ frais de réseau"
 msgid "+{n} more"
 msgstr "+{n} de plus"
 
-#: src/components/modals/UsdcSendModal.vue:177
-#: src/components/modals/UsdcSendModal.vue:200
+#: src/components/modals/UsdcSendModal.vue:165
+#: src/components/modals/UsdcSendModal.vue:188
 #: src/components/swap/SwapModal.vue:56
 msgid "< {amount} fee"
 msgstr "< {amount} de frais"
@@ -205,8 +205,8 @@ msgstr "Limites du compte"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/components/layouts/AccountOverview.vue:110
-#: src/components/layouts/AccountOverview.vue:161
+#: src/components/layouts/AccountOverview.vue:111
+#: src/components/layouts/AccountOverview.vue:162
 msgid "Activate"
 msgstr "Activer"
 
@@ -291,7 +291,7 @@ msgstr "Toutes"
 msgid "All countries"
 msgstr "Tous les pays"
 
-#: src/components/layouts/AccountOverview.vue:207
+#: src/components/layouts/AccountOverview.vue:208
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -356,11 +356,15 @@ msgstr ""
 "cas de problème ou d'expiration du délai, votre paiement sera reversé sur "
 "votre compte bancaire."
 
-#: src/components/PolygonWarningFooter.vue:13
+#: src/components/PolygonWarningFooter.vue:18
 msgid "Ask the receiver to ensure they have a Polygon USDC address."
 msgstr ""
 "Demandez au destinataire de s'assurer qu'il possède une adresse USDC "
 "Polygon."
+
+#: src/components/PolygonWarningFooter.vue:19
+msgid "Ask the sender to ensure they have a Polygon USDC address."
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:102
 msgid "Atomic Swap complete"
@@ -415,7 +419,7 @@ msgstr "Virement bancaire"
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr "Virement bancaire uniquement disponible dans la zone SEPA (Europe)."
 
-#: src/components/modals/UsdcSendModal.vue:14
+#: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
 msgstr "Avant de commencer"
 
@@ -425,7 +429,7 @@ msgid "BIC works, too."
 msgstr "Le BIC fonctionne également."
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:91
+#: src/components/layouts/AccountOverview.vue:92
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -610,7 +614,7 @@ msgstr "Regarder la nouvelle intro"
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:77
+#: src/components/modals/UsdcSendModal.vue:65
 msgid "Choose a Recipient"
 msgstr "Choisissez un destinataire"
 
@@ -848,7 +852,7 @@ msgstr "Déconnexion"
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:384
+#: src/components/modals/UsdcSendModal.vue:370
 msgid "Domain does not resolve to a valid address"
 msgstr "Le domaine ne correspond pas à une adresse valide"
 
@@ -915,7 +919,7 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:590
+#: src/components/modals/UsdcSendModal.vue:576
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
@@ -930,7 +934,7 @@ msgid "Enter account holder name"
 msgstr "Entrer le nom du titulaire du compte"
 
 #: src/components/modals/SendModal.vue:24
-#: src/components/modals/UsdcSendModal.vue:42
+#: src/components/modals/UsdcSendModal.vue:30
 msgid "Enter address"
 msgstr "Entrez l'adresse"
 
@@ -1120,19 +1124,29 @@ msgstr "Noeud Complet"
 msgid "Funding Cashlink"
 msgstr "Financement du Cashlink"
 
-#: src/components/modals/UsdcSendModal.vue:22
+#: src/components/PolygonWarningFooter.vue:10
+msgid "Funds sent from non-Polygon USDC addresses could be permanently lost!"
+msgstr ""
+
+#: src/components/PolygonWarningPage.vue:19
+msgid "Funds sent from non-Polygon USDC addresses could be permanently lost."
+msgstr ""
+
+#: src/components/PolygonWarningFooter.vue:27
+msgid "Funds sent from non-Polygon USDC versions could be permanently lost."
+msgstr ""
+
+#: src/components/PolygonWarningFooter.vue:7
+msgid "Funds sent to non-Polygon USDC addresses could be permanently lost!"
+msgstr ""
+
+#: src/components/PolygonWarningPage.vue:18
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost."
 msgstr ""
 "Les fonds envoyés à des adresses USDC non-Polygon pourraient être "
 "définitivement perdus."
 
-#: src/components/PolygonWarningFooter.vue:6
-msgid "Funds sent to non-Polygon USDC addresses will be permanently lost!"
-msgstr ""
-"Les fonds envoyés à des adresses USDC non-Polygon seront définitivement "
-"perdus !"
-
-#: src/components/PolygonWarningFooter.vue:19
+#: src/components/PolygonWarningFooter.vue:26
 msgid "Funds sent to non-Polygon USDC versions could be permanently lost."
 msgstr ""
 "Les fonds envoyés à des versions de l'USDC non-Polygon pourraient être "
@@ -1169,8 +1183,8 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/UsdcSendModal.vue:25
 #: src/components/modals/WelcomeModal.vue:334
+#: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
 msgstr "Compris"
@@ -1317,7 +1331,7 @@ msgstr "Installer l'application web"
 #: src/components/modals/BtcSendModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:217
+#: src/components/modals/UsdcSendModal.vue:205
 msgid "Insufficient balance."
 msgstr "Solde insuffisant."
 
@@ -1430,13 +1444,17 @@ msgstr "Fichier de connexion"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: src/components/modals/UsdcSendModal.vue:95
+#: src/components/modals/UsdcSendModal.vue:83
 msgid "Long press to confirm"
 msgstr "Appui long pour confirmer"
 
 #: src/components/layouts/Network.vue:113
 msgid "lost"
 msgstr "perdu"
+
+#: src/components/modals/UsdcReceiveModal.vue:16
+msgid "Make sure they are sending Polygon USDC."
+msgstr ""
 
 #: src/components/modals/UsdcActivationModal.vue:20
 msgid ""
@@ -1484,7 +1502,7 @@ msgstr ""
 "sont supportés seulement sur le nouveau type de compte."
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:89
+#: src/components/modals/UsdcSendModal.vue:77
 msgid "Name this contact..."
 msgstr "Nommez ce contact..."
 
@@ -1767,6 +1785,10 @@ msgstr "Recevoir du Fiat sur votre compte bancaire."
 msgid "Receive free NIM"
 msgstr "Recevoir des NIM gratuits"
 
+#: src/components/PolygonWarningPage.vue:12
+msgid "Receive from Polygon USDC addressses only!"
+msgstr ""
+
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
 msgstr "Recevoir des NIM"
@@ -1775,7 +1797,7 @@ msgstr "Recevoir des NIM"
 msgid "Receive some free NIM to get started."
 msgstr "Recevoir des NIM gratuits pour commencer."
 
-#: src/components/modals/UsdcReceiveModal.vue:7
+#: src/components/modals/UsdcReceiveModal.vue:13
 msgid "Receive USDC"
 msgstr "Recevoir de l'USDC"
 
@@ -1871,13 +1893,13 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:23
 #: src/components/modals/SendModal.vue:39
-#: src/components/modals/UsdcSendModal.vue:59
+#: src/components/modals/UsdcSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr "Résolution du domaine Unstoppable"
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:589
+#: src/components/modals/UsdcSendModal.vue:575
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -1885,7 +1907,7 @@ msgstr "Réessayer"
 msgid "Retrying..."
 msgstr "Nouvelle tentative..."
 
-#: src/components/modals/UsdcSendModal.vue:94
+#: src/components/modals/UsdcSendModal.vue:82
 msgid "Save and proceed"
 msgstr "Sauvegarder et continuer"
 
@@ -1972,7 +1994,7 @@ msgstr "Envoyer"
 
 #: src/components/AmountMenu.vue:23 src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:219
+#: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
 msgstr "Tout envoyer"
 
@@ -1988,8 +2010,8 @@ msgstr ""
 msgid "Send crypto to a smart contract."
 msgstr "Envoyer de la crypto à un smart contract."
 
-#: src/components/modals/UsdcSendModal.vue:18
-#: src/components/PolygonWarningFooter.vue:5
+#: src/components/PolygonWarningFooter.vue:6
+#: src/components/PolygonWarningPage.vue:11
 msgid "Send to Polygon USDC addresses only!"
 msgstr "Envoyez uniquement aux adresses Polygon USDC !"
 
@@ -2000,8 +2022,8 @@ msgstr "Envoyez uniquement aux adresses Polygon USDC !"
 msgid "Send Transaction"
 msgstr "Envoyer la Transaction"
 
-#: src/components/modals/UsdcSendModal.vue:229
-#: src/components/modals/UsdcSendModal.vue:32
+#: src/components/modals/UsdcSendModal.vue:20
+#: src/components/modals/UsdcSendModal.vue:217
 msgid "Send USDC"
 msgstr "Envoyer de l'USDC"
 
@@ -2011,7 +2033,7 @@ msgstr "Envoyez, recevez et stockez du BTC sur votre wallet."
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:586
+#: src/components/modals/UsdcSendModal.vue:572
 msgid "Sending Transaction"
 msgstr "Transaction en cours."
 
@@ -2037,11 +2059,11 @@ msgstr "{nim} NIM envoyés"
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
-#: src/components/modals/UsdcSendModal.vue:623
+#: src/components/modals/UsdcSendModal.vue:609
 msgid "Sent {usdc} USDC"
 msgstr "Envoyer {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:619
+#: src/components/modals/UsdcSendModal.vue:605
 msgid "Sent {usdc} USDC to {name}"
 msgstr "Envoyé {usdc} USDC à {name}"
 
@@ -2065,7 +2087,7 @@ msgstr "virement SEPA instantané"
 
 #: src/components/modals/SendModal.vue:101
 #: src/components/modals/SendModal.vue:89
-#: src/components/modals/UsdcSendModal.vue:108
+#: src/components/modals/UsdcSendModal.vue:96
 msgid "Set Amount"
 msgstr "Définir le montant"
 
@@ -2103,7 +2125,7 @@ msgstr ""
 "Incluez éventuellement un montant."
 
 #: src/components/modals/ReceiveModal.vue:8
-#: src/components/modals/UsdcReceiveModal.vue:8
+#: src/components/modals/UsdcReceiveModal.vue:16
 msgid "Share your address with the sender."
 msgstr "Partagez votre adresse avec l'expéditeur."
 
@@ -2150,7 +2172,7 @@ msgstr "Ignorer pour l'instant"
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:635
+#: src/components/modals/UsdcSendModal.vue:621
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
@@ -2208,7 +2230,7 @@ msgstr "Frais très bas, paiements très rapides"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/layouts/AccountOverview.vue:122
+#: src/components/layouts/AccountOverview.vue:123
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "Swap BTC {arrowIcon} USDC"
 
@@ -2242,11 +2264,11 @@ msgstr "Le Swap a expiré"
 msgid "Swap more per 30 days."
 msgstr "Swappez-en plus par période de 30 jours."
 
-#: src/components/layouts/AccountOverview.vue:66
+#: src/components/layouts/AccountOverview.vue:67
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Swap NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:78
+#: src/components/layouts/AccountOverview.vue:79
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Swap NIM {arrowIcon} USDC"
 
@@ -2330,7 +2352,7 @@ msgstr ""
 "Le nouveau fichier de connexion Nimiq est une façon facile et pratique de se"
 " connecter à votre compte et vos adresses."
 
-#: src/components/modals/UsdcSendModal.vue:15
+#: src/components/PolygonWarningPage.vue:7
 msgid "The Nimiq Wallet uses Polygon USDC for speed and low fees."
 msgstr ""
 "Le Wallet Nimiq utilise Polygon USDC pour sa rapidité et ses frais réduits."
@@ -2341,7 +2363,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr "Le taux peut changer en fonction du volume à swap."
 
 #: src/components/modals/SendModal.vue:124
-#: src/components/modals/UsdcSendModal.vue:127
+#: src/components/modals/UsdcSendModal.vue:115
 msgid "The sender and recipient cannot be identical."
 msgstr "L'expéditeur et le bénéficiaire ne peuvent pas être identiques."
 
@@ -2349,7 +2371,7 @@ msgstr "L'expéditeur et le bénéficiaire ne peuvent pas être identiques."
 msgid "The swap expired"
 msgstr "Le Swap a expiré"
 
-#: src/components/PolygonWarningFooter.vue:15
+#: src/components/PolygonWarningFooter.vue:22
 msgid ""
 "The USDC stablecoin was originally launched on Ethereum. To avoid high fees "
 "and enable fast transactions, this wallet uses the Polygon version."
@@ -2581,7 +2603,7 @@ msgstr "Mettre à jour"
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:137
+#: src/components/layouts/AccountOverview.vue:138
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565
@@ -2694,6 +2716,10 @@ msgstr "Vous vous connectez aux Testnets Nimiq, Bitcoin et Polygon (USDC)."
 msgid "You are using a Legacy Account "
 msgstr "Vous utilisez un ancien type de compte."
 
+#: src/components/PolygonWarningFooter.vue:9
+msgid "You can receive from Polygon USDC addresses only!"
+msgstr ""
+
 #: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Vous pourrez recevoir plus de NIM gratuits dans {waitTime} heures."
@@ -2737,7 +2763,7 @@ msgstr "Vous allez envoyer {amount}"
 msgid "You will send {amount} NIM"
 msgstr "Vous enverrez {amount} NIM"
 
-#: src/components/modals/UsdcSendModal.vue:193
+#: src/components/modals/UsdcSendModal.vue:181
 msgid "You will send {amount} USDC"
 msgstr "Vous enverrez {amount} USDC"
 

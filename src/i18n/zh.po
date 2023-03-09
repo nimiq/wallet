@@ -26,8 +26,8 @@ msgstr "{accounts} 保存，管理和汇总地址"
 msgid "{addresses} send and receive transactions."
 msgstr "{addresss} 发送和接收交易"
 
-#: src/components/modals/UsdcSendModal.vue:183
-#: src/components/modals/UsdcSendModal.vue:206
+#: src/components/modals/UsdcSendModal.vue:171
+#: src/components/modals/UsdcSendModal.vue:194
 #: src/components/swap/SwapModal.vue:62
 msgid "{amount} fee"
 msgstr "{amount} 费用"
@@ -110,8 +110,8 @@ msgstr "+网络费用"
 msgid "+{n} more"
 msgstr "+另外{n}个"
 
-#: src/components/modals/UsdcSendModal.vue:177
-#: src/components/modals/UsdcSendModal.vue:200
+#: src/components/modals/UsdcSendModal.vue:165
+#: src/components/modals/UsdcSendModal.vue:188
 #: src/components/swap/SwapModal.vue:56
 msgid "< {amount} fee"
 msgstr "< {amount} 费用"
@@ -202,8 +202,8 @@ msgstr "账户限额"
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:110
-#: src/components/layouts/AccountOverview.vue:161
+#: src/components/layouts/AccountOverview.vue:111
+#: src/components/layouts/AccountOverview.vue:162
 msgid "Activate"
 msgstr "激活"
 
@@ -284,7 +284,7 @@ msgstr "全部"
 msgid "All countries"
 msgstr "所有国家"
 
-#: src/components/layouts/AccountOverview.vue:207
+#: src/components/layouts/AccountOverview.vue:208
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -338,9 +338,13 @@ msgid ""
 "bank account."
 msgstr "一旦加密货币准备就绪，你的欧元将会被进一步处理给卖家。如果出现问题或超时，你的支付款项将被退回到你的银行账户。"
 
-#: src/components/PolygonWarningFooter.vue:13
+#: src/components/PolygonWarningFooter.vue:18
 msgid "Ask the receiver to ensure they have a Polygon USDC address."
 msgstr "请确认接收者使用Polygon USDC 地址。"
+
+#: src/components/PolygonWarningFooter.vue:19
+msgid "Ask the sender to ensure they have a Polygon USDC address."
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:102
 msgid "Atomic Swap complete"
@@ -395,7 +399,7 @@ msgstr "银行转帐"
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr "仅支持欧盟SEPA区域的银行转账"
 
-#: src/components/modals/UsdcSendModal.vue:14
+#: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
 msgstr "在您使用前"
 
@@ -405,7 +409,7 @@ msgid "BIC works, too."
 msgstr "BIC适用"
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:91
+#: src/components/layouts/AccountOverview.vue:92
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -582,7 +586,7 @@ msgstr "请看新介绍"
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:77
+#: src/components/modals/UsdcSendModal.vue:65
 msgid "Choose a Recipient"
 msgstr "选择接收者"
 
@@ -814,7 +818,7 @@ msgstr "断开连接"
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:384
+#: src/components/modals/UsdcSendModal.vue:370
 msgid "Domain does not resolve to a valid address"
 msgstr "域名不能解析为有效地址"
 
@@ -875,7 +879,7 @@ msgstr "编辑NIM值可见的小数位数"
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:590
+#: src/components/modals/UsdcSendModal.vue:576
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -888,7 +892,7 @@ msgid "Enter account holder name"
 msgstr "输入账户持有人姓名"
 
 #: src/components/modals/SendModal.vue:24
-#: src/components/modals/UsdcSendModal.vue:42
+#: src/components/modals/UsdcSendModal.vue:30
 msgid "Enter address"
 msgstr "输入地址"
 
@@ -1076,15 +1080,27 @@ msgstr "完整节点"
 msgid "Funding Cashlink"
 msgstr "充值现金链接"
 
-#: src/components/modals/UsdcSendModal.vue:22
+#: src/components/PolygonWarningFooter.vue:10
+msgid "Funds sent from non-Polygon USDC addresses could be permanently lost!"
+msgstr ""
+
+#: src/components/PolygonWarningPage.vue:19
+msgid "Funds sent from non-Polygon USDC addresses could be permanently lost."
+msgstr ""
+
+#: src/components/PolygonWarningFooter.vue:27
+msgid "Funds sent from non-Polygon USDC versions could be permanently lost."
+msgstr ""
+
+#: src/components/PolygonWarningFooter.vue:7
+msgid "Funds sent to non-Polygon USDC addresses could be permanently lost!"
+msgstr ""
+
+#: src/components/PolygonWarningPage.vue:18
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost."
 msgstr "发送到非Polygon USDC地址的资金可能会永久丢失。"
 
-#: src/components/PolygonWarningFooter.vue:6
-msgid "Funds sent to non-Polygon USDC addresses will be permanently lost!"
-msgstr "发送到非Polygon USDC地址的资金将会永久丢失。"
-
-#: src/components/PolygonWarningFooter.vue:19
+#: src/components/PolygonWarningFooter.vue:26
 msgid "Funds sent to non-Polygon USDC versions could be permanently lost."
 msgstr "发送到非Polygon USDC版本的资金可能会永久丢失。"
 
@@ -1117,8 +1133,8 @@ msgstr "通过使用{provider}进行身份验证以获取更高的限额。要�
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/UsdcSendModal.vue:25
 #: src/components/modals/WelcomeModal.vue:334
+#: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
 msgstr "已取得"
@@ -1252,7 +1268,7 @@ msgstr "安裝网络应用程序"
 #: src/components/modals/BtcSendModal.vue:75
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:217
+#: src/components/modals/UsdcSendModal.vue:205
 msgid "Insufficient balance."
 msgstr "余额不足"
 
@@ -1365,13 +1381,17 @@ msgstr "登录文件"
 msgid "Logout"
 msgstr "登出"
 
-#: src/components/modals/UsdcSendModal.vue:95
+#: src/components/modals/UsdcSendModal.vue:83
 msgid "Long press to confirm"
 msgstr "请长按确认"
 
 #: src/components/layouts/Network.vue:113
 msgid "lost"
 msgstr "遗失"
+
+#: src/components/modals/UsdcReceiveModal.vue:16
+msgid "Make sure they are sending Polygon USDC."
+msgstr ""
 
 #: src/components/modals/UsdcActivationModal.vue:20
 msgid ""
@@ -1416,7 +1436,7 @@ msgstr ""
 "仅支持新帐户"
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:89
+#: src/components/modals/UsdcSendModal.vue:77
 msgid "Name this contact..."
 msgstr "命名此联系人..."
 
@@ -1684,6 +1704,10 @@ msgstr "将法定货币存入你的银行账户"
 msgid "Receive free NIM"
 msgstr "接收免费的NIM"
 
+#: src/components/PolygonWarningPage.vue:12
+msgid "Receive from Polygon USDC addressses only!"
+msgstr ""
+
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
 msgstr "接收NIM"
@@ -1692,7 +1716,7 @@ msgstr "接收NIM"
 msgid "Receive some free NIM to get started."
 msgstr "领取一些免费的NIM来开始吧！"
 
-#: src/components/modals/UsdcReceiveModal.vue:7
+#: src/components/modals/UsdcReceiveModal.vue:13
 msgid "Receive USDC"
 msgstr "接受 USDC"
 
@@ -1781,13 +1805,13 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 
 #: src/components/BtcAddressInput.vue:23
 #: src/components/modals/SendModal.vue:39
-#: src/components/modals/UsdcSendModal.vue:59
+#: src/components/modals/UsdcSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:589
+#: src/components/modals/UsdcSendModal.vue:575
 msgid "Retry"
 msgstr "重试"
 
@@ -1795,7 +1819,7 @@ msgstr "重试"
 msgid "Retrying..."
 msgstr "重试..."
 
-#: src/components/modals/UsdcSendModal.vue:94
+#: src/components/modals/UsdcSendModal.vue:82
 msgid "Save and proceed"
 msgstr "保存并执行"
 
@@ -1880,7 +1904,7 @@ msgstr "发送"
 
 #: src/components/AmountMenu.vue:23 src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:219
+#: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
 msgstr "全部发送"
 
@@ -1894,8 +1918,8 @@ msgstr "在区块链上发送和接收NIM，没有任何第三方。真正实现
 msgid "Send crypto to a smart contract."
 msgstr "将加密货币发送到智能合约"
 
-#: src/components/modals/UsdcSendModal.vue:18
-#: src/components/PolygonWarningFooter.vue:5
+#: src/components/PolygonWarningFooter.vue:6
+#: src/components/PolygonWarningPage.vue:11
 msgid "Send to Polygon USDC addresses only!"
 msgstr "仅发送到Polygon USDC地址！"
 
@@ -1906,8 +1930,8 @@ msgstr "仅发送到Polygon USDC地址！"
 msgid "Send Transaction"
 msgstr "发送交易"
 
-#: src/components/modals/UsdcSendModal.vue:229
-#: src/components/modals/UsdcSendModal.vue:32
+#: src/components/modals/UsdcSendModal.vue:20
+#: src/components/modals/UsdcSendModal.vue:217
 msgid "Send USDC"
 msgstr "发送 USDC"
 
@@ -1917,7 +1941,7 @@ msgstr "从你的钱包中发送、接收和持有BTC"
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:586
+#: src/components/modals/UsdcSendModal.vue:572
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
@@ -1943,11 +1967,11 @@ msgstr "发送{nim}NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
-#: src/components/modals/UsdcSendModal.vue:623
+#: src/components/modals/UsdcSendModal.vue:609
 msgid "Sent {usdc} USDC"
 msgstr "发送 {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:619
+#: src/components/modals/UsdcSendModal.vue:605
 msgid "Sent {usdc} USDC to {name}"
 msgstr "发送 {usdc} USDC 到 {name}"
 
@@ -1971,7 +1995,7 @@ msgstr "SEPA即时交易"
 
 #: src/components/modals/SendModal.vue:101
 #: src/components/modals/SendModal.vue:89
-#: src/components/modals/UsdcSendModal.vue:108
+#: src/components/modals/UsdcSendModal.vue:96
 msgid "Set Amount"
 msgstr "设置金额"
 
@@ -2009,7 +2033,7 @@ msgstr ""
 "你也可以预先输入金额"
 
 #: src/components/modals/ReceiveModal.vue:8
-#: src/components/modals/UsdcReceiveModal.vue:8
+#: src/components/modals/UsdcReceiveModal.vue:16
 msgid "Share your address with the sender."
 msgstr "将你的地址分享给发送者"
 
@@ -2056,7 +2080,7 @@ msgstr "暂时跳过"
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:635
+#: src/components/modals/UsdcSendModal.vue:621
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -2114,7 +2138,7 @@ msgstr "超低手续费，超快支付"
 msgid "Swap"
 msgstr "交换"
 
-#: src/components/layouts/AccountOverview.vue:122
+#: src/components/layouts/AccountOverview.vue:123
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "兑换 BTC {arrowIcon} USDC"
 
@@ -2148,11 +2172,11 @@ msgstr "交换已过期"
 msgid "Swap more per 30 days."
 msgstr "每30天进行更多的兑换。"
 
-#: src/components/layouts/AccountOverview.vue:66
+#: src/components/layouts/AccountOverview.vue:67
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "兑换 NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:78
+#: src/components/layouts/AccountOverview.vue:79
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "兑换 NIM {arrowIcon} USDC"
 
@@ -2233,7 +2257,7 @@ msgid ""
 "account and its addresses."
 msgstr "新的登录文件是个用来访问你的账户及地址简单方便的方式"
 
-#: src/components/modals/UsdcSendModal.vue:15
+#: src/components/PolygonWarningPage.vue:7
 msgid "The Nimiq Wallet uses Polygon USDC for speed and low fees."
 msgstr "Nimiq 钱包使用 Polygon USDC进行快速低费的交易。"
 
@@ -2243,7 +2267,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr "汇率可能会依据交换数量改变"
 
 #: src/components/modals/SendModal.vue:124
-#: src/components/modals/UsdcSendModal.vue:127
+#: src/components/modals/UsdcSendModal.vue:115
 msgid "The sender and recipient cannot be identical."
 msgstr "发件人和收件人不能相同"
 
@@ -2251,7 +2275,7 @@ msgstr "发件人和收件人不能相同"
 msgid "The swap expired"
 msgstr "交换已过期"
 
-#: src/components/PolygonWarningFooter.vue:15
+#: src/components/PolygonWarningFooter.vue:22
 msgid ""
 "The USDC stablecoin was originally launched on Ethereum. To avoid high fees "
 "and enable fast transactions, this wallet uses the Polygon version."
@@ -2464,7 +2488,7 @@ msgstr "现在更新"
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:137
+#: src/components/layouts/AccountOverview.vue:138
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565
@@ -2566,6 +2590,10 @@ msgstr "您正在连接到 Nimiq、Bitcoin 和 Polygon（USDC）的测试网络�
 msgid "You are using a Legacy Account "
 msgstr "你正在使用传统账户"
 
+#: src/components/PolygonWarningFooter.vue:9
+msgid "You can receive from Polygon USDC addresses only!"
+msgstr ""
+
 #: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "你可以在{waitTime}小时内收到更多的免费NIM"
@@ -2605,7 +2633,7 @@ msgstr "你将发送 {amount}"
 msgid "You will send {amount} NIM"
 msgstr "你将发送{amount}NIM"
 
-#: src/components/modals/UsdcSendModal.vue:193
+#: src/components/modals/UsdcSendModal.vue:181
 msgid "You will send {amount} USDC"
 msgstr "你将发送 {amount} USDC"
 

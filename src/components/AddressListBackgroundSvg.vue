@@ -120,10 +120,10 @@ export default defineComponent({
         };
 
         const sides = computed(() => ({
-            top: `h${props.width - 20}`,
-            right: `v${props.height - 20}`,
-            bottom: `h-${props.width - 20}`,
-            left: `v-${props.height - 20}`,
+            top: `h${props.width - (CORNER_SIZE * 2)}`,
+            right: `v${props.height - (CORNER_SIZE * 2)}`,
+            bottom: `h-${props.width - (CORNER_SIZE * 2)}`,
+            left: `v-${props.height - (CORNER_SIZE * 2)}`,
         }));
 
         const corners = {
@@ -230,7 +230,6 @@ export default defineComponent({
 
         // disable transitions on window resize
         const resizing = ref(false);
-
         let resizeTimeout: any = null;
         function onResize() {
             clearTimeout(resizeTimeout);

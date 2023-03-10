@@ -51,6 +51,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency, ENV_DEV } from '../../lib/Constants';
 
@@ -99,10 +100,15 @@ export default defineComponent({
         // for legacy or non-bitcoin-activated accounts.
         const btcAddress: string | undefined = useBtcAddressStore().availableExternalAddresses.value[0];
 
+        // Having a USDC address must be optional, so that the widget also works
+        // for legacy or non-polygon-activated accounts.
+        const usdcAddress = useUsdcAddressStore().activeAddress.value;
+
         const walletAddresses: {[c: string]: string | undefined} = {
             // Remove spaces in NIM address, as spaces are invalid URI components
             nim: useAddressStore().state.activeAddress || undefined,
             ...(btcAddress ? { btc: btcAddress } : {}),
+            ...(usdcAddress ? { usdc: usdcAddress } : {}),
         };
 
         const { config } = useConfig();
@@ -249,10 +255,13 @@ export default defineComponent({
                 // ignore
             }
 
+            let cryptoCurrency = cryptoCurrencyCode.value.toUpperCase();
+            if (cryptoCurrency === 'USDC') cryptoCurrency = 'USDC-MATIC';
+
             await window.simplex.createForm({
                 showFiatFirst: true,
                 fiat: fiatCurrencyCode.toUpperCase(),
-                crypto: cryptoCurrencyCode.value.toUpperCase(),
+                crypto: cryptoCurrency,
             });
 
             // Observe for when the simplex iframe is removed, which is when the the checkout flow
@@ -267,6 +276,7 @@ export default defineComponent({
             observer.observe((context.refs.$simplex as HTMLFormElement), { childList: true, subtree: true });
 
             window.simplex.on('crypto-changed', (crypto: string) => {
+                if (crypto === 'USDC-MATIC') crypto = 'USDC';
                 cryptoCurrencyCode.value = crypto.toLowerCase() as CryptoCurrency;
             });
         });

@@ -320,11 +320,29 @@
 
             <div class="fiat-setting">
                 {{  $t('Show values as {currency}', { currency: '' }) }}
-                <select class="nq-button-s" @change="(event) => setCurrency(event.target.value)">
-                    <option v-for="fiat of fiatCurrencies" :key="fiat" :value="fiat" :selected="fiat === currency">
-                        {{ fiat.toUpperCase() }}
-                    </option>
-                </select>
+
+                <AmountMenu class="currency-selector"
+                    :open="currenciesSelectorOpen"
+                    :currency="currency"
+                    onlyFiatCurrencies
+                    :activeCurrency="currency"
+                    :fiatCurrency="currency"
+                    :otherFiatCurrencies="otherFiatCurrencies"
+                    :feeOption="false" :sendAllOption="false"
+                    @currency="(currency) => setCurrency(currency)"
+                    @click.native.stop="currenciesSelectorOpen = !currenciesSelectorOpen">
+                    <template v-slot:trigger>
+                        <button class="nq-button-s trigger">
+                            {{ currency.toUpperCase() }}
+                            <!-- eslint-disable max-len -->
+                            <svg viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.557.5a.8.8 0 0 1 .678 1.224l-3.557 5.69a.8.8 0 0 1-1.356 0L.765 1.724A.8.8 0 0 1 1.443.5h7.114Z" fill="currentColor" />
+                            </svg>
+                            <!-- eslint-enable max-len -->
+                        </button>
+                    </template>
+                </AmountMenu>
+
             </div>
         </PageBody>
 
@@ -359,7 +377,7 @@
 import { computed, defineComponent, onUnmounted, ref, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
-
+import AmountMenu from '../AmountMenu.vue';
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAddressStore } from '../../stores/Address';
@@ -369,6 +387,7 @@ import {
     FiatCurrency,
     WELCOME_MODAL_LOCALSTORAGE_KEY,
     WELCOME_2_MODAL_LOCALSTORAGE_KEY,
+    FIAT_CURRENCY_DENYLIST,
 } from '../../lib/Constants';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
@@ -379,7 +398,7 @@ export default defineComponent({
         const { state: settings$, setLanguage } = useSettingsStore();
         const { activeAddress } = useAddressStore();
         const { isMobile } = useWindowSize();
-        const { currency, setCurrency } = useFiatStore();
+        const { currency, setCurrency, state: fiat$ } = useFiatStore();
 
         const currencies = [
             CryptoCurrency.NIM,
@@ -533,6 +552,7 @@ export default defineComponent({
             if (page.value === 5) {
                 stopInterval();
                 isPageBodyFadedOut.value = true;
+                currenciesSelectorOpen.value = false;
                 setTimeout(() => {
                     highlightedCurrencyIndex.value = 2; // Go back to USDC explainer
                     page.value = 4;
@@ -559,6 +579,10 @@ export default defineComponent({
         }
 
         const fiatCurrencies = Object.values(FiatCurrency);
+        const currenciesSelectorOpen = ref(false);
+        const otherFiatCurrencies = computed(() =>
+            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
+                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
 
         return {
             $modal,
@@ -580,6 +604,9 @@ export default defineComponent({
             nimExplainer$,
             btcExplainer$,
             usdcExplainer$,
+            currenciesSelectorOpen,
+            otherFiatCurrencies,
+            fiatCurrency: fiat$.currency,
         };
     },
     components: {
@@ -590,6 +617,7 @@ export default defineComponent({
         Tooltip,
         BitcoinIcon,
         UsdcIcon,
+        AmountMenu,
     },
 });
 </script>
@@ -599,6 +627,10 @@ export default defineComponent({
         font-size: var(--body-size);
         font-weight: 600;
         overflow: hidden;
+    }
+
+    .modal ::v-deep .small-page {
+        overflow-y: initial;
     }
 
     .modal ::v-deep .close-button {
@@ -1013,6 +1045,7 @@ export default defineComponent({
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        overflow-y: initial;
 
         padding-bottom: 2rem;
 
@@ -1181,9 +1214,25 @@ export default defineComponent({
             margin-top: -2rem; // To keep the circle aligned with the labels
             margin-bottom: 2rem;
 
-            select {
+            .currency-selector {
+                position: relative;
                 margin-left: 1rem;
-                padding: 0 1rem;
+
+                .trigger {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+
+                    svg {
+                        width: 1rem;
+                        opacity: 0.3;
+                    }
+                }
+
+                & ::v-deep .menu {
+                    position: absolute;
+                    bottom: 4rem;
+                }
             }
         }
     }

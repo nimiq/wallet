@@ -1,6 +1,8 @@
 <template>
     <div class="amount-menu">
-        <button class="reset button flex-row">{{ ticker }}</button>
+        <slot name="trigger">
+            <button class="reset button flex-row">{{ ticker }}</button>
+        </slot>
         <div v-if="open" class="menu flex-column">
             <button v-if="feeOption" class="reset flex-row" @click="$emit('fee-selection')">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -25,6 +27,7 @@
             <div v-if="feeOption || sendAllOption" class="separator"></div>
             <div class="flex-row currencies">
                 <button
+                    v-if="!onlyFiatCurrencies"
                     class="reset" :class="{
                         'active': activeCurrency === currency || (currency === 'btc' && activeCurrency === 'mbtc'),
                     }"
@@ -53,6 +56,10 @@ export default defineComponent({
         currency: {
             type: String as () => CryptoCurrency,
             default: CryptoCurrency.NIM,
+        },
+        onlyFiatCurrencies: {
+            type: Boolean,
+            default: false,
         },
         activeCurrency: {
             type: String as () => CryptoCurrency | 'mbtc' | FiatCurrency,

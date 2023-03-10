@@ -30,22 +30,30 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useConfig } from '../../composables/useConfig';
+import { CryptoCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
         const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
         const baseCurrencyCode = useFiatStore().state.currency;
-        const defaultCurrencyCode = useAccountStore().state.activeCurrency;
+        let defaultCurrencyCode: CryptoCurrency | 'usdc_polygon' = useAccountStore().state.activeCurrency;
+        if (defaultCurrencyCode === 'usdc') defaultCurrencyCode = 'usdc_polygon';
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
-        const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0];
+        const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0] as string | undefined;
+
+        // Having a USDC address must be optional, so that the widget also works
+        // for legacy or non-polygon-activated accounts.
+        const usdcAddress = useUsdcAddressStore().activeAddress.value;
 
         const walletAddresses = {
             // Remove spaces in NIM address, as spaces are invalid URI components
             nim: useAddressStore().state.activeAddress?.replace(/\s/g, ''),
             ...(btcAddress ? { btc: btcAddress } : {}),
+            ...(usdcAddress ? { usdc_polygon: usdcAddress } : {}),
         };
 
         const { config } = useConfig();

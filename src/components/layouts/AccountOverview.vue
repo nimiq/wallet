@@ -582,7 +582,7 @@ export default defineComponent({
 .account-grid {
     --grid-gap: 2rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: calc(50% - var(--grid-gap) / 2) calc(50% - var(--grid-gap) / 2);
     grid-template-rows: minmax(0px, 1fr) auto auto;
     gap: var(--grid-gap);
     align-items: center;

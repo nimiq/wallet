@@ -22,19 +22,24 @@
                 :size="448"
                 :fill="'#1F2348' /* nimiq-blue */"
             />
-            <Tooltip ref="addressTooltip$" class="copyable-short-address" noFocus :disabled="isAddressTooltipDisabled">
+            <!-- Block mouse events registered by Tooltip and replace them with our custom handlers. Additionally, make
+            the Tooltip non-focusable via noFocus to avoid the Tooltip and Copyable both being focus targets during
+            keyboard navigation. Instead, we handle focus events on Copyable. -->
+            <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
+            <Tooltip
+                ref="addressTooltip$"
+                noFocus
+                class="copyable-short-address"
+                @mouseenter.native.capture.stop="scheduleShowAddressTooltip"
+                @mouseleave.native.capture.stop="hideAddressTooltip"
+                @click.native.capture.stop="$refs.copyable$.copy(); /* block tooltip click handler and copy manually */"
+            >
                 <template #trigger>
-                    <!-- Handle events on Copyable and stop the default events on Tooltip to be able to disable showing
-                    the tooltip on touch, and to handle focus events on the Copyable instead of having the Copyable and
-                    Tooltip both as focus targets during keyboard navigation -->
                     <Copyable
-                        ref="copyable"
+                        ref="copyable$"
                         :text="address"
-                        @focus.native.capture.stop="showAddressTooltip"
-                        @blur.native.capture.stop="hideAddressTooltip"
-                        @mouseenter.native.capture.stop="showAddressTooltip"
-                        @mouseleave.native.capture.stop="hideAddressTooltip"
-                        @click.native.capture.stop="$refs.copyable.copy(); /* block tooltip click handler */"
+                        @focus.native="scheduleShowAddressTooltip"
+                        @blur.native="hideAddressTooltip"
                         @copy="onCopy">
                         <ShortAddress :address="address"/>
                     </Copyable>
@@ -47,11 +52,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, QrCode, Tooltip, Copyable } from '@nimiq/vue-components';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import { useWindowSize } from '../../composables/useWindowSize';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -67,7 +71,6 @@ export default defineComponent({
 
         const { state: addresses$, addressInfo } = useUsdcAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
-        const { isTablet } = useWindowSize();
         // These are non-reactive because we're only interested in whether the user had ever received USDC when the
         // modal was initially opened.
         const normalizedUserAddresses = Object.values(addresses$.addressInfos)
@@ -80,17 +83,6 @@ export default defineComponent({
         const address = computed(() => addressInfo.value?.address);
         const addressTooltip$ = ref<Tooltip>(null);
 
-        // Disable display of tooltip on touch.
-        const isAddressTooltipDisabled = ref(isTablet.value);
-        function onTouch() {
-            isAddressTooltipDisabled.value = true;
-        }
-        // Register touchstart as regular event listener on document, to detect touches on the entire page, and because
-        // event listeners registered via vue as @touchstart are triggered too late for us here to disable the tooltip
-        // in time.
-        onMounted(() => document.addEventListener('touchstart', onTouch));
-        onUnmounted(() => document.removeEventListener('touchstart', onTouch));
-
         function back() {
             if (page.value === initialPage) {
                 disableNextModalTransition();
@@ -101,31 +93,36 @@ export default defineComponent({
         }
 
         let showAddressTooltipTimeout = -1;
-        async function showAddressTooltip(delay: number | Event = 0) {
-            await context.root.$nextTick(); // give isAddressTooltipDisabled some more time to update
-            if (isAddressTooltipDisabled.value || showAddressTooltipTimeout !== -1) {
-                // Tooltip is disabled or showing tooltip is already scheduled, and we want to keep the original delay.
+        function showAddressTooltip(delay = 0) {
+            if (showAddressTooltipTimeout !== -1) {
+                // Showing tooltip is already scheduled. Keep the original delay.
                 return;
             }
-            delay = typeof delay === 'number' ? delay : 0;
             showAddressTooltipTimeout = window.setTimeout(() => {
                 showAddressTooltipTimeout = -1;
                 if (!addressTooltip$.value) return;
                 addressTooltip$.value.show();
             }, delay);
         }
-        async function hideAddressTooltip() {
+        function hideAddressTooltip() {
             window.clearTimeout(showAddressTooltipTimeout);
             showAddressTooltipTimeout = -1;
             if (!addressTooltip$.value) return;
             addressTooltip$.value.hide(/* force */ true);
         }
 
+        function scheduleShowAddressTooltip() {
+            // Show the tooltip only after a delay, to check whether a copy is triggered immediately which cancels the
+            // tooltip via hideAddressTooltip. Notably, if the copy was triggered by a tap via touchscreen, we want to
+            // display the copy tooltip immediately and skip the address tooltip which would open very shortly by the
+            // mouseenter and focus happening at the same time as the copy.
+            showAddressTooltip(150);
+        }
+
         function onCopy() {
-            // hide address tooltip and re-show it after the copy tooltip disappeared
+            // Hide / cancel address tooltip and re-show it after the copy tooltip disappeared.
             hideAddressTooltip();
-            isAddressTooltipDisabled.value = false;
-            showAddressTooltip(1500);
+            showAddressTooltip(1200);
         }
 
         return {
@@ -134,11 +131,9 @@ export default defineComponent({
             initialPage,
             address,
             addressTooltip$,
-            isAddressTooltipDisabled,
-            showAddressTooltip,
+            scheduleShowAddressTooltip,
             hideAddressTooltip,
             onCopy,
-            isTablet,
             back,
         };
     },

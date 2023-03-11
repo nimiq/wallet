@@ -169,15 +169,7 @@
                         :width="accountBgPosition.nimiq.width"
                         :height="accountBgPosition.nimiq.height"
                         :style="accountBgPosition.nimiq"
-                        :cutouts="{
-                            bottom: nimBtcSwapTooltip$ && nimUsdcSwapTooltip$
-                                    ? [nimBtcSwapTooltip$.isShown, nimUsdcSwapTooltip$.isShown]
-                                : nimBtcSwapTooltip$ && !nimUsdcSwapTooltip$
-                                    ? [nimBtcSwapTooltip$.isShown]
-                                : !nimBtcSwapTooltip$ && nimUsdcSwapTooltip$
-                                    ? [nimUsdcSwapTooltip$.isShown]
-                                : undefined
-                        }"
+                        :cutouts="nimAccountBgCutouts"
                     />
                     <AddressListBackgroundSvg class="bitcoin-account-background"
                         v-if="accountBgPosition.bitcoin"
@@ -263,6 +255,7 @@ import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
+import { useConfig } from '../../composables/useConfig';
 
 export default defineComponent({
     name: 'account-overview',
@@ -278,6 +271,7 @@ export default defineComponent({
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const { accountBalance: usdcAccountBalance } = useUsdcAddressStore();
         const { accountBalance: nimAccountBalance } = useAddressStore();
+        const { config } = useConfig();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
@@ -406,6 +400,24 @@ export default defineComponent({
             return ret;
         });
 
+        const nimAccountBgCutouts = computed(() => {
+            let bottom;
+
+            if (nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {
+                bottom = [nimBtcSwapTooltip$.value.isShown, nimUsdcSwapTooltip$.value.isShown];
+            } else if (nimBtcSwapTooltip$.value && !nimUsdcSwapTooltip$.value) {
+                bottom = (hasUsdcAddresses.value && config.usdc.enabled)
+                    ? [nimBtcSwapTooltip$.value.isShown, null]
+                    : [nimBtcSwapTooltip$.value.isShown];
+            } else if (!nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {
+                bottom = (hasBitcoinAddresses.value && config.enableBitcoin)
+                    ? [null, nimUsdcSwapTooltip$.value.isShown]
+                    : [nimUsdcSwapTooltip$.value.isShown];
+            }
+
+            return { bottom };
+        });
+
         return {
             activeAccountInfo,
             AccountType,
@@ -436,6 +448,7 @@ export default defineComponent({
             nimUsdcSwapTooltip$,
             btcUsdcSwapTooltip$,
             accountBgPosition,
+            nimAccountBgCutouts,
         };
     },
     components: {
@@ -612,7 +625,8 @@ export default defineComponent({
     .nimiq-account ~ button:last-of-type {
         grid-column-end: 3;
     }
-    .tooltip:last-of-type {
+    .nim-btc-swap-button:first-of-type:last-of-type,
+    .nim-usdc-swap-button:first-of-type:last-of-type {
         grid-column: 1 / 3;
     }
     .bitcoin-account {

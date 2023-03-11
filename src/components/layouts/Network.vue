@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculateUsdcFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
@@ -138,8 +138,22 @@ export default defineComponent({
         const btcFee = ref(0);
         const usdcFee = ref(0);
 
-        onMounted(async () => {
-            // No need to watch config for reactive changes because it won't change while on the network view.
+        // we are going to set up a timer to update the fees every minute
+        let interval: number;
+
+        onMounted(() => {
+            setFees();
+            if (config.enableBitcoin || config.usdc.enabled) {
+                interval = window.setInterval(setFees, 60 * 1000); // every minute
+            }
+        });
+        onUnmounted(() => {
+            if (interval) {
+                window.clearInterval(interval);
+            }
+        });
+
+        async function setFees() {
             if (config.enableBitcoin) {
                 const client = await getElectrumClient();
                 await client.waitForConsensusEstablished();
@@ -150,7 +164,7 @@ export default defineComponent({
             if (config.usdc.enabled) {
                 usdcFee.value = (await calculateUsdcFee()).fee.toNumber();
             }
-        });
+        }
 
         return {
             CryptoCurrency,

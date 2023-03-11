@@ -1893,20 +1893,27 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/utils@^0.8.2", "@nimiq/utils@^0.8.3":
+"@nimiq/utils@^0.8.3":
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.8.3.tgz#e088ad4ec874d2f6ec10437700f23197fd2e7600"
   integrity sha512-fDZR3z/l7G39XbtkbnMvyxkrw/o1DKahxg3Scdn+Ib0/s98H1Uk8P3JJ1DZd+D0bApuCMcQRJnCiJ61r9LUNgg==
   dependencies:
     big-integer "^1.6.44"
 
+"@nimiq/utils@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.9.1.tgz#74b59394b1bbda9fb17efa4affd0edb555f3514e"
+  integrity sha512-YuN2mHefo8law/W4F4I2pAZ+kf5vKnI345ExmAP0Hfefu2Y0fPEoULewEelDwvl9YXxmT+vHKCVH0DHK4508dw==
+  dependencies:
+    big-integer "^1.6.44"
+
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#3b120dac5897cc76cadd73f3b5ddf4b1748155a9"
+  resolved "https://github.com/nimiq/vue-components#04861d66af2ab4789417f7c35fbfee51bd542c5d"
   dependencies:
     "@nimiq/iqons" "^1.6.0"
     "@nimiq/style" "^0.8.5"
-    "@nimiq/utils" "^0.8.2"
+    "@nimiq/utils" "^0.9.1"
     big-integer "^1.6.44"
     input-format "^0.2.8"
     js-sha3 "^0.8.0"

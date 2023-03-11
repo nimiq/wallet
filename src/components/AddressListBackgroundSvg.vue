@@ -22,8 +22,18 @@ export default defineComponent({
             default: 125,
         },
         cutouts: {
-            // support only max 1 cutout per side except for the bottom which can have 2
-            type: Object as () => Record<'left' | 'bottom' | 'top' | 'right', Array<boolean>>,
+            /**
+             * support only max 1 cutout per side except for the bottom which can have 2
+             * @example
+             * // a single centered & closed cutout at the bottom
+             * { bottom: [false] }
+             * // a single left-aligned & opened cutout at the bottom
+             * { bottom: [true, null] }
+             * // 2 cutouts at the bottom, the first one is opened, the second one closed
+             * { bottom: [true, false] }
+             * // etc...
+             */
+            type: Object as () => Record<'left' | 'bottom' | 'top' | 'right', Array<boolean | null>>,
         },
     },
     setup(props) {
@@ -196,13 +206,23 @@ export default defineComponent({
                 } else if (bottomCutout.length === 2) { // 2 cutouts
                     const spacing = ((props.width - ((CORNER_SIZE * 2) + (CLOSED_CUTOUT_SIZE() * 2) + GRID_GAP))) / 4;
 
-                    ret += `h-${spacing - CORNER_SIZE / 2 - (bottomCutout[1] ? diff : 0)}`;
-                    ret += bottomCutout[1] ? cutouts.bottom.opened : cutouts.bottom.closed;
-                    ret += `h-${spacing + CORNER_SIZE / 2 - (bottomCutout[1] ? diff : 0)}`;
+                    if (typeof bottomCutout[1] === 'boolean') {
+                        ret += `h-${spacing - CORNER_SIZE / 2 - (bottomCutout[1] ? diff : 0)}`;
+                        ret += bottomCutout[1] === true ? cutouts.bottom.opened : cutouts.bottom.closed;
+                        ret += `h-${spacing + CORNER_SIZE / 2 - (bottomCutout[1] ? diff : 0)}`;
+                    } else {
+                        ret += `h-${spacing * 2 + CLOSED_CUTOUT_SIZE()}`;
+                    }
+
                     ret += `h-${GRID_GAP}`;
-                    ret += `h-${spacing + CORNER_SIZE / 2 - (bottomCutout[0] ? diff : 0)}`;
-                    ret += bottomCutout[0] ? cutouts.bottom.opened : cutouts.bottom.closed;
-                    ret += `h-${spacing - CORNER_SIZE / 2 - (bottomCutout[0] ? diff : 0)}`;
+
+                    if (typeof bottomCutout[0] === 'boolean') {
+                        ret += `h-${spacing + CORNER_SIZE / 2 - (bottomCutout[0] ? diff : 0)}`;
+                        ret += bottomCutout[0] === true ? cutouts.bottom.opened : cutouts.bottom.closed;
+                        ret += `h-${spacing - CORNER_SIZE / 2 - (bottomCutout[0] ? diff : 0)}`;
+                    } else {
+                        ret += `h-${spacing * 2 + CLOSED_CUTOUT_SIZE()}`;
+                    }
                 }
             }
 

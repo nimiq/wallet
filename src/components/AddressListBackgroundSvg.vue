@@ -9,7 +9,15 @@
     </svg>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import {
+    computed,
+    defineComponent,
+    onActivated,
+    onDeactivated,
+    onMounted,
+    onUnmounted,
+    ref,
+} from '@vue/composition-api';
 
 export default defineComponent({
     props: {
@@ -145,6 +153,9 @@ export default defineComponent({
 
         // starting from the top left corner, clockwise
         const path = computed(() => {
+            if (props.height <= 0 || props.width <= 0) {
+                return '';
+            }
             if (!props.cutouts) {
                 return sides.value.top
                     + corners['top-right']

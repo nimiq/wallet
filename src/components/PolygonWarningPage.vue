@@ -9,7 +9,7 @@
                 <AlertCircleIcon/>
                 {{ type === 'sending'
                     ? $t('Send to Polygon USDC addresses only!')
-                    : $t('Receive from Polygon USDC addressses only!')
+                    : $t('Receive from Polygon USDC addresses only!')
                 }}
             </p>
             <p class="nq-text nq-orange">

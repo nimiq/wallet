@@ -1617,7 +1617,7 @@ msgid "Receive free NIM"
 msgstr ""
 
 #: src/components/PolygonWarningPage.vue:12
-msgid "Receive from Polygon USDC addressses only!"
+msgid "Receive from Polygon USDC addresses only!"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:7

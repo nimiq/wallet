@@ -58,7 +58,7 @@
                     <AddressList @address-selected="onAddressSelected"/>
                 </div>
 
-                <Tooltip class="nim-btc-swap-button" ref="nimBtcSwapTooltip$" :container="this"
+                <Tooltip class="nim-btc-swap-button" ref="nimBtcSwapTooltip$" :container="this" preferredPosition="top"
                     v-if="hasBitcoinAddresses && $config.enableBitcoin
                         && (nimAccountBalance > 0 || btcAccountBalance > 0)">
                     <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
@@ -70,6 +70,7 @@
                 </Tooltip>
 
                 <Tooltip class="nim-usdc-swap-button" ref="nimUsdcSwapTooltip$" :container="this"
+                    preferredPosition="top"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasUsdcAddresses && $config.usdc.enabled
                         && (nimAccountBalance > 0 || usdcAccountBalance > 0)">
@@ -113,6 +114,7 @@
                 </button>
 
                 <Tooltip class="btc-usdc-swap-button" ref="btcUsdcSwapTooltip$" :container="this"
+                    preferredPosition="top"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && hasUsdcAddresses
                         && $config.enableBitcoin && $config.usdc.enabled

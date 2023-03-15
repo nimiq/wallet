@@ -1909,7 +1909,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#04861d66af2ab4789417f7c35fbfee51bd542c5d"
+  resolved "https://github.com/nimiq/vue-components#5b846f187ec47084863ad93c0999c6d87b6754f9"
   dependencies:
     "@nimiq/iqons" "^1.6.0"
     "@nimiq/style" "^0.8.5"

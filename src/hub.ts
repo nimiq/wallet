@@ -630,9 +630,11 @@ export async function sendUsdcTransaction(
             appName: APP_NAME,
             recipientLabel,
 
-            approval: {
-                tokenNonce: approval.tokenNonce,
-            },
+            ...(approval ? {
+                approval: {
+                    tokenNonce: approval.tokenNonce,
+                },
+            } : null),
         });
     });
     const signedTransaction = await hubApi.signPolygonTransaction(request, getBehavior()).catch(onError);

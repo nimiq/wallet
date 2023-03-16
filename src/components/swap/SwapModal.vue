@@ -1480,9 +1480,11 @@ export default defineComponent({
                     fund = {
                         type: 'USDC',
                         ...relayRequest,
-                        approval: {
-                            tokenNonce: usdcNonce.toNumber(),
-                        },
+                        ...(method === 'openWithApproval' ? {
+                            approval: {
+                                tokenNonce: usdcNonce.toNumber(),
+                            },
+                        } : null),
                     };
                 }
 

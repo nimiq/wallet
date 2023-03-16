@@ -659,12 +659,14 @@ export async function createTransactionRequest(recipient: string, amount: number
 
     return {
         relayRequest,
-        approval: {
-            tokenNonce: usdcNonce.toNumber(),
-        },
         relay: {
             url: relay.url,
         },
+        ...(method === 'transferWithApproval' ? {
+            approval: {
+                tokenNonce: usdcNonce.toNumber(),
+            },
+        } : null),
     };
 }
 

@@ -1820,9 +1820,9 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.7.0.tgz#eea496f4898139c51971f0b177583c6cc6b06611"
   integrity sha512-k7vSjYdjAiAQar+21v681Zrp9kN9uHMUw7/dyG2D/IrXqNPHkD133JyrzxPBga+myW411SUR4mtdPQRPQm3d/A==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?907ce52aa44c288bc6b8b6662a71a6d333138286&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?c401928d4407443ecaa3062e5b23c2f9e4de7499&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
   version "1.6.1"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?907ce52aa44c288bc6b8b6662a71a6d333138286&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#356f01f5e23a0535c3012985cb762363749bd8ef"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?c401928d4407443ecaa3062e5b23c2f9e4de7499&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#d2fa6b047a0dc2c7e62e07a2661e6dc041920661"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/fastspot-api" "^1.7.0"

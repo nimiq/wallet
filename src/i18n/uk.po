@@ -31,8 +31,8 @@ msgstr "{addresses} надсилати та отримувати переказ�
 msgid "{amount} fee"
 msgstr ""
 
-#: src/components/layouts/Network.vue:29 src/components/layouts/Network.vue:46
-#: src/components/layouts/Network.vue:61
+#: src/components/layouts/Network.vue:30 src/components/layouts/Network.vue:47
+#: src/components/layouts/Network.vue:62
 msgid "{amount}/tx"
 msgstr ""
 
@@ -46,7 +46,7 @@ msgstr "{bankName} пропонує загальні та індивідуаль
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Підтвердження | {count} Підтверджень"
 
-#: src/components/layouts/Network.vue:27
+#: src/components/layouts/Network.vue:28
 msgid "{count} Peer | {count} Peers"
 msgstr "{count} Піра | {count} Пірів"
 
@@ -120,11 +120,11 @@ msgstr ""
 msgid "1"
 msgstr "1"
 
-#: src/components/layouts/Network.vue:35
+#: src/components/layouts/Network.vue:36
 msgid "1 min"
 msgstr ""
 
-#: src/components/layouts/Network.vue:53
+#: src/components/layouts/Network.vue:54
 msgid "10 min"
 msgstr ""
 
@@ -141,7 +141,7 @@ msgstr "2"
 msgid "2-4h"
 msgstr "2-4 год."
 
-#: src/components/layouts/Network.vue:68
+#: src/components/layouts/Network.vue:69
 msgid "20 sec"
 msgstr ""
 
@@ -201,8 +201,8 @@ msgstr "Ліміти рахунку"
 msgid "Accounts"
 msgstr "Рахунки"
 
-#: src/components/layouts/AccountOverview.vue:111
-#: src/components/layouts/AccountOverview.vue:162
+#: src/components/layouts/AccountOverview.vue:112
+#: src/components/layouts/AccountOverview.vue:164
 msgid "Activate"
 msgstr "Активувати"
 
@@ -285,7 +285,7 @@ msgstr "Усі"
 msgid "All countries"
 msgstr "Усі країни"
 
-#: src/components/layouts/AccountOverview.vue:208
+#: src/components/layouts/AccountOverview.vue:202
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -386,7 +386,7 @@ msgstr "Автоматичний режим використовує {behavior}.
 msgid "Awaiting swap secret"
 msgstr "Очікуємо на ключі обміну"
 
-#: src/components/layouts/Network.vue:13
+#: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Повернутися до адрес"
 
@@ -421,7 +421,7 @@ msgid "BIC works, too."
 msgstr "BIC працює також."
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:92
+#: src/components/layouts/AccountOverview.vue:93
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -695,7 +695,7 @@ msgstr "Підключіться до TEN31 Pass, щоб отримати вищ
 msgid "Connected to"
 msgstr "Підключено до"
 
-#: src/components/layouts/Network.vue:115
+#: src/components/layouts/Network.vue:117
 msgid "connecting"
 msgstr "Підключення"
 
@@ -949,7 +949,7 @@ msgstr ""
 "Введіть пароль пробної версії, яку потрібно увімкнути, а потім натисніть "
 "клавішу Enter."
 
-#: src/components/modals/WelcomeModal.vue:338
+#: src/components/modals/WelcomeModal.vue:356
 msgid "Enter the wallet"
 msgstr ""
 
@@ -961,7 +961,7 @@ msgstr "Введіть свої банківські реквізити"
 msgid "Error:"
 msgstr "Помилка:"
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:118
 msgid "established"
 msgstr "встановлений"
 
@@ -1162,7 +1162,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:334
+#: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1427,7 +1427,7 @@ msgstr "Вийти"
 msgid "Long press to confirm"
 msgstr ""
 
-#: src/components/layouts/Network.vue:113
+#: src/components/layouts/Network.vue:115
 msgid "lost"
 msgstr "Втрачено"
 
@@ -1622,7 +1622,7 @@ msgstr "Або купіть BTC прямо в гаманці."
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Перезаписати спосіб відкриття Keyguard."
 
-#: src/components/modals/WelcomeModal.vue:335
+#: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
 msgstr ""
 
@@ -1755,7 +1755,7 @@ msgid "Receive free NIM"
 msgstr "Отримати безплатний NIM"
 
 #: src/components/PolygonWarningPage.vue:12
-msgid "Receive from Polygon USDC addressses only!"
+msgid "Receive from Polygon USDC addresses only!"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:7
@@ -1955,7 +1955,7 @@ msgstr "Продаж зараз доступний"
 msgid "Send"
 msgstr "Відправити"
 
-#: src/components/AmountMenu.vue:23 src/components/modals/BtcSendModal.vue:77
+#: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
 #: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
@@ -2052,7 +2052,7 @@ msgstr "SEPA Instant транзакція"
 msgid "Set Amount"
 msgstr "Вкажіть суму"
 
-#: src/components/AmountMenu.vue:13
+#: src/components/AmountMenu.vue:15
 msgid "Set fee"
 msgstr "Задати комісію"
 
@@ -2153,7 +2153,7 @@ msgstr ""
 msgid "Stability mixed with self-custody"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:337
+#: src/components/modals/WelcomeModal.vue:355
 msgid "Stable like USD, got it"
 msgstr ""
 
@@ -2169,7 +2169,7 @@ msgstr "Стекінг"
 msgid "standard"
 msgstr "звично"
 
-#: src/components/modals/WelcomeModal.vue:336
+#: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
 msgstr ""
 
@@ -2191,7 +2191,7 @@ msgstr ""
 msgid "Swap"
 msgstr "Обмін"
 
-#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:125
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr ""
 
@@ -2227,7 +2227,7 @@ msgstr "Обмінюйте більше протягом 30 днів."
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:79
+#: src/components/layouts/AccountOverview.vue:80
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
@@ -2257,7 +2257,7 @@ msgstr "Обмінюйте до {limit} протягом 30 днів."
 msgid "Swiping Gestures"
 msgstr "Свайп-жести"
 
-#: src/components/layouts/Network.vue:114
+#: src/components/layouts/Network.vue:116
 msgid "syncing"
 msgstr "синхронізую"
 
@@ -2549,7 +2549,7 @@ msgstr "Оновити зараз"
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565

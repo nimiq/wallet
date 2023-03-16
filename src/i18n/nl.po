@@ -33,8 +33,8 @@ msgstr "{addresses} verzenden en ontvangen transacties."
 msgid "{amount} fee"
 msgstr "{amount} toeslag"
 
-#: src/components/layouts/Network.vue:29 src/components/layouts/Network.vue:46
-#: src/components/layouts/Network.vue:61
+#: src/components/layouts/Network.vue:30 src/components/layouts/Network.vue:47
+#: src/components/layouts/Network.vue:62
 msgid "{amount}/tx"
 msgstr "{amount}/transactie"
 
@@ -48,7 +48,7 @@ msgstr "{bankName} biedt algemene en individuele IBAN's."
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Bevestiging | {count} Bevestigingen"
 
-#: src/components/layouts/Network.vue:27
+#: src/components/layouts/Network.vue:28
 msgid "{count} Peer | {count} Peers"
 msgstr "{count} Peer | {count} Peers"
 
@@ -122,11 +122,11 @@ msgstr "< {amount} toeslag"
 msgid "1"
 msgstr "1"
 
-#: src/components/layouts/Network.vue:35
+#: src/components/layouts/Network.vue:36
 msgid "1 min"
 msgstr "1 min"
 
-#: src/components/layouts/Network.vue:53
+#: src/components/layouts/Network.vue:54
 msgid "10 min"
 msgstr "10 min"
 
@@ -143,7 +143,7 @@ msgstr "2"
 msgid "2-4h"
 msgstr "2-4 uur"
 
-#: src/components/layouts/Network.vue:68
+#: src/components/layouts/Network.vue:69
 msgid "20 sec"
 msgstr "20 sec"
 
@@ -203,8 +203,8 @@ msgstr "Account Limieten"
 msgid "Accounts"
 msgstr "Accounts"
 
-#: src/components/layouts/AccountOverview.vue:111
-#: src/components/layouts/AccountOverview.vue:162
+#: src/components/layouts/AccountOverview.vue:112
+#: src/components/layouts/AccountOverview.vue:164
 msgid "Activate"
 msgstr "Activeren"
 
@@ -288,7 +288,7 @@ msgstr "alles"
 msgid "All countries"
 msgstr "Alle landen"
 
-#: src/components/layouts/AccountOverview.vue:208
+#: src/components/layouts/AccountOverview.vue:202
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -359,6 +359,7 @@ msgstr "Vraag of de ontvanger een Polygon USDC-adres heeft."
 #: src/components/PolygonWarningFooter.vue:19
 msgid "Ask the sender to ensure they have a Polygon USDC address."
 msgstr ""
+"Vraag de verzender om ervoor te zorgen dat ze een Polygon USDC-adres hebben."
 
 #: src/components/swap/SwapAnimation.vue:102
 msgid "Atomic Swap complete"
@@ -388,7 +389,7 @@ msgstr "De automatische modus gebruikt {behavior}."
 msgid "Awaiting swap secret"
 msgstr "In afwachting van swap secret."
 
-#: src/components/layouts/Network.vue:13
+#: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Terug naar adressen"
 
@@ -424,7 +425,7 @@ msgid "BIC works, too."
 msgstr "BIC werkt ook."
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:92
+#: src/components/layouts/AccountOverview.vue:93
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -698,7 +699,7 @@ msgstr "Maak verbinding met de TEN31 Pass voor hogere swap-limieten."
 msgid "Connected to"
 msgstr "Verbonden met"
 
-#: src/components/layouts/Network.vue:115
+#: src/components/layouts/Network.vue:117
 msgid "connecting"
 msgstr "Verbinden"
 
@@ -950,7 +951,7 @@ msgstr ""
 "Voer het wachtwoord in van de proefversie die je wilt inschakelen en druk op"
 " enter."
 
-#: src/components/modals/WelcomeModal.vue:338
+#: src/components/modals/WelcomeModal.vue:356
 msgid "Enter the wallet"
 msgstr "Ga naar de wallet"
 
@@ -962,7 +963,7 @@ msgstr "Voer je bankgegevens in"
 msgid "Error:"
 msgstr "Fout:"
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:118
 msgid "established"
 msgstr "opgezet"
 
@@ -1174,7 +1175,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:334
+#: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1324,7 +1325,7 @@ msgstr "Installeer web app"
 #: src/components/modals/SendModal.vue:171
 #: src/components/modals/UsdcSendModal.vue:205
 msgid "Insufficient balance."
-msgstr "Onvoldoende balans."
+msgstr "Onvoldoende saldo."
 
 #: src/components/BtcTransactionListItem.vue:46
 #: src/components/TransactionListItem.vue:40
@@ -1439,13 +1440,13 @@ msgstr "Log uit"
 msgid "Long press to confirm"
 msgstr "Ingedrukt houden om te bevestigen"
 
-#: src/components/layouts/Network.vue:113
+#: src/components/layouts/Network.vue:115
 msgid "lost"
 msgstr "verloren"
 
 #: src/components/modals/UsdcReceiveModal.vue:16
 msgid "Make sure they are sending Polygon USDC."
-msgstr ""
+msgstr "Zorg ervoor dat ze Polygon USDC verzenden."
 
 #: src/components/modals/UsdcActivationModal.vue:20
 msgid ""
@@ -1636,7 +1637,7 @@ msgstr "Of koop BTC rechtstreeks in de Wallet."
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Overschrijf hoe de Keyguard wordt geopend."
 
-#: src/components/modals/WelcomeModal.vue:335
+#: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
 msgstr "Betalingen, begrepen"
 
@@ -1773,7 +1774,7 @@ msgid "Receive free NIM"
 msgstr "Ontvang gratis NIM"
 
 #: src/components/PolygonWarningPage.vue:12
-msgid "Receive from Polygon USDC addressses only!"
+msgid "Receive from Polygon USDC addresses only!"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:7
@@ -1974,7 +1975,7 @@ msgstr "Verkopen nu beschikbaar"
 msgid "Send"
 msgstr "Verstuur"
 
-#: src/components/AmountMenu.vue:23 src/components/modals/BtcSendModal.vue:77
+#: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
 #: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
@@ -2073,7 +2074,7 @@ msgstr "SEPA Instant transactie"
 msgid "Set Amount"
 msgstr "Bedrag ingeven"
 
-#: src/components/AmountMenu.vue:13
+#: src/components/AmountMenu.vue:15
 msgid "Set fee"
 msgstr "Vergoeding ingeven"
 
@@ -2174,7 +2175,7 @@ msgstr "Stabiliteit"
 msgid "Stability mixed with self-custody"
 msgstr "Stabiliteit in combinatie met volledige eigenaarschap"
 
-#: src/components/modals/WelcomeModal.vue:337
+#: src/components/modals/WelcomeModal.vue:355
 msgid "Stable like USD, got it"
 msgstr "Stabiel als USD, begrepen"
 
@@ -2191,7 +2192,7 @@ msgstr "Inzetten"
 msgid "standard"
 msgstr "Standaard"
 
-#: src/components/modals/WelcomeModal.vue:336
+#: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
 msgstr "Store of value, begrepen"
 
@@ -2213,7 +2214,7 @@ msgstr "Super lage kosten, super snelle betalingen"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:125
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "BTC {arrowIcon} USDC omwisselen"
 
@@ -2251,7 +2252,7 @@ msgstr "Meer omwisselen per 30 dagen."
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "NIM {arrowIcon} BTC omwisselen"
 
-#: src/components/layouts/AccountOverview.vue:79
+#: src/components/layouts/AccountOverview.vue:80
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "NIM {arrowIcon} USDC omwisselen"
 
@@ -2281,7 +2282,7 @@ msgstr "Omwisselen tot {limit} per 30 dagen."
 msgid "Swiping Gestures"
 msgstr "Swiping Gestures"
 
-#: src/components/layouts/Network.vue:114
+#: src/components/layouts/Network.vue:116
 msgid "syncing"
 msgstr "synchroniseren"
 
@@ -2582,7 +2583,7 @@ msgstr "Update nu"
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565
@@ -2698,7 +2699,7 @@ msgstr "Je gebruikt een Legacy Account"
 
 #: src/components/PolygonWarningFooter.vue:9
 msgid "You can receive from Polygon USDC addresses only!"
-msgstr ""
+msgstr "Je kunt alleen van Polygon USDC-adressen ontvangen!"
 
 #: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."

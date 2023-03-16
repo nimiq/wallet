@@ -3,8 +3,8 @@
 # Talleyrand, 2020
 # Sören Schwert <hello@soerenschwert.de>, 2022
 # Daniel, 2022
-# Robinson BARAIS, 2022
 # Matheo <matheo@nimiq.com>, 2023
+# Robinson BARAIS, 2023
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2023
 # 
 msgid ""
@@ -33,8 +33,8 @@ msgstr "{addresses} envoyer et recevoir des transactions"
 msgid "{amount} fee"
 msgstr "{amount} de frais"
 
-#: src/components/layouts/Network.vue:29 src/components/layouts/Network.vue:46
-#: src/components/layouts/Network.vue:61
+#: src/components/layouts/Network.vue:30 src/components/layouts/Network.vue:47
+#: src/components/layouts/Network.vue:62
 msgid "{amount}/tx"
 msgstr "{amount}/tx"
 
@@ -48,7 +48,7 @@ msgstr "{bankName} propose des IBANs génériques et individuels."
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Confirmation | {count} Confirmations"
 
-#: src/components/layouts/Network.vue:27
+#: src/components/layouts/Network.vue:28
 msgid "{count} Peer | {count} Peers"
 msgstr "{count} Pair | {count} Pairs"
 
@@ -122,11 +122,11 @@ msgstr "< {amount} de frais"
 msgid "1"
 msgstr "1"
 
-#: src/components/layouts/Network.vue:35
+#: src/components/layouts/Network.vue:36
 msgid "1 min"
 msgstr "1 min"
 
-#: src/components/layouts/Network.vue:53
+#: src/components/layouts/Network.vue:54
 msgid "10 min"
 msgstr "10 min"
 
@@ -143,7 +143,7 @@ msgstr "2"
 msgid "2-4h"
 msgstr "2-4h"
 
-#: src/components/layouts/Network.vue:68
+#: src/components/layouts/Network.vue:69
 msgid "20 sec"
 msgstr "20 sec"
 
@@ -205,8 +205,8 @@ msgstr "Limites du compte"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/components/layouts/AccountOverview.vue:111
-#: src/components/layouts/AccountOverview.vue:162
+#: src/components/layouts/AccountOverview.vue:112
+#: src/components/layouts/AccountOverview.vue:164
 msgid "Activate"
 msgstr "Activer"
 
@@ -291,7 +291,7 @@ msgstr "Toutes"
 msgid "All countries"
 msgstr "Tous les pays"
 
-#: src/components/layouts/AccountOverview.vue:208
+#: src/components/layouts/AccountOverview.vue:202
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -365,6 +365,8 @@ msgstr ""
 #: src/components/PolygonWarningFooter.vue:19
 msgid "Ask the sender to ensure they have a Polygon USDC address."
 msgstr ""
+"Demandez à l'expéditeur de s'assurer qu'il dispose bien d'une adresse "
+"Polygon USDC."
 
 #: src/components/swap/SwapAnimation.vue:102
 msgid "Atomic Swap complete"
@@ -394,7 +396,7 @@ msgstr "Le mode automatique utilise {behavior}."
 msgid "Awaiting swap secret"
 msgstr "En attente du secret du Swap"
 
-#: src/components/layouts/Network.vue:13
+#: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Retour aux adresses"
 
@@ -429,7 +431,7 @@ msgid "BIC works, too."
 msgstr "Le BIC fonctionne également."
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:92
+#: src/components/layouts/AccountOverview.vue:93
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -447,9 +449,9 @@ msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
 msgstr ""
-"Les addresses Bitcoin sont à usage unique, il n'y a donc pas de contacts. "
-"Utilisez des labels à la place pour trouver facilement des transactions dans"
-" votre historique."
+"Les adresses Bitcoin sont à usage unique, il n'y a donc pas de contacts. "
+"Utilisez des labels à la place pour retrouver facilement des transactions "
+"dans votre historique."
 
 #: src/components/layouts/Settings.vue:138
 msgid "Bitcoin Unit"
@@ -702,7 +704,7 @@ msgstr "Connectez-vous à TEN31 Pass pour des limites de swap plus élevées."
 msgid "Connected to"
 msgstr "Connecté à"
 
-#: src/components/layouts/Network.vue:115
+#: src/components/layouts/Network.vue:117
 msgid "connecting"
 msgstr "connexion"
 
@@ -959,19 +961,19 @@ msgstr ""
 "Saisissez le mot de passe du test que vous souhaitez activer, puis appuyez "
 "sur la touche Entrée."
 
-#: src/components/modals/WelcomeModal.vue:338
+#: src/components/modals/WelcomeModal.vue:356
 msgid "Enter the wallet"
-msgstr "Entrer dans le Wallet"
+msgstr "Renseignez le wallet"
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
 msgid "Enter your bank details"
-msgstr "Entrez les informations de votre banque"
+msgstr "Renseignez vos informations bancaires"
 
 #: src/components/swap/SwapAnimation.vue:329
 msgid "Error:"
 msgstr "Erreur :"
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:118
 msgid "established"
 msgstr "établi"
 
@@ -1066,7 +1068,7 @@ msgstr "Récupération"
 #: src/components/TransactionListItem.vue:57
 #: src/components/UsdcTransactionListItem.vue:55
 msgid "Fiat value unavailable"
-msgstr "Valeur du FIAT indisponible"
+msgstr "Valeur fiat non disponible"
 
 #: src/components/layouts/Settings.vue:352
 msgid "File contains no contacts."
@@ -1127,30 +1129,38 @@ msgstr "Financement du Cashlink"
 #: src/components/PolygonWarningFooter.vue:10
 msgid "Funds sent from non-Polygon USDC addresses could be permanently lost!"
 msgstr ""
+"Les fonds envoyés depuis des adresses USDC autres que Polygon pourraient "
+"être définitivement perdus !"
 
 #: src/components/PolygonWarningPage.vue:19
 msgid "Funds sent from non-Polygon USDC addresses could be permanently lost."
 msgstr ""
+"Les fonds envoyés depuis des adresses USDC autres que Polygon pourraient "
+"être définitivement perdus !"
 
 #: src/components/PolygonWarningFooter.vue:27
 msgid "Funds sent from non-Polygon USDC versions could be permanently lost."
 msgstr ""
+"Les fonds envoyés depuis des adresses USDC autres que Polygon pourraient "
+"être définitivement perdus !"
 
 #: src/components/PolygonWarningFooter.vue:7
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost!"
 msgstr ""
+"Les fonds envoyés à des adresses USDC autres que Polygon pourraient être "
+"définitivement perdus !"
 
 #: src/components/PolygonWarningPage.vue:18
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost."
 msgstr ""
-"Les fonds envoyés à des adresses USDC non-Polygon pourraient être "
-"définitivement perdus."
+"Les fonds envoyés à des adresses USDC autres que Polygon pourraient être "
+"définitivement perdus !"
 
 #: src/components/PolygonWarningFooter.vue:26
 msgid "Funds sent to non-Polygon USDC versions could be permanently lost."
 msgstr ""
-"Les fonds envoyés à des versions de l'USDC non-Polygon pourraient être "
-"définitivement perdus."
+"Les fonds envoyés à des adresses USDC autres que Polygon pourraient être "
+"définitivement perdus !"
 
 #: src/components/layouts/Settings.vue:44
 msgid "General"
@@ -1163,7 +1173,7 @@ msgstr "Générique"
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
-msgstr "Y aller"
+msgstr "Obtenir des NIM"
 
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
@@ -1183,7 +1193,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:334
+#: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1270,7 +1280,7 @@ msgstr "Importer des contacts"
 
 #: src/components/layouts/Settings.vue:80
 msgid "Import contacts that you exported from the Safe."
-msgstr "Importer des contacts que vous avez exporté depuis le Safe."
+msgstr "Importer les contacts que vous avez exporté depuis le Safe."
 
 #: src/components/modals/MigrationWelcomeModal.vue:55
 msgid ""
@@ -1448,13 +1458,13 @@ msgstr "Déconnexion"
 msgid "Long press to confirm"
 msgstr "Appui long pour confirmer"
 
-#: src/components/layouts/Network.vue:113
+#: src/components/layouts/Network.vue:115
 msgid "lost"
 msgstr "perdu"
 
 #: src/components/modals/UsdcReceiveModal.vue:16
 msgid "Make sure they are sending Polygon USDC."
-msgstr ""
+msgstr "Assurez-vous que c'est du Polygon USDC qui est envoyé."
 
 #: src/components/modals/UsdcActivationModal.vue:20
 msgid ""
@@ -1555,7 +1565,7 @@ msgstr "Pas d'enregistrement"
 
 #: src/components/modals/BuyOptionsModal.vue:38
 msgid "No registration – not even email."
-msgstr "Aucune inscription et aucun mail requis."
+msgstr "Pas d'inscription - pas même d'email."
 
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
@@ -1582,7 +1592,7 @@ msgstr ""
 #: src/components/layouts/Sidebar.vue:84
 #: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your browser"
-msgstr "Pas disponible sur votre navigateur"
+msgstr "Non disponible avec votre navigateur"
 
 #: src/components/modals/BuyOptionsModal.vue:155
 #: src/components/modals/BuyOptionsModal.vue:88
@@ -1593,7 +1603,7 @@ msgstr "Non disponible dans votre pays"
 #: src/components/TransactionListItem.vue:37
 #: src/components/UsdcTransactionListItem.vue:35
 msgid "not sent"
-msgstr "non envoyée"
+msgstr "non envoyé"
 
 #: src/components/swap/OasisLaunchModal.vue:4
 msgid "OASIS is finally here!"
@@ -1649,7 +1659,7 @@ msgstr "Ou acheter du BTC directement dans le Wallet."
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Remplace la manière dont le Keyguard s'ouvre."
 
-#: src/components/modals/WelcomeModal.vue:335
+#: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
 msgstr "Paiements, c'est noté"
 
@@ -1682,7 +1692,7 @@ msgstr "Performance"
 
 #: src/components/swap/SwapAnimation.vue:59
 msgid "Performing Atomic Swap"
-msgstr "Exécution du Swap atomique"
+msgstr "Exécution de l'Atomic Swap"
 
 #: src/components/swap/SwapNotification.vue:29
 msgid "Performing swap {progress}/5"
@@ -1786,7 +1796,7 @@ msgid "Receive free NIM"
 msgstr "Recevoir des NIM gratuits"
 
 #: src/components/PolygonWarningPage.vue:12
-msgid "Receive from Polygon USDC addressses only!"
+msgid "Receive from Polygon USDC addresses only!"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:7
@@ -1992,7 +2002,7 @@ msgstr "Vente maintenant disponible"
 msgid "Send"
 msgstr "Envoyer"
 
-#: src/components/AmountMenu.vue:23 src/components/modals/BtcSendModal.vue:77
+#: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
 #: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
@@ -2029,13 +2039,13 @@ msgstr "Envoyer de l'USDC"
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
-msgstr "Envoyez, recevez et stockez du BTC sur votre wallet."
+msgstr "Envoyez, recevez et stockez du BTC avec votre wallet."
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
 #: src/components/modals/UsdcSendModal.vue:572
 msgid "Sending Transaction"
-msgstr "Transaction en cours."
+msgstr "Envoi de la transaction en cours"
 
 #: src/components/modals/BtcSendModal.vue:495
 msgid "Sent {btc} BTC"
@@ -2061,11 +2071,11 @@ msgstr "{nim} NIM envoyés à {name}"
 
 #: src/components/modals/UsdcSendModal.vue:609
 msgid "Sent {usdc} USDC"
-msgstr "Envoyer {usdc} USDC"
+msgstr "{usdc} USDC envoyés"
 
 #: src/components/modals/UsdcSendModal.vue:605
 msgid "Sent {usdc} USDC to {name}"
-msgstr "Envoyé {usdc} USDC à {name}"
+msgstr "{usdc} USDC envoyés à {name}"
 
 #: src/components/modals/BtcTransactionModal.vue:75
 #: src/components/modals/TransactionModal.vue:91
@@ -2091,7 +2101,7 @@ msgstr "virement SEPA instantané"
 msgid "Set Amount"
 msgstr "Définir le montant"
 
-#: src/components/AmountMenu.vue:13
+#: src/components/AmountMenu.vue:15
 msgid "Set fee"
 msgstr "Définir les frais"
 
@@ -2101,7 +2111,7 @@ msgstr "Vendre le minimum"
 
 #: src/components/swap/SwapAnimation.vue:279
 msgid "Setting up atomic swap"
-msgstr "Configuration du Swap atomique"
+msgstr "Configuration de l'Atomic Swap"
 
 #: src/components/swap/SwapAnimation.vue:72
 #: src/components/swap/SwapAnimation.vue:86
@@ -2148,7 +2158,7 @@ msgstr "Afficher le lien"
 
 #: src/components/modals/AccountMenuModal.vue:12
 msgid "Show Recovery Words"
-msgstr "Montrer les mots de récupération"
+msgstr "Afficher les mots de récupération"
 
 #: src/components/modals/WelcomeModal.vue:322
 msgid "Show values as {currency}"
@@ -2192,7 +2202,7 @@ msgstr "Stabilité"
 msgid "Stability mixed with self-custody"
 msgstr "La stabilité mêlée à l'autogestion"
 
-#: src/components/modals/WelcomeModal.vue:337
+#: src/components/modals/WelcomeModal.vue:355
 msgid "Stable like USD, got it"
 msgstr "Stable comme le dollar, c'est noté."
 
@@ -2208,7 +2218,7 @@ msgstr "Staking"
 msgid "standard"
 msgstr "standard"
 
-#: src/components/modals/WelcomeModal.vue:336
+#: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
 msgstr "Réserve de valeur, c'est noté"
 
@@ -2230,7 +2240,7 @@ msgstr "Frais très bas, paiements très rapides"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:125
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "Swap BTC {arrowIcon} USDC"
 
@@ -2268,7 +2278,7 @@ msgstr "Swappez-en plus par période de 30 jours."
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Swap NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:79
+#: src/components/layouts/AccountOverview.vue:80
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Swap NIM {arrowIcon} USDC"
 
@@ -2298,7 +2308,7 @@ msgstr "Swappez jusqu'à {limit} par période de 30 jours."
 msgid "Swiping Gestures"
 msgstr "Navigation par gestes"
 
-#: src/components/layouts/Network.vue:114
+#: src/components/layouts/Network.vue:116
 msgid "syncing"
 msgstr "synchronisation"
 
@@ -2603,7 +2613,7 @@ msgstr "Mettre à jour"
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565
@@ -2637,7 +2647,7 @@ msgstr "Contrat d'acquisition"
 
 #: src/components/modals/BuyCryptoModal.vue:21
 msgid "Wait for the swap to be set up."
-msgstr "Attendez que le Swap soit mis en place."
+msgstr "En attente de la mise en place du swap."
 
 #: src/components/TransactionListOasisPayoutStatus.vue:8
 msgid "Waiting for {currency}"
@@ -2652,8 +2662,8 @@ msgid ""
 "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and "
 "decentralized."
 msgstr ""
-"Bienvenue dans le premier Atomic Swap Fiat-to-Crypto. C'est simple, rapide, "
-"et décentralisé."
+"Bienvenue dans le premier swap atomic entre fiat et crypto. C'est simple, "
+"rapide, et décentralisé."
 
 #: src/components/modals/UsdcActivationModal.vue:17
 msgid ""
@@ -2701,8 +2711,8 @@ msgid ""
 "Without a SEPA instant bank account your money will take 1-3 business days "
 "to arrive."
 msgstr ""
-"Sans compte bancaire SEPA instantané, votre argent peut prendre entre 1-3 "
-"jours ouvrés à arriver."
+"Sans compte bancaire SEPA instantané, il peut s'écouler de 1 à 3 jours "
+"ouvrés avant que votre argent n'arrive."
 
 #: src/components/BankCheckInput.vue:70
 msgid "Without an individual IBAN, refunds are impossible!"
@@ -2718,11 +2728,12 @@ msgstr "Vous utilisez un ancien type de compte."
 
 #: src/components/PolygonWarningFooter.vue:9
 msgid "You can receive from Polygon USDC addresses only!"
-msgstr ""
+msgstr "Vous ne pouvez en recevoir que depuis des adresses USDC de Polygon !"
 
 #: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
-msgstr "Vous pourrez recevoir plus de NIM gratuits dans {waitTime} heures."
+msgstr ""
+"Vous pourrez recevoir plus de NIM gratuitement dans {waitTime} heures."
 
 #: src/components/layouts/Sidebar.vue:117
 msgid "You currently have no balance to swap."
@@ -2769,7 +2780,7 @@ msgstr "Vous enverrez {amount} USDC"
 
 #: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
-msgstr "Votre compte n'est pas encore sûr !"
+msgstr "Votre compte n'est pas encore sécurisé !"
 
 #: src/components/modals/BtcActivationModal.vue:7
 msgid ""

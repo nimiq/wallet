@@ -32,8 +32,8 @@ msgstr "{addresses} envían y reciben transacciones."
 msgid "{amount} fee"
 msgstr "{amount} tarifa"
 
-#: src/components/layouts/Network.vue:29 src/components/layouts/Network.vue:46
-#: src/components/layouts/Network.vue:61
+#: src/components/layouts/Network.vue:30 src/components/layouts/Network.vue:47
+#: src/components/layouts/Network.vue:62
 msgid "{amount}/tx"
 msgstr "{amount}/tx"
 
@@ -47,7 +47,7 @@ msgstr "{bankName} ofrece IBANs genéricos e individuales."
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr "{count} Confirmación | {count} Confirmaciones"
 
-#: src/components/layouts/Network.vue:27
+#: src/components/layouts/Network.vue:28
 msgid "{count} Peer | {count} Peers"
 msgstr "{count} Par | {count} Pares"
 
@@ -121,11 +121,11 @@ msgstr "< {amount} cuota"
 msgid "1"
 msgstr "1"
 
-#: src/components/layouts/Network.vue:35
+#: src/components/layouts/Network.vue:36
 msgid "1 min"
 msgstr "1 min"
 
-#: src/components/layouts/Network.vue:53
+#: src/components/layouts/Network.vue:54
 msgid "10 min"
 msgstr "10 min"
 
@@ -142,7 +142,7 @@ msgstr "2"
 msgid "2-4h"
 msgstr "2-4h"
 
-#: src/components/layouts/Network.vue:68
+#: src/components/layouts/Network.vue:69
 msgid "20 sec"
 msgstr "20 seg"
 
@@ -204,8 +204,8 @@ msgstr "Limites de la Cuenta"
 msgid "Accounts"
 msgstr "Cuentas"
 
-#: src/components/layouts/AccountOverview.vue:111
-#: src/components/layouts/AccountOverview.vue:162
+#: src/components/layouts/AccountOverview.vue:112
+#: src/components/layouts/AccountOverview.vue:164
 msgid "Activate"
 msgstr "Activar"
 
@@ -290,7 +290,7 @@ msgstr "todo"
 msgid "All countries"
 msgstr "Todos los países"
 
-#: src/components/layouts/AccountOverview.vue:208
+#: src/components/layouts/AccountOverview.vue:202
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -392,7 +392,7 @@ msgstr "El modo automático usa {behavior}."
 msgid "Awaiting swap secret"
 msgstr "Esperando el intercambio del secreto"
 
-#: src/components/layouts/Network.vue:13
+#: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr "Volver a las direcciones"
 
@@ -427,7 +427,7 @@ msgid "BIC works, too."
 msgstr "BIC también funciona."
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:92
+#: src/components/layouts/AccountOverview.vue:93
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -703,7 +703,7 @@ msgstr "Conecte con TEN31 Pass para limites mayores."
 msgid "Connected to"
 msgstr "Conectado a"
 
-#: src/components/layouts/Network.vue:115
+#: src/components/layouts/Network.vue:117
 msgid "connecting"
 msgstr "conectando"
 
@@ -955,7 +955,7 @@ msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 "Ingrese la contraseña de la prueba que desea activar, luego presione enter."
 
-#: src/components/modals/WelcomeModal.vue:338
+#: src/components/modals/WelcomeModal.vue:356
 msgid "Enter the wallet"
 msgstr "Entrar a la billetera"
 
@@ -967,7 +967,7 @@ msgstr "Ingrese los detalles de su banco"
 msgid "Error:"
 msgstr "Error:"
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:118
 msgid "established"
 msgstr "establecido"
 
@@ -1179,7 +1179,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:334
+#: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1444,7 +1444,7 @@ msgstr "Cerrar Sesión"
 msgid "Long press to confirm"
 msgstr "Mantenga presionado para confirmar"
 
-#: src/components/layouts/Network.vue:113
+#: src/components/layouts/Network.vue:115
 msgid "lost"
 msgstr "perdida"
 
@@ -1643,7 +1643,7 @@ msgstr "O compre BTC directamente en la billetera."
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Sobreescribe como se abre el Keyguard."
 
-#: src/components/modals/WelcomeModal.vue:335
+#: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
 msgstr "Pagos, entendido"
 
@@ -1782,7 +1782,7 @@ msgid "Receive free NIM"
 msgstr "Reciba NIM gratis"
 
 #: src/components/PolygonWarningPage.vue:12
-msgid "Receive from Polygon USDC addressses only!"
+msgid "Receive from Polygon USDC addresses only!"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:7
@@ -1985,7 +1985,7 @@ msgstr "Ventas ahora disponibles"
 msgid "Send"
 msgstr "Enviar"
 
-#: src/components/AmountMenu.vue:23 src/components/modals/BtcSendModal.vue:77
+#: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
 #: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
@@ -2084,7 +2084,7 @@ msgstr "Transacción SEPA Instantánea"
 msgid "Set Amount"
 msgstr "Ingrese el Monto"
 
-#: src/components/AmountMenu.vue:13
+#: src/components/AmountMenu.vue:15
 msgid "Set fee"
 msgstr "Ingrese la cuota"
 
@@ -2185,7 +2185,7 @@ msgstr "Estabilidad"
 msgid "Stability mixed with self-custody"
 msgstr "Estabilidad mezclada con auto-custodia"
 
-#: src/components/modals/WelcomeModal.vue:337
+#: src/components/modals/WelcomeModal.vue:355
 msgid "Stable like USD, got it"
 msgstr "Estable como USD, entendido"
 
@@ -2203,7 +2203,7 @@ msgstr "Participación"
 msgid "standard"
 msgstr "Estándar"
 
-#: src/components/modals/WelcomeModal.vue:336
+#: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
 msgstr "Reserva de valor, entendido"
 
@@ -2225,7 +2225,7 @@ msgstr "Cuotas súper bajas, pagos súper rápidos"
 msgid "Swap"
 msgstr "Intercambio"
 
-#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:125
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "Intercambiar BTC {arrowIcon} USDC"
 
@@ -2263,7 +2263,7 @@ msgstr "Haga más intercambios cada 30 días"
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Intercambiar NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:79
+#: src/components/layouts/AccountOverview.vue:80
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Intercambiar NIM {arrowIcon} USDC"
 
@@ -2295,7 +2295,7 @@ msgstr "Haga intercambios de hasta  {limit} cada 30 días."
 msgid "Swiping Gestures"
 msgstr "Gestos de deslizamiento"
 
-#: src/components/layouts/Network.vue:114
+#: src/components/layouts/Network.vue:116
 msgid "syncing"
 msgstr "sincronizando"
 
@@ -2598,7 +2598,7 @@ msgstr "Actualizar ahora"
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565

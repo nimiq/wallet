@@ -20,9 +20,9 @@ msgstr ""
 msgid "{amount} fee"
 msgstr ""
 
-#: src/components/layouts/Network.vue:29
-#: src/components/layouts/Network.vue:46
-#: src/components/layouts/Network.vue:61
+#: src/components/layouts/Network.vue:30
+#: src/components/layouts/Network.vue:47
+#: src/components/layouts/Network.vue:62
 msgid "{amount}/tx"
 msgstr ""
 
@@ -37,7 +37,7 @@ msgstr ""
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
-#: src/components/layouts/Network.vue:27
+#: src/components/layouts/Network.vue:28
 msgid "{count} Peer | {count} Peers"
 msgstr ""
 
@@ -111,11 +111,11 @@ msgstr ""
 msgid "1"
 msgstr ""
 
-#: src/components/layouts/Network.vue:35
+#: src/components/layouts/Network.vue:36
 msgid "1 min"
 msgstr ""
 
-#: src/components/layouts/Network.vue:53
+#: src/components/layouts/Network.vue:54
 msgid "10 min"
 msgstr ""
 
@@ -132,7 +132,7 @@ msgstr ""
 msgid "2-4h"
 msgstr ""
 
-#: src/components/layouts/Network.vue:68
+#: src/components/layouts/Network.vue:69
 msgid "20 sec"
 msgstr ""
 
@@ -185,8 +185,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:111
-#: src/components/layouts/AccountOverview.vue:162
+#: src/components/layouts/AccountOverview.vue:112
+#: src/components/layouts/AccountOverview.vue:164
 msgid "Activate"
 msgstr ""
 
@@ -263,7 +263,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:208
+#: src/components/layouts/AccountOverview.vue:202
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -344,7 +344,7 @@ msgstr ""
 msgid "Awaiting swap secret"
 msgstr ""
 
-#: src/components/layouts/Network.vue:13
+#: src/components/layouts/Network.vue:14
 msgid "Back to addresses"
 msgstr ""
 
@@ -379,7 +379,7 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:92
+#: src/components/layouts/AccountOverview.vue:93
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -638,7 +638,7 @@ msgstr ""
 msgid "Connected to"
 msgstr ""
 
-#: src/components/layouts/Network.vue:115
+#: src/components/layouts/Network.vue:117
 msgid "connecting"
 msgstr ""
 
@@ -869,7 +869,7 @@ msgstr ""
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:338
+#: src/components/modals/WelcomeModal.vue:356
 msgid "Enter the wallet"
 msgstr ""
 
@@ -881,7 +881,7 @@ msgstr ""
 msgid "Error:"
 msgstr ""
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:118
 msgid "established"
 msgstr ""
 
@@ -1079,7 +1079,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:21
-#: src/components/modals/WelcomeModal.vue:334
+#: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1317,7 +1317,7 @@ msgstr ""
 msgid "Long press to confirm"
 msgstr ""
 
-#: src/components/layouts/Network.vue:113
+#: src/components/layouts/Network.vue:115
 msgid "lost"
 msgstr ""
 
@@ -1499,7 +1499,7 @@ msgstr ""
 msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:335
+#: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
 msgstr ""
 
@@ -1617,7 +1617,7 @@ msgid "Receive free NIM"
 msgstr ""
 
 #: src/components/PolygonWarningPage.vue:12
-msgid "Receive from Polygon USDC addressses only!"
+msgid "Receive from Polygon USDC addresses only!"
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:7
@@ -1809,7 +1809,7 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: src/components/AmountMenu.vue:23
+#: src/components/AmountMenu.vue:25
 #: src/components/modals/BtcSendModal.vue:77
 #: src/components/modals/SendModal.vue:173
 #: src/components/modals/UsdcSendModal.vue:207
@@ -1905,7 +1905,7 @@ msgstr ""
 msgid "Set Amount"
 msgstr ""
 
-#: src/components/AmountMenu.vue:13
+#: src/components/AmountMenu.vue:15
 msgid "Set fee"
 msgstr ""
 
@@ -2005,7 +2005,7 @@ msgstr ""
 msgid "Stability mixed with self-custody"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:337
+#: src/components/modals/WelcomeModal.vue:355
 msgid "Stable like USD, got it"
 msgstr ""
 
@@ -2021,7 +2021,7 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:336
+#: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
 msgstr ""
 
@@ -2043,7 +2043,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:125
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr ""
 
@@ -2079,7 +2079,7 @@ msgstr ""
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:79
+#: src/components/layouts/AccountOverview.vue:80
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
@@ -2109,7 +2109,7 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/components/layouts/Network.vue:114
+#: src/components/layouts/Network.vue:116
 msgid "syncing"
 msgstr ""
 
@@ -2376,7 +2376,7 @@ msgstr ""
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:518
 #: src/components/modals/TransactionModal.vue:565

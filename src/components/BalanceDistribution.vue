@@ -2,14 +2,16 @@
     <!-- eslint-disable vuejs-accessibility/mouse-events-have-key-events, vue/no-parsing-error -->
     <div class="balance-distribution">
         <transition-group tag="svg" ref="svg$" xmlns="http://www.w3.org/2000/svg"
-            :viewBox="`0 0 ${svgSize} ${svgSize}`"
+            :width="SVG_SIZE"
+            :height="SVG_SIZE"
+            :viewBox="`0 0 ${SVG_SIZE} ${SVG_SIZE}`"
             enter-active-class="arc-enter-active"
             leave-active-class="arc-leave-active"
             @before-enter="onArcBeforeEnter"
             @enter="onArcEnter"
             @leave="onArcLeave">
             <circle v-for="arc in currencyArcs" :key="arc.currency"
-                :r="radius"
+                :r="RADIUS"
                 :stroke-width="STROKE_WIDTH"
                 :stroke-dasharray="`${arc.length} ${arc.spacing}`"
                 :stroke-dashoffset="arc.offset"
@@ -53,7 +55,7 @@ interface CurrencyArc {
 
 export default defineComponent({
     name: 'balance-distribution',
-    setup(props, context) {
+    setup() {
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const cryptoBalances = computed(() => ({
             [CryptoCurrency.NIM]: useAddressStore().accountBalance.value / 1e5,
@@ -63,38 +65,27 @@ export default defineComponent({
 
         const { config } = useConfig();
 
+        const SVG_SIZE = 51; // px
         const STROKE_WIDTH = 4; // px
+        const RADIUS = (SVG_SIZE - STROKE_WIDTH) / 2;
         const ARC_GAP = STROKE_WIDTH;
+
         const svg$ = ref<Vue>(null);
-        const svgSize = ref(0);
         const fullCircleLength = ref(0);
         const highlightedCurrency = ref<SupportedCurrency>(null);
         const cachedCurrencyArcs = ref<Partial<Record<SupportedCurrency, CurrencyArc>>>(null);
 
-        const radius = computed(() => Math.max(0, (svgSize.value - STROKE_WIDTH) / 2));
         // Rotate by -90 degree to start at the top. Offset by linecap and half gap to have the gap centered at the top.
         // Note: positive values result in counterclockwise rotation, negative values in clockwise rotation.
         const circleStart = computed(() => fullCircleLength.value / 4 - STROKE_WIDTH / 2 - ARC_GAP / 2);
 
-        const resizeObserver = new ResizeObserver(async ([{ borderBoxSize, contentRect }]) => {
-            if (borderBoxSize?.length) {
-                svgSize.value = borderBoxSize[0].blockSize;
-            } else {
-                // legacy ResizeObserver
-                svgSize.value = contentRect.width;
-            }
-            await context.root.$nextTick();
-            // Try to measure the actual svg path length if possible because it does not exactly match 2 * PI * r.
+        watch(svg$, async () => {
+            // Update measurements only after the svg has been rendered first, without any arcs, to transition the
+            // entry of arcs. Try to measure the actual svg path length if possible because it does not exactly match
+            // 2 * PI * r.
+            await Vue.nextTick();
             fullCircleLength.value = svg$.value?.$el?.querySelector('circle')?.getTotalLength()
-                || 2 * Math.PI * radius.value;
-        });
-
-        watch(svg$, () => {
-            if (svg$.value?.$el) {
-                resizeObserver.observe(svg$.value.$el);
-            } else {
-                resizeObserver.disconnect();
-            }
+                || 2 * Math.PI * RADIUS;
         });
 
         const currencies = computed<Array<SupportedCurrency>>(() => [
@@ -222,10 +213,10 @@ export default defineComponent({
         }
 
         return {
+            SVG_SIZE,
             STROKE_WIDTH,
+            RADIUS,
             svg$,
-            svgSize,
-            radius,
             currencyArcs,
             breakdown,
             highlightedCurrency,
@@ -246,9 +237,6 @@ export default defineComponent({
 }
 
 svg {
-    width: 6.375rem;
-    height: 6.375rem;
-
     .arc {
         --transition-time: 1.5s;
         cx: 50%;

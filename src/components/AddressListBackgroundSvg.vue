@@ -12,8 +12,6 @@
 import {
     computed,
     defineComponent,
-    onActivated,
-    onDeactivated,
     onMounted,
     onUnmounted,
     ref,

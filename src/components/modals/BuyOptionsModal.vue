@@ -61,17 +61,7 @@
                         </footer>
                         <footer v-else-if="$config.oasis.underMaintenance && !isInOasis2Trial" class="flex-row">
                             <MaintenanceIcon/>
-                            {{ $t('Currently under maintenance') }}
-                            <div class="flex-grow"></div>
-                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
-                                    + ' This might take some time. Please try again later.') }}
-                                <a
-                                    href="https://forum.nimiq.community/t/oasis-infrastructure-update/1810"
-                                    target="_blank" rel="noopener"
-                                >{{ $t('Learn more.') }}</a>
-                            </Tooltip>
+                            {{ $t('Infrastructure Redesign') }}
                         </footer>
                         <footer v-else-if="!canUseSwaps" class="flex-row">
                             <ForbiddenIcon/>

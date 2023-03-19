@@ -517,9 +517,12 @@ export default defineComponent({
         }, { lazy: true });
 
         const direction = computed(() => {
+            // Try to determine direction based on swap values wanted by user first.
             if (wantLeft.value < 0 || wantRight.value > 0) return SwapDirection.LEFT_TO_RIGHT;
             if (wantLeft.value > 0 || wantRight.value < 0) return SwapDirection.RIGHT_TO_LEFT;
-            return SwapDirection.LEFT_TO_RIGHT;
+            // If swap values are not specified yet, determine direction based on available balances or default to
+            // SwapDirection.LEFT_TO_RIGHT if both balances are empty.
+            return !accountBalance(leftAsset.value) ? SwapDirection.RIGHT_TO_LEFT : SwapDirection.LEFT_TO_RIGHT;
         });
 
         const getLeft = computed(() => {

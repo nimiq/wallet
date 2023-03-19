@@ -650,22 +650,25 @@ export default defineComponent({
                     // 244 = NIM HTLC funding tx size
                     fundingFee = (feesPerUnit.nim || fundingFeePerUnit) * 244;
                     break;
-                case SwapAsset.BTC: {
-                    const wantBtc = rightAsset.value === SwapAsset.BTC ? wantRight.value : wantLeft.value;
-                    const getBtc = rightAsset.value === SwapAsset.BTC ? getRight.value : getLeft.value;
-                    const btcAmount = Math.abs(Math.max(wantBtc, -btcMaxSendableAmount.value) || getBtc);
-                    const selected = selectOutputs(
-                        accountUtxos.value,
-                        btcAmount,
-                        feesPerUnit.btc || fundingFeePerUnit,
-                        48, // 48 extra weight units for BTC HTLC funding tx
-                    );
-                    fundingFee = selected.utxos
-                        .reduce((sum, utxo) => sum + utxo.witness.value, 0)
-                        - btcAmount
-                        - selected.changeAmount;
+                case SwapAsset.BTC:
+                    if (accountUtxos.value.length) {
+                        const wantBtc = rightAsset.value === SwapAsset.BTC ? wantRight.value : wantLeft.value;
+                        const getBtc = rightAsset.value === SwapAsset.BTC ? getRight.value : getLeft.value;
+                        const btcAmount = Math.abs(Math.max(wantBtc, -btcMaxSendableAmount.value) || getBtc);
+                        const selected = selectOutputs(
+                            accountUtxos.value,
+                            btcAmount,
+                            feesPerUnit.btc || fundingFeePerUnit,
+                            48, // 48 extra weight units for BTC HTLC funding tx
+                        );
+                        fundingFee = selected.utxos.reduce((sum, utxo) => sum + utxo.witness.value, 0)
+                            - btcAmount
+                            - selected.changeAmount;
+                    } else {
+                        // 48 extra weight units for BTC HTLC funding tx
+                        fundingFee = estimateFees(1, 2, feesPerUnit.btc || fundingFeePerUnit, 48);
+                    }
                     break;
-                }
                 case SwapAsset.USDC:
                     if (usdcFeeStuff.value) fundingFee = usdcFeeStuff.value.fee;
                     else if (!asPromise) fundingFee = 0;

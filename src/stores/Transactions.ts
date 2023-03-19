@@ -311,6 +311,10 @@ export const useTransactionsStore = createStore({
                     : FIAT_PRICE_UNAVAILABLE,
                 );
             }
+
+            // Manually notify the store of the deep changes to trigger subscriptions.
+            // TODO this hack is likely not necessary in newer pinia versions.
+            this.patch({});
         },
 
         removeTransactions(txs: Transaction[]) {

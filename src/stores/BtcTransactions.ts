@@ -252,6 +252,10 @@ export const useBtcTransactionsStore = createStore({
                     );
                 }
             }
+
+            // Manually notify the store of the deep changes to trigger subscriptions.
+            // TODO this hack is likely not necessary in newer pinia versions.
+            this.patch({});
         },
 
         removeTransactions(txs: Transaction[]) {

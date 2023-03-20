@@ -446,12 +446,7 @@ export default defineComponent({
             }
 
             if (swapData.value.asset === SwapAsset.USDC) {
-                let swapTx = useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash];
-                if (swapTx?.relatedTransactionHash) {
-                    // Avoid showing the swap proxy, instead show our related address.
-                    swapTx = useUsdcTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
-                }
-                return swapTx || null;
+                return useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
             }
 
             return null;
@@ -482,7 +477,11 @@ export default defineComponent({
         const peerAddresses = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    if (usesNimSwapProxy.value && !swapTransaction.value.relatedTransactionHash) {
+                    if (usesNimSwapProxy.value
+                        && !(swapTransaction.value as Extract<
+                            typeof swapTransaction.value,
+                            { relatedTransactionHash?: string }
+                        >).relatedTransactionHash) {
                         // Avoid displaying proxy address identicon until we know related address.
                         return [''];
                     }

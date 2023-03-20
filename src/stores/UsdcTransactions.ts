@@ -47,7 +47,6 @@ export type Transaction = {
     timestamp?: number,
 } & {
     fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
-    relatedTransactionHash?: string,
 };
 
 export enum TransactionState {
@@ -85,7 +84,7 @@ export const useUsdcTransactionsStore = createStore({
         addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
-            // re-apply original timestamp and known fiatValue and relatedTransactionHash
+            // re-apply original timestamp and known fiatValue
             for (const tx of txs) {
                 const knownTx = this.state.transactions[tx.transactionHash];
                 if (!knownTx) continue;
@@ -94,14 +93,12 @@ export const useUsdcTransactionsStore = createStore({
                     tx.timestamp = knownTx.timestamp;
                     tx.blockHeight = knownTx.blockHeight;
                 }
-                if (!tx.relatedTransactionHash && knownTx.relatedTransactionHash) {
-                    tx.relatedTransactionHash = knownTx.relatedTransactionHash;
-                }
                 if (!tx.fiatValue && knownTx.fiatValue) {
                     tx.fiatValue = knownTx.fiatValue;
                 }
             }
 
+            const newTxs: { [hash: string]: Transaction } = {};
             for (const tx of txs) {
                 // Detect swaps
                 if (!useSwapsStore().state.swapByTransaction[tx.transactionHash]) {
@@ -220,20 +217,15 @@ export const useUsdcTransactionsStore = createStore({
                         }
                     }
                 }
+
+                newTxs[tx.transactionHash] = tx;
             }
 
             // Need to re-assign the whole object in Vue 2 for change detection of new transactions.
             // TODO: Simply assign transactions in Vue 3.
             this.state.transactions = {
                 ...this.state.transactions,
-                ...txs.reduce((newOrUpdatedTxs, tx) => {
-                    newOrUpdatedTxs[tx.transactionHash] = Object.assign(
-                        // Get the newest transaction from the store in case it was updated via setRelatedTransaction
-                        this.state.transactions[tx.transactionHash] || tx,
-                        tx,
-                    );
-                    return newOrUpdatedTxs;
-                }, {} as { [hash: string]: Transaction }),
+                ...newTxs,
             };
 
             // const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
@@ -242,20 +234,6 @@ export const useUsdcTransactionsStore = createStore({
             // }
 
             this.calculateFiatAmounts();
-        },
-
-        setRelatedTransaction(transaction: Transaction, relatedTransaction: Transaction | null) {
-            // Need to re-assign the whole object in Vue 2 for change detection.
-            // TODO: Simply assign transactions in Vue 3.
-            if (relatedTransaction === null) {
-                delete transaction.relatedTransactionHash;
-                this.state.transactions[transaction.transactionHash] = { ...transaction };
-                return;
-            }
-            transaction.relatedTransactionHash = relatedTransaction.transactionHash;
-            relatedTransaction.relatedTransactionHash = transaction.transactionHash;
-            this.state.transactions[transaction.transactionHash] = { ...transaction };
-            this.state.transactions[relatedTransaction.transactionHash] = { ...relatedTransaction };
         },
 
         async calculateFiatAmounts(fiatCurrency?: FiatCurrency) {

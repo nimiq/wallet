@@ -622,9 +622,6 @@ export default defineComponent({
         const btcMaxSendableAmount = computed(() =>
             Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
 
-        // const usdcMaxSendableAmount = computed(() =>
-        //     Math.max(accountUsdcBalance.value - usdcFundingFee.value, 0));
-
         function calculateMyFees(feesPerUnit?: { nim: number, btc: number }): {
             fundingFee: number,
             settlementFee: number,

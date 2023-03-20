@@ -431,7 +431,8 @@ export default defineComponent({
 
         const relay = ref<RelayServerInfo | null>(null);
 
-        const maxSendableAmount = computed(() => Math.max((addressInfo.value!.balance || 0) - fee.value, 0));
+        // Use 2.00 USDC as safe fallback fee
+        const maxSendableAmount = computed(() => Math.max((addressInfo.value!.balance || 0) - (fee.value || 2e6), 0));
 
         const amountMenuOpened = ref(false);
 

@@ -453,7 +453,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:53
+#: src/components/layouts/Sidebar.vue:52
 msgid "Buy"
 msgstr ""
 
@@ -1957,7 +1957,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:73
+#: src/components/layouts/Sidebar.vue:72
 msgid "Sell"
 msgstr ""
 

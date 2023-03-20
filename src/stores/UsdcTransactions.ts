@@ -305,8 +305,11 @@ export const useUsdcTransactionsStore = createStore({
                 }
             }
 
-            for (const tx of transactionsToUpdate) {
+            for (let tx of transactionsToUpdate) {
                 const exchangeRate = exchangeRates.get(tx.timestamp * 1000);
+                // Get the newest transaction object from the store in case it changed (which for the USDC transaction
+                // store it doesn't do, but doesn't hurt to make the code more resilient).
+                tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
                 // Set via Vue.set to let vue setup the reactivity. TODO this might be not necessary anymore with Vue3
                 if (!tx.fiatValue) Vue.set(tx, 'fiatValue', {});
                 Vue.set(tx.fiatValue!, fiatCurrency, exchangeRate !== undefined

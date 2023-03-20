@@ -264,8 +264,11 @@ export const useBtcTransactionsStore = createStore({
                 }
             }
 
-            for (const tx of transactionsToUpdate) {
+            for (let tx of transactionsToUpdate) {
                 const exchangeRate = exchangeRates.get(tx.timestamp * 1000);
+                // Get the newest transaction from the store in case the object changed in the meantime due to
+                // calculation of txDetails in addTransactions.
+                tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
                 for (const output of tx.outputs) {
                     // Set via Vue.set to let vue setup the reactivity.
                     // TODO this might be not necessary anymore with Vue3

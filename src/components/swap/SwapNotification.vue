@@ -79,6 +79,7 @@ import Time from '../../lib/Time';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import {
     getHtlcContract,
+    getPolygonBlockNumber,
     getPolygonClient,
     receiptToTransaction,
     sendTransaction as sendPolygonTransaction,
@@ -261,14 +262,14 @@ export default defineComponent({
                     const secondsUntilTimeout = timeout - Math.floor(Date.now() / 1e3);
                     const blocksUntilTimeout = Math.ceil((secondsUntilTimeout / 60) * POLYGON_BLOCKS_PER_MINUTE);
 
-                    const currentHeight = useUsdcNetworkStore().state.height;
+                    const currentHeight = await getPolygonBlockNumber();
                     const blockHeightAtTimeout = currentHeight + blocksUntilTimeout;
                     const blocksOfValidity = 3 /* hours */ * 60 * POLYGON_BLOCKS_PER_MINUTE;
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
                     return {
                         htlcContract: await getHtlcContract(),
-                        currentBlock: () => useUsdcNetworkStore().state.height,
+                        currentBlock: () => getPolygonBlockNumber(),
                         startBlock: blockHeightAtStart,
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
                     };

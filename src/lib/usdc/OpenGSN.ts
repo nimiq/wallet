@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import type { BigNumber, Contract } from 'ethers';
-import type { PolygonClient } from '../../ethers';
+import { getPolygonBlockNumber, PolygonClient } from '../../ethers';
 import { RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../Constants';
 
@@ -107,8 +106,9 @@ async function* relayServerRegisterGen(
 ) {
     let events = [];
 
+    const blockHeight = await getPolygonBlockNumber();
     const batchBlocks = batchBlocksGen({
-        height: useUsdcNetworkStore().state.height,
+        height: blockHeight,
         untilBlock: OLDEST_BLOCK_TO_FILTER,
         batchSize: FILTER_BLOCKS_SIZE,
     });
@@ -189,7 +189,7 @@ async function* relayServerRegisterGen(
                 relayAddr.relayManagerAddress,
                 relayAddr.relayWorkerAddress,
             );
-            let startBlock = useUsdcNetworkStore().state.height;
+            let startBlock = blockHeight;
             const hoursToLookBackwards = config.environment === ENV_MAIN ? 48 : 24;
             const earliestBlock = startBlock - hoursToLookBackwards * 60 * POLYGON_BLOCKS_PER_MINUTE;
 

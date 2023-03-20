@@ -286,7 +286,7 @@ import { useTransactionsStore, Transaction as NimTransaction } from '../../store
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
-import { calculateFee, getHtlcContract, sendTransaction } from '../../ethers';
+import { calculateFee, getHtlcContract, getPolygonBlockNumber, sendTransaction } from '../../ethers';
 import { useConfig } from '../../composables/useConfig';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { refundSwap } from '../../hub';
@@ -452,9 +452,11 @@ export default defineComponent({
         );
 
         // Top left tooltip
-        const { height: blockHeight } = useUsdcNetworkStore();
+        const { outdatedHeight: outdatedBlockHeight } = useUsdcNetworkStore();
+        getPolygonBlockNumber(); // Trigger blockHeight update
+
         const confirmations = computed(() =>
-            transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
+            transaction.value.blockHeight ? outdatedBlockHeight.value - transaction.value.blockHeight + 1 : 0);
         const blockExplorerLink = computed(() =>
             explorerTxLink(CryptoCurrency.USDC, transaction.value.transactionHash));
 
@@ -511,7 +513,7 @@ export default defineComponent({
                         value: '0',
                         nonce: forwarderNonce.toString(),
                         gas: gasLimit.toString(),
-                        validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
+                        validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
                             .toString(10),
                     },
                     relayData: {

@@ -484,11 +484,8 @@ export default defineComponent({
             amount.value = maxSendableAmount.value;
         }
 
-        const hasHeight = computed(() => !!network$.height);
-
         const canSend = computed(() =>
             network$.consensus === 'established'
-            && hasHeight.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value);
 

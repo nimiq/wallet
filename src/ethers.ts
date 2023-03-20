@@ -78,7 +78,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     // Wait for a block event to make sure we are really connected
     await new Promise<void>((resolve) => {
         provider.once('block', (height: number) => {
-            useUsdcNetworkStore().state.height = height;
+            useUsdcNetworkStore().state.outdatedHeight = height;
             console.log('Polygon connection established');
             useUsdcNetworkStore().state.consensus = 'established';
             resolve();
@@ -190,14 +190,6 @@ export async function launchPolygon() {
     const transactionsStore = useUsdcTransactionsStore();
     const { config } = useConfig();
 
-    // Start block listener
-    getPolygonClient().then((client) => {
-        client.provider.on('block', (height: number) => {
-            console.debug('Polygon is now at', height);
-            network$.height = height;
-        });
-    });
-
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
     const addressStore = useUsdcAddressStore();
@@ -286,7 +278,7 @@ export async function launchPolygon() {
                     return MAX_ALLOWANCE.sub(allowance);
                 }) as Promise<BigNumber>,
         ]).then(async ([balance, transferAllowanceUsed, htlcAllowanceUsed]) => {
-            let blockHeight = network$.height;
+            let blockHeight = await getPolygonBlockNumber();
 
             // To filter known txs
             const knownHashes = knownTxs.map(
@@ -642,7 +634,7 @@ export async function createTransactionRequest(recipient: string, amount: number
             value: '0',
             nonce: forwarderNonce.toString(),
             gas: gasLimit.toString(),
-            validUntil: (useUsdcNetworkStore().state.height + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
+            validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
                 .toString(10),
         },
         relayData: {
@@ -855,6 +847,13 @@ export async function receiptToTransaction(
         block || await client.provider.getBlock(transferLog.blockHash),
         htlcEvent,
     );
+}
+
+export async function getPolygonBlockNumber() {
+    const client = await getPolygonClient();
+    const blockNumber = await client.provider.getBlockNumber();
+    useUsdcNetworkStore().state.outdatedHeight = blockNumber;
+    return blockNumber;
 }
 
 let htlcContract: Contract | undefined;

@@ -317,9 +317,13 @@ import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
-import { getPolygonClient, calculateFee as calculateUsdcFee, getHtlcContract } from '../../ethers';
+import {
+    getPolygonClient,
+    calculateFee as calculateUsdcFee,
+    getHtlcContract,
+    getPolygonBlockNumber,
+} from '../../ethers';
 import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import ButtonGroup from '../ButtonGroup.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
 
@@ -1426,9 +1430,11 @@ export default defineComponent({
                     const [
                         usdcNonce,
                         forwarderNonce,
+                        blockHeight,
                     ] = await Promise.all([
                         client.usdc.nonces(fromAddress) as Promise<BigNumber>,
                         htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
+                        getPolygonBlockNumber(),
                     ]);
 
                     const { fee, gasLimit, gasPrice, relay, method } = usdcFeeStuff.value!;
@@ -1465,7 +1471,7 @@ export default defineComponent({
                             value: '0',
                             nonce: forwarderNonce.toString(),
                             gas: gasLimit.toString(),
-                            validUntil: (useUsdcNetworkStore().state.height + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
                                 .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
                         },
                         relayData: {
@@ -1533,7 +1539,13 @@ export default defineComponent({
                     const htlcContract = await getHtlcContract();
                     const toAddress = activeUsdcAddress.value!;
 
-                    const forwarderNonce = await htlcContract.getNonce(toAddress) as Promise<BigNumber>;
+                    const [
+                        forwarderNonce,
+                        blockHeight,
+                    ] = await Promise.all([
+                        htlcContract.getNonce(toAddress) as Promise<BigNumber>,
+                        getPolygonBlockNumber(),
+                    ]);
 
                     const { fee, gasLimit, gasPrice, relay, method } = usdcFeeStuff.value!;
                     if (method !== 'redeemWithSecretInData') {
@@ -1554,7 +1566,7 @@ export default defineComponent({
                             value: '0',
                             nonce: forwarderNonce.toString(),
                             gas: gasLimit.toString(),
-                            validUntil: (useUsdcNetworkStore().state.height + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
                                 .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
                         },
                         relayData: {

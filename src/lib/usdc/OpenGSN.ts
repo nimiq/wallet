@@ -171,14 +171,15 @@ async function* relayServerRegisterGen(
             // Check if this relay has enough balance to cover the fee
             const { chainTokenFee } = calculateFee(
                 baseRelayFee, pctRelayFee, client.ethers.BigNumber.from(relayAddr.minGasPrice));
+            const requiredBalance = chainTokenFee.mul(2);
             // eslint-disable-next-line no-await-in-loop
             const relayBalance = await client.provider.getBalance(relayAddr.relayWorkerAddress);
-            if (relayBalance.lt(chainTokenFee)) {
+            if (relayBalance.lt(requiredBalance)) {
                 console.debug(
                     'Skipping relay: not enough balance:',
                     relayBalance.toString(),
                     ', required:',
-                    chainTokenFee.toString(),
+                    requiredBalance.toString(),
                 );
                 continue;
             }

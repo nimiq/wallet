@@ -234,7 +234,7 @@
 </template>
 
 <script lang="ts">
-import { calculateFee } from '@/ethers';
+import { calculateFee, getPolygonClient } from '@/ethers';
 import { RelayServerInfo } from '@/lib/usdc/OpenGSN';
 import { CurrencyInfo, parseRequestLink } from '@nimiq/utils';
 import {
@@ -250,7 +250,6 @@ import {
 } from '@nimiq/vue-components';
 import { captureException } from '@sentry/vue';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
-import { utils } from 'ethers';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendUsdcTransaction } from '../../hub';
@@ -356,8 +355,9 @@ export default defineComponent({
                 const ticker = 'USDC';
                 resolveUnstoppableDomain(domain, ticker)
                     .then(async (resolvedAddress) => {
-                        if (resolvedAddress && utils.isAddress(resolvedAddress)) {
-                            const formattedAddress = utils.getAddress(resolvedAddress);
+                        const client = await getPolygonClient();
+                        if (resolvedAddress && client.ethers.utils.isAddress(resolvedAddress)) {
+                            const formattedAddress = client.ethers.utils.getAddress(resolvedAddress);
                             const label = getLabel.value(formattedAddress);
                             if (!label) setContact(formattedAddress, domain);
                             recipientWithLabel.value = {

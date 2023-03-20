@@ -67,11 +67,6 @@ watch(async () => {
         kycUser.value?.id,
     );
 
-    // Find historic tx values in USD
-    await useTransactionsStore().calculateFiatAmounts(FiatCurrency.USD);
-    await useBtcTransactionsStore().calculateFiatAmounts(FiatCurrency.USD);
-    await useUsdcTransactionsStore().calculateFiatAmounts(FiatCurrency.USD);
-
     const { accountAddresses } = useAddressStore();
     const { activeAddresses } = useBtcAddressStore();
     const { addressInfo: usdcAddressInfo } = useUsdcAddressStore();
@@ -221,6 +216,11 @@ watch(async () => {
         tx: UsdcTransaction,
         swapHash: string,
     })[];
+
+    // Find historic tx values in USD
+    await useTransactionsStore().calculateFiatAmounts(swapNimTxs.map(({ tx }) => tx), FiatCurrency.USD);
+    await useBtcTransactionsStore().calculateFiatAmounts(swapBtcTxs.map(({ tx }) => tx), FiatCurrency.USD);
+    await useUsdcTransactionsStore().calculateFiatAmounts(swapUsdcTxs.map(({ tx }) => tx), FiatCurrency.USD);
 
     const swappedAmount = swapNimTxs.reduce((sum, obj) => {
         const usdValue = obj.tx.timestamp

@@ -197,7 +197,7 @@ export const useBtcTransactionsStore = createStore({
                 ...newTxs,
             };
 
-            this.calculateFiatAmounts();
+            this.calculateFiatAmounts(Object.values(newTxs));
 
             // Update UTXOs and `used` status on affected addresses
 
@@ -217,13 +217,13 @@ export const useBtcTransactionsStore = createStore({
             // revertTransactionsFromUtxos(revertedTransactions, this.state.transactions);
         },
 
-        async calculateFiatAmounts(fiatCurrency?: FiatCurrency) {
+        async calculateFiatAmounts(transactions?: Transaction[], fiatCurrency?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
             fiatCurrency = fiatCurrency || fiatStore.currency.value;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
-            const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
+            const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
                 // BTC transactions don't need to be filtered by age,
                 // as the BTC price is available far enough into the past.
                 !scheduledFiatAmountUpdates[fiatCurrency!]?.has(tx.transactionHash)

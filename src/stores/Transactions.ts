@@ -226,18 +226,19 @@ export const useTransactionsStore = createStore({
                 }
             }
 
+            const newTxs = txs.reduce((newOrUpdatedTxs, tx) => {
+                newOrUpdatedTxs[tx.transactionHash] = Object.assign(
+                    // Get the newest transaction from the store in case it was updated via setRelatedTransaction
+                    this.state.transactions[tx.transactionHash] || tx,
+                    tx,
+                );
+                return newOrUpdatedTxs;
+            }, {} as { [hash: string]: Transaction });
             // Need to re-assign the whole object in Vue 2 for change detection of new transactions.
             // TODO: Simply assign transactions in Vue 3.
             this.state.transactions = {
                 ...this.state.transactions,
-                ...txs.reduce((newOrUpdatedTxs, tx) => {
-                    newOrUpdatedTxs[tx.transactionHash] = Object.assign(
-                        // Get the newest transaction from the store in case it was updated via setRelatedTransaction
-                        this.state.transactions[tx.transactionHash] || tx,
-                        tx,
-                    );
-                    return newOrUpdatedTxs;
-                }, {} as { [hash: string]: Transaction }),
+                ...newTxs,
             };
 
             const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
@@ -245,7 +246,7 @@ export const useTransactionsStore = createStore({
                 setPromoBoxVisible(false);
             }
 
-            this.calculateFiatAmounts();
+            this.calculateFiatAmounts(Object.values(newTxs));
         },
 
         setRelatedTransaction(transaction: Transaction, relatedTransaction: Transaction | null) {
@@ -262,13 +263,13 @@ export const useTransactionsStore = createStore({
             this.state.transactions[relatedTransaction.transactionHash] = { ...relatedTransaction };
         },
 
-        async calculateFiatAmounts(fiatCurrency?: FiatCurrency) {
+        async calculateFiatAmounts(transactions?: Transaction[], fiatCurrency?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
             fiatCurrency = fiatCurrency || fiatStore.currency.value;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency]; // might be pending
-            const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
+            const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
                 !scheduledFiatAmountUpdates[fiatCurrency!]?.has(tx.transactionHash)
                     // NIM price is only available starting 2018-07-28T00:00:00Z, and this timestamp
                     // check prevents us from re-querying older transactions again and again.

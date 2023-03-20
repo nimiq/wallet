@@ -233,16 +233,16 @@ export const useUsdcTransactionsStore = createStore({
             //     setPromoBoxVisible(false);
             // }
 
-            this.calculateFiatAmounts();
+            this.calculateFiatAmounts(Object.values(newTxs));
         },
 
-        async calculateFiatAmounts(fiatCurrency?: FiatCurrency) {
+        async calculateFiatAmounts(transactions?: Transaction[], fiatCurrency?: FiatCurrency) {
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
             fiatCurrency = fiatCurrency || fiatStore.currency.value;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency]; // might be pending
-            const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
+            const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
                 !scheduledFiatAmountUpdates[fiatCurrency!]?.has(tx.transactionHash)
                     // USDC price is only available starting 2018-10-05T00:00:00Z, and this timestamp
                     // check prevents us from re-querying older transactions again and again.

@@ -44,6 +44,8 @@ export const useBtcTransactionsStore = createStore({
             if (!txs.length) return;
 
             const txDetails = txs.map((tx) => {
+                const knownTx = this.state.transactions[tx.transactionHash];
+
                 // Collect all addresses used in this transaction (for convenience)
                 const inputAddresses = tx.inputs
                     .map((input) => input.address)
@@ -53,6 +55,23 @@ export const useBtcTransactionsStore = createStore({
                 return {
                     ...tx,
                     addresses: inputAddresses.concat(outputAddresses),
+                    // Preserve known fiatValues.
+                    ...(knownTx ? {
+                        outputs: tx.outputs.map((output, i) => {
+                            const knownOutput = knownTx.outputs[i];
+                            if (!knownOutput
+                                || typeof knownOutput.fiatValue === 'undefined'
+                                || knownOutput.script !== output.script
+                                || knownOutput.address !== output.address
+                                || knownOutput.value !== output.value
+                                || knownOutput.index !== output.index
+                            ) return output;
+                            return {
+                                ...output,
+                                fiatValue: knownOutput.fiatValue,
+                            };
+                        }),
+                    } : null),
                 } as Transaction;
             });
 

@@ -223,6 +223,7 @@ export const useBtcTransactionsStore = createStore({
             fiatCurrency = fiatCurrency || fiatStore.currency.value;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
+            const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[FiatCurrency.USD];
             const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
                 // BTC transactions don't need to be filtered by age,
                 // as the BTC price is available far enough into the past.
@@ -234,22 +235,37 @@ export const useBtcTransactionsStore = createStore({
             if (!transactionsToUpdate.length) return;
 
             scheduledFiatAmountUpdates[fiatCurrency] = scheduledFiatAmountUpdates[fiatCurrency] || new Set();
-            const exchangeRates = new Map</* timestamp in ms */ number, /* exchange rate */ number | undefined>();
             const historicTimestamps: number[] = [];
+            const { swapByTransaction } = useSwapsStore().state;
 
-            for (let { transactionHash, timestamp } of transactionsToUpdate) {
-                scheduledFiatAmountUpdates[fiatCurrency].add(transactionHash);
+            for (const tx of transactionsToUpdate) {
+                for (const output of tx.outputs) {
+                    output.fiatValue = output.fiatValue || {};
+                }
 
                 // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
                 // historic rates, which also only get updated every few minutes and might not include the newest rates
                 // yet. If the user's time is not set correctly, this will gracefully fall back to fetching rates for
                 // new transactions as historic exchange rates; old transactions at the user's system's time might be
                 // interpreted as current though.
-                timestamp *= 1000;
-                if (Math.abs(timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000 && currentRate) {
-                    exchangeRates.set(timestamp, currentRate);
+                const timestamp = tx.timestamp * 1000;
+                const isNewTransaction = Math.abs(timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
+                if (isNewTransaction && currentRate) {
+                    for (const output of tx.outputs) {
+                        // Set via Vue.set to let vue handle reactivity.
+                        // TODO this might be not necessary anymore with Vue3, also for the other Vue.sets in this file.
+                        Vue.set(output.fiatValue!, fiatCurrency, currentRate * (output.value / 1e8));
+                    }
                 } else {
                     historicTimestamps.push(timestamp);
+                    scheduledFiatAmountUpdates[fiatCurrency].add(tx.transactionHash);
+                }
+                // For the calculation of swap limits, USD amounts of swap transactions are required. If we have the USD
+                // rate already available without having to fetch it, because it's a new transaction, store it.
+                if (isNewTransaction && currentUsdRate && swapByTransaction[tx.transactionHash]) {
+                    for (const output of tx.outputs) {
+                        Vue.set(output.fiatValue!, FiatCurrency.USD, currentUsdRate * (output.value / 1e8));
+                    }
                 }
             }
 
@@ -259,27 +275,21 @@ export const useBtcTransactionsStore = createStore({
                     fiatCurrency,
                     historicTimestamps,
                 );
-                for (const [timestamp, exchangeRate] of historicExchangeRates) {
-                    exchangeRates.set(timestamp, exchangeRate);
-                }
-            }
 
-            for (let tx of transactionsToUpdate) {
-                const exchangeRate = exchangeRates.get(tx.timestamp * 1000);
-                // Get the newest transaction from the store in case the object changed in the meantime due to
-                // calculation of txDetails in addTransactions.
-                tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
-                for (const output of tx.outputs) {
-                    // Set via Vue.set to let vue setup the reactivity.
-                    // TODO this might be not necessary anymore with Vue3
-                    if (!output.fiatValue) Vue.set(output, 'fiatValue', {});
-                    Vue.set(output.fiatValue!, fiatCurrency, exchangeRate !== undefined
-                        ? exchangeRate * (output.value / 1e8)
-                        : FIAT_PRICE_UNAVAILABLE,
-                    );
-                }
+                for (let tx of transactionsToUpdate) {
+                    const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
+                    // Get the newest transaction from the store in case the object changed in the meantime due to
+                    // calculation of txDetails in addTransactions.
+                    tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
+                    for (const output of tx.outputs) {
+                        Vue.set(output.fiatValue!, fiatCurrency, exchangeRate !== undefined
+                            ? exchangeRate * (output.value / 1e8)
+                            : FIAT_PRICE_UNAVAILABLE,
+                        );
+                    }
 
-                scheduledFiatAmountUpdates[fiatCurrency].delete(tx.transactionHash);
+                    scheduledFiatAmountUpdates[fiatCurrency].delete(tx.transactionHash);
+                }
             }
 
             // Manually notify the store of the deep changes to trigger subscriptions.

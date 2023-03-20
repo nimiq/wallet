@@ -433,7 +433,7 @@ router.beforeEach((to, from, next) => {
             replace: true,
         });
     } else {
-        if (to.name === 'swap' && !to.params.pair.includes('BTC')) {
+        if (to.name === 'swap' && !to.params.pair?.includes('BTC')) {
             next();
             return;
         }
@@ -470,7 +470,7 @@ router.beforeEach((to, from, next) => {
             replace: true,
         });
     } else {
-        if (to.name === 'swap' && !to.params.pair.includes('USDC')) {
+        if (to.name === 'swap' && !to.params.pair?.includes('USDC')) {
             next();
             return;
         }

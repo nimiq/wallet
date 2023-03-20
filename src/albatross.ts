@@ -291,8 +291,7 @@ export class AlbatrossRpcClient {
                 await new Promise((res) => { setTimeout(res, 500); });
                 try {
                     // eslint-disable-next-line no-await-in-loop
-                    return await this.rpc<AlbatrossTransaction>('getTransactionByHash', [hash])
-                        .then(convertTransaction);
+                    return this.getTransaction(hash);
                 } catch (error: any) {
                     if (error.data && error.data.includes('Transaction not found')) continue;
                     console.error(error); // eslint-disable-line no-console
@@ -306,6 +305,15 @@ export class AlbatrossRpcClient {
     // public async getBlock(hash: string, includeTransactions = false) {
     //     return this.rpc<Block>('getBlockByHash', [hash, includeTransactions]);
     // }
+
+    public async getHeadHeight() {
+        return this.rpc<number>('getBlockNumber');
+    }
+
+    public async getTransaction(hash: string) {
+        return this.rpc<AlbatrossTransaction>('getTransactionByHash', [hash])
+            .then(convertTransaction);
+    }
 
     public async getAccounts(addresses: string[]): Promise<Account[]> {
         return Promise.all(

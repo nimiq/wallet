@@ -21,7 +21,6 @@
             </Tooltip>
         </div>
 
-
         <header class="logo" @click="resetState">
             <span class="nq-icon nimiq-logo"></span>
             <span class="logo-wordmark">Nimiq</span>

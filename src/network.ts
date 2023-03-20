@@ -36,7 +36,6 @@ export async function getNetworkClient() {
     return clientPromise;
 }
 
-
 // async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
 //     const client = await getNetworkClient();
 

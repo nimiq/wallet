@@ -25,6 +25,8 @@ export enum TransactionState {
     CONFIRMED = 'confirmed',
 }
 
+const scheduledFiatAmountUpdates: {[fiatCurrency: string]: Set<string>} = {};
+
 export const useTransactionsStore = createStore({
     id: 'transactions',
     state: () => ({
@@ -267,22 +269,27 @@ export const useTransactionsStore = createStore({
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency]; // might be pending
             const transactionsToUpdate = Object.values(this.state.transactions).filter((tx) =>
-                // NIM price is only available starting 2018-07-28T00:00:00Z, and this timestamp
-                // check prevents us from re-querying older transactions again and again.
-                tx.timestamp && tx.timestamp >= 1532736000 && typeof tx.fiatValue?.[fiatCurrency!] !== 'number',
+                !scheduledFiatAmountUpdates[fiatCurrency!]?.has(tx.transactionHash)
+                    // NIM price is only available starting 2018-07-28T00:00:00Z, and this timestamp
+                    // check prevents us from re-querying older transactions again and again.
+                    && tx.timestamp && tx.timestamp >= 1532736000
+                    && typeof tx.fiatValue?.[fiatCurrency!] !== 'number',
             ) as Array<Transaction & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
 
+            scheduledFiatAmountUpdates[fiatCurrency] = scheduledFiatAmountUpdates[fiatCurrency] || new Set();
             const exchangeRates = new Map</* timestamp in ms */ number, /* exchange rate */ number | undefined>();
             const historicTimestamps: number[] = [];
 
-            // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
-            // historic rates, which also only get updated every few minutes and might not include the newest rates yet.
-            // If the user's time is not set correctly, this will gracefully fall back to fetching rates for new
-            // transactions as historic exchange rates; old transactions at the user's system's time might be
-            // interpreted as current though.
-            for (let { timestamp } of transactionsToUpdate) {
+            for (let { transactionHash, timestamp } of transactionsToUpdate) {
+                scheduledFiatAmountUpdates[fiatCurrency].add(transactionHash);
+
+                // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
+                // historic rates, which also only get updated every few minutes and might not include the newest rates
+                // yet. If the user's time is not set correctly, this will gracefully fall back to fetching rates for
+                // new transactions as historic exchange rates; old transactions at the user's system's time might be
+                // interpreted as current though.
                 timestamp *= 1000;
                 if (Math.abs(timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000 && currentRate) {
                     exchangeRates.set(timestamp, currentRate);
@@ -310,6 +317,8 @@ export const useTransactionsStore = createStore({
                     ? exchangeRate * (tx.value / 1e5)
                     : FIAT_PRICE_UNAVAILABLE,
                 );
+
+                scheduledFiatAmountUpdates[fiatCurrency].delete(tx.transactionHash);
             }
 
             // Manually notify the store of the deep changes to trigger subscriptions.

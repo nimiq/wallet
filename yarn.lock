@@ -1811,10 +1811,15 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core-web@1.5.8", "@nimiq/core-web@^1.5.8":
+"@nimiq/core-web@1.5.8":
   version "1.5.8"
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.8.tgz#da8abef84c6d293cbb9ca495a77f08daa08886b9"
   integrity sha512-MNpFbGZetz2eZcHtJVa5tpmLjPf65mTcJBRQkOHS8kWE+f+Z++hdnwWUBQCEAph4oC6bsE5JSuU7VpwcogN7+w==
+
+"@nimiq/core-web@^1.5.8":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.1.tgz#97cb5b43b257c7f6f6808ef603e9bf686377241f"
+  integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
@@ -1822,17 +1827,17 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.5.2", "@nimiq/fastspot-api@^1.7.0":
+"@nimiq/fastspot-api@^1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.7.0.tgz#eea496f4898139c51971f0b177583c6cc6b06611"
   integrity sha512-k7vSjYdjAiAQar+21v681Zrp9kN9uHMUw7/dyG2D/IrXqNPHkD133JyrzxPBga+myW411SUR4mtdPQRPQm3d/A==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc":
-  version "1.6.0-albatross.0"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?soeren/albatross-rpc#d90dadfa776ec9630f7330120c033266e133f188"
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?8035ddb317126d1039145cc1db5441953a4bffa4":
+  version "1.7.0-albatross.0"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?8035ddb317126d1039145cc1db5441953a4bffa4#406cd3dee5e111181dbe99ae9bc62e17be2109bd"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
-    "@nimiq/fastspot-api" "^1.5.2"
+    "@nimiq/fastspot-api" "^1.7.0"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
     big-integer "^1.6.48"

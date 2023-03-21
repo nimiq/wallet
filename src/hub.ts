@@ -71,8 +71,6 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
-    if (!config.usdc.enabled) return; // do not show usdc related welcome modals
-
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
     // We do not want to overwrite the fiat currency they already set, so we use a second localstorage key to

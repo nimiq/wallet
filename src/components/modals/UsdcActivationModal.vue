@@ -23,7 +23,10 @@
             <i18n tag="p" path="Read all about it in this {blog_post} or click below for the new wallet intro."
                 class="nq-text secondary">
                 <template #blog_post>
-                    <a target="_blank" href="https://nimiq.com/blog" rel="noopener">{{ $t('blog post') }}</a>
+                    <a
+                        href="https://www.nimiq.com/blog/usdc-on-polygon-now-available-in-nimiq-wallet/"
+                        target="_blank"
+                        rel="noopener">{{ $t('blog post') }}</a>
                 </template>
             </i18n>
 

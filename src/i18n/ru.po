@@ -97,7 +97,7 @@ msgstr "Осталось {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+ ещё {count} | + ещё {count} "
 
-#: src/components/modals/BuyOptionsModal.vue:142
+#: src/components/modals/BuyOptionsModal.vue:132
 #: src/components/modals/BuyOptionsModal.vue:53
 msgid "+ network fees"
 msgstr "+ комиссия сети"
@@ -399,7 +399,7 @@ msgid "Back to Bank Details"
 msgstr "Назад к банковским реквизитам"
 
 #: src/components/BtcTransactionListItem.vue:263
-#: src/components/modals/BtcTransactionModal.vue:522
+#: src/components/modals/BtcTransactionModal.vue:521
 #: src/components/modals/TransactionModal.vue:569
 #: src/components/modals/UsdcTransactionModal.vue:419
 #: src/components/TransactionListItem.vue:242
@@ -411,7 +411,7 @@ msgstr "Банковский счёт"
 msgid "Bank Transfer"
 msgstr "Банковский перевод"
 
-#: src/components/modals/BuyOptionsModal.vue:92
+#: src/components/modals/BuyOptionsModal.vue:82
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr "Банковский перевод поддерживается только в странах Еврозоны SEPA."
 
@@ -520,7 +520,7 @@ msgstr "Купить NIM"
 msgid "Buy NIM & BTC"
 msgstr "Купить NIM и BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:162
+#: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Купить NIM на криптовалютной бирже:"
 
@@ -560,7 +560,7 @@ msgid "Cancel Swap"
 msgstr "Отменить обмен"
 
 #: src/components/BtcTransactionListItem.vue:248
-#: src/components/modals/BtcTransactionModal.vue:507
+#: src/components/modals/BtcTransactionModal.vue:506
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:556
@@ -805,13 +805,9 @@ msgstr "Создан вчера"
 msgid "Creates staking rewards"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:110
+#: src/components/modals/BuyOptionsModal.vue:100
 msgid "Credit Card"
 msgstr "Банковская карта"
-
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Currently under maintenance"
-msgstr "В настоящий момент на обслуживании"
 
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
@@ -842,7 +838,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:370
+#: src/components/modals/UsdcSendModal.vue:372
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -905,7 +901,7 @@ msgstr "Изменить количество знаков после запят
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:576
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
 
@@ -1091,7 +1087,7 @@ msgstr ""
 msgid "free"
 msgstr "свободно"
 
-#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:103
 msgid "Full KYC required, high availability."
 msgstr "Необходима полная идентификация. Высокая доступность сервиса."
 
@@ -1188,7 +1184,7 @@ msgid "Historic value"
 msgstr "Историческая стоимость"
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:475
+#: src/components/modals/BtcTransactionModal.vue:470
 #: src/components/modals/TransactionModal.vue:495
 #: src/components/TransactionListItem.vue:186
 #: src/components/UsdcTransactionListItem.vue:190 src/lib/DataFormatting.ts:21
@@ -1196,7 +1192,7 @@ msgid "HTLC Creation"
 msgstr "Создание HTLC"
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:475
+#: src/components/modals/BtcTransactionModal.vue:470
 #: src/components/modals/TransactionModal.vue:506
 #: src/components/TransactionListItem.vue:197
 #: src/components/UsdcTransactionListItem.vue:201
@@ -1229,7 +1225,7 @@ msgstr "IBAN"
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:215
+#: src/components/swap/SwapNotification.vue:216
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1278,6 +1274,10 @@ msgid ""
 msgstr ""
 "Чтобы ускорить исполнение транзакции, увеличьте размер комиссии. Комиссия "
 "идёт напрямую майнерам."
+
+#: src/components/modals/BuyOptionsModal.vue:64
+msgid "Infrastructure Redesign"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
@@ -1347,7 +1347,6 @@ msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
 #: src/components/layouts/Sidebar.vue:80
-#: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr ""
 
@@ -1438,8 +1437,8 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr "Максимальная сумма свопа: {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:124
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:114
+#: src/components/modals/BuyOptionsModal.vue:128
 #: src/components/modals/BuyOptionsModal.vue:49
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1508,7 +1507,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Кошелёк Nimiq не поддерживает подпись транзакций для Биткоина."
 
-#: src/components/swap/SwapNotification.vue:214
+#: src/components/swap/SwapNotification.vue:215
 msgid "No connection to {chain} network."
 msgstr "Нет соединения с сетью {chain}"
 
@@ -1545,12 +1544,12 @@ msgstr "Не все счета этого банка поддерживают м
 
 #: src/components/layouts/Sidebar.vue:120
 #: src/components/layouts/Sidebar.vue:84
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:155
-#: src/components/modals/BuyOptionsModal.vue:88
+#: src/components/modals/BuyOptionsModal.vue:145
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your country"
 msgstr "Недоступно в вашей стране"
 
@@ -1574,7 +1573,6 @@ msgid "OASIS service fee"
 msgstr "Комиссия сервиса OASIS"
 
 #: src/components/layouts/Sidebar.vue:74
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid ""
 "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
 " some time. Please try again later."
@@ -1853,7 +1851,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:575
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "Повторить"
 
@@ -1981,7 +1979,7 @@ msgstr "Получать, отправлять и хранить BTC в ваше
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:572
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
@@ -2007,11 +2005,11 @@ msgstr "Отправить {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Отправить {nim} NIM {name} "
 
-#: src/components/modals/UsdcSendModal.vue:609
+#: src/components/modals/UsdcSendModal.vue:596
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:605
+#: src/components/modals/UsdcSendModal.vue:592
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -2120,7 +2118,7 @@ msgstr "В данный момент пропустить"
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:621
+#: src/components/modals/UsdcSendModal.vue:608
 msgid "Something went wrong"
 msgstr "Операция не удалась"
 
@@ -2168,7 +2166,7 @@ msgstr ""
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
 #: src/components/layouts/Sidebar.vue:112
-#: src/components/modals/BtcTransactionModal.vue:514
+#: src/components/modals/BtcTransactionModal.vue:513
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:552
 #: src/components/modals/TransactionModal.vue:7
@@ -2273,7 +2271,7 @@ msgstr "Банк обрабатывает вашу транзакцию."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 
-#: src/components/swap/SwapModal.vue:988 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:995 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Минимальная сумма определяется комиссией."
@@ -2540,7 +2538,7 @@ msgstr "Обновить"
 #: src/components/BtcTransactionListItem.vue:259
 #: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
-#: src/components/modals/BtcTransactionModal.vue:518
+#: src/components/modals/BtcTransactionModal.vue:517
 #: src/components/modals/TransactionModal.vue:565
 #: src/components/TransactionListItem.vue:238
 #: src/components/UsdcAddressInfo.vue:12
@@ -2726,7 +2724,7 @@ msgstr "Ваш браузер"
 
 #: src/components/layouts/Sidebar.vue:121
 #: src/components/layouts/Sidebar.vue:85
-#: src/components/modals/BuyOptionsModal.vue:82
+#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

@@ -87,7 +87,7 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:142
+#: src/components/modals/BuyOptionsModal.vue:132
 #: src/components/modals/BuyOptionsModal.vue:53
 msgid "+ network fees"
 msgstr ""
@@ -353,7 +353,7 @@ msgid "Back to Bank Details"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:263
-#: src/components/modals/BtcTransactionModal.vue:522
+#: src/components/modals/BtcTransactionModal.vue:521
 #: src/components/modals/TransactionModal.vue:569
 #: src/components/modals/UsdcTransactionModal.vue:419
 #: src/components/TransactionListItem.vue:242
@@ -365,7 +365,7 @@ msgstr ""
 msgid "Bank Transfer"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:92
+#: src/components/modals/BuyOptionsModal.vue:82
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr ""
 
@@ -465,7 +465,7 @@ msgstr ""
 msgid "Buy NIM & BTC"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:162
+#: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -502,7 +502,7 @@ msgid "Cancel Swap"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:248
-#: src/components/modals/BtcTransactionModal.vue:507
+#: src/components/modals/BtcTransactionModal.vue:506
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:556
@@ -741,12 +741,8 @@ msgstr ""
 msgid "Creates staking rewards"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:110
+#: src/components/modals/BuyOptionsModal.vue:100
 msgid "Credit Card"
-msgstr ""
-
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Currently under maintenance"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:7
@@ -776,7 +772,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:370
+#: src/components/modals/UsdcSendModal.vue:372
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -833,7 +829,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:576
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr ""
 
@@ -1016,7 +1012,7 @@ msgstr ""
 msgid "free"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:103
 msgid "Full KYC required, high availability."
 msgstr ""
 
@@ -1107,7 +1103,7 @@ msgid "Historic value"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:475
+#: src/components/modals/BtcTransactionModal.vue:470
 #: src/components/modals/TransactionModal.vue:495
 #: src/components/TransactionListItem.vue:186
 #: src/components/UsdcTransactionListItem.vue:190
@@ -1116,7 +1112,7 @@ msgid "HTLC Creation"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:475
+#: src/components/modals/BtcTransactionModal.vue:470
 #: src/components/modals/TransactionModal.vue:506
 #: src/components/TransactionListItem.vue:197
 #: src/components/UsdcTransactionListItem.vue:201
@@ -1149,7 +1145,7 @@ msgstr ""
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:215
+#: src/components/swap/SwapNotification.vue:216
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1179,6 +1175,10 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:94
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:64
+msgid "Infrastructure Redesign"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:80
@@ -1245,7 +1245,6 @@ msgid "Learn more here"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:80
-#: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr ""
 
@@ -1334,8 +1333,8 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:124
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:114
+#: src/components/modals/BuyOptionsModal.vue:128
 #: src/components/modals/BuyOptionsModal.vue:49
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1397,7 +1396,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:214
+#: src/components/swap/SwapNotification.vue:215
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1434,12 +1433,12 @@ msgstr ""
 
 #: src/components/layouts/Sidebar.vue:120
 #: src/components/layouts/Sidebar.vue:84
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:155
-#: src/components/modals/BuyOptionsModal.vue:88
+#: src/components/modals/BuyOptionsModal.vue:145
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your country"
 msgstr ""
 
@@ -1463,7 +1462,6 @@ msgid "OASIS service fee"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:74
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take some time. Please try again later."
 msgstr ""
 
@@ -1721,7 +1719,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:575
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr ""
 
@@ -1847,7 +1845,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:572
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1873,11 +1871,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:609
+#: src/components/modals/UsdcSendModal.vue:596
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:605
+#: src/components/modals/UsdcSendModal.vue:592
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -1985,7 +1983,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:621
+#: src/components/modals/UsdcSendModal.vue:608
 msgid "Something went wrong"
 msgstr ""
 
@@ -2032,7 +2030,7 @@ msgstr ""
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
 #: src/components/layouts/Sidebar.vue:112
-#: src/components/modals/BtcTransactionModal.vue:514
+#: src/components/modals/BtcTransactionModal.vue:513
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:552
 #: src/components/modals/TransactionModal.vue:7
@@ -2139,7 +2137,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:988
+#: src/components/swap/SwapModal.vue:995
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -2378,7 +2376,7 @@ msgstr ""
 #: src/components/BtcTransactionListItem.vue:259
 #: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
-#: src/components/modals/BtcTransactionModal.vue:518
+#: src/components/modals/BtcTransactionModal.vue:517
 #: src/components/modals/TransactionModal.vue:565
 #: src/components/TransactionListItem.vue:238
 #: src/components/UsdcAddressInfo.vue:12
@@ -2539,7 +2537,7 @@ msgstr ""
 
 #: src/components/layouts/Sidebar.vue:121
 #: src/components/layouts/Sidebar.vue:85
-#: src/components/modals/BuyOptionsModal.vue:82
+#: src/components/modals/BuyOptionsModal.vue:72
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 

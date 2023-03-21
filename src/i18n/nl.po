@@ -2,9 +2,9 @@
 # Translators:
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Jim <jimvendrig10@gmail.com>, 2021
-# Daniel, 2021
 # Fons <Fonsdesigns@hotmail.com>, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2022
+# Daniel, 2023
 # Stefan, 2023
 # 
 msgid ""
@@ -98,7 +98,7 @@ msgstr "{value} resterend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} meer | + {count} meer"
 
-#: src/components/modals/BuyOptionsModal.vue:142
+#: src/components/modals/BuyOptionsModal.vue:132
 #: src/components/modals/BuyOptionsModal.vue:53
 msgid "+ network fees"
 msgstr "+ netwerkkosten"
@@ -398,7 +398,7 @@ msgid "Back to Bank Details"
 msgstr "Terug naar bankgegevens"
 
 #: src/components/BtcTransactionListItem.vue:263
-#: src/components/modals/BtcTransactionModal.vue:522
+#: src/components/modals/BtcTransactionModal.vue:521
 #: src/components/modals/TransactionModal.vue:569
 #: src/components/modals/UsdcTransactionModal.vue:419
 #: src/components/TransactionListItem.vue:242
@@ -410,7 +410,7 @@ msgstr "Bankrekening"
 msgid "Bank Transfer"
 msgstr "Bankoverschrijving"
 
-#: src/components/modals/BuyOptionsModal.vue:92
+#: src/components/modals/BuyOptionsModal.vue:82
 msgid "Bank Transfer is only supported in the EU’s SEPA area."
 msgstr ""
 "Bankoverschrijvingen worden alleen ondersteund in het SEPA-gebied van de EU."
@@ -520,7 +520,7 @@ msgstr "Koop NIM"
 msgid "Buy NIM & BTC"
 msgstr "Koop NIM & BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:162
+#: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Koop NIM op een crypto exchange:"
 
@@ -564,7 +564,7 @@ msgid "Cancel Swap"
 msgstr "Swap annuleren"
 
 #: src/components/BtcTransactionListItem.vue:248
-#: src/components/modals/BtcTransactionModal.vue:507
+#: src/components/modals/BtcTransactionModal.vue:506
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/TransactionModal.vue:556
@@ -811,13 +811,9 @@ msgstr "Gisteren aangemaakt"
 msgid "Creates staking rewards"
 msgstr "Creëert stake rewards"
 
-#: src/components/modals/BuyOptionsModal.vue:110
+#: src/components/modals/BuyOptionsModal.vue:100
 msgid "Credit Card"
 msgstr "Creditcard"
-
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Currently under maintenance"
-msgstr "Momenteel in onderhoud"
 
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
@@ -850,7 +846,7 @@ msgstr "Uitschakelen"
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:370
+#: src/components/modals/UsdcSendModal.vue:372
 msgid "Domain does not resolve to a valid address"
 msgstr "Domein verwijst niet naar een geldig adres"
 
@@ -913,7 +909,7 @@ msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:576
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
 
@@ -1104,7 +1100,7 @@ msgstr ""
 msgid "free"
 msgstr "gratis"
 
-#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:103
 msgid "Full KYC required, high availability."
 msgstr "Volledige verificatie vereist, hoge beschikbaarheid."
 
@@ -1119,18 +1115,26 @@ msgstr "Cashlink opwaarderen"
 #: src/components/PolygonWarningFooter.vue:10
 msgid "Funds sent from non-Polygon USDC addresses could be permanently lost!"
 msgstr ""
+"Valuta verzonden vanaf niet-Polygon USDC-adressen kunnen permanent verloren "
+"gaan!"
 
 #: src/components/PolygonWarningPage.vue:19
 msgid "Funds sent from non-Polygon USDC addresses could be permanently lost."
 msgstr ""
+"Valuta die vanaf niet-Polygon USDC-adressen worden verzonden, kunnen "
+"permanent verloren gaan."
 
 #: src/components/PolygonWarningFooter.vue:27
 msgid "Funds sent from non-Polygon USDC versions could be permanently lost."
 msgstr ""
+"Valuta die zijn verzonden vanuit niet-Polygon USDC-versies kunnen permanent "
+"verloren gaan."
 
 #: src/components/PolygonWarningFooter.vue:7
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost!"
 msgstr ""
+"Valuta die naar niet-Polygon USDC-adressen worden verzonden, kunnen "
+"permanent verloren gaan!"
 
 #: src/components/PolygonWarningPage.vue:18
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost."
@@ -1207,7 +1211,7 @@ msgid "Historic value"
 msgstr "Historische waarde"
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:475
+#: src/components/modals/BtcTransactionModal.vue:470
 #: src/components/modals/TransactionModal.vue:495
 #: src/components/TransactionListItem.vue:186
 #: src/components/UsdcTransactionListItem.vue:190 src/lib/DataFormatting.ts:21
@@ -1215,7 +1219,7 @@ msgid "HTLC Creation"
 msgstr "HTLC Creatie"
 
 #: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:475
+#: src/components/modals/BtcTransactionModal.vue:470
 #: src/components/modals/TransactionModal.vue:506
 #: src/components/TransactionListItem.vue:197
 #: src/components/UsdcTransactionListItem.vue:201
@@ -1248,7 +1252,7 @@ msgstr "IBAN"
 msgid "ID document"
 msgstr "ID document"
 
-#: src/components/swap/SwapNotification.vue:215
+#: src/components/swap/SwapNotification.vue:216
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1299,6 +1303,10 @@ msgid ""
 msgstr ""
 "Verhoog de snelheid van je transactie door hogere netwerkkosten te betalen. "
 "De vergoedingen gaan rechtstreeks naar de miners."
+
+#: src/components/modals/BuyOptionsModal.vue:64
+msgid "Infrastructure Redesign"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
@@ -1366,7 +1374,6 @@ msgid "Learn more here"
 msgstr "Leer hier meer"
 
 #: src/components/layouts/Sidebar.vue:80
-#: src/components/modals/BuyOptionsModal.vue:73
 msgid "Learn more."
 msgstr "Meer informatie."
 
@@ -1461,8 +1468,8 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr "Maximale omwisselbaar bedrag is {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:124
-#: src/components/modals/BuyOptionsModal.vue:138
+#: src/components/modals/BuyOptionsModal.vue:114
+#: src/components/modals/BuyOptionsModal.vue:128
 #: src/components/modals/BuyOptionsModal.vue:49
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1531,7 +1538,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "De Nimiq wallet ondersteunt geen transactieberichten voor Bitcoin."
 
-#: src/components/swap/SwapNotification.vue:214
+#: src/components/swap/SwapNotification.vue:215
 msgid "No connection to {chain} network."
 msgstr "Geen verbinding met het {chain} netwerk."
 
@@ -1568,12 +1575,12 @@ msgstr "Niet alle rekeningen van deze bank ondersteunen directe transacties."
 
 #: src/components/layouts/Sidebar.vue:120
 #: src/components/layouts/Sidebar.vue:84
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "Niet beschikbaar in jouw browser"
 
-#: src/components/modals/BuyOptionsModal.vue:155
-#: src/components/modals/BuyOptionsModal.vue:88
+#: src/components/modals/BuyOptionsModal.vue:145
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "Not available in your country"
 msgstr "Niet beschikbaar in jouw land"
 
@@ -1597,7 +1604,6 @@ msgid "OASIS service fee"
 msgstr "OASIS servicekosten"
 
 #: src/components/layouts/Sidebar.vue:74
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid ""
 "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
 " some time. Please try again later."
@@ -1775,7 +1781,7 @@ msgstr "Ontvang gratis NIM"
 
 #: src/components/PolygonWarningPage.vue:12
 msgid "Receive from Polygon USDC addresses only!"
-msgstr ""
+msgstr "Ontvang alleen van Polygon USDC-adressen!"
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
@@ -1884,7 +1890,7 @@ msgstr "Unstoppable Domain ophalen..."
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:575
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
@@ -2016,7 +2022,7 @@ msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:572
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "Transactie versturen"
 
@@ -2042,11 +2048,11 @@ msgstr "Stuur {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Stuur {nim} NIM naar {name}"
 
-#: src/components/modals/UsdcSendModal.vue:609
+#: src/components/modals/UsdcSendModal.vue:596
 msgid "Sent {usdc} USDC"
 msgstr "Verstuur {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:605
+#: src/components/modals/UsdcSendModal.vue:592
 msgid "Sent {usdc} USDC to {name}"
 msgstr "Verstuur {usdc} USDC naar {name}"
 
@@ -2155,7 +2161,7 @@ msgstr "Sla het over voor nu"
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:621
+#: src/components/modals/UsdcSendModal.vue:608
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
 
@@ -2203,7 +2209,7 @@ msgstr "Super lage kosten, super snelle betalingen"
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
 #: src/components/layouts/Sidebar.vue:112
-#: src/components/modals/BtcTransactionModal.vue:514
+#: src/components/modals/BtcTransactionModal.vue:513
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:552
 #: src/components/modals/TransactionModal.vue:7
@@ -2310,7 +2316,7 @@ msgstr "De bank verwerkt je transactie."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
-#: src/components/swap/SwapModal.vue:988 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:995 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "De kosten bepalen het minimumbedrag."
@@ -2585,7 +2591,7 @@ msgstr "Update nu"
 #: src/components/BtcTransactionListItem.vue:259
 #: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:84
-#: src/components/modals/BtcTransactionModal.vue:518
+#: src/components/modals/BtcTransactionModal.vue:517
 #: src/components/modals/TransactionModal.vue:565
 #: src/components/TransactionListItem.vue:238
 #: src/components/UsdcAddressInfo.vue:12
@@ -2777,7 +2783,7 @@ msgstr "Je browser"
 
 #: src/components/layouts/Sidebar.vue:121
 #: src/components/layouts/Sidebar.vue:85
-#: src/components/modals/BuyOptionsModal.vue:82
+#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

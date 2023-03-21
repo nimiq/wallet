@@ -858,16 +858,16 @@ export default defineComponent({
 
         .notice {
             margin-top: -3.5rem;
-            transition: opacity 0.3s var(--nimiq-ease), margin-top 0.3s var(--nimiq-ease);
+            font-size: var(--small-size);
+            transition: opacity .3s var(--nimiq-ease), margin-top .3s var(--nimiq-ease);
 
             &.resolving {
-                font-size: var(--small-size);
                 font-weight: 600;
-                opacity: 0.5 !important;
+                opacity: .5 !important;
             }
         }
 
-        .address-input.is-domain ~ .notice {
+        .address-input.display-as-domain ~ .notice {
             margin-top: 1rem;
         }
     }

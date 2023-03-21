@@ -33,7 +33,7 @@
                         :allowDomains="true"
                         :allowEthAddresses="true"
                         :allowNimAddresses="false"
-                        @paste="(event, text) => parseRequestUri(text)"
+                        @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
                         ref="addressInput$"/>
                     <span class="notice"
@@ -493,7 +493,7 @@ export default defineComponent({
             && !!amount.value
             && amount.value <= maxSendableAmount.value);
 
-        async function parseRequestUri(uri: string) {
+        async function parseRequestUri(uri: string, event?: ClipboardEvent) {
             // For now only plain USDC/Polygon/ETH addresses are supported.
             // TODO support Polygon-USDC request links and even consider removing scanning of plain addresses
             //  due to the risk of USDC being sent on the wrong chain.
@@ -501,6 +501,11 @@ export default defineComponent({
                 .replace('polygon:', '');
             const { ethers } = await getPolygonClient();
             if (ethers.utils.isAddress(uri)) {
+                if (event) {
+                    // Prevent paste event being applied to the recipient label field, that now became focussed.
+                    event.preventDefault();
+                }
+
                 onAddressEntered(uri);
             }
         }

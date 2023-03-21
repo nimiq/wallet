@@ -518,6 +518,7 @@ export default defineComponent({
             wantLeft.value = 0;
             wantRight.value = 0;
             fixedAsset.value = newLeft;
+            updateEstimate();
         }, { lazy: true });
 
         const direction = computed(() => {

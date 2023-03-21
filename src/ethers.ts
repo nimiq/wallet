@@ -273,6 +273,7 @@ export async function launchPolygon() {
 
         Promise.all([
             client.usdc.balanceOf(address) as Promise<BigNumber>,
+            client.usdc.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
             client.usdc.allowance(address, config.usdc.transferContract)
                 .then((allowance: BigNumber) => {
                     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
@@ -283,7 +284,7 @@ export async function launchPolygon() {
                     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
                     return MAX_ALLOWANCE.sub(allowance);
                 }) as Promise<BigNumber>,
-        ]).then(async ([balance, transferAllowanceUsed, htlcAllowanceUsed]) => {
+        ]).then(async ([balance, usdcNonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
             let blockHeight = await getPolygonBlockNumber();
 
             // To filter known txs
@@ -296,6 +297,7 @@ export async function launchPolygon() {
             /* eslint-disable max-len */
             while (blockHeight > earliestHeightToCheck && (
                 balance.gt(0)
+                || usdcNonce > 0
                 || transferAllowanceUsed.gt(0)
                 || htlcAllowanceUsed.gt(0)
             )) {
@@ -305,6 +307,7 @@ export async function launchPolygon() {
 
                 console.log('USDC Sync start', {
                     balance: balance.toNumber() / 1e6,
+                    usdcNonce,
                     transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
                     htlcAllowance: transferAllowanceUsed.toNumber() / 1e6,
                 });
@@ -318,6 +321,11 @@ export async function launchPolygon() {
 
                 console.debug(`Got ${logsIn.length} incoming logs, ${logsOut.length} outgoing logs` /* , and ${metaTxs.length} meta tx logs` */);
 
+                // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
+                const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
+                console.debug(`Found ${outgoingTxs.size} outoing txs`);
+                usdcNonce -= outgoingTxs.size;
+
                 const txsUsingHtlcAllowance = new Set(logsOut
                     .filter((ev) => ev.args?.to === config.usdc.htlcContract) // Only HTLC fundings are relevant
                     .map((ev) => ev.transactionHash));
@@ -328,7 +336,8 @@ export async function launchPolygon() {
                 const newLogs = allTransferLogs.filter((log) => {
                     if (!log.args) return false;
 
-                    if (log.args.from === address) {
+                    // TODO: When switching to use max-approval, remove usdcNonce <= 0 check, so allowances get reduced first
+                    if (log.args.from === address && usdcNonce <= 0) {
                         balance = balance.add(log.args.value);
 
                         if (txsUsingHtlcAllowance.has(log.transactionHash)) {
@@ -474,6 +483,7 @@ export async function launchPolygon() {
 
             console.log('USDC Sync end', {
                 balance: balance.toNumber() / 1e6,
+                usdcNonce,
                 transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
                 htlcAllowance: transferAllowanceUsed.toNumber() / 1e6,
             });
@@ -607,23 +617,24 @@ export async function createTransactionRequest(recipient: string, amount: number
 
     const [
         usdcNonce,
-        usdcAllowance,
+        // usdcAllowance,
         forwarderNonce,
     ] = await Promise.all([
         client.usdc.nonces(fromAddress) as Promise<BigNumber>,
-        client.usdc.allowance(fromAddress, config.usdc.transferContract) as Promise<BigNumber>,
+        // client.usdc.allowance(fromAddress, config.usdc.transferContract) as Promise<BigNumber>,
         client.usdcTransfer.getNonce(fromAddress) as Promise<BigNumber>,
     ]);
 
     // This sets the fee buffer to 10 USDC, which should be enough.
-    const method = usdcAllowance.gte(amount + 10e6) ? 'transfer' : 'transferWithApproval';
+    // const method = usdcAllowance.gte(amount + 10e6) ? 'transfer' : 'transferWithApproval';
+    const method = 'transferWithApproval' as 'transfer' | 'transferWithApproval';
 
     const { fee, gasPrice, gasLimit, relay } = await calculateFee(method, forceRelay);
 
-    // To be safe, we still check that amount + fee fits into the current allowance
-    if (method === 'transfer' && usdcAllowance.lt(fee.add(amount))) {
-        throw new Error('Unexpectedly high fee, not enough allowance on the USDC contract');
-    }
+    // // To be safe, we still check that amount + fee fits into the current allowance
+    // if (method === 'transfer' && usdcAllowance.lt(fee.add(amount))) {
+    //     throw new Error('Unexpectedly high fee, not enough allowance on the USDC contract');
+    // }
 
     const data = client.usdcTransfer.interface.encodeFunctionData(method, [
         /* address token */ config.usdc.usdcContract,
@@ -631,9 +642,10 @@ export async function createTransactionRequest(recipient: string, amount: number
         /* address target */ recipient,
         /* uint256 fee */ fee,
         ...(method === 'transferWithApproval' ? [
-            // Approve the maximum possible amount so afterwards we can use the `transfer` method for lower fees
-            /* uint256 approval */ client.ethers
-                .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+            // // Approve the maximum possible amount so afterwards we can use the `transfer` method for lower fees
+            // /* uint256 approval */ client.ethers
+            //     .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+            /* uint256 approval */ fee.add(amount),
 
             // Dummy values, replaced by real signature bytes in Keyguard
             /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',

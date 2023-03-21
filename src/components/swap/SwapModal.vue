@@ -868,13 +868,13 @@ export default defineComponent({
                     // Allowance was already checked at the last fee calculation, reuse the previous result
                     method = prevMethod;
                 } else {
-                    // Otherwise check allowance now
-                    const client = await getPolygonClient();
-                    const allowance = await client.usdc.allowance(
-                        activeUsdcAddress.value!,
-                        config.usdc.htlcContract,
-                    ) as BigNumber;
-                    if (allowance.gte(accountUsdcBalance.value)) method = 'open';
+                    // // Otherwise check allowance now
+                    // const client = await getPolygonClient();
+                    // const allowance = await client.usdc.allowance(
+                    //     activeUsdcAddress.value!,
+                    //     config.usdc.htlcContract,
+                    // ) as BigNumber;
+                    // if (allowance.gte(accountUsdcBalance.value)) method = 'open';
                 }
             }
 
@@ -1452,10 +1452,11 @@ export default defineComponent({
                         /* uint256 timeout */ 0,
                         /* uint256 fee */ fee,
                         ...(method === 'openWithApproval' ? [
-                            // Approve the maximum possible amount so afterwards we can use the `open` method for
-                            // lower fees
-                            /* uint256 approval */ client.ethers
-                                .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+                            // // Approve the maximum possible amount so afterwards we can use the `open` method for
+                            // // lower fees
+                            // /* uint256 approval */ client.ethers
+                            //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+                            /* uint256 approval */ swapSuggestion.from.amount + fee,
 
                             /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                             /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',

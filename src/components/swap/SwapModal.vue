@@ -1306,10 +1306,15 @@ export default defineComponent({
 
                 try {
                     const fees = calculateMyFees(undefined, true);
-                    const { to, from } = calculateRequestData({
+                    const { from, to } = calculateRequestData({
                         fundingFee: await fees.fundingFee,
                         settlementFee: await fees.settlementFee,
                     });
+
+                    if (typeof from !== 'string' && 'USDC' in from) {
+                        // Ensure we send only what's possible with the updated fee
+                        from.USDC = Math.min(from.USDC!, (accountUsdcBalance.value - await fees.fundingFee) / 1e6);
+                    }
 
                     swapSuggestion = await createSwap(
                         from as RequestAsset<SwapAsset>, // Need to force one of the function signatures

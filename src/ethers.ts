@@ -648,6 +648,9 @@ export async function createTransactionRequest(recipient: string, amount: number
 
     const { fee, gasPrice, gasLimit, relay } = await calculateFee(method, forceRelay);
 
+    // Ensure we send only what's possible with the updated fee
+    amount = Math.min(amount, (addressInfo.balance || 0) - fee.toNumber());
+
     // // To be safe, we still check that amount + fee fits into the current allowance
     // if (method === 'transfer' && usdcAllowance.lt(fee.add(amount))) {
     //     throw new Error('Unexpectedly high fee, not enough allowance on the USDC contract');

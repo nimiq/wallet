@@ -156,11 +156,14 @@
                 <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/kucoin.svg" alt="KuCoin">
                 </a>
-                <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/hitbtc.svg" alt="HitBTC">
+                <a href="https://www.gate.io/de/trade/NIM_USDT" title="Gate.io" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/gateio.svg" alt="Gate.io">
                 </a>
                 <a href="https://ascendex.com" title="AscendEX (BitMax)" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/ascendex.png" alt="AscendEX">
+                </a>
+                <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/hitbtc.svg" alt="HitBTC">
                 </a>
                 <a href="https://stealthex.io/?to=NIM" title="StealthEx" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/stealthex.svg" alt="StealthEx">

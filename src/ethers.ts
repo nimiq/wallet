@@ -33,6 +33,12 @@ export interface PolygonClient {
     ethers: typeof ethers;
 }
 
+function consensusEstablishedHandler(height: number) {
+    useUsdcNetworkStore().state.outdatedHeight = height;
+    console.log('Polygon connection established');
+    useUsdcNetworkStore().state.consensus = 'established';
+}
+
 let isLaunched = false;
 
 type Balances = Map<string, number>;
@@ -71,8 +77,21 @@ export async function getPolygonClient(): Promise<PolygonClient> {
             ethers.providers.getNetwork(config.usdc.networkId),
         );
     } else if (rpcEndpoint.substring(0, 2) === 'ws') {
+        const SturdyWebsocket = (await import(/* webpackChunkName: "ethers-js" */ 'sturdy-websocket')).default;
+        const socket = new SturdyWebsocket(rpcEndpoint, {
+            debug: true,
+        });
+        socket.addEventListener('down', () => {
+            console.log('Polygon connection lost');
+            useUsdcNetworkStore().state.consensus = 'connecting';
+        });
+        socket.addEventListener('reopen', async () => {
+            useUsdcNetworkStore().state.consensus = 'syncing';
+            const client = await getPolygonClient();
+            client.provider.once('block', consensusEstablishedHandler);
+        });
         provider = new ethers.providers.WebSocketProvider(
-            rpcEndpoint,
+            socket,
             ethers.providers.getNetwork(config.usdc.networkId),
         );
     } else {
@@ -84,9 +103,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     // Wait for a block event to make sure we are really connected
     await new Promise<void>((resolve) => {
         provider.once('block', (height: number) => {
-            useUsdcNetworkStore().state.outdatedHeight = height;
-            console.log('Polygon connection established');
-            useUsdcNetworkStore().state.consensus = 'established';
+            consensusEstablishedHandler(height);
             resolve();
         });
     });

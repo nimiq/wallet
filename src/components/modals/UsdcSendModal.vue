@@ -32,7 +32,7 @@
                         v-model="addressInputValue"
                         :allowDomains="true"
                         :allowEthAddresses="true"
-                        :allowNimiqAddresses="false"
+                        :allowNimAddresses="false"
                         @paste="(event, text) => parseRequestUri(text)"
                         @address="onAddressEntered"
                         ref="addressInput$"/>

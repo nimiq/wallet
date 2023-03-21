@@ -234,8 +234,6 @@
 </template>
 
 <script lang="ts">
-import { calculateFee, getPolygonClient } from '@/ethers';
-import { RelayServerInfo } from '@/lib/usdc/OpenGSN';
 import { CurrencyInfo, parseRequestLink } from '@nimiq/utils';
 import {
     AddressDisplay,
@@ -253,7 +251,9 @@ import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vu
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendUsdcTransaction } from '../../hub';
+import { getPolygonClient, calculateFee } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
@@ -345,7 +345,7 @@ export default defineComponent({
         });
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
-        watch(addressInputValue, (address) => {
+        watch(addressInputValue, async (address) => {
             resolverError.value = '';
 
             // Detect unstoppable domains
@@ -353,31 +353,31 @@ export default defineComponent({
                 isResolvingUnstoppableDomain.value = true;
                 const domain = address;
                 const ticker = 'USDC';
-                resolveUnstoppableDomain(domain, ticker)
-                    .then(async (resolvedAddress) => {
-                        const client = await getPolygonClient();
-                        if (resolvedAddress && client.ethers.utils.isAddress(resolvedAddress)) {
-                            const formattedAddress = client.ethers.utils.getAddress(resolvedAddress);
-                            const label = getLabel.value(formattedAddress);
-                            if (!label) setContact(formattedAddress, domain);
-                            recipientWithLabel.value = {
-                                address: formattedAddress,
-                                label: label || domain,
-                                type: RecipientType.CONTACT,
-                            };
-                            page.value = Pages.AMOUNT_INPUT;
-                        } else {
-                            resolverError.value = context.root.$t(
-                                'Domain does not resolve to a valid address') as string;
-                        }
-                    })
-                    .catch((error: Error) => {
-                        console.debug(error); // eslint-disable-line no-console
-                        let { message } = error;
-                        message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
-                        resolverError.value = message;
-                    })
-                    .finally(() => isResolvingUnstoppableDomain.value = false);
+                try {
+                    const [resolvedAddress, { ethers }] = await Promise.all([
+                        resolveUnstoppableDomain(domain, ticker),
+                        getPolygonClient(),
+                    ]);
+                    if (resolvedAddress && ethers.utils.isAddress(resolvedAddress)) {
+                        const formattedAddress = ethers.utils.getAddress(resolvedAddress);
+                        const label = getLabel.value(formattedAddress);
+                        if (!label) setContact(formattedAddress, domain);
+                        recipientWithLabel.value = {
+                            address: formattedAddress,
+                            label: label || domain,
+                            type: RecipientType.CONTACT,
+                        };
+                        page.value = Pages.AMOUNT_INPUT;
+                    } else {
+                        resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
+                    }
+                } catch (error) {
+                    console.debug(error); // eslint-disable-line no-console
+                    resolverError.value = (error instanceof Error ? error.message : String(error))
+                        .replace(`crypto.${ticker}.address record`, `${ticker} address`);
+                } finally {
+                    isResolvingUnstoppableDomain.value = false;
+                }
             }
         });
 

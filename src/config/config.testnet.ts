@@ -13,7 +13,7 @@ export default {
 
     usdc: {
         enabled: false,
-        networkId: 80001 as number | string, // Can also be 'maticmum'
+        networkId: 80001,
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
         rpcMaxBlockRange: 10_000,
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',

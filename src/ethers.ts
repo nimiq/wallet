@@ -16,7 +16,13 @@ import {
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
 import { USDC_TRANSFER_CONTRACT_ABI, USDC_CONTRACT_ABI, USDC_HTLC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
-import { getBestRelay, getRelayHub, POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from './lib/usdc/OpenGSN';
+import {
+    getBestRelay,
+    getRelayAddr,
+    getRelayHub,
+    POLYGON_BLOCKS_PER_MINUTE,
+    RelayServerInfo,
+} from './lib/usdc/OpenGSN';
 import { getPoolAddress, getUsdcPrice } from './lib/usdc/Uniswap';
 import { replaceKey } from './lib/KeyReplacer';
 
@@ -523,7 +529,18 @@ export async function calculateFee(
 
     if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);
 
-    let relay = forceRelay;
+    // Update minGasPrice if relay was forcedRelay, as it is most likely outdated.
+    // Also checks for `ready` status to avoid retrying with a non-ready relay
+    let relay = await (forceRelay
+        ? getRelayAddr(forceRelay.url).then((addr) => {
+            if (!addr || !addr.ready) return undefined;
+            return <RelayServerInfo> {
+                ...forceRelay,
+                minGasPrice: client.ethers.BigNumber.from(addr.minGasPrice),
+            };
+        })
+        : Promise.resolve(undefined)
+    );
 
     const [
         networkGasPrice,
@@ -561,7 +578,6 @@ export async function calculateFee(
         relay = await getBestRelay(client, requiredMaxAcceptanceBudget, calculateChainTokenFee);
     }
 
-    // TODO: Update minGasPrice if relay was forcedRelay, as it might be outdated?
     const { baseRelayFee, pctRelayFee, minGasPrice } = relay;
 
     const { gasPrice, chainTokenFee } = calculateChainTokenFee(baseRelayFee, pctRelayFee, minGasPrice);

@@ -19,6 +19,7 @@ export interface RelayServerInfo {
     baseRelayFee: BigNumber;
     pctRelayFee: BigNumber;
     url: string;
+    relayManagerAddress: string;
     relayWorkerAddress: string;
     minGasPrice: BigNumber;
 }
@@ -38,8 +39,6 @@ export async function getBestRelay(
     const relayGen = relayServerRegisterGen(client, requiredMaxAcceptanceBudget, calculateFee);
     const relayServers: RelayServerInfo[] = [];
 
-    let bestRelay: RelayServerInfo | undefined;
-
     while (true) { // eslint-disable-line no-constant-condition
         // eslint-disable-next-line no-await-in-loop
         const relay = await relayGen.next();
@@ -49,21 +48,18 @@ export async function getBestRelay(
 
         // If both fees are maximally our accepted fees, we found an acceptable relay
         if (pctRelayFee.lte(MAX_PCT_RELAY_FEE) && baseRelayFee.lte(MAX_BASE_RELAY_FEE)) {
-            bestRelay = relay.value;
-            break;
+            return relay.value;
         }
 
         relayServers.push(relay.value);
     }
-
-    if (bestRelay) return bestRelay;
 
     // With no relay found, we take the one with the lowest fees among the ones we fetched.
     // We could also go again to the contract and fetch more relays, but most likely we will
     // find relays with similar fees and higher probabilities of being offline.
 
     // Sort relays first by lowest baseRelayFee and then by lowest pctRelayFee
-    [bestRelay] = relayServers.sort((a, b) => {
+    const [bestRelay] = relayServers.sort((a, b) => {
         if (a.baseRelayFee.lt(b.baseRelayFee)) return -1;
         if (a.baseRelayFee.gt(b.baseRelayFee)) return 1;
         if (a.pctRelayFee.lt(b.pctRelayFee)) return -1;
@@ -94,7 +90,7 @@ const OLDEST_BLOCK_TO_FILTER = 60 * POLYGON_BLOCKS_PER_MINUTE;
 const MAX_RELAY_SERVERS_TRIES = 10;
 
 // Iteratively fetches RelayServerRegistered events from the RelayHub contract.
-// It yields them one by one. The goal is to find the relay with the lowest fee.
+// It yields them one by one. The goal is to find the fastest relay that fulfills all requirements.
 //   - It will fetch the last OLDEST_BLOCK_TO_FILTER blocks
 //   - in FILTER_BLOCKS_SIZE blocks batches
 async function* relayServerRegisterGen(
@@ -114,14 +110,14 @@ async function* relayServerRegisterGen(
     });
 
     let count = 0;
+    const relayHub = getRelayHub(client);
 
-    while (count < MAX_RELAY_SERVERS_TRIES && !events.length) {
+    while (count < MAX_RELAY_SERVERS_TRIES) {
         // eslint-disable-next-line no-await-in-loop
         const blocks = await batchBlocks.next();
         if (!blocks.value) break;
         const { fromBlock, toBlock } = blocks.value;
 
-        const relayHub = getRelayHub(client);
         // eslint-disable-next-line no-await-in-loop
         events = await relayHub.queryFilter(
             relayHub.filters.RelayServerRegistered(),
@@ -131,32 +127,79 @@ async function* relayServerRegisterGen(
 
         const { config } = useConfig();
 
-        while (events.length) {
-            const relayServer = events.shift();
-            if (relayServer?.args?.length !== 4) continue;
+        type RelayRegistration = {
+            relayManagerAddress: string,
+            baseRelayFee: BigNumber,
+            pctRelayFee: BigNumber,
+            url: string,
+        }
+
+        let registrations = events.map((event) => {
+            if (event.args?.length !== 4) return false;
+
             const [
-                relayManagerAddress, // eslint-disable-line @typescript-eslint/no-unused-vars
+                relayManagerAddress,
                 baseRelayFee,
                 pctRelayFee,
                 url,
-            ] = relayServer.args as [string, BigNumber, BigNumber, string];
-            // eslint-disable-next-line no-await-in-loop
-            const relayAddr = await getRelayAddr(url);
+            ] = event.args as [string, BigNumber, BigNumber, string];
+
+            return <RelayRegistration> {
+                relayManagerAddress,
+                baseRelayFee,
+                pctRelayFee,
+                url,
+            };
+        }).filter(Boolean) as RelayRegistration[];
+
+        // Filter out dublicates
+        registrations = registrations.filter((reg, i, array) => {
+            const firstIndex = array.findIndex((reg2) => reg2.url === reg.url);
+            return firstIndex === i;
+        });
+
+        // Race pings and do static checks
+
+        const abortController = new AbortController();
+        // Every 2 seconds, check if we have 1 or more final relays already and if so, abort the rest
+        const abortInterval = window.setInterval(() => {
+            let finalRelaysCount = 0;
+            orderedRelays.forEach((relay) => {
+                if (relay.isFinal) finalRelaysCount += 1;
+            });
+            if (finalRelaysCount >= 1) {
+                window.clearInterval(abortInterval);
+                window.clearTimeout(abortTimeout);
+                abortController.abort();
+            }
+        }, 2e3);
+        // Abort after a 10s hard timeout
+        const abortTimeout = window.setTimeout(() => {
+            window.clearInterval(abortInterval);
+            window.clearTimeout(abortTimeout);
+            abortController.abort();
+        }, 10e3);
+
+        const orderedRelays = new Map<string, RelayServerInfo & { isFinal: boolean }>();
+        // eslint-disable-next-line no-await-in-loop,no-loop-func
+        await Promise.all(registrations.map(async (reg) => {
+            const { baseRelayFee, pctRelayFee, url } = reg;
+            const relayAddr = await getRelayAddr(url, abortController.signal);
             if (!relayAddr) {
                 console.debug('Skipping relay: no addr info, timeout');
-                continue;
+                return;
             }
             if (!relayAddr.ready) {
                 console.debug('Skipping relay: not ready');
-                continue;
+                return;
             }
             if (!relayAddr.version.startsWith('2.')) { // TODO: Make OpenGSN version used configurable
                 console.debug('Skipping relay: wrong version:', relayAddr.version);
-                continue;
+                return;
             }
-            if (relayAddr.networkId !== config.usdc.networkId.toString()) {
+            if (relayAddr.networkId !== config.usdc.networkId.toString(10)) {
                 console.debug('Skipping relay: wrong networkId:', relayAddr.networkId);
-                continue;
+                return;
             }
             if (client.ethers.BigNumber.from(relayAddr.maxAcceptanceBudget).lt(requiredMaxAcceptanceBudget)) {
                 console.debug(
@@ -165,15 +208,28 @@ async function* relayServerRegisterGen(
                     ', required:',
                     requiredMaxAcceptanceBudget.toString(),
                 );
-                continue;
+                return;
             }
+
+            const relay: RelayServerInfo & { isFinal: boolean } = {
+                baseRelayFee,
+                pctRelayFee,
+                url,
+                relayManagerAddress: relayAddr.relayManagerAddress,
+                relayWorkerAddress: relayAddr.relayWorkerAddress,
+                minGasPrice: client.ethers.BigNumber.from(relayAddr.minGasPrice),
+                isFinal: false,
+            };
+
+            // Insert into map already so that the map is ordered by fastest responding relay
+            orderedRelays.set(url, relay);
 
             // Check if this relay has enough balance to cover the fee
             const { chainTokenFee } = calculateFee(
-                baseRelayFee, pctRelayFee, client.ethers.BigNumber.from(relayAddr.minGasPrice));
+                baseRelayFee, pctRelayFee, client.ethers.BigNumber.from(relay.minGasPrice));
             const requiredBalance = chainTokenFee.mul(2);
             // eslint-disable-next-line no-await-in-loop
-            const relayBalance = await client.provider.getBalance(relayAddr.relayWorkerAddress);
+            const relayBalance = await client.provider.getBalance(relay.relayWorkerAddress);
             if (relayBalance.lt(requiredBalance)) {
                 console.debug(
                     'Skipping relay: not enough balance:',
@@ -181,13 +237,14 @@ async function* relayServerRegisterGen(
                     ', required:',
                     requiredBalance.toString(),
                 );
-                continue;
+                orderedRelays.delete(url);
+                return;
             }
 
             // Check if this relay has sent a transaction in the last hours
             const filter = relayHub.filters.TransactionRelayed(
-                relayAddr.relayManagerAddress,
-                relayAddr.relayWorkerAddress,
+                relay.relayManagerAddress,
+                relay.relayWorkerAddress,
             );
             let startBlock = blockHeight;
             const hoursToLookBackwards = config.environment === ENV_MAIN ? 48 : 24;
@@ -207,19 +264,19 @@ async function* relayServerRegisterGen(
             }
             if (startBlock === earliestBlock) { // Found no logs
                 console.debug('Skipping relay: no recent activity');
-                continue;
+                orderedRelays.delete(url);
+                return;
             }
 
-            yield <RelayServerInfo> {
-                baseRelayFee,
-                pctRelayFee,
-                url,
-                relayWorkerAddress: relayAddr.relayWorkerAddress,
-                minGasPrice: client.ethers.BigNumber.from(relayAddr.minGasPrice),
-            };
-
             count += 1;
-            if (count >= MAX_RELAY_SERVERS_TRIES) break;
+
+            // Leave the relay in the map and update its finality
+            relay.isFinal = true;
+        }));
+
+        // Yield the relays that we found so far, fastest first
+        for (const relay of [...orderedRelays.values()]) {
+            if (relay) yield relay as RelayServerInfo;
         }
     }
 }
@@ -260,16 +317,10 @@ type RelayAddr = {
     version: string,
 }
 
-async function getRelayAddr(relayUrl: string) {
+export async function getRelayAddr(relayUrl: string, abortSignal?: AbortSignal) {
     console.debug('Pinging relay server', relayUrl); // eslint-disable-line no-console
-    const { config } = useConfig();
-
-    // Set a 1s timeout
-    const abortController = new AbortController();
-    setTimeout(() => abortController.abort(), config.environment === ENV_MAIN ? 1e3 : 2e3);
-
     const response = await fetch(`${relayUrl}/getaddr`, {
-        signal: abortController.signal,
+        signal: abortSignal,
     }).catch(() => ({ ok: false }));
     if (!response.ok) return false;
     return (response as Response).json() as Promise<RelayAddr>;

@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
 import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -523,7 +523,8 @@ export default defineComponent({
             }
         }
 
-        onMounted(() => {
+        watch(() => [props.leftAsset, props.rightAsset], async () => {
+            await context.root.$nextTick();
             const { offsetLeft } = $separator.value!;
             equiPointPositionX.value = (offsetLeft / root.value!.offsetWidth) * 100;
         });

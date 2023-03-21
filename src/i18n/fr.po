@@ -214,7 +214,7 @@ msgstr "Activer"
 msgid "Activate Bitcoin"
 msgstr "Activer Bitcoin"
 
-#: src/components/modals/UsdcActivationModal.vue:36
+#: src/components/modals/UsdcActivationModal.vue:39
 msgid "Activate USDC"
 msgstr "Activer l'USDC"
 
@@ -471,7 +471,7 @@ msgstr "Bloc #{height}"
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
-#: src/components/modals/UsdcActivationModal.vue:26
+#: src/components/modals/UsdcActivationModal.vue:29
 msgid "blog post"
 msgstr "article de blog"
 
@@ -610,7 +610,7 @@ msgstr "Changer le mot de passe"
 msgid "Change your language setting."
 msgstr "Modifier vos paramètres de langue."
 
-#: src/components/modals/UsdcActivationModal.vue:33
+#: src/components/modals/UsdcActivationModal.vue:36
 msgid "Check the new intro"
 msgstr "Regarder la nouvelle intro"
 
@@ -850,7 +850,7 @@ msgstr "Déconnexion"
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:372
+#: src/components/modals/UsdcSendModal.vue:364
 msgid "Domain does not resolve to a valid address"
 msgstr "Le domaine ne correspond pas à une adresse valide"
 
@@ -917,7 +917,7 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:563
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
@@ -954,8 +954,8 @@ msgstr "Entrez l'adresse du destinataire..."
 #: src/components/layouts/Settings.vue:249
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr ""
-"Saisissez le mot de passe du test que vous souhaitez activer, puis appuyez "
-"sur la touche Entrée."
+"Saisissez le mot de passe du test que vous souhaitez activer et appuyez sur "
+"la touche Entrée."
 
 #: src/components/modals/WelcomeModal.vue:356
 msgid "Enter the wallet"
@@ -1316,7 +1316,7 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:64
 msgid "Infrastructure Redesign"
-msgstr ""
+msgstr "Refonte de l'infrastructure"
 
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
@@ -1775,8 +1775,8 @@ msgid ""
 "Read all about it in this {blog_post} or click below for the new wallet "
 "intro."
 msgstr ""
-"Lisez tout à ce sujet dans ce {blog_post} ou cliquez ci-dessous pour la "
-"présentation du nouveau wallet."
+"Apprenez-en plus à ce sujet dans ce {blog_post} ou cliquez ci-dessous pour "
+"la présentation du nouveau Wallet."
 
 #: src/components/layouts/AddressOverview.vue:152
 #: src/components/MobileActionBar.vue:4
@@ -1909,7 +1909,7 @@ msgstr "Résolution du domaine Unstoppable"
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:562
+#: src/components/modals/UsdcSendModal.vue:561
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -2043,7 +2043,7 @@ msgstr "Envoyez, recevez et stockez du BTC avec votre wallet."
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:558
 msgid "Sending Transaction"
 msgstr "Envoi de la transaction en cours"
 
@@ -2069,11 +2069,11 @@ msgstr "{nim} NIM envoyés"
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
-#: src/components/modals/UsdcSendModal.vue:596
+#: src/components/modals/UsdcSendModal.vue:595
 msgid "Sent {usdc} USDC"
 msgstr "{usdc} USDC envoyés"
 
-#: src/components/modals/UsdcSendModal.vue:592
+#: src/components/modals/UsdcSendModal.vue:591
 msgid "Sent {usdc} USDC to {name}"
 msgstr "{usdc} USDC envoyés à {name}"
 
@@ -2172,7 +2172,7 @@ msgstr "S'inscrire"
 msgid "Simulate EUR payment"
 msgstr "Simuler le paiement en Euro"
 
-#: src/components/modals/UsdcActivationModal.vue:39
+#: src/components/modals/UsdcActivationModal.vue:42
 msgid "Skip"
 msgstr "Passer"
 
@@ -2182,7 +2182,7 @@ msgstr "Ignorer pour l'instant"
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:608
+#: src/components/modals/UsdcSendModal.vue:607
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
@@ -2224,7 +2224,7 @@ msgstr "Réserve de valeur, c'est noté"
 
 #: src/components/modals/WelcomeModal.vue:109
 msgid "Super low fees, super fast payments"
-msgstr "Frais très bas, paiements très rapides"
+msgstr "Frais minimes et paiements très rapides"
 
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
@@ -2670,8 +2670,8 @@ msgid ""
 "Welcome to the updated\n"
 "wallet, now with USDC"
 msgstr ""
-"Bienvenue dans le wallet mis à jour,\n"
-"maintenant avec l'USDC."
+"Bienvenue dans le Wall mis à jour\n"
+"désormais disponible avec l'USDC."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"

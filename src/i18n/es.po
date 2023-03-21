@@ -213,7 +213,7 @@ msgstr "Activar"
 msgid "Activate Bitcoin"
 msgstr "Activar Bitcoin"
 
-#: src/components/modals/UsdcActivationModal.vue:36
+#: src/components/modals/UsdcActivationModal.vue:39
 msgid "Activate USDC"
 msgstr "Activar USDC"
 
@@ -467,7 +467,7 @@ msgstr "Bloque #{height}"
 msgid "Block explorer"
 msgstr "Explorador de Bloques"
 
-#: src/components/modals/UsdcActivationModal.vue:26
+#: src/components/modals/UsdcActivationModal.vue:29
 msgid "blog post"
 msgstr "entrada de blog"
 
@@ -609,7 +609,7 @@ msgstr "Cambiar contraseña"
 msgid "Change your language setting."
 msgstr "Cambiar ajustes de lenguaje."
 
-#: src/components/modals/UsdcActivationModal.vue:33
+#: src/components/modals/UsdcActivationModal.vue:36
 msgid "Check the new intro"
 msgstr "Mira la nueva introducción"
 
@@ -847,7 +847,7 @@ msgstr "Deconectar"
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:372
+#: src/components/modals/UsdcSendModal.vue:364
 msgid "Domain does not resolve to a valid address"
 msgstr "El dominio no se resuelve a una dirección válida"
 
@@ -914,7 +914,7 @@ msgstr "Editar la cantidad de decimales visibles para valores en NIM"
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:563
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Edit transaction"
 msgstr "Editar transacción"
 
@@ -1892,7 +1892,7 @@ msgstr "Resolviendo dominio imparable..."
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:562
+#: src/components/modals/UsdcSendModal.vue:561
 msgid "Retry"
 msgstr "Intente de nuevo"
 
@@ -2024,7 +2024,7 @@ msgstr "Envíe, reciba y almacene BTC en su billetera."
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:558
 msgid "Sending Transaction"
 msgstr "Enviando Transacción"
 
@@ -2050,11 +2050,11 @@ msgstr "Se enviaron {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Se enviaron {nim} NIM a {name}"
 
-#: src/components/modals/UsdcSendModal.vue:596
+#: src/components/modals/UsdcSendModal.vue:595
 msgid "Sent {usdc} USDC"
 msgstr "{usdc} USDC enviados"
 
-#: src/components/modals/UsdcSendModal.vue:592
+#: src/components/modals/UsdcSendModal.vue:591
 msgid "Sent {usdc} USDC to {name}"
 msgstr "{usdc} USDC enviados a {name}"
 
@@ -2153,7 +2153,7 @@ msgstr "Regístrate"
 msgid "Simulate EUR payment"
 msgstr "Simular pago en EUR"
 
-#: src/components/modals/UsdcActivationModal.vue:39
+#: src/components/modals/UsdcActivationModal.vue:42
 msgid "Skip"
 msgstr "Omitir"
 
@@ -2163,7 +2163,7 @@ msgstr "Saltar por ahora"
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:608
+#: src/components/modals/UsdcSendModal.vue:607
 msgid "Something went wrong"
 msgstr "Algo ha salido mal"
 

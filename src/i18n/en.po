@@ -194,7 +194,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:36
+#: src/components/modals/UsdcActivationModal.vue:39
 msgid "Activate USDC"
 msgstr ""
 
@@ -414,7 +414,7 @@ msgstr ""
 msgid "Block explorer"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:26
+#: src/components/modals/UsdcActivationModal.vue:29
 msgid "blog post"
 msgstr ""
 
@@ -543,7 +543,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:33
+#: src/components/modals/UsdcActivationModal.vue:36
 msgid "Check the new intro"
 msgstr ""
 
@@ -772,7 +772,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:85
 #: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:372
+#: src/components/modals/UsdcSendModal.vue:364
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -829,7 +829,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:438
 #: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:563
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Edit transaction"
 msgstr ""
 
@@ -1719,7 +1719,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:562
+#: src/components/modals/UsdcSendModal.vue:561
 msgid "Retry"
 msgstr ""
 
@@ -1845,7 +1845,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:434
 #: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:558
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1871,11 +1871,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:596
+#: src/components/modals/UsdcSendModal.vue:595
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:592
+#: src/components/modals/UsdcSendModal.vue:591
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -1973,7 +1973,7 @@ msgstr ""
 msgid "Simulate EUR payment"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:39
+#: src/components/modals/UsdcActivationModal.vue:42
 msgid "Skip"
 msgstr ""
 
@@ -1983,7 +1983,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:506
 #: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:608
+#: src/components/modals/UsdcSendModal.vue:607
 msgid "Something went wrong"
 msgstr ""
 

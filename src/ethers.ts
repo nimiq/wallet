@@ -177,6 +177,7 @@ function subscribe(addresses: string[]) {
 
 async function transactionListener(from: string, to: string, value: BigNumber, log: TransferEvent) {
     if (!balances.has(from) && !balances.has(to)) return;
+    if (value.isZero()) return; // Ignore address poisoning scam transactions
 
     const { config } = useConfig();
 
@@ -331,10 +332,14 @@ export async function launchPolygon() {
 
                 console.debug(`Querying logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
-                const [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
+                let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
                     client.usdc.queryFilter(filterIncoming, startHeight, endHeight),
                     client.usdc.queryFilter(filterOutgoing, startHeight, endHeight),
                 ]);
+
+                // Ignore address poisoning transactions
+                logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+                logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
 
                 console.debug(`Got ${logsIn.length} incoming logs, ${logsOut.length} outgoing logs` /* , and ${metaTxs.length} meta tx logs` */);
 

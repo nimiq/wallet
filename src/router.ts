@@ -157,22 +157,6 @@ const routes: RouteConfig[] = [{
             name: 'receive-usdc',
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/usdc-activation',
-            components: {
-                modal: UsdcActivationModal,
-            },
-            name: 'usdc-activation',
-            props: { modal: true },
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/usdc-transaction/:hash',
-            components: {
-                modal: UsdcTransactionModal,
-            },
-            name: 'usdc-transaction',
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
-        }, {
             path: '/transaction/:hash',
             components: {
                 modal: TransactionModal,
@@ -265,6 +249,32 @@ const routes: RouteConfig[] = [{
                 modal: BtcSendModal,
             },
             name: 'send-via-btc-uri',
+            props: {
+                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
+            },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/usdc-activation',
+            components: {
+                modal: UsdcActivationModal,
+            },
+            name: 'usdc-activation',
+            props: { modal: true },
+            meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/usdc-transaction/:hash',
+            components: {
+                modal: UsdcTransactionModal,
+            },
+            name: 'usdc-transaction',
+            props: { modal: true },
+            meta: { column: Columns.ADDRESS },
+        }, {
+            path: '/polygon\\::requestUri',
+            components: {
+                modal: UsdcSendModal,
+            },
+            name: 'send-via-polygon-uri',
             props: {
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },

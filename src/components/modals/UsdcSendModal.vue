@@ -33,7 +33,7 @@
                         :allowDomains="true"
                         :allowEthAddresses="true"
                         :allowNimiqAddresses="false"
-                        @paste="(event, text) => parseRequestUri(text, event)"
+                        @paste="(event, text) => parseRequestUri(text)"
                         @address="onAddressEntered"
                         ref="addressInput$"/>
                     <span class="notice"
@@ -489,30 +489,15 @@ export default defineComponent({
             && !!amount.value
             && amount.value <= maxSendableAmount.value);
 
-        function parseRequestUri(uri: string, event?: ClipboardEvent) {
-            uri = uri.replace(`${window.location.origin}/`, '');
-            const parsedRequestLink = parseRequestLink(uri, window.location.origin, true);
-            if (parsedRequestLink) {
-                if (event) {
-                    // Prevent paste event being applied to the recipient label field, that now became focussed.
-                    event.preventDefault();
-                }
-
-                if (parsedRequestLink.recipient) {
-                    const skipRecipientDetails = Boolean(parsedRequestLink.label || parsedRequestLink.amount);
-                    onAddressEntered(parsedRequestLink.recipient, skipRecipientDetails);
-                    if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
-                        recipientWithLabel.value!.label = parsedRequestLink.label;
-                    }
-                }
-
-                if (parsedRequestLink.amount) {
-                    amount.value = parsedRequestLink.amount;
-                }
-
-                // if (parsedRequestLink.message) {
-                //     message.value = parsedRequestLink.message;
-                // }
+        async function parseRequestUri(uri: string) {
+            // For now only plain USDC/Polygon/ETH addresses are supported.
+            // TODO support Polygon-USDC request links and even consider removing scanning of plain addresses
+            //  due to the risk of USDC being sent on the wrong chain.
+            uri = uri.replace(`${window.location.origin}/`, '')
+                .replace('polygon:', '');
+            const { ethers } = await getPolygonClient();
+            if (ethers.utils.isAddress(uri)) {
+                onAddressEntered(uri);
             }
         }
 

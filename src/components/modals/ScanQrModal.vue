@@ -23,13 +23,15 @@ import { useRouter } from '../../router';
 import { parseBitcoinUrl, validateAddress } from '../../lib/BitcoinTransactionUtils';
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
+import { getPolygonClient } from '../../ethers';
 
 export default defineComponent({
     name: 'scan-qr-modal',
     setup() {
         const { config } = useConfig();
         const router = useRouter();
-        const checkResult = async (result: string) => {
+        const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const checkResult = (result: string) => {
             // NIM Address
             if (ValidationUtils.isValidAddress(result)) {
                 router.replace(`/${createNimiqRequestLink(result, {
@@ -75,25 +77,35 @@ export default defineComponent({
                 return;
             }
 
-            const { hasBitcoinAddresses } = useAccountStore();
-            if (hasBitcoinAddresses.value) {
-                await loadBitcoinJS();
+            if (config.enableBitcoin && hasBitcoinAddresses.value) {
+                loadBitcoinJS().then(() => {
+                    // BTC Address
+                    if (validateAddress(result, config.environment === ENV_MAIN ? 'MAIN' : 'TEST')) {
+                        router.replace(`/${createBitcoinRequestLink(result)}`);
+                        return;
+                    }
 
-                // BTC Address
-                if (validateAddress(result, config.environment === ENV_MAIN ? 'MAIN' : 'TEST')) {
-                    router.replace(`/${createBitcoinRequestLink(result)}`);
-                    return;
-                }
+                    // BTC Request Link
+                    try {
+                        parseBitcoinUrl(result);
+                        // If the above does not throw, we have a valid BTC request link
+                        router.replace(`/${result}`);
+                    } catch (error) {
+                        // Ignore
+                    }
+                });
+            }
 
-                // BTC Request Link
-                try {
-                    parseBitcoinUrl(result);
-                    // If the above does not throw, we have a valid BTC request link
-                    router.replace(`/${result}`);
-                    return; // eslint-disable-line no-useless-return
-                } catch (error) {
-                    // Ignore
-                }
+            if (config.usdc.enabled && hasUsdcAddresses.value) {
+                getPolygonClient().then(({ ethers }) => {
+                    // Plain USDC/Polygon/ETH address.
+                    // TODO support Polygon-USDC request links and even consider removing scanning of plain addresses
+                    //  due to the risk of USDC being sent on the wrong chain.
+                    if (ethers.utils.isAddress(result)) {
+                        // Pass normalized address.
+                        router.replace(`/polygon:${ethers.utils.getAddress(result)}`);
+                    }
+                });
             }
         };
 

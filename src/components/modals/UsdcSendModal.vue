@@ -359,15 +359,7 @@ export default defineComponent({
                         getPolygonClient(),
                     ]);
                     if (resolvedAddress && ethers.utils.isAddress(resolvedAddress)) {
-                        const formattedAddress = ethers.utils.getAddress(resolvedAddress);
-                        const label = getLabel.value(formattedAddress);
-                        if (!label) setContact(formattedAddress, domain);
-                        recipientWithLabel.value = {
-                            address: formattedAddress,
-                            label: label || domain,
-                            type: RecipientType.CONTACT,
-                        };
-                        page.value = Pages.AMOUNT_INPUT;
+                        onAddressEntered(resolvedAddress, domain);
                     } else {
                         resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
                     }
@@ -381,13 +373,13 @@ export default defineComponent({
             }
         });
 
-        async function onAddressEntered(address: string, skipRecipientDetails = false) {
+        async function onAddressEntered(address: string, fallbackLabel = '') {
             // Normalize address to checksummed version
             const { ethers } = await getPolygonClient();
             address = ethers.utils.getAddress(address);
 
             // Find label across contacts, own addresses
-            let label = '';
+            let label = fallbackLabel;
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
             // Search other stored addresses
             const ownedAddressInfo = addresses$.addressInfos[address];
@@ -401,16 +393,18 @@ export default defineComponent({
             }
 
             // Search contacts
-            if (getLabel.value(address)) {
-                label = getLabel.value(address)!;
+            const contactLabel = getLabel.value(address);
+            if (contactLabel) {
+                label = contactLabel;
                 type = RecipientType.CONTACT;
             }
 
             recipientWithLabel.value = { address, label, type };
-            if (label || skipRecipientDetails) {
+            if (ownedAddressInfo || contactLabel) {
                 // Go directly to the next screen
                 page.value = Pages.AMOUNT_INPUT;
             } else {
+                // Show recipient details with polygon warnings.
                 recipientDetailsOpened.value = true;
             }
         }

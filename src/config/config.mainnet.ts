@@ -12,7 +12,7 @@ export default {
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes
 
     usdc: {
-        enabled: false,
+        enabled: true,
         networkId: 137,
         rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned

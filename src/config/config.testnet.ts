@@ -12,7 +12,7 @@ export default {
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     usdc: {
-        enabled: false,
+        enabled: true,
         networkId: 80001,
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
         rpcMaxBlockRange: 10_000,

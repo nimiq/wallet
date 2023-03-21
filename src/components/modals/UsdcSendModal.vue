@@ -381,7 +381,11 @@ export default defineComponent({
             }
         });
 
-        function onAddressEntered(address: string, skipRecipientDetails = false) {
+        async function onAddressEntered(address: string, skipRecipientDetails = false) {
+            // Normalize address to checksummed version
+            const { ethers } = await getPolygonClient();
+            address = ethers.utils.getAddress(address);
+
             // Find label across contacts, own addresses
             let label = '';
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default

@@ -17,87 +17,13 @@
                 </CountrySelector>
             </header>
             <div class="featured-options flex-row">
-                <Component :is="isOasisAvailable ? 'router-link' : 'span'"
-                    :to="{ name: 'buy-crypto', query: $route.query }" replace
-                    class="option oasis flex-column"
-                    :class="{disabled: !isOasisAvailable}"
+                <Component :is="isMoonpayAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'moonpay', query: $route.query }" replace
+                    class="option credit-card moonpay flex-column"
+                    :class="{disabled: !isMoonpayAvailable}"
                 >
                     <div class="upper-content flex-column">
-                        <h2 class="nq-h1 flex-row">{{ $t('Bank Transfer') }}</h2>
-
-                        <div class="pill flex-row">
-                            <!-- eslint-disable max-len -->
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="14" height="14" fill="currentColor">
-                                <path d="M1.34 5.44l.86-.61.86.62-.33-1.01.85-.64H2.53L2.2 2.79l-.32 1.02H.81l.86.63zM3.33 3.43l.85-.63.86.63-.33-1.02.86-.63H4.51L4.18.77l-.33 1.01H2.79l.86.63zM6.14 2.66L7 2.03l.46.34.4.31-.33-1.03.86-.64H7.32L7 0l-.33 1.02H5.61l.86.63zM8.93 3.42l.86-.62.86.64-.33-1.03.46-.33.38-.3h-1.04L9.79.77l-.33 1.01H8.4l.85.63zM11.3 4.48l-.32 1.02.86-.63.86.64-.33-1.03.86-.63h-1.06l-.33-1.01-.33 1.01h-1.06zM14 6.69h-1.08l-.32-1.02-.33 1.02H11.2l.87.63-.33 1.02.86-.63.46.33.4.31-.33-1.03zM12.16 9.54l-.32-1.03-.33 1.03h-1.06l.85.63-.32 1 .86-.62.85.64-.32-1.03.87-.62zM10.11 11.58l-.32-1.01-.33 1.01H8.4l.85.64-.32 1 .86-.62.85.63-.33-1.02.87-.63zM7.34 12.34l-.33-1.01-.33 1.01H5.62l.85.63-.32 1.01.86-.63.87.65-.34-1.03.85-.63zM4.51 11.57l-.32-1.02-.33 1.02H2.8l.86.63-.32 1 .24-.17.61-.44.86.63-.33-1.02.86-.63zM2.71 10.15l.87-.63H2.5l-.32-1.01-.33 1.01H.79l.86.63-.33 1.02.86-.63.86.63zM1.41 7.67l.86.64-.32-1.04.85-.63H1.74l-.33-1.02-.33 1.02H0l.87.63-.33 1.02z"/>
-                            </svg>
-                            <!-- eslint-enable max-len -->
-                            {{ $t('SEPA Instant only') }}
-                        </div>
-
-                        <p class="nq-text">
-                            {{ $t('No registration – not even email.') }}
-                        </p>
-                    </div>
-
-                    <div class="lower-content flex-column">
-                        <div class="fees">
-                            <span class="percentage flex-row">
-                                1.25%
-                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
-                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
-                                </svg>
-                                <i18n path="min {amount}" tag="span">
-                                    <FiatAmount slot="amount" :amount="$config.oasis.minFee" currency="eur"/>
-                                </i18n>
-                            </span>
-                            {{ $t('+ network fees') }}
-                        </div>
-
-                        <footer v-if="isOasisAvailable" class="flex-row">
-                            <FlameIcon/>
-                            {{ $t('Innovation\nby Nimiq') }}
-                            <div class="flex-grow"></div>
-                            <CaretRightIcon/>
-                        </footer>
-                        <footer v-else-if="$config.oasis.underMaintenance && !isInOasis2Trial" class="flex-row">
-                            <MaintenanceIcon/>
-                            {{ $t('Infrastructure Redesign') }}
-                        </footer>
-                        <footer v-else-if="!canUseSwaps" class="flex-row">
-                            <ForbiddenIcon/>
-                            {{ $t('Not available in your browser') }}
-                            <div class="flex-grow"></div>
-                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                {{ $t('Your browser does not support Keyguard popups, '
-                                    + 'or they are disabled in the Settings.') }}
-                            </Tooltip>
-                        </footer>
-                        <footer v-else class="flex-row">
-                            <ForbiddenIcon/>
-                            {{ $t('Not available in your country') }}
-                            <div class="flex-grow"></div>
-                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                {{ $t('Bank Transfer is only supported in the EU’s SEPA area.') }}
-                                <!-- {{ $t('Bank Transfer is only supported in the EU’s SEPA area, '
-                                    + 'or in Central Americas SIMPE Banks.') }} -->
-                                <!-- <p class="explainer">
-                                    {{ $t('If you have contacts to a banking partner in your country, '
-                                        + 'check out our application form')}}
-                                </p> -->
-                            </Tooltip>
-                        </footer>
-                    </div>
-                </Component>
-
-                <Component :is="isCreditCardAvailable ? 'router-link' : 'span'"
-                    :to="{ name: isMoonpayAvailable ? 'moonpay' : 'simplex', query: $route.query }" replace
-                    class="option credit-card flex-column"
-                    :class="{disabled: !isCreditCardAvailable}"
-                >
-                    <div class="upper-content flex-column">
-                        <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
+                        <h2 class="nq-h1 flex-row">Moonpay</h2>
 
                         <p class="nq-text">
                             {{ $t('Full KYC required, high availability.') }}
@@ -106,7 +32,7 @@
 
                     <div class="lower-content flex-column">
                         <div class="fees">
-                            <span v-if="isMoonpayAvailable" class="percentage flex-row">
+                            <span class="percentage flex-row">
                                 4.5%
                                 <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
                                     <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
@@ -120,7 +46,36 @@
                                     />
                                 </i18n>
                             </span>
-                            <span v-else-if="isSimplexAvailable" class="percentage flex-row">
+                            {{ $t('+ network fees') }}
+                        </div>
+
+                        <footer v-if="isMoonpayAvailable" class="moonpay flex-row">
+                            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay">
+                            <CaretRightIcon/>
+                        </footer>
+                        <footer v-else class="flex-row">
+                            <ForbiddenIcon/>
+                            {{ $t('Not available in your country') }}
+                        </footer>
+                    </div>
+                </Component>
+
+                <Component :is="isSimplexAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'simplex', query: $route.query }" replace
+                    class="option credit-card simplex flex-column"
+                    :class="{disabled: !isSimplexAvailable}"
+                >
+                    <div class="upper-content flex-column">
+                        <h2 class="nq-h1 flex-row">Simplex</h2>
+
+                        <p class="nq-text">
+                            {{ $t('Full KYC required, high availability.') }}
+                        </p>
+                    </div>
+
+                    <div class="lower-content flex-column">
+                        <div class="fees">
+                            <span class="percentage flex-row">
                                 ~8%
                                 <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
                                     <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
@@ -132,12 +87,8 @@
                             {{ $t('+ network fees') }}
                         </div>
 
-                        <footer v-if="isMoonpayAvailable" class="moonpay flex-row">
-                            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay">
-                            <CaretRightIcon/>
-                        </footer>
-                        <footer v-else-if="isSimplexAvailable" class="simplex flex-row">
-                            <img src="../../assets/exchanges/simplex-full.png" alt="Simplex">
+                        <footer v-if="isSimplexAvailable" class="simplex flex-row">
+                            <img src="../../assets/exchanges/simplex-full.svg" alt="Simplex">
                             <CaretRightIcon/>
                         </footer>
                         <footer v-else class="flex-row">
@@ -423,14 +374,21 @@ header {
         }
     }
 
-    &.credit-card {
-        background-color: var(--nimiq-light-blue);
-        background-image: var(--nimiq-light-blue-bg);
+    &.moonpay {
+        background-color: #7D00FF;
 
         &::before {
             position: absolute;
-            background-color: var(--nimiq-light-blue-darkened);
-            background-image: var(--nimiq-light-blue-bg-darkened);
+            background-color: #6400CC;
+        }
+    }
+
+    &.simplex {
+        background-color: #081F2C;
+
+        &::before {
+            position: absolute;
+            background-color: #000101;
         }
     }
 
@@ -503,7 +461,7 @@ header {
             }
         }
 
-        > svg:last-child {
+        > svg.caret-right {
             color: rgba(255, 255, 255, 0.6);
             flex-shrink: 0;
             margin-left: 0.5rem;
@@ -514,7 +472,7 @@ header {
 
     &:hover,
     &:focus {
-        footer > svg:last-child {
+        footer > svg.caret-right {
             color: rgba(255, 255, 255, 0.8);
             transform: translateX(0.25rem);
         }
@@ -551,13 +509,11 @@ header {
 
         &.moonpay img {
             margin-top: -0.75rem;
-            opacity: 0.6;
             filter: invert(100%); // Black logo into white
         }
 
         &.simplex img {
-            opacity: 0.7;
-            filter: brightness(0) invert(1);; // Colored logo into white
+            margin-bottom: -0.75rem;
         }
     }
 }

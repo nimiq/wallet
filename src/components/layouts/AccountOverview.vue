@@ -60,8 +60,14 @@
 
                 <Tooltip class="nim-btc-swap-button" ref="nimBtcSwapTooltip$" :container="this" preferredPosition="top"
                     v-if="hasBitcoinAddresses && $config.enableBitcoin
-                        && (nimAccountBalance > 0 || btcAccountBalance > 0)">
-                    <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-BTC')">
+                        && (nimAccountBalance > 0 || btcAccountBalance > 0)"
+                    noFocus>
+                    <button class="reset" slot="trigger"
+                        @pointerdown="onSwapButtonPointerDown($event, 'NIM-BTC')"
+                        @keydown.space.enter="$router.push('/swap/NIM-BTC')"
+                        @focus="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.show()"
+                        @blur="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.hide()"
+                    >
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
                     <i18n path="Swap NIM {arrowIcon} BTC">
@@ -73,8 +79,14 @@
                     preferredPosition="top"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasUsdcAddresses && $config.usdc.enabled
-                        && (nimAccountBalance > 0 || usdcAccountBalance > 0)">
-                    <button class="reset" slot="trigger" @click="$router.push('/swap/NIM-USDC')">
+                        && (nimAccountBalance > 0 || usdcAccountBalance > 0)"
+                    noFocus>
+                    <button class="reset" slot="trigger"
+                        @pointerdown="onSwapButtonPointerDown($event, 'NIM-USDC')"
+                        @keydown.space.enter="$router.push('/swap/NIM-USDC')"
+                        @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
+                        @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
+                    >
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
                     <i18n path="Swap NIM {arrowIcon} USDC">
@@ -118,8 +130,14 @@
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && hasUsdcAddresses
                         && $config.enableBitcoin && $config.usdc.enabled
-                        && (btcAccountBalance > 0 || usdcAccountBalance > 0)">
-                    <button class="reset" slot="trigger" @click="$router.push('/swap/BTC-USDC')">
+                        && (btcAccountBalance > 0 || usdcAccountBalance > 0)"
+                    noFocus>
+                    <button class="reset" slot="trigger"
+                        @pointerdown="onSwapButtonPointerDown($event, 'BTC-USDC')"
+                        @keydown.space.enter="$router.push('/swap/BTC-USDC')"
+                        @focus="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.show()"
+                        @blur="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.hide()"
+                    >
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
                     <i18n path="Swap BTC {arrowIcon} USDC">
@@ -258,6 +276,7 @@ import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
+import router from '../../router';
 
 export default defineComponent({
     name: 'account-overview',
@@ -420,6 +439,15 @@ export default defineComponent({
             return { bottom };
         });
 
+        let timeoutid: any;
+        function onSwapButtonPointerDown(event: TouchEvent, route: string) {
+            clearTimeout(timeoutid);
+            router.push(`/swap/${route}`);
+            timeoutid = setTimeout(() => {
+                ((event.target! as HTMLElement).parentNode as HTMLElement).focus();
+            }, 100);
+        }
+
         return {
             activeAccountInfo,
             AccountType,
@@ -451,6 +479,7 @@ export default defineComponent({
             btcUsdcSwapTooltip$,
             accountBgPosition,
             nimAccountBgCutouts,
+            onSwapButtonPointerDown,
         };
     },
     components: {
@@ -882,6 +911,7 @@ export default defineComponent({
 .nim-usdc-swap-button,
 .nim-btc-swap-button,
 .btc-usdc-swap-button {
+    ::v-deep .trigger { pointer-events: none }
     button {
         --size: 3rem;
         --transition-duration: 200ms;
@@ -898,12 +928,17 @@ export default defineComponent({
         display: flex;
         justify-content: center;
         align-items: center;
+        pointer-events: all;
 
         transition: {
             property: height, width;
             duration: var(--transition-duration);
             timing-function: var(--nimiq-ease);
         };
+
+        * {
+            pointer-events: none;
+        }
     }
 
     .inner-circle {

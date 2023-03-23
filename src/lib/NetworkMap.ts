@@ -1,6 +1,7 @@
 import bitmap from '../data/NetworkBitMap';
 import { useGeoIp, GeoIpResponse } from '../composables/useGeoIp';
 import RobinsonProjection from './RobinsonProjection';
+import { Peer } from '../stores/Network';
 
 /** how long the tangent to the control point is in relation to the distance between the two points */
 const CURVINESS_FACTOR = .2;
@@ -50,10 +51,10 @@ enum NodeType {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace NodeType {
     // eslint-disable-next-line no-inner-declarations
-    export function fromServices(features: string[]) {
-        if (features.includes('BLOCK_HISTORY')) return NodeType.FULL_NODE;
-        if (features.includes('MEMPOOL')) return NodeType.LIGHT_NODE;
-        return NodeType.BROWSER;
+    export function fromType(type: string) {
+        if (type === 'history') return NodeType.FULL_NODE;
+        if (type === 'full') return NodeType.FULL_NODE;
+        return NodeType.LIGHT_NODE;
     }
 }
 
@@ -62,7 +63,7 @@ export { NodeType };
 /**
  * the PlainAddressInfo returned from the network, augmented with its asociated hexagon
  */
-type PlainAddressInfo = ReturnType<Nimiq.Client.AddressInfo['toPlain']>;
+type PlainAddressInfo = Peer;
 export type Node = PlainAddressInfo & {
     hexagon: NodeHexagon,
     type: NodeType,
@@ -396,7 +397,7 @@ export class NodeHexagon extends Hexagon {
 }
 
 export default class NetworkMap {
-    private _nodes: Map<string, Node> = new Map();
+    private _nodes = new Map<string, Node>();
     private _hexagons: Hexagon[] = [];
     private _self: SelfHexagon | null = null;
     private _nodeHexagons: Map<number, Map<number, NodeHexagon>> = new Map();
@@ -452,11 +453,9 @@ export default class NetworkMap {
                 const selfHexagon = new NodeHexagon(selfPosition.x, selfPosition.y);
                 selfHexagon.addNode({
                     connected: false,
-                    banned: false,
                     peerId: '',
-                    peerAddress: '',
-                    services: [],
-                    netAddress: null,
+                    multiAddress: '',
+                    nodeType: 'light',
                     hexagon: selfHexagon,
                     locationData: {
                         country: response.country,
@@ -524,7 +523,7 @@ export default class NetworkMap {
 
                         const node: Node = Object.assign(nodeAddressInfo, {
                             hexagon,
-                            type: NodeType.fromServices(nodeAddressInfo.services),
+                            type: NodeType.fromType(nodeAddressInfo.nodeType),
                             locationData: {},
                             host: this._getPeerHost(nodeAddressInfo),
                         });
@@ -562,34 +561,26 @@ export default class NetworkMap {
      * 2. Hostname for WS and WSS peers if available (not 0.0.0.0)
      * 3. IP if available
      */
-    private _getPeerLocator(addressInfo: PlainAddressInfo) {
-        if (addressInfo.netAddress && addressInfo.netAddress.reliable) {
-            return this._ipToString(addressInfo.netAddress.ip);
-        }
-
-        const { hostname } = new URL(addressInfo.peerAddress);
-        if (hostname && hostname !== '0.0.0.0') {
-            return hostname;
-        }
-
-        if (addressInfo.netAddress) {
-            return this._ipToString(addressInfo.netAddress.ip);
+    private _getPeerLocator(addressInfo: PlainAddressInfo) { // eslint-disable-line class-methods-use-this
+        const locator = addressInfo.multiAddress.split('/')[2];
+        if (locator && locator !== '0.0.0.0') {
+            return locator;
         }
 
         return null;
     }
 
-    private _ipToString(ip: Uint8Array) { // eslint-disable-line class-methods-use-this
-        return Array.from(ip).join('.');
-    }
-
     private _getPeerHost(addressInfo: PlainAddressInfo) { // eslint-disable-line class-methods-use-this
-        const { hostname } = new URL(addressInfo.peerAddress);
-        if (hostname && !/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(hostname)) {
-            return hostname;
+        const locator = this._getPeerLocator(addressInfo);
+        if (locator && !this._isIp(locator)) {
+            return locator;
         }
 
         return undefined;
+    }
+
+    private _isIp(locator: string) { // eslint-disable-line class-methods-use-this
+        return /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(locator) || locator.includes(':');
     }
 
     /**

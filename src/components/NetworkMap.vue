@@ -27,7 +27,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-// import { /* getNetworkClient, */ onPeersUpdated, offPeersUpdated } from '../network';
+import { useNetworkStore } from '../stores/Network';
 import NetworkMap, {
     NodeHexagon,
     NETWORK_MAP_WIDTH,
@@ -68,46 +68,22 @@ export default defineComponent({
             }
         };
 
-        let updateKnownAddresses: () => Promise<void>;
-
         onMounted(async () => {
-            // const client = await getNetworkClient();
-
             const networkMap = new NetworkMap($network.value!, $overlay.value!, (n) => nodes.value = n);
 
-            let askForAddressesTimeout = 0;
+            const { state: network$ } = useNetworkStore();
 
-            updateKnownAddresses = async () => {
-                if (!askForAddressesTimeout) {
-                    askForAddressesTimeout = window.setTimeout(async () => {
-                        // const peerAddressInfos = await client.network.getAddresses();
-                        // const newKnownAddresses = peerAddressInfos.map((addressInfo) => addressInfo.toPlain());
-                        const newKnownAddresses = [{
-                            peerAddress: new URL(context.root.$config.networkEndpoint).origin,
-                            peerId: '',
-                            services: [],
-                            netAddress: null,
-                            banned: false,
-                            connected: true,
-                        }];
-                        if (networkMap.updateNodes(newKnownAddresses)) {
-                            networkMap.draw();
-                        }
-                        askForAddressesTimeout = 0;
-                    }, 500);
+            watch(() => network$.peers, (peers) => {
+                if (networkMap.updateNodes(Object.values(peers))) {
+                    networkMap.draw();
                 }
-            };
-
-            // onPeersUpdated(updateKnownAddresses);
-
-            updateKnownAddresses();
+            });
 
             window.addEventListener('resize', setDimensions);
             requestAnimationFrame(() => setDimensions()); // use requestAnimationFrame to not cause forced layouting
         });
 
         onUnmounted(() => {
-            // offPeersUpdated(updateKnownAddresses);
             window.removeEventListener('resize', setDimensions);
         });
 

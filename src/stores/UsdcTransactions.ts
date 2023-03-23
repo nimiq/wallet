@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
+import { bytesToHex, hexToBytes } from '@nimiq/electrum-client';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
@@ -81,7 +82,7 @@ export const useUsdcTransactionsStore = createStore({
     actions: {
         // Note: this method should not be async to avoid race conditions between parallel calls. Otherwise an older
         // transaction can overwrite its updated version.
-        addTransactions(txs: Transaction[]) {
+        async addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
             // re-apply original timestamp and known fiatValue
@@ -179,7 +180,14 @@ export const useUsdcTransactionsStore = createStore({
                     // HTLC Settlement
                     if (tx.event?.name === 'Redeem') {
                         const secret = tx.event.secret.substring(2);
-                        const hashRoot = Nimiq.Hash.sha256(Nimiq.BufferUtils.fromHex(secret)).toHex();
+                        const hashRoot = bytesToHex(
+                            new Uint8Array(
+                                await crypto.subtle.digest( // eslint-disable-line no-await-in-loop
+                                    'SHA-256',
+                                    hexToBytes(secret),
+                                ),
+                            ),
+                        );
                         useSwapsStore().addSettlementData(hashRoot, {
                             asset: SwapAsset.USDC,
                             transactionHash: tx.transactionHash,

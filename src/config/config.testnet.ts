@@ -6,8 +6,7 @@ import { ENV_TEST } from '../lib/Constants';
 export default {
     hubEndpoint: process.env.VUE_APP_HUB_URL,
     environment: ENV_TEST,
-    nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
-    networkEndpoint: process.env.VUE_APP_RPC_URL,
+    nimiqSeeds: [process.env.VUE_APP_SEED_NODE_MULTIADDR],
     faucetEndpoint: process.env.VUE_APP_FAUCET_URL,
     reportToSentry: false,
     enableBitcoin: false,

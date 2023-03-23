@@ -5,7 +5,7 @@
         @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
         :key="`tx-${transaction.transactionHash}`"
     >
-        <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
+        <div v-if="state === TransactionState.INCLUDED || state === TransactionState.CONFIRMED" class="date">
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
         </div>
@@ -272,7 +272,7 @@ export default defineComponent({
 
         // Date
         const { language } = useSettingsStore();
-        const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));
+        const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp));
         const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
         const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
         const dateMonth = computed(() => date.value && monthFormatter.value

@@ -179,7 +179,7 @@
                 <Amount :amount="transaction.value" class="transaction-value" :class="{
                     isIncoming,
                     'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
-                    'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
+                    'nq-green': (state === TransactionState.INCLUDED || state === TransactionState.CONFIRMED)
                         && isIncoming,
                 }" value-mask/>
 
@@ -599,7 +599,7 @@ export default defineComponent({
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
         // Date
-        const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
+        const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp));
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);

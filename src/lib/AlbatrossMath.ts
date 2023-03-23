@@ -1,13 +1,19 @@
 /* eslint-disable no-console */
 
-const ALBATROSS_GENESIS_DATE = new Date('2022-07-13T00:00:00.000Z');
+const ALBATROSS_GENESIS_DATE = new Date('2023-03-22T00:00:00.000Z');
 
-export function calculateReward(fee: number, currentlyStaked: number) {
+// Nimiq 1.0 mainnet block
+const MAINNET_REFERENCE_BLOCK = {
+    height: 2585832,
+    time: new Date('2023-03-23T16:36:39Z').getTime(),
+};
+
+export async function calculateReward(fee: number, currentlyStaked: number) {
     // The values here represent a trade-off between the actual values in the devnet and real-life values
     // that show a better picture of how staking will look after the mainnet switch.
 
     // This is a real-life number
-    const supplyAtGenesis = supply1At(blockHeightAt(ALBATROSS_GENESIS_DATE));
+    const supplyAtGenesis = supply1At(await blockHeightAt(ALBATROSS_GENESIS_DATE));
 
     // This is a real-life number
     const currentSupply = supply2At(
@@ -129,11 +135,6 @@ function _blockRewardAt(currentSupply: number, blockHeight: number) {
     return (remaining - remainder) / EMISSION_SPEED;
 }
 
-const referenceBlock = {
-    height: 2200024,
-    time: new Date('2022-06-27T11:10:44Z').getTime(),
-};
-
-function blockHeightAt(date: Date): number {
-    return referenceBlock.height + ((date.getTime() - referenceBlock.time) / (60 * 1000));
+async function blockHeightAt(date: Date): Promise<number> {
+    return MAINNET_REFERENCE_BLOCK.height + ((date.getTime() - MAINNET_REFERENCE_BLOCK.time) / (60 * 1000));
 }

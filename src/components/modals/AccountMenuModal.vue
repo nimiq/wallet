@@ -1,5 +1,5 @@
 <template>
-    <Modal class="account-menu-modal menu">
+    <Modal class="account-menu-modal menu" :class="{'value-masked': amountsHidden}">
         <div v-if="activeAccountId && activeAccountInfo" class="current-account">
             <AccountMenuItem :id="activeAccountId"/>
             <button v-if="canExportFile" class="item reset flex-row"
@@ -64,6 +64,7 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import ChangePasswordIcon from '../icons/AccountMenu/ChangePasswordIcon.vue';
 import LogoutArrowIcon from '../icons/AccountMenu/LogoutArrowIcon.vue';
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { useSettingsStore } from '../../stores/Settings';
 import { backup, rename, changePassword, logout, onboard } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
@@ -92,6 +93,8 @@ export default defineComponent({
             }
         }
 
+        const { amountsHidden } = useSettingsStore();
+
         return {
             otherAccountIds,
             activeAccountInfo,
@@ -105,6 +108,7 @@ export default defineComponent({
             logout,
             onboard,
             onAccountSelected,
+            amountsHidden,
         };
     },
     components: {

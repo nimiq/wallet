@@ -10,13 +10,13 @@ export const ENV_MAIN = 'main';
 export const ENV_TEST = 'test';
 export const ENV_DEV = 'dev';
 
-export const MAINNET_ORIGIN = 'https://wallet.nimiq.com';
-export const TESTNET_ORIGIN = window.location.hostname === 'localhost' || window.location.hostname === 'bs-local.com'
-    ? `${window.location.protocol}//${window.location.hostname}:8081`
-    : 'https://wallet.nimiq-testnet.com';
-export const DEVNET_ORIGIN = window.location.hostname === 'localhost'
-    ? 'http://localhost:8082'
-    : process.env.VUE_APP_HUB_URL!.replace('hub', 'wallet');
+// export const MAINNET_ORIGIN = 'https://wallet.nimiq.com';//
+// export const TESTNET_ORIGIN = window.location.hostname === 'localhost' || window.location.hostname === 'bs-local.com'
+//     ? `${window.location.protocol}//${window.location.hostname}:8081`
+//     : 'https://wallet.nimiq-testnet.com';
+// export const DEVNET_ORIGIN = window.location.hostname === 'localhost'
+//     ? 'http://localhost:8082'
+//     : process.env.VUE_APP_HUB_URL!.replace('hub', 'wallet');
 
 // Manually curated list of fiat currencies to offer in the Wallet. Arguably somewhat arbitrary.
 export const FIAT_CURRENCIES_OFFERED = ([

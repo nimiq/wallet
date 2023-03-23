@@ -50,21 +50,21 @@ export async function exportTransactions(
     // Get receipts from block explorer and compare if we have all transactions
     type Receipt = { block_height: number, hash: string }; // eslint-disable-line camelcase
     const receiptsByAddress: Record<string, Receipt[]> = {};
-    for (const address of nimAddresses) {
-        for (let i = 0; i <= 4; i++) {
-            // Wait 1 second more for each retry, starting at 0 seconds, up to 4 seconds
-            await new Promise((res) => { window.setTimeout(res, 1000 * i); });
-            // nimiq.watch is on adblocker lists, so use nimiqwatch.com to avoid getting blocked
-            const apiUrl = `https://${useConfig().config.environment === ENV_MAIN ? '' : 'test-'}api.nimiqwatch.com`;
-            const receipts = await fetch(`${apiUrl}/account-receipts/${address}/${year}`)
-                .then((res) => res.json() as Promise<Receipt[]>)
-                .catch(() => undefined);
-            if (!receipts) continue;
+    // for (const address of nimAddresses) { // TODO
+    //     for (let i = 0; i <= 4; i++) {
+    //         // Wait 1 second more for each retry, starting at 0 seconds, up to 4 seconds
+    //         await new Promise((res) => { window.setTimeout(res, 1000 * i); });
+    //         // nimiq.watch is on adblocker lists, so use nimiqwatch.com to avoid getting blocked
+    //         const apiUrl = `https://${useConfig().config.environment === ENV_MAIN ? '' : 'test-'}api.nimiqwatch.com`;
+    //         const receipts = await fetch(`${apiUrl}/account-receipts/${address}/${year}`)
+    //             .then((res) => res.json() as Promise<Receipt[]>)
+    //             .catch(() => undefined);
+    //         if (!receipts) continue;
 
-            receiptsByAddress[address] = receipts;
-            break;
-        }
-    }
+    //         receiptsByAddress[address] = receipts;
+    //         break;
+    //     }
+    // }
     const presentTxHashes = new Set(nimTransactions.map((tx) => tx.transactionHash));
     const missingTxHashes = new Set<string>();
     for (const receipts of Object.values(receiptsByAddress)) {
@@ -78,7 +78,7 @@ export async function exportTransactions(
         shimAllSettled();
         const newTxs: Transaction[] = [];
         await Promise.allSettled([...missingTxHashes.values()].map(async (hash) => {
-            newTxs.push((await client.getTransaction(hash)).toPlain());
+            newTxs.push(await client.getTransaction(hash));
         }));
         addTransactions(newTxs);
 

@@ -1,3 +1,4 @@
+import type { PlainTransactionDetails } from '@nimiq/core-web';
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
@@ -9,18 +10,16 @@ import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/P
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 import { AddressInfo, useAddressStore } from './Address';
-import { Transaction as AlbatrossTransaction } from '../albatross';
 
-export type Transaction = ReturnType<AlbatrossTransaction['toPlain']> & {
+export type Transaction = PlainTransactionDetails & {
     fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
     relatedTransactionHash?: string,
 };
 
-// Copied from Nimiq.Client.TransactionState so we don't have to import the Core library to use the enum as values.
 export enum TransactionState {
     NEW = 'new',
     PENDING = 'pending',
-    MINED = 'mined',
+    INCLUDED = 'included',
     INVALIDATED = 'invalidated',
     EXPIRED = 'expired',
     CONFIRMED = 'confirmed',
@@ -166,7 +165,7 @@ export const useTransactionsStore = createStore({
                 // which also don't get updated minutely and might not include the newest rates yet. If the user time is
                 // not set correctly, this will gracefully fall back to fetching rates for new transactions as historic
                 // exchange rates; old transactions at the user's system's time might be interpreted as current though.
-                const isNewTransaction = Math.abs(tx.timestamp * 1000 - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
+                const isNewTransaction = Math.abs(tx.timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
                 if (isNewTransaction && currentRate) {
                     // Set via Vue.set to let vue handle reactivity.
                     // TODO this might be not necessary anymore with Vue3, also for the other Vue.sets in this file.
@@ -191,7 +190,7 @@ export const useTransactionsStore = createStore({
                 );
 
                 for (let tx of historicTransactions) {
-                    const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
+                    const exchangeRate = historicExchangeRates.get(tx.timestamp);
                     // Get the newest transaction from the store in case it was updated via setRelatedTransaction.
                     tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
                     Vue.set(tx.fiatValue!, historyFiatCurrency, exchangeRate !== undefined

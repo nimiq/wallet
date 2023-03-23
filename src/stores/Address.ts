@@ -12,6 +12,7 @@ export enum AddressType {
     BASIC = 0,
     VESTING = 1,
     HTLC = 2,
+    STAKING = 3,
 }
 
 export type AddressInfo = {

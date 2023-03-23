@@ -14,7 +14,7 @@ export default {
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
     usdc: {
-        enabled: true,
+        enabled: false,
         networkId: 80001,
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
         rpcMaxBlockRange: 10_000,
@@ -64,7 +64,7 @@ export default {
     },
 
     ten31Pass: {
-        enabled: true,
+        enabled: false,
         apiEndpoint: window.sessionStorage['use-local-kyc-server'] // switch that can be set to use local kyc server
             // Note that locally signed grants are not actually eligible for higher limits on the deployed Fastspot and
             // OASIS test instances because they don't exist in the deployed TEN31 Pass's database.

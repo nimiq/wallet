@@ -10,11 +10,11 @@ export default {
     networkEndpoint: process.env.VUE_APP_RPC_URL,
     faucetEndpoint: process.env.VUE_APP_FAUCET_URL,
     reportToSentry: false,
-    enableBitcoin: true,
+    enableBitcoin: false,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     usdc: {
-        enabled: true,
+        enabled: false,
         networkId: 80001,
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
         rpcMaxBlockRange: 10_000,

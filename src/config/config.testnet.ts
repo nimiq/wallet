@@ -10,11 +10,11 @@ export default {
     networkEndpoint: process.env.VUE_APP_RPC_URL,
     faucetEndpoint: process.env.VUE_APP_FAUCET_URL,
     reportToSentry: false,
-    enableBitcoin: true,
+    enableBitcoin: false,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     usdc: {
-        enabled: true,
+        enabled: false,
         networkId: 80001,
         rpcEndpoint: 'wss://polygon-mumbai.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned

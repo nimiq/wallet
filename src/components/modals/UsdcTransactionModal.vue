@@ -33,7 +33,7 @@
                 <template v-else v-slot:address>{{ swapData.asset.toUpperCase() }}</template>
             </i18n>
 
-            <i18n v-if="isIncoming" path="Transaction from {address}" :tag="false">
+            <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
                     <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>

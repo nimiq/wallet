@@ -24,11 +24,11 @@ export default defineComponent({
         let action: string | (() => LocaleMessage) | (() => void) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
-        text = () => context.root.$t('Hi there! You are seeing a very early preview of the Wallet for the Albatross '
-            + 'Community Devnet. Things are missing and things will change until Albatross launch!');
+        text = () => context.root.$t('Hi there! You are seeing a preview of the Wallet for the Albatross '
+            + 'Testnet.');
         cta = () => context.root.$t('Start exploring');
         action = () => close();
-        storageKey = 'start-staking-1';
+        storageKey = 'start-staking-2';
 
         const wasDismissed = ref(window.localStorage.getItem(STORAGE_KEY) === storageKey);
 

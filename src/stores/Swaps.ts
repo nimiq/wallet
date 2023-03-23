@@ -1,3 +1,4 @@
+import type { PlainTransactionDetails } from '@nimiq/core-web';
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
@@ -96,12 +97,12 @@ export type ActiveSwap = SwapObject & {
     settlementAuthorizationToken?: string,
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
-    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
+    remoteFundingTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc
         | PolygonTransaction,
-    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
+    fundingTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc
         | PolygonTransaction,
     secret?: string,
-    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
+    settlementTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc
         | PolygonTransaction,
     error?: string,
 }

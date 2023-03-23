@@ -94,6 +94,9 @@ module.exports = {
             // after e.g. i18n optimization.
             realContentHash: true,
         },
+        experiments: {
+            asyncWebAssembly: true,
+        },
     },
     chainWebpack(config) {
         config

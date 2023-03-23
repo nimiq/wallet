@@ -64,8 +64,6 @@ function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | 
 const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
-    const { config } = useConfig();
-
     // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
     // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
     // listed in the Hub iframe cookie).

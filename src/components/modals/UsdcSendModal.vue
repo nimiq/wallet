@@ -234,7 +234,7 @@
 </template>
 
 <script lang="ts">
-import { CurrencyInfo, parseRequestLink } from '@nimiq/utils';
+import { CurrencyInfo } from '@nimiq/utils';
 import {
     AddressDisplay,
     AddressInput,

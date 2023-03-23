@@ -5,7 +5,7 @@
         @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
         :key="`tx-${transaction.transactionHash}`"
     >
-        <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
+        <div v-if="state === TransactionState.INCLUDED || state === TransactionState.CONFIRMED" class="date">
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
         </div>

@@ -6,8 +6,7 @@ import { ENV_MAIN } from '../lib/Constants';
 export default {
     hubEndpoint: 'https://hub.nimiq.com',
     environment: ENV_MAIN,
-    nimiqScript: 'https://cdn.nimiq.com/v1.5.8/web.js',
-    networkEndpoint: '',
+    nimiqSeeds: [],
     faucetEndpoint: '',
     reportToSentry: false,
     enableBitcoin: true,

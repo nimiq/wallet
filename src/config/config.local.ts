@@ -6,8 +6,7 @@ import { ENV_DEV } from '../lib/Constants';
 export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
-    nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
-    networkEndpoint: 'https://seed1.v2.nimiq-testnet.com:8648/ws?secret=Chei2Agh2obo5each1shuopop',
+    nimiqSeeds: ['/dns4/seed1.v2.nimiq-testnet.com/tcp/8443/ws'],
     faucetEndpoint: 'https://faucet.v2.nimiq-testnet.com',
     reportToSentry: false,
     enableBitcoin: false,

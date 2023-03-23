@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { bytesToHex, hexToBytes } from '@nimiq/electrum-client';
 import { createStore } from 'pinia';
 import config from 'config';
 import { useFiatStore } from './Fiat';
@@ -92,7 +93,7 @@ export const useUsdcTransactionsStore = createStore({
     actions: {
         // Note: this method should not be async to avoid race conditions between parallel calls. Otherwise an older
         // transaction can overwrite its updated version.
-        addTransactions(txs: Transaction[]) {
+        async addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
             // re-apply original timestamp and known fiatValue

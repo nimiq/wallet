@@ -261,7 +261,7 @@ export default defineComponent({
 
         async function getClient(asset: SwapAsset, swap: ActiveSwap): Promise<Client<SwapAsset>> {
             switch (asset) {
-                case SwapAsset.NIM: return getNetworkClient() as any as Promise<Client<SwapAsset.NIM>>;
+                case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
                 case SwapAsset.USDC_MATIC: {
                     const { timeout } = swap.contracts[SwapAsset.USDC_MATIC]!;

@@ -363,12 +363,19 @@ export default defineComponent({
 
         const forceUpdateRef = ref(false);
         const resizeObserver = new ResizeObserver(forceUpdate);
-        const mutationObserver = new MutationObserver(forceUpdate);
+        const mutationObserver = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.target instanceof Element && !mutation.target.classList.contains('tooltip')) {
+                    forceUpdate();
+                    break;
+                }
+            }
+        });
 
         // start observing on mount / listen to window resize
         onMounted(async () => {
-            resizeObserver.observe(context.root.$el);
-            mutationObserver.observe(context.root.$el, { // for account switch & add address
+            resizeObserver.observe(root$.value!);
+            mutationObserver.observe(root$.value!, { // for account switch & add address
                 attributes: false,
                 childList: true,
                 subtree: true,
@@ -379,11 +386,20 @@ export default defineComponent({
             resizeObserver.disconnect();
             mutationObserver.disconnect();
         });
-        onActivated(forceUpdate);
+        onActivated(forceUpdate); // to update on view change (settings <-> main view)
 
         async function forceUpdate() {
             await context.root.$nextTick();
             // trick to force vue to update the position on component resize
+            forceUpdateRef.value = !forceUpdateRef.value;
+            /**
+             * In some cases, the re-render after resize takes a bit too long
+             * and the background svg is not positioned correctly.
+             * (example: macos window maximize & minimize / toggling mobile view in devtools)
+             * This is workaround to force to re-render the background svg and position it correctly.
+             * This does the same as doing a setTimeout(() => forceUpdateRef.value = !forceUpdateRef.value, 0);
+             */
+            await context.root.$nextTick();
             forceUpdateRef.value = !forceUpdateRef.value;
         }
 

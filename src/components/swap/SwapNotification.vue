@@ -562,7 +562,11 @@ export default defineComponent({
                     if (activeSwap.value.to.asset === SwapAsset.USDC) {
                         try {
                             // Start listener
-                            const settlementPromise = swapHandler.awaitIncomingConfirmation();
+                            let settlementDetected = false;
+                            const settlementPromise = swapHandler.awaitIncomingConfirmation().then((tx) => {
+                                settlementDetected = true;
+                                return tx;
+                            });
 
                             const {
                                 request,
@@ -580,8 +584,7 @@ export default defineComponent({
                                     `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
                                 );
                             } catch (error) {
-                                const err = error as Error;
-                                if (err.message.includes('invalid nonce')) {
+                                if (settlementDetected) {
                                     const event = await settlementPromise as PolygonEvent<PolygonEventType.REDEEM>;
                                     settlementTx = await receiptToTransaction(await event.getTransactionReceipt());
                                 } else {

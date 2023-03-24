@@ -1579,9 +1579,9 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/vue-components@https://github.com/nimiq/vue-components#build/wallet":
+"@nimiq/vue-components@https://github.com/nimiq/vue-components#build/albatross":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#60d229e427c87bb08d8376de57d3ea88f87922ad"
+  resolved "https://github.com/nimiq/vue-components#0f3f40dbf38142a72cf09b4d4a256351dc68bb7e"
   dependencies:
     "@nimiq/iqons" "^1.6.0"
     "@nimiq/style" "^0.8.5"

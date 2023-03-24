@@ -139,9 +139,7 @@ export default defineComponent({
 
         .mask-container {
             position: relative;
-            top: -.75rem;
             overflow: hidden;
-            padding-top: .75rem;
         }
 
         .scroll-container {

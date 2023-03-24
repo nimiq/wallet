@@ -1,22 +1,28 @@
 <template>
     <div class="stake-validator-filter">
-        <div class="validator-filter-wrapper flex-row" v-if="state !== FilterState.SEARCH">
-            <button class="validator-switch" :class="{ selected: state === FilterState.TRUST }"
-                @click="state = FilterState.TRUST">
-                {{ $t('TrustScore') }}
-            </button>
-                <!-- <button class="validator-switch" :class="{ selected: state === FilterState.PAYOUT }"
-                    @click="state = FilterState.PAYOUT">
+        <SliderToggle class="validator-filter-wrapper" v-if="state !== FilterState.SEARCH"
+            name="validator-filter" v-model="state">
+            <template #[FilterState.TRUST]>
+                <button class="validator-switch">
+                    {{ $t('TrustScore') }}
+                </button>
+            </template>
+            <template #[FilterState.PAYOUT]>
+                <button class="validator-switch">
                     {{ $t('Payout Time') }}
-                </button> -->
-            <button class="validator-switch" :class="{ selected: state === FilterState.REWARD }"
-                @click="state = FilterState.REWARD">
-                {{ $t('Reward') }}
-            </button>
-            <!-- <button class="validator-search-icon" @click="enableSearch">
-                <FatSearchIcon />
-            </button> -->
-        </div>
+                </button>
+            </template>
+            <template #[FilterState.REWARD]>
+                <button class="validator-switch">
+                    {{ $t('Reward') }}
+                </button>
+            </template>
+            <template #[FilterState.SEARCH]>
+                <button class="validator-search-icon">
+                    <FatSearchIcon />
+                </button>
+            </template>
+        </SliderToggle>
         <div class="validator-filter-search-wrapper" v-else>
             <span class="validator-search-icon">
                 <FatSearchIcon />
@@ -32,6 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, watch, ref } from '@vue/composition-api';
+import { SliderToggle } from '@nimiq/vue-components';
 import { FilterState } from '../../lib/StakingUtils';
 import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
@@ -41,23 +48,24 @@ export default defineComponent({
         const state = ref(FilterState.TRUST);
         const $search = ref<HTMLInputElement>();
 
-        watch(state, () => context.emit('changed', state.value));
+        watch(state, () => {
+            context.emit('changed', state.value);
 
-        function enableSearch() {
-            state.value = FilterState.SEARCH;
-            context.root.$nextTick(() => $search.value?.focus());
-        }
+            if (state.value === FilterState.SEARCH) {
+                context.root.$nextTick(() => $search.value?.focus());
+            }
+        });
 
         return {
             state,
             FilterState,
             $search,
-            enableSearch,
         };
     },
     components: {
         FatSearchIcon,
         XCloseIcon,
+        SliderToggle,
     },
 });
 </script>
@@ -72,13 +80,13 @@ export default defineComponent({
     white-space: nowrap;
 
     .validator-filter-wrapper {
-        background-color: var(--text-6);
-        height: 3.75rem;
-        border-radius: 2rem;
-        padding: 0 0.25rem;
+        --horizontalPadding: 0.25rem;
+        --verticalPadding: 0;
+        --inactiveOpacity: 0.5;
+        --padding: 0.25rem;
+
         white-space: nowrap;
         overflow: hidden;
-        align-items: center;
 
         .validator-switch {
             font-family: inherit;
@@ -89,53 +97,29 @@ export default defineComponent({
             border: 0;
             background: transparent;
             box-shadow: none;
-            border-radius: 2rem;
 
             font-style: normal;
             font-weight: 700;
-
             font-size: 1.75rem;
-            line-height: 1.75rem;
-            text-align: center;
 
-            color: var(--text-50);
-            cursor: pointer;
+            color: var(--nimiq-blue);
 
-            transition: color 0.3s;
-
-            * {
-                select: none;
-            }
-
-            &:hover,
-            &:focus {
-                color: var(--text-80);
-            }
-
-            &.selected {
-                color: var(--nimiq-blue);
-                background: white;
-                box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.07),
-                            0px 1.875px 3.75px rgba(0, 0, 0, 0.05),
-                            0px 0.421263px 2.5px rgba(0, 0, 0, 0.0254662);
-            }
+            * { select: none }
         }
 
         .validator-search-icon {
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-            margin-left: -.5rem;
             border: 0;
             background: transparent;
             box-shadow: none;
+
             svg {
-                position: relative;
-                top: .375rem;
-                left: .25rem;
                 width: 2.375rem;
                 height: 2.375rem;
-                opacity: .5;
+
+                * {
+                    stroke: currentColor;
+                }
+
                 line, circle {
                     stroke: rgb(31, 35, 72);
                     stroke-width: 2.0;
@@ -164,10 +148,12 @@ export default defineComponent({
             align-items: center;
             margin-left: 1rem;
             margin-right: .25rem;
+
             svg {
                 width: 1.75rem;
                 height: 1.75rem;
                 opacity:  .7;
+
                 line, circle {
                     stroke: rgb(5, 130, 202);
                 }
@@ -181,6 +167,7 @@ export default defineComponent({
             color: #0582CA;
             opacity: 0.4;
             border: 0;
+
             &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
                 color: #0582CA;
             }

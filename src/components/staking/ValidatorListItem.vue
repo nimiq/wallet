@@ -79,6 +79,8 @@ export default defineComponent({
 
     flex-shrink: 0;
 
+    transition: background-color 400ms var(--nimiq-ease);
+
     &:focus {
         outline: 4px solid #f2f2f4;
         box-shadow: none;

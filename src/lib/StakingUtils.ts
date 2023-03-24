@@ -4,9 +4,10 @@ import { Transaction } from '../stores/Transactions';
 import { StakingTransactionType, STAKING_CONTRACT_ADDRESS } from './Constants';
 
 export enum FilterState {
-    TRUST,
-    REWARD,
-    SEARCH,
+    TRUST = 'trustscore',
+    PAYOUT = 'payoutTime',
+    REWARD = 'reward',
+    SEARCH = 'search',
 }
 
 // export const NOW = DateTime.now();

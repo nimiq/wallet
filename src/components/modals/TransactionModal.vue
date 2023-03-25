@@ -114,7 +114,7 @@
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
                     <InteractiveShortAddress v-if="swapData && peerAddress"
-                        :address="peerAddress" tooltipPosition="right"/>
+                        :address="peerAddress" tooltipPosition="bottom right"/>
                     <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>
@@ -124,7 +124,7 @@
                     <Identicon :address="transaction.recipient"/>
                     <span class="label">{{ myLabel }}</span>
                     <InteractiveShortAddress v-if="swapData"
-                        :address="transaction.recipient" tooltipPosition="left"/>
+                        :address="transaction.recipient" tooltipPosition="bottom left"/>
                     <Copyable v-else :text="transaction.recipient">
                         <AddressDisplay :address="transaction.recipient"/>
                     </Copyable>
@@ -136,7 +136,7 @@
                     <Identicon :address="transaction.sender"/>
                     <span class="label">{{ myLabel }}</span>
                     <InteractiveShortAddress v-if="swapData"
-                        :address="transaction.sender" tooltipPosition="right"/>
+                        :address="transaction.sender" tooltipPosition="bottom right"/>
                     <Copyable v-else :text="transaction.sender">
                         <AddressDisplay :address="transaction.sender"/>
                     </Copyable>
@@ -160,7 +160,7 @@
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
                     <InteractiveShortAddress v-if="swapData && peerAddress"
-                        :address="peerAddress" tooltipPosition="left"/>
+                        :address="peerAddress" tooltipPosition="bottom left"/>
                     <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>
@@ -1108,50 +1108,6 @@ export default defineComponent({
     }
 }
 
-.address-info .tooltip ::v-deep {
-    .tooltip-box {
-        padding: 1rem;
-        font-size: var(--small-size);
-        line-height: 1;
-        font-family: 'Fira Mono', monospace;
-        font-weight: normal;
-        letter-spacing: -0.02em;
-        white-space:nowrap;
-        word-spacing: -0.2em;
-    }
-
-    .trigger {
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        transition: background 300ms var(--nimiq-ease);
-        margin-bottom: .5rem;
-
-        &:hover,
-        &:focus,
-        &:focus-within {
-            background: var(--text-6);
-
-            .short-address {
-                opacity: .6;
-            }
-        }
-    }
-}
-
-.tooltip.left-aligned ::v-deep .tooltip-box {
-    transform: translate(-9.25rem, 2rem);
-}
-
-.tooltip.right-aligned ::v-deep .tooltip-box {
-    transform: translate(9.25rem, 2rem);
-}
-
-.short-address {
-    font-size: var(--body-size);
-    opacity: 0.5;
-    transition: opacity .3s var(--nimiq-ease);
-}
-
 @media (max-width: 700px) { // Full mobile breakpoint
     .page-header {
         ::v-deep .nq-h1 {
@@ -1175,14 +1131,6 @@ export default defineComponent({
 
     .address-info {
         flex-shrink: 0;
-    }
-
-    .tooltip.left-aligned ::v-deep .tooltip-box {
-        transform: translate(-7.75rem, 2rem);
-    }
-
-    .tooltip.right-aligned ::v-deep .tooltip-box {
-        transform: translate(7.75rem, 2rem);
     }
 
     .tooltip {

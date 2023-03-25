@@ -99,7 +99,7 @@
                             <IdenticonStack @click="addressListOpened = true" />
                             <InteractiveShortAddress v-if="activeCurrency === CryptoCurrency.NIM"
                                 :address="activeAddressInfo.address"
-                                tooltipPosition="right"/>
+                                tooltipPosition="bottom right"/>
                         </div>
                         <div class="separator-wrapper">
                             <div class="separator"></div>
@@ -110,7 +110,7 @@
                                 @click="page = Pages.BANK_CHECK"/>
                             <InteractiveShortAddress
                                 :address="bankAccount ? bankAccount.iban : ''"
-                                tooltipPosition="left"/>
+                                tooltipPosition="bottom left"/>
                         </div>
                     </section>
 

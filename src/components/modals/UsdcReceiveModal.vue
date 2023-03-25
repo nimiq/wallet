@@ -22,30 +22,7 @@
                 :size="448"
                 :fill="'#1F2348' /* nimiq-blue */"
             />
-            <!-- Block mouse events registered by Tooltip and replace them with our custom handlers. Additionally, make
-            the Tooltip non-focusable via noFocus to avoid the Tooltip and Copyable both being focus targets during
-            keyboard navigation. Instead, we handle focus events on Copyable. -->
-            <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
-            <Tooltip
-                ref="addressTooltip$"
-                noFocus
-                class="copyable-short-address"
-                @mouseenter.native.capture.stop="scheduleShowAddressTooltip"
-                @mouseleave.native.capture.stop="hideAddressTooltip"
-                @click.native.capture.stop="$refs.copyable$.copy(); /* block tooltip click handler and copy manually */"
-            >
-                <template #trigger>
-                    <Copyable
-                        ref="copyable$"
-                        :text="address"
-                        @focus.native="scheduleShowAddressTooltip"
-                        @blur.native="hideAddressTooltip"
-                        @copy="onCopy">
-                        <ShortAddress :address="address"/>
-                    </Copyable>
-                </template>
-                {{ address }}
-            </Tooltip>
+            <InteractiveShortAddress :address="address" tooltip-position="top right" copyable/>
         </PageBody>
         <PolygonWarningFooter type="receiving"/>
     </Modal>
@@ -53,12 +30,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
-import { PageHeader, PageBody, QrCode, Tooltip, Copyable } from '@nimiq/vue-components';
+import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
-import ShortAddress from '../ShortAddress.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import PolygonWarningFooter from '../PolygonWarningFooter.vue';
 
 export default defineComponent({
@@ -81,7 +58,6 @@ export default defineComponent({
         const page = ref(hasEverReceivedUsdc ? Pages.RECEIVE : Pages.WARNING);
         const initialPage = page.value;
         const address = computed(() => addressInfo.value?.address);
-        const addressTooltip$ = ref<Tooltip>(null);
 
         function back() {
             if (page.value === initialPage) {
@@ -92,48 +68,11 @@ export default defineComponent({
             }
         }
 
-        let showAddressTooltipTimeout = -1;
-        function showAddressTooltip(delay = 0) {
-            if (showAddressTooltipTimeout !== -1) {
-                // Showing tooltip is already scheduled. Keep the original delay.
-                return;
-            }
-            showAddressTooltipTimeout = window.setTimeout(() => {
-                showAddressTooltipTimeout = -1;
-                if (!addressTooltip$.value) return;
-                addressTooltip$.value.show();
-            }, delay);
-        }
-        function hideAddressTooltip() {
-            window.clearTimeout(showAddressTooltipTimeout);
-            showAddressTooltipTimeout = -1;
-            if (!addressTooltip$.value) return;
-            addressTooltip$.value.hide(/* force */ true);
-        }
-
-        function scheduleShowAddressTooltip() {
-            // Show the tooltip only after a delay, to check whether a copy is triggered immediately which cancels the
-            // tooltip via hideAddressTooltip. Notably, if the copy was triggered by a tap via touchscreen, we want to
-            // display the copy tooltip immediately and skip the address tooltip which would open very shortly by the
-            // mouseenter and focus happening at the same time as the copy.
-            showAddressTooltip(150);
-        }
-
-        function onCopy() {
-            // Hide / cancel address tooltip and re-show it after the copy tooltip disappeared.
-            hideAddressTooltip();
-            showAddressTooltip(1200);
-        }
-
         return {
             Pages,
             page,
             initialPage,
             address,
-            addressTooltip$,
-            scheduleShowAddressTooltip,
-            hideAddressTooltip,
-            onCopy,
             back,
         };
     },
@@ -143,9 +82,7 @@ export default defineComponent({
         PageHeader,
         PageBody,
         QrCode,
-        Tooltip,
-        Copyable,
-        ShortAddress,
+        InteractiveShortAddress,
         PolygonWarningFooter,
     },
 });
@@ -197,22 +134,22 @@ export default defineComponent({
         transform: scale(.5);
     }
 
-    .copyable-short-address {
+    .interactive-short-address {
         margin-top: 1.25rem;
 
-        .copyable {
-            padding: .25rem .5rem .5rem;
+        ::v-deep {
+            .copyable {
+                padding: .25rem .5rem .5rem;
 
-            ::v-deep .tooltip {
-                top: -4.625rem;
+                .tooltip {
+                    top: -4.625rem;
 
-                &::after {
-                    transform: scale(-.8) translateY(-.625rem);
+                    &::after {
+                        transform: scale(-.8) translateY(-.625rem);
+                    }
                 }
             }
-        }
 
-        ::v-deep {
             .trigger::after {
                 transform: scale(-.8) translateY(-.625rem);
             }
@@ -220,7 +157,6 @@ export default defineComponent({
             .tooltip-box {
                 left: 50% !important;
                 padding: .625rem 1rem .5rem;
-                font-size: 1.75rem;
                 transform: translate(-50%, -1.25rem);
             }
         }

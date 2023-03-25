@@ -13,13 +13,7 @@
         <span v-else class="label" :class="{ unlabelled: !localLabel }">
             {{ localLabel || $t('unknown') }}
         </span>
-        <InteractiveShortAddress :address="address"
-            :tooltipPosition="tooltipPosition === TooltipPosition.BOTTOM_RIGHT ? 'right' : 'left'"
-            :class="{
-                'left-aligned': tooltipPosition === TooltipPosition.BOTTOM_RIGHT,
-                'right-aligned': tooltipPosition === TooltipPosition.BOTTOM_LEFT,
-            }"
-        />
+        <InteractiveShortAddress :address="address" :tooltipPosition="tooltipPosition"/>
     </div>
 </template>
 
@@ -157,5 +151,4 @@ export default defineComponent({
         flex-shrink: 0;
     }
 }
-
 </style>

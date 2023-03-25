@@ -130,7 +130,7 @@
                             <IdenticonStack @click="addressListOpened = true" />
                             <InteractiveShortAddress v-if="activeCurrency === CryptoCurrency.NIM"
                                 :address="activeAddressInfo.address"
-                                tooltipPosition="left"/>
+                                tooltipPosition="bottom left"/>
                         </div>
                     </section>
 

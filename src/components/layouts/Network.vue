@@ -33,7 +33,7 @@
                         </template>
                     </i18n>
                 </template>
-                <template #txTime>{{ $t('1 min') }}</template>
+                <template #txTime>{{ $t('1-2 sec') }}</template>
             </NetworkStats>
             <div class="map flex-column" ref="$map">
                 <NetworkMap @own-x-coordinate="scrollMap"/>

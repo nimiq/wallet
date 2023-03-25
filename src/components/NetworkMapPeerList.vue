@@ -84,7 +84,7 @@ export default defineComponent({
             const groups = new Map<string, CountedNode>();
 
             for (const peer of props.peers as Set<Node>) {
-                const groupId = `${peer.type}-${peer.locationData.city}`;
+                const groupId = `${peer.type}-${peer.host}-${peer.locationData.city}`;
                 const group = groups.get(groupId);
                 if (group) {
                     group.count += 1;

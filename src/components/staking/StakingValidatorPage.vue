@@ -11,7 +11,7 @@
             </template>
         </PageHeader>
         <PageBody>
-            <ValidatorFilter @changed="changeFilter" />
+            <ValidatorFilter @changed="changeFilter" @search="onSearch"/>
             <div class="mask-container">
                 <div class="scroll-mask-top" :class="{ 'disabled-mask': !masks }"></div>
                 <div class="scroll-container">
@@ -63,6 +63,12 @@ export default defineComponent({
 
         const sortedList = computed(() => {
             switch (filter.value) {
+                case FilterState.SEARCH:
+                    return validatorsList.value.filter((validator) =>
+                        'label' in validator
+                            ? validator.label.toLowerCase().includes(searchValue.value.toLowerCase())
+                            : validator.address.toLowerCase().includes(searchValue.value.toLowerCase()),
+                    );
                 case FilterState.REWARD:
                     return validatorsList.value.slice()
                         .sort((a, b) => {
@@ -105,12 +111,19 @@ export default defineComponent({
             context.emit('next');
         }
 
+        const searchValue = ref('');
+        function onSearch(search: string) {
+            filter.value = search ? FilterState.SEARCH : FilterState.TRUST;
+            searchValue.value = search;
+        }
+
         return {
             masks,
             changeFilter,
             sortedList,
             selectValidator,
             onValidatorFocusChange,
+            onSearch,
         };
     },
     components: {

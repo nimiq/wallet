@@ -115,6 +115,7 @@ export default defineComponent({
 }
 
 .tooltip.staking-feature-tip {
+    z-index: 3;
     ::v-deep .trigger::after {
         background-color: var(--nimiq-green);
     }

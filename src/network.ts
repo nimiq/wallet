@@ -12,7 +12,7 @@ import { useConfig } from './composables/useConfig';
 import { useStakingStore, Validator } from './stores/Staking';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS, StakingTransactionType } from './lib/Constants';
 import { validatorData } from './lib/Validators';
-import { calculateReward } from './lib/AlbatrossMath';
+import { calculateStakingReward } from './lib/AlbatrossMath';
 
 let isLaunched = false;
 let clientPromise: Promise<Client>;
@@ -213,7 +213,7 @@ export async function launchNetwork() {
 
             const data = validatorData[address];
             if (data) {
-                const reward = await calculateReward(data.fee, totalStake);
+                const reward = await calculateStakingReward(data.fee, totalStake);
 
                 validator = {
                     ...validator,

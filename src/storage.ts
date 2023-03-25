@@ -3,22 +3,23 @@
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
 import { captureException } from '@sentry/vue';
 import idbReady from 'safari-14-idb-fix';
-import { useTransactionsStore, Transaction } from './stores/Transactions';
-import { useAddressStore, AddressState } from './stores/Address';
-import { useAccountStore, AccountState } from './stores/Account';
-import { useSettingsStore, SettingsState } from './stores/Settings';
+import type { Store, StateTree } from 'pinia';
+import { useTransactionsStore } from './stores/Transactions';
+import { useAddressStore } from './stores/Address';
+import { useAccountStore } from './stores/Account';
+import { useSettingsStore } from './stores/Settings';
 import { useContactsStore } from './stores/Contacts';
-import { useFiatStore, FiatState } from './stores/Fiat';
-import { useProxyStore, ProxyState } from './stores/Proxy';
-import { useBtcAddressStore, BtcAddressState } from './stores/BtcAddress';
-import { useBtcTransactionsStore, Transaction as BtcTransaction } from './stores/BtcTransactions';
-import { useBtcLabelsStore, BtcLabelsState } from './stores/BtcLabels';
-import { UsdcAddressState, useUsdcAddressStore } from './stores/UsdcAddress';
+import { useFiatStore } from './stores/Fiat';
+import { useProxyStore } from './stores/Proxy';
+import { useBtcAddressStore } from './stores/BtcAddress';
+import { useBtcTransactionsStore } from './stores/BtcTransactions';
+import { useBtcLabelsStore } from './stores/BtcLabels';
+import { useUsdcAddressStore } from './stores/UsdcAddress';
 import { useUsdcContactsStore } from './stores/UsdcContacts';
-import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from './stores/UsdcTransactions';
-import { useSwapsStore, SwapsState } from './stores/Swaps';
-import { useBankStore, BankState } from './stores/Bank';
-import { KycState, useKycStore } from './stores/Kyc';
+import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
+import { useSwapsStore } from './stores/Swaps';
+import { useBankStore } from './stores/Bank';
+import { useKycStore } from './stores/Kyc';
 import { useConfig } from './composables/useConfig';
 
 const StorageKeys = {
@@ -121,267 +122,101 @@ export async function initStorage() {
         Storage = LocalStorageStorage;
     }
 
-    /**
-     * TRANSACTIONS
-     */
     const transactionsStore = useTransactionsStore();
-
-    // Load transactions from storage
-    const storedTxs = await Storage.get<{[hash: string]: Transaction}>(StorageKeys.TRANSACTIONS);
-    if (storedTxs) {
-        transactionsStore.patch({
-            transactions: storedTxs,
-        });
-        transactionsStore.calculateFiatAmounts();
-    }
-
-    unsubscriptions.push(
-        // Write transactions to storage when updated
-        transactionsStore.subscribe(() => Storage.set(StorageKeys.TRANSACTIONS, transactionsStore.state.transactions)),
-    );
-
-    /**
-     * ACCOUNTS
-     */
-    const accountStore = useAccountStore();
-
-    // Load accounts from storage
-    const storedAccountState = await Storage.get<AccountState>(StorageKeys.ACCOUNTINFOS);
-    if (storedAccountState) {
-        accountStore.patch(storedAccountState);
-    }
-
-    unsubscriptions.push(
-        // Write accounts to storage when updated
-        accountStore.subscribe(() => Storage.set(StorageKeys.ACCOUNTINFOS, accountStore.state)),
-    );
-
-    /**
-     * ADDRESSES
-     */
-    const addressStore = useAddressStore();
-
-    // Load addresses from storage
-    const storedAddressState = await Storage.get<AddressState>(StorageKeys.ADDRESSINFOS);
-    if (storedAddressState) {
-        addressStore.patch(storedAddressState);
-    }
-
-    unsubscriptions.push(
-        // Write addresses to storage when updated
-        addressStore.subscribe(() => Storage.set(StorageKeys.ADDRESSINFOS, addressStore.state)),
-    );
-
-    /**
-     * SETTINGS
-     */
-    const settingsStore = useSettingsStore();
-    // Load user settings from storage
-    const storedSettings = await Storage.get<SettingsState>(StorageKeys.SETTINGS);
-    if (storedSettings) {
-        settingsStore.patch({
-            ...storedSettings,
-            updateAvailable: false,
-            btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
-        });
-    }
-
-    unsubscriptions.push(
-        settingsStore.subscribe(() => Storage.set(StorageKeys.SETTINGS, settingsStore.state)),
-    );
-
-    /**
-     * CONTACTS
-     */
-    const contactsStore = useContactsStore();
-    const storedContacts = await Storage.get<{[address: string]: string}>(PersistentStorageKeys.CONTACTS);
-    if (storedContacts) {
-        contactsStore.patch({
-            contacts: storedContacts,
-        });
-    }
-
-    unsubscriptions.push(
-        contactsStore.subscribe(() => Storage.set(PersistentStorageKeys.CONTACTS, contactsStore.state.contacts)),
-    );
-
-    /**
-     * FIAT
-     */
-    const fiatStore = useFiatStore();
-    const storedRates = await Storage.get<FiatState>(StorageKeys.FIAT);
-    if (storedRates) {
-        if (storedRates.timestamp > fiatStore.state.timestamp) {
-            fiatStore.patch(storedRates);
-        }
-    }
-
-    unsubscriptions.push(
-        fiatStore.subscribe(() => Storage.set(StorageKeys.FIAT, fiatStore.state)),
-    );
-
-    /**
-     * PROXIES
-     */
-    const proxyStore = useProxyStore();
-    const storedProxyState = await Storage.get<ProxyState>(StorageKeys.PROXIES)
-        || await Storage.get<ProxyState>(StorageKeys.DEPRECATED_CASHLINKS);
-    await Storage.del(StorageKeys.DEPRECATED_CASHLINKS);
-    if (storedProxyState) {
-        proxyStore.patch({
-            ...storedProxyState,
-            networkTrigger: 0,
-        });
-    }
-
-    unsubscriptions.push(
-        proxyStore.subscribe(() => Storage.set(StorageKeys.PROXIES, proxyStore.state)),
-    );
-
-    /**
-     * BTC TRANSACTIONS
-     */
     const btcTransactionsStore = useBtcTransactionsStore();
-
-    // Load transactions from storage
-    const storedBtcTxs = await Storage.get<{[hash: string]: BtcTransaction}>(StorageKeys.BTCTRANSACTIONS);
-    if (storedBtcTxs) {
-        btcTransactionsStore.patch({
-            transactions: storedBtcTxs,
-        });
-        btcTransactionsStore.calculateFiatAmounts();
-    }
-
-    unsubscriptions.push(
-        // Write transactions to storage when updated
-        btcTransactionsStore.subscribe(() =>
-            Storage.set(StorageKeys.BTCTRANSACTIONS, btcTransactionsStore.state.transactions)),
-    );
-
-    /**
-     * BTC ADDRESSES
-     */
-    const btcAddressStore = useBtcAddressStore();
-
-    // Load addresses from storage
-    const storedBtcAddressState = await Storage.get<BtcAddressState>(StorageKeys.BTCADDRESSINFOS);
-    if (storedBtcAddressState) {
-        btcAddressStore.patch(storedBtcAddressState);
-    }
-
-    unsubscriptions.push(
-        // Write addresses to storage when updated
-        btcAddressStore.subscribe(() => Storage.set(StorageKeys.BTCADDRESSINFOS, btcAddressStore.state)),
-    );
-
-    /**
-     * BTC Labels
-     */
-    const btcLabelsStore = useBtcLabelsStore();
-    const storedBtcLabelsState = await Storage.get<BtcLabelsState>(PersistentStorageKeys.BTCLABELS);
-    if (storedBtcLabelsState) {
-        btcLabelsStore.patch(storedBtcLabelsState);
-    }
-
-    unsubscriptions.push(
-        btcLabelsStore.subscribe(() => Storage.set(PersistentStorageKeys.BTCLABELS, btcLabelsStore.state)),
-    );
-
-    /**
-     * USDC ADDRESSES
-     */
-    const usdcAddressStore = useUsdcAddressStore();
-
-    // Load addresses from storage
-    const storedUsdcAddressState = await Storage.get<UsdcAddressState>(StorageKeys.USDCADDRESSINFOS);
-    if (storedUsdcAddressState) {
-        usdcAddressStore.patch(storedUsdcAddressState);
-    }
-
-    unsubscriptions.push(
-        // Write addresses to storage when updated
-        usdcAddressStore.subscribe(() => Storage.set(StorageKeys.USDCADDRESSINFOS, usdcAddressStore.state)),
-    );
-
-    /**
-     * USDC CONTACTS
-     */
-    const usdcContactsStore = useUsdcContactsStore();
-    const storedUsdcContacts = await Storage.get<{[address: string]: string}>(PersistentStorageKeys.USDCCONTACTS);
-    if (storedUsdcContacts) {
-        usdcContactsStore.patch({
-            contacts: storedUsdcContacts,
-        });
-    }
-
-    unsubscriptions.push(
-        usdcContactsStore.subscribe(() =>
-            Storage.set(PersistentStorageKeys.USDCCONTACTS, usdcContactsStore.state.contacts),
-        ),
-    );
-
-    /**
-     * USDC TRANSACTIONS
-     */
     const usdcTransactionsStore = useUsdcTransactionsStore();
+    const proxyStore = useProxyStore();
 
-    // Load transactions from storage
-    const storedUsdcTxs = await Storage.get<{[hash: string]: UsdcTransaction}>(StorageKeys.USDCTRANSACTIONS);
-    if (storedUsdcTxs) {
-        usdcTransactionsStore.patch({
-            transactions: storedUsdcTxs,
-        });
-        usdcTransactionsStore.calculateFiatAmounts();
-    }
-
-    unsubscriptions.push(
-        // Write transactions to storage when updated
-        usdcTransactionsStore.subscribe(
-            () => Storage.set(StorageKeys.USDCTRANSACTIONS, usdcTransactionsStore.state.transactions),
+    await Promise.all([
+        initStoreStore(
+            useSettingsStore(),
+            StorageKeys.SETTINGS,
+            (state) => state, // this is the default, but we still provide it for ts type inference
+            (storedSettings) => ({
+                ...storedSettings,
+                updateAvailable: false,
+                btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
+            }),
         ),
-    );
+        initStoreStore(useFiatStore(), StorageKeys.FIAT),
+        initStoreStore(useSwapsStore(), StorageKeys.SWAPS),
+        initStoreStore(useBankStore(), StorageKeys.BANK),
+        initStoreStore(
+            useKycStore(),
+            StorageKeys.KYC,
+            (state) => state, // this is the default, but we still provide it for ts type inference
+            (storedKycState) => ({
+                ...storedKycState,
+                kycLimits: null,
+            }),
+        ),
+        initStoreStore(useAccountStore(), StorageKeys.ACCOUNTINFOS),
+        initStoreStore(useAddressStore(), StorageKeys.ADDRESSINFOS),
+        initStoreStore(
+            transactionsStore,
+            StorageKeys.TRANSACTIONS,
+            (state) => state.transactions,
+            (storedTransactions) => ({ transactions: storedTransactions }),
+        ),
+        initStoreStore(
+            useContactsStore(),
+            PersistentStorageKeys.CONTACTS,
+            (state) => state.contacts,
+            (storedContacts) => ({ contacts: storedContacts }),
+        ),
+        initStoreStore(proxyStore, StorageKeys.PROXIES).then((storedProxies) => {
+            if (!storedProxies) {
+                // Migrate proxies over from deprecated Cashlink store, if it exists.
+                return initStoreStore(proxyStore, StorageKeys.DEPRECATED_CASHLINKS);
+            }
+            // Proxies have already been migrated. Delete deprecated Cashlink store if it still exists.
+            Storage.del(StorageKeys.DEPRECATED_CASHLINKS); // no need to await this
+            return storedProxies;
+        }),
+        initStoreStore(useBtcAddressStore(), StorageKeys.BTCADDRESSINFOS),
+        initStoreStore(useBtcLabelsStore(), PersistentStorageKeys.BTCLABELS),
+        initStoreStore(
+            btcTransactionsStore,
+            StorageKeys.BTCTRANSACTIONS,
+            (state) => state.transactions,
+            (storedBtcTransactions) => ({ transactions: storedBtcTransactions }),
+        ),
+        initStoreStore(useUsdcAddressStore(), StorageKeys.USDCADDRESSINFOS),
+        initStoreStore(
+            usdcTransactionsStore,
+            StorageKeys.USDCTRANSACTIONS,
+            (store) => store.transactions,
+            (storedUsdcTransactions) => ({ transactions: storedUsdcTransactions }),
+        ),
+        initStoreStore(
+            useUsdcContactsStore(),
+            PersistentStorageKeys.USDCCONTACTS,
+            (state) => state.contacts,
+            (storedContacts) => ({ contacts: storedContacts }),
+        ),
+    ]);
 
-    /**
-     * Swaps
-     */
-    const swapsStore = useSwapsStore();
-    const storedSwapsState = await Storage.get<SwapsState>(StorageKeys.SWAPS);
-    if (storedSwapsState) {
-        swapsStore.patch(storedSwapsState);
+    // Fetch missing exchange rates.
+    transactionsStore.calculateFiatAmounts();
+    btcTransactionsStore.calculateFiatAmounts();
+    usdcTransactionsStore.calculateFiatAmounts();
+}
+
+async function initStoreStore<State extends StateTree, StoredState>(
+    store: Store<string, State, any, any>,
+    storageKey: string,
+    writeTransform: (state: State) => StoredState = (state: State) => state,
+    readTransform: (storedState: StoredState) => Partial<State> = (storedState: StoredState) => storedState,
+): Promise<StoredState | undefined> {
+    const storedState = await Storage.get<StoredState>(storageKey);
+    if (storedState) {
+        store.patch(readTransform(storedState));
     }
-
     unsubscriptions.push(
-        swapsStore.subscribe(() => Storage.set(StorageKeys.SWAPS, swapsStore.state)),
+        // Write state back to storage on changes.
+        store.subscribe(() => Storage.set(storageKey, writeTransform(store.state))),
     );
-
-    /**
-     * Bank
-     */
-    const bankStore = useBankStore();
-    const storedBankState = await Storage.get<BankState>(StorageKeys.BANK);
-    if (storedBankState) {
-        bankStore.patch(storedBankState);
-    }
-
-    unsubscriptions.push(
-        bankStore.subscribe(() => Storage.set(StorageKeys.BANK, bankStore.state)),
-    );
-
-    /**
-     * KYC
-     */
-    const kycStore = useKycStore();
-    const storedKycState = await Storage.get<KycState>(StorageKeys.KYC);
-    if (storedKycState) {
-        kycStore.patch({
-            ...storedKycState,
-            kycLimits: null,
-        });
-    }
-
-    unsubscriptions.push(
-        kycStore.subscribe(() => Storage.set(StorageKeys.KYC, kycStore.state)),
-    );
+    return storedState;
 }
 
 export async function clearStorage() {

@@ -44,8 +44,10 @@ async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     initTrials(); // Must be called after storage was initialized, can affect Config
-    await initHubApi(); // Must be called after VueCompositionApi has been enabled
-    syncFromHub(); // Can run parallel to Vue initialization
+    // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
+    // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
+    await initHubApi();
+    syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
 
     serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 

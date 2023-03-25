@@ -43,7 +43,7 @@ export async function launchNetwork() {
 
     const client = await getNetworkClient();
 
-    const { state: network$ } = useNetworkStore();
+    const { state: network$, addPeer, removePeer } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
     const stakingStore = useStakingStore();
@@ -171,14 +171,14 @@ export async function launchNetwork() {
 
     client.addPeerChangedListener((peerId, reason, peerCount, peerInfo) => {
         if (reason === 'joined' && peerInfo) {
-            network$.peers[peerId] = {
+            addPeer({
                 peerId,
                 multiAddress: peerInfo.address,
                 nodeType: peerInfo.type,
                 connected: true,
-            };
+            });
         } else if (reason === 'left') {
-            delete network$.peers[peerId];
+            removePeer(peerId);
         }
         network$.peerCount = peerCount;
     });

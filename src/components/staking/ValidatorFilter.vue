@@ -28,7 +28,7 @@
                 <FatSearchIcon />
             </span>
             <input type="text" ref="$search" class="validator-search-box"
-                :placeholder="$t('Type to search...')" />
+                :placeholder="$t('Type to search...')" v-model="searchValue" />
             <button class="validator-search-close-icon" @click="state = FilterState.TRUST">
                 <XCloseIcon />
             </button>
@@ -47,6 +47,7 @@ export default defineComponent({
     setup(props, context) {
         const state = ref(FilterState.TRUST);
         const $search = ref<HTMLInputElement>();
+        const searchValue = ref('');
 
         watch(state, () => {
             context.emit('changed', state.value);
@@ -56,10 +57,15 @@ export default defineComponent({
             }
         });
 
+        watch(searchValue, () => {
+            context.emit('search', searchValue.value);
+        });
+
         return {
             state,
             FilterState,
             $search,
+            searchValue,
         };
     },
     components: {

@@ -1,5 +1,5 @@
 <template>
-    <div class="network nq-blue-bg">
+    <div class="network nq-blue-bg" :class="{'no-footer': !$config.enableBitcoin && !$config.usdc.enabled }">
         <div class="menu-bar full-width flex-row">
             <button class="reset menu-button"
                 @click="$router.push({ name: 'network', query: { sidebar: !router.currentRoute.query.sidebar } })">
@@ -69,6 +69,13 @@
                 <template #txTime>{{ $t('20 sec') }}</template>
             </NetworkStats>
         </section>
+
+        <div class="unconnected-nodes-notice">
+            <p>
+                Only connected nodes can be displayed at this time.
+                Browsers and other disconnected nodes are not shown.
+            </p>
+        </div>
 
         <transition name="modal">
             <NetworkInfoModal v-if="showNetworkInfo" emitClose @close="onNetworkInfoClosed"/>
@@ -225,7 +232,6 @@ export default defineComponent({
     grid-template-rows: auto 1fr auto;
     gap: 1rem;
     padding: 1rem;
-    padding-left: 0.5rem;
 
     @media screen and (min-width: $halfMobileBreakpoint) {
         grid-template-rows: 1fr auto;
@@ -233,6 +239,14 @@ export default defineComponent({
 
     & ::v-deep .page-body {
         overflow: hidden;
+    }
+
+    &.no-footer {
+        grid-template-rows: auto 1fr;
+
+        @media screen and (min-width: 1160px) {
+            grid-template-rows: 1fr;
+        }
     }
 
     .full-width {
@@ -369,6 +383,30 @@ section {
             stroke: rgba(255, 255, 255, 0.6);
         }
     }
+}
+
+.unconnected-nodes-notice {
+    position: absolute;
+    left: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 2;
+
+    p {
+        width: fit-content;
+        margin: 0 auto;
+        font-size: var(--body-size);
+
+        background: rgba(252, 135, 2, 0.2);
+        color: var(--nimiq-orange);
+        padding: 1.5rem 2rem;
+        border-radius: 1rem;
+
+        & + p {
+            margin-top: 0.5rem;
+        }
+    }
+
 }
 
 @media screen and (max-width: $mobileBreakpoint) {

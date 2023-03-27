@@ -24,6 +24,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../../scss/functions.scss';
+
 .validator-reward-bubble {
     height: 3.125rem;
     line-height: 3.125rem;
@@ -43,7 +45,7 @@ export default defineComponent({
     }
 
     &.dry {
-        --border-color: rgba(31, 35, 72, 0.15);
+        --border-color: #{nimiq-blue(0.15)};
         padding: 0 1.375rem;
         height: 3.25rem;
         line-height: 3.25rem;

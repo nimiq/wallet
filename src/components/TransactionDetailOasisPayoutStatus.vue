@@ -69,6 +69,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    @import '../scss/functions.scss';
+
     .flex-row {
         justify-content: center;
         align-items: center;
@@ -83,9 +85,9 @@ export default defineComponent({
             width: 28rem;
 
             box-shadow:
-                0px 18px 38px rgba(31, 35, 72, 0.07),
-                0px 7px 8.5px rgba(31, 35, 72, 0.04),
-                0px 2px 2.5px rgba(31, 35, 72, 0.02);
+                0px 18px 38px nimiq-blue(0.07),
+                0px 7px 8.5px nimiq-blue(0.04),
+                0px 2px 2.5px nimiq-blue(0.02);
         }
 
         strong {

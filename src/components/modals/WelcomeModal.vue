@@ -620,6 +620,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    @import '../../scss/functions.scss';
+
     .modal {
         font-size: var(--body-size);
         font-weight: 600;
@@ -848,7 +850,7 @@ export default defineComponent({
                 .peer\/first:checked ~ label.peer-checked\/first,
                 .peer\/second:checked ~ label.peer-checked\/second,
                 .peer\/third:checked ~ label.peer-checked\/third {
-                    box-shadow: 0px 0px 0px 3px white, 0px 0px 0px 4px rgba(31, 35, 72, 0.4);
+                    box-shadow: 0px 0px 0px 3px white, 0px 0px 0px 4px nimiq-blue(0.4);
                 }
 
                 .peer\/first:not(:checked) ~ label.peer-checked\/first,

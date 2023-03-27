@@ -382,7 +382,7 @@ export default defineComponent({
     .add-address-button:hover,
     .add-address-button:focus {
         .add-address-icon {
-            background: rgba(31, 35, 72, 0.1);
+            background: nimiq-blue(0.1);
             color: var(--text-80);
         }
     }

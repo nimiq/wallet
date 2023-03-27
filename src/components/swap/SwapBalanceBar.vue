@@ -627,6 +627,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/functions.scss';
 
 .swap-balance-bar {
     position: relative;
@@ -636,10 +637,10 @@ export default defineComponent({
     pointer-events: none !important;
 
     .currency {
-        color: rgba(31, 35, 72, 0.4) !important;
+        color: nimiq-blue(0.4) !important;
 
         & ::v-deep svg {
-            color: rgba(31, 35, 72, 0.4) !important;
+            color: nimiq-blue(0.4) !important;
         }
 
         .identicon-stack .disabled {
@@ -654,12 +655,12 @@ export default defineComponent({
     }
 
     .bar {
-        background-color: rgba(31, 35, 72, 0.1) !important;
+        background-color: nimiq-blue(0.1) !important;
         border: 0 !important;
     }
 
     .separator {
-        background: rgba(31, 35, 72, 0.2) !important;
+        background: nimiq-blue(0.2) !important;
         background-image: none !important;
     }
 
@@ -679,7 +680,7 @@ export default defineComponent({
 
     .left-total-percent,
     .right-total-percent {
-        color: rgba(31, 35, 72, 0.4) !important;
+        color: nimiq-blue(0.4) !important;
     }
 }
 

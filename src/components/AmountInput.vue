@@ -186,6 +186,8 @@ export default AmountInput;
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/functions.scss';
+
 .label-input {
     position: relative;
     overflow: hidden; /* limit width-finder width to parent available width */
@@ -223,7 +225,7 @@ input {
     justify-content: center;
     width: 100%;
     font-size: 8rem;
-    color: rgba(31, 35, 72, 0.5); /* Based on Nimiq Blue */
+    color: nimiq-blue(0.5);
 
     form {
         display: flex;

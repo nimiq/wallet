@@ -30,13 +30,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    @import '../../../scss/functions.scss';
+
     .validator-trust-score {
         white-space: nowrap;
         align-items: center;
         color: var(--text-50);
 
         &.dry {
-            box-shadow: inset 0 0 0 .1875rem rgba(31, 35, 72, 0.15);
+            box-shadow: inset 0 0 0 .1875rem nimiq-blue(0.15);
             padding: 0 1.375rem;
             border-radius: 5rem;
             height: 3.25rem;

@@ -85,6 +85,8 @@ export default defineComponent({
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
+@import '../../scss/functions.scss';
+
 .kyc-overlay {
     flex-grow: 1;
     justify-content: space-between;
@@ -187,7 +189,7 @@ export default defineComponent({
         font-size: 1.75rem;
         font-weight: 600;
         text-align: center;
-        color: rgba(31, 35, 72, .45);
+        color: nimiq-blue(.45);
     }
 
     .logo-ten31 {

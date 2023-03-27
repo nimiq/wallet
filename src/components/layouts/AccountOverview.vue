@@ -1203,7 +1203,7 @@ export default defineComponent({
 
     .mobile-action-bar {
         margin: 0 calc(-1 * var(--padding-sides));
-        box-shadow: 0 0 60px rgba(31, 35, 72, 0.07);
+        box-shadow: 0 0 60px nimiq-blue(0.07);
     }
 }
 

@@ -124,6 +124,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/functions.scss';
+
 .subtitle {
     margin-top: 1.25rem;
     font-size: var(--body-size);
@@ -143,7 +145,7 @@ export default defineComponent({
 }
 
 .row {
-    box-shadow: 0 0 0 1.5px rgba(31, 35, 72, 0.1);
+    box-shadow: 0 0 0 1.5px nimiq-blue(0.1);
     padding: 2rem;
     display: flex;
     align-items: center;

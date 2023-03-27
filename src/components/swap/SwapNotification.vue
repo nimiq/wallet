@@ -282,6 +282,12 @@ export default defineComponent({
         const oasisLimitExceeded = ref(false);
         const oasisPayoutFailed = ref(false);
 
+        // The listener should run in the background, even if the transaction-sending itself fails and
+        // `processSwap` thus throws. To keep the same listener across retries, it is scoped outside the
+        // `processSwap` function.
+        let usdcListener: Promise<PolygonEvent<PolygonEventType>> | undefined;
+        let isUsdcListenerResolved = false;
+
         async function processSwap() {
             if (!activeSwap.value || !activeSwap.value.id || !activeSwap.value.from) {
                 // This is a ghost swap that could happen in versions 2.11.0-2.11.5 when an onUpdate handler
@@ -439,10 +445,13 @@ export default defineComponent({
                         });
                     } else if (activeSwap.value!.from.asset === SwapAsset.USDC) {
                         try {
-                            // Start listener
-                            const fundingPromise = swapHandler.awaitOutgoing((/* event */) => {
+                            // Start background listener
+                            usdcListener = usdcListener || swapHandler.awaitOutgoing((/* event */) => {
                                 // const openEvent = event as PolygonEvent<PolygonEventType.OPEN>;
                                 // ...
+                            }).then((tx) => {
+                                isUsdcListenerResolved = true;
+                                return tx as PolygonEvent<PolygonEventType.OPEN>;
                             });
 
                             const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
@@ -456,9 +465,8 @@ export default defineComponent({
                                     relayUrl,
                                 );
                             } catch (error) {
-                                const err = error as Error;
-                                if (err.message.includes('invalid nonce')) {
-                                    const event = await fundingPromise as PolygonEvent<PolygonEventType.OPEN>;
+                                if (isUsdcListenerResolved) {
+                                    const event = await usdcListener;
                                     fundingTx = await receiptToTransaction(await event.getTransactionReceipt());
                                 } else {
                                     throw error;
@@ -469,7 +477,7 @@ export default defineComponent({
                             // We need to add it to the store ourselves.
                             useUsdcTransactionsStore().addTransactions([fundingTx]);
 
-                            await fundingPromise;
+                            await usdcListener;
 
                             updateSwap({
                                 state: SwapState.AWAIT_SECRET,
@@ -561,11 +569,10 @@ export default defineComponent({
                 case SwapState.SETTLE_INCOMING: {
                     if (activeSwap.value.to.asset === SwapAsset.USDC) {
                         try {
-                            // Start listener
-                            let settlementDetected = false;
-                            const settlementPromise = swapHandler.awaitIncomingConfirmation().then((tx) => {
-                                settlementDetected = true;
-                                return tx;
+                            // Start background listener
+                            usdcListener = usdcListener || swapHandler.awaitIncomingConfirmation().then((tx) => {
+                                isUsdcListenerResolved = true;
+                                return tx as PolygonEvent<PolygonEventType.REDEEM>;
                             });
 
                             const {
@@ -584,15 +591,15 @@ export default defineComponent({
                                     `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
                                 );
                             } catch (error) {
-                                if (settlementDetected) {
-                                    const event = await settlementPromise as PolygonEvent<PolygonEventType.REDEEM>;
+                                if (isUsdcListenerResolved) {
+                                    const event = await usdcListener;
                                     settlementTx = await receiptToTransaction(await event.getTransactionReceipt());
                                 } else {
                                     throw error;
                                 }
                             }
 
-                            await settlementPromise;
+                            await usdcListener;
 
                             updateSwap({
                                 state: SwapState.COMPLETE,

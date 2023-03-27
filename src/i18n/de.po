@@ -205,8 +205,8 @@ msgstr "Konto-Limits"
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/layouts/AccountOverview.vue:112
-#: src/components/layouts/AccountOverview.vue:164
+#: src/components/layouts/AccountOverview.vue:124
+#: src/components/layouts/AccountOverview.vue:182
 msgid "Activate"
 msgstr "Aktivieren"
 
@@ -288,7 +288,7 @@ msgstr "alle"
 msgid "All countries"
 msgstr "Alle Länder"
 
-#: src/components/layouts/AccountOverview.vue:202
+#: src/components/layouts/AccountOverview.vue:220
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -426,7 +426,7 @@ msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
 #: src/components/AddressList.vue:172
-#: src/components/layouts/AccountOverview.vue:93
+#: src/components/layouts/AccountOverview.vue:105
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -2235,7 +2235,7 @@ msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 msgid "Swap"
 msgstr "Tausch"
 
-#: src/components/layouts/AccountOverview.vue:125
+#: src/components/layouts/AccountOverview.vue:143
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "Tausche BTC {arrowIcon} USDC"
 
@@ -2269,11 +2269,11 @@ msgstr "Tausch ist abgelaufen"
 msgid "Swap more per 30 days."
 msgstr "Tausche mehr pro 30 Tage."
 
-#: src/components/layouts/AccountOverview.vue:67
+#: src/components/layouts/AccountOverview.vue:73
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Tausche NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:80
+#: src/components/layouts/AccountOverview.vue:92
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Tausche NIM {arrowIcon} USDC"
 
@@ -2333,7 +2333,7 @@ msgstr "Die Bank bearbeitet deine Überweisung."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Die Gebühren (momentan {amount}) bestimmen den Mindestbetrag."
 
-#: src/components/swap/SwapModal.vue:995 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:996 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Die Gebühren bestimmen den Mindestbetrag."
@@ -2610,7 +2610,7 @@ msgstr "Jetzt aktualisieren"
 
 #: src/components/AddressList.vue:179
 #: src/components/BtcTransactionListItem.vue:259
-#: src/components/layouts/AccountOverview.vue:140
+#: src/components/layouts/AccountOverview.vue:158
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/modals/BtcTransactionModal.vue:517
 #: src/components/modals/TransactionModal.vue:565

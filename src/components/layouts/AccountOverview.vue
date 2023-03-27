@@ -730,28 +730,15 @@ export default defineComponent({
 .bitcoin-account,
 .usdc-account {
     z-index: 3;
-
-    header {
-        font-size: 2rem;
-        font-weight: 600;
-        align-items: center;
-        padding: 3rem;
-
-        .nq-icon {
-            margin-right: 1rem;
-            font-size: 2.75rem;
-        }
-
-        .nq-icon + span {
-            opacity: .7;
-        }
-    }
 }
 
 .nimiq-account {
     @extend %custom-scrollbar;
 
-    padding: 0.5rem 1rem;
+    --nimAccountPaddingX: 1rem;
+    --nimAccountPaddingY: 0.5rem;
+
+    padding: var(--nimAccountPaddingY) var(--nimAccountPaddingX);
     padding-bottom: 0;
     flex-shrink: 1;
 
@@ -774,6 +761,23 @@ export default defineComponent({
         ) right / 100% 100%;
     }
 
+    header {
+        --padding: 3rem;
+
+        font-size: 2rem;
+        font-weight: 600;
+        align-items: center;
+        padding: calc(var(--padding) - var(--nimAccountPaddingY)) calc(var(--padding) - var(--nimAccountPaddingX));
+
+        .nq-icon {
+            margin-right: 1rem;
+            font-size: 2.75rem;
+        }
+
+        .nq-icon + span {
+            opacity: .7;
+        }
+    }
     .add-address {
         display: flex;
         justify-content: center;

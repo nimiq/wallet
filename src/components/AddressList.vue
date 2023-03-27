@@ -1,7 +1,6 @@
 <template>
     <div class="address-list" :class="{'has-scrollbar': scrollbarVisible, embedded}" ref="root$">
         <div class="scroll-mask top" v-if="embedded"></div>
-        <AccountStake v-if="!embedded && accountStake" />
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
             :addressInfo="addressInfo"
@@ -47,7 +46,6 @@ import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmoun
 
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
-import AccountStake from './staking/AccountStake.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
@@ -227,7 +225,6 @@ export default defineComponent({
     components: {
         AddressListItem,
         AddIcon,
-        AccountStake,
     },
 });
 </script>
@@ -240,10 +237,6 @@ export default defineComponent({
     .scroll-mask {
         width: calc(100% + 2 * var(--padding-sides));
         margin-left: calc(-1 * var(--padding-sides));
-    }
-
-    .account-stake {
-        margin-bottom: calc(var(--item-margin) / 2 - 0.5rem);
     }
 
     .address-list {

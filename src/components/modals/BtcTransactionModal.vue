@@ -609,6 +609,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../scss/variables.scss";
+@import '../../scss/functions.scss';
 
 .page-header {
     ::v-deep .nq-h1 {
@@ -907,7 +908,7 @@ export default defineComponent({
     z-index: 3; // To be above .swipe-handle
 
     ::v-deep .trigger {
-        color: rgba(31, 35, 72, 0.25);
+        color: nimiq-blue(0.25);
         font-size: 2.25rem;
 
         transition: color 0.3s var(--nimiq-ease);
@@ -925,7 +926,7 @@ export default defineComponent({
 
         &:hover,
         &:focus {
-            color: rgba(31, 35, 72, 0.6);
+            color: nimiq-blue(0.6);
         }
     }
 

@@ -702,9 +702,9 @@ export default defineComponent({
             border-radius: 50%;
             background: var(--bg-primary);
             box-shadow:
-                0px 0.337011px 2px rgba(31, 35, 72, 0.08),
-                0px 1.5px 3px rgba(31, 35, 72, 0.08),
-                0px 4px 16px rgba(31, 35, 72, 0.11);
+                0px 0.337011px 2px nimiq-blue(0.08),
+                0px 1.5px 3px nimiq-blue(0.08),
+                0px 4px 16px nimiq-blue(0.11);
 
             opacity: 0;
             transition: opacity 0.3s var(--nimiq-ease);
@@ -1275,10 +1275,10 @@ export default defineComponent({
     .mobile-action-bar {
         margin: 0;
         box-shadow:
-            0px 0px 4.12454px rgba(31, 35, 72, 0.031357),
-            0px 0px 12.5187px rgba(31, 35, 72, 0.045),
-            0px 0px 32.0004px rgba(31, 35, 72, 0.058643),
-            0px 0px 80px rgba(31, 35, 72, 0.07);
+            0px 0px 4.12454px nimiq-blue(0.031357),
+            0px 0px 12.5187px nimiq-blue(0.045),
+            0px 0px 32.0004px nimiq-blue(0.058643),
+            0px 0px 80px nimiq-blue(0.07);
     }
 
     .promo-box {

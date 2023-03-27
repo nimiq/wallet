@@ -44,6 +44,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/variables.scss';
+@import '../../scss/functions.scss';
 
 .groundfloor {
     background: var(--bg-base);
@@ -68,7 +69,7 @@ export default defineComponent({
         right: 0;
         bottom: 0;
         left: 0;
-        background: rgba(31, 35, 72, 0.6);
+        background: nimiq-blue(0.6);
         opacity: 0;
         pointer-events: none;
 

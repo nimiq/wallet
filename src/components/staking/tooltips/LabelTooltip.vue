@@ -51,13 +51,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../../scss/functions.scss';
+
 .validator-label-tip {
     z-index: 2;
 }
 
 .validator-label-trigger {
     align-items: center;
-    box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
+    box-shadow: inset 0 0 0 1.5px nimiq-blue(0.15);
     padding: 0 1.375rem 0 0.25rem;
     border-radius: 5rem;
     white-space: nowrap;

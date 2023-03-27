@@ -211,6 +211,7 @@ export default Modal;
 
 <style lang="scss" scoped>
 @import "../../scss/variables.scss";
+@import '../../scss/functions.scss';
 
 .backdrop {
     position: fixed;
@@ -219,7 +220,7 @@ export default Modal;
     z-index: 5;
     width: 100%;
     height: 100%;
-    background: rgba(31, 35, 72, 0.6);
+    background: nimiq-blue(0.6);
     align-items: center;
     justify-content: center;
 
@@ -257,7 +258,7 @@ export default Modal;
     bottom: 0;
     left: 0;
     z-index: 5;
-    background: rgba(31, 35, 72, 0.5);
+    background: nimiq-blue(0.5);
     border-radius: 1.25rem;
 }
 
@@ -358,7 +359,7 @@ export default Modal;
 }
 
 .modal-enter, .modal-leave-to {
-    background-color: rgba(31, 35, 72, 0) !important;
+    background-color: nimiq-blue(0) !important;
 
     .wrapper {
         opacity: 0 !important;

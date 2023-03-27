@@ -984,6 +984,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/functions.scss';
+
 .modal {
     &.wider-overlay ::v-deep .overlay {
         width: 63.5rem;
@@ -1144,10 +1146,10 @@ export default defineComponent({
         align-self: center;
         font-size: var(--small-size);
         font-weight: 600;
-        color: rgba(31, 35, 72, 0.6);
+        color: nimiq-blue(0.6);
         padding: 0.75rem 1.5rem;
         border-radius: 5rem;
-        box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.15);
+        box-shadow: inset 0 0 0 1.5px nimiq-blue(0.15);
 
         &.fees {
             svg,

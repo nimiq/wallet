@@ -169,7 +169,7 @@ export default defineComponent({
     .form-control:focus,
     .input-group .form-control:focus {
         border: none;
-        box-shadow: inset 0 0 0 1.5px rgba(31, 35, 72, 0.5) !important;
+        box-shadow: inset 0 0 0 1.5px nimiq-blue(0.5) !important;
         font-weight: bold;
         height: 2.875rem;
         color: black;
@@ -318,6 +318,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/functions.scss';
+
 .modal ::v-deep .small-page {
     height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
 }

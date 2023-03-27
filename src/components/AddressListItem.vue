@@ -87,6 +87,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../scss/variables.scss';
+@import '../scss/functions.scss';
 
 .address-button {
     font-size: var(--body-size);
@@ -128,7 +129,7 @@ export default defineComponent({
         background: white;
         border-radius: 50%;
         box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
-        color: rgba(31, 35, 72, 0.7);
+        color: nimiq-blue(0.7);
     }
 
     > svg.staking-icon {

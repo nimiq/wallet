@@ -72,15 +72,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/functions.scss';
+
 .button-group {
     width: max-content;
     display: flex;
     align-items: center;
     background: linear-gradient(0deg,
-        rgba(31, 35, 72, 0.06), rgba(31, 35, 72, 0.06)), #FFFFFF;
+        nimiq-blue(0.06), nimiq-blue(0.06)), #FFFFFF;
     padding: 0.25rem;
     border-radius: 5rem;
-    box-shadow: 0 0 0 1px rgba(31, 35, 72, 0.03);
+    box-shadow: 0 0 0 1px nimiq-blue(0.03);
 
     input {
         display: none;
@@ -96,7 +98,7 @@ export default defineComponent({
         transition: color 300ms var(--nimiq-ease);
 
        &:not(.active) {
-            color: rgba(31, 35, 72, 0.5);
+            color: nimiq-blue(0.5);
 
             &:not(.disabled):before {
                 cursor: pointer;
@@ -109,12 +111,12 @@ export default defineComponent({
 
             &:not(.disabled):hover,
             &:not(.disabled):focus {
-                color: rgba(31, 35, 72, 0.8);
+                color: nimiq-blue(0.8);
             }
 
             &.disabled {
                 cursor: not-allowed;
-                color: rgba(31, 35, 72, 0.3);
+                color: nimiq-blue(0.3);
             }
         }
 

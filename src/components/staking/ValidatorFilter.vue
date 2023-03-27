@@ -7,11 +7,11 @@
                     {{ $t('TrustScore') }}
                 </button>
             </template>
-            <template #[FilterState.PAYOUT]>
+            <!-- <template #[FilterState.PAYOUT]>
                 <button class="validator-switch">
                     {{ $t('Payout Time') }}
                 </button>
-            </template>
+            </template> -->
             <template #[FilterState.REWARD]>
                 <button class="validator-switch">
                     {{ $t('Reward') }}

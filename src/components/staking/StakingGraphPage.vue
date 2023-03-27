@@ -37,9 +37,9 @@
                 </Tooltip>
             </span>
             <div style="height: 150px; background: gainsboro;">
-                <h2
+                <!-- <h2
                     style="font-size: 32px; font-weigth: bold; color: darkgrey; text-align: center; margin-top: 56px;"
-                >📈 Graph will come here</h2>
+                >📈 Graph will come here</h2> -->
             </div>
             <!-- <StakingGraph
                 :stakedAmount="newStake" :apy="validator && 'reward' in validator ? validator.reward : 0"

@@ -53,6 +53,7 @@
                     <header class="flex-row">
                         <span class="nq-icon nimiq-logo"></span>
                         <span>NIM</span>
+                        <AccountStake v-if="accountStake" />
                         <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
                             <MiniAddIcon/>
                         </button>
@@ -366,6 +367,7 @@ import { useConfig } from '../../composables/useConfig';
 import router from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useStakingStore } from '../../stores/Staking';
+import AccountStake from '../staking/AccountStake.vue';
 
 export default defineComponent({
     name: 'account-overview',
@@ -632,6 +634,7 @@ export default defineComponent({
         LinkedDoubleArrowIcon,
         AddressListBackgroundSvg,
         StakingSummaryMobile,
+        AccountStake,
     },
 });
 </script>
@@ -881,11 +884,16 @@ export default defineComponent({
             opacity: .7;
         }
     }
+
+    .account-stake {
+        margin-left: auto;
+    }
+
     .add-address {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-left: auto;
+        margin-left: 3rem;
         height: 3rem;
         width: 3rem;
         border-radius: 2.5rem;

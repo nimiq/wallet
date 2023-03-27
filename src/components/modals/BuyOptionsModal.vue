@@ -297,6 +297,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/functions.scss';
+
 .modal ::v-deep .small-page {
     width: 63.5rem !important;
     min-height: 63.5rem !important;
@@ -407,9 +409,9 @@ header {
     &:focus {
         transform: translate3D(0, -0.5rem, 0);
         box-shadow:
-            0px 18px 38px rgba(31, 35, 72, 0.07),
-            0px 7px 8.5px rgba(31, 35, 72, 0.04),
-            0px 2px 2.5px rgba(31, 35, 72, 0.02);
+            0px 18px 38px nimiq-blue(0.07),
+            0px 7px 8.5px nimiq-blue(0.04),
+            0px 2px 2.5px nimiq-blue(0.02);
 
         &::before {
             opacity: 1;

@@ -645,9 +645,9 @@ export default defineComponent({
             &.tooltip ::v-deep .tooltip-box {
                 width: 32rem;
                 box-shadow:
-                    0px 18px 38px rgba(31, 35, 72, 0.14),
-                    0px 7px 8.5px rgba(31, 35, 72, 0.08),
-                    0px 2px 2.5px rgba(31, 35, 72, 0.04);
+                    0px 18px 38px nimiq-blue(0.14),
+                    0px 7px 8.5px nimiq-blue(0.08),
+                    0px 2px 2.5px nimiq-blue(0.04);
             }
 
             svg {

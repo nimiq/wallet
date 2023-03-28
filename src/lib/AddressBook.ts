@@ -5,7 +5,7 @@ import { validatorData } from './Validators';
 AddressBook.BOOK['NQ77 0000 0000 0000 0000 0000 0000 0000 0001'] = 'Staking Contract';
 
 // DevNet
-AddressBook.BOOK['NQ37 7C3V VMN8 FRPN FXS9 PLAG JMRE 8SC6 KUSQ'] = 'DevNet Faucet';
+AddressBook.BOOK['NQ37 7C3V VMN8 FRPN FXS9 PLAG JMRE 8SC6 KUSQ'] = 'Testnet Faucet';
 for (const [address, { label }] of Object.entries(validatorData)) {
     AddressBook.BOOK[address] = label;
 }

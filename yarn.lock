@@ -1499,9 +1499,9 @@
   integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
 
 "@nimiq/core-web@next":
-  version "2.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.0.tgz#58db54ec33fd97af896fbaeea1ab1d882b9d1e7b"
-  integrity sha512-OeK1W1RtSNUB0IE9M8dG7I//Vb82yesNMpE2RCPMX7+ASI1Ye1AGFZejdbJ4vhgt2z6fOj2ToGW9AtRqBLgUpQ==
+  version "2.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.1.tgz#bb779c47e9401faedd38c22ea7fbbde1007c7cbb"
+  integrity sha512-q5a4WWc2Ii917vfp+kT+FwKQfgs9OESY9x7rzTT4Q5IPegkQdnNp2KLysKXA4IJecRI3acz9ffwWY9vWwskR5w==
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"

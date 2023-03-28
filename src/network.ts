@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
-import type { Client, PlainStakingAccount, PlainTransactionDetails } from '@nimiq/core-web';
+import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core-web';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
@@ -155,7 +155,7 @@ export async function launchNetwork() {
 
     client.addHeadChangedListener(async (hash) => {
         const { height, epoch } = await client.getBlock(hash);
-        console.debug('Head is now at', height);
+        if (height % 10 === 0) console.log('Head is now at', height);
         network$.height = height;
 
         // The NanoApi did recheck all balances on every block
@@ -185,7 +185,7 @@ export async function launchNetwork() {
 
     async function updateValidators() {
         await client.waitForConsensusEstablished();
-        const stakes = (await client.getAccount(STAKING_CONTRACT_ADDRESS) as PlainStakingAccount)
+        const stakes = (await client.getAccount(STAKING_CONTRACT_ADDRESS) as PlainStakingContract)
             .activeValidators
             .map(([address, balance]) => ({
                 address,
@@ -231,12 +231,9 @@ export async function launchNetwork() {
     function transactionListener(plain: PlainTransactionDetails) {
         if (plain.recipient === STAKING_CONTRACT_ADDRESS) {
             if (plain.data.raw.startsWith(StakingTransactionType.STAKE.toString(16).padStart(2, '0'))) {
-                if (!balances.has(plain.sender)) {
+                if (!balances.has(plain.sender) && 'staker' in plain.data) {
                     // This is a staking transaction from a validator to one of our stakers
-                    // Decode staker address and update that staker
-                    const hexAddress = plain.data.raw.substring(2, 22);
-                    updateStakes([hexAddress]);
-
+                    updateStakes([plain.data.staker]);
                     // Then ignore this transaction
                     // TODO: Store for tracking of staking rewards?
                     return;

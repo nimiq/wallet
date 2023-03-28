@@ -6,8 +6,8 @@ import { ENV_DEV } from '../lib/Constants';
 export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
-    nimiqSeeds: ['/dns4/seed1.v2.nimiq-testnet.com/tcp/8443/ws'],
-    faucetEndpoint: 'https://faucet.v2.nimiq-testnet.com',
+    nimiqSeeds: ['/dns4/seed1.pos.nimiq-testnet.com/tcp/8443/wss'],
+    faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
     reportToSentry: false,
     enableBitcoin: false,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute

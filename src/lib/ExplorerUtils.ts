@@ -6,9 +6,9 @@ export function explorerTxLink(asset: CryptoCurrency, hash: string) {
     const { config } = useConfig();
     switch (asset) {
         case CryptoCurrency.NIM:
-            return `https://${config.environment === ENV_MAIN
-                ? ''
-                : (config.environment === 'albatross' ? 'albatross.' : 'test.')}nimiq.watch/#${hash}`;
+            return config.environment === ENV_MAIN
+                ? `https://nimiq.watch/#${hash}`
+                : `https://albatross.nimiq.tools/transaction/${hash}`;
         case CryptoCurrency.BTC:
             return `https://blockstream.info${config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
         case CryptoCurrency.USDC:
@@ -21,9 +21,9 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
     const { config } = useConfig();
     switch (asset) {
         case SwapAsset.NIM:
-            return `https://${config.environment === ENV_MAIN
-                ? ''
-                : (config.environment === 'albatross' ? 'albatross.' : 'test.')}nimiq.watch/#${address}`;
+            return config.environment === ENV_MAIN
+                ? `https://nimiq.watch/#${address}`
+                : `https://albatross.nimiq.tools/account/${address}`;
         case SwapAsset.BTC:
             return `https://blockstream.info${config.environment === ENV_MAIN ? '' : '/testnet'}/address/${address}`;
         case SwapAsset.USDC:

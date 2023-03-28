@@ -1,9 +1,5 @@
 <template>
-    <button
-        class="validator-list-item reset flex-row"
-        @focus="$emit('focus', true)"
-        @blur="$emit('focus', false)">
-
+    <button class="validator-list-item reset flex-row">
         <div class="validator-item-wrapper flex-row">
             <div class="validator-left validator-icon">
                 <img v-if="'icon' in validator"
@@ -12,8 +8,25 @@
                 <Identicon v-else :address="validator.address"/>
             </div>
             <div class="validator-item-mid flex-column">
-                <div class="validator-item-inner-row">
-                    <span v-if="'label' in validator" class="validator-label">{{ validator.label }}</span>
+                <div class="validator-item-inner-row flex-row">
+                    <template v-if="'label' in validator">
+                        <span class="validator-label">{{ validator.label }}</span>
+                        <Tooltip preferredPosition="top" :container="{ $el: container }" @click.native.stop>
+                            <InfoCircleSmallIcon slot="trigger"/>
+                            <blockquote>
+                                <template v-if="false"><!-- TODO: check for validator description -->
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.<br /><br />
+                                    Explicabo iste exercitationem laudantium.
+                                </template>
+                                <template v-else>
+                                    <span class="no-description">{{ $t('No description available') }}</span>
+                                </template>
+                            </blockquote>
+
+                            <p>{{ $t('The validator is solely responsible for information provided above.') }}</p>
+                            <a href="#" class="nq-link">{{ $t('Nimiq Watch Website') }}<ArrowRightSmallIcon /></a>
+                        </Tooltip>
+                    </template>
                     <ShortAddress v-else :address="validator.address"/>
                 </div>
                 <div class="validator-item-inner-row flex-row validator-trust">
@@ -29,7 +42,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
-import { Identicon } from '@nimiq/vue-components';
+import { ArrowRightSmallIcon, Identicon, InfoCircleSmallIcon, Tooltip } from '@nimiq/vue-components';
 import { Validator } from '../../stores/Staking';
 import { getPayoutText } from '../../lib/StakingUtils';
 
@@ -39,6 +52,7 @@ import ShortAddress from '../ShortAddress.vue';
 
 export default defineComponent({
     props: {
+        container: HTMLElement,
         validator: {
             type: Object as () => Validator,
             required: true,
@@ -58,11 +72,16 @@ export default defineComponent({
         ValidatorTrustScore,
         ValidatorRewardBubble,
         ShortAddress,
+        Tooltip,
+        InfoCircleSmallIcon,
+        ArrowRightSmallIcon,
     },
 });
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/functions.scss';
+
 .validator-list-item {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -81,66 +100,103 @@ export default defineComponent({
 
     transition: background-color 400ms var(--nimiq-ease);
 
-    &:focus {
-        outline: 4px solid #f2f2f4;
-        box-shadow: none;
-    }
-
-    input::-moz-focus-inner {
-        border: 0;
-    }
+    &:hover, &:focus { background-color: #f2f2f4 }
 
     .validator-icon {
         img, .identicon {
-            width: 5.5rem;
-            height: 5.5rem;
+            --size: 5.5rem;
+
+            width: var(--size);
+            height: var(--size);
             display: block;
         }
     }
+}
 
-    &:hover {
-        background-color: #f2f2f4;
+.validator-item-wrapper {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    padding: 0 2.25rem;
+
+    .validator-item-mid {
+        flex-grow: 1;
+        flex-shrink: 1;
+        padding-left: 2.25rem;
+        min-width: 0;
     }
 
-    .validator-item-wrapper {
-        width: 100%;
-        height: 100%;
+    .validator-item-inner-row {
+        line-height: 3rem;
         align-items: center;
-        padding: 0 2.25rem;
+        padding-right: 2rem;
+        font-size: var(--body-size);
 
-        .validator-item-mid {
-            flex-grow: 1;
-            flex-shrink: 1;
-            padding-left: 2.25rem;
-            min-width: 0;
+        .validator-label { font-weight: 600 }
+        .short-address { font-weight: 500 }
+
+        .tooltip {
+            margin-left: 0.625rem;
+
+            blockquote {
+                margin: 0;
+                padding-left: 1.25rem;
+                border-left: 1.5px solid rgba(white, .4);
+
+                font-size: 2rem;
+
+                pre { color: white }
+                span.no-description {
+                    opacity: .25;
+                    font-style: italic;
+                }
+            }
+
+            p {
+                opacity: .6;
+                font-size: 1.75rem;
+            }
+
+            ::v-deep {
+                .trigger {
+                    cursor: pointer;
+                    color: nimiq-blue(.4);
+
+                    transition: color 400ms var(--nimiq-ease);
+
+                    &:hover, &:focus { color: nimiq-blue(.6) }
+                }
+                .tooltip-box {
+                    width: 31.5rem;
+                    line-height: 130%;
+                    cursor: default;
+                }
+            }
+
+            &[class*='position-top'] ::v-deep .tooltip-box { transform: translateY(-1.9rem) }
+            &[class*='position-bottom'] ::v-deep .tooltip-box { transform: translateY(1.9rem) }
         }
-        .validator-item-inner-row {
-            line-height: 3rem;
+
+        .nq-link {
+            color: #0CA6FE; // Light blue on dark
+            display: flex;
             align-items: center;
-            padding-right: 2rem;
-            font-size: var(--body-size);
 
-            .validator-label {
-                font-weight: 600;
+            svg {
+                margin-left: 1rem;
+                transition: transform 400ms var(--nimiq-ease);
             }
 
-            .short-address {
-                font-weight: 500;
-            }
-        }
-
-        .validator-trust {
-            font-size: var(--small-size);
-            color: var(--text-50);
-        }
-
-        .dot {
-            margin: 0 0.675rem;
-        }
-
-        .validator-payout {
-            white-space: nowrap;
+            &:hover svg { transform: translateX(.5rem) }
         }
     }
+
+    .validator-trust {
+        color: var(--text-50);
+        font-size: var(--small-size);
+    }
+
+    .dot { margin: 0 0.675rem }
+    .validator-payout { white-space: nowrap }
 }
 </style>

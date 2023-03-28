@@ -161,9 +161,9 @@ module.exports = {
     // and manually served, e.g. via python -m SimpleHTTPServer 8081, instead of a simple yarn --serve
     pwa: {
         name: {
-            mainnet: 'Nimiq Wallet',
-            testnet: 'Nimiq Testnet',
-            local: 'Nimiq Local',
+            mainnet: 'Nimiq PoS Wallet',
+            testnet: 'PoS Testnet Wallet',
+            local: 'PoS Local Wallet',
         }[buildName],
         msTileColor: '#1F2348',
         manifestOptions: {

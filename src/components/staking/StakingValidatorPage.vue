@@ -1,5 +1,5 @@
 <template>
-    <div class="stake-validator-page flex-column">
+    <div class="staking-validator-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
                 {{ $t('Choose a Validator') }}
@@ -12,21 +12,15 @@
         </PageHeader>
         <PageBody>
             <ValidatorFilter @changed="changeFilter" @search="onSearch"/>
-            <div class="mask-container">
-                <div class="scroll-mask-top" :class="{ 'disabled-mask': !masks }"></div>
-                <div class="scroll-container">
-                    <div class="validator-list">
-                        <ValidatorListItem
-                            v-for="validator in sortedList" :key="validator.address"
-                            :validator="validator"
-                            @click.native="selectValidator(validator.address)"
-                            @focus="onValidatorFocusChange"
-                            sortable
-                        />
-                        <div style="height: 1rem; flex-shrink: 0;"></div>
-                    </div>
-                </div>
-                <div class="scroll-mask-bottom" :class="{ 'disabled-mask': !masks }"></div>
+            <div class="validator-list" ref="validatorList$">
+                <div class="scroll-mask top"></div>
+                <ValidatorListItem
+                    v-for="validator in sortedList" :key="validator.address"
+                    :validator="validator"
+                    :container="validatorList$"
+                    @click.native="selectValidator(validator.address)"
+                />
+                <div class="scroll-mask bottom"></div>
             </div>
         </PageBody>
     </div>
@@ -47,19 +41,13 @@ import { FilterState } from '../../lib/StakingUtils';
 
 export default defineComponent({
     setup(props, context) {
-        const masks = ref(true);
-        const onValidatorFocusChange = (state: boolean) => {
-            masks.value = !state;
-        };
-
-        const filter = ref(FilterState.TRUST);
-
-        function changeFilter(newFilter: FilterState) {
-            filter.value = newFilter;
-        }
-
         const { activeAddress } = useAddressStore();
         const { validatorsList, activeStake, setStake } = useStakingStore();
+
+        const validatorList$ = ref<HTMLElement | null>(null);
+
+        const filter = ref(FilterState.TRUST);
+        const changeFilter = (newFilter: FilterState) => filter.value = newFilter;
 
         const sortedList = computed(() => {
             switch (filter.value) {
@@ -118,11 +106,10 @@ export default defineComponent({
         }
 
         return {
-            masks,
+            validatorList$,
             changeFilter,
             sortedList,
             selectValidator,
-            onValidatorFocusChange,
             onSearch,
         };
     },
@@ -138,7 +125,9 @@ export default defineComponent({
 <style lang="scss" scoped>
     @import '../../scss/mixins.scss';
 
-    .stake-validator-page {
+    @include scroll-mask(true, true, true);
+
+    .staking-validator-page {
         flex-grow: 1;
     }
 
@@ -148,50 +137,14 @@ export default defineComponent({
 
     .page-body {
         padding: 1rem 0;
-        overflow: hidden;
-
-        .mask-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .scroll-container {
-            overflow-y: auto;
-            @extend %custom-scrollbar;
-            &::-webkit-scrollbar {
-                width: 0.75rem;
-            }
-            scrollbar-width: thin;
-        }
-
-        .scroll-mask-top {
-            position: absolute;
-            top: 0;
-            left: 0.875rem;
-            width: calc(100% - 2.25rem);
-            height: 2.5rem;
-            background: linear-gradient(0deg, rgba(244, 244, 244, 0), white);
-        }
-
-        .scroll-mask-bottom {
-            position: absolute;
-            left: 0.875rem;
-            bottom: 0;
-            width: calc(100% - 2.25rem);
-            height: 2.5rem;
-            background: linear-gradient(0deg, white, rgba(244, 244, 244, 0));
-        }
-
-        .disabled-mask {
-            background: none;
-        }
 
         .validator-list {
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow-y: auto;
             width: 100%;
             height: 46.5rem;
-            padding-top: 1rem;
         }
     }
     .nq-text {

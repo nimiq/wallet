@@ -199,24 +199,26 @@ export async function launchNetwork() {
                 console.warn('High-stake validator:', { dominance: Math.round(dominance * 1e3) / 10, address });
             }
 
-            // This is just an approximation of a trust score
-            // TODO: Formalize trust score calculation
-            const trustPenalty = Math.min((dominance * 10) ** 2 / 10, 1);
-            const trust = (1 - trustPenalty) * 5;
-
             let validator: Validator = {
                 address,
-                trust,
                 dominance,
             };
 
-            const data = validatorData[address];
+            type ValueOf<T> = T[keyof T];
+            const data = validatorData[address] as ValueOf<typeof validatorData> | undefined;
+
             if (data) {
+                // This is just an approximation of a trust score
+                // TODO: Formalize trust score calculation
+                const trustPenalty = Math.min((dominance * 10) ** 2 / 10, 1);
+                const trust = (1 - trustPenalty) * 5;
+
                 const reward = await calculateStakingReward(data.fee, totalStake);
 
                 validator = {
                     ...validator,
                     ...data,
+                    trust,
                     reward,
                 };
             }

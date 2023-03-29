@@ -1,4 +1,9 @@
-export const validatorData: Record<string, { label: string, fee: number, payoutType: 'direct' | 'restake' }> = {
+import { RegisteredValidator } from '../stores/Staking';
+
+type ValidatorInfo = Omit<RegisteredValidator, 'address' | 'dominance' | 'trust' | 'reward'>;
+
+export const validatorData: Record<string, ValidatorInfo> = {
+    // Team Demo validators
     'NQ70 JM4N PU3R Y2U2 9RGX ABJE VKA4 4TBB HKF1': {
         label: 'Pooly McPoolface',
         fee: 0.09,
@@ -39,4 +44,19 @@ export const validatorData: Record<string, { label: string, fee: number, payoutT
         fee: 0.11,
         payoutType: 'restake',
     },
+
+    // Community validators
+    'NQ65 DHN8 4BSR 5YSX FC3V BB5J GKM2 GB2L H17C': {
+        label: 'AceStaking',
+        fee: 0.1, // "The fee varies depending on the network. It will be between 8 and 12% on testnet"
+        payoutType: 'direct',
+        description: 'The Ace in staking',
+    },
+    // '': {
+    //     label: 'Mint Pool',
+    //     fee: 0.11,
+    //     payoutType: 'restake',
+    //     description: 'Minting together',
+    //     icon: 'minpool.png',
+    // },
 };

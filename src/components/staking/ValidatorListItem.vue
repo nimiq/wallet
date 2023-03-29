@@ -14,9 +14,8 @@
                         <Tooltip preferredPosition="top" :container="{ $el: container }" @click.native.stop>
                             <InfoCircleSmallIcon slot="trigger"/>
                             <blockquote>
-                                <template v-if="false"><!-- TODO: check for validator description -->
-                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.<br /><br />
-                                    Explicabo iste exercitationem laudantium.
+                                <template v-if="validator.description">
+                                    {{ validator.description }}
                                 </template>
                                 <template v-else>
                                     <span class="no-description">{{ $t('No description available') }}</span>

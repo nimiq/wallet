@@ -15,7 +15,6 @@ export type Stake = {
 
 export type RawValidator = {
     address: string,
-    trust: number,
     dominance: number, // Percentage
 }
 

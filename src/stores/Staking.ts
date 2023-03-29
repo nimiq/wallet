@@ -24,7 +24,7 @@ export type RegisteredValidator = {
     icon?: string,
     payoutType: 'direct' | 'restake',
     fee: number,
-    // description: string,
+    description?: string,
     // link?: string,
     // uptime: number, // Percentage
     // monthsOld: number,

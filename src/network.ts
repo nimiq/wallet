@@ -26,12 +26,12 @@ export async function getNetworkClient() {
     clientPromise = clientPromise || (async () => {
         // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
         // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
-        const { ClientConfiguration } = await import('@nimiq/core-web');
+        const { ClientConfiguration, Client } = await import('@nimiq/core-web');
         const clientConfig = new ClientConfiguration();
         clientConfig.network(config.environment === ENV_MAIN ? 'albatross' : 'testalbatross');
         clientConfig.seedNodes(config.nimiqSeeds);
         clientConfig.logLevel('debug');
-        return clientConfig.instantiateClient();
+        return Client.create(clientConfig.build());
     })();
 
     return clientPromise;

@@ -57,6 +57,6 @@ export const validatorData: Record<string, ValidatorInfo> = {
         fee: 0.1,
         payoutType: 'restake',
         description: 'Minting together',
-        icon: 'minpool.svg',
+        icon: 'mintpool.svg',
     },
 };

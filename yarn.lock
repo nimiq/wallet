@@ -1591,9 +1591,11 @@
   integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
 
 "@nimiq/core-web@next":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.2.tgz#49367585f9761852271b40523adccae8e4005806"
-  integrity sha512-6UVtr69E2GVoOqOR5f1qBPy4mvahn2QLnstxJJ2GCEpW83XIWn7HozZumzOd3p2h+wKejxTQyxJL0OvizWhfSQ==
+  version "2.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.3.tgz#e3d4b8d000c0ab4da451d407b4a334afac67e444"
+  integrity sha512-V3W7BAkBFO+EbA+Jr90/0wu8+/v/w6Eeqmfao2YaihM2W03u8Moel+4VQgXwjpF9OpGzjooNtjz9D7jGUjsCow==
+  dependencies:
+    comlink "^4.4.1"
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
@@ -4068,6 +4070,11 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
   dependencies:
     delayed-stream "~1.0.0"
+
+comlink@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/comlink/-/comlink-4.4.1.tgz#e568b8e86410b809e8600eb2cf40c189371ef981"
+  integrity sha512-+1dlx0aY5Jo1vHy/tSsIGpSkN4tS9rZSW8FIhG0JH/crs9wwweswIo/POr451r7bZww3hFbPAKnTpimzL/mm4Q==
 
 commander@^2.20.0:
   version "2.20.3"

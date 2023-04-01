@@ -11,20 +11,9 @@
                 <div class="validator-item-inner-row flex-row">
                     <template v-if="'label' in validator">
                         <span class="validator-label">{{ validator.label }}</span>
-                        <Tooltip preferredPosition="top" :container="{ $el: container }" @click.native.stop>
-                            <InfoCircleSmallIcon slot="trigger"/>
-                            <blockquote>
-                                <template v-if="validator.description">
-                                    {{ validator.description }}
-                                </template>
-                                <template v-else>
-                                    <span class="no-description">{{ $t('No description available') }}</span>
-                                </template>
-                            </blockquote>
-
-                            <p>{{ $t('The validator is solely responsible for information provided above.') }}</p>
-                            <a href="#" class="nq-link">{{ $t('Nimiq Watch Website') }}<ArrowRightSmallIcon /></a>
-                        </Tooltip>
+                        <ValidatorDescriptionTooltip :container="container" :validator="validator">
+                            <InfoCircleSmallIcon class="trigger"/>
+                        </ValidatorDescriptionTooltip>
                     </template>
                     <ShortAddress v-else :address="validator.address"/>
                 </div>
@@ -41,13 +30,14 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
-import { ArrowRightSmallIcon, Identicon, InfoCircleSmallIcon, Tooltip } from '@nimiq/vue-components';
+import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { Validator } from '../../stores/Staking';
 import { getPayoutText } from '../../lib/StakingUtils';
 
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
+import ValidatorDescriptionTooltip from './tooltips/ValidatorDescriptionTooltip.vue';
 
 export default defineComponent({
     props: {
@@ -71,9 +61,8 @@ export default defineComponent({
         ValidatorTrustScore,
         ValidatorRewardBubble,
         ShortAddress,
-        Tooltip,
+        ValidatorDescriptionTooltip,
         InfoCircleSmallIcon,
-        ArrowRightSmallIcon,
     },
 });
 </script>
@@ -134,59 +123,12 @@ export default defineComponent({
         .validator-label { font-weight: 600 }
         .short-address { font-weight: 500 }
 
-        .tooltip {
-            margin-left: 0.625rem;
+        .trigger {
+            color: nimiq-blue(0.4);
 
-            blockquote {
-                margin: 0;
-                padding-left: 1.25rem;
-                border-left: 1.5px solid rgba(white, .4);
+            transition: color 400ms var(--nimiq-ease);
 
-                font-size: 2rem;
-
-                pre { color: white }
-                span.no-description {
-                    opacity: .25;
-                    font-style: italic;
-                }
-            }
-
-            p {
-                opacity: .6;
-                font-size: 1.75rem;
-            }
-
-            ::v-deep {
-                .trigger {
-                    cursor: pointer;
-                    color: nimiq-blue(.4);
-
-                    transition: color 400ms var(--nimiq-ease);
-
-                    &:hover, &:focus { color: nimiq-blue(.6) }
-                }
-                .tooltip-box {
-                    width: 31.5rem;
-                    line-height: 130%;
-                    cursor: default;
-                }
-            }
-
-            &[class*='position-top'] ::v-deep .tooltip-box { transform: translateY(-1.9rem) }
-            &[class*='position-bottom'] ::v-deep .tooltip-box { transform: translateY(1.9rem) }
-        }
-
-        .nq-link {
-            color: #0CA6FE; // Light blue on dark
-            display: flex;
-            align-items: center;
-
-            svg {
-                margin-left: 1rem;
-                transition: transform 400ms var(--nimiq-ease);
-            }
-
-            &:hover svg { transform: translateX(.5rem) }
+            &:hover, &:focus { color: nimiq-blue(.6) }
         }
     }
 

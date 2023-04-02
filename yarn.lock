@@ -1596,7 +1596,7 @@
 
 "@nimiq/vue-components@https://github.com/nimiq/vue-components#build/albatross":
   version "0.1.0"
-  resolved "https://github.com/nimiq/vue-components#0f3f40dbf38142a72cf09b4d4a256351dc68bb7e"
+  resolved "https://github.com/nimiq/vue-components#b4f0abdf091e8edca637cfb956d846d98c31bd92"
   dependencies:
     "@nimiq/iqons" "^1.6.0"
     "@nimiq/style" "^0.8.5"

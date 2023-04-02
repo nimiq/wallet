@@ -209,7 +209,6 @@ export default defineComponent({
             position: absolute;
             top: 2.675rem;
             left: 1.5rem;
-            z-index: 900;
 
             ::v-deep .trigger {
                 line-height: 1.2;

@@ -16,12 +16,16 @@
         <PageBody>
             <div class="staking-rounded-background flex-column">
                 <div class="staking-icons-lace">
-                    <img v-for="(icon, index) in sortedIcons.slice().reverse().concat(sortedIcons.slice(1))"
-                        :key="index"
-                        :src="`/img/staking/providers/${icon}`"
-                        alt="validator-logo"
-                        :style="{top: `${((Math.sin((index + 1) * (Math.PI / 10))) * 20)}px`}"
-                    />
+                    <template v-for="(validator, index) in validators">
+                        <img v-if="'icon' in validator"
+                            :key="index"
+                            :src="`/img/staking/providers/${validator.icon}`"
+                            alt="validator-logo"
+                            :style="{ top: getTopPosition(index) }"
+                        />
+                        <Identicon v-else :key="index" :address="validator.address"
+                            :style="{ top: getTopPosition(index) }"/>
+                    </template>
                 </div>
                 <div class="staking-under-icons-text">
                     {{ $t('So called validators facilitate this process.'
@@ -37,8 +41,8 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
-import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { RegisteredValidator, useStakingStore } from '../../stores/Staking';
+import { PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
+import { useStakingStore } from '../../stores/Staking';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 // const progression = (i:number, n:number) => {
@@ -52,20 +56,29 @@ import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     setup() {
-        const sortedIcons = computed(() => (useStakingStore().validatorsList.value
-            .filter((validator) => 'icon' in validator) as RegisteredValidator[])
-            .sort((a, b) => b.trust - a.trust)
-            .map((validator) => validator.icon));
+        // const sortedIcons = computed(() => (useStakingStore().validatorsList.value
+        // .filter((validator) => 'icon' in validator) as RegisteredValidator[])
+        // .sort((a, b) => b.trust - a.trust)
+        // .map((validator) => validator.icon));
+
+        const validators = computed(() => useStakingStore().validatorsList.value);
+
+        function getTopPosition(index: number) {
+            return `${((Math.sin((index + 1) * (Math.PI / 10))) * 20)}px`;
+        }
 
         return {
             // progression,
-            sortedIcons,
+            // sortedIcons,
+            validators,
+            getTopPosition,
         };
     },
     components: {
         PageHeader,
         PageBody,
         HeroIcon,
+        Identicon,
     },
 });
 </script>
@@ -113,8 +126,9 @@ export default defineComponent({
                 flex-grow: 1;
                 min-height: 9rem;
 
-                img {
+                img, .identicon {
                     position: relative;
+                    display: inline-block;
                     width: 5.375rem;
                     height: 5.375rem;
                     margin-left: .81rem;

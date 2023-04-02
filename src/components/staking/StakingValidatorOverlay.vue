@@ -1,6 +1,6 @@
 <template>
     <div class="staking-validator-page flex-column">
-        <PageHeader :backArrow="true" @back="$emit('back')">
+        <PageHeader @back="$emit('back')">
             <template #default>
                 {{ $t('Choose a Validator') }}
             </template>

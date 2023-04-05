@@ -20,6 +20,7 @@ export const useNetworkStore = createStore({
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
         height: (state): Readonly<number> => state.height,
         consensus: (state): Readonly<string> => state.consensus,
+        peerCount: (state): Readonly<number> => state.peerCount,
     },
     actions: {
         addPeer(peer: Peer) {

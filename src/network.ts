@@ -43,7 +43,7 @@ export async function launchNetwork() {
 
     const client = await getNetworkClient();
 
-    const { state: network$, addPeer, removePeer } = useNetworkStore();
+    const { state: network$, addPeer, removePeer, patch: patchNetworkStore } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
     const stakingStore = useStakingStore();
@@ -154,9 +154,9 @@ export async function launchNetwork() {
     let currentEpoch = 0;
 
     client.addHeadChangedListener(async (hash) => {
-        const { height, epoch } = await client.getBlock(hash);
+        const { height, epoch, timestamp } = await client.getBlock(hash);
         if (height % 10 === 0) console.log('Head is now at', height);
-        network$.height = height;
+        patchNetworkStore({ height, timestamp });
 
         // The NanoApi did recheck all balances on every block
         // I don't think we need to do this here, as wallet addresses are only expected to

@@ -7,6 +7,8 @@ export type Peer = {
     connected: boolean,
 }
 
+const NETWORK_STALLED_BLOCK_GAP = 60e3; // 60 seconds
+
 export const useNetworkStore = createStore({
     id: 'network',
     state: () => ({
@@ -14,12 +16,19 @@ export const useNetworkStore = createStore({
         peerCount: 0,
         peers: {} as Record<string, Peer>,
         height: 0,
+        timestamp: 0, // timestamp of the lastest block
         fetchingTxHistory: 0,
     }),
     getters: {
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
         height: (state): Readonly<number> => state.height,
-        consensus: (state): Readonly<string> => state.consensus,
+        consensus: (state): Readonly<string> => {
+            // If no new block is received within 30 seconds since the last block, the network is considered stalled.
+            if (state.consensus === 'established' && state.timestamp < Date.now() - NETWORK_STALLED_BLOCK_GAP) {
+                return 'stalled';
+            }
+            return state.consensus;
+        },
         peerCount: (state): Readonly<number> => state.peerCount,
     },
     actions: {

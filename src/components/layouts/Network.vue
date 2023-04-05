@@ -118,6 +118,7 @@ export default defineComponent({
         const { config } = useConfig();
 
         const consensusStateString = computed(() => ({
+            stalled: context.root.$t('paused'),
             syncing: context.root.$t('syncing'),
             connecting: context.root.$t('connecting'),
             established: context.root.$t('established'),

@@ -44,7 +44,7 @@ export default defineComponent({
     opacity: 1 !important;
 }
 
-.connecting {
+.connecting, .stalled {
     color: var(--nimiq-orange) !important;
     opacity: 1 !important;
 }

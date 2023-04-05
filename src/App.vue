@@ -1,5 +1,8 @@
 <template>
-    <div id="app" :class="{'value-masked': amountsHidden}">
+    <div id="app" :class="{'value-masked': amountsHidden, 'consensus-stalled': consensus === 'stalled'}">
+        <div v-if="consensus === 'stalled'" class="red-notice">
+            The PoS testnet is temporarily not processing transactions or staking rewards, thank you for your patience.
+        </div>
         <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>
 
@@ -36,6 +39,7 @@ import { useSettingsStore } from './stores/Settings';
 import { useWindowSize } from './composables/useWindowSize';
 import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
 import { useSwipes } from './composables/useSwipes';
+import { useNetworkStore } from './stores/Network';
 
 export default defineComponent({
     name: 'app',
@@ -136,11 +140,14 @@ export default defineComponent({
             if (isMobile.value && swipingEnabled.value === 1) attachSwipe();
         });
 
+        const { consensus } = useNetworkStore();
+
         return {
             activeMobileColumn,
             hasAccounts,
             amountsHidden,
             $main,
+            consensus,
         };
     },
     components: {
@@ -347,6 +354,35 @@ export default defineComponent({
                 }
             }
         }
+    }
+}
+
+.red-notice {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--nimiq-orange-bg);
+    color: white;
+    font-size: var(--body-size);
+    text-align: center;
+    padding: 1rem;
+}
+
+#app.consensus-stalled {
+    padding-top: 4.5rem;
+}
+
+@media (max-width: 751px) { /* When notice text breaks into two lines */
+    #app.consensus-stalled {
+        padding-top: 6.75rem;
+    }
+}
+
+@media (max-width: 418px) { /* When notice text breaks into three lines */
+    #app.consensus-stalled {
+        padding-top: 9.125rem;
     }
 }
 </style>

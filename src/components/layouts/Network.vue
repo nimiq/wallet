@@ -24,7 +24,7 @@
                 <template #network-info>
                     <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
                 </template>
-                <template #consensus>{{ consensusState }}</template>
+                <template #consensus>{{ consensusStateString }}</template>
                 <template #peerCount>{{ $tc('{count} Peer | {count} Peers', peerCount) }}</template>
                 <template #fee>
                     <i18n tag="span" path="{amount}/tx">
@@ -114,19 +114,15 @@ const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
 export default defineComponent({
     setup(props, context) {
-        const { state: $network } = useNetworkStore();
+        const { consensus, peerCount } = useNetworkStore();
         const { config } = useConfig();
 
         const peerCount = computed(() => $network.peerCount);
-        const consensusState = computed(() => {
-            switch ($network.consensus as 'lost' | 'syncing' | 'connecting' | 'established') {
-                case 'lost': return context.root.$t('lost');
-                case 'syncing': return context.root.$t('syncing');
-                case 'connecting': return context.root.$t('connecting');
-                case 'established': return context.root.$t('established');
-                default: return 'Unknown'; // should never happen
-            }
-        });
+        const consensusStateString = computed(() => ({
+            syncing: context.root.$t('syncing'),
+            connecting: context.root.$t('connecting'),
+            established: context.root.$t('established'),
+        }[consensus.value as 'syncing' | 'connecting' | 'established']));
 
         const showNetworkInfo = ref(!window.localStorage.getItem(LOCALSTORAGE_KEY));
 
@@ -188,7 +184,7 @@ export default defineComponent({
             scrollMap,
             updateAvailable,
             peerCount,
-            consensusState,
+            consensusStateString,
             btcFee,
             usdcFee,
             router,

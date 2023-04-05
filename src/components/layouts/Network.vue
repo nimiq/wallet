@@ -24,8 +24,8 @@
                 <template #network-info>
                     <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
                 </template>
-                <template #consensus>{{getConsensusStateString()}}</template>
-                <template #peerCount>{{ $tc('{count} Peer | {count} Peers', $network.peerCount) }}</template>
+                <template #consensus>{{ consensusStateString }}</template>
+                <template #peerCount>{{ $tc('{count} Peer | {count} Peers', peerCount) }}</template>
                 <template #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculateUsdcFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
@@ -114,17 +114,14 @@ const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
 export default defineComponent({
     setup(props, context) {
-        const { state: $network } = useNetworkStore();
+        const { consensus, peerCount } = useNetworkStore();
         const { config } = useConfig();
 
-        function getConsensusStateString() {
-            return {
-                lost: context.root.$t('lost'),
-                syncing: context.root.$t('syncing'),
-                connecting: context.root.$t('connecting'),
-                established: context.root.$t('established'),
-            }[$network.consensus as 'lost' | 'syncing' | 'connecting' | 'established'];
-        }
+        const consensusStateString = computed(() => ({
+            syncing: context.root.$t('syncing'),
+            connecting: context.root.$t('connecting'),
+            established: context.root.$t('established'),
+        }[consensus.value as 'syncing' | 'connecting' | 'established']));
 
         const showNetworkInfo = ref(!window.localStorage.getItem(LOCALSTORAGE_KEY));
 
@@ -182,8 +179,8 @@ export default defineComponent({
             $map,
             scrollMap,
             updateAvailable,
-            $network,
-            getConsensusStateString,
+            peerCount,
+            consensusStateString,
             btcFee,
             usdcFee,
             router,

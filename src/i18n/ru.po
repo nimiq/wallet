@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Daniel, 2022\n"
-"Language-Team: Russian (https://www.transifex.com/nimiq-foundation/teams/110181/ru/)\n"
+"Language-Team: Russian (https://app.transifex.com/nimiq-foundation/teams/110181/ru/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
@@ -28,7 +28,7 @@ msgstr "{addresses} отправлять и получать транзакци�
 
 #: src/components/modals/UsdcSendModal.vue:171
 #: src/components/modals/UsdcSendModal.vue:194
-#: src/components/swap/SwapModal.vue:62
+#: src/components/swap/SwapModal.vue:61
 msgid "{amount} fee"
 msgstr ""
 
@@ -89,7 +89,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:99
+#: src/components/swap/SwapModal.vue:98
 msgid "{value} remaining"
 msgstr "Осталось {value}"
 
@@ -112,7 +112,7 @@ msgstr "+{n} больше"
 
 #: src/components/modals/UsdcSendModal.vue:165
 #: src/components/modals/UsdcSendModal.vue:188
-#: src/components/swap/SwapModal.vue:56
+#: src/components/swap/SwapModal.vue:55
 msgid "< {amount} fee"
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:94
+#: src/components/swap/SwapModal.vue:93
 msgid "30-day Limit"
 msgstr "30-ти дневный лимит"
 
@@ -540,14 +540,14 @@ msgstr "Увеличьте размер комиссии, чтобы ускор�
 
 #: src/components/modals/BuyCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:180
-#: src/components/swap/SwapModal.vue:188
+#: src/components/swap/SwapModal.vue:186
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot} и {FastspotGO}."
 
 #: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/SellCryptoModal.vue:194
-#: src/components/swap/SwapModal.vue:200
+#: src/components/swap/SwapModal.vue:198
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot}."
 
@@ -619,7 +619,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:283
 #: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:241
+#: src/components/swap/SwapModal.vue:239
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
 
@@ -664,8 +664,8 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:186 src/components/swap/SwapModal.vue:191
-#: src/components/swap/SwapModal.vue:203
+#: src/components/swap/SwapModal.vue:184 src/components/swap/SwapModal.vue:189
+#: src/components/swap/SwapModal.vue:201
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Подтвердить"
@@ -965,7 +965,7 @@ msgstr "установлен"
 msgid "Euro"
 msgstr "евро"
 
-#: src/components/swap/SwapModal.vue:78
+#: src/components/swap/SwapModal.vue:77
 msgid "Exchange rate"
 msgstr ""
 
@@ -1375,7 +1375,7 @@ msgstr "Ссылка недоступна в этом браузере"
 msgid "Load file"
 msgstr "Загрузить файл"
 
-#: src/components/swap/SwapModal.vue:112
+#: src/components/swap/SwapModal.vue:111
 msgid "Loading fees and limits"
 msgstr ""
 
@@ -1386,7 +1386,7 @@ msgstr "Загружаем Moonpay..."
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:97
+#: src/components/swap/SwapModal.vue:96
 msgid "loading..."
 msgstr "загрузка..."
 
@@ -2217,11 +2217,11 @@ msgstr ""
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:10
+#: src/components/swap/SwapModal.vue:40
 msgid "Swap not possible. Ledger accounts are not supported."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:41
+#: src/components/swap/SwapModal.vue:37
 msgid "Swap not possible. Your balance is lower than the fee."
 msgstr ""
 
@@ -2271,7 +2271,7 @@ msgstr "Банк обрабатывает вашу транзакцию."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комиссия (в настоящее время {amount}) составляет минимальную сумму."
 
-#: src/components/swap/SwapModal.vue:996 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:994 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Минимальная сумма определяется комиссией."

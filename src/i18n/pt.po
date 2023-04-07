@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Inês Marques Gomes, 2023\n"
-"Language-Team: Portuguese (https://www.transifex.com/nimiq-foundation/teams/110181/pt/)\n"
+"Language-Team: Portuguese (https://app.transifex.com/nimiq-foundation/teams/110181/pt/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
@@ -25,7 +25,7 @@ msgstr "{addresses} enviam e recebem transações."
 
 #: src/components/modals/UsdcSendModal.vue:171
 #: src/components/modals/UsdcSendModal.vue:194
-#: src/components/swap/SwapModal.vue:62
+#: src/components/swap/SwapModal.vue:61
 msgid "{amount} fee"
 msgstr "{amount} de taxa"
 
@@ -86,7 +86,7 @@ msgstr "{provider} é fornecido por {companyLogo}"
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:99
+#: src/components/swap/SwapModal.vue:98
 msgid "{value} remaining"
 msgstr "{value} restante"
 
@@ -109,7 +109,7 @@ msgstr "+{n} mais"
 
 #: src/components/modals/UsdcSendModal.vue:165
 #: src/components/modals/UsdcSendModal.vue:188
-#: src/components/swap/SwapModal.vue:56
+#: src/components/swap/SwapModal.vue:55
 msgid "< {amount} fee"
 msgstr "< {amount} de taxa"
 
@@ -154,7 +154,7 @@ msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:94
+#: src/components/swap/SwapModal.vue:93
 msgid "30-day Limit"
 msgstr "Limite de 30 dias"
 
@@ -540,7 +540,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:180
-#: src/components/swap/SwapModal.vue:188
+#: src/components/swap/SwapModal.vue:186
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
@@ -549,7 +549,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:213
 #: src/components/modals/SellCryptoModal.vue:194
-#: src/components/swap/SwapModal.vue:200
+#: src/components/swap/SwapModal.vue:198
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 "Ao clicar em '{text}', está a concordar com o Termos de Serviço do "
@@ -623,7 +623,7 @@ msgstr "Escolher um Remetente"
 #: src/components/modals/BuyCryptoModal.vue:283
 #: src/components/modals/SellCryptoModal.vue:247
 #: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:241
+#: src/components/swap/SwapModal.vue:239
 msgid "Choose an Address"
 msgstr "Escolher um Endereço"
 
@@ -668,8 +668,8 @@ msgstr "Comparativamente centralizado"
 msgid "Comparably high transaction fees/time"
 msgstr "Taxas/tempo de transação comparativamente altas"
 
-#: src/components/swap/SwapModal.vue:186 src/components/swap/SwapModal.vue:191
-#: src/components/swap/SwapModal.vue:203
+#: src/components/swap/SwapModal.vue:184 src/components/swap/SwapModal.vue:189
+#: src/components/swap/SwapModal.vue:201
 #: src/components/swap/SwapModalFooter.vue:8
 msgid "Confirm"
 msgstr "Confirmar"
@@ -973,7 +973,7 @@ msgstr "estabelecido"
 msgid "Euro"
 msgstr "Euro"
 
-#: src/components/swap/SwapModal.vue:78
+#: src/components/swap/SwapModal.vue:77
 msgid "Exchange rate"
 msgstr "Taxa de câmbio"
 
@@ -1403,7 +1403,7 @@ msgstr "O link não está disponível neste browser"
 msgid "Load file"
 msgstr "Carregar ficheiro"
 
-#: src/components/swap/SwapModal.vue:112
+#: src/components/swap/SwapModal.vue:111
 msgid "Loading fees and limits"
 msgstr "A carregar taxas e limites"
 
@@ -1414,7 +1414,7 @@ msgstr "A carregar Moonpay..."
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:97
+#: src/components/swap/SwapModal.vue:96
 msgid "loading..."
 msgstr "a carregar..."
 
@@ -2268,11 +2268,11 @@ msgstr "Troca NIM {arrowlcon} BTC"
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Troca NIM {arrowlcon} USDC"
 
-#: src/components/swap/SwapModal.vue:10
+#: src/components/swap/SwapModal.vue:40
 msgid "Swap not possible. Ledger accounts are not supported."
 msgstr "Troca não possível. Contas de registo não são suportadas."
 
-#: src/components/swap/SwapModal.vue:41
+#: src/components/swap/SwapModal.vue:37
 msgid "Swap not possible. Your balance is lower than the fee."
 msgstr "Troca não possível. O seu saldo é menor que o valor da taxa."
 
@@ -2323,7 +2323,7 @@ msgstr "O banco está a processar a sua transação."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "As taxas (de momento a {amount}) determinam o valor mínimo."
 
-#: src/components/swap/SwapModal.vue:996 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:994 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "As taxas determinam o valor mínimo."

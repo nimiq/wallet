@@ -52,6 +52,9 @@ interface StorageBackend {
     del(key: string): Promise<void>;
 }
 
+// For native, use "Ionic Storage" with SQL driver:
+// https://ionic.io/blog/choosing-a-data-storage-solution-ionic-storage-capacitor-storage-sqlite-or-ionic-secure-storage
+
 class IndexedDBStorage {
     private static lastError = '';
 

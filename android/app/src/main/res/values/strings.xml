@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Nimiq Wallet</string>
+    <string name="title_activity_main">Nimiq Wallet</string>
+    <string name="package_name">wallet.nimiq.com</string>
+    <string name="custom_url_scheme">wallet.nimiq.com</string>
+</resources>

@@ -1,4 +1,5 @@
-import HubApi, {
+import HubApi from '@nimiq/hub-api';
+import type {
     Account,
     SignTransactionRequest,
     SignBtcTransactionRequest,
@@ -7,9 +8,10 @@ import HubApi, {
     RefundSwapRequest,
     SignPolygonTransactionRequest,
 } from '@nimiq/hub-api';
-import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
+import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
+import NativeApi from './capacitor';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
@@ -23,23 +25,23 @@ import { sendTransaction as sendBtcTx } from './electrum';
 import { createTransactionRequest, sendTransaction as sendUsdcTx } from './ethers';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
-import { useSettingsStore } from './stores/Settings';
+// import { useSettingsStore } from './stores/Settings';
 import { guessUserCurrency, useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_2_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
-import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
+// import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import { useGeoIp } from './composables/useGeoIp';
 import { RelayServerInfo } from './lib/usdc/OpenGSN';
 
 export function shouldUseRedirects(): boolean {
-    const { canInstallPwa } = usePwaInstallPrompt();
-    // When not in PWA (which we are if PWA can be installed), don't use redirects
-    if (canInstallPwa.value) return false;
+    // const { canInstallPwa } = usePwaInstallPrompt();
+    // // When not in PWA (which we are if PWA can be installed), don't use redirects
+    // if (canInstallPwa.value) return false;
 
-    // Use redirect in Samsung Browser PWA, because hub popups opened from the PWA don't get the request ("invalid
-    // request" error), while popups opened from the regular Samsung Browser work fine.
-    if (navigator.userAgent.includes('SamsungBrowser')) return true;
+    // // Use redirect in Samsung Browser PWA, because hub popups opened from the PWA don't get the request ("invalid
+    // // request" error), while popups opened from the regular Samsung Browser work fine.
+    // if (navigator.userAgent.includes('SamsungBrowser')) return true;
 
     // Firefox does not reliably provide the beforeinstallprompt event, preventing detection of PWA installed status
     // // Firefox Mobile
@@ -49,26 +51,34 @@ export function shouldUseRedirects(): boolean {
 }
 
 function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
-    const { hubBehavior } = useSettingsStore();
+    // const { hubBehavior } = useSettingsStore();
 
-    if (hubBehavior.value === 'popup') return undefined;
-    if (hubBehavior.value === 'redirect' || shouldUseRedirects()) {
-        return new HubApi.RedirectRequestBehavior(window.location.href, localState);
-    }
+    // if (hubBehavior.value === 'popup') return undefined;
+    // if (hubBehavior.value === 'redirect' || shouldUseRedirects()) {
+    //     return new HubApi.RedirectRequestBehavior(window.location.href, localState);
+    // }
 
     return undefined;
 }
 
+const isNative = true;
+
 // We can't use the reactive config via useConfig() here because that one can only be used after the composition-api
 // plugin has been registered in Vue 2.
-const hubApi = new HubApi(Config.hubEndpoint);
+const hubApi = isNative
+    ? new NativeApi()
+    : new HubApi(Config.hubEndpoint);
 
-hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
-    // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
-    // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
-    // listed in the Hub iframe cookie).
-    processAndStoreAccounts(accounts);
+// hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
+//     // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
+//     // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
+//     // listed in the Hub iframe cookie).
+//     processAndStoreAccounts(accounts);
 
+//     handleInitialOnboarding(accounts);
+// });
+
+export function handleInitialOnboarding(accounts: Account[]) {
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
     // We do not want to overwrite the fiat currency they already set, so we use a second localstorage key to
@@ -119,40 +129,40 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
         }
         default: break;
     }
-});
+}
 
-hubApi.on(HubApi.RequestType.MIGRATE, () => {
-    router.onReady(() => router.push('/migration-welcome'));
-});
+// hubApi.on(HubApi.RequestType.MIGRATE, () => {
+//     router.onReady(() => router.push('/migration-welcome'));
+// });
 
-hubApi.on(HubApi.RequestType.SIGN_TRANSACTION, async (tx) => {
-    // TODO: Show status notification
-    await sendTx(tx);
-});
+// hubApi.on(HubApi.RequestType.SIGN_TRANSACTION, async (tx) => {
+//     // TODO: Show status notification
+//     await sendTx(tx);
+// });
 
-hubApi.on(HubApi.RequestType.SIGN_BTC_TRANSACTION, async (tx) => {
-    // TODO: Show status notification
-    await sendBtcTx(tx);
-});
+// hubApi.on(HubApi.RequestType.SIGN_BTC_TRANSACTION, async (tx) => {
+//     // TODO: Show status notification
+//     await sendBtcTx(tx);
+// });
 
-hubApi.on(HubApi.RequestType.CREATE_CASHLINK, (cashlink) => {
-    const proxyStore = useProxyStore();
-    // TODO: Show status notification
-    proxyStore.addHubCashlink(cashlink);
-});
+// hubApi.on(HubApi.RequestType.CREATE_CASHLINK, (cashlink) => {
+//     const proxyStore = useProxyStore();
+//     // TODO: Show status notification
+//     proxyStore.addHubCashlink(cashlink);
+// });
 
-hubApi.on(HubApi.RequestType.MANAGE_CASHLINK, (cashlink) => {
-    const proxyStore = useProxyStore();
-    proxyStore.addHubCashlink(cashlink);
-});
+// hubApi.on(HubApi.RequestType.MANAGE_CASHLINK, (cashlink) => {
+//     const proxyStore = useProxyStore();
+//     proxyStore.addHubCashlink(cashlink);
+// });
 
-hubApi.on(HubApi.RequestType.SETUP_SWAP, (swapResult) => {
-    // TODO: Start swap process
-    console.log({ swapResult }); // eslint-disable-line no-console
-});
+// hubApi.on(HubApi.RequestType.SETUP_SWAP, (swapResult) => {
+//     // TODO: Start swap process
+//     console.log({ swapResult }); // eslint-disable-line no-console
+// });
 
 export async function initHubApi() {
-    return hubApi.checkRedirectResponse();
+    // return hubApi.checkRedirectResponse();
 }
 
 const APP_NAME = 'Wallet';
@@ -346,7 +356,7 @@ export async function syncFromHub() {
 }
 
 export async function onboard(asRedirect = false) {
-    if (asRedirect) {
+    if (asRedirect && !isNative) {
         const behavior = new HubApi.RedirectRequestBehavior(window.location.href);
         hubApi.onboard({
             appName: APP_NAME,
@@ -359,6 +369,10 @@ export async function onboard(asRedirect = false) {
     if (!accounts) return false;
 
     processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
+
+    if (isNative) {
+        handleInitialOnboarding(accounts);
+    }
 
     return true;
 }

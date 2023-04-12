@@ -28,7 +28,8 @@ if (process.env.NODE_ENV !== 'production') {
     release = child_process.execSync("git tag --points-at HEAD").toString().split('\n')[0];
 }
 if (!release) {
-    throw new Error('The current commit must be tagged with the release version name.');
+    // throw new Error('The current commit must be tagged with the release version name.');
+    release = 'capacitor';
 }
 
 /**

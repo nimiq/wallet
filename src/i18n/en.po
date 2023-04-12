@@ -214,10 +214,6 @@ msgstr ""
 msgid "Add a public message..."
 msgstr ""
 
-#: src/components/modals/AccountMenuModal.vue:50
-msgid "Add account"
-msgstr ""
-
 #: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr ""

@@ -8,11 +8,11 @@ export default {
     environment: ENV_DEV,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     reportToSentry: false,
-    enableBitcoin: true,
+    enableBitcoin: false,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
     usdc: {
-        enabled: true,
+        enabled: false,
         networkId: 80001,
         rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
         rpcMaxBlockRange: 10_000,
@@ -42,7 +42,7 @@ export default {
     },
 
     fastspot: {
-        enabled: true,
+        enabled: false,
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',
@@ -62,7 +62,7 @@ export default {
     },
 
     ten31Pass: {
-        enabled: true,
+        enabled: false,
         apiEndpoint: window.sessionStorage['use-local-kyc-server'] // switch that can be set to use local kyc server
             // Note that locally signed grants are not actually eligible for higher limits on the deployed Fastspot and
             // OASIS test instances because they don't exist in the deployed TEN31 Pass's database.

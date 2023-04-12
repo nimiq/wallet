@@ -46,9 +46,9 @@
             />
         </div>
 
-        <button class="nq-button-s add-account" @click="onboard(false)" @mousedown.prevent>
+        <!-- <button class="nq-button-s add-account" @click="onboard(false)" @mousedown.prevent>
             {{ $t('Add account') }}
-        </button>
+        </button> -->
     </Modal>
 </template>
 

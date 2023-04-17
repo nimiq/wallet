@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "author": "Nimiq (https://www.nimiq.com)",
+  "packageManager": "yarn@1.22.19",
   "scripts": {
     "serve": "yarn pre && yarn vue-cli-service serve --port 8081",
     "build": "yarn pre && yarn vue-cli-service build",
@@ -26,6 +27,7 @@
     "@awesome-cordova-plugins/fingerprint-aio": "^6.3.0",
     "@capacitor/android": "^4.7.3",
     "@capacitor/core": "^4.7.3",
+    "@capacitor/ios": "^4.7.3",
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",

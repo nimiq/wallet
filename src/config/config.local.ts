@@ -1,11 +1,11 @@
-import { ENV_DEV } from '../lib/Constants';
+import { ENV_TEST } from '../lib/Constants';
 
 // Note: you'll usually want to use the reactive variant exported by useConfig instead of the plain Config, especially
 // in component templates (where the reactive config is also available as $config), computed props and watchers. Use of
 // the reactive config is not possible in Vue 2 before the composition-api plugin has been registered.
 export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
-    environment: ENV_DEV,
+    environment: ENV_TEST,
     nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
     reportToSentry: false,
     enableBitcoin: false,

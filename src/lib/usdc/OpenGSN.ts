@@ -79,11 +79,11 @@ export const POLYGON_BLOCKS_PER_MINUTE = 60 / 2;
 /**
  * The number of blocks to filter at a time
  */
-const FILTER_BLOCKS_SIZE = 3 * POLYGON_BLOCKS_PER_MINUTE;
+const FILTER_BLOCKS_SIZE = 10 * POLYGON_BLOCKS_PER_MINUTE;
 /**
  * Servers registered more than 1 hour ago have a high risk of being down
  */
-const OLDEST_BLOCK_TO_FILTER = 60 * POLYGON_BLOCKS_PER_MINUTE;
+const MAX_BLOCKS_TO_FILTER = 60 * POLYGON_BLOCKS_PER_MINUTE;
 /**
  * The maximum number of relay servers to try
  */
@@ -105,7 +105,7 @@ async function* relayServerRegisterGen(
     const blockHeight = await getPolygonBlockNumber();
     const batchBlocks = batchBlocksGen({
         height: blockHeight,
-        untilBlock: OLDEST_BLOCK_TO_FILTER,
+        untilBlock: blockHeight - MAX_BLOCKS_TO_FILTER,
         batchSize: FILTER_BLOCKS_SIZE,
     });
 

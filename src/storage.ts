@@ -9,7 +9,7 @@ import { useAddressStore } from './stores/Address';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
 import { useContactsStore } from './stores/Contacts';
-import { useFiatStore } from './stores/Fiat';
+import { useFiatStore, guessUserCurrency } from './stores/Fiat';
 import { useProxyStore } from './stores/Proxy';
 import { useBtcAddressStore } from './stores/BtcAddress';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
@@ -21,6 +21,7 @@ import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
 import { useConfig } from './composables/useConfig';
+import { useGeoIp } from './composables/useGeoIp';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -138,7 +139,21 @@ export async function initStorage() {
                 btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
             }),
         ),
-        initStoreStore(useFiatStore(), StorageKeys.FIAT),
+        initStoreStore(useFiatStore(), StorageKeys.FIAT).then((storedFiatState) => {
+            if (storedFiatState) return;
+            // Get location from GeoIP service to set initial fiat currency. We do this in the background to not block
+            // app startup. There is theoretically a race condition between the geo ip check and the Wallet redirecting
+            // to the Hub Onboarding if there are no accounts present. However, the accounts are fetched in syncFromHub
+            // which is only started after the storages are initialized (see main.ts), and involves loading the Hub
+            // iframe, such that we can expect the geo ip check to resolve before that.
+            useGeoIp().locate().then((location) => {
+                if (!location.country) return;
+                useFiatStore().state.currency = guessUserCurrency(location.country);
+            }).catch((error) => {
+                // eslint-disable-next-line no-console
+                console.debug(`Failed to locate user for fiat currency: ${error.message || error}`);
+            });
+        }),
         initStoreStore(useSwapsStore(), StorageKeys.SWAPS),
         initStoreStore(useBankStore(), StorageKeys.BANK),
         initStoreStore(

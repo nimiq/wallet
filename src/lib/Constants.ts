@@ -26,5 +26,6 @@ export const BTC_UNCOPYABLE_ADDRESS_GAP = 1;
 
 export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 
-export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-modal-shown';
-export const WELCOME_2_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
+// LocalStorage flag used to determine whether the new welcome screen should be shown, ignoring whether the
+// original welcome screen was already shown.
+export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';

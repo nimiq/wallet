@@ -252,7 +252,7 @@
         <PageBody v-else-if="page === 5" class="your-way" :class="[`highlight-${highlightedCurrency}`, {
             'fade-out': isPageBodyFadedOut,
         }]">
-            <svg viewBox="0 0 36 36" class="circle-of-life">
+            <svg viewBox="0 0 36 36">
                 <path
                     class="segment segment-nim"
                     d="M18 2.0845
@@ -386,7 +386,6 @@ import {
     CryptoCurrency,
     FiatCurrency,
     WELCOME_MODAL_LOCALSTORAGE_KEY,
-    WELCOME_2_MODAL_LOCALSTORAGE_KEY,
     FIAT_CURRENCY_DENYLIST,
 } from '../../lib/Constants';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -541,9 +540,7 @@ export default defineComponent({
             if (page.value < 5) {
                 page.value += 1;
             } else {
-                // Set both localstorage keys to true
                 window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
-                window.localStorage.setItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY, '1');
                 await $modal.value!.forceClose();
             }
         }

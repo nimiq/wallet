@@ -24,12 +24,11 @@ import { createTransactionRequest, sendTransaction as sendUsdcTx } from './ether
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
-import { guessUserCurrency, useFiatStore } from './stores/Fiat';
+import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
-import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_2_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
-import { useGeoIp } from './composables/useGeoIp';
 import { RelayServerInfo } from './lib/usdc/OpenGSN';
 
 export function shouldUseRedirects(): boolean {
@@ -64,34 +63,22 @@ function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | 
 const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
+    const { config } = useConfig();
+
     // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
     // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
     // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
+    if (!config.usdc.enabled) return; // do not show usdc related welcome modals
+
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
-
-    // We do not want to overwrite the fiat currency they already set, so we use a second localstorage key to
-    // separate first-time users from returning users.
-    const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
-
-    if (!welcomeModalAlreadyShown) {
-        // Get location from GeoIP service to set fiat currency
-        useGeoIp().locate().then((location) => {
-            if (location.country) {
-                useFiatStore().state.currency = guessUserCurrency(location.country);
-            }
-        }).catch((error: Error) => {
-            // eslint-disable-next-line no-console
-            console.debug(`Failed to locate user for fiat currency: ${error.message}`);
-        });
-    }
 
     const { requestType } = accounts[0];
 
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
-            if (!welcome2ModalAlreadyShown) {
+            if (!welcomeModalAlreadyShown) {
                 // Show regular first-time welcome flow
                 router.onReady(() => router.push('/welcome'));
             }
@@ -110,7 +97,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
             if (
                 activeAccountInfo.value?.type === AccountType.BIP39
                 && !activeAccountInfo.value?.polygonAddresses?.length
-                && !welcome2ModalAlreadyShown
+                && !welcomeModalAlreadyShown
             ) {
                 // Prompt for USDC activation, which then leads into the new welcome modal
                 router.onReady(() => router.push('/usdc-activation'));
@@ -333,11 +320,11 @@ export async function syncFromHub() {
     }
 
     const { activeAccountInfo } = useAccountStore();
-    const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
+    const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
     if (
         activeAccountInfo.value?.type === AccountType.BIP39
         && !activeAccountInfo.value?.polygonAddresses?.length
-        && !welcome2ModalAlreadyShown
+        && !welcomeModalAlreadyShown
         && config.usdc.enabled
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal

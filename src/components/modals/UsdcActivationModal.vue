@@ -49,7 +49,7 @@ import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { activateUsdc } from '../../hub';
-import { CryptoCurrency } from '../../lib/Constants';
+import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { AccountType, useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
@@ -97,10 +97,11 @@ export default defineComponent({
                     await context.root.$router.push('/transactions');
                 }
 
-                // const welcome2ModalAlreadyShown = window.localStorage.getItem(WELCOME_2_MODAL_LOCALSTORAGE_KEY);
-                // if (!welcome2ModalAlreadyShown) {
-                await context.root.$router.push('/welcome');
-                // }
+                const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
+                if (!welcomeModalAlreadyShown) {
+                    // Open welcome modal with additional USDC info if not shown yet.
+                    await context.root.$router.push('/welcome');
+                }
             }
         }
 

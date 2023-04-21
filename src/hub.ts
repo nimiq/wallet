@@ -84,8 +84,8 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
             }
             break;
         case HubApi.RequestType.LOGIN:
-            if (accounts[0].polygonAddresses.length) {
-                // Show "USDC is now available" modal
+            if (accounts[0].polygonAddresses.length && !welcomeModalAlreadyShown) {
+                // Show "USDC is now available" modal which afterwards leads into the welcome flow.
                 router.onReady(() => router.push('/usdc-activation'));
             }
             break;

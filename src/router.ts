@@ -1,4 +1,4 @@
-import VueRouter, { RouteConfig, Route } from 'vue-router';
+import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
 import Vue from 'vue';
 import { Component } from 'vue-router/types/router.d';
 
@@ -10,6 +10,7 @@ import AccountOverview from './components/layouts/AccountOverview.vue';
 import AddressOverview from './components/layouts/AddressOverview.vue';
 
 import { AccountType, useAccountStore } from './stores/Account';
+import { CryptoCurrency } from './lib/Constants';
 
 // Main views
 const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
@@ -423,79 +424,50 @@ const router = new VueRouter({
     routes,
 });
 
-// Offer to activate Bitcoin if a route requires it, but it's not activated yet
-const viewsRequiringActivatedBitcoin = new Set<Component>([BtcSendModal, BtcReceiveModal, SwapModal]);
-router.beforeEach((to, from, next) => {
-    const requiresActivatedBitcoin = to.matched.some(({ components }) =>
-        Object.values(components).some((view) => viewsRequiringActivatedBitcoin.has(view)));
-    const {
-        activeAccountInfo: { value: activeAccount },
-        hasBitcoinAddresses: { value: isBitcoinActivated },
-    } = useAccountStore();
-    const isLegacyAccount = !!activeAccount && activeAccount.type === AccountType.LEGACY;
-    if (!requiresActivatedBitcoin || isBitcoinActivated) {
-        // can continue to the requested view
-        next();
-    } else if (isLegacyAccount) {
-        // legacy accounts don't support Bitcoin; go to main view
-        next({
-            name: 'root',
-            replace: true,
-        });
-    } else {
-        if (to.name === 'swap' && !to.params.pair?.includes('BTC')) {
+// Offer to activate Bitcoin or USDC if a route requires it, but it's not activated yet
+function createActivationNavigationGuard(
+    currency: CryptoCurrency.BTC | CryptoCurrency.USDC,
+    viewsRequiringActivation: Set<Component>,
+    isCurrencyActivated: () => boolean,
+) {
+    return (to: Route, from: Route, next: NavigationGuardNext) => {
+        const requiresCurrencyActivation = to.matched.some(({ components }) =>
+            Object.values(components).some((view) => viewsRequiringActivation.has(view)
+                || (view === SwapModal && !!to.params.pair?.includes(currency.toUpperCase()))));
+        const { activeAccountInfo: { value: activeAccount } } = useAccountStore();
+        const isLegacyAccount = !!activeAccount && activeAccount.type === AccountType.LEGACY;
+        if (!requiresCurrencyActivation || isCurrencyActivated()) {
+            // can continue to the requested view
             next();
-            return;
+        } else if (isLegacyAccount) {
+            // legacy accounts are not supported; go to main view
+            next({
+                name: 'root',
+                replace: true,
+            });
+        } else {
+            // open currency activation modal; store original target route in hash
+            next({
+                name: `${currency}-activation`,
+                // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams
+                // in BtcActivationModal/UsdcActivationModal and also by the RPC api in case that the Hub activation
+                // request is executed as redirect.
+                hash: `#redirect=${encodeURIComponent(to.fullPath)}`,
+                replace: true,
+            });
         }
-
-        // open Bitcoin activation modal; store original target route in hash
-        next({
-            name: 'btc-activation',
-            // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams in
-            // BtcActivationModal and also by the RPC api in case that the Hub BTC activation request is executed as
-            // redirect.
-            hash: `#redirect=${encodeURIComponent(to.fullPath)}`,
-            replace: true,
-        });
-    }
-});
-
-// Offer to activate USDC if a route requires it, but it's not activated yet
-const viewsRequiringActivatedUsdc = new Set<Component>([UsdcSendModal, UsdcReceiveModal, SwapModal]);
-router.beforeEach((to, from, next) => {
-    const requiresActivatedUsdc = to.matched.some(({ components }) =>
-        Object.values(components).some((view) => viewsRequiringActivatedUsdc.has(view)));
-    const {
-        activeAccountInfo: { value: activeAccount },
-        hasUsdcAddresses: { value: isUsdcActivated },
-    } = useAccountStore();
-    const isLegacyAccount = !!activeAccount && activeAccount.type === AccountType.LEGACY;
-    if (!requiresActivatedUsdc || isUsdcActivated) {
-        // can continue to the requested view
-        next();
-    } else if (isLegacyAccount) {
-        // legacy accounts don't support Usdc; go to main view
-        next({
-            name: 'root',
-            replace: true,
-        });
-    } else {
-        if (to.name === 'swap' && !to.params.pair?.includes('USDC')) {
-            next();
-            return;
-        }
-
-        // open Usdc activation modal; store original target route in hash
-        next({
-            name: 'usdc-activation',
-            // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams in
-            // UsdcActivationModal and also by the RPC api in case that the Hub USDC activation request is executed as
-            // redirect.
-            hash: `#redirect=${encodeURIComponent(to.fullPath)}`,
-            replace: true,
-        });
-    }
-});
+    };
+}
+router.beforeEach(createActivationNavigationGuard(
+    CryptoCurrency.BTC,
+    new Set([BtcSendModal, BtcReceiveModal]),
+    () => useAccountStore().hasBitcoinAddresses.value,
+));
+router.beforeEach(createActivationNavigationGuard(
+    CryptoCurrency.USDC,
+    new Set([UsdcSendModal, UsdcReceiveModal]),
+    () => useAccountStore().hasUsdcAddresses.value,
+));
 
 export default router;
 

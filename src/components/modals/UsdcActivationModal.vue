@@ -45,27 +45,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { activateUsdc } from '../../hub';
 import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
-import { AccountType, useAccountStore } from '../../stores/Account';
+import { useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeAccountId, activeAccountInfo, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
+        const { activeAccountId, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
 
         const { isMobile } = useWindowSize();
 
         const $modal = ref<any | null>(null);
-
-        onMounted(() => {
-            if (activeAccountInfo.value?.type === AccountType.LEDGER) {
-                close(true);
-            }
-        });
 
         async function enableUsdc() {
             await activateUsdc(activeAccountId.value!);
@@ -74,7 +68,7 @@ export default defineComponent({
             await close();
         }
 
-        async function close(skipping = false) {
+        async function close(skipDefaultRedirects = false) {
             // check for a redirect set by the USDC activation navigation guard in router.ts
             let redirect: string | undefined;
             try {
@@ -88,8 +82,7 @@ export default defineComponent({
                 await context.root.$router.push(redirect);
             } else {
                 await $modal.value!.forceClose();
-                if (!hasUsdcAddresses.value) return;
-                if (skipping) return;
+                if (!hasUsdcAddresses.value || skipDefaultRedirects) return;
 
                 if (isMobile.value) {
                     // On mobile, forward to the USDC transactions overview, after USDC got activated and the

@@ -428,6 +428,9 @@ const router = new VueRouter({
 function createActivationNavigationGuard(
     currency: CryptoCurrency.BTC | CryptoCurrency.USDC,
     viewsRequiringActivation: Set<Component>,
+    // As method instead of just passing AccountType[] of supported types because AccountType is not available for
+    // passing in the top level yet due to a webpack bug (https://github.com/webpack/webpack/issues/3509).
+    isAccountTypeSupported: (type: AccountType) => boolean,
     isCurrencyActivated: () => boolean,
 ) {
     return (to: Route, from: Route, next: NavigationGuardNext) => {
@@ -435,12 +438,13 @@ function createActivationNavigationGuard(
             Object.values(components).some((view) => viewsRequiringActivation.has(view)
                 || (view === SwapModal && !!to.params.pair?.includes(currency.toUpperCase()))));
         const { activeAccountInfo: { value: activeAccount } } = useAccountStore();
-        const isLegacyAccount = !!activeAccount && activeAccount.type === AccountType.LEGACY;
-        if (!requiresCurrencyActivation || isCurrencyActivated()) {
+        const isUnsupportedAccount = !!activeAccount && !isAccountTypeSupported(activeAccount.type);
+        const isUnsupportedActivation = to.name === `${currency}-activation` && isUnsupportedAccount;
+        if ((!requiresCurrencyActivation && !isUnsupportedActivation) || isCurrencyActivated()) {
             // can continue to the requested view
             next();
-        } else if (isLegacyAccount) {
-            // legacy accounts are not supported; go to main view
+        } else if (isUnsupportedAccount) {
+            // unsupported account; go to main view
             next({
                 name: 'root',
                 replace: true,
@@ -461,11 +465,13 @@ function createActivationNavigationGuard(
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.BTC,
     new Set([BtcSendModal, BtcReceiveModal]),
+    (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
     () => useAccountStore().hasBitcoinAddresses.value,
 ));
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
     new Set([UsdcSendModal, UsdcReceiveModal]),
+    (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasUsdcAddresses.value,
 ));
 

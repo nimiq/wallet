@@ -229,6 +229,9 @@ const routes: RouteConfig[] = [{
                 modal: BtcActivationModal,
             },
             name: 'btc-activation',
+            props: {
+                modal: parseActivationRedirect,
+            },
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/btc-transaction/:hash',
@@ -254,6 +257,9 @@ const routes: RouteConfig[] = [{
                 modal: UsdcActivationModal,
             },
             name: 'usdc-activation',
+            props: {
+                modal: parseActivationRedirect,
+            },
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/usdc-transaction/:hash',
@@ -440,8 +446,8 @@ function createActivationNavigationGuard(
             next({
                 name: `${currency}-activation`,
                 // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams
-                // in BtcActivationModal/UsdcActivationModal and also by the RPC api in case that the Hub activation
-                // request is executed as redirect.
+                // in parseActivationRedirect and also by the RPC api in case that the Hub activation request is
+                // executed as redirect.
                 hash: `#redirect=${encodeURIComponent(to.fullPath)}`,
                 replace: true,
             });
@@ -460,6 +466,16 @@ router.beforeEach(createActivationNavigationGuard(
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasUsdcAddresses.value,
 ));
+
+function parseActivationRedirect(route: Route) {
+    // check for a redirect set by the activation navigation guard
+    let redirect: string | undefined;
+    try {
+        const hashParams = new URLSearchParams(route.hash.substring(1));
+        redirect = decodeURIComponent(hashParams.get('redirect') || '') || undefined;
+    } catch (e) {} // eslint-disable-line no-empty
+    return { redirect };
+}
 
 export default router;
 

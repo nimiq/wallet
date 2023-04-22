@@ -53,6 +53,9 @@ import { useAccountStore } from '../../stores/Account';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
+    props: {
+        redirect: String,
+    },
     setup(props, context) {
         const { activeAccountId, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
 
@@ -68,17 +71,10 @@ export default defineComponent({
         }
 
         async function close(skipDefaultRedirects = false) {
-            // check for a redirect set by the USDC activation navigation guard in router.ts
-            let redirect: string | undefined;
-            try {
-                const hashParams = new URLSearchParams(context.root.$route.hash.substring(1));
-                redirect = decodeURIComponent(hashParams.get('redirect') || '');
-            } catch (e) {} // eslint-disable-line no-empty
-
-            if (hasUsdcAddresses.value && redirect) {
+            if (hasUsdcAddresses.value && props.redirect) {
                 // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
                 // a malicious link.
-                await context.root.$router.push(redirect);
+                await context.root.$router.push(props.redirect);
             } else {
                 await $modal.value!.forceClose();
                 if (!hasUsdcAddresses.value || skipDefaultRedirects) return;

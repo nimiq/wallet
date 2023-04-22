@@ -99,7 +99,6 @@ const routes: RouteConfig[] = [{
                 modal: AccountMenuModal,
             },
             name: 'root-accounts',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send',
@@ -171,7 +170,6 @@ const routes: RouteConfig[] = [{
                 modal: TradeModal,
             },
             name: 'trade',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/buy',
@@ -179,7 +177,6 @@ const routes: RouteConfig[] = [{
                 modal: BuyOptionsModal,
             },
             name: 'buy',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/buy-crypto',
@@ -187,7 +184,6 @@ const routes: RouteConfig[] = [{
                 modal: BuyCryptoModal,
             },
             name: 'buy-crypto',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/sell-crypto',
@@ -195,7 +191,6 @@ const routes: RouteConfig[] = [{
                 modal: SellCryptoModal,
             },
             name: 'sell-crypto',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/scan',
@@ -234,7 +229,6 @@ const routes: RouteConfig[] = [{
                 modal: BtcActivationModal,
             },
             name: 'btc-activation',
-            props: { modal: true },
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/btc-transaction/:hash',
@@ -260,7 +254,6 @@ const routes: RouteConfig[] = [{
                 modal: UsdcActivationModal,
             },
             name: 'usdc-activation',
-            props: { modal: true },
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/usdc-transaction/:hash',
@@ -294,7 +287,6 @@ const routes: RouteConfig[] = [{
                 modal: MoonpayModal,
             },
             name: 'moonpay',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/simplex',
@@ -302,7 +294,6 @@ const routes: RouteConfig[] = [{
                 'persistent-modal': SimplexModal,
             },
             name: 'simplex',
-            // props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/release-notes',
@@ -310,7 +301,6 @@ const routes: RouteConfig[] = [{
                 modal: ReleaseNotesModal,
             },
             name: 'root-release-notes',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/export-history/:type',
@@ -334,7 +324,6 @@ const routes: RouteConfig[] = [{
                 modal: AccountMenuModal,
             },
             name: 'settings-accounts',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/disclaimer',
@@ -349,7 +338,6 @@ const routes: RouteConfig[] = [{
                 modal: ReleaseNotesModal,
             },
             name: 'settings-release-notes',
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }],
     }],
@@ -366,7 +354,6 @@ const routes: RouteConfig[] = [{
             modal: AccountMenuModal,
         },
         name: 'network-accounts',
-        props: { modal: true },
         meta: { column: Columns.DYNAMIC },
     }, {
         path: '/release-notes',
@@ -374,7 +361,6 @@ const routes: RouteConfig[] = [{
             modal: ReleaseNotesModal,
         },
         name: 'network-release-notes',
-        props: { modal: true },
         meta: { column: Columns.DYNAMIC },
     }],
 }];

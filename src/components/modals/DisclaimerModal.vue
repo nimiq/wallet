@@ -1,6 +1,5 @@
 <template>
-    <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" class="disclaimer-modal">
+    <Modal class="disclaimer-modal">
         <PageHeader>
             {{ $t('Disclaimer') }}
             <div slot="more" class="more nq-light-blue">

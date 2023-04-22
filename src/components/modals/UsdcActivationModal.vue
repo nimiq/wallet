@@ -1,6 +1,6 @@
 <template>
     <!-- Pass down all attributes not declared as props --->
-    <Modal v-bind="$attrs" v-on="$listeners" emit-close ref="$modal">
+    <Modal v-bind="$attrs" v-on="$listeners" ref="$modal">
         <PageBody class="flex-column">
             <!-- eslint-disable max-len -->
             <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">

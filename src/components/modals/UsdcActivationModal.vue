@@ -31,15 +31,9 @@
 
             <div class="flex-grow"></div>
 
-            <template v-if="hasUsdcAddresses">
-                <router-link v-if="shouldOpenWelcomeModal" to="/welcome" class="nq-button light-blue"
-                    @mousedown.prevent>
-                    {{ $t('Check the new intro') }}
-                </router-link>
-                <button v-else class="nq-button light-blue" @click="close(true)" @mousedown.prevent>
-                    {{ $t('Got it') }}
-                </button>
-            </template>
+            <button v-if="hasUsdcAddresses" class="nq-button light-blue" @click="close()" @mousedown.prevent>
+                {{ shouldOpenWelcomeModal ? $t('Check the new intro') : $t('Got it') }}
+            </button>
             <button v-else class="nq-button light-blue" @click="enableUsdc" @mousedown.prevent>
                 {{ $t('Activate USDC') }}
             </button>
@@ -77,6 +71,7 @@ export default defineComponent({
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
         //  Welcome modal for new accounts/users anymore which hold no balance.
         const shouldOpenWelcomeModal = !welcomeModalAlreadyShown
+            && !props.redirect // if a redirect is set, don't redirect to Welcome modal and don't offer going there.
             && useConfig().config.enableBitcoin; // Welcome modal talks about BTC.
 
         async function enableUsdc() {

@@ -70,37 +70,41 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
     // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
-    if (!config.usdc.enabled) return; // do not show usdc related welcome modals
-
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
 
     const { requestType } = accounts[0];
 
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
-            if (!welcomeModalAlreadyShown) {
-                // Show regular first-time welcome flow
+            // Signup of a Keyguard account
+            if (!welcomeModalAlreadyShown && config.enableBitcoin && config.usdc.enabled) {
+                // Show regular first-time welcome flow which talks about Bitcoin and USDC.
                 router.onReady(() => router.push('/welcome'));
             }
             break;
         case HubApi.RequestType.LOGIN:
-            if (accounts[0].polygonAddresses.length && !welcomeModalAlreadyShown) {
-                // Show "USDC is now available" modal which afterwards leads into the welcome flow.
+            // Login of a Keyguard or Ledger account
+            if (accounts[0].polygonAddresses.length && !welcomeModalAlreadyShown && config.usdc.enabled) {
+                // If USDC is enabled for this account, show "USDC is now available" info in activation modal which
+                // afterwards leads into the welcome flow if not shown yet.
                 router.onReady(() => router.push('/usdc-activation'));
+            } else if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length
+                && config.enableBitcoin) {
+                // After adding an account that supports Bitcoin without it being activated yet (this is the case for
+                // Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for
+                // Keyguard accounts it's automatically activated on login), offer to activate it. After activation, the
+                // Bitcoin activation modal leads into the Welcome modal if not shown yet.
+                router.onReady(() => router.push('/btc-activation'));
             }
+            // We currently don't need to handle the case that USDC is not activated yet after logins, because for
+            // Legacy and Ledger accounts it's currently not supported yet, and for Keyguard accounts it's automatically
+            // activated on login.
             break;
-        case HubApi.RequestType.ONBOARD: {
-            // This happens when in Safari the Hub reported no accounts from the cookie, but still had accounts
-            // in the database, which could be accessed and returned in the ONBOARD redirect and directly returned.
-            // Treat this as a regular Hub sync with existing accounts.
-            const { activeAccountInfo } = useAccountStore();
-            if (activeAccountInfo.value?.type === AccountType.BIP39
-                && !activeAccountInfo.value?.polygonAddresses?.length) {
-                // Prompt for USDC activation, which then leads into the new welcome modal
-                router.onReady(() => router.push('/usdc-activation'));
-            }
-            break;
-        }
+        // We don't need to do Bitcoin/USDC activation checks for RequestType.Onboard, which happens when in Safari the
+        // Hub reported no accounts from the cookie, but still had accounts in the database, which could be accessed and
+        // returned in the ONBOARD redirect and directly returned. We simply treat this as the accounts not having been
+        // lost, i.e. run the regular USDC activation check in syncFromHub (which happens at a later point) and the
+        // Bitcoin activation check only after actual new logins.
         default: break;
     }
 });
@@ -316,18 +320,26 @@ export async function syncFromHub() {
         proxyStore.setHubCashlinks(listedCashlinks);
     }
 
+    // Check whether USDC is activated for the current account. Currently, we do this in syncFromHub on every app start
+    // which is fine for Keyguard accounts for which it only needs to be activated once per account created before the
+    // USDC release and not for accounts created or logged in after that. Once we have USDC support for Ledgers, this
+    // check should become less aggressive and be done in onboard (same as the Bitcoin activation check) only because
+    // for Ledgers USDC would not be enabled automatically on logins and the activation reminder on every app start
+    // would be annoying for the user.
     const { activeAccountInfo } = useAccountStore();
     if (
-        activeAccountInfo.value?.type === AccountType.BIP39
+        activeAccountInfo.value?.type === AccountType.BIP39 // Legacy accounts and Ledgers are not supported.
         && !activeAccountInfo.value?.polygonAddresses?.length
         && config.usdc.enabled
     ) {
-        // Prompt for USDC activation, which then leads into the new welcome modal
+        // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.onReady(() => router.push('/usdc-activation'));
     }
 }
 
 export async function onboard(asRedirect = false) {
+    const { config } = useConfig();
+
     if (asRedirect) {
         const behavior = new HubApi.RedirectRequestBehavior(window.location.href);
         hubApi.onboard({
@@ -342,6 +354,19 @@ export async function onboard(asRedirect = false) {
 
     processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
 
+    const { activeAccountInfo } = useAccountStore();
+    if (
+        activeAccountInfo.value
+        && activeAccountInfo.value.type !== AccountType.LEGACY // Legacy accounts are not supported.
+        && !activeAccountInfo.value.btcAddresses?.external.length
+        && config.enableBitcoin
+    ) {
+        // After adding an account that supports Bitcoin without it being activated yet (this is the case for Ledger
+        // logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for Keyguard accounts
+        // it's automatically activated on login), offer to activate it. After activation, the Bitcoin activation modal
+        // leads into the Welcome modal if not shown yet.
+        router.onReady(() => router.push('/btc-activation'));
+    }
     return true;
 }
 

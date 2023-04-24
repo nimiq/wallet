@@ -31,14 +31,23 @@
 
             <div class="flex-grow"></div>
 
-            <router-link v-if="hasUsdcAddresses" to="/welcome" class="nq-button light-blue" @mousedown.prevent>
-                {{ $t('Check the new intro') }}
-            </router-link>
+            <template v-if="hasUsdcAddresses">
+                <router-link v-if="shouldOpenWelcomeModal" to="/welcome" class="nq-button light-blue"
+                    @mousedown.prevent>
+                    {{ $t('Check the new intro') }}
+                </router-link>
+                <button v-else class="nq-button light-blue" @click="close(true)" @mousedown.prevent>
+                    {{ $t('Got it') }}
+                </button>
+            </template>
             <button v-else class="nq-button light-blue" @click="enableUsdc" @mousedown.prevent>
                 {{ $t('Activate USDC') }}
             </button>
 
-            <a class="nq-link" @click="close(true)">{{ $t('Skip') }}</a>
+            <a v-if="!hasUsdcAddresses || shouldOpenWelcomeModal" class="nq-link"
+                @click="close(hasUsdcAddresses && shouldOpenWelcomeModal)">
+                {{ $t('Skip') }}
+            </a>
         </PageBody>
     </Modal>
 </template>
@@ -50,6 +59,7 @@ import Modal from './Modal.vue';
 import { activateUsdc } from '../../hub';
 import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
+import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
@@ -62,6 +72,12 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
 
         const $modal = ref<any | null>(null);
+
+        const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
+        // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
+        //  Welcome modal for new accounts/users anymore which hold no balance.
+        const shouldOpenWelcomeModal = !welcomeModalAlreadyShown
+            && useConfig().config.enableBitcoin; // Welcome modal talks about BTC.
 
         async function enableUsdc() {
             await activateUsdc(activeAccountId.value!);
@@ -85,9 +101,8 @@ export default defineComponent({
                     await context.root.$router.push('/transactions');
                 }
 
-                const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
-                if (!welcomeModalAlreadyShown) {
-                    // Open welcome modal with additional USDC info if not shown yet.
+                if (shouldOpenWelcomeModal) {
+                    // Open welcome modal with additional BTC and USDC info if not shown yet.
                     await context.root.$router.push('/welcome');
                 }
             }
@@ -95,6 +110,7 @@ export default defineComponent({
 
         return {
             hasUsdcAddresses,
+            shouldOpenWelcomeModal,
             $modal,
             enableUsdc,
             close,

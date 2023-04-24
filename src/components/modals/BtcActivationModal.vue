@@ -74,9 +74,9 @@ export default defineComponent({
                 await context.root.$router.push(props.redirect);
             } else {
                 await $modal.value!.forceClose();
-                if (!hasBitcoinAddresses.value || skipDefaultRedirects) return;
+                if (skipDefaultRedirects) return;
 
-                if (isMobile.value) {
+                if (isMobile.value && hasBitcoinAddresses.value) {
                     // On mobile, forward to the Bitcoin transactions overview, after Bitcoin got activated and the
                     // redirects by forceClose finished.
                     await context.root.$router.push('/transactions');

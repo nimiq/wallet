@@ -94,11 +94,8 @@ hubApi.on(HubApi.RequestType.ONBOARD, (accounts) => {
             // in the database, which could be accessed and returned in the ONBOARD redirect and directly returned.
             // Treat this as a regular Hub sync with existing accounts.
             const { activeAccountInfo } = useAccountStore();
-            if (
-                activeAccountInfo.value?.type === AccountType.BIP39
-                && !activeAccountInfo.value?.polygonAddresses?.length
-                && !welcomeModalAlreadyShown
-            ) {
+            if (activeAccountInfo.value?.type === AccountType.BIP39
+                && !activeAccountInfo.value?.polygonAddresses?.length) {
                 // Prompt for USDC activation, which then leads into the new welcome modal
                 router.onReady(() => router.push('/usdc-activation'));
             }
@@ -320,11 +317,9 @@ export async function syncFromHub() {
     }
 
     const { activeAccountInfo } = useAccountStore();
-    const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
     if (
         activeAccountInfo.value?.type === AccountType.BIP39
         && !activeAccountInfo.value?.polygonAddresses?.length
-        && !welcomeModalAlreadyShown
         && config.usdc.enabled
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal

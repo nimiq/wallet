@@ -16,14 +16,23 @@
 
             <div class="flex-grow"></div>
 
-            <button v-if="hasBitcoinAddresses" class="nq-button light-blue" @click="close" @mousedown.prevent>
-                {{ $t('Got it') }}
-            </button>
+            <template v-if="hasBitcoinAddresses">
+                <router-link v-if="shouldOpenWelcomeModal" to="/welcome" class="nq-button light-blue"
+                    @mousedown.prevent>
+                    {{ $t('Check the new intro') }}
+                </router-link>
+                <button v-else class="nq-button light-blue" @click="close(true)" @mousedown.prevent>
+                    {{ $t('Got it') }}
+                </button>
+            </template>
             <button v-else class="nq-button light-blue" @click="enableBitcoin" @mousedown.prevent>
                 {{ $t('Activate Bitcoin') }}
             </button>
 
-            <a v-if="!hasBitcoinAddresses" class="nq-link" @click="close">{{ $t('Skip for now') }}</a>
+            <a v-if="!hasBitcoinAddresses || shouldOpenWelcomeModal" class="nq-link"
+                @click="close(hasBitcoinAddresses && shouldOpenWelcomeModal)">
+                {{ $t('Skip') }}
+            </a>
         </PageBody>
     </Modal>
 </template>
@@ -34,8 +43,9 @@ import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { activateBitcoin } from '../../hub';
-import { CryptoCurrency } from '../../lib/Constants';
+import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
+import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
@@ -49,6 +59,12 @@ export default defineComponent({
 
         const $modal = ref<any | null>(null);
 
+        const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
+        // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
+        //  Welcome modal for new accounts/users anymore which hold no balance.
+        const shouldOpenWelcomeModal = !welcomeModalAlreadyShown
+            && useConfig().config.usdc.enabled; // Welcome modal talks about USDC.
+
         async function enableBitcoin() {
             await activateBitcoin(activeAccountId.value!);
             if (!hasBitcoinAddresses.value) return;
@@ -56,25 +72,31 @@ export default defineComponent({
             await close();
         }
 
-        async function close() {
+        async function close(skipDefaultRedirects = false) {
             if (hasBitcoinAddresses.value && props.redirect) {
                 // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
                 // a malicious link.
                 await context.root.$router.push(props.redirect);
             } else {
                 await $modal.value!.forceClose();
-                if (!hasBitcoinAddresses.value) return;
+                if (!hasBitcoinAddresses.value || skipDefaultRedirects) return;
 
                 if (isMobile.value) {
                     // On mobile, forward to the Bitcoin transactions overview, after Bitcoin got activated and the
                     // redirects by forceClose finished.
                     await context.root.$router.push('/transactions');
                 }
+
+                if (shouldOpenWelcomeModal) {
+                    // Open welcome modal with additional BTC and USDC info if not shown yet.
+                    await context.root.$router.push('/welcome');
+                }
             }
         }
 
         return {
             hasBitcoinAddresses,
+            shouldOpenWelcomeModal,
             $modal,
             enableBitcoin,
             close,

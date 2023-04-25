@@ -170,6 +170,7 @@
 
                 <SwapModalFooter
                     v-if="!insufficientLimit || !$config.ten31Pass.enabled || kycUser"
+                    :assets="[activeCurrency]"
                     :isKycConnected="Boolean(kycUser)"
                     :disabled="!canSign"
                     :error="estimateError || swapError"

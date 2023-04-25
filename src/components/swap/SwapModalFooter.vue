@@ -24,11 +24,11 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
-import { SwapAsset } from '@nimiq/fastspot-api';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
-import { useBtcNetworkStore } from '@/stores/BtcNetwork';
-import { useNetworkStore } from '@/stores/Network';
-import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
+import { useBtcNetworkStore } from '../../stores/BtcNetwork';
+import { useNetworkStore } from '../../stores/Network';
+import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import { CryptoCurrency } from '../../lib/Constants';
 import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
@@ -36,7 +36,7 @@ export default defineComponent({
         error: String,
         disabled: Boolean,
         assets: {
-            type: Array as () => Array<SwapAsset>,
+            type: Array as () => Array<CryptoCurrency>,
             required: true,
         },
         isKycConnected: Boolean,
@@ -45,7 +45,7 @@ export default defineComponent({
         const networkState = computed(() => {
             let message: string | null = null;
 
-            if (props.assets.includes(SwapAsset.BTC)) {
+            if (props.assets.includes(CryptoCurrency.BTC)) {
                 const { consensus: btcConsensus } = useBtcNetworkStore();
 
                 if (btcConsensus.value !== 'established') {
@@ -53,7 +53,7 @@ export default defineComponent({
                 }
             }
 
-            if (props.assets.includes(SwapAsset.NIM)) {
+            if (props.assets.includes(CryptoCurrency.NIM)) {
                 const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
 
                 if (nimiqConsensus.value !== 'established') {
@@ -63,7 +63,7 @@ export default defineComponent({
                 }
             }
 
-            if (props.assets.includes(SwapAsset.USDC)) {
+            if (props.assets.includes(CryptoCurrency.USDC)) {
                 const { consensus: usdcConsensus } = useUsdcNetworkStore();
 
                 if (usdcConsensus.value !== 'established') {

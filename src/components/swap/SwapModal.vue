@@ -175,10 +175,10 @@
 
         <SwapModalFooter
             v-if="!isLimitReached || !$config.ten31Pass.enabled || kycUser"
+            :assets="[leftAsset.toLowerCase(), rightAsset.toLowerCase()]"
             :isKycConnected="Boolean(kycUser)"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
-            :assets="[leftAsset, rightAsset]"
             @click="sign"
         >
             <template v-slot:cta>{{ $t('Confirm') }}</template>

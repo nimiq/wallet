@@ -173,10 +173,10 @@
             </div>
         </PageBody>
 
-        <SwapModalFooter
+        <SendModalFooter
             v-if="!isLimitReached || !$config.ten31Pass.enabled || kycUser"
             :assets="[leftAsset.toLowerCase(), rightAsset.toLowerCase()]"
-            :isKycConnected="Boolean(kycUser)"
+            :buttonColor="kycUser ? 'purple' : 'light-blue'"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
             @click="sign"
@@ -203,7 +203,7 @@
                     target="_blank" rel="noopener"
                 >Fastspot</a>
             </i18n>
-        </SwapModalFooter>
+        </SendModalFooter>
         <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
 
         <div v-if="swap" slot="overlay" class="page flex-column animation-overlay">
@@ -308,7 +308,7 @@ import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
-import SwapModalFooter from './SwapModalFooter.vue';
+import SendModalFooter from '../SendModalFooter.vue';
 import { useConfig } from '../../composables/useConfig';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
@@ -2006,7 +2006,7 @@ export default defineComponent({
         SwapFeesTooltip,
         AddressList,
         SwapAnimation,
-        SwapModalFooter,
+        SendModalFooter,
         KycPrompt,
         KycOverlay,
         ButtonGroup,

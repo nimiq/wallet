@@ -130,8 +130,8 @@
                     class="amount-section"
                     :class="{'insufficient-balance': maxSendableAmount < amount}"
                 >
-                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'nim'}">
-                        <AmountInput v-if="activeCurrency === 'nim'" v-model="amount" ref="amountInputRef">
+                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.NIM}">
+                        <AmountInput v-if="activeCurrency === CryptoCurrency.NIM" v-model="amount" ref="amountInputRef">
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
@@ -157,7 +157,7 @@
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
-                        <span v-if="activeCurrency === 'nim'" key="fiat-amount">
+                        <span v-if="activeCurrency === CryptoCurrency.NIM" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
                             <span v-if="fee">
                                 +<Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/> {{ $t('fee') }}
@@ -183,14 +183,12 @@
                         vanishing
                         ref="messageInputRef"/>
                 </section>
-
-                <button
-                    class="nq-button light-blue"
-                    :disabled="!canSend"
-                    @click="sign"
-                    @mousedown.prevent
-                >{{ $t('Send Transaction') }}</button>
             </PageBody>
+            <SendModalFooter
+                :assets="[CryptoCurrency.NIM]"
+                :disabled="!canSend"
+                @click="sign"
+            ><template #cta>{{ $t('Send Transaction') }}</template></SendModalFooter>
         </div>
 
         <div v-if="addressListOpened" slot="overlay" class="page flex-column">
@@ -256,13 +254,14 @@ import AddressList from '../AddressList.vue';
 import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import SendModalFooter from '../SendModalFooter.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -457,7 +456,7 @@ export default defineComponent({
             index: 2,
         }];
 
-        const activeCurrency = ref('nim');
+        const activeCurrency = ref<CryptoCurrency.NIM | FiatCurrency>(CryptoCurrency.NIM);
         const fiatAmount = ref(0);
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
@@ -466,7 +465,7 @@ export default defineComponent({
                 && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
 
         const fiatCurrencyInfo = computed(() => {
-            if (activeCurrency.value === 'nim') {
+            if (activeCurrency.value === CryptoCurrency.NIM) {
                 return new CurrencyInfo(referenceCurrency.value);
             }
             return new CurrencyInfo(activeCurrency.value);
@@ -475,7 +474,7 @@ export default defineComponent({
         const fiatToNimDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e5);
 
         watch(activeCurrency, (currency) => {
-            if (currency === 'nim') {
+            if (currency === CryptoCurrency.NIM) {
                 fiatAmount.value = 0;
                 return;
             }
@@ -486,7 +485,7 @@ export default defineComponent({
         });
 
         watch(() => {
-            if (activeCurrency.value === 'nim') return;
+            if (activeCurrency.value === CryptoCurrency.NIM) return;
             amount.value = Math.floor(
                 fiatAmount.value
                 / exchangeRates.value.nim[activeCurrency.value]!
@@ -494,7 +493,7 @@ export default defineComponent({
         });
 
         async function sendMax() {
-            if (activeCurrency.value !== 'nim') {
+            if (activeCurrency.value !== CryptoCurrency.NIM) {
                 fiatAmount.value = maxSendableAmount.value
                     * fiat$.exchangeRates.nim[activeCurrency.value]!
                     * fiatToNimDecimalRatio.value;
@@ -692,6 +691,7 @@ export default defineComponent({
             // General
             Pages,
             RecipientType,
+            CryptoCurrency,
             page,
             $modal,
 
@@ -779,6 +779,7 @@ export default defineComponent({
         FiatConvertedAmount,
         SelectBar,
         Amount,
+        SendModalFooter,
         StatusScreen,
     },
 });
@@ -828,7 +829,7 @@ export default defineComponent({
     }
 
     .page__amount-input {
-        padding-bottom: 4rem;
+        padding-bottom: .75rem;
 
         button {
             flex-shrink: 0;
@@ -1158,6 +1159,18 @@ export default defineComponent({
 
         .label-input {
             font-size: var(--h2-size);
+        }
+    }
+
+    .send-modal-footer {
+        padding: 0 3rem 2rem;
+
+        @media (max-width: 450px) { // Breakpoint of .page-body padding
+            padding: .75rem 1rem 2rem;
+        }
+
+        ::v-deep .footer-notice {
+            margin-bottom: -1rem;
         }
     }
 

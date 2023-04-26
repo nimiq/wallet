@@ -187,10 +187,10 @@
                     </MessageTransition>
                 </PageBody>
 
-                <SwapModalFooter
+                <SendModalFooter
                     v-if="!insufficientLimit || !$config.ten31Pass.enabled || kycUser"
                     :assets="[activeCurrency]"
-                    :isKycConnected="Boolean(kycUser)"
+                    :buttonColor="kycUser ? 'purple' : 'light-blue'"
                     :disabled="!canSign"
                     :error="estimateError || swapError"
                     @click="sign"
@@ -219,7 +219,7 @@
                             target="_blank" rel="noopener" class="nq-link"
                         >Fastspot</a>
                     </i18n>
-                </SwapModalFooter>
+                </SendModalFooter>
                 <KycPrompt v-else layout="wide" @click="kycOverlayOpened = true" />
             </div>
         </transition>
@@ -353,7 +353,7 @@ import MinimizeIcon from '../icons/MinimizeIcon.vue';
 import LimitIcon from '../icons/LimitIcon.vue';
 import KycIcon from '../icons/KycIcon.vue';
 import SwapSepaFundingInstructions from '../swap/SwapSepaFundingInstructions.vue';
-import SwapModalFooter from '../swap/SwapModalFooter.vue';
+import SendModalFooter from '../SendModalFooter.vue';
 import IdenticonStack from '../IdenticonStack.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import BankIconButton from '../BankIconButton.vue';
@@ -970,7 +970,7 @@ export default defineComponent({
         KycIcon,
         SwapSepaFundingInstructions,
         CircleSpinner,
-        SwapModalFooter,
+        SendModalFooter,
         IdenticonStack,
         InteractiveShortAddress,
         BankIconButton,

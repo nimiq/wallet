@@ -121,8 +121,8 @@
                     class="amount-section"
                     :class="{'insufficient-balance': maxSendableAmount < amount}"
                 >
-                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== 'usdc'}">
-                        <AmountInput v-if="activeCurrency === 'usdc'"
+                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.USDC}">
+                        <AmountInput v-if="activeCurrency === CryptoCurrency.USDC"
                             v-model="amount" :decimals="6" ref="amountInput$"
                         >
                             <AmountMenu slot="suffix" class="ticker"
@@ -152,7 +152,7 @@
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
-                        <span v-if="activeCurrency === 'usdc'" key="fiat-amount">
+                        <span v-if="activeCurrency === CryptoCurrency.USDC" key="fiat-amount">
                             <FiatConvertedAmount :data-amount="amount" :amount="amount" currency="usdc"/>
                             <svg class="dot" viewBox="0 0 3 3"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -208,14 +208,12 @@
                         </a>
                     </span>
                 </section>
-
-                <button
-                    class="nq-button light-blue"
-                    :disabled="!canSend"
-                    @click="sign"
-                    @mousedown.prevent
-                >{{ $t('Send USDC') }}</button>
             </PageBody>
+            <SendModalFooter
+                :assets="[CryptoCurrency.USDC]"
+                :disabled="!canSend"
+                @click="sign"
+            ><template #cta>{{ $t('Send USDC') }}</template></SendModalFooter>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">
@@ -271,6 +269,7 @@ import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import Avatar from '../Avatar.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import SendModalFooter from '../SendModalFooter.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import UsdcAddressInfo from '../UsdcAddressInfo.vue';
 import UsdcContactBook from '../UsdcContactBook.vue';
@@ -434,7 +433,7 @@ export default defineComponent({
 
         const amountMenuOpened = ref(false);
 
-        const activeCurrency = ref('usdc' as CryptoCurrency.USDC | FiatCurrency);
+        const activeCurrency = ref<CryptoCurrency.USDC | FiatCurrency>(CryptoCurrency.USDC);
         const fiatAmount = ref(0);
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
@@ -443,7 +442,7 @@ export default defineComponent({
                 && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
 
         const fiatCurrencyInfo = computed(() => {
-            if (activeCurrency.value === 'usdc') {
+            if (activeCurrency.value === CryptoCurrency.USDC) {
                 return new CurrencyInfo(referenceCurrency.value);
             }
             return new CurrencyInfo(activeCurrency.value);
@@ -452,7 +451,7 @@ export default defineComponent({
         const fiatToUsdcDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e6);
 
         watch(activeCurrency, (currency) => {
-            if (currency === 'usdc') {
+            if (currency === CryptoCurrency.USDC) {
                 fiatAmount.value = 0;
                 return;
             }
@@ -463,7 +462,7 @@ export default defineComponent({
         });
 
         watch(() => {
-            if (activeCurrency.value === 'usdc') return;
+            if (activeCurrency.value === CryptoCurrency.USDC) return;
             amount.value = Math.floor(
                 fiatAmount.value
                 / exchangeRates.value.usdc[activeCurrency.value]!
@@ -471,7 +470,7 @@ export default defineComponent({
         });
 
         async function sendMax() {
-            if (activeCurrency.value !== 'usdc') {
+            if (activeCurrency.value !== CryptoCurrency.USDC) {
                 fiatAmount.value = maxSendableAmount.value
                     * fiat$.exchangeRates.usdc[activeCurrency.value]!
                     * fiatToUsdcDecimalRatio.value;
@@ -691,6 +690,7 @@ export default defineComponent({
             // General
             Pages,
             RecipientType,
+            CryptoCurrency,
             page,
             initialPage,
             modal$,
@@ -770,6 +770,7 @@ export default defineComponent({
         AmountInput,
         AmountMenu,
         FiatConvertedAmount,
+        SendModalFooter,
         StatusScreen,
         Avatar,
         UsdcAddressInfo,
@@ -785,11 +786,6 @@ export default defineComponent({
         flex-grow: 1;
         font-size: var(--body-size);
         height: 100%;
-
-        .nq-button {
-            margin-top: 0;
-            width: calc(100% - 4rem);
-        }
     }
 
     .page-body {
@@ -817,7 +813,7 @@ export default defineComponent({
     }
 
     .page__amount-input {
-        padding-bottom: 4rem;
+        padding-bottom: 4.5rem;
 
         button {
             flex-shrink: 0;
@@ -1072,6 +1068,18 @@ export default defineComponent({
         align-self: stretch;
         text-align: center;
         margin-bottom: 4rem;
+    }
+
+    .send-modal-footer {
+        padding: 0 3rem 2rem;
+
+        @media (max-width: 450px) { // Breakpoint of .page-body padding
+            padding: .75rem 1rem 2rem;
+        }
+
+        ::v-deep .footer-notice {
+            margin-bottom: -1rem;
+        }
     }
 
     @media (min-width: 420px) {

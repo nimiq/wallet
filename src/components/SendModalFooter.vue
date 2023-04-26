@@ -1,9 +1,9 @@
 <template>
-    <PageFooter class="swap-modal-footer">
+    <PageFooter class="send-modal-footer">
         <button
-            class="nq-button" :class="isKycConnected ? 'purple' : 'light-blue'"
+            class="nq-button" :class="buttonColor"
             :disabled="disabled || !networkState.isReady"
-            @click="emitClick"
+            @click="$emit('click')"
             @mousedown.prevent
         ><slot name="cta">{{ $t('Confirm') }}</slot></button>
 
@@ -18,28 +18,30 @@
             </div>
             <div v-else class="footer-notice nq-gray flex-row"><slot></slot></div>
         </MessageTransition>
-
     </PageFooter>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
-import { useBtcNetworkStore } from '../../stores/BtcNetwork';
-import { useNetworkStore } from '../../stores/Network';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
-import { CryptoCurrency } from '../../lib/Constants';
-import MessageTransition from '../MessageTransition.vue';
+import { useBtcNetworkStore } from '../stores/BtcNetwork';
+import { useNetworkStore } from '../stores/Network';
+import { useUsdcNetworkStore } from '../stores/UsdcNetwork';
+import { CryptoCurrency } from '../lib/Constants';
+import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({
     props: {
-        error: String,
-        disabled: Boolean,
         assets: {
             type: Array as () => Array<CryptoCurrency>,
             required: true,
         },
-        isKycConnected: Boolean,
+        buttonColor: {
+            type: String,
+            default: 'light-blue',
+        },
+        error: String,
+        disabled: Boolean,
     },
     setup(props, context) {
         const networkState = computed(() => {
@@ -77,13 +79,8 @@ export default defineComponent({
             };
         });
 
-        function emitClick() {
-            context.emit('click');
-        }
-
         return {
             networkState,
-            emitClick,
         };
     },
     components: {
@@ -96,7 +93,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.swap-modal-footer {
+.send-modal-footer {
     .nq-button {
         margin: 0 4rem 3rem;
     }

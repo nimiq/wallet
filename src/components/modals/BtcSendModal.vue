@@ -100,13 +100,6 @@
                     </Tooltip>
                 </section>
 
-                <button
-                    class="nq-button light-blue send-button"
-                    :disabled="!canSend"
-                    @click="sign"
-                    @mousedown.prevent
-                >{{ $t('Send Transaction') }}</button>
-
                 <Tooltip class="info-tooltip" preferredPosition="bottom right">
                     <InfoCircleSmallIcon slot="trigger"/>
                     <p>{{ $t('Bitcoin addresses are used only once, so there are no contacts. '
@@ -115,6 +108,11 @@
                     <p>{{ $t('Transactions take >10 min. due to Bitcoin’s block time.') }}</p>
                 </Tooltip>
             </PageBody>
+            <SendModalFooter
+                :assets="[CryptoCurrency.BTC]"
+                :disabled="!canSend"
+                @click="sign"
+            ><template #cta>{{ $t('Send Transaction') }}</template></SendModalFooter>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">
@@ -148,6 +146,7 @@ import AmountInput from '../AmountInput.vue';
 import AmountMenu from '../AmountMenu.vue';
 import FeeSelector from '../FeeSelector.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import SendModalFooter from '../SendModalFooter.vue';
 import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -302,7 +301,7 @@ export default defineComponent({
                 && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
 
         const fiatCurrencyInfo = computed(() => {
-            if (activeCurrency.value === 'btc') {
+            if (activeCurrency.value === CryptoCurrency.BTC) {
                 return new CurrencyInfo(referenceCurrency.value);
             }
             return new CurrencyInfo(activeCurrency.value);
@@ -311,7 +310,7 @@ export default defineComponent({
         const fiatToBtcDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e8);
 
         watch(activeCurrency, (currency) => {
-            if (currency === 'btc') {
+            if (currency === CryptoCurrency.BTC) {
                 fiatAmount.value = 0;
                 return;
             }
@@ -322,7 +321,7 @@ export default defineComponent({
         });
 
         watch(() => {
-            if (activeCurrency.value === 'btc') return;
+            if (activeCurrency.value === CryptoCurrency.BTC) return;
             amount.value = Math.floor(
                 fiatAmount.value
                 / exchangeRates.value.btc[activeCurrency.value]!
@@ -330,7 +329,7 @@ export default defineComponent({
         });
 
         async function sendMax() {
-            if (activeCurrency.value !== 'btc') {
+            if (activeCurrency.value !== CryptoCurrency.BTC) {
                 fiatAmount.value = maxSendableAmount.value
                     * fiat$.exchangeRates.btc[activeCurrency.value]!
                     * fiatToBtcDecimalRatio.value;
@@ -347,13 +346,11 @@ export default defineComponent({
             if (isSendingMax) sendMax();
         }
 
-        const hasHeight = computed(() => !!network$.height);
-
         const canSend = computed(() =>
             network$.consensus === 'established'
+            && !!network$.height
             && !!recipientWithLabel.value
             && !!recipientWithLabel.value.address
-            && hasHeight.value
             && !isFetchingTxHistory.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value,
@@ -588,6 +585,7 @@ export default defineComponent({
         FiatConvertedAmount,
         Tooltip,
         InfoCircleSmallIcon,
+        SendModalFooter,
         StatusScreen,
         DoubleInput,
     },
@@ -599,16 +597,12 @@ export default defineComponent({
         flex-grow: 1;
         font-size: var(--body-size);
         height: 100%;
-
-        .nq-button {
-            margin: 0 1rem;
-            flex-shrink: 0;
-        }
     }
 
     .page-body {
         --short-transition-duration: 300ms;
 
+        padding-bottom: 0;
         justify-content: space-between;
         flex-grow: 1;
         overflow: inherit;
@@ -799,6 +793,18 @@ export default defineComponent({
             p:last-child {
                 margin-bottom: 0;
             }
+        }
+    }
+
+    .send-modal-footer {
+        padding-bottom: 2rem;
+
+        @media (max-width: 450px) { // Breakpoint of .page-body padding
+            padding: 0 0 1rem;
+        }
+
+        ::v-deep .footer-notice {
+            margin-bottom: -1rem;
         }
     }
 

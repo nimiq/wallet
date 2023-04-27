@@ -207,11 +207,11 @@ msgstr "账户"
 msgid "Activate"
 msgstr "激活"
 
-#: src/components/modals/BtcActivationModal.vue:24
+#: src/components/modals/BtcActivationModal.vue:23
 msgid "Activate Bitcoin"
 msgstr "激活比特币"
 
-#: src/components/modals/UsdcActivationModal.vue:39
+#: src/components/modals/UsdcActivationModal.vue:38
 msgid "Activate USDC"
 msgstr "激活 USDC"
 
@@ -245,7 +245,7 @@ msgstr "添加地址"
 msgid "Add an existing vesting contract to your wallet."
 msgstr "将现有的归属合同添加到你的钱包"
 
-#: src/components/modals/BtcActivationModal.vue:8
+#: src/components/modals/BtcActivationModal.vue:7
 msgid ""
 "Add Bitcoin\n"
 "to your account"
@@ -297,13 +297,13 @@ msgid ""
 "icon."
 msgstr "所有交换都将是你交易历史中的一部分，并带有一个小的交换图标"
 
-#: src/components/modals/DisclaimerModal.vue:21
+#: src/components/modals/DisclaimerModal.vue:20
 msgid ""
 "All translations are for information purposes only. The English text is the "
 "controlling version."
 msgstr "所有翻译仅供参考，英文原文为主要版本"
 
-#: src/components/modals/DisclaimerModal.vue:7
+#: src/components/modals/DisclaimerModal.vue:6
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr "请随时备份你的恢复字，密码和登录文件"
 
@@ -422,7 +422,7 @@ msgstr "BIC适用"
 msgid "Bitcoin"
 msgstr "比特币"
 
-#: src/components/modals/BtcSendModal.vue:112
+#: src/components/modals/BtcSendModal.vue:106
 msgid ""
 "Bitcoin addresses are used only once, so there are no contacts. Use labels "
 "instead to find transactions in your history easily."
@@ -446,7 +446,7 @@ msgstr "区块＃{height}"
 msgid "Block explorer"
 msgstr "区块链浏览器"
 
-#: src/components/modals/UsdcActivationModal.vue:29
+#: src/components/modals/UsdcActivationModal.vue:28
 msgid "blog post"
 msgstr "博客帖子"
 
@@ -472,9 +472,9 @@ msgstr "仅需银行转帐和你的钱包，即可在钱包内以欧元买卖加
 msgid "Buy BTC"
 msgstr "购买比特币"
 
-#: src/components/modals/BuyCryptoModal.vue:197
-#: src/components/modals/BuyCryptoModal.vue:202
-#: src/components/modals/BuyCryptoModal.vue:216
+#: src/components/modals/BuyCryptoModal.vue:199
+#: src/components/modals/BuyCryptoModal.vue:204
+#: src/components/modals/BuyCryptoModal.vue:218
 #: src/components/modals/BuyCryptoModal.vue:32
 msgid "Buy Crypto"
 msgstr "购买加密货币"
@@ -511,22 +511,22 @@ msgstr "用信用卡购买"
 msgid "Buy with Simplex"
 msgstr "用Simplex购买"
 
-#: src/components/modals/SendModal.vue:207
+#: src/components/modals/SendModal.vue:205
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
 msgstr "你可以通过增加交易费用，提升交易的处理速度"
 
-#: src/components/modals/BuyCryptoModal.vue:199
-#: src/components/modals/SellCryptoModal.vue:180
-#: src/components/swap/SwapModal.vue:186
+#: src/components/modals/BuyCryptoModal.vue:201
+#: src/components/modals/SellCryptoModal.vue:182
+#: src/components/swap/SwapModal.vue:187
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr "点击“ {text}”，即表示你同意{Fastspot}和{FastspotGO}的服务条款"
 
-#: src/components/modals/BuyCryptoModal.vue:213
-#: src/components/modals/SellCryptoModal.vue:194
-#: src/components/swap/SwapModal.vue:198
+#: src/components/modals/BuyCryptoModal.vue:215
+#: src/components/modals/SellCryptoModal.vue:196
+#: src/components/swap/SwapModal.vue:199
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "点击“ {text}”，即表示你同意{Fastspot}的服务条款"
 
@@ -580,7 +580,8 @@ msgstr "更改密码"
 msgid "Change your language setting."
 msgstr "更改你的语言设置"
 
-#: src/components/modals/UsdcActivationModal.vue:36
+#: src/components/modals/BtcActivationModal.vue:20
+#: src/components/modals/UsdcActivationModal.vue:35
 msgid "Check the new intro"
 msgstr "请看新介绍"
 
@@ -595,10 +596,10 @@ msgid "Choose a Sender"
 msgstr "请选择一个发送者"
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:283
-#: src/components/modals/SellCryptoModal.vue:247
-#: src/components/modals/SendModal.vue:197
-#: src/components/swap/SwapModal.vue:239
+#: src/components/modals/BuyCryptoModal.vue:285
+#: src/components/modals/SellCryptoModal.vue:249
+#: src/components/modals/SendModal.vue:195
+#: src/components/swap/SwapModal.vue:240
 msgid "Choose an Address"
 msgstr "选择地址"
 
@@ -643,9 +644,8 @@ msgstr "相对集中的"
 msgid "Comparably high transaction fees/time"
 msgstr "相对较高的交易时长和费用"
 
-#: src/components/swap/SwapModal.vue:184 src/components/swap/SwapModal.vue:189
-#: src/components/swap/SwapModal.vue:201
-#: src/components/swap/SwapModalFooter.vue:8
+#: src/components/SendModalFooter.vue:8 src/components/swap/SwapModal.vue:185
+#: src/components/swap/SwapModal.vue:190 src/components/swap/SwapModal.vue:202
 msgid "Confirm"
 msgstr "确认"
 
@@ -678,15 +678,15 @@ msgstr "已连接至"
 msgid "connecting"
 msgstr "連接中"
 
-#: src/components/swap/SwapModalFooter.vue:52
+#: src/components/SendModalFooter.vue:62
 msgid "Connecting to Bitcoin network"
 msgstr "连接到比特币网络"
 
-#: src/components/swap/SwapModalFooter.vue:60
+#: src/components/SendModalFooter.vue:73
 msgid "Connecting to Nimiq network"
 msgstr "连接到 Nimiq网络"
 
-#: src/components/swap/SwapModalFooter.vue:70
+#: src/components/SendModalFooter.vue:83
 msgid "Connecting to USDC on Polygon"
 msgstr "正在连接 Polygon 网络下的 USDC"
 
@@ -804,7 +804,7 @@ msgid ""
 msgstr "不同的货币可以做不同的事情。用你自己的方式使用它们，充分利用它们。"
 
 #: src/components/layouts/Settings.vue:281
-#: src/components/modals/DisclaimerModal.vue:5
+#: src/components/modals/DisclaimerModal.vue:4
 msgid "Disclaimer"
 msgstr "免责声明"
 
@@ -812,9 +812,9 @@ msgstr "免责声明"
 msgid "Disconnect"
 msgstr "断开连接"
 
-#: src/components/BtcAddressInput.vue:85
-#: src/components/modals/SendModal.vue:356
-#: src/components/modals/UsdcSendModal.vue:364
+#: src/components/BtcAddressInput.vue:90
+#: src/components/modals/SendModal.vue:355
+#: src/components/modals/UsdcSendModal.vue:363
 msgid "Domain does not resolve to a valid address"
 msgstr "域名不能解析为有效地址"
 
@@ -851,11 +851,11 @@ msgid ""
 "other."
 msgstr "因税务或其他原因，请将该地址的所有交易下载为文件。"
 
-#: src/components/modals/BtcSendModal.vue:98
+#: src/components/modals/BtcSendModal.vue:99
 msgid "Duration and fees are estimates."
 msgstr "工作时间和费用均为估计值"
 
-#: src/components/modals/BtcActivationModal.vue:11
+#: src/components/modals/BtcActivationModal.vue:10
 msgid ""
 "Easily swap between NIM, the super performant payment coin and BTC, the gold"
 " standard of crypto."
@@ -873,9 +873,9 @@ msgstr "编辑比特币值可见的小数位数"
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "编辑NIM值可见的小数位数"
 
-#: src/components/modals/BtcSendModal.vue:438
-#: src/components/modals/SendModal.vue:607
-#: src/components/modals/UsdcSendModal.vue:562
+#: src/components/modals/BtcSendModal.vue:441
+#: src/components/modals/SendModal.vue:606
+#: src/components/modals/UsdcSendModal.vue:561
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -903,7 +903,7 @@ msgstr "输入银行名称"
 msgid "Enter IBAN"
 msgstr "输入 IBAN"
 
-#: src/components/modals/BtcSendModal.vue:18
+#: src/components/modals/BtcSendModal.vue:19
 msgid "Enter recipient address..."
 msgstr "输入收件人地址..."
 
@@ -965,7 +965,7 @@ msgstr "导出历史记录"
 msgid "Export your history"
 msgstr "导出历史记录"
 
-#: src/components/modals/SendModal.vue:455
+#: src/components/modals/SendModal.vue:454
 msgid "express"
 msgstr "快速"
 
@@ -1060,7 +1060,7 @@ msgstr ""
 "为了一个更快和费用更低的\n"
 "虚拟货币支付"
 
-#: src/components/modals/SendModal.vue:445
+#: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "免费"
 
@@ -1128,7 +1128,8 @@ msgid ""
 msgstr "通过使用{provider}进行身份验证以获取更高的限额。要求如下："
 
 #: src/components/BankCheckInput.vue:94
-#: src/components/modals/BtcActivationModal.vue:21
+#: src/components/modals/BtcActivationModal.vue:20
+#: src/components/modals/UsdcActivationModal.vue:35
 #: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1235,7 +1236,7 @@ msgid ""
 "automatic refunds will only work for individual IBAN addresses."
 msgstr "如果出现任何问题，例如超出金额限制或资金不足，自动退款仅适用于个人IBAN地址"
 
-#: src/components/modals/BtcSendModal.vue:94
+#: src/components/modals/BtcSendModal.vue:95
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
 "fees go directly to the miners."
@@ -1265,7 +1266,7 @@ msgstr "安裝"
 msgid "Install Web App"
 msgstr "安裝网络应用程序"
 
-#: src/components/modals/BtcSendModal.vue:75
+#: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:171
 #: src/components/modals/UsdcSendModal.vue:205
@@ -1392,7 +1393,7 @@ msgstr "遗失"
 msgid "Make sure they are sending Polygon USDC."
 msgstr "请确保他们是从 Polygon 发送 USDC"
 
-#: src/components/modals/UsdcActivationModal.vue:20
+#: src/components/modals/UsdcActivationModal.vue:19
 msgid ""
 "Many updates like easier address names, more accessible swaps and an "
 "improved asset overview await."
@@ -1451,7 +1452,7 @@ msgstr "为你的联系人命名"
 msgid "Network"
 msgstr "网络"
 
-#: src/components/modals/BtcSendModal.vue:91
+#: src/components/modals/BtcSendModal.vue:92
 msgid "Network fee: {sats} sat/vByte"
 msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
@@ -1459,7 +1460,7 @@ msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 msgid "NIM network fee"
 msgstr "NIM网络费用"
 
-#: src/components/modals/DisclaimerModal.vue:17
+#: src/components/modals/DisclaimerModal.vue:16
 msgid ""
 "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, "
 "hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are"
@@ -1468,7 +1469,7 @@ msgstr ""
 "Nimiq对任何损失概不负责。Nimiq, wallet.nimiq.com, hub.nimiq.com "
 "&keyguard.nimiq.com，以及一些正在积极开发中的基础代码库。"
 
-#: src/components/modals/BtcSendModal.vue:114
+#: src/components/modals/BtcSendModal.vue:108
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Nimiq钱包不支持比特币交易信息"
 
@@ -1567,7 +1568,7 @@ msgstr "一个帐户现在可以拥有多个地址"
 msgid "One Account, many Addresses"
 msgstr "一个帐户，多个地址"
 
-#: src/components/modals/BtcActivationModal.vue:15
+#: src/components/modals/BtcActivationModal.vue:14
 msgid "Or buy BTC directly in the wallet."
 msgstr "或直接在钱包中购买BTC"
 
@@ -1633,7 +1634,7 @@ msgstr "请确保你在发送的是即时交易！"
 msgid "Please keep your Swap ID for reference."
 msgstr "请保留你的交换ID以供参考"
 
-#: src/components/modals/DisclaimerModal.vue:13
+#: src/components/modals/DisclaimerModal.vue:12
 msgid ""
 "Please note that wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com are "
 "not \"hosted wallets\". You do not create a hosted account or give Nimiq "
@@ -1679,7 +1680,7 @@ msgstr "目的"
 msgid "Raise your limits"
 msgstr "提升您的额度"
 
-#: src/components/modals/UsdcActivationModal.vue:23
+#: src/components/modals/UsdcActivationModal.vue:22
 msgid ""
 "Read all about it in this {blog_post} or click below for the new wallet "
 "intro."
@@ -1807,9 +1808,9 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
 
-#: src/components/modals/BtcSendModal.vue:437
-#: src/components/modals/SendModal.vue:606
-#: src/components/modals/UsdcSendModal.vue:561
+#: src/components/modals/BtcSendModal.vue:440
+#: src/components/modals/SendModal.vue:605
+#: src/components/modals/UsdcSendModal.vue:560
 msgid "Retry"
 msgstr "重试"
 
@@ -1862,9 +1863,9 @@ msgstr "选择显示比特币金额的单位"
 msgid "Sell"
 msgstr "卖出"
 
-#: src/components/modals/SellCryptoModal.vue:178
-#: src/components/modals/SellCryptoModal.vue:183
-#: src/components/modals/SellCryptoModal.vue:197
+#: src/components/modals/SellCryptoModal.vue:180
+#: src/components/modals/SellCryptoModal.vue:185
+#: src/components/modals/SellCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:31
 msgid "Sell Crypto"
 msgstr "售出加密货币"
@@ -1900,7 +1901,7 @@ msgstr "出售功能现在可用了"
 msgid "Send"
 msgstr "发送"
 
-#: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:77
+#: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:78
 #: src/components/modals/SendModal.vue:173
 #: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
@@ -1921,15 +1922,15 @@ msgstr "将加密货币发送到智能合约"
 msgid "Send to Polygon USDC addresses only!"
 msgstr "仅发送到Polygon USDC地址！"
 
-#: src/components/modals/BtcSendModal.vue:108
+#: src/components/modals/BtcSendModal.vue:116
 #: src/components/modals/BtcSendModal.vue:5
 #: src/components/modals/SendModal.vue:14
-#: src/components/modals/SendModal.vue:192
+#: src/components/modals/SendModal.vue:191
 msgid "Send Transaction"
 msgstr "发送交易"
 
 #: src/components/modals/UsdcSendModal.vue:20
-#: src/components/modals/UsdcSendModal.vue:217
+#: src/components/modals/UsdcSendModal.vue:216
 msgid "Send USDC"
 msgstr "发送 USDC"
 
@@ -1937,17 +1938,17 @@ msgstr "发送 USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/modals/BtcSendModal.vue:434
-#: src/components/modals/SendModal.vue:603
-#: src/components/modals/UsdcSendModal.vue:558
+#: src/components/modals/BtcSendModal.vue:437
+#: src/components/modals/SendModal.vue:602
+#: src/components/modals/UsdcSendModal.vue:557
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/modals/BtcSendModal.vue:495
+#: src/components/modals/BtcSendModal.vue:498
 msgid "Sent {btc} BTC"
 msgstr "已发送{btc} 比特币"
 
-#: src/components/modals/BtcSendModal.vue:491
+#: src/components/modals/BtcSendModal.vue:494
 msgid "Sent {btc} BTC to {name}"
 msgstr "已发送{btc} BTC到 {name}"
 
@@ -1957,19 +1958,19 @@ msgstr "已发送{btc} BTC到 {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "已发送{fromAsset} –已收到{toAsset}"
 
-#: src/components/modals/SendModal.vue:642
+#: src/components/modals/SendModal.vue:641
 msgid "Sent {nim} NIM"
 msgstr "发送{nim}NIM"
 
-#: src/components/modals/SendModal.vue:638
+#: src/components/modals/SendModal.vue:637
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/UsdcSendModal.vue:594
 msgid "Sent {usdc} USDC"
 msgstr "发送 {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:591
+#: src/components/modals/UsdcSendModal.vue:590
 msgid "Sent {usdc} USDC to {name}"
 msgstr "发送 {usdc} USDC 到 {name}"
 
@@ -2064,21 +2065,18 @@ msgstr "显示价值为 {currency}"
 msgid "Signup"
 msgstr "注册"
 
-#: src/components/modals/BuyCryptoModal.vue:261
+#: src/components/modals/BuyCryptoModal.vue:263
 msgid "Simulate EUR payment"
 msgstr "模拟欧元付款"
 
-#: src/components/modals/UsdcActivationModal.vue:42
+#: src/components/modals/BtcActivationModal.vue:28
+#: src/components/modals/UsdcActivationModal.vue:43
 msgid "Skip"
 msgstr "跳过"
 
-#: src/components/modals/BtcActivationModal.vue:27
-msgid "Skip for now"
-msgstr "暂时跳过"
-
-#: src/components/modals/BtcSendModal.vue:506
-#: src/components/modals/SendModal.vue:654
-#: src/components/modals/UsdcSendModal.vue:607
+#: src/components/modals/BtcSendModal.vue:509
+#: src/components/modals/SendModal.vue:653
+#: src/components/modals/UsdcSendModal.vue:606
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -2086,7 +2084,7 @@ msgstr "出了些问题"
 msgid "Something went wrong with your transaction"
 msgstr "你的交易出错了"
 
-#: src/components/modals/SendModal.vue:205
+#: src/components/modals/SendModal.vue:203
 msgid "Speed up your Transaction"
 msgstr "加快交易"
 
@@ -2110,7 +2108,7 @@ msgstr "质押NIM取得奖励，并确保网络安全"
 msgid "Staking"
 msgstr "质押"
 
-#: src/components/modals/SendModal.vue:450
+#: src/components/modals/SendModal.vue:449
 msgid "standard"
 msgstr "标准"
 
@@ -2208,6 +2206,10 @@ msgstr "滑动手势"
 msgid "syncing"
 msgstr "正在同步"
 
+#: src/components/SendModalFooter.vue:65
+msgid "Syncing with Bitcoin network"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31银行提供了一个银行帐户锁定你的付款"
@@ -2232,7 +2234,7 @@ msgstr "银行正在处理你的交易"
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额"
 
-#: src/components/swap/SwapModal.vue:994 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:995 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "费用将决定最低金额"
@@ -2413,7 +2415,7 @@ msgstr "来自{address}的交易"
 msgid "Transaction to {address}"
 msgstr "发送到{address}的交易"
 
-#: src/components/modals/BtcSendModal.vue:115
+#: src/components/modals/BtcSendModal.vue:109
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr "由于比特币的出块时间，交易需要10分钟以上"
 
@@ -2523,9 +2525,9 @@ msgstr "等待交换设置"
 msgid "Waiting for {currency}"
 msgstr "等待 {currency}"
 
-#: src/components/swap/SwapModalFooter.vue:62
-msgid "Waiting for Nimiq network informations"
-msgstr "等待Nimiq网络信息"
+#: src/components/SendModalFooter.vue:75
+msgid "Waiting for Nimiq network information"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -2533,7 +2535,7 @@ msgid ""
 "decentralized."
 msgstr "欢迎来到第一个法币与加密的原子交换。 它简单、快速且去中心化"
 
-#: src/components/modals/UsdcActivationModal.vue:17
+#: src/components/modals/UsdcActivationModal.vue:16
 msgid ""
 "Welcome to the updated\n"
 "wallet, now with USDC"
@@ -2623,7 +2625,7 @@ msgstr "你现在拥有加密货币了！"
 msgid "You will finalize your purchase by bank transfer."
 msgstr "你将通过银行转帐完成购买"
 
-#: src/components/modals/BtcSendModal.vue:68
+#: src/components/modals/BtcSendModal.vue:69
 msgid "You will send {amount}"
 msgstr "你将发送 {amount}"
 
@@ -2639,7 +2641,7 @@ msgstr "你将发送 {amount} USDC"
 msgid "Your account is not safe yet!"
 msgstr "你的帐户还不够安全！"
 
-#: src/components/modals/BtcActivationModal.vue:7
+#: src/components/modals/BtcActivationModal.vue:6
 msgid ""
 "Your account now\n"
 "supports Bitcoin!"

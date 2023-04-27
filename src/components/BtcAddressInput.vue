@@ -44,7 +44,7 @@ import {
 } from '../lib/UnstoppableDomains';
 import { useConfig } from '../composables/useConfig';
 
-export default defineComponent({
+const BtcAddressInput = defineComponent({
     props: {
         placeholder: {
             type: String,
@@ -190,6 +190,7 @@ export default defineComponent({
 
         return {
             focus, // exposed for use from other components
+
             input$,
             address,
             invalid,
@@ -205,6 +206,10 @@ export default defineComponent({
         ScanQrCodeIcon,
     },
 });
+// Export the component's instance type alongside the value (the constructor) via Typescript declaration merging,
+// similar to what would be the case for a class-based component declaration, for convenient usage in Ref types.
+type BtcAddressInput = InstanceType<typeof BtcAddressInput>;
+export default BtcAddressInput;
 </script>
 
 <style lang="scss" scoped>

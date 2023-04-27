@@ -42,7 +42,7 @@ export function disableNextModalTransition() {
     // the modal transitions are enabled again in onMounted in the next modal component instance
 }
 
-export default defineComponent({
+const Modal = defineComponent({
     props: {
         emitClose: {
             type: Boolean,
@@ -185,8 +185,9 @@ export default defineComponent({
         });
 
         return {
+            forceClose, // exposed for use from other components
+
             close,
-            forceClose, // used by other components
             $main,
             $handle,
             showSwipeHandle,
@@ -202,6 +203,10 @@ export default defineComponent({
         CloseButton,
     },
 });
+// Export the component's instance type alongside the value (the constructor) via Typescript declaration merging,
+// similar to what would be the case for a class-based component declaration, for convenient usage in Ref types.
+type Modal = InstanceType<typeof Modal>;
+export default Modal;
 </script>
 
 <style lang="scss" scoped>

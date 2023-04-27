@@ -297,7 +297,7 @@ export default defineComponent({
             AMOUNT_INPUT,
         }
 
-        const modal$ = ref<any | null>(null);
+        const modal$ = ref<Modal>(null);
 
         const { state: addresses$, addressInfo } = useUsdcAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
@@ -511,15 +511,9 @@ export default defineComponent({
          * Autofocus
          */
 
-        // FIXME: This should optimally be automatic with Typescript
-        interface AmountInput {
-            focus(): void;
-        }
-
-        const addressInput$: Ref<AddressInput | null> = ref(null);
-        const labelInput$: Ref<LabelInput | null> = ref(null);
-        const amountInput$: Ref<AmountInput | null> = ref(null);
-        // const messageInput$: Ref<LabelInput | null> = ref(null);
+        const addressInput$ = ref<AddressInput>(null);
+        const labelInput$ = ref<LabelInput>(null);
+        const amountInput$ = ref<AmountInput>(null);
 
         const { isMobile } = useWindowSize();
 

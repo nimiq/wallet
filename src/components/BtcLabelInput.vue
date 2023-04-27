@@ -29,7 +29,7 @@ import { LabelInput } from '@nimiq/vue-components';
 import { useBtcLabelsStore } from '@/stores/BtcLabels';
 import Avatar from './Avatar.vue';
 
-export default defineComponent({
+const BtcLabelInput = defineComponent({
     props: {
         value: {
             type: String,
@@ -109,6 +109,7 @@ export default defineComponent({
 
         return {
             focus, // exposed for use from other components
+
             localValue,
             input$,
             btcLabelAutocomplete$,
@@ -123,6 +124,10 @@ export default defineComponent({
         Avatar,
     },
 });
+// Export the component's instance type alongside the value (the constructor) via Typescript declaration merging,
+// similar to what would be the case for a class-based component declaration, for convenient usage in Ref types.
+type BtcLabelInput = InstanceType<typeof BtcLabelInput>;
+export default BtcLabelInput;
 </script>
 
 <style lang="scss" scoped>

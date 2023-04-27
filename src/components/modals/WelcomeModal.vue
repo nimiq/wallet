@@ -405,7 +405,7 @@ export default defineComponent({
             CryptoCurrency.USDC,
         ];
 
-        const $modal = ref<any | null>(null);
+        const $modal = ref<Modal>(null);
         const page = ref(1);
 
         const highlightedCurrencyIndex = ref(0);

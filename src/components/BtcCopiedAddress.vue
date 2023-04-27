@@ -5,10 +5,10 @@
                 <Avatar :label="addressInfo.label" />
                 <LabelInput
                     v-model="addressInfo.label /* eslint-disable-line vue/no-mutating-props */"
-                    ref="$labelInput"
+                    ref="labelInput$"
                     :placeholder="$t('Label the sender')"
                     vanishing
-                    @keydown.native.enter="$refs.$labelInput.blur()"
+                    @keydown.native.enter="labelInput$.blur()"
                 />
                 <div class="blue-tooltip" v-if="showTooltip">
                     <p>{{ $t('Add a label to quickly find the transaction '
@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { Tooltip, Copyable, LabelInput } from '@nimiq/vue-components';
 import ShortAddress from './ShortAddress.vue';
 import Avatar from './Avatar.vue';
@@ -46,7 +46,7 @@ export type BtcCopiedAddressInfo = {
     readonly timelabel: string,
 }
 
-export default defineComponent({
+const BtcCopiedAddress = defineComponent({
     props: {
         addressInfo: {
             type: Object as () => BtcCopiedAddressInfo,
@@ -58,16 +58,28 @@ export default defineComponent({
             default: false,
         },
     },
-    setup(props/* , context */) {
+    setup(props) {
         const { removeCopiedAddresses } = useBtcAddressStore();
         const { removeSenderLabelByAddress } = useBtcLabelsStore();
+
+        const labelInput$ = ref<LabelInput>(null);
+
+        function focus() {
+            if (!labelInput$.value) return;
+            labelInput$.value.focus();
+        }
 
         function deleteCopiedAddressAndLabel() {
             removeSenderLabelByAddress(props.addressInfo.address);
             removeCopiedAddresses([props.addressInfo.address]);
         }
 
-        return { deleteCopiedAddressAndLabel };
+        return {
+            focus, // exposed for use from other components
+
+            labelInput$,
+            deleteCopiedAddressAndLabel,
+        };
     },
     components: {
         Avatar,
@@ -77,12 +89,11 @@ export default defineComponent({
         ShortAddress,
         TrashIcon,
     },
-    methods: {
-        focus() {
-            (this.$refs.$labelInput as LabelInput).focus();
-        },
-    },
 });
+// Export the component's instance type alongside the value (the constructor) via Typescript declaration merging,
+// similar to what would be the case for a class-based component declaration, for convenient usage in Ref types.
+type BtcCopiedAddress = InstanceType<typeof BtcCopiedAddress>;
+export default BtcCopiedAddress;
 </script>
 
 <style lang="scss" scoped>

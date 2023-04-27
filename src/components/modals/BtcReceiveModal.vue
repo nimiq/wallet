@@ -198,7 +198,7 @@ export default defineComponent({
         }
 
         // Copied addresses
-        const $copiedAddresses = ref<{ focus(): void }[] | null>();
+        const $copiedAddresses = ref<BtcCopiedAddress[]>(null);
         const addressCopied = ref(false);
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)

@@ -376,7 +376,7 @@ export default defineComponent({
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
-        const $cryptoAmountInput = ref<typeof AmountInput & { focus(): void } | null>(null);
+        const $cryptoAmountInput = ref<AmountInput>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);

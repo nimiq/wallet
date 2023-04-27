@@ -35,7 +35,7 @@ import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({
     setup(props, context) {
-        const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
+        const $bankCheckInput = ref<BankCheckInput>(null);
         const bankName = ref('');
 
         const writing = computed(() => bankName.value.length !== 0);

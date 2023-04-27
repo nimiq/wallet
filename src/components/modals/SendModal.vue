@@ -27,7 +27,7 @@
                         :allowDomains="true"
                         @paste="(event, text) => parseRequestUri(text, event)"
                         @address="onAddressEntered"
-                        ref="addressInputRef"/>
+                        ref="addressInput$"/>
                     <span class="notice"
                         :class="{
                             'resolving': isResolvingUnstoppableDomain,
@@ -74,7 +74,7 @@
                     v-if="recipientWithLabel.type === RecipientType.CONTACT"
                     v-model="recipientWithLabel.label"
                     :placeholder="$t('Name this contact...')"
-                    ref="labelInputRef"/>
+                    ref="labelInput$"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
                 <AddressDisplay :address="recipientWithLabel.address" :copyable="true"/>
                 <div class="flex-grow"></div>
@@ -129,7 +129,7 @@
                     :class="{'insufficient-balance': maxSendableAmount < amount}"
                 >
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.NIM}">
-                        <AmountInput v-if="activeCurrency === CryptoCurrency.NIM" v-model="amount" ref="amountInputRef">
+                        <AmountInput v-if="activeCurrency === CryptoCurrency.NIM" v-model="amount" ref="amountInput$">
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
@@ -178,8 +178,7 @@
                         v-model="message"
                         :placeholder="$t('Add a public message...')"
                         :maxBytes="64"
-                        vanishing
-                        ref="messageInputRef"/>
+                        vanishing/>
                 </section>
             </PageBody>
             <SendModalFooter
@@ -293,7 +292,7 @@ export default defineComponent({
         }
         const page = ref(Pages.RECIPIENT_INPUT);
 
-        const $modal = ref<any | null>(null);
+        const $modal = ref<Modal>(null);
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
@@ -557,42 +556,36 @@ export default defineComponent({
          * Autofocus
          */
 
-        // FIXME: This should optimally be automatic with Typescript
-        interface AmountInput {
-            focus(): void;
-        }
-
-        const addressInputRef: Ref<AddressInput | null> = ref(null);
-        const labelInputRef: Ref<LabelInput | null> = ref(null);
-        const amountInputRef: Ref<AmountInput | null> = ref(null);
-        const messageInputRef: Ref<LabelInput | null> = ref(null);
+        const addressInput$ = ref<AddressInput>(null);
+        const labelInput$ = ref<LabelInput>(null);
+        const amountInput$ = ref<AmountInput>(null);
 
         const { isMobile } = useWindowSize();
 
-        async function focus(elementRef: Ref<AddressInput | LabelInput | AmountInput | null>) {
+        async function focus(element$: Ref<AddressInput | LabelInput | AmountInput | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
             await context.root.$nextTick();
-            if (!elementRef.value) return;
-            elementRef.value.focus();
+            if (!element$.value) return;
+            element$.value.focus();
         }
 
         watch(page, (currentPage) => {
             if (currentPage === Pages.RECIPIENT_INPUT) {
-                focus(addressInputRef);
+                focus(addressInput$);
             } else if (currentPage === Pages.AMOUNT_INPUT) {
-                focus(amountInputRef);
+                focus(amountInput$);
             }
         });
 
         watch(recipientDetailsOpened, (isOpened) => {
             if (isOpened) {
-                focus(labelInputRef);
+                focus(labelInput$);
             } else if (page.value === Pages.RECIPIENT_INPUT) {
-                focus(addressInputRef);
+                focus(addressInput$);
             } else {
-                focus(amountInputRef);
+                focus(amountInput$);
             }
         });
 
@@ -740,10 +733,9 @@ export default defineComponent({
             // onboard,
 
             // DOM refs for autofocus
-            addressInputRef,
-            labelInputRef,
-            amountInputRef,
-            messageInputRef,
+            addressInput$,
+            labelInput$,
+            amountInput$,
 
             // Status Screen
             statusScreenOpened,

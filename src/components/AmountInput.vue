@@ -1,10 +1,10 @@
 <template>
     <div class="amount-input" :class="{'has-value': liveValue.length > 0, 'focussed': isFocussed}">
         <slot name="prefix"/>
-        <form class="label-input" @submit.prevent ref="$fullWidth">
-            <span class="width-finder width-placeholder" ref="$widthPlaceholder">{{ placeholder }}</span>
+        <form class="label-input" @submit.prevent ref="fullWidth$">
+            <span class="width-finder width-placeholder" ref="widthPlaceholder$">{{ placeholder }}</span>
             <div v-if="maxFontSize" class="full-width" :class="{'width-finder': maxWidth > 0}">Width</div>
-            <span class="width-finder width-value" ref="$widthValue">{{ liveValue || '' }}</span>
+            <span class="width-finder width-value" ref="widthValue$">{{ liveValue || '' }}</span>
             <input type="text" inputmode="decimal" class="nq-input" :class="{ vanishing }"
                 :placeholder="placeholder"
                 :style="{width: `${width}px`, fontSize: `${fontSize}rem`}"
@@ -12,7 +12,7 @@
                 @input="onInput"
                 @focus="onToggleFocus(true)"
                 @blur="onToggleFocus(false)"
-                ref="$input">
+                ref="input$">
         </form>
         <slot v-if="$slots.suffix" name="suffix"/>
         <span v-else class="ticker">NIM</span>
@@ -22,7 +22,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
 
-export default defineComponent({
+const AmountInput = defineComponent({
     props: {
         value: Number,
         maxFontSize: {
@@ -60,23 +60,28 @@ export default defineComponent({
         const isFocussed = ref(false);
 
         // Refs
-        const $fullWidth = ref<HTMLDivElement>(null);
-        const $input = ref<HTMLInputElement>(null);
-        const $widthPlaceholder = ref<HTMLSpanElement>(null);
-        const $widthValue = ref<HTMLSpanElement>(null);
+        const fullWidth$ = ref<HTMLDivElement>(null);
+        const input$ = ref<HTMLInputElement>(null);
+        const widthPlaceholder$ = ref<HTMLSpanElement>(null);
+        const widthValue$ = ref<HTMLSpanElement>(null);
 
         onMounted(() => {
             if (props.maxFontSize) {
-                maxWidth.value = $fullWidth.value!.offsetWidth;
+                maxWidth.value = fullWidth$.value!.offsetWidth;
             }
         });
 
+        function focus() {
+            if (!input$.value) return;
+            input$.value.focus();
+        }
+
         async function updateWidth() {
             await context.root.$nextTick(); // Await updated DOM
-            if (!$widthPlaceholder.value) return;
+            if (!widthPlaceholder$.value) return;
 
-            const placeholderWidth = $widthPlaceholder.value.offsetWidth;
-            const valueWidth = $widthValue.value!.offsetWidth;
+            const placeholderWidth = widthPlaceholder$.value.offsetWidth;
+            const valueWidth = widthValue$.value!.offsetWidth;
             const fontSizeFactor = Math.min(1.0, Math.max(maxWidth.value / valueWidth, 1 / props.maxFontSize));
 
             fontSize.value = fontSizeFactor * props.maxFontSize;
@@ -139,7 +144,7 @@ export default defineComponent({
 
         function onToggleFocus(_isFocussed: boolean) {
             isFocussed.value = _isFocussed;
-            context.emit(_isFocussed ? 'focus' : 'blur', context.refs.$input);
+            context.emit(_isFocussed ? 'focus' : 'blur', context.refs.input$);
         }
 
         watch(() => props.value, (newValue: number | undefined) => {
@@ -153,10 +158,12 @@ export default defineComponent({
             // the current value, but will take effect only on the next input.
             if (!newMax || newMax >= valueInLuna.value) return;
 
-            onInput({ target: context.refs.$input as EventTarget });
+            onInput({ target: context.refs.input$ as EventTarget });
         });
 
         return {
+            focus, // exposed for use from other components
+
             valueInLuna,
             isFocussed,
             width,
@@ -165,18 +172,17 @@ export default defineComponent({
             fontSize,
             onInput,
             onToggleFocus,
-            $fullWidth,
-            $input,
-            $widthPlaceholder,
-            $widthValue,
+            fullWidth$,
+            input$,
+            widthPlaceholder$,
+            widthValue$,
         };
     },
-    methods: {
-        focus() {
-            (this.$refs.$input as HTMLInputElement).focus();
-        },
-    },
 });
+// Export the component's instance type alongside the value (the constructor) via Typescript declaration merging,
+// similar to what would be the case for a class-based component declaration, for convenient usage in Ref types.
+type AmountInput = InstanceType<typeof AmountInput>;
+export default AmountInput;
 </script>
 
 <style lang="scss" scoped>

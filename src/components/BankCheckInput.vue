@@ -117,7 +117,7 @@ function unicodeNormalize(s: string) {
     return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-export default defineComponent({
+const BankCheckInput = defineComponent({
     props: {
         value: {
             type: String,
@@ -166,6 +166,11 @@ export default defineComponent({
         onMounted(() => {
             loadBankList().then((BANKS: Bank[]) => banks.value = BANKS);
         });
+
+        function focus() {
+            if (!$bankSearchInput.value) return;
+            $bankSearchInput.value.focus();
+        }
 
         /* List of available banks in the currently selected country */
         const availableBanks = computed(() => {
@@ -414,6 +419,8 @@ export default defineComponent({
         }
 
         return {
+            focus, // exposed for use from other components
+
             SEPA_INSTANT_SUPPORT,
 
             $bankSearchInput,
@@ -445,11 +452,6 @@ export default defineComponent({
             isScrollable,
         };
     },
-    methods: {
-        focus() {
-            (this.$refs.$bankSearchInput as LabelInput).focus();
-        },
-    },
     components: {
         LabelInput,
         CaretRightSmallIcon,
@@ -462,6 +464,10 @@ export default defineComponent({
         CrossIcon,
     },
 });
+// Export the component's instance type alongside the value (the constructor) via Typescript declaration merging,
+// similar to what would be the case for a class-based component declaration, for convenient usage in Ref types.
+type BankCheckInput = InstanceType<typeof BankCheckInput>;
+export default BankCheckInput;
 </script>
 
 <style lang="scss" scoped>

@@ -399,12 +399,12 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<InstanceType<typeof BtcAddressInput>>(null);
-        const labelInput$ = ref<InstanceType<typeof BtcLabelInput>>(null);
+        const addressInput$ = ref<BtcAddressInput>(null);
+        const labelInput$ = ref<BtcLabelInput>(null);
 
         const { isMobile } = useWindowSize();
 
-        async function focus(element$: Ref<InstanceType<typeof BtcAddressInput | typeof BtcLabelInput> | null>) {
+        async function focus(element$: Ref<BtcAddressInput | BtcLabelInput | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
@@ -439,7 +439,7 @@ export default defineComponent({
         const statusMessage = ref('');
         const statusMainActionText = ref(context.root.$t('Retry') as string);
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction') as string);
-        const $modal = ref<any | null>(null);
+        const $modal = ref<Modal>(null);
 
         async function sign() {
             if (!canSend.value) return;

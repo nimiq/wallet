@@ -94,9 +94,9 @@ export default defineComponent({
     setup(props, context) {
         const { bank, bankAccount } = useBankStore();
 
-        const $bankCheckInput = ref<typeof BankCheckInput & { focus(): void } | null>(null);
-        const $accountNameInput = ref<typeof LabelInput & { focus(): void } | null>(null);
-        const $ibanInput = ref<typeof LabelInput & { focus(): void } | null>(null);
+        const $bankCheckInput = ref<BankCheckInput>(null);
+        const $accountNameInput = ref<LabelInput>(null);
+        const $ibanInput = ref<LabelInput>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
         const bankName = ref(bank.value?.name || '');

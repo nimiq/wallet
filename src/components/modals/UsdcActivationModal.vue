@@ -65,7 +65,7 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
-        const $modal = ref<any | null>(null);
+        const $modal = ref<Modal>(null);
 
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the

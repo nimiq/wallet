@@ -5,7 +5,7 @@
             :placeholder="placeholder"
             @input="onInput"
             @paste="onPaste"
-            ref="$input"
+            ref="input$"
         />
         <transition name="fade">
             <button v-if="!address.length" class="reset scan-qr-button" @click="$emit('scan')">
@@ -58,7 +58,7 @@ export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
 
-        const $input = ref<LabelInput>(null);
+        const input$ = ref<LabelInput>(null);
         const inputFontSizeScaleFactor = ref(1);
         let inputPadding: number | null = null;
 
@@ -67,6 +67,11 @@ export default defineComponent({
 
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
+
+        function focus() {
+            if (!input$.value) return;
+            input$.value.focus();
+        }
 
         function checkAddress() {
             resolverError.value = '';
@@ -132,11 +137,11 @@ export default defineComponent({
         async function updateInputFontSize() {
             await context.root.$nextTick();
 
-            if (!$input.value) return;
+            if (!input$.value) return;
 
             if (!inputPadding) {
                 inputPadding = parseInt(
-                    window.getComputedStyle($input.value.$el.children[2])
+                    window.getComputedStyle(input$.value.$el.children[2])
                         .getPropertyValue('padding-left')
                         .replace('px', ''),
                     10,
@@ -146,8 +151,8 @@ export default defineComponent({
             inputFontSizeScaleFactor.value = 1;
             await context.root.$nextTick();
 
-            const width = $input.value.$el.children[1].clientWidth;
-            const maxWidth = $input.value.$el.children[2].clientWidth - (inputPadding / 2);
+            const width = input$.value.$el.children[1].clientWidth;
+            const maxWidth = input$.value.$el.children[2].clientWidth - (inputPadding / 2);
 
             inputFontSizeScaleFactor.value = Math.max(Math.min(maxWidth / width, 1), 0.7);
         }
@@ -184,7 +189,8 @@ export default defineComponent({
         });
 
         return {
-            $input,
+            focus, // exposed for use from other components
+            input$,
             address,
             invalid,
             onPaste,
@@ -193,11 +199,6 @@ export default defineComponent({
             isResolvingUnstoppableDomain,
             resolverError,
         };
-    },
-    methods: {
-        focus() {
-            (this.$refs.$input as LabelInput).focus();
-        },
     },
     components: {
         LabelInput,

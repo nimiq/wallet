@@ -3,9 +3,9 @@
         :class="{ disabled, autocomplete: matchingLabels && matchingLabels.length > 0 }"
         @keydown="onKeyDown"
     >
-        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled"/>
+        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="input$"/>
         <Avatar :label="localValue"/>
-        <ul class="label-autocomplete" v-if="matchingLabels && matchingLabels.length > 0" ref="btcLabelAutocomplete">
+        <ul class="label-autocomplete" v-if="matchingLabels && matchingLabels.length > 0" ref="btcLabelAutocomplete$">
             <li v-for="(label, index) in matchingLabels" :key="index"
                 :class="{selected: selectedLabelIndex === index}"
                 @mouseenter="selectedLabelIndex = index"
@@ -50,8 +50,14 @@ export default defineComponent({
         });
 
         const { recipientLabels } = useBtcLabelsStore();
-        const btcLabelAutocomplete: Ref<HTMLUListElement | null> = ref(null);
+        const input$ = ref<LabelInput>(null);
+        const btcLabelAutocomplete$ = ref<HTMLUListElement>(null);
         const selectedLabelIndex: Ref<number> = ref(0);
+
+        function focus() {
+            if (!input$.value) return;
+            input$.value.focus();
+        }
 
         /* Filtering Labels */
         const matchingLabels = computed(() =>
@@ -67,7 +73,7 @@ export default defineComponent({
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
-            if (!matchingLabels || !btcLabelAutocomplete.value) return;
+            if (!matchingLabels || !btcLabelAutocomplete$.value) return;
             const oldIndex = selectedLabelIndex.value;
 
             switch (event.keyCode) {
@@ -94,7 +100,7 @@ export default defineComponent({
 
             if (selectedLabelIndex.value !== oldIndex) {
                 /* If the selected label list item is not into view, scroll to it */
-                btcLabelAutocomplete.value.children[selectedLabelIndex.value].scrollIntoView({
+                btcLabelAutocomplete$.value.children[selectedLabelIndex.value].scrollIntoView({
                     behavior: 'smooth',
                     block: 'nearest',
                 });
@@ -102,8 +108,10 @@ export default defineComponent({
         }
 
         return {
+            focus, // exposed for use from other components
             localValue,
-            btcLabelAutocomplete,
+            input$,
+            btcLabelAutocomplete$,
             recipientLabels,
             matchingLabels,
             selectedLabelIndex,

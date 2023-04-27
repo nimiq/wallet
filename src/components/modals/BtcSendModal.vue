@@ -10,7 +10,8 @@
                         <BtcLabelInput
                             v-model="recipientWithLabel.label"
                             :placeholder="$t('Name this recipient...')"
-                            :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"/>
+                            :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"
+                            ref="labelInput$"/>
                     </template>
 
                     <template #main>
@@ -22,7 +23,7 @@
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
                             @scan="$router.push('/scan')"
-                            ref="addressInputRef"/>
+                            ref="addressInput$"/>
                     </template>
                 </DoubleInput>
 
@@ -31,7 +32,7 @@
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.BTC}">
                         <AmountInput v-if="activeCurrency === CryptoCurrency.BTC"
-                            v-model="amount" :decimals="btcUnit.decimals" ref="amountInputRef"
+                            v-model="amount" :decimals="btcUnit.decimals"
                         >
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
@@ -398,30 +399,35 @@ export default defineComponent({
          * Autofocus
          */
 
-        // FIXME: This should optimally be automatic with Typescript
-        interface BtcAddressInput {
-            focus(): void;
-        }
-        interface AmountInput {
-            focus(): void;
-        }
-
-        const addressInputRef = ref<BtcAddressInput>(null);
-        const amountInputRef = ref<AmountInput>(null);
+        const addressInput$ = ref<InstanceType<typeof BtcAddressInput>>(null);
+        const labelInput$ = ref<InstanceType<typeof BtcLabelInput>>(null);
 
         const { isMobile } = useWindowSize();
 
-        async function focus(elementRef: Ref<BtcAddressInput | AmountInput | null>) {
+        async function focus(element$: Ref<InstanceType<typeof BtcAddressInput | typeof BtcLabelInput> | null>) {
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
             await context.root.$nextTick();
-            if (!elementRef.value) return;
-            elementRef.value.focus();
+            if (!element$.value) return;
+            element$.value.focus();
         }
 
-        onMounted(() => {
-            focus(addressInputRef);
+        onMounted(async () => {
+            if (addressInputValue.value) {
+                // If an initial address was set via request link, focus the label input instead of the address input,
+                // once the request link populated and the label input showed up.
+                await new Promise<void>((resolve) => {
+                    const unwatch = watch(() => {
+                        if (!labelInput$.value) return;
+                        resolve();
+                        unwatch();
+                    });
+                });
+                focus(labelInput$);
+            } else {
+                focus(addressInput$);
+            }
         });
 
         /**
@@ -557,8 +563,8 @@ export default defineComponent({
             // onboard,
 
             // DOM refs for autofocus
-            addressInputRef,
-            amountInputRef,
+            addressInput$,
+            labelInput$,
 
             // Status Screen
             statusScreenOpened,

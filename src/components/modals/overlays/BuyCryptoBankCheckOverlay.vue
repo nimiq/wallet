@@ -14,7 +14,7 @@
                 :placeholder="$t('Enter bank name')"
                 :title="$t('Enter bank name')"
                 :class="{ writing }"
-                ref="$bankCheckInput"
+                ref="bankCheckInput$"
             />
             <span class="bic-too">{{ $t('BIC works, too.') }}</span>
             <div class="flex-grow"></div>
@@ -35,18 +35,18 @@ import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({
     setup(props, context) {
-        const $bankCheckInput = ref<BankCheckInput>(null);
+        const bankCheckInput$ = ref<BankCheckInput>(null);
         const bankName = ref('');
 
         const writing = computed(() => bankName.value.length !== 0);
 
         onMounted(async () => {
             await context.root.$nextTick();
-            if ($bankCheckInput.value) $bankCheckInput.value.focus();
+            if (bankCheckInput$.value) bankCheckInput$.value.focus();
         });
 
         return {
-            $bankCheckInput,
+            bankCheckInput$,
             bankName,
             writing,
         };

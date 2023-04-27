@@ -25,7 +25,7 @@
             </div>
         </PageBody>
         <div class="separator"></div>
-        <form id="simplex-form" ref="$simplex">
+        <form id="simplex-form" ref="simplex$">
             <div id="checkout-element"></div>
         </form>
         <div v-if="mustReload" class="reload-notice flex-column">
@@ -115,12 +115,12 @@ export default defineComponent({
 
         async function loadScript(src: string, id: string): Promise<void> {
             return new Promise<void>((resolve) => {
-                const $script = document.createElement('script');
-                $script.type = 'text/javascript';
-                $script.id = id;
-                $script.addEventListener('load', () => resolve());
-                $script.src = src;
-                window.document.body.appendChild($script);
+                const script$ = document.createElement('script');
+                script$.type = 'text/javascript';
+                script$.id = id;
+                script$.addEventListener('load', () => resolve());
+                script$.src = src;
+                window.document.body.appendChild(script$);
             });
         }
 
@@ -152,10 +152,10 @@ export default defineComponent({
         function loadStyles() {
             if (document.querySelector('style#simplex-css')) return;
 
-            const $style = document.createElement('style');
-            $style.type = 'text/css';
-            $style.id = 'simplex-css';
-            $style.innerHTML = `
+            const style$ = document.createElement('style');
+            style$.type = 'text/css';
+            style$.id = 'simplex-css';
+            style$.innerHTML = `
     .simplex-form {
         padding: 0 2rem 1rem 1.5rem;
         font-family: Mulish, Muli, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -234,7 +234,7 @@ export default defineComponent({
         align-items: flex-end;
     }
 `;
-            window.document.body.appendChild($style);
+            window.document.body.appendChild(style$);
         }
 
         const showAddressCopyUi = ref(true);
@@ -273,7 +273,7 @@ export default defineComponent({
                     }
                 }
             });
-            observer.observe((context.refs.$simplex as HTMLFormElement), { childList: true, subtree: true });
+            observer.observe((context.refs.simplex$ as HTMLFormElement), { childList: true, subtree: true });
 
             window.simplex.on('crypto-changed', (crypto: string) => {
                 if (crypto === 'USDC-MATIC') crypto = 'USDC';
@@ -287,8 +287,8 @@ export default defineComponent({
             // If we find an iframe in the simplex-form that has no src attribute, it means the user continued
             // to the checkout flow. This state is not recoverable once the modal has been closed.
             // The only workaround is to reload the page and start with a fresh Javascript context.
-            const $iframe = (context.refs.$simplex as HTMLFormElement).querySelector('iframe');
-            mustReload.value = window.simplex && (!!$iframe && !$iframe.src);
+            const iframe$ = (context.refs.simplex$ as HTMLFormElement).querySelector('iframe');
+            mustReload.value = window.simplex && (!!iframe$ && !iframe$.src);
         });
 
         onUnmounted(() => {

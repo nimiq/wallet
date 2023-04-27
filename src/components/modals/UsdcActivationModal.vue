@@ -1,5 +1,5 @@
 <template>
-    <Modal ref="$modal">
+    <Modal ref="modal$">
         <PageBody class="flex-column">
             <!-- eslint-disable max-len -->
             <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +65,7 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
-        const $modal = ref<Modal>(null);
+        const modal$ = ref<Modal>(null);
 
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
@@ -87,7 +87,7 @@ export default defineComponent({
                 // a malicious link.
                 await context.root.$router.push(props.redirect);
             } else {
-                await $modal.value!.forceClose();
+                await modal$.value!.forceClose();
                 if (skipDefaultRedirects) return;
 
                 if (isMobile.value && hasUsdcAddresses.value) {
@@ -106,7 +106,7 @@ export default defineComponent({
         return {
             hasUsdcAddresses,
             shouldOpenWelcomeModal,
-            $modal,
+            modal$,
             enableUsdc,
             close,
         };

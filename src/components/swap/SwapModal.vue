@@ -81,7 +81,7 @@
                     <strong class="dot">&middot;</strong>
 
                     <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                        class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="$limitsTooltip">
+                        class="limits-tooltip" :class="{ 'kyc-connected': kycUser }" ref="limitsTooltip$">
                         <div slot="trigger" class="limits flex-row" :class="{
                             'limit-reached': isLimitReached,
                             'kyc-connected': kycUser,
@@ -1006,8 +1006,8 @@ export default defineComponent({
         }
 
         function openLimitsTooltip() {
-            if (!context.refs.$limitsTooltip) return;
-            (context.refs.$limitsTooltip as Tooltip).show();
+            if (!context.refs.limitsTooltip$) return;
+            (context.refs.limitsTooltip$ as Tooltip).show();
         }
 
         const isLimitReached = ref(false);

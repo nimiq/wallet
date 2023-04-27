@@ -6,7 +6,7 @@
                 <img src="../../assets/browser-network.png" alt="Browser Network Graph" />
             </div>
 
-            <div ref="$textDiv">
+            <div ref="textDiv$">
                 <h1 class="nq-h1">{{ $t('With Nimiq, you\'re a\npart of the Blockchain.') }}</h1>
                 <p>
                     {{ $t('Unlike any other crypto, Nimiq connects your wallet directly to peers from all around' +
@@ -38,13 +38,13 @@ export default defineComponent({
          * Reminder: The `shape-outside` property needs the element to be floating and to have a defined height
          *  (and not `height: 100%`)
          */
-        const $textDiv = ref<HTMLDivElement | null>(null);
+        const textDiv$ = ref<HTMLDivElement>(null);
         const height = ref<number>(0);
 
         async function updateHeight() {
             await context.root.$nextTick();
-            if ($textDiv.value && height.value !== $textDiv.value.clientHeight) {
-                height.value = $textDiv.value.clientHeight;
+            if (textDiv$.value && height.value !== textDiv$.value.clientHeight) {
+                height.value = textDiv$.value.clientHeight;
             }
         }
 
@@ -62,7 +62,7 @@ export default defineComponent({
         onUnmounted(() => window.removeEventListener('resize', onResize));
 
         return {
-            $textDiv,
+            textDiv$,
             height,
         };
     },

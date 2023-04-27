@@ -331,7 +331,7 @@
             <p>{{ $t('Retrying...') }}</p>
         </div>
 
-        <Identicon :address="nimAddress" ref="$identicon"/> <!-- Hidden by CSS -->
+        <Identicon :address="nimAddress" ref="identicon$"/> <!-- Hidden by CSS -->
     </div>
 </template>
 
@@ -438,11 +438,11 @@ export default defineComponent({
     },
     setup(props, context) {
         // NIM Identicon
-        const $identicon = ref<Identicon>(null);
+        const identicon$ = ref<Identicon>(null);
         const identiconUrl = ref('');
         if (props.fromAsset === SwapAsset.NIM || props.toAsset === SwapAsset.NIM) {
             onMounted(() => {
-                const img = $identicon.value!.$el.querySelector('img')!;
+                const img = identicon$.value!.$el.querySelector('img')!;
                 img.addEventListener('load', () => {
                     identiconUrl.value = img.src;
                 });
@@ -626,7 +626,7 @@ export default defineComponent({
             rightAsset,
             leftColor,
             rightColor,
-            $identicon,
+            identicon$,
             identiconUrl,
             setState,
             swapDirection,

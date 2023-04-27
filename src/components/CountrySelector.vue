@@ -21,9 +21,9 @@
                 <input class="nq-input"
                     :placeholder="$t('Search')"
                     v-model="searchTerm"
-                    ref="$input"/>
+                    ref="input$"/>
             </div>
-            <ul class="list" ref="$list">
+            <ul class="list" ref="list$">
                 <li v-for="(country, index) in sortedCountries"
                     :key="country.code"
                     :class="{ selected: index === selectedIndex }"
@@ -80,8 +80,8 @@ export default defineComponent({
 
         const searchTerm = ref('');
 
-        const $input = ref<HTMLInputElement>(null);
-        const $list = ref<HTMLUListElement>(null);
+        const input$ = ref<HTMLInputElement>(null);
+        const list$ = ref<HTMLUListElement>(null);
 
         async function setOpen(open: boolean) {
             isOpen.value = open;
@@ -93,7 +93,7 @@ export default defineComponent({
             }
 
             await context.root.$nextTick();
-            if (open && $input.value) $input.value.focus();
+            if (open && input$.value) input$.value.focus();
         }
 
         function selectCountry(country: Country) {
@@ -162,8 +162,8 @@ export default defineComponent({
                     break;
             }
 
-            if (selectedIndex.value !== oldIndex && $list.value) {
-                $list.value.children[selectedIndex.value].scrollIntoView({
+            if (selectedIndex.value !== oldIndex && list$.value) {
+                list$.value.children[selectedIndex.value].scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
                 });
@@ -179,8 +179,8 @@ export default defineComponent({
             selectCountry,
             sortedCountries,
             onKeyDown,
-            $input,
-            $list,
+            input$,
+            list$,
         };
     },
     components: {

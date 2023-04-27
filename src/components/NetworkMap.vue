@@ -1,12 +1,12 @@
 <template>
-    <div class="network-map" ref="$container">
-        <canvas class="map" ref="$network" :style="`width: ${width}px; height: ${height}px;`"></canvas>
-        <canvas class="overlay" ref="$overlay" :style="`width: ${width}px; height: ${height}px;`"></canvas>
+    <div class="network-map" ref="container$">
+        <canvas class="map" ref="network$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
+        <canvas class="overlay" ref="overlay$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
         <div class="nodes" :style="`width: ${width}px; height: ${height}px;`">
             <Tooltip v-for="(node, index) in nodes" :key="'node-' + index"
                 class="node"
                 theme="inverse"
-                :container="$container ? { $el: $container } : null"
+                :container="this"
                 :preferredPosition="getPreferredTooltipPosition(node)"
                 :margin="{ left: 12, top: 12, right: 12, bottom: 12 }"
                 :style="`transform: translate(${Math.floor(node.x * scale)}px, ${Math.floor(node.y * scale)}px);`"
@@ -41,18 +41,18 @@ import NetworkMapPeerList from './NetworkMapPeerList.vue';
 
 export default defineComponent({
     setup(props, context) {
-        const $container = ref<HTMLDivElement|null>(null);
-        const $network = ref<HTMLCanvasElement|null>(null);
-        const $overlay = ref<HTMLCanvasElement|null>(null);
+        const container$ = ref<HTMLDivElement>(null);
+        const network$ = ref<HTMLCanvasElement>(null);
+        const overlay$ = ref<HTMLCanvasElement>(null);
         const nodes = ref<NodeHexagon[]>([]);
         const scale = ref(SCALING_FACTOR);
         const width = ref(2 * WIDTH);
         const height = ref(2 * HEIGHT);
 
         const setDimensions = () => {
-            if (!$container.value) return;
-            const containerWidth = $container.value.offsetWidth;
-            const containerHeight = $container.value.offsetHeight;
+            if (!container$.value) return;
+            const containerWidth = container$.value.offsetWidth;
+            const containerHeight = container$.value.offsetHeight;
 
             // Set width and height such that it fits the container. Restrict to even numbers, to avoid blurriness
             // due to subpixel precision by centering via translate(-50%, -50%) and to avoid positioning tooltips
@@ -73,7 +73,7 @@ export default defineComponent({
         onMounted(async () => {
             const client = await getNetworkClient();
 
-            const networkMap = new NetworkMap($network.value!, $overlay.value!, (n) => nodes.value = n);
+            const networkMap = new NetworkMap(network$.value!, overlay$.value!, (n) => nodes.value = n);
 
             let askForAddressesTimeout = 0;
 
@@ -124,9 +124,9 @@ export default defineComponent({
         }
 
         return {
-            $container,
-            $network,
-            $overlay,
+            container$,
+            network$,
+            overlay$,
             nodes,
             scale,
             width,

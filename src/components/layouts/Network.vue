@@ -24,8 +24,8 @@
                 <template #network-info>
                     <button class="reset info-button" @click="showNetworkInfo = true"><InfoCircleIcon/></button>
                 </template>
-                <template #consensus>{{getConsensusStateString()}}</template>
-                <template #peerCount>{{ $tc('{count} Peer | {count} Peers', $network.peerCount) }}</template>
+                <template #consensus>{{ consensusState }}</template>
+                <template #peerCount>{{ $tc('{count} Peer | {count} Peers', peerCount) }}</template>
                 <template #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
@@ -35,7 +35,7 @@
                 </template>
                 <template #txTime>{{ $t('1 min') }}</template>
             </NetworkStats>
-            <div class="map flex-column" ref="$map">
+            <div class="map flex-column" ref="map$">
                 <NetworkMap @own-x-coordinate="scrollMap"/>
             </div>
         </section>
@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed } from '@vue/composition-api';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculateUsdcFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
@@ -110,14 +110,16 @@ export default defineComponent({
         const { state: $network } = useNetworkStore();
         const { config } = useConfig();
 
-        function getConsensusStateString() {
-            return {
-                lost: context.root.$t('lost'),
-                syncing: context.root.$t('syncing'),
-                connecting: context.root.$t('connecting'),
-                established: context.root.$t('established'),
-            }[$network.consensus as 'lost' | 'syncing' | 'connecting' | 'established'];
-        }
+        const peerCount = computed(() => $network.peerCount);
+        const consensusState = computed(() => {
+            switch ($network.consensus as 'lost' | 'syncing' | 'connecting' | 'established') {
+                case 'lost': return context.root.$t('lost');
+                case 'syncing': return context.root.$t('syncing');
+                case 'connecting': return context.root.$t('connecting');
+                case 'established': return context.root.$t('established');
+                default: return 'Unknown'; // should never happen
+            }
+        });
 
         const showNetworkInfo = ref(!window.localStorage.getItem(LOCALSTORAGE_KEY));
 
@@ -126,13 +128,13 @@ export default defineComponent({
             showNetworkInfo.value = false;
         }
 
-        const $map = ref<HTMLDivElement | null>(null);
+        const map$ = ref<HTMLDivElement>(null);
         function scrollMap(x: number) {
-            const mapWidth = $map.value!.children[0]!.clientWidth;
+            const mapWidth = map$.value!.children[0]!.clientWidth;
             const adjustedX = x * (mapWidth / WIDTH);
 
             const scrollTarget = adjustedX - (window.innerWidth / 2);
-            $map.value!.scrollTo(scrollTarget, 0);
+            map$.value!.scrollTo(scrollTarget, 0);
         }
 
         const { updateAvailable } = useSettingsStore();
@@ -172,11 +174,11 @@ export default defineComponent({
             CryptoCurrency,
             showNetworkInfo,
             onNetworkInfoClosed,
-            $map,
+            map$,
             scrollMap,
             updateAvailable,
-            $network,
-            getConsensusStateString,
+            peerCount,
+            consensusState,
             btcFee,
             usdcFee,
             router,

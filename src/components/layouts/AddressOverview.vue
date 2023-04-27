@@ -93,7 +93,7 @@
                         <Copyable v-if="activeCurrency === 'nim'"
                             :text="activeAddressInfo.address" :key="activeAddressInfo.address"
                         >
-                            <div class="address" ref="$address" :class="{ 'masked': addressMasked  }">
+                            <div class="address" ref="address$" :class="{ 'masked': addressMasked  }">
                                 {{activeAddressInfo.address}}
                             </div>
                         </Copyable>
@@ -103,7 +103,7 @@
                         <Copyable v-if="activeCurrency === 'usdc'"
                             :text="usdcAddressInfo.address" :key="usdcAddressInfo.address"
                         >
-                            <div class="address" ref="$address" :class="{ 'masked': addressMasked  }">
+                            <div class="address" ref="address$" :class="{ 'masked': addressMasked  }">
                                 {{usdcAddressInfo.address}}
                             </div>
                         </Copyable>
@@ -261,12 +261,12 @@ export default defineComponent({
         const unclaimedCashlinkCount = ref(0);
         const showUnclaimedCashlinkList = ref(false);
 
-        const $address = ref<HTMLDivElement>(null);
+        const address$ = ref<HTMLDivElement>(null);
         const addressMasked = ref<boolean>(false);
 
         const { isMobile, isFullDesktop } = useWindowSize();
 
-        useElementResize($address, () => {
+        useElementResize(address$, () => {
             let addressWidth: number;
             if (isMobile.value) {
                 addressWidth = 322;
@@ -275,7 +275,7 @@ export default defineComponent({
             } else {
                 addressWidth = 372; // Tablet
             }
-            addressMasked.value = $address.value!.clientWidth < addressWidth;
+            addressMasked.value = address$.value!.clientWidth < addressWidth;
         });
 
         function hideUnclaimedCashlinkList() {
@@ -350,7 +350,7 @@ export default defineComponent({
             promoBoxVisible,
             setPromoBoxVisible,
             onTransactionListScroll,
-            $address,
+            address$,
             addressMasked,
         };
     },

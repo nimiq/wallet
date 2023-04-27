@@ -138,7 +138,7 @@
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="fiatAmount"
                                 :decimals="fiatCurrencyInfo.decimals"
-                                placeholder="0.00" ref="$eurAmountInput"
+                                placeholder="0.00" ref="eurAmountInput$"
                             >
                                 <span slot="suffix" class="ticker">{{ selectedFiatCurrency.toUpperCase() }}</span>
                             </AmountInput>
@@ -404,7 +404,7 @@ export default defineComponent({
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
-        const $eurAmountInput = ref<AmountInput>(null);
+        const eurAmountInput$ = ref<AmountInput>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
@@ -470,8 +470,8 @@ export default defineComponent({
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
-                if (!isMobile.value && $eurAmountInput.value) {
-                    $eurAmountInput.value.focus();
+                if (!isMobile.value && eurAmountInput$.value) {
+                    eurAmountInput$.value.focus();
                 }
             }
         });
@@ -909,7 +909,7 @@ export default defineComponent({
         );
 
         return {
-            $eurAmountInput,
+            eurAmountInput$,
             addressListOpened,
             onClose,
             onBankSelected,

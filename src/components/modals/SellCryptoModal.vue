@@ -117,7 +117,7 @@
                     <section class="amount-section" :class="{ orange: insufficientLimit || insufficientBalance }">
                         <div class="flex-row primary-amount">
                             <AmountInput v-model="cryptoAmount"
-                                ref="$cryptoAmountInput"
+                                ref="cryptoAmountInput$"
                                 :decimals="activeCurrency === CryptoCurrency.BTC ? btcUnit.decimals : 5">
                                 <div class="amount-menu ticker" slot="suffix">
                                     <button class="reset button flex-row"
@@ -376,7 +376,7 @@ export default defineComponent({
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
-        const $cryptoAmountInput = ref<AmountInput>(null);
+        const cryptoAmountInput$ = ref<AmountInput>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
@@ -452,8 +452,8 @@ export default defineComponent({
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
-                if (!isMobile.value && $cryptoAmountInput.value) {
-                    $cryptoAmountInput.value.focus();
+                if (!isMobile.value && cryptoAmountInput$.value) {
+                    cryptoAmountInput$.value.focus();
                 }
             }
         });
@@ -479,7 +479,7 @@ export default defineComponent({
             setBankAccount(newBankAccount);
             page.value = Pages.SETUP_BUY;
             await context.root.$nextTick();
-            if ($cryptoAmountInput.value) $cryptoAmountInput.value.focus();
+            if (cryptoAmountInput$.value) cryptoAmountInput$.value.focus();
         }
 
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
@@ -959,7 +959,7 @@ export default defineComponent({
         );
 
         return {
-            $cryptoAmountInput,
+            cryptoAmountInput$,
             addressListOpened,
             onClose,
             onBankSelected,

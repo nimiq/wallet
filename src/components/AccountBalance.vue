@@ -8,12 +8,12 @@
                     <PrivacyOnIcon v-else/>
                 </button>
             </h2>
-            <div class="fiat-amount" ref="$fiatAmountContainer">
+            <div class="fiat-amount" ref="fiatAmountContainer$">
                 <FiatAmount
                     v-if="fiatAmount !== undefined"
                     :amount="fiatAmount"
                     :currency="fiatCurrency"
-                    ref="$fiatAmount"
+                    ref="fiatAmount$"
                     :style="{ fontSize: `${fiatAmountFontSize}rem` }"
                     value-mask
                 />
@@ -24,7 +24,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
@@ -77,8 +76,8 @@ export default defineComponent({
             return amount;
         });
 
-        const $fiatAmountContainer = ref<HTMLDivElement>(null);
-        const $fiatAmount = ref<Vue>(null);
+        const fiatAmountContainer$ = ref<HTMLDivElement>(null);
+        const fiatAmount$ = ref<FiatAmount>(null);
 
         const { isFullDesktop } = useWindowSize();
         const fiatAmountMaxSize = computed(() => isFullDesktop.value ? 7 : 5.5); // rem
@@ -86,12 +85,12 @@ export default defineComponent({
 
         async function updateFontSize() {
             await context.root.$nextTick();
-            if (!$fiatAmount.value) return;
+            if (!fiatAmount$.value) return;
 
-            if (!$fiatAmountContainer.value || !$fiatAmount.value) return;
+            if (!fiatAmountContainer$.value || !fiatAmount$.value) return;
 
-            const availableWidth = $fiatAmountContainer.value!.offsetWidth;
-            const referenceWidth = ($fiatAmount.value!.$el as HTMLElement).offsetWidth;
+            const availableWidth = fiatAmountContainer$.value!.offsetWidth;
+            const referenceWidth = (fiatAmount$.value!.$el as HTMLElement).offsetWidth;
             const scaleFactor = Math.round((availableWidth / referenceWidth) * 100) / 100;
 
             if (scaleFactor > 1.02 || scaleFactor < 0.98) { // needed for safari
@@ -104,8 +103,8 @@ export default defineComponent({
         });
         onUnmounted(() => window.removeEventListener('resize', updateFontSize));
 
-        watch($fiatAmount, () => {
-            if (!$fiatAmount.value) updateFontSize();
+        watch(fiatAmount$, () => {
+            if (!fiatAmount$.value) updateFontSize();
         }, { lazy: true });
 
         const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
@@ -113,8 +112,8 @@ export default defineComponent({
         return {
             fiatAmount,
             fiatCurrency,
-            $fiatAmount,
-            $fiatAmountContainer,
+            fiatAmount$,
+            fiatAmountContainer$,
             fiatAmountFontSize,
             amountsHidden,
             toggleAmountsHidden,

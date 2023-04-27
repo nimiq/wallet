@@ -5,7 +5,7 @@
                 :class="{ single: backgroundAddresses.length === 0 }"
                 @click="onActiveAddressClick"
             >
-                <div class="identicon-stack" ref="$nimiqIcon">
+                <div class="identicon-stack">
                     <div v-if="disabled" class="disabled"></div>
                     <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                     <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
@@ -30,7 +30,7 @@
             >
                 <label>{{ activeAddressInfo.label }}</label>
                 <Amount :amount="newRightBalance" currency="nim" :decimals="0" />
-                 <div class="identicon-stack" ref="$nimiqIcon">
+                 <div class="identicon-stack">
                     <Identicon class="secondary" v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
                     <Identicon class="secondary" v-if="backgroundAddresses[1]" :address="backgroundAddresses[1]"/>
                     <Identicon class="primary" :address="activeAddressInfo.address"/>
@@ -55,17 +55,14 @@
             <div class="bar left flex-row"
                 v-for="barDef in leftDistributionData"
                 :key="barDef.address"
-                :ref="barDef.active ? '$leftActiveBar' : null"
+                :ref="barDef.active ? 'leftActiveBar$' : null"
                 :class="[{ active: barDef.active }, barDef.barColorClass]"
                 :style="{ width: `${getBarWidth(barDef)}%` }"
                 @click="barDef.active ? onActiveBarClick(leftAsset, $event) : selectAddress(barDef.address)"
             >
-                <div class="change"
-                    ref="$leftChangeBar"
-                    :style="{ width: `${getChangeBarWidth(barDef)}%` }"
-                ></div>
+                <div class="change" :style="{ width: `${getChangeBarWidth(barDef)}%` }"></div>
             </div>
-            <div class="separator nq-light-blue-bg" ref="$separator">
+            <div class="separator nq-light-blue-bg" ref="separator$">
                 <transition name="fade">
                     <SlideHint direction="left" v-if="!disabled && distributionPercents.right <= 2"/>
                 </transition>
@@ -82,15 +79,12 @@
             <div class="bar right flex-row"
                 v-for="barDef in rightDistributionData"
                 :key="barDef.address"
-                :ref="barDef.active ? '$rightActiveBar' : null"
+                :ref="barDef.active ? 'rightActiveBar$' : null"
                 :class="[{ active: barDef.active }, barDef.barColorClass]"
                 :style="{ width: `${getBarWidth(barDef)}%` }"
                 @click="barDef.active ? onActiveBarClick(rightAsset, $event) : selectAddress(barDef.address)"
             >
-                <div class="change"
-                    ref="$rightChangeBar"
-                    :style="{ width: `${getChangeBarWidth(barDef)}%` }"
-                ></div>
+                <div class="change" :style="{ width: `${getChangeBarWidth(barDef)}%` }"></div>
             </div>
         </div>
         <div class="scale flex-row">
@@ -320,8 +314,8 @@ export default defineComponent({
         let currentCursorPosition = 0;
         let animationFrameHandle = 0;
 
-        const $leftActiveBar = ref<HTMLDivElement[] | null>(null);
-        const $rightActiveBar = ref<HTMLDivElement[] | null>(null);
+        const leftActiveBar$ = ref<HTMLDivElement[]>(null);
+        const rightActiveBar$ = ref<HTMLDivElement[]>(null);
         const leftActiveBar = computed(() =>
             leftDistributionData.value.find((def) => def.active)!,
         );
@@ -371,17 +365,17 @@ export default defineComponent({
         function updateSwapBalanceBar(cursorPosition?: number) {
             if (
                 (!isGrabbing && !cursorPosition)
-                || !$leftActiveBar.value
-                || !$rightActiveBar.value
+                || !leftActiveBar$.value
+                || !rightActiveBar$.value
                 || !leftActiveBar.value
                 || !leftActiveBar.value
                 || !root.value
-                || !$separator.value
+                || !separator$.value
             ) {
                 return undefined;
             }
 
-            const separatorPositionX = $separator.value.getBoundingClientRect().left;
+            const separatorPositionX = separator$.value.getBoundingClientRect().left;
 
             /* initialize the initialCursorPosition to the handle/separator position if not set yet */
             if (initialCursorPosition === 0) initialCursorPosition = separatorPositionX;
@@ -488,31 +482,29 @@ export default defineComponent({
         const rightConnectingLineWidth = ref(0);
 
         function updateConnectingLinesWidth() {
-            if ($leftActiveBar.value && $leftActiveBar.value[0].parentElement) {
-                leftConnectingLineWidth.value = ($leftActiveBar.value[0].offsetWidth / 2)
-                    + ($leftActiveBar.value[0].offsetLeft) - (remSize.value * 2.5);
+            if (leftActiveBar$.value && leftActiveBar$.value[0].parentElement) {
+                leftConnectingLineWidth.value = (leftActiveBar$.value[0].offsetWidth / 2)
+                    + (leftActiveBar$.value[0].offsetLeft) - (remSize.value * 2.5);
             }
 
-            if ($rightActiveBar.value) {
-                rightConnectingLineWidth.value = ($rightActiveBar.value[0].offsetWidth / 2) - (remSize.value * 2.5);
+            if (rightActiveBar$.value) {
+                rightConnectingLineWidth.value = (rightActiveBar$.value[0].offsetWidth / 2) - (remSize.value * 2.5);
             }
         }
 
         /* Equilibrium point */
-        const $separator = ref<HTMLDivElement | null>(null);
-        const $leftChangeBar = ref<HTMLDivElement[] | null>(null);
-        const $rightChangeBar = ref<HTMLDivElement[] | null>(null);
+        const separator$ = ref<HTMLDivElement>(null);
         const equiPointThreshold = 8;
         const equiPointPositionX = ref(0);
         const equiPointVisible = ref(false);
         const animatingBars = ref(false);
 
         function updateEquiPointVisibility() {
-            if (!root.value || !$separator.value) {
+            if (!root.value || !separator$.value) {
                 return;
             }
 
-            const { offsetLeft } = $separator.value;
+            const { offsetLeft } = separator$.value;
 
             /* hide the point if close to the handle/separator */
             if (equiPointPositionX.value < ((offsetLeft + equiPointThreshold) / root.value.offsetWidth) * 100
@@ -525,7 +517,7 @@ export default defineComponent({
 
         watch(() => [props.leftAsset, props.rightAsset], async () => {
             await context.root.$nextTick();
-            const { offsetLeft } = $separator.value!;
+            const { offsetLeft } = separator$.value!;
             equiPointPositionX.value = (offsetLeft / root.value!.offsetWidth) * 100;
         });
 
@@ -556,7 +548,7 @@ export default defineComponent({
         /* Move the separator to the cursor position or limit on click on an active bar */
         let activeBarClickTimeoutId = 0;
         function onActiveBarClick(asset: SwapAsset, event: MouseEvent) {
-            if (!$separator.value || !event.target || !Object.values(SwapAsset).includes(asset)) {
+            if (!separator$.value || !event.target || !Object.values(SwapAsset).includes(asset)) {
                 return;
             }
 
@@ -564,12 +556,12 @@ export default defineComponent({
             animatingBars.value = true;
 
             if (asset === props.leftAsset) {
-                const posX = $separator.value.getBoundingClientRect().left
+                const posX = separator$.value.getBoundingClientRect().left
                     - ((event.target as HTMLElement).offsetWidth - event.offsetX);
 
                 updateSwapBalanceBar(posX);
             } else if (asset === props.rightAsset) {
-                const posX = $separator.value.getBoundingClientRect().right + event.offsetX;
+                const posX = separator$.value.getBoundingClientRect().right + event.offsetX;
                 updateSwapBalanceBar(posX);
             }
 
@@ -586,11 +578,9 @@ export default defineComponent({
 
             /* HTML elements */
             root,
-            $leftActiveBar,
-            $rightActiveBar,
-            $rightChangeBar,
-            $leftChangeBar,
-            $separator,
+            leftActiveBar$,
+            rightActiveBar$,
+            separator$,
 
             /* distribution data */
             activeAddressInfo,

@@ -3,7 +3,6 @@
         v-if="activeAccountInfo"
         class="account-menu reset flex-row"
         @click="goToAccount"
-        ref="$button"
     >
         <div v-if="activeAccountInfo.type === AccountType.BIP39" class="icon" :class="backgroundColor">
             <LoginFileIcon/>
@@ -27,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { Identicon, MenuDotsIcon } from '@nimiq/vue-components';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
@@ -40,8 +39,6 @@ export default defineComponent({
     setup(props, context) {
         const { activeAccountInfo } = useAccountStore();
         const { state: addressState } = useAddressStore();
-
-        const $button = ref<HTMLButtonElement>(null);
 
         function openMenu() {
             context.root.$router.push({
@@ -71,7 +68,6 @@ export default defineComponent({
             AccountType,
             firstAddressInfo,
             goToAccount,
-            $button,
         };
     },
     components: {

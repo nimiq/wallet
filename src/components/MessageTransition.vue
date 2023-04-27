@@ -26,7 +26,6 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const $currentEl = ref<HTMLElement | null>(null);
         const isReverse = ref(false);
         const messageHeight = ref<number | null>(null);
         const isTransitioning = ref(false);
@@ -67,8 +66,6 @@ export default defineComponent({
         }
 
         return {
-            $currentEl,
-
             isReverse,
             isTransitioning,
             messageHeight,

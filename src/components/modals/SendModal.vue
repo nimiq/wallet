@@ -7,7 +7,7 @@
         @close-overlay="onCloseOverlay"
         class="send-modal"
         :class="{'value-masked': amountsHidden}"
-        ref="$modal"
+        ref="modal$"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
@@ -292,7 +292,7 @@ export default defineComponent({
         }
         const page = ref(Pages.RECIPIENT_INPUT);
 
-        const $modal = ref<Modal>(null);
+        const modal$ = ref<Modal>(null);
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
@@ -637,7 +637,7 @@ export default defineComponent({
                     });
 
                 // Close modal
-                successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => modal$.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
@@ -687,7 +687,7 @@ export default defineComponent({
             RecipientType,
             CryptoCurrency,
             page,
-            $modal,
+            modal$,
 
             // Recipient Input
             recentContacts,

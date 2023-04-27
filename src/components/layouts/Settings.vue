@@ -83,7 +83,7 @@
 
                     <label class="nq-button-pill light-blue">
                         {{ $t('Load file') }}
-                        <input type="file" @change="loadFile" ref="$fileInput">
+                        <input type="file" @change="loadFile" ref="fileInput$">
                     </label>
                 </div>
 
@@ -333,11 +333,11 @@ export default defineComponent({
             return sorted.filter((code) => !FIAT_CURRENCY_DENYLIST.includes(code.toUpperCase()));
         }
 
-        const $fileInput = ref<HTMLInputElement | null>(null);
+        const fileInput$ = ref<HTMLInputElement>(null);
 
         function readFile(data: string) {
             // Reset file input
-            $fileInput.value!.value = '';
+            fileInput$.value!.value = '';
 
             let importedContacts = [];
             try {
@@ -423,7 +423,7 @@ export default defineComponent({
             sortedFiatCurrency,
             setCurrency,
             ...settings,
-            $fileInput,
+            fileInput$,
             loadFile,
             showVestingSetting,
             onTrialPassword,

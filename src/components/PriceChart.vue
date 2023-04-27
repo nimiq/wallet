@@ -1,8 +1,8 @@
 <template>
     <div class="price-chart flex-column">
-        <svg ref="$svg" xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" preserveAspectRatio="none"
+        <svg ref="svg$" xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" preserveAspectRatio="none"
             :style="{ opacity: history.length >= 2 ? 1 : 0 }">
-            <path ref="$path"
+            <path ref="path$"
                 :d="path"
                 fill="none"
                 stroke="currentColor"
@@ -67,8 +67,8 @@ export default defineComponent({
     },
     // @ts-expect-error (The "validator" for the currency prop throws off the automatic prop typing)
     setup(props) {
-        const $svg = ref<SVGElement|null>(null);
-        const $path = ref<SVGPathElement|null>(null);
+        const svg$ = ref<SVGElement>(null);
+        const path$ = ref<SVGPathElement>(null);
         const history = ref<Array<[/* timestamp */number, /* price */number]>>([]);
 
         // Calculate SVG size
@@ -84,8 +84,8 @@ export default defineComponent({
             () => `-${strokeWidth / 2} -${padding} ${width.value + strokeWidth} ${height.value + 2 * padding}`,
         );
         const onResize = () => requestAnimationFrame(() => {
-            if (!$svg.value) return;
-            const svgBoundingBox = $svg.value.getBoundingClientRect();
+            if (!svg$.value) return;
+            const svgBoundingBox = svg$.value.getBoundingClientRect();
             width.value = svgBoundingBox.width;
             height.value = svgBoundingBox.height;
         });
@@ -227,26 +227,26 @@ export default defineComponent({
         });
 
         watch(history, async () => {
-            if (!$path.value) return;
+            if (!path$.value) return;
             if (!switchingTimeRange) return;
             // animate the chart line
             if (history.value.length) {
-                const pathLength = $path.value.getTotalLength();
-                $path.value.style.strokeDasharray = `0 ${pathLength}`;
+                const pathLength = path$.value.getTotalLength();
+                path$.value.style.strokeDasharray = `0 ${pathLength}`;
                 // strokeDasharray gets applied
                 await new Promise((resolve) => { requestAnimationFrame(resolve); });
                 // ready to update strokeDasharray again
                 await new Promise((resolve) => { requestAnimationFrame(resolve); });
-                $path.value.style.strokeDasharray = `${pathLength} 0`;
+                path$.value.style.strokeDasharray = `${pathLength} 0`;
                 switchingTimeRange = false;
             } else {
-                $path.value.style.strokeDasharray = '';
+                path$.value.style.strokeDasharray = '';
             }
         });
 
         return {
-            $svg,
-            $path,
+            svg$,
+            path$,
             strokeWidth,
             viewBox,
             path,

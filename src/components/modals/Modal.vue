@@ -1,11 +1,11 @@
 <template>
     <div class="modal backdrop flex-column" v-pointerdown="checkTouchStart" @click.self="onBackdropClick">
-        <div class="wrapper flex-column" @click.self="onBackdropClick" ref="$main">
+        <div class="wrapper flex-column" @click.self="onBackdropClick" ref="main$">
             <SmallPage
                 class="main"
                 :class="{ 'smallen': showOverlay, 'swipe-padding': showSwipeHandle && swipePadding }"
             >
-                <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="$handle">
+                <div v-if="showSwipeHandle" class="swipe-handle flex-row" ref="handle$">
                     <div class="swipe-bar"></div>
                 </div>
                 <slot/>
@@ -111,8 +111,8 @@ const Modal = defineComponent({
         });
 
         // Swiping
-        const $main = ref<HTMLDivElement>(null);
-        const $handle = ref<HTMLDivElement>(null);
+        const main$ = ref<HTMLDivElement>(null);
+        const handle$ = ref<HTMLDivElement>(null);
         const showSwipeHandle = ref(false);
 
         async function updateSwipeRestPosition(
@@ -141,15 +141,15 @@ const Modal = defineComponent({
             const { isMobile, height } = useWindowSize();
             const { swipingEnabled } = useSettingsStore();
 
-            const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+            const { attachSwipe, detachSwipe } = useSwipes(main$ as Ref<HTMLDivElement>, {
                 onSwipeEnded: updateSwipeRestPosition,
                 clampMovement: computed<[number, number]>(() => [0, height.value]),
                 vertical: true,
-                handle: $handle as Ref<HTMLDivElement>,
+                handle: handle$ as Ref<HTMLDivElement>,
             });
 
             watch(isMobile, (isMobileNow, wasMobile) => {
-                if (!$main.value) return;
+                if (!main$.value) return;
 
                 if (isMobileNow && !wasMobile && swipingEnabled.value === 1) {
                     showSwipeHandle.value = true;
@@ -188,8 +188,8 @@ const Modal = defineComponent({
             forceClose, // exposed for use from other components
 
             close,
-            $main,
-            $handle,
+            main$,
+            handle$,
             showSwipeHandle,
             checkTouchStart,
             onBackdropClick,

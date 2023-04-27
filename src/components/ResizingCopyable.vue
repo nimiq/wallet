@@ -4,10 +4,10 @@
         v-on="$listeners"
         :style="{ fontSize: `calc(var(--body-size) * ${addressFontSizeScaleFactor})` }"
         :text="text"
-        ref="$copyable"
+        ref="copyable$"
     >
         <slot></slot>
-        <div class="width-finder" ref="$widthFinder">{{ text }}</div>
+        <div class="width-finder" ref="widthFinder$">{{ text }}</div>
     </Copyable>
 </template>
 
@@ -20,19 +20,19 @@ export default defineComponent({
         text: String,
     },
     setup(props) {
-        const $copyable = ref<Copyable>(null);
-        const $widthFinder = ref<HTMLDivElement>(null);
+        const copyable$ = ref<Copyable>(null);
+        const widthFinder$ = ref<HTMLDivElement>(null);
         const addressFontSizeScaleFactor = ref(1);
 
         async function updateAddressFontSizeScaleFactor() {
-            if (!$copyable.value || !$widthFinder.value) return;
+            if (!copyable$.value || !widthFinder$.value) return;
 
-            const style = window.getComputedStyle($copyable.value.$el.children[1]);
+            const style = window.getComputedStyle(copyable$.value.$el.children[1]);
             const leftPadding = parseInt(style.getPropertyValue('padding-left'), 10);
             const rightPadding = parseInt(style.getPropertyValue('padding-right'), 10);
 
-            const width = $widthFinder.value.clientWidth;
-            const maxWidth = $copyable.value.$el.clientWidth - leftPadding - rightPadding;
+            const width = widthFinder$.value.clientWidth;
+            const maxWidth = copyable$.value.$el.clientWidth - leftPadding - rightPadding;
 
             addressFontSizeScaleFactor.value = Math.min(maxWidth / width, 1);
         }
@@ -47,8 +47,8 @@ export default defineComponent({
         });
 
         return {
-            $copyable,
-            $widthFinder,
+            copyable$,
+            widthFinder$,
             addressFontSizeScaleFactor,
         };
     },

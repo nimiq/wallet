@@ -22,7 +22,7 @@
                         :placeholder="$t('Enter bank name')"
                         :title="$t('Enter bank name')"
                         :class="{ writing }"
-                        ref="$bankCheckInput"
+                        ref="bankCheckInput$"
                     />
                     <span class="bic-too">{{ $t('BIC works, too.') }}</span>
                 </template>
@@ -31,7 +31,7 @@
                         <template #second>
                             <LabelInput
                                 v-model="accountName"
-                                ref="$accountNameInput"
+                                ref="accountNameInput$"
                                 :placeholder="$t('Enter account holder name')"
                                 @keydown.native="onIbanInputKeyDown"
                             />
@@ -40,7 +40,6 @@
                         <template #main>
                             <LabelInput
                                 v-model="iban"
-                                ref="$ibanInput"
                                 :placeholder="$t('Enter IBAN')"
                                 @keydown.native="onIbanInputKeyDown"
                             />
@@ -94,9 +93,8 @@ export default defineComponent({
     setup(props, context) {
         const { bank, bankAccount } = useBankStore();
 
-        const $bankCheckInput = ref<BankCheckInput>(null);
-        const $accountNameInput = ref<LabelInput>(null);
-        const $ibanInput = ref<LabelInput>(null);
+        const bankCheckInput$ = ref<BankCheckInput>(null);
+        const accountNameInput$ = ref<LabelInput>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
         const bankName = ref(bank.value?.name || '');
@@ -119,9 +117,9 @@ export default defineComponent({
         watch(currentStep, async () => {
             await context.root.$nextTick();
             if (currentStep.value === Step.BANK_CHECK) {
-                if ($bankCheckInput.value) $bankCheckInput.value.focus();
+                if (bankCheckInput$.value) bankCheckInput$.value.focus();
             } else if (currentStep.value === Step.IBAN_CHECK) {
-                if ($accountNameInput.value) $accountNameInput.value.focus();
+                if (accountNameInput$.value) accountNameInput$.value.focus();
             }
         });
 
@@ -157,9 +155,8 @@ export default defineComponent({
         return {
             Step,
 
-            $bankCheckInput,
-            $accountNameInput,
-            $ibanInput,
+            bankCheckInput$,
+            accountNameInput$,
 
             bank,
             bankName,

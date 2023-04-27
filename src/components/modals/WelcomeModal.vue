@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="$modal">
+    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="modal$">
         <PageHeader :backArrow="page > 1" @back="onArrowClick" :class="{
             'absolute': page > 1 && page < 5,
             'fade-out': isPageBodyFadedOut,
@@ -405,7 +405,7 @@ export default defineComponent({
             CryptoCurrency.USDC,
         ];
 
-        const $modal = ref<Modal>(null);
+        const modal$ = ref<Modal>(null);
         const page = ref(1);
 
         const highlightedCurrencyIndex = ref(0);
@@ -541,7 +541,7 @@ export default defineComponent({
                 page.value += 1;
             } else {
                 window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
-                await $modal.value!.forceClose();
+                await modal$.value!.forceClose();
             }
         }
 
@@ -582,7 +582,7 @@ export default defineComponent({
                 && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
 
         return {
-            $modal,
+            modal$,
             page,
             highlightedCurrency,
             isPageBodyFadedOut,

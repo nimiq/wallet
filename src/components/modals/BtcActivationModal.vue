@@ -1,5 +1,5 @@
 <template>
-    <Modal ref="$modal" class="btc-activation-modal">
+    <Modal ref="modal$" class="btc-activation-modal">
         <PageBody class="flex-column">
             <BitcoinIcon/>
 
@@ -51,7 +51,7 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
-        const $modal = ref<Modal>(null);
+        const modal$ = ref<Modal>(null);
 
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
@@ -73,7 +73,7 @@ export default defineComponent({
                 // a malicious link.
                 await context.root.$router.push(props.redirect);
             } else {
-                await $modal.value!.forceClose();
+                await modal$.value!.forceClose();
                 if (skipDefaultRedirects) return;
 
                 if (isMobile.value && hasBitcoinAddresses.value) {
@@ -92,7 +92,7 @@ export default defineComponent({
         return {
             hasBitcoinAddresses,
             shouldOpenWelcomeModal,
-            $modal,
+            modal$,
             enableBitcoin,
             close,
         };

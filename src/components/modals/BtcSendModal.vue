@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened" ref="$modal">
+    <Modal :showOverlay="statusScreenOpened" ref="modal$">
         <div class="page flex-column" @click="amountMenuOpened = false">
             <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
                 {{ $t('Send Transaction') }}
@@ -439,7 +439,7 @@ export default defineComponent({
         const statusMessage = ref('');
         const statusMainActionText = ref(context.root.$t('Retry') as string);
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction') as string);
-        const $modal = ref<Modal>(null);
+        const modal$ = ref<Modal>(null);
 
         async function sign() {
             if (!canSend.value) return;
@@ -500,7 +500,7 @@ export default defineComponent({
                     }) as string;
 
                 // Close modal
-                successCloseTimeout = window.setTimeout(() => $modal.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => modal$.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
 
@@ -531,7 +531,7 @@ export default defineComponent({
             RecipientType,
             CryptoCurrency,
             FiatCurrency,
-            $modal,
+            modal$,
 
             // Recipient Input
             addressInputValue,

@@ -2,12 +2,12 @@
     <section class="double-input" :class="{ 'extended': extended }">
 
         <transition name="slide-n-fade">
-            <div ref="$secondInput" class="second-input-wrapper" v-if="extended">
+            <div ref="secondInput$" class="second-input-wrapper" v-if="extended">
                 <slot name="second"></slot>
             </div>
         </transition>
 
-        <div ref="$mainInput" class="main-input-wrapper">
+        <div class="main-input-wrapper">
             <slot name="main"></slot>
         </div>
 
@@ -35,15 +35,14 @@ export default defineComponent({
         extended: Boolean,
     },
     setup(props, context) {
-        const $mainInput = ref<HTMLDivElement>(null);
-        const $secondInput = ref<HTMLDivElement>(null);
+        const secondInput$ = ref<HTMLDivElement>(null);
 
         const labelInputHeight = ref(0);
 
         async function updateLabelInputHeight() {
-            if (props.extended && $secondInput.value) {
+            if (props.extended && secondInput$.value) {
                 await context.root.$nextTick();
-                const input = $secondInput.value.querySelector('input');
+                const input = secondInput$.value.querySelector('input');
                 if (input) labelInputHeight.value = input.clientHeight;
                 else labelInputHeight.value = 0;
             }
@@ -53,8 +52,7 @@ export default defineComponent({
         watch(() => props.extended, updateLabelInputHeight);
 
         return {
-            $mainInput,
-            $secondInput,
+            secondInput$,
             labelInputHeight,
         };
     },

@@ -1,6 +1,6 @@
 <template>
     <div class="bank-check-input" :class="{ disabled }" @keydown="onKeyDown">
-        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="$bankSearchInput"/>
+        <LabelInput v-bind="$attrs" v-on="$listeners" v-model="localValue" :disabled="disabled" ref="bankSearchInput$"/>
         <CountrySelector :countryCodes="SEPA_COUNTRY_CODES" includeAllOption
             @open="countryDropdownOpened = true"
             @close="countryDropdownOpened = false"
@@ -8,7 +8,7 @@
             ref="countrySelect">
             <li slot="info" class="info">{{ $t('More locations will be supported in the future.') }}</li>
         </CountrySelector>
-        <ul class="bank-autocomplete" ref="$bankAutocomplete"
+        <ul class="bank-autocomplete" ref="bankAutocomplete$"
             v-if="matchingBanks && matchingBanks.length > 0 && localValue.length >= 2 && !countryDropdownOpened"
             :class="{ scroll: isScrollable }"
         >
@@ -51,7 +51,7 @@
                     class="circled-question-mark"
                     preferredPosition="bottom left"
                     theme="inverse"
-                    :container="$bankAutocomplete && { $el: $bankAutocomplete }"
+                    :container="bankAutocomplete$ && { $el: bankAutocomplete$ }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
                     <CircledQuestionMarkIcon @click.stop slot="trigger"/>
                     <p>{{ $t('Not all accounts provided by this bank support instant transactions.') }}</p>
@@ -62,8 +62,8 @@
                     class="alert-triangle-icon"
                     preferredPosition="bottom left"
                     theme="inverse"
-                    ref="$tooltips"
-                    :container="$bankAutocomplete && { $el: $bankAutocomplete }"
+                    ref="tooltips$"
+                    :container="bankAutocomplete$ && { $el: bankAutocomplete$ }"
                     :styles="{ transform: `translate3d(${isScrollable ? -1 : 5}%, 2rem, 1px)` }">
                     <AlertTriangleIcon @click.stop slot="trigger"/>
                     <template v-if="direction == 'outbound'">
@@ -148,9 +148,9 @@ const BankCheckInput = defineComponent({
             ),
         );
 
-        const $bankSearchInput = ref<LabelInput>(null);
-        const $bankAutocomplete = ref<HTMLUListElement>(null);
-        const $tooltips = ref<Array<Tooltip>>([]);
+        const bankSearchInput$ = ref<LabelInput>(null);
+        const bankAutocomplete$ = ref<HTMLUListElement>(null);
+        const tooltips$ = ref<Array<Tooltip>>([]);
 
         const selectedBankIndex = ref(0);
         const currentCountry = ref<CountryInfo>(null);
@@ -168,8 +168,8 @@ const BankCheckInput = defineComponent({
         });
 
         function focus() {
-            if (!$bankSearchInput.value) return;
-            $bankSearchInput.value.focus();
+            if (!bankSearchInput$.value) return;
+            bankSearchInput$.value.focus();
         }
 
         /* List of available banks in the currently selected country */
@@ -225,11 +225,11 @@ const BankCheckInput = defineComponent({
                     : matchingBanks.value.slice(0, 3)
             )];
 
-            if ($tooltips.value.length === 0) return b;
+            if (tooltips$.value.length === 0) return b;
 
             for (let i = 0, tIndex = 0; i < b.length; i++) {
                 if (checkBankSupport(b[i], SEPA_INSTANT_SUPPORT.FULL_OR_SHARED)) {
-                    b[i].tooltip = $tooltips.value[tIndex];
+                    b[i].tooltip = tooltips$.value[tIndex];
                     tIndex++;
                 }
             }
@@ -262,8 +262,8 @@ const BankCheckInput = defineComponent({
         /* Country dropdown watch: onOpen -> focus input | onClose -> clear input & focus bank search */
         watch(countryDropdownOpened, (newBool, oldBool) => {
             if (!newBool && oldBool) { // onClose
-                if ($bankSearchInput.value) {
-                    $bankSearchInput.value.focus();
+                if (bankSearchInput$.value) {
+                    bankSearchInput$.value.focus();
                 }
             }
         });
@@ -272,7 +272,7 @@ const BankCheckInput = defineComponent({
 
         /* Keyboard navigation */
         function onKeyDown(event: KeyboardEvent) {
-            if ((!matchingBanks || !$bankAutocomplete.value) && (!countryDropdownOpened.value)) return;
+            if ((!matchingBanks || !bankAutocomplete$.value) && (!countryDropdownOpened.value)) return;
             const oldBankIndex = selectedBankIndex.value;
 
             if (countryDropdownOpened.value) { // country list
@@ -301,8 +301,8 @@ const BankCheckInput = defineComponent({
                         break;
                 }
 
-                if (selectedBankIndex.value !== oldBankIndex && $bankAutocomplete.value) {
-                    $bankAutocomplete.value.children[selectedBankIndex.value].scrollIntoView({
+                if (selectedBankIndex.value !== oldBankIndex && bankAutocomplete$.value) {
+                    bankAutocomplete$.value.children[selectedBankIndex.value].scrollIntoView({
                         behavior: 'smooth',
                         block: 'center',
                     });
@@ -315,7 +315,7 @@ const BankCheckInput = defineComponent({
 
             // Only continue if the selected bank supports the wanted direction
             if (getBankSupport(bank) === SEPA_INSTANT_SUPPORT.NONE) {
-                if ($bankSearchInput.value) $bankSearchInput.value.focus();
+                if (bankSearchInput$.value) bankSearchInput$.value.focus();
                 return;
             }
 
@@ -423,9 +423,9 @@ const BankCheckInput = defineComponent({
 
             SEPA_INSTANT_SUPPORT,
 
-            $bankSearchInput,
-            $bankAutocomplete,
-            $tooltips,
+            bankSearchInput$,
+            bankAutocomplete$,
+            tooltips$,
 
             localValue,
             matchingBanks,

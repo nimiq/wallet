@@ -34,13 +34,13 @@
                 :style="{ fontSize: `calc(var(--body-size) * ${addressFontSizeScaleFactor})` }"
                 :text="currentlyShownAddress"
                 @click.native="copyActiveAddressCallback"
-                ref="$availableAddressCopyable"
+                ref="availableAddressCopyable$"
                 :class="{ 'already-copied': !!recentlyCopiedAddresses[currentlyShownAddress] }"
             >
                 <transition-group name="translateY">
                     <div v-for="address in [currentlyShownAddress]" :key="address">{{ address }}</div>
                 </transition-group>
-                <div class="width-finder" ref="$addressWidthFinder">{{ currentlyShownAddress }}</div>
+                <div class="width-finder" ref="addressWidthFinder$">{{ currentlyShownAddress }}</div>
             </Copyable>
 
             <div class="address-sub-label">
@@ -83,7 +83,7 @@
                             <transition-group name="translateY-fade-list" tag="div">
                                 <BtcCopiedAddress
                                     v-for="addressInfo in recentlyCopiedAddressesListSorted"
-                                    ref="$copiedAddresses"
+                                    ref="copiedAddresses$"
                                     :key="addressInfo.address"
                                     :addressInfo="addressInfo"
                                     :container="$refs.addressList ? { $el: $refs.addressList } : null"
@@ -121,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref, Ref, onUnmounted, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from '@vue/composition-api';
 import {
     PageBody,
     PageHeader,
@@ -198,7 +198,7 @@ export default defineComponent({
         }
 
         // Copied addresses
-        const $copiedAddresses = ref<BtcCopiedAddress[]>(null);
+        const copiedAddresses$ = ref<BtcCopiedAddress[]>(null);
         const addressCopied = ref(false);
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)
@@ -246,8 +246,8 @@ export default defineComponent({
                 setCopiedAddress(currentlyShownAddress.value);
                 // Focus the label input of the newly copied address
                 setTimeout(() => {
-                    if ($copiedAddresses.value && $copiedAddresses.value.length > 0) {
-                        $copiedAddresses.value[$copiedAddresses.value.length - 1].focus();
+                    if (copiedAddresses$.value && copiedAddresses$.value.length > 0) {
+                        copiedAddresses$.value[copiedAddresses$.value.length - 1].focus();
                     }
                 }, 100);
             }
@@ -280,18 +280,18 @@ export default defineComponent({
         );
 
         // Auto-adapt font-size for the address to always fit the grey box
-        const $availableAddressCopyable: Ref<Copyable | null> = ref(null);
-        const $addressWidthFinder: Ref<HTMLDivElement | null> = ref(null);
+        const availableAddressCopyable$ = ref<Copyable>(null);
+        const addressWidthFinder$ = ref<HTMLDivElement>(null);
         const addressFontSizeScaleFactor = ref(1);
         let addressPadding: number | null = null;
 
         async function updateAddressFontSizeScaleFactor() {
-            if (!$availableAddressCopyable.value || !$addressWidthFinder.value) {
+            if (!availableAddressCopyable$.value || !addressWidthFinder$.value) {
                 return null;
             }
             if (!addressPadding) {
                 addressPadding = parseInt(
-                    window.getComputedStyle($availableAddressCopyable.value.$el.children[1])
+                    window.getComputedStyle(availableAddressCopyable$.value.$el.children[1])
                         .getPropertyValue('padding-left')
                         .replace('px', ''),
                     10,
@@ -301,8 +301,8 @@ export default defineComponent({
             addressFontSizeScaleFactor.value = 1;
             await context.root.$nextTick();
 
-            const addressWidth = $addressWidthFinder.value.clientWidth;
-            const maxWidth = $availableAddressCopyable.value.$el.clientWidth - (addressPadding * 2);
+            const addressWidth = addressWidthFinder$.value.clientWidth;
+            const maxWidth = availableAddressCopyable$.value.$el.clientWidth - (addressPadding * 2);
 
             addressFontSizeScaleFactor.value = Math.min(maxWidth / addressWidth, 1);
 
@@ -328,14 +328,14 @@ export default defineComponent({
             receiveLinkOverlayOpened,
             closeOverlay,
             copyActiveAddressCallback,
-            $copiedAddresses,
+            copiedAddresses$,
             addressCopied,
             recentlyCopiedAddresses,
             recentlyCopiedAddressesListSorted,
             showNextExternalAddress,
             currentlyShownAddress,
-            $availableAddressCopyable,
-            $addressWidthFinder,
+            availableAddressCopyable$,
+            addressWidthFinder$,
             addressFontSizeScaleFactor,
             BTC_MAX_COPYABLE_ADDRESSES,
             back,

@@ -1,6 +1,6 @@
 <template>
     <div id="app" :class="{'value-masked': amountsHidden}">
-        <main :class="activeMobileColumn" ref="$main">
+        <main :class="activeMobileColumn" ref="main$">
             <Sidebar/>
 
             <transition name="delay">
@@ -51,8 +51,8 @@ export default defineComponent({
         const { amountsHidden, swipingEnabled } = useSettingsStore();
 
         // Swiping
-        const $main = ref<HTMLDivElement>(null);
-        let $mobileTapArea: HTMLDivElement | null = null;
+        const main$ = ref<HTMLDivElement>(null);
+        let mobileTapArea$: HTMLDivElement | null = null;
         const { width, isMobile } = useWindowSize();
 
         async function updateSwipeRestPosition(
@@ -92,21 +92,21 @@ export default defineComponent({
 
         function onSwipeFrame(position: number) {
             if (position <= -192) return;
-            if (!$mobileTapArea) {
-                $mobileTapArea = document.querySelector('.mobile-tap-area') as HTMLDivElement;
+            if (!mobileTapArea$) {
+                mobileTapArea$ = document.querySelector('.mobile-tap-area') as HTMLDivElement;
             }
-            $mobileTapArea!.style.transition = 'initial';
-            $mobileTapArea!.style.opacity = `${1 - (position / -192)}`;
+            mobileTapArea$.style.transition = 'initial';
+            mobileTapArea$.style.opacity = `${1 - (position / -192)}`;
         }
 
         function resetStyles() {
-            if (!$mobileTapArea) return;
-            $mobileTapArea!.style.transition = '';
-            $mobileTapArea!.style.opacity = '';
-            $mobileTapArea = null;
+            if (!mobileTapArea$) return;
+            mobileTapArea$.style.transition = '';
+            mobileTapArea$.style.opacity = '';
+            mobileTapArea$ = null;
         }
 
-        const { attachSwipe, detachSwipe } = useSwipes($main as Ref<HTMLDivElement>, {
+        const { attachSwipe, detachSwipe } = useSwipes(main$ as Ref<HTMLDivElement>, {
             onSwipeEnded: updateSwipeRestPosition,
             // TODO: clamp movement to smaller area on settings and network view
             clampMovement: computed<[number, number]>(() => {
@@ -123,7 +123,7 @@ export default defineComponent({
         });
 
         watch([isMobile, swipingEnabled], ([isMobileNow, newSwiping], [wasMobile, oldSwiping]) => {
-            if (!$main.value) return;
+            if (!main$.value) return;
 
             if ((isMobileNow && !wasMobile) || (newSwiping === 1 && oldSwiping !== 1)) {
                 attachSwipe();
@@ -140,7 +140,7 @@ export default defineComponent({
             activeMobileColumn,
             hasAccounts,
             amountsHidden,
-            $main,
+            main$,
         };
     },
     components: {

@@ -432,8 +432,9 @@ function createActivationNavigationGuard(
         const { activeAccountInfo: { value: activeAccount } } = useAccountStore();
         const isUnsupportedAccount = !!activeAccount && !isAccountTypeSupported(activeAccount.type);
         const isUnsupportedActivation = to.name === `${currency}-activation` && isUnsupportedAccount;
-        if ((!requiresCurrencyActivation && !isUnsupportedActivation) || isCurrencyActivated()) {
-            // can continue to the requested view
+        if ((!requiresCurrencyActivation && !isUnsupportedActivation) || isCurrencyActivated() || !activeAccount) {
+            // Can continue to the requested view, or is not logged-in into any account yet, in which case we want to
+            // preserve the original route to be redirected back to after login.
             next();
         } else if (isUnsupportedAccount) {
             // unsupported account; go to main view

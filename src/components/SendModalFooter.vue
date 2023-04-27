@@ -42,16 +42,27 @@ export default defineComponent({
         },
         error: String,
         disabled: Boolean,
+        requireCompleteBtcHistory: {
+            type: Boolean,
+            default: true,
+        },
     },
     setup(props, context) {
         const networkState = computed(() => {
             let message: string | null = null;
 
             if (props.assets.includes(CryptoCurrency.BTC)) {
-                const { consensus: btcConsensus } = useBtcNetworkStore();
+                const {
+                    consensus: btcConsensus,
+                    height: btcHeight,
+                    isFetchingTxHistory: isFetchingBtcHistory,
+                } = useBtcNetworkStore();
 
-                if (btcConsensus.value !== 'established') {
+                if (btcConsensus.value !== 'established' || !btcHeight.value) {
                     message = context.root.$i18n.t('Connecting to Bitcoin network') as string;
+                } else if (props.requireCompleteBtcHistory && isFetchingBtcHistory.value) {
+                    // Current Bitcoin UTXOs and balance are unknown without complete history.
+                    message = context.root.$i18n.t('Syncing with Bitcoin network') as string;
                 }
             }
 
@@ -61,7 +72,7 @@ export default defineComponent({
                 if (nimiqConsensus.value !== 'established') {
                     message = context.root.$i18n.t('Connecting to Nimiq network') as string;
                 } else if (!nimiqHeight.value) {
-                    message = context.root.$i18n.t('Waiting for Nimiq network informations') as string;
+                    message = context.root.$i18n.t('Waiting for Nimiq network information') as string;
                 }
             }
 

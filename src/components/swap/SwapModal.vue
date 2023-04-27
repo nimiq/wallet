@@ -179,6 +179,7 @@
             :buttonColor="kycUser ? 'purple' : 'light-blue'"
             :disabled="!canSign || currentlySigning"
             :error="estimateError || swapError"
+            requireCompleteBtcHistory
             @click="sign"
         >
             <template v-slot:cta>{{ $t('Confirm') }}</template>

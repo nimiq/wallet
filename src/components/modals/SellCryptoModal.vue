@@ -174,6 +174,7 @@
                     :buttonColor="kycUser ? 'purple' : 'light-blue'"
                     :disabled="!canSign"
                     :error="estimateError || swapError"
+                    requireCompleteBtcHistory
                     @click="sign"
                 >
                     <template v-slot:cta>{{ $t('Sell Crypto') }}</template>

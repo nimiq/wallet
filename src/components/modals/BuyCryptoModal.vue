@@ -193,6 +193,7 @@
                     :buttonColor="kycUser ? 'purple' : 'light-blue'"
                     :disabled="!canSign"
                     :error="estimateError || swapError"
+                    :requireCompleteBtcHistory="false"
                     @click="sign"
                 >
                     <template v-slot:cta>{{ $t('Buy Crypto') }}</template>

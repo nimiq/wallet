@@ -1,69 +1,33 @@
 /* eslint-disable no-console */
 
-const ALBATROSS_GENESIS_DATE = new Date('2023-03-23T00:00:00.000Z');
+// Albatross Genesis block has two bugs currently:
+// 1. Its timestamp is a unix timestamp in seconds, but should be milliseconds.
+//    This leads to the rewards being paid out being significantly lower than they should.
+// 2. It does not encode the genesis supply, but this has no influence on the reward percentage,
+//    as it cancels out when the future and current supply are subtracted from each other.
 
-const GENESIS_SUPPLY = [
-    8 * 10_000e5, // Validators
-    8 * 1_000_000_000e5, // Stakers
-    3 * 1_000_000_000e5, // Accounts
-].reduce((sum, value) => sum + value);
+// const ALBATROSS_GENESIS_DATE = new Date('2023-03-23T00:00:00.000Z');
+const ALBATROSS_GENESIS_DATE = new Date('1970-01-20T10:32:09.000Z');
 
-export async function calculateStakingReward(fee: number, currentlyStaked: number) {
-    // The values here represent a trade-off between the actual values in the devnet and real-life values
-    // that show a better picture of how staking will look after the mainnet switch.
+const GENESIS_SUPPLY = 0;
+// 8 * 10_000e5 // Validators
+// + 8 * 1_000_000_000e5 // Stakers
+// + 3 * 1_000_000_000e5; // Accounts
 
-    // This is a real-life number
-    const currentSupply = supplyAtTime(Date.now());
+export async function calculateStakingReward(fee: number, currentlyStaked: number): Promise<number> {
+    const now = new Date();
+    const currentSupply = supplyAtTime(now.getTime());
+    const supplyIn1Year = supplyAtTime(now.setFullYear(now.getFullYear() + 1));
 
-    // This is a devnet number
-    const stakingRatio = currentlyStaked / currentSupply;
-
-    const reward = (wealth(
-        1,
-        stakingRatio,
-        365,
-        currentSupply,
-    ) - 1) * (1 - fee);
-
-    return reward;
+    return ((supplyIn1Year - currentSupply) / currentlyStaked) * (1 - fee);
 }
 
 const INITIAL_SUPPLY_VELOCITY = 875; // Luna per millisecond
 const SUPPLY_DECAY = 4.692821935e-13; // Decay per millisecond, 1.47% per year
 
-const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
-const INITIAL_REWARDS_PER_DAY = INITIAL_SUPPLY_VELOCITY * MILLISECONDS_PER_DAY;
-const DECAY_PER_DAY = SUPPLY_DECAY * MILLISECONDS_PER_DAY;
-
-function wealth(
-    initiallyStaked: number,
-    networkStakingRatio: number,
-    daysStaked: number,
-    initialSupply: number,
-    restaking = true,
-) {
-    if (restaking) {
-        return initiallyStaked
-            * (1
-                + (INITIAL_REWARDS_PER_DAY / (DECAY_PER_DAY * networkStakingRatio * initialSupply))
-                * (1 - (Math.E ** (-DECAY_PER_DAY * daysStaked)))
-            );
-    }
-    return initiallyStaked
-            * (1
-                + (1 / networkStakingRatio)
-                * (Math.log(
-                    (DECAY_PER_DAY * initialSupply * (Math.E ** (DECAY_PER_DAY * daysStaked)))
-                        + (INITIAL_REWARDS_PER_DAY * (Math.E ** (DECAY_PER_DAY * daysStaked)))
-                        - INITIAL_REWARDS_PER_DAY)
-                    - (DECAY_PER_DAY * daysStaked)
-                    - Math.log(DECAY_PER_DAY * initialSupply))
-            );
-}
-
 function supplyAtTime(currentTime: number): number {
     const t = (currentTime - ALBATROSS_GENESIS_DATE.getTime());
     const exponent = -SUPPLY_DECAY * t;
 
-    return GENESIS_SUPPLY + ((INITIAL_SUPPLY_VELOCITY / SUPPLY_DECAY) * (1.0 - Math.E ** exponent));
+    return GENESIS_SUPPLY + ((INITIAL_SUPPLY_VELOCITY / SUPPLY_DECAY) * (1 - Math.E ** exponent));
 }

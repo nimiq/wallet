@@ -185,15 +185,15 @@ export async function launchNetwork() {
 
     async function updateValidators() {
         await client.waitForConsensusEstablished();
-        const stakes = (await client.getAccount(STAKING_CONTRACT_ADDRESS) as PlainStakingContract)
+        const activeValidators = (await client.getAccount(STAKING_CONTRACT_ADDRESS) as PlainStakingContract)
             .activeValidators
             .map(([address, balance]) => ({
                 address,
                 balance,
             }));
-        const totalStake = stakes.reduce((sum, stake) => sum + stake.balance, 0);
+        const totalStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
 
-        const validators: Validator[] = await Promise.all(stakes.map(async ({ address, balance }) => {
+        const validators: Validator[] = await Promise.all(activeValidators.map(async ({ address, balance }) => {
             const dominance = balance / totalStake;
             if (dominance > 0.3) {
                 console.warn('High-stake validator:', { dominance: Math.round(dominance * 1e3) / 10, address });

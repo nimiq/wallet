@@ -214,7 +214,7 @@
                 :disabled="!canSend"
                 :error="feeError"
                 @click="sign"
-            ><template #cta>{{ $t('Send USDC') }}</template></SendModalFooter>
+            ><template #cta>{{ $t('Send {currency}', { currency: 'USDC' }) }}</template></SendModalFooter>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">

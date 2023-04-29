@@ -113,7 +113,7 @@
                 :assets="[CryptoCurrency.BTC]"
                 :disabled="!canSend"
                 @click="sign"
-            ><template #cta>{{ $t('Send Transaction') }}</template></SendModalFooter>
+            ><template #cta>{{ $t('Send {currency}', { currency: 'BTC' }) }}</template></SendModalFooter>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">

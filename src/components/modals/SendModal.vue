@@ -185,7 +185,7 @@
                 :assets="[CryptoCurrency.NIM]"
                 :disabled="!canSend"
                 @click="sign"
-            ><template #cta>{{ $t('Send Transaction') }}</template></SendModalFooter>
+            ><template #cta>{{ $t('Send {currency}', { currency: 'NIM' }) }}</template></SendModalFooter>
         </div>
 
         <div v-if="addressListOpened" slot="overlay" class="page flex-column">

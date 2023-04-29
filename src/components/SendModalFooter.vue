@@ -2,7 +2,7 @@
     <PageFooter class="send-modal-footer">
         <button
             class="nq-button" :class="buttonColor"
-            :disabled="disabled || !networkState.isReady"
+            :disabled="disabled || !networkState.isReady || error"
             @click="$emit('click')"
             @mousedown.prevent
         ><slot name="cta">{{ $t('Confirm') }}</slot></button>

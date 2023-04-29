@@ -471,85 +471,97 @@ export default defineComponent({
 
         async function refundHtlc() {
             const htlcDetails = (swapInfo.value?.in as SwapUsdcData | undefined)?.htlc;
-            if (!htlcDetails) throw new Error('Unexpected: unknown HTLC refund details');
+            if (!htlcDetails) {
+                alert('Unexpected: unknown HTLC refund details'); // eslint-disable-line no-alert
+                return;
+            }
 
             let relayUrl: string;
 
             // eslint-disable-next-line no-async-promise-executor
-            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
-                const myAddress = transaction.value.sender;
+            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve, reject) => {
+                try {
+                    const myAddress = transaction.value.sender;
 
-                const { config } = useConfig();
+                    const { config } = useConfig();
 
-                const method = 'refund';
+                    const method = 'refund';
 
-                const htlcContract = await getHtlcContract();
+                    const htlcContract = await getHtlcContract();
 
-                const [
-                    forwarderNonce,
-                    { fee, gasPrice, gasLimit, relay },
-                ] = await Promise.all([
-                    htlcContract.getNonce(myAddress) as Promise<BigNumber>,
-                    calculateFee(
-                        method,
-                        undefined,
-                        htlcContract,
-                    ),
-                ]);
+                    const [
+                        forwarderNonce,
+                        { fee, gasPrice, gasLimit, relay },
+                    ] = await Promise.all([
+                        htlcContract.getNonce(myAddress) as Promise<BigNumber>,
+                        calculateFee(
+                            method,
+                            undefined,
+                            htlcContract,
+                        ),
+                    ]);
 
-                relayUrl = relay.url;
+                    relayUrl = relay.url;
 
-                const data = htlcContract.interface.encodeFunctionData(method, [
-                    /** bytes32 id */ htlcDetails.address,
-                    /** address target */ myAddress,
-                    /** uint256 fee */ fee,
-                ]);
+                    const data = htlcContract.interface.encodeFunctionData(method, [
+                        /** bytes32 id */ htlcDetails.address,
+                        /** address target */ myAddress,
+                        /** uint256 fee */ fee,
+                    ]);
 
-                const relayRequest: RelayRequest = {
-                    request: {
-                        from: myAddress,
-                        to: config.usdc.htlcContract,
-                        data,
-                        value: '0',
-                        nonce: forwarderNonce.toString(),
-                        gas: gasLimit.toString(),
-                        validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
-                            .toString(10),
-                    },
-                    relayData: {
-                        gasPrice: gasPrice.toString(),
-                        pctRelayFee: relay.pctRelayFee.toString(),
-                        baseRelayFee: relay.baseRelayFee.toString(),
-                        relayWorker: relay.relayWorkerAddress,
-                        paymaster: config.usdc.htlcContract,
-                        paymasterData: '0x',
-                        clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        forwarder: config.usdc.htlcContract,
-                    },
-                };
+                    const relayRequest: RelayRequest = {
+                        request: {
+                            from: myAddress,
+                            to: config.usdc.htlcContract,
+                            data,
+                            value: '0',
+                            nonce: forwarderNonce.toString(),
+                            gas: gasLimit.toString(),
+                            validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE) // 2 hours
+                                .toString(10),
+                        },
+                        relayData: {
+                            gasPrice: gasPrice.toString(),
+                            pctRelayFee: relay.pctRelayFee.toString(),
+                            baseRelayFee: relay.baseRelayFee.toString(),
+                            relayWorker: relay.relayWorkerAddress,
+                            paymaster: config.usdc.htlcContract,
+                            paymasterData: '0x',
+                            clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            forwarder: config.usdc.htlcContract,
+                        },
+                    };
 
-                const request: Omit<RefundSwapRequest, 'appName'> = {
-                    accountId: useAccountStore().activeAccountId.value!,
-                    refund: {
-                        type: SwapAsset.USDC,
-                        ...relayRequest,
-                        amount: transaction.value.value - fee.toNumber(),
-                    },
-                };
+                    const request: Omit<RefundSwapRequest, 'appName'> = {
+                        accountId: useAccountStore().activeAccountId.value!,
+                        refund: {
+                            type: SwapAsset.USDC,
+                            ...relayRequest,
+                            amount: transaction.value.value - fee.toNumber(),
+                        },
+                    };
 
-                resolve(request);
+                    resolve(request);
+                } catch (e) {
+                    reject(e);
+                }
             });
 
-            const tx = await refundSwap(requestPromise);
-            if (!tx) return;
-            const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
-            const plainTx = await sendTransaction(
-                { request: relayRequest as ForwardRequest, relayData },
-                (tx as SignedPolygonTransaction).signature,
-                relayUrl!,
-            );
-            await context.root.$nextTick();
-            context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
+            try {
+                const tx = await refundSwap(requestPromise);
+                if (!tx) return;
+                const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
+                const plainTx = await sendTransaction(
+                    { request: relayRequest as ForwardRequest, relayData },
+                    (tx as SignedPolygonTransaction).signature,
+                    relayUrl!,
+                );
+                await context.root.$nextTick();
+                context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
+            } catch (e) {
+                const errorMessage = e instanceof Error ? e.message : String(e);
+                alert(context.root.$t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
+            }
         }
 
         return {

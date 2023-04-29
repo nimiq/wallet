@@ -178,7 +178,7 @@
             :assets="[leftAsset.toLowerCase(), rightAsset.toLowerCase()]"
             :buttonColor="kycUser ? 'purple' : 'light-blue'"
             :disabled="!canSign || currentlySigning"
-            :error="estimateError || swapError"
+            :error="estimateError || swapError || usdcFeeError"
             requireCompleteBtcHistory
             @click="sign"
         >
@@ -841,18 +841,14 @@ export default defineComponent({
         };
 
         const usdcFeeStuff = ref<UsdcFees>(null);
+        const usdcFeeError = ref<string>(null);
 
         // Used for Fastspot service fee calculation
         const usdcPriceInWei = ref<number>(null);
         const usdcGasPrice = ref<number>(null);
 
-        async function calculateUsdcHtlcFee(forOpening: boolean) {
-            // Prevent changing USDC fees while processing the swap suggestion
-            if (currentlySigning.value) return;
-
-            const prevMethod = usdcFeeStuff.value?.method;
-
-            usdcFeeStuff.value = null;
+        async function calculateUsdcHtlcFee(forOpening: boolean, prevUsdcFees: UsdcFees | null) {
+            const prevMethod = prevUsdcFees?.method;
 
             // Use the existing relay if it was selected in the last 10 minutes
             const forceRelay = usdcRelay.timestamp > Date.now() - 10 * 60 * 1e3
@@ -899,7 +895,7 @@ export default defineComponent({
             usdcPriceInWei.value = usdcPrice.toNumber();
             usdcGasPrice.value = gasPrice.toNumber();
 
-            usdcFeeStuff.value = {
+            return {
                 fee: fee.toNumber(),
                 gasLimit,
                 gasPrice,
@@ -908,32 +904,64 @@ export default defineComponent({
             };
         }
 
-        let usdcFeeUpdateInterval = -1;
+        let usdcFeeUpdateTimeout = -1; // -1: stopped; 0: to be started; >0: timer id
+        async function startUsdcFeeUpdates() {
+            window.clearTimeout(usdcFeeUpdateTimeout); // Reset potentially existing update timeout.
+            usdcFeeUpdateTimeout = 0; // 0: timer is to be started after the initial update
+            if (![leftAsset.value, rightAsset.value].includes(SwapAsset.USDC)) {
+                stopUsdcFeeUpdates();
+                return false;
+            }
+            try {
+                if (!currentlySigning.value) {
+                    // Update USDC fees if not already signing a swap suggestion.
+                    const forOpening = (direction.value === SwapDirection.LEFT_TO_RIGHT ? leftAsset : rightAsset).value
+                        === SwapAsset.USDC;
+                    const prevUsdcFeeStuff = usdcFeeStuff.value;
+                    usdcFeeStuff.value = null;
+                    usdcFeeStuff.value = await calculateUsdcHtlcFee(forOpening, prevUsdcFeeStuff);
+                    usdcFeeError.value = null;
+                }
+                if (usdcFeeUpdateTimeout === 0) {
+                    // Schedule next update in 30s if timer is still to be started and has not been started yet.
+                    usdcFeeUpdateTimeout = window.setTimeout(startUsdcFeeUpdates, 30e3);
+                }
+                return true; // return true if USDC was successfully updated on first attempt.
+            } catch (e: unknown) {
+                if (![leftAsset.value, rightAsset.value].includes(SwapAsset.USDC)) {
+                    // USDC is not selected anymore.
+                    stopUsdcFeeUpdates();
+                    return false;
+                }
+                usdcFeeError.value = context.root.$t(
+                    'Failed to fetch USDC fees. Retrying... (Error: {message})',
+                    { message: e instanceof Error ? e.message : String(e) },
+                ) as string;
+                if (usdcFeeUpdateTimeout === 0) {
+                    // Retry in 10s if timer is still to be started and has not been started yet.
+                    usdcFeeUpdateTimeout = window.setTimeout(startUsdcFeeUpdates, 10e3);
+                }
+                return false;
+            }
+        }
 
-        watch([leftAsset, rightAsset], (newAssets) => {
-            const newLeft = newAssets?.[0];
-            const newRight = newAssets?.[1];
-            if ([newLeft, newRight].includes(SwapAsset.USDC)) {
-                const forOpening = (direction.value === SwapDirection.LEFT_TO_RIGHT && newLeft === SwapAsset.USDC)
-                    || (direction.value === SwapDirection.RIGHT_TO_LEFT && newRight === SwapAsset.USDC);
-                calculateUsdcHtlcFee(forOpening);
+        function stopUsdcFeeUpdates() {
+            window.clearTimeout(usdcFeeUpdateTimeout);
+            usdcFeeUpdateTimeout = -1; // -1: timer stopped
+            usdcFeeStuff.value = null;
+            usdcFeeError.value = null;
+        }
 
-                // Replace fee-update interval
-                window.clearInterval(usdcFeeUpdateInterval);
-                usdcFeeUpdateInterval = window.setInterval(
-                    () => calculateUsdcHtlcFee(forOpening),
-                    30e3, // Update fee every 30s
-                );
-            } else if (![newLeft, newRight].includes(SwapAsset.USDC)) {
-                window.clearInterval(usdcFeeUpdateInterval);
-                usdcFeeUpdateInterval = -1;
-                usdcFeeStuff.value = null;
+        watch([leftAsset, rightAsset], () => {
+            if ([leftAsset.value, rightAsset.value].includes(SwapAsset.USDC)) {
+                // (Re)start USDC fee updates if USDC was selected or the USDC swap direction switched.
+                startUsdcFeeUpdates();
+            } else {
+                stopUsdcFeeUpdates();
             }
         });
 
-        onBeforeUnmount(() => {
-            window.clearInterval(usdcFeeUpdateInterval);
-        });
+        onBeforeUnmount(stopUsdcFeeUpdates);
 
         // watch(
         //     usdcFeeStuff,
@@ -1275,13 +1303,27 @@ export default defineComponent({
             }
         }
 
-        const canSign = computed(() =>
-            !estimateError.value && !swapError.value
-            && estimate.value
-            && limits.value?.current.usd
-            && !fetchingEstimate.value
-            && newLeftBalance.value >= 0 && newRightBalance.value >= 0,
-        );
+        const canSign = computed(() => { // eslint-disable-line arrow-body-style
+            // console.log(
+            //     'canSign:\n',
+            //     `!estimateError: ${!estimateError.value} (estimateError: ${estimateError.value})\n`
+            //         + `!swapError: ${!swapError.value} (swapError: ${swapError.value})\n`
+            //         + `!usdcFeeError: ${!usdcFeeError.value} (usdcFeeError: ${usdcFeeError.value})\n`
+            //         + `!!estimate: ${!!estimate.value} (estimate: ${estimate.value})\n`
+            //         + `!!limits.current.usd: ${!!limits.value?.current.usd} (limits: ${limits.value})\n`
+            //         + `!fetchingEstimate: ${!fetchingEstimate.value} (fetchingEstimate: ${fetchingEstimate.value})\n`
+            //         + `newLeftBalance>=0: ${newLeftBalance.value>=0} (newLeftBalance: ${newLeftBalance.value})\n`
+            //         + `newRightBalance>=0: ${newRightBalance.value>=0} (newRightBalance: ${newRightBalance.value})`,
+            // );
+            // Don't need to wait for fees because they're calculated from the estimate and swapSuggestion for NIM and
+            // BTC, and for USDC waiting for usdcFeeStuff is covered by fetchingEstimate via calculateMyFees in
+            // updateEstimate, which waits for usdcFeeStuff (but usdcFeeStuff is also re-fetched in sign() anyways).
+            return !estimateError.value && !swapError.value && !usdcFeeError.value
+                && estimate.value
+                && limits.value?.current.usd
+                && !fetchingEstimate.value
+                && newLeftBalance.value >= 0 && newRightBalance.value >= 0;
+        });
 
         /**
          * SWAP PROCESS
@@ -1291,11 +1333,16 @@ export default defineComponent({
             if (!canSign.value) return;
 
             // Get up-to-date fees for USDC
-            if ([leftAsset.value, rightAsset.value].includes(SwapAsset.USDC)) {
-                calculateUsdcHtlcFee(
-                    (direction.value === SwapDirection.LEFT_TO_RIGHT && leftAsset.value === SwapAsset.USDC)
-                    || (direction.value === SwapDirection.RIGHT_TO_LEFT && rightAsset.value === SwapAsset.USDC),
-                );
+            if ([leftAsset.value, rightAsset.value].includes(SwapAsset.USDC) && usdcFeeStuff.value) {
+                // Fetch new fees, if no update is currently in process already (in which case usdcFeeStuff would be
+                // null as it's cleared in startUsdcFeeUpdates). If an update is already in process, the result is being
+                // awaited via the promises returned by calculateMyFees.
+                const wasFeeUpdateSuccessful = await startUsdcFeeUpdates();
+                if (!wasFeeUpdateSuccessful) {
+                    // If first attempt to update fee was not successful, abort signing. An error message will be shown
+                    // in the UI via usdcFeeError.
+                    return;
+                }
             }
 
             currentlySigning.value = true;
@@ -1718,7 +1765,7 @@ export default defineComponent({
             } catch (error) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-                swapError.value = 'Invalid swap state, swap aborted!';
+                swapError.value = context.root.$t('Invalid swap state, swap aborted!');
                 cancelSwap({ id: swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();
@@ -1963,6 +2010,7 @@ export default defineComponent({
             estimateError,
             swap,
             swapError,
+            usdcFeeError,
             canSign,
             sign,
             cancel,

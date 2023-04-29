@@ -639,20 +639,24 @@ export async function sendUsdcTransaction(
     let relayUrl: string;
 
     // eslint-disable-next-line no-async-promise-executor
-    const request = new Promise<SignPolygonTransactionRequest>(async (resolve) => {
-        const { relayRequest, approval, relay } = await createTransactionRequest(recipient, amount, forceRelay);
-        relayUrl = relay.url;
-        resolve({
-            ...relayRequest,
-            appName: APP_NAME,
-            recipientLabel,
+    const request = new Promise<SignPolygonTransactionRequest>(async (resolve, reject) => {
+        try {
+            const { relayRequest, approval, relay } = await createTransactionRequest(recipient, amount, forceRelay);
+            relayUrl = relay.url;
+            resolve({
+                ...relayRequest,
+                appName: APP_NAME,
+                recipientLabel,
 
-            ...(approval ? {
-                approval: {
-                    tokenNonce: approval.tokenNonce,
-                },
-            } : null),
-        });
+                ...(approval ? {
+                    approval: {
+                        tokenNonce: approval.tokenNonce,
+                    },
+                } : null),
+            });
+        } catch (e) {
+            reject(e);
+        }
     });
     const signedTransaction = await hubApi.signPolygonTransaction(request, getBehavior()).catch(onError);
     if (!signedTransaction) return false;

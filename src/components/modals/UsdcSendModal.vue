@@ -212,6 +212,7 @@
             <SendModalFooter
                 :assets="[CryptoCurrency.USDC]"
                 :disabled="!canSend"
+                :error="feeError"
                 @click="sign"
             ><template #cta>{{ $t('Send USDC') }}</template></SendModalFooter>
         </div>
@@ -424,7 +425,8 @@ export default defineComponent({
 
         const amount = ref(0);
         const fee = ref<number>(0);
-        const feeLoading = ref(true);
+        const feeLoading = ref(true); // Only true for first fee loading, not for updates.
+        const feeError = ref<string>(null);
 
         const relay = ref<RelayServerInfo | null>(null);
 
@@ -484,7 +486,10 @@ export default defineComponent({
         const canSend = computed(() =>
             network$.consensus === 'established'
             && !!amount.value
-            && amount.value <= maxSendableAmount.value);
+            && amount.value <= maxSendableAmount.value
+            && !feeLoading.value
+            && !feeError.value,
+        );
 
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
             // For now only plain USDC/Polygon/ETH addresses are supported.
@@ -553,6 +558,8 @@ export default defineComponent({
         const statusMessage = ref('');
         const statusMainActionText = ref(context.root.$t('Retry') as string);
         const statusAlternativeActionText = ref(context.root.$t('Edit transaction') as string);
+
+        let successCloseTimeout = 0;
 
         async function sign() {
             if (!canSend.value) return;
@@ -633,34 +640,51 @@ export default defineComponent({
             }
         }
 
-        let successCloseTimeout = 0;
-
-        onBeforeUnmount(() => {
-            window.clearTimeout(successCloseTimeout);
-        });
-
-        async function setFeeInformation() {
-            const feeInformation = await calculateFee('transferWithApproval', relay.value || undefined);
-            fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
-            relay.value = feeInformation.relay;
-            feeLoading.value = false;
+        let feeUpdateTimeout = -1; // -1: stopped; 0: to be started; >0: timer id
+        async function startFeeUpdates() {
+            window.clearTimeout(feeUpdateTimeout); // Reset potentially existing update timeout.
+            feeUpdateTimeout = 0; // 0: timer is to be started after the initial update
+            try {
+                const feeInformation = await calculateFee('transferWithApproval', relay.value || undefined);
+                fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
+                relay.value = feeInformation.relay;
+                feeLoading.value = false;
+                feeError.value = null;
+                if (feeUpdateTimeout === 0) {
+                    // Schedule next update in 20s if timer is still to be started and has not been started yet.
+                    feeUpdateTimeout = window.setTimeout(startFeeUpdates, 20e3);
+                }
+            } catch (e: unknown) {
+                feeError.value = context.root.$t(
+                    'Failed to fetch USDC fees. Retrying... (Error: {message})',
+                    { message: e instanceof Error ? e.message : String(e) },
+                ) as string;
+                if (feeUpdateTimeout === 0) {
+                    // Retry in 10s if timer is still to be started and has not been started yet.
+                    feeUpdateTimeout = window.setTimeout(startFeeUpdates, 10e3);
+                }
+            }
         }
 
-        let feeIntervalId = -1;
+        function stopFeeUpdates() {
+            window.clearTimeout(feeUpdateTimeout);
+            feeUpdateTimeout = -1; // -1: timer stopped
+            feeError.value = null;
+        }
 
         // USDC fee does not depend on the amount, therefore it is not reactive to amount
-        watch(statusScreenOpened, async (statusScreenOpen) => {
+        watch(statusScreenOpened, (statusScreenOpen) => {
             if (!statusScreenOpen) {
-                setFeeInformation();
-                feeIntervalId = window.setInterval(setFeeInformation, 20e3); // 20 seconds
-            } else {
-                window.clearInterval(feeIntervalId);
-                feeIntervalId = -1;
+                startFeeUpdates();
+            } else if (!feeError.value) {
+                // Avoid changing the fees while signing.
+                stopFeeUpdates();
             }
         });
 
         onBeforeUnmount(() => {
-            window.clearInterval(feeIntervalId);
+            stopFeeUpdates();
+            window.clearTimeout(successCloseTimeout);
         });
 
         const fiatSmUnit = computed(() => {
@@ -710,8 +734,8 @@ export default defineComponent({
             resetRecipient,
             addressInfo,
             amount,
-            fee,
             feeLoading,
+            feeError,
             roundedUpFiatFee,
             feeSmallerThanSmUnit,
             fiatSmUnit,

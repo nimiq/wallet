@@ -19,12 +19,13 @@
             </div>
             <div class="address-created">{{ addressInfo.timelabel }}</div>
         </div>
-        <Tooltip class="copyable-short-address" preferredPosition="top right" :container="container">
-            <Copyable :text="addressInfo.address" slot="trigger">
-                <ShortAddress :address="addressInfo.address"/>
-            </Copyable>
-            {{ addressInfo.address }}
-        </Tooltip>
+        <InteractiveShortAddress
+            :address="addressInfo.address"
+            copyable
+            :tooltipContainer="container"
+            tooltipPosition="top right"
+            :offsetTooltipPosition="false"
+        />
         <button class="delete" @click="deleteCopiedAddressAndLabel"><TrashIcon /></button>
     </div>
 </template>
@@ -32,8 +33,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { defineComponent, ref } from '@vue/composition-api';
-import { Tooltip, Copyable, LabelInput } from '@nimiq/vue-components';
-import ShortAddress from './ShortAddress.vue';
+import { LabelInput } from '@nimiq/vue-components';
+import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import Avatar from './Avatar.vue';
 import TrashIcon from './icons/TrashIcon.vue';
 import { useBtcAddressStore } from '../stores/BtcAddress';
@@ -83,10 +84,8 @@ const BtcCopiedAddress = defineComponent({
     },
     components: {
         Avatar,
-        Tooltip,
-        Copyable,
         LabelInput,
-        ShortAddress,
+        InteractiveShortAddress,
         TrashIcon,
     },
 });
@@ -191,59 +190,35 @@ export default BtcCopiedAddress;
     font-weight: 600;
 }
 
-.copyable-short-address {
-    &.tooltip ::v-deep {
-        .trigger {
-            transition: transform var(--short-transition-duration) var(--nimiq-ease);
-            transform: translateX(4rem);
-
-            .address-item:hover &,
-            .address-item:focus &,
-            .address-item:focus-within & {
-                transform: translateX(0);
-            }
-        }
-
-        .trigger::after {
-            pointer-events: none;
-        }
-
-        .tooltip-box {
-            font-size: var(--small-size);
-            line-height: 1;
-            padding: 1rem;
-            font-family: 'Fira Mono', monospace;
-            letter-spacing: -0.02em;
-            font-weight: normal;
-            pointer-events: none;
-        }
+.interactive-short-address ::v-deep {
+    .trigger::after,
+    .tooltip-box {
+        pointer-events: none;
     }
 
     .copyable {
-        padding: .5rem;
-        border-radius: 0.375rem;
-        background-color: transparent;
+        transition: transform var(--short-transition-duration) var(--nimiq-ease),
+            color .3s var(--nimiq-ease); // preserve original transition
+        transform: translateX(4rem);
 
-        transition: background-color var(--short-transition-duration) var(--nimiq-ease);
-
-        .short-address {
-            font-weight: normal;
-            font-size: var(--body-size);
-            color: var(--text-70);
-
-            transition: all var(--short-transition-duration) var(--nimiq-ease);
+        .address-item:hover &,
+        .address-item:focus &,
+        .address-item:focus-within & {
+            transform: translateX(0);
         }
 
-        &:hover .short-address,
-        &:focus .short-address,
-        &.copied .short-address {
-            font-weight: 500;
-            color: var(--nimiq-light-blue);
-        }
-
-        ::v-deep .tooltip {
+        .tooltip {
             z-index: 4;
         }
+    }
+
+    .short-address {
+        opacity: .7;
+    }
+    .copyable:hover .short-address,
+    .copyable:focus .short-address,
+    .copyable.copied .short-address {
+        font-weight: 500;
     }
 }
 
@@ -287,5 +262,4 @@ export default BtcCopiedAddress;
         opacity: 1;
     }
 }
-
 </style>

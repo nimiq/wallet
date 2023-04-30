@@ -7,6 +7,7 @@
     <Tooltip
         ref="tooltip$"
         :preferredPosition="tooltipPosition"
+        :container="tooltipContainer"
         :noFocus="copyable"
         @mouseenter.native.capture.stop="scheduleShowTooltip"
         @mouseleave.native.capture.stop="hideTooltip"
@@ -14,7 +15,10 @@
         @blur.native.capture.stop="hideTooltip"
         @click.native.capture.stop="onClick"
         class="interactive-short-address"
-        :class="[tooltipHorizontalPosition, { 'is-copyable': copyable }]">
+        :class="[tooltipHorizontalPosition, {
+            'is-copyable': copyable,
+            'offset-tooltip-position': offsetTooltipPosition,
+         }]">
         <template #trigger>
             <Copyable v-if="copyable"
                 ref="copyable$"
@@ -29,6 +33,7 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import { Copyable, Tooltip } from '@nimiq/vue-components';
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import ShortAddress from './ShortAddress.vue';
@@ -39,14 +44,21 @@ export default defineComponent({
             type: String,
             required: true,
         },
+        copyable: {
+            type: Boolean,
+            default: false,
+        },
+        tooltipContainer: Object as () => Vue | { $el: HTMLElement },
         tooltipPosition: {
             type: String as () => 'top left' | 'top right' | 'bottom left' | 'bottom right',
             default: 'bottom right',
             validator: (val: string) => /^(?:top|bottom) (?:left|right)$/.test(val),
         },
-        copyable: {
+        // Because the address in the tooltip is typically much longer than the short address, offset the tooltip
+        // position by default.
+        offsetTooltipPosition: {
             type: Boolean,
-            default: false,
+            default: true,
         },
     },
     setup(props) {
@@ -146,6 +158,28 @@ export default defineComponent({
         word-spacing: -.2em;
     }
 
+    &.offset-tooltip-position {
+        &.top.left .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-top-left .tooltip-box {
+            transform: translate(20%, -2rem);
+        }
+
+        &.top.right .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-top-right .tooltip-box {
+            transform: translate(-20%, -2rem);
+        }
+
+        &.bottom.left .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-bottom-left .tooltip-box {
+            transform: translate(20%, 2rem);
+        }
+
+        &.bottom.right .tooltip-box, // For compatibility with old Tooltip implementation, can be removed in the future.
+        &.position-bottom-right .tooltip-box {
+            transform: translate(-20%, 2rem);
+        }
+    }
+
     &:not(.is-copyable) .trigger {
         padding: .5rem .75rem;
         line-height: 1.25;
@@ -163,14 +197,6 @@ export default defineComponent({
             }
         }
     }
-}
-
-.tooltip.left ::v-deep .tooltip-box {
-    transform: translate(20%, 2rem);
-}
-
-.tooltip.right ::v-deep .tooltip-box {
-    transform: translate(-20%, 2rem);
 }
 
 .copyable {

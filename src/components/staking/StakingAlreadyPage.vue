@@ -60,8 +60,14 @@
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                     </div>
-                    <button class="nq-button-s" @click="$emit('adjust-stake')">{{ $t('Adjust Stake') }}</button>
-                    <button class="nq-button-pill red unstake-all" @click="unstakeAll">{{ $t('Unstake All') }}</button>
+                    <div class="flex-row">
+                        <button class="nq-button-s" @click="$emit('adjust-stake')">
+                            {{ $t('Adjust Stake') }}
+                        </button>
+                        <button class="nq-button-pill red unstake-all" @click="unstakeAll">
+                            {{ $t('Unstake All') }}
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -335,6 +341,14 @@ export default defineComponent({
 
         button + button {
             margin-left: 2rem;
+        }
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            &.flex-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.75rem;
+            }
         }
     }
 </style>

@@ -1499,9 +1499,9 @@
   integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
 
 "@nimiq/core-web@next":
-  version "2.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.9.tgz#29dacbb24ce59cb8cdb5bda7582eaff8f1ac4065"
-  integrity sha512-suQJVmlwznpH/HvAjK4+eRSEW6ccvWkfKrpIH0pceDfsrAZT+Xj08saut0DXWbK5M+wq/p3KEMagiFn4R4iuUA==
+  version "2.0.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.10.tgz#3f004f456a32755f75a0cd05262f5e7384e4cc33"
+  integrity sha512-arSpZxW1Z7LF//kTTTEb6pjSQ9yKLWk6FE+dWLwzLBNlZ01gbY2vga4vC5HYkvb8VtXKyfi8pvE2fGVu91FYZw==
   dependencies:
     comlink "^4.4.1"
 

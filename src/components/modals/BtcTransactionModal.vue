@@ -102,12 +102,8 @@
                         {{ peerLabel || $t('Unknown') }}
                     </span>
                     <template v-if="peerAddresses[0]">
-                        <Tooltip preferredPosition="bottom right" class="left-aligned"
-                            v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                        >
-                            <ShortAddress :address="address" slot="trigger"/>
-                            {{ address }}
-                        </Tooltip>
+                        <InteractiveShortAddress v-for="address in peerAddresses.slice(0, 3)" :key="address"
+                            :address="address" tooltipPosition="bottom right"/>
                     </template>
 
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
@@ -118,12 +114,8 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Tooltip preferredPosition="bottom left" class="right-aligned"
-                        v-for="address in ownAddresses.slice(0, 3)" :key="address"
-                    >
-                        <ShortAddress :address="address" slot="trigger"/>
-                        {{ address }}
-                    </Tooltip>
+                    <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
+                        :address="address" tooltipPosition="bottom left"/>
 
                     <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
                         target="_blank" rel="noopener" class="nq-link"
@@ -134,12 +126,8 @@
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
-                    <Tooltip preferredPosition="bottom right" class="left-aligned"
-                        v-for="address in ownAddresses.slice(0, 3)" :key="address"
-                    >
-                        <ShortAddress :address="address" slot="trigger"/>
-                        {{ address }}
-                    </Tooltip>
+                    <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
+                        :address="address" tooltipPosition="bottom right"/>
                     <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
                         target="_blank" rel="noopener" class="nq-link"
                     >{{ $t('+{n} more', {n: ownAddresses.length - 3}) }}</a>
@@ -166,12 +154,8 @@
                         {{ peerLabel || $t('Unknown') }}
                     </span>
                     <template v-if="peerAddresses[0]">
-                        <Tooltip preferredPosition="bottom left" class="right-aligned"
-                            v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                        >
-                            <ShortAddress :address="address" slot="trigger"/>
-                            {{ address }}
-                        </Tooltip>
+                        <InteractiveShortAddress v-for="address in peerAddresses.slice(0, 3)" :key="address"
+                            :address="address" tooltipPosition="bottom left"/>
                     </template>
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
                         target="_blank" rel="noopener" class="nq-link"
@@ -337,7 +321,7 @@ import Modal from './Modal.vue';
 import BlueLink from '../BlueLink.vue';
 import Avatar from '../Avatar.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
-import ShortAddress from '../ShortAddress.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
@@ -687,7 +671,7 @@ export default defineComponent({
         PageBody,
         PageHeader,
         Modal,
-        ShortAddress,
+        InteractiveShortAddress,
         FiatAmount,
         Tooltip,
         InfoCircleSmallIcon,
@@ -885,49 +869,6 @@ export default defineComponent({
     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
-.address-info .tooltip ::v-deep {
-    .tooltip-box {
-        padding: 1rem;
-        font-size: var(--small-size);
-        line-height: 1;
-        font-family: 'Fira Mono', monospace;
-        font-weight: normal;
-        letter-spacing: -0.02em;
-        white-space:nowrap;
-        word-spacing: -0.2em;
-    }
-
-    .trigger {
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        transition: background 300ms var(--nimiq-ease);
-
-        &:hover,
-        &:focus,
-        &:focus-within {
-            background: var(--text-6);
-
-            .short-address {
-                opacity: .6;
-            }
-        }
-    }
-}
-
-.tooltip.left-aligned ::v-deep .tooltip-box {
-    transform: translate(-9.25rem, 2rem);
-}
-
-.tooltip.right-aligned ::v-deep .tooltip-box {
-    transform: translate(9.25rem, 2rem);
-}
-
-.short-address {
-    font-size: var(--body-size);
-    opacity: 0.5;
-    transition: opacity .3s var(--nimiq-ease);
-}
-
 .amount-block {
     align-items: center;
     margin: 4rem 0 2rem;
@@ -1119,18 +1060,8 @@ export default defineComponent({
         flex-shrink: 0;
     }
 
-    .tooltip.left-aligned ::v-deep .tooltip-box {
-        transform: translate(-7.75rem, 2rem);
-    }
-
-    .tooltip.right-aligned ::v-deep .tooltip-box {
-        transform: translate(7.75rem, 2rem);
-    }
-
-    .tooltip {
-        ::v-deep .tooltip-box {
-            transform: translate(1rem, 2rem);
-        }
+    .tooltip ::v-deep .tooltip-box {
+        transform: translate(1rem, 2rem);
     }
 }
 

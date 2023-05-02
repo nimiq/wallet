@@ -33,7 +33,7 @@
                     {{ Math.round(currentPercentage) }}%
                 </div>
                 <VerticalLineIcon v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
-                    :style="`left: ${1.375 + (5 * Math.min(5, index)) + (index > 5 ? (index - 5) * 4.77 : 0)}rem`" />
+                    :style="`left: calc(1.375rem + ((100% - 2.75rem) / 11) * ${index}`" />
                 <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
             </div>
             <div class="slider-controls" ref="$slide" @click="onMove($event, true);">
@@ -224,7 +224,7 @@ export default defineComponent({
             $percentText.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 7}px`;
             $stakedNIMText.value!.style.width = `${amountBox.width + 16}px`;
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
-            const rightSpacing = (knobBox.width * 2.0);
+            const rightSpacing = knobBox.width + 6;
             const minXPos = (-knobBox.width) + 24;
             const maxXPos = containerBox.width - (amountBox.width + rightSpacing);
             if (offsetX <= minXPos) {
@@ -386,14 +386,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .slider-container {
-    padding-top: 2.5rem;
     height: 12rem;
 
     .slider-body {
         position: relative;
         margin: auto;
         margin-top: 2rem;
-        width: 56rem;
+        width: 100%;
         height: 5rem;
         background-color: #f2f2f4;
         border-radius: 2.5rem;
@@ -406,6 +405,7 @@ export default defineComponent({
             position: absolute;
             left: 0;
             top: 0;
+            right: 0;
             padding-top: 0.75rem;
             padding-left: 1.5rem;
             div {
@@ -414,7 +414,7 @@ export default defineComponent({
             }
             .background-one, .background-three {
                 display: inline-block;
-                width: 25rem;
+                width: calc(50% - 3.5rem / 2);
 
                 mask-image: url('../../assets/staking/vertical-line.svg');
                 mask-size: .5rem;
@@ -424,14 +424,13 @@ export default defineComponent({
             .background-two {
                 display: inline-block;
                 width: 3.5rem;
-                margin-right: 0.375rem;
 
                 mask-image: url('../../assets/staking/staking.svg');
                 mask-repeat: no-repeat;
                 mask-position: center;
             }
             .background-three {
-                width: 21.25rem;
+                width: calc(50% - 3.5rem / 2 - 3.5rem - 0.375rem);
             }
             .background-four {
                 display: inline-block;
@@ -469,7 +468,7 @@ export default defineComponent({
             position: absolute;
             left: 0.5rem;
             top: 0rem;
-            width: 56rem;
+            width: 100%;
             .scalar-amount-text {
                 display: flex;
                 position: relative;

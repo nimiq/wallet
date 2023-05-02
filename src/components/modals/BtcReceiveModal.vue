@@ -632,6 +632,21 @@ export default defineComponent({
         .scroll-mask.top {
             transform: translateY(-#{$paddingTop});
         }
+
+        .btc-copied-address ::v-deep .copyable {
+            // Render the Copyable's tooltip, which is shown on copy, above the scroll mask. Instead of increasing just
+            // the tooltip's z-index, we have to raise the Copyable itself because it causes a separate stacking context
+            &.copied {
+                z-index: 3;
+            }
+            &:not(.copied) {
+                z-index: 0;
+                transition: z-index 0s .3s, // Keep the Copyable elevated until the tooltip is faded out.
+                    // Preserve original transitions.
+                    transform var(--short-transition-duration) var(--nimiq-ease),
+                    color .3s var(--nimiq-ease);
+            }
+        }
     }
 }
 
@@ -662,7 +677,7 @@ footer {
 /* vue transition - translateY-fade-list */
 .translateY-fade-list-enter-active,
 .translateY-fade-list-leave-active,
-.translateY-fade-list-leave-active ~ .address-item,
+.translateY-fade-list-leave-active ~ .btc-copied-address,
 .translateY-fade-list-move {
     transition: {
         property: opacity, transform;
@@ -687,7 +702,7 @@ footer {
     transform-origin: top;
     transform: scaleY(0);
 
-    & ~ .address-item {
+    & ~ .btc-copied-address {
         transform: translateY(-7.25rem);
     }
 }

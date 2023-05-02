@@ -1,5 +1,5 @@
 <template>
-    <div class="address-item flex-row">
+    <div class="btc-copied-address flex-row">
         <div class="flex-column">
             <div class="label-input-wrapper flex-row">
                 <Avatar :label="addressInfo.label" />
@@ -98,7 +98,7 @@ export default BtcCopiedAddress;
 <style lang="scss" scoped>
 @import '../scss/mixins.scss';
 
-.address-item {
+.btc-copied-address {
     position: relative;
     justify-content: space-between;
     align-items: center;
@@ -114,16 +114,11 @@ export default BtcCopiedAddress;
         flex-grow: 1;
         height: 100%;
     }
-
-    &:focus-within .label-input-wrapper {
-        z-index: 3; // above the scroll-mask sticky top-gradient
-    }
 }
 
 .label-input-wrapper {
     position: relative;
     align-items: center;
-    z-index: 0;
 }
 
 .avatar {
@@ -201,14 +196,10 @@ export default BtcCopiedAddress;
             color .3s var(--nimiq-ease); // preserve original transition
         transform: translateX(4rem);
 
-        .address-item:hover &,
-        .address-item:focus &,
-        .address-item:focus-within & {
+        .btc-copied-address:hover &,
+        .btc-copied-address:focus &,
+        .btc-copied-address:focus-within & {
             transform: translateX(0);
-        }
-
-        .tooltip {
-            z-index: 4;
         }
     }
 
@@ -256,9 +247,9 @@ export default BtcCopiedAddress;
         }
     }
 
-    .address-item:hover &,
-    .address-item:focus &,
-    .address-item:focus-within & {
+    .btc-copied-address:hover &,
+    .btc-copied-address:focus &,
+    .btc-copied-address:focus-within & {
         opacity: 1;
     }
 }

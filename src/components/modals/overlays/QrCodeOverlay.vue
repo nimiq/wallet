@@ -9,7 +9,7 @@
                     :fill="'#1F2348' /* nimiq-blue */"
                     class="qr-code"
                 />
-                <ShortAddress :address="address" />
+                <InteractiveShortAddress :address="address" tooltipPosition="top right" :offsetTooltipPosition="false"/>
             </div>
             <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\n{currency} to this address', {
                 currency: currency.toUpperCase(),
@@ -21,7 +21,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageBody, PageHeader, QrCode } from '@nimiq/vue-components';
-import ShortAddress from '../../ShortAddress.vue';
+import InteractiveShortAddress from '../../InteractiveShortAddress.vue';
 
 export default defineComponent({
     props: {
@@ -42,7 +42,7 @@ export default defineComponent({
         PageBody,
         PageHeader,
         QrCode,
-        ShortAddress,
+        InteractiveShortAddress,
     },
 });
 </script>
@@ -83,8 +83,13 @@ export default defineComponent({
     }
 }
 
-.short-address {
+.interactive-short-address {
     align-self: center;
     margin-top: 2rem;
+
+    ::v-deep .tooltip-box {
+        left: 50% !important;
+        transform: translate(-50%, -2rem);
+    }
 }
 </style>

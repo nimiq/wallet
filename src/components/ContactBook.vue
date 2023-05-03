@@ -1,6 +1,6 @@
 <template>
     <div class="contact-book flex-column" :class="{ editing }">
-        <div class="list flex-column">
+        <div ref="list$" class="list flex-column">
             <div class="scroll-mask top"></div>
             <AddressListItem
                 v-for="addressInfo in (showAllOwnAddresses ? ownAddressInfos : ownAddressInfos.slice(0, 2))"
@@ -28,7 +28,8 @@
                     :placeholder="$t('Name your contact')"
                     @input="onInput(contact.address, $event)"/>
                 <div class="flex-grow"></div>
-                <ShortAddress :address="contact.address"/>
+                <InteractiveShortAddress :address="contact.address" tooltipPosition="top right"
+                    :tooltipContainer="list$ ? { $el: list$ } : null" :offsetTooltipPosition="false"/>
                 <button v-if="editing" class="reset delete-button" @click="setContact(contact.address, '')">
                     <TrashIcon/>
                 </button>
@@ -56,7 +57,7 @@
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Identicon, LabelInput } from '@nimiq/vue-components';
 import AddressListItem from './AddressListItem.vue';
-import ShortAddress from './ShortAddress.vue';
+import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import TrashIcon from './icons/TrashIcon.vue';
 import { RecipientType } from './modals/SendModal.vue';
 import { useContactsStore } from '../stores/Contacts';
@@ -67,6 +68,8 @@ export default defineComponent({
         const { contactsArray: contacts, setContact } = useContactsStore();
 
         const { addressInfos, activeAddress } = useAddressStore();
+
+        const list$ = ref<HTMLDivElement>(null);
 
         const ownAddressInfos = computed(() => addressInfos.value.filter(
             (addressInfo) => addressInfo.address !== activeAddress.value && addressInfo.type === AddressType.BASIC,
@@ -84,6 +87,7 @@ export default defineComponent({
         }
 
         return {
+            list$,
             contacts,
             ownAddressInfos,
             showAllOwnAddresses,
@@ -96,7 +100,7 @@ export default defineComponent({
     components: {
         Identicon,
         AddressListItem,
-        ShortAddress,
+        InteractiveShortAddress,
         LabelInput,
         TrashIcon,
     },
@@ -198,9 +202,28 @@ export default defineComponent({
         }
     }
 
-    .short-address {
-        opacity: 0.5;
+    .interactive-short-address {
+        margin-right: -.75rem; // offset the trigger padding
         flex-shrink: 0;
+
+        ::v-deep {
+            .trigger {
+                padding: .75rem;
+
+                .contact-book:not(.editing) & {
+                    background: none;
+                }
+            }
+
+            .tooltip-box {
+                margin-left: -1rem;
+            }
+
+            .trigger::after,
+            .tooltip-box {
+                pointer-events: none;
+            }
+        }
     }
 
     .delete-button {

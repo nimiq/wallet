@@ -52,7 +52,7 @@
 
             <AmountSlider
                 :stakedAmount="activeStake ? activeStake.balance : 0"
-                @amountStaked="updateStaked"
+                @amount-staked="updateStaked"
             />
 
             <div>
@@ -228,9 +228,7 @@ export default defineComponent({
             }
         }
 
-        .slider-container {
-            padding: 2.5rem 2rem 0;
-        }
+        // .stake-amount-slider {}
 
         .stake-button {
             width: 40.5rem;

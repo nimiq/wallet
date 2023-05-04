@@ -25,6 +25,12 @@
         <template v-if="page === Page.RewardsHistory">
             <StakingRewardsHistoryPage @back="page = Page.Already" />
         </template>
+        <template v-if="page === Page.Validator">
+            <StakingValidatorPage
+                @back="page = isStaking ? Page.Already : Page.Info"
+                @next="page = Page.Graph; closeOverlay()"
+            />
+        </template>
         <template slot="overlay">
             <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
                 @selected="switchValidator"
@@ -54,6 +60,7 @@ enum Page {
     Graph,
     Already,
     RewardsHistory,
+    Validator,
 }
 
 enum Overlay {
@@ -73,7 +80,7 @@ export default defineComponent({
             : false);
 
         const adjustStake = () => { page.value = Page.Graph; };
-        const switchValidator = () => { overlay.value = Overlay.Validator; };
+        const switchValidator = () => { page.value = Page.Validator; };
         const closeOverlay = () => { overlay.value = null; };
 
         const isStaking = computed(() => !!(activeStake.value || activeValidator.value));
@@ -82,9 +89,14 @@ export default defineComponent({
             if (!stake) page.value = Page.Info;
         }, { lazy: true });
 
-        watch(overlay, (newOverlay) => {
-            if (newOverlay === Overlay.Validator && invalidAccount.value) overlay.value = Overlay.SelectAccount;
-        });
+        function showOverlayIfInvalidAccount(newPath: Overlay | Page) {
+            if ((newPath === Overlay.Validator || newPath === Page.Validator) && invalidAccount.value) {
+                overlay.value = Overlay.SelectAccount;
+            }
+        }
+
+        watch(page, (newPage) => showOverlayIfInvalidAccount(newPage as Page));
+        watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay));
 
         return {
             page,

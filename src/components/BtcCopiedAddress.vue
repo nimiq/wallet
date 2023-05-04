@@ -186,11 +186,6 @@ export default BtcCopiedAddress;
 }
 
 .interactive-short-address ::v-deep {
-    .trigger::after,
-    .tooltip-box {
-        pointer-events: none;
-    }
-
     .copyable {
         transition: transform var(--short-transition-duration) var(--nimiq-ease),
             color .3s var(--nimiq-ease); // preserve original transition

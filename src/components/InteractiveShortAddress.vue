@@ -147,6 +147,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tooltip::v-deep {
+    .tooltip-box,
+    .trigger::after {
+        pointer-events: none;
+    }
+
     .tooltip-box {
         padding: 1rem;
         font-size: var(--small-size);
@@ -185,7 +190,6 @@ export default defineComponent({
         line-height: 1.25;
         border-radius: .5rem;
         transition: background .3s var(--nimiq-ease);
-        margin-bottom: .5rem;
 
         &:hover,
         &:focus,

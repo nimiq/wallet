@@ -218,11 +218,6 @@ export default defineComponent({
             .tooltip-box {
                 margin-left: -1rem;
             }
-
-            .trigger::after,
-            .tooltip-box {
-                pointer-events: none;
-            }
         }
     }
 

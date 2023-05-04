@@ -1,5 +1,5 @@
 <template>
-    <div class="staked-already-page flex-column">
+    <div class="staking-info-page flex-column">
         <PageHeader :backArrow="false">
             <template v-if="validator">
                 {{ $t(
@@ -195,7 +195,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .staked-already-page {
+    .staking-info-page {
         flex-grow: 1;
     }
 

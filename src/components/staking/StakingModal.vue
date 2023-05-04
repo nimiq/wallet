@@ -1,7 +1,7 @@
 <template>
     <!-- Pass down all attributes not declared as props -->
     <Modal v-bind="$attrs" v-on="$listeners" class="staking-modal"
-        :class="{ 'fat-modal': page >= Page.Graph }"
+        :class="{ 'large-modal': [Page.Graph, Page.Already].includes(page) }"
         :showOverlay="overlay === Overlay.SelectAccount || overlay === Overlay.Validator"
         @close-overlay="closeOverlay"
     >
@@ -125,7 +125,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     .modal {
-        &.fat-modal {
+        &.large-modal {
             ::v-deep .small-page {
                 transition: transform var(--transition-time) var(--nimiq-ease),
                             width 200ms var(--nimiq-ease);

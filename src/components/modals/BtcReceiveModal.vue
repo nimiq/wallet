@@ -76,7 +76,7 @@
                     </p>
                     <div v-else class="address-list flex-column">
                         <h2 class="nq-label">{{ $t('Recently copied') }}</h2>
-                        <div class="list flex-column" ref="addressList"
+                        <div class="list flex-column" ref="addressList$"
                             :class="{ scroll: recentlyCopiedAddressesListSorted.length > 1 }">
                             <div class="scroll-mask top"></div>
 
@@ -86,7 +86,7 @@
                                     ref="copiedAddresses$"
                                     :key="addressInfo.address"
                                     :addressInfo="addressInfo"
-                                    :container="$refs.addressList ? { $el: $refs.addressList } : null"
+                                    :container="addressList$ ? { $el: addressList$ } : null"
                                     :showTooltip="recentlyCopiedAddressesListSorted.length === 1"
                                 />
                             </transition-group>
@@ -198,6 +198,7 @@ export default defineComponent({
         }
 
         // Copied addresses
+        const addressList$ = ref<HTMLDivElement>(null);
         const copiedAddresses$ = ref<BtcCopiedAddress[]>(null);
         const addressCopied = ref(false);
         const recentlyCopiedAddresses = computed(() =>
@@ -328,6 +329,7 @@ export default defineComponent({
             receiveLinkOverlayOpened,
             closeOverlay,
             copyActiveAddressCallback,
+            addressList$,
             copiedAddresses$,
             addressCopied,
             recentlyCopiedAddresses,

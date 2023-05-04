@@ -1,5 +1,5 @@
 <template>
-    <div class="stake-info-page flex-column">
+    <div class="staking-welcome-page flex-column">
         <PageHeader>
             <template #default>
                 <div class="staking-icon">
@@ -84,7 +84,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .stake-info-page {
+    .staking-welcome-page {
         flex-grow: 1;
     }
 

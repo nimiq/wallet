@@ -6,7 +6,7 @@
         @close-overlay="closeOverlay"
     >
         <template v-if="page === Page.Info">
-            <StakingInfoPage @next="switchValidator" />
+            <StakingWelcomePage @next="switchValidator" />
         </template>
         <template v-if="page === Page.Graph">
             <StakingGraphPage
@@ -16,7 +16,7 @@
             />
         </template>
         <template v-if="page === Page.Already">
-            <StakingAlreadyPage
+            <StakingInfoPage
                 @back="page = Page.Graph" @next="page = Page.RewardsHistory"
                 @adjust-stake="adjustStake"
                 @switch-validator="switchValidator"
@@ -48,10 +48,10 @@ import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import Modal from '../modals/Modal.vue';
-import StakingInfoPage from './StakingInfoPage.vue';
+import StakingWelcomePage from './StakingWelcomePage.vue';
 import StakingValidatorPage from './StakingValidatorOverlay.vue';
 import StakingGraphPage from './StakingGraphPage.vue';
-import StakingAlreadyPage from './StakingAlreadyPage.vue';
+import StakingInfoPage from './StakingInfoPage.vue';
 import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';
 import SelectAccountOverlay from './SelectAccountOverlay.vue';
 
@@ -113,10 +113,10 @@ export default defineComponent({
     },
     components: {
         Modal,
-        StakingInfoPage,
+        StakingWelcomePage,
         StakingValidatorPage,
         StakingGraphPage,
-        StakingAlreadyPage,
+        StakingInfoPage,
         StakingRewardsHistoryPage,
         SelectAccountOverlay,
     },

@@ -103,7 +103,7 @@
                     </span>
                     <template v-if="peerAddresses[0]">
                         <InteractiveShortAddress v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                            :address="address" tooltipPosition="bottom right"/>
+                            :address="address" copyable tooltipPosition="bottom right"/>
                     </template>
 
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
@@ -115,7 +115,7 @@
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
                     <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
-                        :address="address" tooltipPosition="bottom left"/>
+                        :address="address" copyable tooltipPosition="bottom left"/>
 
                     <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
                         target="_blank" rel="noopener" class="nq-link"
@@ -127,7 +127,7 @@
                     <BitcoinIcon/>
                     <span class="label">{{ $t('Bitcoin') }}</span>
                     <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
-                        :address="address" tooltipPosition="bottom right"/>
+                        :address="address" copyable tooltipPosition="bottom right"/>
                     <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
                         target="_blank" rel="noopener" class="nq-link"
                     >{{ $t('+{n} more', {n: ownAddresses.length - 3}) }}</a>
@@ -155,7 +155,7 @@
                     </span>
                     <template v-if="peerAddresses[0]">
                         <InteractiveShortAddress v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                            :address="address" tooltipPosition="bottom left"/>
+                            :address="address" copyable tooltipPosition="bottom left"/>
                     </template>
                     <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
                         target="_blank" rel="noopener" class="nq-link"

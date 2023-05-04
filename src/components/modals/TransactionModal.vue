@@ -114,7 +114,7 @@
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
                     <InteractiveShortAddress v-if="swapData && peerAddress"
-                        :address="peerAddress" tooltipPosition="bottom right"/>
+                        :address="peerAddress" copyable tooltipPosition="bottom right"/>
                     <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>
@@ -124,7 +124,7 @@
                     <Identicon :address="transaction.recipient"/>
                     <span class="label">{{ myLabel }}</span>
                     <InteractiveShortAddress v-if="swapData"
-                        :address="transaction.recipient" tooltipPosition="bottom left"/>
+                        :address="transaction.recipient" copyable tooltipPosition="bottom left"/>
                     <Copyable v-else :text="transaction.recipient">
                         <AddressDisplay :address="transaction.recipient"/>
                     </Copyable>
@@ -136,7 +136,7 @@
                     <Identicon :address="transaction.sender"/>
                     <span class="label">{{ myLabel }}</span>
                     <InteractiveShortAddress v-if="swapData"
-                        :address="transaction.sender" tooltipPosition="bottom right"/>
+                        :address="transaction.sender" copyable tooltipPosition="bottom right"/>
                     <Copyable v-else :text="transaction.sender">
                         <AddressDisplay :address="transaction.sender"/>
                     </Copyable>
@@ -160,7 +160,7 @@
                     />
                     <span v-else class="label">{{ peerLabel }}</span>
                     <InteractiveShortAddress v-if="swapData && peerAddress"
-                        :address="peerAddress" tooltipPosition="bottom left"/>
+                        :address="peerAddress" copyable tooltipPosition="bottom left"/>
                     <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
                         <AddressDisplay :address="peerAddress"/>
                     </Copyable>

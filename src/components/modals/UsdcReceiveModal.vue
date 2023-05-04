@@ -22,7 +22,12 @@
                 :size="448"
                 :fill="'#1F2348' /* nimiq-blue */"
             />
-            <InteractiveShortAddress :address="address" tooltip-position="top right" copyable/>
+            <InteractiveShortAddress
+                :address="address"
+                copyable
+                tooltip-position="top right"
+                :offsetTooltipPosition="false"
+            />
         </PageBody>
         <PolygonWarningFooter type="receiving"/>
     </Modal>

@@ -9,7 +9,12 @@
                     :fill="'#1F2348' /* nimiq-blue */"
                     class="qr-code"
                 />
-                <InteractiveShortAddress :address="address" tooltipPosition="top right" :offsetTooltipPosition="false"/>
+                <InteractiveShortAddress
+                    :address="address"
+                    copyable
+                    tooltipPosition="top right"
+                    :offsetTooltipPosition="false"
+                />
             </div>
             <p class="qr-info-text nq-light-blue">{{ $t('Scan the code to send\n{currency} to this address', {
                 currency: currency.toUpperCase(),

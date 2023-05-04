@@ -13,7 +13,7 @@
         <span v-else class="label" :class="{ unlabelled: !localLabel }">
             {{ localLabel || $t('unknown') }}
         </span>
-        <InteractiveShortAddress :address="address" :tooltipPosition="tooltipPosition"/>
+        <InteractiveShortAddress :address="address" :copyable="copyable" :tooltipPosition="tooltipPosition"/>
     </div>
 </template>
 
@@ -39,6 +39,10 @@ export default defineComponent({
         label: {
             type: String,
             required: false,
+        },
+        copyable: {
+            type: Boolean,
+            default: false,
         },
         editable: {
             type: Boolean,

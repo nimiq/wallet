@@ -79,11 +79,12 @@
                     </div>
                     <span class="label">{{ peerLabel }}</span>
                     <InteractiveShortAddress v-if="swapData && peerAddress"
-                        :address="peerAddress" tooltipPosition="bottom right"/>
+                        :address="peerAddress" copyable tooltipPosition="bottom right"/>
                 </div>
                 <UsdcAddressInfo v-else
                     :address="transaction.sender"
                     :label="isIncoming ? peerLabel : undefined"
+                    copyable
                     :editable="isIncoming ? (peerIsContact || !peerLabel) : false"
                     tooltipPosition="bottom right"
                 />
@@ -99,11 +100,12 @@
                         <SwapMediumIcon/>
                     </div>
                     <span class="label">{{ peerLabel || (showRefundButton ? $t('Expired HTLC') : '&nbsp;') }}</span>
-                    <InteractiveShortAddress :address="peerAddress" tooltipPosition="bottom left"/>
+                    <InteractiveShortAddress :address="peerAddress" copyable tooltipPosition="bottom left"/>
                 </div>
                 <UsdcAddressInfo v-else
                     :address="transaction.recipient"
                     :label="!isIncoming ? peerLabel : undefined"
+                    copyable
                     :editable="!isIncoming ? (peerIsContact || !peerLabel) : false"
                     tooltipPosition="bottom left"
                 />

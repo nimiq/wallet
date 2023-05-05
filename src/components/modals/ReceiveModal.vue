@@ -16,7 +16,7 @@
                 <QrCodeIcon/>
             </button>
             <Identicon :address="activeAddressInfo.address"/>
-            <AddressDisplay :address="activeAddressInfo.address" :copyable="true"/>
+            <AddressDisplay :address="activeAddressInfo.address" copyable/>
             <button
                 v-if="activeAddressInfo.type === AddressType.BASIC"
                 @click="receiveLinkOverlayOpened = true"
@@ -124,24 +124,17 @@ export default defineComponent({
         margin-top: 3rem;
     }
 
-    .copyable {
+    .address-display {
         padding: 0.5rem;
         background: var(--nimiq-highlight-bg);
         border-radius: 0.625rem;
         margin: 1rem 0 4rem;
-
         transition:
             color .3s var(--nimiq-ease),
             background 0.3s var(--nimiq-ease);
 
         ::v-deep .background {
             display: none;
-        }
-
-        .address-display {
-            transition: opacity 0.3s var(--nimiq-ease);
-            font-weight: 500;
-            opacity: 1;
         }
 
         &:hover,

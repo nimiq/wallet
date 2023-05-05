@@ -76,7 +76,7 @@
                     :placeholder="$t('Name this contact...')"
                     ref="labelInput$"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
-                <AddressDisplay :address="recipientWithLabel.address" :copyable="true"/>
+                <AddressDisplay :address="recipientWithLabel.address" copyable/>
                 <div class="flex-grow"></div>
                 <button
                     class="nq-button light-blue"
@@ -913,30 +913,12 @@ export default defineComponent({
             line-height: 6.25rem; // Same height as the LabelInput
         }
 
-        .copyable {
+        .address-display {
             padding: 0.5rem;
-            background: var(--nimiq-highlight-bg);
-            border-radius: 0.625rem;
-            margin: 1rem 0 4rem;
-
-            transition:
-                color .3s var(--nimiq-ease),
-                background 0.3s var(--nimiq-ease);
+            margin-bottom: 4rem;
 
             ::v-deep .background {
-                display: none;
-            }
-
-            .address-display {
-                transition: opacity 0.3s var(--nimiq-ease);
-                font-weight: 500;
-                opacity: 1;
-            }
-
-            &:hover,
-            &:focus,
-            &.copied {
-                background: rgba(5, 130, 202, 0.07); // Based on Nimiq Light Blue
+                border-radius: 0.625rem;
             }
         }
     }

@@ -14,6 +14,8 @@
         @focus.native.capture.stop="scheduleShowTooltip"
         @blur.native.capture.stop="hideTooltip"
         @click.native.capture.stop="onClick"
+        @show="$emit('show')"
+        @hide="$emit('hide')"
         class="interactive-short-address"
         :class="[tooltipHorizontalPosition, {
             'is-copyable': copyable,
@@ -61,7 +63,7 @@ export default defineComponent({
             default: true,
         },
     },
-    setup(props) {
+    setup(props, context) {
         const tooltip$ = ref<Tooltip>(null);
         const copyable$ = ref<Copyable>(null);
 
@@ -122,6 +124,7 @@ export default defineComponent({
         }
 
         function onCopy() {
+            context.emit('copy');
             // Hide / cancel address tooltip and re-show it after the copy tooltip disappeared.
             hideTooltip();
             showTooltip(1200);

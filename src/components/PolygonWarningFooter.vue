@@ -23,8 +23,8 @@
                     + 'enable fast transactions, this wallet uses the Polygon version.') }}
                 </p>
                 <p class="nq-orange">{{ type === 'sending'
-                    ? $t('Funds sent to non-Polygon USDC versions could be permanently lost.')
-                    : $t('Funds sent from non-Polygon USDC versions could be permanently lost.')
+                    ? $t('Funds sent to non-Polygon USDC versions could be permanently lost!')
+                    : $t('Funds sent from non-Polygon USDC versions could be permanently lost!')
                 }}</p>
             </Tooltip>
         </div>

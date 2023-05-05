@@ -15,8 +15,8 @@
             <p class="nq-text nq-orange">
                 <AlertTriangleIcon/>
                 {{ type === 'sending'
-                    ? $t('Funds sent to non-Polygon USDC addresses could be permanently lost.')
-                    : $t('Funds sent from non-Polygon USDC addresses could be permanently lost.')
+                    ? $t('Funds sent to non-Polygon USDC addresses could be permanently lost!')
+                    : $t('Funds sent from non-Polygon USDC addresses could be permanently lost!')
                 }}
             </p>
             <button class="nq-button light-blue" @click="$emit('continue')" @mousedown.prevent>

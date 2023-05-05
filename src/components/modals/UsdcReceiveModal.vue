@@ -27,9 +27,14 @@
                 copyable
                 tooltip-position="top right"
                 :offsetTooltipPosition="false"
+                @show="hasSeenAddress = true"
+                @copy="hasSeenAddress = true"
             />
         </PageBody>
-        <PolygonWarningFooter type="receiving"/>
+        <transition name="fade">
+            <PolygonWarningFooter v-if="!hasSeenAddress" type="receiving" level="info" key="info"/>
+            <PolygonWarningFooter v-else type="receiving" level="warning" key="warning"/>
+        </transition>
     </Modal>
 </template>
 
@@ -63,6 +68,7 @@ export default defineComponent({
         const page = ref(hasEverReceivedUsdc ? Pages.RECEIVE : Pages.WARNING);
         const initialPage = page.value;
         const address = computed(() => addressInfo.value?.address);
+        const hasSeenAddress = ref(false);
 
         function back() {
             if (page.value === initialPage) {
@@ -70,6 +76,7 @@ export default defineComponent({
                 context.root.$router.back();
             } else if (page.value === Pages.RECEIVE) {
                 page.value = Pages.WARNING;
+                hasSeenAddress.value = false;
             }
         }
 
@@ -78,6 +85,7 @@ export default defineComponent({
             page,
             initialPage,
             address,
+            hasSeenAddress,
             back,
         };
     },
@@ -166,5 +174,11 @@ export default defineComponent({
             }
         }
     }
+}
+
+.polygon-warning-footer.fade-leave-active {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 </style>

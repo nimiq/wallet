@@ -115,9 +115,8 @@
                     <span v-else class="label">{{ peerLabel }}</span>
                     <InteractiveShortAddress v-if="swapData && peerAddress"
                         :address="peerAddress" copyable tooltipPosition="bottom right"/>
-                    <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
-                        <AddressDisplay :address="peerAddress"/>
-                    </Copyable>
+                    <AddressDisplay v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS"
+                        :address="peerAddress" copyable/>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
@@ -125,9 +124,7 @@
                     <span class="label">{{ myLabel }}</span>
                     <InteractiveShortAddress v-if="swapData"
                         :address="transaction.recipient" copyable tooltipPosition="bottom left"/>
-                    <Copyable v-else :text="transaction.recipient">
-                        <AddressDisplay :address="transaction.recipient"/>
-                    </Copyable>
+                    <AddressDisplay v-else :address="transaction.recipient" copyable/>
                 </div>
             </div>
 
@@ -137,9 +134,7 @@
                     <span class="label">{{ myLabel }}</span>
                     <InteractiveShortAddress v-if="swapData"
                         :address="transaction.sender" copyable tooltipPosition="bottom right"/>
-                    <Copyable v-else :text="transaction.sender">
-                        <AddressDisplay :address="transaction.sender"/>
-                    </Copyable>
+                    <AddressDisplay v-else :address="transaction.sender" copyable/>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
@@ -161,9 +156,8 @@
                     <span v-else class="label">{{ peerLabel }}</span>
                     <InteractiveShortAddress v-if="swapData && peerAddress"
                         :address="peerAddress" copyable tooltipPosition="bottom left"/>
-                    <Copyable v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS" :text="peerAddress">
-                        <AddressDisplay :address="peerAddress"/>
-                    </Copyable>
+                    <AddressDisplay v-else-if="peerAddress && peerAddress !== constants.CASHLINK_ADDRESS"
+                        :address="peerAddress" copyable/>
                     <button
                         v-else-if="hubCashlink && hubCashlink.value"
                         class="nq-button-s manage-cashlink"
@@ -319,7 +313,6 @@ import {
     PageBody,
     Identicon,
     ArrowRightIcon,
-    Copyable,
     AddressDisplay,
     FiatAmount,
     Tooltip,
@@ -709,7 +702,6 @@ export default defineComponent({
         PageBody,
         PageHeader,
         Modal,
-        Copyable,
         AddressDisplay,
         FiatAmount,
         Tooltip,
@@ -786,7 +778,11 @@ export default defineComponent({
             opacity: 0.5;
         }
 
-        .address-display {
+        .nq-input-s:not(:hover,:focus,:focus-visible) {
+            color: var(--text-50);
+        }
+
+        .address-display:not(:hover,:focus,:focus-visible,:focus-within,.copied) {
             opacity: 0.3;
         }
 
@@ -909,24 +905,15 @@ export default defineComponent({
     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
-.copyable {
-    padding: 0rem;
-
-    &:hover .address-display,
-    &:focus .address-display,
-    &.copied .address-display {
-        opacity: 1;
-        font-weight: 500;
-    }
-}
-
 .address-display {
+    padding: 0;
     font-size: var(--body-size);
-    transition: opacity .3s var(--nimiq-ease);
-}
+    transition: opacity .3s var(--nimiq-ease), // for expired and invalidated transactions
+        color .3s var(--nimiq-ease); // preserve original transition
 
-.address-display ::v-deep .chunk {
-    margin: 0.5rem 0;
+    ::v-deep .chunk {
+        margin: 0.5rem 0;
+    }
 }
 
 .manage-cashlink {

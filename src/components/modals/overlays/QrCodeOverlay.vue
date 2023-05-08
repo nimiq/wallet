@@ -5,9 +5,10 @@
             <div class="flex-column">
                 <QrCode
                     :data="`${qrPrefix}${address}`"
-                    :size="520"
+                    :size="qrCodeCanvasSize"
                     :fill="'#1F2348' /* nimiq-blue */"
                     class="qr-code"
+                    :style="{'--qr-code-canvas-size': `${qrCodeCanvasSize}px`}"
                 />
                 <InteractiveShortAddress
                     :address="address"
@@ -25,8 +26,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { PageBody, PageHeader, QrCode } from '@nimiq/vue-components';
+import { useWindowSize } from '../../../composables/useWindowSize';
 import InteractiveShortAddress from '../../InteractiveShortAddress.vue';
 
 export default defineComponent({
@@ -44,6 +46,13 @@ export default defineComponent({
             required: true,
         },
     },
+    setup() {
+        const windowHeight = useWindowSize().height;
+        const qrCodeCanvasSize = computed(() => Math.min(520, Math.floor(windowHeight.value * .95)));
+        return {
+            qrCodeCanvasSize,
+        };
+    },
     components: {
         PageBody,
         PageHeader,
@@ -60,25 +69,17 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-.qr-code-overlay .page-body {
+.page-body {
+    min-height: 56rem;
     justify-content: space-evenly;
     align-items: center;
-    min-height: 56rem;
-
-    .flex-spacer {
-        height: 2rem;
-    }
 
     .qr-code {
-        // The QrCode is rendered at 2x size and then scaled to half its size,
-        // to be sharp on retina displays:
-        // 2 x 260px = 520px
-        // But now we need to make it behave as half its size as well, that's
-        // why we use negative margins on all sides (130px = 260px / 2).
+        // The QrCode is rendered at 2x size and then scaled to half its size, to be sharp on retina displays. But now
+        // we need to make it behave as half its size as well, that's why we use negative margins on all sides.
+        height: var(--qr-code-canvas-size); // Must set fixed height for iOS 16 to display correctly
+        margin: calc(var(--qr-code-canvas-size) / -4);
         transform: scale(0.5);
-        margin: -130px;
-
-        height: 520px; // Must set fixed height for iOS 16 to display correctly
         align-self: center;
     }
 
@@ -87,6 +88,11 @@ export default defineComponent({
         font-weight: 600;
         white-space: pre;
         text-align: center;
+    }
+
+    @media (max-height: 520px) { // small mobile
+        min-height: unset;
+        justify-content: space-between;
     }
 }
 

@@ -19,8 +19,9 @@
         <PageBody class="flex-column">
             <QrCode
                 :data="address"
-                :size="448"
+                :size="qrCodeCanvasSize"
                 :fill="'#1F2348' /* nimiq-blue */"
+                :style="{'--qr-code-canvas-size': `${qrCodeCanvasSize}px`}"
             />
             <InteractiveShortAddress
                 :address="address"
@@ -44,6 +45,7 @@ import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { useWindowSize } from '../../composables/useWindowSize';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
@@ -71,6 +73,9 @@ export default defineComponent({
         const address = computed(() => addressInfo.value?.address);
         const hasSeenAddress = ref(false);
 
+        const windowHeight = useWindowSize().height;
+        const qrCodeCanvasSize = computed(() => windowHeight.value <= 520 ? Math.floor(windowHeight.value * .85) : 448);
+
         function back() {
             if (page.value === initialPage) {
                 disableNextModalTransition();
@@ -87,6 +92,7 @@ export default defineComponent({
             initialPage,
             address,
             hasSeenAddress,
+            qrCodeCanvasSize,
             back,
         };
     },
@@ -109,7 +115,6 @@ export default defineComponent({
 }
 
 .polygon-warning-page {
-    // style containment set in component itself
     position: absolute;
     width: 100%;
     z-index: 1;
@@ -136,15 +141,18 @@ export default defineComponent({
     padding-top: 2rem;
     align-items: center;
 
+    @media (max-height: 520px) { // small mobile
+        padding-top: 1rem;
+    }
+    @media (max-height: 480px) {
+        contain: layout paint style; // make page scrollable
+    }
+
     .qr-code {
-        // The QrCode is rendered at 2x size and then scaled to half its size,
-        // to be sharp on retina displays:
-        // 2 x 224px = 448px
-        // But now we need to make it behave as half its size as well, that's
-        // why we use negative margins on all sides.
-        --qr-canvas-size: 448px;
-        height: var(--qr-canvas-size); // Must set fixed height for iOS 16 to display correctly
-        margin: calc(var(--qr-canvas-size) / -4);
+        // The QrCode is rendered at 2x size and then scaled to half its size, to be sharp on retina displays. But now
+        // we need to make it behave as half its size as well, that's why we use negative margins on all sides.
+        height: var(--qr-code-canvas-size); // Must set fixed height for iOS 16 to display correctly.
+        margin: calc(var(--qr-code-canvas-size) / -4);
         transform: scale(.5);
     }
 

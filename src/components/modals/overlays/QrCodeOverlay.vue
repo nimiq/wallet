@@ -12,7 +12,7 @@
                 />
                 <InteractiveShortAddress
                     :address="address"
-                    :displayedCharacters="28"
+                    :displayedCharacters="displayedAddressCharacters"
                     copyable
                     tooltipPosition="top right"
                     :offsetTooltipPosition="false"
@@ -46,11 +46,22 @@ export default defineComponent({
             required: true,
         },
     },
-    setup() {
-        const windowHeight = useWindowSize().height;
+    setup(props) {
+        const { height: windowHeight, isMobile } = useWindowSize();
         const qrCodeCanvasSize = computed(() => Math.min(520, Math.floor(windowHeight.value * .95)));
+        const displayedAddressCharacters = computed(() => {
+            if (/nim/i.test(props.currency)) {
+                // Display an even number of 4 char blocks, plus spaces between.
+                const blockCount = Math.round(qrCodeCanvasSize.value / 170) * 2; // *2 because first factor gives pairs
+                return Math.max(8, blockCount * 4 + (/* spaces, but none for innermost blocks */ blockCount - 2));
+            }
+            // BTC
+            const maxChars = isMobile.value ? 26 : 24;
+            return Math.max(8, Math.min(maxChars, Math.round(qrCodeCanvasSize.value / 20)));
+        });
         return {
             qrCodeCanvasSize,
+            displayedAddressCharacters,
         };
     },
     components: {

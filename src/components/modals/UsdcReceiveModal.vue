@@ -25,7 +25,7 @@
             />
             <InteractiveShortAddress
                 :address="address"
-                :displayedCharacters="20"
+                :displayedCharacters="displayedAddressCharacters"
                 copyable
                 tooltip-position="top right"
                 :offsetTooltipPosition="false"
@@ -73,8 +73,12 @@ export default defineComponent({
         const address = computed(() => addressInfo.value?.address);
         const hasSeenAddress = ref(false);
 
-        const windowHeight = useWindowSize().height;
+        const { height: windowHeight, isMobile } = useWindowSize();
         const qrCodeCanvasSize = computed(() => windowHeight.value <= 520 ? Math.floor(windowHeight.value * .85) : 448);
+        const displayedAddressCharacters = computed(() => {
+            const maxChars = isMobile.value ? 22 : 20;
+            return Math.max(8, Math.min(maxChars, Math.round(qrCodeCanvasSize.value / 20)));
+        });
 
         function back() {
             if (page.value === initialPage) {
@@ -93,6 +97,7 @@ export default defineComponent({
             address,
             hasSeenAddress,
             qrCodeCanvasSize,
+            displayedAddressCharacters,
             back,
         };
     },

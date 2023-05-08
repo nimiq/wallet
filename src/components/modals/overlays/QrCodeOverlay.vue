@@ -11,6 +11,7 @@
                 />
                 <InteractiveShortAddress
                     :address="address"
+                    :displayedCharacters="28"
                     copyable
                     tooltipPosition="top right"
                     :offsetTooltipPosition="false"
@@ -78,6 +79,7 @@ export default defineComponent({
         margin: -130px;
 
         height: 520px; // Must set fixed height for iOS 16 to display correctly
+        align-self: center;
     }
 
     .qr-info-text {

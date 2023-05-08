@@ -24,6 +24,7 @@
             />
             <InteractiveShortAddress
                 :address="address"
+                :displayedCharacters="20"
                 copyable
                 tooltip-position="top right"
                 :offsetTooltipPosition="false"

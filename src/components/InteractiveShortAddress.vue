@@ -26,9 +26,9 @@
                 ref="copyable$"
                 :text="address"
                 @copy="onCopy">
-                <ShortAddress :address="address"/>
+                <ShortAddress :address="address" :displayedCharacters="displayedCharacters"/>
             </Copyable>
-            <ShortAddress v-else :address="address"/>
+            <ShortAddress v-else :address="address" :displayedCharacters="displayedCharacters"/>
         </template>
         <template #default>{{ address }}</template>
     </Tooltip>
@@ -46,6 +46,7 @@ export default defineComponent({
             type: String,
             required: true,
         },
+        displayedCharacters: Number,
         copyable: {
             type: Boolean,
             default: false,

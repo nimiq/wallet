@@ -11,18 +11,14 @@
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
-        <div v-if="!url" class="placeholder flex-column flex-grow">{{ $t('Loading Moonpay...') }}</div>
-        <!-- Iframe allow list from Moonpay docs -->
-        <iframe v-else :src="url"
-            allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0" title="Moonpay"
-        >
-            <p>Your browser does not support iframes.</p>
-        </iframe>
+        <div class="widget-container flex-column flex-grow" id="moonpay-widget-container">
+            <span v-if="!widgetReady" class="placeholder">{{ $t('Loading Moonpay...') }}</span>
+        </div>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { useSettingsStore } from '../../stores/Settings';
@@ -32,11 +28,18 @@ import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useConfig } from '../../composables/useConfig';
-import { CryptoCurrency } from '../../lib/Constants';
+import { loadScript } from '../../lib/ScriptLoader';
+import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
+
+declare global {
+    interface Window {
+        MoonPayWebSdk: any;
+    }
+}
 
 export default defineComponent({
     setup() {
-        const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
+        const { language } = useSettingsStore().state;
         const baseCurrencyCode = useFiatStore().state.currency;
         let defaultCurrencyCode: CryptoCurrency | 'usdc_polygon' = useAccountStore().state.activeCurrency;
         if (defaultCurrencyCode === 'usdc') defaultCurrencyCode = 'usdc_polygon';
@@ -58,29 +61,44 @@ export default defineComponent({
 
         const { config } = useConfig();
 
-        const widgetUrl = [
-            config.moonpay.widgetUrl,
-            'colorCode=%231F2348',
-            `language=${language}`,
-            `baseCurrencyCode=${baseCurrencyCode}`,
-            `defaultCurrencyCode=${defaultCurrencyCode}`,
-            `walletAddresses=${encodeURIComponent(JSON.stringify(walletAddresses))}`,
-        ].join('&');
+        const widgetReady = ref(false);
 
-        const url = ref<string>(null);
+        onMounted(async () => {
+            await loadScript('MoonPayWebSdk', 'https://static.moonpay.com/web-sdk/v1/moonpay-web-sdk.min.js');
 
-        fetch(config.moonpay.signatureEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                url: widgetUrl,
-            }),
-        }).then((response) => response.text()).then((signature) => {
-            url.value = `${widgetUrl}&signature=${encodeURIComponent(signature)}`;
+            const widget = window.MoonPayWebSdk.init({
+                flow: 'buy', // TODO: Depend on prop
+                environment: config.environment === ENV_MAIN ? 'production' : 'sandbox',
+                variant: 'embedded',
+                containerNodeSelector: '#moonpay-widget-container',
+                params: {
+                    apiKey: config.moonpay.clientApiKey,
+                    colorCode: '#0582CA',
+                    language,
+                    baseCurrencyCode,
+                    defaultCurrencyCode,
+                    walletAddresses: JSON.stringify(walletAddresses),
+                },
+            });
+
+            const widgetUrl = widget.generateUrlForSigning();
+
+            const signature = await fetch(config.moonpay.signatureEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: widgetUrl,
+                }),
+            }).then((response) => response.text());
+
+            widget.updateSignature(signature);
+
+            widget.show();
+            widgetReady.value = true;
         });
 
         return {
-            url,
+            widgetReady,
         };
     },
     components: {
@@ -117,7 +135,7 @@ header {
     }
 
     img {
-        width: 114px;
+        width: 18rem;
     }
 
     .flex-spacer {
@@ -131,18 +149,20 @@ header {
     box-shadow: 0 1.5px 0 0 var(--text-14);
 }
 
-.placeholder {
+.widget-container {
     justify-content: center;
     align-items: center;
-    font-weight: bold;
-    font-size: var(--small-size);
-    opacity: 0.5;
-}
 
-iframe {
-    flex-grow: 1;
-    align-self: stretch;
-    border-bottom-left-radius: 1.25rem;
-    border-bottom-right-radius: 1.25rem;
+    .placeholder {
+        font-weight: bold;
+        font-size: var(--small-size);
+        opacity: 0.5;
+    }
+
+    ::v-deep iframe {
+        border: none;
+        border-bottom-left-radius: 1.25rem;
+        border-bottom-right-radius: 1.25rem;
+    }
 }
 </style>

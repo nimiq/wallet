@@ -93,7 +93,7 @@ export default {
     moonpay: {
         enabled: true,
         // This is a publishable key
-        widgetUrl: 'https://buy-staging.moonpay.com?apiKey=pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
+        clientApiKey: 'pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
         signatureEndpoint: 'https://mun.soerenschwert.de',
     },
 

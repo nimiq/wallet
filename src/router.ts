@@ -293,6 +293,7 @@ const routes: RouteConfig[] = [{
                 modal: MoonpayModal,
             },
             name: 'moonpay',
+            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/simplex',

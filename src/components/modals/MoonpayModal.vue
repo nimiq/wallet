@@ -38,7 +38,14 @@ declare global {
 }
 
 export default defineComponent({
-    setup() {
+    props: {
+        flow: {
+            type: String as () => 'buy' | 'sell',
+            default: 'buy' as const,
+            // validator: val => ['buy', 'sell'].includes(val), // Adding this breaks type-inference for props
+        },
+    },
+    setup(props) {
         const { language } = useSettingsStore().state;
         const baseCurrencyCode = useFiatStore().state.currency;
         let defaultCurrencyCode: CryptoCurrency | 'usdc_polygon' = useAccountStore().state.activeCurrency;
@@ -67,7 +74,8 @@ export default defineComponent({
             await loadScript('MoonPayWebSdk', 'https://static.moonpay.com/web-sdk/v1/moonpay-web-sdk.min.js');
 
             const widget = window.MoonPayWebSdk.init({
-                flow: 'buy', // TODO: Depend on prop
+                debug: config.environment !== ENV_MAIN,
+                flow: props.flow,
                 environment: config.environment === ENV_MAIN ? 'production' : 'sandbox',
                 variant: 'embedded',
                 containerNodeSelector: '#moonpay-widget-container',
@@ -75,10 +83,24 @@ export default defineComponent({
                     apiKey: config.moonpay.clientApiKey,
                     colorCode: '#0582CA',
                     language,
-                    baseCurrencyCode,
-                    defaultCurrencyCode,
-                    walletAddresses: JSON.stringify(walletAddresses),
+                    ...(props.flow === 'buy' ? {
+                        baseCurrencyCode,
+                        defaultCurrencyCode,
+                        walletAddresses: JSON.stringify(walletAddresses),
+                    } : {}),
+                    ...(props.flow === 'sell' ? {
+                        defaultBaseCurrencyCode: defaultCurrencyCode,
+                        quoteCurrencyCode: baseCurrencyCode,
+                        refundWalletAddresses: JSON.stringify(walletAddresses),
+                    } : {}),
                 },
+                ...(props.flow === 'sell' ? {
+                    handlers: {
+                        async onInitiateDeposit(properties: any) {
+                            console.log({ properties });
+                        },
+                    },
+                } : {}),
             });
 
             const widgetUrl = widget.generateUrlForSigning();

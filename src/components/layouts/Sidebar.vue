@@ -65,8 +65,7 @@
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"
-                        :disabled="$config.oasis.underMaintenance || !canUseSwaps || hasActiveSwap"
-                        @click="openModal('sell-crypto')"
+                        @click="openModal('moonpay', { flow: 'sell' })"
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Sell') }}</button>
                 </template>
@@ -184,7 +183,7 @@ export default defineComponent({
             return context.root.$router.push(path).catch(() => { /* ignore */ });
         }
 
-        async function openModal(routeName: string) {
+        async function openModal(routeName: string, params: Record<string, string> = {}) {
             // Each modal is expected to be sitting above a specific parent route / background page. If we're not
             // currently on that route, navigate to it first, such that the modal can be closed later by a simple back
             // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
@@ -200,6 +199,7 @@ export default defineComponent({
             return context.root.$router.push({
                 name: routeName,
                 query: { sidebar: 'true' }, // on mobile keep sidebar open in background
+                params,
             }).catch(() => { /* ignore */ });
         }
 

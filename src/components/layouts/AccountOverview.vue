@@ -672,8 +672,8 @@ export default defineComponent({
     .nimiq-account ~ button:last-of-type {
         grid-column-end: 3;
     }
-    .nim-btc-swap-button:first-of-type:last-of-type,
-    .nim-usdc-swap-button:first-of-type:last-of-type {
+    .nim-btc-swap-button:first-of-type:last-of-type:nth-last-child(3),
+    .nim-usdc-swap-button:first-of-type:last-of-type:nth-last-child(3) {
         grid-column: 1 / 3;
     }
     .bitcoin-account {

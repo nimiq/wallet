@@ -482,7 +482,7 @@ export default defineComponent({
             activeCurrency,
             CryptoCurrency,
             hasBitcoinAddresses,
-            hasUsdcAddresses,
+            hasUsdcAddresses: false,
             btcConsensus,
             usdcConsensus,
             updateAvailable,
@@ -800,6 +800,8 @@ export default defineComponent({
     }
 
     &.requires-activation {
+        height: calc(100% + var(--grid-gap) / 2);
+        justify-content: center;
         pointer-events: none;
 
         button {

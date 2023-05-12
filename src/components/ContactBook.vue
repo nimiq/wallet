@@ -203,16 +203,11 @@ export default defineComponent({
     }
 
     .interactive-short-address {
-        margin-right: -.75rem; // offset the trigger padding
         flex-shrink: 0;
 
         ::v-deep {
             .trigger {
-                padding: .75rem;
-
-                .contact-book:not(.editing) & {
-                    background: none;
-                }
+                padding: 0;
             }
 
             .tooltip-box {

@@ -193,33 +193,14 @@ export default defineComponent({
     }
 
     &:not(.is-copyable) .trigger {
-        padding: .5rem .75rem;
+        padding: .5rem .75rem; // Have a similar size as with Copyable's padding.
         line-height: 1.25;
-        border-radius: .5rem;
-        transition: background .3s var(--nimiq-ease);
-
-        &:hover,
-        &:focus,
-        &:focus-within {
-            background: var(--text-6);
-
-            .short-address {
-                opacity: .6;
-            }
-        }
     }
 }
 
 .copyable {
     padding: .5rem .75rem;
     line-height: 1.25;
-
-    &:hover .short-address,
-    &:focus .short-address,
-    &:focus-within .short-address,
-    &.copied .short-address {
-        opacity: 1;
-    }
 }
 
 .short-address {
@@ -227,5 +208,10 @@ export default defineComponent({
     opacity: .5;
     pointer-events: none;
     transition: opacity .3s var(--nimiq-ease);
+
+    // Full opacity if the parent Tooltip .trigger or Copyable is hovered, focused or copied.
+    :is(.trigger, .copyable):is(:hover, :focus, :focus-within, .copied) > & {
+        opacity: 1;
+    }
 }
 </style>

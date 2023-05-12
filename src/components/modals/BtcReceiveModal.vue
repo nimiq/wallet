@@ -635,18 +635,29 @@ export default defineComponent({
             transform: translateY(-#{$paddingTop});
         }
 
-        .btc-copied-address ::v-deep .copyable {
+        .btc-copied-address ::v-deep .interactive-short-address {
+            // When showing the Copyable tooltip (see below) or address tooltip avoid separate stacking contexts caused
+            // by style containment for any parents of the Copyable or address tooltip-box to be able to elevate the
+            // Copyable and tooltip-box without having to elevate any stacking context causing parents.
+            &:has(.copyable.copied, .tooltip-box, :hover, :focus, :focus-within),
+            &:has(.copyable.copied, .tooltip-box, :hover, :focus, :focus-within) :has(.copyable, .tooltip-box) {
+                contain: none;
+            }
+
             // Render the Copyable's tooltip, which is shown on copy, above the scroll mask. Instead of increasing just
             // the tooltip's z-index, we have to raise the Copyable itself because it causes a separate stacking context
-            &.copied {
-                z-index: 3;
-            }
-            &:not(.copied) {
-                z-index: 0;
-                transition: z-index 0s .3s, // Keep the Copyable elevated until the tooltip is faded out.
-                    // Preserve original transitions.
-                    transform var(--short-transition-duration) var(--nimiq-ease),
-                    color .3s var(--nimiq-ease);
+            // due to its translateX transform.
+            .copyable {
+                &.copied {
+                    z-index: 3;
+                }
+                &:not(.copied) {
+                    z-index: 0;
+                    transition: z-index 0s .3s, // Keep the Copyable elevated until the tooltip is faded out.
+                        // Preserve original transitions.
+                        transform var(--short-transition-duration) var(--nimiq-ease),
+                        color .3s var(--nimiq-ease);
+                }
             }
         }
     }

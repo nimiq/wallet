@@ -151,12 +151,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .tooltip::v-deep {
+    contain: layout style; // not paint because tooltip box overflows
+
     .tooltip-box,
     .trigger::after {
         pointer-events: none;
     }
 
     .tooltip-box {
+        contain: layout paint style;
         padding: 1rem;
         font-size: var(--small-size);
         line-height: 1;

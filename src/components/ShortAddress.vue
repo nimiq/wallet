@@ -29,16 +29,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .short-address {
+    contain: layout paint style;
     white-space: nowrap;
     align-items: center;
 
     .address {
+        contain: layout paint style;
         word-spacing: -0.2em;
         font-family: "Fira Mono", monospace; // TODO: Improve monospace font stack
-        // transition: opacity .3s var(--nimiq-ease);
     }
 
     svg {
+        contain: size layout paint style;
         margin-right: 0.5rem;
         opacity: 0.6;
         width: 0.375rem;

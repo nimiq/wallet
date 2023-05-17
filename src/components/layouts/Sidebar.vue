@@ -55,21 +55,26 @@
                 }}</template>
             </Tooltip>
 
-            <Tooltip v-if="$config.fastspot.enabled"
+            <Tooltip v-if="$config.moonpay.enabled"
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
                 :styles="{ minWidth: '25rem' }"
-                :disabled="!$config.oasis.underMaintenance && canUseSwaps && !hasActiveSwap"
+                :disabled="canSellCryptoWithMoonpay"
                 ref="sellTooltip"
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"
-                        @click="openModal('moonpay', { flow: 'sell' })"
+                        :disabled="!canSellCryptoWithMoonpay"
+                        @click="openModal('moonpay-sell-info')"
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Sell') }}</button>
                 </template>
-                <template v-if="$config.oasis.underMaintenance" #default>
+                <template v-if="!canSellCryptoWithMoonpay" #default>{{
+                    $t('Selling NIM is not yet available.' +
+                        ' Please switch to your BTC or USDC balance to sell your crypto.')
+                }}</template>
+                <!-- <template v-else-if="$config.oasis.underMaintenance" #default>
                     {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
                         + ' This might take some time. Please try again later.') }}
                     <br>
@@ -85,7 +90,7 @@
                 }}</template>
                 <template v-else-if="hasActiveSwap" #default>{{
                     $t('Please wait for your current swap to finish before starting a new one.')
-                }}</template>
+                }}</template> -->
             </Tooltip>
         </div>
 
@@ -252,6 +257,10 @@ export default defineComponent({
             }
         }
 
+        const { activeCurrency } = useAccountStore();
+
+        const canSellCryptoWithMoonpay = computed(() => activeCurrency.value !== CryptoCurrency.NIM);
+
         return {
             navigateTo,
             resetState,
@@ -268,6 +277,7 @@ export default defineComponent({
             updateAvailable,
             hideTooltips,
             openModal,
+            canSellCryptoWithMoonpay,
         };
     },
     components: {

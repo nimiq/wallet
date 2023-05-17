@@ -549,18 +549,9 @@ header {
         justify-content: space-between;
 
         img {
-            width: 10.5rem;
-        }
-
-        &.moonpay img {
-            margin-top: -0.75rem;
-            opacity: 0.6;
-            filter: invert(100%); // Black logo into white
-        }
-
-        &.simplex img {
+            width: 11rem;
+            filter: brightness(0) invert(1); // Colored logo into white
             opacity: 0.7;
-            filter: brightness(0) invert(1);; // Colored logo into white
         }
     }
 }

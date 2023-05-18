@@ -86,6 +86,7 @@ export default defineComponent({
 
     &:disabled {
         opacity: 0.4;
+        background: none !important;
     }
 }
 

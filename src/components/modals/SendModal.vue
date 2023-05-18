@@ -192,7 +192,7 @@
         <div v-if="addressListOpened" slot="overlay" class="page flex-column">
             <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
             <PageBody class="page__address-list">
-                <AddressList embedded @address-selected="addressListOpened = false"/>
+                <AddressList embedded @address-selected="addressListOpened = false" :required-balance="1"/>
             </PageBody>
         </div>
 

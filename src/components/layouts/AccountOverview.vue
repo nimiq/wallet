@@ -482,7 +482,7 @@ export default defineComponent({
             activeCurrency,
             CryptoCurrency,
             hasBitcoinAddresses,
-            hasUsdcAddresses: false,
+            hasUsdcAddresses,
             btcConsensus,
             usdcConsensus,
             updateAvailable,

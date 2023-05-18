@@ -2195,14 +2195,9 @@ export default defineComponent({
 
         .exchange-rate {
             margin-top: 2rem;
-            padding-bottom: 0.25rem;
 
             & > span {
                 display: block;
-
-                & ::v-deep .amount {
-                    font-size: 15px;
-                }
             }
 
             label {

@@ -385,6 +385,10 @@ svg {
     &:hover,
     &:focus {
         background: var(--nimiq-highlight-bg);
+
+        .identicon-container > svg:last-child {
+            border-color: #F2F2F4;
+        }
     }
 
     > * {
@@ -461,7 +465,8 @@ svg {
             color: white;
             background: var(--nimiq-blue-bg);
             border-radius: 50%;
-            border: 0.375rem solid white;
+            border: 0.375rem solid var(--bg-primary);
+            transition: border-color 400ms var(--nimiq-ease);
         }
 
         .avatar {

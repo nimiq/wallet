@@ -344,6 +344,10 @@ svg {
     &:hover,
     &:focus {
         background: var(--nimiq-highlight-bg);
+
+        .identicon .cashlink-or-swap {
+            border-color: #F2F2F4;
+        }
     }
 
     > * {
@@ -426,6 +430,7 @@ svg {
             color: white;
             background: var(--nimiq-blue-bg);
             border: 0.375rem solid var(--bg-primary);
+            transition: border-color 400ms var(--nimiq-ease);
             border-radius: 2rem;
             height: 2.75rem;
             width: 2.75rem;

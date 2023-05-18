@@ -25,6 +25,7 @@
 ^\/usdc-transaction(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/polygon\:([^\/#\?]+?)[\/#\?]?$
 ^\/swap(?:\/([^\/#\?]+?))?[\/#\?]?$
+^\/moonpay-sell-info[\/#\?]?$
 ^\/moonpay[\/#\?]?$
 ^\/simplex[\/#\?]?$
 ^\/release-notes[\/#\?]?$

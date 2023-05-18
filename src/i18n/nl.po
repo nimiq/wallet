@@ -83,6 +83,10 @@ msgstr "{fee} heffing"
 msgid "{perc}% of swap value."
 msgstr "{perc}% van swap waarde."
 
+#: src/components/modals/MoonpaySellInfoModal.vue:20
+msgid "{percentage} fees"
+msgstr ""
+
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
 msgstr "{provider} is mogelijk gemaakt door {companyLogo}"
@@ -100,6 +104,7 @@ msgstr "+ {count} meer | + {count} meer"
 
 #: src/components/modals/BuyOptionsModal.vue:132
 #: src/components/modals/BuyOptionsModal.vue:53
+#: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+ netwerkkosten"
 
@@ -746,6 +751,10 @@ msgstr "Doorgaan"
 msgid "Continue Swap"
 msgstr "Swap voortzetten"
 
+#: src/components/modals/MoonpaySellInfoModal.vue:38
+msgid "Continue with Moonpay"
+msgstr ""
+
 #: src/components/modals/SimplexModal.vue:39
 msgid ""
 "Copy\n"
@@ -1373,10 +1382,6 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
-#: src/components/layouts/Sidebar.vue:80
-msgid "Learn more."
-msgstr "Meer informatie."
-
 #: src/components/layouts/AddressOverview.vue:174
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Laten we beginnen! Maak je eigen Nimiq account:"
@@ -1406,7 +1411,7 @@ msgstr "Bestand laden"
 msgid "Loading fees and limits"
 msgstr "Toeslag en limieten ophalen"
 
-#: src/components/modals/MoonpayModal.vue:14
+#: src/components/modals/MoonpayModal.vue:15
 msgid "Loading Moonpay..."
 msgstr "Moonpay laden..."
 
@@ -1471,6 +1476,7 @@ msgstr "Maximale omwisselbaar bedrag is {amount}"
 #: src/components/modals/BuyOptionsModal.vue:114
 #: src/components/modals/BuyOptionsModal.vue:128
 #: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "min {amount}"
@@ -1482,6 +1488,10 @@ msgstr "Minimale bedrag is {amount}"
 #: src/components/kyc/KycOverlay.vue:19
 msgid "Mobile phone"
 msgstr "Mobiel"
+
+#: src/components/modals/MoonpaySellInfoModal.vue:14
+msgid "MoonPay is a third-party service requiring registration and KYC."
+msgstr ""
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1512,7 +1522,7 @@ msgstr "Geef deze ontvanger een naam..."
 msgid "Name your contact"
 msgstr "Geef je contact een naam"
 
-#: src/components/layouts/Sidebar.vue:140
+#: src/components/layouts/Sidebar.vue:143
 msgid "Network"
 msgstr "Netwerk"
 
@@ -1573,8 +1583,7 @@ msgstr "Geen"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Niet alle rekeningen van deze bank ondersteunen directe transacties."
 
-#: src/components/layouts/Sidebar.vue:120
-#: src/components/layouts/Sidebar.vue:84
+#: src/components/layouts/Sidebar.vue:123
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "Niet beschikbaar in jouw browser"
@@ -1602,14 +1611,6 @@ msgstr "OASIS-limiet overschreden"
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "OASIS service fee"
 msgstr "OASIS servicekosten"
-
-#: src/components/layouts/Sidebar.vue:74
-msgid ""
-"OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
-" some time. Please try again later."
-msgstr ""
-"De TEN31 bank-infrastructuur van OASIS wordt momenteel bijgewerkt. Dit kan "
-"even duren. Probeer het later opnieuw."
 
 #: src/components/layouts/Settings.vue:196
 msgid "Off"
@@ -1682,7 +1683,7 @@ msgstr "Atomic Swap uitvoeren"
 msgid "Performing swap {progress}/5"
 msgstr "Swap {progress} / 5 uitvoeren"
 
-#: src/components/layouts/Sidebar.vue:115
+#: src/components/layouts/Sidebar.vue:118
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -1723,8 +1724,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Gelieve over te maken"
 
-#: src/components/layouts/Sidebar.vue:124
-#: src/components/layouts/Sidebar.vue:54 src/components/layouts/Sidebar.vue:88
+#: src/components/layouts/Sidebar.vue:127
+#: src/components/layouts/Sidebar.vue:54
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 "Wacht tot je huidige swap is voltooid voordat je een nieuwe kan starten."
@@ -1947,6 +1948,10 @@ msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 msgid "Sell"
 msgstr "Verkopen"
 
+#: src/components/modals/MoonpaySellInfoModal.vue:13
+msgid "Sell BTC and USDC"
+msgstr ""
+
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
 #: src/components/modals/SellCryptoModal.vue:199
@@ -1975,6 +1980,12 @@ msgstr ""
 #: src/components/BankCheckInput.vue:78
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr "Verkopen en terugbetalingen werken niet met een generiek IBAN!"
+
+#: src/components/layouts/Sidebar.vue:74
+msgid ""
+"Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be"
+" sold for FIAT."
+msgstr ""
 
 #: src/components/swap/OasisLaunchModal.vue:11
 msgid "Selling now available"
@@ -2104,7 +2115,7 @@ msgstr "Atomic Swap opzetten"
 msgid "Setting up the {currency} side of the swap."
 msgstr "De {currency} kant van de swap instellen."
 
-#: src/components/layouts/Sidebar.vue:148
+#: src/components/layouts/Sidebar.vue:151
 msgid "Settings"
 msgstr "Instellingen"
 
@@ -2212,7 +2223,7 @@ msgstr "Super lage kosten, super snelle betalingen"
 
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
-#: src/components/layouts/Sidebar.vue:112
+#: src/components/layouts/Sidebar.vue:115
 #: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:545
@@ -2719,7 +2730,7 @@ msgstr "Je kunt alleen van Polygon USDC-adressen ontvangen!"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Je kan meer gratis NIM ontvangen in {waitTime} uren."
 
-#: src/components/layouts/Sidebar.vue:117
+#: src/components/layouts/Sidebar.vue:120
 msgid "You currently have no balance to swap."
 msgstr "Je hebt momenteel geen tegoed om te wisselen."
 
@@ -2789,8 +2800,7 @@ msgstr "Komt je bank niet in aanmerking?"
 msgid "Your browser"
 msgstr "Je browser"
 
-#: src/components/layouts/Sidebar.vue:121
-#: src/components/layouts/Sidebar.vue:85
+#: src/components/layouts/Sidebar.vue:124
 #: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "

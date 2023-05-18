@@ -72,6 +72,10 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
+#: src/components/modals/MoonpaySellInfoModal.vue:20
+msgid "{percentage} fees"
+msgstr ""
+
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
 msgstr ""
@@ -89,6 +93,7 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:132
 #: src/components/modals/BuyOptionsModal.vue:53
+#: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr ""
 
@@ -684,6 +689,10 @@ msgstr ""
 msgid "Continue Swap"
 msgstr ""
 
+#: src/components/modals/MoonpaySellInfoModal.vue:38
+msgid "Continue with Moonpay"
+msgstr ""
+
 #: src/components/modals/SimplexModal.vue:39
 msgid ""
 "Copy\n"
@@ -1253,10 +1262,6 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:80
-msgid "Learn more."
-msgstr ""
-
 #: src/components/layouts/AddressOverview.vue:174
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
@@ -1286,7 +1291,7 @@ msgstr ""
 msgid "Loading fees and limits"
 msgstr ""
 
-#: src/components/modals/MoonpayModal.vue:14
+#: src/components/modals/MoonpayModal.vue:15
 msgid "Loading Moonpay..."
 msgstr ""
 
@@ -1345,6 +1350,7 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:114
 #: src/components/modals/BuyOptionsModal.vue:128
 #: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr ""
@@ -1355,6 +1361,10 @@ msgstr ""
 
 #: src/components/kyc/KycOverlay.vue:19
 msgid "Mobile phone"
+msgstr ""
+
+#: src/components/modals/MoonpaySellInfoModal.vue:14
+msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr ""
 
 #: src/components/BankCheckInput.vue:9
@@ -1385,7 +1395,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:140
+#: src/components/layouts/Sidebar.vue:143
 msgid "Network"
 msgstr ""
 
@@ -1440,8 +1450,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:120
-#: src/components/layouts/Sidebar.vue:84
+#: src/components/layouts/Sidebar.vue:123
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr ""
@@ -1468,10 +1477,6 @@ msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "OASIS service fee"
-msgstr ""
-
-#: src/components/layouts/Sidebar.vue:74
-msgid "OASIS’ TEN31 Bank infrastructure is currently being updated. This might take some time. Please try again later."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:196
@@ -1545,7 +1550,7 @@ msgstr ""
 msgid "Performing swap {progress}/5"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:115
+#: src/components/layouts/Sidebar.vue:118
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
@@ -1570,9 +1575,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:124
+#: src/components/layouts/Sidebar.vue:127
 #: src/components/layouts/Sidebar.vue:54
-#: src/components/layouts/Sidebar.vue:88
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 
@@ -1784,6 +1788,10 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
+#: src/components/modals/MoonpaySellInfoModal.vue:13
+msgid "Sell BTC and USDC"
+msgstr ""
+
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
 #: src/components/modals/SellCryptoModal.vue:199
@@ -1809,6 +1817,10 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:78
 msgid "Selling and refunds will not work with a generic IBAN!"
+msgstr ""
+
+#: src/components/layouts/Sidebar.vue:74
+msgid "Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be sold for FIAT."
 msgstr ""
 
 #: src/components/swap/OasisLaunchModal.vue:11
@@ -1936,7 +1948,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:148
+#: src/components/layouts/Sidebar.vue:151
 msgid "Settings"
 msgstr ""
 
@@ -2042,7 +2054,7 @@ msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
-#: src/components/layouts/Sidebar.vue:112
+#: src/components/layouts/Sidebar.vue:115
 #: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:545
@@ -2493,7 +2505,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:117
+#: src/components/layouts/Sidebar.vue:120
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -2552,8 +2564,7 @@ msgstr ""
 msgid "Your browser"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:121
-#: src/components/layouts/Sidebar.vue:85
+#: src/components/layouts/Sidebar.vue:124
 #: src/components/modals/BuyOptionsModal.vue:72
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""

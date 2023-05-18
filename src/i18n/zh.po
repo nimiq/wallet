@@ -82,6 +82,10 @@ msgstr "{fee} 费用"
 msgid "{perc}% of swap value."
 msgstr "交换价值的{perc}％"
 
+#: src/components/modals/MoonpaySellInfoModal.vue:20
+msgid "{percentage} fees"
+msgstr ""
+
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
 msgstr "{provider} 由 {companyLogo} 提供"
@@ -99,6 +103,7 @@ msgstr "+另外{count}个 | +另外{count}个"
 
 #: src/components/modals/BuyOptionsModal.vue:132
 #: src/components/modals/BuyOptionsModal.vue:53
+#: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+网络费用"
 
@@ -719,6 +724,10 @@ msgstr "继续"
 msgid "Continue Swap"
 msgstr "继续交换"
 
+#: src/components/modals/MoonpaySellInfoModal.vue:38
+msgid "Continue with Moonpay"
+msgstr ""
+
 #: src/components/modals/SimplexModal.vue:39
 msgid ""
 "Copy\n"
@@ -1318,10 +1327,6 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/Sidebar.vue:80
-msgid "Learn more."
-msgstr "了解更多。"
-
 #: src/components/layouts/AddressOverview.vue:174
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
@@ -1351,7 +1356,7 @@ msgstr "加载文件"
 msgid "Loading fees and limits"
 msgstr "加载费用和限额。"
 
-#: src/components/modals/MoonpayModal.vue:14
+#: src/components/modals/MoonpayModal.vue:15
 msgid "Loading Moonpay..."
 msgstr "正在加载Moonpay..."
 
@@ -1414,6 +1419,7 @@ msgstr "最大可交换金额为 {amount}"
 #: src/components/modals/BuyOptionsModal.vue:114
 #: src/components/modals/BuyOptionsModal.vue:128
 #: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "最低{amount}"
@@ -1425,6 +1431,10 @@ msgstr "最低交换金额为{amount}"
 #: src/components/kyc/KycOverlay.vue:19
 msgid "Mobile phone"
 msgstr "移动设备"
+
+#: src/components/modals/MoonpaySellInfoModal.vue:14
+msgid "MoonPay is a third-party service requiring registration and KYC."
+msgstr ""
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1455,7 +1465,7 @@ msgstr "命名此收件人..."
 msgid "Name your contact"
 msgstr "为你的联系人命名"
 
-#: src/components/layouts/Sidebar.vue:140
+#: src/components/layouts/Sidebar.vue:143
 msgid "Network"
 msgstr "网络"
 
@@ -1515,8 +1525,7 @@ msgstr "无"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "此银行提供的帐户并非全部都支持即时交易"
 
-#: src/components/layouts/Sidebar.vue:120
-#: src/components/layouts/Sidebar.vue:84
+#: src/components/layouts/Sidebar.vue:123
 #: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "在你的浏览器中无法使用"
@@ -1544,12 +1553,6 @@ msgstr "超出OASIS限制"
 #: src/components/swap/SwapFeesTooltip.vue:18
 msgid "OASIS service fee"
 msgstr "OASIS服务费"
-
-#: src/components/layouts/Sidebar.vue:74
-msgid ""
-"OASIS’ TEN31 Bank infrastructure is currently being updated. This might take"
-" some time. Please try again later."
-msgstr "OASIS的TEN31银行基础设施目前正在更新中。这可能需要一些时间。请稍后再试。"
 
 #: src/components/layouts/Settings.vue:196
 msgid "Off"
@@ -1622,7 +1625,7 @@ msgstr "执行原子交换"
 msgid "Performing swap {progress}/5"
 msgstr "进行交换{progress} / 5"
 
-#: src/components/layouts/Sidebar.vue:115
+#: src/components/layouts/Sidebar.vue:118
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -1658,8 +1661,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "请转账"
 
-#: src/components/layouts/Sidebar.vue:124
-#: src/components/layouts/Sidebar.vue:54 src/components/layouts/Sidebar.vue:88
+#: src/components/layouts/Sidebar.vue:127
+#: src/components/layouts/Sidebar.vue:54
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr "在开始新的交换前，请等待当前兑换完成。"
 
@@ -1874,6 +1877,10 @@ msgstr "选择显示比特币金额的单位"
 msgid "Sell"
 msgstr "卖出"
 
+#: src/components/modals/MoonpaySellInfoModal.vue:13
+msgid "Sell BTC and USDC"
+msgstr ""
+
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
 #: src/components/modals/SellCryptoModal.vue:199
@@ -1902,6 +1909,12 @@ msgstr ""
 #: src/components/BankCheckInput.vue:78
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr "销售和退款不适用于通用 IBAN！"
+
+#: src/components/layouts/Sidebar.vue:74
+msgid ""
+"Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be"
+" sold for FIAT."
+msgstr ""
 
 #: src/components/swap/OasisLaunchModal.vue:11
 msgid "Selling now available"
@@ -2029,7 +2042,7 @@ msgstr "设置原子交换"
 msgid "Setting up the {currency} side of the swap."
 msgstr "设置交换的 {currency} "
 
-#: src/components/layouts/Sidebar.vue:148
+#: src/components/layouts/Sidebar.vue:151
 msgid "Settings"
 msgstr "设置"
 
@@ -2136,7 +2149,7 @@ msgstr "超低手续费，超快支付"
 
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/BtcTransactionListItem.vue:255
-#: src/components/layouts/Sidebar.vue:112
+#: src/components/layouts/Sidebar.vue:115
 #: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:545
@@ -2612,7 +2625,7 @@ msgstr "您仅可以接受来自于 Polygon USDC的地址！"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "你可以在{waitTime}小时内收到更多的免费NIM"
 
-#: src/components/layouts/Sidebar.vue:117
+#: src/components/layouts/Sidebar.vue:120
 msgid "You currently have no balance to swap."
 msgstr "您当前没有余额可以进行兑换。"
 
@@ -2677,8 +2690,7 @@ msgstr "你的银行不符合条件？"
 msgid "Your browser"
 msgstr "你的浏览器"
 
-#: src/components/layouts/Sidebar.vue:121
-#: src/components/layouts/Sidebar.vue:85
+#: src/components/layouts/Sidebar.vue:124
 #: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "

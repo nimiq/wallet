@@ -76,16 +76,14 @@
                     :placeholder="$t('Name this contact...')"
                     ref="labelInputRef"/>
                 <label v-else>{{ recipientWithLabel.label }}</label>
-                <Copyable :text="recipientWithLabel.address">
-                    <AddressDisplay :address="recipientWithLabel.address"/>
-                </Copyable>
+                <AddressDisplay :address="recipientWithLabel.address" :copyable="true"/>
                 <div class="flex-grow"></div>
                 <button
                     class="nq-button light-blue"
                     @click="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT;"
                     @mousedown.prevent
                 >
-                    <template v-if="amount > 0">{{ $t('Continue') }}</template>
+                    <template v-if="page === Pages.AMOUNT_INPUT">{{ $t('Done') }}</template>
                     <template v-else>{{ $t('Set Amount') }}</template>
                 </button>
             </PageBody>
@@ -242,7 +240,6 @@ import {
     ScanQrCodeIcon,
     Identicon,
     LabelInput,
-    Copyable,
     AddressDisplay,
     SelectBar,
     Amount,
@@ -773,7 +770,6 @@ export default defineComponent({
         ScanQrCodeIcon,
         Identicon,
         LabelInput,
-        Copyable,
         AddressDisplay,
         IdenticonButton,
         TriangleDownIcon,
@@ -927,23 +923,28 @@ export default defineComponent({
 
         .copyable {
             padding: 0.5rem;
-            margin-bottom: 4rem;
+            background: var(--nimiq-highlight-bg);
+            border-radius: 0.625rem;
+            margin: 1rem 0 4rem;
+
+            transition:
+                color .3s var(--nimiq-ease),
+                background 0.3s var(--nimiq-ease);
 
             ::v-deep .background {
-                border-radius: 0.625rem;
+                display: none;
             }
 
             .address-display {
                 transition: opacity 0.3s var(--nimiq-ease);
+                font-weight: 500;
+                opacity: 1;
             }
 
             &:hover,
             &:focus,
             &.copied {
-                .address-display {
-                    opacity: 1;
-                    font-weight: 500;
-                }
+                background: rgba(5, 130, 202, 0.07); // Based on Nimiq Light Blue
             }
         }
     }

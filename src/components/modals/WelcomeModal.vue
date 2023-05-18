@@ -661,6 +661,10 @@ export default defineComponent({
             left: 0;
             z-index: 1000;
         }
+
+        @media (max-width: 700px) { // Full mobile breakpoint
+            white-space: normal;
+        }
     }
 
     .think-features {

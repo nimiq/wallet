@@ -375,7 +375,8 @@ export default defineComponent({
 
         > .info-tooltip {
             margin-left: 0.25rem;
-            z-index: 4;
+            z-index: 5;
+            text-align: left;
 
             ::v-deep .trigger svg {
                 height: 2rem;
@@ -571,7 +572,7 @@ export default defineComponent({
     }
 
     .tooltip {
-        z-index: 3;
+        z-index: 4;
 
         ::v-deep .trigger .nq-icon {
             margin-left: 0.75rem;

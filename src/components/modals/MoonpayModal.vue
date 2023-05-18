@@ -159,64 +159,64 @@ export default defineComponent({
         });
 
         async function sendBitcoin(properties: InitiateDepositProperties) {
-            const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
-
-            // eslint-disable-next-line no-async-promise-executor
-            const request = new Promise<Omit<SignBtcTransactionRequest, 'appName'>>(async (resolve) => {
-                const { accountUtxos, accountBalance } = useBtcAddressStore();
-
-                const client = await getElectrumClient();
-                await client.waitForConsensusEstablished();
-
-                const fees = await client.estimateFees([1]);
-                const feePerByte = fees[1] || 3;
-                const requiredInputs = selectOutputs(accountUtxos.value, value, feePerByte);
-
-                const fee = estimateFees(
-                    requiredInputs.utxos.length,
-                    requiredInputs.changeAmount > 0 ? 2 : 1,
-                    feePerByte,
-                );
-
-                if (accountBalance.value < value + fee) {
-                    throw new Error('Insufficient BTC balance to send the amount plus fees');
-                }
-
-                let changeAddress: string | undefined;
-                if (requiredInputs.changeAmount > 0) {
-                    const { nextChangeAddress } = useBtcAddressStore();
-                    if (!nextChangeAddress.value) {
-                        // FIXME: If no unused change address is found,
-                        //        need to request new ones from Hub!
-                        throw new Error('No more unused change addresses)');
-                    }
-                    changeAddress = nextChangeAddress.value;
-                }
-
-                resolve({
-                    accountId: useAccountStore().state.activeAccountId!,
-                    inputs: requiredInputs.utxos.map((utxo) => ({
-                        address: utxo.address,
-                        transactionHash: utxo.transactionHash,
-                        outputIndex: utxo.index,
-                        outputScript: utxo.witness.script,
-                        value: utxo.witness.value,
-                    })),
-                    output: {
-                        address: properties.depositWalletAddress,
-                        label: 'Moonpay',
-                        value,
-                    },
-                    ...(requiredInputs.changeAmount > 0 ? {
-                        changeOutput: {
-                            address: changeAddress!,
-                            value: requiredInputs.changeAmount,
-                        },
-                    } : {}),
-                });
-            });
-
             try {
+                const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
+
+                // eslint-disable-next-line no-async-promise-executor
+                const request = new Promise<Omit<SignBtcTransactionRequest, 'appName'>>(async (resolve) => {
+                    const { accountUtxos, accountBalance } = useBtcAddressStore();
+
+                    const client = await getElectrumClient();
+                    await client.waitForConsensusEstablished();
+
+                    const fees = await client.estimateFees([1]);
+                    const feePerByte = fees[1] || 3;
+                    const requiredInputs = selectOutputs(accountUtxos.value, value, feePerByte);
+
+                    const fee = estimateFees(
+                        requiredInputs.utxos.length,
+                        requiredInputs.changeAmount > 0 ? 2 : 1,
+                        feePerByte,
+                    );
+
+                    if (accountBalance.value < value + fee) {
+                        throw new Error('Insufficient BTC balance to send the amount plus fees');
+                    }
+
+                    let changeAddress: string | undefined;
+                    if (requiredInputs.changeAmount > 0) {
+                        const { nextChangeAddress } = useBtcAddressStore();
+                        if (!nextChangeAddress.value) {
+                            // FIXME: If no unused change address is found,
+                            //        need to request new ones from Hub!
+                            throw new Error('No more unused change addresses)');
+                        }
+                        changeAddress = nextChangeAddress.value;
+                    }
+
+                    resolve({
+                        accountId: useAccountStore().state.activeAccountId!,
+                        inputs: requiredInputs.utxos.map((utxo) => ({
+                            address: utxo.address,
+                            transactionHash: utxo.transactionHash,
+                            outputIndex: utxo.index,
+                            outputScript: utxo.witness.script,
+                            value: utxo.witness.value,
+                        })),
+                        output: {
+                            address: properties.depositWalletAddress,
+                            label: 'Moonpay',
+                            value,
+                        },
+                        ...(requiredInputs.changeAmount > 0 ? {
+                            changeOutput: {
+                                address: changeAddress!,
+                                value: requiredInputs.changeAmount,
+                            },
+                        } : {}),
+                    });
+                });
+
                 const plainTx = await sendBtcTransaction(request);
 
                 if (!plainTx) {
@@ -231,27 +231,26 @@ export default defineComponent({
         }
 
         async function sendUsdc(properties: InitiateDepositProperties) {
-            const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
-
-            // Validate that we are talking about the same USDC
-            if (
-                !properties.cryptoCurrency.chainId
-                || parseInt(properties.cryptoCurrency.chainId, 10) !== config.usdc.networkId
-            ) {
-                throw new Error('Invalid network ID given by Moonpay');
-            }
-
-            if (properties.cryptoCurrency.contractAddress !== config.usdc.usdcContract) {
-                throw new Error('Invalid USDC contract address given by Moonpay');
-            }
-
-            const { accountBalance } = useUsdcAddressStore();
-            // TODO: Preselect a relay to be able to check balance against the fee as well
-            if (accountBalance.value < value) {
-                throw new Error('Insufficient USDC balance');
-            }
-
             try {
+                const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
+                // Validate that we are talking about the same USDC
+                if (
+                    !properties.cryptoCurrency.chainId
+                    || parseInt(properties.cryptoCurrency.chainId, 10) !== config.usdc.networkId
+                ) {
+                    throw new Error('Invalid network ID given by Moonpay');
+                }
+
+                if (properties.cryptoCurrency.contractAddress !== config.usdc.usdcContract.toLowerCase()) {
+                    throw new Error('Invalid USDC contract address given by Moonpay');
+                }
+
+                const { accountBalance } = useUsdcAddressStore();
+                // TODO: Preselect a relay to be able to check balance against the fee as well
+                if (accountBalance.value < value) {
+                    throw new Error('Insufficient USDC balance');
+                }
+
                 const tx = await sendUsdcTransaction(
                     properties.depositWalletAddress,
                     value,

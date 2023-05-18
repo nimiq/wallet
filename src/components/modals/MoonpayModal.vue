@@ -11,32 +11,73 @@
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
-        <div v-if="!url" class="placeholder flex-column flex-grow">{{ $t('Loading Moonpay...') }}</div>
-        <!-- Iframe allow list from Moonpay docs -->
-        <iframe v-else :src="url"
-            allow="accelerometer; autoplay; camera; gyroscope; payment" frameborder="0" title="Moonpay"
-        >
-            <p>Your browser does not support iframes.</p>
-        </iframe>
+        <div class="widget-container flex-column flex-grow" id="moonpay-widget-container">
+            <span v-if="!widgetReady" class="placeholder">{{ $t('Loading Moonpay...') }}</span>
+        </div>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { SignBtcTransactionRequest } from '@nimiq/hub-api';
 import Modal from './Modal.vue';
 import { useSettingsStore } from '../../stores/Settings';
 import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
+import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { useUsdcContactsStore } from '../../stores/UsdcContacts';
+import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useConfig } from '../../composables/useConfig';
-import { CryptoCurrency } from '../../lib/Constants';
+import { loadScript } from '../../lib/ScriptLoader';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '../../lib/Constants';
+
+import { getElectrumClient } from '../../electrum';
+import { estimateFees, selectOutputs } from '../../lib/BitcoinTransactionUtils';
+
+import { sendBtcTransaction, sendUsdcTransaction } from '../../hub';
+
+declare global {
+    interface Window {
+        MoonPayWebSdk: any;
+    }
+}
+
+type InitiateDepositProperties = {
+    transactionId: string,
+    cryptoCurrency: {
+        id: string,
+        name: string,
+        code: CryptoCurrency | 'usdc_polygon',
+        contractAddress: string | null,
+        chainId: string | null,
+        coinType: string,
+        networkCode: string,
+    },
+    fiatCurrency: {
+        id: string,
+        name: string,
+        code: FiatCurrency,
+    },
+    cryptoCurrencyAmount: string,
+    cryptoCurrencyAmountSmallestDenomination: string,
+    fiatCurrencyAmount: string | null,
+    depositWalletAddress: string,
+};
 
 export default defineComponent({
-    setup() {
-        const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
+    props: {
+        flow: {
+            type: String as () => 'buy' | 'sell',
+            default: 'buy' as const,
+            // validator: val => ['buy', 'sell'].includes(val), // Adding this breaks type-inference for props
+        },
+    },
+    setup(props) {
+        const { language } = useSettingsStore().state;
         const baseCurrencyCode = useFiatStore().state.currency;
         let defaultCurrencyCode: CryptoCurrency | 'usdc_polygon' = useAccountStore().state.activeCurrency;
         if (defaultCurrencyCode === 'usdc') defaultCurrencyCode = 'usdc_polygon';
@@ -58,29 +99,180 @@ export default defineComponent({
 
         const { config } = useConfig();
 
-        const widgetUrl = [
-            config.moonpay.widgetUrl,
-            'colorCode=%231F2348',
-            `language=${language}`,
-            `baseCurrencyCode=${baseCurrencyCode}`,
-            `defaultCurrencyCode=${defaultCurrencyCode}`,
-            `walletAddresses=${encodeURIComponent(JSON.stringify(walletAddresses))}`,
-        ].join('&');
+        const widgetReady = ref(false);
 
-        const url = ref<string>(null);
+        onMounted(async () => {
+            await loadScript('MoonPayWebSdk', 'https://static.moonpay.com/web-sdk/v1/moonpay-web-sdk.min.js');
 
-        fetch(config.moonpay.signatureEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                url: widgetUrl,
-            }),
-        }).then((response) => response.text()).then((signature) => {
-            url.value = `${widgetUrl}&signature=${encodeURIComponent(signature)}`;
+            const widget = window.MoonPayWebSdk.init({
+                debug: config.environment !== ENV_MAIN,
+                flow: props.flow,
+                environment: config.environment === ENV_MAIN ? 'production' : 'sandbox',
+                variant: 'embedded',
+                containerNodeSelector: '#moonpay-widget-container',
+                params: {
+                    apiKey: config.moonpay.clientApiKey,
+                    colorCode: '#0582CA',
+                    language,
+                    ...(props.flow === 'buy' ? {
+                        baseCurrencyCode,
+                        defaultCurrencyCode,
+                        walletAddresses: JSON.stringify(walletAddresses),
+                    } : {}),
+                    ...(props.flow === 'sell' ? {
+                        defaultBaseCurrencyCode: defaultCurrencyCode,
+                        quoteCurrencyCode: baseCurrencyCode,
+                        refundWalletAddresses: JSON.stringify(walletAddresses),
+                    } : {}),
+                },
+                ...(props.flow === 'sell' ? {
+                    handlers: {
+                        async onInitiateDeposit(properties: InitiateDepositProperties) {
+                            console.debug({ properties }); // eslint-disable-line no-console
+
+                            if (properties.cryptoCurrency.code === CryptoCurrency.BTC) {
+                                useAccountStore().setActiveCurrency(CryptoCurrency.BTC);
+                                sendBitcoin(properties);
+                            } else if (properties.cryptoCurrency.code === 'usdc_polygon') {
+                                useAccountStore().setActiveCurrency(CryptoCurrency.USDC);
+                                sendUsdc(properties);
+                            }
+                        },
+                    },
+                } : {}),
+            });
+
+            const widgetUrl = widget.generateUrlForSigning();
+
+            const signature = await fetch(config.moonpay.signatureEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: widgetUrl,
+                }),
+            }).then((response) => response.text());
+
+            widget.updateSignature(signature);
+
+            widget.show();
+            widgetReady.value = true;
         });
 
+        async function sendBitcoin(properties: InitiateDepositProperties) {
+            const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
+
+            const request = new Promise<Omit<SignBtcTransactionRequest, "appName">>(async (resolve) => {
+                const { accountUtxos, accountBalance } = useBtcAddressStore();
+
+                const client = await getElectrumClient();
+                await client.waitForConsensusEstablished();
+
+                const fees = await client.estimateFees([1]);
+                const feePerByte = fees[1] || 3;
+                const requiredInputs = selectOutputs(accountUtxos.value, value, feePerByte);
+
+                const fee = estimateFees(
+                    requiredInputs.utxos.length,
+                    requiredInputs.changeAmount > 0 ? 2 : 1,
+                    feePerByte,
+                );
+
+                if (accountBalance.value < value + fee) {
+                    throw new Error('Insufficient BTC balance to send the amount plus fees');
+                }
+
+                let changeAddress: string | undefined;
+                if (requiredInputs.changeAmount > 0) {
+                    const { nextChangeAddress } = useBtcAddressStore();
+                    if (!nextChangeAddress.value) {
+                        // FIXME: If no unused change address is found,
+                        //        need to request new ones from Hub!
+                        throw new Error('No more unused change addresses)');
+                    }
+                    changeAddress = nextChangeAddress.value;
+                }
+
+                resolve({
+                    accountId: useAccountStore().state.activeAccountId!,
+                    inputs: requiredInputs.utxos.map((utxo) => ({
+                        address: utxo.address,
+                        transactionHash: utxo.transactionHash,
+                        outputIndex: utxo.index,
+                        outputScript: utxo.witness.script,
+                        value: utxo.witness.value,
+                    })),
+                    output: {
+                        address: properties.depositWalletAddress,
+                        label: 'Moonpay',
+                        value,
+                    },
+                    ...(requiredInputs.changeAmount > 0 ? {
+                        changeOutput: {
+                            address: changeAddress!,
+                            value: requiredInputs.changeAmount,
+                        },
+                    } : {}),
+                });
+            });
+
+            try {
+                const plainTx = await sendBtcTransaction(request);
+
+                if (!plainTx) {
+                    throw new Error('Failed to sign and/or send BTC transaction');
+                }
+
+                useBtcLabelsStore().setRecipientLabel(properties.depositWalletAddress, 'Moonpay');
+            } catch (error) {
+                console.error(error); // eslint-disable-line no-console
+                alert(`Something went wrong: ${(error as Error).message}`); // eslint-disable-line no-alert
+            }
+        }
+
+        async function sendUsdc(properties: InitiateDepositProperties) {
+            const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
+
+            // Validate that we are talking about the same USDC
+            if (
+                !properties.cryptoCurrency.chainId
+                || parseInt(properties.cryptoCurrency.chainId, 10) !== config.usdc.networkId
+            ) {
+                throw new Error('Invalid network ID given by Moonpay');
+            }
+
+            if (properties.cryptoCurrency.contractAddress !== config.usdc.usdcContract) {
+                throw new Error('Invalid USDC contract address given by Moonpay');
+            }
+
+            const { accountBalance } = useUsdcAddressStore();
+            // TODO: Preselect a relay to be able to check balance against the fee as well
+            if (accountBalance.value < value) {
+                throw new Error('Insufficient USDC balance');
+            }
+
+            try {
+                const tx = await sendUsdcTransaction(
+                    properties.depositWalletAddress,
+                    value,
+                    'Moonpay',
+                    // relay,
+                );
+
+                if (!tx) {
+                    throw new Error('Failed to sign and/or send USDC transaction');
+                }
+
+                useUsdcContactsStore().setContact(properties.depositWalletAddress, 'Moonpay');
+
+                useUsdcTransactionsStore().addTransactions([tx]);
+            } catch (error) {
+                console.error(error); // eslint-disable-line no-console
+                alert(`Something went wrong: ${(error as Error).message}`); // eslint-disable-line no-alert
+            }
+        }
+
         return {
-            url,
+            widgetReady,
         };
     },
     components: {
@@ -117,7 +309,7 @@ header {
     }
 
     img {
-        width: 114px;
+        width: 18rem;
     }
 
     .flex-spacer {
@@ -131,18 +323,20 @@ header {
     box-shadow: 0 1.5px 0 0 var(--text-14);
 }
 
-.placeholder {
+.widget-container {
     justify-content: center;
     align-items: center;
-    font-weight: bold;
-    font-size: var(--small-size);
-    opacity: 0.5;
-}
 
-iframe {
-    flex-grow: 1;
-    align-self: stretch;
-    border-bottom-left-radius: 1.25rem;
-    border-bottom-right-radius: 1.25rem;
+    .placeholder {
+        font-weight: bold;
+        font-size: var(--small-size);
+        opacity: 0.5;
+    }
+
+    ::v-deep iframe {
+        border: none;
+        border-bottom-left-radius: 1.25rem;
+        border-bottom-right-radius: 1.25rem;
+    }
 }
 </style>

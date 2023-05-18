@@ -721,7 +721,7 @@ export default defineComponent({
         font-size: 2rem;
         font-weight: 600;
         align-items: center;
-        padding: 3rem;
+        padding: 3rem 2rem;
 
         .nq-icon {
             margin-right: 1rem;

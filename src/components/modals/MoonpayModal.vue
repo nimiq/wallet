@@ -20,6 +20,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { SignBtcTransactionRequest } from '@nimiq/hub-api';
 import Modal from './Modal.vue';
 import { useSettingsStore } from '../../stores/Settings';
 import { useFiatStore } from '../../stores/Fiat';
@@ -160,36 +161,38 @@ export default defineComponent({
         async function sendBitcoin(properties: InitiateDepositProperties) {
             const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
 
-            const { accountUtxos, accountBalance } = useBtcAddressStore();
-            const client = await getElectrumClient();
-            // TODO: Precompute estimated fee, to not prevent Hub popup from being opened with async wait
-            const fees = await client.estimateFees([1]);
-            const feePerByte = fees[1] || 3;
-            const requiredInputs = selectOutputs(accountUtxos.value, value, feePerByte);
+            const request = new Promise<Omit<SignBtcTransactionRequest, "appName">>(async (resolve) => {
+                const { accountUtxos, accountBalance } = useBtcAddressStore();
 
-            const fee = estimateFees(
-                requiredInputs.utxos.length,
-                requiredInputs.changeAmount > 0 ? 2 : 1,
-                feePerByte,
-            );
+                const client = await getElectrumClient();
+                await client.waitForConsensusEstablished();
 
-            if (accountBalance.value < value + fee) {
-                throw new Error('Insufficient BTC balance to send the amount plus fees');
-            }
+                const fees = await client.estimateFees([1]);
+                const feePerByte = fees[1] || 3;
+                const requiredInputs = selectOutputs(accountUtxos.value, value, feePerByte);
 
-            let changeAddress: string | undefined;
-            if (requiredInputs.changeAmount > 0) {
-                const { nextChangeAddress } = useBtcAddressStore();
-                if (!nextChangeAddress.value) {
-                    // FIXME: If no unused change address is found,
-                    //        need to request new ones from Hub!
-                    throw new Error('No more unused change addresses)');
+                const fee = estimateFees(
+                    requiredInputs.utxos.length,
+                    requiredInputs.changeAmount > 0 ? 2 : 1,
+                    feePerByte,
+                );
+
+                if (accountBalance.value < value + fee) {
+                    throw new Error('Insufficient BTC balance to send the amount plus fees');
                 }
-                changeAddress = nextChangeAddress.value;
-            }
 
-            try {
-                const plainTx = await sendBtcTransaction({
+                let changeAddress: string | undefined;
+                if (requiredInputs.changeAmount > 0) {
+                    const { nextChangeAddress } = useBtcAddressStore();
+                    if (!nextChangeAddress.value) {
+                        // FIXME: If no unused change address is found,
+                        //        need to request new ones from Hub!
+                        throw new Error('No more unused change addresses)');
+                    }
+                    changeAddress = nextChangeAddress.value;
+                }
+
+                resolve({
                     accountId: useAccountStore().state.activeAccountId!,
                     inputs: requiredInputs.utxos.map((utxo) => ({
                         address: utxo.address,
@@ -210,6 +213,10 @@ export default defineComponent({
                         },
                     } : {}),
                 });
+            });
+
+            try {
+                const plainTx = await sendBtcTransaction(request);
 
                 if (!plainTx) {
                     throw new Error('Failed to sign and/or send BTC transaction');

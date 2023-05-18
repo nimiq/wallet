@@ -71,8 +71,7 @@
                     >{{ $t('Sell') }}</button>
                 </template>
                 <template v-if="!canSellCryptoWithMoonpay" #default>{{
-                    $t('Selling NIM is not yet available.' +
-                        ' Please switch to your BTC or USDC balance to sell your crypto.')
+                    $t('Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be sold for FIAT.')
                 }}</template>
                 <!-- <template v-else-if="$config.oasis.underMaintenance" #default>
                     {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'

@@ -594,11 +594,14 @@ export async function logout(accountId: string) {
     return true;
 }
 
-export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'appName'>) {
-    const signedTransaction = await hubApi.signBtcTransaction({
-        appName: APP_NAME,
-        ...tx,
-    }, getBehavior()).catch(onError);
+export async function sendBtcTransaction(tx: Omit<SignBtcTransactionRequest, 'appName'> | Promise<Omit<SignBtcTransactionRequest, 'appName'>>) {
+    const signedTransaction = await hubApi.signBtcTransaction(
+        Promise.resolve(tx).then((tx) => ({
+            appName: APP_NAME,
+            ...tx,
+        })),
+        getBehavior(),
+    ).catch(onError);
     if (!signedTransaction) return null;
 
     return sendBtcTx(signedTransaction);

@@ -161,7 +161,8 @@ export default defineComponent({
         async function sendBitcoin(properties: InitiateDepositProperties) {
             const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
 
-            const request = new Promise<Omit<SignBtcTransactionRequest, "appName">>(async (resolve) => {
+            // eslint-disable-next-line no-async-promise-executor
+            const request = new Promise<Omit<SignBtcTransactionRequest, 'appName'>>(async (resolve) => {
                 const { accountUtxos, accountBalance } = useBtcAddressStore();
 
                 const client = await getElectrumClient();

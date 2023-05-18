@@ -211,6 +211,10 @@
                     @changed="updateFee"
                 />
                 <Amount :amount="fee" :minDecimals="0" :maxDecimals="5"/>
+                <div class="flex-grow"></div>
+                <button class="nq-button light-blue" @click="onCloseOverlay" @mousedown.prevent>
+                    {{ $t('Apply fee') }}
+                </button>
             </PageBody>
         </div>
 

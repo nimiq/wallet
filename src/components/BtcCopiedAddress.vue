@@ -3,12 +3,12 @@
         <div class="flex-column">
             <div class="label-input-wrapper flex-row">
                 <Avatar :label="addressInfo.label" />
-                <LabelInput
-                    v-model="addressInfo.label /* eslint-disable-line vue/no-mutating-props */"
+                <!-- eslint-disable-next-line eslint-disable-line vue/no-mutating-props -->
+                <LabelInput v-model="addressInfo.label"
                     ref="labelInput$"
                     :placeholder="$t('Label the sender')"
                     vanishing
-                    @keydown.native.enter="labelInput$.blur()"
+                    @keydown.native.enter="$event.target.blur()"
                 />
                 <div class="blue-tooltip" v-if="showTooltip">
                     <p>{{ $t('Add a label to quickly find the transaction '

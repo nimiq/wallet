@@ -323,7 +323,7 @@ export async function launchPolygon() {
                 const endHeight = blockHeight;
                 blockHeight = startHeight;
 
-                console.log('USDC Sync start', {
+                console.debug('USDC Sync start', {
                     balance: balance.toNumber() / 1e6,
                     usdcNonce,
                     transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
@@ -503,7 +503,7 @@ export async function launchPolygon() {
             } // End while loop
             /* eslint-enable max-len */
 
-            console.log('USDC Sync end', {
+            console.debug('USDC Sync end', {
                 balance: balance.toNumber() / 1e6,
                 usdcNonce,
                 transferAllowance: transferAllowanceUsed.toNumber() / 1e6,

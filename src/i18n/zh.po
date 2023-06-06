@@ -1291,7 +1291,7 @@ msgstr "余额不足"
 msgid "invalid"
 msgstr "无效"
 
-#: src/components/swap/SwapModal.vue:1768
+#: src/components/swap/SwapModal.vue:1770
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 

@@ -1346,7 +1346,7 @@ msgstr "Onvoldoende saldo."
 msgid "invalid"
 msgstr "ongeldig"
 
-#: src/components/swap/SwapModal.vue:1768
+#: src/components/swap/SwapModal.vue:1770
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 

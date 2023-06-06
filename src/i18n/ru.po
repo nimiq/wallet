@@ -1325,7 +1325,7 @@ msgstr "Недостаточный баланс."
 msgid "invalid"
 msgstr "некорректный"
 
-#: src/components/swap/SwapModal.vue:1768
+#: src/components/swap/SwapModal.vue:1770
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 

@@ -4,12 +4,12 @@
 # Matheo <matheo@nimiq.com>, 2023
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2023
 # Daniel, 2023
-# Robinson BARAIS, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2023
+# Robinson BARAIS, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2023\n"
+"Last-Translator: Robinson BARAIS, 2023\n"
 "Language-Team: French (https://app.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -85,7 +85,7 @@ msgstr "{perc}% de la valeur du swap."
 
 #: src/components/modals/MoonpaySellInfoModal.vue:20
 msgid "{percentage} fees"
-msgstr ""
+msgstr "{percentage} de frais"
 
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
@@ -353,7 +353,7 @@ msgstr "Tout fonds envoyés seront remboursés."
 
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"
-msgstr ""
+msgstr "Appliquer les frais"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:34
 msgid ""
@@ -756,7 +756,7 @@ msgstr "Continuer le Swap"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:38
 msgid "Continue with Moonpay"
-msgstr ""
+msgstr "Continuer avec Moonpay"
 
 #: src/components/modals/SimplexModal.vue:39
 msgid ""
@@ -1037,6 +1037,8 @@ msgstr "Échoué"
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
+"Échec de la récupération des frais de l'USDC. Nouvelle tentative... (Erreur "
+": {message})"
 
 #: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
@@ -1150,6 +1152,8 @@ msgstr ""
 #: src/components/PolygonWarningFooter.vue:27
 msgid "Funds sent from non-Polygon USDC versions could be permanently lost!"
 msgstr ""
+"Les fonds envoyés à partir de versions USDC autres que Polygon pourraient "
+"être définitivement perdus !"
 
 #: src/components/PolygonWarningFooter.vue:7
 #: src/components/PolygonWarningPage.vue:18
@@ -1161,6 +1165,8 @@ msgstr ""
 #: src/components/PolygonWarningFooter.vue:26
 msgid "Funds sent to non-Polygon USDC versions could be permanently lost!"
 msgstr ""
+"Les fonds envoyés à des versions de l'USDC autres que Polygon pourraient "
+"être définitivement perdus !"
 
 #: src/components/layouts/Settings.vue:44
 msgid "General"
@@ -1356,9 +1362,9 @@ msgstr "Solde insuffisant."
 msgid "invalid"
 msgstr "invalide"
 
-#: src/components/swap/SwapModal.vue:1768
+#: src/components/swap/SwapModal.vue:1770
 msgid "Invalid swap state, swap aborted!"
-msgstr ""
+msgstr "État du Swap invalide : Swap abandonné !"
 
 #: src/components/TransactionList.vue:59
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
@@ -1505,6 +1511,8 @@ msgstr "Numéro de mobile"
 #: src/components/modals/MoonpaySellInfoModal.vue:14
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr ""
+"MoonPay est un service tiers nécessitant une inscription et une vérification"
+" d'identité."
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1865,7 +1873,7 @@ msgstr "Remboursement"
 
 #: src/components/modals/UsdcTransactionModal.vue:565
 msgid "Refund failed: "
-msgstr ""
+msgstr "Le remboursement a échoué :"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:72
 msgid ""
@@ -1969,7 +1977,7 @@ msgstr "Vendre"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:13
 msgid "Sell BTC and USDC"
-msgstr ""
+msgstr "Vendre du BTC et de l'USDC"
 
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
@@ -2007,6 +2015,8 @@ msgid ""
 "Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be"
 " sold for FIAT."
 msgstr ""
+"La vente de NIM est actuellement indisponible. Échangez du NIM contre du BTC"
+" ou de l'USDC, qui eux peuvent être vendus contre du FIAT."
 
 #: src/components/swap/OasisLaunchModal.vue:11
 msgid "Selling now available"
@@ -2021,7 +2031,7 @@ msgstr "Envoyer"
 #: src/components/modals/SendModal.vue:188
 #: src/components/modals/UsdcSendModal.vue:217
 msgid "Send {currency}"
-msgstr ""
+msgstr "Envoyer {currency}"
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:78
 #: src/components/modals/SendModal.vue:171

@@ -1348,7 +1348,7 @@ msgstr "Saldo insuficiente"
 msgid "invalid"
 msgstr "Inválido"
 
-#: src/components/swap/SwapModal.vue:1768
+#: src/components/swap/SwapModal.vue:1770
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 

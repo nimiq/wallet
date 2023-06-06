@@ -1333,16 +1333,12 @@ export default defineComponent({
             if (!canSign.value) return;
 
             // Get up-to-date fees for USDC
+            let wasFeeUpdateSuccessful = Promise.resolve(true);
             if ([leftAsset.value, rightAsset.value].includes(SwapAsset.USDC) && usdcFeeStuff.value) {
                 // Fetch new fees, if no update is currently in process already (in which case usdcFeeStuff would be
                 // null as it's cleared in startUsdcFeeUpdates). If an update is already in process, the result is being
                 // awaited via the promises returned by calculateMyFees.
-                const wasFeeUpdateSuccessful = await startUsdcFeeUpdates();
-                if (!wasFeeUpdateSuccessful) {
-                    // If first attempt to update fee was not successful, abort signing. An error message will be shown
-                    // in the UI via usdcFeeError.
-                    return;
-                }
+                wasFeeUpdateSuccessful = startUsdcFeeUpdates();
             }
 
             currentlySigning.value = true;
@@ -1350,6 +1346,12 @@ export default defineComponent({
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
+
+                if (!await wasFeeUpdateSuccessful) {
+                    // If first attempt to update fee was not successful, abort signing. An error message will be shown
+                    // in the UI via usdcFeeError.
+                    reject(new Error(usdcFeeError.value || undefined));
+                }
 
                 try {
                     const fees = calculateMyFees(undefined, true);

@@ -1809,6 +1809,11 @@
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.8.tgz#da8abef84c6d293cbb9ca495a77f08daa08886b9"
   integrity sha512-MNpFbGZetz2eZcHtJVa5tpmLjPf65mTcJBRQkOHS8kWE+f+Z++hdnwWUBQCEAph4oC6bsE5JSuU7VpwcogN7+w==
 
+"@nimiq/core-web@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.1.tgz#97cb5b43b257c7f6f6808ef603e9bf686377241f"
+  integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
+
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
   resolved "https://github.com/nimiq/electrum-client#4f706a0acb13b8e8abdf5be68cfc036eb102e3fc"
@@ -1820,14 +1825,16 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.7.0.tgz#eea496f4898139c51971f0b177583c6cc6b06611"
   integrity sha512-k7vSjYdjAiAQar+21v681Zrp9kN9uHMUw7/dyG2D/IrXqNPHkD133JyrzxPBga+myW411SUR4mtdPQRPQm3d/A==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?c401928d4407443ecaa3062e5b23c2f9e4de7499&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build":
-  version "1.6.1"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?c401928d4407443ecaa3062e5b23c2f9e4de7499&scripts.postinstall=yarn%20--ignore-scripts%20%26%26%20yarn%20build#d2fa6b047a0dc2c7e62e07a2661e6dc041920661"
+"@nimiq/hub-api@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.7.0.tgz#f4bfbefbab497f56943a44d7dd7633a1314cf56c"
+  integrity sha512-FNAkQGarhJlb791wvgtLw9XaVkpCrszFdbdFN0dyOIZ7pBowjM6E8XaaGZbHAe8iVI81BRSUdd3ctMfndho/mA==
   dependencies:
-    "@nimiq/core-web" "^1.5.8"
+    "@nimiq/core-web" "^1.6.1"
     "@nimiq/fastspot-api" "^1.7.0"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
+    "@opengsn/common" "^2.2.5"
     big-integer "^1.6.48"
 
 "@nimiq/iqons@^1.5.2", "@nimiq/iqons@^1.6.0":

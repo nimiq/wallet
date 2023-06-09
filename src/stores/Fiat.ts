@@ -38,12 +38,12 @@ export function guessUserCurrency(regionOverwrite?: string) {
         if (currencyByRegion) return currencyByRegion;
 
         // check whether it's a country in the euro zone.
-        const euroZoneRegex = /^(AT|BE|CY|EE|FI|FR|DE|GR|IE|IT|LV|LT|LU|MT|NL|PT|SK|SI|ES)$/i;
+        const euroZoneRegex = /^(AT|BE|CY|EE|FI|FR|DE|GR|HR|IE|IT|LV|LT|LU|MT|NL|PT|SK|SI|ES)$/i;
         if (euroZoneRegex.test(region)) return FiatCurrency.EUR;
     }
 
     // Check for languages in the euro zone (but leaving out some that are also spoken in other regions)
-    const euroLanguageRegex = /^(de|fr|nl|el|et|fi|sv|ga|it|lv|lt|lb|mt|sk|sl)$/i;
+    const euroLanguageRegex = /^(de|fr|nl|el|et|fi|sv|ga|hr|it|lv|lt|lb|mt|sk|sl)$/i;
     if (euroLanguageRegex.test(language)) return FiatCurrency.EUR;
 
     // Use USD by default

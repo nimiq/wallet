@@ -1094,6 +1094,7 @@ export default defineComponent({
         }
 
         .secondary-amount {
+            padding: 0 .5rem; // for fixing a visual glitch in iOS Safari 16.5 which cuts off the text
             font-weight: 600;
             opacity: 0.5;
 

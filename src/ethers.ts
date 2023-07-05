@@ -595,8 +595,11 @@ export async function calculateFee(
     function calculateChainTokenFee(baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) {
         let gasPrice = networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
 
-        // main 10%, test 25% as it is more volatile
-        const gasPriceBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
+        // For swap redeem txs, add 50% to cover network fee changes until the end of the swap.
+        // Otherwise, in mainnet, add 10%; in testnet add 25% as it is more volatile.
+        const gasPriceBufferPercentage = method === 'redeemWithSecretInData'
+            ? 150
+            : useConfig().config.environment === ENV_MAIN ? 110 : 125;
         gasPrice = gasPrice.mul(gasPriceBufferPercentage).div(100);
 
         // (gasPrice * gasLimit) * (1 + pctRelayFee) + baseRelayFee

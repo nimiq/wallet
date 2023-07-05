@@ -70,14 +70,11 @@
 
         <div v-else-if="!searchString" class="empty-state flex-column">
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
-            <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
-            <a v-if="isMainnet"
-                :href="`https://getsome.nimiq.com/?address=${activeAddress}`" target="_blank" rel="noopener"
-                class="nq-button green"
-                @mousedown.prevent
-            >{{ $t('Receive free NIM') }}</a>
-            <TestnetFaucet v-else-if="activeAddress" :address="activeAddress" :key="activeAddress"/>
+            <router-link v-if="isMainnet" to="buy" class="nq-button light-blue">
+                {{ $t('Buy NIM') }}
+            </router-link>
+            <TestnetFaucet v-else-if="activeAddress" :address="activeAddress"/>
         </div>
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>
@@ -626,12 +623,6 @@ export default defineComponent({
         margin-top: 0;
         margin-bottom: 1.5rem;
         text-align: center;
-    }
-
-    span {
-        font-size: var(--body-size);
-        font-weight: 600;
-        opacity: 0.6;
     }
 
     .testnet-faucet,

@@ -101,10 +101,12 @@ export default defineComponent({
 
         const widgetReady = ref(false);
 
+        let widget: any;
+
         onMounted(async () => {
             await loadScript('MoonPayWebSdk', 'https://static.moonpay.com/web-sdk/v1/moonpay-web-sdk.min.js');
 
-            const widget = window.MoonPayWebSdk.init({
+            widget = window.MoonPayWebSdk.init({
                 debug: config.environment !== ENV_MAIN,
                 flow: props.flow,
                 environment: config.environment === ENV_MAIN ? 'production' : 'sandbox',
@@ -156,9 +158,9 @@ export default defineComponent({
 
             widget.show();
             widgetReady.value = true;
-
-            onBeforeUnmount(() => widget.close());
         });
+
+        onBeforeUnmount(() => widget && widget.close());
 
         async function sendBitcoin(properties: InitiateDepositProperties) {
             try {

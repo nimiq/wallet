@@ -94,7 +94,7 @@ export default {
         enabled: true,
         // This is a publishable key
         clientApiKey: 'pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
-        signatureEndpoint: 'https://mun.soerenschwert.de',
+        signatureEndpoint: 'https://moosign.nimiq.network',
     },
 
     simplex: {

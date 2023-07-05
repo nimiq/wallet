@@ -499,6 +499,7 @@ msgstr ""
 "wallet."
 
 #: src/components/BtcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:68
 msgid "Buy BTC"
 msgstr "Koop BTC"
 
@@ -521,7 +522,7 @@ msgstr "Koop maximaal"
 msgid "Buy more here in the wallet."
 msgstr "Koop meer in de Wallet."
 
-#: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:65 src/components/TransactionList.vue:75
 msgid "Buy NIM"
 msgstr "Koop NIM"
 
@@ -532,6 +533,11 @@ msgstr "Koop NIM & BTC"
 #: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Koop NIM op een crypto exchange:"
+
+#: src/components/UsdcTransactionList.vue:48
+#: src/components/UsdcTransactionList.vue:58
+msgid "Buy USDC"
+msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
@@ -689,6 +695,7 @@ msgstr "Account bevestigen"
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
+#: src/components/UsdcTransactionList.vue:45
 msgid "Congrats"
 msgstr "Proficiat"
 
@@ -1568,9 +1575,9 @@ msgstr "Geen registratie - zelfs geen e-mail."
 msgid "No request received."
 msgstr "Geen verzoek ontvangen."
 
-#: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
-#: src/components/UsdcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:77
+#: src/components/TransactionList.vue:80
+#: src/components/UsdcTransactionList.vue:62
 msgid "No transactions found"
 msgstr "Geen transacties gevonden"
 
@@ -1776,7 +1783,7 @@ msgstr "Ontvang BTC"
 msgid "Receive fiat to your bank account."
 msgstr "Ontvang fiat op uw bankrekening."
 
-#: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
+#: src/components/TestnetFaucet.vue:11
 msgid "Receive free NIM"
 msgstr "Ontvang gratis NIM"
 
@@ -1787,10 +1794,6 @@ msgstr "Ontvang alleen van Polygon USDC-adressen!"
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
 msgstr "Ontvang NIM"
-
-#: src/components/TransactionList.vue:73
-msgid "Receive some free NIM to get started."
-msgstr "Ontvang gratis NIM om te starten."
 
 #: src/components/modals/UsdcReceiveModal.vue:13
 msgid "Receive USDC"
@@ -2450,12 +2453,12 @@ msgstr "Dit is een ongeldige IBAN"
 msgid "This might take up to {min} minutes."
 msgstr "Dit kan tot {min} minuten duren."
 
-#: src/components/BtcTransactionList.vue:235
-#: src/components/BtcTransactionList.vue:257
-#: src/components/TransactionList.vue:250
-#: src/components/TransactionList.vue:272
-#: src/components/UsdcTransactionList.vue:193
-#: src/components/UsdcTransactionList.vue:215
+#: src/components/BtcTransactionList.vue:232
+#: src/components/BtcTransactionList.vue:254
+#: src/components/TransactionList.vue:247
+#: src/components/TransactionList.vue:269
+#: src/components/UsdcTransactionList.vue:197
+#: src/components/UsdcTransactionList.vue:219
 msgid "This month"
 msgstr "Deze maand"
 
@@ -2753,6 +2756,7 @@ msgstr "Je hebt een SEPA-account nodig die directe transacties ondersteunt."
 
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
+#: src/components/UsdcTransactionList.vue:46
 msgid "You now own crypto!"
 msgstr "Je bent nu in het bezit van crypto!"
 

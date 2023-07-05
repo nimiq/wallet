@@ -505,6 +505,7 @@ msgstr ""
 "virement bancaire et depuis votre wallet."
 
 #: src/components/BtcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:68
 msgid "Buy BTC"
 msgstr "Acheter du BTC"
 
@@ -527,7 +528,7 @@ msgstr "Acheter le maximum"
 msgid "Buy more here in the wallet."
 msgstr "Achetez plus ici dans le Wallet."
 
-#: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:65 src/components/TransactionList.vue:75
 msgid "Buy NIM"
 msgstr "Acheter des NIM"
 
@@ -538,6 +539,11 @@ msgstr "Acheter NIM et BTC"
 #: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Acheter du NIM sur une plateforme d'échange :"
+
+#: src/components/UsdcTransactionList.vue:48
+#: src/components/UsdcTransactionList.vue:58
+msgid "Buy USDC"
+msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
@@ -694,6 +700,7 @@ msgstr "Confirmer le compte"
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
+#: src/components/UsdcTransactionList.vue:45
 msgid "Congrats"
 msgstr "Félicitations"
 
@@ -1590,9 +1597,9 @@ msgstr "Pas d'inscription - pas même d'email."
 msgid "No request received."
 msgstr "Aucune demande reçue."
 
-#: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
-#: src/components/UsdcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:77
+#: src/components/TransactionList.vue:80
+#: src/components/UsdcTransactionList.vue:62
 msgid "No transactions found"
 msgstr "Aucune transaction trouvée"
 
@@ -1800,7 +1807,7 @@ msgstr "Recevoir des BTC"
 msgid "Receive fiat to your bank account."
 msgstr "Recevoir du Fiat sur votre compte bancaire."
 
-#: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
+#: src/components/TestnetFaucet.vue:11
 msgid "Receive free NIM"
 msgstr "Recevoir des NIM gratuits"
 
@@ -1811,10 +1818,6 @@ msgstr "Recevoir de l'USDC uniquement depuis une adresse Polygon USDC !"
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
 msgstr "Recevoir des NIM"
-
-#: src/components/TransactionList.vue:73
-msgid "Receive some free NIM to get started."
-msgstr "Recevoir des NIM gratuits pour commencer."
 
 #: src/components/modals/UsdcReceiveModal.vue:13
 msgid "Receive USDC"
@@ -2482,12 +2485,12 @@ msgstr "Ce n'est pas un IBAN valide"
 msgid "This might take up to {min} minutes."
 msgstr "Cela peut prendre jusqu'à {min} minutes."
 
-#: src/components/BtcTransactionList.vue:235
-#: src/components/BtcTransactionList.vue:257
-#: src/components/TransactionList.vue:250
-#: src/components/TransactionList.vue:272
-#: src/components/UsdcTransactionList.vue:193
-#: src/components/UsdcTransactionList.vue:215
+#: src/components/BtcTransactionList.vue:232
+#: src/components/BtcTransactionList.vue:254
+#: src/components/TransactionList.vue:247
+#: src/components/TransactionList.vue:269
+#: src/components/UsdcTransactionList.vue:197
+#: src/components/UsdcTransactionList.vue:219
 msgid "This month"
 msgstr "Ce mois-ci"
 
@@ -2788,6 +2791,7 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
+#: src/components/UsdcTransactionList.vue:46
 msgid "You now own crypto!"
 msgstr "Vous possédez maintenant de la crypto !"
 

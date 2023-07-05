@@ -444,6 +444,7 @@ msgid "Buy and sell crypto for EUR. Simply by bank transfer and from inside your
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:68
 msgid "Buy BTC"
 msgstr ""
 
@@ -467,6 +468,7 @@ msgid "Buy more here in the wallet."
 msgstr ""
 
 #: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:75
 msgid "Buy NIM"
 msgstr ""
 
@@ -476,6 +478,11 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
+msgstr ""
+
+#: src/components/UsdcTransactionList.vue:48
+#: src/components/UsdcTransactionList.vue:58
+msgid "Buy USDC"
 msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
@@ -629,6 +636,7 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
+#: src/components/UsdcTransactionList.vue:45
 msgid "Congrats"
 msgstr ""
 
@@ -1435,9 +1443,9 @@ msgstr ""
 msgid "No request received."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
-#: src/components/UsdcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:77
+#: src/components/TransactionList.vue:80
+#: src/components/UsdcTransactionList.vue:62
 msgid "No transactions found"
 msgstr ""
 
@@ -1623,7 +1631,6 @@ msgid "Receive fiat to your bank account."
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:11
-#: src/components/TransactionList.vue:79
 msgid "Receive free NIM"
 msgstr ""
 
@@ -1633,10 +1640,6 @@ msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
-msgstr ""
-
-#: src/components/TransactionList.vue:73
-msgid "Receive some free NIM to get started."
 msgstr ""
 
 #: src/components/modals/UsdcReceiveModal.vue:13
@@ -2262,12 +2265,12 @@ msgstr ""
 msgid "This might take up to {min} minutes."
 msgstr ""
 
-#: src/components/BtcTransactionList.vue:235
-#: src/components/BtcTransactionList.vue:257
-#: src/components/TransactionList.vue:250
-#: src/components/TransactionList.vue:272
-#: src/components/UsdcTransactionList.vue:193
-#: src/components/UsdcTransactionList.vue:215
+#: src/components/BtcTransactionList.vue:232
+#: src/components/BtcTransactionList.vue:254
+#: src/components/TransactionList.vue:247
+#: src/components/TransactionList.vue:269
+#: src/components/UsdcTransactionList.vue:197
+#: src/components/UsdcTransactionList.vue:219
 msgid "This month"
 msgstr ""
 
@@ -2523,6 +2526,7 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
+#: src/components/UsdcTransactionList.vue:46
 msgid "You now own crypto!"
 msgstr ""
 

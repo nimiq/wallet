@@ -495,6 +495,7 @@ msgstr ""
 " вашого гаманця."
 
 #: src/components/BtcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:68
 msgid "Buy BTC"
 msgstr "Купити BTC"
 
@@ -517,7 +518,7 @@ msgstr "Купити максимум"
 msgid "Buy more here in the wallet."
 msgstr "Купуйте більше тут, у гаманці."
 
-#: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:65 src/components/TransactionList.vue:75
 msgid "Buy NIM"
 msgstr "Купити NIM"
 
@@ -528,6 +529,11 @@ msgstr "Купити NIM і BTC"
 #: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Купити NIM на криптобіржі:"
+
+#: src/components/UsdcTransactionList.vue:48
+#: src/components/UsdcTransactionList.vue:58
+msgid "Buy USDC"
+msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
@@ -686,6 +692,7 @@ msgstr "Підтвердіть рахунок"
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
+#: src/components/UsdcTransactionList.vue:45
 msgid "Congrats"
 msgstr "Вітаємо"
 
@@ -1563,9 +1570,9 @@ msgstr "Без реєстрації – навіть без електронно
 msgid "No request received."
 msgstr "Запит не отримано."
 
-#: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
-#: src/components/UsdcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:77
+#: src/components/TransactionList.vue:80
+#: src/components/UsdcTransactionList.vue:62
 msgid "No transactions found"
 msgstr "Переказів не знайдено"
 
@@ -1767,7 +1774,7 @@ msgstr "Отримати BTC"
 msgid "Receive fiat to your bank account."
 msgstr "Отримати фіат на свій банківський рахунок."
 
-#: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
+#: src/components/TestnetFaucet.vue:11
 msgid "Receive free NIM"
 msgstr "Отримати безплатний NIM"
 
@@ -1778,10 +1785,6 @@ msgstr ""
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
 msgstr "Отримати NIM"
-
-#: src/components/TransactionList.vue:73
-msgid "Receive some free NIM to get started."
-msgstr "Отримайте декілька безплатних NIM щоб розпочати."
 
 #: src/components/modals/UsdcReceiveModal.vue:13
 msgid "Receive USDC"
@@ -2429,12 +2432,12 @@ msgstr "Це невірний IBAN"
 msgid "This might take up to {min} minutes."
 msgstr "Це може зайняти до {min} хвилин."
 
-#: src/components/BtcTransactionList.vue:235
-#: src/components/BtcTransactionList.vue:257
-#: src/components/TransactionList.vue:250
-#: src/components/TransactionList.vue:272
-#: src/components/UsdcTransactionList.vue:193
-#: src/components/UsdcTransactionList.vue:215
+#: src/components/BtcTransactionList.vue:232
+#: src/components/BtcTransactionList.vue:254
+#: src/components/TransactionList.vue:247
+#: src/components/TransactionList.vue:269
+#: src/components/UsdcTransactionList.vue:197
+#: src/components/UsdcTransactionList.vue:219
 msgid "This month"
 msgstr "Цього місяця"
 
@@ -2730,6 +2733,7 @@ msgstr "Вам потрібен рахунок SEPA, який підтримує
 
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
+#: src/components/UsdcTransactionList.vue:46
 msgid "You now own crypto!"
 msgstr "Тепер у вас є криптовалюта!"
 

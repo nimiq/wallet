@@ -478,6 +478,7 @@ msgid ""
 msgstr "仅需银行转帐和你的钱包，即可在钱包内以欧元买卖加密货币"
 
 #: src/components/BtcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:68
 msgid "Buy BTC"
 msgstr "购买比特币"
 
@@ -500,7 +501,7 @@ msgstr "全数购买"
 msgid "Buy more here in the wallet."
 msgstr "在钱包内购买更多"
 
-#: src/components/TransactionList.vue:65
+#: src/components/TransactionList.vue:65 src/components/TransactionList.vue:75
 msgid "Buy NIM"
 msgstr "购买NIM"
 
@@ -511,6 +512,11 @@ msgstr "购买NIM&BTC"
 #: src/components/modals/BuyOptionsModal.vue:152
 msgid "Buy NIM on a crypto exchange:"
 msgstr "在加密货币交易所购买NIM："
+
+#: src/components/UsdcTransactionList.vue:48
+#: src/components/UsdcTransactionList.vue:58
+msgid "Buy USDC"
+msgstr ""
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
@@ -664,6 +670,7 @@ msgstr "确认账户"
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:57
+#: src/components/UsdcTransactionList.vue:45
 msgid "Congrats"
 msgstr "恭喜"
 
@@ -1510,9 +1517,9 @@ msgstr "无需注册，甚至无需电子邮件"
 msgid "No request received."
 msgstr "未收到请求。"
 
-#: src/components/BtcTransactionList.vue:80
-#: src/components/TransactionList.vue:83
-#: src/components/UsdcTransactionList.vue:58
+#: src/components/BtcTransactionList.vue:77
+#: src/components/TransactionList.vue:80
+#: src/components/UsdcTransactionList.vue:62
 msgid "No transactions found"
 msgstr "交易未找到"
 
@@ -1709,7 +1716,7 @@ msgstr "接收比特币"
 msgid "Receive fiat to your bank account."
 msgstr "将法定货币存入你的银行账户"
 
-#: src/components/TestnetFaucet.vue:11 src/components/TransactionList.vue:79
+#: src/components/TestnetFaucet.vue:11
 msgid "Receive free NIM"
 msgstr "接收免费的NIM"
 
@@ -1720,10 +1727,6 @@ msgstr "仅支持接受来自于 Polygon USDC 地址！"
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
 msgstr "接收NIM"
-
-#: src/components/TransactionList.vue:73
-msgid "Receive some free NIM to get started."
-msgstr "领取一些免费的NIM来开始吧！"
 
 #: src/components/modals/UsdcReceiveModal.vue:13
 msgid "Receive USDC"
@@ -2366,12 +2369,12 @@ msgstr "这不是有效的 IBAN"
 msgid "This might take up to {min} minutes."
 msgstr "这可能会花费{min}分钟"
 
-#: src/components/BtcTransactionList.vue:235
-#: src/components/BtcTransactionList.vue:257
-#: src/components/TransactionList.vue:250
-#: src/components/TransactionList.vue:272
-#: src/components/UsdcTransactionList.vue:193
-#: src/components/UsdcTransactionList.vue:215
+#: src/components/BtcTransactionList.vue:232
+#: src/components/BtcTransactionList.vue:254
+#: src/components/TransactionList.vue:247
+#: src/components/TransactionList.vue:269
+#: src/components/UsdcTransactionList.vue:197
+#: src/components/UsdcTransactionList.vue:219
 msgid "This month"
 msgstr "本月份"
 
@@ -2645,6 +2648,7 @@ msgstr "你需要一个支持即时交易的SEPA帐户"
 
 #: src/components/BtcTransactionList.vue:55
 #: src/components/TransactionList.vue:58
+#: src/components/UsdcTransactionList.vue:46
 msgid "You now own crypto!"
 msgstr "你现在拥有加密货币了！"
 

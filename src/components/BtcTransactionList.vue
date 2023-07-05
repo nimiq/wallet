@@ -63,18 +63,15 @@
 
         <div v-else-if="!searchString" class="empty-state flex-column">
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
-            <!-- <span>{{ $t('Receive some free NIM to get started.') }}</span>
 
-            <a v-if="isMainnet"
-                :href="`https://getsome.nimiq.com/?address=${activeAddress}`" target="_blank" rel="noopener"
+            <router-link v-if="isMainnet" to="buy" class="nq-button light-blue">
+                {{ $t('Buy BTC') }}
+            </router-link>
+            <!-- <a v-else
+                href="https://www.google.com/search?q=bitcoin+testnet+faucet" target="_blank" rel="noopener"
                 class="nq-button green"
                 @mousedown.prevent
-            >{{ $t('Receive free NIM') }}</a>
-            <a v-else
-                href="https://testnet-faucet.mempool.co/" target="_blank" rel="noopener"
-                class="nq-button green"
-                @mousedown.prevent
-            >{{ $t('Get free test BTC') }}</a> -->
+            >{{ $t('Get free tBTC') }}</a> -->
         </div>
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>
@@ -86,14 +83,14 @@
 import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
-// import { ENV_MAIN } from '../lib/Constants';
+import { ENV_MAIN } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useAccountStore } from '../stores/Account';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
 import { useWindowSize } from '../composables/useWindowSize';
-// import { useConfig } from '../composables/useConfig';
+import { useConfig } from '../composables/useConfig';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -347,7 +344,7 @@ export default defineComponent({
         // })();
 
         // Does not need to be reactive, as the environment doesn't change during runtime.
-        // const isMainnet = useConfig().config.environment === ENV_MAIN;
+        const isMainnet = useConfig().config.environment === ENV_MAIN;
 
         // Scroll to top when
         // - Active address changes
@@ -365,7 +362,7 @@ export default defineComponent({
             transactions,
             root,
             isFetchingTxHistory,
-            // isMainnet,
+            isMainnet,
             scroller,
             consensus,
         };

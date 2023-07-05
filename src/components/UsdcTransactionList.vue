@@ -40,7 +40,7 @@
                 </div>
             </template>
 
-            <!-- <template v-if="txCount === 1" v-slot:after>
+            <template v-if="txCount === 1" v-slot:after>
                 <div class="after-first-tx">
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
@@ -48,11 +48,15 @@
                         {{ $t('Buy USDC') }}
                     </router-link>
                 </div>
-            </template> -->
+            </template>
         </RecycleScroller>
 
         <div v-else-if="!searchString" class="empty-state flex-column">
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
+
+            <router-link v-if="isMainnet" to="buy" class="nq-button light-blue">
+                {{ $t('Buy USDC') }}
+            </router-link>
         </div>
         <div v-else class="empty-state flex-column">
             <h2 class="nq-h1 no-search-results">{{ $t('No transactions found') }}</h2>

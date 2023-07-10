@@ -1,18 +1,8 @@
-/* eslint-disable no-console */
+const ALBATROSS_GENESIS_DATE = new Date('2023-07-10T18:01:40.999875+00:00');
 
-// Albatross Genesis block has two bugs currently:
-// 1. Its timestamp is a unix timestamp in seconds, but should be milliseconds.
-//    This leads to the rewards being paid out being significantly lower than they should.
-// 2. It does not encode the genesis supply, but this has no influence on the reward percentage,
-//    as it cancels out when the future and current supply are subtracted from each other.
-
-// const ALBATROSS_GENESIS_DATE = new Date('2023-03-23T00:00:00.000Z');
-const ALBATROSS_GENESIS_DATE = new Date('1970-01-20T10:32:09.000Z');
-
+// Not actually necessary, as it cancels out when subtracting the current supply from the future supply
+// const GENESIS_SUPPLY = 1103202591538253; // Luna, as encoded in the genesis block
 const GENESIS_SUPPLY = 0;
-// 8 * 10_000e5 // Validators
-// + 8 * 1_000_000_000e5 // Stakers
-// + 3 * 1_000_000_000e5; // Accounts
 
 export async function calculateStakingReward(fee: number, currentlyStaked: number): Promise<number> {
     const now = new Date();

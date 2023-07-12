@@ -61,9 +61,9 @@ export const STAKING_ACCOUNT_TYPE = 3;
 export const StakingTransactionType = {
     UNSTAKE: 1,
 
-    CREATE_STAKER: 6,
-    STAKE: 7,
-    UPDATE_STAKER: 8,
+    CREATE_STAKER: 5,
+    STAKE: 6,
+    UPDATE_STAKER: 7,
 };
 
 // Pre-Staking

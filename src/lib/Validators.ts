@@ -52,7 +52,7 @@ export const validatorData: Record<string, ValidatorInfo> = {
         payoutType: 'direct',
         description: 'The Ace in staking',
     },
-    'NQ52 HQFS NN1X HXXT YE2F 5AYD 49UC X7BE 9QQ3': {
+    'NQ96 M1NT EGN0 Q3K4 JGGD 3B2H 28M5 S9D3 7BLD': {
         label: 'Mint Pool',
         fee: 0.1,
         payoutType: 'restake',

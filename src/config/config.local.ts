@@ -14,8 +14,8 @@ export default {
     usdc: {
         enabled: true,
         networkId: 80001,
-        rpcEndpoint: 'https://matic-mumbai.chainstacklabs.com',
-        rpcMaxBlockRange: 10_000,
+        rpcEndpoint: 'wss://polygon-mumbai.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
+        rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
         // eslint-disable-next-line max-len
         // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',

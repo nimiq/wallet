@@ -8,10 +8,12 @@ export async function replaceKey(input: string): Promise<string> {
 
     const keyName = sections[1];
     const fileName = `k_${btoa(keyName)}`;
-    const encodedKey = await fetch(`/${fileName}`).then((res) => res.text());
+    const encodedKey = await fetch(`/${fileName}`)
+        .then((res) => res.text())
+        .then((text) => text.replace(/\s/g, '')); // Remove any whitespace & newlines
 
     // Replace the key name with the key itself
-    sections[1] = atob(encodedKey.replace(/\s/g, ''));
+    sections[1] = atob(encodedKey);
 
     // Create the resulting string without the delimiters
     return sections.join('');

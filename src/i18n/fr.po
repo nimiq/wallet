@@ -543,7 +543,7 @@ msgstr "Acheter du NIM sur une plateforme d'échange :"
 #: src/components/UsdcTransactionList.vue:48
 #: src/components/UsdcTransactionList.vue:58
 msgid "Buy USDC"
-msgstr ""
+msgstr "Acheter de l'USDC"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"

@@ -144,6 +144,13 @@ async function* relayServerRegisterGen(
                 url,
             ] = event.args as [string, BigNumber, BigNumber, string];
 
+            try {
+                new URL(url); // eslint-disable-line no-new
+            } catch (error) {
+                // Invalid URL, skip this relay
+                return false;
+            }
+
             return <RelayRegistration> {
                 relayManagerAddress,
                 baseRelayFee,

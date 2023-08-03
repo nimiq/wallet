@@ -185,12 +185,13 @@ export async function launchNetwork() {
 
     async function updateValidators() {
         await client.waitForConsensusEstablished();
-        const activeValidators = (await client.getAccount(STAKING_CONTRACT_ADDRESS) as PlainStakingContract)
-            .activeValidators
-            .map(([address, balance]) => ({
-                address,
-                balance,
-            }));
+        const contract = (await retry(
+            () => client.getAccount(STAKING_CONTRACT_ADDRESS) as Promise<PlainStakingContract>,
+        ));
+        const activeValidators = contract.activeValidators.map(([address, balance]) => ({
+            address,
+            balance,
+        }));
         const totalStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
 
         const validators: Validator[] = await Promise.all(activeValidators.map(async ({ address, balance }) => {
@@ -414,6 +415,26 @@ export async function sendTransaction(tx: SignedTransaction | string) {
     }
 
     return plain;
+}
+
+async function retry<T>(func: (...args: any[]) => T | Promise<T>, baseDelay = 500, maxRetries = Infinity): Promise<T> {
+    let i = 0;
+    while (true) { // eslint-disable-line no-constant-condition
+        try {
+            // Run the function (async or not) and return the result if sucessful
+            return await func(); // eslint-disable-line no-await-in-loop
+        } catch (e) {
+            // Stop retrying and instead throw the error if we reached the max number of retries
+            if (i >= maxRetries) throw e;
+
+            // If the function fails, increase the tries counter
+            i += 1;
+
+            // Wait an increasing amount of time before trying again
+            const delay = baseDelay * i;
+            await new Promise((resolve) => { setTimeout(resolve, delay); }); // eslint-disable-line no-await-in-loop
+        }
+    }
 }
 
 // @ts-expect-error debugging

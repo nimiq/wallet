@@ -61,8 +61,9 @@ export const StakingTransactionType = {
     UNSTAKE: 1,
 
     CREATE_STAKER: 5,
-    STAKE: 6,
+    ADD_STAKE: 6,
     UPDATE_STAKER: 7,
+    SET_INACTIVE_STAKE: 8,
 };
 
 // Pre-Staking

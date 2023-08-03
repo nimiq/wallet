@@ -28,7 +28,7 @@
     "@nimiq/core-web": "next",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "^1.8.0",
-    "@nimiq/hub-api": "https://gitpkg.now.sh/nimiq/hub/client?8035ddb317126d1039145cc1db5441953a4bffa4",
+    "@nimiq/hub-api": "https://gitpkg.now.sh/nimiq/hub/client?a9e17e5eddd6c3fb633e29825cdf3dde6bb155ec",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "1.4.0-albatross.0",
     "@nimiq/oasis-api": "^1.1.1",

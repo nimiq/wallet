@@ -125,7 +125,7 @@ export default defineComponent({
                     });
                 } else {
                     await sendStaking({
-                        type: StakingTransactionType.STAKE,
+                        type: StakingTransactionType.ADD_STAKE,
                         value: stakeDelta.value,
                         sender: activeAddress.value!,
                         recipient: STAKING_CONTRACT_ADDRESS,
@@ -138,10 +138,13 @@ export default defineComponent({
                 }
             } else {
                 await sendStaking({
-                    type: StakingTransactionType.UNSTAKE,
-                    value: Math.abs(stakeDelta.value),
-                    sender: STAKING_CONTRACT_ADDRESS,
-                    recipient: activeAddress.value!,
+                    type: StakingTransactionType.SET_INACTIVE_STAKE,
+                    newInactiveBalance: activeStake.value!.inactiveBalance - stakeDelta.value,
+                    value: 1, // Unused in transaction
+                    sender: activeAddress.value!,
+                    recipient: STAKING_CONTRACT_ADDRESS,
+                    recipientType: STAKING_ACCOUNT_TYPE,
+                    recipientLabel: context.root.$t('Staking Contract') as string,
                     validityStartHeight: useNetworkStore().state.height,
                 }).catch((error) => {
                     throw new Error(error.data);

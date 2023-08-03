@@ -79,6 +79,7 @@ export default defineComponent({
                 setStake({
                     address: activeAddress.value!,
                     balance: 0,
+                    inactiveBalance: 0,
                     validator: address,
                 });
             } else {

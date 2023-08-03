@@ -90,6 +90,8 @@ export async function launchNetwork() {
                 stakingStore.setStake({
                     address,
                     balance: staker.balance,
+                    inactiveBalance: staker.inactiveBalance,
+                    inactiveRelease: staker.inactiveRelease,
                     validator: staker.delegation,
                 });
             } else {
@@ -233,7 +235,7 @@ export async function launchNetwork() {
 
     function transactionListener(plain: PlainTransactionDetails) {
         if (plain.recipient === STAKING_CONTRACT_ADDRESS) {
-            if (plain.data.raw.startsWith(StakingTransactionType.STAKE.toString(16).padStart(2, '0'))) {
+            if (plain.data.raw.startsWith(StakingTransactionType.ADD_STAKE.toString(16).padStart(2, '0'))) {
                 if (!balances.has(plain.sender) && 'staker' in plain.data) {
                     // This is a staking transaction from a validator to one of our stakers
                     updateStakes([plain.data.staker]);

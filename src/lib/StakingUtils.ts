@@ -56,12 +56,18 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
             // }
             return text;
         }
-        case StakingTransactionType.STAKE: {
+        case StakingTransactionType.ADD_STAKE: {
             const text = i18n.t('Add stake') as string;
             if (!verbose) return text;
 
             // const staker = Nimiq.Address.unserialize(buf);
             // text += ` for ${staker.toUserFriendlyAddress()}`;
+            return text;
+        }
+        case StakingTransactionType.SET_INACTIVE_STAKE: {
+            const text = i18n.t('Set inactive stake') as string;
+            if (!verbose) return text;
+
             return text;
         }
         default: throw new Error('Unknown staking data type');

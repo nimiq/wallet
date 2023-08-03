@@ -1,5 +1,8 @@
 <template>
-    <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
+    <Modal class="transaction-modal" :class="{
+        'value-masked': amountsHidden,
+        'not-executed': transaction.executionResult === false,
+    }">
         <PageHeader :class="{'inline-header': !peerLabel && !(isSwapProxy && !swapData)}">
 
             <template v-if="isCancelledSwap">{{ $t('Cancelled Swap') }}</template>
@@ -728,6 +731,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../../scss/variables.scss";
 @import '../../scss/functions.scss';
+
+.not-executed {
+    text-decoration: line-through;
+}
 
 .page-header {
     ::v-deep .nq-h1 {

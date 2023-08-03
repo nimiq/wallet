@@ -1,7 +1,7 @@
 <template>
     <button
         class="reset transaction"
-        :class="state"
+        :class="[state, {'not-executed': transaction.executionResult === false}]"
         @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
         :key="`tx-${transaction.transactionHash}`"
     >
@@ -407,6 +407,11 @@ svg {
         .amounts {
             text-decoration: line-through;
         }
+    }
+
+    &.not-executed {
+        text-decoration: line-through;
+        opacity: 0.4;
     }
 }
 

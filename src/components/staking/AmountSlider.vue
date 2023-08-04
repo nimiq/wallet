@@ -1,5 +1,5 @@
 <template>
-    <div class="slider-container" ref="$container">
+    <div class="amount-slider slider-container" ref="$container">
         <div class="slider-body">
             <div class="slider-background">
                 <div class="background-one" ref="$backgroundLinesLeft" />
@@ -33,7 +33,7 @@
                     {{ Math.round(currentPercentage) }}%
                 </div>
                 <VerticalLineIcon v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
-                    :style="`left: ${1.375 + (5 * Math.min(5, index)) + (index > 5 ? (index - 5) * 4.77 : 0)}rem`" />
+                    :style="`left: calc(2rem + 2px + (100% - 4rem - 4px) * (${index} / 10) - 1px)`" />
                 <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
             </div>
             <div class="slider-controls" ref="$slide" @click="onMove($event, true);">
@@ -216,19 +216,16 @@ export default defineComponent({
         const updatePosition = (offsetX: number) => {
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
-            if (currentPercentage.value! <= 0) {
+            if (currentPercentage.value <= 0) {
                 $progressBar.value!.style.width = '0';
             } else {
                 $progressBar.value!.style.width = `${offsetX + knobBox.width + 2}px`;
             }
-            $percentText.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 7}px`;
-            $stakedNIMText.value!.style.width = `${amountBox.width + 16}px`;
+            $percentText.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 8}px`;
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
-            const rightSpacing = (knobBox.width * 2.0);
-            const minXPos = (-knobBox.width) + 24;
-            const maxXPos = containerBox.width - (amountBox.width + rightSpacing);
-            if (offsetX <= minXPos) {
-                $stakedNIMText.value!.style.left = `${minXPos}px`;
+            const maxXPos = containerBox.width - amountBox.width;
+            if (offsetX <= 0) {
+                $stakedNIMText.value!.style.left = '0px';
             } else if (offsetX < maxXPos) {
                 $stakedNIMText.value!.style.left = `${offsetX}px`;
             } else {
@@ -313,7 +310,7 @@ export default defineComponent({
 
                 const svg = buildSVG(
                     [['rect', {
-                        x: `${startOffset}px`,
+                        x: '0px',
                         y: '0px',
                         width: `${endOffset - startOffset}px`,
                         height: '3.5rem',
@@ -341,7 +338,7 @@ export default defineComponent({
 
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value)
-                        + (knobBox.width / 2) - 5}px`;
+                        + (knobBox.width / 2) - 2}px`;
                 fillBackground(0, alreadyStakedPercentage.value);
             }
         });
@@ -391,38 +388,40 @@ export default defineComponent({
 
     .slider-body {
         position: relative;
-        margin: auto;
-        margin-top: 2rem;
-        width: 56rem;
         height: 5rem;
         background-color: #f2f2f4;
         border-radius: 2.5rem;
+
         .nq-input {
             background-color: #fff;
             padding: 0.75rem 1.75rem;
             font-weight: bold;
         }
+
         .slider-background {
             position: absolute;
             left: 0;
             top: 0;
+            display: flex;
+            width: 100%;
             padding-top: 0.75rem;
-            padding-left: 1.5rem;
+            padding-left: 4rem;
+
             div {
-                background-color: #9e9faf;
+                background-color: #9e9faf; /** TODO: Replace by nimiq-blue with alpha */
                 height: 3.5rem;
             }
+
             .background-one, .background-three {
-                display: inline-block;
-                width: 25rem;
+                flex-grow: 1;
 
                 mask-image: url('../../assets/staking/vertical-line.svg');
                 mask-size: .5rem;
                 mask-repeat: repeat-x;
                 mask-position: center;
             }
-            .background-two {
-                display: inline-block;
+
+            .background-two, .background-four {
                 width: 3.5rem;
                 margin-right: 0.375rem;
 
@@ -430,19 +429,12 @@ export default defineComponent({
                 mask-repeat: no-repeat;
                 mask-position: center;
             }
-            .background-three {
-                width: 21.25rem;
-            }
-            .background-four {
-                display: inline-block;
-                width: 3.5rem;
-                margin-right: 0.375rem;
 
+            .background-four {
                 mask-image: url('../../assets/staking/three-leaf-staking.svg');
-                mask-repeat: no-repeat;
-                mask-position: center;
             }
         }
+
         .scalar-amount {
             font-weight: bold;
             font-size: 1.75rem;
@@ -451,32 +443,33 @@ export default defineComponent({
             text-align: right;
             color: var(--nimiq-blue);
             opacity: 0.3;
-            &.left {
+
+            &.left, &.right {
                 position: absolute;
-                left: 0rem;
+                left: 0;
                 top: -3.5rem;
-                background-color: transparent!important;
+                background-color: transparent;
             }
 
             &.right {
-                position: absolute;
-                top: -3.5rem;
-                right: -0.5rem;
-                background-color: transparent!important;
+                left: unset;
+                right: 0;
             }
         }
+
         .slider-gradation {
             position: absolute;
-            left: 0.5rem;
-            top: 0rem;
-            width: 56rem;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: calc(100% + 2rem);
+
             .scalar-amount-text {
                 display: flex;
-                position: relative;
+                position: absolute;
                 justify-content: center;
                 align-items: center;
 
-                background: radial-gradient(center, farthest-corner, rgba(255, 255, 255, 1.0), white)!important;
                 top: -4.5rem;
                 font-size: 2rem;
                 font-weight: bold;
@@ -486,43 +479,49 @@ export default defineComponent({
                     right: 1.75rem;
                 }
             }
+
             .percent-amount-text {
-                position: relative;
+                position: absolute;
                 display: flex;
                 justify-content: center;
                 width: 7rem;
-                top: 1.75rem;
+                bottom: -0.5rem;
                 color: var(--nimiq-green);
                 font-size: 1.625rem;
                 font-weight: 700;
                 letter-spacing: .0625rem;
                 background: white;
             }
+
             .bottom-indicator {
                 display: inline-block;
-                position: relative;
-                top: -1rem;
+                position: absolute;
+                bottom: 0;
                 height: 1rem;
             }
+
             .stake-dot-indicator {
-                position: relative;
-                top: -2.25rem;
+                position: absolute;
+                bottom: 0.25rem;
                 background-color: var(--nimiq-green);
-                width: .375rem;
-                height: .375rem;
+                width: .5rem;
+                height: .5rem;
                 border-radius: 50%;
             }
         }
+
         .slider-controls {
             position: absolute;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
+
             .slider-controls-wrapper {
                 position: relative;
                 width: 100%;
                 height: 100%;
+
                 .slider-progress-bar {
                     position: absolute;
                     left: 0;
@@ -531,6 +530,7 @@ export default defineComponent({
                     height: 100%;
                     border-radius: 3rem;
                 }
+
                 .slider-knob {
                     display: flex;
                     position: absolute;
@@ -546,6 +546,7 @@ export default defineComponent({
                     box-shadow: 0rem .5rem 2rem rgba(0, 0, 0, 0.1),
                                 0rem .1875rem .375rem rgba(0, 0, 0, 0.08),
                                 0rem 0.03rem .25rem rgba(0, 0, 0, 0.06);
+
                     svg {
                         width: 3.5rem;
                         height: 3.5rem;

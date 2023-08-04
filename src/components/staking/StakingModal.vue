@@ -132,8 +132,8 @@ export default defineComponent({
     .modal {
         &.large-modal {
             ::v-deep .small-page {
-                transition: transform var(--transition-time) var(--nimiq-ease),
-                            width 200ms var(--nimiq-ease);
+                // transition: transform var(--transition-time) var(--nimiq-ease),
+                //             width 200ms var(--nimiq-ease);
                 width: 63.5rem;
                 // height: 74.875rem;
                 // transition: width 1.5s ease-out;

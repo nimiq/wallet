@@ -34,13 +34,14 @@ export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 
 // Albatross
-// export const BATCH_LENGTH = 60;
-// export const BATCHES_PER_EPOCH = 360;
-// export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
+export const BATCH_LENGTH = 60;
+export const BATCHES_PER_EPOCH = 360;
+export const GENESIS_BLOCK_HEIGHT = 0;
+export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
 
-// export function nextElectionBlock(height: number): number {
-//     return Math.floor(height / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
-// }
+export function nextElectionBlock(height: number): number {
+    return Math.floor((height - GENESIS_BLOCK_HEIGHT) / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
+}
 
 export const STAKING_CONTRACT_ADDRESS = 'NQ77 0000 0000 0000 0000 0000 0000 0000 0001';
 export const STAKING_ACCOUNT_TYPE = 3;

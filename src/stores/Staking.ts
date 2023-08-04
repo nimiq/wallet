@@ -62,7 +62,10 @@ export const useStakingStore = createStore({
             for (const accountInfo of Object.values(accountInfos.value)) {
                 let sum = 0;
                 for (const address of accountInfo.addresses) {
-                    sum += state.stakeByAddress[address]?.balance ?? 0;
+                    const stake = state.stakeByAddress[address];
+                    if (stake) {
+                        sum += stake.balance + stake.inactiveBalance;
+                    }
                 }
                 stakeByAccount[accountInfo.id] = sum;
             }

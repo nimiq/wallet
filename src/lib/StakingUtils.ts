@@ -66,6 +66,8 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
         }
         case StakingTransactionType.SET_INACTIVE_STAKE: {
             const text = i18n.t('Set inactive stake') as string;
+
+            // TODO: Read inactive stake amount from transaction data
             if (!verbose) return text;
 
             return text;

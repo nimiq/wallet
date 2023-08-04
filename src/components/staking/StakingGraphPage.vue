@@ -231,7 +231,9 @@ export default defineComponent({
             }
         }
 
-        // .stake-amount-slider {}
+        .amount-slider {
+            margin: 4rem 3rem 0;
+        }
 
         .stake-button {
             width: 40.5rem;

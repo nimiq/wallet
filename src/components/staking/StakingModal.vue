@@ -10,7 +10,7 @@
         </template>
         <template v-if="page === Page.Graph">
             <StakingGraphPage
-                @back="isStaking ? (page = Page.Already) : (page = Page.Info)"
+                @back="page = isStaking ? Page.Already : Page.Validator"
                 @next="page = Page.Already"
                 @changeValidator="switchValidator"
             />
@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import Modal from '../modals/Modal.vue';
@@ -75,15 +75,14 @@ export default defineComponent({
         const page = ref(activeValidator.value ? Page.Already : Page.Info);
         const overlay = ref<Overlay | null>(null);
 
+        const isStaking = computed(() => !!(activeStake.value?.balance || activeStake.value?.inactiveBalance));
         const invalidAccount = computed(() => activeAddressInfo.value
-            ? !activeAddressInfo.value.balance && !activeStake.value?.balance
+            ? !activeAddressInfo.value.balance && !isStaking.value
             : false);
 
         const adjustStake = () => { page.value = Page.Graph; };
         const switchValidator = () => { page.value = Page.Validator; };
         const closeOverlay = () => { overlay.value = null; };
-
-        const isStaking = computed(() => !!(activeStake.value || activeValidator.value));
 
         watch(activeStake, (stake) => {
             if (!stake) page.value = Page.Info;
@@ -97,6 +96,12 @@ export default defineComponent({
 
         watch(page, (newPage) => showOverlayIfInvalidAccount(newPage as Page));
         watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay));
+
+        onBeforeUnmount(() => {
+            if (!activeStake.value?.balance && !activeStake.value?.inactiveBalance) {
+                useStakingStore().removeStake(activeAddressInfo.value!.address);
+            }
+        });
 
         return {
             page,

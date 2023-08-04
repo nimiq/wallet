@@ -64,10 +64,24 @@
                         <button class="nq-button-s" @click="$emit('adjust-stake')">
                             {{ $t('Adjust Stake') }}
                         </button>
-                        <button class="nq-button-pill red unstake-all" @click="unstakeAll">
+                        <!-- <button class="nq-button-pill red unstake-all" @click="unstakeAll">
                             {{ $t('Unstake All') }}
-                        </button>
+                        </button> -->
                     </div>
+                </div>
+                <div v-if="stake && stake.inactiveBalance && hasUnstakableStake"
+                    class="unstaking row flex-row nq-light-blue"
+                >
+                    <Amount :amount="stake.inactiveBalance"/>&nbsp;{{ $t('available to unstake') }}
+                    <div class="flex-grow"></div>
+                    <button class="nq-button-pill light-blue unstake-all" @click="unstakeAll">
+                        {{ $t('Unstake') }}
+                    </button>
+                </div>
+                <div v-else-if="stake && stake.inactiveBalance" class="unstaking row flex-row nq-light-blue">
+                    <CircleSpinner/> {{ $t('Deactivating') }}&nbsp;<Amount :amount="stake.inactiveBalance"/>
+                    <div class="flex-grow"></div>
+                    <span class="inactive-release-timer">{{ inactiveReleaseTime }}</span>
                 </div>
             </div>
 
@@ -96,7 +110,11 @@
                             <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
                         </div>
                     </div>
-                    <button class="nq-button-s switch-validator" @click="$emit('switch-validator')">
+                    <button
+                        class="nq-button-s switch-validator"
+                        :disabled="!canSwitchValidator"
+                        @click="$emit('switch-validator')"
+                    >
                         {{ $t('Switch Validator') }}
                     </button>
                 </div>
@@ -118,6 +136,7 @@ import {
     PageBody,
     Tooltip,
     Identicon,
+    CircleSpinner,
 } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
@@ -146,16 +165,41 @@ export default defineComponent({
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
         const stakedBalance = computed(() => stake.value ? stake.value.balance : 0);
 
-        const percentage = computed(() => (stakedBalance.value / (availableBalance.value + stakedBalance.value)) * 100);
+        const percentage = computed(() => (
+            stakedBalance.value / (availableBalance.value + stakedBalance.value + (stake.value?.inactiveBalance || 0))
+        ) * 100);
 
         const payoutText = computed(() => validator.value && 'label' in validator.value
             ? getPayoutText(validator.value.payoutType)
             : context.root.$t('Unregistered validator'));
 
+        const inactiveReleaseTime = computed(() => {
+            if (stake.value?.inactiveRelease) {
+                // TODO: Take validator jail release into account
+                const secondsRemaining = stake.value.inactiveRelease - height.value;
+                const date = new Date(Date.UTC(0, 0, 0, 0, 0, secondsRemaining));
+                const hours = date.getUTCHours().toString().padStart(2, '0');
+                const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+                const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+                return [
+                    ...(hours !== '' ? [hours] : []),
+                    minutes,
+                    seconds,
+                ].join(':');
+            }
+
+            return '00:00';
+        });
+
+        const hasUnstakableStake = computed(() => {
+            if (!stake.value?.inactiveBalance) return false;
+            return height.value > stake.value.inactiveRelease!;
+        });
+
         async function unstakeAll() {
             await sendStaking({
                 type: StakingTransactionType.UNSTAKE,
-                value: stake.value!.balance,
+                value: stake.value!.inactiveBalance,
                 sender: STAKING_CONTRACT_ADDRESS,
                 recipient: activeAddress.value!,
                 validityStartHeight: height.value,
@@ -167,6 +211,10 @@ export default defineComponent({
             // context.root.$router.back();
         }
 
+        const canSwitchValidator = computed(() => stake.value?.balance === 0
+                && stake.value?.inactiveRelease
+                && stake.value?.inactiveRelease < height.value);
+
         return {
             // NOW,
             // MONTH,
@@ -175,7 +223,10 @@ export default defineComponent({
             validator,
             percentage,
             payoutText,
+            inactiveReleaseTime,
+            hasUnstakableStake,
             unstakeAll,
+            canSwitchValidator,
         };
     },
     components: {
@@ -189,12 +240,15 @@ export default defineComponent({
         ValidatorTrustScore,
         ValidatorRewardBubble,
         Identicon,
+        CircleSpinner,
         ShortAddress,
     },
 });
 </script>
 
 <style lang="scss" scoped>
+    @import '../../scss/mixins.scss';
+
     .staking-info-page {
         flex-grow: 1;
     }
@@ -275,6 +329,14 @@ export default defineComponent({
 
         ::v-deep .circle-spinner {
             margin-right: 1rem;
+        }
+
+        .inactive-release-timer {
+            box-shadow: 0 0 0 1.5px nimiq-light-blue(0.4);
+            border-radius: 5rem;
+            line-height: 1;
+            padding: 0.25rem 0.75rem;
+            font-size: var(--small-size);
         }
     }
 

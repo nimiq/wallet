@@ -61,11 +61,11 @@
                 </button>
 
                 <div class="disclaimer stake-disclaimer" v-if="stakeDelta >= 0">
-                    {{ $t('Unlock at any time. Your NIM will be available instantly.') }}
+                    {{ $t('Unlock at any time. Your NIM will be available within hours.') }}
                 </div>
                 <div class="disclaimer unstake-disclaimer" v-else>
                     <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
-                    {{ $t('will be available instantly.') }}
+                    {{ $t('will be available within hours.') }}
                 </div>
             </div>
         </PageBody>
@@ -124,6 +124,7 @@ export default defineComponent({
                         throw new Error(error.data);
                     });
                 } else {
+                    // TODO: Differentiate between adding and reactivating stake
                     await sendStaking({
                         type: StakingTransactionType.ADD_STAKE,
                         value: stakeDelta.value,

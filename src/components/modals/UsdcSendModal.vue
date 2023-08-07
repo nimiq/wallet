@@ -495,16 +495,19 @@ export default defineComponent({
             // For now only plain USDC/Polygon/ETH addresses are supported.
             // TODO support Polygon-USDC request links and even consider removing scanning of plain addresses
             //  due to the risk of USDC being sent on the wrong chain.
-            uri = uri.replace(`${window.location.origin}/`, '')
-                .replace('polygon:', '');
+            const url = new URL(uri);
             const { ethers } = await getPolygonClient();
-            if (ethers.utils.isAddress(uri)) {
+            if (ethers.utils.isAddress(url.pathname)) {
                 if (event) {
                     // Prevent paste event being applied to the recipient label field, that now became focussed.
                     event.preventDefault();
                 }
 
-                onAddressEntered(uri);
+                await onAddressEntered(url.pathname);
+
+                if (url.searchParams.has('amount')) {
+                    amount.value = parseFloat(url.searchParams.get('amount')!) * 1e6;
+                }
             }
         }
 

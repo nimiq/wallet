@@ -28,7 +28,7 @@ import { useConfig } from './composables/useConfig';
 import { useGeoIp } from './composables/useGeoIp';
 
 const StorageKeys = {
-    TRANSACTIONS: 'wallet_transactions_v01',
+    TRANSACTIONS: 'wallet_transactions_v02',
     ACCOUNTINFOS: 'wallet_accounts_v01',
     ADDRESSINFOS: 'wallet_addresses_v01',
     SETTINGS: 'wallet_settings_v01',
@@ -136,6 +136,11 @@ export async function initStorage() {
     const usdcTransactionsStore = useUsdcTransactionsStore();
     const usdtTransactionsStore = useUsdtTransactionsStore();
     const proxyStore = useProxyStore();
+
+    // Delete deprecated stores
+    if (StorageKeys.TRANSACTIONS === 'wallet_transactions_v02') {
+        idbDel(StorageKeys.TRANSACTIONS.replace('v2', 'v1')); // no need to await this, fire and forget
+    }
 
     await Promise.all([
         initStoreStore(

@@ -102,11 +102,17 @@ msgstr "Осталось {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+ ещё {count} | + ещё {count} "
 
-#: src/components/modals/BuyOptionsModal.vue:132
-#: src/components/modals/BuyOptionsModal.vue:53
 #: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+ комиссия сети"
+
+#: src/components/modals/BuyOptionsModal.vue:145
+msgid "+ network fees, registration required"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "+ network fees, registration required above $700"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -349,6 +355,11 @@ msgstr "Все отправленные средства будут возвра
 msgid "Any funds sent will be refunded."
 msgstr "Все отправленные средства будут возвращены."
 
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:43
+msgid "Apple/Google Pay"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"
 msgstr "Применить"
@@ -418,13 +429,10 @@ msgstr "Назад к банковским реквизитам"
 msgid "Bank Account"
 msgstr "Банковский счёт"
 
-#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:28
+#: src/components/modals/BuyOptionsModal.vue:98
 msgid "Bank Transfer"
 msgstr "Банковский перевод"
-
-#: src/components/modals/BuyOptionsModal.vue:82
-msgid "Bank Transfer is only supported in the EU’s SEPA area."
-msgstr "Банковский перевод поддерживается только в странах Еврозоны SEPA."
 
 #: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
@@ -532,7 +540,7 @@ msgstr "Купить NIM"
 msgid "Buy NIM & BTC"
 msgstr "Купить NIM и BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:157
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Купить NIM на криптовалютной бирже:"
 
@@ -826,7 +834,8 @@ msgstr "Создан вчера"
 msgid "Creates staking rewards"
 msgstr "Ставки вознаграждения"
 
-#: src/components/modals/BuyOptionsModal.vue:100
+#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:42
 msgid "Credit Card"
 msgstr "Банковская карта"
 
@@ -929,7 +938,7 @@ msgstr "Изменить количество знаков после запят
 
 #: src/components/modals/BtcSendModal.vue:441
 #: src/components/modals/SendModal.vue:600
-#: src/components/modals/UsdcSendModal.vue:560
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
 
@@ -1031,7 +1040,7 @@ msgstr "экспресс"
 msgid "Failed"
 msgstr "Не удалось"
 
-#: src/components/modals/UsdcSendModal.vue:658
+#: src/components/modals/UsdcSendModal.vue:661
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr "Не удалось узнать комиссию USDC. Повторяю... (Ошибка: {message})"
@@ -1119,10 +1128,6 @@ msgstr ""
 #: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "свободно"
-
-#: src/components/modals/BuyOptionsModal.vue:103
-msgid "Full KYC required, high availability."
-msgstr "Необходима полная идентификация. Высокая доступность сервиса."
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1312,21 +1317,9 @@ msgstr ""
 "Чтобы ускорить исполнение транзакции, увеличьте размер комиссии. Комиссия "
 "идёт напрямую майнерам."
 
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Infrastructure Redesign"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
 msgstr ""
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid ""
-"Innovation\n"
-"by Nimiq"
-msgstr ""
-"Инновация\n"
-"от Nimiq"
 
 #: src/components/layouts/Settings.vue:38
 msgid "Install"
@@ -1474,9 +1467,11 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr "Максимальная сумма свопа: {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:114
-#: src/components/modals/BuyOptionsModal.vue:128
-#: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/BuyOptionsModal.vue:101
+#: src/components/modals/BuyOptionsModal.vue:118
+#: src/components/modals/BuyOptionsModal.vue:31
+#: src/components/modals/BuyOptionsModal.vue:48
+#: src/components/modals/BuyOptionsModal.vue:67
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1561,10 +1556,6 @@ msgstr "Средства не были получены, и срок обмен�
 msgid "No registration"
 msgstr "Без регистрации"
 
-#: src/components/modals/BuyOptionsModal.vue:38
-msgid "No registration – not even email."
-msgstr "Без регистрации, даже без указания почты."
-
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr ""
@@ -1585,12 +1576,11 @@ msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не все счета этого банка поддерживают моментальные транзакции."
 
 #: src/components/layouts/Sidebar.vue:123
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "Недоступно в вашем браузере"
 
-#: src/components/modals/BuyOptionsModal.vue:145
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:151
+#: src/components/modals/BuyOptionsModal.vue:86
 msgid "Not available in your country"
 msgstr "Недоступно в вашей стране"
 
@@ -1886,7 +1876,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "Повторить"
 
@@ -2033,7 +2023,7 @@ msgstr "Получать, отправлять и хранить BTC в ваше
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:596
-#: src/components/modals/UsdcSendModal.vue:556
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
@@ -2059,11 +2049,11 @@ msgstr "Отправить {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Отправить {nim} NIM {name} "
 
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/UsdcSendModal.vue:598
 msgid "Sent {usdc} USDC"
 msgstr "Отправлено {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:591
+#: src/components/modals/UsdcSendModal.vue:594
 msgid "Sent {usdc} USDC to {name}"
 msgstr "Отправлено {name} {usdc} USDC"
 
@@ -2076,10 +2066,6 @@ msgstr "Отправить {dateAndTime}"
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
 msgstr "Комиссия SEPA Instant"
-
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "SEPA Instant only"
-msgstr "Только SEPA Instant"
 
 #: src/components/BankCheckInput.vue:90
 msgid "SEPA Instant transaction"
@@ -2169,7 +2155,7 @@ msgstr "Пропустить"
 
 #: src/components/modals/BtcSendModal.vue:509
 #: src/components/modals/SendModal.vue:647
-#: src/components/modals/UsdcSendModal.vue:607
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Something went wrong"
 msgstr "Операция не удалась"
 
@@ -2794,7 +2780,6 @@ msgid "Your browser"
 msgstr "Ваш браузер"
 
 #: src/components/layouts/Sidebar.vue:124
-#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

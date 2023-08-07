@@ -1,15 +1,15 @@
 # 
 # Translators:
 # Talleyrand, 2020
-# Matheo <matheo@nimiq.com>, 2023
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2023
 # Daniel, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2023
 # Robinson BARAIS, 2023
+# Matheo <matheo@nimiq.com>, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Robinson BARAIS, 2023\n"
+"Last-Translator: Matheo <matheo@nimiq.com>, 2023\n"
 "Language-Team: French (https://app.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -102,11 +102,17 @@ msgstr "{value} restant"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} de plus | + {count} de plus"
 
-#: src/components/modals/BuyOptionsModal.vue:132
-#: src/components/modals/BuyOptionsModal.vue:53
 #: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+ frais de réseau"
+
+#: src/components/modals/BuyOptionsModal.vue:145
+msgid "+ network fees, registration required"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "+ network fees, registration required above $700"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -351,6 +357,11 @@ msgstr "Chaque somme envoyée sera retournée dans un délai de 1 à 3 jours."
 msgid "Any funds sent will be refunded."
 msgstr "Tout fonds envoyés seront remboursés."
 
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:43
+msgid "Apple/Google Pay"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"
 msgstr "Appliquer les frais"
@@ -422,13 +433,10 @@ msgstr "Retour aux coordonnées bancaires"
 msgid "Bank Account"
 msgstr "Compte bancaire"
 
-#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:28
+#: src/components/modals/BuyOptionsModal.vue:98
 msgid "Bank Transfer"
 msgstr "Virement bancaire"
-
-#: src/components/modals/BuyOptionsModal.vue:82
-msgid "Bank Transfer is only supported in the EU’s SEPA area."
-msgstr "Virement bancaire uniquement disponible dans la zone SEPA (Europe)."
 
 #: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
@@ -536,7 +544,7 @@ msgstr "Acheter des NIM"
 msgid "Buy NIM & BTC"
 msgstr "Acheter NIM et BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:157
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Acheter du NIM sur une plateforme d'échange :"
 
@@ -834,7 +842,8 @@ msgstr "Créé hier"
 msgid "Creates staking rewards"
 msgstr "Génère des récompenses de staking"
 
-#: src/components/modals/BuyOptionsModal.vue:100
+#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:42
 msgid "Credit Card"
 msgstr "Carte de crédit"
 
@@ -937,7 +946,7 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
 #: src/components/modals/BtcSendModal.vue:441
 #: src/components/modals/SendModal.vue:600
-#: src/components/modals/UsdcSendModal.vue:560
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
@@ -1040,7 +1049,7 @@ msgstr "express"
 msgid "Failed"
 msgstr "Échoué"
 
-#: src/components/modals/UsdcSendModal.vue:658
+#: src/components/modals/UsdcSendModal.vue:661
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1136,10 +1145,6 @@ msgstr ""
 #: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "gratuit"
-
-#: src/components/modals/BuyOptionsModal.vue:103
-msgid "Full KYC required, high availability."
-msgstr "KYC requis pour les montants importants."
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1332,21 +1337,9 @@ msgstr ""
 "Augmentez la vitesse de votre transaction en payant des frais de réseau plus"
 " élevés. Ces frais vont directement aux mineurs."
 
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Infrastructure Redesign"
-msgstr "Refonte de l'infrastructure"
-
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
 msgstr "Limite de Swap initiale"
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid ""
-"Innovation\n"
-"by Nimiq"
-msgstr ""
-"Innovation\n"
-"par Nimiq"
 
 #: src/components/layouts/Settings.vue:38
 msgid "Install"
@@ -1499,9 +1492,11 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr "Le montant maximum Swappable est de {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:114
-#: src/components/modals/BuyOptionsModal.vue:128
-#: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/BuyOptionsModal.vue:101
+#: src/components/modals/BuyOptionsModal.vue:118
+#: src/components/modals/BuyOptionsModal.vue:31
+#: src/components/modals/BuyOptionsModal.vue:48
+#: src/components/modals/BuyOptionsModal.vue:67
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1589,10 +1584,6 @@ msgstr "Aucuns fonds reçus donc le Swap a expiré."
 msgid "No registration"
 msgstr "Pas d'enregistrement"
 
-#: src/components/modals/BuyOptionsModal.vue:38
-msgid "No registration – not even email."
-msgstr "Pas d'inscription - pas même d'email."
-
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr "Aucune demande reçue."
@@ -1615,12 +1606,11 @@ msgstr ""
 "transactions instantanées."
 
 #: src/components/layouts/Sidebar.vue:123
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "Non disponible avec votre navigateur"
 
-#: src/components/modals/BuyOptionsModal.vue:145
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:151
+#: src/components/modals/BuyOptionsModal.vue:86
 msgid "Not available in your country"
 msgstr "Non disponible dans votre pays"
 
@@ -1925,7 +1915,7 @@ msgstr "Résolution du domaine Unstoppable"
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -2074,7 +2064,7 @@ msgstr "Envoyez, recevez et stockez du BTC avec votre wallet."
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:596
-#: src/components/modals/UsdcSendModal.vue:556
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "Envoi de la transaction en cours"
 
@@ -2100,11 +2090,11 @@ msgstr "{nim} NIM envoyés"
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/UsdcSendModal.vue:598
 msgid "Sent {usdc} USDC"
 msgstr "{usdc} USDC envoyés"
 
-#: src/components/modals/UsdcSendModal.vue:591
+#: src/components/modals/UsdcSendModal.vue:594
 msgid "Sent {usdc} USDC to {name}"
 msgstr "{usdc} USDC envoyés à {name}"
 
@@ -2117,10 +2107,6 @@ msgstr "Envoyé le {dateAndTime}"
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
 msgstr "Frais du virement SEPA instantané"
-
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "SEPA Instant only"
-msgstr "Virement SEPA instantané uniquement"
 
 #: src/components/BankCheckInput.vue:90
 msgid "SEPA Instant transaction"
@@ -2210,7 +2196,7 @@ msgstr "Passer"
 
 #: src/components/modals/BtcSendModal.vue:509
 #: src/components/modals/SendModal.vue:647
-#: src/components/modals/UsdcSendModal.vue:607
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
@@ -2702,7 +2688,7 @@ msgid ""
 "Welcome to the updated\n"
 "wallet, now with USDC"
 msgstr ""
-"Bienvenue dans le Wall mis à jour\n"
+"Bienvenue dans le Wallet mis à jour\n"
 "désormais disponible avec l'USDC."
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
@@ -2840,7 +2826,6 @@ msgid "Your browser"
 msgstr "Votre navigateur"
 
 #: src/components/layouts/Sidebar.vue:124
-#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

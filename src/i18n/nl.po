@@ -4,12 +4,12 @@
 # Jim <jimvendrig10@gmail.com>, 2021
 # Fons <Fonsdesigns@hotmail.com>, 2022
 # Daniel, 2023
-# Stefan, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2023
+# Stefan, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2023\n"
+"Last-Translator: Stefan, 2023\n"
 "Language-Team: Dutch (https://app.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -85,7 +85,7 @@ msgstr "{perc}% van swap waarde."
 
 #: src/components/modals/MoonpaySellInfoModal.vue:20
 msgid "{percentage} fees"
-msgstr ""
+msgstr "{percentage} kosten"
 
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
@@ -102,11 +102,17 @@ msgstr "{value} resterend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} meer | + {count} meer"
 
-#: src/components/modals/BuyOptionsModal.vue:132
-#: src/components/modals/BuyOptionsModal.vue:53
 #: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+ netwerkkosten"
+
+#: src/components/modals/BuyOptionsModal.vue:145
+msgid "+ network fees, registration required"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "+ network fees, registration required above $700"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -347,9 +353,14 @@ msgstr "Eventueel verzonden geld wordt binnen 1-3 dagen terugbetaald."
 msgid "Any funds sent will be refunded."
 msgstr "Eventueel verzonden geld wordt terugbetaald."
 
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:43
+msgid "Apple/Google Pay"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"
-msgstr ""
+msgstr "Pas kosten toe"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:34
 msgid ""
@@ -415,14 +426,10 @@ msgstr "Terug naar bankgegevens"
 msgid "Bank Account"
 msgstr "Bankrekening"
 
-#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:28
+#: src/components/modals/BuyOptionsModal.vue:98
 msgid "Bank Transfer"
 msgstr "Bankoverschrijving"
-
-#: src/components/modals/BuyOptionsModal.vue:82
-msgid "Bank Transfer is only supported in the EU’s SEPA area."
-msgstr ""
-"Bankoverschrijvingen worden alleen ondersteund in het SEPA-gebied van de EU."
 
 #: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
@@ -530,14 +537,14 @@ msgstr "Koop NIM"
 msgid "Buy NIM & BTC"
 msgstr "Koop NIM & BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:157
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Koop NIM op een crypto exchange:"
 
 #: src/components/UsdcTransactionList.vue:48
 #: src/components/UsdcTransactionList.vue:58
 msgid "Buy USDC"
-msgstr ""
+msgstr "USDC kopen"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
@@ -760,7 +767,7 @@ msgstr "Swap voortzetten"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:38
 msgid "Continue with Moonpay"
-msgstr ""
+msgstr "Ga verder met MoonPay"
 
 #: src/components/modals/SimplexModal.vue:39
 msgid ""
@@ -830,7 +837,8 @@ msgstr "Gisteren aangemaakt"
 msgid "Creates staking rewards"
 msgstr "Creëert stake rewards"
 
-#: src/components/modals/BuyOptionsModal.vue:100
+#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:42
 msgid "Credit Card"
 msgstr "Creditcard"
 
@@ -929,7 +937,7 @@ msgstr "Bewerk het aantal decimalen dat zichtbaar is voor NIM waarden."
 
 #: src/components/modals/BtcSendModal.vue:441
 #: src/components/modals/SendModal.vue:600
-#: src/components/modals/UsdcSendModal.vue:560
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "Bewerk transactie"
 
@@ -1030,10 +1038,10 @@ msgstr "express"
 msgid "Failed"
 msgstr "Mislukt"
 
-#: src/components/modals/UsdcSendModal.vue:658
+#: src/components/modals/UsdcSendModal.vue:661
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
-msgstr ""
+msgstr "Kan USDC-kosten niet ophalen. Opnieuw proberen... (Error: {message})"
 
 #: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
@@ -1125,10 +1133,6 @@ msgstr ""
 msgid "free"
 msgstr "gratis"
 
-#: src/components/modals/BuyOptionsModal.vue:103
-msgid "Full KYC required, high availability."
-msgstr "Volledige verificatie vereist, hoge beschikbaarheid."
-
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Full Node"
@@ -1147,6 +1151,8 @@ msgstr ""
 #: src/components/PolygonWarningFooter.vue:27
 msgid "Funds sent from non-Polygon USDC versions could be permanently lost!"
 msgstr ""
+"Valuta dat verstuurd word vanuit een niet-Polygon USDC adres, kan permanent "
+"verloren gaan!"
 
 #: src/components/PolygonWarningFooter.vue:7
 #: src/components/PolygonWarningPage.vue:18
@@ -1158,6 +1164,8 @@ msgstr ""
 #: src/components/PolygonWarningFooter.vue:26
 msgid "Funds sent to non-Polygon USDC versions could be permanently lost!"
 msgstr ""
+"Valuta dat verstuurd word naar een niet-Polygon USDC adres, kan permanent "
+"verloren gaan!"
 
 #: src/components/layouts/Settings.vue:44
 msgid "General"
@@ -1316,21 +1324,9 @@ msgstr ""
 "Verhoog de snelheid van je transactie door hogere netwerkkosten te betalen. "
 "De vergoedingen gaan rechtstreeks naar de miners."
 
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Infrastructure Redesign"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
 msgstr "Initiële swaplimiet"
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid ""
-"Innovation\n"
-"by Nimiq"
-msgstr ""
-"Innovatie\n"
-"door Nimiq"
 
 #: src/components/layouts/Settings.vue:38
 msgid "Install"
@@ -1355,7 +1351,7 @@ msgstr "ongeldig"
 
 #: src/components/swap/SwapModal.vue:1770
 msgid "Invalid swap state, swap aborted!"
-msgstr ""
+msgstr "Ongeldige status, swap afgebroken!"
 
 #: src/components/TransactionList.vue:59
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
@@ -1420,7 +1416,7 @@ msgstr "Toeslag en limieten ophalen"
 
 #: src/components/modals/MoonpayModal.vue:15
 msgid "Loading Moonpay..."
-msgstr "Moonpay laden..."
+msgstr "MoonPay laden..."
 
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
@@ -1480,9 +1476,11 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr "Maximale omwisselbaar bedrag is {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:114
-#: src/components/modals/BuyOptionsModal.vue:128
-#: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/BuyOptionsModal.vue:101
+#: src/components/modals/BuyOptionsModal.vue:118
+#: src/components/modals/BuyOptionsModal.vue:31
+#: src/components/modals/BuyOptionsModal.vue:48
+#: src/components/modals/BuyOptionsModal.vue:67
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1498,7 +1496,7 @@ msgstr "Mobiel"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:14
 msgid "MoonPay is a third-party service requiring registration and KYC."
-msgstr ""
+msgstr "MoonPay is een derde partij die registratie en vereist verificatie."
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1567,10 +1565,6 @@ msgstr "Er is geen geld ontvangen, dus de swap is verlopen."
 msgid "No registration"
 msgstr "Geen registratie"
 
-#: src/components/modals/BuyOptionsModal.vue:38
-msgid "No registration – not even email."
-msgstr "Geen registratie - zelfs geen e-mail."
-
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr "Geen verzoek ontvangen."
@@ -1591,12 +1585,11 @@ msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Niet alle rekeningen van deze bank ondersteunen directe transacties."
 
 #: src/components/layouts/Sidebar.vue:123
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "Niet beschikbaar in jouw browser"
 
-#: src/components/modals/BuyOptionsModal.vue:145
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:151
+#: src/components/modals/BuyOptionsModal.vue:86
 msgid "Not available in your country"
 msgstr "Niet beschikbaar in jouw land"
 
@@ -1852,7 +1845,7 @@ msgstr "Terugbetaling"
 
 #: src/components/modals/UsdcTransactionModal.vue:565
 msgid "Refund failed: "
-msgstr ""
+msgstr "Terugbetaling mislukt:"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:72
 msgid ""
@@ -1898,7 +1891,7 @@ msgstr "Unstoppable Domain ophalen..."
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "Probeer opnieuw"
 
@@ -1953,7 +1946,7 @@ msgstr "Verkopen"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:13
 msgid "Sell BTC and USDC"
-msgstr ""
+msgstr "Verkoop BTC en USDC"
 
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
@@ -1989,6 +1982,8 @@ msgid ""
 "Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be"
 " sold for FIAT."
 msgstr ""
+"Het verkopen van NIM is momenteel niet beschikbaar. Verhandel NIM voor BTC "
+"of USDC, die kunnen worden verkocht voor fiat-valuta."
 
 #: src/components/swap/OasisLaunchModal.vue:11
 msgid "Selling now available"
@@ -2003,7 +1998,7 @@ msgstr "Verstuur"
 #: src/components/modals/SendModal.vue:188
 #: src/components/modals/UsdcSendModal.vue:217
 msgid "Send {currency}"
-msgstr ""
+msgstr "Verstuur {currency}"
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:78
 #: src/components/modals/SendModal.vue:171
@@ -2043,7 +2038,7 @@ msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:596
-#: src/components/modals/UsdcSendModal.vue:556
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "Transactie versturen"
 
@@ -2069,11 +2064,11 @@ msgstr "Stuur {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Stuur {nim} NIM naar {name}"
 
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/UsdcSendModal.vue:598
 msgid "Sent {usdc} USDC"
 msgstr "Verstuur {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:591
+#: src/components/modals/UsdcSendModal.vue:594
 msgid "Sent {usdc} USDC to {name}"
 msgstr "Verstuur {usdc} USDC naar {name}"
 
@@ -2086,10 +2081,6 @@ msgstr "Stuur op {dateAndTime}"
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
 msgstr "SEPA Instant toeslag"
-
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "SEPA Instant only"
-msgstr "Alleen SEPA Instant"
 
 #: src/components/BankCheckInput.vue:90
 msgid "SEPA Instant transaction"
@@ -2179,7 +2170,7 @@ msgstr "Overslaan"
 
 #: src/components/modals/BtcSendModal.vue:509
 #: src/components/modals/SendModal.vue:647
-#: src/components/modals/UsdcSendModal.vue:607
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
 
@@ -2312,7 +2303,7 @@ msgstr "synchroniseren"
 
 #: src/components/SendModalFooter.vue:65
 msgid "Syncing with Bitcoin network"
-msgstr ""
+msgstr "Synchroniseren met het Bitcoin-netwerk"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
@@ -2652,7 +2643,7 @@ msgstr "Wachten op {currency}"
 
 #: src/components/SendModalFooter.vue:75
 msgid "Waiting for Nimiq network information"
-msgstr ""
+msgstr "Wachten op Nimiq netwerk informatie"
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -2805,7 +2796,6 @@ msgid "Your browser"
 msgstr "Je browser"
 
 #: src/components/layouts/Sidebar.vue:124
-#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

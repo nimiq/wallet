@@ -100,11 +100,17 @@ msgstr "{value} залишок"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} інший | + {count} інші"
 
-#: src/components/modals/BuyOptionsModal.vue:132
-#: src/components/modals/BuyOptionsModal.vue:53
 #: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+ комісія мережі"
+
+#: src/components/modals/BuyOptionsModal.vue:145
+msgid "+ network fees, registration required"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "+ network fees, registration required above $700"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -118,7 +124,7 @@ msgstr "+{n} більше"
 #: src/components/modals/UsdcSendModal.vue:188
 #: src/components/swap/SwapModal.vue:55
 msgid "< {amount} fee"
-msgstr ""
+msgstr "< {amount} комісія"
 
 #: src/components/modals/BuyCryptoModal.vue:20
 #: src/components/modals/SellCryptoModal.vue:19
@@ -345,6 +351,11 @@ msgstr "Будь-які надіслані кошти будуть поверн�
 msgid "Any funds sent will be refunded."
 msgstr "Усі надіслані кошти будуть повернені."
 
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:43
+msgid "Apple/Google Pay"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"
 msgstr ""
@@ -413,13 +424,10 @@ msgstr "Назад до банкіських реквізитів"
 msgid "Bank Account"
 msgstr "Банківський рахунок"
 
-#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:28
+#: src/components/modals/BuyOptionsModal.vue:98
 msgid "Bank Transfer"
 msgstr "Банківський переказ"
-
-#: src/components/modals/BuyOptionsModal.vue:82
-msgid "Bank Transfer is only supported in the EU’s SEPA area."
-msgstr "Банківський переказ підтримується лише в зоні ЄС SEPA."
 
 #: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
@@ -526,14 +534,14 @@ msgstr "Купити NIM"
 msgid "Buy NIM & BTC"
 msgstr "Купити NIM і BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:157
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Купити NIM на криптобіржі:"
 
 #: src/components/UsdcTransactionList.vue:48
 #: src/components/UsdcTransactionList.vue:58
 msgid "Buy USDC"
-msgstr ""
+msgstr "Купити USDC"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
@@ -826,7 +834,8 @@ msgstr "Створено вчора"
 msgid "Creates staking rewards"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:100
+#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:42
 msgid "Credit Card"
 msgstr "Кредитна карта"
 
@@ -927,7 +936,7 @@ msgstr "Змінити кількість знаків після коми дл�
 
 #: src/components/modals/BtcSendModal.vue:441
 #: src/components/modals/SendModal.vue:600
-#: src/components/modals/UsdcSendModal.vue:560
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "Редагувати переказ"
 
@@ -1029,7 +1038,7 @@ msgstr "швидкий"
 msgid "Failed"
 msgstr "Неуспішний"
 
-#: src/components/modals/UsdcSendModal.vue:658
+#: src/components/modals/UsdcSendModal.vue:661
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1118,10 +1127,6 @@ msgstr ""
 #: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "комісія"
-
-#: src/components/modals/BuyOptionsModal.vue:103
-msgid "Full KYC required, high availability."
-msgstr "Потрібна повна ідентифікація, висока доступність."
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1312,21 +1317,9 @@ msgstr ""
 "Збільшіть швидкість переказу, вказавши вищу комісію. Уся комісія збирається "
 "майнерами напряму."
 
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Infrastructure Redesign"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
 msgstr "Початковий ліміт обміну"
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid ""
-"Innovation\n"
-"by Nimiq"
-msgstr ""
-"Інновації\n"
-"від Nimiq"
 
 #: src/components/layouts/Settings.vue:38
 msgid "Install"
@@ -1454,7 +1447,7 @@ msgstr "Вийти"
 
 #: src/components/modals/UsdcSendModal.vue:83
 msgid "Long press to confirm"
-msgstr ""
+msgstr "Довге натискання для підтвердження"
 
 #: src/components/layouts/Network.vue:116
 msgid "lost"
@@ -1475,9 +1468,11 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr "Максимальна сума, яку можна обміняти: {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:114
-#: src/components/modals/BuyOptionsModal.vue:128
-#: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/BuyOptionsModal.vue:101
+#: src/components/modals/BuyOptionsModal.vue:118
+#: src/components/modals/BuyOptionsModal.vue:31
+#: src/components/modals/BuyOptionsModal.vue:48
+#: src/components/modals/BuyOptionsModal.vue:67
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1562,10 +1557,6 @@ msgstr "Кошти не надійшли, тому термін дії обмі�
 msgid "No registration"
 msgstr "Без реєстрації"
 
-#: src/components/modals/BuyOptionsModal.vue:38
-msgid "No registration – not even email."
-msgstr "Без реєстрації – навіть без електронної пошти."
-
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr "Запит не отримано."
@@ -1586,12 +1577,11 @@ msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не всі рахунки, надані цим банком, підтримують миттєві операції."
 
 #: src/components/layouts/Sidebar.vue:123
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "Недоступно у вашому веб-оглядачі"
 
-#: src/components/modals/BuyOptionsModal.vue:145
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:151
+#: src/components/modals/BuyOptionsModal.vue:86
 msgid "Not available in your country"
 msgstr "Недоступно у вашій країні"
 
@@ -1888,7 +1878,7 @@ msgstr "Вирішення незупинного домену..."
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "Спробувати знову"
 
@@ -1926,7 +1916,7 @@ msgstr "Пошук переказів за контактами, адресам�
 
 #: src/components/modals/WelcomeModal.vue:43
 msgid "Security"
-msgstr ""
+msgstr "Безпека"
 
 #: src/components/modals/BuyCryptoModal.vue:20
 #: src/components/modals/SellCryptoModal.vue:19
@@ -2031,7 +2021,7 @@ msgstr "Переказуйте, отримуйте і зберігайте BTC �
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:596
-#: src/components/modals/UsdcSendModal.vue:556
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "Відправляється"
 
@@ -2057,11 +2047,11 @@ msgstr "Надіслано {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Надіслано {nim} NIM до {name}"
 
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/UsdcSendModal.vue:598
 msgid "Sent {usdc} USDC"
 msgstr "Надіслати {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:591
+#: src/components/modals/UsdcSendModal.vue:594
 msgid "Sent {usdc} USDC to {name}"
 msgstr "Надіслано {usdc} USDC до {name}"
 
@@ -2074,10 +2064,6 @@ msgstr "Надіслано {dateAndTime}"
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
 msgstr "SEPA Instant комісія"
-
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "SEPA Instant only"
-msgstr "Тільки SEPA Instant"
 
 #: src/components/BankCheckInput.vue:90
 msgid "SEPA Instant transaction"
@@ -2167,7 +2153,7 @@ msgstr "Пропустити"
 
 #: src/components/modals/BtcSendModal.vue:509
 #: src/components/modals/SendModal.vue:647
-#: src/components/modals/UsdcSendModal.vue:607
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
@@ -2181,7 +2167,7 @@ msgstr "Пришвидшити переказ"
 
 #: src/components/modals/WelcomeModal.vue:44
 msgid "Stability"
-msgstr ""
+msgstr "Стабільність"
 
 #: src/components/modals/WelcomeModal.vue:243
 msgid "Stability mixed with self-custody"
@@ -2271,7 +2257,7 @@ msgstr "Обмін неможливий. Ledger рахунки не підтри
 
 #: src/components/swap/SwapModal.vue:37
 msgid "Swap not possible. Your balance is lower than the fee."
-msgstr ""
+msgstr "Обмін неможливий. Ваш баланс менший за комісію."
 
 #: src/components/swap/SwapNotification.vue:26
 msgid "Swap successful!"
@@ -2349,6 +2335,7 @@ msgstr "Новий файл-ключ це зручний спосіб отрим
 #: src/components/PolygonWarningPage.vue:7
 msgid "The Nimiq Wallet uses Polygon USDC for speed and low fees."
 msgstr ""
+"Гаманець Nimiq використовує Polygon USDC для швидкості та низьких комісій."
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
@@ -2369,6 +2356,9 @@ msgid ""
 "The USDC stablecoin was originally launched on Ethereum. To avoid high fees "
 "and enable fast transactions, this wallet uses the Polygon version."
 msgstr ""
+"Стейблкоїн USDC спочатку був запущений на Ethereum. Щоб уникнути високих "
+"комісій і забезпечити швидкі транзакції, цей гаманець використовує версію "
+"Polygon."
 
 #: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
@@ -2476,6 +2466,8 @@ msgid ""
 "This value is based on the historic exchange rate of the USD and your "
 "reference currency."
 msgstr ""
+"Це значення базується на історичному обмінному курсі долара США та вашої "
+"базової валюти."
 
 #: src/components/modals/HistoryExportModal.vue:15
 msgid "Timeframe"
@@ -2782,7 +2774,6 @@ msgid "Your browser"
 msgstr "Ваш веб-оглядач"
 
 #: src/components/layouts/Sidebar.vue:124
-#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

@@ -4,13 +4,13 @@
 # Matheo <matheo@nimiq.com>, 2021
 # Redexe <timo.niehoff@yahoo.de>, 2021
 # Sven <sven@nimiq.com>, 2022
-# Daniel, 2022
 # Michael <jiggaaa20@gmail.com>, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2023
+# Daniel, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2023\n"
+"Last-Translator: Daniel, 2023\n"
 "Language-Team: German (https://app.transifex.com/nimiq-foundation/teams/110181/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -103,11 +103,17 @@ msgstr "{value} verbleibend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} weitere | + {count} weitere"
 
-#: src/components/modals/BuyOptionsModal.vue:132
-#: src/components/modals/BuyOptionsModal.vue:53
 #: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+ Netzwerk­gebühren"
+
+#: src/components/modals/BuyOptionsModal.vue:145
+msgid "+ network fees, registration required"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "+ network fees, registration required above $700"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -183,7 +189,7 @@ msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "                            Do you want to replace it?"
 msgstr ""
-"Ein Kontakt mit der Adresse \"{adress}\", aber ein anderer Name exisiert bereits.\n"
+"Ein Kontakt mit der Adresse \"{address}\", aber anderem Namen existiert bereits.\n"
 "Willst du ihn überschreiben?"
 
 #: src/lib/KycConnection.ts:40
@@ -348,6 +354,11 @@ msgstr "Gesendete Beträge werden innerhalb von 1-3 Tagen zurückerstattet."
 msgid "Any funds sent will be refunded."
 msgstr "Gesendete Beträge werden zurückerstattet."
 
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:43
+msgid "Apple/Google Pay"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"
 msgstr ""
@@ -417,13 +428,10 @@ msgstr "Zurück zu Bankdetails"
 msgid "Bank Account"
 msgstr "Bankkonto"
 
-#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:28
+#: src/components/modals/BuyOptionsModal.vue:98
 msgid "Bank Transfer"
 msgstr "Überweisung"
-
-#: src/components/modals/BuyOptionsModal.vue:82
-msgid "Bank Transfer is only supported in the EU’s SEPA area."
-msgstr "Banküberweisung wird nur in der SEPA-Region der EU unterstützt."
 
 #: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
@@ -531,7 +539,7 @@ msgstr "NIM kaufen"
 msgid "Buy NIM & BTC"
 msgstr "Kaufe NIM und BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:157
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Kaufe NIM auf einer Kryptobörse:"
 
@@ -833,7 +841,8 @@ msgstr "Gestern erstellt"
 msgid "Creates staking rewards"
 msgstr "Erzeugt Einnahmen durch Staking"
 
-#: src/components/modals/BuyOptionsModal.vue:100
+#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:42
 msgid "Credit Card"
 msgstr "Kreditkarte"
 
@@ -936,7 +945,7 @@ msgstr "Wieviele Nachkommenstellen möchtest du für NIM sehen?"
 
 #: src/components/modals/BtcSendModal.vue:441
 #: src/components/modals/SendModal.vue:600
-#: src/components/modals/UsdcSendModal.vue:560
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -1038,7 +1047,7 @@ msgstr "Express"
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: src/components/modals/UsdcSendModal.vue:658
+#: src/components/modals/UsdcSendModal.vue:661
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1132,10 +1141,6 @@ msgstr ""
 #: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "gratis"
-
-#: src/components/modals/BuyOptionsModal.vue:103
-msgid "Full KYC required, high availability."
-msgstr "Identitätsnachweis erforderlich, hohe Verfügbarkeit."
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1324,21 +1329,9 @@ msgstr ""
 "Du kannst eine höhere Netzwerkgebühr bezahlen, um deine Transaktion zu "
 "beschleunigen. Die Gebühr geht direkt an die Miner."
 
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Infrastructure Redesign"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
 msgstr "Initiales Tauschlimit"
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid ""
-"Innovation\n"
-"by Nimiq"
-msgstr ""
-"Innovation\n"
-"von Nimiq"
 
 #: src/components/layouts/Settings.vue:38
 msgid "Install"
@@ -1490,9 +1483,11 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr "Höchst-Tauschbetrag ist {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:114
-#: src/components/modals/BuyOptionsModal.vue:128
-#: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/BuyOptionsModal.vue:101
+#: src/components/modals/BuyOptionsModal.vue:118
+#: src/components/modals/BuyOptionsModal.vue:31
+#: src/components/modals/BuyOptionsModal.vue:48
+#: src/components/modals/BuyOptionsModal.vue:67
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1578,10 +1573,6 @@ msgstr "Da keine Geldbeträge eingegangen sind, ist der Tausch abgelaufen."
 msgid "No registration"
 msgstr "Keine Registrierung"
 
-#: src/components/modals/BuyOptionsModal.vue:38
-msgid "No registration – not even email."
-msgstr "Keine Anmeldung, nicht einmal E-Mail."
-
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr "Keine Anfrage erhalten."
@@ -1602,12 +1593,11 @@ msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
 
 #: src/components/layouts/Sidebar.vue:123
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "Nicht verfügbar in deinem Browser"
 
-#: src/components/modals/BuyOptionsModal.vue:145
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:151
+#: src/components/modals/BuyOptionsModal.vue:86
 msgid "Not available in your country"
 msgstr "Nicht verfügbar in deinem Land"
 
@@ -1912,7 +1902,7 @@ msgstr "Unstoppable Domain wird aufgelöst..."
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "Erneut versuchen"
 
@@ -2059,7 +2049,7 @@ msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:596
-#: src/components/modals/UsdcSendModal.vue:556
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "Transaktion wird versendet"
 
@@ -2085,11 +2075,11 @@ msgstr "{nim} NIM versendet"
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM an {name} versendet"
 
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/UsdcSendModal.vue:598
 msgid "Sent {usdc} USDC"
 msgstr "{usdc} USDC gesendet"
 
-#: src/components/modals/UsdcSendModal.vue:591
+#: src/components/modals/UsdcSendModal.vue:594
 msgid "Sent {usdc} USDC to {name}"
 msgstr " {usdc} USDC zu {name} versendet"
 
@@ -2102,10 +2092,6 @@ msgstr "Gesendet am {dateAndTime}"
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
 msgstr "SEPA-Instant-Gebühr"
-
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "SEPA Instant only"
-msgstr "Nur SEPA Instant"
 
 #: src/components/BankCheckInput.vue:90
 msgid "SEPA Instant transaction"
@@ -2195,7 +2181,7 @@ msgstr "Überspringen"
 
 #: src/components/modals/BtcSendModal.vue:509
 #: src/components/modals/SendModal.vue:647
-#: src/components/modals/UsdcSendModal.vue:607
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
 
@@ -2825,7 +2811,6 @@ msgid "Your browser"
 msgstr "Dein Browser"
 
 #: src/components/layouts/Sidebar.vue:124
-#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

@@ -101,11 +101,17 @@ msgstr "剩余 {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+另外{count}个 | +另外{count}个"
 
-#: src/components/modals/BuyOptionsModal.vue:132
-#: src/components/modals/BuyOptionsModal.vue:53
 #: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr "+网络费用"
+
+#: src/components/modals/BuyOptionsModal.vue:145
+msgid "+ network fees, registration required"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:80
+msgid "+ network fees, registration required above $700"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -336,6 +342,11 @@ msgstr "所有汇出的款项将在1-3天内退还"
 msgid "Any funds sent will be refunded."
 msgstr "所有汇出的款项将被退还"
 
+#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:43
+msgid "Apple/Google Pay"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"
 msgstr ""
@@ -400,13 +411,10 @@ msgstr "返回银行详情"
 msgid "Bank Account"
 msgstr "银行账户"
 
-#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:28
+#: src/components/modals/BuyOptionsModal.vue:98
 msgid "Bank Transfer"
 msgstr "银行转帐"
-
-#: src/components/modals/BuyOptionsModal.vue:82
-msgid "Bank Transfer is only supported in the EU’s SEPA area."
-msgstr "仅支持欧盟SEPA区域的银行转账"
 
 #: src/components/PolygonWarningPage.vue:6
 msgid "Before you start"
@@ -509,7 +517,7 @@ msgstr "购买NIM"
 msgid "Buy NIM & BTC"
 msgstr "购买NIM&BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:157
 msgid "Buy NIM on a crypto exchange:"
 msgstr "在加密货币交易所购买NIM："
 
@@ -800,7 +808,8 @@ msgstr "昨天创建"
 msgid "Creates staking rewards"
 msgstr "创建质押收益"
 
-#: src/components/modals/BuyOptionsModal.vue:100
+#: src/components/modals/BuyOptionsModal.vue:112
+#: src/components/modals/BuyOptionsModal.vue:42
 msgid "Credit Card"
 msgstr "信用卡"
 
@@ -895,7 +904,7 @@ msgstr "编辑NIM值可见的小数位数"
 
 #: src/components/modals/BtcSendModal.vue:441
 #: src/components/modals/SendModal.vue:600
-#: src/components/modals/UsdcSendModal.vue:560
+#: src/components/modals/UsdcSendModal.vue:563
 msgid "Edit transaction"
 msgstr "修改交易"
 
@@ -994,7 +1003,7 @@ msgstr "快速"
 msgid "Failed"
 msgstr "失败"
 
-#: src/components/modals/UsdcSendModal.vue:658
+#: src/components/modals/UsdcSendModal.vue:661
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1088,10 +1097,6 @@ msgstr ""
 #: src/components/modals/SendModal.vue:444
 msgid "free"
 msgstr "免费"
-
-#: src/components/modals/BuyOptionsModal.vue:103
-msgid "Full KYC required, high availability."
-msgstr "需要完整的KYC，可用性高"
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1261,21 +1266,9 @@ msgid ""
 "fees go directly to the miners."
 msgstr "通过支付更高的网络费用来提高交易速度。费用将直接支付给矿工"
 
-#: src/components/modals/BuyOptionsModal.vue:64
-msgid "Infrastructure Redesign"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:80
 msgid "Initial Swap Limit"
 msgstr "初始交换上限"
-
-#: src/components/modals/BuyOptionsModal.vue:58
-msgid ""
-"Innovation\n"
-"by Nimiq"
-msgstr ""
-"由Nimiq\n"
-"技术创新"
 
 #: src/components/layouts/Settings.vue:38
 msgid "Install"
@@ -1423,9 +1416,11 @@ msgstr "许多更新，例如更易记的地址名称，更易访问的交换和
 msgid "Max swappable amount is {amount}"
 msgstr "最大可交换金额为 {amount}"
 
-#: src/components/modals/BuyOptionsModal.vue:114
-#: src/components/modals/BuyOptionsModal.vue:128
-#: src/components/modals/BuyOptionsModal.vue:49
+#: src/components/modals/BuyOptionsModal.vue:101
+#: src/components/modals/BuyOptionsModal.vue:118
+#: src/components/modals/BuyOptionsModal.vue:31
+#: src/components/modals/BuyOptionsModal.vue:48
+#: src/components/modals/BuyOptionsModal.vue:67
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1509,10 +1504,6 @@ msgstr "交换因为没有收到任何资金而过期了"
 msgid "No registration"
 msgstr "无需注册"
 
-#: src/components/modals/BuyOptionsModal.vue:38
-msgid "No registration – not even email."
-msgstr "无需注册，甚至无需电子邮件"
-
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr "未收到请求。"
@@ -1533,12 +1524,11 @@ msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "此银行提供的帐户并非全部都支持即时交易"
 
 #: src/components/layouts/Sidebar.vue:123
-#: src/components/modals/BuyOptionsModal.vue:68
 msgid "Not available in your browser"
 msgstr "在你的浏览器中无法使用"
 
-#: src/components/modals/BuyOptionsModal.vue:145
-#: src/components/modals/BuyOptionsModal.vue:78
+#: src/components/modals/BuyOptionsModal.vue:151
+#: src/components/modals/BuyOptionsModal.vue:86
 msgid "Not available in your country"
 msgstr "在你的国家不可用"
 
@@ -1827,7 +1817,7 @@ msgstr "正在解析 Unstoppable域名"
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/UsdcSendModal.vue:562
 msgid "Retry"
 msgstr "重试"
 
@@ -1970,7 +1960,7 @@ msgstr "从你的钱包中发送、接收和持有BTC"
 
 #: src/components/modals/BtcSendModal.vue:437
 #: src/components/modals/SendModal.vue:596
-#: src/components/modals/UsdcSendModal.vue:556
+#: src/components/modals/UsdcSendModal.vue:559
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
@@ -1996,11 +1986,11 @@ msgstr "发送{nim}NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/UsdcSendModal.vue:598
 msgid "Sent {usdc} USDC"
 msgstr "发送 {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:591
+#: src/components/modals/UsdcSendModal.vue:594
 msgid "Sent {usdc} USDC to {name}"
 msgstr "发送 {usdc} USDC 到 {name}"
 
@@ -2013,10 +2003,6 @@ msgstr "在{dateAndTime}发送"
 #: src/components/swap/SwapFeesTooltip.vue:31
 msgid "SEPA Instant fee"
 msgstr "SEPA即时网络费用"
-
-#: src/components/modals/BuyOptionsModal.vue:34
-msgid "SEPA Instant only"
-msgstr "仅支持SEPA Instant"
 
 #: src/components/BankCheckInput.vue:90
 msgid "SEPA Instant transaction"
@@ -2106,7 +2092,7 @@ msgstr "跳过"
 
 #: src/components/modals/BtcSendModal.vue:509
 #: src/components/modals/SendModal.vue:647
-#: src/components/modals/UsdcSendModal.vue:607
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -2695,7 +2681,6 @@ msgid "Your browser"
 msgstr "你的浏览器"
 
 #: src/components/layouts/Sidebar.vue:124
-#: src/components/modals/BuyOptionsModal.vue:72
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

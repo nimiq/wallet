@@ -17,141 +17,146 @@
                 </CountrySelector>
             </header>
             <div class="featured-options flex-row">
-                <Component :is="isOasisAvailable ? 'router-link' : 'span'"
-                    :to="{ name: 'buy-crypto', query: $route.query }" replace
-                    class="option oasis flex-column"
-                    :class="{disabled: !isOasisAvailable}"
+                <Component :is="isSimplexAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'simplex', query: $route.query }" replace
+                    class="option simplex flex-column"
+                    :class="{disabled: !isSimplexAvailable}"
                 >
-                    <div class="upper-content flex-column">
-                        <h2 class="nq-h1 flex-row">{{ $t('Bank Transfer') }}</h2>
+                    <img src="../../assets/exchanges/simplex-full.png" class="logo" alt="Simplex">
 
-                        <div class="pill flex-row">
-                            <!-- eslint-disable max-len -->
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="14" height="14" fill="currentColor">
-                                <path d="M1.34 5.44l.86-.61.86.62-.33-1.01.85-.64H2.53L2.2 2.79l-.32 1.02H.81l.86.63zM3.33 3.43l.85-.63.86.63-.33-1.02.86-.63H4.51L4.18.77l-.33 1.01H2.79l.86.63zM6.14 2.66L7 2.03l.46.34.4.31-.33-1.03.86-.64H7.32L7 0l-.33 1.02H5.61l.86.63zM8.93 3.42l.86-.62.86.64-.33-1.03.46-.33.38-.3h-1.04L9.79.77l-.33 1.01H8.4l.85.63zM11.3 4.48l-.32 1.02.86-.63.86.64-.33-1.03.86-.63h-1.06l-.33-1.01-.33 1.01h-1.06zM14 6.69h-1.08l-.32-1.02-.33 1.02H11.2l.87.63-.33 1.02.86-.63.46.33.4.31-.33-1.03zM12.16 9.54l-.32-1.03-.33 1.03h-1.06l.85.63-.32 1 .86-.62.85.64-.32-1.03.87-.62zM10.11 11.58l-.32-1.01-.33 1.01H8.4l.85.64-.32 1 .86-.62.85.63-.33-1.02.87-.63zM7.34 12.34l-.33-1.01-.33 1.01H5.62l.85.63-.32 1.01.86-.63.87.65-.34-1.03.85-.63zM4.51 11.57l-.32-1.02-.33 1.02H2.8l.86.63-.32 1 .24-.17.61-.44.86.63-.33-1.02.86-.63zM2.71 10.15l.87-.63H2.5l-.32-1.01-.33 1.01H.79l.86.63-.33 1.02.86-.63.86.63zM1.41 7.67l.86.64-.32-1.04.85-.63H1.74l-.33-1.02-.33 1.02H0l.87.63-.33 1.02z"/>
-                            </svg>
-                            <!-- eslint-enable max-len -->
-                            {{ $t('SEPA Instant only') }}
+                    <div class="fees">
+                        <div>{{ $t('Bank Transfer') }}</div>
+                        <div>
+                            1%<br>
+                            <i18n path="min {amount}" tag="span" class="low">
+                                <FiatAmount slot="amount"
+                                    :amount="3.00"
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
+                                        ? currency
+                                        : FiatCurrency.USD"
+                                />
+                            </i18n>
                         </div>
 
-                        <p class="nq-text">
-                            {{ $t('No registration – not even email.') }}
-                        </p>
-                    </div>
-
-                    <div class="lower-content flex-column">
-                        <div class="fees">
-                            <span class="percentage flex-row">
-                                1.25%
-                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
-                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
-                                </svg>
-                                <i18n path="min {amount}" tag="span">
-                                    <FiatAmount slot="amount" :amount="$config.oasis.minFee" currency="eur"/>
-                                </i18n>
-                            </span>
-                            {{ $t('+ network fees') }}
+                        <div>
+                            {{ $t('Credit Card') }}<br>
+                            {{ $t('Apple/Google Pay') }}
+                            <!-- <span class="low">Visa, Mastercard</span> -->
+                        </div>
+                        <div>
+                            4%<br>
+                            <i18n path="min {amount}" tag="span" class="low">
+                                <FiatAmount slot="amount"
+                                    :amount="3.50"
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
+                                        ? currency
+                                        : FiatCurrency.USD"
+                                />
+                            </i18n>
                         </div>
 
-                        <footer v-if="isOasisAvailable" class="flex-row">
-                            <FlameIcon/>
-                            {{ $t('Innovation\nby Nimiq') }}
-                            <div class="flex-grow"></div>
-                            <CaretRightIcon/>
-                        </footer>
-                        <footer v-else-if="$config.oasis.underMaintenance && !isInOasis2Trial" class="flex-row">
-                            <MaintenanceIcon/>
-                            {{ $t('Infrastructure Redesign') }}
-                        </footer>
-                        <footer v-else-if="!canUseSwaps" class="flex-row">
-                            <ForbiddenIcon/>
-                            {{ $t('Not available in your browser') }}
-                            <div class="flex-grow"></div>
-                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                {{ $t('Your browser does not support Keyguard popups, '
-                                    + 'or they are disabled in the Settings.') }}
-                            </Tooltip>
-                        </footer>
-                        <footer v-else class="flex-row">
-                            <ForbiddenIcon/>
-                            {{ $t('Not available in your country') }}
-                            <div class="flex-grow"></div>
-                            <Tooltip preferredPosition="top left" :styles="{width: '25rem'}">
-                                <InfoCircleSmallIcon slot="trigger"/>
-                                {{ $t('Bank Transfer is only supported in the EU’s SEPA area.') }}
-                                <!-- {{ $t('Bank Transfer is only supported in the EU’s SEPA area, '
-                                    + 'or in Central Americas SIMPE Banks.') }} -->
-                                <!-- <p class="explainer">
-                                    {{ $t('If you have contacts to a banking partner in your country, '
-                                        + 'check out our application form')}}
-                                </p> -->
-                            </Tooltip>
-                        </footer>
-                    </div>
-                </Component>
+                        <template v-if="country && country.code === 'BR'">
+                            <div>PIX</div>
+                            <div>2.99%</div>
+                        </template>
 
-                <Component :is="isCreditCardAvailable ? 'router-link' : 'span'"
-                    :to="{ name: isMoonpayAvailable ? 'moonpay' : 'simplex', query: $route.query }" replace
-                    class="option credit-card flex-column"
-                    :class="{disabled: !isCreditCardAvailable}"
-                >
-                    <div class="upper-content flex-column">
-                        <h2 class="nq-h1 flex-row">{{ $t('Credit Card') }}</h2>
-
-                        <p class="nq-text">
-                            {{ $t('Full KYC required, high availability.') }}
-                        </p>
-                    </div>
-
-                    <div class="lower-content flex-column">
-                        <div class="fees">
-                            <span v-if="isMoonpayAvailable" class="percentage flex-row">
-                                4.5%
-                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
-                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
-                                </svg>
-                                <i18n path="min {amount}" tag="span">
+                        <template v-if="country && country.code === 'US'">
+                            <div>ACH</div>
+                            <div>
+                                1.5%<br>
+                                <i18n path="min {amount}" tag="span" class="low">
                                     <FiatAmount slot="amount"
-                                        :amount="3.99"
+                                        :amount="3.00"
                                         :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
                                             ? currency
                                             : FiatCurrency.USD"
                                     />
                                 </i18n>
-                            </span>
-                            <span v-else-if="isSimplexAvailable" class="percentage flex-row">
-                                ~8%
-                                <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
-                                    <circle cx="1.5" cy="1.5" r="1.5" fill="currentColor"/>
-                                </svg>
-                                <i18n path="min {amount}" tag="span">
-                                    <FiatAmount slot="amount" :amount="5.00" :currency="FiatCurrency.USD" />
-                                </i18n>
-                            </span>
-                            {{ $t('+ network fees') }}
+                            </div>
+                        </template>
+                    </div>
+
+                    <footer v-if="isSimplexAvailable" class="flex-row">
+                        {{ $t('+ network fees, registration required above $700') }}
+                        <div class="flex-grow"></div>
+                        <CaretRightIcon/>
+                    </footer>
+                    <footer v-else class="flex-row">
+                        <ForbiddenIcon/>
+                        {{ $t('Not available in your country') }}
+                    </footer>
+                </Component>
+
+                <Component :is="isMoonpayAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'moonpay', query: $route.query }" replace
+                    class="option moonpay flex-column"
+                    :class="{disabled: !isMoonpayAvailable}"
+                >
+                    <img src="../../assets/exchanges/moonpay-mono.svg" class="logo" alt="Moonpay">
+
+                    <div class="fees">
+                        <div>{{ $t('Bank Transfer') }}</div>
+                        <div>
+                            1%<br>
+                            <i18n path="min {amount}" tag="span" class="low">
+                                <FiatAmount slot="amount"
+                                    :amount="3.99"
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
+                                        ? currency
+                                        : FiatCurrency.USD"
+                                />
+                            </i18n>
                         </div>
 
-                        <footer v-if="isMoonpayAvailable" class="moonpay flex-row">
-                            <img src="../../assets/exchanges/moonpay-full.svg" alt="Moonpay">
-                            <CaretRightIcon/>
-                        </footer>
-                        <footer v-else-if="isSimplexAvailable" class="simplex flex-row">
-                            <img src="../../assets/exchanges/simplex-full.png" alt="Simplex">
-                            <CaretRightIcon/>
-                        </footer>
-                        <footer v-else class="flex-row">
-                            <ForbiddenIcon/>
-                            {{ $t('Not available in your country') }}
-                        </footer>
+                        <div>
+                            {{ $t('Credit Card') }}<br>
+                            {{ $t('Apple/Google Pay') }}
+                            <!-- <span class="low">Visa, Mastercard</span> -->
+                        </div>
+                        <div>
+                            4.5%<br>
+                            <i18n path="min {amount}" tag="span" class="low">
+                                <FiatAmount slot="amount"
+                                    :amount="3.99"
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
+                                        ? currency
+                                        : FiatCurrency.USD"
+                                />
+                            </i18n>
+                        </div>
+
+                        <template v-if="country && country.code === 'BR'">
+                            <div>PIX</div>
+                            <div>2.95%</div>
+                        </template>
+
+                        <template v-if="country && country.code === 'GB'">
+                            <div>Faster Payments</div>
+                            <div>1%</div>
+                        </template>
+
+                        <template v-if="country && country.code === 'NG'">
+                            <div>YellowCard</div>
+                            <div>1.5%</div>
+                        </template>
                     </div>
+
+                    <footer v-if="isMoonpayAvailable" class="flex-row">
+                        {{ $t('+ network fees, registration required') }}
+                        <div class="flex-grow"></div>
+                        <CaretRightIcon/>
+                    </footer>
+                    <footer v-else class="flex-row">
+                        <ForbiddenIcon/>
+                        {{ $t('Not available in your country') }}
+                    </footer>
                 </Component>
             </div>
 
-            <p class="nq-text exchanges-note" :class="{'only-option': !isOasisAvailable && !isCreditCardAvailable}">
+            <p class="nq-text exchanges-note" :class="{'only-option': !isCreditCardAvailable}">
                 {{ $t('Buy NIM on a crypto exchange:') }}
             </p>
-            <div class="exchange-logos flex-row" :class="{'only-option': !isOasisAvailable && !isCreditCardAvailable}">
+            <div class="exchange-logos flex-row" :class="{'only-option': !isCreditCardAvailable}">
                 <!-- eslint-disable max-len -->
                 <a href="https://www.kucoin.com/trade/NIM-BTC?rcode=y38f6N" title="KuCoin" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/kucoin.svg" alt="KuCoin">
@@ -195,20 +200,18 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
-import { PageBody, FiatAmount, Tooltip, InfoCircleSmallIcon, CircleSpinner } from '@nimiq/vue-components';
+import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CountrySelector from '../CountrySelector.vue';
 import CountryFlag from '../CountryFlag.vue';
-import FlameIcon from '../icons/FlameIcon.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
-import MaintenanceIcon from '../icons/MaintenanceIcon.vue';
 import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { ENV_TEST, FiatCurrency } from '../../lib/Constants';
+import { FiatCurrency } from '../../lib/Constants';
 import { useConfig } from '../../composables/useConfig';
 import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
-import { MOONPAY_COUNTRY_CODES, SEPA_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
+import { MOONPAY_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
 import { useSettingsStore } from '../../stores/Settings';
 // import { Trial } from '../../lib/Trials';
 
@@ -225,19 +228,6 @@ export default defineComponent({
         const { config } = useConfig();
 
         const country = ref<Country>(null);
-
-        const isInOasis2Trial = computed(
-            () => false, // trials.value.includes(Trial.OASIS2) || trials.value.includes(Trial.TEN31Pass),
-        );
-
-        const isOasisAvailable = computed(() => {
-            if (!config.fastspot.enabled) return false;
-            if (!canUseSwaps.value) return false;
-            if (config.oasis.underMaintenance && !isInOasis2Trial.value) return false;
-
-            if (config.environment === ENV_TEST) return true;
-            return !country.value || SEPA_COUNTRY_CODES.includes(country.value.code);
-        });
 
         const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
             if (!config.moonpay.enabled) return false;
@@ -269,11 +259,9 @@ export default defineComponent({
 
         return {
             country,
-            isOasisAvailable,
-            isInOasis2Trial,
-            isCreditCardAvailable,
             isMoonpayAvailable,
             isSimplexAvailable,
+            isCreditCardAvailable,
             currency,
             FiatCurrency,
             canUseSwaps,
@@ -287,10 +275,6 @@ export default defineComponent({
         CountrySelector,
         CircleSpinner,
         CountryFlag,
-        FlameIcon,
-        MaintenanceIcon,
-        Tooltip,
-        InfoCircleSmallIcon,
         ForbiddenIcon,
     },
 });
@@ -298,7 +282,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal ::v-deep .small-page {
-    width: 63.5rem !important;
+    width: 70rem !important;
     min-height: 63.5rem !important;
     max-width: 100vw;
 }
@@ -371,37 +355,29 @@ header {
 .featured-options {
     flex-grow: 1;
     align-self: stretch;
+    overflow-x: auto;
+    margin: 0 -2rem;
+    padding: 0 2rem 2rem;
 }
 
 .option {
     width: 50%;
+    min-width: 31rem;
     height: 36rem;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: stretch;
     margin: 1rem;
     border-radius: 0.75rem;
-    padding: 2.5rem;
+    padding: 3rem;
     text-decoration: none;
     color: white;
+    gap: 3rem;
 
     transition:
         transform 0.3s var(--nimiq-ease),
         box-shadow 0.3s var(--nimiq-ease),
         background-color 0.3s var(--nimiq-ease);
     will-change: transform, box-shadow;
-
-    &::before {
-        position: absolute;
-        content: "";
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        border-radius: inherit;
-        z-index: -1;
-        transition: opacity 0.3s var(--nimiq-ease);
-        opacity: 0;
-    }
 
     &:hover,
     &:focus {
@@ -410,30 +386,20 @@ header {
             0px 18px 38px rgba(31, 35, 72, 0.07),
             0px 7px 8.5px rgba(31, 35, 72, 0.04),
             0px 2px 2.5px rgba(31, 35, 72, 0.02);
+    }
 
-        &::before {
-            opacity: 1;
+    &.simplex {
+        background-color: #081F2C;
+
+        .logo {
+            width: 9.5rem;
         }
     }
 
-    &.oasis {
-        background-color: var(--nimiq-blue);
-        background-image: var(--nimiq-blue-bg);
-
-        &::before {
-            background-color: var(--nimiq-blue-darkened);
-            background-image: var(--nimiq-blue-bg-darkened);
-        }
-    }
-
-    &.credit-card {
-        background-color: var(--nimiq-light-blue);
-        background-image: var(--nimiq-light-blue-bg);
-
-        &::before {
-            position: absolute;
-            background-color: var(--nimiq-light-blue-darkened);
-            background-image: var(--nimiq-light-blue-bg-darkened);
+    &.moonpay {
+        background-color: #7D00FF;
+        .logo {
+            width: 11.5rem;
         }
     }
 
@@ -443,12 +409,6 @@ header {
         line-height: 1.3;
         font-weight: bold;
         font-size: var(--h1-size);
-    }
-
-    .pill {
-        margin-top: 1.5rem;
-        box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.3);
-        color: rgba(255, 255, 255, 0.8);
     }
 
     .nq-text {
@@ -461,49 +421,33 @@ header {
         margin-top: 1rem;
     }
 
-    .upper-content {
-        flex-grow: 1;
-    }
-
-    .lower-content {
-        justify-content: space-between;
-    }
-
     .fees {
+        display: grid;
+        grid-template-columns: auto max-content;
+        gap: 2rem 1rem;
         font-size: var(--small-size);
         font-weight: 600;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 3rem;
         hyphens: manual;
 
-        .percentage {
-            align-items: center;
-            font-size: var(--h2-size);
-            color: white;
-
-            .dot {
-                width: 0.5rem;
-                height: 0.5rem;
-                opacity: 0.5;
-                margin: 0 0.75rem;
-            }
+        .low {
+            opacity: 0.5;
         }
     }
 
+    &.moonpay .fees .low {
+        opacity: 0.7;
+    }
+
     footer {
-        align-items: center;
         font-size: var(--small-label-size);
         line-height: 1;
         font-weight: bold;
-        color: rgba(255, 255, 255, 0.65);
-        height: 3.25rem;
-        margin-bottom: 0.25rem;
+        color: rgba(255, 255, 255, 0.7);
         white-space: pre-line;
+        align-items: center;
 
         .flex-grow {
-            @media (min-width: 700px) { // Full mobile breakpoint
-                min-width: 2rem;
-            }
+            min-width: 2rem;
         }
 
         > svg:last-child {
@@ -515,43 +459,11 @@ header {
         }
     }
 
-    &:hover,
-    &:focus {
+    &:not(.disabled):hover,
+    &:not(.disabled):focus {
         footer > svg:last-child {
             color: rgba(255, 255, 255, 0.8);
             transform: translateX(0.25rem);
-        }
-    }
-}
-
-.oasis {
-    .pill svg {
-        margin: 0 0.5rem 0 -0.5rem;
-        flex-shrink: 0;
-    }
-
-    footer {
-        > svg:first-child {
-            width: 1.75rem;
-            height: 2.5rem;
-            margin-right: 1rem;
-            flex-shrink: 0;
-
-            path {
-                fill: currentColor;
-            }
-        }
-    }
-}
-
-.credit-card {
-    footer {
-        justify-content: space-between;
-
-        img {
-            width: 11rem;
-            filter: brightness(0) invert(1); // Colored logo into white
-            opacity: 0.7;
         }
     }
 }
@@ -563,16 +475,13 @@ header {
     background: none;
     color: var(--text-25);
 
-    &::before {
-        display: none;
-    }
-
     * {
         color: inherit !important;
     }
 
-    .pill {
-        box-shadow: 0 0 0 1.5px var(--text-10);
+    .logo {
+        filter: invert(1);
+        opacity: 0.25;
     }
 
     footer {
@@ -599,6 +508,7 @@ header {
     color: var(--text-50);
     font-size: var(--small-size);
     font-weight: 600;
+    margin-top: 0;
 
     &.only-option {
         color: var(--text-100);
@@ -634,46 +544,6 @@ header {
     }
 }
 
-@media (max-width: 700px) and (min-width: 360px) { // Full mobile breakpoint
-    .option {
-        flex-direction: row;
-
-        .upper-content {
-            margin-right: 2rem;
-        }
-
-        .lower-content {
-            width: 13rem;
-            flex-shrink: 0;
-        }
-
-        .nq-text {
-            max-width: 30rem;
-            margin-bottom: 0;
-        }
-
-        .fees .percentage {
-            flex-direction: column;
-            align-items: flex-start;
-
-            .dot {
-                display: none;
-            }
-        }
-
-        &.credit-card {
-            footer {
-                margin-bottom: 0;
-
-                img {
-                    width: 9.5rem;
-                    margin-top: -0.625rem;
-                }
-            }
-        }
-    }
-}
-
 @media (max-width: 700px) { // Full mobile breakpoint
     .modal ::v-deep .small-page {
         // Regular Modal size (iOS scrolling inside the BuyOptionsModal does not work without a fixed height)
@@ -687,15 +557,11 @@ header {
         padding: 1rem 1.25rem 2.25rem;
     }
 
-    .featured-options {
-        flex-direction: column;
-    }
-
-    .option {
-        margin: 1rem;
-        width: unset;
-        height: unset;
-    }
+    // .option {
+    //     margin: 1rem;
+    //     width: unset;
+    //     height: unset;
+    // }
 
     .exchange-logos {
         overflow-x: auto;

@@ -1,3 +1,5 @@
+import { GENESIS_BLOCK_HEIGHT } from './AlbatrossMath';
+
 export {
     FiatApiSupportedFiatCurrency as FiatCurrency,
     FiatApiSupportedCryptoCurrency as CryptoCurrency,
@@ -36,7 +38,6 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 // Albatross
 export const BATCH_LENGTH = 60;
 export const BATCHES_PER_EPOCH = 360;
-export const GENESIS_BLOCK_HEIGHT = 0;
 export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
 
 export function nextElectionBlock(height: number): number {

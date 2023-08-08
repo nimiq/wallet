@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { Identicon } from '@nimiq/vue-components';
+import ShortAddress from '../../ShortAddress.vue';
 import { Validator } from '../../../stores/Staking';
 import ValidatorDescriptionTooltip from './ValidatorDescriptionTooltip.vue';
 
@@ -27,6 +28,7 @@ export default defineComponent({
     },
     components: {
         Identicon,
+        ShortAddress,
         ValidatorDescriptionTooltip,
     },
 });

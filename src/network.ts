@@ -205,6 +205,7 @@ export async function launchNetwork() {
             let validator: Validator = {
                 address,
                 dominance,
+                active: true,
             };
 
             type ValueOf<T> = T[keyof T];

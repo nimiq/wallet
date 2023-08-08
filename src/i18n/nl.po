@@ -108,11 +108,11 @@ msgstr "+ netwerkkosten"
 
 #: src/components/modals/BuyOptionsModal.vue:145
 msgid "+ network fees, registration required"
-msgstr ""
+msgstr "+ transactiekosten, registratie vereist"
 
 #: src/components/modals/BuyOptionsModal.vue:80
 msgid "+ network fees, registration required above $700"
-msgstr ""
+msgstr "+ transactiekosten, registratie vereist vanaf $700"
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -356,7 +356,7 @@ msgstr "Eventueel verzonden geld wordt terugbetaald."
 #: src/components/modals/BuyOptionsModal.vue:113
 #: src/components/modals/BuyOptionsModal.vue:43
 msgid "Apple/Google Pay"
-msgstr ""
+msgstr "Apple/Google Pay"
 
 #: src/components/modals/SendModal.vue:213
 msgid "Apply fee"

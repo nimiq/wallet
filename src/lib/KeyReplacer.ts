@@ -1,3 +1,5 @@
+import Config from 'config';
+
 const DELIMITER = '#';
 
 export async function replaceKey(input: string): Promise<string> {
@@ -7,7 +9,7 @@ export async function replaceKey(input: string): Promise<string> {
     if (sections.length !== 3) return input;
 
     const keyName = sections[1];
-    const fileName = `k_${btoa(keyName)}`;
+    const fileName = `${Config.environment}_k_${btoa(keyName)}`;
     const encodedKey = await fetch(`/${fileName}`)
         .then((res) => res.text())
         .then((text) => text.replace(/\s/g, '')); // Remove any whitespace & newlines

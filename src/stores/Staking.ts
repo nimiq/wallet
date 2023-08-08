@@ -18,10 +18,12 @@ export type Stake = {
 export type RawValidator = {
     address: string,
     dominance: number, // Percentage
+    active: boolean,
 }
 
 export type RegisteredValidator = {
     address: string,
+    active: boolean,
     label: string,
     icon?: string,
     payoutType: 'direct' | 'restake',
@@ -80,7 +82,11 @@ export const useStakingStore = createStore({
         activeValidator: (state, { activeStake }): Validator | null => {
             const stake = activeStake.value as Stake | null;
             if (!stake || !stake.validator) return null;
-            return state.validators[stake.validator] || null;
+            return state.validators[stake.validator] || {
+                address: stake.validator,
+                dominance: 0,
+                active: false,
+            };
         },
     },
     actions: {

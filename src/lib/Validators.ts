@@ -1,6 +1,6 @@
 import { RegisteredValidator } from '../stores/Staking';
 
-type ValidatorInfo = Omit<RegisteredValidator, 'address' | 'dominance' | 'trust' | 'reward'>;
+type ValidatorInfo = Omit<RegisteredValidator, 'address' | 'active' | 'dominance' | 'trust' | 'reward'>;
 
 export const validatorData: Record<string, ValidatorInfo> = {
     // Team Demo validators

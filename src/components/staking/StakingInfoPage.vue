@@ -171,7 +171,9 @@ export default defineComponent({
 
         const payoutText = computed(() => validator.value && 'label' in validator.value
             ? getPayoutText(validator.value.payoutType)
-            : context.root.$t('Unregistered validator'));
+            : validator.value?.active
+                ? context.root.$t('Unregistered validator')
+                : context.root.$t('Inactive validator'));
 
         const inactiveReleaseTime = computed(() => {
             if (stake.value?.inactiveRelease) {

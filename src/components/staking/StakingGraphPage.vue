@@ -110,7 +110,7 @@ export default defineComponent({
 
         async function performStaking() {
             if (stakeDelta.value > 0) {
-                if (!activeStake.value || !activeStake.value.balance) {
+                if (!activeStake.value || (!activeStake.value.balance && !activeStake.value.inactiveBalance)) {
                     await sendStaking({
                         type: StakingTransactionType.CREATE_STAKER,
                         delegation: activeValidator.value!.address,

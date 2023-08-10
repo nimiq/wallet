@@ -28,7 +28,7 @@
         <template v-if="page === Page.Validator">
             <StakingValidatorPage
                 @back="page = isStaking ? Page.Already : Page.Info"
-                @next="page = Page.Graph; closeOverlay()"
+                @next="page = isStaking ? Page.Already : Page.Graph; closeOverlay()"
             />
         </template>
         <template slot="overlay">

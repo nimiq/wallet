@@ -75,7 +75,7 @@ export default defineComponent({
         });
 
         async function selectValidator(address: string) {
-            if (!activeStake.value || activeStake.value.balance === 0) {
+            if (!activeStake.value || (!activeStake.value.balance && !activeStake.value.inactiveBalance)) {
                 setStake({
                     address: activeAddress.value!,
                     balance: 0,

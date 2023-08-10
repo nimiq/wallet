@@ -214,8 +214,8 @@ export default defineComponent({
         }
 
         const canSwitchValidator = computed(() => stake.value?.balance === 0
-                && stake.value?.inactiveRelease
-                && stake.value?.inactiveRelease < height.value);
+                && stake.value.inactiveBalance > 0
+                && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value));
 
         return {
             // NOW,

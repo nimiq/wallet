@@ -12,7 +12,9 @@ import HubApi, {
     type ResultByRequestType,
     type PopupRequestBehavior,
     type SignedPolygonTransaction,
+    type SignedTransaction,
 } from '@nimiq/hub-api';
+import type { PlainTransactionDetails } from '@nimiq/core-web';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
@@ -485,13 +487,24 @@ export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'
 }
 
 export async function sendStaking(tx: Omit<SignStakingRequest, 'appName'>) {
-    const signedTransaction = await hubApi.signStaking({
+    const signedTransactions = await hubApi.signStaking({
         appName: APP_NAME,
         ...tx,
     }).catch(onError);
-    if (!signedTransaction) return null;
+    if (!signedTransactions) return null;
 
-    return sendTx(signedTransaction);
+    const txDetails: PlainTransactionDetails[] = [];
+
+    if (Array.isArray(signedTransactions)) {
+        for (const signedTx of signedTransactions) {
+            // Need to await here, to be sure the transactions are sent after each other
+            txDetails.push(await sendTx(signedTx)); // eslint-disable-line no-await-in-loop
+        }
+    } else { // Backward-compatibility
+        txDetails.push(await sendTx(signedTransactions as SignedTransaction));
+    }
+
+    return txDetails;
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {

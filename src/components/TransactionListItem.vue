@@ -49,7 +49,7 @@
                 </span>
             </div>
         </div>
-        <div class="amounts" :class="{isIncoming}">
+        <div class="amounts" :class="{isIncoming, 'signalling': transaction.flags === 2}">
             <Amount :amount="transaction.value" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
@@ -357,7 +357,7 @@ svg {
             text-align: right;
         }
 
-        &:not(.isIncoming) {
+        &:not(.isIncoming):not(.signalling) {
             .amount {
                 opacity: 0.6;
             }
@@ -380,6 +380,16 @@ svg {
             .amount::before {
                 content: '+';
                 margin-right: -0.1em;
+            }
+        }
+
+        &.signalling {
+            .amount {
+                opacity: 0.4;
+            }
+
+            .fiat-amount {
+                display: none;
             }
         }
     }

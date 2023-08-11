@@ -364,8 +364,10 @@ export default defineComponent({
                     else {
                         // eslint-disable-next-line no-alert, no-restricted-globals
                         const shouldOverwrite = confirm(context.root.$t(
-                            `A contact with the address "{address}", but a different name already exists.
-                            Do you want to replace it?`, contact.address) as string);
+                            'A contact with the address "{address}", but a different name already exists.\n'
+                                + 'Do you want to replace it?',
+                            { address: contact.address },
+                        ) as string);
                         if (!shouldOverwrite) continue;
                     }
                 }

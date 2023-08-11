@@ -12,10 +12,10 @@ export function parseData(data: string | Readonly<string>): string {
     if (!data) return '';
 
     if (isProxyData(data, ProxyType.CASHLINK, ProxyTransactionDirection.FUND)) {
-        return i18n.t('Funding Cashlink') as string;
+        return i18n.t('Cashlink Funding') as string;
     }
     if (isProxyData(data, ProxyType.CASHLINK, ProxyTransactionDirection.REDEEM)) {
-        return i18n.t('Claiming Cashlink') as string;
+        return i18n.t('Cashlink Claiming') as string;
     }
     if (isProxyData(data, ProxyType.HTLC_PROXY, ProxyTransactionDirection.FUND)) {
         return i18n.t('HTLC Creation') as string;

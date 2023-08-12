@@ -69,12 +69,13 @@ import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } fr
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import UsdcTransactionListItem from '@/components/UsdcTransactionListItem.vue';
 import { useUsdcAddressStore } from '../stores/UsdcAddress';
-import { useUsdcTransactionsStore /* , Transaction */, TransactionState } from '../stores/UsdcTransactions';
+import { useUsdcTransactionsStore, Transaction, TransactionState } from '../stores/UsdcTransactions';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { useUsdcNetworkStore } from '../stores/UsdcNetwork';
 import { ENV_MAIN } from '../lib/Constants';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
+import { useUsdcTransactionInfo } from '../composables/useUsdcTransactionInfo';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -151,6 +152,9 @@ export default defineComponent({
             const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
 
             return txsForActiveAddress.value.filter((tx) => {
+                const transaction = ref<Readonly<Transaction>>(tx);
+                const { peerLabel, data } = useUsdcTransactionInfo(transaction);
+
                 const senderLabel = getContactLabel.value(tx.sender) || '';
 
                 const recipientLabel = getContactLabel.value(tx.recipient) || '';
@@ -158,6 +162,8 @@ export default defineComponent({
                 const concatenatedTxStrings = `
                     ${tx.sender.replace(/\s/g, '')}
                     ${tx.recipient.replace(/\s/g, '')}
+                    ${peerLabel.value ? (peerLabel.value as string).toUpperCase() : ''}
+                    ${data.value ? (data.value as string).toUpperCase() : ''}
                     ${senderLabel.toUpperCase()}
                     ${recipientLabel.toUpperCase()}
                 `;

@@ -85,12 +85,13 @@ import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
 import { ENV_MAIN } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
-import { useBtcTransactionsStore } from '../stores/BtcTransactions';
+import { Transaction, useBtcTransactionsStore } from '../stores/BtcTransactions';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useAccountStore } from '../stores/Account';
 import { useBtcLabelsStore } from '../stores/BtcLabels';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useConfig } from '../composables/useConfig';
+import { useBtcTransactionInfo } from '../composables/useBtcTransactionInfo';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -165,30 +166,38 @@ export default defineComponent({
             } = useBtcLabelsStore();
 
             return txsForActiveAddress.value.filter((tx) => {
+                const transaction = ref<Readonly<Transaction>>(tx);
+                const { peerLabel, data } = useBtcTransactionInfo(transaction);
+
                 const labels = tx.addresses.map((address) => {
+                    let label = '';
+                    if (peerLabel.value) label += `${peerLabel.value} `;
+
                     const recipientLabel = getRecipientLabel.value(address);
-                    if (recipientLabel) return recipientLabel;
+                    if (recipientLabel) label += `${recipientLabel} `;
 
                     const senderLabel = getSenderLabel.value(address);
-                    if (senderLabel) return senderLabel;
+                    if (senderLabel) label += `${senderLabel} `;
 
                     const ownedAddressInfo = btcAddresses$.addressInfos[address];
                     if (ownedAddressInfo) {
                         // Find account label
                         const { accountInfos } = useAccountStore();
-                        return Object.values(accountInfos.value)
+                        const accountLabel = Object.values(accountInfos.value)
                             .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
                             || Object.values(accountInfos.value)
                                 .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
+                        if (accountLabel) label += `${accountLabel} `;
                     }
 
-                    return undefined;
+                    return label;
                     // TODO: Search global address book
                 }).filter((label) => label) as string[];
 
                 const concatenatedTxStrings = `
-                    ${tx.addresses.map((address) => address.toUpperCase()).join('')}
-                    ${labels.map((label) => label.toUpperCase()).join('')}
+                    ${tx.addresses.map((address) => address.toUpperCase()).join(' ')}
+                    ${(data.value as string).toUpperCase()}
+                    ${labels.map((label) => label.toUpperCase()).join(' ')}
                 `;
                 return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
             });

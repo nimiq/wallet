@@ -90,7 +90,7 @@ import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
-import { useTransactionsStore /* , Transaction */, TransactionState } from '../stores/Transactions';
+import { useTransactionsStore, Transaction, TransactionState } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
@@ -99,6 +99,7 @@ import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyD
 import { createCashlink } from '../hub';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
+import { useTransactionInfo } from '../composables/useTransactionInfo';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -190,6 +191,9 @@ export default defineComponent({
             const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
 
             return txsForActiveAddress.value.filter((tx) => {
+                const transaction = ref<Readonly<Transaction>>(tx);
+                const { peerLabel, data } = useTransactionInfo(transaction);
+
                 const senderLabel = addresses$.addressInfos[tx.sender]
                     ? addresses$.addressInfos[tx.sender].label
                     : getContactLabel.value(tx.sender) || AddressBook.getLabel(tx.sender) || '';
@@ -201,8 +205,10 @@ export default defineComponent({
                 const concatenatedTxStrings = `
                     ${tx.sender.replace(/\s/g, '')}
                     ${tx.recipient.replace(/\s/g, '')}
+                    ${peerLabel.value ? (peerLabel.value as string).toUpperCase() : ''}
                     ${senderLabel ? senderLabel.toUpperCase() : ''}
                     ${recipientLabel ? recipientLabel.toUpperCase() : ''}
+                    ${data.value.toUpperCase()}
                     ${parseData(tx.data.raw).toUpperCase()}
                 `;
                 return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));

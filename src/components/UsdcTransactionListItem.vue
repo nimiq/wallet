@@ -78,8 +78,6 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { SettlementStatus } from '@nimiq/oasis-api';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useSettingsStore } from '../stores/Settings';
 import { Transaction, TransactionState } from '../stores/UsdcTransactions';
@@ -91,14 +89,9 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { useUsdcContactsStore } from '../stores/UsdcContacts';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
-import { useAccountStore } from '../stores/Account';
-import { useSwapsStore } from '../stores/Swaps';
-import { useOasisPayoutStatusUpdater } from '../composables/useOasisPayoutStatusUpdater';
+import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
+import { useUsdcTransactionInfo } from '../composables/useUsdcTransactionInfo';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
-import { useTransactionsStore } from '../stores/Transactions';
-import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
     props: {
@@ -108,176 +101,21 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS };
-
-        const { addressInfo, state: addresses$ } = useUsdcAddressStore();
-        const { getLabel } = useUsdcContactsStore();
+        const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
         const state = computed(() => props.transaction.state);
 
-        const isIncoming = computed(() => { // eslint-disable-line arrow-body-style
-            // const haveSender = !!addresses$.addressInfos[props.transaction.sender];
-            // const haveRecipient = !!addresses$.addressInfos[props.transaction.recipient];
+        const transaction = computed(() => props.transaction);
 
-            // if (haveSender && !haveRecipient) return false;
-            // if (!haveSender && haveRecipient) return true;
-
-            // Fall back to comparing with active address
-            return props.transaction.recipient === addressInfo.value?.address;
-        });
-
-        // Related Transaction
-        // const { state: transactions$ } = useUsdcTransactionsStore();
-        // const relatedTx = computed(() => {
-        //     if (!props.transaction.relatedTransactionHash) return null;
-        //     return transactions$.transactions[props.transaction.relatedTransactionHash] || null;
-        // });
-
-        const { getSwapByTransactionHash } = useSwapsStore();
-        const swapInfo = computed(() => getSwapByTransactionHash.value(props.transaction.transactionHash),
-            /* || (props.transaction.relatedTransactionHash
-                ? getSwapByTransactionHash.value(props.transaction.relatedTransactionHash)
-                : null) */);
-        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
-        useOasisPayoutStatusUpdater(swapData);
-        // // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we
-        // // are displaying here related to our address, always holds the proxy data.
-        // const isSwapProxy = computed(() => isProxyData(props.transaction.data.raw, ProxyType.HTLC_PROXY));
-        const isCancelledSwap = computed(() =>
-            (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset));
-            // // Funded proxy and then refunded without creating an actual htlc?
-            // || (isSwapProxy.value && (isIncoming.value
-            //     ? props.transaction.recipient === relatedTx.value?.sender
-            //     : props.transaction.sender === relatedTx.value?.recipient)));
-
-        const swapTransaction = computed(() => {
-            if (!swapData.value) return null;
-
-            if (swapData.value.asset === SwapAsset.NIM) {
-                let swapTx = useTransactionsStore().state.transactions[swapData.value.transactionHash];
-                if (swapTx?.relatedTransactionHash) {
-                    // Avoid showing the swap proxy, instead show our related address. Note that we don't test for
-                    // the swap proxy detection extra data here as the swap tx holds htlc data instead. Only the related
-                    // tx holds the proxy identifying extra data.
-                    swapTx = useTransactionsStore().state.transactions[swapTx.relatedTransactionHash];
-                }
-                return swapTx || null;
-            }
-
-            return null;
-        });
-
-        // Data
-        const data = computed(() => { // eslint-disable-line arrow-body-style
-            if (swapData.value && !isCancelledSwap.value) {
-                const message = context.root.$t('Sent {fromAsset} – Received {toAsset}', {
-                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.USDC,
-                    toAsset: isIncoming.value ? SwapAsset.USDC : swapData.value.asset,
-                }) as string;
-
-                // The TransactionListOasisPayoutStatus takes care of the second half of the message
-                if (
-                    swapData.value.asset === SwapAsset.EUR
-                    && swapData.value.htlc?.settlement
-                    && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
-                ) return `${message.split('–')[0]} –`;
-
-                return message;
-            }
-
-            if (props.transaction.event?.name === 'Open'
-            /* || (relatedTx.value && 'hashRoot' in relatedTx.value.data) */) {
-                return context.root.$t('HTLC Creation') as string;
-            }
-            if (props.transaction.event?.name === 'Redeem'
-            /* || (relatedTx.value && 'hashRoot' in relatedTx.value.proof) */) {
-                return context.root.$t('HTLC Settlement') as string;
-            }
-            if (props.transaction.event?.name === 'Refund'
-            /* || (relatedTx.value && 'creator' in relatedTx.value.proof)
-                // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
-                // tx are regular transactions and we regard the tx from the proxy as refund
-                || (relatedTx.value && isSwapProxy.value && isIncoming.value) */) {
-                return context.root.$t('HTLC Refund') as string;
-            }
-
-            return null;
-        });
-
-        // Peer
-        const peerAddress = computed(() => {
-            if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    const swapPeerAddress = isIncoming.value
-                        ? swapTransaction.value.sender
-                        : swapTransaction.value.recipient;
-                    if (!useAddressStore().state.addressInfos[swapPeerAddress] // not one of our addresses -> proxy
-                        && !swapTransaction.value.relatedTransactionHash) {
-                        // Avoid displaying proxy address identicon until we know related address.
-                        return '';
-                    }
-                    return swapPeerAddress;
-                }
-                if (swapData.value.asset === SwapAsset.BTC) return 'bitcoin';
-                if (swapData.value.asset === SwapAsset.EUR) return constants.BANK_ADDRESS;
-            }
-
-            // For swap proxies
-            // if (relatedTx.value) {
-            //     return isIncoming.value
-            //         ? relatedTx.value.sender // This is a claiming tx, so the related tx is the funding one
-            //         : relatedTx.value.recipient; // This is a funding tx, so the related tx is the claiming one
-            // }
-
-            // eslint-disable-next-line max-len
-            // if (isSwapProxy.value) return ''; // avoid displaying proxy address identicon until we know related address
-
-            return isIncoming.value ? props.transaction.sender : props.transaction.recipient;
-        });
-        const peerLabel = computed(() => {
-            /* eslint-disable max-len */
-            // if (isSwapProxy.value && !relatedTx.value) {
-            //     return context.root.$t('Swap'); // avoid displaying the proxy address until we know related peer address
-            // }
-            /* eslint-enable max-len */
-
-            if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap') as string;
-            }
-
-            if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    return useAddressStore().state.addressInfos[peerAddress.value]?.label
-                        // avoid displaying proxy address until we know related peer address
-                        || context.root.$t('Swap') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.BTC) {
-                    return context.root.$t('Bitcoin') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.EUR) {
-                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
-                }
-
-                return swapData.value.asset.toUpperCase();
-            }
-
-            // Search other stored addresses
-            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
-            if (ownedAddressInfo) {
-                // Find account label
-                const { accountInfos } = useAccountStore();
-                return Object.values(accountInfos.value)
-                    .find((accountInfo) => accountInfo
-                        .polygonAddresses?.includes(ownedAddressInfo.address))?.label || false;
-            }
-
-            // Search contacts
-            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value)!;
-
-            return false;
-        });
+        const {
+            data,
+            isCancelledSwap,
+            isIncoming,
+            peerAddress,
+            peerLabel,
+            swapData,
+            swapInfo,
+        } = useUsdcTransactionInfo(transaction);
 
         // Date
         const { language } = useSettingsStore();

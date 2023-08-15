@@ -7,18 +7,13 @@
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <SearchBar v-model="searchString"/>
-                <button
+
+                <CashlinkButton
                     v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
-                    class="nq-button-s orange unclaimed-cashlinks"
-                    :class="{'active': showUnclaimedCashlinkList}"
-                    @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
-                    @mousedown.prevent
-                >
-                    {{ $tc(
-                        '{count} pending Cashlink | {count} pending Cashlinks',
-                        unclaimedCashlinkCount,
-                    ) }}
-                </button>
+                    :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
+                    :unclaimedCashlinkCount="unclaimedCashlinkCount"
+                    @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
+                />
                 <button
                     class="reset icon-button"
                     @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
@@ -124,19 +119,12 @@
             </div>
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
-
-                <button
+                <CashlinkButton
                     v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
-                    class="nq-button-s orange unclaimed-cashlinks"
-                    :class="{'active': showUnclaimedCashlinkList}"
-                    @click="showUnclaimedCashlinkList = !showUnclaimedCashlinkList"
-                    @mousedown.prevent
-                >
-                    {{ $tc(
-                        '{count} pending Cashlink | {count} pending Cashlinks',
-                        unclaimedCashlinkCount,
-                    ) }}
-                </button>
+                    :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
+                    :unclaimedCashlinkCount="unclaimedCashlinkCount"
+                    @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
+                />
 
                 <button class="send nq-button-pill light-blue flex-row"
                     @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
@@ -233,6 +221,7 @@ import UsdcTransactionList from '../UsdcTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
+import CashlinkButton from '../CashlinkButton.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -331,6 +320,10 @@ export default defineComponent({
             setPromoBoxVisible(false);
         }
 
+        function toggleUnclaimedCashlinkList() {
+            showUnclaimedCashlinkList.value = !showUnclaimedCashlinkList.value;
+        }
+
         return {
             activeCurrency,
             searchString,
@@ -352,6 +345,7 @@ export default defineComponent({
             onTransactionListScroll,
             address$,
             addressMasked,
+            toggleUnclaimedCashlinkList,
         };
     },
     components: {
@@ -375,6 +369,7 @@ export default defineComponent({
         HighFiveIcon,
         BoxedArrowUpIcon,
         UsdcIcon,
+        CashlinkButton,
     },
 });
 </script>

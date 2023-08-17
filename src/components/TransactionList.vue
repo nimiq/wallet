@@ -10,8 +10,11 @@
         >
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
-                    <CrossCloseButton class="top-right nq-orange" @click="$emit('close-unclaimed-cashlink-list')"/>
-                    <div class="month-label nq-orange"><label>{{ $t('Pending Cashlinks') }}</label></div>
+                    <CrossCloseButton
+                        class="top-right nq-blue opacity-50"
+                        @click="$emit('close-unclaimed-cashlink-list')"
+                    />
+                    <div class="month-label nq-blue opacity-40"><label>{{ $t('Pending Cashlinks') }}</label></div>
                     <TransactionListItem
                         v-for="tx in unclaimedCashlinkTxs"
                         :transaction="tx"
@@ -472,7 +475,7 @@ export default defineComponent({
     padding: 2rem;
     position: relative;
     margin: 4rem -2rem 0;
-    box-shadow: inset 0 0 0 0.1875rem rgba(252, 135, 2, 0.4);
+    box-shadow: inset 0 0 0 0.1875rem rgba(31, 35, 72, 0.16);
 
     .cross-close-button {
         top: 1.5rem;
@@ -689,5 +692,13 @@ export default defineComponent({
             margin-top: 2.5rem;
         }
     }
+}
+
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.opacity-40 {
+    opacity: 0.4;
 }
 </style>

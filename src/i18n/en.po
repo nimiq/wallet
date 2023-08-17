@@ -274,7 +274,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:175
+#: src/components/layouts/AddressOverview.vue:178
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -465,8 +465,8 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:65
-#: src/components/TransactionList.vue:75
+#: src/components/TransactionList.vue:68
+#: src/components/TransactionList.vue:78
 msgid "Buy NIM"
 msgstr ""
 
@@ -596,7 +596,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:177
+#: src/components/layouts/AddressOverview.vue:180
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr ""
@@ -629,7 +629,7 @@ msgid "Confirm account"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:57
+#: src/components/TransactionList.vue:60
 #: src/components/UsdcTransactionList.vue:45
 msgid "Congrats"
 msgstr ""
@@ -983,7 +983,7 @@ msgid "fees"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
-#: src/components/TransactionList.vue:48
+#: src/components/TransactionList.vue:51
 #: src/components/UsdcTransactionList.vue:36
 msgid "Fetching"
 msgstr ""
@@ -1218,7 +1218,7 @@ msgstr ""
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
-#: src/components/TransactionList.vue:59
+#: src/components/TransactionList.vue:62
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 
@@ -1250,7 +1250,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:162
+#: src/components/layouts/AddressOverview.vue:165
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1422,7 +1422,7 @@ msgid "No request received."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:77
-#: src/components/TransactionList.vue:80
+#: src/components/TransactionList.vue:83
 #: src/components/UsdcTransactionList.vue:62
 msgid "No transactions found"
 msgstr ""
@@ -1510,7 +1510,7 @@ msgstr ""
 msgid "pending"
 msgstr ""
 
-#: src/components/TransactionList.vue:14
+#: src/components/TransactionList.vue:17
 msgid "Pending Cashlinks"
 msgstr ""
 
@@ -1594,7 +1594,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:140
+#: src/components/layouts/AddressOverview.vue:142
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
@@ -1743,15 +1743,15 @@ msgid ""
 msgstr ""
 
 #: src/components/CountrySelector.vue:22
-#: src/components/SearchBar.vue:18
+#: src/components/SearchBar.vue:98
 msgid "Search"
 msgstr ""
 
-#: src/components/SearchBar.vue:17
+#: src/components/SearchBar.vue:97
 msgid "Search transactions"
 msgstr ""
 
-#: src/components/SearchBar.vue:15
+#: src/components/SearchBar.vue:95
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 
@@ -1811,7 +1811,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:135
+#: src/components/layouts/AddressOverview.vue:137
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
@@ -1973,7 +1973,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:163
+#: src/components/layouts/AddressOverview.vue:166
 msgid "Signup"
 msgstr ""
 
@@ -2496,7 +2496,7 @@ msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:58
+#: src/components/TransactionList.vue:61
 #: src/components/UsdcTransactionList.vue:46
 msgid "You now own crypto!"
 msgstr ""
@@ -2566,7 +2566,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:171
+#: src/components/layouts/AddressOverview.vue:174
 msgid "Your swap was successful!"
 msgstr ""
 
@@ -2575,7 +2575,7 @@ msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:72
+#: src/components/TransactionList.vue:75
 #: src/components/UsdcTransactionList.vue:55
 msgid "Your transactions will appear here"
 msgstr ""

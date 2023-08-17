@@ -119,26 +119,29 @@
             </div>
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
-                <CashlinkButton
-                    v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
-                    :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
-                    :unclaimedCashlinkCount="unclaimedCashlinkCount"
-                    @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
-                />
 
-                <button class="send nq-button-pill light-blue flex-row"
-                    @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
-                    :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
-                        || (activeCurrency === 'btc' && !btcAccountBalance)
-                        || (activeCurrency === 'usdc' && (!usdcAddressInfo || !usdcAddressInfo.balance))"
-                >
-                    <ArrowRightSmallIcon />{{ $t('Send') }}
-                </button>
-                <button class="receive nq-button-s flex-row"
-                    @click="$router.push(`/receive/${activeCurrency}`)" @mousedown.prevent
-                >
-                    <ArrowRightSmallIcon />{{ $t('Receive') }}
-                </button>
+                <div class="flex-row">
+                    <CashlinkButton
+                        v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
+                        :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
+                        :unclaimedCashlinkCount="unclaimedCashlinkCount"
+                        @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
+                    />
+
+                    <button class="send nq-button-pill light-blue flex-row"
+                        @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
+                        :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
+                            || (activeCurrency === 'btc' && !btcAccountBalance)
+                            || (activeCurrency === 'usdc' && (!usdcAddressInfo || !usdcAddressInfo.balance))"
+                    >
+                        <ArrowRightSmallIcon />{{ $t('Send') }}
+                    </button>
+                    <button class="receive nq-button-s flex-row"
+                        @click="$router.push(`/receive/${activeCurrency}`)" @mousedown.prevent
+                    >
+                        <ArrowRightSmallIcon />{{ $t('Receive') }}
+                    </button>
+                </div>
             </div>
             <div class="scroll-mask top"></div>
             <TransactionList

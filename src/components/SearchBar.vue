@@ -1,27 +1,28 @@
 <template>
-    <div class="search-bar" @click="$refs.searchBarInput.focus()">
+    <div
+        class="search-bar"
+        @click="$refs.searchBarInput.focus()"
+        :style="{ 'max-width': `${maxWidth}` }"
+    >
         <svg fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2"/>
             <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
                 fill="currentColor"/>
         </svg>
-        <input
-            ref="searchBarInput"
-            type="text"
-            :value="value"
-            :placeholder="width < 50
-                ? ''
-                : width > 340
-                    ? $t('Search transactions by contact, address, etc.')
-                    : width > 150
-                        ? $t('Search transactions')
-                        : $t('Search')"
+        <input ref="searchBarInput" type="text" :value="value" :placeholder="placeholderText"
             @input="$emit('input', $event.target.value)" />
+        <CrossCloseButton
+            class="cross-close-button"
+            v-if="isInputActive"
+            @click="handleClose"
+        />
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted, computed } from '@vue/composition-api';
+
+import CrossCloseButton from './CrossCloseButton.vue';
 
 export default defineComponent({
     name: 'search-bar',
@@ -31,11 +32,52 @@ export default defineComponent({
             default: '',
         },
     },
-    setup() {
+    setup(props, context) {
         const searchBarInput = ref<HTMLInputElement | null>(null);
         const width = ref(1000);
+        const placeholderText = ref('');
+        const isInputFocused = ref(false);
 
         let observer: ResizeObserver;
+
+        const getFontSize = (element: HTMLElement) => {
+            const style = getComputedStyle(element);
+            const fontSize = style.getPropertyValue('--body-size');
+            return fontSize;
+        };
+
+        const getTextWidth = (text: string, size: string) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return 0;
+            ctx.font = size;
+            return ctx.measureText(text).width;
+        };
+
+        const maxWidth = computed(() => {
+            if (!searchBarInput.value) return '100%';
+            const fontSize = getFontSize(searchBarInput.value);
+            const textSize = getTextWidth(placeholderText.value, fontSize);
+            return isInputActive.value ? '100%' : `${textSize + 120}px`;
+        });
+
+        const handleFocus = () => {
+            isInputFocused.value = true;
+        };
+
+        const handleBlur = () => {
+            isInputFocused.value = false;
+        };
+
+        const isInputActive = computed(() => {
+            // Only collapse if not focused and no text
+            if (!isInputFocused.value && searchBarInput.value?.value === '') return false;
+            return true;
+        });
+
+        const handleClose = () => {
+            context.emit('input', '');
+        };
 
         onMounted(() => {
             if ('ResizeObserver' in window && searchBarInput.value) {
@@ -46,21 +88,43 @@ export default defineComponent({
                             ? entry.contentBoxSize[0].inlineSize
                             : (entry.contentBoxSize as any).inlineSize)
                         : entry.contentRect.width;
+
+                    placeholderText.value = (width.value < 50
+                        ? ''
+                        : width.value > 340
+                            ? context.root.$t('Search transactions by contact, address, etc.')
+                            : width.value > 130
+                                ? context.root.$t('Search transactions')
+                                : context.root.$t('Search')) as string;
                 });
                 observer.observe(searchBarInput.value);
             }
+
+            searchBarInput.value?.addEventListener('focus', handleFocus);
+
+            searchBarInput.value?.addEventListener('blur', handleBlur);
         });
 
         onUnmounted(() => {
             if (observer && searchBarInput.value) {
                 observer.unobserve(searchBarInput.value);
             }
+
+            searchBarInput.value?.removeEventListener('focus', handleFocus);
+            searchBarInput.value?.removeEventListener('blur', handleBlur);
         });
 
         return {
             searchBarInput,
             width,
+            maxWidth,
+            placeholderText,
+            isInputActive,
+            handleClose,
         };
+    },
+    components: {
+        CrossCloseButton,
     },
 });
 </script>
@@ -78,7 +142,7 @@ export default defineComponent({
     padding: 0.75rem 0;
     min-width: 0;
 
-    transition: color var(--attr-duration) var(--nimiq-ease);
+    transition: color var(--attr-duration) var(--nimiq-ease), max-width var(--attr-duration) var(--nimiq-ease);
 
     &::after {
         content: '';
@@ -155,5 +219,12 @@ input {
             font-weight: 600;
         }
     }
+}
+
+.cross-close-button {
+    position: absolute;
+    z-index: 1;
+    right: 1.75rem;
+    cursor: pointer;
 }
 </style>

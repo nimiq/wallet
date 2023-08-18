@@ -10,11 +10,11 @@
         >
             <template v-if="showUnclaimedCashlinkList" v-slot:before>
                 <div class="unclaimed-cashlink-list">
+                    <div class="month-label nq-blue opacity-40"><label>{{ $t('Pending Cashlinks') }}</label></div>
                     <CrossCloseButton
                         class="top-right nq-blue opacity-50"
                         @click="$emit('close-unclaimed-cashlink-list')"
                     />
-                    <div class="month-label nq-blue opacity-40"><label>{{ $t('Pending Cashlinks') }}</label></div>
                     <TransactionListItem
                         v-for="tx in unclaimedCashlinkTxs"
                         :transaction="tx"

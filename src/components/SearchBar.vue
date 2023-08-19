@@ -1,16 +1,23 @@
 <template>
     <div
-        class="search-bar"
+        class="search-bar cover-all"
         @click="$refs.searchBarInput.focus()"
+        @pointerdown.prevent
         :style="{ 'max-width': `${maxWidth}` }"
     >
         <svg fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2"/>
+            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
             <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
-                fill="currentColor"/>
+                fill="currentColor" />
         </svg>
-        <input ref="searchBarInput" type="text" :value="value" :placeholder="placeholderText"
-            @input="$emit('input', $event.target.value)" />
+        <input
+            ref="searchBarInput"
+            type="text" :value="value"
+            :placeholder="placeholderText"
+            @input="$emit('input', $event.target.value)"
+            @focus="handleFocus"
+            @blur="handleBlur"
+        />
         <CrossCloseButton
             class="cross-close-button"
             v-if="isInputActive"
@@ -20,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted, computed } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from '@vue/composition-api';
 
 import CrossCloseButton from './CrossCloseButton.vue';
 
@@ -69,14 +76,18 @@ export default defineComponent({
             isInputFocused.value = false;
         };
 
+        const inputValue = computed(() => props.value);
+
         const isInputActive = computed(() => {
             // Only collapse if not focused and no text
-            if (!isInputFocused.value && searchBarInput.value?.value === '') return false;
+            if (!isInputFocused.value && inputValue.value === '') return false;
             return true;
         });
 
-        const handleClose = () => {
+        const handleClose = (e: Event) => {
             context.emit('input', '');
+            // Prevent the search bar from losing or gaining focus when not intended
+            e.stopImmediatePropagation();
         };
 
         onMounted(() => {
@@ -99,19 +110,12 @@ export default defineComponent({
                 });
                 observer.observe(searchBarInput.value);
             }
-
-            searchBarInput.value?.addEventListener('focus', handleFocus);
-
-            searchBarInput.value?.addEventListener('blur', handleBlur);
         });
 
         onUnmounted(() => {
             if (observer && searchBarInput.value) {
                 observer.unobserve(searchBarInput.value);
             }
-
-            searchBarInput.value?.removeEventListener('focus', handleFocus);
-            searchBarInput.value?.removeEventListener('blur', handleBlur);
         });
 
         return {
@@ -120,6 +124,8 @@ export default defineComponent({
             maxWidth,
             placeholderText,
             isInputActive,
+            handleFocus,
+            handleBlur,
             handleClose,
         };
     },
@@ -140,7 +146,8 @@ export default defineComponent({
     width: 100%;
     cursor: text;
     padding: 0.75rem 0;
-    min-width: 0;
+    margin-right: 1rem;
+    min-width: 5.5rem;
 
     transition: color var(--attr-duration) var(--nimiq-ease), max-width var(--attr-duration) var(--nimiq-ease);
 
@@ -213,7 +220,9 @@ input {
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: 700px) {
+
+    // Full mobile breakpoint
     input {
         &::placeholder {
             font-weight: 600;
@@ -226,5 +235,19 @@ input {
     z-index: 1;
     right: 1.75rem;
     cursor: pointer;
+}
+
+@media (min-width: 700px) and (max-width: 900px) {
+    .cover-all {
+        &:focus-within {
+            position: absolute;
+            z-index: 10;
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 1rem var(--bg-primary);
+            border-radius: 6rem;
+
+            width: calc(100% - 5rem);
+        }
+    }
 }
 </style>

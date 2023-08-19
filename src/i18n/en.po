@@ -274,7 +274,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:178
+#: src/components/layouts/AddressOverview.vue:180
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr ""
 
 #: src/components/AddressList.vue:172
 #: src/components/layouts/AccountOverview.vue:105
-#: src/components/layouts/AddressOverview.vue:78
+#: src/components/layouts/AddressOverview.vue:80
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:116
@@ -596,7 +596,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:180
+#: src/components/layouts/AddressOverview.vue:182
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr ""
@@ -925,8 +925,8 @@ msgstr ""
 msgid "Expired HTLC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:39
-#: src/components/layouts/AddressOverview.vue:70
+#: src/components/layouts/AddressOverview.vue:41
+#: src/components/layouts/AddressOverview.vue:72
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
 msgstr ""
@@ -1250,7 +1250,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:165
+#: src/components/layouts/AddressOverview.vue:167
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1594,7 +1594,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:142
+#: src/components/layouts/AddressOverview.vue:144
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
@@ -1684,8 +1684,8 @@ msgstr ""
 msgid "Release Notes"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:27
-#: src/components/layouts/AddressOverview.vue:58
+#: src/components/layouts/AddressOverview.vue:29
+#: src/components/layouts/AddressOverview.vue:60
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr ""
@@ -1699,8 +1699,8 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:33
-#: src/components/layouts/AddressOverview.vue:64
+#: src/components/layouts/AddressOverview.vue:35
+#: src/components/layouts/AddressOverview.vue:66
 msgid "Rescan"
 msgstr ""
 
@@ -1743,15 +1743,15 @@ msgid ""
 msgstr ""
 
 #: src/components/CountrySelector.vue:22
-#: src/components/SearchBar.vue:98
+#: src/components/SearchBar.vue:155
 msgid "Search"
 msgstr ""
 
-#: src/components/SearchBar.vue:97
+#: src/components/SearchBar.vue:154
 msgid "Search transactions"
 msgstr ""
 
-#: src/components/SearchBar.vue:95
+#: src/components/SearchBar.vue:152
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 
@@ -1811,7 +1811,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:137
+#: src/components/layouts/AddressOverview.vue:139
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
@@ -1973,7 +1973,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:166
+#: src/components/layouts/AddressOverview.vue:168
 msgid "Signup"
 msgstr ""
 
@@ -2566,7 +2566,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:174
+#: src/components/layouts/AddressOverview.vue:176
 msgid "Your swap was successful!"
 msgstr ""
 

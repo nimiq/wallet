@@ -6,14 +6,16 @@
         >
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
-                <SearchBar v-model="searchString"/>
+                <div class="flex-row justify-between w-full">
+                    <SearchBar v-model="searchString"/>
 
-                <CashlinkButton
-                    v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
-                    :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
-                    :unclaimedCashlinkCount="unclaimedCashlinkCount"
-                    @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
-                />
+                    <CashlinkButton
+                        v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
+                        :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
+                        :unclaimedCashlinkCount="unclaimedCashlinkCount"
+                        @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
+                    />
+                </div>
                 <button
                     class="reset icon-button"
                     @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
@@ -120,7 +122,7 @@
             <div class="actions flex-row">
                 <SearchBar v-model="searchString"/>
 
-                <div class="flex-row">
+                <div class="flex-row ml-auto">
                     <CashlinkButton
                         v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
                         :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
@@ -602,6 +604,7 @@ export default defineComponent({
 
 .actions,
 .actions-mobile {
+    position: relative;
     justify-content: space-between;
     margin-bottom: 0.75rem;
     align-items: center;
@@ -716,10 +719,6 @@ export default defineComponent({
     .nq-icon {
         transform: rotateZ(90deg);
     }
-}
-
-.search-bar {
-    margin-right: 3rem;
 }
 
 .unclaimed-cashlinks {
@@ -979,5 +978,14 @@ export default defineComponent({
             left: 40%;
         }
     }
+}
+.justify-between {
+    justify-content: space-between;
+}
+.w-full {
+    width: 100%;
+}
+.ml-auto {
+    margin-left: auto;
 }
 </style>

@@ -37,6 +37,27 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
 
     const isIncoming = computed(() => inputsSent.value.length === 0);
 
+    const outputsReceived = computed(() => {
+        if (!isIncoming.value) return [];
+
+        const receivedToExternal = transaction.value.outputs
+            .filter((output) => output.address && activeExternalAddresses.value.includes(output.address));
+
+        if (receivedToExternal.length > 0) return receivedToExternal;
+
+        return transaction.value.outputs
+            .filter((output) => output.address && activeInternalAddresses.value.includes(output.address));
+    });
+
+    const outputsSent = computed(() => isIncoming.value
+        ? []
+        : transaction.value.outputs.filter((output) =>
+            !output.address || !activeInternalAddresses.value.includes(output.address)),
+    );
+
+    const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
+    const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
+
     const { getSwapByTransactionHash } = useSwapsStore();
     const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
     const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
@@ -60,24 +81,6 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
 
         return null;
     });
-
-    const outputsReceived = computed(() => {
-        if (!isIncoming.value) return [];
-
-        const receivedToExternal = transaction.value.outputs
-            .filter((output) => output.address && activeExternalAddresses.value.includes(output.address));
-
-        if (receivedToExternal.length > 0) return receivedToExternal;
-
-        return transaction.value.outputs
-            .filter((output) => output.address && activeInternalAddresses.value.includes(output.address));
-    });
-
-    const outputsSent = computed(() => isIncoming.value
-        ? []
-        : transaction.value.outputs.filter((output) =>
-            !output.address || !activeInternalAddresses.value.includes(output.address)),
-    );
 
     // Peer
     const peerAddresses = computed(() => {
@@ -197,9 +200,12 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
     });
 
     return {
+        amountReceived,
+        amountSent,
         data,
         isCancelledSwap,
         isIncoming,
+        inputsSent,
         peerAddresses,
         peerLabel,
         outputsReceived,

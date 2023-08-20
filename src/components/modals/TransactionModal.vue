@@ -307,7 +307,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { AddressBook, BrowserDetection } from '@nimiq/utils';
+import { BrowserDetection } from '@nimiq/utils';
 import {
     PageHeader,
     PageBody,
@@ -345,10 +345,9 @@ import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, CryptoCurrency } from '../../lib/Constants';
-import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
-import { useSwapsStore, SwapNimData } from '../../stores/Swaps';
+import { SwapNimData } from '../../stores/Swaps';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { sendTransaction } from '../../network';
@@ -356,6 +355,7 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
+import { useTransactionInfo } from '../../composables/useTransactionInfo';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -374,6 +374,16 @@ export default defineComponent({
 
         const state = computed(() => transaction.value.state);
 
+        const {
+            isCashlink,
+            isSwapProxy,
+            isCancelledSwap,
+            peerLabel,
+            relatedTx,
+            swapData,
+            swapInfo,
+        } = useTransactionInfo(transaction);
+
         const isIncoming = computed(() => {
             const haveSender = !!addresses$.addressInfos[transaction.value.sender];
             const haveRecipient = !!addresses$.addressInfos[transaction.value.recipient];
@@ -391,7 +401,6 @@ export default defineComponent({
         ].label);
 
         // Data & Cashlink Data
-        const isCashlink = computed(() => isProxyData(transaction.value.data.raw, ProxyType.CASHLINK));
         const hubCashlink = computed(() => {
             if (!isCashlink.value) return null;
 
@@ -433,29 +442,6 @@ export default defineComponent({
 
             return null;
         });
-
-        // Related Transaction
-        const { state: transactions$ } = useTransactionsStore();
-        const relatedTx = computed(() => {
-            if (!transaction.value.relatedTransactionHash) return null;
-            return transactions$.transactions[transaction.value.relatedTransactionHash] || null;
-        });
-
-        const { getSwapByTransactionHash } = useSwapsStore();
-        const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash)
-            || (transaction.value.relatedTransactionHash
-                ? getSwapByTransactionHash.value(transaction.value.relatedTransactionHash)
-                : null));
-        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
-        // Note: the htlc proxy tx that is not funding or redeeming the htlc itself, i.e. the one we are displaying here
-        // related to our address, always holds the proxy data.
-        const isSwapProxy = computed(() => isProxyData(transaction.value.data.raw, ProxyType.HTLC_PROXY));
-        const isCancelledSwap = computed(() =>
-            (swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset)
-            // Funded proxy and then refunded without creating an actual htlc?
-            || (isSwapProxy.value && (isIncoming.value
-                ? transaction.value.recipient === relatedTx.value?.sender
-                : transaction.value.sender === relatedTx.value?.recipient)));
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -539,52 +525,7 @@ export default defineComponent({
 
             return isIncoming.value ? transaction.value.sender : transaction.value.recipient;
         });
-        const peerLabel = computed(() => {
-            if (isSwapProxy.value && !relatedTx.value) {
-                // Avoid displaying the proxy address until we know related peer address
-                return context.root.$t('Swap') as string;
-            }
 
-            if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap') as string;
-            }
-
-            if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.BTC) {
-                    return context.root.$t('Bitcoin') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.USDC) {
-                    return context.root.$t('USD Coin') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.EUR) {
-                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
-                }
-
-                return swapData.value.asset.toUpperCase();
-            }
-
-            // Label cashlinks
-            if (peerAddress.value === constants.CASHLINK_ADDRESS) {
-                return isIncoming.value
-                    ? context.root.$t('Cashlink') as string
-                    : context.root.$t('Unclaimed Cashlink') as string;
-            }
-
-            // Search other stored addresses
-            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
-            if (ownedAddressInfo) return ownedAddressInfo.label;
-
-            // Search contacts
-            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value);
-
-            // Search global address book
-            const globalLabel = AddressBook.getLabel(peerAddress.value);
-            if (globalLabel) return globalLabel;
-
-            return undefined;
-        });
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
         // Date

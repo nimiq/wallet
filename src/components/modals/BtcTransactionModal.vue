@@ -345,6 +345,7 @@ import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
+import { useBtcTransactionInfo } from '../../composables/useBtcTransactionInfo';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 
 export default defineComponent({
@@ -378,44 +379,23 @@ export default defineComponent({
 
         const state = computed(() => transaction.value.state);
 
-        const inputsSent = computed(() => transaction.value.inputs.filter((input) =>
-            input.address && (activeInternalAddresses.value.includes(input.address)
-                || activeExternalAddresses.value.includes(input.address)
-            ),
-        ));
-
-        const isIncoming = computed(() => inputsSent.value.length === 0);
-
-        const outputsReceived = computed(() => {
-            if (!isIncoming.value) return [];
-
-            const receivedToExternal = transaction.value.outputs
-                .filter((output) => output.address && activeExternalAddresses.value.includes(output.address));
-
-            if (receivedToExternal.length > 0) return receivedToExternal;
-
-            return transaction.value.outputs
-                .filter((output) => output.address && activeInternalAddresses.value.includes(output.address));
-        });
-        const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
-
-        const outputsSent = computed(() => isIncoming.value
-            ? []
-            : transaction.value.outputs.filter((output) =>
-                !output.address || !activeInternalAddresses.value.includes(output.address)),
-        );
-        const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
+        const {
+            amountReceived,
+            amountSent,
+            isIncoming,
+            isCancelledSwap,
+            inputsSent,
+            peerLabel,
+            outputsReceived,
+            outputsSent,
+            swapData,
+            swapInfo,
+        } = useBtcTransactionInfo(transaction);
 
         const ownAddresses = computed(() => (isIncoming.value
             ? outputsReceived.value.map((output) => output.address || output.script)
             : inputsSent.value.map((input) => input.address || input.script)
         ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
-
-        const { getSwapByTransactionHash } = useSwapsStore();
-        const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
-        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
-        const isCancelledSwap = computed(() =>
-            swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset);
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -485,62 +465,7 @@ export default defineComponent({
                 : outputsSent.value.map((output) => output.address || output.script)
             ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
         });
-        const peerLabel = computed(() => {
-            if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap') as string;
-            }
 
-            if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    return useAddressStore().state.addressInfos[peerAddresses.value[0]]?.label
-                        // Avoid displaying proxy address until we know related peer address
-                        || context.root.$t('Swap') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.USDC) {
-                    return context.root.$t('USD Coin') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.EUR) {
-                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
-                }
-
-                return swapData.value.asset.toUpperCase();
-            }
-
-            if (isIncoming.value) {
-                // Search sender labels
-                for (const address of ownAddresses.value) {
-                    const label = getSenderLabel.value(address);
-                    if (label) return label;
-                }
-            } else {
-                // Search recipient labels
-                for (const address of peerAddresses.value) {
-                    const label = getRecipientLabel.value(address);
-                    if (label) return label;
-                }
-            }
-
-            // Search other stored addresses
-            for (const address of peerAddresses.value) {
-                const ownedAddressInfo = btcAddresses$.addressInfos[address];
-                if (ownedAddressInfo) {
-                    // Find account label
-                    const { accountInfos } = useAccountStore();
-                    return Object.values(accountInfos.value)
-                        .find((accountInfo) => accountInfo.btcAddresses.external.includes(address))?.label
-                        || Object.values(accountInfos.value)
-                            .find((accountInfo) => accountInfo.btcAddresses.internal.includes(address))!.label;
-                }
-            }
-
-            // // Search global address book
-            // const globalLabel = AddressBook.getLabel(peerAddress.value);
-            // if (globalLabel) return globalLabel;
-
-            return undefined;
-        });
         const senderLabelAddress = computed(() => isIncoming.value
             && (ownAddresses.value.find((address) => !!getSenderLabel.value(address)) || false));
         const recipientLabelAddress = computed(() => !isIncoming.value

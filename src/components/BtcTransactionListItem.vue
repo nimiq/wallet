@@ -118,6 +118,8 @@ export default defineComponent({
         const transaction = computed(() => props.transaction);
 
         const {
+            amountReceived,
+            amountSent,
             data,
             isCancelledSwap,
             isIncoming,
@@ -129,10 +131,6 @@ export default defineComponent({
             swapInfo,
             swapTransaction,
         } = useBtcTransactionInfo(transaction);
-
-        const amountReceived = computed(() => outputsReceived.value.reduce((sum, output) => sum + output.value, 0));
-
-        const amountSent = computed(() => outputsSent.value.reduce((sum, output) => sum + output.value, 0));
 
         // Date
         const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));

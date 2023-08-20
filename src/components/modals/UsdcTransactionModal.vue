@@ -283,13 +283,14 @@ import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import Avatar from '../Avatar.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
-import { SwapUsdcData, useSwapsStore } from '../../stores/Swaps';
+import { SwapUsdcData } from '../../stores/Swaps';
 import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
 import { calculateFee, getHtlcContract, getPolygonBlockNumber, sendTransaction } from '../../ethers';
 import { useConfig } from '../../composables/useConfig';
+import { useUsdcTransactionInfo } from '../../composables/useUsdcTransactionInfo';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { refundSwap } from '../../hub';
 
@@ -309,6 +310,13 @@ export default defineComponent({
 
         const transaction = computed(() => useUsdcTransactionsStore().state.transactions[props.hash]);
 
+        const {
+            isCancelledSwap,
+            peerLabel,
+            swapData,
+            swapInfo,
+        } = useUsdcTransactionInfo(transaction);
+
         const isIncoming = computed(() => {
             const haveSender = !!addresses$.addressInfos[transaction.value.sender];
             const haveRecipient = !!addresses$.addressInfos[transaction.value.recipient];
@@ -319,12 +327,6 @@ export default defineComponent({
             // Fall back to comparing with active address
             return transaction.value.recipient === addressInfo.value!.address;
         });
-
-        const { getSwapByTransactionHash } = useSwapsStore();
-        const swapInfo = computed(() => getSwapByTransactionHash.value(transaction.value.transactionHash));
-        const swapData = computed(() => (isIncoming.value ? swapInfo.value?.in : swapInfo.value?.out) || null);
-        const isCancelledSwap = computed(() =>
-            swapInfo.value?.in && swapInfo.value?.out && swapInfo.value.in.asset === swapInfo.value.out.asset);
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -401,43 +403,7 @@ export default defineComponent({
 
             return isIncoming.value ? transaction.value.sender : transaction.value.recipient;
         });
-        const peerLabel = computed(() => {
-            if (isCancelledSwap.value) {
-                return context.root.$t('Cancelled Swap') as string;
-            }
 
-            if (swapData.value) {
-                if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    return useAddressStore().state.addressInfos[peerAddress.value]?.label
-                        // Avoid displaying proxy address until we know related peer address
-                        || context.root.$t('Swap') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.BTC) {
-                    return context.root.$t('Bitcoin') as string;
-                }
-
-                if (swapData.value.asset === SwapAsset.EUR) {
-                    return swapData.value.bankLabel || context.root.$t('Bank Account') as string;
-                }
-
-                return swapData.value.asset.toUpperCase();
-            }
-
-            // Search other stored addresses
-            const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
-            if (ownedAddressInfo) {
-                // Find account label
-                const { accountInfos } = useAccountStore();
-                return Object.values(accountInfos.value)
-                    .find((accountInfo) => accountInfo.polygonAddresses?.includes(ownedAddressInfo.address))?.label;
-            }
-
-            // Search contacts
-            if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value)!;
-
-            return undefined;
-        });
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
         // Date

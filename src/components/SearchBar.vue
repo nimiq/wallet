@@ -18,16 +18,18 @@
             @focus="handleFocus"
             @blur="handleBlur"
         />
-        <CrossCloseButton
-            class="cross-close-button"
-            v-if="isInputActive"
-            @click="handleClose"
-        />
+        <transition name="fade">
+            <CrossCloseButton
+                class="cross-close-button"
+                v-if="isInputActive"
+                @click="handleClose"
+            />
+        </transition>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted, computed } from '@vue/composition-api';
 
 import CrossCloseButton from './CrossCloseButton.vue';
 
@@ -235,6 +237,10 @@ input {
     z-index: 1;
     right: 1.75rem;
     cursor: pointer;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition-duration: var(--attr-duration);
 }
 
 @media (min-width: 700px) and (max-width: 900px) {

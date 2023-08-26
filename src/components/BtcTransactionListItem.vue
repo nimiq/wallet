@@ -90,9 +90,7 @@ import {
 import { TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from '../stores/Fiat';
-import { useSettingsStore } from '../stores/Settings';
 import { Transaction } from '../stores/BtcTransactions';
-import { twoDigit } from '../lib/NumberFormatting';
 import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
@@ -102,6 +100,7 @@ import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { useBtcTransactionInfo } from '../composables/useBtcTransactionInfo';
+import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
 
 export default defineComponent({
@@ -133,14 +132,8 @@ export default defineComponent({
             swapTransaction,
         } = useBtcTransactionInfo(transaction);
 
-        // Date
-        const { language } = useSettingsStore();
-        const date = computed(() => props.transaction.timestamp && new Date(props.transaction.timestamp * 1000));
-        const dateDay = computed(() => date.value && twoDigit(date.value.getDate()));
-        const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
-        const dateMonth = computed(() => date.value && monthFormatter.value.format(date.value));
-        const dateTime = computed(() => date.value
-            && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
+        const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp * 1000);
+        const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
 
         // Fiat currency
         const { currency: fiatCurrency } = useFiatStore();

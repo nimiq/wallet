@@ -369,6 +369,10 @@ export default defineComponent({
 
         const state = computed(() => transaction.value.state);
 
+        // Note that as the transaction modal is typically opened from the active account's transaction history, we base
+        // our calculations here on the active account and its addresses. This yields wrong results if the opened
+        // transaction modal (e.g. opened via url) does not belong to the active account but saves us scanning through
+        // all accounts in the common case.
         const {
             amountReceived,
             amountSent,

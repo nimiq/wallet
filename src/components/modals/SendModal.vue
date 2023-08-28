@@ -243,7 +243,7 @@ import {
     SelectBar,
     Amount,
 } from '@nimiq/vue-components';
-import { parseRequestLink, AddressBook, Utf8Tools, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
+import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { captureException } from '@sentry/vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
@@ -520,32 +520,28 @@ export default defineComponent({
 
         const gotValidRequestUri = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
-            uri = uri.replace(`${window.location.origin}/`, '');
-            const parsedRequestLink = parseRequestLink(uri, window.location.origin, true);
-            if (parsedRequestLink) {
-                if (event) {
-                    // Prevent paste event being applied to the recipient label field, that now became focussed.
-                    event.preventDefault();
-                }
-
-                if (parsedRequestLink.recipient) {
-                    const skipRecipientDetails = Boolean(parsedRequestLink.label || parsedRequestLink.amount);
-                    onAddressEntered(parsedRequestLink.recipient, skipRecipientDetails);
-                    if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
-                        recipientWithLabel.value!.label = parsedRequestLink.label;
-                    }
-                }
-
-                if (parsedRequestLink.amount) {
-                    amount.value = parsedRequestLink.amount;
-                }
-
-                if (parsedRequestLink.message) {
-                    message.value = parsedRequestLink.message;
-                }
-
-                gotValidRequestUri.value = true;
+            const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.NIM] });
+            if (!parsedRequestLink) return;
+            if (event) {
+                // Prevent paste event being applied to the recipient label field, that now became focussed.
+                event.preventDefault();
             }
+
+            const skipRecipientDetails = Boolean(parsedRequestLink.label || parsedRequestLink.amount);
+            onAddressEntered(parsedRequestLink.recipient, skipRecipientDetails);
+            if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
+                recipientWithLabel.value!.label = parsedRequestLink.label;
+            }
+
+            if (parsedRequestLink.amount) {
+                amount.value = parsedRequestLink.amount;
+            }
+
+            if (parsedRequestLink.message) {
+                message.value = parsedRequestLink.message;
+            }
+
+            gotValidRequestUri.value = true;
         }
 
         if (props.requestUri) {

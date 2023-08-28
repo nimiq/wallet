@@ -35,9 +35,10 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
+import { parseRequestLink, Currency } from '@nimiq/utils';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
-import { parseBitcoinUrl, validateAddress } from '../lib/BitcoinTransactionUtils';
+import { validateAddress } from '../lib/BitcoinTransactionUtils';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
@@ -171,13 +172,11 @@ const BtcAddressInput = defineComponent({
             const { clipboardData } = event;
             const pastedData = clipboardData ? clipboardData.getData('text/plain') : '';
 
-            try {
-                const { recipient } = parseBitcoinUrl(pastedData);
+            const bitcoinRequestLink = parseRequestLink(pastedData, { currencies: [Currency.BTC] });
+            if (bitcoinRequestLink) {
                 event.preventDefault();
-                address.value = recipient;
+                address.value = bitcoinRequestLink.recipient;
                 onUpdate();
-            } catch (err) {
-                // Ignore
             }
 
             context.emit('paste', event, pastedData);

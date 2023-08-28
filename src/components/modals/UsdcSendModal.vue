@@ -233,7 +233,7 @@
 </template>
 
 <script lang="ts">
-import { CurrencyInfo } from '@nimiq/utils';
+import { parseRequestLink, Currency, CurrencyInfo, EthereumChain } from '@nimiq/utils';
 import {
     AddressDisplay,
     AddressInput,
@@ -251,7 +251,7 @@ import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendUsdcTransaction } from '../../hub';
 import { getPolygonClient, calculateFee } from '../../ethers';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST, ENV_MAIN } from '../../lib/Constants';
 import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import {
     isValidDomain as isValidUnstoppableDomain,
@@ -492,23 +492,35 @@ export default defineComponent({
         );
 
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
-            // For now only plain USDC/Polygon/ETH addresses are supported.
-            // TODO support Polygon-USDC request links and even consider removing scanning of plain addresses
-            //  due to the risk of USDC being sent on the wrong chain.
-            const url = new URL(uri);
-            const { ethers } = await getPolygonClient();
-            if (ethers.utils.isAddress(url.pathname)) {
-                if (event) {
-                    // Prevent paste event being applied to the recipient label field, that now became focussed.
-                    event.preventDefault();
-                }
-
-                await onAddressEntered(url.pathname);
-
-                if (url.searchParams.has('amount')) {
-                    amount.value = parseFloat(url.searchParams.get('amount')!) * 1e6;
-                }
+            // We only accept links on Polygon to avoid users sending Polygon USDC to an Ethereum wallet. We accept:
+            // - links for USDC, i.e. links specifying the Polygon USDC contract address, both with the polygon: and the
+            //   ethereum: protocol (which strictly speaking is the only correct protocol according to eip681), but only
+            //   as long as they specify a Polygon USDC contract address and not an Ethereum USDC contract address.
+            // - also links for MATIC, i.e. links with the polygon: protocol, or the ethereum: protocol if they specify
+            //   a Polygon chain id. This is to be a bit more lenient, to not only accept strict USDC links but also
+            //   simple links like polygon:<address>, as long as they are unmistakably Polygon links via the polygon:
+            //   protocol or a Polygon chain id. Thus, links like ethereum:<address> are ignored. The amount in the link
+            //   is interpreted directly as USDC balance.
+            const allowedChains = [
+                EthereumChain.POLYGON_MAINNET,
+                ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_MUMBAI_TESTNET] : []),
+            ];
+            const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.USDC, Currency.MATIC] });
+            if (!parsedRequestLink || !parsedRequestLink.chainId
+                || !allowedChains.includes(parsedRequestLink.chainId)) return;
+            if (event) {
+                // Prevent paste event being applied to the recipient label field, that now became focussed.
+                event.preventDefault();
             }
+
+            await onAddressEntered(parsedRequestLink.recipient);
+
+            if (typeof parsedRequestLink.amount === 'number') {
+                // As USDC only has 6 decimal places, we can expect it to not be a bigint in real life use.
+                amount.value = parsedRequestLink.amount;
+            }
+
+            // Ignore parsedRequestLink.gasPrice and parsedRequestLink.gasLimit because we don't pay fees in MATIC.
         }
 
         if (props.requestUri) {

@@ -13,9 +13,11 @@ import {
     parseRequestLink,
     createNimiqRequestLink,
     createBitcoinRequestLink,
+    createEthereumRequestLink,
     NimiqRequestLinkType,
     ValidationUtils,
     Currency,
+    EthereumChain,
 } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useAccountStore } from '../../stores/Account';
@@ -97,12 +99,40 @@ export default defineComponent({
 
             if (config.usdc.enabled && hasUsdcAddresses.value) {
                 getPolygonClient().then(({ ethers }) => {
-                    // Plain USDC/Polygon/ETH address.
-                    // TODO support Polygon-USDC request links and even consider removing scanning of plain addresses
-                    //  due to the risk of USDC being sent on the wrong chain.
-                    if (ethers.utils.isAddress(result)) {
-                        // Pass normalized address.
-                        router.replace(`/polygon:${ethers.utils.getAddress(result)}`);
+                    // For USDC we don't support scanning plain addresses to avoid the risk of sending Polygon USDC to
+                    // an Ethereum wallet, because the addresses are the same.
+
+                    // USDC Request Link
+                    // We only accept links on Polygon to avoid sending Polygon USDC to an Ethereum wallet. We accept:
+                    // - links for USDC, i.e. links specifying the Polygon USDC contract address, both with the polygon:
+                    //   and the ethereum: protocol (which strictly speaking is the only correct protocol according to
+                    //   eip681), but only as long as they specify a Polygon USDC contract address and not an Ethereum
+                    //   USDC contract address.
+                    // - also links for MATIC, i.e. links with the polygon: protocol, or the ethereum: protocol if they
+                    //   specify a Polygon chain id. This is to be a bit more lenient, to not only accept strict USDC
+                    //   links but also simple links like polygon:<address>, as long as they are unmistakably Polygon
+                    //   links via the polygon: protocol or a Polygon chain id. Thus, links like ethereum:<address> are
+                    //   ignored. The amount in the link is interpreted directly as USDC balance.
+                    const allowedChains = [
+                        EthereumChain.POLYGON_MAINNET,
+                        ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_MUMBAI_TESTNET] : []),
+                    ];
+                    const usdcRequestLink = parseRequestLink(result, {
+                        currencies: [Currency.USDC, Currency.MATIC],
+                        isValidAddress: {
+                            // The address validation is shared between ETH, MATIC and USDC.
+                            [Currency.ETH]: (address: string) => ethers.utils.isAddress(address),
+                        },
+                    });
+                    if (usdcRequestLink && usdcRequestLink.chainId && allowedChains.includes(usdcRequestLink.chainId)) {
+                        // Reformat into a request link with polygon: protocol, in case it has the ethereum: protocol
+                        // because we only define a route for polygon: in router.ts, and redirect to the request link as
+                        // path which will be handled by the router.
+                        router.replace(`/${createEthereumRequestLink(
+                            usdcRequestLink.recipient,
+                            Currency.USDC,
+                            usdcRequestLink,
+                        )}`);
                     }
                 });
             }

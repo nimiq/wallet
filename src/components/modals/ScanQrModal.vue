@@ -12,15 +12,16 @@ import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
     createNimiqRequestLink,
+    createBitcoinRequestLink,
     NimiqRequestLinkType,
     ValidationUtils,
-    createBitcoinRequestLink,
+    Currency,
 } from '@nimiq/utils';
 import Modal from './Modal.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
-import { parseBitcoinUrl, validateAddress } from '../../lib/BitcoinTransactionUtils';
+import { validateAddress as validateBitcoinAddress } from '../../lib/BitcoinTransactionUtils';
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
 import { getPolygonClient } from '../../ethers';
@@ -32,38 +33,6 @@ export default defineComponent({
         const router = useRouter();
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
         const checkResult = (result: string) => {
-            // NIM Address
-            if (ValidationUtils.isValidAddress(result)) {
-                router.replace(`/${createNimiqRequestLink(result, {
-                    type: NimiqRequestLinkType.URI,
-                })}`);
-                return;
-            }
-
-            // parseRequestLink has not implemented urischemes appending an url yet.
-            // checkResult('http://localhost:8081/nimiq:NQ35SB3EB8XAESYER574SJA4EEFTX0VQQ5T1?amount=12&message=asd');
-            // does not give an result for any of the below combinations of arguments to parseRequestLink
-            result = result.replace(`${window.location.origin}/`, '');
-
-            // NIM Request Link
-            try {
-                const requestLink = parseRequestLink(result, undefined, true)
-                    || parseRequestLink(result, 'safe.nimiq.com', true)
-                    || parseRequestLink(result, 'safe.nimiq-testnet.com', true);
-
-                if (requestLink) {
-                    // console.error(requestLink);
-                    // replace old request Link formats with the new one and redirect.
-                    router.replace(`/${createNimiqRequestLink(requestLink.recipient, {
-                        ...requestLink,
-                        type: NimiqRequestLinkType.URI,
-                    })}`);
-                    return;
-                }
-            } catch (error) {
-                // Ignore
-            }
-
             // Cashlink
             if (/https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
                 // result is a cashlink so redirect to hub
@@ -77,21 +46,51 @@ export default defineComponent({
                 return;
             }
 
+            // NIM Address
+            if (ValidationUtils.isValidAddress(result)) {
+                router.replace(`/${createNimiqRequestLink(result, {
+                    type: NimiqRequestLinkType.URI,
+                })}`);
+                return;
+            }
+
+            // Remove the origin to support scanning full wallet links with encoded payment request link, e.g.
+            // http://localhost:8081/nimiq:NQ35SB3EB8XAESYER574SJA4EEFTX0VQQ5T1?amount=12&message=asd
+            result = result.replace(`${window.location.origin}/`, '');
+
+            // NIM Request Link
+            const nimRequestLink = parseRequestLink(result, { currencies: [Currency.NIM] });
+            if (nimRequestLink) {
+                // Reformat into the new Nimiq request link format, in case it's a old Safe url, and redirect to the
+                // request link as path which will be handled by the router.
+                router.replace(`/${createNimiqRequestLink(nimRequestLink.recipient, {
+                    ...nimRequestLink,
+                    type: NimiqRequestLinkType.URI,
+                })}`);
+                return;
+            }
+
             if (config.enableBitcoin && hasBitcoinAddresses.value) {
                 loadBitcoinJS().then(() => {
+                    const isValidBitcoinAddressForCurrentNetwork = (address: string) =>
+                        validateBitcoinAddress(address, config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
+
                     // BTC Address
-                    if (validateAddress(result, config.environment === ENV_MAIN ? 'MAIN' : 'TEST')) {
+                    if (isValidBitcoinAddressForCurrentNetwork(result)) {
                         router.replace(`/${createBitcoinRequestLink(result)}`);
                         return;
                     }
 
                     // BTC Request Link
-                    try {
-                        parseBitcoinUrl(result);
-                        // If the above does not throw, we have a valid BTC request link
+                    const btcRequestLink = parseRequestLink(result, {
+                        currencies: [Currency.BTC],
+                        isValidAddress: {
+                            [Currency.BTC]: isValidBitcoinAddressForCurrentNetwork,
+                        },
+                    });
+                    if (btcRequestLink) {
+                        // Redirect to the valid Bitcoin request link as path which will be handled by the router.
                         router.replace(`/${result}`);
-                    } catch (error) {
-                        // Ignore
                     }
                 });
             }

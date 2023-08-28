@@ -18,7 +18,7 @@
                         <BtcAddressInput
                             :placeholder="$t('Enter recipient address...')"
                             v-model="addressInputValue"
-                            @paste="onPaste"
+                            @paste="(event, text) => parseRequestUri(text, event)"
                             @input="resetAddress"
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
@@ -139,7 +139,7 @@ import {
     Tooltip,
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
-import { /* parseRequestLink, */ CurrencyInfo } from '@nimiq/utils';
+import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -158,7 +158,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { selectOutputs, estimateFees, parseBitcoinUrl } from '../../lib/BitcoinTransactionUtils';
+import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '../../electrum';
 import DoubleInput from '../DoubleInput.vue';
 
@@ -359,35 +359,27 @@ export default defineComponent({
 
         const addressInputValue = ref(''); // Used for setting the address from a request URI
 
-        function onPaste(event: ClipboardEvent, text: string) {
-            parseRequestUri(text, event);
-        }
-
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
-            try {
-                const parsedRequestLink = parseBitcoinUrl(uri);
-                if (event) {
-                    event.stopPropagation(); // Prevent pasting
-                }
+            const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.BTC] });
+            if (!parsedRequestLink) return;
 
-                if (parsedRequestLink.amount) {
-                    amount.value = parsedRequestLink.amount;
-                }
+            if (event) {
+                event.stopPropagation(); // Prevent pasting
+            }
 
-                if (parsedRequestLink.recipient) {
-                    addressInputValue.value = parsedRequestLink.recipient;
-                    // Wait for onAddressEntered to trigger
-                    let i = 0;
-                    while (!recipientWithLabel.value && i < 10) {
-                        await context.root.$nextTick(); // eslint-disable-line no-await-in-loop
-                        i += 1;
-                    }
-                    if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
-                        recipientWithLabel.value!.label = parsedRequestLink.label;
-                    }
-                }
-            } catch (err) {
-                // Ignore
+            if (parsedRequestLink.amount) {
+                amount.value = parsedRequestLink.amount;
+            }
+
+            addressInputValue.value = parsedRequestLink.recipient;
+            // Wait for onAddressEntered to trigger
+            let i = 0;
+            while (!recipientWithLabel.value && i < 10) {
+                await context.root.$nextTick(); // eslint-disable-line no-await-in-loop
+                i += 1;
+            }
+            if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
+                recipientWithLabel.value!.label = parsedRequestLink.label;
             }
         }
 
@@ -539,7 +531,6 @@ export default defineComponent({
             onAddressEntered,
             onDomainEntered,
             recipientWithLabel,
-            onPaste,
             parseRequestUri,
 
             // Amount Input

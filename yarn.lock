@@ -1544,17 +1544,17 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/utils@^0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.8.3.tgz#e088ad4ec874d2f6ec10437700f23197fd2e7600"
-  integrity sha512-fDZR3z/l7G39XbtkbnMvyxkrw/o1DKahxg3Scdn+Ib0/s98H1Uk8P3JJ1DZd+D0bApuCMcQRJnCiJ61r9LUNgg==
-  dependencies:
-    big-integer "^1.6.44"
-
 "@nimiq/utils@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.9.1.tgz#74b59394b1bbda9fb17efa4affd0edb555f3514e"
   integrity sha512-YuN2mHefo8law/W4F4I2pAZ+kf5vKnI345ExmAP0Hfefu2Y0fPEoULewEelDwvl9YXxmT+vHKCVH0DHK4508dw==
+  dependencies:
+    big-integer "^1.6.44"
+
+"@nimiq/utils@^0.9.2":
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.9.2.tgz#8c0e6b054ef8ae91583c7775030bed89e20e303f"
+  integrity sha512-1mjW58V75JAXKtHhojI8Od3i32XuQkkd7A5n2IWXBIJ94EpdH/H6uGOaA16GdS+87wXNO9GwvXq3jTImEvZM1A==
   dependencies:
     big-integer "^1.6.44"
 

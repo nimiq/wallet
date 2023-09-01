@@ -82,4 +82,11 @@ export default {
         splxScriptUrl: null,
         apiKey: 'pk_test_4cc61433-31dc-4020-b442-ba7b77cc9fa7',
     },
+
+    goCrypto: {
+        enabled: true,
+        apiEndpoint: 'https://api.staging.gocrypto.com/',
+        // This is a publishable key. This is the key from chapter 4 of the documentation.
+        apiKey: 'ae7344d0-3839-4732-bf57-c2489b92dc62',
+    },
 };

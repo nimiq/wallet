@@ -24,6 +24,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
 import { validateAddress as validateBitcoinAddress } from '../../lib/BitcoinTransactionUtils';
+import { parseGoCryptoRequestLink, fetchGoCryptoPaymentDetails, GoCryptoPaymentStatus } from '../../lib/GoCrypto';
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
 import { getPolygonClient } from '../../ethers';
@@ -34,7 +35,7 @@ export default defineComponent({
         const { config } = useConfig();
         const router = useRouter();
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
-        const checkResult = (result: string) => {
+        const checkResult = async (result: string) => {
             // Cashlink
             if (/https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
                 // result is a cashlink so redirect to hub
@@ -48,6 +49,10 @@ export default defineComponent({
                 return;
             }
 
+            // Remove the origin to support scanning full wallet links with encoded payment request link, e.g.
+            // http://localhost:8081/nimiq:NQ35SB3EB8XAESYER574SJA4EEFTX0VQQ5T1?amount=12&message=asd
+            result = result.replace(`${window.location.origin}/`, '');
+
             // NIM Address
             if (ValidationUtils.isValidAddress(result)) {
                 router.replace(`/${createNimiqRequestLink(result, {
@@ -55,10 +60,6 @@ export default defineComponent({
                 })}`);
                 return;
             }
-
-            // Remove the origin to support scanning full wallet links with encoded payment request link, e.g.
-            // http://localhost:8081/nimiq:NQ35SB3EB8XAESYER574SJA4EEFTX0VQQ5T1?amount=12&message=asd
-            result = result.replace(`${window.location.origin}/`, '');
 
             // NIM Request Link
             const nimRequestLink = parseRequestLink(result, { currencies: [Currency.NIM] });
@@ -135,6 +136,23 @@ export default defineComponent({
                         )}`);
                     }
                 });
+            }
+
+            if (config.goCrypto.enabled) {
+                const goCryptoRequestLink = parseGoCryptoRequestLink(result);
+                const goCryptoPaymentDetails = goCryptoRequestLink
+                    ? await fetchGoCryptoPaymentDetails(goCryptoRequestLink)
+                    : null;
+                if (goCryptoPaymentDetails
+                    && goCryptoPaymentDetails.status <= GoCryptoPaymentStatus.InPayment
+                    && Date.now() < goCryptoPaymentDetails.expiry) {
+                    // Reformat into a Nimiq request link and redirect to it as path which will be handled by the router
+                    router.replace(`/${createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
+                        amount: goCryptoPaymentDetails.amount,
+                        label: goCryptoPaymentDetails.storeName,
+                        type: NimiqRequestLinkType.URI,
+                    })}`);
+                }
             }
         };
 

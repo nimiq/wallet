@@ -66,4 +66,11 @@ export default {
         splxScriptUrl: 'https://checkout.simplexcc.com/splx.js',
         apiKey: 'pk_live_c33fd2b9-39e7-472b-8330-f96a9ff07573',
     },
+
+    goCrypto: {
+        enabled: false,
+        apiEndpoint: 'https://api.gocrypto.com/',
+        // This is a publishable key.
+        apiKey: 'TODO',
+    },
 };

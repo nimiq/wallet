@@ -1,5 +1,6 @@
 import { ValidationUtils } from '@nimiq/utils';
 import { useConfig } from '../composables/useConfig';
+import Time from './Time';
 
 export enum GoCryptoPaymentStatus {
     Opened,
@@ -61,18 +62,21 @@ export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: stri
     };
 
     try {
-        const response = await fetch(url, {
-            headers,
-            cache: 'no-cache',
-            referrerPolicy: 'no-referrer',
-        });
+        const [response, timeOffset] = await Promise.all([
+            fetch(url, {
+                headers,
+                cache: 'no-cache',
+                referrerPolicy: 'no-referrer',
+            }),
+            Time.now().then((serverTime) => serverTime - Date.now()),
+        ]);
         if (!response.ok) return null;
         const data = await response.json();
 
         const status: GoCryptoPaymentStatus = data.status; // eslint-disable-line prefer-destructuring
         if (typeof status !== 'number' || !Object.values(GoCryptoPaymentStatus).includes(status)) return null;
 
-        const expiry = Date.parse(data.expires_at);
+        const expiry = Date.parse(data.expires_at) - timeOffset; // convert expiry to user's clock
         if (Number.isNaN(expiry)) return null;
 
         const storeName: string = data.store_full_name; // eslint-disable-line prefer-destructuring

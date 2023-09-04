@@ -1,4 +1,7 @@
 import type Resolution from '@unstoppabledomains/resolution';
+import config from 'config';
+import { replaceKey } from './KeyReplacer';
+import { ENV_MAIN } from './Constants';
 
 let importPromise: Promise<typeof Resolution> | undefined;
 let cachedResolver: Resolution | undefined;
@@ -24,7 +27,24 @@ async function getResolver() {
     if (!importPromise) {
         importPromise = import('@unstoppabledomains/resolution').then((module) => module.default);
         const Resolver = await importPromise;
-        cachedResolver = new Resolver();
+        cachedResolver = new Resolver({
+            sourceConfig: {
+                uns: {
+                    locations: {
+                        Layer1: {
+                            url: await replaceKey(`https://eth-${
+                                config.environment === ENV_MAIN ? 'mainnet' : 'goerli'
+                            }.g.alchemy.com/v2/#ALCHEMY_ETH_API_KEY#`),
+                            network: config.environment === ENV_MAIN ? 'mainnet' : 'goerli',
+                        },
+                        Layer2: {
+                            url: await replaceKey(config.usdc.rpcEndpoint.replace('wss', 'https')),
+                            network: config.environment === ENV_MAIN ? 'polygon-mainnet' : 'polygon-mumbai',
+                        },
+                    },
+                },
+            },
+        });
         return cachedResolver;
     }
 

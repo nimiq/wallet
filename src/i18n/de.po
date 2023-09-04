@@ -419,12 +419,9 @@ msgstr "Zurück zu Adressen"
 msgid "Back to Bank Details"
 msgstr "Zurück zu Bankdetails"
 
-#: src/components/BtcTransactionListItem.vue:263
-#: src/components/modals/BtcTransactionModal.vue:505
-#: src/components/modals/TransactionModal.vue:562
-#: src/components/modals/UsdcTransactionModal.vue:421
-#: src/components/TransactionListItem.vue:242
-#: src/components/UsdcTransactionListItem.vue:260
+#: src/composables/useBtcTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:103
+#: src/composables/useUsdcTransactionInfo.ts:129
 msgid "Bank Account"
 msgstr "Bankkonto"
 
@@ -449,10 +446,8 @@ msgstr "BIC funktioniert auch."
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:116
 #: src/components/modals/BtcTransactionModal.vue:128
-#: src/components/modals/TransactionModal.vue:554
-#: src/components/modals/UsdcTransactionModal.vue:417
-#: src/components/TransactionListItem.vue:234
-#: src/components/UsdcTransactionListItem.vue:256
+#: src/composables/useTransactionInfo.ts:95
+#: src/composables/useUsdcTransactionInfo.ts:125
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
@@ -589,15 +584,12 @@ msgstr "Abbrechen"
 msgid "Cancel Swap"
 msgstr "Tausch abbrechen"
 
-#: src/components/BtcTransactionListItem.vue:248
-#: src/components/modals/BtcTransactionModal.vue:490
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
-#: src/components/modals/TransactionModal.vue:549
-#: src/components/modals/UsdcTransactionModal.vue:406
 #: src/components/modals/UsdcTransactionModal.vue:6
-#: src/components/TransactionListItem.vue:229
-#: src/components/UsdcTransactionListItem.vue:245
+#: src/composables/useBtcTransactionInfo.ts:110
+#: src/composables/useTransactionInfo.ts:90
+#: src/composables/useUsdcTransactionInfo.ts:114
 msgid "Cancelled Swap"
 msgstr "Abgebrochener Tausch"
 
@@ -605,9 +597,8 @@ msgstr "Abgebrochener Tausch"
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
-#: src/components/modals/TransactionModal.vue:571
 #: src/components/TransactionList.vue:62
-#: src/components/TransactionListItem.vue:251
+#: src/composables/useTransactionInfo.ts:112
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -656,7 +647,7 @@ msgstr "Adresse auswählen"
 
 #: src/lib/DataFormatting.ts:18
 msgid "Claiming Cashlink"
-msgstr "Cashlink wird eingelöst"
+msgstr "Cashlink-Einlösung"
 
 #: src/components/layouts/Settings.vue:241
 msgid "Clear"
@@ -1013,7 +1004,6 @@ msgstr "Euro"
 msgid "Exchange rate"
 msgstr "Wechselkurs"
 
-#: src/components/BtcTransactionListItem.vue:45
 #: src/components/TransactionListItem.vue:39
 #: src/components/UsdcTransactionListItem.vue:37
 msgid "expired"
@@ -1091,7 +1081,7 @@ msgstr "Gebühren"
 msgid "Fetching"
 msgstr "Lade"
 
-#: src/components/BtcTransactionListItem.vue:66
+#: src/components/BtcTransactionListItem.vue:65
 #: src/components/modals/TransactionModal.vue:206
 #: src/components/TransactionListItem.vue:57
 #: src/components/UsdcTransactionListItem.vue:55
@@ -1148,7 +1138,7 @@ msgstr "Full Node"
 
 #: src/lib/DataFormatting.ts:15
 msgid "Funding Cashlink"
-msgstr "Cashlink wird aufgeladen"
+msgstr "Cashlink-Aufladung"
 
 #: src/components/PolygonWarningFooter.vue:10
 #: src/components/PolygonWarningPage.vue:19
@@ -1235,25 +1225,25 @@ msgstr "Höchster Grad an Dezentralisierung"
 msgid "Historic value"
 msgstr "Historischer Wert"
 
-#: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:454
-#: src/components/modals/TransactionModal.vue:488
-#: src/components/TransactionListItem.vue:186
-#: src/components/UsdcTransactionListItem.vue:190 src/lib/DataFormatting.ts:21
+#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/TransactionModal.vue:474
+#: src/composables/useBtcTransactionInfo.ts:186
+#: src/composables/useTransactionInfo.ts:157
+#: src/composables/useUsdcTransactionInfo.ts:171 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "HTLC-Erstellung"
 
-#: src/components/BtcTransactionListItem.vue:208
-#: src/components/modals/BtcTransactionModal.vue:454
-#: src/components/modals/TransactionModal.vue:499
-#: src/components/TransactionListItem.vue:197
-#: src/components/UsdcTransactionListItem.vue:201
+#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/TransactionModal.vue:485
+#: src/composables/useBtcTransactionInfo.ts:186
+#: src/composables/useTransactionInfo.ts:168
+#: src/composables/useUsdcTransactionInfo.ts:182
 msgid "HTLC Refund"
 msgstr "HTLC-Rückerstattung"
 
-#: src/components/modals/TransactionModal.vue:492
-#: src/components/TransactionListItem.vue:190
-#: src/components/UsdcTransactionListItem.vue:194
+#: src/components/modals/TransactionModal.vue:478
+#: src/composables/useTransactionInfo.ts:161
+#: src/composables/useUsdcTransactionInfo.ts:175
 msgid "HTLC Settlement"
 msgstr "HTLC-Abrechnung"
 
@@ -1348,7 +1338,7 @@ msgstr "Web-App Installieren"
 msgid "Insufficient balance."
 msgstr "Unzureichendes Guthaben."
 
-#: src/components/BtcTransactionListItem.vue:46
+#: src/components/BtcTransactionListItem.vue:45
 #: src/components/TransactionListItem.vue:40
 #: src/components/UsdcTransactionListItem.vue:38
 msgid "invalid"
@@ -1852,7 +1842,7 @@ msgstr "Seite neuladen um fortzufahren."
 msgid "Refund"
 msgstr "Rückerstattung"
 
-#: src/components/modals/UsdcTransactionModal.vue:565
+#: src/components/modals/UsdcTransactionModal.vue:531
 msgid "Refund failed: "
 msgstr ""
 
@@ -2061,9 +2051,9 @@ msgstr "{btc} BTC versendet"
 msgid "Sent {btc} BTC to {name}"
 msgstr "{btc} BTC an {name} versendet"
 
-#: src/components/BtcTransactionListItem.vue:193
-#: src/components/TransactionListItem.vue:169
-#: src/components/UsdcTransactionListItem.vue:173
+#: src/composables/useBtcTransactionInfo.ts:171
+#: src/composables/useTransactionInfo.ts:140
+#: src/composables/useUsdcTransactionInfo.ts:154
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "{fromAsset} gesendet – {toAsset} erhalten"
 
@@ -2226,16 +2216,13 @@ msgid "Super low fees, super fast payments"
 msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/BtcTransactionListItem.vue:255
 #: src/components/layouts/Sidebar.vue:115
-#: src/components/modals/BtcTransactionModal.vue:497
 #: src/components/modals/BtcTransactionModal.vue:9
-#: src/components/modals/TransactionModal.vue:545
 #: src/components/modals/TransactionModal.vue:7
-#: src/components/modals/UsdcTransactionModal.vue:413
 #: src/components/modals/UsdcTransactionModal.vue:9
-#: src/components/TransactionListItem.vue:225
-#: src/components/UsdcTransactionListItem.vue:252
+#: src/composables/useBtcTransactionInfo.ts:117
+#: src/composables/useTransactionInfo.ts:86
+#: src/composables/useUsdcTransactionInfo.ts:121
 msgid "Swap"
 msgstr "Tausch"
 
@@ -2458,12 +2445,12 @@ msgstr "Dies ist keine gültige IBAN"
 msgid "This might take up to {min} minutes."
 msgstr "Das kann bis zu {min} Minuten dauern."
 
-#: src/components/BtcTransactionList.vue:232
-#: src/components/BtcTransactionList.vue:254
-#: src/components/TransactionList.vue:247
-#: src/components/TransactionList.vue:269
-#: src/components/UsdcTransactionList.vue:197
-#: src/components/UsdcTransactionList.vue:219
+#: src/components/BtcTransactionList.vue:241
+#: src/components/BtcTransactionList.vue:263
+#: src/components/TransactionList.vue:253
+#: src/components/TransactionList.vue:275
+#: src/components/UsdcTransactionList.vue:203
+#: src/components/UsdcTransactionList.vue:225
 msgid "This month"
 msgstr "Diesen Monat"
 
@@ -2565,8 +2552,7 @@ msgstr "Jetzt probieren"
 msgid "Tx time"
 msgstr "Tx Zeit"
 
-#: src/components/modals/TransactionModal.vue:572
-#: src/components/TransactionListItem.vue:252
+#: src/composables/useTransactionInfo.ts:113
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"
 
@@ -2617,13 +2603,11 @@ msgid "Update now"
 msgstr "Jetzt aktualisieren"
 
 #: src/components/AddressList.vue:179
-#: src/components/BtcTransactionListItem.vue:259
 #: src/components/layouts/AccountOverview.vue:158
 #: src/components/layouts/AddressOverview.vue:84
-#: src/components/modals/BtcTransactionModal.vue:501
-#: src/components/modals/TransactionModal.vue:558
-#: src/components/TransactionListItem.vue:238
 #: src/components/UsdcAddressInfo.vue:12
+#: src/composables/useBtcTransactionInfo.ts:121
+#: src/composables/useTransactionInfo.ts:99
 msgid "USD Coin"
 msgstr "USD Coin"
 

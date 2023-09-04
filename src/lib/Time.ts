@@ -14,8 +14,14 @@ export default class Time {
 
     public static async updateOffset() {
         try {
-            const unix = parseInt(await fetch('https://now.unixtime.dev').then((res) => res.text()), 10);
-            this.offset = (unix * 1000) - Date.now();
+            // Fetch a resource from our server to read the response's Date header. Note that the Date header can only
+            // be read for non-cors requests, unless the cors request specifically allows reading the Date header.
+            const response = await fetch(`${process.env.BASE_URL}manifest.json`, {
+                cache: 'no-cache',
+            });
+            const serverTime = Date.parse(response.headers.get('Date') || '');
+            if (Number.isNaN(serverTime)) throw new Error('Failed to read server time');
+            this.offset = serverTime - Date.now();
         } catch (error) {
             console.error(error); // eslint-disable-line no-console
             if (useConfig().config.reportToSentry) captureException(error);

@@ -14,6 +14,14 @@ export enum GoCryptoPaymentStatus {
     Cancelled,
 }
 
+export interface GoCryptoPaymentDetails {
+    status: GoCryptoPaymentStatus;
+    expiry: number; // timestamp in ms
+    storeName: string;
+    recipient: string;
+    amount: number;
+}
+
 export function parseGoCryptoRequestLink(requestLink: string | URL) {
     const { config } = useConfig();
     if (!config.goCrypto.enabled) return null;
@@ -41,7 +49,8 @@ export function parseGoCryptoRequestLink(requestLink: string | URL) {
     return null;
 }
 
-export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: string } | { paymentId: string }) {
+export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: string } | { paymentId: string })
+: Promise<GoCryptoPaymentDetails | null> {
     const { config } = useConfig();
     if (!config.goCrypto.enabled) return null;
 

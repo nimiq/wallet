@@ -1,13 +1,24 @@
 <template>
-    <Modal class="scan-qr-modal" :swipePadding="false">
+    <Modal class="scan-qr-modal" :swipePadding="false" :showOverlay="!!goCryptoStatus"
+        @close-overlay="resetGoCryptoPaymentDetails">
         <PageBody>
             <QrScanner @result="checkResult" @cancel="$router.back()" />
         </PageBody>
+
+        <template #overlay>
+            <StatusScreen
+                :state="goCryptoStatus.state"
+                :title="goCryptoStatus.title"
+                :message="goCryptoStatus.message"
+                :mainAction="goCryptoStatus.mainAction"
+                @main-action="goCryptoStatus.onMainAction && goCryptoStatus.onMainAction()"
+            />
+        </template>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
@@ -20,21 +31,28 @@ import {
     EthereumChain,
 } from '@nimiq/utils';
 import Modal from './Modal.vue';
+import StatusScreen, { State as StatusScreenState } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
 import { validateAddress as validateBitcoinAddress } from '../../lib/BitcoinTransactionUtils';
-import { parseGoCryptoRequestLink, fetchGoCryptoPaymentDetails, GoCryptoPaymentStatus } from '../../lib/GoCrypto';
+import {
+    parseGoCryptoRequestLink,
+    fetchGoCryptoPaymentDetails,
+    GoCryptoPaymentStatus,
+    GoCryptoPaymentDetails,
+} from '../../lib/GoCrypto';
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
 import { getPolygonClient } from '../../ethers';
 
 export default defineComponent({
     name: 'scan-qr-modal',
-    setup() {
+    setup(props, context) {
         const { config } = useConfig();
         const router = useRouter();
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+
         const checkResult = async (result: string) => {
             // Cashlink
             if (/https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
@@ -140,29 +158,98 @@ export default defineComponent({
 
             if (config.goCrypto.enabled) {
                 const goCryptoRequestLink = parseGoCryptoRequestLink(result);
-                const goCryptoPaymentDetails = goCryptoRequestLink
+                goCryptoPaymentDetails.value = goCryptoRequestLink
                     ? await fetchGoCryptoPaymentDetails(goCryptoRequestLink)
                     : null;
-                if (goCryptoPaymentDetails
-                    && goCryptoPaymentDetails.status <= GoCryptoPaymentStatus.InPayment
-                    && Date.now() < goCryptoPaymentDetails.expiry) {
+                if (goCryptoPaymentDetails.value && !goCryptoStatus.value) {
                     // Reformat into a Nimiq request link and redirect to it as path which will be handled by the router
-                    router.replace(`/${createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
-                        amount: goCryptoPaymentDetails.amount,
-                        label: goCryptoPaymentDetails.storeName,
+                    router.replace(`/${createNimiqRequestLink(goCryptoPaymentDetails.value.recipient, {
+                        amount: goCryptoPaymentDetails.value.amount,
+                        label: goCryptoPaymentDetails.value.storeName,
                         type: NimiqRequestLinkType.URI,
                     })}`);
                 }
             }
         };
 
+        const goCryptoPaymentDetails = ref<GoCryptoPaymentDetails>(null);
+        function resetGoCryptoPaymentDetails() {
+            goCryptoPaymentDetails.value = null;
+        }
+
+        const goCryptoStatus = computed(() => {
+            if (!goCryptoPaymentDetails.value) return null;
+            const successDefaults = {
+                // Note: StatusScreen does not support actions for success screens.
+                state: StatusScreenState.SUCCESS,
+            };
+            const errorDefaults = {
+                state: StatusScreenState.WARNING,
+                // Concatenate sentences to re-use individual translations.
+                // eslint-disable-next-line prefer-template
+                message: context.root.$t('Please ask the merchant to create a new payment request.') + ' '
+                    + context.root.$t('If you already made a payment, please contact GoCrypto for a refund.'),
+                mainAction: 'OK', // no need to translate this
+                onMainAction: resetGoCryptoPaymentDetails,
+            };
+            switch (goCryptoPaymentDetails.value.status) {
+                case GoCryptoPaymentStatus.Paid: return {
+                    ...successDefaults,
+                    title: context.root.$t('Payment request has already been paid'),
+                };
+                case GoCryptoPaymentStatus.Processing: return {
+                    ...successDefaults,
+                    title: context.root.$t('Your payment is being processed'),
+                };
+                case GoCryptoPaymentStatus.Failed: return {
+                    ...errorDefaults,
+                    title: context.root.$t('Your payment failed'),
+                };
+                case GoCryptoPaymentStatus.NotValid: return {
+                    ...errorDefaults,
+                    title: context.root.$t('Your payment is invalid'),
+                };
+                case GoCryptoPaymentStatus.Refund: return {
+                    ...errorDefaults,
+                    title: context.root.$t('Your payment was refunded'),
+                    message: context.root.$t('Please ask the merchant to create a new payment request.'),
+                };
+                case GoCryptoPaymentStatus.Cancelled: return {
+                    ...errorDefaults,
+                    title: context.root.$t('Your payment was cancelled'),
+                };
+                default: // do nothing and continue with checks below
+            }
+            if (goCryptoPaymentDetails.value.status === GoCryptoPaymentStatus.AutoClosed
+                || goCryptoPaymentDetails.value.expiry < Date.now()) {
+                return {
+                    ...errorDefaults,
+                    title: context.root.$t('The payment request expired'),
+                };
+            }
+            return null; // Unpaid request without any errors.
+        });
+
+        let statusScreenHideTimeout = -1;
+        watch(goCryptoStatus, () => {
+            if (goCryptoStatus.value?.state === StatusScreenState.SUCCESS) {
+                // The success screen has no ok button, therefore auto-close it.
+                statusScreenHideTimeout = window.setTimeout(resetGoCryptoPaymentDetails, 3000);
+            } else {
+                clearTimeout(statusScreenHideTimeout);
+            }
+        });
+
         return {
             checkResult,
+            goCryptoStatus,
+            resetGoCryptoPaymentDetails,
         };
     },
     components: {
         PageBody,
         QrScanner,
+        StatusScreen,
         Modal,
     },
 });

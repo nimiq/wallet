@@ -3,7 +3,7 @@
         || recipientDetailsOpened
         || addressListOpened
         || feeSelectionOpened
-        || statusScreenOpened"
+        || statusType !== 'none'"
         @close-overlay="onCloseOverlay"
         class="send-modal"
         :class="{'value-masked': amountsHidden}"
@@ -215,16 +215,16 @@
             </PageBody>
         </div>
 
-        <div v-if="statusScreenOpened" slot="overlay" class="page">
+        <div v-if="statusType !== 'none'" slot="overlay" class="page">
             <StatusScreen
                 :title="statusTitle"
                 :state="statusState"
                 :message="statusMessage"
-                :mainAction="statusMainActionText"
-                :alternativeAction="statusAlternativeActionText"
+                :mainAction="statusType === 'signing' ? $t('Retry') : $t('Cancel')"
+                :alternativeAction="statusType === 'signing' ? $t('Edit transaction') : undefined"
                 @main-action="onStatusMainAction"
                 @alternative-action="onStatusAlternativeAction"
-                :lightBlue="true"
+                lightBlue
             />
         </div>
     </Modal>
@@ -263,6 +263,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
+import { fetchGoCryptoPaymentDetails, goCryptoStatusToUserFriendlyMessage } from '../../lib/GoCrypto';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
@@ -518,6 +519,10 @@ export default defineComponent({
             && !!amount.value
             && amount.value <= maxSendableAmount.value);
 
+        /**
+         * Request link parsing
+         */
+
         const gotValidRequestUri = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
             const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.NIM] });
@@ -542,6 +547,66 @@ export default defineComponent({
             }
 
             gotValidRequestUri.value = true;
+
+            try {
+                const goCryptoId = new URL(uri).searchParams.get('goCryptoId');
+                if (goCryptoId) {
+                    monitorGoCryptoRequest(goCryptoId);
+                }
+            } catch (e) {
+                // Invalid uri; ignore.
+            }
+        }
+
+        let goCryptoMonitoringTimeout = -1;
+        async function monitorGoCryptoRequest(paymentId: string) {
+            clearTimeout(goCryptoMonitoringTimeout); // avoid potential parallel monitoring
+            let endMonitoring = false;
+            try {
+                const goCryptoPaymentDetails = await fetchGoCryptoPaymentDetails({ paymentId });
+                if (!goCryptoPaymentDetails
+                    || goCryptoPaymentDetails.recipient !== recipientWithLabel.value?.address
+                    || goCryptoPaymentDetails.amount !== amount.value) {
+                    // The GoCrypto payment id is invalid, does not match the payment link, or the user changed the
+                    // payment info manually.
+                    endMonitoring = true;
+                    return;
+                }
+                const userFriendlyStatus = goCryptoStatusToUserFriendlyMessage(goCryptoPaymentDetails);
+
+                if (userFriendlyStatus.paymentStatus === 'pending') {
+                    if (statusType.value === 'go-crypto') {
+                        // Hide previous status only if it was a go-crypto status before.
+                        statusType.value = 'none';
+                    }
+                    return;
+                }
+
+                statusType.value = 'go-crypto';
+                statusState.value = userFriendlyStatus.paymentStatus === 'accepted' ? State.SUCCESS : State.WARNING;
+                statusTitle.value = userFriendlyStatus.title;
+                statusMessage.value = 'message' in userFriendlyStatus ? userFriendlyStatus.message : '';
+
+                // Close modal automatically if success screen is shown.
+                if (statusState.value !== State.SUCCESS) return;
+                await new Promise<void>((resolve) => {
+                    successCloseTimeout = window.setTimeout(() => {
+                        resolve();
+                        endMonitoring = true;
+                        modal$.value!.forceClose();
+                    }, SUCCESS_REDIRECT_DELAY);
+                });
+            } catch (e) {
+                statusType.value = 'go-crypto';
+                statusState.value = State.WARNING;
+                statusTitle.value = context.root.$t('Something went wrong') as string;
+                statusMessage.value = e instanceof Error ? e.message : String(e);
+            } finally {
+                if (!endMonitoring) {
+                    clearTimeout(goCryptoMonitoringTimeout); // avoid potential parallel monitoring
+                    goCryptoMonitoringTimeout = window.setTimeout(() => monitorGoCryptoRequest(paymentId), 10000);
+                }
+            }
         }
 
         if (props.requestUri) {
@@ -588,19 +653,19 @@ export default defineComponent({
         /**
          * Status Screen
          */
-        const statusScreenOpened = ref(false);
-        const statusTitle = ref(context.root.$t('Sending Transaction'));
-        const statusState = ref(State.LOADING);
+        const statusType = ref<'none' | 'go-crypto' | 'signing'>('none');
+        const statusState = ref<State>(State.LOADING);
+        const statusTitle = ref('');
         const statusMessage = ref('');
-        const statusMainActionText = ref(context.root.$t('Retry'));
-        const statusAlternativeActionText = ref(context.root.$t('Edit transaction'));
 
         async function sign() {
             if (!canSend.value) return;
 
             // Show loading screen
-            statusScreenOpened.value = true;
+            statusType.value = 'signing';
             statusState.value = State.LOADING;
+            statusTitle.value = context.root.$t('Sending Transaction') as string;
+            statusMessage.value = '';
 
             try {
                 const plainTx = await sendTransaction({
@@ -615,22 +680,23 @@ export default defineComponent({
                 });
 
                 if (!plainTx) {
-                    statusScreenOpened.value = false;
+                    statusType.value = 'none'; // hide StatusScreen
                     return;
                 }
 
                 saveRecipientLabel();
 
                 // Show success screen
+                statusType.value = 'signing';
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientWithLabel.value!.label
                     ? context.root.$t('Sent {nim} NIM to {name}', {
                         nim: amount.value / 1e5,
                         name: recipientWithLabel.value!.label,
-                    })
+                    }) as string
                     : context.root.$t('Sent {nim} NIM', {
                         nim: amount.value / 1e5,
-                    });
+                    }) as string;
 
                 // Close modal
                 successCloseTimeout = window.setTimeout(() => modal$.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
@@ -639,18 +705,25 @@ export default defineComponent({
                 else console.error(error); // eslint-disable-line no-console
 
                 // Show error screen
+                statusType.value = 'signing';
                 statusState.value = State.WARNING;
-                statusTitle.value = context.root.$t('Something went wrong');
+                statusTitle.value = context.root.$t('Something went wrong') as string;
                 statusMessage.value = error.message;
             }
         }
 
         function onStatusMainAction() {
-            sign();
+            if (statusType.value === 'signing') {
+                // Retry signing
+                sign();
+            } else {
+                // Close SendModal and potentially go back to previous modal, which should be the QrScanner for GoCrypto
+                back();
+            }
         }
 
         function onStatusAlternativeAction() {
-            statusScreenOpened.value = false;
+            statusType.value = 'none'; // hide StatusScreen
         }
 
         function onCloseOverlay() {
@@ -661,6 +734,10 @@ export default defineComponent({
             addressListOpened.value = false;
             feeSelectionOpened.value = false;
 
+            if (statusType.value === 'go-crypto' && statusState.value === State.WARNING) {
+                // Close SendModal and potentially go back to previous modal, which should be the QrScanner for GoCrypto
+                back();
+            }
             // Do nothing when the success status overlay is shown, it will be closed by successCloseTimeout
         }
 
@@ -674,7 +751,8 @@ export default defineComponent({
         let successCloseTimeout = 0;
 
         onBeforeUnmount(() => {
-            window.clearTimeout(successCloseTimeout);
+            clearTimeout(successCloseTimeout);
+            clearTimeout(goCryptoMonitoringTimeout);
         });
 
         return {
@@ -734,12 +812,10 @@ export default defineComponent({
             amountInput$,
 
             // Status Screen
-            statusScreenOpened,
-            statusTitle,
+            statusType,
             statusState,
+            statusTitle,
             statusMessage,
-            statusMainActionText,
-            statusAlternativeActionText,
             onStatusMainAction,
             onStatusAlternativeAction,
 

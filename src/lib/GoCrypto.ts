@@ -1,6 +1,7 @@
 import { ValidationUtils } from '@nimiq/utils';
 import { useConfig } from '../composables/useConfig';
 import Time from './Time';
+import { i18n } from '../i18n/i18n-setup';
 
 export enum GoCryptoPaymentStatus {
     Opened,
@@ -15,6 +16,7 @@ export enum GoCryptoPaymentStatus {
 }
 
 export interface GoCryptoPaymentDetails {
+    id: string;
     status: GoCryptoPaymentStatus;
     expiry: number; // timestamp in ms
     storeName: string;
@@ -82,6 +84,10 @@ export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: stri
         if (!response.ok) return null;
         const data = await response.json();
 
+        const id: string = data.id; // eslint-disable-line prefer-destructuring
+        if (typeof id !== 'string' || !/\w+/.test(id)
+            || ('paymentId' in parsedLink && id !== parsedLink.paymentId)) return null;
+
         const status: GoCryptoPaymentStatus = data.status; // eslint-disable-line prefer-destructuring
         if (typeof status !== 'number' || !Object.values(GoCryptoPaymentStatus).includes(status)) return null;
 
@@ -106,6 +112,7 @@ export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: stri
         if (Number.isNaN(amount) || !Number.isFinite(amount)) return null;
 
         return {
+            id,
             status,
             expiry,
             storeName,
@@ -116,6 +123,60 @@ export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: stri
         console.error('Failed to fetch GoCrypto payment info:', e); // eslint-disable-line no-console
         return null;
     }
+}
+
+export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaymentDetails)
+: { paymentStatus: 'pending' }
+    | { paymentStatus: 'accepted', title: string }
+    | { paymentStatus: 'failed', title: string, message: string } {
+    const successDefaults = {
+        paymentStatus: 'accepted' as const,
+    };
+    const errorDefaults = {
+        paymentStatus: 'failed' as const,
+        // Concatenate sentences to re-use individual translations.
+        // eslint-disable-next-line prefer-template
+        message: i18n.t('Please ask the merchant to create a new payment request.') + ' '
+            + i18n.t('If you already made a payment, please contact GoCrypto for a refund.'),
+    };
+    switch (paymentDetails.status) {
+        case GoCryptoPaymentStatus.Paid: return {
+            ...successDefaults,
+            title: i18n.t('Payment request has already been paid') as string,
+        };
+        case GoCryptoPaymentStatus.Processing: return {
+            ...successDefaults,
+            title: i18n.t('Your payment is being processed') as string,
+        };
+        case GoCryptoPaymentStatus.Failed: return {
+            ...errorDefaults,
+            title: i18n.t('Your payment failed') as string,
+        };
+        case GoCryptoPaymentStatus.NotValid: return {
+            ...errorDefaults,
+            title: i18n.t('Your payment is invalid') as string,
+        };
+        case GoCryptoPaymentStatus.Refund: return {
+            ...errorDefaults,
+            title: i18n.t('Your payment was refunded') as string,
+            message: i18n.t('Please ask the merchant to create a new payment request.') as string,
+        };
+        case GoCryptoPaymentStatus.Cancelled: return {
+            ...errorDefaults,
+            title: i18n.t('Your payment was cancelled') as string,
+        };
+        default: // do nothing and continue with checks below
+    }
+    if (paymentDetails.status === GoCryptoPaymentStatus.AutoClosed || paymentDetails.expiry < Date.now()) {
+        return {
+            ...errorDefaults,
+            title: i18n.t('The payment request expired') as string,
+        };
+    }
+    // Unpaid request without any errors.
+    return {
+        paymentStatus: 'pending',
+    };
 }
 
 function toUrl(link: string | URL): null | URL {

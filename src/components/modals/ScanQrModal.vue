@@ -1,24 +1,27 @@
 <template>
-    <Modal class="scan-qr-modal" :swipePadding="false" :showOverlay="!!goCryptoStatus"
-        @close-overlay="resetGoCryptoPaymentDetails">
+    <Modal class="scan-qr-modal" :swipePadding="false"
+        :showOverlay="goCryptoStatus && goCryptoStatus.paymentStatus !== 'pending'"
+        @close-overlay="resetGoCryptoPaymentStatus">
         <PageBody>
             <QrScanner @result="checkResult" @cancel="$router.back()" />
         </PageBody>
 
-        <template #overlay>
+        <template #overlay v-if="!!goCryptoStatus">
             <StatusScreen
-                :state="goCryptoStatus.state"
+                :state="goCryptoStatus.paymentStatus === 'accepted'
+                    ? StatusScreenState.SUCCESS
+                    : StatusScreenState.WARNING"
                 :title="goCryptoStatus.title"
                 :message="goCryptoStatus.message"
-                :mainAction="goCryptoStatus.mainAction"
-                @main-action="goCryptoStatus.onMainAction && goCryptoStatus.onMainAction()"
+                mainAction="Ok"
+                @main-action="resetGoCryptoPaymentStatus"
             />
         </template>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
@@ -31,7 +34,7 @@ import {
     EthereumChain,
 } from '@nimiq/utils';
 import Modal from './Modal.vue';
-import StatusScreen, { State as StatusScreenState } from '../StatusScreen.vue';
+import StatusScreen, { State as StatusScreenState, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
@@ -39,8 +42,7 @@ import { validateAddress as validateBitcoinAddress } from '../../lib/BitcoinTran
 import {
     parseGoCryptoRequestLink,
     fetchGoCryptoPaymentDetails,
-    GoCryptoPaymentStatus,
-    GoCryptoPaymentDetails,
+    goCryptoStatusToUserFriendlyMessage,
 } from '../../lib/GoCrypto';
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
@@ -48,7 +50,7 @@ import { getPolygonClient } from '../../ethers';
 
 export default defineComponent({
     name: 'scan-qr-modal',
-    setup(props, context) {
+    setup() {
         const { config } = useConfig();
         const router = useRouter();
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
@@ -158,92 +160,42 @@ export default defineComponent({
 
             if (config.goCrypto.enabled) {
                 const goCryptoRequestLink = parseGoCryptoRequestLink(result);
-                goCryptoPaymentDetails.value = goCryptoRequestLink
+                const goCryptoPaymentDetails = goCryptoRequestLink
                     ? await fetchGoCryptoPaymentDetails(goCryptoRequestLink)
                     : null;
-                if (goCryptoPaymentDetails.value && !goCryptoStatus.value) {
-                    // Reformat into a Nimiq request link and redirect to it as path which will be handled by the router
-                    router.replace(`/${createNimiqRequestLink(goCryptoPaymentDetails.value.recipient, {
-                        amount: goCryptoPaymentDetails.value.amount,
-                        label: goCryptoPaymentDetails.value.storeName,
+                goCryptoStatus.value = goCryptoPaymentDetails
+                    ? goCryptoStatusToUserFriendlyMessage(goCryptoPaymentDetails)
+                    : null;
+                if (goCryptoPaymentDetails && goCryptoStatus.value?.paymentStatus === 'pending') {
+                    // Forward to SendModal by reformatting the request into a Nimiq request link.
+                    const nimiqRequestLink = createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
+                        amount: goCryptoPaymentDetails.amount,
+                        label: goCryptoPaymentDetails.storeName,
                         type: NimiqRequestLinkType.URI,
-                    })}`);
+                    });
+                    const goCryptoSuffix = `&goCryptoId=${goCryptoPaymentDetails.id}`; // Pass payment id to SendModal
+                    // Redirect to request link as path which will be handled by the router.
+                    router.replace(`/${nimiqRequestLink}${goCryptoSuffix}`);
+                } else if (goCryptoStatus.value?.paymentStatus === 'accepted') {
+                    // The success screen has no dismiss button, therefore auto-close it.
+                    setTimeout(() => {
+                        if (goCryptoStatus.value?.paymentStatus !== 'accepted') return;
+                        resetGoCryptoPaymentStatus();
+                    }, SUCCESS_REDIRECT_DELAY);
                 }
             }
         };
 
-        const goCryptoPaymentDetails = ref<GoCryptoPaymentDetails>(null);
-        function resetGoCryptoPaymentDetails() {
-            goCryptoPaymentDetails.value = null;
+        const goCryptoStatus = ref<ReturnType<typeof goCryptoStatusToUserFriendlyMessage>>(null);
+        function resetGoCryptoPaymentStatus() {
+            goCryptoStatus.value = null;
         }
 
-        const goCryptoStatus = computed(() => {
-            if (!goCryptoPaymentDetails.value) return null;
-            const successDefaults = {
-                // Note: StatusScreen does not support actions for success screens.
-                state: StatusScreenState.SUCCESS,
-            };
-            const errorDefaults = {
-                state: StatusScreenState.WARNING,
-                // Concatenate sentences to re-use individual translations.
-                // eslint-disable-next-line prefer-template
-                message: context.root.$t('Please ask the merchant to create a new payment request.') + ' '
-                    + context.root.$t('If you already made a payment, please contact GoCrypto for a refund.'),
-                mainAction: 'OK', // no need to translate this
-                onMainAction: resetGoCryptoPaymentDetails,
-            };
-            switch (goCryptoPaymentDetails.value.status) {
-                case GoCryptoPaymentStatus.Paid: return {
-                    ...successDefaults,
-                    title: context.root.$t('Payment request has already been paid'),
-                };
-                case GoCryptoPaymentStatus.Processing: return {
-                    ...successDefaults,
-                    title: context.root.$t('Your payment is being processed'),
-                };
-                case GoCryptoPaymentStatus.Failed: return {
-                    ...errorDefaults,
-                    title: context.root.$t('Your payment failed'),
-                };
-                case GoCryptoPaymentStatus.NotValid: return {
-                    ...errorDefaults,
-                    title: context.root.$t('Your payment is invalid'),
-                };
-                case GoCryptoPaymentStatus.Refund: return {
-                    ...errorDefaults,
-                    title: context.root.$t('Your payment was refunded'),
-                    message: context.root.$t('Please ask the merchant to create a new payment request.'),
-                };
-                case GoCryptoPaymentStatus.Cancelled: return {
-                    ...errorDefaults,
-                    title: context.root.$t('Your payment was cancelled'),
-                };
-                default: // do nothing and continue with checks below
-            }
-            if (goCryptoPaymentDetails.value.status === GoCryptoPaymentStatus.AutoClosed
-                || goCryptoPaymentDetails.value.expiry < Date.now()) {
-                return {
-                    ...errorDefaults,
-                    title: context.root.$t('The payment request expired'),
-                };
-            }
-            return null; // Unpaid request without any errors.
-        });
-
-        let statusScreenHideTimeout = -1;
-        watch(goCryptoStatus, () => {
-            if (goCryptoStatus.value?.state === StatusScreenState.SUCCESS) {
-                // The success screen has no ok button, therefore auto-close it.
-                statusScreenHideTimeout = window.setTimeout(resetGoCryptoPaymentDetails, 3000);
-            } else {
-                clearTimeout(statusScreenHideTimeout);
-            }
-        });
-
         return {
+            StatusScreenState,
             checkResult,
             goCryptoStatus,
-            resetGoCryptoPaymentDetails,
+            resetGoCryptoPaymentStatus,
         };
     },
     components: {

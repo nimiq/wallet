@@ -1,4 +1,5 @@
 import { UTXO } from '../stores/BtcAddress';
+import { BTC_DUST_LIMIT } from './Constants';
 
 // Source for Weight Units: https://bitcoinops.org/en/tools/calc-size/
 
@@ -11,7 +12,7 @@ export const NESTED_OUTPUT_WU = 128; // P2SH
 export const NATIVE_OUPUT_WU = 124; // P2WPKH
 
 // The amount which does not warrant a change output, since it would cost more in fees to include than it's worth
-export const DUST_AMOUNT = Math.ceil(INPUT_WU / 4) * 2;
+export const DUST_AMOUNT = Math.max(Math.ceil(INPUT_WU / 4) * 2, BTC_DUST_LIMIT);
 
 export function estimateFees(numInputs: number, numOutputs: number, feePerByte = 1, extraWeightUnits = 0) {
     const weightUnits = TX_HEADER_WU + INPUT_WU * numInputs + LEGACY_OUTPUT_WU * numOutputs + extraWeightUnits;
@@ -60,7 +61,7 @@ export function selectOutputs(
         const feeWithChange = estimateFees(outputCount, 2, feePerByte, extraWeightUnits);
         const feeWithoutChange = estimateFees(outputCount, 1, feePerByte, extraWeightUnits);
 
-        if (sum >= amount + feeWithChange + DUST_AMOUNT) {
+        if (sum > amount + feeWithChange + DUST_AMOUNT) {
             console.debug('Found a combi that DOES require a change output'); // eslint-disable-line no-console
             changeAmount = sum - (amount + feeWithChange);
             break;

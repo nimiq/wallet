@@ -296,7 +296,7 @@ import LightningIcon from '../icons/LightningIcon.vue';
 import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
-import { CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
+import { BTC_DUST_LIMIT, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { setupSwap } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
@@ -1021,6 +1021,12 @@ export default defineComponent({
                 if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
                     // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
                     estimateError.value = context.root.$t('The fees determine the minimum amount.') as string;
+                } else if (
+                    newEstimate.to.asset === SwapAsset.BTC
+                    // Check that output is higher than the BTC dust limit
+                    && newEstimate.to.amount - newEstimate.to.fee <= BTC_DUST_LIMIT
+                ) {
+                    estimateError.value = context.root.$t('Resulting BTC amount is too small.') as string;
                 } else {
                     estimateError.value = null;
                 }
@@ -1389,6 +1395,14 @@ export default defineComponent({
 
                     if (swapSuggestion.to.amount - swapSuggestion.to.fee <= 0) {
                         throw new Error(`${swapSuggestion.to.asset} output value is 0`);
+                    }
+
+                    if (
+                        swapSuggestion.to.asset === SwapAsset.BTC
+                        // Check that output is higher than the BTC dust limit
+                        && swapSuggestion.to.amount - swapSuggestion.to.fee <= BTC_DUST_LIMIT
+                    ) {
+                        throw new Error('Resulting BTC amount is too small.');
                     }
 
                     console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console

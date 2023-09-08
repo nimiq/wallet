@@ -336,7 +336,7 @@ import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { FIAT_PRICE_UNAVAILABLE, CryptoCurrency } from '../../lib/Constants';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
-import { useSwapsStore, SwapBtcData } from '../../stores/Swaps';
+import { SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { estimateFees } from '../../lib/BitcoinTransactionUtils';
@@ -359,16 +359,6 @@ export default defineComponent({
     setup(props, context) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
-
-        // Note that as the transaction modal is typically opened from the active account's transaction history, we base
-        // our calculations here on the active account and its addresses. This yields wrong results if the opened
-        // transaction modal (e.g. opened via url) does not belong to the active account but saves us scanning through
-        // all accounts in the common case.
-        const {
-            state: btcAddresses$,
-            activeInternalAddresses,
-            activeExternalAddresses,
-        } = useBtcAddressStore();
 
         const {
             setRecipientLabel,

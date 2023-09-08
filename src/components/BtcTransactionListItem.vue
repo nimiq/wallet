@@ -110,7 +110,7 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
         const state = computed(() => props.transaction.state);

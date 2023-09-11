@@ -1,5 +1,5 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened" ref="modal$">
+    <Modal :showOverlay="statusScreenOpened" ref="modal$" @close-overlay="onCloseOverlay">
         <div class="page flex-column" @click="amountMenuOpened = false">
             <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
                 {{ $t('Send Transaction') }}
@@ -514,6 +514,14 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
+        function onCloseOverlay() {
+            if (statusState.value !== State.WARNING) {
+                // Do nothing when the loading or success status overlays are shown as they will be auto-closed.
+                return;
+            }
+            statusScreenOpened.value = false;
+        }
+
         const { btcUnit } = useSettingsStore();
 
         function back() {
@@ -567,6 +575,7 @@ export default defineComponent({
             statusMessage,
             onStatusMainAction,
             onStatusAlternativeAction,
+            onCloseOverlay,
 
             back,
         };

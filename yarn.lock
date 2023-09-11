@@ -1499,11 +1499,12 @@
   integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
 
 "@nimiq/core-web@next":
-  version "2.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.13.tgz#6fe7ae67aeaadbfff880061c75728928de75d863"
-  integrity sha512-lSOhtgDy7jl74naVuwik54eCFD/oDiAhe1JV0uQVbm3O5tJKCTLqik+wSO9FvdjpZwLj/XwzA06NcJWM/PyFcA==
+  version "2.0.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.15.tgz#ac0c8ab92c76ec4f60edcc62074bcd56352d5c25"
+  integrity sha512-jWCvaBEW1K1q2MxqnkkHcbui0XwEvoylU/wdR32QR7cXAVgbKVKgdCBvn64ypbK2U1StX+TgFsG8cb7xDWaGFA==
   dependencies:
     comlink "^4.4.1"
+    websocket "^1.0.34"
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
@@ -11556,7 +11557,7 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-websocket@^1.0.32:
+websocket@^1.0.32, websocket@^1.0.34:
   version "1.0.34"
   resolved "https://registry.yarnpkg.com/websocket/-/websocket-1.0.34.tgz#2bdc2602c08bf2c82253b730655c0ef7dcab3111"
   integrity sha512-PRDso2sGwF6kM75QykIesBijKSVceR6jL2G8NGYyq2XrItNC2P5/qL5XeR056GhA+Ly7JMFvJb9I312mJfmqnQ==

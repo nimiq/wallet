@@ -121,8 +121,8 @@
                 :title="statusTitle"
                 :state="statusState"
                 :message="statusMessage"
-                :mainAction="statusMainActionText"
-                :alternativeAction="statusAlternativeActionText"
+                :mainAction="$t('Retry')"
+                :alternativeAction="$t('Edit transaction')"
                 @main-action="onStatusMainAction"
                 @alternative-action="onStatusAlternativeAction"
                 :lightBlue="true"
@@ -426,11 +426,9 @@ export default defineComponent({
          * Status Screen
          */
         const statusScreenOpened = ref(false);
-        const statusTitle = ref(context.root.$t('Sending Transaction') as string);
-        const statusState = ref(State.LOADING);
+        const statusState = ref<State>(State.LOADING);
+        const statusTitle = ref('');
         const statusMessage = ref('');
-        const statusMainActionText = ref(context.root.$t('Retry') as string);
-        const statusAlternativeActionText = ref(context.root.$t('Edit transaction') as string);
         const modal$ = ref<Modal>(null);
 
         async function sign() {
@@ -439,6 +437,8 @@ export default defineComponent({
             // Show loading screen
             statusScreenOpened.value = true;
             statusState.value = State.LOADING;
+            statusTitle.value = context.root.$t('Sending Transaction') as string;
+            statusMessage.value = '';
 
             let changeAddress: string;
             if (requiredInputs.value.changeAmount > 0) {
@@ -492,7 +492,10 @@ export default defineComponent({
                     }) as string;
 
                 // Close modal
-                successCloseTimeout = window.setTimeout(() => modal$.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => {
+                    if (statusState.value !== State.SUCCESS) return;
+                    modal$.value!.forceClose();
+                }, SUCCESS_REDIRECT_DELAY);
             } catch (error) {
                 // console.debug(error);
 
@@ -562,8 +565,6 @@ export default defineComponent({
             statusTitle,
             statusState,
             statusMessage,
-            statusMainActionText,
-            statusAlternativeActionText,
             onStatusMainAction,
             onStatusAlternativeAction,
 

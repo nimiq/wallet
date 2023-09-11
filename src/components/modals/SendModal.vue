@@ -592,6 +592,7 @@ export default defineComponent({
                 await new Promise<void>((resolve) => {
                     successCloseTimeout = window.setTimeout(() => {
                         resolve();
+                        if (statusType.value !== 'go-crypto' || statusState.value !== State.SUCCESS) return;
                         endMonitoring = true;
                         modal$.value!.forceClose();
                     }, SUCCESS_REDIRECT_DELAY);
@@ -699,7 +700,10 @@ export default defineComponent({
                     }) as string;
 
                 // Close modal
-                successCloseTimeout = window.setTimeout(() => modal$.value!.forceClose(), SUCCESS_REDIRECT_DELAY);
+                successCloseTimeout = window.setTimeout(() => {
+                    if (statusType.value !== 'signing' || statusState.value !== State.SUCCESS) return;
+                    modal$.value!.forceClose();
+                }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

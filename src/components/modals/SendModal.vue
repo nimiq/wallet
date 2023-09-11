@@ -738,11 +738,16 @@ export default defineComponent({
             addressListOpened.value = false;
             feeSelectionOpened.value = false;
 
-            if (statusType.value === 'go-crypto' && statusState.value === State.WARNING) {
+            if (statusState.value !== State.WARNING) {
+                // Do nothing when the loading or success status overlays are shown as they will be auto-closed.
+                return;
+            }
+            if (statusType.value === 'go-crypto') {
                 // Close SendModal and potentially go back to previous modal, which should be the QrScanner for GoCrypto
                 back();
+            } else {
+                statusType.value = 'none'; // hide StatusScreen
             }
-            // Do nothing when the success status overlay is shown, it will be closed by successCloseTimeout
         }
 
         const { amountsHidden } = useSettingsStore();
@@ -822,10 +827,9 @@ export default defineComponent({
             statusMessage,
             onStatusMainAction,
             onStatusAlternativeAction,
+            onCloseOverlay,
 
             back,
-
-            onCloseOverlay,
         };
     },
     components: {

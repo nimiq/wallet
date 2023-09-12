@@ -26,10 +26,18 @@ export interface GoCryptoPaymentDetails {
     amount: number;
 }
 
+// The errors listed here are the ones we encountered so far. The API errors are unfortunately not mentioned in the
+// documentation at all.
+export enum GoCryptoPaymentApiErrorCode {
+    // Seems to be returned for invalid/unknown request identifiers.
+    IdentifierNotFound = 'http404',
+    // This surprisingly is returned for expired requests, instead of payment info with status AutoClosed.
+    PaymentNotFound = 'paymentNotFound'
+}
+
 export interface GoCryptoPaymentApiError {
-    // paymentNotFound is surprisingly returned for expired requests, instead of payment info status AutoClosed.
-    errorCode: 'paymentNotFound' | string;
-    errorMessage: string;
+    errorCode: GoCryptoPaymentApiErrorCode | string;
+    errorMessage: string; // Can also be an empty string.
     request: GoCryptoRequestIdentifier;
 }
 
@@ -161,25 +169,30 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
 
     if ('errorCode' in paymentDetails) {
         switch (paymentDetails.errorCode) {
-            case 'paymentNotFound': return {
-                // No payment request found for the given identifier. While this could occur because the identifier is
-                // simply invalid/unknown, this surprisingly also occurs more typically for expired requests, which do
-                // not actually seem to return payment details with status AutoClosed.
+            case GoCryptoPaymentApiErrorCode.PaymentNotFound:
+                // This surprisingly is returned for expired requests, instead of payment info with status AutoClosed.
+                if ('paymentId' in paymentDetails.request) {
+                    return {
+                        ...errorDefaults,
+                        title: i18n.t('The payment request expired') as string,
+                    };
+                }
+                // For payment request by merchantId fall through to the InvalidIdentifier case, because the merchant's
+                // previous payment request expired, which might have been for another customer, and he did not set up a
+                // new request yet for the new customer.
+                // eslint-disable-next-line no-fallthrough
+            case GoCryptoPaymentApiErrorCode.InvalidIdentifier: return {
+                // No payment request found for the given identifier.
                 ...errorDefaults,
-                title: 'paymentId' in paymentDetails.request
-                    // We assume the more likely case of an expired request here.
-                    ? i18n.t('The payment request expired') as string
-                    // Likely, the merchant's previous payment request expired, which might have been for another
-                    // customer, and he did not set up a new request yet for the new customer.
-                    : i18n.t('No payment request found') as string,
-                message: 'paymentId' in paymentDetails.request
-                    ? errorDefaults.message
-                    : i18n.t('Please ask the merchant to create a new payment request.') as string,
+                title: i18n.t('No payment request found') as string,
+                message: i18n.t('Please ask the merchant to create a new payment request.') as string,
             };
             default: return {
                 ...errorDefaults,
                 title: i18n.t('Unexpected GoCrypto error') as string,
-                message: i18n.t('Error {errorCode}: {errorMessage}', paymentDetails) as string,
+                message: paymentDetails.errorMessage
+                    ? i18n.t('Error {errorCode}: {errorMessage}', paymentDetails) as string
+                    : i18n.t('Error {errorCode}', paymentDetails) as string,
             };
         }
     }

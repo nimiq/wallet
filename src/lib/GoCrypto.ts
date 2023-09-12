@@ -167,6 +167,11 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
 : { paymentStatus: 'pending' }
     | { paymentStatus: 'accepted', title: string }
     | { paymentStatus: 'failed', title: string, message: string } {
+    const paymentId = 'id' in paymentDetails
+        ? paymentDetails.id
+        : 'paymentId' in paymentDetails.request
+            ? paymentDetails.request.paymentId
+            : null;
     const successDefaults = {
         paymentStatus: 'accepted' as const,
     };
@@ -175,7 +180,8 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
         // Concatenate sentences to re-use individual translations.
         // eslint-disable-next-line prefer-template
         message: i18n.t('Please ask the merchant to create a new payment request.') + ' '
-            + i18n.t('If you already made a payment, please contact GoCrypto for a refund.'),
+            + i18n.t('If you already made a payment, please contact GoCrypto for a refund.')
+            + (paymentId ? ` (GoCrypto id: ${paymentId})` : ''),
     };
 
     if ('errorCode' in paymentDetails) {

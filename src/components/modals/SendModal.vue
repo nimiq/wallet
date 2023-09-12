@@ -565,9 +565,10 @@ export default defineComponent({
             try {
                 const goCryptoPaymentDetails = await fetchGoCryptoPaymentDetails({ paymentId });
                 if (!goCryptoPaymentDetails
-                    || goCryptoPaymentDetails.recipient !== recipientWithLabel.value?.address
-                    || goCryptoPaymentDetails.amount !== amount.value) {
-                    // The GoCrypto payment id is invalid, does not match the payment link, or the user changed the
+                    || ('recipient' in goCryptoPaymentDetails
+                        && goCryptoPaymentDetails.recipient !== recipientWithLabel.value?.address)
+                    || ('amount' in goCryptoPaymentDetails && goCryptoPaymentDetails.amount !== amount.value)) {
+                    // The GoCrypto payment request is invalid, does not match the payment info, or the user changed the
                     // payment info manually.
                     endMonitoring = true;
                     return;
@@ -603,8 +604,8 @@ export default defineComponent({
                 statusTitle.value = context.root.$t('Something went wrong') as string;
                 statusMessage.value = e instanceof Error ? e.message : String(e);
             } finally {
+                clearTimeout(goCryptoMonitoringTimeout); // end if requested, otherwise avoid parallel monitoring
                 if (!endMonitoring) {
-                    clearTimeout(goCryptoMonitoringTimeout); // avoid potential parallel monitoring
                     goCryptoMonitoringTimeout = window.setTimeout(() => monitorGoCryptoRequest(paymentId), 10000);
                 }
             }

@@ -3,20 +3,22 @@ import { useConfig } from '../composables/useConfig';
 import Time from './Time';
 import { i18n } from '../i18n/i18n-setup';
 
+export type GoCryptoRequestIdentifier = { merchantId: string } | { paymentId: string };
+
 export enum GoCryptoPaymentStatus {
     Opened,
     InPayment, // This is the standard case when a request link is scanned.
     Paid,
     Processing,
-    AutoClosed,
+    AutoClosed, // Payment expired
     Failed,
     NotValid,
-    Refund,
-    Cancelled,
+    Refund, // Refunded after successful payment
+    Cancelled, // Payment request cancelled on POS
 }
 
 export interface GoCryptoPaymentDetails {
-    id: string;
+    id: string; // payment id
     status: GoCryptoPaymentStatus;
     expiry: number; // timestamp in ms
     storeName: string;
@@ -24,7 +26,14 @@ export interface GoCryptoPaymentDetails {
     amount: number;
 }
 
-export function parseGoCryptoRequestLink(requestLink: string | URL) {
+export interface GoCryptoPaymentApiError {
+    // paymentNotFound is surprisingly returned for expired requests, instead of payment info status AutoClosed.
+    errorCode: 'paymentNotFound' | string;
+    errorMessage: string;
+    request: GoCryptoRequestIdentifier;
+}
+
+export function parseGoCryptoRequestLink(requestLink: string | URL): GoCryptoRequestIdentifier | null {
     const { config } = useConfig();
     if (!config.goCrypto.enabled) return null;
 
@@ -37,22 +46,24 @@ export function parseGoCryptoRequestLink(requestLink: string | URL) {
     )) return null;
 
     // Note: searchParams.get also url decodes the parameters already
-    const merchantId = url.searchParams.get('merchant_id');
-    if (merchantId && !/\w+/.test(merchantId)) return null;
     const paymentId = url.searchParams.get('gocrypto_id');
     if (paymentId && !/\w+/.test(paymentId)) return null;
+    const merchantId = url.searchParams.get('merchant_id');
+    if (merchantId && !/\w+/.test(merchantId)) return null;
 
-    if (merchantId) {
-        return { merchantId };
-    }
+    // paymentId is more specific, therefore prioritize paymentId over merchantId, in case both are specified.
     if (paymentId) {
         return { paymentId };
     }
+    if (merchantId) {
+        return { merchantId };
+    }
+
     return null;
 }
 
-export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: string } | { paymentId: string })
-: Promise<GoCryptoPaymentDetails | null> {
+export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoRequestIdentifier)
+: Promise<GoCryptoPaymentDetails | GoCryptoPaymentApiError | null> {
     const { config } = useConfig();
     if (!config.goCrypto.enabled) return null;
 
@@ -60,9 +71,9 @@ export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: stri
     // <apiEndpoint>/v3/custodial/payment?merchant_id=<merchantId> should be queried, and chapter 4 suggests that v2 is
     // to be used. However, all those URLs are invalid or at least not CORS enabled. Experimentation showed, that the
     // same url path as querying for payment ids has to be used instead: /publicapi/payment.
-    const url = `${config.goCrypto.apiEndpoint}publicapi/payment?${'merchantId' in parsedLink
-        ? `merchant_id=${parsedLink.merchantId}`
-        : `payment_id=${parsedLink.paymentId}`}`;
+    const url = `${config.goCrypto.apiEndpoint}publicapi/payment?${'merchantId' in requestIdentifier
+        ? `merchant_id=${requestIdentifier.merchantId}`
+        : `payment_id=${requestIdentifier.paymentId}`}`;
     const headers = {
         // Note: As of August 2023, setting a custom user agent is possible in Firefox and Safari, but not in Chrome
         // yet, see https://bugs.chromium.org/p/chromium/issues/detail?id=571722. However, the Chrome uer agent is good
@@ -81,12 +92,20 @@ export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: stri
             }),
             Time.now().then((serverTime) => serverTime - Date.now()),
         ]);
-        if (!response.ok) return null;
-        const data = await response.json();
+        const data = await response.json(); // Try to read body which is set on valid requests and expected errors.
+
+        if (!response.ok) {
+            if (typeof data.code !== 'string' || typeof data.message !== 'string') return null; // unexpected error
+            return {
+                errorCode: data.code,
+                errorMessage: data.message,
+                request: requestIdentifier,
+            };
+        }
 
         const id: string = data.id; // eslint-disable-line prefer-destructuring
         if (typeof id !== 'string' || !/\w+/.test(id)
-            || ('paymentId' in parsedLink && id !== parsedLink.paymentId)) return null;
+            || ('paymentId' in requestIdentifier && id !== requestIdentifier.paymentId)) return null;
 
         const status: GoCryptoPaymentStatus = data.status; // eslint-disable-line prefer-destructuring
         if (typeof status !== 'number' || !Object.values(GoCryptoPaymentStatus).includes(status)) return null;
@@ -125,7 +144,7 @@ export async function fetchGoCryptoPaymentDetails(parsedLink: { merchantId: stri
     }
 }
 
-export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaymentDetails)
+export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaymentDetails | GoCryptoPaymentApiError)
 : { paymentStatus: 'pending' }
     | { paymentStatus: 'accepted', title: string }
     | { paymentStatus: 'failed', title: string, message: string } {
@@ -139,6 +158,32 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
         message: i18n.t('Please ask the merchant to create a new payment request.') + ' '
             + i18n.t('If you already made a payment, please contact GoCrypto for a refund.'),
     };
+
+    if ('errorCode' in paymentDetails) {
+        switch (paymentDetails.errorCode) {
+            case 'paymentNotFound': return {
+                // No payment request found for the given identifier. While this could occur because the identifier is
+                // simply invalid/unknown, this surprisingly also occurs more typically for expired requests, which do
+                // not actually seem to return payment details with status AutoClosed.
+                ...errorDefaults,
+                title: 'paymentId' in paymentDetails.request
+                    // We assume the more likely case of an expired request here.
+                    ? i18n.t('The payment request expired') as string
+                    // Likely, the merchant's previous payment request expired, which might have been for another
+                    // customer, and he did not set up a new request yet for the new customer.
+                    : i18n.t('No payment request found') as string,
+                message: 'paymentId' in paymentDetails.request
+                    ? errorDefaults.message
+                    : i18n.t('Please ask the merchant to create a new payment request.') as string,
+            };
+            default: return {
+                ...errorDefaults,
+                title: i18n.t('Unexpected GoCrypto error') as string,
+                message: i18n.t('Error {errorCode}: {errorMessage}', paymentDetails) as string,
+            };
+        }
+    }
+
     switch (paymentDetails.status) {
         case GoCryptoPaymentStatus.Paid: return {
             ...successDefaults,

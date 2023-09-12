@@ -166,7 +166,8 @@ export default defineComponent({
                 goCryptoStatus.value = goCryptoPaymentDetails
                     ? goCryptoStatusToUserFriendlyMessage(goCryptoPaymentDetails)
                     : null;
-                if (goCryptoPaymentDetails && goCryptoStatus.value?.paymentStatus === 'pending') {
+                if (goCryptoPaymentDetails && !('errorCode' in goCryptoPaymentDetails)
+                    && goCryptoStatus.value?.paymentStatus === 'pending') {
                     // Forward to SendModal by reformatting the request into a Nimiq request link.
                     const nimiqRequestLink = createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
                         amount: goCryptoPaymentDetails.amount,

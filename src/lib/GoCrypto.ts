@@ -30,9 +30,12 @@ export interface GoCryptoPaymentDetails {
 // documentation at all.
 export enum GoCryptoPaymentApiErrorCode {
     // Seems to be returned for invalid/unknown request identifiers.
-    IdentifierNotFound = 'http404',
+    InvalidIdentifier = 'http404',
     // This surprisingly is returned for expired requests, instead of payment info with status AutoClosed.
-    PaymentNotFound = 'paymentNotFound'
+    PaymentNotFound = 'paymentNotFound',
+    // This is not an error that is returned by the GoCrypto api, but an error that we assign on invalid / unexpected
+    // api responses. This error's name is surrounded by __ to avoid a potential name clash with GoCrypto.
+    InvalidResponse = '__invalidResponse__',
 }
 
 export interface GoCryptoPaymentApiError {
@@ -71,9 +74,8 @@ export function parseGoCryptoRequestLink(requestLink: string | URL): GoCryptoReq
 }
 
 export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoRequestIdentifier)
-: Promise<GoCryptoPaymentDetails | GoCryptoPaymentApiError | null> {
+: Promise<GoCryptoPaymentDetails | GoCryptoPaymentApiError> {
     const { config } = useConfig();
-    if (!config.goCrypto.enabled) return null;
 
     // Note: for querying data by merchant id for fixed QR code stickers in the shop, the documentation claims that
     // <apiEndpoint>/v3/custodial/payment?merchant_id=<merchantId> should be queried, and chapter 4 suggests that v2 is
@@ -92,6 +94,8 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
     };
 
     try {
+        if (!config.goCrypto.enabled) throw new Error('GoCrypto not enabled');
+
         const [response, timeOffset] = await Promise.all([
             fetch(url, {
                 headers,
@@ -103,7 +107,7 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
         const data = await response.json(); // Try to read body which is set on valid requests and expected errors.
 
         if (!response.ok) {
-            if (typeof data.code !== 'string' || typeof data.message !== 'string') return null; // unexpected error
+            if (typeof data.code !== 'string' || typeof data.message !== 'string') throw new Error('Unexpected error');
             return {
                 errorCode: data.code,
                 errorMessage: data.message,
@@ -113,30 +117,32 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
 
         const id: string = data.id; // eslint-disable-line prefer-destructuring
         if (typeof id !== 'string' || !/\w+/.test(id)
-            || ('paymentId' in requestIdentifier && id !== requestIdentifier.paymentId)) return null;
+            || ('paymentId' in requestIdentifier && id !== requestIdentifier.paymentId)) throw new Error('Invalid id');
 
         const status: GoCryptoPaymentStatus = data.status; // eslint-disable-line prefer-destructuring
-        if (typeof status !== 'number' || !Object.values(GoCryptoPaymentStatus).includes(status)) return null;
+        if (typeof status !== 'number'
+            || !Object.values(GoCryptoPaymentStatus).includes(status)) throw new Error('Invalid status');
 
         const expiry = Date.parse(data.expires_at) - timeOffset; // convert expiry to user's clock
-        if (Number.isNaN(expiry)) return null;
+        if (Number.isNaN(expiry)) throw new Error('Invalid expiry');
 
         const storeName: string = data.store_full_name; // eslint-disable-line prefer-destructuring
-        if (typeof storeName !== 'string' || !storeName) return null;
+        if (typeof storeName !== 'string' || !storeName) throw new Error('Invalid storeName');
 
         // Only support Nimiq because GoCrypto doesn't support USDC and BTC is only supported as Lightning on Terminals.
         const nimiqPaymentOptions = Array.isArray(data.payment_options)
             && data.payment_options.find((option: any) => !!option && option.currency_name === 'NIM');
-        if (!nimiqPaymentOptions || nimiqPaymentOptions.currency !== /* GoCrypto id for Nimiq */ 207) return null;
+        if (!nimiqPaymentOptions
+            || nimiqPaymentOptions.currency !== /* Nimiq id */ 207) throw new Error('Missing Nimiq payment options');
 
         const recipient: string = nimiqPaymentOptions.wallet_address
             .toUpperCase() // format as uppercase
-            .replace(/\s/g, '') // strip spaces and dashes
+            .replace(/\s/g, '') // strip spaces
             .replace(/(.)(?=(.{4})+$)/g, '$1 '); // reformat with spaces, forming blocks of 4 chars
-        if (!ValidationUtils.isValidAddress(nimiqPaymentOptions.wallet_address)) return null;
+        if (!ValidationUtils.isValidAddress(recipient)) throw new Error('Invalid recipient');
 
         const amount = Math.round(Number.parseFloat(nimiqPaymentOptions.amount) * 1e5);
-        if (Number.isNaN(amount) || !Number.isFinite(amount)) return null;
+        if (Number.isNaN(amount) || !Number.isFinite(amount)) throw new Error('Invalid amount');
 
         return {
             id,
@@ -147,8 +153,13 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
             amount,
         };
     } catch (e) {
-        console.error('Failed to fetch GoCrypto payment info:', e); // eslint-disable-line no-console
-        return null;
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        return {
+            errorCode: GoCryptoPaymentApiErrorCode.InvalidResponse,
+            // We don't translate the error message, as these errors shouldn't normally occur.
+            errorMessage: `Received an invalid response from GoCrypto: ${errorMessage}`,
+            request: requestIdentifier,
+        };
     }
 }
 
@@ -187,6 +198,7 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
                 title: i18n.t('No payment request found') as string,
                 message: i18n.t('Please ask the merchant to create a new payment request.') as string,
             };
+            case GoCryptoPaymentApiErrorCode.InvalidResponse:
             default: return {
                 ...errorDefaults,
                 title: i18n.t('Unexpected GoCrypto error') as string,

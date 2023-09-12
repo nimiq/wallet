@@ -175,8 +175,9 @@ export default defineComponent({
                         type: NimiqRequestLinkType.URI,
                     });
                     const goCryptoSuffix = `&goCryptoId=${goCryptoPaymentDetails.id}`; // Pass payment id to SendModal
-                    // Redirect to request link as path which will be handled by the router.
-                    router.replace(`/${nimiqRequestLink}${goCryptoSuffix}`);
+                    // Redirect to request link as path which will be handled by the router. Don't replace the route,
+                    // such that the user can navigate back to the scanner from SendModal on GoCrypto errors.
+                    router.push(`/${nimiqRequestLink}${goCryptoSuffix}`);
                 } else if (goCryptoStatus.value?.paymentStatus === 'accepted') {
                     // The success screen has no dismiss button, therefore auto-close it.
                     setTimeout(() => {

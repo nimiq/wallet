@@ -564,12 +564,11 @@ export default defineComponent({
             let endMonitoring = false;
             try {
                 const goCryptoPaymentDetails = await fetchGoCryptoPaymentDetails({ paymentId });
-                if (!goCryptoPaymentDetails
-                    || ('recipient' in goCryptoPaymentDetails
+                if (('recipient' in goCryptoPaymentDetails
                         && goCryptoPaymentDetails.recipient !== recipientWithLabel.value?.address)
                     || ('amount' in goCryptoPaymentDetails && goCryptoPaymentDetails.amount !== amount.value)) {
-                    // The GoCrypto payment request is invalid, does not match the payment info, or the user changed the
-                    // payment info manually.
+                    // The GoCrypto payment request does not match the payment info, or the user changed the payment
+                    // info manually.
                     endMonitoring = true;
                     return;
                 }

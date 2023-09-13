@@ -52,11 +52,11 @@ export const validatorData: Record<string, ValidatorInfo> = {
         payoutType: 'direct',
         description: 'The Ace in staking',
     },
-    'NQ96 M1NT EGN0 Q3K4 JGGD 3B2H 28M5 S9D3 7BLD': {
+    'NQ57 M1NT JRQA FGD2 HX1P FN2G 611P JNAE K7HN': {
         label: 'Mint Pool',
         fee: 0.1,
         payoutType: 'restake',
-        description: 'Minting together',
+        description: 'Minting together - mintpool.io',
         icon: 'mintpool.svg',
     },
 };

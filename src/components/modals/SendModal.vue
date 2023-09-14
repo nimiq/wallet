@@ -154,7 +154,7 @@
                         </AmountInput>
                     </div>
 
-                    <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
+                    <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee+expiry">
                         <span v-if="activeCurrency === CryptoCurrency.NIM" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
                             <span v-if="fee">
@@ -163,6 +163,10 @@
                         </span>
                         <span v-else key="nim-amount">
                             {{ $t('You will send {amount} NIM', { amount: amount / 1e5 }) }}
+                        </span>
+                        <span v-if="goCryptoExpiryCountdown" class="expiry-countdown"
+                            :class="{ 'same-line': activeCurrency === CryptoCurrency.NIM && !fee }">
+                            {{ $t('Pay within {countdown}', { countdown: goCryptoExpiryCountdown }) }}
                         </span>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
@@ -263,7 +267,12 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
-import { fetchGoCryptoPaymentDetails, goCryptoStatusToUserFriendlyMessage } from '../../lib/GoCrypto';
+import {
+    fetchGoCryptoPaymentDetails,
+    goCryptoStatusToUserFriendlyMessage,
+    GoCryptoPaymentDetails,
+    GoCryptoPaymentApiError,
+} from '../../lib/GoCrypto';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
@@ -517,7 +526,9 @@ export default defineComponent({
             network$.consensus === 'established'
             && hasHeight.value
             && !!amount.value
-            && amount.value <= maxSendableAmount.value);
+            && amount.value <= maxSendableAmount.value
+            && goCryptoExpiryCountdown.value !== '0:00',
+        );
 
         /**
          * Request link parsing
@@ -559,11 +570,12 @@ export default defineComponent({
         }
 
         let goCryptoMonitoringTimeout = -1;
+        let goCryptoPaymentDetails: GoCryptoPaymentDetails | GoCryptoPaymentApiError | null = null;
         async function monitorGoCryptoRequest(paymentId: string) {
             clearTimeout(goCryptoMonitoringTimeout); // avoid potential parallel monitoring
             let endMonitoring = false;
             try {
-                const goCryptoPaymentDetails = await fetchGoCryptoPaymentDetails({ paymentId });
+                goCryptoPaymentDetails = await fetchGoCryptoPaymentDetails({ paymentId });
                 if (('recipient' in goCryptoPaymentDetails
                         && goCryptoPaymentDetails.recipient !== recipientWithLabel.value?.address)
                     || ('amount' in goCryptoPaymentDetails && goCryptoPaymentDetails.amount !== amount.value)) {
@@ -603,10 +615,54 @@ export default defineComponent({
                 statusTitle.value = context.root.$t('Something went wrong') as string;
                 statusMessage.value = e instanceof Error ? e.message : String(e);
             } finally {
-                clearTimeout(goCryptoMonitoringTimeout); // end if requested, otherwise avoid parallel monitoring
+                clearTimeout(goCryptoMonitoringTimeout); // end if requested, or clear to avoid parallel monitoring
                 if (!endMonitoring) {
+                    startGoCryptoExpiryCountdown(); // Start countdown if it's not started yet.
                     goCryptoMonitoringTimeout = window.setTimeout(() => monitorGoCryptoRequest(paymentId), 10000);
+                } else {
+                    stopGoCryptoExpiryCountdown(true);
                 }
+            }
+        }
+
+        let goCryptoExpiryUpdateInterval = -1;
+        const goCryptoExpiryCountdown = ref('');
+        function startGoCryptoExpiryCountdown() {
+            if (goCryptoExpiryUpdateInterval !== -1) return;
+            const updateCountdown = () => {
+                const expiry = goCryptoPaymentDetails && 'expiry' in goCryptoPaymentDetails
+                    ? goCryptoPaymentDetails.expiry
+                    : -1; // goCryptoPaymentDetails is unknown or an error
+
+                if (Date.now() > expiry) {
+                    stopGoCryptoExpiryCountdown();
+                    return;
+                }
+
+                const remainingTime = Math.max(expiry - Date.now(), 0);
+                const hours = Math.floor(remainingTime / 1000 / 60 / 60);
+                const minutes = Math.floor(remainingTime / 1000 / 60) % 60;
+                const seconds = Math.floor(remainingTime / 1000) % 60;
+                goCryptoExpiryCountdown.value = (hours ? `${hours}:` : '') // eslint-disable-line prefer-template
+                    + `${hours ? minutes.toString().padStart(2, '0') : minutes}:`
+                    + seconds.toString().padStart(2, '0');
+            };
+            goCryptoExpiryUpdateInterval = window.setInterval(updateCountdown, 500);
+            updateCountdown();
+        }
+
+        function stopGoCryptoExpiryCountdown(clearZeroCountdown = false) {
+            clearInterval(goCryptoExpiryUpdateInterval);
+            goCryptoExpiryUpdateInterval = -1;
+            if (goCryptoExpiryCountdown.value !== '0:00' || clearZeroCountdown) {
+                // Remove countdown.
+                goCryptoExpiryCountdown.value = '';
+            }
+            if (goCryptoExpiryCountdown.value === '0:00' && goCryptoPaymentDetails && 'id' in goCryptoPaymentDetails
+                && (statusType.value !== 'go-crypto' || statusState.value !== State.WARNING)) {
+                // Request an immediate monitoring update to show the expiry warning, if it's not shown already.
+                // Keep the countdown visible as 0:00 unless clearZeroCountdown cleared it.
+                monitorGoCryptoRequest(goCryptoPaymentDetails.id);
             }
         }
 
@@ -762,6 +818,7 @@ export default defineComponent({
         onBeforeUnmount(() => {
             clearTimeout(successCloseTimeout);
             clearTimeout(goCryptoMonitoringTimeout);
+            clearInterval(goCryptoExpiryUpdateInterval);
         });
 
         return {
@@ -810,6 +867,7 @@ export default defineComponent({
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             message,
+            goCryptoExpiryCountdown,
             canSend,
             sign,
             isValidRecipient,
@@ -1181,6 +1239,17 @@ export default defineComponent({
             .fiat-amount,
             .amount {
                 margin-left: -0.2em;
+            }
+
+            .expiry-countdown {
+                &.same-line::before {
+                    content: '\00B7 '; // &middot;
+                }
+                &:not(.same-line)::before {
+                    content: '\000A'; // newline
+                    white-space: pre-line;
+                    line-height: 1.7;
+                }
             }
         }
 

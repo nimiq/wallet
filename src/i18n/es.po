@@ -3,13 +3,13 @@
 # Rhody Lugo, 2021
 # Max, 2022
 # Daniel, 2022
+# Ricardo Barquero Carranza <richy@nimiq.com>, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2023
 # Alberto Monterroso, 2023
-# Ricardo Barquero Carranza <richy@nimiq.com>, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2023\n"
+"Last-Translator: Alberto Monterroso, 2023\n"
 "Language-Team: Spanish (https://app.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -187,10 +187,8 @@ msgstr ""
 #: src/components/layouts/Settings.vue:366
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
-"                            Do you want to replace it?"
+"Do you want to replace it?"
 msgstr ""
-"Ya existe un contacto con la dirección \"{address}\", pero con nombre distinto.\n"
-"                            Do you want to replace it?"
 
 #: src/lib/KycConnection.ts:40
 msgid ""
@@ -247,7 +245,7 @@ msgstr ""
 "Agrega una etiqueta para encontrar rápidamente la transacción en el "
 "historial."
 
-#: src/components/modals/SendModal.vue:179
+#: src/components/modals/SendModal.vue:183
 msgid "Add a public message..."
 msgstr "Agrega un mensaje público..."
 
@@ -361,7 +359,7 @@ msgstr "Cualquier dinero enviado será reembolsado."
 msgid "Apple/Google Pay"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:213
+#: src/components/modals/SendModal.vue:217
 msgid "Apply fee"
 msgstr ""
 
@@ -553,7 +551,7 @@ msgstr "Comprar con Credit Card"
 msgid "Buy with Simplex"
 msgstr "Compre con Simplex"
 
-#: src/components/modals/SendModal.vue:202
+#: src/components/modals/SendModal.vue:206
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -578,6 +576,7 @@ msgstr ""
 "Al hacer click en '{text}', usted esta aceptando a los términos de servicio "
 "de {Fastspot}."
 
+#: src/components/modals/SendModal.vue:227
 #: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
 msgstr "Cancelar"
@@ -604,9 +603,17 @@ msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 msgid "Cashlink"
 msgstr "Cashlink"
 
+#: src/lib/DataFormatting.ts:18
+msgid "Cashlink Claiming"
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:37
 msgid "Cashlink from {address}"
 msgstr "Cashlink proveniente de {address}"
+
+#: src/lib/DataFormatting.ts:15
+msgid "Cashlink Funding"
+msgstr ""
 
 #: src/components/modals/TransactionModal.vue:43
 msgid "Cashlink to {address}"
@@ -642,14 +649,10 @@ msgstr "Seleccione un Emisor"
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:285
 #: src/components/modals/SellCryptoModal.vue:249
-#: src/components/modals/SendModal.vue:192
+#: src/components/modals/SendModal.vue:196
 #: src/components/swap/SwapModal.vue:240
 msgid "Choose an Address"
 msgstr "Elija una Dirección"
-
-#: src/lib/DataFormatting.ts:18
-msgid "Claiming Cashlink"
-msgstr "Reclamando Cashlink"
 
 #: src/components/layouts/Settings.vue:241
 msgid "Clear"
@@ -865,8 +868,8 @@ msgstr "Aviso legal"
 msgid "Disconnect"
 msgstr "Deconectar"
 
-#: src/components/BtcAddressInput.vue:90
-#: src/components/modals/SendModal.vue:355
+#: src/components/BtcAddressInput.vue:91
+#: src/components/modals/SendModal.vue:365
 #: src/components/modals/UsdcSendModal.vue:364
 msgid "Domain does not resolve to a valid address"
 msgstr "El dominio no se resuelve a una dirección válida"
@@ -933,9 +936,9 @@ msgstr "Edite la cantidad de decimales visibles para valores en BTC."
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Editar la cantidad de decimales visibles para valores en NIM"
 
-#: src/components/modals/BtcSendModal.vue:441
-#: src/components/modals/SendModal.vue:600
-#: src/components/modals/UsdcSendModal.vue:563
+#: src/components/modals/BtcSendModal.vue:125
+#: src/components/modals/SendModal.vue:228
+#: src/components/modals/UsdcSendModal.vue:226
 msgid "Edit transaction"
 msgstr "Editar transacción"
 
@@ -979,6 +982,14 @@ msgstr "Entrar a la billetera"
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
 msgid "Enter your bank details"
 msgstr "Ingrese los detalles de su banco"
+
+#: src/lib/GoCrypto.ts:213
+msgid "Error {errorCode}"
+msgstr ""
+
+#: src/lib/GoCrypto.ts:212
+msgid "Error {errorCode}: {errorMessage}"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:329
 msgid "Error:"
@@ -1025,7 +1036,7 @@ msgstr "Exportar Historíal"
 msgid "Export your history"
 msgstr "Exporta tu historial"
 
-#: src/components/modals/SendModal.vue:454
+#: src/components/modals/SendModal.vue:464
 msgid "express"
 msgstr "rápido"
 
@@ -1034,7 +1045,7 @@ msgstr "rápido"
 msgid "Failed"
 msgstr "Fallido"
 
-#: src/components/modals/UsdcSendModal.vue:661
+#: src/components/modals/UsdcSendModal.vue:680
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1125,17 +1136,13 @@ msgstr ""
 "Para pagos cripto\n"
 "rápidos y de bajo costo"
 
-#: src/components/modals/SendModal.vue:444
+#: src/components/modals/SendModal.vue:454
 msgid "free"
 msgstr "gratis"
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
 msgstr "Nodo Completo"
-
-#: src/lib/DataFormatting.ts:15
-msgid "Funding Cashlink"
-msgstr "Financiando Cashlink"
 
 #: src/components/PolygonWarningFooter.vue:10
 #: src/components/PolygonWarningPage.vue:19
@@ -1218,7 +1225,7 @@ msgstr "Mayor grado de decentralization"
 msgid "Historic value"
 msgstr "Valor histórico"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:428
 #: src/components/modals/TransactionModal.vue:474
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:157
@@ -1226,7 +1233,7 @@ msgstr "Valor histórico"
 msgid "HTLC Creation"
 msgstr "Creación de HTLC"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:428
 #: src/components/modals/TransactionModal.vue:485
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:168
@@ -1267,6 +1274,10 @@ msgid ""
 msgstr ""
 "Si este error persiste, revise su conexión a Internet o recargue la pantalla"
 " para re-conectarse."
+
+#: src/lib/GoCrypto.ts:183
+msgid "If you already made a payment, please contact GoCrypto for a refund."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1325,7 +1336,7 @@ msgstr "Instalar la Aplicación Web"
 
 #: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SellCryptoModal.vue:166
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:173
 #: src/components/modals/UsdcSendModal.vue:205
 msgid "Insufficient balance."
 msgstr "Balance insuficiente."
@@ -1336,7 +1347,7 @@ msgstr "Balance insuficiente."
 msgid "invalid"
 msgstr "invalido"
 
-#: src/components/swap/SwapModal.vue:1770
+#: src/components/swap/SwapModal.vue:1784
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1549,6 +1560,10 @@ msgstr "No hay conexión a la red {chain}."
 msgid "No funds were received so the swap expired."
 msgstr "No se han recibido fondos, entonces el intercambio ha espirado."
 
+#: src/lib/GoCrypto.ts:204
+msgid "No payment request found"
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
 msgstr "No registro"
@@ -1606,7 +1621,7 @@ msgstr "Cuota de servicio de OASIS"
 msgid "Off"
 msgstr "Apagado"
 
-#: src/components/layouts/Settings.vue:375
+#: src/components/layouts/Settings.vue:377
 msgid "OK! Contacts imported successfully."
 msgstr "¡OK! Los Contactos fueron importados exitosamente."
 
@@ -1633,6 +1648,14 @@ msgstr "O compre BTC directamente en la billetera."
 #: src/components/layouts/Settings.vue:204
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Sobreescribe como se abre el Keyguard."
+
+#: src/components/modals/SendModal.vue:169
+msgid "Pay within {countdown}"
+msgstr ""
+
+#: src/lib/GoCrypto.ts:221
+msgid "Payment request has already been paid"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
@@ -1680,6 +1703,10 @@ msgid ""
 msgstr ""
 "Por favor, active primero BTC o USDC en su cuenta para poder intercambiar a "
 "estas monedas."
+
+#: src/lib/GoCrypto.ts:182 src/lib/GoCrypto.ts:205 src/lib/GoCrypto.ts:238
+msgid "Please ask the merchant to create a new payment request."
+msgstr ""
 
 #: src/components/layouts/Sidebar.vue:18
 msgid "Please do not use your Mainnet accounts!"
@@ -1883,9 +1910,13 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr "Resolviendo dominio imparable..."
 
-#: src/components/modals/BtcSendModal.vue:440
-#: src/components/modals/SendModal.vue:599
-#: src/components/modals/UsdcSendModal.vue:562
+#: src/components/swap/SwapModal.vue:1029
+msgid "Resulting BTC amount is too small."
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:124
+#: src/components/modals/SendModal.vue:227
+#: src/components/modals/UsdcSendModal.vue:225
 msgid "Retry"
 msgstr "Intente de nuevo"
 
@@ -1987,13 +2018,13 @@ msgid "Send"
 msgstr "Enviar"
 
 #: src/components/modals/BtcSendModal.vue:116
-#: src/components/modals/SendModal.vue:188
+#: src/components/modals/SendModal.vue:192
 #: src/components/modals/UsdcSendModal.vue:217
 msgid "Send {currency}"
 msgstr ""
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:78
-#: src/components/modals/SendModal.vue:171
+#: src/components/modals/SendModal.vue:175
 #: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
 msgstr "Enviar todo"
@@ -2028,17 +2059,17 @@ msgstr "Enviar USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envíe, reciba y almacene BTC en su billetera."
 
-#: src/components/modals/BtcSendModal.vue:437
-#: src/components/modals/SendModal.vue:596
-#: src/components/modals/UsdcSendModal.vue:559
+#: src/components/modals/BtcSendModal.vue:440
+#: src/components/modals/SendModal.vue:724
+#: src/components/modals/UsdcSendModal.vue:583
 msgid "Sending Transaction"
 msgstr "Enviando Transacción"
 
-#: src/components/modals/BtcSendModal.vue:498
+#: src/components/modals/BtcSendModal.vue:490
 msgid "Sent {btc} BTC"
 msgstr "Enviar {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:494
+#: src/components/modals/BtcSendModal.vue:486
 msgid "Sent {btc} BTC to {name}"
 msgstr "Enviar {btc} BTC a {name}"
 
@@ -2048,19 +2079,19 @@ msgstr "Enviar {btc} BTC a {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Enviado {fromAsset} – Recibido {toAsset}"
 
-#: src/components/modals/SendModal.vue:635
+#: src/components/modals/SendModal.vue:754
 msgid "Sent {nim} NIM"
 msgstr "Se enviaron {nim} NIM"
 
-#: src/components/modals/SendModal.vue:631
+#: src/components/modals/SendModal.vue:750
 msgid "Sent {nim} NIM to {name}"
 msgstr "Se enviaron {nim} NIM a {name}"
 
-#: src/components/modals/UsdcSendModal.vue:598
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Sent {usdc} USDC"
 msgstr "{usdc} USDC enviados"
 
-#: src/components/modals/UsdcSendModal.vue:594
+#: src/components/modals/UsdcSendModal.vue:606
 msgid "Sent {usdc} USDC to {name}"
 msgstr "{usdc} USDC enviados a {name}"
 
@@ -2160,9 +2191,10 @@ msgstr "Simular pago en EUR"
 msgid "Skip"
 msgstr "Omitir"
 
-#: src/components/modals/BtcSendModal.vue:509
-#: src/components/modals/SendModal.vue:647
-#: src/components/modals/UsdcSendModal.vue:610
+#: src/components/modals/BtcSendModal.vue:504
+#: src/components/modals/SendModal.vue:615
+#: src/components/modals/SendModal.vue:770
+#: src/components/modals/UsdcSendModal.vue:625
 msgid "Something went wrong"
 msgstr "Algo ha salido mal"
 
@@ -2170,7 +2202,7 @@ msgstr "Algo ha salido mal"
 msgid "Something went wrong with your transaction"
 msgstr "Algo salio mal con su transacción"
 
-#: src/components/modals/SendModal.vue:200
+#: src/components/modals/SendModal.vue:204
 msgid "Speed up your Transaction"
 msgstr "Acelere su Transacción"
 
@@ -2196,7 +2228,7 @@ msgstr ""
 msgid "Staking"
 msgstr "Participación"
 
-#: src/components/modals/SendModal.vue:449
+#: src/components/modals/SendModal.vue:459
 msgid "standard"
 msgstr "Estándar"
 
@@ -2350,6 +2382,10 @@ msgstr ""
 msgid "The Nimiq Wallet uses Polygon USDC for speed and low fees."
 msgstr ""
 "La Billetera de Nimiq usa USDC  en Polygon por su velocidad y bajas cuotas."
+
+#: src/lib/GoCrypto.ts:194 src/lib/GoCrypto.ts:249
+msgid "The payment request expired"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
@@ -2546,6 +2582,10 @@ msgstr "Tiempo de tx"
 #: src/composables/useTransactionInfo.ts:113
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink no canjeado"
+
+#: src/lib/GoCrypto.ts:210
+msgid "Unexpected GoCrypto error"
+msgstr ""
 
 #: src/swap-kyc-handler.ts:214
 msgid ""
@@ -2817,9 +2857,29 @@ msgstr ""
 "Sus NIM están almacenados en una cuenta de versión antigua. Transfiéralos a "
 "una cuenta regular para beneficiarse de las nuevas características."
 
+#: src/lib/GoCrypto.ts:229
+msgid "Your payment failed"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:112
 msgid "Your payment has not been received yet. There might be an issue."
 msgstr "Su pago aún no se ha recibido. Puede que haya un problema."
+
+#: src/lib/GoCrypto.ts:225
+msgid "Your payment is being processed"
+msgstr ""
+
+#: src/lib/GoCrypto.ts:233
+msgid "Your payment is invalid"
+msgstr ""
+
+#: src/lib/GoCrypto.ts:242
+msgid "Your payment was cancelled"
+msgstr ""
+
+#: src/lib/GoCrypto.ts:237
+msgid "Your payment was refunded"
+msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:9
 msgid "Your payout is on its way"

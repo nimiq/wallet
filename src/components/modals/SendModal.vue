@@ -285,6 +285,10 @@ export enum RecipientType {
     CONTACT,
     OWN_ADDRESS,
     GLOBAL_ADDRESS,
+    // GoCrypto payments show a recipient label, which shouldn't be stored as contact as GoCrypto recycles addresses
+    // such that different addresses can be used for the same shop, and different shops can use the same
+    // address.
+    GO_CRYPTO,
 }
 
 export default defineComponent({
@@ -538,6 +542,15 @@ export default defineComponent({
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
             const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.NIM] });
             if (!parsedRequestLink) return;
+
+            let goCryptoId: string | null = null;
+            try {
+                goCryptoId = new URL(uri).searchParams.get('goCryptoId');
+            } catch (e) {
+                // Failed to parse uri as URL, e.g. due to missing protocol. Ignore as legit requests with goCryptoId
+                // set should be coming from ScanQrModal and be well formatted.
+            }
+
             if (event) {
                 // Prevent paste event being applied to the recipient label field, that now became focussed.
                 event.preventDefault();
@@ -547,6 +560,9 @@ export default defineComponent({
             onAddressEntered(parsedRequestLink.recipient, skipRecipientDetails);
             if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
                 recipientWithLabel.value!.label = parsedRequestLink.label;
+                if (goCryptoId) {
+                    recipientWithLabel.value!.type = RecipientType.GO_CRYPTO;
+                }
             }
 
             if (parsedRequestLink.amount) {
@@ -559,13 +575,8 @@ export default defineComponent({
 
             gotValidRequestUri.value = true;
 
-            try {
-                const goCryptoId = new URL(uri).searchParams.get('goCryptoId');
-                if (goCryptoId) {
-                    monitorGoCryptoRequest(goCryptoId);
-                }
-            } catch (e) {
-                // Invalid uri; ignore.
+            if (goCryptoId) {
+                monitorGoCryptoRequest(goCryptoId);
             }
         }
 

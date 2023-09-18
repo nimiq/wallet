@@ -223,6 +223,15 @@ module.exports = {
             msTileImage: null,
         },
         workboxOptions: {
+            exclude: [
+                /^server-time$/, // File needs to be fetched from server in Time.ts
+                // Defaults set by @vue/cli-plugin-pwa, which is in line with the recommendation to not cache icons,
+                // developer.chrome.com/docs/workbox/precaching-dos-and-donts/#dont-precache-responsive-images-or-favicons
+                /\.map$/,
+                /img\/icons\//,
+                /favicon\.ico$/,
+                /^manifest.*\.js?$/
+            ],
             cleanupOutdatedCaches: true,
             clientsClaim: true, // Start controlling all clients when activated (should prevent stale secondary tabs)
             manifestTransforms: [

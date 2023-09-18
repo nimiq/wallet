@@ -15,8 +15,10 @@ export default class Time {
     public static async updateOffset() {
         try {
             // Fetch a resource from our server to read the response's Date header. Note that the Date header can only
-            // be read for non-cors requests, unless the cors request specifically allows reading the Date header.
-            const response = await fetch(`${process.env.BASE_URL}manifest.json`, {
+            // be read for non-cors requests, unless the cors request specifically allows reading the Date header. Also
+            // note that for the server to actually be consulted, it mustn't be a resource cached by the service worker.
+            // Therefore, fetch a dummy file public/server-time that's excluded from workbox's caching in vue.config.js.
+            const response = await fetch(`${process.env.BASE_URL}server-time`, {
                 cache: 'no-cache',
             });
             const serverTime = Date.parse(response.headers.get('Date') || '');

@@ -1,4 +1,6 @@
 const fs = require('node:fs')
+// Note that this is the same library as used by vue router, i.e. the path matching here is compatible with vue router's
+// syntax (https://router.vuejs.org/guide/essentials/route-matching-syntax.html) defined in router.ts
 const { pathToRegexp } = require('path-to-regexp')
 
 const routerConfig = fs.readFileSync('src/router.ts', 'utf8')

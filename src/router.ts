@@ -202,12 +202,13 @@ const routes: RouteConfig[] = [{
             name: 'scan',
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/nimiq\\::requestUri',
+            path: '/:requestUri(nimiq:.+)',
             components: {
                 modal: SendModal,
             },
             name: 'send-via-uri',
             props: {
+                // Pass full path including query parameters.
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },
             meta: { column: Columns.DYNAMIC },
@@ -244,12 +245,13 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            path: '/bitcoin\\::requestUri',
+            path: '/:requestUri(bitcoin:.+)',
             components: {
                 modal: BtcSendModal,
             },
             name: 'send-via-btc-uri',
             props: {
+                // Pass full path including query parameters.
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },
             meta: { column: Columns.DYNAMIC },
@@ -272,12 +274,15 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            path: '/polygon\\::requestUri',
+            // Match complete pathname with all segments, which is important for polygon request links with contract
+            // functions as the contract function name is a separate path segment, e.g. /transfer.
+            path: '/:requestUri(polygon:.+)',
             components: {
                 modal: UsdcSendModal,
             },
             name: 'send-via-polygon-uri',
             props: {
+                // Pass full path including query parameters.
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },
             meta: { column: Columns.DYNAMIC },

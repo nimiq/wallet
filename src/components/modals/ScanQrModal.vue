@@ -46,7 +46,7 @@ import {
 } from '../../lib/GoCrypto';
 import { ENV_MAIN } from '../../lib/Constants';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
-import { getPolygonClient } from '../../ethers';
+import { loadEthersLibrary } from '../../ethers';
 
 export default defineComponent({
     name: 'scan-qr-modal',
@@ -119,7 +119,7 @@ export default defineComponent({
             }
 
             if (config.usdc.enabled && hasUsdcAddresses.value) {
-                getPolygonClient().then(({ ethers }) => {
+                loadEthersLibrary().then((ethers) => {
                     // For USDC we don't support scanning plain addresses to avoid the risk of sending Polygon USDC to
                     // an Ethereum wallet, because the addresses are the same.
 

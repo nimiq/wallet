@@ -26,6 +26,10 @@ import {
 import { getPoolAddress, getUsdcPrice } from './lib/usdc/Uniswap';
 import { replaceKey } from './lib/KeyReplacer';
 
+export async function loadEthersLibrary() {
+    return import(/* webpackChunkName: "ethers-js" */ 'ethers');
+}
+
 export interface PolygonClient {
     provider: providers.Provider;
     usdc: Contract;
@@ -68,15 +72,18 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         unwatchGetPolygonClientConfig = null;
     }, { lazy: true });
 
-    const ethers = await import(/* webpackChunkName: "ethers-js" */ 'ethers');
     let provider: providers.BaseProvider;
-    const rpcEndpoint = await replaceKey(config.usdc.rpcEndpoint);
+    const [ethers, rpcEndpoint] = await Promise.all([
+        loadEthersLibrary(),
+        replaceKey(config.usdc.rpcEndpoint),
+    ]);
     if (rpcEndpoint.substring(0, 4) === 'http') {
         provider = new ethers.providers.StaticJsonRpcProvider(
             rpcEndpoint,
             ethers.providers.getNetwork(config.usdc.networkId),
         );
     } else if (rpcEndpoint.substring(0, 2) === 'ws') {
+        // No need to optimize this import as it's the ethers-js chunk which is already loaded via loadEthersLibrary.
         const SturdyWebsocket = (await import(/* webpackChunkName: "ethers-js" */ 'sturdy-websocket')).default;
         const socket = new SturdyWebsocket(rpcEndpoint, {
             debug: true,

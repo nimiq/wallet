@@ -250,7 +250,7 @@ import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vu
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendUsdcTransaction } from '../../hub';
-import { getPolygonClient, calculateFee } from '../../ethers';
+import { loadEthersLibrary, calculateFee } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST, ENV_MAIN } from '../../lib/Constants';
 import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import {
@@ -354,9 +354,9 @@ export default defineComponent({
                 const domain = address;
                 const ticker = 'USDC';
                 try {
-                    const [resolvedAddress, { ethers }] = await Promise.all([
+                    const [resolvedAddress, ethers] = await Promise.all([
                         resolveUnstoppableDomain(domain, ticker),
-                        getPolygonClient(),
+                        loadEthersLibrary(),
                     ]);
                     if (resolvedAddress && ethers.utils.isAddress(resolvedAddress)) {
                         onAddressEntered(resolvedAddress, domain);
@@ -375,7 +375,7 @@ export default defineComponent({
 
         async function onAddressEntered(address: string, fallbackLabel = '') {
             // Normalize address to checksummed version
-            const { ethers } = await getPolygonClient();
+            const ethers = await loadEthersLibrary();
             address = ethers.utils.getAddress(address);
 
             // Find label across contacts, own addresses

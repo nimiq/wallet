@@ -36,7 +36,13 @@ import { loadScript } from '../../lib/ScriptLoader';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '../../lib/Constants';
 
 import { getElectrumClient } from '../../electrum';
-import { estimateFees, selectOutputs } from '../../lib/BitcoinTransactionUtils';
+import {
+    estimateFees as estimateBitcoinFees,
+    selectOutputs as selectBitcoinOutputs,
+    normalizeAddress as normalizeBitcoinAddress,
+} from '../../lib/BitcoinTransactionUtils';
+
+import { loadEthersLibrary } from '../../ethers';
 
 import { sendBtcTransaction, sendUsdcTransaction } from '../../hub';
 
@@ -164,8 +170,6 @@ export default defineComponent({
 
         async function sendBitcoin(properties: InitiateDepositProperties) {
             try {
-                const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
-
                 // eslint-disable-next-line no-async-promise-executor
                 const request = new Promise<Omit<SignBtcTransactionRequest, 'appName'>>(async (resolve) => {
                     const { accountUtxos, accountBalance } = useBtcAddressStore();
@@ -173,11 +177,13 @@ export default defineComponent({
                     const client = await getElectrumClient();
                     await client.waitForConsensusEstablished();
 
+                    const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
+
                     const fees = await client.estimateFees([1]);
                     const feePerByte = fees[1] || 3;
-                    const requiredInputs = selectOutputs(accountUtxos.value, value, feePerByte);
+                    const requiredInputs = selectBitcoinOutputs(accountUtxos.value, value, feePerByte);
 
-                    const fee = estimateFees(
+                    const fee = estimateBitcoinFees(
                         requiredInputs.utxos.length,
                         requiredInputs.changeAmount > 0 ? 2 : 1,
                         feePerByte,
@@ -208,7 +214,7 @@ export default defineComponent({
                             value: utxo.witness.value,
                         })),
                         output: {
-                            address: properties.depositWalletAddress,
+                            address: normalizeBitcoinAddress(properties.depositWalletAddress),
                             label: 'Moonpay',
                             value,
                         },
@@ -227,7 +233,7 @@ export default defineComponent({
                     throw new Error('Failed to sign and/or send BTC transaction');
                 }
 
-                useBtcLabelsStore().setRecipientLabel(properties.depositWalletAddress, 'Moonpay');
+                useBtcLabelsStore().setRecipientLabel(plainTx.outputs[0].address!, 'Moonpay');
             } catch (error) {
                 console.error(error); // eslint-disable-line no-console
                 alert(`Something went wrong: ${(error as Error).message}`); // eslint-disable-line no-alert
@@ -236,7 +242,10 @@ export default defineComponent({
 
         async function sendUsdc(properties: InitiateDepositProperties) {
             try {
+                const ethers = await loadEthersLibrary();
+                const normalizedDepositAddress = ethers.utils.getAddress(properties.depositWalletAddress);
                 const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
+
                 // Validate that we are talking about the same USDC
                 if (
                     !properties.cryptoCurrency.chainId
@@ -256,7 +265,7 @@ export default defineComponent({
                 }
 
                 const tx = await sendUsdcTransaction(
-                    properties.depositWalletAddress,
+                    normalizedDepositAddress,
                     value,
                     'Moonpay',
                     // relay,
@@ -266,7 +275,7 @@ export default defineComponent({
                     throw new Error('Failed to sign and/or send USDC transaction');
                 }
 
-                useUsdcContactsStore().setContact(properties.depositWalletAddress, 'Moonpay');
+                useUsdcContactsStore().setContact(normalizedDepositAddress, 'Moonpay');
 
                 useUsdcTransactionsStore().addTransactions([tx]);
             } catch (error) {

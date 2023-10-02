@@ -337,9 +337,7 @@ export default defineComponent({
         const addressInputValue = ref(''); // Used for resetting the address input
         const isDomain = computed(() => {
             const input = addressInputValue.value;
-            if (input.length < 3) return false;
-            if (input.toUpperCase().startsWith('NQ') && !Number.isNaN(parseInt(input[2], 10))) return false;
-            return true;
+            return input.length >= 3 && !/^NQ\d/i.test(input);
         });
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
@@ -538,6 +536,7 @@ export default defineComponent({
 
         const gotValidRequestUri = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
+            // Note that for Nimiq, parseRequestLink automatically validates and normalizes addresses.
             const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.NIM] });
             if (!parsedRequestLink) return;
 

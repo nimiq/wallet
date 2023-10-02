@@ -339,9 +339,7 @@ export default defineComponent({
         const addressInputValue = ref(''); // Used for resetting the address input
         const isDomain = computed(() => {
             const input = addressInputValue.value;
-            if (input.length < 3) return false;
-            if (input.toUpperCase().startsWith('NQ') && !Number.isNaN(parseInt(input[2], 10))) return false;
-            return true;
+            return input.length >= 3 && !/^0x[0-9a-f]+/i.test(input);
         });
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
@@ -359,7 +357,8 @@ export default defineComponent({
                         loadEthersLibrary(),
                     ]);
                     if (resolvedAddress && ethers.utils.isAddress(resolvedAddress)) {
-                        onAddressEntered(resolvedAddress, domain);
+                        const normalizedAddress = ethers.utils.getAddress(resolvedAddress); // normalize with checksum
+                        onAddressEntered(normalizedAddress, domain);
                     } else {
                         resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
                     }
@@ -373,11 +372,7 @@ export default defineComponent({
             }
         });
 
-        async function onAddressEntered(address: string, fallbackLabel = '') {
-            // Normalize address to checksummed version
-            const ethers = await loadEthersLibrary();
-            address = ethers.utils.getAddress(address);
-
+        function onAddressEntered(address: string, fallbackLabel = '') {
             // Find label across contacts, own addresses
             let label = fallbackLabel;
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
@@ -505,6 +500,9 @@ export default defineComponent({
                 EthereumChain.POLYGON_MAINNET,
                 ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_MUMBAI_TESTNET] : []),
             ];
+            // We don't normalize and validate addresses in parseRequestLink yet because it requires asynchronously
+            // loading ethers, and event.preventDefault() needs to be called synchronously below. Instead, the
+            // normalization and validation happen afterward.
             const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.USDC, Currency.MATIC] });
             if (!parsedRequestLink || !parsedRequestLink.chainId
                 || !allowedChains.includes(parsedRequestLink.chainId)) return;
@@ -513,7 +511,17 @@ export default defineComponent({
                 event.preventDefault();
             }
 
-            await onAddressEntered(parsedRequestLink.recipient);
+            // Normalize address to checksummed version.
+            let normalizedAddress: string;
+            try {
+                const ethers = await loadEthersLibrary();
+                normalizedAddress = ethers.utils.getAddress(parsedRequestLink.recipient);
+            } catch (e) {
+                // Invalid address.
+                return;
+            }
+
+            onAddressEntered(normalizedAddress);
 
             if (typeof parsedRequestLink.amount === 'number') {
                 // As USDC only has 6 decimal places, we can expect it to not be a bigint in real life use.

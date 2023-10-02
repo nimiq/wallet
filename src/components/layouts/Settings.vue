@@ -292,6 +292,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { CircleSpinner } from '@nimiq/vue-components';
+import { ValidationUtils } from '@nimiq/utils';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 
@@ -357,8 +358,9 @@ export default defineComponent({
 
             for (const contact of importedContacts) {
                 if (!contact.label || !contact.address) continue;
+                const address = ValidationUtils.normalizeAddress(contact.address);
 
-                const storedLabel = contacts$.contacts[contact.address];
+                const storedLabel = contacts$.contacts[address];
                 if (storedLabel) {
                     if (storedLabel === contact.label) continue;
                     else {
@@ -366,13 +368,13 @@ export default defineComponent({
                         const shouldOverwrite = confirm(context.root.$t(
                             'A contact with the address "{address}", but a different name already exists.\n'
                                 + 'Do you want to replace it?',
-                            { address: contact.address },
+                            { address },
                         ) as string);
                         if (!shouldOverwrite) continue;
                     }
                 }
 
-                setContact(contact.address, contact.label);
+                setContact(address, contact.label);
             }
             alert(context.root.$t('OK! Contacts imported successfully.')); // eslint-disable-line no-alert
         }

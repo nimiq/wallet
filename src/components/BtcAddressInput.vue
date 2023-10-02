@@ -38,7 +38,7 @@ import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { parseRequestLink, Currency } from '@nimiq/utils';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
-import { validateAddress } from '../lib/BitcoinTransactionUtils';
+import { normalizeAddress, validateAddress } from '../lib/BitcoinTransactionUtils';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
@@ -85,7 +85,8 @@ const BtcAddressInput = defineComponent({
                 resolveUnstoppableDomain(domain, ticker)
                     .then((resolvedAddress) => {
                         doValidateAddress(resolvedAddress!, () => {
-                            context.emit('domain-address', domain, resolvedAddress);
+                            const normalizedAddress = normalizeAddress(resolvedAddress!);
+                            context.emit('domain-address', domain, normalizedAddress);
                             invalid.value = false;
                         }, () => {
                             resolverError.value = context.root.$t(
@@ -113,7 +114,8 @@ const BtcAddressInput = defineComponent({
 
             const addressToCheck = address.value;
             doValidateAddress(addressToCheck, () => {
-                context.emit('address', addressToCheck);
+                const normalizedAddress = normalizeAddress(addressToCheck);
+                context.emit('address', normalizedAddress);
                 invalid.value = false;
             }, () => {
                 invalid.value = true;
@@ -126,7 +128,7 @@ const BtcAddressInput = defineComponent({
             invalidCallback: () => void,
         ) {
             loadBitcoinJS().then(() => {
-                const isValid = validateAddress(addressToCheck, config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
+                const isValid = validateAddress(addressToCheck);
                 if (isValid) {
                     validCallback();
                 } else {
@@ -172,7 +174,14 @@ const BtcAddressInput = defineComponent({
             const { clipboardData } = event;
             const pastedData = clipboardData ? clipboardData.getData('text/plain') : '';
 
-            const bitcoinRequestLink = parseRequestLink(pastedData, { currencies: [Currency.BTC] });
+            const bitcoinRequestLink = parseRequestLink(pastedData, {
+                currencies: [Currency.BTC],
+                normalizeAddress: {
+                    [Currency.BTC]: normalizeAddress,
+                },
+                // No need to pass isValidAddress (which would require loading BitcoinJS) because validity will be
+                // checked in onUpdate, too.
+            });
             if (bitcoinRequestLink) {
                 event.preventDefault();
                 address.value = bitcoinRequestLink.recipient;

@@ -1,5 +1,6 @@
 import { UTXO } from '../stores/BtcAddress';
-import { BTC_DUST_LIMIT } from './Constants';
+import { useConfig } from '../composables/useConfig';
+import { BTC_DUST_LIMIT, ENV_MAIN } from './Constants';
 
 // Source for Weight Units: https://bitcoinops.org/en/tools/calc-size/
 
@@ -92,7 +93,9 @@ export const BIP84_ADDRESS_PREFIX = {
     TEST: 'tb',
 };
 
-export function validateAddress(address: string, network: 'MAIN' | 'TEST') {
+export function validateAddress(address: string) {
+    const { config } = useConfig();
+    const network = config.environment === ENV_MAIN ? 'MAIN' : 'TEST';
     try {
         const parsedAddress = BitcoinJS.address.fromBase58Check(address);
         return BIP49_ADDRESS_VERSIONS[network].includes(parsedAddress.version); // Check includes legacy BIP44 versions
@@ -108,4 +111,12 @@ export function validateAddress(address: string, network: 'MAIN' | 'TEST') {
     }
 
     return false;
+}
+
+export function normalizeAddress(address: string) {
+    // Legacy addresses are case-sensitive and are thus preserved. Non-legacy addresses are normalized to lowercase.
+    if (new RegExp(`^(${Object.values(BIP84_ADDRESS_PREFIX).join('|')})`, 'i').test(address)) {
+        return address.toLowerCase();
+    }
+    return address;
 }

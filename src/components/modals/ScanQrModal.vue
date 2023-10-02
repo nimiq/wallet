@@ -38,7 +38,10 @@ import StatusScreen, { State as StatusScreenState, SUCCESS_REDIRECT_DELAY } from
 import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
-import { validateAddress as validateBitcoinAddress } from '../../lib/BitcoinTransactionUtils';
+import {
+    normalizeAddress as normalizeBitcoinAddress,
+    validateAddress as validateBitcoinAddress,
+} from '../../lib/BitcoinTransactionUtils';
 import {
     parseGoCryptoRequestLink,
     fetchGoCryptoPaymentDetails,
@@ -82,6 +85,7 @@ export default defineComponent({
             }
 
             // NIM Request Link
+            // Note that for Nimiq, parseRequestLink automatically validates and normalizes addresses.
             const nimRequestLink = parseRequestLink(result, { currencies: [Currency.NIM] });
             if (nimRequestLink) {
                 // Reformat into the new Nimiq request link format, in case it's a old Safe url, and redirect to the
@@ -95,11 +99,8 @@ export default defineComponent({
 
             if (config.enableBitcoin && hasBitcoinAddresses.value) {
                 loadBitcoinJS().then(() => {
-                    const isValidBitcoinAddressForCurrentNetwork = (address: string) =>
-                        validateBitcoinAddress(address, config.environment === ENV_MAIN ? 'MAIN' : 'TEST');
-
                     // BTC Address
-                    if (isValidBitcoinAddressForCurrentNetwork(result)) {
+                    if (validateBitcoinAddress(result)) {
                         router.replace(`/${createBitcoinRequestLink(result)}`);
                         return;
                     }
@@ -107,8 +108,11 @@ export default defineComponent({
                     // BTC Request Link
                     const btcRequestLink = parseRequestLink(result, {
                         currencies: [Currency.BTC],
+                        normalizeAddress: {
+                            [Currency.BTC]: normalizeBitcoinAddress,
+                        },
                         isValidAddress: {
-                            [Currency.BTC]: isValidBitcoinAddressForCurrentNetwork,
+                            [Currency.BTC]: validateBitcoinAddress,
                         },
                     });
                     if (btcRequestLink) {
@@ -140,8 +144,18 @@ export default defineComponent({
                     ];
                     const usdcRequestLink = parseRequestLink(result, {
                         currencies: [Currency.USDC, Currency.MATIC],
+                        // The address normalization and validation are shared between ETH, MATIC and USDC.
+                        normalizeAddress: {
+                            [Currency.ETH]: (address: string) => {
+                                try {
+                                    // Normalize address to checksummed version. Throws for invalid address.
+                                    return ethers.utils.getAddress(address);
+                                } catch (e) {
+                                    return address;
+                                }
+                            },
+                        },
                         isValidAddress: {
-                            // The address validation is shared between ETH, MATIC and USDC.
                             [Currency.ETH]: (address: string) => ethers.utils.isAddress(address),
                         },
                     });

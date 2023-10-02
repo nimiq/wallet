@@ -158,7 +158,8 @@ import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
+import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
+import { selectOutputs, estimateFees, normalizeAddress, validateAddress } from '../../lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '../../electrum';
 import DoubleInput from '../DoubleInput.vue';
 
@@ -357,15 +358,26 @@ export default defineComponent({
             && amount.value <= maxSendableAmount.value,
         );
 
-        const addressInputValue = ref(''); // Used for setting the address from a request URI
+        const addressInputValue = ref(''); // Used for setting the address from a request URI or unstoppable domain
 
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
-            const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.BTC] });
+            // We don't validate addresses here yet because it requires asynchronously loading BitcoinJS, and
+            // event.preventDefault() needs to be called synchronously below. Instead, the validation happens afterward.
+            // The normalization does not require BitcoinJS to be loaded.
+            const parsedRequestLink = parseRequestLink(uri, {
+                currencies: [Currency.BTC],
+                normalizeAddress: {
+                    [Currency.BTC]: normalizeAddress,
+                },
+            });
             if (!parsedRequestLink) return;
 
             if (event) {
                 event.stopPropagation(); // Prevent pasting
             }
+
+            await loadBitcoinJS();
+            if (!validateAddress(parsedRequestLink.recipient)) return;
 
             if (parsedRequestLink.amount) {
                 amount.value = parsedRequestLink.amount;

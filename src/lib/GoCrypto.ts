@@ -135,10 +135,7 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
         if (!nimiqPaymentOptions
             || nimiqPaymentOptions.currency !== /* Nimiq id */ 207) throw new Error('Missing Nimiq payment options');
 
-        const recipient: string = nimiqPaymentOptions.wallet_address
-            .toUpperCase() // format as uppercase
-            .replace(/\s/g, '') // strip spaces
-            .replace(/(.)(?=(.{4})+$)/g, '$1 '); // reformat with spaces, forming blocks of 4 chars
+        const recipient: string = ValidationUtils.normalizeAddress(nimiqPaymentOptions.wallet_address);
         if (!ValidationUtils.isValidAddress(recipient)) throw new Error('Invalid recipient');
 
         const amount = Math.round(Number.parseFloat(nimiqPaymentOptions.amount) * 1e5);

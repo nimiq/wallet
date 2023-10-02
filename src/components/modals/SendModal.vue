@@ -354,13 +354,11 @@ export default defineComponent({
                 resolveUnstoppableDomain(domain, ticker)
                     .then(async (resolvedAddress) => {
                         if (resolvedAddress && ValidationUtils.isValidAddress(resolvedAddress)) {
-                            const formattedAddress = resolvedAddress
-                                .replace(/[ +-]|%20/g, '') // strip spaces and dashes
-                                .replace(/(.)(?=(.{4})+$)/g, '$1 '); // reformat with spaces, forming blocks of 4 chars
-                            const label = getLabel.value(formattedAddress);
-                            if (!label) setContact(formattedAddress, domain);
+                            const normalizedAddress = ValidationUtils.normalizeAddress(resolvedAddress);
+                            const label = getLabel.value(normalizedAddress);
+                            if (!label) setContact(normalizedAddress, domain);
                             recipientWithLabel.value = {
-                                address: formattedAddress,
+                                address: normalizedAddress,
                                 label: label || domain,
                                 type: RecipientType.CONTACT,
                             };

@@ -384,12 +384,14 @@ export default defineComponent({
             }
 
             addressInputValue.value = parsedRequestLink.recipient;
-            // Wait for onAddressEntered to trigger
-            let i = 0;
-            while (!recipientWithLabel.value && i < 10) {
-                await context.root.$nextTick(); // eslint-disable-line no-await-in-loop
-                i += 1;
-            }
+            // Wait for BtcAddressInput to trigger onAddressEntered which sets recipientWithLabel.
+            await new Promise<void>((resolve) => {
+                const unwatch = watch(() => {
+                    if (recipientWithLabel.value?.address !== parsedRequestLink.recipient) return;
+                    resolve();
+                    unwatch();
+                });
+            });
             if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
                 recipientWithLabel.value!.label = parsedRequestLink.label;
             }

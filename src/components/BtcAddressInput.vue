@@ -74,7 +74,7 @@ const BtcAddressInput = defineComponent({
             input$.value.focus();
         }
 
-        function checkAddress() {
+        async function checkAddress() {
             resolverError.value = '';
 
             // Detect unstoppable domains
@@ -82,26 +82,28 @@ const BtcAddressInput = defineComponent({
                 isResolvingUnstoppableDomain.value = true;
                 const domain = address.value;
                 const ticker = config.environment === ENV_MAIN ? 'BTC' : 'TBTC';
-                resolveUnstoppableDomain(domain, ticker)
-                    .then((resolvedAddress) => {
-                        doValidateAddress(resolvedAddress!, () => {
-                            const normalizedAddress = normalizeAddress(resolvedAddress!);
-                            context.emit('domain-address', domain, normalizedAddress);
-                            invalid.value = false;
-                        }, () => {
-                            resolverError.value = context.root.$t(
-                                'Domain does not resolve to a valid address') as string;
-                            invalid.value = true;
-                        });
-                    })
-                    .catch((error: Error) => {
-                        console.debug(error); // eslint-disable-line no-console
-                        let { message } = error;
-                        message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
-                        resolverError.value = message;
+                try {
+                    const [resolvedAddress] = await Promise.all([
+                        resolveUnstoppableDomain(domain, ticker),
+                        loadBitcoinJS(),
+                    ]);
+                    const normalizedAddress = resolvedAddress && normalizeAddress(resolvedAddress);
+                    if (normalizedAddress && validateAddress(normalizedAddress)) {
+                        context.emit('domain-address', domain, normalizedAddress);
+                        invalid.value = false;
+                    } else {
+                        resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
                         invalid.value = true;
-                    })
-                    .finally(() => isResolvingUnstoppableDomain.value = false);
+                    }
+                } catch (e) {
+                    console.debug(e); // eslint-disable-line no-console
+                    let message = e instanceof Error ? e.message : String(e);
+                    message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
+                    resolverError.value = message;
+                    invalid.value = true;
+                } finally {
+                    isResolvingUnstoppableDomain.value = false;
+                }
 
                 return;
             }
@@ -112,29 +114,14 @@ const BtcAddressInput = defineComponent({
                 return;
             }
 
-            const addressToCheck = address.value;
-            doValidateAddress(addressToCheck, () => {
-                const normalizedAddress = normalizeAddress(addressToCheck);
+            const normalizedAddress = normalizeAddress(address.value);
+            await loadBitcoinJS();
+            if (validateAddress(normalizedAddress)) {
                 context.emit('address', normalizedAddress);
                 invalid.value = false;
-            }, () => {
+            } else {
                 invalid.value = true;
-            });
-        }
-
-        function doValidateAddress(
-            addressToCheck: string,
-            validCallback: () => void,
-            invalidCallback: () => void,
-        ) {
-            loadBitcoinJS().then(() => {
-                const isValid = validateAddress(addressToCheck);
-                if (isValid) {
-                    validCallback();
-                } else {
-                    invalidCallback();
-                }
-            });
+            }
         }
 
         async function updateInputFontSize() {

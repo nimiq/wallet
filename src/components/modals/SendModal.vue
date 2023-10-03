@@ -337,7 +337,7 @@ export default defineComponent({
         const addressInputValue = ref(''); // Used for resetting the address input
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
-        watch(addressInputValue, (address) => {
+        watch(addressInputValue, async (address) => {
             resolverError.value = '';
 
             // Detect unstoppable domains
@@ -345,30 +345,29 @@ export default defineComponent({
                 isResolvingUnstoppableDomain.value = true;
                 const domain = address;
                 const ticker = 'NIM';
-                resolveUnstoppableDomain(domain, ticker)
-                    .then(async (resolvedAddress) => {
-                        if (resolvedAddress && ValidationUtils.isValidAddress(resolvedAddress)) {
-                            const normalizedAddress = ValidationUtils.normalizeAddress(resolvedAddress);
-                            const label = getLabel.value(normalizedAddress);
-                            if (!label) setContact(normalizedAddress, domain);
-                            recipientWithLabel.value = {
-                                address: normalizedAddress,
-                                label: label || domain,
-                                type: RecipientType.CONTACT,
-                            };
-                            page.value = Pages.AMOUNT_INPUT;
-                        } else {
-                            resolverError.value = context.root.$t(
-                                'Domain does not resolve to a valid address') as string;
-                        }
-                    })
-                    .catch((error: Error) => {
-                        console.debug(error); // eslint-disable-line no-console
-                        let { message } = error;
-                        message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
-                        resolverError.value = message;
-                    })
-                    .finally(() => isResolvingUnstoppableDomain.value = false);
+                try {
+                    const resolvedAddress = await resolveUnstoppableDomain(domain, ticker);
+                    const normalizedAddress = resolvedAddress && ValidationUtils.normalizeAddress(resolvedAddress);
+                    if (normalizedAddress && ValidationUtils.isValidAddress(normalizedAddress)) {
+                        const label = getLabel.value(normalizedAddress);
+                        if (!label) setContact(normalizedAddress, domain);
+                        recipientWithLabel.value = {
+                            address: normalizedAddress,
+                            label: label || domain,
+                            type: RecipientType.CONTACT,
+                        };
+                        page.value = Pages.AMOUNT_INPUT;
+                    } else {
+                        resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
+                    }
+                } catch (e) {
+                    console.debug(e); // eslint-disable-line no-console
+                    let message = e instanceof Error ? e.message : String(e);
+                    message = message.replace(`crypto.${ticker}.address record`, `${ticker} address`);
+                    resolverError.value = message;
+                } finally {
+                    isResolvingUnstoppableDomain.value = false;
+                }
             }
         });
 

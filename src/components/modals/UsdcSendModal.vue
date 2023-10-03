@@ -337,10 +337,6 @@ export default defineComponent({
         }
 
         const addressInputValue = ref(''); // Used for resetting the address input
-        const isDomain = computed(() => {
-            const input = addressInputValue.value;
-            return input.length >= 3 && !/^0x[0-9a-f]+/i.test(input);
-        });
         const isResolvingUnstoppableDomain = ref(false);
         const resolverError = ref('');
         watch(addressInputValue, async (address) => {
@@ -755,7 +751,6 @@ export default defineComponent({
             closeRecipientDetails,
             parseRequestUri,
             amountsHidden,
-            isDomain,
             isResolvingUnstoppableDomain,
             resolverError,
             setContact,

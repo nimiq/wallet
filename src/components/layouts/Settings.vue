@@ -349,7 +349,7 @@ export default defineComponent({
             }
 
             // Make sure the input is a non-empty array
-            if (!importedContacts.length) {
+            if (!Array.isArray(importedContacts) || !importedContacts.length) {
                 alert(context.root.$t('File contains no contacts.')); // eslint-disable-line no-alert
                 return;
             }
@@ -357,7 +357,9 @@ export default defineComponent({
             const { state: contacts$, setContact } = useContactsStore();
 
             for (const contact of importedContacts) {
-                if (!contact.label || !contact.address) continue;
+                if (!contact
+                    || typeof contact.label !== 'string' || !contact.label
+                    || !ValidationUtils.isValidAddress(contact.address)) continue;
                 const address = ValidationUtils.normalizeAddress(contact.address);
 
                 const storedLabel = contacts$.contacts[address];

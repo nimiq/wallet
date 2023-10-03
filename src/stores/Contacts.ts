@@ -1,4 +1,5 @@
 import { createStore } from 'pinia';
+import { ValidationUtils } from '@nimiq/utils';
 
 export type ContactsState = {
      contacts: {[address: string]: string},
@@ -16,6 +17,8 @@ export const useContactsStore = createStore({
     },
     actions: {
         setContact(address: string, label: string) {
+            address = ValidationUtils.normalizeAddress(address.toUpperCase());
+
             // console.debug('Updating contact', address, label);
             if (!label.trim()) {
                 // Remove contact
@@ -29,7 +32,7 @@ export const useContactsStore = createStore({
             // TODO: Simply set new contact in Vue 3.
             this.state.contacts = {
                 ...this.state.contacts,
-                [address.trim()]: label,
+                [address]: label.trim(),
             };
         },
     },

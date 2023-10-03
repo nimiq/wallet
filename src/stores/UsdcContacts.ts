@@ -1,4 +1,5 @@
 import { createStore } from 'pinia';
+import { loadEthersLibrary } from '../ethers';
 
 export type UsdcContactsState = {
      contacts: {[address: string]: string},
@@ -17,7 +18,10 @@ export const useUsdcContactsStore = createStore({
             state.contacts[address],
     },
     actions: {
-        setContact(address: string, label: string) {
+        async setContact(address: string, label: string) {
+            const ethers = await loadEthersLibrary();
+            address = ethers.utils.getAddress(address.trim()); // normalize with checksum
+
             // console.debug('Updating contact', address, label);
             if (!label.trim()) {
                 // Remove contact
@@ -31,7 +35,7 @@ export const useUsdcContactsStore = createStore({
             // TODO: Simply set new contact in Vue 3.
             this.state.contacts = {
                 ...this.state.contacts,
-                [address.trim()]: label,
+                [address]: label.trim(),
             };
         },
     },

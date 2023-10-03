@@ -1,4 +1,5 @@
 import { createStore } from 'pinia';
+import { normalizeAddress } from '../lib/BitcoinTransactionUtils';
 
 export type BtcLabelsState = {
     recipientLabels: {[address: string]: string},
@@ -21,6 +22,8 @@ export const useBtcLabelsStore = createStore({
     },
     actions: {
         setRecipientLabel(address: string, label: string) {
+            address = normalizeAddress(address);
+
             // console.debug('Updating recipient label', address, label);
             if (!label.trim()) {
                 // Remove label
@@ -34,10 +37,12 @@ export const useBtcLabelsStore = createStore({
             // TODO: Simply set new label in Vue 3.
             this.state.recipientLabels = {
                 ...this.state.recipientLabels,
-                [address.trim()]: label,
+                [address]: label.trim(),
             };
         },
         setSenderLabel(address: string, label: string) {
+            address = normalizeAddress(address);
+
             // console.debug('Updating sender label', address, label);
             if (!label.trim()) {
                 // Remove label
@@ -51,13 +56,11 @@ export const useBtcLabelsStore = createStore({
             // TODO: Simply set new label in Vue 3.
             this.state.senderLabels = {
                 ...this.state.senderLabels,
-                [address.trim()]: label,
+                [address]: label.trim(),
             };
         },
         removeSenderLabelByAddress(address: string) {
-            const senderLabels = { ...this.state.senderLabels };
-            delete senderLabels[address];
-            this.state.senderLabels = senderLabels;
+            this.setSenderLabel(address, '');
         },
     },
 });

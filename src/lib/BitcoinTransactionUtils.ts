@@ -114,6 +114,7 @@ export function validateAddress(address: string) {
 }
 
 export function normalizeAddress(address: string) {
+    address = address.trim();
     // Legacy addresses are case-sensitive and are thus preserved. Non-legacy addresses are normalized to lowercase.
     if (new RegExp(`^(${Object.values(BIP84_ADDRESS_PREFIX).join('|')})`, 'i').test(address)) {
         return address.toLowerCase();

@@ -1,14 +1,17 @@
 import { Route } from 'vue-router';
 import HubApi, {
-    Account,
-    SignTransactionRequest,
-    SignBtcTransactionRequest,
-    SetupSwapRequest,
-    SetupSwapResult,
-    RefundSwapRequest,
-    SignPolygonTransactionRequest,
+    type Account,
+    type SignTransactionRequest,
+    type SignBtcTransactionRequest,
+    type SetupSwapRequest,
+    type SetupSwapResult,
+    type RefundSwapRequest,
+    type SignPolygonTransactionRequest,
+    type RequestType,
+    type ResultByRequestType,
+    type PopupRequestBehavior,
 } from '@nimiq/hub-api';
-import { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
+import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
@@ -32,7 +35,13 @@ import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import { RelayServerInfo } from './lib/usdc/OpenGSN';
 
-export function shouldUseRedirects(): boolean {
+export function shouldUseRedirects(ignoreSettings = false): boolean {
+    if (!ignoreSettings) {
+        const { hubBehavior } = useSettingsStore();
+        if (hubBehavior.value === 'redirect') return true;
+        if (hubBehavior.value !== 'auto') return false;
+    }
+
     const { canInstallPwa } = usePwaInstallPrompt();
     // When not in PWA (which we are if PWA can be installed), don't use redirects
     if (canInstallPwa.value) return false;
@@ -48,15 +57,55 @@ export function shouldUseRedirects(): boolean {
     return false;
 }
 
-function getBehavior(localState?: any): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
-    const { hubBehavior } = useSettingsStore();
-
-    if (hubBehavior.value === 'popup') return undefined;
-    if (hubBehavior.value === 'redirect' || shouldUseRedirects()) {
+function getBehavior({
+    abortSignal, // Only for popups because Wallet can not abort a redirect request as it's not open after redirect.
+    localState, // Only for redirects. For popups no state needs to be stored as the Wallet remains open.
+}: {
+    abortSignal?: AbortSignal,
+    localState?: any,
+} = {}): RequestBehavior<BehaviorType.REDIRECT | BehaviorType.POPUP> | undefined {
+    if (shouldUseRedirects()) {
         return new HubApi.RedirectRequestBehavior(window.location.href, localState);
     }
 
-    return undefined;
+    // @ts-expect-error _defaultBehavior is private.
+    const defaultBehavior: PopupRequestBehavior = hubApi._defaultBehavior;
+
+    if (abortSignal) {
+        // Return a popup behavior that can be aborted.
+        return new class AbortablePopupRequestBehavior extends HubApi.PopupRequestBehavior {
+            constructor(private abortSignal: AbortSignal) { // eslint-disable-line @typescript-eslint/no-shadow
+                // Create with same parameters as defaultBehavior
+                // @ts-expect-error _popupFeatures and _options are private
+                super(defaultBehavior._popupFeatures, defaultBehavior._options);
+                abortSignal.addEventListener('abort', () => {
+                    // @ts-expect-error shouldRetryRequest is private
+                    this.shouldRetryRequest = false;
+                    // @ts-expect-error popup and client are private
+                    const { popup, client } = this;
+                    if (popup) popup.close();
+                    if (client) client.close();
+                });
+            }
+
+            override async request<R extends RequestType>(
+                endpoint: string,
+                command: R,
+                args: Iterable<PromiseLike<any> | any>,
+            ): Promise<ResultByRequestType<R>> {
+                if (this.abortSignal.aborted) throw new Error('Connection was closed'); // same error as on closed popup
+                return super.request(endpoint, command, args);
+            }
+
+            override createPopup(url: string) {
+                if (this.abortSignal.aborted) throw new Error('Failed to open popup'); // same error as on failed popup
+                return super.createPopup(url);
+            }
+        }(abortSignal);
+    }
+
+    // Return defaultBehavior which is a PopupRequestBehavior.
+    return defaultBehavior;
 }
 
 // We can't use the reactive config via useConfig() here because that one can only be used after the composition-api
@@ -422,11 +471,11 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
     return true;
 }
 
-export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'>) {
+export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'>, abortSignal?: AbortSignal) {
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
         ...tx,
-    }, getBehavior()).catch(onError);
+    }, getBehavior({ abortSignal })).catch(onError);
     if (!signedTransaction) return null;
 
     return sendTx(signedTransaction);

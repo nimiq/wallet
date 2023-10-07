@@ -206,7 +206,7 @@
                         </p>
                         <p class="nq-text">
                             {{ $t('Automatic mode uses {behavior}.', {
-                                behavior: shouldUseRedirects() ? $t('redirects') : $t('popups'),
+                                behavior: shouldUseRedirects(/*ignoreSettings*/ true) ? $t('redirects') : $t('popups'),
                             }) }}
                         </p>
                     </div>

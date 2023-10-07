@@ -75,11 +75,7 @@ export const useSettingsStore = createStore({
         trials: (state): Readonly<Trial[]> => state.trials,
         updateAvailable: (state): Readonly<boolean> => state.updateAvailable,
         hubBehavior: (state): Readonly<HubBehavior> => state.hubBehavior,
-        canUseSwaps: (state) => {
-            if (state.hubBehavior === 'popup') return true;
-            if (state.hubBehavior === 'redirect') return false;
-            return !shouldUseRedirects();
-        },
+        canUseSwaps: () => !shouldUseRedirects(), // depends on hubBehavior
     },
     actions: {
         setDecimals(num: NimDecimals = 0) {

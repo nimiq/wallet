@@ -522,7 +522,7 @@ export default defineComponent({
             && hasHeight.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value
-            && goCryptoExpiryCountdown.value !== '0:00',
+            && !isGoCryptoExpiryCountdownExpired(),
         );
 
         /**
@@ -654,19 +654,24 @@ export default defineComponent({
             updateCountdown();
         }
 
-        function stopGoCryptoExpiryCountdown(clearZeroCountdown = false) {
+        function stopGoCryptoExpiryCountdown(clearExpiredCountdown = false) {
             clearInterval(goCryptoExpiryUpdateInterval);
             goCryptoExpiryUpdateInterval = -1;
-            if (goCryptoExpiryCountdown.value !== '0:00' || clearZeroCountdown) {
+            const isExpired = isGoCryptoExpiryCountdownExpired();
+            if (!isExpired || clearExpiredCountdown) {
                 // Remove countdown.
                 goCryptoExpiryCountdown.value = '';
             }
-            if (goCryptoExpiryCountdown.value === '0:00' && goCryptoPaymentDetails && 'id' in goCryptoPaymentDetails
+            if (isExpired && goCryptoPaymentDetails && 'id' in goCryptoPaymentDetails
                 && (statusType.value !== 'go-crypto' || statusState.value !== State.WARNING)) {
                 // Request an immediate monitoring update to show the expiry warning, if it's not shown already.
-                // Keep the countdown visible as 0:00 unless clearZeroCountdown cleared it.
+                // Keep the countdown visible as 0:00 unless clearExpiredCountdown cleared it.
                 monitorGoCryptoRequest(goCryptoPaymentDetails.id);
             }
+        }
+
+        function isGoCryptoExpiryCountdownExpired() {
+            return goCryptoExpiryCountdown.value === '0:00';
         }
 
         if (props.requestUri) {
@@ -728,6 +733,11 @@ export default defineComponent({
             statusMessage.value = '';
 
             try {
+                const abortController = new AbortController();
+                const unwatchGoCryptoExpiry = watch(() => {
+                    if (!isGoCryptoExpiryCountdownExpired()) return;
+                    abortController.abort();
+                });
                 const plainTx = await sendTransaction({
                     sender: activeAddressInfo.value!.address,
                     recipient: recipientWithLabel.value!.address,
@@ -737,10 +747,14 @@ export default defineComponent({
                     fee: fee.value,
                     extraData: message.value || undefined,
                     validityStartHeight: network$.height,
-                });
+                }, abortController.signal);
+                unwatchGoCryptoExpiry();
 
                 if (!plainTx) {
-                    statusType.value = 'none'; // hide StatusScreen
+                    if (statusType.value === 'signing') {
+                        // Hide StatusScreen unless an error is shown.
+                        statusType.value = 'none';
+                    }
                     return;
                 }
 

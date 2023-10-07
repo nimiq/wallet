@@ -43,6 +43,7 @@ import {
     validateAddress as validateBitcoinAddress,
 } from '../../lib/BitcoinTransactionUtils';
 import {
+    GOCRYPTO_ID_PARAM,
     parseGoCryptoRequestLink,
     fetchGoCryptoPaymentDetails,
     goCryptoStatusToUserFriendlyMessage,
@@ -88,12 +89,23 @@ export default defineComponent({
             // Note that for Nimiq, parseRequestLink automatically validates and normalizes addresses.
             const nimRequestLink = parseRequestLink(result, { currencies: [Currency.NIM] });
             if (nimRequestLink) {
-                // Reformat into the new Nimiq request link format, in case it's a old Safe url, and redirect to the
-                // request link as path which will be handled by the router.
-                router.replace(`/${createNimiqRequestLink(nimRequestLink.recipient, {
+                // Reformat into the new Nimiq request link uri format, in case it's an old Safe url.
+                const nimRequestLinkUri = new URL(createNimiqRequestLink(nimRequestLink.recipient, {
                     ...nimRequestLink,
                     type: NimiqRequestLinkType.URI,
-                })}`);
+                }));
+                // If the request includes a GoCrypto id, pass it on to SendModal. We don't handle it here yet, to be
+                // able to redirect to SendModal quicker, without having to wait for the GoCrypto api, as the usual case
+                // should be that there are no errors. Potential GoCrypto errors or a mismatch of the payment info in
+                // the request link and the info fetched from GoCrypto are then handled in SendModal.
+                // Ensure that scan result includes protocol (which is optional for Nimiq Safe links) to be a valid URL.
+                const goCryptoId = new URL(result.replace(/^(?:\w+:)?/, 'dummy:')).searchParams.get(GOCRYPTO_ID_PARAM);
+                if (goCryptoId) {
+                    nimRequestLinkUri.searchParams.set(GOCRYPTO_ID_PARAM, goCryptoId);
+                }
+                // Redirect to request link as path which will be handled by the router. If a GoCrypto id is set, don't
+                // replace the route, such that user can navigate back to the scanner from SendModal on GoCrypto errors.
+                (goCryptoId ? router.push : router.replace)(`/${nimRequestLinkUri}`);
                 return;
             }
 
@@ -182,16 +194,16 @@ export default defineComponent({
                     : null;
                 if (goCryptoPaymentDetails && !('errorCode' in goCryptoPaymentDetails)
                     && goCryptoStatus.value?.paymentStatus === 'pending') {
-                    // Forward to SendModal by reformatting the request into a Nimiq request link.
-                    const nimiqRequestLink = createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
+                    // Forward to SendModal by reformatting the request into a Nimiq request link uri.
+                    const nimRequestLinkUri = new URL(createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
                         amount: goCryptoPaymentDetails.amount,
                         label: goCryptoPaymentDetails.storeName,
                         type: NimiqRequestLinkType.URI,
-                    });
-                    const goCryptoSuffix = `&goCryptoId=${goCryptoPaymentDetails.id}`; // Pass payment id to SendModal
+                    }));
+                    nimRequestLinkUri.searchParams.set(GOCRYPTO_ID_PARAM, goCryptoPaymentDetails.id); // for SendModal
                     // Redirect to request link as path which will be handled by the router. Don't replace the route,
                     // such that the user can navigate back to the scanner from SendModal on GoCrypto errors.
-                    router.push(`/${nimiqRequestLink}${goCryptoSuffix}`);
+                    router.push(`/${nimRequestLinkUri}`);
                 } else if (goCryptoStatus.value?.paymentStatus === 'accepted') {
                     // The success screen has no dismiss button, therefore auto-close it.
                     setTimeout(() => {

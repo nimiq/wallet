@@ -268,6 +268,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import {
+    GOCRYPTO_ID_PARAM,
     fetchGoCryptoPaymentDetails,
     goCryptoStatusToUserFriendlyMessage,
     GoCryptoPaymentDetails,
@@ -286,8 +287,7 @@ export enum RecipientType {
     OWN_ADDRESS,
     GLOBAL_ADDRESS,
     // GoCrypto payments show a recipient label, which shouldn't be stored as contact as GoCrypto recycles addresses
-    // such that different addresses can be used for the same shop, and different shops can use the same
-    // address.
+    // such that different addresses can be used for the same shop, and different shops can use the same address.
     GO_CRYPTO,
 }
 
@@ -537,9 +537,9 @@ export default defineComponent({
 
             let goCryptoId: string | null = null;
             try {
-                goCryptoId = new URL(uri).searchParams.get('goCryptoId');
+                goCryptoId = new URL(uri).searchParams.get(GOCRYPTO_ID_PARAM);
             } catch (e) {
-                // Failed to parse uri as URL, e.g. due to missing protocol. Ignore as legit requests with goCryptoId
+                // Failed to parse uri as URL, e.g. due to missing protocol. Ignore as legit requests with gocrypto_id
                 // set should be coming from ScanQrModal and be well formatted.
             }
 

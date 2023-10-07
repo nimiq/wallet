@@ -3,6 +3,11 @@ import { useConfig } from '../composables/useConfig';
 import Time from './Time';
 import { i18n } from '../i18n/i18n-setup';
 
+// Parameter that specifies the GoCrypto payment id. Can optionally also be set on regular payment links, e.g. Nimiq
+// payment links, not only on GoCrypto request links.
+export const GOCRYPTO_ID_PARAM = 'gocrypto_id';
+const MERCHANT_ID_PARAM = 'merchant_id';
+
 export type GoCryptoRequestIdentifier = { merchantId: string } | { paymentId: string };
 
 export enum GoCryptoPaymentStatus {
@@ -57,9 +62,9 @@ export function parseGoCryptoRequestLink(requestLink: string | URL): GoCryptoReq
     )) return null;
 
     // Note: searchParams.get also url decodes the parameters already
-    const paymentId = url.searchParams.get('gocrypto_id');
+    const paymentId = url.searchParams.get(GOCRYPTO_ID_PARAM);
     if (paymentId && !/\w+/.test(paymentId)) return null;
-    const merchantId = url.searchParams.get('merchant_id');
+    const merchantId = url.searchParams.get(MERCHANT_ID_PARAM);
     if (merchantId && !/\w+/.test(merchantId)) return null;
 
     // paymentId is more specific, therefore prioritize paymentId over merchantId, in case both are specified.

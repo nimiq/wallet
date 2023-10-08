@@ -164,9 +164,21 @@
                         <span v-else key="nim-amount">
                             {{ $t('You will send {amount} NIM', { amount: amount / 1e5 }) }}
                         </span>
-                        <span v-if="goCryptoExpiryCountdown" class="expiry-countdown"
+                        <span v-if="goCryptoExpiryEarlyCountdown" class="expiry-countdown"
                             :class="{ 'same-line': activeCurrency === CryptoCurrency.NIM && !fee }">
-                            {{ $t('Pay within {countdown}', { countdown: goCryptoExpiryCountdown }) }}
+                            {{ $t('Pay within {countdown}', { countdown: goCryptoExpiryEarlyCountdown }) }}
+                            <Tooltip preferredPosition="top left" :styles="{ 'min-width': '35rem' }">
+                                <template #trigger>
+                                    <InfoCircleSmallIcon/>
+                                </template>
+                                <template #default>{{
+                                    $t('The GoCrypto payment request expires in {finalCountdown}. To ensure that your '
+                                        + 'payment is confirmed in time, send it within {earlyCountdown}.', {
+                                        earlyCountdown: goCryptoExpiryEarlyCountdown,
+                                        finalCountdown: goCryptoExpiryFinalCountdown,
+                                    })
+                                }}</template>
+                            </Tooltip>
                         </span>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
@@ -246,6 +258,8 @@ import {
     AddressDisplay,
     SelectBar,
     Amount,
+    Tooltip,
+    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { captureException } from '@sentry/vue';
@@ -522,7 +536,7 @@ export default defineComponent({
             && hasHeight.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value
-            && !isGoCryptoExpiryCountdownExpired(),
+            && !isGoCryptoExpiryEarlyCountdownExpired(),
         );
 
         /**
@@ -620,58 +634,82 @@ export default defineComponent({
             } finally {
                 clearTimeout(goCryptoMonitoringTimeout); // end if requested, or clear to avoid parallel monitoring
                 if (!endMonitoring) {
-                    startGoCryptoExpiryCountdown(); // Start countdown if it's not started yet.
+                    startGoCryptoExpiryCountdowns(); // Start countdowns if they're not started yet.
                     goCryptoMonitoringTimeout = window.setTimeout(() => monitorGoCryptoRequest(paymentId), 10000);
                 } else {
-                    stopGoCryptoExpiryCountdown(true);
+                    stopGoCryptoExpiryCountdowns(true);
                 }
             }
         }
 
-        let goCryptoExpiryUpdateInterval = -1;
-        const goCryptoExpiryCountdown = ref('');
-        function startGoCryptoExpiryCountdown() {
-            if (goCryptoExpiryUpdateInterval !== -1) return;
+        let goCryptoExpiriesUpdateInterval = -1;
+        const goCryptoExpiryEarlyCountdown = ref('');
+        const goCryptoExpiryFinalCountdown = ref('');
+        function startGoCryptoExpiryCountdowns() {
+            if (goCryptoExpiriesUpdateInterval !== -1) return;
             const updateCountdown = () => {
-                const expiry = goCryptoPaymentDetails && 'expiry' in goCryptoPaymentDetails
-                    ? goCryptoPaymentDetails.expiry
-                    : -1; // goCryptoPaymentDetails is unknown or an error
+                const {
+                    expiryEarly,
+                    expiryFinal,
+                } = goCryptoPaymentDetails && 'expiryFinal' in goCryptoPaymentDetails
+                    ? goCryptoPaymentDetails
+                    : { expiryEarly: -1, expiryFinal: -1 }; // goCryptoPaymentDetails is unknown or an error
 
-                if (Date.now() > expiry) {
-                    stopGoCryptoExpiryCountdown();
-                    return;
+                if (Date.now() > expiryEarly) {
+                    stopGoCryptoExpiryCountdowns();
+                    return false;
                 }
 
-                const remainingTime = Math.max(expiry - Date.now(), 0);
-                const hours = Math.floor(remainingTime / 1000 / 60 / 60);
-                const minutes = Math.floor(remainingTime / 1000 / 60) % 60;
-                const seconds = Math.floor(remainingTime / 1000) % 60;
-                goCryptoExpiryCountdown.value = (hours ? `${hours}:` : '') // eslint-disable-line prefer-template
-                    + `${hours ? minutes.toString().padStart(2, '0') : minutes}:`
-                    + seconds.toString().padStart(2, '0');
+                const now = Date.now();
+                goCryptoExpiryEarlyCountdown.value = formatDuration(Math.max(expiryEarly - now, 0));
+                goCryptoExpiryFinalCountdown.value = formatDuration(Math.max(expiryFinal - now, 0));
+
+                return true;
             };
-            goCryptoExpiryUpdateInterval = window.setInterval(updateCountdown, 500);
-            updateCountdown();
+            if (!updateCountdown()) return;
+            goCryptoExpiriesUpdateInterval = window.setInterval(updateCountdown, 500);
         }
 
-        function stopGoCryptoExpiryCountdown(clearExpiredCountdown = false) {
-            clearInterval(goCryptoExpiryUpdateInterval);
-            goCryptoExpiryUpdateInterval = -1;
-            const isExpired = isGoCryptoExpiryCountdownExpired();
-            if (!isExpired || clearExpiredCountdown) {
-                // Remove countdown.
-                goCryptoExpiryCountdown.value = '';
+        function stopGoCryptoExpiryCountdowns(clearExpiredCountdowns = false) {
+            // Stop countdowns.
+            clearInterval(goCryptoExpiriesUpdateInterval);
+            goCryptoExpiriesUpdateInterval = -1;
+
+            // Update UI.
+            // Remove countdowns if they didn't reach 0:00, of if removal was explicitly requested.
+            const isExpiryEarlyCountdownExpired = isGoCryptoExpiryEarlyCountdownExpired();
+            const isExpiryFinalCountdownExpired = isGoCryptoExpiryFinalCountdownExpired();
+            if (!isExpiryEarlyCountdownExpired || clearExpiredCountdowns) {
+                goCryptoExpiryEarlyCountdown.value = '';
             }
-            if (isExpired && goCryptoPaymentDetails && 'id' in goCryptoPaymentDetails
+            if (!isExpiryFinalCountdownExpired || clearExpiredCountdowns) {
+                goCryptoExpiryFinalCountdown.value = '';
+            }
+
+            // Request an immediate monitoring update to show the expiry warning, if it's not shown already.
+            // The check whether the warning is already shown is also important for avoiding an infinite loop.
+            if (isExpiryEarlyCountdownExpired
+                && (goCryptoPaymentDetails && 'id' in goCryptoPaymentDetails)
                 && (statusType.value !== 'go-crypto' || statusState.value !== State.WARNING)) {
-                // Request an immediate monitoring update to show the expiry warning, if it's not shown already.
-                // Keep the countdown visible as 0:00 unless clearExpiredCountdown cleared it.
                 monitorGoCryptoRequest(goCryptoPaymentDetails.id);
             }
         }
 
-        function isGoCryptoExpiryCountdownExpired() {
-            return goCryptoExpiryCountdown.value === '0:00';
+        function formatDuration(duration: number) {
+            const hours = Math.floor(duration / 1000 / 60 / 60);
+            const minutes = Math.floor(duration / 1000 / 60) % 60;
+            const seconds = Math.floor(duration / 1000) % 60;
+            return (hours ? `${hours}:` : '') // eslint-disable-line prefer-template
+                + `${hours ? minutes.toString().padStart(2, '0') : minutes}:`
+                + seconds.toString().padStart(2, '0');
+        }
+
+        function isGoCryptoExpiryEarlyCountdownExpired() {
+            return goCryptoExpiryEarlyCountdown.value === '0:00';
+        }
+
+        function isGoCryptoExpiryFinalCountdownExpired() {
+            return goCryptoExpiryFinalCountdown.value === '0:00';
         }
 
         if (props.requestUri) {
@@ -735,7 +773,7 @@ export default defineComponent({
             try {
                 const abortController = new AbortController();
                 const unwatchGoCryptoExpiry = watch(() => {
-                    if (!isGoCryptoExpiryCountdownExpired()) return;
+                    if (!isGoCryptoExpiryEarlyCountdownExpired()) return;
                     abortController.abort();
                 });
                 const plainTx = await sendTransaction({
@@ -835,7 +873,7 @@ export default defineComponent({
         onBeforeUnmount(() => {
             clearTimeout(successCloseTimeout);
             clearTimeout(goCryptoMonitoringTimeout);
-            clearInterval(goCryptoExpiryUpdateInterval);
+            clearInterval(goCryptoExpiriesUpdateInterval);
         });
 
         return {
@@ -883,7 +921,8 @@ export default defineComponent({
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             message,
-            goCryptoExpiryCountdown,
+            goCryptoExpiryEarlyCountdown,
+            goCryptoExpiryFinalCountdown,
             canSend,
             sign,
             isValidRecipient,
@@ -925,6 +964,8 @@ export default defineComponent({
         FiatConvertedAmount,
         SelectBar,
         Amount,
+        Tooltip,
+        InfoCircleSmallIcon,
         SendModalFooter,
         StatusScreen,
     },
@@ -1250,7 +1291,7 @@ export default defineComponent({
         .secondary-amount {
             padding: 0 .5rem; // for fixing a visual glitch in iOS Safari 16.5 which cuts off the text
             font-weight: 600;
-            opacity: 0.5;
+            color: var(--text-50);
 
             .fiat-amount,
             .amount {
@@ -1265,6 +1306,11 @@ export default defineComponent({
                     content: '\000A'; // newline
                     white-space: pre-line;
                     line-height: 1.7;
+                }
+
+                .tooltip {
+                    contain: layout; // avoid jumping of the UI when showing tooltip for first time
+                    margin-bottom: -.25rem;
                 }
             }
         }

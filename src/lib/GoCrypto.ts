@@ -25,7 +25,8 @@ export enum GoCryptoPaymentStatus {
 export interface GoCryptoPaymentDetails {
     id: string; // payment id
     status: GoCryptoPaymentStatus;
-    expiry: number; // timestamp in ms
+    expiryFinal: number; // timestamp in ms; when the GoCrypto payment request expires
+    expiryEarly: number; // timestamp in ms; expiryFinal minus a safety buffer for transaction to get confirmed
     storeName: string;
     recipient: string;
     amount: number;
@@ -128,8 +129,13 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
         if (typeof status !== 'number'
             || !Object.values(GoCryptoPaymentStatus).includes(status)) throw new Error('Invalid status');
 
-        const expiry = Date.parse(data.expires_at) - timeOffset; // convert expiry to user's clock
-        if (Number.isNaN(expiry)) throw new Error('Invalid expiry');
+        const expiryFinal = Date.parse(data.expires_at) - timeOffset; // convert expiry to user's clock
+        if (Number.isNaN(expiryFinal)) throw new Error('Invalid expiry');
+        // Deduct a two-minute buffer (double the block time to be on the safe side) for the transaction to be mined
+        // into a block, because GoCrypto only accepts transactions that are confirmed within the expiry window, not
+        // pending transactions.
+        // TODO with Nimiq 2.0 this won't be necessary anymore
+        const expiryEarly = expiryFinal - 2 * 60 * 1000;
 
         const storeName: string = data.store_full_name; // eslint-disable-line prefer-destructuring
         if (typeof storeName !== 'string' || !storeName) throw new Error('Invalid storeName');
@@ -149,7 +155,8 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
         return {
             id,
             status,
-            expiry,
+            expiryFinal,
+            expiryEarly,
             storeName,
             recipient,
             amount,
@@ -177,11 +184,12 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
     const successDefaults = {
         paymentStatus: 'accepted' as const,
     };
+    const messageNewPaymentRequest = i18n.t('Please ask the merchant to create a new payment request.') as string;
     const errorDefaults = {
         paymentStatus: 'failed' as const,
         // Concatenate sentences to re-use individual translations.
         // eslint-disable-next-line prefer-template
-        message: i18n.t('Please ask the merchant to create a new payment request.') + ' '
+        message: messageNewPaymentRequest + ' '
             + i18n.t('If you already made a payment, please contact GoCrypto for a refund.')
             + (paymentId ? ` (GoCrypto id: ${paymentId})` : ''),
     };
@@ -204,7 +212,7 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
                 // No payment request found for the given identifier.
                 ...errorDefaults,
                 title: i18n.t('No payment request found') as string,
-                message: i18n.t('Please ask the merchant to create a new payment request.') as string,
+                message: messageNewPaymentRequest,
             };
             case GoCryptoPaymentApiErrorCode.InvalidResponse:
             default: return {
@@ -237,7 +245,7 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
         case GoCryptoPaymentStatus.Refund: return {
             ...errorDefaults,
             title: i18n.t('Your payment was refunded') as string,
-            message: i18n.t('Please ask the merchant to create a new payment request.') as string,
+            message: messageNewPaymentRequest,
         };
         case GoCryptoPaymentStatus.Cancelled: return {
             ...errorDefaults,
@@ -245,10 +253,19 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
         };
         default: // do nothing and continue with checks below
     }
-    if (paymentDetails.status === GoCryptoPaymentStatus.AutoClosed || paymentDetails.expiry < Date.now()) {
+    if (paymentDetails.status === GoCryptoPaymentStatus.AutoClosed || paymentDetails.expiryFinal < Date.now()) {
         return {
             ...errorDefaults,
             title: i18n.t('The payment request expired') as string,
+        };
+    }
+    if (paymentDetails.expiryEarly < Date.now()) {
+        return {
+            ...errorDefaults,
+            title: i18n.t('The payment request is about to expire') as string,
+            // eslint-disable-next-line prefer-template
+            message: messageNewPaymentRequest + ' '
+                + i18n.t('If you already made a payment, wait for it to be confirmed instead.'),
         };
     }
     // Unpaid request without any errors.

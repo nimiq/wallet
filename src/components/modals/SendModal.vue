@@ -655,14 +655,16 @@ export default defineComponent({
                     ? goCryptoPaymentDetails
                     : { expiryEarly: -1, expiryFinal: -1 }; // goCryptoPaymentDetails is unknown or an error
 
-                if (Date.now() > expiryEarly) {
+                const now = Date.now();
+                // Ceil durations such that they're only 0:00 once the payment request actually expired, for
+                // monitorGoCryptoRequest in stopGoCryptoExpiryCountdowns to show the warning screen immediately.
+                goCryptoExpiryEarlyCountdown.value = formatDuration(Math.max(expiryEarly - now, 0), 'ceil');
+                goCryptoExpiryFinalCountdown.value = formatDuration(Math.max(expiryFinal - now, 0), 'ceil');
+
+                if (isGoCryptoExpiryEarlyCountdownExpired()) {
                     stopGoCryptoExpiryCountdowns();
                     return false;
                 }
-
-                const now = Date.now();
-                goCryptoExpiryEarlyCountdown.value = formatDuration(Math.max(expiryEarly - now, 0));
-                goCryptoExpiryFinalCountdown.value = formatDuration(Math.max(expiryFinal - now, 0));
 
                 return true;
             };
@@ -695,7 +697,17 @@ export default defineComponent({
             }
         }
 
-        function formatDuration(duration: number) {
+        function formatDuration(duration: number, rounding: 'round' | 'floor' | 'ceil' = 'round') {
+            // If rounding is requested, add a time offset such that the desired rounding of seconds is achieved after
+            // flooring, while also taking carry-overs into account.
+            if (rounding === 'round') {
+                // E.g. 0:59.7 gets rounded to 1:00 while 0:59.3 gets rounded to 0:59.
+                duration += 500; // Add .5s = 500ms.
+            } else if (rounding === 'ceil') {
+                // E.g. 0:59.7 and 0:59.3 get rounded to 1:00 while 0:59 remains 0:59.
+                const epsilon = Number.EPSILON * Math.max(duration, 1000); // EPSILON scaled up to magnitude of duration
+                duration += 1000 - epsilon; // Add slightly less than 1s.
+            }
             const hours = Math.floor(duration / 1000 / 60 / 60);
             const minutes = Math.floor(duration / 1000 / 60) % 60;
             const seconds = Math.floor(duration / 1000) % 60;
@@ -1299,6 +1311,8 @@ export default defineComponent({
             }
 
             .expiry-countdown {
+                font-variant-numeric: tabular-nums;
+
                 &.same-line::before {
                     content: '\00B7 '; // &middot;
                 }

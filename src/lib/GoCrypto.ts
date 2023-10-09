@@ -37,7 +37,8 @@ export interface GoCryptoPaymentDetails {
 export enum GoCryptoPaymentApiErrorCode {
     // Seems to be returned for invalid/unknown request identifiers.
     InvalidIdentifier = 'http404',
-    // This surprisingly is returned for expired requests, instead of payment info with status AutoClosed.
+    // This surprisingly is returned for non-pending requests, for example paid, expired, or cancelled requests, instead
+    // of payment info with a status of for example Paid or AutoClosed.
     PaymentNotFound = 'paymentNotFound',
     // This is not an error that is returned by the GoCrypto api, but an error that we assign on invalid / unexpected
     // api responses. This error's name is surrounded by __ to avoid a potential name clash with GoCrypto.
@@ -190,18 +191,22 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
         // Concatenate sentences to re-use individual translations.
         // eslint-disable-next-line prefer-template
         message: messageNewPaymentRequest + ' '
-            + i18n.t('If you already made a payment, please contact GoCrypto for a refund.')
+            + i18n.t('If you already made a payment which was not accepted, please contact GoCrypto for a refund.')
             + (paymentId ? ` (GoCrypto id: ${paymentId})` : ''),
     };
 
     if ('errorCode' in paymentDetails) {
         switch (paymentDetails.errorCode) {
             case GoCryptoPaymentApiErrorCode.PaymentNotFound:
-                // This surprisingly is returned for expired requests, instead of payment info with status AutoClosed.
+                // This surprisingly is returned for non-pending requests, for example paid, expired, or cancelled
+                // requests, instead of payment info with a status of for example Paid or AutoClosed.
                 if ('paymentId' in paymentDetails.request) {
                     return {
                         ...errorDefaults,
-                        title: i18n.t('The payment request expired') as string,
+                        title: i18n.t('Not a pending payment request') as string,
+                        // eslint-disable-next-line prefer-template
+                        message: i18n.t('The payment request might have been paid, expired, or cancelled.') + ' '
+                            + errorDefaults.message,
                     };
                 }
                 // For payment request by merchantId fall through to the InvalidIdentifier case, because the merchant's
@@ -268,6 +273,7 @@ export function goCryptoStatusToUserFriendlyMessage(paymentDetails: GoCryptoPaym
                 + i18n.t('If you already made a payment, wait for it to be confirmed instead.'),
         };
     }
+
     // Unpaid request without any errors.
     return {
         paymentStatus: 'pending',

@@ -281,6 +281,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
+import { formatDuration } from '../../lib/Time';
 import {
     GOCRYPTO_ID_PARAM,
     fetchGoCryptoPaymentDetails,
@@ -695,25 +696,6 @@ export default defineComponent({
                 && (statusType.value !== 'go-crypto' || statusState.value !== State.WARNING)) {
                 monitorGoCryptoRequest(goCryptoPaymentDetails.id);
             }
-        }
-
-        function formatDuration(duration: number, rounding: 'round' | 'floor' | 'ceil' = 'round') {
-            // If rounding is requested, add a time offset such that the desired rounding of seconds is achieved after
-            // flooring, while also taking carry-overs into account.
-            if (rounding === 'round') {
-                // E.g. 0:59.7 gets rounded to 1:00 while 0:59.3 gets rounded to 0:59.
-                duration += 500; // Add .5s = 500ms.
-            } else if (rounding === 'ceil') {
-                // E.g. 0:59.7 and 0:59.3 get rounded to 1:00 while 0:59 remains 0:59.
-                const epsilon = Number.EPSILON * Math.max(duration, 1000); // EPSILON scaled up to magnitude of duration
-                duration += 1000 - epsilon; // Add slightly less than 1s.
-            }
-            const hours = Math.floor(duration / 1000 / 60 / 60);
-            const minutes = Math.floor(duration / 1000 / 60) % 60;
-            const seconds = Math.floor(duration / 1000) % 60;
-            return (hours ? `${hours}:` : '') // eslint-disable-line prefer-template
-                + `${hours ? minutes.toString().padStart(2, '0') : minutes}:`
-                + seconds.toString().padStart(2, '0');
         }
 
         function isGoCryptoExpiryEarlyCountdownExpired() {

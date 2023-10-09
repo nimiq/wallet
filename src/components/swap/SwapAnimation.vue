@@ -354,6 +354,7 @@ import Amount from '../Amount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import BlueLink from '../BlueLink.vue';
 import { SwapState } from '../../stores/Swaps';
+import { formatDuration } from '../../lib/Time';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
 import BitcoinSvg from './animation/bitcoin.svg';
@@ -502,7 +503,7 @@ export default defineComponent({
         const swapDirection = computed(() => props.switchSides ? 'right-to-left' : 'left-to-right');
 
         // To-side funding timer
-        const timer = ref('00:00');
+        const timer = ref('0:00');
         let timerInterval = 0;
 
         // Swap State
@@ -594,15 +595,7 @@ export default defineComponent({
                 return;
             }
 
-            const diff = new Date(Date.now() - props.stateEnteredAt);
-            const hours = diff.getUTCHours();
-            const minutes = diff.getUTCMinutes();
-            const seconds = diff.getUTCSeconds();
-            timer.value = [
-                ...(hours ? [hours.toString().padStart(2, '0')] : []),
-                minutes.toString().padStart(2, '0'),
-                seconds.toString().padStart(2, '0'),
-            ].join(':');
+            timer.value = formatDuration(Date.now() - props.stateEnteredAt);
         }
 
         onMounted(() => {

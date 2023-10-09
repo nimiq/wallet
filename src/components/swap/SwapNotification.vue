@@ -75,7 +75,7 @@ import { useBankStore } from '../../stores/Bank';
 import { useConfig } from '../../composables/useConfig';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { getNetworkClient } from '../../network';
-import Time from '../../lib/Time';
+import { getServerTime } from '../../lib/Time';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import {
     getHtlcContract,
@@ -129,7 +129,7 @@ export default defineComponent({
         }
 
         async function isExpired() {
-            const timestamp = await Time.now(true);
+            const timestamp = await getServerTime(true);
             const swap = activeSwap.value!;
 
             const remainingTimes: number[] = [];

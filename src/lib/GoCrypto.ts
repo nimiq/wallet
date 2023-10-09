@@ -1,6 +1,6 @@
 import { ValidationUtils } from '@nimiq/utils';
 import { useConfig } from '../composables/useConfig';
-import Time from './Time';
+import { getServerTime } from './Time';
 import { i18n } from '../i18n/i18n-setup';
 
 // Parameter that specifies the GoCrypto payment id. Can optionally also be set on regular payment links, e.g. Nimiq
@@ -108,7 +108,7 @@ export async function fetchGoCryptoPaymentDetails(requestIdentifier: GoCryptoReq
                 cache: 'no-cache',
                 referrerPolicy: 'no-referrer',
             }),
-            Time.now().then((serverTime) => serverTime - Date.now()),
+            getServerTime().then((serverTime) => serverTime - Date.now()),
         ]);
         const data = await response.json(); // Try to read body which is set on valid requests and expected errors.
 

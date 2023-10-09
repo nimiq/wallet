@@ -59,7 +59,7 @@ export default defineComponent({
         const router = useRouter();
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
 
-        const checkResult = async (result: string) => {
+        const checkResult = (result: string) => {
             // Cashlink
             if (/https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
                 // result is a cashlink so redirect to hub
@@ -110,6 +110,7 @@ export default defineComponent({
             }
 
             if (config.enableBitcoin && hasBitcoinAddresses.value) {
+                // Run in parallel, without awaiting.
                 loadBitcoinJS().then(() => {
                     // BTC Address
                     if (validateBitcoinAddress(result)) {
@@ -135,6 +136,7 @@ export default defineComponent({
             }
 
             if (config.usdc.enabled && hasUsdcAddresses.value) {
+                // Run in parallel, without awaiting.
                 loadEthersLibrary().then((ethers) => {
                     // For USDC we don't support scanning plain addresses to avoid the risk of sending Polygon USDC to
                     // an Ethereum wallet, because the addresses are the same.
@@ -185,32 +187,35 @@ export default defineComponent({
             }
 
             if (config.goCrypto.enabled) {
-                const goCryptoRequestLink = parseGoCryptoRequestLink(result);
-                const goCryptoPaymentDetails = goCryptoRequestLink
-                    ? await fetchGoCryptoPaymentDetails(goCryptoRequestLink)
-                    : null;
-                goCryptoStatus.value = goCryptoPaymentDetails
-                    ? goCryptoStatusToUserFriendlyMessage(goCryptoPaymentDetails)
-                    : null;
-                if (goCryptoPaymentDetails && !('errorCode' in goCryptoPaymentDetails)
-                    && goCryptoStatus.value?.paymentStatus === 'pending') {
-                    // Forward to SendModal by reformatting the request into a Nimiq request link uri.
-                    const nimRequestLinkUri = new URL(createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
-                        amount: goCryptoPaymentDetails.amount,
-                        label: goCryptoPaymentDetails.storeName,
-                        type: NimiqRequestLinkType.URI,
-                    }));
-                    nimRequestLinkUri.searchParams.set(GOCRYPTO_ID_PARAM, goCryptoPaymentDetails.id); // for SendModal
-                    // Redirect to request link as path which will be handled by the router. Don't replace the route,
-                    // such that the user can navigate back to the scanner from SendModal on GoCrypto errors.
-                    router.push(`/${nimRequestLinkUri}`);
-                } else if (goCryptoStatus.value?.paymentStatus === 'accepted') {
-                    // The success screen has no dismiss button, therefore auto-close it.
-                    setTimeout(() => {
-                        if (goCryptoStatus.value?.paymentStatus !== 'accepted') return;
-                        resetGoCryptoPaymentStatus();
-                    }, SUCCESS_REDIRECT_DELAY);
-                }
+                // Run in parallel, without awaiting.
+                (async () => {
+                    const goCryptoRequestLink = parseGoCryptoRequestLink(result);
+                    const goCryptoPaymentDetails = goCryptoRequestLink
+                        ? await fetchGoCryptoPaymentDetails(goCryptoRequestLink)
+                        : null;
+                    goCryptoStatus.value = goCryptoPaymentDetails
+                        ? goCryptoStatusToUserFriendlyMessage(goCryptoPaymentDetails)
+                        : null;
+                    if (goCryptoPaymentDetails && !('errorCode' in goCryptoPaymentDetails)
+                        && goCryptoStatus.value?.paymentStatus === 'pending') {
+                        // Forward to SendModal by reformatting the request into a Nimiq request link uri.
+                        const nimRequestLinkUri = new URL(createNimiqRequestLink(goCryptoPaymentDetails.recipient, {
+                            amount: goCryptoPaymentDetails.amount,
+                            label: goCryptoPaymentDetails.storeName,
+                            type: NimiqRequestLinkType.URI,
+                        }));
+                        nimRequestLinkUri.searchParams.set(GOCRYPTO_ID_PARAM, goCryptoPaymentDetails.id);
+                        // Redirect to request link as path which will be handled by the router. Don't replace the
+                        // route, such that the user can navigate back to the scanner from SendModal on GoCrypto errors.
+                        router.push(`/${nimRequestLinkUri}`);
+                    } else if (goCryptoStatus.value?.paymentStatus === 'accepted') {
+                        // The success screen has no dismiss button, therefore auto-close it.
+                        setTimeout(() => {
+                            if (goCryptoStatus.value?.paymentStatus !== 'accepted') return;
+                            resetGoCryptoPaymentStatus();
+                        }, SUCCESS_REDIRECT_DELAY);
+                    }
+                })();
             }
         };
 

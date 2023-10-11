@@ -969,7 +969,7 @@ msgstr ""
 msgid "Export your history"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:474
+#: src/components/modals/SendModal.vue:475
 msgid "express"
 msgstr ""
 
@@ -1063,7 +1063,7 @@ msgid ""
 "crypto payments"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:464
+#: src/components/modals/SendModal.vue:465
 msgid "free"
 msgstr ""
 
@@ -1930,7 +1930,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:454
-#: src/components/modals/SendModal.vue:764
+#: src/components/modals/SendModal.vue:766
 #: src/components/modals/UsdcSendModal.vue:595
 msgid "Sending Transaction"
 msgstr ""
@@ -1949,11 +1949,11 @@ msgstr ""
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:803
+#: src/components/modals/SendModal.vue:805
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:799
+#: src/components/modals/SendModal.vue:801
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
@@ -2065,8 +2065,8 @@ msgid "Skip"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:518
-#: src/components/modals/SendModal.vue:633
-#: src/components/modals/SendModal.vue:819
+#: src/components/modals/SendModal.vue:635
+#: src/components/modals/SendModal.vue:821
 #: src/components/modals/UsdcSendModal.vue:637
 msgid "Something went wrong"
 msgstr ""
@@ -2099,7 +2099,7 @@ msgstr ""
 msgid "Staking"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:469
+#: src/components/modals/SendModal.vue:470
 msgid "standard"
 msgstr ""
 

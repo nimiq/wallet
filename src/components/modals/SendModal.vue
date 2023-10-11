@@ -386,7 +386,7 @@ export default defineComponent({
             }
         });
 
-        function onAddressEntered(address: string, skipRecipientDetails = false) {
+        function onAddressEntered(address: string, skipRecipientPage = false) {
             // Find label across contacts, own addresses
             let label = '';
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
@@ -409,10 +409,11 @@ export default defineComponent({
             }
 
             recipientWithLabel.value = { address, label, type };
-            if (label || skipRecipientDetails) {
+            if (label || skipRecipientPage) {
                 // Go directly to the next screen
                 page.value = Pages.AMOUNT_INPUT;
-            } else {
+            }
+            if (!label) {
                 recipientDetailsOpened.value = true;
             }
         }
@@ -563,12 +564,13 @@ export default defineComponent({
                 event.preventDefault();
             }
 
-            const skipRecipientDetails = Boolean(parsedRequestLink.label || parsedRequestLink.amount);
-            onAddressEntered(parsedRequestLink.recipient, skipRecipientDetails);
+            const skipRecipientPage = Boolean(parsedRequestLink.label || parsedRequestLink.amount);
+            onAddressEntered(parsedRequestLink.recipient, skipRecipientPage);
             if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
                 recipientWithLabel.value!.label = parsedRequestLink.label;
                 if (goCryptoId) {
                     recipientWithLabel.value!.type = RecipientType.GO_CRYPTO;
+                    recipientDetailsOpened.value = false; // hide recipient overlay as GoCrypto label isn't editable
                 }
             }
 

@@ -12,7 +12,7 @@
             :canGoBack="!!$route.params.canUserGoBack"
             :key="Pages.WARNING"
             @back="back"
-            @continue="page = Pages.RECIPIENT_INPUT"
+            @continue="closePolygonWarningPage"
         />
 
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
@@ -391,6 +391,11 @@ export default defineComponent({
             }
 
             recipientWithLabel.value = { address, label, type };
+            if (page.value === Pages.WARNING) {
+                // Don't interrupt display of warning page. Page and overlay changes will be triggered in
+                // closePolygonWarningPage.
+                return;
+            }
             if (ownedAddressInfo || contactLabel) {
                 // Go directly to the next screen
                 page.value = Pages.AMOUNT_INPUT;
@@ -642,6 +647,15 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
+        function closePolygonWarningPage() {
+            page.value = Pages.RECIPIENT_INPUT;
+            if (recipientWithLabel.value?.address) {
+                // Let onAddressEntered navigate directly to amount page or show recipient overlay, depending on
+                // whether it's a known address.
+                onAddressEntered(recipientWithLabel.value.address);
+            }
+        }
+
         function onCloseOverlay() {
             contactListOpened.value = false;
             if (recipientDetailsOpened.value) {
@@ -747,7 +761,10 @@ export default defineComponent({
             initialPage,
             modal$,
 
-            // Recipient Input
+            // Polygon Warning Page
+            closePolygonWarningPage,
+
+            // Recipient Input Page
             recentContacts,
             hasOwnAddresses,
             contactListOpened,
@@ -763,7 +780,7 @@ export default defineComponent({
             resolverError,
             setContact,
 
-            // Amount Input
+            // Amount Input Page
             resetRecipient,
             addressInfo,
             amount,

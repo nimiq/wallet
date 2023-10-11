@@ -716,7 +716,7 @@ msgstr ""
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:397
+#: src/components/modals/UsdcTransactionModal.vue:403
 #: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
@@ -978,7 +978,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:692
+#: src/components/modals/UsdcSendModal.vue:706
 #: src/components/swap/SwapModal.vue:948
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1146,7 +1146,7 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:436
 #: src/components/modals/TransactionModal.vue:483
-#: src/components/modals/UsdcTransactionModal.vue:393
+#: src/components/modals/UsdcTransactionModal.vue:399
 #: src/composables/useBtcTransactionInfo.ts:187
 #: src/composables/useTransactionInfo.ts:169
 #: src/composables/useUsdcTransactionInfo.ts:148
@@ -1157,7 +1157,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:436
 #: src/components/modals/TransactionModal.vue:498
 #: src/components/modals/TransactionModal.vue:504
-#: src/components/modals/UsdcTransactionModal.vue:393
+#: src/components/modals/UsdcTransactionModal.vue:399
 #: src/composables/useBtcTransactionInfo.ts:187
 #: src/composables/useTransactionInfo.ts:184
 #: src/composables/useTransactionInfo.ts:190
@@ -1745,7 +1745,7 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:560
+#: src/components/modals/UsdcTransactionModal.vue:570
 msgid "Refund failed: "
 msgstr ""
 
@@ -1931,7 +1931,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:454
 #: src/components/modals/SendModal.vue:764
-#: src/components/modals/UsdcSendModal.vue:590
+#: src/components/modals/UsdcSendModal.vue:595
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1957,11 +1957,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:617
+#: src/components/modals/UsdcSendModal.vue:622
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:613
+#: src/components/modals/UsdcSendModal.vue:618
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -2067,7 +2067,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:518
 #: src/components/modals/SendModal.vue:633
 #: src/components/modals/SendModal.vue:819
-#: src/components/modals/UsdcSendModal.vue:632
+#: src/components/modals/UsdcSendModal.vue:637
 msgid "Something went wrong"
 msgstr ""
 

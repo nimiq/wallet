@@ -14,8 +14,8 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:194
+#: src/components/modals/UsdcSendModal.vue:173
+#: src/components/modals/UsdcSendModal.vue:196
 #: src/components/swap/SwapModal.vue:61
 msgid "{amount} fee"
 msgstr ""
@@ -106,8 +106,8 @@ msgstr ""
 msgid "+{n} more"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:165
-#: src/components/modals/UsdcSendModal.vue:188
+#: src/components/modals/UsdcSendModal.vue:167
+#: src/components/modals/UsdcSendModal.vue:190
 #: src/components/swap/SwapModal.vue:55
 msgid "< {amount} fee"
 msgstr ""
@@ -216,7 +216,7 @@ msgstr ""
 msgid "Add a label to quickly find the transaction in your history."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:195
+#: src/components/modals/SendModal.vue:197
 msgid "Add a public message..."
 msgstr ""
 
@@ -315,7 +315,7 @@ msgstr ""
 msgid "Apple/Google Pay"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:229
+#: src/components/modals/SendModal.vue:233
 msgid "Apply fee"
 msgstr ""
 
@@ -399,7 +399,7 @@ msgstr ""
 msgid "Bitcoin"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:106
+#: src/components/modals/BtcSendModal.vue:109
 msgid "Bitcoin addresses are used only once, so there are no contacts. Use labels instead to find transactions in your history easily."
 msgstr ""
 
@@ -491,7 +491,7 @@ msgstr ""
 msgid "Buy with Simplex"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:218
+#: src/components/modals/SendModal.vue:222
 msgid "By adding a transaction fee, you can influence how fast your transaction will be processed."
 msgstr ""
 
@@ -507,7 +507,7 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:239
+#: src/components/modals/SendModal.vue:243
 #: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
 msgstr ""
@@ -580,7 +580,7 @@ msgstr ""
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
-#: src/components/modals/SendModal.vue:208
+#: src/components/modals/SendModal.vue:212
 #: src/components/swap/SwapModal.vue:246
 msgid "Choose an Address"
 msgstr ""
@@ -812,9 +812,9 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:95
-#: src/components/modals/SendModal.vue:376
-#: src/components/modals/UsdcSendModal.vue:359
+#: src/components/BtcAddressInput.vue:100
+#: src/components/modals/SendModal.vue:380
+#: src/components/modals/UsdcSendModal.vue:361
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -849,7 +849,7 @@ msgstr ""
 msgid "Download all transactions of this address as a file, for tax reasons or other."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:99
+#: src/components/modals/BtcSendModal.vue:102
 msgid "Duration and fees are estimates."
 msgstr ""
 
@@ -870,9 +870,9 @@ msgstr ""
 msgid "Edit the amount of decimals visible for NIM values."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:125
-#: src/components/modals/SendModal.vue:240
-#: src/components/modals/UsdcSendModal.vue:226
+#: src/components/modals/BtcSendModal.vue:128
+#: src/components/modals/SendModal.vue:244
+#: src/components/modals/UsdcSendModal.vue:228
 msgid "Edit transaction"
 msgstr ""
 
@@ -900,7 +900,7 @@ msgstr ""
 msgid "Enter IBAN"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:19
+#: src/components/modals/BtcSendModal.vue:20
 msgid "Enter recipient address..."
 msgstr ""
 
@@ -969,7 +969,7 @@ msgstr ""
 msgid "Export your history"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:475
+#: src/components/modals/SendModal.vue:480
 msgid "express"
 msgstr ""
 
@@ -978,7 +978,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:706
+#: src/components/modals/UsdcSendModal.vue:724
 #: src/components/swap/SwapModal.vue:948
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1003,7 +1003,7 @@ msgstr ""
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:161
+#: src/components/modals/SendModal.vue:165
 msgid "fee"
 msgstr ""
 
@@ -1063,7 +1063,7 @@ msgid ""
 "crypto payments"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:465
+#: src/components/modals/SendModal.vue:470
 msgid "free"
 msgstr ""
 
@@ -1227,7 +1227,7 @@ msgstr ""
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:95
+#: src/components/modals/BtcSendModal.vue:98
 msgid "Increase the speed of your transaction by paying a higher network fee. The fees go directly to the miners."
 msgstr ""
 
@@ -1243,10 +1243,10 @@ msgstr ""
 msgid "Install Web App"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:76
+#: src/components/modals/BtcSendModal.vue:79
 #: src/components/modals/SellCryptoModal.vue:166
-#: src/components/modals/SendModal.vue:185
-#: src/components/modals/UsdcSendModal.vue:205
+#: src/components/modals/SendModal.vue:189
+#: src/components/modals/UsdcSendModal.vue:207
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1435,7 +1435,7 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:92
+#: src/components/modals/BtcSendModal.vue:95
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
@@ -1447,7 +1447,7 @@ msgstr ""
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:108
+#: src/components/modals/BtcSendModal.vue:111
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
@@ -1558,7 +1558,7 @@ msgstr ""
 msgid "Partially reverted"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:169
+#: src/components/modals/SendModal.vue:173
 msgid "Pay within {countdown}"
 msgstr ""
 
@@ -1782,7 +1782,7 @@ msgstr ""
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:23
+#: src/components/BtcAddressInput.vue:24
 #: src/components/modals/SendModal.vue:39
 #: src/components/modals/UsdcSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
@@ -1792,9 +1792,9 @@ msgstr ""
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:124
-#: src/components/modals/SendModal.vue:239
-#: src/components/modals/UsdcSendModal.vue:225
+#: src/components/modals/BtcSendModal.vue:127
+#: src/components/modals/SendModal.vue:243
+#: src/components/modals/UsdcSendModal.vue:227
 msgid "Retry"
 msgstr ""
 
@@ -1890,16 +1890,16 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:116
-#: src/components/modals/SendModal.vue:204
-#: src/components/modals/UsdcSendModal.vue:217
+#: src/components/modals/BtcSendModal.vue:119
+#: src/components/modals/SendModal.vue:208
+#: src/components/modals/UsdcSendModal.vue:219
 msgid "Send {currency}"
 msgstr ""
 
 #: src/components/AmountMenu.vue:25
-#: src/components/modals/BtcSendModal.vue:78
-#: src/components/modals/SendModal.vue:187
-#: src/components/modals/UsdcSendModal.vue:207
+#: src/components/modals/BtcSendModal.vue:81
+#: src/components/modals/SendModal.vue:190
+#: src/components/modals/UsdcSendModal.vue:209
 msgid "Send all"
 msgstr ""
 
@@ -1929,17 +1929,17 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:454
-#: src/components/modals/SendModal.vue:766
-#: src/components/modals/UsdcSendModal.vue:595
+#: src/components/modals/BtcSendModal.vue:463
+#: src/components/modals/SendModal.vue:773
+#: src/components/modals/UsdcSendModal.vue:606
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:504
+#: src/components/modals/BtcSendModal.vue:513
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:500
+#: src/components/modals/BtcSendModal.vue:509
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -1949,19 +1949,19 @@ msgstr ""
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:805
+#: src/components/modals/SendModal.vue:812
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:801
+#: src/components/modals/SendModal.vue:808
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:622
+#: src/components/modals/UsdcSendModal.vue:633
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:618
+#: src/components/modals/UsdcSendModal.vue:629
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -2064,10 +2064,10 @@ msgstr ""
 msgid "Skip"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:518
-#: src/components/modals/SendModal.vue:635
-#: src/components/modals/SendModal.vue:821
-#: src/components/modals/UsdcSendModal.vue:637
+#: src/components/modals/BtcSendModal.vue:527
+#: src/components/modals/SendModal.vue:642
+#: src/components/modals/SendModal.vue:828
+#: src/components/modals/UsdcSendModal.vue:648
 msgid "Something went wrong"
 msgstr ""
 
@@ -2075,7 +2075,7 @@ msgstr ""
 msgid "Something went wrong with your transaction"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:216
+#: src/components/modals/SendModal.vue:220
 msgid "Speed up your Transaction"
 msgstr ""
 
@@ -2099,7 +2099,7 @@ msgstr ""
 msgid "Staking"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:470
+#: src/components/modals/SendModal.vue:475
 msgid "standard"
 msgstr ""
 
@@ -2228,7 +2228,7 @@ msgstr ""
 msgid "The fees determine the minimum amount."
 msgstr ""
 
-#: src/components/modals/SendModal.vue:175
+#: src/components/modals/SendModal.vue:179
 msgid "The GoCrypto payment request expires in {finalCountdown}. To ensure that your payment is confirmed in time, send it within {earlyCountdown}."
 msgstr ""
 
@@ -2319,7 +2319,7 @@ msgstr ""
 msgid "This is a single-use address"
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:29
+#: src/components/BtcAddressInput.vue:30
 msgid "This is not a valid address"
 msgstr ""
 
@@ -2406,7 +2406,7 @@ msgstr ""
 msgid "Transaction to {address}"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:109
+#: src/components/modals/BtcSendModal.vue:112
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
 
@@ -2608,15 +2608,15 @@ msgstr ""
 msgid "You will finalize your purchase by bank transfer."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:69
+#: src/components/modals/BtcSendModal.vue:72
 msgid "You will send {amount}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:165
+#: src/components/modals/SendModal.vue:169
 msgid "You will send {amount} NIM"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:181
+#: src/components/modals/UsdcSendModal.vue:183
 msgid "You will send {amount} USDC"
 msgstr ""
 

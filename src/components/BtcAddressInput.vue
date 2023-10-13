@@ -3,12 +3,13 @@
         <LabelInput v-model="address"
             :style="{ fontSize: `calc(var(--body-size) * ${inputFontSizeScaleFactor})` }"
             :placeholder="placeholder"
+            :disabled="disabled"
             @input="onInput"
             @paste="onPaste"
             ref="input$"
         />
         <transition name="fade">
-            <button v-if="!address.length" class="reset scan-qr-button" @click="$emit('scan')">
+            <button v-if="!address.length && !disabled" class="reset scan-qr-button" @click="$emit('scan')">
                 <ScanQrCodeIcon/>
             </button>
         </transition>
@@ -54,6 +55,10 @@ const BtcAddressInput = defineComponent({
         value: {
             type: String,
             default: '',
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props, context) {

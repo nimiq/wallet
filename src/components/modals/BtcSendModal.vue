@@ -16,10 +16,11 @@
 
                     <template #main>
                         <BtcAddressInput
-                            :placeholder="$t('Enter recipient address...')"
                             v-model="addressInputValue"
+                            :placeholder="$t('Enter recipient address...')"
+                            :disabled="gotRequestUriRecipient"
                             @paste="(event, text) => parseRequestUri(text, event)"
-                            @input="resetAddress"
+                            @input="resetRecipient"
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
                             @scan="$router.push('/scan')"
@@ -31,9 +32,8 @@
 
                 <section class="amount-section" :class="{'insufficient-balance': maxSendableAmount < amount}">
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.BTC}">
-                        <AmountInput v-if="activeCurrency === CryptoCurrency.BTC"
-                            v-model="amount" :decimals="btcUnit.decimals"
-                        >
+                        <AmountInput v-if="activeCurrency === CryptoCurrency.BTC" v-model="amount"
+                            :decimals="btcUnit.decimals" :disabled="gotRequestUriAmount">
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :currency="CryptoCurrency.BTC"
@@ -41,11 +41,13 @@
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 :feeOption="false"
+                                :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
                                 @currency="onCurrencySelected"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
-                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
+                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals"
+                            :disabled="gotRequestUriAmount">
                             <span slot="prefix" class="tilde">~</span>
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
@@ -54,6 +56,7 @@
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 :feeOption="false"
+                                :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
                                 @currency="onCurrencySelected"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
@@ -74,7 +77,7 @@
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
-                        <a class="send-all" @click="sendMax">
+                        <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
                             {{ $t('Send all') }}
                         </a>
                     </span>
@@ -196,7 +199,8 @@ export default defineComponent({
             setRecipientLabel(recipientWithLabel.value.address, recipientWithLabel.value.label);
         }
 
-        function resetAddress() {
+        function resetRecipient() {
+            if (gotRequestUriRecipient.value) return;
             recipientWithLabel.value = null;
         }
 
@@ -323,7 +327,7 @@ export default defineComponent({
         });
 
         watch(() => {
-            if (activeCurrency.value === CryptoCurrency.BTC) return;
+            if (activeCurrency.value === CryptoCurrency.BTC || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
                 / exchangeRates.value.btc[activeCurrency.value]!
@@ -331,6 +335,7 @@ export default defineComponent({
         });
 
         async function sendMax() {
+            if (gotRequestUriAmount.value) return;
             if (activeCurrency.value !== CryptoCurrency.BTC) {
                 fiatAmount.value = maxSendableAmount.value
                     * fiat$.exchangeRates.btc[activeCurrency.value]!
@@ -360,6 +365,8 @@ export default defineComponent({
 
         const addressInputValue = ref(''); // Used for setting the address from a request URI or unstoppable domain
 
+        const gotRequestUriRecipient = ref(false);
+        const gotRequestUriAmount = ref(false);
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
             // We don't validate addresses here yet because it requires asynchronously loading BitcoinJS, and
             // event.preventDefault() needs to be called synchronously below. Instead, the validation happens afterward.
@@ -380,9 +387,11 @@ export default defineComponent({
             if (!validateAddress(parsedRequestLink.recipient)) return;
 
             if (parsedRequestLink.amount) {
+                gotRequestUriAmount.value = true;
                 amount.value = parsedRequestLink.amount;
             }
 
+            gotRequestUriRecipient.value = true;
             addressInputValue.value = parsedRequestLink.recipient;
             // Wait for BtcAddressInput to trigger onAddressEntered which sets recipientWithLabel.
             await new Promise<void>((resolve) => {
@@ -552,10 +561,12 @@ export default defineComponent({
 
             // Recipient Input
             addressInputValue,
-            resetAddress,
+            resetRecipient,
             onAddressEntered,
             onDomainEntered,
             recipientWithLabel,
+            gotRequestUriRecipient,
+            gotRequestUriAmount,
             parseRequestUri,
 
             // Amount Input

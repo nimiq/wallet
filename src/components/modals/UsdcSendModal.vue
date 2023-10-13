@@ -122,9 +122,8 @@
                     :class="{'insufficient-balance': maxSendableAmount < amount}"
                 >
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.USDC}">
-                        <AmountInput v-if="activeCurrency === CryptoCurrency.USDC"
-                            v-model="amount" :decimals="6" ref="amountInput$"
-                        >
+                        <AmountInput v-if="activeCurrency === CryptoCurrency.USDC" v-model="amount"
+                            :decimals="6" :disabled="gotRequestUriAmount" ref="amountInput$">
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 currency="usdc"
@@ -132,11 +131,13 @@
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 :feeOption="false"
+                                :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
-                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
+                        <AmountInput v-else v-model="fiatAmount"
+                            :decimals="fiatCurrencyInfo.decimals" :disabled="gotRequestUriAmount">
                             <span slot="prefix" class="tilde">~</span>
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
@@ -145,6 +146,7 @@
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
                                 :feeOption="false"
+                                :sendAllOption="!gotRequestUriAmount"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
@@ -203,7 +205,7 @@
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
-                        <a class="send-all" @click="sendMax">
+                        <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
                             {{ $t('Send all') }}
                         </a>
                     </span>
@@ -396,10 +398,12 @@ export default defineComponent({
                 // closePolygonWarningPage.
                 return;
             }
-            if (ownedAddressInfo || contactLabel) {
-                // Go directly to the next screen
+            const isKnownAddress = !!ownedAddressInfo || !!contactLabel;
+            if (isKnownAddress || gotRequestUriRecipient.value) {
+                // Go directly to the amount page
                 page.value = Pages.AMOUNT_INPUT;
-            } else {
+            }
+            if (!isKnownAddress) {
                 // Show recipient details with polygon warnings.
                 recipientDetailsOpened.value = true;
             }
@@ -408,13 +412,14 @@ export default defineComponent({
         const isValidRecipient = computed(() => recipientWithLabel.value?.address !== addressInfo.value?.address);
 
         function resetRecipient() {
+            if (gotRequestUriRecipient.value) return;
             addressInputValue.value = '';
             recipientWithLabel.value = null;
         }
 
         function closeRecipientDetails() {
             recipientDetailsOpened.value = false;
-            if (page.value === Pages.RECIPIENT_INPUT) {
+            if (page.value === Pages.RECIPIENT_INPUT && !gotRequestUriRecipient.value) {
                 resetRecipient();
             }
         }
@@ -463,7 +468,7 @@ export default defineComponent({
         });
 
         watch(() => {
-            if (activeCurrency.value === CryptoCurrency.USDC) return;
+            if (activeCurrency.value === CryptoCurrency.USDC || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
                 / exchangeRates.value.usdc[activeCurrency.value]!
@@ -471,6 +476,7 @@ export default defineComponent({
         });
 
         async function sendMax() {
+            if (gotRequestUriAmount.value) return;
             if (activeCurrency.value !== CryptoCurrency.USDC) {
                 fiatAmount.value = maxSendableAmount.value
                     * fiat$.exchangeRates.usdc[activeCurrency.value]!
@@ -490,6 +496,8 @@ export default defineComponent({
             && !feeError.value,
         );
 
+        const gotRequestUriRecipient = ref(false);
+        const gotRequestUriAmount = ref(false);
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
             // We only accept links on Polygon to avoid users sending Polygon USDC to an Ethereum wallet. We accept:
             // - links for USDC, i.e. links specifying the Polygon USDC contract address, both with the polygon: and the
@@ -525,10 +533,13 @@ export default defineComponent({
                 return;
             }
 
+            gotRequestUriRecipient.value = true;
             onAddressEntered(normalizedAddress);
+            initialPage = page.value;
 
             if (typeof parsedRequestLink.amount === 'number') {
                 // As USDC only has 6 decimal places, we can expect it to not be a bigint in real life use.
+                gotRequestUriAmount.value = true;
                 amount.value = parsedRequestLink.amount;
             }
 
@@ -648,11 +659,13 @@ export default defineComponent({
         }
 
         function closePolygonWarningPage() {
-            page.value = Pages.RECIPIENT_INPUT;
-            if (recipientWithLabel.value?.address) {
-                // Let onAddressEntered navigate directly to amount page or show recipient overlay, depending on
-                // whether it's a known address.
-                onAddressEntered(recipientWithLabel.value.address);
+            if (gotRequestUriRecipient.value) {
+                // Skip recipient page and navigate directly to amount page, and let onAddressEntered open recipient
+                // details over amount page, if it's an unknown address.
+                page.value = Pages.AMOUNT_INPUT;
+                onAddressEntered(recipientWithLabel.value!.address);
+            } else {
+                page.value = Pages.RECIPIENT_INPUT;
             }
         }
 
@@ -678,8 +691,13 @@ export default defineComponent({
             } else if (page.value === Pages.RECIPIENT_INPUT) {
                 page.value = Pages.WARNING;
             } else if (page.value === Pages.AMOUNT_INPUT) {
-                page.value = Pages.RECIPIENT_INPUT;
-                resetRecipient();
+                if (gotRequestUriRecipient.value) {
+                    // If we got the recipient via request link, skip the recipient page and go directly back to warning
+                    page.value = Pages.WARNING;
+                } else {
+                    page.value = Pages.RECIPIENT_INPUT;
+                    resetRecipient();
+                }
             }
         }
 
@@ -750,7 +768,7 @@ export default defineComponent({
 
         const feeSmallerThanSmUnit = computed(() => roundedUpFiatFee.value <= fiatSmUnit.value);
 
-        const initialPage = page.value;
+        let initialPage = page.value;
 
         return {
             // General
@@ -774,6 +792,8 @@ export default defineComponent({
             recipientDetailsOpened,
             recipientWithLabel,
             closeRecipientDetails,
+            gotRequestUriRecipient,
+            gotRequestUriAmount,
             parseRequestUri,
             amountsHidden,
             isResolvingUnstoppableDomain,
@@ -781,7 +801,6 @@ export default defineComponent({
             setContact,
 
             // Amount Input Page
-            resetRecipient,
             addressInfo,
             amount,
             feeLoading,

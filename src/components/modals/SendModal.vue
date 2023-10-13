@@ -94,7 +94,7 @@
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
-                :backArrow="!gotValidRequestUri"
+                :backArrow="!gotRequestUriRecipient"
                 @back="page = Pages.RECIPIENT_INPUT; resetRecipient();"
             >{{ $t('Set Amount') }}</PageHeader>
             <PageBody class="page__amount-input flex-column">
@@ -129,24 +129,28 @@
                     :class="{'insufficient-balance': maxSendableAmount < amount}"
                 >
                     <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.NIM}">
-                        <AmountInput v-if="activeCurrency === CryptoCurrency.NIM" v-model="amount" ref="amountInput$">
+                        <AmountInput v-if="activeCurrency === CryptoCurrency.NIM" v-model="amount"
+                            :disabled="gotRequestUriAmount" ref="amountInput$">
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
+                                :sendAllOption="!gotRequestUriAmount"
                                 @fee-selection="feeSelectionOpened = true"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
                                 @click.native.stop="amountMenuOpened = !amountMenuOpened"/>
                         </AmountInput>
-                        <AmountInput v-else v-model="fiatAmount" :decimals="fiatCurrencyInfo.decimals">
+                        <AmountInput v-else v-model="fiatAmount" :disabled="gotRequestUriAmount"
+                            :decimals="fiatCurrencyInfo.decimals">
                             <span slot="prefix" class="tilde">~</span>
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
+                                :sendAllOption="!gotRequestUriAmount"
                                 @fee-selection="feeSelectionOpened = true"
                                 @send-max="sendMax"
                                 @currency="(currency) => activeCurrency = currency"
@@ -183,9 +187,7 @@
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
-                        <a class="send-all" @click="sendMax">
-                            {{ $t('Send all') }}
-                        </a>
+                        <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">{{ $t('Send all') }}</a>
                     </span>
                 </section>
 
@@ -194,7 +196,9 @@
                         v-model="message"
                         :placeholder="$t('Add a public message...')"
                         :maxBytes="64"
-                        vanishing/>
+                        :disabled="gotRequestUriMessage"
+                        vanishing
+                    />
                 </section>
             </PageBody>
             <SendModalFooter
@@ -386,7 +390,7 @@ export default defineComponent({
             }
         });
 
-        function onAddressEntered(address: string, skipRecipientPage = false) {
+        function onAddressEntered(address: string) {
             // Find label across contacts, own addresses
             let label = '';
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
@@ -409,8 +413,8 @@ export default defineComponent({
             }
 
             recipientWithLabel.value = { address, label, type };
-            if (label || skipRecipientPage) {
-                // Go directly to the next screen
+            if (label || gotRequestUriRecipient.value) {
+                // Go directly to the amount page
                 page.value = Pages.AMOUNT_INPUT;
             }
             if (!label) {
@@ -421,13 +425,14 @@ export default defineComponent({
         const isValidRecipient = computed(() => recipientWithLabel.value?.address !== activeAddressInfo.value?.address);
 
         function resetRecipient() {
+            if (gotRequestUriRecipient.value) return;
             addressInputValue.value = '';
             recipientWithLabel.value = null;
         }
 
         function closeRecipientDetails() {
             recipientDetailsOpened.value = false;
-            if (page.value === Pages.RECIPIENT_INPUT) {
+            if (page.value === Pages.RECIPIENT_INPUT && !gotRequestUriRecipient.value) {
                 resetRecipient();
             }
         }
@@ -506,7 +511,7 @@ export default defineComponent({
         });
 
         watch(() => {
-            if (activeCurrency.value === CryptoCurrency.NIM) return;
+            if (activeCurrency.value === CryptoCurrency.NIM || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
                 / exchangeRates.value.nim[activeCurrency.value]!
@@ -514,6 +519,7 @@ export default defineComponent({
         });
 
         async function sendMax() {
+            if (gotRequestUriAmount.value) return;
             if (activeCurrency.value !== CryptoCurrency.NIM) {
                 fiatAmount.value = maxSendableAmount.value
                     * fiat$.exchangeRates.nim[activeCurrency.value]!
@@ -545,7 +551,9 @@ export default defineComponent({
          * Request link parsing
          */
 
-        const gotValidRequestUri = ref(false);
+        const gotRequestUriRecipient = ref(false);
+        const gotRequestUriAmount = ref(false);
+        const gotRequestUriMessage = ref(false);
         function parseRequestUri(uri: string, event?: ClipboardEvent) {
             // Note that for Nimiq, parseRequestLink automatically validates and normalizes addresses.
             const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.NIM] });
@@ -564,8 +572,8 @@ export default defineComponent({
                 event.preventDefault();
             }
 
-            const skipRecipientPage = Boolean(parsedRequestLink.label || parsedRequestLink.amount);
-            onAddressEntered(parsedRequestLink.recipient, skipRecipientPage);
+            gotRequestUriRecipient.value = true;
+            onAddressEntered(parsedRequestLink.recipient);
             if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
                 recipientWithLabel.value!.label = parsedRequestLink.label;
                 if (goCryptoId) {
@@ -575,14 +583,14 @@ export default defineComponent({
             }
 
             if (parsedRequestLink.amount) {
+                gotRequestUriAmount.value = true;
                 amount.value = parsedRequestLink.amount;
             }
 
             if (parsedRequestLink.message) {
+                gotRequestUriMessage.value = true;
                 message.value = parsedRequestLink.message;
             }
-
-            gotValidRequestUri.value = true;
 
             if (goCryptoId) {
                 monitorGoCryptoRequest(goCryptoId);
@@ -599,8 +607,7 @@ export default defineComponent({
                 if (('recipient' in goCryptoPaymentDetails
                         && goCryptoPaymentDetails.recipient !== recipientWithLabel.value?.address)
                     || ('amount' in goCryptoPaymentDetails && goCryptoPaymentDetails.amount !== amount.value)) {
-                    // The GoCrypto payment request does not match the payment info, or the user changed the payment
-                    // info manually.
+                    // The GoCrypto payment request does not match the payment info.
                     endMonitoring = true;
                     return;
                 }
@@ -891,7 +898,9 @@ export default defineComponent({
             recipientDetailsOpened,
             recipientWithLabel,
             closeRecipientDetails,
-            gotValidRequestUri,
+            gotRequestUriRecipient,
+            gotRequestUriAmount,
+            gotRequestUriMessage,
             parseRequestUri,
             amountsHidden,
             isResolvingUnstoppableDomain,

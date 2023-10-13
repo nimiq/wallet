@@ -9,10 +9,12 @@
                 :placeholder="placeholder"
                 :style="{width: `${width}px`, fontSize: `${fontSize}rem`}"
                 :value="liveValue"
+                :disabled="disabled"
                 @input="onInput"
                 @focus="onToggleFocus(true)"
                 @blur="onToggleFocus(false)"
-                ref="input$">
+                ref="input$"
+            >
         </form>
         <slot v-if="$slots.suffix" name="suffix"/>
         <span v-else class="ticker">NIM</span>
@@ -46,6 +48,10 @@ const AmountInput = defineComponent({
             default: 5,
         },
         preserveSign: {
+            type: Boolean,
+            default: false,
+        },
+        disabled: {
             type: Boolean,
             default: false,
         },
@@ -208,8 +214,11 @@ input {
     text-align: center;
     transition: box-shadow 0.2s var(--nimiq-ease), width 50ms ease-out, color 0.2s var(--nimiq-ease);
 
-    &:hover {
+    &:not(:disabled):hover {
         --border-color: rgba(5, 130, 202, 0.2);
+    }
+    &:disabled {
+        box-shadow: none;
     }
 }
 
@@ -227,6 +236,10 @@ input {
 
     form {
         display: flex;
+
+        &:has(:disabled) ~ .ticker {
+           margin-left: -.5rem;
+        }
     }
 
     .ticker {
@@ -240,11 +253,11 @@ input {
         color: var(--nimiq-blue);
     }
 
-    &.has-value .nq-input:hover {
+    &.has-value .nq-input:not(:disabled):hover {
         color: var(--nimiq-light-blue);
     }
 
-    &.has-value .nq-input:focus-within {
+    &.has-value .nq-input:not(:disabled):focus-within {
         --border-color: rgba(5, 130, 202, 0.4);
     }
 }

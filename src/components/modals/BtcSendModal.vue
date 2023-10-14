@@ -188,6 +188,8 @@ export default defineComponent({
         } = useBtcLabelsStore();
         const { state: network$, isFetchingTxHistory } = useBtcNetworkStore();
 
+        const delay = ref(12); // Same value as Fee Selector default value
+
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
 
         function saveRecipientLabel() {
@@ -341,9 +343,12 @@ export default defineComponent({
             amount.value = maxSendableAmount.value;
         }
 
-        function updateFee(newFeePerByte: number) {
+        interface FeeSelectorEvent {fee: number; delay: number}
+        function updateFee({ fee: newFeePerByte, delay: newDelay }: FeeSelectorEvent) {
             const isSendingMax = amount.value === maxSendableAmount.value;
             feePerByte.value = newFeePerByte;
+
+            delay.value = newDelay;
             if (isSendingMax) sendMax();
         }
 
@@ -479,6 +484,10 @@ export default defineComponent({
                             value: requiredInputs.value.changeAmount,
                         },
                     } : {}),
+                    fiatCurrency: fiat$.currency,
+                    fiatRate: exchangeRates.value.btc[fiat$.currency] || 0, // Hub will handle this
+                    delay: delay.value,
+                    feePerByte: feePerByte.value,
                 });
 
                 if (!plainTx) {

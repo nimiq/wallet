@@ -59,7 +59,7 @@
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
-                :styles="{ minWidth: '25rem' }"
+                :styles="{ minWidth: '30.5rem' }"
                 :disabled="canSellCryptoWithMoonpay"
                 ref="sellTooltip"
             >
@@ -70,9 +70,18 @@
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Sell') }}</button>
                 </template>
-                <template v-if="!canSellCryptoWithMoonpay" #default>{{
-                    $t('Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be sold for FIAT.')
-                }}</template>
+                <template v-if="!canSellCryptoWithMoonpay" #default>
+                    {{ $t('Selling NIM directly is currently unavailable in the Wallet.') }}
+                    <template v-if="nimSellOptions">
+                        {{ nimSellOptions.intro }}
+                        <ul class="nim-sell-options">
+                            <li>{{ nimSellOptions.optionSwap }}</li>
+                            <li><a href="https://www.nimiq.com/buy-and-sell/" target="_blank" rel="noopener">{{
+                                nimSellOptions.optionExchange
+                            }}</a></li>
+                        </ul>
+                    </template>
+                </template>
                 <!-- <template v-else-if="$config.oasis.underMaintenance" #default>
                     {{ $t('OASIS’ TEN31 Bank infrastructure is currently being updated.'
                         + ' This might take some time. Please try again later.') }}
@@ -173,6 +182,7 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { i18n } from '../../i18n/i18n-setup';
 import { ENV_TEST, ENV_DEV, CryptoCurrency } from '../../lib/Constants';
 
 export default defineComponent({
@@ -260,6 +270,16 @@ export default defineComponent({
 
         const canSellCryptoWithMoonpay = computed(() => activeCurrency.value !== CryptoCurrency.NIM);
 
+        const nimSellOptions = computed(() => {
+            const [intro, optionSwap, optionExchange] = (i18n.t('You can sell NIM\n'
+                + '- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n'
+                + '- on supported exchanges.') as string).split(/\s*-\s*/);
+            // return options only if translators translated them correctly and kept the format
+            return intro && optionSwap && optionExchange
+                ? { intro, optionSwap, optionExchange }
+                : null;
+        });
+
         return {
             navigateTo,
             resetState,
@@ -277,6 +297,7 @@ export default defineComponent({
             hideTooltips,
             openModal,
             canSellCryptoWithMoonpay,
+            nimSellOptions,
         };
     },
     components: {
@@ -443,16 +464,21 @@ $balance-distribution-display-breakpoint: 450px;
     flex-wrap: wrap;
     gap: 1rem;
 
-    > * {
-        flex-grow: 1; // make buttons span available space and full width if they break into two lines
-    }
-
     @media (max-height: $price-chart-display-breakpoint - 1px) {
         margin-top: 2rem;
         margin-bottom: .5rem;
     }
     @media (max-height: $balance-distribution-display-breakpoint - 1px) {
         margin-bottom: 2rem;
+    }
+
+    > * {
+        flex-grow: 1; // make buttons span available space and full width if they break into two lines
+    }
+
+    .nim-sell-options {
+        padding-top: .25rem;
+        padding-inline-start: 2.5rem;
     }
 }
 

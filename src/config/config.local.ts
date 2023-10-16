@@ -19,6 +19,7 @@ export default {
         // eslint-disable-next-line max-len
         // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
+        nativeUsdcContract: '0x9999f7fea5938fd3b1e26a12c3f2fb024e194f97',
         transferContract: '0x2805f3187dcDfa424EFA8c55Db6012Cf08Fa6eEc', // v3
         htlcContract: '0x2EB7cd7791b947A25d629219ead941fCd8f364BF', // v3
         relayHubContract: '0x6646cD15d33cE3a6933e36de38990121e8ba2806',

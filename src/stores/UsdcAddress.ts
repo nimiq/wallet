@@ -9,6 +9,7 @@ export type UsdcAddressState = {
 export type UsdcAddressInfo = {
     address: string,
     balance: number | null,
+    nativeBalance: number | null,
     matic: number | null, // For testing until OpenGSN contract is available
 };
 

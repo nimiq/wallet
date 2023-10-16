@@ -289,6 +289,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             usdcAddressInfos.push({
                 address: polygonAddress,
                 balance: usdcAddressStore.state.addressInfos[polygonAddress]?.balance ?? null,
+                nativeBalance: usdcAddressStore.state.addressInfos[polygonAddress]?.nativeBalance ?? null,
                 matic: usdcAddressStore.state.addressInfos[polygonAddress]?.matic ?? null,
             });
         }

@@ -15,7 +15,12 @@ import {
 } from './stores/UsdcTransactions';
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
-import { USDC_TRANSFER_CONTRACT_ABI, USDC_CONTRACT_ABI, USDC_HTLC_CONTRACT_ABI } from './lib/usdc/ContractABIs';
+import {
+    USDC_TRANSFER_CONTRACT_ABI,
+    USDC_CONTRACT_ABI,
+    USDC_HTLC_CONTRACT_ABI,
+    NATIVE_USDC_CONTRACT_ABI,
+} from './lib/usdc/ContractABIs';
 import {
     getBestRelay,
     getRelayAddr,
@@ -34,6 +39,7 @@ export interface PolygonClient {
     provider: providers.Provider;
     usdc: Contract;
     usdcTransfer: Contract;
+    nativeUsdc: Contract;
     ethers: typeof ethers;
 }
 
@@ -46,7 +52,14 @@ function consensusEstablishedHandler(height: number) {
 let isLaunched = false;
 
 type Balances = Map<string, number>;
-const balances: Balances = new Map(); // Balances in USDC-base units, excluding pending txs
+/**
+ * Balances in bridged USDC-base units, excluding pending txs.
+ */
+const balances: Balances = new Map();
+/**
+ * Balances in native USDC-base units, excluding pending txs.
+ */
+const nativeBalances: Balances = new Map();
 
 let clientPromise: Promise<PolygonClient> | null = null;
 let unwatchGetPolygonClientConfig: (() => void) | null = null;
@@ -118,10 +131,13 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     const usdc = new ethers.Contract(config.usdc.usdcContract, USDC_CONTRACT_ABI, provider);
     const usdcTransfer = new ethers.Contract(config.usdc.transferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
 
+    const nativeUsdc = new ethers.Contract(config.usdc.nativeUsdcContract, NATIVE_USDC_CONTRACT_ABI, provider);
+
     resolver!({
         provider,
         usdc,
         usdcTransfer,
+        nativeUsdc,
         ethers,
     });
 
@@ -134,13 +150,18 @@ async function getBalance(address: string) {
     return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDC, enough for now
 }
 
+async function getNativeBalance(address: string) {
+    const client = await getPolygonClient();
+    const balance = await client.nativeUsdc.balanceOf(address) as BigNumber;
+    return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDC, enough for now
+}
+
 async function updateBalances(addresses: string[] = [...balances.keys()]) {
     if (!addresses.length) return;
     const accounts = await Promise.all(addresses.map((address) => getBalance(address)));
     const newBalances: Balances = new Map(
         accounts.map((balance, i) => [addresses[i], balance]),
     );
-
     for (const [address, newBalance] of newBalances) {
         if (balances.get(address) === newBalance) {
             // Balance did not change since last check.
@@ -152,17 +173,43 @@ async function updateBalances(addresses: string[] = [...balances.keys()]) {
         }
     }
 
-    if (!newBalances.size) return;
-    console.debug('Got new USDC balances for', [...newBalances.keys()], [...newBalances.values()]);
+    const nativeAccounts = await Promise.all(addresses.map((address) => getNativeBalance(address)));
+    const newNativeBalances: Balances = new Map(
+        nativeAccounts.map((balance, i) => [addresses[i], balance]),
+    );
+    for (const [address, newBalance] of newNativeBalances) {
+        if (nativeBalances.get(address) === newBalance) {
+            // Balance did not change since last check.
+            // Remove from newBalances Map to not update the store.
+            newNativeBalances.delete(address);
+        } else {
+            // Update balances cache
+            nativeBalances.set(address, newBalance);
+        }
+    }
+
+    if (!newBalances.size && !newNativeBalances.size) return;
+    if (newBalances.size) {
+        console.debug('Got new bridged USDC balances for', [...newBalances.keys()], [...newBalances.values()]);
+    }
+    if (newNativeBalances.size) {
+        console.warn(
+            'Got new native USDC balances for', [...newNativeBalances.keys()], [...newNativeBalances.values()],
+        );
+    }
     const { patchAddress } = useUsdcAddressStore();
     for (const [address, balance] of newBalances) {
         patchAddress(address, { balance });
+    }
+    for (const [address, nativeBalance] of newNativeBalances) {
+        patchAddress(address, { nativeBalance });
     }
 }
 
 function forgetBalances(addresses: string[]) {
     for (const address of addresses) {
         balances.delete(address);
+        nativeBalances.delete(address);
     }
 }
 

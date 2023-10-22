@@ -1479,10 +1479,10 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.7.0.tgz#eea496f4898139c51971f0b177583c6cc6b06611"
   integrity sha512-k7vSjYdjAiAQar+21v681Zrp9kN9uHMUw7/dyG2D/IrXqNPHkD133JyrzxPBga+myW411SUR4mtdPQRPQm3d/A==
 
-"@nimiq/hub-api@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.7.0.tgz#f4bfbefbab497f56943a44d7dd7633a1314cf56c"
-  integrity sha512-FNAkQGarhJlb791wvgtLw9XaVkpCrszFdbdFN0dyOIZ7pBowjM6E8XaaGZbHAe8iVI81BRSUdd3ctMfndho/mA==
+"@nimiq/hub-api@^1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.7.2.tgz#90588af97289fce6fbe75fd9af2d045b84548de7"
+  integrity sha512-JT4XqhlCIQwlJhwMa1H3g8MS6kgI7IGaYLd4bNsv0XZOMF+mN8OrQdL6ln2uM8ujyGOPYlGJsDGAAhZ5Ou7mSA==
   dependencies:
     "@nimiq/core-web" "^1.6.1"
     "@nimiq/fastspot-api" "^1.7.0"

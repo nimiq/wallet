@@ -1220,7 +1220,7 @@ msgstr "Hoogste graad van decentralisatie"
 msgid "Historic value"
 msgstr "Historische waarde"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:424
 #: src/components/modals/TransactionModal.vue:474
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:157
@@ -1228,7 +1228,7 @@ msgstr "Historische waarde"
 msgid "HTLC Creation"
 msgstr "HTLC Creatie"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:424
 #: src/components/modals/TransactionModal.vue:485
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:168
@@ -1339,7 +1339,7 @@ msgstr "Onvoldoende saldo."
 msgid "invalid"
 msgstr "ongeldig"
 
-#: src/components/swap/SwapModal.vue:1770
+#: src/components/swap/SwapModal.vue:1784
 msgid "Invalid swap state, swap aborted!"
 msgstr "Ongeldige status, swap afgebroken!"
 
@@ -1878,6 +1878,10 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 #: src/components/modals/UsdcSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr "Unstoppable Domain ophalen..."
+
+#: src/components/swap/SwapModal.vue:1029
+msgid "Resulting BTC amount is too small."
+msgstr "Het resulterende BTC-bedrag is te klein."
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599

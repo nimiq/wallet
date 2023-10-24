@@ -1233,7 +1233,7 @@ msgstr "Le plus haut degré de décentralisation"
 msgid "Historic value"
 msgstr "Valeur historique"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:424
 #: src/components/modals/TransactionModal.vue:474
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:157
@@ -1241,7 +1241,7 @@ msgstr "Valeur historique"
 msgid "HTLC Creation"
 msgstr "Création du HTLC"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:424
 #: src/components/modals/TransactionModal.vue:485
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:168
@@ -1352,7 +1352,7 @@ msgstr "Solde insuffisant."
 msgid "invalid"
 msgstr "invalide"
 
-#: src/components/swap/SwapModal.vue:1770
+#: src/components/swap/SwapModal.vue:1784
 msgid "Invalid swap state, swap aborted!"
 msgstr "État du Swap invalide : Swap abandonné !"
 
@@ -1902,6 +1902,10 @@ msgstr ""
 #: src/components/modals/UsdcSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr "Résolution du domaine Unstoppable"
+
+#: src/components/swap/SwapModal.vue:1029
+msgid "Resulting BTC amount is too small."
+msgstr "Le montant de BTC obtenu est trop faible."
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599

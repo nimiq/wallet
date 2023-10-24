@@ -1173,7 +1173,7 @@ msgstr "更高层面的去中心化"
 msgid "Historic value"
 msgstr "历史价值"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:424
 #: src/components/modals/TransactionModal.vue:474
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:157
@@ -1181,7 +1181,7 @@ msgstr "历史价值"
 msgid "HTLC Creation"
 msgstr "HTLC创建"
 
-#: src/components/modals/BtcTransactionModal.vue:434
+#: src/components/modals/BtcTransactionModal.vue:424
 #: src/components/modals/TransactionModal.vue:485
 #: src/composables/useBtcTransactionInfo.ts:186
 #: src/composables/useTransactionInfo.ts:168
@@ -1281,7 +1281,7 @@ msgstr "余额不足"
 msgid "invalid"
 msgstr "无效"
 
-#: src/components/swap/SwapModal.vue:1770
+#: src/components/swap/SwapModal.vue:1784
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1804,6 +1804,10 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 #: src/components/modals/UsdcSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
+
+#: src/components/swap/SwapModal.vue:1029
+msgid "Resulting BTC amount is too small."
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:440
 #: src/components/modals/SendModal.vue:599

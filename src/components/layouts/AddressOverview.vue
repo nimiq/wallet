@@ -82,7 +82,7 @@
                         <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
                         <Amount v-if="activeCurrency === 'btc'" :amount="btcAccountBalance" currency="btc" value-mask/>
                         <Amount v-if="activeCurrency === 'usdc'"
-                            :amount="usdcAccountBalance" currency="usdc" value-mask/>
+                            :amount="usdcAccountBalance + nativeUsdcAccountBalance" currency="usdc" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -264,7 +264,11 @@ export default defineComponent({
         const { activeAccountId, activeCurrency } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
-        const { accountBalance: usdcAccountBalance, addressInfo: usdcAddressInfo } = useUsdcAddressStore();
+        const {
+            accountBalance: usdcAccountBalance,
+            nativeAccountBalance: nativeUsdcAccountBalance,
+            addressInfo: usdcAddressInfo,
+        } = useUsdcAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
         const searchString = ref('');
@@ -360,6 +364,7 @@ export default defineComponent({
             hideUnclaimedCashlinkList,
             btcAccountBalance,
             usdcAccountBalance,
+            nativeUsdcAccountBalance,
             usdcAddressInfo,
             CryptoCurrency,
             promoBoxVisible,

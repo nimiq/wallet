@@ -36,6 +36,11 @@ export const useUsdcAddressStore = createStore({
             if (!ai || ai.balance === null) return 0;
             return ai.balance;
         },
+        nativeAccountBalance: (state, { addressInfo }) => {
+            const ai = addressInfo.value as UsdcAddressInfo | undefined;
+            if (!ai || ai.nativeBalance === null) return 0;
+            return ai.nativeBalance;
+        },
     },
     actions: {
         addAddressInfo(addressInfo: UsdcAddressInfo) {

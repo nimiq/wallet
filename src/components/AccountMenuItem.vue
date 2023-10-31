@@ -109,6 +109,10 @@ export default defineComponent({
             ? usdcAddressState.addressInfos[polygonAddress.value]?.balance || 0
             : 0,
         );
+        const nativeUsdcAccountBalance = computed(() => polygonAddress.value
+            ? usdcAddressState.addressInfos[polygonAddress.value]?.nativeBalance || 0
+            : 0,
+        );
 
         // TODO: Dedupe double code with AccountBalance
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
@@ -131,7 +135,7 @@ export default defineComponent({
             }
             if (config.usdc.enabled) {
                 const usdcFiatAmount = usdcExchangeRate.value !== undefined
-                    ? (usdcAccountBalance.value / 1e6) * usdcExchangeRate.value
+                    ? ((usdcAccountBalance.value + nativeUsdcAccountBalance.value) / 1e6) * usdcExchangeRate.value
                     : undefined;
                 if (usdcFiatAmount === undefined) return undefined;
                 amount += usdcFiatAmount;

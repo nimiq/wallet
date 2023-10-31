@@ -145,6 +145,22 @@
                     </button>
                 </div>
             </div>
+            <div v-if="usdcAddressInfo && usdcAddressInfo.nativeBalance" class="native-usdc-notice">
+                <div class="flex-row">
+                    <UsdcIcon />
+                    {{ $t('Native Polygon USDC') }}
+                    <div class="flex-grow"></div>
+                    <Amount :amount="usdcAddressInfo.nativeBalance" currency="usdc" value-mask/>
+                </div>
+                <div class="flex-row">
+                    <span class="nq-orange">
+                        <AlertTriangleIcon />
+                        {{ $t('Sending Native Polygon USDC is not yet supported.') }}
+                    </span>
+                    <div class="flex-grow"></div>
+                    <!-- <a href="#" class="nq-button-s">How to transfer</a> -->
+                </div>
+            </div>
             <div class="scroll-mask top"></div>
             <TransactionList
                 v-if="activeCurrency === CryptoCurrency.NIM"
@@ -211,6 +227,7 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
+    AlertTriangleIcon,
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -355,6 +372,7 @@ export default defineComponent({
     },
     components: {
         ArrowRightSmallIcon,
+        AlertTriangleIcon,
         Identicon,
         BitcoinIcon,
         GearIcon,
@@ -682,6 +700,50 @@ export default defineComponent({
     left: -0.25rem;
 }
 
+.native-usdc-notice {
+    background: var(--nimiq-highlight-bg);
+    border-radius: 1.25rem;
+    padding: 2rem;
+    margin: 2rem calc(var(--padding) + 3rem) 0 calc(var(--padding) + 2rem);
+    font-size: var(--body-size);
+    font-weight: 600;
+
+    .flex-row {
+        gap: 1rem;
+        align-items: center;
+
+        &:first-of-type {
+            opacity: 0.6;
+        }
+
+        + .flex-row {
+            margin-top: 1.5rem;
+        }
+    }
+
+    svg.usdc {
+        // color: var(--usdc-blue);
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .nq-orange {
+        font-size: var(--small-size);
+
+        svg {
+            display: inline;
+            width: 2rem;
+            height: 2rem;
+            vertical-align: text-top;
+            margin-top: 0.125rem;
+        }
+    }
+
+    .nq-button-s {
+        white-space: nowrap;
+    }
+}
+
 .send, .receive {
     margin: 0 0.5rem;
     align-items: center;
@@ -959,6 +1021,10 @@ export default defineComponent({
         .fiat-amount {
             font-size: var(--small-size);
         }
+    }
+
+    .native-usdc-notice {
+        margin: 0 calc(var(--padding) + 1rem);
     }
 
     .mobile-action-bar {

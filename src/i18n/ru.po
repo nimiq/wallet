@@ -178,7 +178,7 @@ msgid ""
 msgstr ""
 "Спустя 72 часа после первой покупки, ваш лимит будет увеличен автоматически."
 
-#: src/components/layouts/Settings.vue:366
+#: src/components/layouts/Settings.vue:370
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "Do you want to replace it?"
@@ -238,7 +238,7 @@ msgid "Add a label to quickly find the transaction in your history."
 msgstr ""
 "Добавьте ярлык, чтобы быстро найти нужную транзакцию в истории транзакций."
 
-#: src/components/modals/SendModal.vue:183
+#: src/components/modals/SendModal.vue:195
 msgid "Add a public message..."
 msgstr "Добавить публичное сообщение... "
 
@@ -302,7 +302,7 @@ msgstr ""
 "Все новые функции доступны только для аккаунтов нового типа. Обновите "
 "аккаунт сейчас, это займет всего пару секунд. "
 
-#: src/components/layouts/AddressOverview.vue:180
+#: src/components/layouts/AddressOverview.vue:196
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -353,7 +353,7 @@ msgstr "Все отправленные средства будут возвра
 msgid "Apple/Google Pay"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:217
+#: src/components/modals/SendModal.vue:229
 msgid "Apply fee"
 msgstr "Применить"
 
@@ -545,7 +545,7 @@ msgstr "Купить банковской картой"
 msgid "Buy with Simplex"
 msgstr "Купить через Simplex"
 
-#: src/components/modals/SendModal.vue:206
+#: src/components/modals/SendModal.vue:218
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -564,7 +564,7 @@ msgstr "Нажимая «{text}», вы принимаете условия {Fas
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Нажимая «{text}», вы принимаете условия {Fastspot}."
 
-#: src/components/modals/SendModal.vue:227
+#: src/components/modals/SendModal.vue:239
 #: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
 msgstr "Отменить"
@@ -582,7 +582,7 @@ msgstr "Отменить обмен"
 msgid "Cancelled Swap"
 msgstr "Обмен отменён"
 
-#: src/components/layouts/Settings.vue:346
+#: src/components/layouts/Settings.vue:347
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не удалось импортировать список контактов, некорректный формат файла!"
 
@@ -637,7 +637,7 @@ msgstr "Выберите Отправителя"
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:285
 #: src/components/modals/SellCryptoModal.vue:249
-#: src/components/modals/SendModal.vue:196
+#: src/components/modals/SendModal.vue:208
 #: src/components/swap/SwapModal.vue:240
 msgid "Choose an Address"
 msgstr "Выбрать Адрес"
@@ -658,7 +658,7 @@ msgstr "Кликните для подробной информации"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Нажмите на «Решение проблем», чтобы узнать больше."
 
-#: src/components/layouts/AddressOverview.vue:182
+#: src/components/layouts/AddressOverview.vue:198
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr "Закрыть"
@@ -857,9 +857,9 @@ msgstr "Предупреждние"
 msgid "Disconnect"
 msgstr "Отключить"
 
-#: src/components/BtcAddressInput.vue:91
-#: src/components/modals/SendModal.vue:365
-#: src/components/modals/UsdcSendModal.vue:364
+#: src/components/BtcAddressInput.vue:95
+#: src/components/modals/SendModal.vue:376
+#: src/components/modals/UsdcSendModal.vue:359
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -926,7 +926,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Изменить количество знаков после запятой для значений NIM."
 
 #: src/components/modals/BtcSendModal.vue:125
-#: src/components/modals/SendModal.vue:228
+#: src/components/modals/SendModal.vue:240
 #: src/components/modals/UsdcSendModal.vue:226
 msgid "Edit transaction"
 msgstr "Редактировать транзакцию"
@@ -974,11 +974,11 @@ msgstr "Войти в кошелёк"
 msgid "Enter your bank details"
 msgstr "Введите свои банковские реквизиты"
 
-#: src/lib/GoCrypto.ts:213
+#: src/lib/GoCrypto.ts:228
 msgid "Error {errorCode}"
 msgstr ""
 
-#: src/lib/GoCrypto.ts:212
+#: src/lib/GoCrypto.ts:227
 msgid "Error {errorCode}: {errorMessage}"
 msgstr ""
 
@@ -1027,7 +1027,7 @@ msgstr "Экспорт истории"
 msgid "Export your history"
 msgstr "Экспортировать"
 
-#: src/components/modals/SendModal.vue:464
+#: src/components/modals/SendModal.vue:474
 msgid "express"
 msgstr "экспресс"
 
@@ -1036,7 +1036,7 @@ msgstr "экспресс"
 msgid "Failed"
 msgstr "Не удалось"
 
-#: src/components/modals/UsdcSendModal.vue:680
+#: src/components/modals/UsdcSendModal.vue:684
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr "Не удалось узнать комиссию USDC. Повторяю... (Ошибка: {message})"
@@ -1087,7 +1087,7 @@ msgstr "Загрузка"
 msgid "Fiat value unavailable"
 msgstr "Значение в фиатной валюте не доступно"
 
-#: src/components/layouts/Settings.vue:352
+#: src/components/layouts/Settings.vue:353
 msgid "File contains no contacts."
 msgstr "Файл не содержит контакты."
 
@@ -1121,7 +1121,7 @@ msgid ""
 "crypto payments"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:454
+#: src/components/modals/SendModal.vue:464
 msgid "free"
 msgstr "свободно"
 
@@ -1265,8 +1265,14 @@ msgstr ""
 "Если ошибка не исчезает, проверьте, подключены ли вы к интернету или "
 "перезагрузите эту страницу, чтобы подключиться заново."
 
-#: src/lib/GoCrypto.ts:183
-msgid "If you already made a payment, please contact GoCrypto for a refund."
+#: src/lib/GoCrypto.ts:194
+msgid ""
+"If you already made a payment which was not accepted, please contact "
+"GoCrypto for a refund."
+msgstr ""
+
+#: src/lib/GoCrypto.ts:273
+msgid "If you already made a payment, wait for it to be confirmed instead."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:78
@@ -1327,7 +1333,7 @@ msgstr "Установить веб-приложение"
 
 #: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SellCryptoModal.vue:166
-#: src/components/modals/SendModal.vue:173
+#: src/components/modals/SendModal.vue:185
 #: src/components/modals/UsdcSendModal.vue:205
 msgid "Insufficient balance."
 msgstr "Недостаточный баланс."
@@ -1376,7 +1382,7 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
-#: src/components/layouts/AddressOverview.vue:167
+#: src/components/layouts/AddressOverview.vue:183
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Давайте приступим! Создайте свой аккаунт Nimiq:"
 
@@ -1514,6 +1520,10 @@ msgstr "Назовите этого отправителя..."
 msgid "Name your contact"
 msgstr "Укажите имя контакта"
 
+#: src/components/layouts/AddressOverview.vue:151
+msgid "Native Polygon USDC"
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:143
 msgid "Network"
 msgstr "Сеть"
@@ -1548,7 +1558,7 @@ msgstr "Нет соединения с сетью {chain}"
 msgid "No funds were received so the swap expired."
 msgstr "Средства не были получены, и срок обмена истёк."
 
-#: src/lib/GoCrypto.ts:204
+#: src/lib/GoCrypto.ts:219
 msgid "No payment request found"
 msgstr ""
 
@@ -1570,6 +1580,10 @@ msgstr "Транзакции не найдены"
 #: src/components/layouts/Settings.vue:70
 msgid "None"
 msgstr "Нет"
+
+#: src/lib/GoCrypto.ts:206
+msgid "Not a pending payment request"
+msgstr ""
 
 #: src/components/BankCheckInput.vue:57
 msgid "Not all accounts provided by this bank support instant transactions."
@@ -1607,7 +1621,7 @@ msgstr "Комиссия сервиса OASIS"
 msgid "Off"
 msgstr "Выкл"
 
-#: src/components/layouts/Settings.vue:377
+#: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
 msgstr "Импорт контактов выполнен успешно."
 
@@ -1639,7 +1653,7 @@ msgstr ""
 msgid "Pay within {countdown}"
 msgstr ""
 
-#: src/lib/GoCrypto.ts:221
+#: src/lib/GoCrypto.ts:236
 msgid "Payment request has already been paid"
 msgstr ""
 
@@ -1688,7 +1702,7 @@ msgid ""
 "these currencies."
 msgstr ""
 
-#: src/lib/GoCrypto.ts:182 src/lib/GoCrypto.ts:205 src/lib/GoCrypto.ts:238
+#: src/lib/GoCrypto.ts:188
 msgid "Please ask the merchant to create a new payment request."
 msgstr ""
 
@@ -1891,7 +1905,7 @@ msgid "Resulting BTC amount is too small."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:124
-#: src/components/modals/SendModal.vue:227
+#: src/components/modals/SendModal.vue:239
 #: src/components/modals/UsdcSendModal.vue:225
 msgid "Retry"
 msgstr "Повторить"
@@ -1996,13 +2010,13 @@ msgid "Send"
 msgstr "Отправить"
 
 #: src/components/modals/BtcSendModal.vue:116
-#: src/components/modals/SendModal.vue:192
+#: src/components/modals/SendModal.vue:204
 #: src/components/modals/UsdcSendModal.vue:217
 msgid "Send {currency}"
 msgstr "Отправить {currency}"
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:78
-#: src/components/modals/SendModal.vue:175
+#: src/components/modals/SendModal.vue:187
 #: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
 msgstr "Отправить все"
@@ -2037,17 +2051,21 @@ msgstr "Отправить USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
-#: src/components/modals/BtcSendModal.vue:440
-#: src/components/modals/SendModal.vue:724
-#: src/components/modals/UsdcSendModal.vue:583
+#: src/components/layouts/AddressOverview.vue:158
+msgid "Sending Native Polygon USDC is not yet supported."
+msgstr ""
+
+#: src/components/modals/BtcSendModal.vue:454
+#: src/components/modals/SendModal.vue:764
+#: src/components/modals/UsdcSendModal.vue:587
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
-#: src/components/modals/BtcSendModal.vue:490
+#: src/components/modals/BtcSendModal.vue:504
 msgid "Sent {btc} BTC"
 msgstr "Отправить {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:486
+#: src/components/modals/BtcSendModal.vue:500
 msgid "Sent {btc} BTC to {name}"
 msgstr "Отправить {btc} BTC на адрес {name}"
 
@@ -2057,19 +2075,19 @@ msgstr "Отправить {btc} BTC на адрес {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Отправлены {fromAsset} — получены {toAsset}"
 
-#: src/components/modals/SendModal.vue:754
+#: src/components/modals/SendModal.vue:803
 msgid "Sent {nim} NIM"
 msgstr "Отправить {nim} NIM"
 
-#: src/components/modals/SendModal.vue:750
+#: src/components/modals/SendModal.vue:799
 msgid "Sent {nim} NIM to {name}"
 msgstr "Отправить {nim} NIM {name} "
 
-#: src/components/modals/UsdcSendModal.vue:610
+#: src/components/modals/UsdcSendModal.vue:614
 msgid "Sent {usdc} USDC"
 msgstr "Отправлено {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:606
+#: src/components/modals/UsdcSendModal.vue:610
 msgid "Sent {usdc} USDC to {name}"
 msgstr "Отправлено {name} {usdc} USDC"
 
@@ -2156,7 +2174,7 @@ msgstr "Показать Защитную Фразу"
 msgid "Show values as {currency}"
 msgstr "Показывать в {currency}"
 
-#: src/components/layouts/AddressOverview.vue:168
+#: src/components/layouts/AddressOverview.vue:184
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
@@ -2169,10 +2187,10 @@ msgstr "Симулировать платёж в евро"
 msgid "Skip"
 msgstr "Пропустить"
 
-#: src/components/modals/BtcSendModal.vue:504
-#: src/components/modals/SendModal.vue:615
-#: src/components/modals/SendModal.vue:770
-#: src/components/modals/UsdcSendModal.vue:625
+#: src/components/modals/BtcSendModal.vue:518
+#: src/components/modals/SendModal.vue:633
+#: src/components/modals/SendModal.vue:819
+#: src/components/modals/UsdcSendModal.vue:629
 msgid "Something went wrong"
 msgstr "Операция не удалась"
 
@@ -2180,7 +2198,7 @@ msgstr "Операция не удалась"
 msgid "Something went wrong with your transaction"
 msgstr "С вашей транзакцией что-то не то"
 
-#: src/components/modals/SendModal.vue:204
+#: src/components/modals/SendModal.vue:216
 msgid "Speed up your Transaction"
 msgstr "Ускорьте свою транзакцию"
 
@@ -2205,7 +2223,7 @@ msgstr ""
 msgid "Staking"
 msgstr " Стекинг"
 
-#: src/components/modals/SendModal.vue:459
+#: src/components/modals/SendModal.vue:469
 msgid "standard"
 msgstr "стандартный"
 
@@ -2331,6 +2349,12 @@ msgstr "Комиссия (в настоящее время {amount}) соста�
 msgid "The fees determine the minimum amount."
 msgstr "Минимальная сумма определяется комиссией."
 
+#: src/components/modals/SendModal.vue:175
+msgid ""
+"The GoCrypto payment request expires in {finalCountdown}. To ensure that "
+"your payment is confirmed in time, send it within {earlyCountdown}."
+msgstr ""
+
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
 msgstr "Достигнут лимит для вашего IBAN-счета."
@@ -2355,8 +2379,16 @@ msgstr ""
 msgid "The Nimiq Wallet uses Polygon USDC for speed and low fees."
 msgstr "Кошелёк Nimiq использует Polygon USDC для скорости и низких комиссии."
 
-#: src/lib/GoCrypto.ts:194 src/lib/GoCrypto.ts:249
+#: src/lib/GoCrypto.ts:264
 msgid "The payment request expired"
+msgstr ""
+
+#: src/lib/GoCrypto.ts:270
+msgid "The payment request is about to expire"
+msgstr ""
+
+#: src/lib/GoCrypto.ts:208
+msgid "The payment request might have been paid, expired, or cancelled."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:44
@@ -2558,7 +2590,7 @@ msgstr "Время транзакции"
 msgid "Unclaimed Cashlink"
 msgstr "Активный Cashlink"
 
-#: src/lib/GoCrypto.ts:210
+#: src/lib/GoCrypto.ts:225
 msgid "Unexpected GoCrypto error"
 msgstr ""
 
@@ -2831,7 +2863,7 @@ msgstr ""
 "Ваши NIM хранятся на аккаунте \"старого\" типа. Переведите их на новый "
 "аккаунт, чтобы получить доступ к новым функциям."
 
-#: src/lib/GoCrypto.ts:229
+#: src/lib/GoCrypto.ts:244
 msgid "Your payment failed"
 msgstr ""
 
@@ -2839,19 +2871,19 @@ msgstr ""
 msgid "Your payment has not been received yet. There might be an issue."
 msgstr "Ваш платёж пока не был получен. Возможно, возникла проблема."
 
-#: src/lib/GoCrypto.ts:225
+#: src/lib/GoCrypto.ts:240
 msgid "Your payment is being processed"
 msgstr ""
 
-#: src/lib/GoCrypto.ts:233
+#: src/lib/GoCrypto.ts:248
 msgid "Your payment is invalid"
 msgstr ""
 
-#: src/lib/GoCrypto.ts:242
+#: src/lib/GoCrypto.ts:257
 msgid "Your payment was cancelled"
 msgstr ""
 
-#: src/lib/GoCrypto.ts:237
+#: src/lib/GoCrypto.ts:252
 msgid "Your payment was refunded"
 msgstr ""
 
@@ -2859,7 +2891,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Платеж уже в пути"
 
-#: src/components/layouts/AddressOverview.vue:176
+#: src/components/layouts/AddressOverview.vue:192
 msgid "Your swap was successful!"
 msgstr "Ваш Своп прошел успешно!"
 

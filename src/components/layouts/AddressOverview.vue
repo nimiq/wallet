@@ -158,7 +158,9 @@
                         {{ $t('Sending Native Polygon USDC is not yet supported.') }}
                     </span>
                     <div class="flex-grow"></div>
-                    <!-- <a href="#" class="nq-button-s">How to transfer</a> -->
+                    <!-- eslint-disable-next-line max-len -->
+                    <a href="https://forum.nimiq.community/t/important-update-on-usdc-support-in-nimiq-wallet-native-usdc/1927"
+                        target="_blank" rel="noopener" class="nq-button-s">How to transfer</a>
                 </div>
             </div>
             <div class="scroll-mask top"></div>

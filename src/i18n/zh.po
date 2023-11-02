@@ -295,7 +295,7 @@ msgid ""
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟"
 
-#: src/components/layouts/AddressOverview.vue:196
+#: src/components/layouts/AddressOverview.vue:198
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -635,7 +635,7 @@ msgstr "点击了解更多信息"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:200
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr "关闭"
@@ -1329,7 +1329,7 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/AddressOverview.vue:183
+#: src/components/layouts/AddressOverview.vue:185
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
 
@@ -2111,7 +2111,7 @@ msgstr "显示恢复字"
 msgid "Show values as {currency}"
 msgstr "显示价值为 {currency}"
 
-#: src/components/layouts/AddressOverview.vue:184
+#: src/components/layouts/AddressOverview.vue:186
 msgid "Signup"
 msgstr "注册"
 
@@ -2786,7 +2786,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "你的付款正在处理中"
 
-#: src/components/layouts/AddressOverview.vue:192
+#: src/components/layouts/AddressOverview.vue:194
 msgid "Your swap was successful!"
 msgstr "你的交换成功了！"
 

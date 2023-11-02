@@ -304,7 +304,7 @@ msgstr ""
 "Todas las nuevas características son exclusivas para nuevas cuentas. Mejora "
 "a la nueva versión ahora, solo toma unos segundos."
 
-#: src/components/layouts/AddressOverview.vue:196
+#: src/components/layouts/AddressOverview.vue:198
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -665,7 +665,7 @@ msgstr "Haga click para obtener más información"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Haga click en ‘Solución de problemas’ para aprender más."
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:200
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr "Cerrar"
@@ -1385,7 +1385,7 @@ msgstr "Aprenda más"
 msgid "Learn more here"
 msgstr "Aprenda más aquí"
 
-#: src/components/layouts/AddressOverview.vue:183
+#: src/components/layouts/AddressOverview.vue:185
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "¡Comencemos! Cree su cuenta Nimiq:"
 
@@ -2191,7 +2191,7 @@ msgstr "Mostrar Palabras de Recuperación"
 msgid "Show values as {currency}"
 msgstr "Mostrar montos en {currency}"
 
-#: src/components/layouts/AddressOverview.vue:184
+#: src/components/layouts/AddressOverview.vue:186
 msgid "Signup"
 msgstr "Regístrate"
 
@@ -2912,7 +2912,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Su pago esta de camino"
 
-#: src/components/layouts/AddressOverview.vue:192
+#: src/components/layouts/AddressOverview.vue:194
 msgid "Your swap was successful!"
 msgstr "¡Su intercambio fue exitoso!"
 

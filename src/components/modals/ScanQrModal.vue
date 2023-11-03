@@ -105,7 +105,7 @@ export default defineComponent({
                 }
                 // Redirect to request link as path which will be handled by the router. If a GoCrypto id is set, don't
                 // replace the route, such that user can navigate back to the scanner from SendModal on GoCrypto errors.
-                (goCryptoId ? router.push : router.replace)(`/${nimRequestLinkUri}`);
+                (goCryptoId ? router.push : router.replace).bind(router)(`/${nimRequestLinkUri}`);
                 return;
             }
 

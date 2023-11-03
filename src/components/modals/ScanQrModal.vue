@@ -60,6 +60,8 @@ export default defineComponent({
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
 
         const checkResult = (result: string) => {
+            console.debug('Scanned QR code:', result); // eslint-disable-line no-console
+
             // Cashlink
             if (/https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
                 // result is a cashlink so redirect to hub
@@ -138,8 +140,20 @@ export default defineComponent({
             if (config.usdc.enabled && hasUsdcAddresses.value) {
                 // Run in parallel, without awaiting.
                 loadEthersLibrary().then((ethers) => {
-                    // For USDC we don't support scanning plain addresses to avoid the risk of sending Polygon USDC to
-                    // an Ethereum wallet, because the addresses are the same.
+                    // Support scanning plain addresses. The send modal shows a warning for unknown addresses
+                    // that users must make sure this is a Polygon USDC address.
+                    if (result.startsWith('0x')) {
+                        const address = ethers.utils.getAddress(result);
+                        router.replace(`/${createEthereumRequestLink(
+                            address,
+                            Currency.USDC,
+                            {
+                                chainId: config.environment === ENV_MAIN
+                                    ? EthereumChain.POLYGON_MAINNET
+                                    : EthereumChain.POLYGON_MUMBAI_TESTNET,
+                            },
+                        )}`);
+                    }
 
                     // USDC Request Link
                     // We only accept links on Polygon to avoid sending Polygon USDC to an Ethereum wallet. We accept:

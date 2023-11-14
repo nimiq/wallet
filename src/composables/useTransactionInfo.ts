@@ -22,6 +22,7 @@ import {
 import { isProxyData, ProxyType } from '@/lib/ProxyDetection';
 import { parseData } from '@/lib/DataFormatting';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
+import { getStakingTransactionMeaning } from '@/lib/StakingUtils';
 
 import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
@@ -219,6 +220,9 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
             || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
             return i18n.t('HTLC Refund') as string;
         }
+
+        const stakingData = getStakingTransactionMeaning(transaction.value, false);
+        if (stakingData) return stakingData;
 
         return parseData(transaction.value.data.raw);
     });

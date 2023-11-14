@@ -97,7 +97,6 @@ import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/C
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
-import { getStakingTransactionMeaning } from '../lib/StakingUtils';
 
 export default defineComponent({
     props: {

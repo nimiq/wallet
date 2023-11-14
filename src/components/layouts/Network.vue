@@ -118,7 +118,6 @@ export default defineComponent({
         const { consensus, peerCount } = useNetworkStore();
         const { config } = useConfig();
 
-        const peerCount = computed(() => $network.peerCount);
         const consensusStateString = computed(() => ({
             stalled: context.root.$t('paused'),
             syncing: context.root.$t('syncing'),

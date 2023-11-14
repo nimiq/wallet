@@ -1,4 +1,4 @@
-<template>
+j<template>
     <div class="network-map" ref="container$">
         <canvas class="map" ref="network$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
         <canvas class="overlay" ref="overlay$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
@@ -73,9 +73,9 @@ export default defineComponent({
 
             const networkMap = new NetworkMap(network$.value!, overlay$.value!, (n) => nodes.value = n);
 
-            const { state: network$ } = useNetworkStore();
+            const networkStore = useNetworkStore();
 
-            watch(() => network$.peers, (peers) => {
+            watch(() => networkStore.state.peers, (peers) => {
                 if (networkMap.updateNodes(Object.values(peers))) {
                     networkMap.draw();
                 }

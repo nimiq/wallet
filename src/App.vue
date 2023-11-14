@@ -146,7 +146,7 @@ export default defineComponent({
             activeMobileColumn,
             hasAccounts,
             amountsHidden,
-            $main,
+            main$,
             consensus,
         };
     },

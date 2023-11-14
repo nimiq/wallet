@@ -1698,7 +1698,7 @@ export default defineComponent({
                     },
                     polygonAddresses: activeUsdcAddress.value ? [{
                         address: activeUsdcAddress.value,
-                        usdcBalance: accountUsdcBalance.value,
+                        balance: accountUsdcBalance.value,
                     }] : [],
                 };
 

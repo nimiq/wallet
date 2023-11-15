@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class="flex-row">
-                        <button class="nq-button-s" @click="$emit('adjust-stake')">
+                        <button class="nq-button-s" @click="$emit('adjust-stake')" :disabled="isStakeDeactivating">
                             {{ $t('Adjust Stake') }}
                         </button>
                         <!-- <button class="nq-button-pill red unstake-all" @click="unstakeAll">
@@ -198,6 +198,10 @@ export default defineComponent({
             return height.value > stake.value.inactiveRelease!;
         });
 
+        const isStakeDeactivating = computed(() =>
+            stake.value?.inactiveBalance && stake.value?.inactiveBalance > 0,
+        );
+
         async function unstakeAll() {
             await sendStaking({
                 type: StakingTransactionType.UNSTAKE,
@@ -227,6 +231,7 @@ export default defineComponent({
             payoutText,
             inactiveReleaseTime,
             hasUnstakableStake,
+            isStakeDeactivating,
             unstakeAll,
             canSwitchValidator,
         };

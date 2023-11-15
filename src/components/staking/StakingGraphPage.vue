@@ -73,17 +73,9 @@
 </template>
 
 <script lang="ts">
+import { captureException } from '@sentry/vue';
 import { defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
-import { useAddressStore } from '../../stores/Address';
-import { useStakingStore } from '../../stores/Staking';
-
-// import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
-import AmountSlider from './AmountSlider.vue';
-
-import LabelTooltip from './tooltips/LabelTooltip.vue';
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 
 import {
     CryptoCurrency,
@@ -93,10 +85,24 @@ import {
 } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { sendStaking } from '../../hub';
+
+import { useConfig } from '../../composables/useConfig';
+
+import { useAddressStore } from '../../stores/Address';
+import { useStakingStore } from '../../stores/Staking';
 import { useNetworkStore } from '../../stores/Network';
+
+// import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
+import AmountSlider from './AmountSlider.vue';
+import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
+
+import LabelTooltip from './tooltips/LabelTooltip.vue';
+import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 
 export default defineComponent({
     setup(props, context) {
+        const { config } = useConfig();
         const { activeAddress } = useAddressStore();
         const { activeStake, activeValidator } = useStakingStore();
 
@@ -109,25 +115,72 @@ export default defineComponent({
         }
 
         async function performStaking() {
-            if (stakeDelta.value > 0) {
-                if (!activeStake.value || (!activeStake.value.balance && !activeStake.value.inactiveBalance)) {
-                    await sendStaking({
-                        type: StakingTransactionType.CREATE_STAKER,
-                        delegation: activeValidator.value!.address,
-                        value: stakeDelta.value,
-                        sender: activeAddress.value!,
-                        recipient: STAKING_CONTRACT_ADDRESS,
-                        recipientType: STAKING_ACCOUNT_TYPE,
-                        recipientLabel: context.root.$t('Staking Contract') as string,
-                        validityStartHeight: useNetworkStore().state.height,
-                    }).catch((error) => {
-                        throw new Error(error.data);
-                    });
+            context.emit('statusChange', {
+                type: 'staking',
+                state: State.LOADING,
+                title: context.root.$t('Sending Staking Transaction') as string,
+            });
+
+            const validatorLabelOrAddress = 'label' in activeValidator.value!
+                ? activeValidator.value.label
+                : activeValidator.value!.address;
+
+            try {
+                if (stakeDelta.value > 0) {
+                    if (!activeStake.value || (!activeStake.value.balance && !activeStake.value.inactiveBalance)) {
+                        await sendStaking({
+                            type: StakingTransactionType.CREATE_STAKER,
+                            delegation: activeValidator.value!.address,
+                            value: stakeDelta.value,
+                            sender: activeAddress.value!,
+                            recipient: STAKING_CONTRACT_ADDRESS,
+                            recipientType: STAKING_ACCOUNT_TYPE,
+                            recipientLabel: context.root.$t('Staking Contract') as string,
+                            validityStartHeight: useNetworkStore().state.height,
+                        }).catch((error) => {
+                            throw new Error(error.data);
+                        });
+
+                        context.emit('statusChange', {
+                            state: State.SUCCESS,
+                            title: context.root.$t(
+                                'Successfully staked {amount}NIM with {validator}',
+                                {
+                                    amount: Math.abs(stakeDelta.value / 1e5),
+                                    validator: validatorLabelOrAddress,
+                                },
+                            ),
+                        });
+                    } else {
+                        // TODO: Differentiate between adding and reactivating stake
+                        await sendStaking({
+                            type: StakingTransactionType.ADD_STAKE,
+                            value: stakeDelta.value,
+                            sender: activeAddress.value!,
+                            recipient: STAKING_CONTRACT_ADDRESS,
+                            recipientType: STAKING_ACCOUNT_TYPE,
+                            recipientLabel: context.root.$t('Staking Contract') as string,
+                            validityStartHeight: useNetworkStore().state.height,
+                        }).catch((error) => {
+                            throw new Error(error.data);
+                        });
+
+                        context.emit('statusChange', {
+                            state: State.SUCCESS,
+                            title: context.root.$t(
+                                'Successfully added {amount} NIM to your stake with {validator}',
+                                {
+                                    amount: Math.abs(stakeDelta.value / 1e5),
+                                    validator: validatorLabelOrAddress,
+                                },
+                            ),
+                        });
+                    }
                 } else {
-                    // TODO: Differentiate between adding and reactivating stake
                     await sendStaking({
-                        type: StakingTransactionType.ADD_STAKE,
-                        value: stakeDelta.value,
+                        type: StakingTransactionType.SET_INACTIVE_STAKE,
+                        newInactiveBalance: activeStake.value!.inactiveBalance - stakeDelta.value,
+                        value: 1, // Unused in transaction
                         sender: activeAddress.value!,
                         recipient: STAKING_CONTRACT_ADDRESS,
                         recipientType: STAKING_ACCOUNT_TYPE,
@@ -136,28 +189,39 @@ export default defineComponent({
                     }).catch((error) => {
                         throw new Error(error.data);
                     });
+
+                    context.emit('statusChange', {
+                        state: State.SUCCESS,
+                        title: context.root.$t(
+                            'Successfully disactivated {amount}NIM from your stake with {validator}',
+                            {
+                                amount: Math.abs((activeStake.value!.inactiveBalance - stakeDelta.value) / 1e5),
+                                validator: validatorLabelOrAddress,
+                            },
+                        ),
+                    });
+
+                    // if (Math.abs(stakeDelta.value) === activeStake.value!.balance) {
+                    //     // Close staking modal
+                    //     context.root.$router.back();
+                    // }
                 }
-            } else {
-                await sendStaking({
-                    type: StakingTransactionType.SET_INACTIVE_STAKE,
-                    newInactiveBalance: activeStake.value!.inactiveBalance - stakeDelta.value,
-                    value: 1, // Unused in transaction
-                    sender: activeAddress.value!,
-                    recipient: STAKING_CONTRACT_ADDRESS,
-                    recipientType: STAKING_ACCOUNT_TYPE,
-                    recipientLabel: context.root.$t('Staking Contract') as string,
-                    validityStartHeight: useNetworkStore().state.height,
-                }).catch((error) => {
-                    throw new Error(error.data);
+
+                window.setTimeout(() => {
+                    context.emit('statusChange', { type: 'none' });
+                    context.emit('next');
+                }, SUCCESS_REDIRECT_DELAY);
+            } catch (error: any) {
+                if (config.reportToSentry) captureException(error);
+                else console.error(error);
+
+                // Show error screen
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: context.root.$t('Something went wrong') as string,
+                    message: `${error.message} - ${error.data}`,
                 });
-
-                // if (Math.abs(stakeDelta.value) === activeStake.value!.balance) {
-                //     // Close staking modal
-                //     context.root.$router.back();
-                // }
             }
-
-            context.emit('next');
         }
 
         return {

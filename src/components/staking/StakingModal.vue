@@ -39,6 +39,11 @@
                 @back="page = isStaking ? Page.Already : Page.Info"
                 @next="page = Page.Graph; closeOverlay()"
             />
+            <StatusScreen v-if="statusType !== 'none'"
+                :state="statusState"
+                :title="statusTitle"
+                :message="statusMessage"
+            />
         </template>
     </Modal>
 </template>
@@ -54,6 +59,7 @@ import StakingGraphPage from './StakingGraphPage.vue';
 import StakingInfoPage from './StakingInfoPage.vue';
 import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';
 import SelectAccountOverlay from './SelectAccountOverlay.vue';
+import StatusScreen, { State } from '../StatusScreen.vue';
 
 enum Page {
     Info,
@@ -84,6 +90,30 @@ export default defineComponent({
         const switchValidator = () => { page.value = Page.Validator; };
         const closeOverlay = () => { overlay.value = null; };
 
+        /**
+         * Status Screen
+         */
+        const statusType = ref<NonNullable<StatusChangeParams['type']>>('none');
+        const statusState = ref<State>(State.LOADING);
+        const statusTitle = ref('');
+        const statusMessage = ref('');
+
+        const statusMainAction = ref('');
+        const statusAlternativeAction = ref('');
+
+        type StatusChangeParams = {
+            type?: 'none' | 'staking',
+            state?: State,
+            title?: string,
+            message?: string,
+        };
+
+        function onStatusChange({ type, state, title, message }: StatusChangeParams) {
+            if (type !== undefined) statusType.value = type;
+            if (state !== undefined) statusState.value = state;
+            if (title !== undefined) statusTitle.value = title;
+            if (message !== undefined) statusMessage.value = message;
+        }
         watch(activeStake, (stake) => {
             if (!stake) page.value = Page.Info;
         }, { lazy: true });
@@ -114,6 +144,13 @@ export default defineComponent({
             isStaking,
             Page,
             Overlay,
+
+            // StatusScreen
+            statusType,
+            statusState,
+            statusTitle,
+            statusMessage,
+            onStatusChange,
         };
     },
     components: {
@@ -124,6 +161,7 @@ export default defineComponent({
         StakingInfoPage,
         StakingRewardsHistoryPage,
         SelectAccountOverlay,
+        StatusScreen,
     },
 });
 </script>

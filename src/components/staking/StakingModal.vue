@@ -2,7 +2,7 @@
     <!-- Pass down all attributes not declared as props -->
     <Modal v-bind="$attrs" v-on="$listeners" class="staking-modal"
         :class="{ 'large-modal': [Page.Graph, Page.Already].includes(page) }"
-        :showOverlay="overlay === Overlay.SelectAccount || overlay === Overlay.Validator"
+        :showOverlay="overlay === Overlay.SelectAccount || overlay === Overlay.Validator || statusType !== 'none'"
         @close-overlay="closeOverlay"
     >
         <template v-if="page === Page.Info">
@@ -13,6 +13,7 @@
                 @back="page = isStaking ? Page.Already : Page.Validator"
                 @next="page = Page.Already"
                 @changeValidator="switchValidator"
+                @statusChange="onStatusChange"
             />
         </template>
         <template v-if="page === Page.Already">
@@ -114,6 +115,15 @@ export default defineComponent({
             if (title !== undefined) statusTitle.value = title;
             if (message !== undefined) statusMessage.value = message;
         }
+
+        function onStatusMainAction() {
+            // Handle main action here
+        }
+
+        function onStatusAlternativeAction() {
+            // Handle alternative action here
+        }
+
         watch(activeStake, (stake) => {
             if (!stake) page.value = Page.Info;
         }, { lazy: true });
@@ -150,7 +160,11 @@ export default defineComponent({
             statusState,
             statusTitle,
             statusMessage,
+            statusMainAction,
+            statusAlternativeAction,
             onStatusChange,
+            onStatusMainAction,
+            onStatusAlternativeAction,
         };
     },
     components: {

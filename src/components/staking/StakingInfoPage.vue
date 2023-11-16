@@ -199,7 +199,7 @@ export default defineComponent({
         });
 
         const isStakeDeactivating = computed(() =>
-            stake.value?.inactiveBalance && stake.value?.inactiveBalance > 0,
+            !!(stake.value?.inactiveBalance && stake.value?.inactiveBalance > 0),
         );
 
         async function unstakeAll() {

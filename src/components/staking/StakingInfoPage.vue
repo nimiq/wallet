@@ -138,6 +138,8 @@ import {
     Identicon,
     CircleSpinner,
 } from '@nimiq/vue-components';
+import { captureException } from '@sentry/vue';
+
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { getPayoutText } from '../../lib/StakingUtils';
@@ -147,6 +149,7 @@ import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
+import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 
 import {
     StakingTransactionType,
@@ -154,12 +157,14 @@ import {
 } from '../../lib/Constants';
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
+import { useConfig } from '../../composables/useConfig';
 
 export default defineComponent({
     setup(props, context) {
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator } = useStakingStore();
         const { height } = useNetworkStore();
+        const { config } = useConfig();
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
@@ -203,18 +208,44 @@ export default defineComponent({
         );
 
         async function unstakeAll() {
-            await sendStaking({
-                type: StakingTransactionType.UNSTAKE,
-                value: stake.value!.inactiveBalance,
-                sender: STAKING_CONTRACT_ADDRESS,
-                recipient: activeAddress.value!,
-                validityStartHeight: height.value,
-            }).catch((error) => {
-                throw new Error(error.data);
+            context.emit('statusChange', {
+                type: 'unstaking',
+                state: State.LOADING,
+                title: context.root.$t('Sending Unstaking Transaction') as string,
             });
 
-            // // Close staking modal
-            // context.root.$router.back();
+            try {
+                await sendStaking({
+                    type: StakingTransactionType.UNSTAKE,
+                    value: stake.value!.inactiveBalance,
+                    sender: STAKING_CONTRACT_ADDRESS,
+                    recipient: activeAddress.value!,
+                    validityStartHeight: height.value,
+                });
+
+                context.emit('statusChange', {
+                    state: State.SUCCESS,
+                    title: context.root.$t(
+                        'Successfully unstaked {amount} NIM',
+                        { amount: stake.value!.inactiveBalance / 1e5 },
+                    ),
+                });
+
+                window.setTimeout(() => {
+                    // // Close staking modal
+                    // context.root.$router.back();
+                    context.emit('statusChange', { type: 'none' });
+                }, SUCCESS_REDIRECT_DELAY);
+            } catch (error: any) {
+                if (config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: context.root.$t('Something went wrong') as string,
+                    message: `${error.message} - ${error.data}`,
+                });
+            }
         }
 
         const canSwitchValidator = computed(() => stake.value?.balance === 0

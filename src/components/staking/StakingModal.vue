@@ -21,6 +21,7 @@
                 @back="page = Page.Graph" @next="page = Page.RewardsHistory"
                 @adjust-stake="adjustStake"
                 @switch-validator="switchValidator"
+                @statusChange="onStatusChange"
             />
         </template>
         <template v-else-if="page === Page.RewardsHistory">

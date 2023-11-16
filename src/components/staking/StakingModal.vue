@@ -43,6 +43,8 @@
                 :title="statusTitle"
                 :message="statusMessage"
             />
+                <!-- :mainAction="$t('Cancel')"
+                @main-action="onStatusMainAction" -->
         </template>
     </Modal>
 </template>
@@ -114,13 +116,9 @@ export default defineComponent({
             if (message !== undefined) statusMessage.value = message;
         }
 
-        function onStatusMainAction() {
-            // Handle main action here
-        }
-
-        function onStatusAlternativeAction() {
-            // Handle alternative action here
-        }
+        // function onStatusMainAction() {
+        //     // Handle main action here
+        // }
 
         watch(activeStake, (stake) => {
             if (!stake) page.value = Page.Info;
@@ -161,8 +159,7 @@ export default defineComponent({
             statusMainAction,
             statusAlternativeAction,
             onStatusChange,
-            onStatusMainAction,
-            onStatusAlternativeAction,
+            // onStatusMainAction,
         };
     },
     components: {

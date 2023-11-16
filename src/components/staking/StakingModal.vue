@@ -2,7 +2,7 @@
     <!-- Pass down all attributes not declared as props -->
     <Modal v-bind="$attrs" v-on="$listeners" class="staking-modal"
         :class="{ 'large-modal': [Page.Graph, Page.Already].includes(page) }"
-        :showOverlay="overlay === Overlay.SelectAccount || overlay === Overlay.Validator || statusType !== 'none'"
+        :showOverlay="overlay === Overlay.SelectAccount || statusType !== 'none'"
         @close-overlay="closeOverlay"
     >
         <template v-if="page === Page.Info">
@@ -30,17 +30,14 @@
             <StakingValidatorPage
                 @back="page = isStaking ? Page.Already : Page.Info"
                 @next="page = isStaking ? Page.Already : Page.Graph; closeOverlay()"
+                @statusChange="onStatusChange"
             />
         </template>
         <template slot="overlay">
             <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
                 @selected="switchValidator"
             />
-            <StakingValidatorPage v-if="overlay === Overlay.Validator"
-                @back="page = isStaking ? Page.Already : Page.Info"
-                @next="page = Page.Graph; closeOverlay()"
-            />
-            <StatusScreen v-if="statusType !== 'none'"
+            <StatusScreen v-else-if="statusType !== 'none'"
                 :state="statusState"
                 :title="statusTitle"
                 :message="statusMessage"
@@ -55,7 +52,7 @@ import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import Modal from '../modals/Modal.vue';
 import StakingWelcomePage from './StakingWelcomePage.vue';
-import StakingValidatorPage from './StakingValidatorOverlay.vue';
+import StakingValidatorPage from './StakingValidatorPage.vue';
 import StakingGraphPage from './StakingGraphPage.vue';
 import StakingInfoPage from './StakingInfoPage.vue';
 import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';
@@ -103,7 +100,7 @@ export default defineComponent({
         const statusAlternativeAction = ref('');
 
         type StatusChangeParams = {
-            type?: 'none' | 'staking',
+            type?: 'none' | 'staking' | 'validator',
             state?: State,
             title?: string,
             message?: string,
@@ -129,7 +126,7 @@ export default defineComponent({
         }, { lazy: true });
 
         function showOverlayIfInvalidAccount(newPath: Overlay | Page) {
-            if ((newPath === Overlay.Validator || newPath === Page.Validator) && invalidAccount.value) {
+            if (newPath === Page.Validator && invalidAccount.value) {
                 overlay.value = Overlay.SelectAccount;
             }
         }

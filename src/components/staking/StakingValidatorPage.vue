@@ -1,6 +1,6 @@
 <template>
     <div class="staking-validator-page flex-column">
-        <PageHeader @back="$emit('back')">
+        <PageHeader @back="$emit('back')" :backArrow="true">
             <template #default>
                 {{ $t('Choose a Validator') }}
             </template>
@@ -18,7 +18,7 @@
                     v-for="validator in sortedList" :key="validator.address"
                     :validator="validator"
                     :container="validatorList$"
-                    @click.native="selectValidator(validator.address)"
+                    @click.native="selectValidator(validator)"
                 />
                 <div class="scroll-mask bottom"></div>
             </div>
@@ -27,9 +27,11 @@
 </template>
 
 <script lang="ts">
+import { captureException } from '@sentry/vue';
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { useStakingStore } from '../../stores/Staking';
+import { Validator, useStakingStore } from '../../stores/Staking';
+import { useConfig } from '../../composables/useConfig';
 
 import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
@@ -38,9 +40,11 @@ import { sendStaking } from '../../hub';
 import { StakingTransactionType, STAKING_ACCOUNT_TYPE, STAKING_CONTRACT_ADDRESS } from '../../lib/Constants';
 import { useNetworkStore } from '../../stores/Network';
 import { FilterState } from '../../lib/StakingUtils';
+import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 
 export default defineComponent({
     setup(props, context) {
+        const { config } = useConfig();
         const { activeAddress } = useAddressStore();
         const { validatorsList, activeStake, setStake } = useStakingStore();
 
@@ -74,31 +78,62 @@ export default defineComponent({
             }
         });
 
-        async function selectValidator(address: string) {
-            if (!activeStake.value || (!activeStake.value.balance && !activeStake.value.inactiveBalance)) {
-                setStake({
-                    address: activeAddress.value!,
-                    balance: 0,
-                    inactiveBalance: 0,
-                    validator: address,
-                });
-            } else {
-                await sendStaking({
-                    type: StakingTransactionType.UPDATE_STAKER,
-                    delegation: address,
-                    reactivateAllStake: true,
-                    value: 1, // Unused in transaction
-                    sender: activeAddress.value!,
-                    recipient: STAKING_CONTRACT_ADDRESS,
-                    recipientType: STAKING_ACCOUNT_TYPE,
-                    recipientLabel: context.root.$t('Staking Contract') as string,
-                    validityStartHeight: useNetworkStore().state.height,
-                }).catch((error) => {
-                    throw new Error(error.data);
+        async function selectValidator(validator: Validator) {
+            context.emit('statusChange', {
+                type: 'validator',
+                state: State.LOADING,
+                title: context.root.$t('Changing validator') as string,
+            });
+
+            const validatorLabelOrAddress = 'label' in validator ? validator.label : validator.address;
+
+            try {
+                if (!activeStake.value || (!activeStake.value.balance && !activeStake.value.inactiveBalance)) {
+                    setStake({
+                        address: activeAddress.value!,
+                        balance: 0,
+                        inactiveBalance: 0,
+                        validator: validator.address,
+                    });
+                } else {
+                    await sendStaking({
+                        type: StakingTransactionType.UPDATE_STAKER,
+                        delegation: validator.address,
+                        reactivateAllStake: true,
+                        value: 1, // Unused in transaction
+                        sender: activeAddress.value!,
+                        recipient: STAKING_CONTRACT_ADDRESS,
+                        recipientType: STAKING_ACCOUNT_TYPE,
+                        recipientLabel: context.root.$t('Staking Contract') as string,
+                        validityStartHeight: useNetworkStore().state.height,
+                    }).catch((error) => {
+                        throw new Error(error.data);
+                    });
+
+                    context.emit('statusChange', {
+                        state: State.SUCCESS,
+                        title: context.root.$t(
+                            'Successfully changed validator to {validator}',
+                            { validator: validatorLabelOrAddress },
+                        ),
+                    });
+                }
+
+                window.setTimeout(() => {
+                    context.emit('statusChange', { type: 'none' });
+                    context.emit('next');
+                }, SUCCESS_REDIRECT_DELAY);
+            } catch (error: any) {
+                if (config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+
+                // Show error screen
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: context.root.$t('Something went wrong') as string,
+                    message: `${error.message} - ${error.data}`,
                 });
             }
-
-            context.emit('next');
         }
 
         const searchValue = ref('');

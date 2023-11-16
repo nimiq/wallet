@@ -213,7 +213,7 @@ export default defineComponent({
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 if (config.reportToSentry) captureException(error);
-                else console.error(error);
+                else console.error(error); // eslint-disable-line no-console
 
                 // Show error screen
                 context.emit('statusChange', {

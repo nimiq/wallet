@@ -86,7 +86,7 @@ export default defineComponent({
                 await sendStaking({
                     type: StakingTransactionType.UPDATE_STAKER,
                     delegation: address,
-                    newInactiveBalance: 0, // Re-activate all inactive balance
+                    reactivateAllStake: true,
                     value: 1, // Unused in transaction
                     sender: activeAddress.value!,
                     recipient: STAKING_CONTRACT_ADDRESS,

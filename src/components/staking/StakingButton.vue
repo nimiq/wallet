@@ -70,6 +70,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.staking-button {
+    position: relative;
+
+    &::v-deep .tooltip {
+        position: absolute;
+        right: 0;
+        top: -1.5rem;
+    }
+}
+
 .stake {
     display: block;
     background-color: transparent;

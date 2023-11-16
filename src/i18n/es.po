@@ -3,13 +3,13 @@
 # Rhody Lugo, 2021
 # Max, 2022
 # Daniel, 2022
-# Ricardo Barquero Carranza <richy@nimiq.com>, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2023
 # Alberto Monterroso, 2023
+# Ricardo Barquero Carranza <richy@nimiq.com>, 2023
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Alberto Monterroso, 2023\n"
+"Last-Translator: Ricardo Barquero Carranza <richy@nimiq.com>, 2023\n"
 "Language-Team: Spanish (https://app.transifex.com/nimiq-foundation/teams/110181/es/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: es\n"
@@ -80,7 +80,7 @@ msgstr "{perc}% del valor del intercambio."
 
 #: src/components/modals/MoonpaySellInfoModal.vue:20
 msgid "{percentage} fees"
-msgstr ""
+msgstr "{percentage} tarifas"
 
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
@@ -103,11 +103,12 @@ msgstr "+ cuotas de red"
 
 #: src/components/modals/BuyOptionsModal.vue:145
 msgid "+ network fees, registration required"
-msgstr ""
+msgstr "+ tarifas de red, es necesario registrarse"
 
 #: src/components/modals/BuyOptionsModal.vue:80
 msgid "+ network fees, registration required above $700"
 msgstr ""
+"+ tarifas de red, es necesario registrarse para montos superiores a $700"
 
 #: src/components/modals/BtcTransactionModal.vue:111
 #: src/components/modals/BtcTransactionModal.vue:122
@@ -184,6 +185,8 @@ msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "Do you want to replace it?"
 msgstr ""
+"Ya existe un contacto con la dirección \"{address}\", pero con un nombre distinto.\n"
+"¿Desea reemplazarlo?"
 
 #: src/lib/KycConnection.ts:40
 msgid ""
@@ -352,11 +355,11 @@ msgstr "Cualquier dinero enviado será reembolsado."
 #: src/components/modals/BuyOptionsModal.vue:113
 #: src/components/modals/BuyOptionsModal.vue:43
 msgid "Apple/Google Pay"
-msgstr ""
+msgstr "Apple/Google Pay"
 
 #: src/components/modals/SendModal.vue:229
 msgid "Apply fee"
-msgstr ""
+msgstr "Aplicar la tarifa"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:34
 msgid ""
@@ -377,6 +380,8 @@ msgstr ""
 #: src/components/PolygonWarningFooter.vue:19
 msgid "Ask the sender to ensure they have a Polygon USDC address."
 msgstr ""
+"Consulte a el emisario para asegurarse que poseen una dirección de USDC en "
+"Polygon."
 
 #: src/components/swap/SwapAnimation.vue:102
 msgid "Atomic Swap complete"
@@ -415,8 +420,8 @@ msgid "Back to Bank Details"
 msgstr "Volver a los Detalles del Banco"
 
 #: src/composables/useBtcTransactionInfo.ts:125
-#: src/composables/useTransactionInfo.ts:103
-#: src/composables/useUsdcTransactionInfo.ts:129
+#: src/composables/useTransactionInfo.ts:114
+#: src/composables/useUsdcTransactionInfo.ts:89
 msgid "Bank Account"
 msgstr "Cuenta Bancaria"
 
@@ -441,8 +446,8 @@ msgstr "BIC también funciona."
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:116
 #: src/components/modals/BtcTransactionModal.vue:128
-#: src/composables/useTransactionInfo.ts:95
-#: src/composables/useUsdcTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:106
+#: src/composables/useUsdcTransactionInfo.ts:85
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
@@ -536,7 +541,7 @@ msgstr "Comprar NIM en una casa de intercambio cripto:"
 #: src/components/UsdcTransactionList.vue:48
 #: src/components/UsdcTransactionList.vue:58
 msgid "Buy USDC"
-msgstr ""
+msgstr "Comprar USDC"
 
 #: src/components/modals/overlays/BuyCryptoBankCheckOverlay.vue:25
 msgid "Buy with Credit Card"
@@ -584,8 +589,8 @@ msgstr "Cancelar Intercambio"
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:110
-#: src/composables/useTransactionInfo.ts:90
-#: src/composables/useUsdcTransactionInfo.ts:114
+#: src/composables/useTransactionInfo.ts:101
+#: src/composables/useUsdcTransactionInfo.ts:74
 msgid "Cancelled Swap"
 msgstr "Intercambio Cancelado"
 
@@ -594,13 +599,13 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "No se pueden importar los contactos, formato de archivos incorrecto."
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:112
+#: src/composables/useTransactionInfo.ts:123
 msgid "Cashlink"
 msgstr "Cashlink"
 
 #: src/lib/DataFormatting.ts:18
 msgid "Cashlink Claiming"
-msgstr ""
+msgstr "Reclamo de Cashlink"
 
 #: src/components/modals/TransactionModal.vue:37
 msgid "Cashlink from {address}"
@@ -608,7 +613,7 @@ msgstr "Cashlink proveniente de {address}"
 
 #: src/lib/DataFormatting.ts:15
 msgid "Cashlink Funding"
-msgstr ""
+msgstr "Financiamiento de Cashlink"
 
 #: src/components/modals/TransactionModal.vue:43
 msgid "Cashlink to {address}"
@@ -760,7 +765,7 @@ msgstr "Continuar Intercambio"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:38
 msgid "Continue with Moonpay"
-msgstr ""
+msgstr "Continuar con Moonpay"
 
 #: src/components/modals/SimplexModal.vue:39
 msgid ""
@@ -980,11 +985,11 @@ msgstr "Ingrese los detalles de su banco"
 
 #: src/lib/GoCrypto.ts:228
 msgid "Error {errorCode}"
-msgstr ""
+msgstr "Error {errorCode}"
 
 #: src/lib/GoCrypto.ts:227
 msgid "Error {errorCode}: {errorMessage}"
-msgstr ""
+msgstr "Error {errorCode}: {errorMessage}"
 
 #: src/components/swap/SwapAnimation.vue:329
 msgid "Error:"
@@ -1044,6 +1049,7 @@ msgstr "Fallido"
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
+"Fallo al recolectar las tarifas de USDC. Reintentando... (Error: {message})"
 
 #: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
@@ -1143,19 +1149,27 @@ msgstr "Nodo Completo"
 #: src/components/PolygonWarningPage.vue:19
 msgid "Funds sent from non-Polygon USDC addresses could be permanently lost!"
 msgstr ""
+"Los fondos que se envían de direcciones que no sean de USDC en Polygon "
+"podrían perderse permanentemente."
 
 #: src/components/PolygonWarningFooter.vue:27
 msgid "Funds sent from non-Polygon USDC versions could be permanently lost!"
 msgstr ""
+"Los fondos que se envían de versiones de USDC que no sean en Polygon podrían"
+" perderse permanentemente."
 
 #: src/components/PolygonWarningFooter.vue:7
 #: src/components/PolygonWarningPage.vue:18
 msgid "Funds sent to non-Polygon USDC addresses could be permanently lost!"
 msgstr ""
+"Los fondos que se envían hacia direcciones que no sean de USDC en Polygon "
+"podrían perderse permanentemente."
 
 #: src/components/PolygonWarningFooter.vue:26
 msgid "Funds sent to non-Polygon USDC versions could be permanently lost!"
 msgstr ""
+"Los fondos que se envían hacia versiones de USDC que no sean en Polygon "
+"podrían perderse permanentemente."
 
 #: src/components/layouts/Settings.vue:44
 msgid "General"
@@ -1221,24 +1235,26 @@ msgid "Historic value"
 msgstr "Valor histórico"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:475
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:157
-#: src/composables/useUsdcTransactionInfo.ts:171 src/lib/DataFormatting.ts:21
+#: src/composables/useTransactionInfo.ts:168
+#: src/composables/useUsdcTransactionInfo.ts:130 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "Creación de HTLC"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:485
+#: src/components/modals/TransactionModal.vue:490
+#: src/components/modals/TransactionModal.vue:496
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:168
-#: src/composables/useUsdcTransactionInfo.ts:182
+#: src/composables/useTransactionInfo.ts:183
+#: src/composables/useTransactionInfo.ts:189
+#: src/composables/useUsdcTransactionInfo.ts:136
 msgid "HTLC Refund"
 msgstr "Reembolso de HTLC"
 
-#: src/components/modals/TransactionModal.vue:478
-#: src/composables/useTransactionInfo.ts:161
-#: src/composables/useUsdcTransactionInfo.ts:175
+#: src/components/modals/TransactionModal.vue:479
+#: src/composables/useTransactionInfo.ts:172
+#: src/composables/useUsdcTransactionInfo.ts:133
 msgid "HTLC Settlement"
 msgstr "Establecimiento del HTLC"
 
@@ -1275,10 +1291,12 @@ msgid ""
 "If you already made a payment which was not accepted, please contact "
 "GoCrypto for a refund."
 msgstr ""
+"Si ha realizado un pago que no ha sido aceptado, por favor contacte a "
+"GoCrypto para que le reintegren su dinero."
 
 #: src/lib/GoCrypto.ts:273
 msgid "If you already made a payment, wait for it to be confirmed instead."
-msgstr ""
+msgstr "Si ya ha realizado un pago, por favor espere por la confirmación."
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1350,7 +1368,7 @@ msgstr "invalido"
 
 #: src/components/swap/SwapModal.vue:1784
 msgid "Invalid swap state, swap aborted!"
-msgstr ""
+msgstr "Estado del intercambio es invalido, ¡intercambio abortado!"
 
 #: src/components/TransactionList.vue:62
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
@@ -1461,7 +1479,7 @@ msgstr "perdida"
 
 #: src/components/modals/UsdcReceiveModal.vue:16
 msgid "Make sure they are sending Polygon USDC."
-msgstr ""
+msgstr "Asegurese que estan enviando USDC en Polygon"
 
 #: src/components/modals/UsdcActivationModal.vue:19
 msgid ""
@@ -1496,7 +1514,7 @@ msgstr "Teléfono celular"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:14
 msgid "MoonPay is a third-party service requiring registration and KYC."
-msgstr ""
+msgstr "MoonPay es un servicio de terceros que requiere registro y KYC."
 
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
@@ -1529,7 +1547,7 @@ msgstr "De un nombre a su contacto"
 
 #: src/components/layouts/AddressOverview.vue:151
 msgid "Native Polygon USDC"
-msgstr ""
+msgstr "USDC en Polygon Nativo"
 
 #: src/components/layouts/Sidebar.vue:143
 msgid "Network"
@@ -1567,7 +1585,7 @@ msgstr "No se han recibido fondos, entonces el intercambio ha espirado."
 
 #: src/lib/GoCrypto.ts:219
 msgid "No payment request found"
-msgstr ""
+msgstr "No se ha encontrado una solicitud de pago"
 
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
@@ -1590,7 +1608,7 @@ msgstr "Ninguna"
 
 #: src/lib/GoCrypto.ts:206
 msgid "Not a pending payment request"
-msgstr ""
+msgstr "No hay solicitud de pago pendiente"
 
 #: src/components/BankCheckInput.vue:57
 msgid "Not all accounts provided by this bank support instant transactions."
@@ -1660,11 +1678,11 @@ msgstr "Sobreescribe como se abre el Keyguard."
 
 #: src/components/modals/SendModal.vue:169
 msgid "Pay within {countdown}"
-msgstr ""
+msgstr "Pague en {countdown}"
 
 #: src/lib/GoCrypto.ts:236
 msgid "Payment request has already been paid"
-msgstr ""
+msgstr "La solicitud de pago ya ha sido pagada"
 
 #: src/components/modals/WelcomeModal.vue:353
 msgid "Payments, got it"
@@ -1715,7 +1733,7 @@ msgstr ""
 
 #: src/lib/GoCrypto.ts:188
 msgid "Please ask the merchant to create a new payment request."
-msgstr ""
+msgstr "Por favor solicite la creación de una nueva solicitud de pago."
 
 #: src/components/layouts/Sidebar.vue:18
 msgid "Please do not use your Mainnet accounts!"
@@ -1810,7 +1828,7 @@ msgstr "Reciba NIM gratis"
 
 #: src/components/PolygonWarningPage.vue:12
 msgid "Receive from Polygon USDC addresses only!"
-msgstr ""
+msgstr "Reciba solo de direcciones de USDC en Polygon"
 
 #: src/components/modals/ReceiveModal.vue:7
 msgid "Receive NIM"
@@ -1873,7 +1891,7 @@ msgstr "Reembolso"
 
 #: src/components/modals/UsdcTransactionModal.vue:531
 msgid "Refund failed: "
-msgstr ""
+msgstr "Re-financiamiento fallido: "
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:72
 msgid ""
@@ -1921,7 +1939,7 @@ msgstr "Resolviendo dominio imparable..."
 
 #: src/components/swap/SwapModal.vue:1029
 msgid "Resulting BTC amount is too small."
-msgstr ""
+msgstr "El monto de BTC resultante es muy pequeño"
 
 #: src/components/modals/BtcSendModal.vue:124
 #: src/components/modals/SendModal.vue:239
@@ -1980,7 +1998,7 @@ msgstr "Vender"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:13
 msgid "Sell BTC and USDC"
-msgstr ""
+msgstr "Vender BTC y USDC"
 
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
@@ -2016,6 +2034,8 @@ msgid ""
 "Selling NIM is currently unavailable. Swap NIM for BTC or USDC, which can be"
 " sold for FIAT."
 msgstr ""
+"La venta de NIM en estos momentos no esta disponible. Intercambio NIM por "
+"BTC o USDC, el cual puede ser vendido por FIAT."
 
 #: src/components/swap/OasisLaunchModal.vue:11
 msgid "Selling now available"
@@ -2030,7 +2050,7 @@ msgstr "Enviar"
 #: src/components/modals/SendModal.vue:204
 #: src/components/modals/UsdcSendModal.vue:217
 msgid "Send {currency}"
-msgstr ""
+msgstr "Enviar {currency}"
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:78
 #: src/components/modals/SendModal.vue:187
@@ -2070,7 +2090,7 @@ msgstr "Envíe, reciba y almacene BTC en su billetera."
 
 #: src/components/layouts/AddressOverview.vue:158
 msgid "Sending Native Polygon USDC is not yet supported."
-msgstr ""
+msgstr "No se soporta aún el envío de USDC en Polygon nativo."
 
 #: src/components/modals/BtcSendModal.vue:454
 #: src/components/modals/SendModal.vue:764
@@ -2087,8 +2107,8 @@ msgid "Sent {btc} BTC to {name}"
 msgstr "Enviar {btc} BTC a {name}"
 
 #: src/composables/useBtcTransactionInfo.ts:171
-#: src/composables/useTransactionInfo.ts:140
-#: src/composables/useUsdcTransactionInfo.ts:154
+#: src/composables/useTransactionInfo.ts:151
+#: src/composables/useUsdcTransactionInfo.ts:114
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Enviado {fromAsset} – Recibido {toAsset}"
 
@@ -2259,8 +2279,8 @@ msgstr "Cuotas súper bajas, pagos súper rápidos"
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:117
-#: src/composables/useTransactionInfo.ts:86
-#: src/composables/useUsdcTransactionInfo.ts:121
+#: src/composables/useTransactionInfo.ts:97
+#: src/composables/useUsdcTransactionInfo.ts:81
 msgid "Swap"
 msgstr "Intercambio"
 
@@ -2340,7 +2360,7 @@ msgstr "sincronizando"
 
 #: src/components/SendModalFooter.vue:65
 msgid "Syncing with Bitcoin network"
-msgstr ""
+msgstr "Sincronizando con la red de Bitcoin"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
@@ -2376,6 +2396,8 @@ msgid ""
 "The GoCrypto payment request expires in {finalCountdown}. To ensure that "
 "your payment is confirmed in time, send it within {earlyCountdown}."
 msgstr ""
+"La solicitud de pago de GoCrypto expira en {finalCountdown}. Para asegurarse"
+" que su pago será confirmado a tiempo, envíelo en {earlyCountdown}."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
@@ -2404,15 +2426,15 @@ msgstr ""
 
 #: src/lib/GoCrypto.ts:264
 msgid "The payment request expired"
-msgstr ""
+msgstr "La solicitud de pago ha expirado"
 
 #: src/lib/GoCrypto.ts:270
 msgid "The payment request is about to expire"
-msgstr ""
+msgstr "Su solicitud de pago esta apunto de expirar"
 
 #: src/lib/GoCrypto.ts:208
 msgid "The payment request might have been paid, expired, or cancelled."
-msgstr ""
+msgstr "La solicitud de pago pudo haber sido pagada, expirada o cancelada."
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
@@ -2606,13 +2628,13 @@ msgstr "Pruébelo ahora"
 msgid "Tx time"
 msgstr "Tiempo de tx"
 
-#: src/composables/useTransactionInfo.ts:113
+#: src/composables/useTransactionInfo.ts:124
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink no canjeado"
 
 #: src/lib/GoCrypto.ts:225
 msgid "Unexpected GoCrypto error"
-msgstr ""
+msgstr "Error inesperado en GoCrypto"
 
 #: src/swap-kyc-handler.ts:214
 msgid ""
@@ -2665,7 +2687,7 @@ msgstr "Actualizar ahora"
 #: src/components/layouts/AddressOverview.vue:81
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:121
-#: src/composables/useTransactionInfo.ts:99
+#: src/composables/useTransactionInfo.ts:110
 msgid "USD Coin"
 msgstr "USD Coin"
 
@@ -2699,7 +2721,7 @@ msgstr "Esperando por {currency}"
 
 #: src/components/SendModalFooter.vue:75
 msgid "Waiting for Nimiq network information"
-msgstr ""
+msgstr "Esperando información de la red Nimiq."
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -2774,7 +2796,7 @@ msgstr "Esta usando una Cuenta versión antigua "
 
 #: src/components/PolygonWarningFooter.vue:9
 msgid "You can receive from Polygon USDC addresses only!"
-msgstr ""
+msgstr "¡Solo puede recibir de direccion USDC en Polygon!"
 
 #: src/components/TestnetFaucet.vue:125
 msgid "You can receive more free NIM in {waitTime} hours."
@@ -2886,7 +2908,7 @@ msgstr ""
 
 #: src/lib/GoCrypto.ts:244
 msgid "Your payment failed"
-msgstr ""
+msgstr "Su pago ha fallado"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:112
 msgid "Your payment has not been received yet. There might be an issue."
@@ -2894,19 +2916,19 @@ msgstr "Su pago aún no se ha recibido. Puede que haya un problema."
 
 #: src/lib/GoCrypto.ts:240
 msgid "Your payment is being processed"
-msgstr ""
+msgstr "Su pago esta siendo procesado"
 
 #: src/lib/GoCrypto.ts:248
 msgid "Your payment is invalid"
-msgstr ""
+msgstr "Su pago es invalido"
 
 #: src/lib/GoCrypto.ts:257
 msgid "Your payment was cancelled"
-msgstr ""
+msgstr "Su pago fue cancelado"
 
 #: src/lib/GoCrypto.ts:252
 msgid "Your payment was refunded"
-msgstr ""
+msgstr "Su pago fue re-financiado"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:9
 msgid "Your payout is on its way"

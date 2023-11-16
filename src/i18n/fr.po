@@ -420,8 +420,8 @@ msgid "Back to Bank Details"
 msgstr "Retour aux coordonnées bancaires"
 
 #: src/composables/useBtcTransactionInfo.ts:125
-#: src/composables/useTransactionInfo.ts:103
-#: src/composables/useUsdcTransactionInfo.ts:129
+#: src/composables/useTransactionInfo.ts:114
+#: src/composables/useUsdcTransactionInfo.ts:89
 msgid "Bank Account"
 msgstr "Compte bancaire"
 
@@ -446,8 +446,8 @@ msgstr "Le BIC fonctionne également."
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:116
 #: src/components/modals/BtcTransactionModal.vue:128
-#: src/composables/useTransactionInfo.ts:95
-#: src/composables/useUsdcTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:106
+#: src/composables/useUsdcTransactionInfo.ts:85
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
@@ -586,8 +586,8 @@ msgstr "Annuler le Swap"
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:110
-#: src/composables/useTransactionInfo.ts:90
-#: src/composables/useUsdcTransactionInfo.ts:114
+#: src/composables/useTransactionInfo.ts:101
+#: src/composables/useUsdcTransactionInfo.ts:74
 msgid "Cancelled Swap"
 msgstr "Swap annulé"
 
@@ -596,7 +596,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "Impossible d'importer les contacts, format de fichier incorrect."
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:112
+#: src/composables/useTransactionInfo.ts:123
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -1238,24 +1238,26 @@ msgid "Historic value"
 msgstr "Valeur historique"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:475
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:157
-#: src/composables/useUsdcTransactionInfo.ts:171 src/lib/DataFormatting.ts:21
+#: src/composables/useTransactionInfo.ts:168
+#: src/composables/useUsdcTransactionInfo.ts:130 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "Création du HTLC"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:485
+#: src/components/modals/TransactionModal.vue:490
+#: src/components/modals/TransactionModal.vue:496
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:168
-#: src/composables/useUsdcTransactionInfo.ts:182
+#: src/composables/useTransactionInfo.ts:183
+#: src/composables/useTransactionInfo.ts:189
+#: src/composables/useUsdcTransactionInfo.ts:136
 msgid "HTLC Refund"
 msgstr "Remboursement du HTLC"
 
-#: src/components/modals/TransactionModal.vue:478
-#: src/composables/useTransactionInfo.ts:161
-#: src/composables/useUsdcTransactionInfo.ts:175
+#: src/components/modals/TransactionModal.vue:479
+#: src/composables/useTransactionInfo.ts:172
+#: src/composables/useUsdcTransactionInfo.ts:133
 msgid "HTLC Settlement"
 msgstr "Règlement du HTLC"
 
@@ -1292,10 +1294,12 @@ msgid ""
 "If you already made a payment which was not accepted, please contact "
 "GoCrypto for a refund."
 msgstr ""
+"Si vous avez déjà effectué un paiement qui n'a pas été accepté, veuillez "
+"contacter GoCrypto pour obtenir un remboursement."
 
 #: src/lib/GoCrypto.ts:273
 msgid "If you already made a payment, wait for it to be confirmed instead."
-msgstr ""
+msgstr "Si vous avez déjà effectué un paiement, attendez qu'il soit confirmé."
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1551,7 +1555,7 @@ msgstr "Nommez votre contact"
 
 #: src/components/layouts/AddressOverview.vue:151
 msgid "Native Polygon USDC"
-msgstr ""
+msgstr "Polygon USDC natif"
 
 #: src/components/layouts/Sidebar.vue:143
 msgid "Network"
@@ -1613,7 +1617,7 @@ msgstr "Aucun"
 
 #: src/lib/GoCrypto.ts:206
 msgid "Not a pending payment request"
-msgstr ""
+msgstr "Pas de demande de paiement en attente"
 
 #: src/components/BankCheckInput.vue:57
 msgid "Not all accounts provided by this bank support instant transactions."
@@ -2097,7 +2101,7 @@ msgstr "Envoyez, recevez et stockez du BTC avec votre wallet."
 
 #: src/components/layouts/AddressOverview.vue:158
 msgid "Sending Native Polygon USDC is not yet supported."
-msgstr ""
+msgstr "L'envoi de Polygon USDC natif n'est pas encore pris en charge."
 
 #: src/components/modals/BtcSendModal.vue:454
 #: src/components/modals/SendModal.vue:764
@@ -2114,8 +2118,8 @@ msgid "Sent {btc} BTC to {name}"
 msgstr "{btc} BTC envoyé à {name}"
 
 #: src/composables/useBtcTransactionInfo.ts:171
-#: src/composables/useTransactionInfo.ts:140
-#: src/composables/useUsdcTransactionInfo.ts:154
+#: src/composables/useTransactionInfo.ts:151
+#: src/composables/useUsdcTransactionInfo.ts:114
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Envoyé {fromAsset} – Recu {toAsset}"
 
@@ -2284,8 +2288,8 @@ msgstr "Frais minimes et paiements très rapides"
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:117
-#: src/composables/useTransactionInfo.ts:86
-#: src/composables/useUsdcTransactionInfo.ts:121
+#: src/composables/useTransactionInfo.ts:97
+#: src/composables/useUsdcTransactionInfo.ts:81
 msgid "Swap"
 msgstr "Swap"
 
@@ -2400,6 +2404,8 @@ msgid ""
 "The GoCrypto payment request expires in {finalCountdown}. To ensure that "
 "your payment is confirmed in time, send it within {earlyCountdown}."
 msgstr ""
+"La demande de paiement GoCrypto expire dans {finalCountdown}. Pour que votre"
+" paiement soit confirmé à temps, envoyez-le avant {earlyCountdown}."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
@@ -2432,11 +2438,12 @@ msgstr "La demande de paiement a expiré"
 
 #: src/lib/GoCrypto.ts:270
 msgid "The payment request is about to expire"
-msgstr ""
+msgstr "La demande de paiement est sur le point d'expirer"
 
 #: src/lib/GoCrypto.ts:208
 msgid "The payment request might have been paid, expired, or cancelled."
 msgstr ""
+"Il se peut que la demande de paiement ait été payée, expirée ou annulée."
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
@@ -2631,7 +2638,7 @@ msgstr "Essayez-le maintenant"
 msgid "Tx time"
 msgstr "Temps de Tx"
 
-#: src/composables/useTransactionInfo.ts:113
+#: src/composables/useTransactionInfo.ts:124
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"
 
@@ -2690,7 +2697,7 @@ msgstr "Mettre à jour"
 #: src/components/layouts/AddressOverview.vue:81
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:121
-#: src/composables/useTransactionInfo.ts:99
+#: src/composables/useTransactionInfo.ts:110
 msgid "USD Coin"
 msgstr "USD Coin"
 

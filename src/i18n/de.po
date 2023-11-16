@@ -4,8 +4,8 @@
 # Matheo <matheo@nimiq.com>, 2021
 # Redexe <timo.niehoff@yahoo.de>, 2021
 # Sven <sven@nimiq.com>, 2022
+# Sören Schwert <hello@soerenschwert.de>, 2022
 # Michael <jiggaaa20@gmail.com>, 2023
-# Sören Schwert <hello@soerenschwert.de>, 2023
 # Daniel, 2023
 # 
 msgid ""
@@ -413,8 +413,8 @@ msgid "Back to Bank Details"
 msgstr "Zurück zu Bankdetails"
 
 #: src/composables/useBtcTransactionInfo.ts:125
-#: src/composables/useTransactionInfo.ts:103
-#: src/composables/useUsdcTransactionInfo.ts:129
+#: src/composables/useTransactionInfo.ts:114
+#: src/composables/useUsdcTransactionInfo.ts:89
 msgid "Bank Account"
 msgstr "Bankkonto"
 
@@ -439,8 +439,8 @@ msgstr "BIC funktioniert auch."
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:116
 #: src/components/modals/BtcTransactionModal.vue:128
-#: src/composables/useTransactionInfo.ts:95
-#: src/composables/useUsdcTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:106
+#: src/composables/useUsdcTransactionInfo.ts:85
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
@@ -582,8 +582,8 @@ msgstr "Tausch abbrechen"
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:110
-#: src/composables/useTransactionInfo.ts:90
-#: src/composables/useUsdcTransactionInfo.ts:114
+#: src/composables/useTransactionInfo.ts:101
+#: src/composables/useUsdcTransactionInfo.ts:74
 msgid "Cancelled Swap"
 msgstr "Abgebrochener Tausch"
 
@@ -592,7 +592,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:112
+#: src/composables/useTransactionInfo.ts:123
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -852,7 +852,7 @@ msgid ""
 "Different currencies can do different things.\n"
 "Use them your way and make the most of it."
 msgstr ""
-"Unterschiedliche Währungen können unterschiedliche Dinge. Nutze Sie nach "
+"Unterschiedliche Währungen können unterschiedliche Dinge. Nutze sie nach "
 "deinen Wünschen und mach das Beste draus."
 
 #: src/components/layouts/Settings.vue:281
@@ -1228,24 +1228,26 @@ msgid "Historic value"
 msgstr "Historischer Wert"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:475
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:157
-#: src/composables/useUsdcTransactionInfo.ts:171 src/lib/DataFormatting.ts:21
+#: src/composables/useTransactionInfo.ts:168
+#: src/composables/useUsdcTransactionInfo.ts:130 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "HTLC-Erstellung"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:485
+#: src/components/modals/TransactionModal.vue:490
+#: src/components/modals/TransactionModal.vue:496
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:168
-#: src/composables/useUsdcTransactionInfo.ts:182
+#: src/composables/useTransactionInfo.ts:183
+#: src/composables/useTransactionInfo.ts:189
+#: src/composables/useUsdcTransactionInfo.ts:136
 msgid "HTLC Refund"
 msgstr "HTLC-Rückerstattung"
 
-#: src/components/modals/TransactionModal.vue:478
-#: src/composables/useTransactionInfo.ts:161
-#: src/composables/useUsdcTransactionInfo.ts:175
+#: src/components/modals/TransactionModal.vue:479
+#: src/composables/useTransactionInfo.ts:172
+#: src/composables/useUsdcTransactionInfo.ts:133
 msgid "HTLC Settlement"
 msgstr "HTLC-Abrechnung"
 
@@ -2096,8 +2098,8 @@ msgid "Sent {btc} BTC to {name}"
 msgstr "{btc} BTC an {name} versendet"
 
 #: src/composables/useBtcTransactionInfo.ts:171
-#: src/composables/useTransactionInfo.ts:140
-#: src/composables/useUsdcTransactionInfo.ts:154
+#: src/composables/useTransactionInfo.ts:151
+#: src/composables/useUsdcTransactionInfo.ts:114
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "{fromAsset} gesendet – {toAsset} erhalten"
 
@@ -2266,8 +2268,8 @@ msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:117
-#: src/composables/useTransactionInfo.ts:86
-#: src/composables/useUsdcTransactionInfo.ts:121
+#: src/composables/useTransactionInfo.ts:97
+#: src/composables/useUsdcTransactionInfo.ts:81
 msgid "Swap"
 msgstr "Tausch"
 
@@ -2615,7 +2617,7 @@ msgstr "Jetzt probieren"
 msgid "Tx time"
 msgstr "Tx Zeit"
 
-#: src/composables/useTransactionInfo.ts:113
+#: src/composables/useTransactionInfo.ts:124
 msgid "Unclaimed Cashlink"
 msgstr "Ungenutzter Cashlink"
 
@@ -2674,7 +2676,7 @@ msgstr "Jetzt aktualisieren"
 #: src/components/layouts/AddressOverview.vue:81
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:121
-#: src/composables/useTransactionInfo.ts:99
+#: src/composables/useTransactionInfo.ts:110
 msgid "USD Coin"
 msgstr "USD Coin"
 

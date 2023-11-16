@@ -413,8 +413,8 @@ msgid "Back to Bank Details"
 msgstr "Terug naar bankgegevens"
 
 #: src/composables/useBtcTransactionInfo.ts:125
-#: src/composables/useTransactionInfo.ts:103
-#: src/composables/useUsdcTransactionInfo.ts:129
+#: src/composables/useTransactionInfo.ts:114
+#: src/composables/useUsdcTransactionInfo.ts:89
 msgid "Bank Account"
 msgstr "Bankrekening"
 
@@ -439,8 +439,8 @@ msgstr "BIC werkt ook."
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:116
 #: src/components/modals/BtcTransactionModal.vue:128
-#: src/composables/useTransactionInfo.ts:95
-#: src/composables/useUsdcTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:106
+#: src/composables/useUsdcTransactionInfo.ts:85
 msgid "Bitcoin"
 msgstr "Bitcoin"
 
@@ -580,8 +580,8 @@ msgstr "Swap annuleren"
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:110
-#: src/composables/useTransactionInfo.ts:90
-#: src/composables/useUsdcTransactionInfo.ts:114
+#: src/composables/useTransactionInfo.ts:101
+#: src/composables/useUsdcTransactionInfo.ts:74
 msgid "Cancelled Swap"
 msgstr "Geannuleerde Swap"
 
@@ -590,7 +590,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "Kan geen contacten importeren, fout bestandformaat."
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:112
+#: src/composables/useTransactionInfo.ts:123
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -1225,24 +1225,26 @@ msgid "Historic value"
 msgstr "Historische waarde"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:475
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:157
-#: src/composables/useUsdcTransactionInfo.ts:171 src/lib/DataFormatting.ts:21
+#: src/composables/useTransactionInfo.ts:168
+#: src/composables/useUsdcTransactionInfo.ts:130 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "HTLC Creatie"
 
 #: src/components/modals/BtcTransactionModal.vue:428
-#: src/components/modals/TransactionModal.vue:485
+#: src/components/modals/TransactionModal.vue:490
+#: src/components/modals/TransactionModal.vue:496
 #: src/composables/useBtcTransactionInfo.ts:186
-#: src/composables/useTransactionInfo.ts:168
-#: src/composables/useUsdcTransactionInfo.ts:182
+#: src/composables/useTransactionInfo.ts:183
+#: src/composables/useTransactionInfo.ts:189
+#: src/composables/useUsdcTransactionInfo.ts:136
 msgid "HTLC Refund"
 msgstr "HTLC terugbetaling"
 
-#: src/components/modals/TransactionModal.vue:478
-#: src/composables/useTransactionInfo.ts:161
-#: src/composables/useUsdcTransactionInfo.ts:175
+#: src/components/modals/TransactionModal.vue:479
+#: src/composables/useTransactionInfo.ts:172
+#: src/composables/useUsdcTransactionInfo.ts:133
 msgid "HTLC Settlement"
 msgstr "HTLC schikking"
 
@@ -2087,8 +2089,8 @@ msgid "Sent {btc} BTC to {name}"
 msgstr "Stuur {btc} BTC naar {name}"
 
 #: src/composables/useBtcTransactionInfo.ts:171
-#: src/composables/useTransactionInfo.ts:140
-#: src/composables/useUsdcTransactionInfo.ts:154
+#: src/composables/useTransactionInfo.ts:151
+#: src/composables/useUsdcTransactionInfo.ts:114
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Verzonden {fromAsset} - Ontvangen {toAsset}"
 
@@ -2258,8 +2260,8 @@ msgstr "Super lage kosten, super snelle betalingen"
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:117
-#: src/composables/useTransactionInfo.ts:86
-#: src/composables/useUsdcTransactionInfo.ts:121
+#: src/composables/useTransactionInfo.ts:97
+#: src/composables/useUsdcTransactionInfo.ts:81
 msgid "Swap"
 msgstr "Swap"
 
@@ -2602,7 +2604,7 @@ msgstr "Probeer nu"
 msgid "Tx time"
 msgstr "Transactie tijd"
 
-#: src/composables/useTransactionInfo.ts:113
+#: src/composables/useTransactionInfo.ts:124
 msgid "Unclaimed Cashlink"
 msgstr "Niet geclaimde Cashlink"
 
@@ -2660,7 +2662,7 @@ msgstr "Update nu"
 #: src/components/layouts/AddressOverview.vue:81
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:121
-#: src/composables/useTransactionInfo.ts:99
+#: src/composables/useTransactionInfo.ts:110
 msgid "USD Coin"
 msgstr "USD Coin"
 

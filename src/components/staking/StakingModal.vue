@@ -8,7 +8,7 @@
         <template v-if="page === Page.Info">
             <StakingWelcomePage @next="switchValidator" />
         </template>
-        <template v-if="page === Page.Graph">
+        <template v-else-if="page === Page.Graph">
             <StakingGraphPage
                 @back="page = isStaking ? Page.Already : Page.Validator"
                 @next="page = Page.Already"
@@ -16,17 +16,17 @@
                 @statusChange="onStatusChange"
             />
         </template>
-        <template v-if="page === Page.Already">
+        <template v-else-if="page === Page.Already">
             <StakingInfoPage
                 @back="page = Page.Graph" @next="page = Page.RewardsHistory"
                 @adjust-stake="adjustStake"
                 @switch-validator="switchValidator"
             />
         </template>
-        <template v-if="page === Page.RewardsHistory">
+        <template v-else-if="page === Page.RewardsHistory">
             <StakingRewardsHistoryPage @back="page = Page.Already" />
         </template>
-        <template v-if="page === Page.Validator">
+        <template v-else-if="page === Page.Validator">
             <StakingValidatorPage
                 @back="page = isStaking ? Page.Already : Page.Info"
                 @next="page = isStaking ? Page.Already : Page.Graph; closeOverlay()"

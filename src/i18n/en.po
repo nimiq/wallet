@@ -130,7 +130,7 @@ msgid "1"
 msgstr ""
 
 #: src/components/layouts/Network.vue:36
-msgid "1 min"
+msgid "1-2 sec"
 msgstr ""
 
 #: src/components/layouts/Network.vue:54
@@ -236,7 +236,7 @@ msgstr ""
 msgid "Add account"
 msgstr ""
 
-#: src/components/AddressList.vue:20
+#: src/components/AddressList.vue:19
 msgid "Add address"
 msgstr ""
 
@@ -256,7 +256,7 @@ msgstr ""
 msgid "Add contact"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:59
+#: src/lib/StakingUtils.ts:60
 msgid "Add stake"
 msgstr ""
 
@@ -268,7 +268,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:63
+#: src/components/staking/StakingInfoPage.vue:65
 msgid "Adjust Stake"
 msgstr ""
 
@@ -453,7 +453,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:52
+#: src/components/layouts/Sidebar.vue:51
 msgid "Buy"
 msgstr ""
 
@@ -537,7 +537,7 @@ msgid "Cancel Swap"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:6
-#: src/components/modals/TransactionModal.vue:5
+#: src/components/modals/TransactionModal.vue:8
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:113
 #: src/composables/useTransactionInfo.ts:109
@@ -687,7 +687,7 @@ msgstr ""
 msgid "Connected to"
 msgstr ""
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:123
 msgid "connecting"
 msgstr ""
 
@@ -819,6 +819,10 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:82
+msgid "Deactivating"
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
@@ -827,10 +831,6 @@ msgstr ""
 
 #: src/components/swap/OasisLaunchModal.vue:19
 msgid "Developer resources"
-msgstr ""
-
-#: src/components/layouts/Sidebar.vue:5
-msgid "Devnet"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:10
@@ -968,7 +968,7 @@ msgstr ""
 msgid "Error:"
 msgstr ""
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:124
 msgid "established"
 msgstr ""
 
@@ -1023,23 +1023,23 @@ msgstr ""
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:140
+#: src/components/TestnetFaucet.vue:132
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:82
+#: src/components/TestnetFaucet.vue:75
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:86
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:93
+#: src/components/TestnetFaucet.vue:86
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:78
+#: src/components/TestnetFaucet.vue:71
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -1171,12 +1171,12 @@ msgstr ""
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:12
+#: src/components/staking/StakingWelcomePage.vue:12
 msgid "Help secure the network by locking up NIM and get a percentage as a reward."
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:27
-msgid "Hi there! You are seeing a very early preview of the Wallet for the Albatross Community Devnet. Things are missing and things will change until Albatross launch!"
+msgid "Hi there! You are seeing a preview of the Wallet for the PoS Testnet. We are working on the performance issues!"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:178
@@ -1420,10 +1420,6 @@ msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:83
 msgid "Long press to confirm"
-msgstr ""
-
-#: src/components/layouts/Network.vue:116
-msgid "lost"
 msgstr ""
 
 #: src/components/modals/UsdcReceiveModal.vue:16
@@ -1867,8 +1863,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:144
-#: src/components/TestnetFaucet.vue:150
+#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:143
 msgid "Request failed"
 msgstr ""
 
@@ -1957,7 +1953,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:72
+#: src/components/layouts/Sidebar.vue:71
 msgid "Sell"
 msgstr ""
 
@@ -2112,6 +2108,10 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
+#: src/lib/StakingUtils.ts:68
+msgid "Set inactive stake"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:185
 msgid "Set minimum"
 msgstr ""
@@ -2212,7 +2212,7 @@ msgstr ""
 msgid "Stable like USD, got it"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:8
+#: src/components/staking/StakingWelcomePage.vue:8
 msgid "Stake NIM to earn NIM"
 msgstr ""
 
@@ -2224,14 +2224,13 @@ msgstr ""
 msgid "Stake now"
 msgstr ""
 
-#: src/components/staking/AccountStake.vue:4
-#: src/components/staking/StakingAlreadyPage.vue:52
+#: src/components/staking/StakingInfoPage.vue:52
 msgid "Staked"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:38
 #: src/components/LegacyAccountNotice.vue:28
-#: src/components/staking/StakingAlreadyPage.vue:11
+#: src/components/staking/StakingInfoPage.vue:11
 msgid "Staking"
 msgstr ""
 
@@ -2243,7 +2242,7 @@ msgstr ""
 msgid "Start exploring"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:33
+#: src/lib/StakingUtils.ts:34
 msgid "Start staking"
 msgstr ""
 
@@ -2266,7 +2265,7 @@ msgstr ""
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/layouts/Sidebar.vue:124
 #: src/components/modals/BtcTransactionModal.vue:9
-#: src/components/modals/TransactionModal.vue:7
+#: src/components/modals/TransactionModal.vue:10
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:120
 #: src/composables/useTransactionInfo.ts:105
@@ -2293,7 +2292,7 @@ msgid "Swap fee"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:12
-#: src/components/modals/TransactionModal.vue:9
+#: src/components/modals/TransactionModal.vue:12
 #: src/components/modals/UsdcTransactionModal.vue:12
 msgid "Swap from {address}"
 msgstr ""
@@ -2306,7 +2305,7 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:73
+#: src/components/layouts/AccountOverview.vue:76
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
@@ -2340,7 +2339,15 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/components/layouts/Network.vue:117
+#: src/lib/StakingUtils.ts:47
+msgid "Switch validator"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:118
+msgid "Switch Validator"
+msgstr ""
+
+#: src/components/layouts/Network.vue:122
 msgid "syncing"
 msgstr ""
 
@@ -2432,7 +2439,7 @@ msgstr ""
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:135
+#: src/components/TestnetFaucet.vue:128
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -2495,7 +2502,7 @@ msgstr ""
 msgid "This month"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:130
+#: src/components/TestnetFaucet.vue:123
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2615,20 +2622,17 @@ msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers fro
 msgstr ""
 
 #: src/components/staking/StakingGraphPage.vue:64
-msgid "Unlock at any time. Your NIM will be available instantly."
+msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingAlreadyPage.vue:147
-#: src/components/staking/ValidatorListItem.vue:50
+#: src/components/staking/StakingInfoPage.vue:175
+#: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:25
+#: src/components/staking/StakingInfoPage.vue:78
+#: src/lib/StakingUtils.ts:26
 msgid "Unstake"
-msgstr ""
-
-#: src/components/staking/StakingAlreadyPage.vue:64
-msgid "Unstake All"
 msgstr ""
 
 #: src/swap-kyc-handler.ts:148
@@ -2748,7 +2752,7 @@ msgid "Without an individual IBAN, refunds are impossible!"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:17
-msgid "You are connecting to the Nimiq, Bitcoin, Polygon (USDC) Testnets,                        and Nimiq Albatross Devnet."
+msgid "You are connecting to the Nimiq Proof-of-Stake Testnet."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
@@ -2759,7 +2763,7 @@ msgstr ""
 msgid "You can receive from Polygon USDC addresses only!"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:124
+#: src/components/TestnetFaucet.vue:117
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 

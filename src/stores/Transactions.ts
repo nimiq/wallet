@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
+import Config from 'config';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
@@ -128,7 +129,12 @@ export const useTransactionsStore = createStore({
                         }
                     }
                     // HTLC Refunding
-                    if ('creator' in plain.proof) {
+                    if ('creator' in plain.proof
+                        && !(
+                            'signer' in plain.proof
+                            && Config.nimiqPay.cosignerPublicKeys.includes(plain.proof.publicKey!)
+                        )
+                    ) {
                         // async sub call to keep the main method synchronous to avoid race conditions and to avoid
                         // await in loop (slow sequential processing).
                         (async () => {

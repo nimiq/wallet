@@ -324,6 +324,7 @@ import {
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -477,8 +478,18 @@ export default defineComponent({
                 || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
                 return context.root.$t('HTLC Settlement');
             }
-            if ('creator' in transaction.value.proof
-                || (relatedTx.value && 'creator' in relatedTx.value.proof)
+            if ('creator' in transaction.value.proof) {
+                // Detect Nimiq Pay transactions
+                if (
+                    'signer' in transaction.value.proof
+                    && Config.nimiqPay.cosignerPublicKeys.includes(transaction.value.proof.publicKey!)
+                ) {
+                    return '';
+                }
+
+                return context.root.$t('HTLC Refund');
+            }
+            if ((relatedTx.value && 'creator' in relatedTx.value.proof)
                 // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
                 // tx are regular transactions and we regard the tx from the proxy as refund
                 || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
@@ -522,6 +533,15 @@ export default defineComponent({
             if (isSwapProxy.value) return ''; // avoid displaying proxy address identicon until we know related address
 
             if (isCashlink.value) return constants.CASHLINK_ADDRESS; // No related tx yet, show placeholder
+
+            if (
+                'creator' in transaction.value.proof
+                && 'signer' in transaction.value.proof
+                && Config.nimiqPay.cosignerPublicKeys.includes(transaction.value.proof.publicKey!)
+            ) {
+                // @ts-expect-error Missing types for HTLC early-resolve
+                return transaction.value.proof.creator as string;
+            }
 
             return isIncoming.value ? transaction.value.sender : transaction.value.recipient;
         });

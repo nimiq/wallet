@@ -1,4 +1,5 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
+import Config from 'config';
 import { useAddressStore } from '../../stores/Address';
 import { useProxyStore } from '../../stores/Proxy';
 import { Transaction as NimTx } from '../../stores/Transactions';
@@ -72,7 +73,12 @@ export abstract class Format {
         } else if ('hashRoot' in transaction.proof) {
             message = 'HTLC Settlement';
         } else if ('creator' in transaction.proof) {
-            message = 'HTLC Refund';
+            if (
+                !('signer' in transaction.proof)
+                || !Config.nimiqPay.cosignerPublicKeys.includes(transaction.proof.publicKey!)
+            ) {
+                message = 'HTLC Refund';
+            }
         } else {
             message = parseData(transaction.data.raw);
         }

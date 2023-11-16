@@ -186,16 +186,6 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
             return isIncoming.value ? i18n.t('HTLC Refund') : i18n.t('HTLC Creation');
         }
 
-        // if ('hashRoot' in props.transaction.data) {
-        //     return context.root.$t('HTLC Creation');
-        // }
-        // if ('creator' in props.transaction.proof) {
-        //     return context.root.$t('HTLC Refund');
-        // }
-        // if ('hashRoot' in props.transaction.proof) {
-        //     return context.root.$t('HTLC Settlement');
-        // }
-
         return '';
     });
 

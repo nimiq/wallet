@@ -74,4 +74,8 @@ export default {
         // This is a publishable key.
         apiKey: '606abde2-bc23-46c6-9f2e-a53307bae0bb',
     },
+
+    nimiqPay: {
+        cosignerPublicKeys: [],
+    },
 };

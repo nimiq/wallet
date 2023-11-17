@@ -114,13 +114,28 @@ export default defineComponent({
             state?: State,
             title?: string,
             message?: string,
+            timeout?: number,
         };
 
-        function onStatusChange({ type, state, title, message }: StatusChangeParams) {
+        let statusChangeTimeout: number | null = null;
+
+        function updateStatusScreen({ type, state, title, message }: StatusChangeParams) {
             if (type !== undefined) statusType.value = type;
             if (state !== undefined) statusState.value = state;
             if (title !== undefined) statusTitle.value = title;
             if (message !== undefined) statusMessage.value = message;
+        }
+
+        async function onStatusChange(statusChangeObj: StatusChangeParams) {
+            if (statusChangeTimeout) clearTimeout(statusChangeTimeout);
+
+            if (statusChangeObj.timeout) {
+                statusChangeTimeout = window.setTimeout(() =>
+                    updateStatusScreen(statusChangeObj),
+                statusChangeObj.timeout);
+            } else {
+                updateStatusScreen(statusChangeObj);
+            }
         }
 
         // function onStatusMainAction() {

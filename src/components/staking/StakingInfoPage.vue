@@ -61,9 +61,16 @@
                         </div>
                     </div>
                     <div class="flex-row">
-                        <button class="nq-button-s" @click="$emit('adjust-stake')" :disabled="isStakeDeactivating">
-                            {{ $t('Adjust Stake') }}
-                        </button>
+                        <Tooltip :disabled="!isStakeDeactivating" preferredPosition="top left"
+                            :container="this" class="adjust-stake">
+                            <template #trigger>
+                                <button class="nq-button-s" @click="$emit('adjust-stake')"
+                                    :disabled="isStakeDeactivating">
+                                    {{ $t('Adjust Stake') }}
+                                </button>
+                            </template>
+                            <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
+                        </Tooltip>
                         <!-- <button class="nq-button-pill red unstake-all" @click="unstakeAll">
                             {{ $t('Unstake All') }}
                         </button> -->
@@ -347,6 +354,10 @@ export default defineComponent({
         font-weight: bold;
         line-height: 1;
         margin-bottom: 1rem;
+    }
+
+    .adjust-stake::v-deep .tooltip-box {
+            width: 25.75rem;
     }
 
     .unstake-all:disabled {

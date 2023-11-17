@@ -2,7 +2,7 @@
     <!-- Pass down all attributes not declared as props -->
     <Modal v-bind="$attrs" v-on="$listeners" class="staking-modal"
         :class="{ 'large-modal': [Page.Graph, Page.Already].includes(page) }"
-        :showOverlay="overlay === Overlay.SelectAccount || statusType !== 'none'"
+        :showOverlay="overlay === Overlay.SelectAccount || statusType !== StatusChangeType.NONE"
         @close-overlay="closeOverlay"
     >
         <template v-if="page === Page.Info">
@@ -75,6 +75,13 @@ enum Overlay {
     Validator,
 }
 
+export enum StatusChangeType {
+    NONE = 'none',
+    STAKING = 'staking',
+    UNSTAKING = 'unstaking',
+    VALIDATOR = 'validator',
+}
+
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
@@ -103,7 +110,7 @@ export default defineComponent({
         const statusAlternativeAction = ref('');
 
         type StatusChangeParams = {
-            type?: 'none' | 'staking' | 'validator',
+            type?: StatusChangeType,
             state?: State,
             title?: string,
             message?: string,
@@ -159,6 +166,7 @@ export default defineComponent({
             statusMainAction,
             statusAlternativeAction,
             onStatusChange,
+            StatusChangeType,
             // onStatusMainAction,
         };
     },

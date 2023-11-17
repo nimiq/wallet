@@ -268,7 +268,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:65
+#: src/components/staking/StakingInfoPage.vue:69
 msgid "Adjust Stake"
 msgstr ""
 
@@ -375,7 +375,7 @@ msgstr ""
 msgid "Automatic mode uses {behavior}."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:75
+#: src/components/staking/StakingInfoPage.vue:82
 msgid "available to unstake"
 msgstr ""
 
@@ -586,7 +586,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/staking/StakingValidatorPage.vue:85
+#: src/components/staking/StakingValidatorPage.vue:99
 msgid "Changing validator"
 msgstr ""
 
@@ -803,7 +803,7 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:82
+#: src/components/staking/StakingInfoPage.vue:89
 msgid "Deactivating"
 msgstr ""
 
@@ -1260,7 +1260,7 @@ msgstr ""
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:181
+#: src/components/staking/StakingInfoPage.vue:189
 msgid "Inactive validator"
 msgstr ""
 
@@ -1979,7 +1979,7 @@ msgstr ""
 msgid "Sending Native Polygon USDC is not yet supported."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:121
+#: src/components/staking/StakingGraphPage.vue:122
 msgid "Sending Staking Transaction"
 msgstr ""
 
@@ -1989,7 +1989,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:214
+#: src/components/staking/StakingInfoPage.vue:223
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2134,9 +2134,9 @@ msgstr ""
 #: src/components/modals/SendModal.vue:633
 #: src/components/modals/SendModal.vue:819
 #: src/components/modals/UsdcSendModal.vue:629
-#: src/components/staking/StakingGraphPage.vue:221
-#: src/components/staking/StakingInfoPage.vue:245
-#: src/components/staking/StakingValidatorPage.vue:133
+#: src/components/staking/StakingGraphPage.vue:222
+#: src/components/staking/StakingInfoPage.vue:254
+#: src/components/staking/StakingValidatorPage.vue:136
 msgid "Something went wrong"
 msgstr ""
 
@@ -2182,10 +2182,10 @@ msgstr ""
 msgid "Staking"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:138
-#: src/components/staking/StakingGraphPage.vue:162
-#: src/components/staking/StakingGraphPage.vue:187
-#: src/components/staking/StakingValidatorPage.vue:107
+#: src/components/staking/StakingGraphPage.vue:139
+#: src/components/staking/StakingGraphPage.vue:163
+#: src/components/staking/StakingGraphPage.vue:188
+#: src/components/staking/StakingValidatorPage.vue:110
 msgid "Staking Contract"
 msgstr ""
 
@@ -2209,23 +2209,23 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:170
+#: src/components/staking/StakingGraphPage.vue:171
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingValidatorPage.vue:115
+#: src/components/staking/StakingValidatorPage.vue:118
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:195
+#: src/components/staking/StakingGraphPage.vue:196
 msgid "Successfully disactivated {amount}NIM from your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:146
+#: src/components/staking/StakingGraphPage.vue:147
 msgid "Successfully staked {amount}NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:228
+#: src/components/staking/StakingInfoPage.vue:236
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2314,7 +2314,7 @@ msgstr ""
 msgid "Switch validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:118
+#: src/components/staking/StakingInfoPage.vue:125
 msgid "Switch Validator"
 msgstr ""
 
@@ -2596,12 +2596,12 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:180
+#: src/components/staking/StakingInfoPage.vue:188
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:78
+#: src/components/staking/StakingInfoPage.vue:85
 #: src/lib/StakingUtils.ts:26
 msgid "Unstake"
 msgstr ""
@@ -2653,7 +2653,7 @@ msgstr ""
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:92
+#: src/components/staking/StakingInfoPage.vue:99
 msgid "Validator"
 msgstr ""
 
@@ -2740,6 +2740,10 @@ msgstr ""
 
 #: src/components/TestnetFaucet.vue:117
 msgid "You can receive more free NIM in {waitTime} hours."
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:72
+msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:120

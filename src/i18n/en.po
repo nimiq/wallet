@@ -2733,7 +2733,7 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:175
+#: src/components/staking/StakingInfoPage.vue:180
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""

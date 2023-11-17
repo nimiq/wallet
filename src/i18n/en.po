@@ -268,7 +268,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:65
+#: src/components/staking/StakingInfoPage.vue:69
 msgid "Adjust Stake"
 msgstr ""
 
@@ -819,7 +819,7 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:82
+#: src/components/staking/StakingInfoPage.vue:89
 msgid "Deactivating"
 msgstr ""
 
@@ -2343,7 +2343,7 @@ msgstr ""
 msgid "Switch validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:118
+#: src/components/staking/StakingInfoPage.vue:125
 msgid "Switch Validator"
 msgstr ""
 
@@ -2625,12 +2625,12 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:180
+#: src/components/staking/StakingInfoPage.vue:188
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:78
+#: src/components/staking/StakingInfoPage.vue:85
 #: src/lib/StakingUtils.ts:26
 msgid "Unstake"
 msgstr ""

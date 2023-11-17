@@ -273,7 +273,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:65
+#: src/components/staking/StakingInfoPage.vue:69
 msgid "Adjust Stake"
 msgstr ""
 
@@ -2733,12 +2733,12 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:180
+#: src/components/staking/StakingInfoPage.vue:188
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:78
+#: src/components/staking/StakingInfoPage.vue:85
 #: src/lib/StakingUtils.ts:26
 msgid "Unstake"
 msgstr ""

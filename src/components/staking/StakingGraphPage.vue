@@ -99,6 +99,7 @@ import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import LabelTooltip from './tooltips/LabelTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+import { StatusChangeType } from './StakingModal.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -116,7 +117,7 @@ export default defineComponent({
 
         async function performStaking() {
             context.emit('statusChange', {
-                type: 'staking',
+                type: StatusChangeType.STAKING,
                 state: State.LOADING,
                 title: context.root.$t('Sending Staking Transaction') as string,
             });
@@ -208,7 +209,7 @@ export default defineComponent({
                 }
 
                 window.setTimeout(() => {
-                    context.emit('statusChange', { type: 'none' });
+                    context.emit('statusChange', { type: StatusChangeType.NONE });
                     context.emit('next');
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {

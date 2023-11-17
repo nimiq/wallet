@@ -41,6 +41,7 @@ import { StakingTransactionType, STAKING_ACCOUNT_TYPE, STAKING_CONTRACT_ADDRESS 
 import { useNetworkStore } from '../../stores/Network';
 import { FilterState } from '../../lib/StakingUtils';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
+import { StatusChangeType } from './StakingModal.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -93,7 +94,7 @@ export default defineComponent({
                     context.emit('next');
                 } else {
                     context.emit('statusChange', {
-                        type: 'validator',
+                        type: StatusChangeType.VALIDATOR,
                         state: State.LOADING,
                         title: context.root.$t('Changing validator') as string,
                     });
@@ -121,7 +122,7 @@ export default defineComponent({
                     });
 
                     window.setTimeout(() => {
-                        context.emit('statusChange', { type: 'none' });
+                        context.emit('statusChange', { type: StatusChangeType.NONE });
                         context.emit('next');
                     }, SUCCESS_REDIRECT_DELAY);
                 }

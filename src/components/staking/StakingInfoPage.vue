@@ -150,6 +150,7 @@ import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
+import { StatusChangeType } from './StakingModal.vue';
 
 import {
     StakingTransactionType,
@@ -208,13 +209,13 @@ export default defineComponent({
         );
 
         async function unstakeAll() {
-            context.emit('statusChange', {
-                type: 'unstaking',
-                state: State.LOADING,
-                title: context.root.$t('Sending Unstaking Transaction') as string,
-            });
-
             try {
+                context.emit('statusChange', {
+                    type: StatusChangeType.UNSTAKING,
+                    state: State.LOADING,
+                    title: context.root.$t('Sending Unstaking Transaction') as string,
+                });
+
                 await sendStaking({
                     type: StakingTransactionType.UNSTAKE,
                     value: stake.value!.inactiveBalance,
@@ -231,11 +232,12 @@ export default defineComponent({
                     ),
                 });
 
-                window.setTimeout(() => {
-                    // // Close staking modal
-                    // context.root.$router.back();
-                    context.emit('statusChange', { type: 'none' });
-                }, SUCCESS_REDIRECT_DELAY);
+                // // Close staking modal
+                // context.root.$router.back();
+                context.emit('statusChange', {
+                    type: StatusChangeType.NONE,
+                    timeout: SUCCESS_REDIRECT_DELAY,
+                });
             } catch (error: any) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

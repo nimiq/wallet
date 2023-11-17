@@ -1260,7 +1260,7 @@ msgstr ""
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:176
+#: src/components/staking/StakingInfoPage.vue:181
 msgid "Inactive validator"
 msgstr ""
 
@@ -1989,6 +1989,10 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:214
+msgid "Sending Unstaking Transaction"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:504
 msgid "Sent {btc} BTC"
 msgstr ""
@@ -2131,6 +2135,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:819
 #: src/components/modals/UsdcSendModal.vue:629
 #: src/components/staking/StakingGraphPage.vue:221
+#: src/components/staking/StakingInfoPage.vue:245
 #: src/components/staking/StakingValidatorPage.vue:133
 msgid "Something went wrong"
 msgstr ""
@@ -2218,6 +2223,10 @@ msgstr ""
 
 #: src/components/staking/StakingGraphPage.vue:146
 msgid "Successfully staked {amount}NIM with {validator}"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:228
+msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:109
@@ -2587,7 +2596,7 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:175
+#: src/components/staking/StakingInfoPage.vue:180
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""

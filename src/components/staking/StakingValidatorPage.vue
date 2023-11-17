@@ -79,12 +79,6 @@ export default defineComponent({
         });
 
         async function selectValidator(validator: Validator) {
-            context.emit('statusChange', {
-                type: 'validator',
-                state: State.LOADING,
-                title: context.root.$t('Changing validator') as string,
-            });
-
             const validatorLabelOrAddress = 'label' in validator ? validator.label : validator.address;
 
             try {
@@ -95,7 +89,15 @@ export default defineComponent({
                         inactiveBalance: 0,
                         validator: validator.address,
                     });
+
+                    context.emit('next');
                 } else {
+                    context.emit('statusChange', {
+                        type: 'validator',
+                        state: State.LOADING,
+                        title: context.root.$t('Changing validator') as string,
+                    });
+
                     await sendStaking({
                         type: StakingTransactionType.UPDATE_STAKER,
                         delegation: validator.address,
@@ -117,12 +119,12 @@ export default defineComponent({
                             { validator: validatorLabelOrAddress },
                         ),
                     });
-                }
 
-                window.setTimeout(() => {
-                    context.emit('statusChange', { type: 'none' });
-                    context.emit('next');
-                }, SUCCESS_REDIRECT_DELAY);
+                    window.setTimeout(() => {
+                        context.emit('statusChange', { type: 'none' });
+                        context.emit('next');
+                    }, SUCCESS_REDIRECT_DELAY);
+                }
             } catch (error: any) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console

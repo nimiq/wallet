@@ -71,9 +71,10 @@
                             </template>
                             <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                         </Tooltip>
-                        <!-- <button class="nq-button-pill red unstake-all" @click="unstakeAll">
-                            {{ $t('Unstake All') }}
-                        </button> -->
+                        <button class="nq-button-pill red" @click="deactivateAll"
+                            :disabled="!stake.activeBalance || isStakeDeactivating">
+                            {{ $t('Deactivate All') }}
+                        </button>
                     </div>
                 </div>
                 <div v-if="stake && stake.inactiveBalance && hasUnstakableStake"
@@ -81,8 +82,8 @@
                 >
                     <Amount :amount="stake.inactiveBalance"/>&nbsp;{{ $t('available to unstake') }}
                     <div class="flex-grow"></div>
-                    <button class="nq-button-pill light-blue unstake-all" @click="unstakeAll">
-                        {{ $t('Unstake') }}
+                    <button class="nq-button-pill light-blue" @click="unstakeAll">
+                        {{ $t('Unstake All') }}
                     </button>
                 </div>
                 <div v-else-if="stake && stake.inactiveBalance" class="unstaking row flex-row nq-light-blue">
@@ -162,6 +163,7 @@ import { StatusChangeType } from './StakingModal.vue';
 import {
     StakingTransactionType,
     STAKING_CONTRACT_ADDRESS,
+    STAKING_ACCOUNT_TYPE,
 } from '../../lib/Constants';
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
@@ -215,6 +217,11 @@ export default defineComponent({
             !!(stake.value?.inactiveBalance && stake.value?.inactiveBalance > 0),
         );
 
+        const canSwitchValidator = computed(() => stake.value?.activeBalance === 0
+            && stake.value.inactiveBalance > 0
+            && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value),
+        );
+
         async function unstakeAll() {
             try {
                 context.emit('statusChange', {
@@ -257,9 +264,57 @@ export default defineComponent({
             }
         }
 
-        const canSwitchValidator = computed(() => stake.value?.balance === 0
-                && stake.value.inactiveBalance > 0
-                && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value));
+        async function deactivateAll() {
+            context.emit('statusChange', {
+                type: StatusChangeType.UNSTAKING,
+                state: State.LOADING,
+                title: context.root.$t('Sending Staking Transaction') as string,
+            });
+
+            const validatorLabelOrAddress = 'label' in validator.value!
+                ? validator.value.label : validator.value!.address;
+
+            try {
+                await sendStaking({
+                    type: StakingTransactionType.SET_INACTIVE_STAKE,
+                    newInactiveBalance: stake.value!.activeBalance,
+                    value: 1, // Unused in transaction
+                    sender: activeAddress.value!,
+                    recipient: STAKING_CONTRACT_ADDRESS,
+                    recipientType: STAKING_ACCOUNT_TYPE,
+                    recipientLabel: context.root.$t('Staking Contract') as string,
+                    validityStartHeight: useNetworkStore().state.height,
+                }).catch((error) => {
+                    throw new Error(error.data);
+                });
+
+                context.emit('statusChange', {
+                    state: State.SUCCESS,
+                    title: context.root.$t(
+                        'Successfully deactivated {amount} NIM from your stake with {validator}',
+                        {
+                            amount: Math.abs(stake.value!.activeBalance / 1e5),
+                            validator: validatorLabelOrAddress,
+                        },
+                    ),
+                });
+
+                context.emit('statusChange', {
+                    type: StatusChangeType.NONE,
+                    timeout: SUCCESS_REDIRECT_DELAY,
+                });
+            } catch (error: any) {
+                if (config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+
+                // Show error screen
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: context.root.$t('Something went wrong') as string,
+                    message: `${error.message} - ${error.data}`,
+                });
+            }
+        }
 
         return {
             // NOW,
@@ -273,6 +328,7 @@ export default defineComponent({
             hasUnstakableStake,
             isStakeDeactivating,
             unstakeAll,
+            deactivateAll,
             canSwitchValidator,
         };
     },
@@ -356,13 +412,17 @@ export default defineComponent({
         margin-bottom: 1rem;
     }
 
-    .adjust-stake::v-deep .tooltip-box {
+    .adjust-stake {
+        margin-right: 2rem;
+        ::v-deep .tooltip-box {
             width: 25.75rem;
+        }
     }
 
-    .unstake-all:disabled {
+    .nq-button-pill:disabled {
         opacity: 0.5;
-        pointer-events: none;
+        cursor: not-allowed;
+        // pointer-events: none;
     }
 
     .amount-staked-proportional {

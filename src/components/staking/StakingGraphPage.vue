@@ -146,7 +146,7 @@ export default defineComponent({
                         context.emit('statusChange', {
                             state: State.SUCCESS,
                             title: context.root.$t(
-                                'Successfully staked {amount}NIM with {validator}',
+                                'Successfully staked {amount} NIM with {validator}',
                                 {
                                     amount: Math.abs(stakeDelta.value / 1e5),
                                     validator: validatorLabelOrAddress,
@@ -195,7 +195,7 @@ export default defineComponent({
                     context.emit('statusChange', {
                         state: State.SUCCESS,
                         title: context.root.$t(
-                            'Successfully disactivated {amount}NIM from your stake with {validator}',
+                            'Successfully deactivated {amount} NIM from your stake with {validator}',
                             {
                                 amount: Math.abs((activeStake.value!.inactiveBalance - stakeDelta.value) / 1e5),
                                 validator: validatorLabelOrAddress,

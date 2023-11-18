@@ -51,7 +51,7 @@
             /> -->
 
             <AmountSlider
-                :stakedAmount="activeStake ? activeStake.balance : 0"
+                :stakedAmount="activeStake ? activeStake.activeBalance : 0"
                 @amount-staked="updateStaked"
             />
 
@@ -107,12 +107,12 @@ export default defineComponent({
         const { activeAddress } = useAddressStore();
         const { activeStake, activeValidator } = useStakingStore();
 
-        const newStake = ref(activeStake.value ? activeStake.value.balance : 0);
+        const newStake = ref(activeStake.value ? activeStake.value.activeBalance : 0);
         const stakeDelta = ref(0);
 
         function updateStaked(amount: number) {
             newStake.value = amount;
-            stakeDelta.value = amount - (activeStake.value?.balance || 0);
+            stakeDelta.value = amount - (activeStake.value?.activeBalance || 0);
         }
 
         async function performStaking() {
@@ -128,7 +128,8 @@ export default defineComponent({
 
             try {
                 if (stakeDelta.value > 0) {
-                    if (!activeStake.value || (!activeStake.value.balance && !activeStake.value.inactiveBalance)) {
+                    if (!activeStake.value
+                        || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
                         await sendStaking({
                             type: StakingTransactionType.CREATE_STAKER,
                             delegation: activeValidator.value!.address,
@@ -202,7 +203,7 @@ export default defineComponent({
                         ),
                     });
 
-                    // if (Math.abs(stakeDelta.value) === activeStake.value!.balance) {
+                    // if (Math.abs(stakeDelta.value) === activeStake.value!.activeBalance) {
                     //     // Close staking modal
                     //     context.root.$router.back();
                     // }

@@ -89,7 +89,7 @@ export default defineComponent({
         const page = ref(activeValidator.value ? Page.Already : Page.Info);
         const overlay = ref<Overlay | null>(null);
 
-        const isStaking = computed(() => !!(activeStake.value?.balance || activeStake.value?.inactiveBalance));
+        const isStaking = computed(() => !!(activeStake.value?.activeBalance || activeStake.value?.inactiveBalance));
         const invalidAccount = computed(() => activeAddressInfo.value
             ? !activeAddressInfo.value.balance && !isStaking.value
             : false);
@@ -156,7 +156,7 @@ export default defineComponent({
         watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay));
 
         onBeforeUnmount(() => {
-            if (!activeStake.value?.balance && !activeStake.value?.inactiveBalance) {
+            if (!activeStake.value?.activeBalance && !activeStake.value?.inactiveBalance) {
                 useStakingStore().removeStake(activeAddressInfo.value!.address);
             }
         });

@@ -2733,14 +2733,17 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:188
+#: src/components/staking/StakingInfoPage.vue:190
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:85
 #: src/lib/StakingUtils.ts:26
 msgid "Unstake"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:86
+msgid "Unstake All"
 msgstr ""
 
 #: src/swap-kyc-handler.ts:148

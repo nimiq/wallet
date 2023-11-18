@@ -89,7 +89,7 @@ export async function launchNetwork() {
             if (staker) {
                 stakingStore.setStake({
                     address,
-                    balance: staker.balance,
+                    activeBalance: staker.balance,
                     inactiveBalance: staker.inactiveBalance,
                     inactiveRelease: staker.inactiveRelease,
                     validator: staker.delegation,

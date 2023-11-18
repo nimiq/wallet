@@ -54,7 +54,7 @@
                 <div class="row flex-row">
                     <div class="col flex-grow">
                         <div class="amount-staked">
-                            <Amount :amount="stake.balance"/>
+                            <Amount :amount="stake.activeBalance"/>
                         </div>
                         <div class="amount-staked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
@@ -176,7 +176,7 @@ export default defineComponent({
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value ? stake.value.balance : 0);
+        const stakedBalance = computed(() => stake.value ? stake.value.activeBalance : 0);
 
         const percentage = computed(() => (
             stakedBalance.value / (availableBalance.value + stakedBalance.value + (stake.value?.inactiveBalance || 0))

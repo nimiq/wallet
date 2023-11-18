@@ -116,18 +116,18 @@ export default defineComponent({
         }
 
         async function performStaking() {
-            context.emit('statusChange', {
-                type: StatusChangeType.STAKING,
-                state: State.LOADING,
-                title: context.root.$t('Sending Staking Transaction') as string,
-            });
-
             const validatorLabelOrAddress = 'label' in activeValidator.value!
                 ? activeValidator.value.label
                 : activeValidator.value!.address;
 
             try {
                 if (stakeDelta.value > 0) {
+                    context.emit('statusChange', {
+                        type: StatusChangeType.STAKING,
+                        state: State.LOADING,
+                        title: context.root.$t('Sending Staking Transaction') as string,
+                    });
+
                     if (!activeStake.value
                         || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
                         await sendStaking({
@@ -179,6 +179,12 @@ export default defineComponent({
                         });
                     }
                 } else {
+                    context.emit('statusChange', {
+                        type: StatusChangeType.DEACTIVATING,
+                        state: State.LOADING,
+                        title: context.root.$t('Sending Staking Transaction') as string,
+                    });
+
                     await sendStaking({
                         type: StakingTransactionType.SET_INACTIVE_STAKE,
                         newInactiveBalance: activeStake.value!.inactiveBalance - stakeDelta.value,

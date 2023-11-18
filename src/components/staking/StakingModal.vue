@@ -76,10 +76,11 @@ enum Overlay {
 }
 
 export enum StatusChangeType {
-    NONE = 'none',
-    STAKING = 'staking',
-    UNSTAKING = 'unstaking',
-    VALIDATOR = 'validator',
+    NONE,
+    STAKING,
+    UNSTAKING,
+    VALIDATOR,
+    DEACTIVATING,
 }
 
 export default defineComponent({
@@ -101,7 +102,7 @@ export default defineComponent({
         /**
          * Status Screen
          */
-        const statusType = ref<NonNullable<StatusChangeParams['type']>>('none');
+        const statusType = ref<StatusChangeType>(StatusChangeType.NONE);
         const statusState = ref<State>(State.LOADING);
         const statusTitle = ref('');
         const statusMessage = ref('');

@@ -265,6 +265,7 @@ export default defineComponent({
                 }
 
                 const tx = await sendUsdcTransaction(
+                    config.usdc.usdcContract,
                     normalizedDepositAddress,
                     value,
                     'Moonpay',

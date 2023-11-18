@@ -156,14 +156,11 @@
                     <Amount :amount="usdcAddressInfo.nativeBalance" currency="usdc" value-mask/>
                 </div>
                 <div class="flex-row">
-                    <span class="nq-orange">
-                        <AlertTriangleIcon />
-                        {{ $t('Sending Native Polygon USDC is not yet supported.') }}
-                    </span>
                     <div class="flex-grow"></div>
-                    <!-- eslint-disable-next-line max-len -->
-                    <a href="https://forum.nimiq.community/t/important-update-on-usdc-support-in-nimiq-wallet-native-usdc/1927"
-                        target="_blank" rel="noopener" class="nq-button-s">How to transfer</a>
+                    <router-link
+                        :to="{ name: 'send-usdc', params: {token: config.usdc.nativeUsdcContract }}"
+                        class="nq-button-s"
+                    >Send</router-link>
                 </div>
             </div>
             <div class="scroll-mask top"></div>
@@ -232,7 +229,6 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
-    AlertTriangleIcon,
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -262,6 +258,7 @@ import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
+import { useConfig } from '../../composables/useConfig';
 
 export default defineComponent({
     name: 'address-overview',
@@ -355,6 +352,8 @@ export default defineComponent({
             showUnclaimedCashlinkList.value = !showUnclaimedCashlinkList.value;
         }
 
+        const { config } = useConfig();
+
         return {
             activeCurrency,
             searchString,
@@ -378,11 +377,11 @@ export default defineComponent({
             address$,
             addressMasked,
             toggleUnclaimedCashlinkList,
+            config,
         };
     },
     components: {
         ArrowRightSmallIcon,
-        AlertTriangleIcon,
         Identicon,
         BitcoinIcon,
         GearIcon,

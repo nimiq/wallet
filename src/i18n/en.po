@@ -793,7 +793,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:95
 #: src/components/modals/SendModal.vue:376
-#: src/components/modals/UsdcSendModal.vue:359
+#: src/components/modals/UsdcSendModal.vue:364
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -957,7 +957,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:684
+#: src/components/modals/UsdcSendModal.vue:696
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1904,7 +1904,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:454
 #: src/components/modals/SendModal.vue:764
-#: src/components/modals/UsdcSendModal.vue:587
+#: src/components/modals/UsdcSendModal.vue:597
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1930,11 +1930,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:614
+#: src/components/modals/UsdcSendModal.vue:625
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:610
+#: src/components/modals/UsdcSendModal.vue:621
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -2036,7 +2036,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:518
 #: src/components/modals/SendModal.vue:633
 #: src/components/modals/SendModal.vue:819
-#: src/components/modals/UsdcSendModal.vue:629
+#: src/components/modals/UsdcSendModal.vue:640
 msgid "Something went wrong"
 msgstr ""
 

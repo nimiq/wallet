@@ -17,7 +17,12 @@
 
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader :backArrow="!!$route.params.canUserGoBack || page !== initialPage" @back="back">
-                {{ $t('Send USDC') }}
+                <template v-if="token === config.usdc.usdcContract">
+                    {{ $t('Send USDC') }}
+                </template>
+                <template v-else>
+                    {{ $t('Send native USDC') }}
+                </template>
             </PageHeader>
             <PageBody class="page__recipient-input flex-column">
                 <UsdcContactShortcuts
@@ -247,6 +252,7 @@ import {
 } from '@nimiq/vue-components';
 import { captureException } from '@sentry/vue';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
+import Config from 'config';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendUsdcTransaction } from '../../hub';
@@ -289,6 +295,10 @@ export default defineComponent({
         requestUri: {
             type: String,
             required: false,
+        },
+        token: {
+            type: String,
+            default: Config.usdc.usdcContract,
         },
     },
     setup(props, context) {
@@ -422,7 +432,12 @@ export default defineComponent({
         const relay = ref<RelayServerInfo | null>(null);
 
         // Use 2.00 USDC as safe fallback fee
-        const maxSendableAmount = computed(() => Math.max((addressInfo.value!.balance || 0) - (fee.value || 2e6), 0));
+        const maxSendableAmount = computed(() => {
+            const balance = props.token === Config.usdc.usdcContract
+                ? addressInfo.value!.balance
+                : addressInfo.value!.nativeBalance;
+            return Math.max((balance || 0) - (fee.value || 2e6), 0);
+        });
 
         const amountMenuOpened = ref(false);
 
@@ -589,6 +604,7 @@ export default defineComponent({
 
             try {
                 const tx = await sendUsdcTransaction(
+                    props.token,
                     recipientWithLabel.value!.address,
                     amount.value,
                     recipientWithLabel.value!.label,
@@ -671,7 +687,8 @@ export default defineComponent({
             window.clearTimeout(feeUpdateTimeout); // Reset potentially existing update timeout.
             feeUpdateTimeout = 0; // 0: timer is to be started after the initial update
             try {
-                const feeInformation = await calculateFee('transferWithApproval', relay.value || undefined);
+                const method = props.token === Config.usdc.usdcContract ? 'transferWithApproval' : 'transferWithPermit';
+                const feeInformation = await calculateFee(props.token, method, relay.value || undefined);
                 fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
                 relay.value = feeInformation.relay;
                 feeLoading.value = false;
@@ -792,6 +809,7 @@ export default defineComponent({
             onCloseOverlay,
 
             back,
+            config,
         };
     },
     components: {

@@ -882,7 +882,7 @@ export default defineComponent({
                 gasPrice,
                 relay,
                 usdcPrice,
-            } = await calculateUsdcFee(method, forceRelay, htlcContract);
+            } = await calculateUsdcFee(config.usdc.usdcContract, method, forceRelay, htlcContract);
 
             if (!forceRelay) {
                 // Store the new relay

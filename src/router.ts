@@ -130,6 +130,7 @@ const routes: RouteConfig[] = [{
                 modal: UsdcSendModal,
             },
             name: 'send-usdc',
+            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive',

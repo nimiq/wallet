@@ -19,6 +19,7 @@ export default {
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
         nativeUsdcContract: '0x9999f7fea5938fd3b1e26a12c3f2fb024e194f97',
         transferContract: '0x2805f3187dcDfa424EFA8c55Db6012Cf08Fa6eEc', // v3
+        nativeTransferContract: '0x5D101A320547f8D640c44fDfe5d1f35224f00B8B', // v1
         htlcContract: '0x2EB7cd7791b947A25d629219ead941fCd8f364BF', // v3
         relayHubContract: '0x6646cD15d33cE3a6933e36de38990121e8ba2806',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',

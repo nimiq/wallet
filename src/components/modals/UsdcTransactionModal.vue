@@ -463,6 +463,7 @@ export default defineComponent({
                     ] = await Promise.all([
                         htlcContract.getNonce(myAddress) as Promise<BigNumber>,
                         calculateFee(
+                            config.usdc.usdcContract,
                             method,
                             undefined,
                             htlcContract,

@@ -1,31 +1,32 @@
 import { useConfig } from '@/composables/useConfig';
-import type { BigNumber } from 'ethers';
+import type { BigNumber, Contract } from 'ethers';
 import { PolygonClient } from '../../ethers';
 import { UNISWAP_POOL_CONTRACT_ABI, UNISWAP_QUOTER_CONTRACT_ABI } from './ContractABIs';
 
-let poolAddress: string | undefined;
-let poolFee: BigNumber | undefined;
+let poolAddresses: Record<string, string | undefined>;
+let poolFees: Record<string, BigNumber | undefined>;
 
-export async function getPoolAddress(client: PolygonClient) {
-    if (!poolAddress) {
-        const { config } = useConfig();
-        poolAddress = await client.usdcTransfer.registeredTokenPool(config.usdc.usdcContract) as string;
+export async function getPoolAddress(contract: Contract, token: string) {
+    const key = `${contract.address}-${token}`;
+    if (!poolAddresses[key]) {
+        poolAddresses[key] = await contract.registeredTokenPool(token) as string;
     }
 
-    return poolAddress;
+    return poolAddresses[key]!;
 }
 
 // https://docs.uniswap.org/sdk/v3/guides/quoting
-export async function getUsdcPrice(client: PolygonClient) {
+export async function getUsdcPrice(token: string, client: PolygonClient) {
     const { config } = useConfig();
 
-    if (!poolFee) {
+    if (!poolFees[token]) {
+        const transferContract = token === config.usdc.usdcContract ? client.usdcTransfer : client.nativeUsdcTransfer;
         const poolContract = new client.ethers.Contract(
-            await getPoolAddress(client),
+            await getPoolAddress(transferContract, token),
             UNISWAP_POOL_CONTRACT_ABI,
             client.provider,
         );
-        poolFee = await poolContract.fee() as BigNumber;
+        poolFees[token] = await poolContract.fee() as BigNumber;
     }
 
     const quoterContract = new client.ethers.Contract(
@@ -36,9 +37,9 @@ export async function getUsdcPrice(client: PolygonClient) {
 
     // MATIC amount that would be received for swapping 1 USDC
     const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
-        config.usdc.usdcContract, // in
+        token, // in
         config.usdc.wmaticContract, // out
-        poolFee,
+        poolFees[token]!,
         1_000_000, // 1 USDC
         0,
     ) as BigNumber;

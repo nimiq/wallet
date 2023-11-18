@@ -684,6 +684,7 @@ export async function activateUsdc(accountId: string) {
 }
 
 export async function sendUsdcTransaction(
+    token: string,
     recipient: string,
     amount: number,
     recipientLabel?: string,
@@ -696,7 +697,12 @@ export async function sendUsdcTransaction(
     // eslint-disable-next-line no-async-promise-executor
     const request = new Promise<SignPolygonTransactionRequest>(async (resolve, reject) => {
         try {
-            const { relayRequest, approval, relay } = await createTransactionRequest(recipient, amount, forceRelay);
+            const {
+                relayRequest,
+                approval,
+                permit,
+                relay,
+            } = await createTransactionRequest(token, recipient, amount, forceRelay);
             relayUrl = relay.url;
             resolve({
                 ...relayRequest,
@@ -706,6 +712,12 @@ export async function sendUsdcTransaction(
                 ...(approval ? {
                     approval: {
                         tokenNonce: approval.tokenNonce,
+                    },
+                } : null),
+
+                ...(permit ? {
+                    permit: {
+                        tokenNonce: permit.tokenNonce,
                     },
                 } : null),
             });

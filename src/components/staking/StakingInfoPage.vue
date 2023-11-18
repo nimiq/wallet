@@ -63,12 +63,10 @@
                     <div class="flex-row">
                         <Tooltip :disabled="!isStakeDeactivating" preferredPosition="top left"
                             :container="this" class="adjust-stake">
-                            <template #trigger>
-                                <button class="nq-button-s" @click="$emit('adjust-stake')"
-                                    :disabled="isStakeDeactivating">
-                                    {{ $t('Adjust Stake') }}
-                                </button>
-                            </template>
+                            <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
+                                :disabled="isStakeDeactivating">
+                                {{ $t('Adjust Stake') }}
+                            </button>
                             <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                         </Tooltip>
                         <button class="nq-button-pill red" @click="deactivateAll"
@@ -266,7 +264,7 @@ export default defineComponent({
 
         async function deactivateAll() {
             context.emit('statusChange', {
-                type: StatusChangeType.UNSTAKING,
+                type: StatusChangeType.DEACTIVATING,
                 state: State.LOADING,
                 title: context.root.$t('Sending Staking Transaction') as string,
             });

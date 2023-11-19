@@ -14,6 +14,7 @@
             <ValidatorFilter @changed="changeFilter" @search="onSearch"/>
             <div class="validator-list" ref="validatorList$">
                 <div class="scroll-mask top"></div>
+                <LoadingList v-if="validatorsList.length === 0" :length="5" :type="LoadingListType.VALIDATOR" />
                 <ValidatorListItem
                     v-for="validator in sortedList" :key="validator.address"
                     :validator="validator"
@@ -42,6 +43,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { FilterState } from '../../lib/StakingUtils';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
+import LoadingList, { LoadingListType } from '../LoadingList.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -146,8 +148,10 @@ export default defineComponent({
         }
 
         return {
+            LoadingListType,
             validatorList$,
             changeFilter,
+            validatorsList,
             sortedList,
             selectValidator,
             onSearch,
@@ -158,6 +162,7 @@ export default defineComponent({
         PageBody,
         ValidatorListItem,
         ValidatorFilter,
+        LoadingList,
     },
 });
 </script>
@@ -177,6 +182,10 @@ export default defineComponent({
 
     .page-body {
         padding: 1rem 0;
+
+        .loading-list {
+            margin: 0 3.25rem;
+        }
 
         .validator-list {
             display: flex;

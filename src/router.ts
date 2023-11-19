@@ -1,5 +1,6 @@
 import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
 import Vue from 'vue';
+import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
 import { Component } from 'vue-router/types/router.d';
 
 import { provide, inject } from '@vue/composition-api';
@@ -332,6 +333,18 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }],
+        beforeEnter: (to, from, next) => {
+            if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
+                const parsed = parseNimiqSafeRequestLink(window.location.href);
+                if (!parsed) return next();
+                const path = createNimiqRequestLink(parsed.recipient, {
+                    ...parsed,
+                    type: NimiqRequestLinkType.URI,
+                });
+                return next({ path, replace: true });
+            }
+            return next();
+        },
     }, {
         path: '/settings',
         components: {

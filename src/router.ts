@@ -1,5 +1,6 @@
 import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
 import Vue from 'vue';
+import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
 import { Component } from 'vue-router/types/router.d';
 
 import { provide, inject } from '@vue/composition-api';
@@ -334,19 +335,15 @@ const routes: RouteConfig[] = [{
         }],
         beforeEnter: (to, from, next) => {
             if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
-                // old safe links are in this format: /#_request/NQ208P9L3YMDGQYT1TAA8D0GMC125HBQ1Q8A/100_
-                // new wallet links are in this format: /nimiq:NQ208P9L3YMDGQYT1TAA8D0GMC125HBQ1Q8A?amount=100
-                const results = to.hash.match(/^#_request\/(?<address>[A-Z0-9]+)\/?(?<amount>\d+)?_$/);
-                const address = results?.groups?.address;
-                const amount = results?.groups?.amount ? `?amount=${results.groups.amount}` : '';
-                next({
-                    name: 'send-via-uri',
-                    hash: `nimiq:${address}${amount}`,
-                    replace: true,
+                const parsed = parseNimiqSafeRequestLink(window.location.href);
+                if (!parsed) return next();
+                const path = createNimiqRequestLink(parsed.recipient, {
+                    ...parsed,
+                    type: NimiqRequestLinkType.URI,
                 });
-            } else {
-                next();
+                return next({ path, replace: true });
             }
+            return next();
         },
     }, {
         path: '/settings',

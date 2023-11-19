@@ -24,25 +24,7 @@
             </template>
 
             <template v-slot:default="{ item, index }">
-                <div
-                    class="list-element loading"
-                    v-if="item.loading"
-                    :style="{ animationDelay: `${index * .1}s` }"
-                >
-                    <div class="date flex-column">
-                        <div class="placeholder"></div>
-                        <div class="placeholder"></div>
-                    </div>
-                    <HexagonIcon class="identicon"/>
-                    <div class="data flex-column">
-                        <div class="placeholder"></div>
-                        <div class="placeholder"></div>
-                    </div>
-                    <div class="amounts flex-column">
-                        <div class="placeholder"></div>
-                        <div class="placeholder"></div>
-                    </div>
-                </div>
+                <LoadingList v-if="item.loading" :delay="index * 100" :type="LoadingListType.TRANSACTION" />
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
                     <div v-if="!item.sender" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
@@ -87,7 +69,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
-import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
+import { CircleSpinner } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -103,6 +85,7 @@ import { createCashlink } from '../hub';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
+import LoadingList, { LoadingListType } from './LoadingList.vue';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -410,6 +393,7 @@ export default defineComponent({
         });
 
         return {
+            LoadingListType,
             activeAddress,
             scrollerBuffer,
             itemSize,
@@ -428,7 +412,7 @@ export default defineComponent({
         TestnetFaucet,
         CrossCloseButton,
         CircleSpinner,
-        HexagonIcon,
+        LoadingList,
     },
 });
 </script>

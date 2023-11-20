@@ -17,14 +17,17 @@
             <div class="staking-rounded-background flex-column">
                 <div class="staking-icons-lace">
                     <template v-for="(validator, index) in validators">
-                        <img v-if="'icon' in validator"
+                        <img v-if="validator && 'icon' in validator"
                             :key="index"
                             :src="`/img/staking/providers/${validator.icon}`"
                             alt="validator-logo"
                             :style="{ top: getTopPosition(index) }"
                         />
-                        <Identicon v-else :key="index" :address="validator.address"
+                        <Identicon v-else-if="validator && 'address' in validator" :key="index"
+                            :address="validator.address"
                             :style="{ top: getTopPosition(index) }"/>
+                        <HexagonIcon v-else :key="index"
+                            :style="{ top: getTopPosition(index), '--delay': `${index * 100}ms` }"/>
                     </template>
                 </div>
                 <div class="staking-under-icons-text">
@@ -41,7 +44,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
-import { PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, Identicon, HexagonIcon } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
@@ -61,7 +64,12 @@ export default defineComponent({
         // .sort((a, b) => b.trust - a.trust)
         // .map((validator) => validator.icon));
 
-        const validators = computed(() => useStakingStore().validatorsList.value);
+        const { validatorsList } = useStakingStore();
+
+        const validators = computed(() => validatorsList.value.length === 0
+            ? Array.from({ length: 10 }) as undefined[]
+            : validatorsList.value,
+        );
 
         function getTopPosition(index: number) {
             return `${((Math.sin((index + 1) * (Math.PI / 10))) * 20)}px`;
@@ -79,6 +87,7 @@ export default defineComponent({
         PageBody,
         HeroIcon,
         Identicon,
+        HexagonIcon,
     },
 });
 </script>
@@ -126,8 +135,27 @@ export default defineComponent({
                 white-space: nowrap;
                 flex-grow: 1;
                 min-height: 9rem;
+                .nq-icon {
+                    --delay: 0ms;
+                    color: var(--text-10);
 
-                img, .identicon {
+                    animation-name: breathing;
+                    animation-duration: 1s;
+                    animation-iteration-count: infinite;
+                    animation-delay: var(--delay);
+
+                    opacity: 1;
+                    transform: translateY(0);
+
+                    @keyframes breathing {
+                        50% {
+                            opacity: .5;
+                            transform: translateY(2px);
+                        }
+                    }
+                }
+
+                img, .identicon, .nq-icon {
                     position: relative;
                     display: inline-block;
                     width: 5.375rem;

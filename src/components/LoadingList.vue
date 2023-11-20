@@ -125,24 +125,16 @@ export default defineComponent({
         delay: var(--delay);
     }
 
+    .list-item.animating.loading & {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
     @keyframes breathing {
-        0% {
-            opacity: 1;
-            transform: translateY(0);
-        }
         50% {
             opacity: .5;
             transform: translateY(2px);
         }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .list-item.animating.loading & {
-        opacity: 1;
-        transform: translateY(0);
     }
 }
 

@@ -60,13 +60,15 @@
                     {{ $t('Confirm stake') }}
                 </button>
 
-                <div class="disclaimer stake-disclaimer" v-if="stakeDelta >= 0">
-                    {{ $t('Unlock at any time. Your NIM will be available within hours.') }}
-                </div>
-                <div class="disclaimer unstake-disclaimer" v-else>
-                    <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
-                    {{ $t('will be available within hours.') }}
-                </div>
+                <MessageTransition>
+                    <div class="disclaimer stake-disclaimer" v-if="stakeDelta >= 0">
+                        {{ $t('Unlock at any time. Your NIM will be available within hours.') }}
+                    </div>
+                    <div class="disclaimer unstake-disclaimer" v-else>
+                        <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
+                        {{ $t('will be available within hours.') }}
+                    </div>
+                </MessageTransition>
             </div>
         </PageBody>
     </div>
@@ -100,6 +102,7 @@ import LabelTooltip from './tooltips/LabelTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import { StatusChangeType } from './StakingModal.vue';
+import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -255,6 +258,7 @@ export default defineComponent({
         Amount,
         Tooltip,
         InfoCircleSmallIcon,
+        MessageTransition,
     },
 });
 </script>

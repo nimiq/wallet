@@ -109,6 +109,7 @@ export default defineComponent({
         padding: 0;
         margin: 0;
         flex-grow: 1;
+        overflow: hidden;
 
         .staking-rounded-background {
             // background-image: url('/img/staking/background-collar.svg');

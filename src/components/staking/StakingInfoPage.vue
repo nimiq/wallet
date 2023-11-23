@@ -228,13 +228,20 @@ export default defineComponent({
                     title: context.root.$t('Sending Unstaking Transaction') as string,
                 });
 
-                await sendStaking({
+                const tx = await sendStaking({
                     type: StakingTransactionType.UNSTAKE,
                     value: stake.value!.inactiveBalance,
                     sender: STAKING_CONTRACT_ADDRESS,
                     recipient: activeAddress.value!,
                     validityStartHeight: height.value,
                 });
+
+                if (!tx) {
+                    context.emit('statusChange', {
+                        type: StatusChangeType.NONE,
+                    });
+                    return;
+                }
 
                 context.emit('statusChange', {
                     state: State.SUCCESS,
@@ -273,7 +280,7 @@ export default defineComponent({
                 ? validator.value.label : validator.value!.address;
 
             try {
-                await sendStaking({
+                const tx = await sendStaking({
                     type: StakingTransactionType.SET_INACTIVE_STAKE,
                     newInactiveBalance: stake.value!.activeBalance,
                     value: 1, // Unused in transaction
@@ -285,6 +292,13 @@ export default defineComponent({
                 }).catch((error) => {
                     throw new Error(error.data);
                 });
+
+                if (!tx) {
+                    context.emit('statusChange', {
+                        type: StatusChangeType.NONE,
+                    });
+                    return;
+                }
 
                 context.emit('statusChange', {
                     state: State.SUCCESS,

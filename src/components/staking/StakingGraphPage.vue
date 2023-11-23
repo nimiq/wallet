@@ -133,7 +133,7 @@ export default defineComponent({
 
                     if (!activeStake.value
                         || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
-                        await sendStaking({
+                        const tx = await sendStaking({
                             type: StakingTransactionType.CREATE_STAKER,
                             delegation: activeValidator.value!.address,
                             value: stakeDelta.value,
@@ -145,6 +145,13 @@ export default defineComponent({
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
+
+                        if (!tx) {
+                            context.emit('statusChange', {
+                                type: StatusChangeType.NONE,
+                            });
+                            return;
+                        }
 
                         context.emit('statusChange', {
                             state: State.SUCCESS,
@@ -158,7 +165,7 @@ export default defineComponent({
                         });
                     } else {
                         // TODO: Differentiate between adding and reactivating stake
-                        await sendStaking({
+                        const tx = await sendStaking({
                             type: StakingTransactionType.ADD_STAKE,
                             value: stakeDelta.value,
                             sender: activeAddress.value!,
@@ -169,6 +176,13 @@ export default defineComponent({
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
+
+                        if (!tx) {
+                            context.emit('statusChange', {
+                                type: StatusChangeType.NONE,
+                            });
+                            return;
+                        }
 
                         context.emit('statusChange', {
                             state: State.SUCCESS,
@@ -188,7 +202,7 @@ export default defineComponent({
                         title: context.root.$t('Sending Staking Transaction') as string,
                     });
 
-                    await sendStaking({
+                    const tx = await sendStaking({
                         type: StakingTransactionType.SET_INACTIVE_STAKE,
                         newInactiveBalance: activeStake.value!.inactiveBalance - stakeDelta.value,
                         value: 1, // Unused in transaction
@@ -200,6 +214,13 @@ export default defineComponent({
                     }).catch((error) => {
                         throw new Error(error.data);
                     });
+
+                    if (!tx) {
+                        context.emit('statusChange', {
+                            type: StatusChangeType.NONE,
+                        });
+                        return;
+                    }
 
                     context.emit('statusChange', {
                         state: State.SUCCESS,

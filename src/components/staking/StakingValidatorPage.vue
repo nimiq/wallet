@@ -101,7 +101,7 @@ export default defineComponent({
                         title: context.root.$t('Changing validator') as string,
                     });
 
-                    await sendStaking({
+                    const tx = await sendStaking({
                         type: StakingTransactionType.UPDATE_STAKER,
                         delegation: validator.address,
                         reactivateAllStake: true,
@@ -114,6 +114,13 @@ export default defineComponent({
                     }).catch((error) => {
                         throw new Error(error.data);
                     });
+
+                    if (!tx) {
+                        context.emit('statusChange', {
+                            type: StatusChangeType.NONE,
+                        });
+                        return;
+                    }
 
                     context.emit('statusChange', {
                         state: State.SUCCESS,

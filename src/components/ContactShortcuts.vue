@@ -47,7 +47,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     .contact-shortcuts {
-        width: calc(100% + 2rem);
+        width: 100%;
     }
 
     .identicon-button {

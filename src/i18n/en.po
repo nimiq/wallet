@@ -273,7 +273,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:69
+#: src/components/staking/StakingInfoPage.vue:68
 msgid "Adjust Stake"
 msgstr ""
 
@@ -378,6 +378,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:208
 msgid "Automatic mode uses {behavior}."
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:81
+msgid "available to unstake"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:294
@@ -496,8 +500,8 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:68
-#: src/components/TransactionList.vue:78
+#: src/components/TransactionList.vue:50
+#: src/components/TransactionList.vue:60
 msgid "Buy NIM"
 msgstr ""
 
@@ -692,8 +696,12 @@ msgstr ""
 msgid "Confirm stake"
 msgstr ""
 
+#: src/components/staking/StakingGraphPage.vue:60
+msgid "Confirm stake"
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:60
+#: src/components/TransactionList.vue:42
 #: src/components/UsdcTransactionList.vue:45
 #: src/components/UsdtTransactionList.vue:45
 msgid "Congrats"
@@ -1101,7 +1109,7 @@ msgid "fees"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:38
-#: src/components/TransactionList.vue:51
+#: src/components/TransactionList.vue:33
 #: src/components/UsdcTransactionList.vue:36
 #: src/components/UsdtTransactionList.vue:36
 msgid "Fetching"
@@ -1380,7 +1388,7 @@ msgstr ""
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
-#: src/components/TransactionList.vue:62
+#: src/components/TransactionList.vue:44
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 
@@ -1600,7 +1608,7 @@ msgid "No request received."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:77
-#: src/components/TransactionList.vue:83
+#: src/components/TransactionList.vue:65
 #: src/components/UsdcTransactionList.vue:62
 #: src/components/UsdtTransactionList.vue:62
 msgid "No transactions found"
@@ -1692,6 +1700,10 @@ msgstr ""
 #: src/components/modals/UsdcTransactionModal.vue:65
 #: src/components/modals/UsdtTransactionModal.vue:61
 msgid "Partially reverted"
+msgstr ""
+
+#: src/components/layouts/Network.vue:121
+msgid "paused"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:173
@@ -2105,6 +2117,10 @@ msgstr ""
 #: src/components/modals/SendModal.vue:771
 #: src/components/modals/StablecoinSendModal.vue:629
 msgid "Sending Transaction"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:223
+msgid "Sending Unstaking Transaction"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:511
@@ -2587,8 +2603,8 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
-#: src/components/TransactionList.vue:237
-#: src/components/TransactionList.vue:259
+#: src/components/TransactionList.vue:220
+#: src/components/TransactionList.vue:242
 #: src/components/UsdcTransactionList.vue:203
 #: src/components/UsdcTransactionList.vue:225
 #: src/components/UsdtTransactionList.vue:203
@@ -2729,11 +2745,11 @@ msgstr ""
 msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:64
+#: src/components/staking/StakingGraphPage.vue:65
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:190
+#: src/components/staking/StakingInfoPage.vue:184
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
@@ -2742,7 +2758,7 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:86
+#: src/components/staking/StakingInfoPage.vue:84
 msgid "Unstake All"
 msgstr ""
 
@@ -2920,7 +2936,7 @@ msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:61
+#: src/components/TransactionList.vue:43
 #: src/components/UsdcTransactionList.vue:46
 #: src/components/UsdtTransactionList.vue:46
 msgid "You now own crypto!"
@@ -3020,7 +3036,7 @@ msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:75
+#: src/components/TransactionList.vue:57
 #: src/components/UsdcTransactionList.vue:55
 #: src/components/UsdtTransactionList.vue:55
 msgid "Your transactions will appear here"

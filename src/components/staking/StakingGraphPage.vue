@@ -81,9 +81,6 @@ import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nim
 
 import {
     CryptoCurrency,
-    STAKING_CONTRACT_ADDRESS,
-    StakingTransactionType,
-    STAKING_ACCOUNT_TYPE,
 } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { sendStaking } from '../../hub';
@@ -103,6 +100,7 @@ import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
+import { getNetworkClient } from '../../network';
 
 export default defineComponent({
     setup(props, context) {
@@ -123,6 +121,9 @@ export default defineComponent({
                 ? activeValidator.value.label
                 : activeValidator.value!.address;
 
+            const { Address, TransactionBuilder } = await import('@nimiq/core-web');
+            const client = await getNetworkClient();
+
             try {
                 if (stakeDelta.value > 0) {
                     context.emit('statusChange', {
@@ -133,15 +134,16 @@ export default defineComponent({
 
                     if (!activeStake.value
                         || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
+                        const transaction = TransactionBuilder.newCreateStaker(
+                            Address.fromUserFriendlyAddress(activeAddress.value!),
+                            Address.fromUserFriendlyAddress(activeValidator.value!.address),
+                            BigInt(stakeDelta.value),
+                            BigInt(0),
+                            useNetworkStore().state.height,
+                            await client.getNetworkId(),
+                        );
                         const tx = await sendStaking({
-                            type: StakingTransactionType.CREATE_STAKER,
-                            delegation: activeValidator.value!.address,
-                            value: stakeDelta.value,
-                            sender: activeAddress.value!,
-                            recipient: STAKING_CONTRACT_ADDRESS,
-                            recipientType: STAKING_ACCOUNT_TYPE,
-                            recipientLabel: context.root.$t('Staking Contract') as string,
-                            validityStartHeight: useNetworkStore().state.height,
+                            transaction: transaction.serialize(),
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -165,14 +167,16 @@ export default defineComponent({
                         });
                     } else {
                         // TODO: Differentiate between adding and reactivating stake
+                        const transaction = TransactionBuilder.newStake(
+                            Address.fromUserFriendlyAddress(activeAddress.value!),
+                            Address.fromUserFriendlyAddress(activeAddress.value!),
+                            BigInt(stakeDelta.value),
+                            BigInt(0),
+                            useNetworkStore().state.height,
+                            await client.getNetworkId(),
+                        );
                         const tx = await sendStaking({
-                            type: StakingTransactionType.ADD_STAKE,
-                            value: stakeDelta.value,
-                            sender: activeAddress.value!,
-                            recipient: STAKING_CONTRACT_ADDRESS,
-                            recipientType: STAKING_ACCOUNT_TYPE,
-                            recipientLabel: context.root.$t('Staking Contract') as string,
-                            validityStartHeight: useNetworkStore().state.height,
+                            transaction: transaction.serialize(),
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -202,15 +206,15 @@ export default defineComponent({
                         title: context.root.$t('Sending Staking Transaction') as string,
                     });
 
+                    const transaction = TransactionBuilder.newSetInactiveStake(
+                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        BigInt(activeStake.value!.inactiveBalance - stakeDelta.value),
+                        BigInt(0),
+                        useNetworkStore().state.height,
+                        await client.getNetworkId(),
+                    );
                     const tx = await sendStaking({
-                        type: StakingTransactionType.SET_INACTIVE_STAKE,
-                        newInactiveBalance: activeStake.value!.inactiveBalance - stakeDelta.value,
-                        value: 1, // Unused in transaction
-                        sender: activeAddress.value!,
-                        recipient: STAKING_CONTRACT_ADDRESS,
-                        recipientType: STAKING_ACCOUNT_TYPE,
-                        recipientLabel: context.root.$t('Staking Contract') as string,
-                        validityStartHeight: useNetworkStore().state.height,
+                        transaction: transaction.serialize(),
                     }).catch((error) => {
                         throw new Error(error.data);
                     });

@@ -38,12 +38,12 @@ import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
 import { useAddressStore } from '../../stores/Address';
 import { sendStaking } from '../../hub';
-import { StakingTransactionType, STAKING_ACCOUNT_TYPE, STAKING_CONTRACT_ADDRESS } from '../../lib/Constants';
 import { useNetworkStore } from '../../stores/Network';
 import { FilterState } from '../../lib/StakingUtils';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
+import { getNetworkClient } from '../../network';
 
 export default defineComponent({
     setup(props, context) {
@@ -101,16 +101,20 @@ export default defineComponent({
                         title: context.root.$t('Changing validator') as string,
                     });
 
+                    const { Address, TransactionBuilder } = await import('@nimiq/core-web');
+                    const client = await getNetworkClient();
+
+                    const transaction = TransactionBuilder.newUpdateStaker(
+                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        Address.fromUserFriendlyAddress(validator.address),
+                        true,
+                        BigInt(0),
+                        useNetworkStore().state.height,
+                        await client.getNetworkId(),
+                    );
+
                     const tx = await sendStaking({
-                        type: StakingTransactionType.UPDATE_STAKER,
-                        delegation: validator.address,
-                        reactivateAllStake: true,
-                        value: 1, // Unused in transaction
-                        sender: activeAddress.value!,
-                        recipient: STAKING_CONTRACT_ADDRESS,
-                        recipientType: STAKING_ACCOUNT_TYPE,
-                        recipientLabel: context.root.$t('Staking Contract') as string,
-                        validityStartHeight: useNetworkStore().state.height,
+                        transaction: transaction.serialize(),
                     }).catch((error) => {
                         throw new Error(error.data);
                     });

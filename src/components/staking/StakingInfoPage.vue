@@ -158,14 +158,10 @@ import ShortAddress from '../ShortAddress.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
 
-import {
-    StakingTransactionType,
-    STAKING_CONTRACT_ADDRESS,
-    STAKING_ACCOUNT_TYPE,
-} from '../../lib/Constants';
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
 import { useConfig } from '../../composables/useConfig';
+import { getNetworkClient } from '../../network';
 
 export default defineComponent({
     setup(props, context) {
@@ -221,19 +217,25 @@ export default defineComponent({
         );
 
         async function unstakeAll() {
-            try {
-                context.emit('statusChange', {
-                    type: StatusChangeType.UNSTAKING,
-                    state: State.LOADING,
-                    title: context.root.$t('Sending Unstaking Transaction') as string,
-                });
+            context.emit('statusChange', {
+                type: StatusChangeType.UNSTAKING,
+                state: State.LOADING,
+                title: context.root.$t('Sending Unstaking Transaction') as string,
+            });
 
+            try {
+                const { Address, TransactionBuilder } = await import('@nimiq/core-web');
+                const client = await getNetworkClient();
+
+                const transaction = TransactionBuilder.newUnstake(
+                    Address.fromUserFriendlyAddress(activeAddress.value!),
+                    BigInt(stake.value!.inactiveBalance),
+                    BigInt(0),
+                    useNetworkStore().state.height,
+                    await client.getNetworkId(),
+                );
                 const tx = await sendStaking({
-                    type: StakingTransactionType.UNSTAKE,
-                    value: stake.value!.inactiveBalance,
-                    sender: STAKING_CONTRACT_ADDRESS,
-                    recipient: activeAddress.value!,
-                    validityStartHeight: height.value,
+                    transaction: transaction.serialize(),
                 });
 
                 if (!tx) {
@@ -280,15 +282,18 @@ export default defineComponent({
                 ? validator.value.label : validator.value!.address;
 
             try {
+                const { Address, TransactionBuilder } = await import('@nimiq/core-web');
+                const client = await getNetworkClient();
+
+                const transaction = TransactionBuilder.newSetInactiveStake(
+                    Address.fromUserFriendlyAddress(activeAddress.value!),
+                    BigInt(stake.value!.activeBalance + stake.value!.inactiveBalance),
+                    BigInt(0),
+                    useNetworkStore().state.height,
+                    await client.getNetworkId(),
+                );
                 const tx = await sendStaking({
-                    type: StakingTransactionType.SET_INACTIVE_STAKE,
-                    newInactiveBalance: stake.value!.activeBalance,
-                    value: 1, // Unused in transaction
-                    sender: activeAddress.value!,
-                    recipient: STAKING_CONTRACT_ADDRESS,
-                    recipientType: STAKING_ACCOUNT_TYPE,
-                    recipientLabel: context.root.$t('Staking Contract') as string,
-                    validityStartHeight: useNetworkStore().state.height,
+                    transaction: transaction.serialize(),
                 }).catch((error) => {
                     throw new Error(error.data);
                 });

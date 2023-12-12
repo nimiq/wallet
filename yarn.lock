@@ -1480,9 +1480,9 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.7.0.tgz#eea496f4898139c51971f0b177583c6cc6b06611"
   integrity sha512-k7vSjYdjAiAQar+21v681Zrp9kN9uHMUw7/dyG2D/IrXqNPHkD133JyrzxPBga+myW411SUR4mtdPQRPQm3d/A==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?add8db68884d6e4282dc7dc2d1ea81d1f6dc02a3":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?87627adee73c7ad9c70beeb5cc5703c30c8d30a8":
   version "1.7.0-albatross.0"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?add8db68884d6e4282dc7dc2d1ea81d1f6dc02a3#e4c7aa531da6e45ae6a367140f3a11ee60576333"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?87627adee73c7ad9c70beeb5cc5703c30c8d30a8#e5b282f30ee3211d161ee215ab7684c04f3f6c21"
   dependencies:
     "@nimiq/core-web" "^1.6.1"
     "@nimiq/fastspot-api" "^1.7.0"

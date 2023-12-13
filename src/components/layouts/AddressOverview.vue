@@ -145,7 +145,10 @@
                     </button>
                 </div>
             </div>
-            <div v-if="usdcAddressInfo && usdcAddressInfo.nativeBalance" class="native-usdc-notice">
+            <div
+                v-if="activeCurrency === 'usdc' && usdcAddressInfo && usdcAddressInfo.nativeBalance"
+                class="native-usdc-notice"
+            >
                 <div class="flex-row">
                     <UsdcIcon />
                     {{ $t('Native Polygon USDC') }}

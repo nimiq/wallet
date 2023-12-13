@@ -41,6 +41,7 @@ export default {
          * Set to `0` to disable early stopping.
          */
         earliestHistoryScanHeight: 29621817,
+        earliestNativeHistoryScanHeight: 36560732, // Native USDC contract creation block
     },
 
     fastspot: {

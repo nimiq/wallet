@@ -35,6 +35,7 @@ export type HtlcEvent = HtlcOpenEvent | HtlcRedeemEvent | HtlcRefundEvent;
 // It is NOT a full Ethereum/Polygon transaction.
 // Might be better named `UsdcTokenTransfer`...
 export type Transaction = {
+    token: string,
     transactionHash: string,
     logIndex: number,
     sender: string,

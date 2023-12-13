@@ -3,30 +3,30 @@ import type { BigNumber, Contract } from 'ethers';
 import { PolygonClient } from '../../ethers';
 import { UNISWAP_POOL_CONTRACT_ABI, UNISWAP_QUOTER_CONTRACT_ABI } from './ContractABIs';
 
-let poolAddresses: Record<string, string | undefined>;
-let poolFees: Record<string, BigNumber | undefined>;
+const poolAddresses = new Map<string, string | undefined>();
+const poolFees = new Map<string, BigNumber | undefined>();
 
 export async function getPoolAddress(contract: Contract, token: string) {
     const key = `${contract.address}-${token}`;
-    if (!poolAddresses[key]) {
-        poolAddresses[key] = await contract.registeredTokenPool(token) as string;
+    if (!poolAddresses.has(key)) {
+        poolAddresses.set(key, await contract.registeredTokenPool(token));
     }
 
-    return poolAddresses[key]!;
+    return poolAddresses.get(key)!;
 }
 
 // https://docs.uniswap.org/sdk/v3/guides/quoting
 export async function getUsdcPrice(token: string, client: PolygonClient) {
     const { config } = useConfig();
 
-    if (!poolFees[token]) {
+    if (!poolFees.has(token)) {
         const transferContract = token === config.usdc.usdcContract ? client.usdcTransfer : client.nativeUsdcTransfer;
         const poolContract = new client.ethers.Contract(
             await getPoolAddress(transferContract, token),
             UNISWAP_POOL_CONTRACT_ABI,
             client.provider,
         );
-        poolFees[token] = await poolContract.fee() as BigNumber;
+        poolFees.set(token, await poolContract.fee());
     }
 
     const quoterContract = new client.ethers.Contract(
@@ -39,7 +39,7 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
     const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
         token, // in
         config.usdc.wmaticContract, // out
-        poolFees[token]!,
+        poolFees.get(token)!,
         1_000_000, // 1 USDC
         0,
     ) as BigNumber;

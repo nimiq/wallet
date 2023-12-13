@@ -178,6 +178,18 @@ async function updateBalances(addresses: string[] = [...balances.keys()]) {
         }
     }
 
+    if (!newBalances.size) return;
+    if (newBalances.size) {
+        console.debug('Got new bridged USDC balances for', [...newBalances.keys()], [...newBalances.values()]);
+    }
+    const { patchAddress } = useUsdcAddressStore();
+    for (const [address, balance] of newBalances) {
+        patchAddress(address, { balance });
+    }
+}
+
+async function updateNativeBalances(addresses: string[] = [...balances.keys()]) {
+    if (!addresses.length) return;
     const nativeAccounts = await Promise.all(addresses.map((address) => getNativeBalance(address)));
     const newNativeBalances: Balances = new Map(
         nativeAccounts.map((balance, i) => [addresses[i], balance]),
@@ -193,19 +205,13 @@ async function updateBalances(addresses: string[] = [...balances.keys()]) {
         }
     }
 
-    if (!newBalances.size && !newNativeBalances.size) return;
-    if (newBalances.size) {
-        console.debug('Got new bridged USDC balances for', [...newBalances.keys()], [...newBalances.values()]);
-    }
+    if (!newNativeBalances.size) return;
     if (newNativeBalances.size) {
-        console.warn(
+        console.debug(
             'Got new native USDC balances for', [...newNativeBalances.keys()], [...newNativeBalances.values()],
         );
     }
     const { patchAddress } = useUsdcAddressStore();
-    for (const [address, balance] of newBalances) {
-        patchAddress(address, { balance });
-    }
     for (const [address, nativeBalance] of newNativeBalances) {
         patchAddress(address, { nativeBalance });
     }
@@ -220,17 +226,29 @@ function forgetBalances(addresses: string[]) {
 
 const subscribedAddresses = new Set<string>();
 const fetchedAddresses = new Set<string>();
+const fetchedNativeAddresses = new Set<string>();
 
 let currentSubscriptionFilter: EventFilter | undefined;
+let currentNativeSubscriptionFilter: EventFilter | undefined;
 function subscribe(addresses: string[]) {
     getPolygonClient().then((client) => {
         // Only subscribe to incoming logs
         const newFilterIncoming = client.usdc.filters.Transfer(null, [...subscribedAddresses]);
         client.usdc.on(newFilterIncoming, transactionListener);
-        if (currentSubscriptionFilter) client.usdc.off(currentSubscriptionFilter, transactionListener);
+        if (currentSubscriptionFilter) {
+            client.usdc.off(currentSubscriptionFilter, transactionListener);
+        }
         currentSubscriptionFilter = newFilterIncoming;
+
+        const newNativeFilterIncoming = client.nativeUsdc.filters.Transfer(null, [...subscribedAddresses]);
+        client.nativeUsdc.on(newNativeFilterIncoming, transactionListener);
+        if (currentNativeSubscriptionFilter) {
+            client.nativeUsdc.off(currentNativeSubscriptionFilter, transactionListener);
+        }
+        currentNativeSubscriptionFilter = newNativeFilterIncoming;
     });
     updateBalances(addresses);
+    updateNativeBalances(addresses);
     return true;
 }
 
@@ -243,12 +261,14 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
     const [block, receipt] = await Promise.all([
         log.getBlock(),
         // Handle HTLC redeem/refund events
-        from === config.usdc.htlcContract ? log.getTransactionReceipt() : Promise.resolve(null),
+        from === config.usdc.htlcContract/* || from === config.usdc.nativeHtlcContract */
+            ? log.getTransactionReceipt()
+            : Promise.resolve(null),
     ]);
 
     let tx: Transaction;
     if (receipt) {
-        tx = await receiptToTransaction(receipt, undefined, block);
+        tx = await receiptToTransaction(receipt.contractAddress, receipt, undefined, block);
     } else {
         tx = logAndBlockToPlain(log, block);
     }
@@ -262,7 +282,12 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
     if (balances.has(to)) {
         addresses.push(to);
     }
-    updateBalances(addresses);
+
+    if (receipt?.contractAddress === config.usdc.nativeUsdcContract || log.address === config.usdc.nativeUsdcContract) {
+        updateNativeBalances(addresses);
+    } else {
+        updateBalances(addresses);
+    }
 }
 
 export async function launchPolygon() {
@@ -294,6 +319,7 @@ export async function launchPolygon() {
             for (const removedAddress of removedAddresses) {
                 subscribedAddresses.delete(removedAddress);
                 fetchedAddresses.delete(removedAddress);
+                fetchedNativeAddresses.delete(removedAddress);
             }
             // Let the network forget the balances of the removed addresses,
             // so that they are reported as new again at re-login.
@@ -316,7 +342,8 @@ export async function launchPolygon() {
         console.debug('Scheduling USDC transaction fetch for', address);
 
         const knownTxs = Object.values(transactionsStore.state.transactions)
-            .filter((tx) => tx.sender === address || tx.recipient === address);
+            .filter((tx) => (!tx.token || tx.token === config.usdc.usdcContract)
+                && (tx.sender === address || tx.recipient === address));
         const lastConfirmedHeight = knownTxs
             .filter((tx) => Boolean(tx.blockHeight))
             .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
@@ -328,7 +355,6 @@ export async function launchPolygon() {
 
         const client = await getPolygonClient();
         const poolAddress = await getPoolAddress(client.usdcTransfer, config.usdc.usdcContract);
-        // const nativePoolAddress = await getPoolAddress(client.nativeUsdcTransfer, config.usdc.nativeUsdcContract);
 
         console.debug('Fetching USDC transaction history for', address, knownTxs);
 
@@ -387,7 +413,7 @@ export async function launchPolygon() {
                     balance: balance.toNumber() / 1e6,
                     usdcNonce,
                     transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                    htlcAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                    htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
                 });
 
                 console.debug(`Querying logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
@@ -405,7 +431,7 @@ export async function launchPolygon() {
 
                 // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
                 const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
-                console.debug(`Found ${outgoingTxs.size} outoing txs`);
+                console.debug(`Found ${outgoingTxs.size} outgoing txs`);
                 usdcNonce -= outgoingTxs.size;
 
                 const txsUsingHtlcAllowance = new Set(logsOut
@@ -567,7 +593,7 @@ export async function launchPolygon() {
                 balance: balance.toNumber() / 1e6,
                 usdcNonce,
                 transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                htlcAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
             });
         })
             .catch((error) => {
@@ -576,10 +602,271 @@ export async function launchPolygon() {
             })
             .then(() => network$.fetchingTxHistory--);
     });
+
+    const nativeTxFetchTrigger = ref(0);
+    watch([addressStore.addressInfo, nativeTxFetchTrigger, () => config.usdc], async ([addressInfo, trigger]) => {
+        const address = (addressInfo as UsdcAddressInfo | null)?.address;
+        if (!address || fetchedNativeAddresses.has(address)) return;
+        fetchedNativeAddresses.add(address);
+
+        console.debug('Scheduling native USDC transaction fetch for', address);
+
+        const knownTxs = Object.values(transactionsStore.state.transactions)
+            .filter((tx) => tx.token === config.usdc.nativeUsdcContract
+                && (tx.sender === address || tx.recipient === address));
+        const lastConfirmedHeight = knownTxs
+            .filter((tx) => Boolean(tx.blockHeight))
+            .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
+        const earliestHeightToCheck = Math.max(config.usdc.earliestNativeHistoryScanHeight, lastConfirmedHeight - 1000);
+
+        network$.fetchingTxHistory++;
+
+        if ((trigger as number) > 0) updateNativeBalances([address]);
+
+        const client = await getPolygonClient();
+        const poolAddress = await getPoolAddress(client.nativeUsdcTransfer, config.usdc.nativeUsdcContract);
+
+        console.debug('Fetching native USDC transaction history for', address, knownTxs);
+
+        // EventFilters only allow to query with an AND condition between arguments (topics). So while
+        // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
+        // OR two AND pairs. That requires two separate requests.
+        const filterIncoming = client.nativeUsdc.filters.Transfer(null, address);
+        const filterOutgoing = client.nativeUsdc.filters.Transfer(address);
+        // const filterMetaTx = client.usdc.filters.MetaTransactionExecuted();
+
+        const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
+
+        const MAX_ALLOWANCE = client.ethers
+            .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+
+        // The minimum allowance that should remain so we can be certain the max allowance was ever given.
+        // If the current allowance is below this number, we ignore allowance counting for the history sync.
+        const MIN_ALLOWANCE = client.ethers
+            .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
+
+        Promise.all([
+            client.nativeUsdc.balanceOf(address) as Promise<BigNumber>,
+            client.nativeUsdc.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+            client.nativeUsdc.allowance(address, config.usdc.nativeTransferContract)
+                .then((allowance: BigNumber) => {
+                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+                    return MAX_ALLOWANCE.sub(allowance);
+                }) as Promise<BigNumber>,
+            // client.nativeUsdc.allowance(address, config.usdc.nativeHtlcContract)
+            //     .then((allowance: BigNumber) => {
+            //         if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+            //         return MAX_ALLOWANCE.sub(allowance);
+            //     }) as Promise<BigNumber>,
+        ]).then(async ([nativeBalance, nativeUsdcNonce, transferAllowanceUsed/* , htlcAllowanceUsed */]) => {
+            let blockHeight = await getPolygonBlockNumber();
+
+            // To filter known txs
+            const knownHashes = knownTxs.map(
+                (tx) => tx.transactionHash,
+            );
+
+            const nativeHtlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
+
+            /* eslint-disable max-len */
+            while (blockHeight > earliestHeightToCheck && (
+                nativeBalance.gt(0)
+                || nativeUsdcNonce > 0
+                || transferAllowanceUsed.gt(0)
+                // || htlcAllowanceUsed.gt(0)
+            )) {
+                const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
+                const endHeight = blockHeight;
+                blockHeight = startHeight;
+
+                console.debug('Native USDC Sync start', {
+                    balance: nativeBalance.toNumber() / 1e6,
+                    usdcNonce: nativeUsdcNonce,
+                    transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                    // htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                });
+
+                console.debug(`Querying native logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
+
+                let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
+                    client.nativeUsdc.queryFilter(filterIncoming, startHeight, endHeight),
+                    client.nativeUsdc.queryFilter(filterOutgoing, startHeight, endHeight),
+                ]);
+
+                // Ignore address poisoning transactions
+                logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+                logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+
+                console.debug(`Got ${logsIn.length} incoming native logs, ${logsOut.length} outgoing native logs` /* , and ${metaTxs.length} meta tx logs` */);
+
+                // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
+                const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
+                console.debug(`Found ${outgoingTxs.size} outgoing native txs`);
+                nativeUsdcNonce -= outgoingTxs.size;
+
+                // const txsUsingHtlcAllowance = new Set(logsOut
+                //     .filter((ev) => ev.args?.to === config.usdc.nativeHtlcContract) // Only HTLC fundings are relevant
+                //     .map((ev) => ev.transactionHash));
+
+                const allTransferLogs = logsIn.concat(logsOut);
+
+                // eslint-disable-next-line no-loop-func
+                const newLogs = allTransferLogs.filter((log) => {
+                    if (!log.args) return false;
+
+                    // TODO: When switching to use max-approval, remove usdcNonce <= 0 check, so allowances get reduced first
+                    if (log.args.from === address && nativeUsdcNonce <= 0) {
+                        nativeBalance = nativeBalance.add(log.args.value);
+
+                        // if (txsUsingHtlcAllowance.has(log.transactionHash)) {
+                        //     htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
+                        // } else {
+                        transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
+                        // }
+                    }
+                    if (log.args.to === address) {
+                        nativeBalance = nativeBalance.sub(log.args.value);
+                    }
+
+                    if (knownHashes.includes(log.transactionHash)) return false;
+
+                    // Transfers to the Uniswap pool are the fees paid to OpenGSN
+                    if (log.args.to === poolAddress) {
+                        // Find the main transfer log
+                        const mainTransferLog = allTransferLogs.find((otherLog) =>
+                            otherLog.transactionHash === log.transactionHash
+                            && otherLog.logIndex !== log.logIndex);
+
+                        if (mainTransferLog && mainTransferLog.args) {
+                            // Write this log's `value` as the main transfer log's `fee`
+                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                        }
+
+                        // Then ignore this log
+                        return false;
+                    }
+
+                    // if (log.args.to === config.usdc.nativeHtlcContract) {
+                    //     if (
+                    //         // Before v3, transfers to the HTLC contract were the fees paid to OpenGSN
+                    //         config.environment !== ENV_MAIN
+                    //         && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
+                    //     ) {
+                    //         // Determine if this transfer is the fee, by looking for another transfer in this
+                    //         // transaction with a higher `logIndex`, which means that one is the main transfer and this
+                    //         // one is the fee.
+                    //         const mainTransferLog = allTransferLogs.find((otherLog) =>
+                    //             otherLog.transactionHash === log.transactionHash
+                    //             && otherLog.logIndex > log.logIndex);
+
+                    //         if (mainTransferLog && mainTransferLog.args) {
+                    //             // Write this log's `value` as the main transfer log's `fee`
+                    //             mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+
+                    //             // Then ignore this log
+                    //             return false;
+                    //         }
+                    //     }
+
+                    //     // Get Open event log
+                    //     const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                    //         const nativeHtlcContract = await getNativeHtlcContract(true);
+
+                    //         for (const innerLog of receipt.logs) {
+                    //             if (innerLog.address === config.usdc.nativeHtlcContract) {
+                    //                 try {
+                    //                     const { args, name } = nativeHtlcContract.interface.parseLog(innerLog);
+                    //                     if (name === 'Open') {
+                    //                         return <HtlcEvent> {
+                    //                             name,
+                    //                             id: args.id,
+                    //                             token: args.token,
+                    //                             amount: args.amount.toNumber(),
+                    //                             recipient: args.recipient,
+                    //                             hash: args.hash,
+                    //                             timeout: args.timeout.toNumber(),
+                    //                         };
+                    //                     }
+                    //                 } catch (error) { /* ignore */ }
+                    //             }
+                    //         }
+                    //         return undefined;
+                    //     });
+
+                    //     nativeHtlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                    // }
+
+                    // if (log.args.from === config.usdc.nativeHtlcContract) {
+                    //     // Get Redeem or Refund event log
+                    //     const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                    //         const nativeHtlcContract = await getNativeHtlcContract(true);
+
+                    //         for (const innerLog of receipt.logs) {
+                    //             if (innerLog.address === config.usdc.nativeHtlcContract) {
+                    //                 try {
+                    //                     const { args, name } = nativeHtlcContract.interface.parseLog(innerLog);
+                    //                     if (name === 'Redeem') {
+                    //                         return <HtlcEvent> {
+                    //                             name,
+                    //                             id: args.id,
+                    //                             secret: args.secret,
+                    //                         };
+                    //                     }
+                    //                     if (name === 'Refund') {
+                    //                         return <HtlcEvent> {
+                    //                             name,
+                    //                             id: args.id,
+                    //                         };
+                    //                     }
+                    //                 } catch (error) { /* ignore */ }
+                    //             }
+                    //         }
+                    //         return undefined;
+                    //     });
+
+                    //     nativeHtlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                    // }
+
+                    return true;
+                }) as TransferEvent[];
+
+                const logsAndBlocks = newLogs.map((log) => ({
+                    log,
+                    block: log.getBlock(),
+                    event: nativeHtlcEventsByTransactionHash.get(log.transactionHash),
+                }));
+
+                // TODO: Allow individual fetches to fail, but still add the other transactions?
+                await Promise.all(logsAndBlocks.map( // eslint-disable-line no-await-in-loop
+                    async ({ log, block, event }) => logAndBlockToPlain(
+                        log,
+                        await block,
+                        await event,
+                    ),
+                )).then((transactions) => {
+                    transactionsStore.addTransactions(transactions);
+                });
+            } // End while loop
+            /* eslint-enable max-len */
+
+            console.debug('Native USDC Sync end', {
+                nativeBalance: nativeBalance.toNumber() / 1e6,
+                nativeUsdcNonce,
+                transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                // htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+            });
+        })
+            .catch((error) => {
+                console.error(error);
+                fetchedNativeAddresses.delete(address);
+            })
+            .then(() => network$.fetchingTxHistory--);
+    });
 }
 
 function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block, event?: HtlcEvent): Transaction {
     return {
+        token: log.address,
         transactionHash: log.transactionHash,
         logIndex: log.logIndex,
         sender: log.args.from,
@@ -844,15 +1131,23 @@ export async function sendTransaction(
         txResponse = await client.provider.getTransaction(tx.hash!);
     }
 
+    const token = relayRequest.request.to === config.usdc.nativeTransferContract
+        // || relayRequest.request.to === config.usdc.nativeHtlcContract
+        ? config.usdc.nativeUsdcContract
+        : config.usdc.usdcContract;
+
     // If `approvalData` is present, this is a redeem transaction
     const isHtlcRedeemTx = approvalData.length > 2;
     const isHtlcRefundTx = relayRequest.request.data.startsWith(
-        (await getHtlcContract()).interface.getSighash('refund'),
+        /* relayRequest.request.to === config.usdc.nativeHtlcContract
+            ? (await getNativeHtlcContract()).interface.getSighash('refund')
+            : */(await getHtlcContract()).interface.getSighash('refund'),
     );
 
     const isIncomingTx = isHtlcRedeemTx || isHtlcRefundTx;
 
     const tx = await receiptToTransaction(
+        token,
         await txResponse.wait(1),
         // Do not filter by sender for incoming txs
         isIncomingTx ? undefined : relayRequest.request.from,
@@ -860,13 +1155,18 @@ export async function sendTransaction(
 
     if (!isIncomingTx) {
         // Trigger manual balance update for outgoing transactions
-        updateBalances([relayRequest.request.from]);
+        if (token === config.usdc.nativeUsdcContract) {
+            updateNativeBalances([relayRequest.request.from]);
+        } else {
+            updateBalances([relayRequest.request.from]);
+        }
     }
 
     return tx;
 }
 
 export async function receiptToTransaction(
+    token: string,
     receipt: TransactionReceipt,
     filterByFromAddress?: string,
     block?: providers.Block,
@@ -874,15 +1174,23 @@ export async function receiptToTransaction(
     const { config } = useConfig();
     const client = await getPolygonClient();
 
+    const [tokenContract, transferContrat] = token === config.usdc.nativeUsdcContract
+        ? [client.nativeUsdc, client.nativeUsdcTransfer]
+        : [client.usdc, client.usdcTransfer];
+
+    const htlcContractAddress = token === config.usdc.nativeUsdcContract
+        ? /* config.usdc.nativeHtlcContract */ ''
+        : config.usdc.htlcContract;
+
     const [htlcContract, poolAddress] = await Promise.all([
-        getHtlcContract(),
-        getPoolAddress(client.usdcTransfer, config.usdc.usdcContract),
+        token === config.usdc.nativeUsdcContract ? getNativeHtlcContract() : getHtlcContract(),
+        getPoolAddress(transferContrat, token),
     ]);
 
     const logs = receipt.logs.map((log) => {
-        if (log.address === config.usdc.usdcContract) {
+        if (log.address === token) {
             try {
-                const { args, name } = client.usdc.interface.parseLog(log);
+                const { args, name } = tokenContract.interface.parseLog(log);
                 return {
                     ...log,
                     args,
@@ -893,7 +1201,7 @@ export async function receiptToTransaction(
             }
         }
 
-        if (log.address === config.usdc.htlcContract) {
+        if (htlcContract && log.address === htlcContractAddress) {
             try {
                 const { args, name } = htlcContract.interface.parseLog(log);
                 return {
@@ -1009,8 +1317,22 @@ export async function getHtlcContract() {
         USDC_HTLC_CONTRACT_ABI,
         provider,
     );
-
     return htlcContract;
+}
+
+let nativeHtlcContract: Contract | undefined;
+export async function getNativeHtlcContract() {
+    if (nativeHtlcContract) return nativeHtlcContract;
+    return undefined;
+
+    // const { ethers, provider } = await getPolygonClient();
+    // const { config } = useConfig();
+    // nativeHtlcContract = new ethers.Contract(
+    //     config.usdc.nativeHtlcContract,
+    //     NATIVE_USDC_HTLC_CONTRACT_ABI,
+    //     provider,
+    // );
+    // return nativeHtlcContract;
 }
 
 function addFeeToArgs(readonlyArgs: Result, fee: BigNumber): Result {

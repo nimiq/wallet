@@ -25,6 +25,7 @@ export default {
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wmaticContract: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
         earliestHistoryScanHeight: 29621817, // see config.local.ts
+        earliestNativeHistoryScanHeight: 36560732, // Native USDC contract creation block
     },
 
     fastspot: {

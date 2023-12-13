@@ -373,7 +373,7 @@ export default defineComponent({
 
                     if ('getBlock' in remoteFundingTx) {
                         const receipt = await remoteFundingTx.getTransactionReceipt();
-                        const polygonTx = await receiptToTransaction(receipt);
+                        const polygonTx = await receiptToTransaction(config.usdc.usdcContract, receipt);
                         updateSwap({
                             state: SwapState.CREATE_OUTGOING,
                             stateEnteredAt: Date.now(),
@@ -467,7 +467,10 @@ export default defineComponent({
                             } catch (error) {
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
-                                    fundingTx = await receiptToTransaction(await event.getTransactionReceipt());
+                                    fundingTx = await receiptToTransaction(
+                                        config.usdc.usdcContract,
+                                        await event.getTransactionReceipt(),
+                                    );
                                 } else {
                                     throw error;
                                 }
@@ -593,7 +596,10 @@ export default defineComponent({
                             } catch (error) {
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
-                                    settlementTx = await receiptToTransaction(await event.getTransactionReceipt());
+                                    settlementTx = await receiptToTransaction(
+                                        config.usdc.usdcContract,
+                                        await event.getTransactionReceipt(),
+                                    );
                                 } else {
                                     throw error;
                                 }

@@ -10,11 +10,12 @@
             </header>
 
             <main class="flex-column">
-                <h1 class="nq-h1">{{ $t('Sell BTC and USDC') }}</h1>
+                <!-- <h1 class="nq-h1">{{ $t('Sell BTC and USDC') }}</h1> -->
+                <h1 class="nq-h1">{{ $t('Sell BTC') }}</h1>
                 <p class="subline">{{ $t('MoonPay is a third-party service requiring registration and KYC.') }}</p>
                 <div class="crypto-logos flex-row">
                     <BitcoinIcon />
-                    <UsdcIcon />
+                    <!-- <UsdcIcon /> -->
                 </div>
                 <p class="fees flex-row">
                     {{ $t('{percentage} fees', { percentage: '1%'}) }}
@@ -46,7 +47,7 @@ import { defineComponent } from '@vue/composition-api';
 import { PageBody, PageFooter, FiatAmount } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
-import UsdcIcon from '../icons/UsdcIcon.vue';
+// import UsdcIcon from '../icons/UsdcIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
 import { FiatCurrency } from '../../lib/Constants';
 
@@ -64,7 +65,7 @@ export default defineComponent({
         PageBody,
         PageFooter,
         BitcoinIcon,
-        UsdcIcon,
+        // UsdcIcon,
         FiatAmount,
     },
 });

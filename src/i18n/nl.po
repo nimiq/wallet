@@ -78,7 +78,7 @@ msgstr "{fee} heffing"
 msgid "{perc}% of swap value."
 msgstr "{perc}% van swap waarde."
 
-#: src/components/modals/MoonpaySellInfoModal.vue:20
+#: src/components/modals/MoonpaySellInfoModal.vue:21
 msgid "{percentage} fees"
 msgstr "{percentage} kosten"
 
@@ -97,7 +97,7 @@ msgstr "{value} resterend"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} meer | + {count} meer"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:33
+#: src/components/modals/MoonpaySellInfoModal.vue:34
 msgid "+ network fees"
 msgstr "+ netwerkkosten"
 
@@ -303,7 +303,7 @@ msgstr ""
 "Alle nieuwe functies zijn exclusief voor nieuwe accounts. Upgrade nu, het "
 "duurt slechts enkele seconden."
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:201
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -661,7 +661,7 @@ msgstr "Klik voor meer informatie"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Klik op ‘Probleemoplossing’ voor meer informatie."
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:203
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr "Sluit"
@@ -756,7 +756,7 @@ msgstr "Doorgaan"
 msgid "Continue Swap"
 msgstr "Swap voortzetten"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:38
+#: src/components/modals/MoonpaySellInfoModal.vue:39
 msgid "Continue with Moonpay"
 msgstr "Ga verder met MoonPay"
 
@@ -1391,7 +1391,7 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
-#: src/components/layouts/AddressOverview.vue:185
+#: src/components/layouts/AddressOverview.vue:188
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Laten we beginnen! Maak je eigen Nimiq account:"
 
@@ -1487,7 +1487,7 @@ msgstr "Maximale omwisselbaar bedrag is {amount}"
 #: src/components/modals/BuyOptionsModal.vue:31
 #: src/components/modals/BuyOptionsModal.vue:48
 #: src/components/modals/BuyOptionsModal.vue:67
-#: src/components/modals/MoonpaySellInfoModal.vue:24
+#: src/components/modals/MoonpaySellInfoModal.vue:25
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "min {amount}"
@@ -1500,7 +1500,7 @@ msgstr "Minimale bedrag is {amount}"
 msgid "Mobile phone"
 msgstr "Mobiel"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:14
+#: src/components/modals/MoonpaySellInfoModal.vue:15
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr "MoonPay is een derde partij die registratie en vereist verificatie."
 
@@ -1533,7 +1533,7 @@ msgstr "Geef deze ontvanger een naam..."
 msgid "Name your contact"
 msgstr "Geef je contact een naam"
 
-#: src/components/layouts/AddressOverview.vue:151
+#: src/components/layouts/AddressOverview.vue:154
 msgid "Native Polygon USDC"
 msgstr ""
 
@@ -1978,9 +1978,9 @@ msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 msgid "Sell"
 msgstr "Verkopen"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:13
-msgid "Sell BTC and USDC"
-msgstr "Verkoop BTC en USDC"
+#: src/components/modals/MoonpaySellInfoModal.vue:14
+msgid "Sell BTC"
+msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
@@ -2070,7 +2070,7 @@ msgstr "Verstuur USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
-#: src/components/layouts/AddressOverview.vue:158
+#: src/components/layouts/AddressOverview.vue:161
 msgid "Sending Native Polygon USDC is not yet supported."
 msgstr ""
 
@@ -2193,7 +2193,7 @@ msgstr "Toon herstelwoorden"
 msgid "Show values as {currency}"
 msgstr "Toon waardes als {currency}"
 
-#: src/components/layouts/AddressOverview.vue:186
+#: src/components/layouts/AddressOverview.vue:189
 msgid "Signup"
 msgstr "Aanmelden"
 
@@ -2911,7 +2911,7 @@ msgstr "Je betaling was teruggestort"
 msgid "Your payout is on its way"
 msgstr "Je uitbetaling is onderweg"
 
-#: src/components/layouts/AddressOverview.vue:194
+#: src/components/layouts/AddressOverview.vue:197
 msgid "Your swap was successful!"
 msgstr "Je swap is gelukt!"
 

@@ -78,7 +78,7 @@ msgstr "{fee} комиссия "
 msgid "{perc}% of swap value."
 msgstr "{perc}% от суммы сделки."
 
-#: src/components/modals/MoonpaySellInfoModal.vue:20
+#: src/components/modals/MoonpaySellInfoModal.vue:21
 msgid "{percentage} fees"
 msgstr "{percentage} комиссии"
 
@@ -97,7 +97,7 @@ msgstr "Осталось {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+ ещё {count} | + ещё {count} "
 
-#: src/components/modals/MoonpaySellInfoModal.vue:33
+#: src/components/modals/MoonpaySellInfoModal.vue:34
 msgid "+ network fees"
 msgstr "+ комиссия сети"
 
@@ -302,7 +302,7 @@ msgstr ""
 "Все новые функции доступны только для аккаунтов нового типа. Обновите "
 "аккаунт сейчас, это займет всего пару секунд. "
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:201
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -658,7 +658,7 @@ msgstr "Кликните для подробной информации"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Нажмите на «Решение проблем», чтобы узнать больше."
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:203
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr "Закрыть"
@@ -752,7 +752,7 @@ msgstr "Продолжить"
 msgid "Continue Swap"
 msgstr "Продолжить обмен"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:38
+#: src/components/modals/MoonpaySellInfoModal.vue:39
 msgid "Continue with Moonpay"
 msgstr "Продолжить с Moonpay"
 
@@ -1384,7 +1384,7 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
-#: src/components/layouts/AddressOverview.vue:185
+#: src/components/layouts/AddressOverview.vue:188
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Давайте приступим! Создайте свой аккаунт Nimiq:"
 
@@ -1476,7 +1476,7 @@ msgstr "Максимальная сумма свопа: {amount}"
 #: src/components/modals/BuyOptionsModal.vue:31
 #: src/components/modals/BuyOptionsModal.vue:48
 #: src/components/modals/BuyOptionsModal.vue:67
-#: src/components/modals/MoonpaySellInfoModal.vue:24
+#: src/components/modals/MoonpaySellInfoModal.vue:25
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "мин. {amount}"
@@ -1489,7 +1489,7 @@ msgstr "Минимальная сумма обмена {amount}"
 msgid "Mobile phone"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:14
+#: src/components/modals/MoonpaySellInfoModal.vue:15
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr ""
 
@@ -1522,7 +1522,7 @@ msgstr "Назовите этого отправителя..."
 msgid "Name your contact"
 msgstr "Укажите имя контакта"
 
-#: src/components/layouts/AddressOverview.vue:151
+#: src/components/layouts/AddressOverview.vue:154
 msgid "Native Polygon USDC"
 msgstr ""
 
@@ -1961,9 +1961,9 @@ msgstr "Выберите в каких единицах будет отобра�
 msgid "Sell"
 msgstr "Продать"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:13
-msgid "Sell BTC and USDC"
-msgstr "Продать BTC и USDC"
+#: src/components/modals/MoonpaySellInfoModal.vue:14
+msgid "Sell BTC"
+msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
@@ -2053,7 +2053,7 @@ msgstr "Отправить USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
-#: src/components/layouts/AddressOverview.vue:158
+#: src/components/layouts/AddressOverview.vue:161
 msgid "Sending Native Polygon USDC is not yet supported."
 msgstr ""
 
@@ -2176,7 +2176,7 @@ msgstr "Показать Защитную Фразу"
 msgid "Show values as {currency}"
 msgstr "Показывать в {currency}"
 
-#: src/components/layouts/AddressOverview.vue:186
+#: src/components/layouts/AddressOverview.vue:189
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
@@ -2893,7 +2893,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Платеж уже в пути"
 
-#: src/components/layouts/AddressOverview.vue:194
+#: src/components/layouts/AddressOverview.vue:197
 msgid "Your swap was successful!"
 msgstr "Ваш Своп прошел успешно!"
 

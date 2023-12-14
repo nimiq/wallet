@@ -77,7 +77,7 @@ msgstr "{fee} 费用"
 msgid "{perc}% of swap value."
 msgstr "交换价值的{perc}％"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:20
+#: src/components/modals/MoonpaySellInfoModal.vue:21
 msgid "{percentage} fees"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr "剩余 {value}"
 msgid "+ {count} more | + {count} more"
 msgstr "+另外{count}个 | +另外{count}个"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:33
+#: src/components/modals/MoonpaySellInfoModal.vue:34
 msgid "+ network fees"
 msgstr "+网络费用"
 
@@ -295,7 +295,7 @@ msgid ""
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟"
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:201
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -635,7 +635,7 @@ msgstr "点击了解更多信息"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:203
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr "关闭"
@@ -728,7 +728,7 @@ msgstr "继续"
 msgid "Continue Swap"
 msgstr "继续交换"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:38
+#: src/components/modals/MoonpaySellInfoModal.vue:39
 msgid "Continue with Moonpay"
 msgstr ""
 
@@ -1331,7 +1331,7 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/AddressOverview.vue:185
+#: src/components/layouts/AddressOverview.vue:188
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
 
@@ -1425,7 +1425,7 @@ msgstr "最大可交换金额为 {amount}"
 #: src/components/modals/BuyOptionsModal.vue:31
 #: src/components/modals/BuyOptionsModal.vue:48
 #: src/components/modals/BuyOptionsModal.vue:67
-#: src/components/modals/MoonpaySellInfoModal.vue:24
+#: src/components/modals/MoonpaySellInfoModal.vue:25
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr "最低{amount}"
@@ -1438,7 +1438,7 @@ msgstr "最低交换金额为{amount}"
 msgid "Mobile phone"
 msgstr "移动设备"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:14
+#: src/components/modals/MoonpaySellInfoModal.vue:15
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr ""
 
@@ -1471,7 +1471,7 @@ msgstr "命名此收件人..."
 msgid "Name your contact"
 msgstr "为你的联系人命名"
 
-#: src/components/layouts/AddressOverview.vue:151
+#: src/components/layouts/AddressOverview.vue:154
 msgid "Native Polygon USDC"
 msgstr ""
 
@@ -1902,8 +1902,8 @@ msgstr "选择显示比特币金额的单位"
 msgid "Sell"
 msgstr "卖出"
 
-#: src/components/modals/MoonpaySellInfoModal.vue:13
-msgid "Sell BTC and USDC"
+#: src/components/modals/MoonpaySellInfoModal.vue:14
+msgid "Sell BTC"
 msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:180
@@ -1990,7 +1990,7 @@ msgstr "发送 USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/layouts/AddressOverview.vue:158
+#: src/components/layouts/AddressOverview.vue:161
 msgid "Sending Native Polygon USDC is not yet supported."
 msgstr ""
 
@@ -2113,7 +2113,7 @@ msgstr "显示恢复字"
 msgid "Show values as {currency}"
 msgstr "显示价值为 {currency}"
 
-#: src/components/layouts/AddressOverview.vue:186
+#: src/components/layouts/AddressOverview.vue:189
 msgid "Signup"
 msgstr "注册"
 
@@ -2788,7 +2788,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "你的付款正在处理中"
 
-#: src/components/layouts/AddressOverview.vue:194
+#: src/components/layouts/AddressOverview.vue:197
 msgid "Your swap was successful!"
 msgstr "你的交换成功了！"
 

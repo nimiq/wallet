@@ -121,7 +121,7 @@ export default defineComponent({
             swapInfo,
         } = useTransactionInfo(transaction);
 
-        const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp * 1000);
+        const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp);
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
 
         // Fiat currency

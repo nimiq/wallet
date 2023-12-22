@@ -256,7 +256,7 @@ msgstr ""
 msgid "Add contact"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:60
+#: src/lib/StakingUtils.ts:96
 msgid "Add stake"
 msgstr ""
 
@@ -774,6 +774,10 @@ msgstr ""
 msgid "Create request link"
 msgstr ""
 
+#: src/lib/StakingUtils.ts:45
+msgid "Create validator"
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:194
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr ""
@@ -807,8 +811,16 @@ msgstr ""
 msgid "Deactivate All"
 msgstr ""
 
+#: src/lib/StakingUtils.ts:55
+msgid "Deactivate validator"
+msgstr ""
+
 #: src/components/staking/StakingInfoPage.vue:88
 msgid "Deactivating"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:28
+msgid "Delete validator"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:7
@@ -1711,6 +1723,10 @@ msgstr ""
 msgid "Raise your limits"
 msgstr ""
 
+#: src/lib/StakingUtils.ts:60
+msgid "Reactivate validator"
+msgstr ""
+
 #: src/components/modals/UsdcActivationModal.vue:22
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
@@ -1836,6 +1852,10 @@ msgstr ""
 
 #: src/components/swap/SwapModal.vue:1029
 msgid "Resulting BTC amount is too small."
+msgstr ""
+
+#: src/lib/StakingUtils.ts:65
+msgid "Retire validator"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:124
@@ -2057,7 +2077,7 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:68
+#: src/lib/StakingUtils.ts:104
 msgid "Set inactive stake"
 msgstr ""
 
@@ -2201,7 +2221,7 @@ msgstr ""
 msgid "Start exploring"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:34
+#: src/lib/StakingUtils.ts:70
 msgid "Start staking"
 msgstr ""
 
@@ -2311,7 +2331,7 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:47
+#: src/lib/StakingUtils.ts:83
 msgid "Switch validator"
 msgstr ""
 
@@ -2602,7 +2622,7 @@ msgstr ""
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:26
+#: src/lib/StakingUtils.ts:33
 msgid "Unstake"
 msgstr ""
 
@@ -2626,6 +2646,10 @@ msgstr ""
 #: src/components/layouts/Settings.vue:24
 #: src/components/UpdateNotification.vue:16
 msgid "Update now"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:50
+msgid "Update validator"
 msgstr ""
 
 #: src/components/AddressList.vue:181

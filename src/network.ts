@@ -9,7 +9,7 @@ import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { useStakingStore, Validator } from './stores/Staking';
-import { ENV_MAIN, STAKING_CONTRACT_ADDRESS, StakingTransactionType } from './lib/Constants';
+import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { validatorData } from './lib/Validators';
 import { calculateStakingReward } from './lib/AlbatrossMath';
 
@@ -236,7 +236,7 @@ export async function launchNetwork() {
 
     function transactionListener(plain: PlainTransactionDetails) {
         if (plain.recipient === STAKING_CONTRACT_ADDRESS) {
-            if (plain.data.raw.startsWith(StakingTransactionType.ADD_STAKE.toString(16).padStart(2, '0'))) {
+            if (plain.data.type === 'add-stake') {
                 if (!balances.has(plain.sender) && 'staker' in plain.data) {
                     // This is a staking transaction from a validator to one of our stakers
                     updateStakes([plain.data.staker]);

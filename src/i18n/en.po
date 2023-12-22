@@ -261,7 +261,7 @@ msgstr ""
 msgid "Add contact"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:60
+#: src/lib/StakingUtils.ts:96
 msgid "Add stake"
 msgstr ""
 
@@ -824,6 +824,10 @@ msgstr ""
 #: src/components/modals/BtcReceiveModal.vue:102
 #: src/components/modals/ReceiveModal.vue:26
 msgid "Create request link"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:45
+msgid "Create validator"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:194
@@ -2183,10 +2187,6 @@ msgstr ""
 msgid "Set fee"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:68
-msgid "Set inactive stake"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:185
 msgid "Set minimum"
 msgstr ""
@@ -2333,7 +2333,7 @@ msgstr ""
 msgid "Start exploring"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:34
+#: src/lib/StakingUtils.ts:70
 msgid "Start staking"
 msgstr ""
 
@@ -2754,7 +2754,7 @@ msgstr ""
 msgid "Unregistered validator"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:26
+#: src/lib/StakingUtils.ts:33
 msgid "Unstake"
 msgstr ""
 

@@ -139,7 +139,7 @@ export async function initStorage() {
 
     // Delete deprecated stores
     if (StorageKeys.TRANSACTIONS === 'wallet_transactions_v02') {
-        idbDel(StorageKeys.TRANSACTIONS.replace('v2', 'v1')); // no need to await this, fire and forget
+        idbDel('wallet_transactions_v01'); // no need to await this, fire and forget
     }
 
     await Promise.all([

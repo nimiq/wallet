@@ -328,10 +328,11 @@ export async function launchNetwork() {
         //        (even when cross-account transactions are already present)
         client.waitForConsensusEstablished()
             .then(() => {
-                console.debug('Fetching transaction history for', address, knownTxDetails);
+                console.info('Fetching transaction history for', address, knownTxDetails);
                 return client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails);
             })
             .then((txDetails) => {
+                console.info('Got transaction history for', address, txDetails);
                 transactionsStore.addTransactions(txDetails);
             })
             .catch(() => fetchedAddresses.delete(address))

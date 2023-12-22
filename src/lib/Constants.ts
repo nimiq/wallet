@@ -57,14 +57,6 @@ export function nextElectionBlock(height: number): number {
 }
 
 export const STAKING_CONTRACT_ADDRESS = 'NQ77 0000 0000 0000 0000 0000 0000 0000 0001';
-export const StakingTransactionType = {
-    UNSTAKE: 1,
-
-    CREATE_STAKER: 5,
-    ADD_STAKE: 6,
-    UPDATE_STAKER: 7,
-    SET_INACTIVE_STAKE: 8,
-};
 
 // Pre-Staking
 export const MIN_PRESTAKE = 100e5;

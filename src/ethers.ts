@@ -1021,7 +1021,8 @@ export async function createTransactionRequest(
     const { fee, gasPrice, gasLimit, relay } = await calculateFee(token, method, forceRelay);
 
     // Ensure we send only what's possible with the updated fee
-    amount = Math.min(amount, (addressInfo.balance || 0) - fee.toNumber());
+    const accountBalance = token === config.usdc.usdcContract ? addressInfo.balance : addressInfo.nativeBalance;
+    amount = Math.min(amount, (accountBalance || 0) - fee.toNumber());
 
     // // To be safe, we still check that amount + fee fits into the current allowance
     // if (method === 'transfer' && usdcAllowance.lt(fee.add(amount))) {

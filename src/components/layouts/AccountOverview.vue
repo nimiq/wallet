@@ -161,13 +161,13 @@
                                 <div class="flex-row">
                                     <AlertTriangleIcon v-if="usdcConsensus === 'connecting'" />
                                     <Amount
-                                        :amount="usdcAccountBalance"
+                                        :amount="usdcAccountBalance + nativeUsdcAccountBalance"
                                         :currency="CryptoCurrency.USDC"
                                         value-mask
                                     />
                                 </div>
                                 <FiatConvertedAmount class="fiat-balance"
-                                    :amount="usdcAccountBalance"
+                                    :amount="usdcAccountBalance + nativeUsdcAccountBalance"
                                     :currency="CryptoCurrency.USDC"
                                     value-mask
                                 />
@@ -290,7 +290,10 @@ export default defineComponent({
             hasUsdcAddresses,
         } = useAccountStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
-        const { accountBalance: usdcAccountBalance } = useUsdcAddressStore();
+        const {
+            accountBalance: usdcAccountBalance,
+            nativeAccountBalance: nativeUsdcAccountBalance,
+        } = useUsdcAddressStore();
         const { accountBalance: nimAccountBalance } = useAddressStore();
         const { config } = useConfig();
 
@@ -474,6 +477,7 @@ export default defineComponent({
             onAddressSelected,
             btcAccountBalance,
             usdcAccountBalance,
+            nativeUsdcAccountBalance,
             nimAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,

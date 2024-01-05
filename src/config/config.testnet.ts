@@ -17,7 +17,7 @@ export default {
         rpcEndpoint: 'wss://polygon-mumbai.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
         usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
-        nativeUsdcContract: '0x9999f7fea5938fd3b1e26a12c3f2fb024e194f97',
+        nativeUsdcContract: '0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97',
         transferContract: '0x2805f3187dcDfa424EFA8c55Db6012Cf08Fa6eEc', // v3
         nativeTransferContract: '0x5D101A320547f8D640c44fDfe5d1f35224f00B8B', // v1
         htlcContract: '0x2EB7cd7791b947A25d629219ead941fCd8f364BF', // v3

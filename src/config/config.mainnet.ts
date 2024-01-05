@@ -17,7 +17,7 @@ export default {
         rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
         usdcContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-        nativeUsdcContract: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+        nativeUsdcContract: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
         transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
         nativeTransferContract: '',
         htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',

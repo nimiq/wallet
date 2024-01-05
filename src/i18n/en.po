@@ -274,7 +274,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:201
+#: src/components/layouts/AddressOverview.vue:209
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -601,7 +601,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:203
+#: src/components/layouts/AddressOverview.vue:211
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr ""
@@ -1269,7 +1269,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:188
+#: src/components/layouts/AddressOverview.vue:196
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1902,7 +1902,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:161
+#: src/components/layouts/AddressOverview.vue:168
 msgid "Sending Native Polygon USDC is not yet supported."
 msgstr ""
 
@@ -2024,7 +2024,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:189
+#: src/components/layouts/AddressOverview.vue:197
 msgid "Signup"
 msgstr ""
 
@@ -2658,7 +2658,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:197
+#: src/components/layouts/AddressOverview.vue:205
 msgid "Your swap was successful!"
 msgstr ""
 

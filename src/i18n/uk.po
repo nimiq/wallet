@@ -25,8 +25,8 @@ msgstr "{accounts} зберігайте, керуйте і накопичуйт�
 msgid "{addresses} send and receive transactions."
 msgstr "{addresses} надсилати та отримувати перекази."
 
-#: src/components/modals/UsdcSendModal.vue:171
-#: src/components/modals/UsdcSendModal.vue:194
+#: src/components/modals/UsdcSendModal.vue:176
+#: src/components/modals/UsdcSendModal.vue:199
 #: src/components/swap/SwapModal.vue:61
 msgid "{amount} fee"
 msgstr "{amount} комісія"
@@ -115,8 +115,8 @@ msgstr ""
 msgid "+{n} more"
 msgstr "+{n} більше"
 
-#: src/components/modals/UsdcSendModal.vue:165
-#: src/components/modals/UsdcSendModal.vue:188
+#: src/components/modals/UsdcSendModal.vue:170
+#: src/components/modals/UsdcSendModal.vue:193
 #: src/components/swap/SwapModal.vue:55
 msgid "< {amount} fee"
 msgstr "< {amount} комісія"
@@ -299,7 +299,7 @@ msgstr ""
 "Усі нові можливості працюють виключно для нових рахунків. Оновіть зараз, це "
 "займе лише кілька секунди."
 
-#: src/components/layouts/AddressOverview.vue:201
+#: src/components/layouts/AddressOverview.vue:209
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -626,7 +626,7 @@ msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:65
+#: src/components/modals/UsdcSendModal.vue:70
 msgid "Choose a Recipient"
 msgstr "Виберіть одержувача"
 
@@ -658,7 +658,7 @@ msgstr "Натисніть для отримання додаткової інф
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Натисніть ‘Усунення несправностей’, щоб дізнатися більше."
 
-#: src/components/layouts/AddressOverview.vue:203
+#: src/components/layouts/AddressOverview.vue:211
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr "Закрити"
@@ -858,7 +858,7 @@ msgstr "Відключити"
 
 #: src/components/BtcAddressInput.vue:95
 #: src/components/modals/SendModal.vue:376
-#: src/components/modals/UsdcSendModal.vue:359
+#: src/components/modals/UsdcSendModal.vue:369
 msgid "Domain does not resolve to a valid address"
 msgstr "Домен не дозволяється на дійсну адресу"
 
@@ -926,7 +926,7 @@ msgstr "Змінити кількість знаків після коми дл�
 
 #: src/components/modals/BtcSendModal.vue:125
 #: src/components/modals/SendModal.vue:240
-#: src/components/modals/UsdcSendModal.vue:226
+#: src/components/modals/UsdcSendModal.vue:231
 msgid "Edit transaction"
 msgstr "Редагувати переказ"
 
@@ -940,7 +940,7 @@ msgid "Enter account holder name"
 msgstr "Введіть ім'я власника рахунку"
 
 #: src/components/modals/SendModal.vue:24
-#: src/components/modals/UsdcSendModal.vue:30
+#: src/components/modals/UsdcSendModal.vue:35
 msgid "Enter address"
 msgstr "Вкажіть адресу"
 
@@ -1035,7 +1035,7 @@ msgstr "швидкий"
 msgid "Failed"
 msgstr "Неуспішний"
 
-#: src/components/modals/UsdcSendModal.vue:684
+#: src/components/modals/UsdcSendModal.vue:701
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1337,7 +1337,7 @@ msgstr "Встановити веб-додаток"
 #: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:185
-#: src/components/modals/UsdcSendModal.vue:205
+#: src/components/modals/UsdcSendModal.vue:210
 msgid "Insufficient balance."
 msgstr "Недостатньо коштів."
 
@@ -1384,7 +1384,7 @@ msgstr "Дізнайтеся більше"
 msgid "Learn more here"
 msgstr "Дізнайтеся більше тут"
 
-#: src/components/layouts/AddressOverview.vue:188
+#: src/components/layouts/AddressOverview.vue:196
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Розпочнемо! Створіть рахунок у мережі Німік."
 
@@ -1450,7 +1450,7 @@ msgstr "Файл-ключ"
 msgid "Logout"
 msgstr "Вийти"
 
-#: src/components/modals/UsdcSendModal.vue:83
+#: src/components/modals/UsdcSendModal.vue:88
 msgid "Long press to confirm"
 msgstr "Довге натискання для підтвердження"
 
@@ -1512,7 +1512,7 @@ msgstr ""
 "декілька адрес і файли-ключі."
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:77
+#: src/components/modals/UsdcSendModal.vue:82
 msgid "Name this contact..."
 msgstr "Вкажіть ім'я контакту..."
 
@@ -1859,7 +1859,7 @@ msgstr "Оновіть сторінку, щоб продовжити."
 msgid "Refund"
 msgstr "Відшкодування"
 
-#: src/components/modals/UsdcTransactionModal.vue:531
+#: src/components/modals/UsdcTransactionModal.vue:532
 msgid "Refund failed: "
 msgstr ""
 
@@ -1901,7 +1901,7 @@ msgstr "Скинути налаштування веб-оглядача і пе�
 
 #: src/components/BtcAddressInput.vue:23
 #: src/components/modals/SendModal.vue:39
-#: src/components/modals/UsdcSendModal.vue:47
+#: src/components/modals/UsdcSendModal.vue:52
 msgid "Resolving Unstoppable Domain..."
 msgstr "Вирішення незупинного домену..."
 
@@ -1911,7 +1911,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:124
 #: src/components/modals/SendModal.vue:239
-#: src/components/modals/UsdcSendModal.vue:225
+#: src/components/modals/UsdcSendModal.vue:230
 msgid "Retry"
 msgstr "Спробувати знову"
 
@@ -1919,7 +1919,7 @@ msgstr "Спробувати знову"
 msgid "Retrying..."
 msgstr "Пробуємо ще..."
 
-#: src/components/modals/UsdcSendModal.vue:82
+#: src/components/modals/UsdcSendModal.vue:87
 msgid "Save and proceed"
 msgstr ""
 
@@ -2014,13 +2014,13 @@ msgstr "Відправити"
 
 #: src/components/modals/BtcSendModal.vue:116
 #: src/components/modals/SendModal.vue:204
-#: src/components/modals/UsdcSendModal.vue:217
+#: src/components/modals/UsdcSendModal.vue:222
 msgid "Send {currency}"
 msgstr ""
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:78
 #: src/components/modals/SendModal.vue:187
-#: src/components/modals/UsdcSendModal.vue:207
+#: src/components/modals/UsdcSendModal.vue:212
 msgid "Send all"
 msgstr "Переказати все"
 
@@ -2034,6 +2034,10 @@ msgstr ""
 msgid "Send crypto to a smart contract."
 msgstr "Надіслати криптовалюту в смарт-контракт."
 
+#: src/components/modals/UsdcSendModal.vue:24
+msgid "Send native USDC"
+msgstr ""
+
 #: src/components/PolygonWarningFooter.vue:6
 #: src/components/PolygonWarningPage.vue:11
 msgid "Send to Polygon USDC addresses only!"
@@ -2044,7 +2048,7 @@ msgstr ""
 msgid "Send Transaction"
 msgstr "Відправити переказ"
 
-#: src/components/modals/UsdcSendModal.vue:20
+#: src/components/modals/UsdcSendModal.vue:21
 msgid "Send USDC"
 msgstr "Надіслати USDC"
 
@@ -2052,13 +2056,13 @@ msgstr "Надіслати USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Переказуйте, отримуйте і зберігайте BTC у гаманці."
 
-#: src/components/layouts/AddressOverview.vue:161
+#: src/components/layouts/AddressOverview.vue:168
 msgid "Sending Native Polygon USDC is not yet supported."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:454
 #: src/components/modals/SendModal.vue:764
-#: src/components/modals/UsdcSendModal.vue:587
+#: src/components/modals/UsdcSendModal.vue:602
 msgid "Sending Transaction"
 msgstr "Відправляється"
 
@@ -2084,11 +2088,11 @@ msgstr "Надіслано {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Надіслано {nim} NIM до {name}"
 
-#: src/components/modals/UsdcSendModal.vue:614
+#: src/components/modals/UsdcSendModal.vue:630
 msgid "Sent {usdc} USDC"
 msgstr "Надіслати {usdc} USDC"
 
-#: src/components/modals/UsdcSendModal.vue:610
+#: src/components/modals/UsdcSendModal.vue:626
 msgid "Sent {usdc} USDC to {name}"
 msgstr "Надіслано {usdc} USDC до {name}"
 
@@ -2108,7 +2112,7 @@ msgstr "SEPA Instant транзакція"
 
 #: src/components/modals/SendModal.vue:87
 #: src/components/modals/SendModal.vue:99
-#: src/components/modals/UsdcSendModal.vue:96
+#: src/components/modals/UsdcSendModal.vue:101
 msgid "Set Amount"
 msgstr "Вкажіть суму"
 
@@ -2175,7 +2179,7 @@ msgstr "Показати секретні слова"
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:189
+#: src/components/layouts/AddressOverview.vue:197
 msgid "Signup"
 msgstr "Приєднатися"
 
@@ -2191,7 +2195,7 @@ msgstr "Пропустити"
 #: src/components/modals/BtcSendModal.vue:518
 #: src/components/modals/SendModal.vue:633
 #: src/components/modals/SendModal.vue:819
-#: src/components/modals/UsdcSendModal.vue:629
+#: src/components/modals/UsdcSendModal.vue:645
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
@@ -2396,7 +2400,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr "Курс може змінюватися в залежності від суми обміну."
 
 #: src/components/modals/SendModal.vue:122
-#: src/components/modals/UsdcSendModal.vue:115
+#: src/components/modals/UsdcSendModal.vue:120
 msgid "The sender and recipient cannot be identical."
 msgstr "Відправник та одержувач не можуть бути однаковими."
 
@@ -2795,7 +2799,7 @@ msgstr "Ви надішлете {amount}"
 msgid "You will send {amount} NIM"
 msgstr "Ви надішлете {amount} NIM"
 
-#: src/components/modals/UsdcSendModal.vue:181
+#: src/components/modals/UsdcSendModal.vue:186
 msgid "You will send {amount} USDC"
 msgstr "Ви надішлете {amount} USDC"
 
@@ -2888,7 +2892,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Ваша виплата вже в дорозі"
 
-#: src/components/layouts/AddressOverview.vue:197
+#: src/components/layouts/AddressOverview.vue:205
 msgid "Your swap was successful!"
 msgstr "Ваш обмін пройшов успішно!"
 

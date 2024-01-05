@@ -156,11 +156,22 @@
                     <Amount :amount="usdcAddressInfo.nativeBalance" currency="usdc" value-mask/>
                 </div>
                 <div class="flex-row">
-                    <div class="flex-grow"></div>
-                    <router-link
-                        :to="{ name: 'send-usdc', params: {token: config.usdc.nativeUsdcContract }}"
-                        class="nq-button-s"
-                    >Send</router-link>
+                    <template v-if="config.environment !== 'main' || sendingNativeUsdcTrialEnabled">
+                        <router-link
+                            :to="{ name: 'send-usdc', params: {token: config.usdc.nativeUsdcContract }}"
+                            class="nq-button-s"
+                        >Send</router-link>
+                    </template>
+                    <template v-else>
+                        <span class="nq-orange">
+                            <AlertTriangleIcon />
+                            {{ $t('Sending Native Polygon USDC is not yet supported.') }}
+                        </span>
+                        <div class="flex-grow"></div>
+                        <!-- eslint-disable-next-line max-len -->
+                        <a href="https://forum.nimiq.community/t/important-update-on-usdc-support-in-nimiq-wallet-native-usdc/1927"
+                            target="_blank" rel="noopener" class="nq-button-s">How to transfer</a>
+                    </template>
                 </div>
             </div>
             <div class="scroll-mask top"></div>
@@ -221,7 +232,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -229,6 +240,7 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
+    AlertTriangleIcon,
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -250,6 +262,8 @@ import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { useSettingsStore } from '../../stores/Settings';
+import { Trial } from '../../lib/Trials';
 import { onboard, rename } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -354,6 +368,10 @@ export default defineComponent({
 
         const { config } = useConfig();
 
+        const { trials } = useSettingsStore();
+
+        const sendingNativeUsdcTrialEnabled = computed(() => trials.value.includes(Trial.SEND_NATIVE_USDC));
+
         return {
             activeCurrency,
             searchString,
@@ -378,10 +396,12 @@ export default defineComponent({
             addressMasked,
             toggleUnclaimedCashlinkList,
             config,
+            sendingNativeUsdcTrialEnabled,
         };
     },
     components: {
         ArrowRightSmallIcon,
+        AlertTriangleIcon,
         Identicon,
         BitcoinIcon,
         GearIcon,

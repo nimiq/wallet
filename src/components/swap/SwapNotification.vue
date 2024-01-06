@@ -451,6 +451,7 @@ export default defineComponent({
                                 // ...
                             }).then((tx) => {
                                 isUsdcListenerResolved = true;
+                                currentError.value = null;
                                 return tx as PolygonEvent<PolygonEventType.OPEN>;
                             });
 
@@ -464,6 +465,7 @@ export default defineComponent({
                                     signature,
                                     relayUrl,
                                 );
+                                currentError.value = null;
                             } catch (error) {
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
@@ -516,7 +518,9 @@ export default defineComponent({
                                 subscribeToAddresses([(fundingTx as BtcTransactionDetails).inputs[0].address!]);
 
                                 // Fastspot now requires 1 confirmation for BTC transactions
-                                await swapHandler.awaitOutgoing(() => { /* noop */ }, 1);
+                                await swapHandler.awaitOutgoing(() => {
+                                    currentError.value = null;
+                                }, 1);
                             }
 
                             updateSwap({
@@ -533,9 +537,8 @@ export default defineComponent({
                             cleanUp();
                             return;
                         }
-
-                        currentError.value = null;
                     }
+                    currentError.value = null;
                 }
                 case SwapState.AWAIT_SECRET: {
                     let interval: number;
@@ -575,6 +578,7 @@ export default defineComponent({
                             // Start background listener
                             usdcListener = usdcListener || swapHandler.awaitIncomingConfirmation().then((tx) => {
                                 isUsdcListenerResolved = true;
+                                currentError.value = null;
                                 return tx as PolygonEvent<PolygonEventType.REDEEM>;
                             });
 
@@ -593,6 +597,7 @@ export default defineComponent({
                                     relayUrl,
                                     `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
                                 );
+                                currentError.value = null;
                             } catch (error) {
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
@@ -698,6 +703,8 @@ export default defineComponent({
                                         } else {
                                             oasisPayoutFailed.value = false;
                                         }
+
+                                        currentError.value = null;
                                     }) as OasisHtlc<HtlcStatus.SETTLED>;
 
                                     oasisLimitExceeded.value = false;

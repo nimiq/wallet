@@ -5,11 +5,11 @@
 # Daniel, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2023
 # Matheo <matheo@nimiq.com>, 2023
-# Robinson BARAIS, 2023
+# Robinson BARAIS, 2024
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Robinson BARAIS, 2023\n"
+"Last-Translator: Robinson BARAIS, 2024\n"
 "Language-Team: French (https://app.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -2083,7 +2083,7 @@ msgstr "Envoyer de la crypto à un smart contract."
 
 #: src/components/modals/UsdcSendModal.vue:24
 msgid "Send native USDC"
-msgstr ""
+msgstr "Envoyer de l'USDC natif"
 
 #: src/components/PolygonWarningFooter.vue:6
 #: src/components/PolygonWarningPage.vue:11

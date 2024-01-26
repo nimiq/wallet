@@ -1673,10 +1673,9 @@
   dependencies:
     big-integer "^1.6.44"
 
-"@nimiq/utils@^0.9.3":
+"@nimiq/utils@https://github.com/nimiq/nimiq-utils#soeren/dist/crc":
   version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.9.3.tgz#db402c8f42bb16dee8e5500c617cff18e1497960"
-  integrity sha512-g/9FpoNcJmU737TRQsNdU5/OGoXnc1UwunJBF/TGw4bx4cQ/pbYO7k0nsZ4RGUFn0jiy9xlxYH+yH1mvSY7+nQ==
+  resolved "https://github.com/nimiq/nimiq-utils#b97dedd796fd232852dffd1845c6eb3f00d88681"
   dependencies:
     big-integer "^1.6.44"
 

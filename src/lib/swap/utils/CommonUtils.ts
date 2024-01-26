@@ -136,8 +136,8 @@ export function capDecimals(amount: number, asset: SwapAsset) {
 }
 
 export function calculateFees(
-    { to, from }: { to: FiatCurrency.EUR, from?: CryptoCurrency }
-                | { to?: CryptoCurrency, from: FiatCurrency.EUR },
+    { to, from }: { to: 'eur', from?: CryptoCurrency }
+                | { to?: CryptoCurrency, from: 'eur' },
     amount?: number,
     feesPerUnit = { eur: 0, nim: 0, btc: 0 },
 ) {

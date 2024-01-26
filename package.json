@@ -34,7 +34,7 @@
     "@nimiq/rpc": "^0.4.1",
     "@nimiq/style": "^0.8.2",
     "@nimiq/ten31-pass-api": "^1.1.0",
-    "@nimiq/utils": "^0.9.3",
+    "@nimiq/utils": "https://github.com/nimiq/nimiq-utils#soeren/dist/crc",
     "@nimiq/vue-components": "https://github.com/nimiq/vue-components#build/wallet",
     "@opengsn/common": "^2.2.5",
     "@sentry/vue": "^6.0.0",

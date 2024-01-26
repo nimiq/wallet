@@ -1,7 +1,12 @@
-export {
-    FiatApiSupportedFiatCurrency as FiatCurrency,
-    FiatApiSupportedCryptoCurrency as CryptoCurrency,
-} from '@nimiq/utils';
+import { FiatApiSupportedFiatCurrency, FiatApiBridgedFiatCurrency } from '@nimiq/utils';
+
+export { FiatApiSupportedCryptoCurrency as CryptoCurrency } from '@nimiq/utils';
+
+export const FiatCurrency = {
+    ...FiatApiSupportedFiatCurrency,
+    ...FiatApiBridgedFiatCurrency,
+};
+export type FiatCurrency = FiatApiSupportedFiatCurrency | FiatApiBridgedFiatCurrency;
 
 export const FIAT_PRICE_UNAVAILABLE = null;
 export const CASHLINK_ADDRESS = 'cashlink';

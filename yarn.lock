@@ -1659,6 +1659,13 @@
   resolved "https://registry.yarnpkg.com/@nimiq/ten31-pass-api/-/ten31-pass-api-1.1.0.tgz#4e013dd23302304965ac032e521d38a25b186a24"
   integrity sha512-YLxzRyJcg/0xPMMBl+TcIugm8SdSitWZXEhotXK8wIj/wbtRQEbUoo052JCfpWJXVTsGDNS0VbS9oLA+fuFm1A==
 
+"@nimiq/utils@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.10.0.tgz#05a9856c256a32cc1faa38fbf09c34d2c9d59105"
+  integrity sha512-Ai+zYrgB54sxVhYqKFnOlGYR8Qp+2KCyrVfVgytPWax4IyEWbi92Mjk+lz1MMKXchouT+DanAf4kiqm+U/vmJg==
+  dependencies:
+    big-integer "^1.6.44"
+
 "@nimiq/utils@^0.5.0":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.5.1.tgz#a5641e483e80b00066c3f2b0b85132974cf5c7e5"
@@ -1670,13 +1677,6 @@
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.9.1.tgz#74b59394b1bbda9fb17efa4affd0edb555f3514e"
   integrity sha512-YuN2mHefo8law/W4F4I2pAZ+kf5vKnI345ExmAP0Hfefu2Y0fPEoULewEelDwvl9YXxmT+vHKCVH0DHK4508dw==
-  dependencies:
-    big-integer "^1.6.44"
-
-"@nimiq/utils@^0.9.3":
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.9.3.tgz#db402c8f42bb16dee8e5500c617cff18e1497960"
-  integrity sha512-g/9FpoNcJmU737TRQsNdU5/OGoXnc1UwunJBF/TGw4bx4cQ/pbYO7k0nsZ4RGUFn0jiy9xlxYH+yH1mvSY7+nQ==
   dependencies:
     big-integer "^1.6.44"
 

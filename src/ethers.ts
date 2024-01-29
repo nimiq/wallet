@@ -268,7 +268,7 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
 
     let tx: Transaction;
     if (receipt) {
-        tx = await receiptToTransaction(receipt.contractAddress, receipt, undefined, block);
+        tx = await receiptToTransaction(log.address, receipt, undefined, block);
     } else {
         tx = logAndBlockToPlain(log, block);
     }
@@ -283,7 +283,7 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
         addresses.push(to);
     }
 
-    if (receipt?.contractAddress === config.usdc.nativeUsdcContract || log.address === config.usdc.nativeUsdcContract) {
+    if (log.address === config.usdc.nativeUsdcContract) {
         updateNativeBalances(addresses);
     } else {
         updateBalances(addresses);

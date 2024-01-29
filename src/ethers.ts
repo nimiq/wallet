@@ -1175,7 +1175,7 @@ export async function receiptToTransaction(
     const { config } = useConfig();
     const client = await getPolygonClient();
 
-    const [tokenContract, transferContrat] = token === config.usdc.nativeUsdcContract
+    const [tokenContract, transferContract] = token === config.usdc.nativeUsdcContract
         ? [client.nativeUsdc, client.nativeUsdcTransfer]
         : [client.usdc, client.usdcTransfer];
 
@@ -1185,7 +1185,7 @@ export async function receiptToTransaction(
 
     const [htlcContract, poolAddress] = await Promise.all([
         token === config.usdc.nativeUsdcContract ? getNativeHtlcContract() : getHtlcContract(),
-        getPoolAddress(transferContrat, token),
+        getPoolAddress(transferContract, token),
     ]);
 
     const logs = receipt.logs.map((log) => {

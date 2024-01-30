@@ -60,7 +60,9 @@ export default defineComponent({
         const cryptoBalances = computed(() => ({
             [CryptoCurrency.NIM]: useAddressStore().accountBalance.value / 1e5,
             [CryptoCurrency.BTC]: useBtcAddressStore().accountBalance.value / 1e8,
-            [CryptoCurrency.USDC]: useUsdcAddressStore().accountBalance.value / 1e6,
+            [CryptoCurrency.USDC]: (
+                useUsdcAddressStore().accountBalance.value + useUsdcAddressStore().nativeAccountBalance.value
+            ) / 1e6,
         }));
 
         const { config } = useConfig();

@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="transaction.value" currency="usdc" value-mask/>
+            <Amount :amount="transaction.value" :currency="ticker" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
@@ -78,6 +78,7 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import config from 'config';
 import { useFiatStore } from '../stores/Fiat';
 import { Transaction, TransactionState } from '../stores/UsdcTransactions';
 import Avatar from './Avatar.vue';
@@ -87,7 +88,7 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS, CryptoCurrency } from '../lib/Constants';
 import { useUsdcTransactionInfo } from '../composables/useUsdcTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
@@ -126,6 +127,10 @@ export default defineComponent({
             : undefined,
         );
 
+        const ticker = computed(() => transaction.value.token === config.usdc.nativeUsdcContract
+            ? CryptoCurrency.USDC
+            : 'usdc.e');
+
         return {
             constants,
             state,
@@ -144,6 +149,7 @@ export default defineComponent({
             swapInfo,
             swapData,
             isCancelledSwap,
+            ticker,
         };
     },
     components: {

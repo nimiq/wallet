@@ -20,7 +20,7 @@ export default defineComponent({
             required: true,
         },
         currency: {
-            type: String as () => CryptoCurrency,
+            type: String as () => CryptoCurrency | 'usdc.e',
             default: CryptoCurrency.NIM,
         },
     },
@@ -30,7 +30,9 @@ export default defineComponent({
         const currencyDecimals = computed(() => {
             switch (props.currency) {
                 case CryptoCurrency.BTC: return btcUnit.value.decimals;
-                case CryptoCurrency.USDC: return 6;
+                case CryptoCurrency.USDC:
+                case 'usdc.e':
+                    return 6;
                 default: return 5;
             }
         });

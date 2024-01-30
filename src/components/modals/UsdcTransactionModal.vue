@@ -112,7 +112,7 @@
             </div>
 
             <div class="amount-block flex-column">
-                <Amount :amount="transaction.value" currency="usdc" value-mask
+                <Amount :amount="transaction.value" :currency="ticker" value-mask
                     class="transaction-value" :class="{
                     isIncoming,
                     'nq-green': isIncoming,
@@ -231,7 +231,7 @@
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
                 <span v-if="transaction.fee" class="fee">
-                    <Amount :amount="transaction.fee" currency="usdc" /> fee
+                    <Amount :amount="transaction.fee" :currency="ticker" /> fee
                 </span>
 
                 <BlueLink
@@ -316,6 +316,8 @@ export default defineComponent({
             swapData,
             swapInfo,
         } = useUsdcTransactionInfo(transaction);
+
+        const { config } = useConfig();
 
         const isIncoming = computed(() => {
             const haveSender = !!addresses$.addressInfos[transaction.value.sender];
@@ -451,8 +453,6 @@ export default defineComponent({
                 try {
                     const myAddress = transaction.value.sender;
 
-                    const { config } = useConfig();
-
                     const method = 'refund';
 
                     const htlcContract = await getHtlcContract();
@@ -533,6 +533,10 @@ export default defineComponent({
             }
         }
 
+        const ticker = computed(() => transaction.value.token === config.usdc.nativeUsdcContract
+            ? CryptoCurrency.USDC
+            : 'usdc.e');
+
         return {
             amountsHidden,
             isIncoming,
@@ -560,6 +564,7 @@ export default defineComponent({
             constants,
             showRefundButton,
             refundHtlc,
+            ticker,
         };
     },
     components: {

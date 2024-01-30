@@ -6,7 +6,7 @@ export function twoDigit(value: number) {
     return value.toString();
 }
 
-export function calculateDisplayedDecimals(amount: number | null, currency: CryptoCurrency) {
+export function calculateDisplayedDecimals(amount: number | null, currency: CryptoCurrency | 'usdc.e') {
     if (amount === null) return 0;
 
     const { decimals, btcDecimals, usdcDecimals, btcUnit } = useSettingsStore();
@@ -36,7 +36,7 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
         return maxDecimals;
     }
 
-    if (currency === CryptoCurrency.USDC) {
+    if (currency === CryptoCurrency.USDC || currency === 'usdc.e') {
         // For USDC, make sure that 2 significant digits are always displayed
         if (amount === 0) return usdcDecimals.value;
         if (amount < 0.0001 * 1e6) return 6;

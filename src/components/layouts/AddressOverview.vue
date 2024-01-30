@@ -146,32 +146,27 @@
                 </div>
             </div>
             <div
-                v-if="activeCurrency === 'usdc' && usdcAddressInfo && usdcAddressInfo.nativeBalance"
-                class="native-usdc-notice"
+                v-if="activeCurrency === 'usdc' && usdcAddressInfo && usdcAddressInfo.balance"
+                class="bridged-usdc-notice"
             >
                 <div class="flex-row">
                     <UsdcIcon />
-                    {{ $t('Native Polygon USDC') }}
+                    {{ $t('Legacy USDC (USDC.e)') }}
                     <div class="flex-grow"></div>
-                    <Amount :amount="usdcAddressInfo.nativeBalance" currency="usdc" value-mask/>
+                    <Amount :amount="usdcAddressInfo.balance" currency="usdc.e" value-mask/>
                 </div>
                 <div class="flex-row">
-                    <template v-if="config.environment !== 'main' || sendingNativeUsdcTrialEnabled">
-                        <router-link
-                            :to="{ name: 'send-usdc', params: {token: config.usdc.nativeUsdcContract }}"
-                            class="nq-button-s"
-                        >Send</router-link>
-                    </template>
-                    <template v-else>
-                        <span class="nq-orange">
-                            <AlertTriangleIcon />
-                            {{ $t('Sending Native Polygon USDC is not yet supported.') }}
-                        </span>
-                        <div class="flex-grow"></div>
+                    <span class="description">
+                        <InfoCircleSmallIcon />
+                        {{ $t('Convert your USDC.e to the new standard.') }}
                         <!-- eslint-disable-next-line max-len -->
-                        <a href="https://forum.nimiq.community/t/important-update-on-usdc-support-in-nimiq-wallet-native-usdc/1927"
-                            target="_blank" rel="noopener" class="nq-button-s">How to transfer</a>
-                    </template>
+                        <a href="https://forum.nimiq.community/404"
+                            target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
+                    </span>
+                    <button
+                        @click="convertUsdcToNative"
+                        class="nq-button-pill light-blue"
+                    >{{ $t('Convert to USDC') }}</button>
                 </div>
             </div>
             <div class="scroll-mask top"></div>
@@ -232,7 +227,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -240,7 +235,7 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
-    AlertTriangleIcon,
+    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -262,8 +257,6 @@ import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
-import { useSettingsStore } from '../../stores/Settings';
-import { Trial } from '../../lib/Trials';
 import { onboard, rename } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -368,9 +361,9 @@ export default defineComponent({
 
         const { config } = useConfig();
 
-        const { trials } = useSettingsStore();
-
-        const sendingNativeUsdcTrialEnabled = computed(() => trials.value.includes(Trial.SEND_NATIVE_USDC));
+        function convertUsdcToNative() {
+            alert('TODO: Convert bridged USDC.e to native USDC');
+        }
 
         return {
             activeCurrency,
@@ -396,12 +389,12 @@ export default defineComponent({
             addressMasked,
             toggleUnclaimedCashlinkList,
             config,
-            sendingNativeUsdcTrialEnabled,
+            convertUsdcToNative,
         };
     },
     components: {
         ArrowRightSmallIcon,
-        AlertTriangleIcon,
+        InfoCircleSmallIcon,
         Identicon,
         BitcoinIcon,
         GearIcon,
@@ -729,7 +722,7 @@ export default defineComponent({
     left: -0.25rem;
 }
 
-.native-usdc-notice {
+.bridged-usdc-notice {
     background: var(--nimiq-highlight-bg);
     border-radius: 1.25rem;
     padding: 2rem;
@@ -741,12 +734,9 @@ export default defineComponent({
         gap: 1rem;
         align-items: center;
 
-        &:first-of-type {
-            opacity: 0.6;
-        }
-
         + .flex-row {
             margin-top: 1.5rem;
+            justify-content: space-between;
         }
     }
 
@@ -756,8 +746,13 @@ export default defineComponent({
         height: 3rem;
     }
 
-    .nq-orange {
+    .amount {
+        font-weight: bold;
+    }
+
+    .description {
         font-size: var(--small-size);
+        opacity: 0.6;
 
         svg {
             display: inline;
@@ -765,10 +760,16 @@ export default defineComponent({
             height: 2rem;
             vertical-align: text-top;
             margin-top: 0.125rem;
+            margin-right: 0.5rem;
+        }
+
+        .nq-link {
+            color: inherit;
+            text-decoration: underline;
         }
     }
 
-    .nq-button-s {
+    .nq-button-pill {
         white-space: nowrap;
     }
 }

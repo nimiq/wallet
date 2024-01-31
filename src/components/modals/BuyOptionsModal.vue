@@ -2,7 +2,7 @@
     <Modal class="buy-options-modal">
         <PageBody class="flex-column">
             <header>
-                <h1 class="nq-h1">{{ $t('Buy NIM & BTC') }}</h1>
+                <h1 class="nq-h1">{{ $t('Buy NIM, BTC & USDC') }}</h1>
                 <p class="nq-text">
                     {{ $t('Depending on your country of residence,\ndifferent options are available.') }}
                 </p>

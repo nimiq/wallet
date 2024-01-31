@@ -785,6 +785,10 @@ export default defineComponent({
                 stroke-linejoin: round;
             }
         }
+
+        &:hover {
+            background-color: var(--text-14);
+        }
     }
 }
 

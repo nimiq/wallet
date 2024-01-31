@@ -258,9 +258,7 @@ export default defineComponent({
 
         const { activeCurrency } = useAccountStore();
 
-        const canSellCryptoWithMoonpay = computed(
-            () => activeCurrency.value !== CryptoCurrency.NIM && activeCurrency.value !== CryptoCurrency.USDC,
-        );
+        const canSellCryptoWithMoonpay = computed(() => activeCurrency.value !== CryptoCurrency.NIM);
 
         return {
             navigateTo,

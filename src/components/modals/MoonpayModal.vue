@@ -92,15 +92,15 @@ export default defineComponent({
         // for legacy or non-bitcoin-activated accounts.
         const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0] as string | undefined;
 
-        // // Having a USDC address must be optional, so that the widget also works
-        // // for legacy or non-polygon-activated accounts.
-        // const usdcAddress = useUsdcAddressStore().activeAddress.value;
+        // Having a USDC address must be optional, so that the widget also works
+        // for legacy or non-polygon-activated accounts.
+        const usdcAddress = useUsdcAddressStore().activeAddress.value;
 
         const walletAddresses = {
             // Remove spaces in NIM address, as spaces are invalid URI components
             nim: useAddressStore().state.activeAddress?.replace(/\s/g, ''),
             ...(btcAddress ? { btc: btcAddress } : {}),
-            // ...(usdcAddress ? { usdc_polygon: usdcAddress } : {}),
+            ...(usdcAddress ? { usdc_polygon: usdcAddress } : {}),
         };
 
         const { config } = useConfig();

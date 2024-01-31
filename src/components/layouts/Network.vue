@@ -167,8 +167,8 @@ export default defineComponent({
 
             if (config.usdc.enabled) {
                 usdcFee.value = (await calculateUsdcFee(
-                    config.usdc.usdcContract,
-                    'transferWithApproval',
+                    config.usdc.nativeUsdcContract,
+                    'transferWithPermit',
                 )).fee.toNumber();
             }
         }

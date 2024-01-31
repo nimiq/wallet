@@ -684,7 +684,6 @@ export async function activateUsdc(accountId: string) {
 }
 
 export async function sendUsdcTransaction(
-    token: string,
     recipient: string,
     amount: number,
     recipientLabel?: string,
@@ -699,21 +698,14 @@ export async function sendUsdcTransaction(
         try {
             const {
                 relayRequest,
-                approval,
                 permit,
                 relay,
-            } = await createTransactionRequest(token, recipient, amount, forceRelay);
+            } = await createTransactionRequest(recipient, amount, forceRelay);
             relayUrl = relay.url;
             resolve({
                 ...relayRequest,
                 appName: APP_NAME,
                 recipientLabel,
-
-                ...(approval ? {
-                    approval: {
-                        tokenNonce: approval.tokenNonce,
-                    },
-                } : null),
 
                 ...(permit ? {
                     permit: {

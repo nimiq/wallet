@@ -882,7 +882,6 @@ function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block, eve
 
 type ContractMethods =
     'transfer'
-    | 'transferWithApproval'
     | 'transferWithPermit'
     | 'open'
     | 'openWithApproval'
@@ -905,7 +904,6 @@ export async function calculateFee(
     // The byte size of `data` of the wrapper relay transaction, plus 4 bytes for the `relayCall` method identifier
     const dataSize = {
         transfer: 1092,
-        transferWithApproval: 1220,
         transferWithPermit: 1220,
         open: 1220,
         openWithApproval: 1348,
@@ -986,7 +984,6 @@ export async function calculateFee(
 }
 
 export async function createTransactionRequest(
-    token: string,
     recipient: string,
     amount: number,
     forceRelay?: RelayServerInfo,
@@ -999,29 +996,29 @@ export async function createTransactionRequest(
 
     const client = await getPolygonClient();
 
-    const usdcContract = token === config.usdc.usdcContract ? client.usdc : client.nativeUsdc;
-    const transferContract = token === config.usdc.usdcContract ? client.usdcTransfer : client.nativeUsdcTransfer;
+    const tokenAddress = config.usdc.nativeUsdcContract;
+    const tokenContract = client.nativeUsdc;
+    const transferAddress = config.usdc.nativeTransferContract;
+    const transferContract = client.nativeUsdcTransfer;
 
     const [
         usdcNonce,
         // usdcAllowance,
         forwarderNonce,
     ] = await Promise.all([
-        usdcContract.nonces(fromAddress) as Promise<BigNumber>,
-        // usdcContract.allowance(fromAddress, config.usdc.transferContract) as Promise<BigNumber>,
+        tokenContract.nonces(fromAddress) as Promise<BigNumber>,
+        // tokenContract.allowance(fromAddress, transferAddress) as Promise<BigNumber>,
         transferContract.getNonce(fromAddress) as Promise<BigNumber>,
     ]);
 
-    const method: 'transfer' | 'transferWithApproval' | 'transferWithPermit' = token === config.usdc.usdcContract
-        ? 'transferWithApproval'
-        : 'transferWithPermit';
+    const method: 'transfer' | 'transferWithPermit' = 'transferWithPermit';
     // This sets the fee buffer to 10 USDC, which should be enough.
     // method = usdcAllowance.gte(amount + 10e6) ? 'transfer' : method;
 
-    const { fee, gasPrice, gasLimit, relay } = await calculateFee(token, method, forceRelay);
+    const { fee, gasPrice, gasLimit, relay } = await calculateFee(tokenAddress, method, forceRelay);
 
     // Ensure we send only what's possible with the updated fee
-    const accountBalance = token === config.usdc.usdcContract ? addressInfo.balance : addressInfo.nativeBalance;
+    const accountBalance = addressInfo.nativeBalance;
     amount = Math.min(amount, (accountBalance || 0) - fee.toNumber());
 
     // // To be safe, we still check that amount + fee fits into the current allowance
@@ -1030,15 +1027,15 @@ export async function createTransactionRequest(
     // }
 
     const data = transferContract.interface.encodeFunctionData(method, [
-        /* address token */ token,
+        /* address token */ tokenAddress,
         /* uint256 amount */ amount,
         /* address target */ recipient,
         /* uint256 fee */ fee,
-        ...(method === 'transferWithPermit' || method === 'transferWithApproval' ? [
+        ...(method === 'transferWithPermit' ? [
             // // Approve the maximum possible amount so afterwards we can use the `transfer` method for lower fees
-            // /* uint256 value/approval */ client.ethers
+            // /* uint256 value */ client.ethers
             //     .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-            /* uint256 value/approval */ fee.add(amount),
+            /* uint256 value */ fee.add(amount),
 
             // Dummy values, replaced by real signature bytes in Keyguard
             /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1047,14 +1044,10 @@ export async function createTransactionRequest(
         ] : []),
     ]);
 
-    const paymasterAddress = token === config.usdc.usdcContract
-        ? config.usdc.transferContract
-        : config.usdc.nativeTransferContract;
-
     const relayRequest: RelayRequest = {
         request: {
             from: fromAddress,
-            to: paymasterAddress,
+            to: transferAddress,
             data,
             value: '0',
             nonce: forwarderNonce.toString(),
@@ -1067,10 +1060,10 @@ export async function createTransactionRequest(
             pctRelayFee: relay.pctRelayFee.toString(),
             baseRelayFee: relay.baseRelayFee.toString(),
             relayWorker: relay.relayWorkerAddress,
-            paymaster: paymasterAddress,
+            paymaster: transferAddress,
             paymasterData: '0x',
             clientId: Math.floor(Math.random() * 1e6).toString(10),
-            forwarder: paymasterAddress,
+            forwarder: transferAddress,
         },
     };
 
@@ -1079,11 +1072,6 @@ export async function createTransactionRequest(
         relay: {
             url: relay.url,
         },
-        ...(method === 'transferWithApproval' ? {
-            approval: {
-                tokenNonce: usdcNonce.toNumber(),
-            },
-        } : null),
         ...(method === 'transferWithPermit' ? {
             permit: {
                 tokenNonce: usdcNonce.toNumber(),

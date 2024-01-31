@@ -254,18 +254,17 @@ export default defineComponent({
                     throw new Error('Invalid network ID given by Moonpay');
                 }
 
-                if (properties.cryptoCurrency.contractAddress !== config.usdc.usdcContract.toLowerCase()) {
+                if (properties.cryptoCurrency.contractAddress !== config.usdc.nativeUsdcContract.toLowerCase()) {
                     throw new Error('Invalid USDC contract address given by Moonpay');
                 }
 
-                const { accountBalance } = useUsdcAddressStore();
+                const { nativeAccountBalance } = useUsdcAddressStore();
                 // TODO: Preselect a relay to be able to check balance against the fee as well
-                if (accountBalance.value < value) {
+                if (nativeAccountBalance.value < value) {
                     throw new Error('Insufficient USDC balance');
                 }
 
                 const tx = await sendUsdcTransaction(
-                    config.usdc.usdcContract,
                     normalizedDepositAddress,
                     value,
                     'Moonpay',

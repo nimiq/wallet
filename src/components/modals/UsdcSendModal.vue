@@ -592,7 +592,6 @@ export default defineComponent({
 
             try {
                 const tx = await sendUsdcTransaction(
-                    config.usdc.nativeUsdcContract,
                     recipientWithLabel.value!.address,
                     amount.value,
                     recipientWithLabel.value!.label,

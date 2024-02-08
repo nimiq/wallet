@@ -167,7 +167,7 @@ export default defineComponent({
                         });
                     } else {
                         // TODO: Differentiate between adding and reactivating stake
-                        const transaction = TransactionBuilder.newStake(
+                        const transaction = TransactionBuilder.newAddStake(
                             Address.fromUserFriendlyAddress(activeAddress.value!),
                             Address.fromUserFriendlyAddress(activeAddress.value!),
                             BigInt(stakeDelta.value),
@@ -206,9 +206,9 @@ export default defineComponent({
                         title: context.root.$t('Sending Staking Transaction') as string,
                     });
 
-                    const transaction = TransactionBuilder.newSetInactiveStake(
+                    const transaction = TransactionBuilder.newSetActiveStake(
                         Address.fromUserFriendlyAddress(activeAddress.value!),
-                        BigInt(activeStake.value!.inactiveBalance - stakeDelta.value),
+                        BigInt(activeStake.value!.activeBalance + stakeDelta.value),
                         BigInt(0),
                         useNetworkStore().state.height,
                         await client.getNetworkId(),

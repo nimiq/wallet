@@ -142,13 +142,13 @@ export default defineComponent({
                             useNetworkStore().state.height,
                             await client.getNetworkId(),
                         );
-                        const tx = await sendStaking({
+                        const txs = await sendStaking({
                             transaction: transaction.serialize(),
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
 
-                        if (!tx) {
+                        if (!txs) {
                             context.emit('statusChange', {
                                 type: StatusChangeType.NONE,
                             });
@@ -175,13 +175,13 @@ export default defineComponent({
                             useNetworkStore().state.height,
                             await client.getNetworkId(),
                         );
-                        const tx = await sendStaking({
+                        const txs = await sendStaking({
                             transaction: transaction.serialize(),
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
 
-                        if (!tx) {
+                        if (!txs) {
                             context.emit('statusChange', {
                                 type: StatusChangeType.NONE,
                             });
@@ -213,13 +213,13 @@ export default defineComponent({
                         useNetworkStore().state.height,
                         await client.getNetworkId(),
                     );
-                    const tx = await sendStaking({
+                    const txs = await sendStaking({
                         transaction: transaction.serialize(),
                     }).catch((error) => {
                         throw new Error(error.data);
                     });
 
-                    if (!tx) {
+                    if (!txs) {
                         context.emit('statusChange', {
                             type: StatusChangeType.NONE,
                         });

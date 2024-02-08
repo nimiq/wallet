@@ -285,9 +285,9 @@ export default defineComponent({
                 const { Address, TransactionBuilder } = await import('@nimiq/core-web');
                 const client = await getNetworkClient();
 
-                const transaction = TransactionBuilder.newSetInactiveStake(
+                const transaction = TransactionBuilder.newSetActiveStake(
                     Address.fromUserFriendlyAddress(activeAddress.value!),
-                    BigInt(stake.value!.activeBalance + stake.value!.inactiveBalance),
+                    BigInt(0),
                     BigInt(0),
                     useNetworkStore().state.height,
                     await client.getNetworkId(),

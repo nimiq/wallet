@@ -100,10 +100,10 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
             // text += ` for ${staker.toUserFriendlyAddress()}`;
             return text;
         }
-        case 'set-inactive-stake': {
-            const text = i18n.t('Set inactive stake') as string;
+        case 'set-active-stake': {
+            const text = i18n.t('Set active stake') as string;
 
-            // TODO: Read inactive stake amount from transaction data
+            // TODO: Read active stake amount from transaction data
             if (!verbose) return text;
 
             return text;

@@ -113,13 +113,13 @@ export default defineComponent({
                         await client.getNetworkId(),
                     );
 
-                    const tx = await sendStaking({
+                    const txs = await sendStaking({
                         transaction: transaction.serialize(),
                     }).catch((error) => {
                         throw new Error(error.data);
                     });
 
-                    if (!tx) {
+                    if (!txs) {
                         context.emit('statusChange', {
                             type: StatusChangeType.NONE,
                         });

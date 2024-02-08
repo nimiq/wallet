@@ -227,18 +227,30 @@ export default defineComponent({
                 const { Address, TransactionBuilder } = await import('@nimiq/core-web');
                 const client = await getNetworkClient();
 
-                const transaction = TransactionBuilder.newUnstake(
+                const retireStakeTransaction = TransactionBuilder.newRetireStake(
                     Address.fromUserFriendlyAddress(activeAddress.value!),
                     BigInt(stake.value!.inactiveBalance),
                     BigInt(0),
                     useNetworkStore().state.height,
                     await client.getNetworkId(),
                 );
-                const tx = await sendStaking({
-                    transaction: transaction.serialize(),
+
+                const removeStakeTransaction = TransactionBuilder.newRemoveStake(
+                    Address.fromUserFriendlyAddress(activeAddress.value!),
+                    BigInt(stake.value!.inactiveBalance),
+                    BigInt(0),
+                    useNetworkStore().state.height,
+                    await client.getNetworkId(),
+                );
+
+                const txs = await sendStaking({
+                    transaction: [
+                        retireStakeTransaction.serialize(),
+                        removeStakeTransaction.serialize(),
+                    ],
                 });
 
-                if (!tx) {
+                if (!txs) {
                     context.emit('statusChange', {
                         type: StatusChangeType.NONE,
                     });
@@ -292,13 +304,13 @@ export default defineComponent({
                     useNetworkStore().state.height,
                     await client.getNetworkId(),
                 );
-                const tx = await sendStaking({
+                const txs = await sendStaking({
                     transaction: transaction.serialize(),
                 }).catch((error) => {
                     throw new Error(error.data);
                 });
 
-                if (!tx) {
+                if (!txs) {
                     context.emit('statusChange', {
                         type: StatusChangeType.NONE,
                     });

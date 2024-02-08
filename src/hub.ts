@@ -14,6 +14,7 @@ import HubApi, {
     type SignedPolygonTransaction,
     type SignedTransaction,
 } from '@nimiq/hub-api';
+import type { PlainTransactionDetails } from '@nimiq/core-web';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
@@ -473,24 +474,35 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
     return true;
 }
 
-export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'>, abortSignal?: AbortSignal) {
+export async function sendTransaction(request: Omit<SignTransactionRequest, 'appName'>, abortSignal?: AbortSignal) {
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
-        ...tx,
+        ...request,
     }, getBehavior({ abortSignal })).catch(onError);
     if (!signedTransaction) return null;
 
     return sendTx(signedTransaction);
 }
 
-export async function sendStaking(tx: Omit<SignStakingRequest, 'appName'>) {
-    const signedTransaction = await hubApi.signStaking({
+export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) {
+    const signedTransactions = await hubApi.signStaking({
         appName: APP_NAME,
-        ...tx,
+        ...request,
     }).catch(onError);
-    if (!signedTransaction) return null;
+    if (!signedTransactions) return null;
 
-    return sendTx(signedTransaction);
+    const txDetails: PlainTransactionDetails[] = [];
+
+    if (Array.isArray(signedTransactions)) {
+        for (const signedTx of signedTransactions) {
+            // Need to await here, to be sure the transactions are sent after each other
+            txDetails.push(await sendTx(signedTx)); // eslint-disable-line no-await-in-loop
+        }
+    } else { // Backward-compatibility
+        txDetails.push(await sendTx(signedTransactions as SignedTransaction));
+    }
+
+    return txDetails;
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {

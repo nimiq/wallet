@@ -70,7 +70,7 @@
                             <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                         </Tooltip>
                         <button class="nq-button-pill red" @click="deactivateAll"
-                            :disabled="!stake.activeBalance || isStakeDeactivating">
+                            :disabled="!stake.activeBalance || isStakeDeactivating || consensus !== 'established'">
                             {{ $t('Deactivate All') }}
                         </button>
                     </div>
@@ -80,7 +80,11 @@
                 >
                     <Amount :amount="stake.inactiveBalance"/>&nbsp;{{ $t('available to unstake') }}
                     <div class="flex-grow"></div>
-                    <button class="nq-button-pill light-blue" @click="unstakeAll">
+                    <button
+                        class="nq-button-pill light-blue"
+                        @click="unstakeAll"
+                        :disabled="consensus !== 'established'"
+                    >
                         {{ $t('Unstake All') }}
                     </button>
                 </div>
@@ -88,6 +92,12 @@
                     <CircleSpinner/> {{ $t('Deactivating') }}&nbsp;<Amount :amount="stake.inactiveBalance"/>
                     <div class="flex-grow"></div>
                     <span class="inactive-release-timer">{{ inactiveReleaseTime }}</span>
+                </div>
+                <div v-if="stake && stake.retiredBalance"
+                    class="unstaking row flex-row nq-light-blue"
+                >
+                    <Amount :amount="stake.retiredBalance"/>&nbsp;{{ $t('retired stake') }}
+                    <div class="flex-grow"></div>
                 </div>
             </div>
 
@@ -167,7 +177,7 @@ export default defineComponent({
     setup(props, context) {
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator } = useStakingStore();
-        const { height } = useNetworkStore();
+        const { height, consensus } = useNetworkStore();
         const { config } = useConfig();
 
         const graphUpdate = ref(0);
@@ -208,7 +218,7 @@ export default defineComponent({
         });
 
         const isStakeDeactivating = computed(() =>
-            !!(stake.value?.inactiveBalance && stake.value?.inactiveBalance > 0),
+            !!(stake.value?.inactiveBalance && stake.value.inactiveBalance > 0),
         );
 
         const canSwitchValidator = computed(() => stake.value?.activeBalance === 0
@@ -359,6 +369,7 @@ export default defineComponent({
             unstakeAll,
             deactivateAll,
             canSwitchValidator,
+            consensus,
         };
     },
     components: {

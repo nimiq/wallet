@@ -93,6 +93,7 @@ export async function launchNetwork() {
                     inactiveBalance: staker.inactiveBalance,
                     inactiveRelease: staker.inactiveRelease,
                     validator: staker.delegation,
+                    retiredBalance: staker.retiredBalance,
                 });
             } else {
                 // Staker does not exist (anymore)
@@ -157,7 +158,7 @@ export async function launchNetwork() {
 
     client.addHeadChangedListener(async (hash) => {
         const { height, epoch, timestamp } = await client.getBlock(hash);
-        if (height % 10 === 0) console.log('Head is now at', height);
+        console.log('Head is now at', height);
         patchNetworkStore({ height, timestamp });
 
         // The NanoApi did recheck all balances on every block

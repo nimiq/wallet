@@ -96,8 +96,15 @@
                 <div v-if="stake && stake.retiredBalance"
                     class="unstaking row flex-row nq-light-blue"
                 >
-                    <Amount :amount="stake.retiredBalance"/>&nbsp;{{ $t('retired stake') }}
+                    <Amount :amount="stake.retiredBalance"/>&nbsp;{{ $t('available to unstake') }}
                     <div class="flex-grow"></div>
+                    <button
+                        class="nq-button-pill light-blue"
+                        @click="() => unstakeAll(true)"
+                        :disabled="consensus !== 'established'"
+                    >
+                        {{ $t('Unstake All') }}
+                    </button>
                 </div>
             </div>
 
@@ -226,7 +233,7 @@ export default defineComponent({
             && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value),
         );
 
-        async function unstakeAll() {
+        async function unstakeAll(removeOnly = false) {
             context.emit('statusChange', {
                 type: StatusChangeType.UNSTAKING,
                 state: State.LOADING,
@@ -237,27 +244,30 @@ export default defineComponent({
                 const { Address, TransactionBuilder } = await import('@nimiq/core-web');
                 const client = await getNetworkClient();
 
-                const retireStakeTransaction = TransactionBuilder.newRetireStake(
-                    Address.fromUserFriendlyAddress(activeAddress.value!),
-                    BigInt(stake.value!.inactiveBalance),
-                    BigInt(0),
-                    useNetworkStore().state.height,
-                    await client.getNetworkId(),
-                );
-
-                const removeStakeTransaction = TransactionBuilder.newRemoveStake(
-                    Address.fromUserFriendlyAddress(activeAddress.value!),
-                    BigInt(stake.value!.inactiveBalance),
-                    BigInt(0),
-                    useNetworkStore().state.height,
-                    await client.getNetworkId(),
-                );
+                const transactions = [
+                    ...(removeOnly ? [] : [
+                        TransactionBuilder.newRetireStake(
+                            Address.fromUserFriendlyAddress(activeAddress.value!),
+                            BigInt(stake.value!.inactiveBalance),
+                            BigInt(0),
+                            useNetworkStore().state.height,
+                            await client.getNetworkId(),
+                        ),
+                    ]),
+                    // It is only allowed to remove the complete retired balance, not only parts of it.
+                    TransactionBuilder.newRemoveStake(
+                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        BigInt(removeOnly
+                            ? stake.value!.retiredBalance
+                            : stake.value!.retiredBalance + stake.value!.inactiveBalance),
+                        BigInt(0),
+                        useNetworkStore().state.height,
+                        await client.getNetworkId(),
+                    ),
+                ];
 
                 const txs = await sendStaking({
-                    transaction: [
-                        retireStakeTransaction.serialize(),
-                        removeStakeTransaction.serialize(),
-                    ],
+                    transaction: transactions.map((tx) => tx.serialize()),
                 });
 
                 if (!txs) {

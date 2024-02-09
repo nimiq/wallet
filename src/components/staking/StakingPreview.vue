@@ -2,7 +2,10 @@
     <button class="staking-preview nq-button-pill green flex-row"
         @click="$router.push('/staking')" @mousedown.prevent>
         <StakingIcon />
-        <Amount :amount="stake && (stake.activeBalance + stake.inactiveBalance) || 0" value-mask />
+        <Amount
+            :amount="stake && (stake.activeBalance + stake.inactiveBalance + stake.retiredBalance) || 0"
+            value-mask
+        />
 
         <div class="flex-grow"></div>
 

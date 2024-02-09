@@ -91,6 +91,7 @@ export default defineComponent({
                         activeBalance: 0,
                         inactiveBalance: 0,
                         validator: validator.address,
+                        retiredBalance: 0,
                     });
 
                     context.emit('next');

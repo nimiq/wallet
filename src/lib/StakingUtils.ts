@@ -108,6 +108,14 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
 
             return text;
         }
+        case 'retire-stake': {
+            const text = i18n.t('Retire stake') as string;
+
+            // TODO: Read retired stake amount from transaction data
+            if (!verbose) return text;
+
+            return text;
+        }
         default: throw new Error('Unknown staking data type');
     }
 }

@@ -38,7 +38,7 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 
 // Albatross
 export const BATCH_LENGTH = 60;
-export const BATCHES_PER_EPOCH = 360;
+export const BATCHES_PER_EPOCH = 720;
 export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
 
 export function nextElectionBlock(height: number): number {

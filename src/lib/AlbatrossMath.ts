@@ -1,5 +1,5 @@
-export const GENESIS_BLOCK_HEIGHT = 21600;
-export const GENESIS_DATE = new Date('2023-08-07T18:04:28.244615+00:00');
+export const GENESIS_BLOCK_HEIGHT = 15581984;
+export const GENESIS_DATE = new Date('2024-02-07T20:04:15.464756+00:00');
 
 // Not actually necessary, as it cancels out when subtracting the current supply from the future supply
 // const GENESIS_SUPPLY = 1103202591538253; // Luna, as encoded in the genesis block

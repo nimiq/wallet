@@ -82,7 +82,7 @@
                     <div class="flex-grow"></div>
                     <button
                         class="nq-button-pill light-blue"
-                        @click="unstakeAll"
+                        @click="() => unstakeAll()"
                         :disabled="consensus !== 'established'"
                     >
                         {{ $t('Unstake All') }}

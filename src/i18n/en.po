@@ -2293,6 +2293,10 @@ msgstr ""
 msgid "Stable like USD, got it"
 msgstr ""
 
+#: src/components/staking/StakingGraphPage.vue:69
+msgid "Stake must be at least {minStake}."
+msgstr ""
+
 #: src/components/staking/StakingWelcomePage.vue:8
 msgid "Stake NIM to earn NIM"
 msgstr ""

@@ -56,12 +56,19 @@
             />
 
             <div>
-                <button class="nq-button light-blue stake-button" :disabled="!stakeDelta" @click="performStaking">
+                <button
+                    class="nq-button light-blue stake-button"
+                    :disabled="!stakeDelta || isStakeBelowMinimum"
+                    @click="performStaking"
+                >
                     {{ $t('Confirm stake') }}
                 </button>
 
                 <MessageTransition>
-                    <div class="disclaimer stake-disclaimer" v-if="stakeDelta >= 0">
+                    <div class="disclaimer minimum-stake-disclaimer" v-if="newStake !== 0 && isStakeBelowMinimum">
+                        {{ $t('Stake must be at least {minStake}.', { minStake: `${MIN_STAKE / 1e5} NIM` }) }}
+                    </div>
+                    <div class="disclaimer stake-disclaimer" v-else-if="stakeDelta >= 0">
                         {{ $t('Unlock at any time. Your NIM will be available within hours.') }}
                     </div>
                     <div class="disclaimer unstake-disclaimer" v-else>
@@ -76,12 +83,10 @@
 
 <script lang="ts">
 import { captureException } from '@sentry/vue';
-import { defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 
-import {
-    CryptoCurrency,
-} from '../../lib/Constants';
+import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { sendStaking } from '../../hub';
 
@@ -117,6 +122,8 @@ export default defineComponent({
         }
 
         async function performStaking() {
+            if (newStake.value < MIN_STAKE) return;
+
             const validatorLabelOrAddress = 'label' in activeValidator.value!
                 ? activeValidator.value.label
                 : activeValidator.value!.address;
@@ -260,6 +267,8 @@ export default defineComponent({
             }
         }
 
+        const isStakeBelowMinimum = computed(() => newStake.value < MIN_STAKE);
+
         return {
             // NOW,
             // MONTH,
@@ -270,6 +279,8 @@ export default defineComponent({
             stakeDelta,
             updateStaked,
             performStaking,
+            isStakeBelowMinimum,
+            MIN_STAKE,
         };
     },
     components: {
@@ -346,6 +357,10 @@ export default defineComponent({
             font-weight: 600;
             font-size: var(--small-size);
             text-align: center;
+        }
+
+        .minimum-stake-disclaimer {
+            color: var(--nimiq-orange);
         }
 
         .stake-disclaimer {

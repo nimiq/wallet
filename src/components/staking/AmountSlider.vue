@@ -56,6 +56,7 @@
 <script lang="ts">
 import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { useAddressStore } from '../../stores/Address';
+import { MIN_STAKE } from '../../lib/Constants';
 
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
@@ -164,6 +165,10 @@ export default defineComponent({
         const $stakedNIMAmount = ref<HTMLInputElement>(null);
         const $dotIndicator = ref<HTMLElement>(null);
 
+        const minimumStakePercent = computed(() => availableAmount.value < MIN_STAKE
+            ? Infinity // Makes it impossible to move the mouse above half the `minimumStakePercent`
+            : (MIN_STAKE / availableAmount.value) * 100);
+
         const atClick = (e: MouseEvent | TouchEvent) => {
             e.preventDefault();
 
@@ -236,16 +241,22 @@ export default defineComponent({
         };
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const onMove = (e: MouseEvent | TouchEvent, execute = false, skipSignals = false, _percent = NaN) => {
+        const onMove = (e: MouseEvent | TouchEvent, execute = false, skipSignals = false) => {
             // if (execute !== true) return;
             const position = extractEventPosition(e);
             if (!position || !pivotPoint) return;
 
             position.x += $container.value?.closest('.small-page')?.scrollLeft || 0;
 
-            const percent = (!Number.isNaN(_percent)) ? _percent : Math.min(100, Math.max(0,
+            let percent = Math.min(100, Math.max(0,
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
+            if (percent < minimumStakePercent.value / 2) {
+                percent = 0;
+            } else {
+                percent = Math.max(minimumStakePercent.value, percent);
+            }
+
             const offsetX = getPointAtPercent(percent);
             currentAmount.value = Math.floor(
                 ((percent / 100) * availableAmount.value) / 1e5,

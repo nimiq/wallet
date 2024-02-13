@@ -51,6 +51,7 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 export const BATCH_LENGTH = 60;
 export const BATCHES_PER_EPOCH = 720;
 export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
+export const MIN_STAKE = 100e5;
 
 export function nextElectionBlock(height: number): number {
     return Math.floor((height - GENESIS_BLOCK_HEIGHT) / EPOCH_LENGTH + 1) * EPOCH_LENGTH;

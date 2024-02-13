@@ -1854,6 +1854,10 @@ msgstr ""
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
+#: src/lib/StakingUtils.ts:112
+msgid "Retire stake"
+msgstr ""
+
 #: src/lib/StakingUtils.ts:65
 msgid "Retire validator"
 msgstr ""
@@ -2185,6 +2189,10 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:355
 msgid "Stable like USD, got it"
+msgstr ""
+
+#: src/components/staking/StakingGraphPage.vue:69
+msgid "Stake must be at least {minStake}."
 msgstr ""
 
 #: src/components/staking/StakingWelcomePage.vue:8

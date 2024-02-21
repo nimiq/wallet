@@ -276,7 +276,7 @@ export default Modal;
     .wrapper {
         position: fixed; // Must be fixed so the bottom is not cut off by iOS Safari's bottom bar
         bottom: 0;
-        height: 96%; // Must be a fixed heigth value (not max-height) to force children to limit their height
+        height: 96%; // Must be a fixed height value (not max-height) to force children to limit their height
         justify-content: flex-end;
     }
 
@@ -376,9 +376,9 @@ export default Modal;
      * 100vh is the height of the viewport
      *
      * To adapt the animation distance to the screen height (because we don't want the overlay to only
-     * animate part of the way on larger screens, or ultra-fast on smaller screens), we calculcate the
+     * animate part of the way on larger screens, or ultra-fast on smaller screens), we calculate the
      * distance between the top of the overlay to the top of the viewport [(100vh - 100%) / 2] and add
-     * the heigh of the overlay to it [+ 100%]. Then we just turn it around into a negative distance
+     * the height of the overlay to it [+ 100%]. Then we just turn it around into a negative distance
      * [-1 *] so it animates from and to the top, and we add a little extra [1.1 = +10%] so the easing
      * doesn't stop at the top of the viewport.
      */

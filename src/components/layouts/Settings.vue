@@ -468,7 +468,7 @@ export default defineComponent({
 
 .column {
     justify-content: flex-start;
-    max-height: calc(100% - 4rem); // for Copyright / Disclamer link
+    max-height: calc(100% - 4rem); // for Copyright / Disclaimer link
     overflow-y: auto;
 
     @extend %custom-scrollbar;

@@ -145,7 +145,7 @@ export async function checkHistory(
         btcNetwork$.fetchingTxHistory++;
 
         console.debug('Fetching transaction history for', address, knownTxDetails);
-        // FIXME: Re-enable lastConfirmedHeigth, but ensure it syncs from 0 the first time
+        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
         //        (even when cross-account transactions are already present)
         // eslint-disable-next-line no-await-in-loop
         await client.waitForConsensusEstablished();
@@ -186,7 +186,7 @@ export async function launchElectrum() {
     const fetchedAccounts = new Set<string>();
 
     const txFetchTrigger = ref(0);
-    function invalidateTransationHistory() {
+    function invalidateTransactionHistory() {
         // Invalidate fetched addresses
         fetchedAccounts.clear();
         // Trigger watcher
@@ -214,7 +214,7 @@ export async function launchElectrum() {
                 }
             }, { lazy: true });
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
-            invalidateTransationHistory();
+            invalidateTransactionHistory();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -225,7 +225,7 @@ export async function launchElectrum() {
 
         if (Date.now() - lastVisibilityFetch > config.pageVisibilityTxRefreshInterval) {
             if (!txHistoryWasInvalidatedSinceLastConsensus) {
-                invalidateTransationHistory();
+                invalidateTransactionHistory();
                 lastVisibilityFetch = Date.now();
             }
         }
@@ -238,7 +238,7 @@ export async function launchElectrum() {
 
         const { addressSet, activeAddresses } = btcAddressStore;
 
-        // If this account does't have any Bitcoin addresses, there's nothing to check.
+        // If this account doesn't have any Bitcoin addresses, there's nothing to check.
         if (!addressSet.value.external.length && !addressSet.value.internal.length) return;
 
         const accountId = account.id;

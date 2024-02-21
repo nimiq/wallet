@@ -60,7 +60,7 @@ namespace NodeType {
 export { NodeType };
 
 /**
- * the PlainAddressInfo returned from the network, augmented with its asociated hexagon
+ * the PlainAddressInfo returned from the network, augmented with its associated hexagon
  */
 type PlainAddressInfo = ReturnType<Nimiq.Client.AddressInfo['toPlain']>;
 export type Node = PlainAddressInfo & {
@@ -420,7 +420,7 @@ export default class NetworkMap {
         _overlayCanvas.width = 2 * WIDTH;
         _overlayCanvas.height = 2 * HEIGHT;
 
-        // Scale the map down to acomodate for 5% top padding, and 2.5% padding left and right.
+        // Scale the map down to accommodate for 5% top padding, and 2.5% padding left and right.
         this._mapDc.scale(SCALING_FACTOR, SCALING_FACTOR);
         this._overlayDc.scale(SCALING_FACTOR, SCALING_FACTOR);
 
@@ -593,8 +593,8 @@ export default class NetworkMap {
     }
 
     /**
-     * Calculates the time passed in milliseconds since last frame. returns 0 on first invokation
-     * and after renderingwas suspended.
+     * Calculates the time passed in milliseconds since last frame. returns 0 on first invocation
+     * and after rendering was suspended.
      */
     private _frameTime() {
         const currentTime = Date.now();
@@ -704,7 +704,7 @@ export default class NetworkMap {
 
         const ft = this._frameTime();
 
-        // this._setDomensions();
+        // this._setDimensions();
         this._drawMap(ft);
         if (this._drawOverlay(ft)) {
             // only redraw after timeout if there is actual change to be drawn

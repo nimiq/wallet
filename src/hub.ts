@@ -34,7 +34,7 @@ import { useKycStore } from './stores/Kyc';
 import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
-import { RelayServerInfo } from './lib/usdc/OpenGSN';
+import type { RelayServerInfo } from './lib/usdc/OpenGSN';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
@@ -811,6 +811,13 @@ export async function swapBridgedUsdcToNative(requestPromise: Promise<Omit<SignP
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
     return hubApi.refundSwap(
+        requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
+        getBehavior(),
+    ).catch(onError);
+}
+
+export async function signPolygonTransaction(requestPromise: Promise<Omit<SignPolygonTransactionRequest, 'appName'>>) {
+    return hubApi.signPolygonTransaction(
         requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
         getBehavior(),
     ).catch(onError);

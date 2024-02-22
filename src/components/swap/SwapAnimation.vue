@@ -334,7 +334,12 @@
         <div v-if="error" class="error nq-orange-bg">
             <strong>{{ $t('Error:') }}</strong>
             {{ error }}
-            <p>{{ $t('Retrying...') }}</p>
+            <p class="retrying">{{ $t('Retrying...') }}</p>
+            <template v-if="errorActionText">
+                <button class="error-action nq-button-s inverse" @click="$emit('error-action')" @mousedown.prevent>
+                    {{ errorActionText }}
+                </button>
+            </template>
         </div>
 
         <Identicon :address="nimAddress" ref="identicon$"/> <!-- Hidden by CSS -->
@@ -359,7 +364,7 @@ import OverflowingCup from '../icons/OverflowingCup.vue';
 import Amount from '../Amount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import BlueLink from '../BlueLink.vue';
-import { SwapState } from '../../stores/Swaps';
+import { SwapState, SwapErrorAction } from '../../stores/Swaps';
 import { formatDuration } from '../../lib/Time';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
@@ -417,6 +422,10 @@ export default defineComponent({
         },
         error: {
             type: String,
+            required: false,
+        },
+        errorAction: {
+            type: String as () => SwapErrorAction,
             required: false,
         },
         switchSides: {
@@ -619,6 +628,19 @@ export default defineComponent({
             stopTimer();
         });
 
+        const errorActionText = computed(() => {
+            if (!props.error) return false;
+
+            if (props.errorAction === SwapErrorAction.USDC_RESIGN_REDEEM
+                && props.swapState === SwapState.SETTLE_INCOMING
+                && props.toAsset === SwapAsset.USDC_MATIC
+            ) {
+                return context.root.$t('Sign a new redeem transaction') as string;
+            }
+
+            return false;
+        });
+
         return {
             SwapState,
             state,
@@ -641,6 +663,7 @@ export default defineComponent({
             bottomNoticeMsg,
             timer,
             assetToCurrency,
+            errorActionText,
         };
     },
     components: {
@@ -1202,12 +1225,17 @@ export default defineComponent({
     border-radius: 0.5rem;
     padding: 2rem;
 
-    p:last-child {
+    p.retrying {
         margin-bottom: 0;
         font-size: var(--small-size);
         font-weight: 600;
         opacity: 0.7;
         text-align: right;
+    }
+
+    .error-action {
+        display: block;
+        margin: 2rem auto 0;
     }
 }
 

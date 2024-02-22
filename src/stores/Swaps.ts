@@ -104,6 +104,11 @@ export type ActiveSwap = SwapObject & {
     settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
         | PolygonTransaction,
     error?: string,
+    errorAction?: SwapErrorAction,
+}
+
+export enum SwapErrorAction {
+    USDC_RESIGN_REDEEM = 'usdc-resign-redeem',
 }
 
 export type SwapsState = {

@@ -68,7 +68,7 @@ import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest'
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
-import { useSwapsStore, SwapState, ActiveSwap, SwapEurData } from '../../stores/Swaps';
+import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useBankStore } from '../../stores/Bank';
@@ -622,12 +622,16 @@ export default defineComponent({
                                 state: SwapState.COMPLETE,
                                 stateEnteredAt: Date.now(),
                                 settlementTx,
+                                errorAction: undefined,
                             });
                         } catch (error: any) {
                             if (error.message === SwapError.EXPIRED) return;
                             if (error.message === SwapError.DELETED) return;
 
                             currentError.value = error.message;
+                            updateSwap({
+                                errorAction: SwapErrorAction.USDC_RESIGN_REDEEM,
+                            });
                             setTimeout(processSwap, 2000); // 2 seconds
                             cleanUp();
                             return;

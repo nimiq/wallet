@@ -578,10 +578,10 @@ msgid "Choose a Sender"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:285
-#: src/components/modals/SellCryptoModal.vue:249
+#: src/components/modals/BuyCryptoModal.vue:286
+#: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:208
-#: src/components/swap/SwapModal.vue:240
+#: src/components/swap/SwapModal.vue:242
 msgid "Choose an Address"
 msgstr ""
 
@@ -919,7 +919,7 @@ msgstr ""
 msgid "Error {errorCode}: {errorMessage}"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:329
+#: src/components/swap/SwapAnimation.vue:330
 msgid "Error:"
 msgstr ""
 
@@ -1249,7 +1249,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1784
+#: src/components/swap/SwapModal.vue:1789
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1774,7 +1774,7 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1029
+#: src/components/swap/SwapModal.vue:1032
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -1784,7 +1784,7 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:331
+#: src/components/swap/SwapAnimation.vue:332
 msgid "Retrying..."
 msgstr ""
 
@@ -2037,7 +2037,7 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:263
+#: src/components/modals/BuyCryptoModal.vue:264
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -2204,7 +2204,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1023
+#: src/components/swap/SwapModal.vue:1026
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."

@@ -231,8 +231,10 @@
                     :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
                     :switchSides="swap.from.asset === rightAsset"
                     :stateEnteredAt="swap.stateEnteredAt"
+                    :errorAction="swap.errorAction"
                     @finished="finishSwap"
                     @cancel="finishSwap"
+                    @error-action="handleSwapErrorAction"
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
@@ -268,6 +270,7 @@ import {
     SignedTransaction,
     SignedBtcTransaction,
     SignedPolygonTransaction,
+    SignPolygonTransactionRequest,
 } from '@nimiq/hub-api';
 import {
     cancelSwap,
@@ -301,11 +304,11 @@ import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { BTC_DUST_LIMIT, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
-import { setupSwap } from '../../hub';
+import { setupSwap, signPolygonTransaction } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
-import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
+import { SwapState, SwapDirection, useSwapsStore, SwapErrorAction } from '../../stores/Swaps';
 import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
@@ -858,8 +861,8 @@ export default defineComponent({
         async function calculateUsdcHtlcFee(forOpening: boolean, prevUsdcFees: UsdcFees | null) {
             const prevMethod = prevUsdcFees?.method;
 
-            // Use the existing relay if it was selected in the last 10 minutes
-            const forceRelay = usdcRelay.timestamp > Date.now() - 10 * 60 * 1e3
+            // Use the existing relay if it was selected in the last 5 minutes
+            const forceRelay = usdcRelay.timestamp > Date.now() - 5 * 60 * 1e3
                 ? usdcRelay.relay
                 : undefined;
 
@@ -1534,6 +1537,8 @@ export default defineComponent({
                         throw new Error('Wrong USDC contract method');
                     }
 
+                    // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
+                    // Keyguard's SwapIFrameApi.
                     const data = htlcContract.interface.encodeFunctionData(method, [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
                         /* address token */ config.usdc.nativeUsdcContract,
@@ -1851,14 +1856,14 @@ export default defineComponent({
                 let settlementSerializedTx = swap.value!.settlementSerializedTx!;
 
                 // In case of a Nimiq tx, we need to replace the dummy swap hash in the tx with the actual swap hash
-                if (confirmedSwap.to.asset === 'NIM') {
+                if (confirmedSwap.to.asset === SwapAsset.NIM) {
                     settlementSerializedTx = settlementSerializedTx.replace(
                         '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925',
                         `${confirmedSwap.hash}`,
                     );
                 }
 
-                // In case of a Polygon signed message, we need to restructre the `request` format
+                // In case of a Polygon signed message, we need to restructure the `request` format
                 if (confirmedSwap.to.asset === SwapAsset.USDC_MATIC) {
                     const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
                     const { relayData, ...relayRequest } = request;
@@ -2007,6 +2012,156 @@ export default defineComponent({
             return false;
         });
 
+        function handleSwapErrorAction() {
+            if (swap.value?.errorAction === SwapErrorAction.USDC_RESIGN_REDEEM) {
+                resignUsdcRedeemTransaction();
+            }
+        }
+
+        async function resignUsdcRedeemTransaction() {
+            if (!swap.value) {
+                console.warn('No swap found'); // eslint-disable-line no-console
+                return;
+            }
+            const usdcHtlc = swap.value.contracts[SwapAsset.USDC_MATIC];
+            if (!usdcHtlc) {
+                console.warn('No USDC HTLC found in swap', swap.value); // eslint-disable-line no-console
+                return;
+            }
+            if (usdcHtlc.direction !== 'receive') {
+                console.warn('USDC HTLC is not a receive HTLC', usdcHtlc); // eslint-disable-line no-console
+                return;
+            }
+
+            let relayUrl: string;
+
+            // eslint-disable-next-line no-async-promise-executor
+            const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve) => {
+                const htlcContract = await getNativeHtlcContract(); // This promise is already resolved
+                const toAddress = usdcHtlc.redeemAddress;
+
+                // Unset stored relay so we can select a new one that hopefully works then
+                usdcRelay = {
+                    relay: undefined,
+                    timestamp: 0,
+                };
+
+                const [
+                    forwarderNonce,
+                    blockHeight,
+                    { fee, gasLimit, gasPrice, relay, method },
+                ] = await Promise.all([
+                    htlcContract.getNonce(toAddress) as Promise<BigNumber>,
+                    getPolygonBlockNumber(),
+                    calculateUsdcHtlcFee(false, null),
+                ]);
+
+                if (method !== 'redeemWithSecretInData') {
+                    throw new Error('Wrong USDC contract method');
+                }
+
+                relayUrl = relay.url;
+
+                const data = htlcContract.interface.encodeFunctionData(method, [
+                    /* bytes32 id */ usdcHtlc.htlc.address,
+                    /* address target */ toAddress,
+                    /* uint256 fee */ fee,
+                ]);
+
+                const relayRequest: RelayRequest = {
+                    request: {
+                        from: toAddress,
+                        to: config.usdc.nativeHtlcContract,
+                        data,
+                        value: '0',
+                        nonce: forwarderNonce.toString(),
+                        gas: gasLimit.toString(),
+                        validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                            .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                    },
+                    relayData: {
+                        gasPrice: gasPrice.toString(),
+                        pctRelayFee: relay.pctRelayFee.toString(),
+                        baseRelayFee: relay.baseRelayFee.toString(),
+                        relayWorker: relay.relayWorkerAddress,
+                        paymaster: config.usdc.nativeHtlcContract,
+                        paymasterData: '0x',
+                        clientId: Math.floor(Math.random() * 1e6).toString(10),
+                        forwarder: config.usdc.nativeHtlcContract,
+                    },
+                };
+
+                resolve({
+                    ...relayRequest,
+                    amount: swap.value!.to.amount - swap.value!.to.fee,
+                    senderLabel: 'Swap HTLC',
+                });
+            });
+
+            const signedTransaction = await signPolygonTransaction(request);
+            if (!signedTransaction) return;
+
+            if (!swap.value) {
+                console.warn('No swap found after signing'); // eslint-disable-line no-console
+                return;
+            }
+
+            useSwapsStore().setActiveSwap({
+                ...swap.value,
+                settlementSerializedTx: JSON.stringify({
+                    request: signedTransaction.message,
+                    signature: signedTransaction.signature,
+                    relayUrl: relayUrl!,
+                }),
+                error: undefined,
+                errorAction: undefined,
+            });
+
+            if (config.fastspot.watchtowerEndpoint) {
+                let settlementSerializedTx = swap.value.settlementSerializedTx!;
+
+                // In case of a Polygon signed message, we need to restructure the `request` format
+                if (swap.value.to.asset === SwapAsset.USDC_MATIC) {
+                    // eslint-disable-next-line @typescript-eslint/no-shadow
+                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
+                    const { relayData, ...relayRequest } = request;
+                    settlementSerializedTx = JSON.stringify({
+                        request: {
+                            request: relayRequest as ForwardRequest,
+                            relayData,
+                        },
+                        signature,
+                        relayUrl,
+                    });
+                }
+
+                // Send redeem transaction to watchtower
+                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: swap.value.id,
+                        endpoint: new URL(config.fastspot.apiEndpoint).host,
+                        apikey: config.fastspot.apiKey,
+                        redeem: settlementSerializedTx,
+                    }),
+                }).then(async (response) => {
+                    if (!response.ok) {
+                        throw new Error((await response.json()).message);
+                    }
+
+                    setActiveSwap({
+                        ...swap.value!,
+                        watchtowerNotified: true,
+                    });
+                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
+                }).catch((error) => {
+                    if (config.reportToSentry) captureException(error);
+                    else console.error(error); // eslint-disable-line no-console
+                });
+            }
+        }
+
         return {
             onClose,
             leftAsset,
@@ -2076,6 +2231,7 @@ export default defineComponent({
             setRightAsset,
             swapIsNotSupported,
             assetToCurrency,
+            handleSwapErrorAction,
         };
     },
     components: {

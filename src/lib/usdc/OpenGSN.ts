@@ -270,9 +270,11 @@ async function* relayServerRegisterGen(
                 startBlock = filterFromBlock;
             }
             if (startBlock === earliestBlock) { // Found no logs
-                console.debug('Skipping relay: no recent activity');
-                orderedRelays.delete(url);
-                return;
+                if (!url.endsWith('.fastspot.io')) {
+                    console.debug('Skipping relay: no recent activity');
+                    orderedRelays.delete(url);
+                    return;
+                }
             }
 
             count += 1;

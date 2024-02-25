@@ -10,6 +10,7 @@ import HubApi, {
     type RequestType,
     type ResultByRequestType,
     type PopupRequestBehavior,
+    type SignedPolygonTransaction,
 } from '@nimiq/hub-api';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
@@ -797,6 +798,15 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
         ).catch(onError);
     }
     return hubApi.setupSwap(requestWithAppNamePromise, getBehavior()).catch(onError);
+}
+
+export async function swapBridgedUsdcToNative(requestPromise: Promise<Omit<SignPolygonTransactionRequest, 'appName'>>)
+    : Promise<SignedPolygonTransaction | null | void> {
+    const requestWithAppNamePromise = requestPromise.then((request) => ({
+        ...request,
+        appName: APP_NAME,
+    }));
+    return hubApi.signPolygonTransaction(requestWithAppNamePromise, getBehavior()).catch(onError);
 }
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {

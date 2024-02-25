@@ -21,6 +21,7 @@ import {
     USDC_HTLC_CONTRACT_ABI,
     NATIVE_USDC_CONTRACT_ABI,
     NATIVE_USDC_TRANSFER_CONTRACT_ABI,
+    SWAP_CONTRACT_ABI,
 } from './lib/usdc/ContractABIs';
 import {
     getBestRelay,
@@ -886,7 +887,9 @@ type ContractMethods =
     | 'open'
     | 'openWithApproval'
     | 'redeemWithSecretInData'
-    | 'refund';
+    | 'refund'
+    // | 'swap'
+    | 'swapWithApproval';
 
 export async function calculateFee(
     token: string, // Contract address
@@ -909,6 +912,8 @@ export async function calculateFee(
         openWithApproval: 1348,
         redeemWithSecretInData: 1092,
         refund: 1092,
+        // swap: 0,
+        swapWithApproval: 1252,
     }[method];
 
     if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);
@@ -1322,6 +1327,20 @@ export async function getNativeHtlcContract() {
     //     provider,
     // );
     // return nativeHtlcContract;
+}
+
+let swapContract: Contract | undefined;
+export async function getSwapContract() {
+    if (swapContract) return swapContract;
+
+    const { ethers, provider } = await getPolygonClient();
+    const { config } = useConfig();
+    swapContract = new ethers.Contract(
+        config.usdc.swapContract,
+        SWAP_CONTRACT_ABI,
+        provider,
+    );
+    return swapContract;
 }
 
 function addFeeToArgs(readonlyArgs: Result, fee: BigNumber): Result {

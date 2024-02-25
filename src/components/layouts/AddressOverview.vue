@@ -164,7 +164,7 @@
                             target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
                     </span>
                     <button
-                        @click="convertUsdcToNative"
+                        @click="convertBridgedUsdcToNative"
                         class="nq-button-pill light-blue"
                     >{{ $t('Convert to USDC') }}</button>
                 </div>
@@ -239,6 +239,10 @@ import {
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
+import { BigNumber } from 'ethers';
+import { SignPolygonTransactionRequest } from '@nimiq/hub-api';
+import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
+import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
@@ -257,15 +261,24 @@ import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
-import { onboard, rename } from '../../hub';
+import { onboard, rename, swapBridgedUsdcToNative } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
+import { BTC_ADDRESS_GAP, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
 import { useConfig } from '../../composables/useConfig';
+import {
+    calculateFee,
+    getPolygonBlockNumber,
+    getPolygonClient,
+    getSwapContract,
+    sendTransaction as sendPolygonTransaction,
+} from '../../ethers';
+import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { i18n } from '../../i18n/i18n-setup';
 
 export default defineComponent({
     name: 'address-overview',
@@ -361,8 +374,132 @@ export default defineComponent({
 
         const { config } = useConfig();
 
-        function convertUsdcToNative() {
-            alert('TODO: Convert bridged USDC.e to native USDC');
+        async function convertBridgedUsdcToNative() {
+            let relayUrl: string;
+
+            // eslint-disable-next-line no-async-promise-executor
+            const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve, reject) => {
+                try {
+                    const [client, swapContract] = await Promise.all([
+                        getPolygonClient(),
+                        getSwapContract(),
+                    ]);
+                    const fromAddress = usdcAddressInfo.value!.address;
+
+                    const [
+                        usdcNonce,
+                        forwarderNonce,
+                        blockHeight,
+                    ] = await Promise.all([
+                        client.usdc.nonces(fromAddress) as Promise<BigNumber>,
+                        swapContract.getNonce(fromAddress) as Promise<BigNumber>,
+                        getPolygonBlockNumber(),
+                    ]);
+
+                    // eslint-disable-next-line @typescript-eslint/prefer-as-const
+                    const method:/* 'swap' | */'swapWithApproval' = 'swapWithApproval';
+
+                    const {
+                        fee,
+                        gasLimit,
+                        gasPrice,
+                        relay,
+                    } = await calculateFee(config.usdc.usdcContract, method, undefined, swapContract);
+                    relayUrl = relay.url;
+
+                    if (fee.toNumber() >= usdcAddressInfo.value!.balance!) {
+                        reject(new Error(i18n.t(
+                            'You do not have enough USDC.e to pay conversion fees ({fee})',
+                            { fee: `${fee.toNumber() / 1e6} USDC.e` },
+                        ) as string));
+                        return;
+                    }
+
+                    const amount = usdcAddressInfo.value!.balance! - fee.toNumber();
+
+                    // Only allow 0.5% slippage on mainnet, but up to 5% on testnet
+                    const minTargetAmountPercentage = config.environment === ENV_MAIN ? 0.995 : 0.95;
+
+                    const data = swapContract.interface.encodeFunctionData(method, [
+                        /* address token */ config.usdc.usdcContract,
+                        /* uint256 amount */ amount,
+                        /* address pool */ config.usdc.swapPoolContract,
+                        /* uint256 targetAmount */ Math.floor(amount * minTargetAmountPercentage),
+                        /* uint256 fee */ fee,
+                        ...(method === 'swapWithApproval' ? [
+                            // // Approve the maximum possible amount so afterwards we can use the `swap` method for
+                            // // lower fees
+                            // /* uint256 approval */ client.ethers
+                            //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+                            /* uint256 approval */ amount + fee.toNumber(),
+
+                            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            /* uint8 sigV */ 0,
+                        ] : []),
+                    ]);
+
+                    const relayRequest: RelayRequest = {
+                        request: {
+                            from: fromAddress,
+                            to: config.usdc.swapContract,
+                            data,
+                            value: '0',
+                            nonce: forwarderNonce.toString(),
+                            gas: gasLimit.toString(),
+                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                        },
+                        relayData: {
+                            gasPrice: gasPrice.toString(),
+                            pctRelayFee: relay.pctRelayFee.toString(),
+                            baseRelayFee: relay.baseRelayFee.toString(),
+                            relayWorker: relay.relayWorkerAddress,
+                            paymaster: config.usdc.swapContract,
+                            paymasterData: '0x',
+                            clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            forwarder: config.usdc.swapContract,
+                        },
+                    };
+
+                    resolve({
+                        ...relayRequest,
+                        ...(method === 'swapWithApproval' ? {
+                            approval: {
+                                tokenNonce: usdcNonce.toNumber(),
+                            },
+                        } : null),
+                    });
+                } catch (e) {
+                    reject(e);
+                }
+            }).catch((error) => {
+                // Trigger alert only after popup closed, as otherwise the popup is visually blocking the alert
+                // and the UI seems frozen
+                window.setTimeout(() => {
+                    alert(error.message); // eslint-disable-line no-alert
+                }, 200);
+                throw error;
+            });
+
+            const signedTransaction = await swapBridgedUsdcToNative(request).catch((error) => {
+                // Trigger alert only after popup closed, as otherwise the popup is visually blocking the alert
+                // and the UI seems frozen
+                window.setTimeout(() => {
+                    alert(error.message); // eslint-disable-line no-alert
+                }, 200);
+                throw error;
+            });
+            if (!signedTransaction) return false;
+
+            const { relayData, ...relayRequest } = signedTransaction.message;
+            return sendPolygonTransaction(
+                { request: relayRequest as ForwardRequest, relayData },
+                signedTransaction.signature,
+                relayUrl!,
+            ).catch((error) => {
+                alert(error.message); // eslint-disable-line no-alert
+            });
         }
 
         return {
@@ -389,7 +526,7 @@ export default defineComponent({
             addressMasked,
             toggleUnclaimedCashlinkList,
             config,
-            convertUsdcToNative,
+            convertBridgedUsdcToNative,
         };
     },
     components: {

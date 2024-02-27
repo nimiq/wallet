@@ -33,6 +33,10 @@
                 <template v-else v-slot:address>{{ swapData.asset.toUpperCase() }}</template>
             </i18n>
 
+            <template v-else-if="transaction.event && transaction.event.name === 'Swap'">
+                {{ $t("Conversion from USDC.e") }}
+            </template>
+
             <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
                     <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
@@ -81,6 +85,14 @@
                     <InteractiveShortAddress v-if="swapData && peerAddress"
                         :address="peerAddress" copyable tooltipPosition="bottom right"/>
                 </div>
+                <UsdcAddressInfo v-else-if="transaction.event && transaction.event.name === 'Swap'"
+                    :address="transaction.sender"
+                    label="USDC.e"
+                    copyable
+                    :editable="false"
+                    dark
+                    tooltipPosition="bottom right"
+                />
                 <UsdcAddressInfo v-else
                     :address="transaction.sender"
                     :label="isIncoming ? peerLabel : undefined"
@@ -102,6 +114,13 @@
                     <span class="label">{{ peerLabel || (showRefundButton ? $t('Expired HTLC') : '&nbsp;') }}</span>
                     <InteractiveShortAddress :address="peerAddress" copyable tooltipPosition="bottom left"/>
                 </div>
+                <UsdcAddressInfo v-else-if="transaction.event && transaction.event.name === 'Swap'"
+                    :address="transaction.sender"
+                    label="USDC"
+                    copyable
+                    :editable="false"
+                    tooltipPosition="bottom left"
+                />
                 <UsdcAddressInfo v-else
                     :address="transaction.recipient"
                     :label="!isIncoming ? peerLabel : undefined"
@@ -112,7 +131,7 @@
             </div>
 
             <div class="amount-block flex-column">
-                <Amount :amount="transaction.value" :currency="ticker" value-mask
+                <Amount :amount="txValue" :currency="ticker" value-mask
                     class="transaction-value" :class="{
                     isIncoming,
                     'nq-green': isIncoming,
@@ -127,7 +146,7 @@
                             <template slot="trigger">
                                 <FiatAmount :amount="(swapData.amount / 100)
                                     - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
-                                    * (isIncoming ? 1 : -1)" :currency="swapData.asset.toLowerCase()"
+                                    * (isIncoming ? 1 : -1)" :currency="assetToCurrency(swapData.asset)"
                                 />
                             </template>
                             <span>{{ $t('Historic value') }}</span>
@@ -140,7 +159,7 @@
                     <transition v-else-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                         <FiatConvertedAmount
                             v-if="transaction.state === TransactionState.PENDING"
-                            :amount="transaction.value"
+                            :amount="txValue"
                             currency="usdc"
                             value-mask/>
                         <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
@@ -152,7 +171,7 @@
                                 <template slot="trigger">
                                     <!-- <HistoricValueIcon/> -->
                                     <FiatAmount
-                                        :amount="fiatValue"
+                                        :amount="fiatValue / transaction.value * txValue"
                                         :currency="fiatCurrency"
                                         value-mask/>
                                 </template>
@@ -183,7 +202,7 @@
                             </div>
                             <Amount
                                 :amount="swapTransaction.value"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
@@ -197,7 +216,7 @@
                             </div>
                             <Amount
                                 :amount="swapTransaction.outputs[0].value"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
@@ -209,12 +228,14 @@
                             </div>
                             <FiatAmount
                                 :amount="swapData.amount / 100"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </div>
                     </template>
                 </div>
+
+                <div v-if="data" class="message">{{ data }}</div>
             </div>
 
             <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
@@ -264,7 +285,6 @@ import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
-import { useUsdcAddressStore } from '@/stores/UsdcAddress';
 import { useFiatStore } from '@/stores/Fiat';
 import { useSettingsStore } from '@/stores/Settings';
 import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
@@ -292,6 +312,8 @@ import { calculateFee, getNativeHtlcContract, getPolygonBlockNumber, sendTransac
 import { useConfig } from '../../composables/useConfig';
 import { useUsdcTransactionInfo } from '../../composables/useUsdcTransactionInfo';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { assetToCurrency } from '../../lib/swap/utils/Assets';
+
 import { refundSwap } from '../../hub';
 
 export default defineComponent({
@@ -304,13 +326,14 @@ export default defineComponent({
     },
     setup(props, context) {
         const { amountsHidden } = useSettingsStore();
-        const { state: addresses$, addressInfo } = useUsdcAddressStore();
 
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         const transaction = computed(() => useUsdcTransactionsStore().state.transactions[props.hash]);
 
         const {
+            txValue,
+            isIncoming,
             isCancelledSwap,
             peerLabel,
             swapData,
@@ -318,17 +341,6 @@ export default defineComponent({
         } = useUsdcTransactionInfo(transaction);
 
         const { config } = useConfig();
-
-        const isIncoming = computed(() => {
-            const haveSender = !!addresses$.addressInfos[transaction.value.sender];
-            const haveRecipient = !!addresses$.addressInfos[transaction.value.recipient];
-
-            if (haveSender && !haveRecipient) return false;
-            if (!haveSender && haveRecipient) return true;
-
-            // Fall back to comparing with active address
-            return transaction.value.recipient === addressInfo.value!.address;
-        });
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -366,14 +378,21 @@ export default defineComponent({
                 || !useAddressStore().state.addressInfos[swapPeerAddress]; // not one of our addresses -> proxy
         });
 
-        // // Data
-        // const data = computed(() => {
-        //     if (isCancelledSwap.value) {
-        //         return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
-        //     }
+        // Data
+        const data = computed(() => {
+            if (isCancelledSwap.value) {
+                return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
+            }
 
-        //     return '';
-        // });
+            if (transaction.value.event?.name === 'Swap') {
+                return context.root.$t('Converted {amount1} USDC.e to {amount2} USDC', {
+                    amount1: (transaction.value.event.amountIn / 1e6).toFixed(2),
+                    amount2: (transaction.value.event.amountOut / 1e6).toFixed(2),
+                }) as string;
+            }
+
+            return '';
+        });
 
         // Peer
         const { getLabel, setContact } = useUsdcContactsStore();
@@ -472,7 +491,7 @@ export default defineComponent({
 
                     relayUrl = relay.url;
 
-                    const data = htlcContract.interface.encodeFunctionData(method, [
+                    const functionData = htlcContract.interface.encodeFunctionData(method, [
                         /** bytes32 id */ htlcDetails.address,
                         /** address target */ myAddress,
                         /** uint256 fee */ fee,
@@ -482,7 +501,7 @@ export default defineComponent({
                         request: {
                             from: myAddress,
                             to: config.usdc.nativeHtlcContract,
-                            data,
+                            data: functionData,
                             value: '0',
                             nonce: forwarderNonce.toString(),
                             gas: gasLimit.toString(),
@@ -533,9 +552,16 @@ export default defineComponent({
             }
         }
 
-        const ticker = computed(() => transaction.value.token === config.usdc.nativeUsdcContract
-            ? CryptoCurrency.USDC
-            : 'usdc.e');
+        const ticker = computed(() => {
+            // If the swap had a positive slippage, the ticker should be the asset we received.
+            if (transaction.value.event?.name === 'Swap' && isIncoming.value) {
+                return CryptoCurrency.USDC;
+            }
+
+            return transaction.value.token === config.usdc.nativeUsdcContract
+                ? CryptoCurrency.USDC
+                : 'usdc.e';
+        });
 
         return {
             amountsHidden,
@@ -543,6 +569,7 @@ export default defineComponent({
             blockExplorerLink,
             confirmations,
             datum,
+            txValue,
             fiatCurrency,
             fiatValue,
             peerAddress,
@@ -559,12 +586,13 @@ export default defineComponent({
             isCancelledSwap,
             swapTransaction,
             usesNimSwapProxy,
-            // data,
+            data,
             SettlementStatus,
             constants,
             showRefundButton,
             refundHtlc,
             ticker,
+            assetToCurrency,
         };
     },
     components: {
@@ -849,7 +877,7 @@ export default defineComponent({
     }
 
     .message {
-        margin: 1rem 0;
+        margin: 4rem 0 1rem;
         text-align: center;
         font-size: var(--body-size);
         line-height: 1.375;

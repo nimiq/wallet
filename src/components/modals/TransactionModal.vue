@@ -192,7 +192,7 @@
                             <template slot="trigger">
                                 <FiatAmount :amount="(swapData.amount / 100)
                                     - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
-                                    * (isIncoming ? 1 : -1)" :currency="swapData.asset.toLowerCase()"
+                                    * (isIncoming ? 1 : -1)" :currency="assetToCurrency(swapData.asset)"
                                 />
                             </template>
                             <span>{{ $t('Historic value') }}</span>
@@ -246,7 +246,7 @@
                             </div>
                             <Amount
                                 :amount="swapTransaction.outputs[0].value"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
@@ -261,7 +261,7 @@
                             </div>
                             <Amount
                                 :amount="swapTransaction.value"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
@@ -274,7 +274,7 @@
                             </div>
                             <FiatAmount
                                 :amount="swapData.amount / 100"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </div>
@@ -361,6 +361,7 @@ import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../
 import { sendTransaction } from '../../network';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
+import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import { useTransactionInfo } from '../../composables/useTransactionInfo';
@@ -660,6 +661,7 @@ export default defineComponent({
             blockExplorerLink,
             refundHtlc,
             SettlementStatus,
+            assetToCurrency,
         };
     },
     components: {
@@ -1002,7 +1004,7 @@ export default defineComponent({
 }
 
 .message {
-    margin: 1rem 0;
+    margin: 4rem 0 1rem;
     text-align: center;
     font-size: var(--body-size);
     line-height: 1.375;

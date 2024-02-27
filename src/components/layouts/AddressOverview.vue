@@ -279,6 +279,7 @@ import {
 } from '../../ethers';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
+import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 
 export default defineComponent({
     name: 'address-overview',
@@ -493,13 +494,19 @@ export default defineComponent({
             if (!signedTransaction) return false;
 
             const { relayData, ...relayRequest } = signedTransaction.message;
-            return sendPolygonTransaction(
+            const tx = await sendPolygonTransaction(
                 { request: relayRequest as ForwardRequest, relayData },
                 signedTransaction.signature,
                 relayUrl!,
             ).catch((error) => {
                 alert(error.message); // eslint-disable-line no-alert
             });
+
+            if (tx) {
+                useUsdcTransactionsStore().addTransactions([tx]);
+            }
+
+            return tx;
         }
 
         return {

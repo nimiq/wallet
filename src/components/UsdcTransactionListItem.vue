@@ -25,8 +25,10 @@
             <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/>
             <Identicon v-else-if="swapData && swapData.asset === SwapAsset.NIM" :address="peerAddress" />
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
+            <UsdcIcon v-else-if="transaction.event && transaction.event.name === 'Swap'" class="nq-blue" />
             <Avatar v-else :label="isCancelledSwap ? '' : (peerLabel || '')"/>
-            <div v-if="swapInfo /* || isSwapProxy */" class="swap"><SwapSmallIcon/></div>
+            <div v-if="swapInfo /* || isSwapProxy */
+                || (transaction.event && transaction.event.name === 'Swap')" class="swap"><SwapSmallIcon/></div>
         </div>
         <div class="data">
             <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
@@ -47,23 +49,23 @@
             </div>
         </div>
         <div class="amounts" :class="{isIncoming}">
-            <Amount :amount="transaction.value" :currency="ticker" value-mask/>
+            <Amount :amount="txValue" :currency="ticker" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
-                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
+                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="txValue" value-mask/>
                 <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <!-- <HistoricValueIcon/> -->
-                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
+                    <FiatAmount :amount="fiatValue / transaction.value * txValue" :currency="fiatCurrency" value-mask/>
                 </div>
             </transition>
             <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
                 :amount="(swapData.amount / 100)
                     - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
                     * (isIncoming ? 1 : -1)"
-                :currency="swapData.asset.toLowerCase()" value-mask/>
+                :currency="assetToCurrency(swapData.asset)" value-mask/>
         </div>
     </button>
 </template>
@@ -87,8 +89,10 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
+import UsdcIcon from './icons/UsdcIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS, CryptoCurrency } from '../lib/Constants';
+import { assetToCurrency } from '../lib/swap/utils/Assets';
 import { useUsdcTransactionInfo } from '../composables/useUsdcTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
@@ -108,6 +112,7 @@ export default defineComponent({
         const transaction = computed(() => props.transaction);
 
         const {
+            txValue,
             data,
             isCancelledSwap,
             isIncoming,
@@ -127,9 +132,16 @@ export default defineComponent({
             : undefined,
         );
 
-        const ticker = computed(() => transaction.value.token === config.usdc.nativeUsdcContract
-            ? CryptoCurrency.USDC
-            : 'usdc.e');
+        const ticker = computed(() => {
+            // If the swap had a positive slippage, the ticker should be the asset we received.
+            if (transaction.value.event?.name === 'Swap' && isIncoming.value) {
+                return CryptoCurrency.USDC;
+            }
+
+            return transaction.value.token === config.usdc.nativeUsdcContract
+                ? CryptoCurrency.USDC
+                : 'usdc.e';
+        });
 
         return {
             constants,
@@ -138,6 +150,7 @@ export default defineComponent({
             dateDay,
             dateMonth,
             dateTime,
+            txValue,
             data,
             fiatCurrency,
             fiatValue,
@@ -150,6 +163,7 @@ export default defineComponent({
             swapData,
             isCancelledSwap,
             ticker,
+            assetToCurrency,
         };
     },
     components: {
@@ -162,6 +176,7 @@ export default defineComponent({
         Identicon,
         BitcoinIcon,
         BankIcon,
+        UsdcIcon,
         SwapSmallIcon,
         TransactionListOasisPayoutStatus,
         FiatAmount,

@@ -700,12 +700,20 @@ msgstr ""
 msgid "Continue with Moonpay"
 msgstr ""
 
+#: src/composables/useUsdcTransactionInfo.ts:97
+msgid "Conversion from USDC.e to USDC"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:169
 msgid "Convert to USDC"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:161
 msgid "Convert your USDC.e to the new standard."
+msgstr ""
+
+#: src/composables/useUsdcTransactionInfo.ts:145
+msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
 
 #: src/components/modals/SimplexModal.vue:39

@@ -12,6 +12,7 @@ import {
     Transaction,
     TransactionState,
     useUsdcTransactionsStore,
+    UniswapEvent,
 } from './stores/UsdcTransactions';
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
@@ -264,11 +265,21 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
     if (!balances.has(from) && !balances.has(to)) return;
     if (value.isZero()) return; // Ignore address poisoning scam transactions
 
+    const { state: usdcTransactions$, addTransactions } = useUsdcTransactionsStore();
+
+    // Ignore transactions that we already know about
+    if (usdcTransactions$.transactions[log.transactionHash]) return;
+
     const { config } = useConfig();
+
+    if (log.address === config.usdc.nativeUsdcContract && log.args.from === config.usdc.swapPoolContract) {
+        // Ignore the native USDC events for Uniswap swaps from bridged to native USDC
+        return;
+    }
 
     const [block, receipt] = await Promise.all([
         log.getBlock(),
-        // Handle HTLC redeem/refund events
+        // Handle HTLC redeem/refund events by watchtower
         from === config.usdc.htlcContract || from === config.usdc.nativeHtlcContract
             ? log.getTransactionReceipt()
             : Promise.resolve(null),
@@ -281,7 +292,7 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
         tx = logAndBlockToPlain(log, block);
     }
 
-    useUsdcTransactionsStore().addTransactions([tx]);
+    addTransactions([tx]);
 
     const addresses: string[] = [];
     if (balances.has(from)) {
@@ -404,6 +415,7 @@ export async function launchPolygon() {
             );
 
             const htlcEventsByTransactionHash = new Map<string, Promise<HtlcEvent | undefined>>();
+            const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
 
             /* eslint-disable max-len */
             while (blockHeight > earliestHeightToCheck && (
@@ -520,22 +532,21 @@ export async function launchPolygon() {
                             const htlcContract = await getHtlcContract();
 
                             for (const innerLog of receipt.logs) {
-                                if (innerLog.address === config.usdc.htlcContract) {
-                                    try {
-                                        const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                        if (name === 'Open') {
-                                            return <HtlcEvent> {
-                                                name,
-                                                id: args.id,
-                                                token: args.token,
-                                                amount: args.amount.toNumber(),
-                                                recipient: args.recipient,
-                                                hash: args.hash,
-                                                timeout: args.timeout.toNumber(),
-                                            };
-                                        }
-                                    } catch (error) { /* ignore */ }
-                                }
+                                if (innerLog.address !== config.usdc.htlcContract) continue;
+                                try {
+                                    const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                    if (name === 'Open') {
+                                        return <HtlcEvent> {
+                                            name,
+                                            id: args.id,
+                                            token: args.token,
+                                            amount: args.amount.toNumber(),
+                                            recipient: args.recipient,
+                                            hash: args.hash,
+                                            timeout: args.timeout.toNumber(),
+                                        };
+                                    }
+                                } catch (error) { /* ignore */ }
                             }
                             return undefined;
                         });
@@ -549,29 +560,51 @@ export async function launchPolygon() {
                             const htlcContract = await getHtlcContract();
 
                             for (const innerLog of receipt.logs) {
-                                if (innerLog.address === config.usdc.htlcContract) {
-                                    try {
-                                        const { args, name } = htlcContract.interface.parseLog(innerLog);
-                                        if (name === 'Redeem') {
-                                            return <HtlcEvent> {
-                                                name,
-                                                id: args.id,
-                                                secret: args.secret,
-                                            };
-                                        }
-                                        if (name === 'Refund') {
-                                            return <HtlcEvent> {
-                                                name,
-                                                id: args.id,
-                                            };
-                                        }
-                                    } catch (error) { /* ignore */ }
-                                }
+                                if (innerLog.address !== config.usdc.htlcContract) continue;
+                                try {
+                                    const { args, name } = htlcContract.interface.parseLog(innerLog);
+                                    if (name === 'Redeem') {
+                                        return <HtlcEvent> {
+                                            name,
+                                            id: args.id,
+                                            secret: args.secret,
+                                        };
+                                    }
+                                    if (name === 'Refund') {
+                                        return <HtlcEvent> {
+                                            name,
+                                            id: args.id,
+                                        };
+                                    }
+                                } catch (error) { /* ignore */ }
                             }
                             return undefined;
                         });
 
                         htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                    }
+
+                    if (log.args.to === config.usdc.swapPoolContract) {
+                        // Get native USDC transfer log from pool to user
+                        const uniswapEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                            for (const innerLog of receipt.logs) {
+                                if (innerLog.address !== config.usdc.nativeUsdcContract) continue;
+                                try {
+                                    const { args, name } = client.nativeUsdc.interface.parseLog(innerLog);
+                                    if (name === 'Transfer') {
+                                        const event: UniswapEvent = {
+                                            name: 'Swap',
+                                            amountIn: log.args!.value.toNumber(),
+                                            amountOut: args.value.toNumber(),
+                                        };
+                                        return event;
+                                    }
+                                } catch (error) { /* ignore */ }
+                            }
+                            return undefined;
+                        });
+
+                        uniswapEventsByTransactionHash.set(log.transactionHash, uniswapEventPromise);
                     }
 
                     return true;
@@ -580,7 +613,8 @@ export async function launchPolygon() {
                 const logsAndBlocks = newLogs.map((log) => ({
                     log,
                     block: log.getBlock(),
-                    event: htlcEventsByTransactionHash.get(log.transactionHash),
+                    event: htlcEventsByTransactionHash.get(log.transactionHash)
+                        || uniswapEventsByTransactionHash.get(log.transactionHash),
                 }));
 
                 // TODO: Allow individual fetches to fail, but still add the other transactions?
@@ -813,6 +847,12 @@ export async function launchPolygon() {
                         nativeHtlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
                     }
 
+                    if (log.args.from === config.usdc.swapPoolContract) {
+                        // Uniswap swaps from bridged to native USDC are handled by the bridged USDC listener
+                        // to be able to include the transaction fee into it.
+                        return false;
+                    }
+
                     return true;
                 }) as TransferEvent[];
 
@@ -850,7 +890,11 @@ export async function launchPolygon() {
     });
 }
 
-function logAndBlockToPlain(log: TransferEvent | TransferLog, block?: Block, event?: HtlcEvent): Transaction {
+function logAndBlockToPlain(
+    log: TransferEvent | TransferLog,
+    block?: Block,
+    event?: HtlcEvent | UniswapEvent,
+): Transaction {
     return {
         token: log.address,
         transactionHash: log.transactionHash,
@@ -1180,7 +1224,7 @@ export async function receiptToTransaction(
             }
         }
 
-        if (htlcContract && log.address === htlcContractAddress) {
+        if (log.address === htlcContractAddress) {
             try {
                 const { args, name } = htlcContract.interface.parseLog(log);
                 return {
@@ -1199,6 +1243,7 @@ export async function receiptToTransaction(
     let transferLog: TransferLog | undefined;
     let fee: BigNumber | undefined;
     let htlcEvent: HtlcEvent | undefined;
+    let uniswapEvent: UniswapEvent | undefined;
 
     logs.forEach((log) => {
         if (!log) return;
@@ -1231,6 +1276,23 @@ export async function receiptToTransaction(
             ) {
                 fee = log.args.value;
                 return;
+            }
+
+            // Transfers to the bridged/native USDC Uniswap pool need to be extended with the UniswapEvent
+            if (token === config.usdc.usdcContract && log.args.to === config.usdc.swapPoolContract) {
+                for (const innerLog of receipt.logs) {
+                    if (innerLog.address !== config.usdc.nativeUsdcContract) continue;
+                    try {
+                        const { args, name } = client.nativeUsdc.interface.parseLog(innerLog);
+                        if (name === 'Transfer' && args.from === config.usdc.swapPoolContract) {
+                            uniswapEvent = {
+                                name: 'Swap',
+                                amountIn: log.args.value.toNumber(),
+                                amountOut: args.value.toNumber(),
+                            };
+                        }
+                    } catch (error) { /* ignore */ }
+                }
             }
 
             transferLog = log as TransferLog;
@@ -1274,7 +1336,7 @@ export async function receiptToTransaction(
     return logAndBlockToPlain(
         transferLog,
         block || await client.provider.getBlock(transferLog.blockHash),
-        htlcEvent,
+        htlcEvent || uniswapEvent,
     );
 }
 

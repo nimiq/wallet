@@ -904,7 +904,7 @@ export default defineComponent({
     }
 
     .message {
-        margin: 1rem 0;
+        margin: 4rem 0 1rem;
         text-align: center;
         font-size: var(--body-size);
         line-height: 1.375;

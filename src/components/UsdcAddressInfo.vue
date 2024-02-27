@@ -1,7 +1,7 @@
 <template>
     <div class="reset usdc-address-info flex-column" v-on="$listeners">
         <div class="crypto-logo-container">
-            <UsdcIcon v-if="isOwnAddress" />
+            <UsdcIcon v-if="isOwnAddress" :class="{'nq-blue': dark}" />
             <Avatar v-else :label="localLabel || ''"/>
         </div>
         <input type="text" class="nq-input-s vanishing"
@@ -9,7 +9,7 @@
             :placeholder="$t('Add contact')"
             v-model="localLabel"
         />
-        <span v-else-if="isOwnAddress" class="label">{{ $t('USD Coin') }}</span>
+        <span v-else-if="isOwnAddress" class="label">{{ localLabel || $t('USD Coin') }}</span>
         <span v-else class="label" :class="{ unlabelled: !localLabel }">
             {{ localLabel || $t('unknown') }}
         </span>
@@ -52,6 +52,10 @@ export default defineComponent({
             type: String as () => TooltipPosition,
             default: TooltipPosition.BOTTOM_RIGHT,
             validator: (value: any) => Object.values(TooltipPosition).includes(value),
+        },
+        dark: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props) {

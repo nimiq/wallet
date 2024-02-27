@@ -32,6 +32,16 @@ type HtlcRefundEvent = {
 
 export type HtlcEvent = HtlcOpenEvent | HtlcRedeemEvent | HtlcRefundEvent;
 
+/**
+ * These events are created from the viewpoint of bridged USDC, to be able to include the
+ * (bridged USDC) fee in the resulting Transaction object.
+ */
+export type UniswapEvent = {
+    name: 'Swap',
+    amountIn: number,
+    amountOut: number,
+}
+
 // This is a simplified transaction, only storing the token transfer.
 // It is NOT a full Ethereum/Polygon transaction.
 // Might be better named `UsdcTokenTransfer`...
@@ -43,7 +53,7 @@ export type Transaction = {
     recipient: string,
     value: number,
     fee?: number,
-    event?: HtlcEvent,
+    event?: HtlcEvent | UniswapEvent,
     state: TransactionState,
     blockHeight?: number,
     timestamp?: number,
@@ -156,10 +166,11 @@ export const useUsdcTransactionsStore = createStore({
                     if (tx.event?.name === 'Refund') {
                         // async sub call to keep the main method synchronous to avoid race conditions and to avoid
                         // await in loop (slow sequential processing).
+                        const swapId = tx.event.id;
                         (async () => {
                             // Find funding transaction
                             const selector = (testedTx: Transaction) =>
-                                testedTx.event?.name === 'Open' && testedTx.event.id === tx.event!.id;
+                                testedTx.event?.name === 'Open' && testedTx.event.id === swapId;
 
                             // First search known transactions
                             const fundingTx = [...Object.values(this.state.transactions), ...txs].find(selector);

@@ -22,7 +22,20 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
     const { addressInfo, state: addresses$ } = useUsdcAddressStore();
     const { getLabel } = useUsdcContactsStore();
 
+    const txValue = computed(() => {
+        if (transaction.value.event?.name === 'Swap') {
+            const { amountOut } = transaction.value.event;
+            return Math.abs(transaction.value.value - amountOut);
+        }
+        return transaction.value.value;
+    });
+
     const isIncoming = computed(() => { // eslint-disable-line arrow-body-style
+        if (transaction.value.event?.name === 'Swap') {
+            const { amountOut } = transaction.value.event;
+            return transaction.value.value < amountOut;
+        }
+
         return transaction.value.recipient === addressInfo.value?.address;
     });
 
@@ -93,6 +106,10 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
             return swapData.value.asset.toUpperCase();
         }
 
+        if (transaction.value.event?.name === 'Swap') {
+            return i18n.t('Conversion from USDC.e to USDC') as string;
+        }
+
         // Search other stored addresses
         const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
         if (ownedAddressInfo) {
@@ -137,10 +154,18 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
             return i18n.t('HTLC Refund') as string;
         }
 
+        if (transaction.value.event?.name === 'Swap') {
+            return i18n.t('Converted {amount1} USDC.e to {amount2} USDC', {
+                amount1: (transaction.value.event.amountIn / 1e6).toFixed(2),
+                amount2: (transaction.value.event.amountOut / 1e6).toFixed(2),
+            }) as string;
+        }
+
         return null;
     });
 
     return {
+        txValue,
         data,
         isCancelledSwap,
         isIncoming,

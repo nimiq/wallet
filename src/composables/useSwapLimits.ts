@@ -62,7 +62,7 @@ watch(async () => {
         kycUser.value?.id,
     );
     const usdcAddressLimitsPromise = getLimits(
-        SwapAsset.USDC,
+        SwapAsset.USDC_MATIC,
         usdcAddress.value || '0x0000000000000000000000000000000000000000', // Burn address
         kycUser.value?.id,
     );

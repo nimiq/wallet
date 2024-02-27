@@ -82,8 +82,8 @@
                         && (nimAccountBalance > 0 || usdcAccountBalance > 0)"
                     noFocus>
                     <button class="reset" slot="trigger"
-                        @pointerdown="onSwapButtonPointerDown($event, 'NIM-USDC')"
-                        @keydown.space.enter="$router.push('/swap/NIM-USDC')"
+                        @pointerdown="onSwapButtonPointerDown($event, 'NIM-USDC_MATIC')"
+                        @keydown.space.enter="$router.push('/swap/NIM-USDC_MATIC')"
                         @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
                         @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
                     >
@@ -133,8 +133,8 @@
                         && (btcAccountBalance > 0 || usdcAccountBalance > 0)"
                     noFocus>
                     <button class="reset" slot="trigger"
-                        @pointerdown="onSwapButtonPointerDown($event, 'BTC-USDC')"
-                        @keydown.space.enter="$router.push('/swap/BTC-USDC')"
+                        @pointerdown="onSwapButtonPointerDown($event, 'BTC-USDC_MATIC')"
+                        @keydown.space.enter="$router.push('/swap/BTC-USDC_MATIC')"
                         @focus="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.show()"
                         @blur="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.hide()"
                     >

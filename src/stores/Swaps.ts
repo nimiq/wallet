@@ -44,7 +44,7 @@ export type SwapBtcData = {
 };
 
 export type SwapUsdcData = {
-    asset: SwapAsset.USDC,
+    asset: SwapAsset.USDC | SwapAsset.USDC_MATIC,
     transactionHash: string,
     htlc?: {
         address?: string,

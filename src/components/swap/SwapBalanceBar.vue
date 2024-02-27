@@ -19,7 +19,7 @@
                 <label>Bitcoin</label>
                 <Amount :amount="newLeftBalance" currency="btc" :currency-decimals="8" />
             </div>
-            <div v-if="leftAsset === SwapAsset.USDC" class="currency left usdc">
+            <div v-if="leftAsset === SwapAsset.USDC_MATIC" class="currency left usdc">
                 <UsdcIcon />
                 <label>USD Coin</label>
                 <Amount :amount="newLeftBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
@@ -41,7 +41,7 @@
                 <Amount :amount="newRightBalance" currency="btc" :currency-decimals="8" />
                 <BitcoinIcon />
             </div>
-            <div v-if="rightAsset === SwapAsset.USDC" class="currency right usdc">
+            <div v-if="rightAsset === SwapAsset.USDC_MATIC" class="currency right usdc">
                 <label>USD Coin</label>
                 <Amount :amount="newRightBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
                 <UsdcIcon />
@@ -124,6 +124,7 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
 import { getColorClass } from '../../lib/AddressColor';
+import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 
@@ -172,16 +173,17 @@ export default defineComponent({
     setup(props, context) {
         const { addressInfos, selectAddress, activeAddressInfo } = useAddressStore();
         const { accountBalance: btcAccountBalance, availableExternalAddresses } = useBtcAddressStore();
-        const { addressInfo: usdcAddressInfo, accountBalance: usdcAccountBalance } = useUsdcAddressStore();
+        const { addressInfo: usdcAddressInfo, nativeAccountBalance: usdcAccountBalance } = useUsdcAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
         const root = ref<HTMLDivElement | null>(null);
 
         const leftExchangeRate = computed(() =>
-            exchangeRates.value?.[props.leftAsset.toLowerCase()][currency.value] || 0);
+            exchangeRates.value?.[assetToCurrency(props.leftAsset)][currency.value] || 0);
         const rightExchangeRate = computed(() =>
-            exchangeRates.value?.[props.rightAsset.toLowerCase()][currency.value] || 0);
+            exchangeRates.value?.[assetToCurrency(props.rightAsset)][currency.value] || 0);
 
+        // TODO: Deduplicate leftDistributionData and rightDistributionData code
         const leftDistributionData = computed<BarDefinition[]>(() => {
             switch (props.leftAsset) {
                 case SwapAsset.NIM:
@@ -220,7 +222,7 @@ export default defineComponent({
                         fiatBalanceChange: ((props.newLeftBalance - btcAccountBalance.value) / 1e8)
                             * leftExchangeRate.value,
                     }];
-                case SwapAsset.USDC:
+                case SwapAsset.USDC_MATIC:
                     return [{
                         address: usdcAddressInfo.value?.address || 'usdc',
                         balance: usdcAccountBalance.value,
@@ -273,7 +275,7 @@ export default defineComponent({
                         fiatBalanceChange: ((props.newRightBalance - btcAccountBalance.value) / 1e8)
                             * rightExchangeRate.value,
                     }];
-                case SwapAsset.USDC:
+                case SwapAsset.USDC_MATIC:
                     return [{
                         address: usdcAddressInfo.value?.address || 'usdc',
                         balance: usdcAccountBalance.value,
@@ -358,7 +360,8 @@ export default defineComponent({
         const DECIMALS = {
             [SwapAsset.NIM]: 5,
             [SwapAsset.BTC]: 8,
-            [SwapAsset.USDC]: 6,
+            [SwapAsset.USDC]: 6, // For TS completeness
+            [SwapAsset.USDC_MATIC]: 6,
             [SwapAsset.EUR]: 2, // For TS completeness
         } as const;
 

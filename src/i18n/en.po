@@ -14,8 +14,8 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:176
-#: src/components/modals/UsdcSendModal.vue:199
+#: src/components/modals/UsdcSendModal.vue:171
+#: src/components/modals/UsdcSendModal.vue:194
 #: src/components/swap/SwapModal.vue:61
 msgid "{amount} fee"
 msgstr ""
@@ -67,7 +67,7 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:21
+#: src/components/modals/MoonpaySellInfoModal.vue:20
 msgid "{percentage} fees"
 msgstr ""
 
@@ -86,7 +86,7 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:34
+#: src/components/modals/MoonpaySellInfoModal.vue:33
 msgid "+ network fees"
 msgstr ""
 
@@ -106,8 +106,8 @@ msgstr ""
 msgid "+{n} more"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:170
-#: src/components/modals/UsdcSendModal.vue:193
+#: src/components/modals/UsdcSendModal.vue:165
+#: src/components/modals/UsdcSendModal.vue:188
 #: src/components/swap/SwapModal.vue:55
 msgid "< {amount} fee"
 msgstr ""
@@ -274,7 +274,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:209
+#: src/components/layouts/AddressOverview.vue:204
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -470,12 +470,12 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:5
-msgid "Buy NIM & BTC"
-msgstr ""
-
 #: src/components/modals/BuyOptionsModal.vue:157
 msgid "Buy NIM on a crypto exchange:"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:5
+msgid "Buy NIM, BTC & USDC"
 msgstr ""
 
 #: src/components/UsdcTransactionList.vue:48
@@ -569,7 +569,7 @@ msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:70
+#: src/components/modals/UsdcSendModal.vue:65
 msgid "Choose a Recipient"
 msgstr ""
 
@@ -601,7 +601,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:211
+#: src/components/layouts/AddressOverview.vue:206
 #: src/components/swap/SwapAnimation.vue:105
 msgid "Close"
 msgstr ""
@@ -696,8 +696,16 @@ msgstr ""
 msgid "Continue Swap"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:39
+#: src/components/modals/MoonpaySellInfoModal.vue:38
 msgid "Continue with Moonpay"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:169
+msgid "Convert to USDC"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:161
+msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
 #: src/components/modals/SimplexModal.vue:39
@@ -793,7 +801,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:95
 #: src/components/modals/SendModal.vue:376
-#: src/components/modals/UsdcSendModal.vue:369
+#: src/components/modals/UsdcSendModal.vue:359
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -851,7 +859,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:125
 #: src/components/modals/SendModal.vue:240
-#: src/components/modals/UsdcSendModal.vue:231
+#: src/components/modals/UsdcSendModal.vue:226
 msgid "Edit transaction"
 msgstr ""
 
@@ -864,7 +872,7 @@ msgid "Enter account holder name"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:24
-#: src/components/modals/UsdcSendModal.vue:35
+#: src/components/modals/UsdcSendModal.vue:30
 msgid "Enter address"
 msgstr ""
 
@@ -957,7 +965,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:701
+#: src/components/modals/UsdcSendModal.vue:692
 #: src/components/swap/SwapModal.vue:936
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1223,7 +1231,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:76
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:185
-#: src/components/modals/UsdcSendModal.vue:210
+#: src/components/modals/UsdcSendModal.vue:205
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1261,6 +1269,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:164
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr ""
@@ -1269,7 +1278,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:196
+#: src/components/layouts/AddressOverview.vue:154
+msgid "Legacy USDC (USDC.e)"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:191
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1333,7 +1346,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:88
+#: src/components/modals/UsdcSendModal.vue:83
 msgid "Long press to confirm"
 msgstr ""
 
@@ -1359,7 +1372,7 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:31
 #: src/components/modals/BuyOptionsModal.vue:48
 #: src/components/modals/BuyOptionsModal.vue:67
-#: src/components/modals/MoonpaySellInfoModal.vue:25
+#: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr ""
@@ -1372,7 +1385,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:15
+#: src/components/modals/MoonpaySellInfoModal.vue:14
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr ""
 
@@ -1391,7 +1404,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:82
+#: src/components/modals/UsdcSendModal.vue:77
 msgid "Name this contact..."
 msgstr ""
 
@@ -1402,10 +1415,6 @@ msgstr ""
 #: src/components/ContactBook.vue:28
 #: src/components/UsdcContactBook.vue:35
 msgid "Name your contact"
-msgstr ""
-
-#: src/components/layouts/AddressOverview.vue:154
-msgid "Native Polygon USDC"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:143
@@ -1753,7 +1762,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:23
 #: src/components/modals/SendModal.vue:39
-#: src/components/modals/UsdcSendModal.vue:52
+#: src/components/modals/UsdcSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
@@ -1763,7 +1772,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:124
 #: src/components/modals/SendModal.vue:239
-#: src/components/modals/UsdcSendModal.vue:230
+#: src/components/modals/UsdcSendModal.vue:225
 msgid "Retry"
 msgstr ""
 
@@ -1771,7 +1780,7 @@ msgstr ""
 msgid "Retrying..."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:87
+#: src/components/modals/UsdcSendModal.vue:82
 msgid "Save and proceed"
 msgstr ""
 
@@ -1815,8 +1824,8 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:14
-msgid "Sell BTC"
+#: src/components/modals/MoonpaySellInfoModal.vue:13
+msgid "Sell BTC and USDC"
 msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:180
@@ -1861,14 +1870,14 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:116
 #: src/components/modals/SendModal.vue:204
-#: src/components/modals/UsdcSendModal.vue:222
+#: src/components/modals/UsdcSendModal.vue:217
 msgid "Send {currency}"
 msgstr ""
 
 #: src/components/AmountMenu.vue:25
 #: src/components/modals/BtcSendModal.vue:78
 #: src/components/modals/SendModal.vue:187
-#: src/components/modals/UsdcSendModal.vue:212
+#: src/components/modals/UsdcSendModal.vue:207
 msgid "Send all"
 msgstr ""
 
@@ -1878,10 +1887,6 @@ msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:20
 msgid "Send crypto to a smart contract."
-msgstr ""
-
-#: src/components/modals/UsdcSendModal.vue:24
-msgid "Send native USDC"
 msgstr ""
 
 #: src/components/PolygonWarningFooter.vue:6
@@ -1894,7 +1899,7 @@ msgstr ""
 msgid "Send Transaction"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:21
+#: src/components/modals/UsdcSendModal.vue:20
 msgid "Send USDC"
 msgstr ""
 
@@ -1902,13 +1907,9 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:168
-msgid "Sending Native Polygon USDC is not yet supported."
-msgstr ""
-
 #: src/components/modals/BtcSendModal.vue:454
 #: src/components/modals/SendModal.vue:764
-#: src/components/modals/UsdcSendModal.vue:602
+#: src/components/modals/UsdcSendModal.vue:590
 msgid "Sending Transaction"
 msgstr ""
 
@@ -1934,11 +1935,11 @@ msgstr ""
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:630
+#: src/components/modals/UsdcSendModal.vue:617
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:626
+#: src/components/modals/UsdcSendModal.vue:613
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -1958,7 +1959,7 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:87
 #: src/components/modals/SendModal.vue:99
-#: src/components/modals/UsdcSendModal.vue:101
+#: src/components/modals/UsdcSendModal.vue:96
 msgid "Set Amount"
 msgstr ""
 
@@ -2024,7 +2025,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:197
+#: src/components/layouts/AddressOverview.vue:192
 msgid "Signup"
 msgstr ""
 
@@ -2040,7 +2041,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:518
 #: src/components/modals/SendModal.vue:633
 #: src/components/modals/SendModal.vue:819
-#: src/components/modals/UsdcSendModal.vue:645
+#: src/components/modals/UsdcSendModal.vue:632
 msgid "Something went wrong"
 msgstr ""
 
@@ -2241,7 +2242,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:122
-#: src/components/modals/UsdcSendModal.vue:120
+#: src/components/modals/UsdcSendModal.vue:115
 msgid "The sender and recipient cannot be identical."
 msgstr ""
 
@@ -2555,6 +2556,10 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:411
+msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:50
 msgid "You exceeded the 30-day limit of your bank account and will be refunded. Please note that network fees may be deducted from your funds."
 msgstr ""
@@ -2585,7 +2590,7 @@ msgstr ""
 msgid "You will send {amount} NIM"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:186
+#: src/components/modals/UsdcSendModal.vue:181
 msgid "You will send {amount} USDC"
 msgstr ""
 
@@ -2658,7 +2663,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:205
+#: src/components/layouts/AddressOverview.vue:200
 msgid "Your swap was successful!"
 msgstr ""
 

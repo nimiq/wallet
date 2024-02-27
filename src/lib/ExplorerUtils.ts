@@ -25,6 +25,7 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
             return `https://blockstream.info${config.environment === ENV_MAIN ? '' : '/testnet'}`
                 + `/address/${address}`;
         case SwapAsset.USDC:
+        case SwapAsset.USDC_MATIC:
             return `https://${config.environment === ENV_MAIN ? '' : 'mumbai.'}polygonscan.com/address/${address}`;
         case SwapAsset.EUR:
             if (config.environment === ENV_MAIN) return `https://oasis.watch/?id=${address}`;

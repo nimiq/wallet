@@ -11,6 +11,7 @@ import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
 
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
+import { assetToCurrency } from '@/lib/swap/utils/Assets';
 
 import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
@@ -112,8 +113,8 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
     const data = computed(() => { // eslint-disable-line arrow-body-style
         if (swapData.value && !isCancelledSwap.value) {
             const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
-                fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.USDC,
-                toAsset: isIncoming.value ? SwapAsset.USDC : swapData.value.asset,
+                fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : SwapAsset.USDC,
+                toAsset: isIncoming.value ? SwapAsset.USDC : assetToCurrency(swapData.value.asset).toUpperCase(),
             }) as string;
 
             // The TransactionListOasisPayoutStatus takes care of the second half of the message

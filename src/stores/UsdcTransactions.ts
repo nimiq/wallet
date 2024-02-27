@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { getHistoricExchangeRates } from '@nimiq/utils';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
+import config from 'config';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useSwapsStore } from './Swaps';
@@ -35,7 +36,7 @@ export type HtlcEvent = HtlcOpenEvent | HtlcRedeemEvent | HtlcRefundEvent;
 // It is NOT a full Ethereum/Polygon transaction.
 // Might be better named `UsdcTokenTransfer`...
 export type Transaction = {
-    token: string,
+    token?: string,
     transactionHash: string,
     logIndex: number,
     sender: string,
@@ -103,11 +104,14 @@ export const useUsdcTransactionsStore = createStore({
             for (const tx of txs) {
                 // Detect swaps
                 if (!useSwapsStore().state.swapByTransaction[tx.transactionHash]) {
+                    const asset = tx.token === config.usdc.nativeUsdcContract
+                        ? SwapAsset.USDC_MATIC
+                        : SwapAsset.USDC;
                     // HTLC Creation
                     if (tx.event?.name === 'Open') {
                         const hashRoot = tx.event.hash.substring(2);
                         useSwapsStore().addFundingData(hashRoot, {
-                            asset: SwapAsset.USDC,
+                            asset,
                             transactionHash: tx.transactionHash,
                             htlc: {
                                 address: tx.event.id,
@@ -119,11 +123,11 @@ export const useUsdcTransactionsStore = createStore({
 
                         if (!useSwapsStore().state.swaps[hashRoot].out) {
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            getContract(SwapAsset.USDC, tx.event.id.substring(2)).then((contractWithEstimate) => {
+                            getContract(asset, tx.event.id.substring(2)).then((contractWithEstimate) => {
                                 if (contractWithEstimate.to.asset === SwapAsset.EUR) {
                                     const exchangeRate = {
                                         [CryptoCurrency.USDC]: {
-                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.USDC, contractWithEstimate),
+                                            [FiatCurrency.EUR]: getEurPerCrypto(asset, contractWithEstimate),
                                         },
                                     };
                                     const fiatFees = getFiatFees(
@@ -171,7 +175,7 @@ export const useUsdcTransactionsStore = createStore({
                             if (fundingTx) {
                                 const hashRoot = (fundingTx.event as HtlcOpenEvent).hash.substring(2);
                                 useSwapsStore().addSettlementData(hashRoot, {
-                                    asset: SwapAsset.USDC,
+                                    asset,
                                     transactionHash: tx.transactionHash,
                                 });
                             }
@@ -182,17 +186,17 @@ export const useUsdcTransactionsStore = createStore({
                         const secret = tx.event.secret.substring(2);
                         const hashRoot = Nimiq.Hash.sha256(Nimiq.BufferUtils.fromHex(secret)).toHex();
                         useSwapsStore().addSettlementData(hashRoot, {
-                            asset: SwapAsset.USDC,
+                            asset,
                             transactionHash: tx.transactionHash,
                         });
 
                         if (!useSwapsStore().state.swaps[hashRoot].in) {
                             // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            getContract(SwapAsset.USDC, tx.event.id.substring(2)).then((contractWithEstimate) => {
+                            getContract(asset, tx.event.id.substring(2)).then((contractWithEstimate) => {
                                 if (contractWithEstimate.from.asset === SwapAsset.EUR) {
                                     const exchangeRate = {
                                         [CryptoCurrency.USDC]: {
-                                            [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.USDC, contractWithEstimate),
+                                            [FiatCurrency.EUR]: getEurPerCrypto(asset, contractWithEstimate),
                                         },
                                     };
                                     const fiatFees = getFiatFees(

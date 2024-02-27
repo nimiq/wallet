@@ -22,6 +22,7 @@ import {
     NATIVE_USDC_CONTRACT_ABI,
     NATIVE_USDC_TRANSFER_CONTRACT_ABI,
     SWAP_CONTRACT_ABI,
+    NATIVE_USDC_HTLC_CONTRACT_ABI,
 } from './lib/usdc/ContractABIs';
 import {
     getBestRelay,
@@ -39,7 +40,9 @@ export async function loadEthersLibrary() {
 
 export interface PolygonClient {
     provider: providers.Provider;
+    /** @deprecated */
     usdc: Contract;
+    /** @deprecated */
     usdcTransfer: Contract;
     nativeUsdc: Contract;
     nativeUsdcTransfer: Contract;
@@ -80,6 +83,10 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         config.usdc.networkId,
         config.usdc.usdcContract,
         config.usdc.transferContract,
+        config.usdc.htlcContract,
+        config.usdc.nativeUsdcContract,
+        config.usdc.nativeTransferContract,
+        config.usdc.nativeHtlcContract,
     ], () => {
         // Reset clientPromise when the usdc config changes.
         clientPromise = null;
@@ -262,7 +269,7 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
     const [block, receipt] = await Promise.all([
         log.getBlock(),
         // Handle HTLC redeem/refund events
-        from === config.usdc.htlcContract/* || from === config.usdc.nativeHtlcContract */
+        from === config.usdc.htlcContract || from === config.usdc.nativeHtlcContract
             ? log.getTransactionReceipt()
             : Promise.resolve(null),
     ]);
@@ -364,7 +371,6 @@ export async function launchPolygon() {
         // OR two AND pairs. That requires two separate requests.
         const filterIncoming = client.usdc.filters.Transfer(null, address);
         const filterOutgoing = client.usdc.filters.Transfer(address);
-        // const filterMetaTx = client.usdc.filters.MetaTransactionExecuted();
 
         const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
 
@@ -654,12 +660,12 @@ export async function launchPolygon() {
                     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
                     return MAX_ALLOWANCE.sub(allowance);
                 }) as Promise<BigNumber>,
-            // client.nativeUsdc.allowance(address, config.usdc.nativeHtlcContract)
-            //     .then((allowance: BigNumber) => {
-            //         if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-            //         return MAX_ALLOWANCE.sub(allowance);
-            //     }) as Promise<BigNumber>,
-        ]).then(async ([nativeBalance, nativeUsdcNonce, transferAllowanceUsed/* , htlcAllowanceUsed */]) => {
+            client.nativeUsdc.allowance(address, config.usdc.nativeHtlcContract)
+                .then((allowance: BigNumber) => {
+                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+                    return MAX_ALLOWANCE.sub(allowance);
+                }) as Promise<BigNumber>,
+        ]).then(async ([nativeBalance, nativeUsdcNonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
             let blockHeight = await getPolygonBlockNumber();
 
             // To filter known txs
@@ -674,7 +680,7 @@ export async function launchPolygon() {
                 nativeBalance.gt(0)
                 || nativeUsdcNonce > 0
                 || transferAllowanceUsed.gt(0)
-                // || htlcAllowanceUsed.gt(0)
+                || htlcAllowanceUsed.gt(0)
             )) {
                 const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
                 const endHeight = blockHeight;
@@ -684,7 +690,7 @@ export async function launchPolygon() {
                     balance: nativeBalance.toNumber() / 1e6,
                     usdcNonce: nativeUsdcNonce,
                     transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                    // htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                    htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
                 });
 
                 console.debug(`Querying native logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
@@ -705,9 +711,9 @@ export async function launchPolygon() {
                 console.debug(`Found ${outgoingTxs.size} outgoing native txs`);
                 nativeUsdcNonce -= outgoingTxs.size;
 
-                // const txsUsingHtlcAllowance = new Set(logsOut
-                //     .filter((ev) => ev.args?.to === config.usdc.nativeHtlcContract) // Only HTLC fundings are relevant
-                //     .map((ev) => ev.transactionHash));
+                const txsUsingHtlcAllowance = new Set(logsOut
+                    .filter((ev) => ev.args?.to === config.usdc.nativeHtlcContract) // Only HTLC fundings are relevant
+                    .map((ev) => ev.transactionHash));
 
                 const allTransferLogs = logsIn.concat(logsOut);
 
@@ -719,11 +725,11 @@ export async function launchPolygon() {
                     if (log.args.from === address && nativeUsdcNonce <= 0) {
                         nativeBalance = nativeBalance.add(log.args.value);
 
-                        // if (txsUsingHtlcAllowance.has(log.transactionHash)) {
-                        //     htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
-                        // } else {
-                        transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
-                        // }
+                        if (txsUsingHtlcAllowance.has(log.transactionHash)) {
+                            htlcAllowanceUsed = htlcAllowanceUsed.sub(log.args.value);
+                        } else {
+                            transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
+                        }
                     }
                     if (log.args.to === address) {
                         nativeBalance = nativeBalance.sub(log.args.value);
@@ -747,86 +753,65 @@ export async function launchPolygon() {
                         return false;
                     }
 
-                    // if (log.args.to === config.usdc.nativeHtlcContract) {
-                    //     if (
-                    //         // Before v3, transfers to the HTLC contract were the fees paid to OpenGSN
-                    //         config.environment !== ENV_MAIN
-                    //         && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
-                    //     ) {
-                    //         // Determine if this transfer is the fee, by looking for another transfer in this
-                    //         // transaction with a higher `logIndex`, which means that one is the main transfer and this
-                    //         // one is the fee.
-                    //         const mainTransferLog = allTransferLogs.find((otherLog) =>
-                    //             otherLog.transactionHash === log.transactionHash
-                    //             && otherLog.logIndex > log.logIndex);
+                    if (log.args.to === config.usdc.nativeHtlcContract) {
+                        // Get Open event log
+                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                            const nativeHtlcContract = await getNativeHtlcContract();
 
-                    //         if (mainTransferLog && mainTransferLog.args) {
-                    //             // Write this log's `value` as the main transfer log's `fee`
-                    //             mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                            for (const innerLog of receipt.logs) {
+                                if (innerLog.address === config.usdc.nativeHtlcContract) {
+                                    try {
+                                        const { args, name } = nativeHtlcContract.interface.parseLog(innerLog);
+                                        if (name === 'Open') {
+                                            return <HtlcEvent> {
+                                                name,
+                                                id: args.id,
+                                                token: args.token,
+                                                amount: args.amount.toNumber(),
+                                                recipient: args.recipient,
+                                                hash: args.hash,
+                                                timeout: args.timeout.toNumber(),
+                                            };
+                                        }
+                                    } catch (error) { /* ignore */ }
+                                }
+                            }
+                            return undefined;
+                        });
 
-                    //             // Then ignore this log
-                    //             return false;
-                    //         }
-                    //     }
+                        nativeHtlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                    }
 
-                    //     // Get Open event log
-                    //     const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                    //         const nativeHtlcContract = await getNativeHtlcContract(true);
+                    if (log.args.from === config.usdc.nativeHtlcContract) {
+                        // Get Redeem or Refund event log
+                        const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
+                            const nativeHtlcContract = await getNativeHtlcContract();
 
-                    //         for (const innerLog of receipt.logs) {
-                    //             if (innerLog.address === config.usdc.nativeHtlcContract) {
-                    //                 try {
-                    //                     const { args, name } = nativeHtlcContract.interface.parseLog(innerLog);
-                    //                     if (name === 'Open') {
-                    //                         return <HtlcEvent> {
-                    //                             name,
-                    //                             id: args.id,
-                    //                             token: args.token,
-                    //                             amount: args.amount.toNumber(),
-                    //                             recipient: args.recipient,
-                    //                             hash: args.hash,
-                    //                             timeout: args.timeout.toNumber(),
-                    //                         };
-                    //                     }
-                    //                 } catch (error) { /* ignore */ }
-                    //             }
-                    //         }
-                    //         return undefined;
-                    //     });
+                            for (const innerLog of receipt.logs) {
+                                if (innerLog.address === config.usdc.nativeHtlcContract) {
+                                    try {
+                                        const { args, name } = nativeHtlcContract.interface.parseLog(innerLog);
+                                        if (name === 'Redeem') {
+                                            return <HtlcEvent> {
+                                                name,
+                                                id: args.id,
+                                                secret: args.secret,
+                                            };
+                                        }
+                                        if (name === 'Refund') {
+                                            return <HtlcEvent> {
+                                                name,
+                                                id: args.id,
+                                            };
+                                        }
+                                    } catch (error) { /* ignore */ }
+                                }
+                            }
+                            return undefined;
+                        });
 
-                    //     nativeHtlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    // }
-
-                    // if (log.args.from === config.usdc.nativeHtlcContract) {
-                    //     // Get Redeem or Refund event log
-                    //     const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
-                    //         const nativeHtlcContract = await getNativeHtlcContract(true);
-
-                    //         for (const innerLog of receipt.logs) {
-                    //             if (innerLog.address === config.usdc.nativeHtlcContract) {
-                    //                 try {
-                    //                     const { args, name } = nativeHtlcContract.interface.parseLog(innerLog);
-                    //                     if (name === 'Redeem') {
-                    //                         return <HtlcEvent> {
-                    //                             name,
-                    //                             id: args.id,
-                    //                             secret: args.secret,
-                    //                         };
-                    //                     }
-                    //                     if (name === 'Refund') {
-                    //                         return <HtlcEvent> {
-                    //                             name,
-                    //                             id: args.id,
-                    //                         };
-                    //                     }
-                    //                 } catch (error) { /* ignore */ }
-                    //             }
-                    //         }
-                    //         return undefined;
-                    //     });
-
-                    //     nativeHtlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
-                    // }
+                        nativeHtlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
+                    }
 
                     return true;
                 }) as TransferEvent[];
@@ -854,7 +839,7 @@ export async function launchPolygon() {
                 nativeBalance: nativeBalance.toNumber() / 1e6,
                 nativeUsdcNonce,
                 transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
-                // htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
+                htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
             });
         })
             .catch((error) => {
@@ -885,7 +870,7 @@ type ContractMethods =
     'transfer'
     | 'transferWithPermit'
     | 'open'
-    | 'openWithApproval'
+    | 'openWithPermit'
     | 'redeemWithSecretInData'
     | 'refund'
     // | 'swap'
@@ -909,7 +894,7 @@ export async function calculateFee(
         transfer: 1092,
         transferWithPermit: 1220,
         open: 1220,
-        openWithApproval: 1348,
+        openWithPermit: 1348, // TODO: Recheck this value
         redeemWithSecretInData: 1092,
         refund: 1092,
         // swap: 0,
@@ -1126,16 +1111,16 @@ export async function sendTransaction(
     }
 
     const token = relayRequest.request.to === config.usdc.nativeTransferContract
-        // || relayRequest.request.to === config.usdc.nativeHtlcContract
+        || relayRequest.request.to === config.usdc.nativeHtlcContract
         ? config.usdc.nativeUsdcContract
         : config.usdc.usdcContract;
 
     // If `approvalData` is present, this is a redeem transaction
     const isHtlcRedeemTx = approvalData.length > 2;
     const isHtlcRefundTx = relayRequest.request.data.startsWith(
-        /* relayRequest.request.to === config.usdc.nativeHtlcContract
+        relayRequest.request.to === config.usdc.nativeHtlcContract
             ? (await getNativeHtlcContract()).interface.getSighash('refund')
-            : */(await getHtlcContract()).interface.getSighash('refund'),
+            : (await getHtlcContract()).interface.getSighash('refund'),
     );
 
     const isIncomingTx = isHtlcRedeemTx || isHtlcRefundTx;
@@ -1173,7 +1158,7 @@ export async function receiptToTransaction(
         : [client.usdc, client.usdcTransfer];
 
     const htlcContractAddress = token === config.usdc.nativeUsdcContract
-        ? /* config.usdc.nativeHtlcContract */ ''
+        ? config.usdc.nativeHtlcContract
         : config.usdc.htlcContract;
 
     const [htlcContract, poolAddress] = await Promise.all([
@@ -1301,6 +1286,7 @@ export async function getPolygonBlockNumber() {
 }
 
 let htlcContract: Contract | undefined;
+/** @deprecated */
 export async function getHtlcContract() {
     if (htlcContract) return htlcContract;
 
@@ -1317,16 +1303,15 @@ export async function getHtlcContract() {
 let nativeHtlcContract: Contract | undefined;
 export async function getNativeHtlcContract() {
     if (nativeHtlcContract) return nativeHtlcContract;
-    return undefined;
 
-    // const { ethers, provider } = await getPolygonClient();
-    // const { config } = useConfig();
-    // nativeHtlcContract = new ethers.Contract(
-    //     config.usdc.nativeHtlcContract,
-    //     NATIVE_USDC_HTLC_CONTRACT_ABI,
-    //     provider,
-    // );
-    // return nativeHtlcContract;
+    const { ethers, provider } = await getPolygonClient();
+    const { config } = useConfig();
+    nativeHtlcContract = new ethers.Contract(
+        config.usdc.nativeHtlcContract,
+        NATIVE_USDC_HTLC_CONTRACT_ABI,
+        provider,
+    );
+    return nativeHtlcContract;
 }
 
 let swapContract: Contract | undefined;

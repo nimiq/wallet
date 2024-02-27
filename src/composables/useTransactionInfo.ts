@@ -14,6 +14,7 @@ import { useProxyStore } from '@/stores/Proxy';
 import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '@/lib/Constants';
 import { isProxyData, ProxyType } from '@/lib/ProxyDetection';
 import { parseData } from '@/lib/DataFormatting';
+import { assetToCurrency } from '@/lib/swap/utils/Assets';
 
 import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
@@ -106,7 +107,7 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
                 return i18n.t('Bitcoin') as string;
             }
 
-            if (swapData.value.asset === SwapAsset.USDC) {
+            if (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC) {
                 return i18n.t('USD Coin') as string;
             }
 
@@ -149,8 +150,8 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
 
         if (swapData.value && !isCancelledSwap.value) {
             const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
-                fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.NIM,
-                toAsset: isIncoming.value ? SwapAsset.NIM : swapData.value.asset,
+                fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : SwapAsset.NIM,
+                toAsset: isIncoming.value ? SwapAsset.NIM : assetToCurrency(swapData.value.asset).toUpperCase(),
             }) as string;
 
             // The TransactionListOasisPayoutStatus takes care of the second half of the message

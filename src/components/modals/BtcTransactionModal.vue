@@ -10,7 +10,9 @@
             }}</template>
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.NIM || swapData.asset === SwapAsset.USDC" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.NIM
+                    || swapData.asset === SwapAsset.USDC
+                    || swapData.asset === SwapAsset.USDC_MATIC" v-slot:address>
                     <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
@@ -22,7 +24,9 @@
             </i18n>
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.NIM || swapData.asset === SwapAsset.USDC" v-slot:address>
+                <template v-if="swapData.asset === SwapAsset.NIM
+                    || swapData.asset === SwapAsset.USDC
+                    || swapData.asset === SwapAsset.USDC_MATIC" v-slot:address>
                     <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
@@ -86,7 +90,8 @@
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
-                        <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
+                        <UsdcIcon v-else-if="swapData
+                            && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
@@ -138,7 +143,8 @@
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                             :address="peerAddresses[0]"/>
-                        <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
+                        <UsdcIcon v-else-if="swapData
+                            && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
@@ -180,7 +186,7 @@
                             <template slot="trigger">
                                 <FiatAmount :amount="(swapData.amount / 100)
                                     - ((swapInfo && swapInfo.fees && swapInfo.fees.totalFee) || 0)
-                                    * (isIncoming ? 1 : -1)" :currency="swapData.asset.toLowerCase()"
+                                    * (isIncoming ? 1 : -1)" :currency="assetToCurrency(swapData.asset)"
                                 />
                             </template>
                             <span>{{ $t('Historic value') }}</span>
@@ -236,11 +242,12 @@
                             </div>
                             <Amount
                                 :amount="swapTransaction.value"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
-                        <button v-if="swapData.asset === SwapAsset.USDC && swapTransaction"
+                        <button v-if="(swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)
+                            && swapTransaction"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace(`/usdc-transaction/${swapTransaction.transactionHash}`)"
                         >
@@ -250,7 +257,7 @@
                             </div>
                             <Amount
                                 :amount="swapTransaction.value"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
@@ -262,7 +269,7 @@
                             </div>
                             <FiatAmount
                                 :amount="swapData.amount / 100"
-                                :currency="swapData.asset.toLowerCase()"
+                                :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
                         </div>
@@ -343,6 +350,7 @@ import { estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { refundSwap } from '../../hub';
 import { sendTransaction } from '../../electrum';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
+import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { useBtcTransactionInfo } from '../../composables/useBtcTransactionInfo';
@@ -403,7 +411,7 @@ export default defineComponent({
                 return swapTx || null;
             }
 
-            if (swapData.value.asset === SwapAsset.USDC) {
+            if (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC) {
                 return useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
             }
 
@@ -446,7 +454,10 @@ export default defineComponent({
                     return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
                 }
 
-                if (swapData.value.asset === SwapAsset.USDC && swapTransaction.value) {
+                if (
+                    (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC)
+                    && swapTransaction.value
+                ) {
                     const swapTx = swapTransaction.value as UsdcTransaction;
                     return isIncoming.value ? [swapTx.sender] : [swapTx.recipient];
                 }
@@ -579,6 +590,7 @@ export default defineComponent({
             showRefundButton,
             refundHtlc,
             SettlementStatus,
+            assetToCurrency,
         };
     },
     components: {

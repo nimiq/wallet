@@ -20,7 +20,9 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
     const { config } = useConfig();
 
     if (!poolFees.has(token)) {
-        const transferContract = token === config.usdc.usdcContract ? client.usdcTransfer : client.nativeUsdcTransfer;
+        const transferContract = token === config.usdc.nativeUsdcContract
+            ? client.nativeUsdcTransfer
+            : client.usdcTransfer;
         const poolContract = new client.ethers.Contract(
             await getPoolAddress(transferContract, token),
             UNISWAP_POOL_CONTRACT_ABI,

@@ -24,7 +24,8 @@
         <div class="identicon">
             <UnclaimedCashlinkIcon v-if="peerAddress === constants.CASHLINK_ADDRESS" />
             <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
-            <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
+            <UsdcIcon v-else-if="swapData
+                && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>

@@ -69,8 +69,11 @@
         <transition name="fade">
             <div v-if="toFundingDurationMins && state === SwapState.AWAIT_INCOMING" class="to-funding-delay-notice">
                 <h2 class="nq-h2">
-                    {{ $t('Setting up the {currency} side of the swap.', { currency: toAsset} ) }}<br>
-                    {{ $t('This might take up to {min} minutes.', { min: toFundingDurationMins} ) }}
+                    {{ $t(
+                        'Setting up the {currency} side of the swap.',
+                        { currency: assetToCurrency(toAsset).toUpperCase() },
+                    ) }}<br>
+                    {{ $t('This might take up to {min} minutes.', { min: toFundingDurationMins }) }}
                 </h2>
                 <p class="nq-gray flex-row action-row">
                     <span class="timer">{{ timer }}</span>
@@ -83,7 +86,10 @@
                 class="from-funding-delay-notice"
             >
                 <h2 class="nq-h2">
-                    {{ $t('Setting up the {currency} side of the swap.', { currency: fromAsset} ) }}<br>
+                    {{ $t(
+                        'Setting up the {currency} side of the swap.',
+                        { currency: assetToCurrency(fromAsset).toUpperCase() },
+                    ) }}<br>
                     {{ $t('This might take up to {min} minutes.', { min: fromFundingDurationMins} ) }}
                 </h2>
                 <p class="nq-gray flex-row action-row">
@@ -118,7 +124,7 @@
 
         <div class="animation flex-row" :class="[swapDirection, animationClassName]">
             <!-- eslint-disable max-len -->
-            <Tooltip class="left" :class="leftAsset.toLowerCase()"
+            <Tooltip class="left" :class="assetToCurrency(leftAsset)"
                 :preferredPosition="`${
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
@@ -171,7 +177,7 @@
                         <g class="logo" fill="none" opacity="1">
                             <path fill="currentColor" d="M84.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z"/>
                             <image
-                                :href="leftAsset === SwapAsset.BTC ? BitcoinSvg : leftAsset === SwapAsset.USDC ? UsdcSvg : (bankLogo || BankSvg)"
+                                :href="leftAsset === SwapAsset.BTC ? BitcoinSvg : leftAsset === SwapAsset.USDC_MATIC ? UsdcSvg : (bankLogo || BankSvg)"
                                 x="33" y="22" width="52" height="52"
                             />
                         </g>
@@ -179,8 +185,8 @@
                     <div class="flex-row swap-amount">
                         <GroundedArrowUpIcon v-if="!switchSides"/>
                         <GroundedArrowDownIcon v-if="switchSides"/>
-                        <Amount v-if="leftAsset !== SwapAsset.EUR" :amount="!switchSides ? fromAmount : toAmount" :currency="leftAsset.toLowerCase()"/>
-                        <FiatAmount v-else :amount="(!switchSides ? fromAmount : toAmount) / 100" :currency="leftAsset.toLowerCase()"/>
+                        <Amount v-if="leftAsset !== SwapAsset.EUR" :amount="!switchSides ? fromAmount : toAmount" :currency="assetToCurrency(leftAsset)"/>
+                        <FiatAmount v-else :amount="(!switchSides ? fromAmount : toAmount) / 100" :currency="assetToCurrency(leftAsset)"/>
                     </div>
                 </div>
                 {{ assetToName(leftAsset) }} HTLC
@@ -198,7 +204,7 @@
                     <path opacity=".2" d="M39.23 48.38a26 26 0 000-44.76M12.77 3.62a26 26 0 000 44.76"/>
                 </g>
             </svg>
-            <Tooltip class="right" :class="rightAsset.toLowerCase()"
+            <Tooltip class="right" :class="assetToCurrency(rightAsset)"
                 :preferredPosition="`${
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
@@ -229,7 +235,7 @@
                         <g class="logo" fill="none" opacity="1">
                             <path :fill="rightAsset === SwapAsset.EUR ? bankColor : 'currentColor'" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                             <image
-                                :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : rightAsset === SwapAsset.USDC ? UsdcSvg : (bankLogo || BankSvg)"
+                                :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : rightAsset === SwapAsset.USDC_MATIC ? UsdcSvg : (bankLogo || BankSvg)"
                                 x="92" y="22" width="52" height="52"
                             />
                         </g>
@@ -259,8 +265,8 @@
                     <div class="flex-row swap-amount">
                         <GroundedArrowDownIcon v-if="!switchSides"/>
                         <GroundedArrowUpIcon v-if="switchSides"/>
-                        <Amount v-if="rightAsset !== SwapAsset.EUR" :amount="!switchSides ? toAmount : fromAmount" :currency="rightAsset.toLowerCase()"/>
-                        <FiatAmount v-else :amount="(!switchSides ? toAmount : fromAmount) / 100" :currency="rightAsset.toLowerCase()"/>
+                        <Amount v-if="rightAsset !== SwapAsset.EUR" :amount="!switchSides ? toAmount : fromAmount" :currency="assetToCurrency(rightAsset)"/>
+                        <FiatAmount v-else :amount="(!switchSides ? toAmount : fromAmount) / 100" :currency="assetToCurrency(rightAsset)"/>
                     </div>
                 </div>
                 {{ assetToName(rightAsset) }} HTLC
@@ -279,10 +285,10 @@
                 1/5 {{ $t('Setting up atomic swap') }}
             </div>
             <div v-if="state === SwapState.AWAIT_INCOMING" class="nq-h2">
-                2/5 {{ $t('Locking up {asset}', {asset: toAsset}) }}
+                2/5 {{ $t('Locking up {asset}', {asset: assetToCurrency(toAsset).toUpperCase()}) }}
             </div>
             <div v-if="state === SwapState.CREATE_OUTGOING" class="nq-h2">
-                3/5 {{ $t('Locking up {asset}', {asset: fromAsset}) }}
+                3/5 {{ $t('Locking up {asset}', {asset: assetToCurrency(fromAsset).toUpperCase()}) }}
             </div>
             <div v-if="state === SwapState.AWAIT_SECRET" class="nq-h2">
                 4/5 {{ $t('Awaiting swap secret') }}
@@ -357,6 +363,7 @@ import { SwapState } from '../../stores/Swaps';
 import { formatDuration } from '../../lib/Time';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
+import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import BitcoinSvg from './animation/bitcoin.svg';
 import UsdcSvg from './animation/usdc.svg';
 import BankSvg from './animation/bank.svg';
@@ -453,6 +460,7 @@ export default defineComponent({
         const leftAsset = computed(() => props.switchSides ? props.toAsset : props.fromAsset);
         const rightAsset = computed(() => props.switchSides ? props.fromAsset : props.toAsset);
 
+        // TODO: Deduplicate leftColor vs rightColor code
         const leftColor = computed(() => {
             switch (leftAsset.value) {
                 case SwapAsset.NIM: {
@@ -464,7 +472,7 @@ export default defineComponent({
                     return `var(--${className.replace('nq-', 'nimiq-')})`;
                 }
                 case SwapAsset.BTC: return '#f7931a';
-                case SwapAsset.USDC: return '#2775ca';
+                case SwapAsset.USDC_MATIC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
                 default: return '';
             }
@@ -483,7 +491,7 @@ export default defineComponent({
                     return `var(--${className.replace('nq-', 'nimiq-')})`;
                 }
                 case SwapAsset.BTC: return '#f7931a';
-                case SwapAsset.USDC: return '#2775ca';
+                case SwapAsset.USDC_MATIC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
                 default: return '';
             }
@@ -493,7 +501,7 @@ export default defineComponent({
             switch (asset) {
                 case SwapAsset.NIM: return 'Nimiq';
                 case SwapAsset.BTC: return 'Bitcoin';
-                case SwapAsset.USDC: return 'USD Coin';
+                case SwapAsset.USDC_MATIC: return 'USD Coin';
                 case SwapAsset.EUR: return 'Euro';
                 default: throw new Error(`Invalid asset ${asset}`);
             }
@@ -632,6 +640,7 @@ export default defineComponent({
             BottomNoticeMessage,
             bottomNoticeMsg,
             timer,
+            assetToCurrency,
         };
     },
     components: {

@@ -26,7 +26,8 @@
                 v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
                 :address="peerAddresses[0]"
             />
-            <UsdcIcon v-else-if="swapData && swapData.asset === SwapAsset.USDC"/>
+            <UsdcIcon v-else-if="swapData
+                && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
             <SwapSmallIcon/>

@@ -11,6 +11,7 @@ import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
 
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
+import { assetToCurrency } from '@/lib/swap/utils/Assets';
 
 import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
@@ -117,7 +118,7 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
                     || i18n.t('Swap') as string;
             }
 
-            if (swapData.value.asset === SwapAsset.USDC) {
+            if (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC) {
                 return i18n.t('USD Coin') as string;
             }
 
@@ -169,8 +170,8 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
         if (swapData.value) {
             if (!isCancelledSwap.value) {
                 const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
-                    fromAsset: isIncoming.value ? swapData.value.asset : SwapAsset.BTC,
-                    toAsset: isIncoming.value ? SwapAsset.BTC : swapData.value.asset,
+                    fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : SwapAsset.BTC,
+                    toAsset: isIncoming.value ? SwapAsset.BTC : assetToCurrency(swapData.value.asset).toUpperCase(),
                 }) as string;
 
                 // The TransactionListOasisPayoutStatus takes care of the second half of the message

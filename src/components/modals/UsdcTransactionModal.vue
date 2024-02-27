@@ -288,7 +288,7 @@ import { useTransactionsStore, Transaction as NimTransaction } from '../../store
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
-import { calculateFee, getHtlcContract, getPolygonBlockNumber, sendTransaction } from '../../ethers';
+import { calculateFee, getNativeHtlcContract, getPolygonBlockNumber, sendTransaction } from '../../ethers';
 import { useConfig } from '../../composables/useConfig';
 import { useUsdcTransactionInfo } from '../../composables/useUsdcTransactionInfo';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
@@ -432,7 +432,7 @@ export default defineComponent({
 
         const showRefundButton = computed(() => !isIncoming.value
             // funded but not redeemed htlc which is now expired
-            && swapInfo.value?.in?.asset === SwapAsset.USDC
+            && (swapInfo.value?.in?.asset === SwapAsset.USDC || swapInfo.value?.in?.asset === SwapAsset.USDC_MATIC)
             && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
             && !swapInfo.value.out,
             // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
@@ -455,7 +455,7 @@ export default defineComponent({
 
                     const method = 'refund';
 
-                    const htlcContract = await getHtlcContract();
+                    const htlcContract = await getNativeHtlcContract();
 
                     const [
                         forwarderNonce,
@@ -463,7 +463,7 @@ export default defineComponent({
                     ] = await Promise.all([
                         htlcContract.getNonce(myAddress) as Promise<BigNumber>,
                         calculateFee(
-                            config.usdc.usdcContract,
+                            config.usdc.nativeUsdcContract,
                             method,
                             undefined,
                             htlcContract,
@@ -481,7 +481,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: myAddress,
-                            to: config.usdc.htlcContract,
+                            to: config.usdc.nativeHtlcContract,
                             data,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -494,17 +494,17 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.htlcContract,
+                            paymaster: config.usdc.nativeHtlcContract,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.htlcContract,
+                            forwarder: config.usdc.nativeHtlcContract,
                         },
                     };
 
                     const request: Omit<RefundSwapRequest, 'appName'> = {
                         accountId: useAccountStore().activeAccountId.value!,
                         refund: {
-                            type: SwapAsset.USDC,
+                            type: SwapAsset.USDC_MATIC,
                             ...relayRequest,
                             amount: transaction.value.value - fee.toNumber(),
                         },

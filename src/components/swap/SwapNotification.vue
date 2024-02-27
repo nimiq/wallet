@@ -78,7 +78,7 @@ import { getNetworkClient } from '../../network';
 import { getServerTime } from '../../lib/Time';
 import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
 import {
-    getHtlcContract,
+    getNativeHtlcContract,
     getPolygonBlockNumber,
     getPolygonClient,
     receiptToTransaction,
@@ -151,9 +151,9 @@ export default defineComponent({
                         break;
                     }
                     case SwapAsset.BTC:
-                    case SwapAsset.USDC:
+                    case SwapAsset.USDC_MATIC:
                     case SwapAsset.EUR: {
-                        const { timeout } = (contract as Contract<SwapAsset.BTC | SwapAsset.USDC | SwapAsset.EUR>);
+                        const { timeout } = contract as Contract<SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.EUR>;
                         if (timeout <= timestamp) return true;
                         remainingTimes.push(timeout - timestamp);
                         break;
@@ -227,7 +227,10 @@ export default defineComponent({
                     if (swap.to.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
                         return consensusErrorMsg('Bitcoin');
                     }
-                    if (swap.to.asset === SwapAsset.USDC && useUsdcNetworkStore().state.consensus !== 'established') {
+                    if (
+                        swap.to.asset === SwapAsset.USDC_MATIC
+                        && useUsdcNetworkStore().state.consensus !== 'established'
+                    ) {
                         return consensusErrorMsg('Polygon');
                     }
                 }
@@ -239,7 +242,10 @@ export default defineComponent({
                     if (swap.from.asset === SwapAsset.BTC && useBtcNetworkStore().state.consensus !== 'established') {
                         return consensusErrorMsg('Bitcoin');
                     }
-                    if (swap.from.asset === SwapAsset.USDC && useUsdcNetworkStore().state.consensus !== 'established') {
+                    if (
+                        swap.from.asset === SwapAsset.USDC_MATIC
+                        && useUsdcNetworkStore().state.consensus !== 'established'
+                    ) {
                         return consensusErrorMsg('Polygon');
                     }
                 }
@@ -257,8 +263,8 @@ export default defineComponent({
             switch (asset) {
                 case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
-                case SwapAsset.USDC: {
-                    const { timeout } = swap.contracts.USDC!;
+                case SwapAsset.USDC_MATIC: {
+                    const { timeout } = swap.contracts[SwapAsset.USDC_MATIC]!;
                     const secondsUntilTimeout = timeout - Math.floor(Date.now() / 1e3);
                     const blocksUntilTimeout = Math.ceil((secondsUntilTimeout / 60) * POLYGON_BLOCKS_PER_MINUTE);
 
@@ -268,7 +274,7 @@ export default defineComponent({
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
                     return {
-                        htlcContract: await getHtlcContract(),
+                        htlcContract: await getNativeHtlcContract(),
                         currentBlock: () => getPolygonBlockNumber(),
                         startBlock: blockHeightAtStart,
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
@@ -301,7 +307,7 @@ export default defineComponent({
 
             const swapsNim = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.NIM);
             const swapsBtc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.BTC);
-            const swapsUsdc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.USDC);
+            const swapsUsdc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.USDC_MATIC);
             // const swapsEur = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.EUR);
 
             // Await Nimiq and Bitcoin consensus
@@ -373,7 +379,7 @@ export default defineComponent({
 
                     if ('getBlock' in remoteFundingTx) {
                         const receipt = await remoteFundingTx.getTransactionReceipt();
-                        const polygonTx = await receiptToTransaction(config.usdc.usdcContract, receipt);
+                        const polygonTx = await receiptToTransaction(config.usdc.nativeUsdcContract, receipt);
                         updateSwap({
                             state: SwapState.CREATE_OUTGOING,
                             stateEnteredAt: Date.now(),
@@ -443,7 +449,7 @@ export default defineComponent({
                             stateEnteredAt: Date.now(),
                             fundingTx,
                         });
-                    } else if (activeSwap.value!.from.asset === SwapAsset.USDC) {
+                    } else if (activeSwap.value!.from.asset === SwapAsset.USDC_MATIC) {
                         try {
                             // Start background listener
                             usdcListener = usdcListener || swapHandler.awaitOutgoing((/* event */) => {
@@ -470,7 +476,7 @@ export default defineComponent({
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
                                     fundingTx = await receiptToTransaction(
-                                        config.usdc.usdcContract,
+                                        config.usdc.nativeUsdcContract,
                                         await event.getTransactionReceipt(),
                                     );
                                 } else {
@@ -573,7 +579,7 @@ export default defineComponent({
                     });
                 }
                 case SwapState.SETTLE_INCOMING: {
-                    if (activeSwap.value.to.asset === SwapAsset.USDC) {
+                    if (activeSwap.value.to.asset === SwapAsset.USDC_MATIC) {
                         try {
                             // Start background listener
                             usdcListener = usdcListener || swapHandler.awaitIncomingConfirmation().then((tx) => {
@@ -602,7 +608,7 @@ export default defineComponent({
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
                                     settlementTx = await receiptToTransaction(
-                                        config.usdc.usdcContract,
+                                        config.usdc.nativeUsdcContract,
                                         await event.getTransactionReceipt(),
                                     );
                                 } else {
@@ -785,7 +791,7 @@ export default defineComponent({
             const cryptoCurrencies = [
                 SwapAsset.NIM,
                 SwapAsset.BTC,
-                SwapAsset.USDC,
+                SwapAsset.USDC_MATIC,
             ];
 
             const fiatCurrencies = [

@@ -227,7 +227,7 @@
                         ? swap.contracts[swap.to.asset].htlc.contract
                         : swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
-                    :error="swap.error"
+                    :error="swap.error && swap.error.split(' req={')[0]"
                     :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
                     :switchSides="swap.from.asset === rightAsset"
                     :stateEnteredAt="swap.stateEnteredAt"

@@ -630,7 +630,7 @@ export default defineComponent({
                 // Show error screen
                 statusState.value = State.WARNING;
                 statusTitle.value = context.root.$t('Something went wrong') as string;
-                statusMessage.value = error.message;
+                statusMessage.value = error.message.split(' req={')[0]; // eslint-disable-line prefer-destructuring
             }
         }
 

@@ -280,7 +280,8 @@ export default defineComponent({
                 useUsdcTransactionsStore().addTransactions([tx]);
             } catch (error) {
                 console.error(error); // eslint-disable-line no-console
-                alert(`Something went wrong: ${(error as Error).message}`); // eslint-disable-line no-alert
+                // eslint-disable-next-line no-alert
+                alert(`Something went wrong: ${(error as Error).message.split(' req={')[0]}`);
             }
         }
 

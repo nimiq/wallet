@@ -56,6 +56,14 @@
                 slot="more"
                 :data="swapData"
             />
+            <span
+                v-else-if="transaction.state === TransactionState.FAILED"
+                slot="more"
+                class="nq-red failed flex-row"
+            >
+                <CrossIcon/>
+                {{ $t('Partially reverted') }}
+            </span>
             <span v-else slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
                 <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
                     <template v-slot:dateAndTime>
@@ -69,7 +77,7 @@
                 </i18n>
             </span>
         </PageHeader>
-        <PageBody class="flex-column">
+        <PageBody class="flex-column" :class="transaction.state">
             <div class="flex-row sender-recipient">
                 <div v-if="isIncoming && swapInfo" class="swap-peer flex-column">
                     <div class="identicon-container">
@@ -274,6 +282,7 @@ import {
     PageHeader,
     Tooltip,
     Identicon,
+    CrossIcon,
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
@@ -616,6 +625,7 @@ export default defineComponent({
         Avatar,
         InteractiveShortAddress,
         TransactionDetailOasisPayoutStatus,
+        CrossIcon,
     },
 });
 </script>
@@ -663,26 +673,6 @@ export default defineComponent({
     align-items: center;
     padding-bottom: 3rem;
     overflow-y: initial;
-
-    &.expired,
-    &.invalidated {
-        .avatar {
-            filter: saturate(0);
-            opacity: 0.5;
-        }
-
-        .label {
-            opacity: 0.5;
-        }
-
-        .address-display {
-            opacity: 0.3;
-        }
-
-        .amount-block {
-            opacity: 0.4;
-        }
-    }
 
     button.swap-other-side {
         border-radius: 8rem;

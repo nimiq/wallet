@@ -261,6 +261,7 @@ function subscribe(addresses: string[]) {
     return true;
 }
 
+// Is only called for incoming transfers
 async function transactionListener(from: string, to: string, value: BigNumber, log: TransferEvent) {
     if (!balances.has(from) && !balances.has(to)) return;
     if (value.isZero()) return; // Ignore address poisoning scam transactions
@@ -499,6 +500,32 @@ export async function launchPolygon() {
                         if (mainTransferLog && mainTransferLog.args) {
                             // Write this log's `value` as the main transfer log's `fee`
                             mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                        } else if (!mainTransferLog) {
+                            // If no main transfer log was found, it means this transaction failed
+                            // and only the fee was paid.
+                            (log as TransferEvent).failed = true;
+                            return true;
+                        }
+
+                        // Then ignore this log
+                        return false;
+                    }
+
+                    if (
+                        // Before v3, transfers to the HTLC contract were the fees paid to OpenGSN
+                        config.environment !== ENV_MAIN
+                        && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
+                    ) {
+                        // Determine if this transfer is the fee, by looking for another transfer in this
+                        // transaction with a higher `logIndex`, which means that one is the main transfer and this
+                        // one is the fee.
+                        const mainTransferLog = allTransferLogs.find((otherLog) =>
+                            otherLog.transactionHash === log.transactionHash
+                            && otherLog.logIndex > log.logIndex);
+
+                        if (mainTransferLog && mainTransferLog.args) {
+                            // Write this log's `value` as the main transfer log's `fee`
+                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
                         }
 
                         // Then ignore this log
@@ -506,27 +533,6 @@ export async function launchPolygon() {
                     }
 
                     if (log.args.to === config.usdc.htlcContract) {
-                        if (
-                            // Before v3, transfers to the HTLC contract were the fees paid to OpenGSN
-                            config.environment !== ENV_MAIN
-                            && log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
-                        ) {
-                            // Determine if this transfer is the fee, by looking for another transfer in this
-                            // transaction with a higher `logIndex`, which means that one is the main transfer and this
-                            // one is the fee.
-                            const mainTransferLog = allTransferLogs.find((otherLog) =>
-                                otherLog.transactionHash === log.transactionHash
-                                && otherLog.logIndex > log.logIndex);
-
-                            if (mainTransferLog && mainTransferLog.args) {
-                                // Write this log's `value` as the main transfer log's `fee`
-                                mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-
-                                // Then ignore this log
-                                return false;
-                            }
-                        }
-
                         // Get Open event log
                         const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
                             const htlcContract = await getHtlcContract();
@@ -781,6 +787,11 @@ export async function launchPolygon() {
                         if (mainTransferLog && mainTransferLog.args) {
                             // Write this log's `value` as the main transfer log's `fee`
                             mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                        } else if (!mainTransferLog) {
+                            // If no main transfer log was found, it means this transaction failed
+                            // and only the fee was paid.
+                            (log as TransferEvent).failed = true;
+                            return true;
                         }
 
                         // Then ignore this log
@@ -904,7 +915,9 @@ function logAndBlockToPlain(
         value: log.args.value.toNumber(), // With Javascript numbers we can safely represent up to 9,007,199,254 USDC
         fee: log.args.fee?.toNumber(),
         event,
-        state: block ? TransactionState.MINED : TransactionState.PENDING,
+        state: log.failed
+            ? TransactionState.FAILED
+            : (block ? TransactionState.MINED : TransactionState.PENDING),
         blockHeight: block?.number,
         timestamp: block?.timestamp,
     };
@@ -1241,7 +1254,7 @@ export async function receiptToTransaction(
     });
 
     let transferLog: TransferLog | undefined;
-    let fee: BigNumber | undefined;
+    let feeLog: TransferLog | undefined;
     let htlcEvent: HtlcEvent | undefined;
     let uniswapEvent: UniswapEvent | undefined;
 
@@ -1267,14 +1280,14 @@ export async function receiptToTransaction(
                     config.environment !== ENV_MAIN
                     && (
                         log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
-                        && !fee
+                        && !feeLog
                         // When Fastspot is funding the HTLC, there's only one Transfer event, which is the main
                         // `transferLog`, so don't handle any fee.
                         && logs.filter((l) => l?.name === 'Transfer').length > 1
                     )
                 )
             ) {
-                fee = log.args.value;
+                feeLog = log as TransferLog;
                 return;
             }
 
@@ -1327,10 +1340,18 @@ export async function receiptToTransaction(
         }
     });
 
-    if (!transferLog) throw new Error('Could not find transfer log');
+    if (!transferLog) {
+        if (feeLog) {
+            transferLog = feeLog;
+            transferLog.failed = true;
+            feeLog = undefined;
+        } else {
+            throw new Error('Could not find transfer log');
+        }
+    }
 
-    if (fee) {
-        transferLog.args = addFeeToArgs(transferLog.args, fee) as TransferResult;
+    if (feeLog) {
+        transferLog.args = addFeeToArgs(transferLog.args, feeLog.args.value) as TransferResult;
     }
 
     return logAndBlockToPlain(
@@ -1420,8 +1441,10 @@ interface TransferResult extends ReadonlyArray<any> {
 interface TransferLog extends Log {
     args: TransferResult;
     name: string;
+    failed?: boolean;
 }
 
 interface TransferEvent extends Event {
     args: TransferResult;
+    failed?: boolean;
 }

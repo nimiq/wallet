@@ -65,7 +65,7 @@ export enum TransactionState {
     NEW = 'new',
     PENDING = 'pending',
     MINED = 'mined',
-    INVALIDATED = 'invalidated',
+    FAILED = 'failed',
     EXPIRED = 'expired',
     CONFIRMED = 'confirmed',
 }

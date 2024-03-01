@@ -13,7 +13,7 @@
             <CircleSpinner/>
         </div>
         <div
-            v-else-if="state === TransactionState.EXPIRED || state === TransactionState.INVALIDATED"
+            v-else-if="state === TransactionState.EXPIRED || state === TransactionState.FAILED"
             class="invalid nq-red"
         >
             <CrossIcon/>
@@ -37,7 +37,7 @@
                 <span v-if="state === TransactionState.NEW">{{ $t('not sent') }}</span>
                 <span v-else-if="state === TransactionState.PENDING">{{ $t('pending') }}</span>
                 <span v-else-if="state === TransactionState.EXPIRED">{{ $t('expired') }}</span>
-                <span v-else-if="state === TransactionState.INVALIDATED">{{ $t('invalid') }}</span>
+                <span v-else-if="state === TransactionState.FAILED">{{ $t('partially reverted') }}</span>
                 <span v-else-if="dateTime">{{ dateTime }}</span>
 
                 <span v-if="data" class="message">
@@ -402,23 +402,6 @@ svg {
                 content: '+';
                 margin-right: -0.1em;
             }
-        }
-    }
-
-    &.expired,
-    &.invalidated {
-        .identicon {
-            filter: saturate(0);
-            opacity: 0.5;
-        }
-
-        .data,
-        .amounts {
-            opacity: 0.5;
-        }
-
-        .amounts {
-            text-decoration: line-through;
         }
     }
 }

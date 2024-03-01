@@ -27,7 +27,7 @@ export default {
         /** @deprecated */
         htlcContract: '0x2EB7cd7791b947A25d629219ead941fCd8f364BF', // v3
         nativeHtlcContract: '0xA9fAbABE97375565e4A9Ac69A57Df33c91FCB897',
-        swapContract: '0x72e64Cff5cfFD4BFbC5b8d4fB081B33B9EE3e30e',
+        swapContract: '0xf4a619F6561CeE543BDa9BBA0cAC68758B607714', // v2
         swapPoolContract: '0x8292Be650A20D30A21436601bFb1ea0e1143d901',
         relayHubContract: '0x6646cD15d33cE3a6933e36de38990121e8ba2806',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',

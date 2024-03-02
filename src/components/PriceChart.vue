@@ -39,7 +39,7 @@
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { CryptoCurrency } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
 
 export enum TimeRange {
@@ -98,11 +98,16 @@ export default defineComponent({
         const { exchangeRates, currency: fiatCurrency, timestamp: lastExchangeRateUpdateTime } = useFiatStore();
 
         // Calculate price change
-        const startPrice = computed(() => history.value[0]?.[1]);
         const currentPrice = computed(() => exchangeRates.value[props.currency]?.[fiatCurrency.value]);
-        const priceChange = computed(() => (currentPrice.value && startPrice.value)
-            ? (currentPrice.value - startPrice.value) / startPrice.value
-            : undefined);
+        const priceChange = computed(() => {
+            const startPrice = history.value[0]?.[1];
+            // We do not use currentPrice as endPrice as they can be based on different fiat currencies, for example for
+            // currencies for which our FiatApi does not support historic rates, or when the history request has not
+            // terminated yet after switching the currency, while the current exchange rate is typically already
+            // available for all currencies.
+            const endPrice = history.value[history.value.length - 1]?.[1];
+            return startPrice && endPrice ? (endPrice - startPrice) / startPrice : undefined;
+        });
         const priceChangeClass = computed(() => !priceChange.value
             ? 'none'
             : priceChange.value > 0
@@ -179,16 +184,16 @@ export default defineComponent({
 
         let switchingTimeRange = false;
 
+        // Update history
         watch(() => [
             props.currency,
             props.timeRange,
             fiatCurrency.value,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], ([cryptoCurrency, timeRange, fiatCode, lastUpdate], oldValues?: any[]) => {
-            if (!isHistorySupportedFiatCurrency(fiatCode)) {
-                history.value = [];
-                return;
-            }
+        ], ([cryptoCurrency, timeRange, historyFiatCurrency, lastUpdate], oldValues?: any[]) => {
+            historyFiatCurrency = isHistorySupportedFiatCurrency(historyFiatCurrency)
+                ? historyFiatCurrency
+                : FiatCurrency.USD;
 
             const TWO_MINUTES = 2 * 60 * 1000;
             // Same algorithm as in main.ts where the exchange rate update is queued
@@ -221,7 +226,7 @@ export default defineComponent({
 
             getHistoricExchangeRates(
                 cryptoCurrency,
-                fiatCode,
+                historyFiatCurrency,
                 timestamps,
                 true, // disable minutely data
             ).then(

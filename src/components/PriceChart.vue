@@ -37,8 +37,8 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
-import { getHistoricExchangeRates } from '@nimiq/utils';
 import { FiatAmount } from '@nimiq/vue-components';
+import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { CryptoCurrency } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
 
@@ -185,6 +185,11 @@ export default defineComponent({
             fiatCurrency.value,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
         ], ([cryptoCurrency, timeRange, fiatCode, lastUpdate], oldValues?: any[]) => {
+            if (!isHistorySupportedFiatCurrency(fiatCode)) {
+                history.value = [];
+                return;
+            }
+
             const TWO_MINUTES = 2 * 60 * 1000;
             // Same algorithm as in main.ts where the exchange rate update is queued
             const nextUpdateIn = Math.max(0, Math.min(lastUpdate + TWO_MINUTES - Date.now(), TWO_MINUTES));

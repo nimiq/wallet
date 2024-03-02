@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import { createStore } from 'pinia';
-import { getHistoricExchangeRates } from '@nimiq/utils';
+import {
+    getHistoricExchangeRates,
+    isHistorySupportedFiatCurrency,
+    type FiatApiSupportedFiatCurrency,
+    type FiatApiHistorySupportedBridgedFiatCurrency,
+} from '@nimiq/utils';
 import { TransactionDetails, PlainOutput, TransactionState } from '@nimiq/electrum-client';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from './Fiat';
@@ -256,7 +261,7 @@ export const useBtcTransactionsStore = createStore({
                         // TODO this might be not necessary anymore with Vue3, also for the other Vue.sets in this file.
                         Vue.set(output.fiatValue!, fiatCurrency, currentRate * (output.value / 1e8));
                     }
-                } else {
+                } else if (isHistorySupportedFiatCurrency(fiatCurrency)) {
                     historicTimestamps.push(timestamp);
                     scheduledFiatAmountUpdates[fiatCurrency].add(tx.transactionHash);
                 }
@@ -272,7 +277,7 @@ export const useBtcTransactionsStore = createStore({
             if (historicTimestamps.length) {
                 const historicExchangeRates = await getHistoricExchangeRates(
                     CryptoCurrency.BTC,
-                    fiatCurrency,
+                    fiatCurrency as FiatApiSupportedFiatCurrency | FiatApiHistorySupportedBridgedFiatCurrency,
                     historicTimestamps,
                 );
 

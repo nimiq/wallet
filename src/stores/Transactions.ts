@@ -1,5 +1,10 @@
 import Vue from 'vue';
-import { getHistoricExchangeRates } from '@nimiq/utils';
+import {
+    getHistoricExchangeRates,
+    isHistorySupportedFiatCurrency,
+    type FiatApiSupportedFiatCurrency,
+    type FiatApiHistorySupportedBridgedFiatCurrency,
+} from '@nimiq/utils';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import Config from 'config';
@@ -304,7 +309,7 @@ export const useTransactionsStore = createStore({
                     // Set via Vue.set to let vue handle reactivity.
                     // TODO this might be not necessary anymore with Vue3, also for the other Vue.sets in this file.
                     Vue.set(tx.fiatValue, fiatCurrency, currentRate * (tx.value / 1e5));
-                } else {
+                } else if (isHistorySupportedFiatCurrency(fiatCurrency)) {
                     historicTimestamps.push(timestamp);
                     scheduledFiatAmountUpdates[fiatCurrency].add(tx.transactionHash);
                 }
@@ -318,7 +323,7 @@ export const useTransactionsStore = createStore({
             if (historicTimestamps.length) {
                 const historicExchangeRates = await getHistoricExchangeRates(
                     CryptoCurrency.NIM,
-                    fiatCurrency,
+                    fiatCurrency as FiatApiSupportedFiatCurrency | FiatApiHistorySupportedBridgedFiatCurrency,
                     historicTimestamps,
                 );
 

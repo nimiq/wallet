@@ -317,7 +317,13 @@ import { useTransactionsStore, Transaction as NimTransaction } from '../../store
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
-import { calculateFee, getNativeHtlcContract, getPolygonBlockNumber, sendTransaction } from '../../ethers';
+import {
+    calculateFee,
+    getHtlcContract,
+    getNativeHtlcContract,
+    getPolygonBlockNumber,
+    sendTransaction,
+} from '../../ethers';
 import { useConfig } from '../../composables/useConfig';
 import { useUsdcTransactionInfo } from '../../composables/useUsdcTransactionInfo';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
@@ -483,7 +489,9 @@ export default defineComponent({
 
                     const method = 'refund';
 
-                    const htlcContract = await getNativeHtlcContract();
+                    const htlcContract = transaction.value.token === config.usdc.nativeUsdcContract
+                        ? await getNativeHtlcContract()
+                        : await getHtlcContract();
 
                     const [
                         forwarderNonce,
@@ -491,7 +499,7 @@ export default defineComponent({
                     ] = await Promise.all([
                         htlcContract.getNonce(myAddress) as Promise<BigNumber>,
                         calculateFee(
-                            config.usdc.nativeUsdcContract,
+                            transaction.value.token || config.usdc.usdcContract,
                             method,
                             undefined,
                             htlcContract,
@@ -509,7 +517,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: myAddress,
-                            to: config.usdc.nativeHtlcContract,
+                            to: htlcContract.address,
                             data: functionData,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -522,17 +530,19 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.nativeHtlcContract,
+                            paymaster: htlcContract.address,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.nativeHtlcContract,
+                            forwarder: htlcContract.address,
                         },
                     };
 
                     const request: Omit<RefundSwapRequest, 'appName'> = {
                         accountId: useAccountStore().activeAccountId.value!,
                         refund: {
-                            type: SwapAsset.USDC_MATIC,
+                            type: transaction.value.token === config.usdc.nativeUsdcContract
+                                ? SwapAsset.USDC_MATIC
+                                : SwapAsset.USDC,
                             ...relayRequest,
                             amount: transaction.value.value - fee.toNumber(),
                         },

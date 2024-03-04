@@ -416,7 +416,8 @@ export default defineComponent({
                         return;
                     }
 
-                    const amount = usdcAddressInfo.value!.balance! - fee.toNumber();
+                    // Limit swap amount to 100k USDC.e, to not unbalance the pool too much
+                    const amount = Math.min(100_000e6, usdcAddressInfo.value!.balance! - fee.toNumber());
 
                     // Only allow 0.5% slippage on mainnet, but up to 5% on testnet
                     const minTargetAmountPercentage = config.environment === ENV_MAIN ? 0.995 : 0.95;

@@ -412,7 +412,7 @@ const BankCheckInput = defineComponent({
             return tmp;
         }
 
-        /* if the search match the bank name: return true. Otherwise it's probaly a BIC search: return false */
+        /* if the search match the bank name: return true. Otherwise it's probably a BIC search: return false */
         function shouldHighlightMatch(bankName: string) {
             const rgx = new RegExp(normalizedLocalValue.value, 'i');
             return rgx.test(unicodeNormalize(bankName));

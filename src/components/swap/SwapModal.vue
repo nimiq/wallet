@@ -407,7 +407,7 @@ export default defineComponent({
             usdcAddress: activeUsdcAddress.value,
         });
 
-        // Re-run limit calculation when address changes (ony NIM address can change within the active account)
+        // Re-run limit calculation when address changes (only NIM address can change within the active account)
         watch(activeAddress, (address) => {
             limitsNimAddress.value = address || undefined;
         }, { lazy: true });

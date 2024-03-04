@@ -159,7 +159,7 @@ async function* relayServerRegisterGen(
             };
         }).filter(Boolean) as RelayRegistration[];
 
-        // Filter out dublicates
+        // Filter out duplicates
         registrations = registrations.filter((reg, i, array) => {
             const firstIndex = array.findIndex((reg2) => reg2.url === reg.url);
             return firstIndex === i;

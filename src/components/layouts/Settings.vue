@@ -258,7 +258,7 @@
                 <h2 class="nq-label">{{ $t('Reference currency') }}</h2>
 
                 <div class="setting currency-selector">
-                    <button v-for="currencyOption of sortedFiatCurrency()"
+                    <button v-for="currencyOption of FIAT_CURRENCIES_OFFERED"
                         :key="currencyOption"
                         :class="{ selected: currencyOption === currency }"
                         class="reset currency"
@@ -300,7 +300,7 @@ import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
 import { useSettingsStore, ColorMode } from '../../stores/Settings';
-import { FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { addVestingContract, shouldUseRedirects } from '../../hub';
 import { usePwaInstallPrompt } from '../../composables/usePwaInstallPrompt';
@@ -327,11 +327,6 @@ export default defineComponent({
             if (!confirm('Really clear cache?')) return;
             await clearStorage();
             window.location.reload();
-        }
-
-        function sortedFiatCurrency() {
-            const sorted = Object.values(FiatCurrency).sort();
-            return sorted.filter((code) => !FIAT_CURRENCY_DENYLIST.includes(code.toUpperCase()));
         }
 
         const fileInput$ = ref<HTMLInputElement>(null);
@@ -426,7 +421,7 @@ export default defineComponent({
             Languages,
             ColorMode,
             currency,
-            sortedFiatCurrency,
+            FIAT_CURRENCIES_OFFERED,
             setCurrency,
             ...settings,
             fileInput$,

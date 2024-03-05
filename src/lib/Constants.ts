@@ -5,7 +5,7 @@ export { FiatApiSupportedCryptoCurrency as CryptoCurrency } from '@nimiq/utils';
 export const FiatCurrency = {
     ...FiatApiSupportedFiatCurrency,
     ...FiatApiBridgedFiatCurrency,
-};
+} as const;
 export type FiatCurrency = FiatApiSupportedFiatCurrency | FiatApiBridgedFiatCurrency;
 
 export const FIAT_PRICE_UNAVAILABLE = null;
@@ -21,9 +21,12 @@ export const TESTNET_ORIGIN = window.location.hostname === 'localhost' || window
     ? `${window.location.protocol}//${window.location.hostname}:8081`
     : 'https://wallet.nimiq-testnet.com';
 
-export const FIAT_CURRENCY_DENYLIST = [
-    'BDT', 'BHD', 'BMD', 'KWD', 'LKR', 'MMK', 'SAR',
-];
+// Manually curated list of fiat currencies to offer in the Wallet. Arguably somewhat arbitrary.
+export const FIAT_CURRENCIES_OFFERED = ([
+    'AED', 'ARS', 'AUD', 'BRL', 'CAD', 'CHF', 'CLP', 'CNY', 'CRC', 'CZK', 'DKK', 'EUR', 'GBP', 'GMD', 'HKD', 'HUF',
+    'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NGN', 'NOK', 'NZD', 'PHP', 'PKR', 'PLN', 'RUB', 'SEK', 'SGD',
+    'THB', 'TRY', 'TWD', 'UAH', 'USD', 'VND', 'XOF', 'ZAR',
+] as const).map((ticker) => FiatCurrency[ticker]);
 
 export const BTC_ADDRESS_GAP = 10; // TODO: Update to standard 20
 export const BTC_MAX_COPYABLE_ADDRESSES = 5; // TODO: Update to 10 when BTC_ADDRESS_GAP is set to 20

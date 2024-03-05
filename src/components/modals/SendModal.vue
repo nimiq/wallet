@@ -283,7 +283,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { formatDuration } from '../../lib/Time';
 import {
@@ -486,9 +486,7 @@ export default defineComponent({
         const fiatAmount = ref(0);
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
-        const otherFiatCurrencies = computed(() =>
-            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
-                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
+        const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
             if (activeCurrency.value === CryptoCurrency.NIM) {

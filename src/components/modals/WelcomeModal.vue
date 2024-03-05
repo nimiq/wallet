@@ -382,12 +382,7 @@ import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAddressStore } from '../../stores/Address';
 import { useWindowSize } from '../../composables/useWindowSize';
-import {
-    CryptoCurrency,
-    FiatCurrency,
-    WELCOME_MODAL_LOCALSTORAGE_KEY,
-    FIAT_CURRENCY_DENYLIST,
-} from '../../lib/Constants';
+import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
@@ -575,11 +570,8 @@ export default defineComponent({
             page.value -= 1;
         }
 
-        const fiatCurrencies = Object.values(FiatCurrency);
         const currenciesSelectorOpen = ref(false);
-        const otherFiatCurrencies = computed(() =>
-            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
-                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
+        const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         return {
             modal$,
@@ -595,7 +587,6 @@ export default defineComponent({
             setLanguage,
             activeAddress,
             isMobile,
-            fiatCurrencies,
             currency,
             setCurrency,
             nimExplainer$,

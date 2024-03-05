@@ -253,7 +253,7 @@ import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendUsdcTransaction } from '../../hub';
 import { loadEthersLibrary, calculateFee } from '../../ethers';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST, ENV_MAIN } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
 import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import {
     isValidDomain as isValidUnstoppableDomain,
@@ -443,9 +443,7 @@ export default defineComponent({
         const fiatAmount = ref(0);
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
-        const otherFiatCurrencies = computed(() =>
-            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
-                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
+        const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
             if (activeCurrency.value === CryptoCurrency.USDC) {

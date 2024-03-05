@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { getExchangeRates } from '@nimiq/utils';
-import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../lib/Constants';
 import { useTransactionsStore } from './Transactions';
 import { useBtcTransactionsStore } from './BtcTransactions';
 import { useUsdcTransactionsStore } from './UsdcTransactions';
@@ -12,8 +12,6 @@ export type FiatState = {
 };
 
 export function guessUserCurrency(regionOverwrite?: string) {
-    const currencies = Object.values(FiatCurrency);
-
     // parse navigator.language which is formatted according to https://tools.ietf.org/html/bcp47#section-2.1
     const languageRegex = new RegExp(
         '^'
@@ -34,7 +32,7 @@ export function guessUserCurrency(regionOverwrite?: string) {
     if (region) {
         // Find a currency which starts by a region. From currencies supported by FiatApi, that are actually all but EUR
         const currencyRegionRegex = new RegExp(`^${region}`, 'i');
-        const currencyByRegion = currencies.find((currency) => currencyRegionRegex.test(currency));
+        const currencyByRegion = FIAT_CURRENCIES_OFFERED.find((currency) => currencyRegionRegex.test(currency));
         if (currencyByRegion) return currencyByRegion;
 
         // check whether it's a country in the euro zone.
@@ -74,7 +72,7 @@ export const useFiatStore = createStore({
             try {
                 this.state.exchangeRates = await getExchangeRates(
                     [CryptoCurrency.NIM, CryptoCurrency.BTC, CryptoCurrency.USDC],
-                    Object.values(FiatCurrency),
+                    FIAT_CURRENCIES_OFFERED,
                 );
                 this.state.timestamp = Date.now();
             } catch (e) {

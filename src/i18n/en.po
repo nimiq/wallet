@@ -165,7 +165,7 @@ msgstr ""
 msgid "72 hours after your first buy, your limit will be increased automatically."
 msgstr ""
 
-#: src/components/layouts/Settings.vue:370
+#: src/components/layouts/Settings.vue:365
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "Do you want to replace it?"
@@ -525,7 +525,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:347
+#: src/components/layouts/Settings.vue:342
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -978,7 +978,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:724
+#: src/components/modals/UsdcSendModal.vue:722
 #: src/components/swap/SwapModal.vue:948
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1029,7 +1029,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:353
+#: src/components/layouts/Settings.vue:348
 msgid "File contains no contacts."
 msgstr ""
 
@@ -1522,7 +1522,7 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:381
+#: src/components/layouts/Settings.vue:376
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -1929,17 +1929,17 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:463
-#: src/components/modals/SendModal.vue:773
-#: src/components/modals/UsdcSendModal.vue:606
+#: src/components/modals/BtcSendModal.vue:461
+#: src/components/modals/SendModal.vue:771
+#: src/components/modals/UsdcSendModal.vue:604
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:513
+#: src/components/modals/BtcSendModal.vue:511
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:509
+#: src/components/modals/BtcSendModal.vue:507
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -1949,19 +1949,19 @@ msgstr ""
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:812
+#: src/components/modals/SendModal.vue:810
 msgid "Sent {nim} NIM"
 msgstr ""
 
-#: src/components/modals/SendModal.vue:808
+#: src/components/modals/SendModal.vue:806
 msgid "Sent {nim} NIM to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:633
+#: src/components/modals/UsdcSendModal.vue:631
 msgid "Sent {usdc} USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:629
+#: src/components/modals/UsdcSendModal.vue:627
 msgid "Sent {usdc} USDC to {name}"
 msgstr ""
 
@@ -2064,10 +2064,10 @@ msgstr ""
 msgid "Skip"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:527
-#: src/components/modals/SendModal.vue:642
-#: src/components/modals/SendModal.vue:828
-#: src/components/modals/UsdcSendModal.vue:648
+#: src/components/modals/BtcSendModal.vue:525
+#: src/components/modals/SendModal.vue:640
+#: src/components/modals/SendModal.vue:826
+#: src/components/modals/UsdcSendModal.vue:646
 msgid "Something went wrong"
 msgstr ""
 

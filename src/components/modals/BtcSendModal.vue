@@ -158,7 +158,7 @@ import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
@@ -302,9 +302,7 @@ export default defineComponent({
         }
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
-        const otherFiatCurrencies = computed(() =>
-            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
-                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
+        const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
             if (activeCurrency.value === CryptoCurrency.BTC) {

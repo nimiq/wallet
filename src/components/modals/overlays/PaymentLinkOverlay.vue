@@ -72,7 +72,7 @@ import { useSettingsStore } from '@/stores/Settings';
 import AmountInput from '../../AmountInput.vue';
 import AmountMenu from '../../AmountMenu.vue';
 import FiatConvertedAmount from '../../FiatConvertedAmount.vue';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCY_DENYLIST } from '../../../lib/Constants';
+import { CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../../lib/Constants';
 import { useFiatStore } from '../../../stores/Fiat';
 
 export default defineComponent({
@@ -108,9 +108,7 @@ export default defineComponent({
         const fiatAmount = ref(0);
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
-        const otherFiatCurrencies = computed(() =>
-            Object.values(FiatCurrency).filter((fiat) => fiat !== fiat$.currency
-                && !FIAT_CURRENCY_DENYLIST.includes(fiat.toUpperCase())));
+        const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
             if (activeCurrency.value === CryptoCurrency.NIM || activeCurrency.value === CryptoCurrency.BTC) {

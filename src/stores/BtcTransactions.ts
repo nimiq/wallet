@@ -18,7 +18,7 @@ import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 export type Transaction = Omit<TransactionDetails, 'outputs'> & {
     addresses: string[],
     outputs: (PlainOutput & {
-        fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
+        fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
     })[],
 };
 
@@ -28,7 +28,10 @@ const VALID_TRANSACTION_STATES = [
     TransactionState.CONFIRMED,
 ];
 
-const scheduledFiatAmountUpdates: {[fiatCurrency: string]: Set<string>} = {};
+const scheduledHistoricFiatAmountUpdates: Partial<Record<
+    FiatApiSupportedFiatCurrency | FiatApiHistorySupportedBridgedFiatCurrency,
+    Set<string>
+>> = {};
 
 export const useBtcTransactionsStore = createStore({
     id: 'btcTransactions',
@@ -226,26 +229,33 @@ export const useBtcTransactionsStore = createStore({
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
             fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency) ? fiatCurrency : FiatCurrency.USD;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency]; // might be pending
             const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.BTC]?.[FiatCurrency.USD];
             const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
-                // BTC transactions don't need to be filtered by age,
-                // as the BTC price is available far enough into the past.
-                !scheduledFiatAmountUpdates[fiatCurrency!]?.has(tx.transactionHash)
-                    && tx.timestamp
-                    && tx.outputs.some((output) => typeof output.fiatValue?.[fiatCurrency!] !== 'number'),
+                // Only update fiat amount if neither completely set for actual fiatCurrency nor historyFiatCurrency.
+                // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
+                // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
+                // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
+                // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
+                tx.outputs.some((output) => typeof output.fiatValue?.[fiatCurrency!] !== 'number')
+                    && tx.outputs.some((output) => typeof output.fiatValue?.[historyFiatCurrency] !== 'number')
+                    && !scheduledHistoricFiatAmountUpdates[historyFiatCurrency]?.has(tx.transactionHash)
+                    // BTC transactions don't need to be filtered by age,
+                    // as the BTC price is available far enough into the past.
+                    && tx.timestamp,
             ) as Array<Omit<Transaction, 'timestamp'> & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
 
-            scheduledFiatAmountUpdates[fiatCurrency] = scheduledFiatAmountUpdates[fiatCurrency] || new Set();
+            scheduledHistoricFiatAmountUpdates[historyFiatCurrency] ||= new Set();
             const historicTimestamps: number[] = [];
             const { swapByTransaction } = useSwapsStore().state;
 
             for (const tx of transactionsToUpdate) {
                 for (const output of tx.outputs) {
-                    output.fiatValue = output.fiatValue || {};
+                    output.fiatValue ||= {};
                 }
 
                 // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
@@ -261,9 +271,9 @@ export const useBtcTransactionsStore = createStore({
                         // TODO this might be not necessary anymore with Vue3, also for the other Vue.sets in this file.
                         Vue.set(output.fiatValue!, fiatCurrency, currentRate * (output.value / 1e8));
                     }
-                } else if (isHistorySupportedFiatCurrency(fiatCurrency)) {
+                } else {
                     historicTimestamps.push(timestamp);
-                    scheduledFiatAmountUpdates[fiatCurrency].add(tx.transactionHash);
+                    scheduledHistoricFiatAmountUpdates[historyFiatCurrency]!.add(tx.transactionHash);
                 }
                 // For the calculation of swap limits, USD amounts of swap transactions are required. If we have the USD
                 // rate already available without having to fetch it, because it's a new transaction, store it.
@@ -277,7 +287,7 @@ export const useBtcTransactionsStore = createStore({
             if (historicTimestamps.length) {
                 const historicExchangeRates = await getHistoricExchangeRates(
                     CryptoCurrency.BTC,
-                    fiatCurrency as FiatApiSupportedFiatCurrency | FiatApiHistorySupportedBridgedFiatCurrency,
+                    historyFiatCurrency,
                     historicTimestamps,
                 );
 
@@ -287,13 +297,13 @@ export const useBtcTransactionsStore = createStore({
                     // calculation of txDetails in addTransactions.
                     tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
                     for (const output of tx.outputs) {
-                        Vue.set(output.fiatValue!, fiatCurrency, exchangeRate !== undefined
+                        Vue.set(output.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
                             ? exchangeRate * (output.value / 1e8)
                             : FIAT_PRICE_UNAVAILABLE,
                         );
                     }
 
-                    scheduledFiatAmountUpdates[fiatCurrency].delete(tx.transactionHash);
+                    scheduledHistoricFiatAmountUpdates[historyFiatCurrency]!.delete(tx.transactionHash);
                 }
             }
 

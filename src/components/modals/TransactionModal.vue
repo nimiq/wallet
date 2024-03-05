@@ -207,8 +207,8 @@
                             v-if="state === TransactionState.PENDING"
                             :amount="transaction.value"
                             value-mask/>
-                        <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
-                        <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                        <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
+                        <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                             {{ $t('Fiat value unavailable') }}
                         </div>
                         <div v-else class="fiat-amount">
@@ -216,8 +216,8 @@
                                 <template slot="trigger">
                                     <!-- <HistoricValueIcon/> -->
                                     <FiatAmount
-                                        :amount="fiatValue"
-                                        :currency="fiatCurrency"
+                                        :amount="fiat.value"
+                                        :currency="fiat.currency"
                                         value-mask/>
                                 </template>
                                 <span>{{ $t('Historic value') }}</span>
@@ -314,7 +314,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { BrowserDetection } from '@nimiq/utils';
 import {
     PageHeader,
     PageBody,
@@ -328,6 +327,7 @@ import {
     CashlinkSmallIcon,
     CrossIcon,
 } from '@nimiq/vue-components';
+import { BrowserDetection, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
@@ -352,7 +352,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, CryptoCurrency } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
 import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
 import { SwapNimData } from '../../stores/Swaps';
@@ -563,11 +563,15 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Fiat currency
-        const { currency: fiatCurrency } = useFiatStore();
-        const fiatValue = computed(() => transaction.value.fiatValue
-            ? transaction.value.fiatValue[fiatCurrency.value]
-            : undefined,
-        );
+        const { currency: preferredFiatCurrency } = useFiatStore();
+        const fiat = computed(() => {
+            const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
+            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
+                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+                ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
+                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
+        });
 
         const { height: blockHeight } = useNetworkStore();
         const confirmations = computed(() =>
@@ -638,8 +642,7 @@ export default defineComponent({
             datum,
             time,
             data,
-            fiatCurrency,
-            fiatValue,
+            fiat,
             isCashlink,
             isIncoming,
             isCancelledSwap,

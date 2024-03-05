@@ -53,13 +53,13 @@
             <Amount :amount="transaction.value" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
-                <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
-                <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
+                <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <!-- <HistoricValueIcon/> -->
-                    <FiatAmount :amount="fiatValue" :currency="fiatCurrency" value-mask/>
+                    <FiatAmount :amount="fiat.value" :currency="fiat.currency" value-mask/>
                 </div>
             </transition>
             <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
@@ -81,6 +81,7 @@ import {
     FiatAmount,
     CrossIcon,
 } from '@nimiq/vue-components';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { useFiatStore } from '../stores/Fiat';
 import { Transaction, TransactionState } from '../stores/Transactions';
@@ -92,7 +93,7 @@ import BitcoinIcon from './icons/BitcoinIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
+import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
@@ -126,11 +127,15 @@ export default defineComponent({
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
 
         // Fiat currency
-        const { currency: fiatCurrency } = useFiatStore();
-        const fiatValue = computed(() => props.transaction.fiatValue
-            ? props.transaction.fiatValue[fiatCurrency.value]
-            : undefined,
-        );
+        const { currency: preferredFiatCurrency } = useFiatStore();
+        const fiat = computed(() => {
+            const preferredFiatValue = props.transaction.fiatValue?.[preferredFiatCurrency.value];
+            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
+                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+                ? { currency: FiatCurrency.USD, value: props.transaction.fiatValue?.[FiatCurrency.USD] }
+                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
+        });
 
         return {
             constants,
@@ -140,8 +145,7 @@ export default defineComponent({
             dateMonth,
             dateTime,
             data,
-            fiatCurrency,
-            fiatValue,
+            fiat,
             isCashlink,
             isIncoming,
             isSwapProxy,

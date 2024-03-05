@@ -1,4 +1,5 @@
 import { CurrencyInfo } from '@nimiq/utils';
+import { type FiatCurrency } from '../Constants';
 import { useFiatStore } from '../../stores/Fiat';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
@@ -27,7 +28,7 @@ export class GenericFormat extends Format {
         'fiat_amount_out',
     ];
 
-    private referenceAsset: string;
+    private referenceAsset: FiatCurrency;
     private referenceDecimals: number;
 
     constructor(

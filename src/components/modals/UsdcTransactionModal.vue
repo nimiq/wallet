@@ -170,8 +170,8 @@
                             :amount="txValue"
                             currency="usdc"
                             value-mask/>
-                        <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
-                        <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                        <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
+                        <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                             Fiat value unavailable
                         </div>
                         <div v-else class="fiat-amount">
@@ -179,8 +179,8 @@
                                 <template slot="trigger">
                                     <!-- <HistoricValueIcon/> -->
                                     <FiatAmount
-                                        :amount="fiatValue / transaction.value * txValue"
-                                        :currency="fiatCurrency"
+                                        :amount="fiat.value / transaction.value * txValue"
+                                        :currency="fiat.currency"
                                         value-mask/>
                                 </template>
                                 <span>{{ $t('Historic value') }}</span>
@@ -284,6 +284,7 @@ import {
     Identicon,
     CrossIcon,
 } from '@nimiq/vue-components';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import { RefundSwapRequest, SignedPolygonTransaction } from '@nimiq/hub-api';
@@ -292,7 +293,7 @@ import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
 import { useFiatStore } from '@/stores/Fiat';
 import { useSettingsStore } from '@/stores/Settings';
@@ -449,11 +450,15 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Fiat currency
-        const { currency: fiatCurrency } = useFiatStore();
-        const fiatValue = computed(() => transaction.value.fiatValue
-            ? transaction.value.fiatValue[fiatCurrency.value]
-            : undefined,
-        );
+        const { currency: preferredFiatCurrency } = useFiatStore();
+        const fiat = computed(() => {
+            const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
+            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
+                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+                ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
+                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
+        });
 
         // Top left tooltip
         const { outdatedHeight: outdatedBlockHeight } = useUsdcNetworkStore();
@@ -589,8 +594,7 @@ export default defineComponent({
             confirmations,
             datum,
             txValue,
-            fiatCurrency,
-            fiatValue,
+            fiat,
             peerAddress,
             peerLabel,
             peerIsContact,

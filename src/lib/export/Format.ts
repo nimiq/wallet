@@ -1,5 +1,6 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
+import { type FiatCurrency } from '../Constants';
 import { useAddressStore } from '../../stores/Address';
 import { useProxyStore } from '../../stores/Proxy';
 import { Transaction as NimTx } from '../../stores/Transactions';
@@ -233,16 +234,21 @@ export abstract class Format {
         outgoingFee: number,
     }
 
-    protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean, fiatAsset: string): {
+    protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean, fiatAsset: FiatCurrency): {
         value: number,
         outgoingFee: number,
         fiatValue?: number,
     }
 
-    // eslint-disable-next-line consistent-return
-    protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean, fiatAsset?: string): {
+    protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean, fiatAsset?: FiatCurrency): {
         value: number,
         outgoingFee: number,
+        // note: different to the transaction list and to transaction modals in the UI, in the transaction export we do
+        // not include the USD fiat amount as fallback if fetching historic exchange rates is not supported for the
+        // requested fiat currency. Instead, only the available fiat values for the specifically requested fiat currency
+        // are included, to keep exports consistent. Note that for such currencies, it's still possible that stored fiat
+        // amounts are available for historic transactions, if they were stored via current exchange rates at the time
+        // the transaction was new. If the user wants to export USD values, he can trigger a separate export.
         fiatValue?: number,
      } {
         this.assertCryptoAsset(tx);
@@ -315,6 +321,8 @@ export abstract class Format {
                     outgoingFee: (tx as UsdcTx).fee || 0,
                     ...(fiatAsset ? { fiatValue: (tx as UsdcTx).fiatValue?.[fiatAsset] || undefined } : {}),
                 };
+            default:
+                throw new Error(`Unsupported currency ${tx.asset}`);
         }
     }
 }

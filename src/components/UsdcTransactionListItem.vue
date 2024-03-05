@@ -52,13 +52,17 @@
             <Amount :amount="txValue" :currency="ticker" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="txValue" value-mask/>
-                <div v-else-if="fiatValue === undefined" class="fiat-amount">&nbsp;</div>
-                <div v-else-if="fiatValue === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
+                <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
                     <!-- <HistoricValueIcon/> -->
-                    <FiatAmount :amount="fiatValue / transaction.value * txValue" :currency="fiatCurrency" value-mask/>
+                    <FiatAmount
+                        :amount="fiat.value / transaction.value * txValue"
+                        :currency="fiat.currency"
+                        value-mask
+                    />
                 </div>
             </transition>
             <FiatAmount v-else-if="swapData.asset === SwapAsset.EUR"
@@ -79,6 +83,7 @@ import {
     FiatAmount,
     CrossIcon,
 } from '@nimiq/vue-components';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import config from 'config';
 import { useFiatStore } from '../stores/Fiat';
@@ -91,7 +96,7 @@ import BitcoinIcon from './icons/BitcoinIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS, CryptoCurrency } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { assetToCurrency } from '../lib/swap/utils/Assets';
 import { useUsdcTransactionInfo } from '../composables/useUsdcTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
@@ -126,11 +131,15 @@ export default defineComponent({
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
 
         // Fiat currency
-        const { currency: fiatCurrency } = useFiatStore();
-        const fiatValue = computed(() => props.transaction.fiatValue
-            ? props.transaction.fiatValue[fiatCurrency.value]
-            : undefined,
-        );
+        const { currency: preferredFiatCurrency } = useFiatStore();
+        const fiat = computed(() => {
+            const preferredFiatValue = props.transaction.fiatValue?.[preferredFiatCurrency.value];
+            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
+                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+                ? { currency: FiatCurrency.USD, value: props.transaction.fiatValue?.[FiatCurrency.USD] }
+                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
+        });
 
         const ticker = computed(() => {
             // If the swap had a positive slippage, the ticker should be the asset we received.
@@ -152,8 +161,7 @@ export default defineComponent({
             dateTime,
             txValue,
             data,
-            fiatCurrency,
-            fiatValue,
+            fiat,
             isIncoming,
             // isSwapProxy,
             peerAddress,

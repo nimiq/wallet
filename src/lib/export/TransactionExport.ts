@@ -1,11 +1,12 @@
 import { shim as shimAllSettled } from 'promise.allsettled';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { getNetworkClient } from '../../network';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
 import { Transaction, useTransactionsStore } from '../../stores/Transactions';
 import { useConfig } from '../../composables/useConfig';
-import { ENV_MAIN } from '../Constants';
+import { FiatCurrency, ENV_MAIN } from '../Constants';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
 import { GenericFormat } from './GenericFormat';
 
@@ -81,12 +82,14 @@ export async function exportTransactions(
 
         if (format === ExportFormat.GENERIC) {
             // Wait for transactions to receive their fiatValue
-            const fiatCode = useFiatStore().state.currency;
+            const fiatCurrency = useFiatStore().state.currency;
+            const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency) ? fiatCurrency : FiatCurrency.USD;
             for (let i = 0; i < 100; i++) {
-                // Wait 100 milliseconds more for each retry, 10 seconds maximum
+                // Wait 100 milliseconds between each retry, 10 seconds maximum
                 await new Promise((res) => { window.setTimeout(res, 100); });
                 const hashToCheck = newTxs[Math.floor(Math.random() * newTxs.length)].transactionHash;
-                if (nimTransactions$.transactions[hashToCheck].fiatValue?.[fiatCode]) break;
+                const transaction = nimTransactions$.transactions[hashToCheck];
+                if (transaction.fiatValue?.[fiatCurrency] || transaction.fiatValue?.[historyFiatCurrency]) break;
             }
         }
 

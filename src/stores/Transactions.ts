@@ -17,7 +17,7 @@ import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { AddressInfo, useAddressStore } from './Address';
 
 export type Transaction = ReturnType<Nimiq.Client.TransactionDetails['toPlain']> & {
-    fiatValue?: { [fiatCurrency: string]: number | typeof FIAT_PRICE_UNAVAILABLE },
+    fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
     relatedTransactionHash?: string,
 };
 
@@ -31,7 +31,10 @@ export enum TransactionState {
     CONFIRMED = 'confirmed',
 }
 
-const scheduledFiatAmountUpdates: {[fiatCurrency: string]: Set<string>} = {};
+const scheduledHistoricFiatAmountUpdates: Partial<Record<
+    FiatApiSupportedFiatCurrency | FiatApiHistorySupportedBridgedFiatCurrency,
+    Set<string>
+>> = {};
 
 export const useTransactionsStore = createStore({
     id: 'transactions',
@@ -278,25 +281,32 @@ export const useTransactionsStore = createStore({
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
             fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency) ? fiatCurrency : FiatCurrency.USD;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency]; // might be pending
             const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[FiatCurrency.USD];
             const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
-                !scheduledFiatAmountUpdates[fiatCurrency!]?.has(tx.transactionHash)
+                // Only update the fiat amount if it's neither set for the actual fiatCurrency nor historyFiatCurrency.
+                // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
+                // there is no need to fetch for the historyFiatCurrency. On the other hand, if historyFiatCurrency is
+                // different to fiatCurrency, no historic amounts for fiatCurrency can be determined, thus only for new
+                // transactions, and if an amount for historyFiatCurrency is already set, it's not a new transaction.
+                typeof tx.fiatValue?.[fiatCurrency!] !== 'number'
+                    && typeof tx.fiatValue?.[historyFiatCurrency] !== 'number'
+                    && !scheduledHistoricFiatAmountUpdates[historyFiatCurrency]?.has(tx.transactionHash)
                     // NIM price is only available starting 2018-07-28T00:00:00Z, and this timestamp
                     // check prevents us from re-querying older transactions again and again.
-                    && tx.timestamp && tx.timestamp >= 1532736000
-                    && typeof tx.fiatValue?.[fiatCurrency!] !== 'number',
+                    && tx.timestamp && tx.timestamp >= 1532736000,
             ) as Array<Transaction & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
 
-            scheduledFiatAmountUpdates[fiatCurrency] = scheduledFiatAmountUpdates[fiatCurrency] || new Set();
+            scheduledHistoricFiatAmountUpdates[historyFiatCurrency] ||= new Set();
             const historicTimestamps: number[] = [];
             const { swapByTransaction } = useSwapsStore().state;
 
             for (const tx of transactionsToUpdate) {
-                tx.fiatValue = tx.fiatValue || {};
+                tx.fiatValue ||= {};
 
                 // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
                 // historic rates, which also only get updated every few minutes and might not include the newest rates
@@ -309,9 +319,9 @@ export const useTransactionsStore = createStore({
                     // Set via Vue.set to let vue handle reactivity.
                     // TODO this might be not necessary anymore with Vue3, also for the other Vue.sets in this file.
                     Vue.set(tx.fiatValue, fiatCurrency, currentRate * (tx.value / 1e5));
-                } else if (isHistorySupportedFiatCurrency(fiatCurrency)) {
+                } else {
                     historicTimestamps.push(timestamp);
-                    scheduledFiatAmountUpdates[fiatCurrency].add(tx.transactionHash);
+                    scheduledHistoricFiatAmountUpdates[historyFiatCurrency]!.add(tx.transactionHash);
                 }
                 // For the calculation of swap limits, USD amounts of swap transactions are required. If we have the USD
                 // rate already available without having to fetch it, because it's a new transaction, store it.
@@ -323,7 +333,7 @@ export const useTransactionsStore = createStore({
             if (historicTimestamps.length) {
                 const historicExchangeRates = await getHistoricExchangeRates(
                     CryptoCurrency.NIM,
-                    fiatCurrency as FiatApiSupportedFiatCurrency | FiatApiHistorySupportedBridgedFiatCurrency,
+                    historyFiatCurrency,
                     historicTimestamps,
                 );
 
@@ -331,12 +341,12 @@ export const useTransactionsStore = createStore({
                     const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
                     // Get the newest transaction from the store in case it was updated via setRelatedTransaction.
                     tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
-                    Vue.set(tx.fiatValue!, fiatCurrency, exchangeRate !== undefined
+                    Vue.set(tx.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
                         ? exchangeRate * (tx.value / 1e5)
                         : FIAT_PRICE_UNAVAILABLE,
                     );
 
-                    scheduledFiatAmountUpdates[fiatCurrency].delete(tx.transactionHash);
+                    scheduledHistoricFiatAmountUpdates[historyFiatCurrency]!.delete(tx.transactionHash);
                 }
             }
 

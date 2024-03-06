@@ -30,7 +30,8 @@ export function guessUserCurrency(regionOverwrite?: string) {
 
     // Find currency by region
     if (region) {
-        // Find a currency which starts by a region. From currencies supported by FiatApi, that are actually all but EUR
+        // Find a currency which starts by a region. From currencies supported by FiatApi, that are actually most, see
+        // getFiatCurrencyCountry in Settings.vue.
         const currencyRegionRegex = new RegExp(`^${region}`, 'i');
         const currencyByRegion = FIAT_CURRENCIES_OFFERED.find((currency) => currencyRegionRegex.test(currency));
         if (currencyByRegion) return currencyByRegion;

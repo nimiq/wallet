@@ -260,11 +260,11 @@
                 <div class="setting currency-selector">
                     <button v-for="currencyOption of FIAT_CURRENCIES_OFFERED"
                         :key="currencyOption"
-                        :class="{ selected: currencyOption === currency }"
+                        :class="{ selected: currencyOption === fiatCurrency }"
                         class="reset currency"
-                        @click="setCurrency(currencyOption)"
+                        @click="setFiatCurrency(currencyOption)"
                     >
-                        <CountryFlag :code="currencyOption.substring(0, 2)"/>
+                        <CountryFlag :code="getFiatCurrencyCountry(currencyOption)"/>
                         {{currencyOption.toUpperCase()}}
                     </button>
                 </div>
@@ -318,7 +318,7 @@ export default defineComponent({
         const settings = useSettingsStore();
         const { connectedUser: kycUser } = useKycStore();
 
-        const { currency, setCurrency } = useFiatStore();
+        const { currency: fiatCurrency, setCurrency: setFiatCurrency } = useFiatStore();
 
         const { canInstallPwa, callAndConsumePwaInstallPrompt, pwaInstallationChoice } = usePwaInstallPrompt();
 
@@ -410,6 +410,21 @@ export default defineComponent({
         // @ts-expect-error Property 'enableVestingSetting' does not exist on type 'Window & typeof globalThis'
         window.enableVestingSetting = enableVestingSetting;
 
+        function getFiatCurrencyCountry(currency: FiatCurrency) {
+            switch (currency) {
+                case FiatCurrency.XOF:
+                    // Used in several West African countries (https://en.wikipedia.org/wiki/West_African_CFA_franc) of
+                    // which Senegal is where most Nimiq adoption is taking place.
+                    return 'SN';
+                default:
+                    // For remaining currencies, the main country of use can be derived as the first two letters of the
+                    // currency code. The resulting countries / flags should be checked against the flags in the list of
+                    // circulating currencies in https://en.wikipedia.org/wiki/List_of_circulating_currencies. For euro,
+                    // an additional EU flag has been added.
+                    return currency.substring(0, 2);
+            }
+        }
+
         const copyrightYear = Math.max(
             Number.parseInt(process.env.VUE_APP_COPYRIGHT_YEAR!, 10), // build year
             new Date().getFullYear(), // user year
@@ -420,9 +435,10 @@ export default defineComponent({
             clearCache,
             Languages,
             ColorMode,
-            currency,
             FIAT_CURRENCIES_OFFERED,
-            setCurrency,
+            fiatCurrency,
+            setFiatCurrency,
+            getFiatCurrencyCountry,
             ...settings,
             fileInput$,
             loadFile,

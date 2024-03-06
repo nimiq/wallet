@@ -327,7 +327,7 @@ import {
     CashlinkSmallIcon,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { BrowserDetection, isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { BrowserDetection } from '@nimiq/utils';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
@@ -347,12 +347,11 @@ import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
-import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
 import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
 import { SwapNimData } from '../../stores/Swaps';
@@ -391,6 +390,7 @@ export default defineComponent({
             relatedTx,
             swapData,
             swapInfo,
+            fiat,
         } = useTransactionInfo(transaction);
 
         const isIncoming = computed(() => {
@@ -561,17 +561,6 @@ export default defineComponent({
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
-
-        // Fiat currency
-        const { currency: preferredFiatCurrency } = useFiatStore();
-        const fiat = computed(() => {
-            const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
-            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
-            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-                ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
-                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
-        });
 
         const { height: blockHeight } = useNetworkStore();
         const confirmations = computed(() =>

@@ -1,5 +1,6 @@
 import { Ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
 
 import { useSwapsStore } from '@/stores/Swaps';
@@ -9,8 +10,9 @@ import { useBtcLabelsStore } from '@/stores/BtcLabels';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
+import { useFiatStore } from '@/stores/Fiat';
 
-import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
+import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
 
 import { i18n } from '@/i18n/i18n-setup';
@@ -190,6 +192,27 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
         return '';
     });
 
+    // Fiat currency
+    const { currency: preferredFiatCurrency } = useFiatStore();
+    const getFiatValue = (fiatCurrency: FiatCurrency) => {
+        const outputsToCount = isIncoming.value ? outputsReceived.value : outputsSent.value;
+        let value = 0;
+        for (const output of outputsToCount) {
+            const outputValue = output.fiatValue?.[fiatCurrency];
+            if (outputValue === undefined || outputValue === FIAT_PRICE_UNAVAILABLE) return outputValue;
+            value += outputValue;
+        }
+        return value;
+    };
+    const fiat = computed(() => {
+        const preferredFiatValue = getFiatValue(preferredFiatCurrency.value);
+        const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+        return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
+            // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+            ? { currency: FiatCurrency.USD, value: getFiatValue(FiatCurrency.USD) }
+            : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
+    });
+
     return {
         amountReceived,
         amountSent,
@@ -204,5 +227,6 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
         swapData,
         swapInfo,
         swapTransaction,
+        fiat,
     };
 }

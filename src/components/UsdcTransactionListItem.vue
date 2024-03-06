@@ -83,10 +83,7 @@ import {
     FiatAmount,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import config from 'config';
-import { useFiatStore } from '../stores/Fiat';
 import { Transaction, TransactionState } from '../stores/UsdcTransactions';
 import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
@@ -96,7 +93,8 @@ import BitcoinIcon from './icons/BitcoinIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
+import { useConfig } from '../composables/useConfig';
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { assetToCurrency } from '../lib/swap/utils/Assets';
 import { useUsdcTransactionInfo } from '../composables/useUsdcTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
@@ -110,6 +108,7 @@ export default defineComponent({
         },
     },
     setup(props) {
+        const { config } = useConfig();
         const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
         const state = computed(() => props.transaction.state);
@@ -125,21 +124,11 @@ export default defineComponent({
             peerLabel,
             swapData,
             swapInfo,
+            fiat,
         } = useUsdcTransactionInfo(transaction);
 
         const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp * 1000);
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
-
-        // Fiat currency
-        const { currency: preferredFiatCurrency } = useFiatStore();
-        const fiat = computed(() => {
-            const preferredFiatValue = props.transaction.fiatValue?.[preferredFiatCurrency.value];
-            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
-            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-                ? { currency: FiatCurrency.USD, value: props.transaction.fiatValue?.[FiatCurrency.USD] }
-                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
-        });
 
         const ticker = computed(() => {
             // If the swap had a positive slippage, the ticker should be the asset we received.

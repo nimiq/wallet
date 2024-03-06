@@ -284,7 +284,6 @@ import {
     Identicon,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import { RefundSwapRequest, SignedPolygonTransaction } from '@nimiq/hub-api';
@@ -293,9 +292,8 @@ import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
-import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
-import { useFiatStore } from '@/stores/Fiat';
 import { useSettingsStore } from '@/stores/Settings';
 import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
@@ -354,6 +352,7 @@ export default defineComponent({
             peerLabel,
             swapData,
             swapInfo,
+            fiat,
         } = useUsdcTransactionInfo(transaction);
 
         const { config } = useConfig();
@@ -448,17 +447,6 @@ export default defineComponent({
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
-
-        // Fiat currency
-        const { currency: preferredFiatCurrency } = useFiatStore();
-        const fiat = computed(() => {
-            const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
-            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
-            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-                ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
-                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
-        });
 
         // Top left tooltip
         const { outdatedHeight: outdatedBlockHeight } = useUsdcNetworkStore();

@@ -1,5 +1,6 @@
 import { Ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
 
 import { useSwapsStore } from '@/stores/Swaps';
@@ -9,8 +10,9 @@ import { useUsdcContactsStore } from '@/stores/UsdcContacts';
 import { useUsdcAddressStore } from '@/stores/UsdcAddress';
 import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
+import { useFiatStore } from '@/stores/Fiat';
 
-import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
+import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
 
 import { i18n } from '@/i18n/i18n-setup';
@@ -164,6 +166,17 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
         return null;
     });
 
+    // Fiat currency
+    const { currency: preferredFiatCurrency } = useFiatStore();
+    const fiat = computed(() => {
+        const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
+        const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+        return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
+            // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+            ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
+            : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
+    });
+
     return {
         txValue,
         data,
@@ -173,5 +186,6 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
         peerLabel,
         swapData,
         swapInfo,
+        fiat,
     };
 }

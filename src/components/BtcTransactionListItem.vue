@@ -88,10 +88,8 @@ import {
     CrossIcon,
     Identicon,
 } from '@nimiq/vue-components';
-import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { TransactionState } from '@nimiq/electrum-client';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { useFiatStore } from '../stores/Fiat';
 import { Transaction } from '../stores/BtcTransactions';
 import Avatar from './Avatar.vue';
 import Amount from './Amount.vue';
@@ -100,7 +98,7 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
 import { useBtcTransactionInfo } from '../composables/useBtcTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
@@ -127,36 +125,14 @@ export default defineComponent({
             isIncoming,
             peerAddresses,
             peerLabel,
-            outputsReceived,
-            outputsSent,
             swapData,
             swapInfo,
             swapTransaction,
+            fiat,
         } = useBtcTransactionInfo(transaction);
 
         const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp * 1000);
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
-
-        // Fiat currency
-        const { currency: preferredFiatCurrency } = useFiatStore();
-        const getFiatValue = (fiatCurrency: FiatCurrency) => {
-            const outputsToCount = isIncoming.value ? outputsReceived.value : outputsSent.value;
-            let value = 0;
-            for (const output of outputsToCount) {
-                const outputValue = output.fiatValue?.[fiatCurrency];
-                if (outputValue === undefined || outputValue === FIAT_PRICE_UNAVAILABLE) return outputValue;
-                value += outputValue;
-            }
-            return value;
-        };
-        const fiat = computed(() => {
-            const preferredFiatValue = getFiatValue(preferredFiatCurrency.value);
-            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
-            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-                ? { currency: FiatCurrency.USD, value: getFiatValue(FiatCurrency.USD) }
-                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
-        });
 
         return {
             constants,

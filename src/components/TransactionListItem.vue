@@ -81,9 +81,7 @@ import {
     FiatAmount,
     CrossIcon,
 } from '@nimiq/vue-components';
-import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { useFiatStore } from '../stores/Fiat';
 import { Transaction, TransactionState } from '../stores/Transactions';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
@@ -93,7 +91,7 @@ import BitcoinIcon from './icons/BitcoinIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
+import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
@@ -121,21 +119,11 @@ export default defineComponent({
             peerLabel,
             swapData,
             swapInfo,
+            fiat,
         } = useTransactionInfo(transaction);
 
         const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp * 1000);
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
-
-        // Fiat currency
-        const { currency: preferredFiatCurrency } = useFiatStore();
-        const fiat = computed(() => {
-            const preferredFiatValue = props.transaction.fiatValue?.[preferredFiatCurrency.value];
-            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
-            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-                ? { currency: FiatCurrency.USD, value: props.transaction.fiatValue?.[FiatCurrency.USD] }
-                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
-        });
 
         return {
             constants,

@@ -1,6 +1,6 @@
 import { Ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { AddressBook } from '@nimiq/utils';
+import { AddressBook, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
 
 import Config from 'config';
@@ -10,8 +10,9 @@ import { Transaction, useTransactionsStore } from '@/stores/Transactions';
 import { useAddressStore } from '@/stores/Address';
 import { useContactsStore } from '@/stores/Contacts';
 import { useProxyStore } from '@/stores/Proxy';
+import { useFiatStore } from '@/stores/Fiat';
 
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '@/lib/Constants';
+import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '@/lib/Constants';
 import { isProxyData, ProxyType } from '@/lib/ProxyDetection';
 import { parseData } from '@/lib/DataFormatting';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
@@ -193,6 +194,17 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
         return parseData(transaction.value.data.raw);
     });
 
+    // Fiat currency
+    const { currency: preferredFiatCurrency } = useFiatStore();
+    const fiat = computed(() => {
+        const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
+        const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+        return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
+            // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
+            ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }
+            : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
+    });
+
     return {
         data,
         isCancelledSwap,
@@ -204,5 +216,6 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
         relatedTx,
         swapData,
         swapInfo,
+        fiat,
     };
 }

@@ -317,7 +317,6 @@ import {
     CrossIcon,
     Identicon,
 } from '@nimiq/vue-components';
-import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest, SignedBtcTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
@@ -338,11 +337,10 @@ import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
 import { useAccountStore, AccountType } from '../../stores/Account';
-import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { twoDigit } from '../../lib/NumberFormatting';
-import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { SwapBtcData } from '../../stores/Swaps';
 import { useTransactionsStore } from '../../stores/Transactions';
@@ -393,6 +391,7 @@ export default defineComponent({
             outputsSent,
             swapData,
             swapInfo,
+            fiat,
         } = useBtcTransactionInfo(transaction);
 
         const ownAddresses = computed(() => (isIncoming.value
@@ -482,27 +481,6 @@ export default defineComponent({
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
-
-        // Fiat currency
-        const { currency: preferredFiatCurrency } = useFiatStore();
-        const getFiatValue = (fiatCurrency: FiatCurrency) => {
-            const outputsToCount = isIncoming.value ? outputsReceived.value : outputsSent.value;
-            let value = 0;
-            for (const output of outputsToCount) {
-                const outputValue = output.fiatValue?.[fiatCurrency];
-                if (outputValue === undefined || outputValue === FIAT_PRICE_UNAVAILABLE) return outputValue;
-                value += outputValue;
-            }
-            return value;
-        };
-        const fiat = computed(() => {
-            const preferredFiatValue = getFiatValue(preferredFiatCurrency.value);
-            const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
-            return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
-                // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
-                ? { currency: FiatCurrency.USD, value: getFiatValue(FiatCurrency.USD) }
-                : { currency: preferredFiatCurrency.value, value: preferredFiatValue };
-        });
 
         const { height: blockHeight, timestamp: blockTimestamp } = useBtcNetworkStore();
         const confirmations = computed(() =>

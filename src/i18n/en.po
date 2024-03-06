@@ -367,9 +367,9 @@ msgstr ""
 msgid "Back to Bank Details"
 msgstr ""
 
-#: src/composables/useBtcTransactionInfo.ts:126
-#: src/composables/useTransactionInfo.ts:115
-#: src/composables/useUsdcTransactionInfo.ts:103
+#: src/composables/useBtcTransactionInfo.ts:128
+#: src/composables/useTransactionInfo.ts:116
+#: src/composables/useUsdcTransactionInfo.ts:105
 msgid "Bank Account"
 msgstr ""
 
@@ -394,8 +394,8 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:121
 #: src/components/modals/BtcTransactionModal.vue:133
-#: src/composables/useTransactionInfo.ts:107
-#: src/composables/useUsdcTransactionInfo.ts:99
+#: src/composables/useTransactionInfo.ts:108
+#: src/composables/useUsdcTransactionInfo.ts:101
 msgid "Bitcoin"
 msgstr ""
 
@@ -519,9 +519,9 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:6
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
-#: src/composables/useBtcTransactionInfo.ts:111
-#: src/composables/useTransactionInfo.ts:102
-#: src/composables/useUsdcTransactionInfo.ts:88
+#: src/composables/useBtcTransactionInfo.ts:113
+#: src/composables/useTransactionInfo.ts:103
+#: src/composables/useUsdcTransactionInfo.ts:90
 msgid "Cancelled Swap"
 msgstr ""
 
@@ -530,7 +530,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:124
+#: src/composables/useTransactionInfo.ts:125
 msgid "Cashlink"
 msgstr ""
 
@@ -704,7 +704,7 @@ msgstr ""
 msgid "Conversion from USDC.e"
 msgstr ""
 
-#: src/composables/useUsdcTransactionInfo.ts:110
+#: src/composables/useUsdcTransactionInfo.ts:112
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
@@ -716,8 +716,8 @@ msgstr ""
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:404
-#: src/composables/useUsdcTransactionInfo.ts:158
+#: src/components/modals/UsdcTransactionModal.vue:403
+#: src/composables/useUsdcTransactionInfo.ts:160
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
 
@@ -1144,30 +1144,30 @@ msgstr ""
 msgid "Historic value"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:437
+#: src/components/modals/BtcTransactionModal.vue:436
 #: src/components/modals/TransactionModal.vue:483
-#: src/components/modals/UsdcTransactionModal.vue:400
-#: src/composables/useBtcTransactionInfo.ts:187
-#: src/composables/useTransactionInfo.ts:169
-#: src/composables/useUsdcTransactionInfo.ts:148
+#: src/components/modals/UsdcTransactionModal.vue:399
+#: src/composables/useBtcTransactionInfo.ts:189
+#: src/composables/useTransactionInfo.ts:170
+#: src/composables/useUsdcTransactionInfo.ts:150
 #: src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:437
+#: src/components/modals/BtcTransactionModal.vue:436
 #: src/components/modals/TransactionModal.vue:498
 #: src/components/modals/TransactionModal.vue:504
-#: src/components/modals/UsdcTransactionModal.vue:400
-#: src/composables/useBtcTransactionInfo.ts:187
-#: src/composables/useTransactionInfo.ts:184
-#: src/composables/useTransactionInfo.ts:190
-#: src/composables/useUsdcTransactionInfo.ts:154
+#: src/components/modals/UsdcTransactionModal.vue:399
+#: src/composables/useBtcTransactionInfo.ts:189
+#: src/composables/useTransactionInfo.ts:185
+#: src/composables/useTransactionInfo.ts:191
+#: src/composables/useUsdcTransactionInfo.ts:156
 msgid "HTLC Refund"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:487
-#: src/composables/useTransactionInfo.ts:173
-#: src/composables/useUsdcTransactionInfo.ts:151
+#: src/composables/useTransactionInfo.ts:174
+#: src/composables/useUsdcTransactionInfo.ts:153
 msgid "HTLC Settlement"
 msgstr ""
 
@@ -1745,7 +1745,7 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:575
+#: src/components/modals/UsdcTransactionModal.vue:563
 msgid "Refund failed: "
 msgstr ""
 
@@ -1943,9 +1943,9 @@ msgstr ""
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/composables/useBtcTransactionInfo.ts:172
-#: src/composables/useTransactionInfo.ts:152
-#: src/composables/useUsdcTransactionInfo.ts:132
+#: src/composables/useBtcTransactionInfo.ts:174
+#: src/composables/useTransactionInfo.ts:153
+#: src/composables/useUsdcTransactionInfo.ts:134
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
@@ -2116,9 +2116,9 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
-#: src/composables/useBtcTransactionInfo.ts:118
-#: src/composables/useTransactionInfo.ts:98
-#: src/composables/useUsdcTransactionInfo.ts:95
+#: src/composables/useBtcTransactionInfo.ts:120
+#: src/composables/useTransactionInfo.ts:99
+#: src/composables/useUsdcTransactionInfo.ts:97
 msgid "Swap"
 msgstr ""
 
@@ -2431,7 +2431,7 @@ msgstr ""
 msgid "Tx time"
 msgstr ""
 
-#: src/composables/useTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:126
 msgid "Unclaimed Cashlink"
 msgstr ""
 
@@ -2480,8 +2480,8 @@ msgstr ""
 #: src/components/layouts/AccountOverview.vue:158
 #: src/components/layouts/AddressOverview.vue:81
 #: src/components/UsdcAddressInfo.vue:12
-#: src/composables/useBtcTransactionInfo.ts:122
-#: src/composables/useTransactionInfo.ts:111
+#: src/composables/useBtcTransactionInfo.ts:124
+#: src/composables/useTransactionInfo.ts:112
 msgid "USD Coin"
 msgstr ""
 

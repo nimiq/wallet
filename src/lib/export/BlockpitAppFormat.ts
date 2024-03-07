@@ -51,14 +51,19 @@ export class BlockpitAppFormat extends Format {
             this.nimAddresses.length === 1
             && this.btcAddresses.internal.length === 0
             && this.btcAddresses.external.length === 0
+            && this.usdcAddresses.length === 0
         ) {
             // We are exporting one NIM address only
             this.depotLabel = useAddressStore().state.addressInfos[this.nimAddresses[0]].label;
         } else {
-            // We are exporting all addresses, or the BTC account
+            // We are exporting all addresses, or the BTC or USDC account. Find the label of the account that contains
+            // the addresses.
             this.depotLabel = Object.values(useAccountStore().state.accountInfos).find((accountInfo) => {
                 if (this.nimAddresses[0]) return accountInfo.addresses.includes(this.nimAddresses[0]);
-                return accountInfo.btcAddresses.external[0] === this.btcAddresses.external[0];
+                if (this.btcAddresses.external.length) {
+                    return accountInfo.btcAddresses.external[0] === this.btcAddresses.external[0];
+                }
+                return !!accountInfo.polygonAddresses?.includes(this.usdcAddresses[0]);
             })!.label;
         }
     }

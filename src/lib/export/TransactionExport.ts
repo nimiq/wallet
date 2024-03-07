@@ -105,6 +105,7 @@ export async function exportTransactions(
 
     const { state: usdcTransactions$ } = useUsdcTransactionsStore();
     const usdcTransactions = usdcAddresses.length === 0 ? [] : Object.values(usdcTransactions$.transactions)
+        .filter((tx) => usdcAddresses.includes(tx.sender) || usdcAddresses.includes(tx.recipient))
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 

@@ -83,11 +83,11 @@ export class BlockpitAppFormat extends Format {
         let feeOut = 0;
 
         if (txIn) {
-            this.assertCryptoAsset(txIn);
+            this.assertAndSetCryptoAsset(txIn);
             ({ value: valueIn } = this.getValue(txIn, true));
         }
         if (txOut) {
-            this.assertCryptoAsset(txOut);
+            this.assertAndSetCryptoAsset(txOut);
             ({ value: valueOut, outgoingFee: feeOut } = this.getValue(txOut, false));
         }
 

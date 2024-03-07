@@ -95,16 +95,24 @@ export abstract class Format {
         return message;
     }
 
-    protected assertCryptoAsset<T extends NimTx | BtcTx | UsdcTx>(tx: T): asserts tx is T & { asset: CryptoAsset } {
+    protected assertAndSetCryptoAsset<T extends NimTx | BtcTx | UsdcTx>(tx: T)
+    : asserts tx is T & { readonly asset: CryptoAsset } {
+        let asset: CryptoAsset;
         if ('sender' in tx && 'senderType' in tx) {
-            (tx as NimTx & { asset: 'NIM' }).asset = 'NIM';
+            asset = 'NIM';
         } else if ('outputs' in tx) {
-            (tx as BtcTx & { asset: 'BTC' }).asset = 'BTC';
+            asset = 'BTC';
         } else if ('sender' in tx && 'logIndex' in tx) {
-            (tx as UsdcTx & { asset: 'USDC' }).asset = 'USDC';
+            asset = 'USDC';
         } else {
             throw new Error('Unable to detect tx asset');
         }
+        // Define asset on tx as non-enumerable property to avoid it for example ending up being written to the
+        // transaction store, as it's only meant as a temporary metadata.
+        Object.defineProperty(tx, 'asset', {
+            value: asset,
+            enumerable: false,
+        });
     }
 
     public export(filename?: string) {
@@ -113,7 +121,7 @@ export abstract class Format {
         for (const tx of this.transactions) {
             if (alreadyProcessedTransactionHashes.includes(tx.transactionHash)) continue;
 
-            this.assertCryptoAsset(tx);
+            this.assertAndSetCryptoAsset(tx);
             let messageOverride: string | undefined;
 
             // Detect swaps and add them in the same row
@@ -218,7 +226,7 @@ export abstract class Format {
     }
 
     protected getTxAsset(tx: BtcTx | NimTx | UsdcTx) {
-        this.assertCryptoAsset(tx);
+        this.assertAndSetCryptoAsset(tx);
         return tx.asset;
     }
 
@@ -251,7 +259,7 @@ export abstract class Format {
         // the transaction was new. If the user wants to export USD values, he can trigger a separate export.
         fiatValue?: number,
      } {
-        this.assertCryptoAsset(tx);
+        this.assertAndSetCryptoAsset(tx);
 
         switch (tx.asset) {
             case 'NIM':

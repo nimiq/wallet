@@ -74,8 +74,8 @@ export class GenericFormat extends Format {
             } = this.getValue(txOut, false, this.referenceAsset));
         }
 
-        if (txIn) this.assertCryptoAsset(txIn);
-        if (txOut) this.assertCryptoAsset(txOut);
+        if (txIn) this.assertAndSetCryptoAsset(txIn);
+        if (txOut) this.assertAndSetCryptoAsset(txOut);
 
         this.rows.push([
             // (txIn || txOut)!.transactionHash,

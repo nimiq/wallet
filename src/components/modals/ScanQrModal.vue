@@ -142,10 +142,10 @@ export default defineComponent({
                 loadEthersLibrary().then((ethers) => {
                     // Support scanning plain addresses. The send modal shows a warning for unknown addresses
                     // that users must make sure this is a Polygon USDC address.
-                    if (result.startsWith('0x')) {
-                        const address = ethers.utils.getAddress(result);
+                    if (result.startsWith('0x') && ethers.utils.isAddress(result)) {
+                        const normalizedAddress = ethers.utils.getAddress(result);
                         router.replace(`/${createEthereumRequestLink(
-                            address,
+                            normalizedAddress,
                             Currency.USDC,
                             {
                                 chainId: config.environment === ENV_MAIN

@@ -4,7 +4,7 @@ const child_process = require('child_process');
 const createHash = require('crypto').createHash;
 
 const webpack = require('webpack');
-const PoLoaderOptimizer = require('webpack-i18n-tools')();
+const PoLoaderOptimizer = require('webpack-i18n-tools/optimizer/webpack');
 
 // Fix build for Node version with OpenSSL 3
 const crypto = require('crypto');
@@ -83,7 +83,6 @@ module.exports = {
                 stream: require.resolve('stream-browserify'), // Needed by bitcoinjs-lib/tiny-secp256k1
             },
         },
-        devtool: 'source-map', // TEMP: only 'source-map' allowed by webpack-i18-tools, will be fixed in future versions.
         // externals: {
         //     'bitcoinjs-lib': 'BitcoinJS',
         //     'buffer': 'BitcoinJS',

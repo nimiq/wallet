@@ -1933,6 +1933,10 @@ msgstr "Сбросить настройки кошелька и перезагр
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:638
+msgid "Restart payout process"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:1041
 msgid "Resulting BTC amount is too small."
 msgstr ""
@@ -2198,10 +2202,6 @@ msgstr "Показать Защитную Фразу"
 #: src/components/modals/WelcomeModal.vue:322
 msgid "Show values as {currency}"
 msgstr "Показывать в {currency}"
-
-#: src/components/swap/SwapAnimation.vue:638
-msgid "Sign a new redeem transaction"
-msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:192
 msgid "Signup"

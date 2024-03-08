@@ -1960,6 +1960,10 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr "A resolver Unstopable Domain..."
 
+#: src/components/swap/SwapAnimation.vue:638
+msgid "Restart payout process"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:1041
 msgid "Resulting BTC amount is too small."
 msgstr "O valor resultante de BTC é demasiado baixo."
@@ -2225,10 +2229,6 @@ msgstr "Mostrar Palavras de Backup"
 #: src/components/modals/WelcomeModal.vue:322
 msgid "Show values as {currency}"
 msgstr "Mostrar valores em {currency}"
-
-#: src/components/swap/SwapAnimation.vue:638
-msgid "Sign a new redeem transaction"
-msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:192
 msgid "Signup"

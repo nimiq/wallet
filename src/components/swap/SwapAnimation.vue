@@ -635,7 +635,7 @@ export default defineComponent({
                 && props.swapState === SwapState.SETTLE_INCOMING
                 && props.toAsset === SwapAsset.USDC_MATIC
             ) {
-                return context.root.$t('Sign a new redeem transaction') as string;
+                return context.root.$t('Restart payout process') as string;
             }
 
             return false;

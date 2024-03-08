@@ -1950,6 +1950,10 @@ msgstr "Reset je wallet instellingen en herlaad de data van de blockchain."
 msgid "Resolving Unstoppable Domain..."
 msgstr "Unstoppable Domain ophalen..."
 
+#: src/components/swap/SwapAnimation.vue:638
+msgid "Restart payout process"
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:1041
 msgid "Resulting BTC amount is too small."
 msgstr "Het resulterende BTC-bedrag is te klein."
@@ -2215,10 +2219,6 @@ msgstr "Toon herstelwoorden"
 #: src/components/modals/WelcomeModal.vue:322
 msgid "Show values as {currency}"
 msgstr "Toon waardes als {currency}"
-
-#: src/components/swap/SwapAnimation.vue:638
-msgid "Sign a new redeem transaction"
-msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:192
 msgid "Signup"

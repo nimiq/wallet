@@ -299,7 +299,7 @@ msgstr ""
 "Усі нові можливості працюють виключно для нових рахунків. Оновіть зараз, це "
 "займе лише кілька секунди."
 
-#: src/components/layouts/AddressOverview.vue:204
+#: src/components/layouts/AddressOverview.vue:203
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -658,7 +658,7 @@ msgstr "Натисніть для отримання додаткової інф
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Натисніть ‘Усунення несправностей’, щоб дізнатися більше."
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:205
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Закрити"
@@ -765,11 +765,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:169
+#: src/components/layouts/AddressOverview.vue:168
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:161
+#: src/components/layouts/AddressOverview.vue:160
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -1398,7 +1398,7 @@ msgstr "Підпишіть відправника"
 msgid "Language"
 msgstr "Мова"
 
-#: src/components/layouts/AddressOverview.vue:164
+#: src/components/layouts/AddressOverview.vue:163
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr "Дізнайтеся більше"
@@ -1407,11 +1407,11 @@ msgstr "Дізнайтеся більше"
 msgid "Learn more here"
 msgstr "Дізнайтеся більше тут"
 
-#: src/components/layouts/AddressOverview.vue:154
+#: src/components/layouts/AddressOverview.vue:153
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:190
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Розпочнемо! Створіть рахунок у мережі Німік."
 
@@ -1811,7 +1811,7 @@ msgid ""
 "intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:144
+#: src/components/layouts/AddressOverview.vue:143
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Отримати"
@@ -2040,7 +2040,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Продаж зараз доступний"
 
-#: src/components/layouts/AddressOverview.vue:139
+#: src/components/layouts/AddressOverview.vue:138
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Відправити"
@@ -2204,7 +2204,7 @@ msgstr "Показати секретні слова"
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:192
+#: src/components/layouts/AddressOverview.vue:191
 msgid "Signup"
 msgstr "Приєднатися"
 
@@ -2796,7 +2796,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "Наразі у вас немає коштів для обміну."
 
-#: src/components/layouts/AddressOverview.vue:412
+#: src/components/layouts/AddressOverview.vue:411
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -2928,7 +2928,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Ваша виплата вже в дорозі"
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Your swap was successful!"
 msgstr "Ваш обмін пройшов успішно!"
 

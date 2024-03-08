@@ -274,7 +274,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:204
+#: src/components/layouts/AddressOverview.vue:203
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -601,7 +601,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:205
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr ""
@@ -708,11 +708,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:169
+#: src/components/layouts/AddressOverview.vue:168
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:161
+#: src/components/layouts/AddressOverview.vue:160
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -1283,7 +1283,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:164
+#: src/components/layouts/AddressOverview.vue:163
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr ""
@@ -1292,11 +1292,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:154
+#: src/components/layouts/AddressOverview.vue:153
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:190
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1668,7 +1668,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:144
+#: src/components/layouts/AddressOverview.vue:143
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
@@ -1889,7 +1889,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:139
+#: src/components/layouts/AddressOverview.vue:138
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
@@ -2051,7 +2051,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:192
+#: src/components/layouts/AddressOverview.vue:191
 msgid "Signup"
 msgstr ""
 
@@ -2589,7 +2589,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:412
+#: src/components/layouts/AddressOverview.vue:411
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -2696,7 +2696,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Your swap was successful!"
 msgstr ""
 

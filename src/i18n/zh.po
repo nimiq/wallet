@@ -295,7 +295,7 @@ msgid ""
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟"
 
-#: src/components/layouts/AddressOverview.vue:204
+#: src/components/layouts/AddressOverview.vue:203
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -635,7 +635,7 @@ msgstr "点击了解更多信息"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:205
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"
@@ -740,11 +740,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:169
+#: src/components/layouts/AddressOverview.vue:168
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:161
+#: src/components/layouts/AddressOverview.vue:160
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -1345,7 +1345,7 @@ msgstr "标注发件人"
 msgid "Language"
 msgstr "语言"
 
-#: src/components/layouts/AddressOverview.vue:164
+#: src/components/layouts/AddressOverview.vue:163
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr "了解更多"
@@ -1354,11 +1354,11 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/AddressOverview.vue:154
+#: src/components/layouts/AddressOverview.vue:153
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:190
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
 
@@ -1752,7 +1752,7 @@ msgid ""
 "intro."
 msgstr "在这个{blog_post}中阅读更多信息，或点击下方查看新的钱包介绍。"
 
-#: src/components/layouts/AddressOverview.vue:144
+#: src/components/layouts/AddressOverview.vue:143
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "接收"
@@ -1978,7 +1978,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "出售功能现在可用了"
 
-#: src/components/layouts/AddressOverview.vue:139
+#: src/components/layouts/AddressOverview.vue:138
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "发送"
@@ -2142,7 +2142,7 @@ msgstr "显示恢复字"
 msgid "Show values as {currency}"
 msgstr "显示价值为 {currency}"
 
-#: src/components/layouts/AddressOverview.vue:192
+#: src/components/layouts/AddressOverview.vue:191
 msgid "Signup"
 msgstr "注册"
 
@@ -2707,7 +2707,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "您当前没有余额可以进行兑换。"
 
-#: src/components/layouts/AddressOverview.vue:412
+#: src/components/layouts/AddressOverview.vue:411
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -2828,7 +2828,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "你的付款正在处理中"
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Your swap was successful!"
 msgstr "你的交换成功了！"
 

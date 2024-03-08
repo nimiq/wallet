@@ -306,7 +306,7 @@ msgstr ""
 "Les nouvelles fonctionnalités sont disponibles exclusivement pour les "
 "comptes multi-adresses. Essayez-les, cela ne prend que quelques secondes."
 
-#: src/components/layouts/AddressOverview.vue:204
+#: src/components/layouts/AddressOverview.vue:203
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -667,7 +667,7 @@ msgstr "Cliquez pour plus d'informations"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Cliquez sur \"Résolution des problèmes\" pour en apprendre plus."
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:205
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fermer"
@@ -772,11 +772,11 @@ msgstr "Conversion à partir de l'USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Conversion d'USDC.e en USDC"
 
-#: src/components/layouts/AddressOverview.vue:169
+#: src/components/layouts/AddressOverview.vue:168
 msgid "Convert to USDC"
 msgstr "Convertir en USDC"
 
-#: src/components/layouts/AddressOverview.vue:161
+#: src/components/layouts/AddressOverview.vue:160
 msgid "Convert your USDC.e to the new standard."
 msgstr "Convertissez votre USDC.e à la nouvelle norme."
 
@@ -1422,7 +1422,7 @@ msgstr "Étiquetez l'expéditeur"
 msgid "Language"
 msgstr "Langue"
 
-#: src/components/layouts/AddressOverview.vue:164
+#: src/components/layouts/AddressOverview.vue:163
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr "En apprendre plus"
@@ -1431,11 +1431,11 @@ msgstr "En apprendre plus"
 msgid "Learn more here"
 msgstr "En apprendre plus"
 
-#: src/components/layouts/AddressOverview.vue:154
+#: src/components/layouts/AddressOverview.vue:153
 msgid "Legacy USDC (USDC.e)"
 msgstr "USDC original (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:190
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Commençons ! Créez votre compte Nimiq :"
 
@@ -1848,7 +1848,7 @@ msgstr ""
 "Apprenez-en plus à ce sujet dans ce {blog_post} ou cliquez ci-dessous pour "
 "la présentation du nouveau Wallet."
 
-#: src/components/layouts/AddressOverview.vue:144
+#: src/components/layouts/AddressOverview.vue:143
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Recevoir"
@@ -1979,7 +1979,7 @@ msgstr "Résolution du domaine Unstoppable"
 
 #: src/components/swap/SwapAnimation.vue:638
 msgid "Restart payout process"
-msgstr ""
+msgstr "Relancer le processus de paiement"
 
 #: src/components/swap/SwapModal.vue:1041
 msgid "Resulting BTC amount is too small."
@@ -2078,12 +2078,13 @@ msgstr ""
 #: src/components/layouts/Sidebar.vue:74
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
+"La vente directe de NIM n'est actuellement pas disponible dans le Wallet."
 
 #: src/components/swap/OasisLaunchModal.vue:11
 msgid "Selling now available"
 msgstr "Vente maintenant disponible"
 
-#: src/components/layouts/AddressOverview.vue:139
+#: src/components/layouts/AddressOverview.vue:138
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Envoyer"
@@ -2249,7 +2250,7 @@ msgstr "Afficher les mots de récupération"
 msgid "Show values as {currency}"
 msgstr "Afficher les valeurs en {currency}"
 
-#: src/components/layouts/AddressOverview.vue:192
+#: src/components/layouts/AddressOverview.vue:191
 msgid "Signup"
 msgstr "S'inscrire"
 
@@ -2847,12 +2848,15 @@ msgid ""
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
+"Vous pouvez vendre du NIM\n"
+"- dans le Wallet en swappant votre NIM en BTC ou en USDC, qui peuvent ensuite être vendus.\n"
+"-  sur les exchanges qui supportent le NIM."
 
 #: src/components/layouts/Sidebar.vue:129
 msgid "You currently have no balance to swap."
 msgstr "Vous n'avez actuellement aucun solde à swap."
 
-#: src/components/layouts/AddressOverview.vue:412
+#: src/components/layouts/AddressOverview.vue:411
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 "Vous n'avez pas assez d'USDC.e pour payer les frais de conversion ({fee})"
@@ -2987,7 +2991,7 @@ msgstr "Votre paiement a été remboursé"
 msgid "Your payout is on its way"
 msgstr "Votre paiement est en chemin"
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Your swap was successful!"
 msgstr "Votre swap a été un succès !"
 

@@ -113,9 +113,8 @@
                         <FiatConvertedAmount v-if="activeCurrency === 'btc'"
                             :amount="btcAccountBalance" currency="btc" value-mask/>
 
-                        <FiatConvertedAmount v-if="activeCurrency === 'usdc' && usdcAddressInfo.balance !== null"
-                            :amount="usdcAddressInfo.balance" currency="usdc" value-mask/>
-                        <span v-else-if="activeCurrency === 'usdc'" class="fiat-amount"></span>
+                        <FiatConvertedAmount v-if="activeCurrency === 'usdc'"
+                            :amount="usdcAccountBalance + nativeUsdcAccountBalance  " currency="usdc" value-mask/>
                     </div>
                 </div>
             </div>
@@ -134,7 +133,7 @@
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                         :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || (activeCurrency === 'btc' && !btcAccountBalance)
-                            || (activeCurrency === 'usdc' && (!usdcAddressInfo || !usdcAddressInfo.balance))"
+                            || (activeCurrency === 'usdc' && !nativeUsdcAccountBalance)"
                     >
                         <ArrowRightSmallIcon />{{ $t('Send') }}
                     </button>
@@ -146,14 +145,14 @@
                 </div>
             </div>
             <div
-                v-if="activeCurrency === 'usdc' && usdcAddressInfo && usdcAddressInfo.balance >= 0.1e6"
+                v-if="activeCurrency === 'usdc' && usdcAccountBalance >= 0.1e6"
                 class="bridged-usdc-notice"
             >
                 <div class="flex-row">
                     <UsdcIcon />
                     {{ $t('Legacy USDC (USDC.e)') }}
                     <div class="flex-grow"></div>
-                    <Amount :amount="usdcAddressInfo.balance" currency="usdc.e" value-mask/>
+                    <Amount :amount="usdcAccountBalance" currency="usdc.e" value-mask/>
                 </div>
                 <div class="flex-row">
                     <span class="description">

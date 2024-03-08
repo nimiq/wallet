@@ -160,7 +160,7 @@
                         <InfoCircleSmallIcon />
                         {{ $t('Convert your USDC.e to the new standard.') }}
                         <!-- eslint-disable-next-line max-len -->
-                        <a href="https://forum.nimiq.community/404"
+                        <a href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
                             target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
                     </span>
                     <button

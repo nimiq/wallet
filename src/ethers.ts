@@ -268,15 +268,16 @@ async function transactionListener(from: string, to: string, value: BigNumber, l
 
     const { state: usdcTransactions$, addTransactions } = useUsdcTransactionsStore();
 
-    // Ignore transactions that we already know about
-    if (usdcTransactions$.transactions[log.transactionHash]) return;
-
     const { config } = useConfig();
 
-    if (log.address === config.usdc.nativeUsdcContract && log.args.from === config.usdc.swapPoolContract) {
-        // Ignore the native USDC events for Uniswap swaps from bridged to native USDC
+    if (log.address === config.usdc.nativeUsdcContract && from === config.usdc.swapPoolContract) {
+        // Ignore the native USDC events for Uniswap swaps from bridged to native USDC, but update native USDC balance
+        updateNativeBalances([to]);
         return;
     }
+
+    // Ignore transactions that we already know about
+    if (usdcTransactions$.transactions[log.transactionHash]) return;
 
     const [block, receipt] = await Promise.all([
         log.getBlock(),

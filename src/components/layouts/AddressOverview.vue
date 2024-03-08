@@ -146,7 +146,7 @@
                 </div>
             </div>
             <div
-                v-if="activeCurrency === 'usdc' && usdcAddressInfo && usdcAddressInfo.balance"
+                v-if="activeCurrency === 'usdc' && usdcAddressInfo && usdcAddressInfo.balance >= 0.1e6"
                 class="bridged-usdc-notice"
             >
                 <div class="flex-row">

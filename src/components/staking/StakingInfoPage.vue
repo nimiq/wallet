@@ -70,7 +70,7 @@
                             <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                         </Tooltip>
                         <button class="nq-button-pill red" @click="deactivateAll"
-                            :disabled="!stake.activeBalance || isStakeDeactivating || consensus !== 'established'">
+                            :disabled="!stake.activeBalance || consensus !== 'established'">
                             {{ $t('Deactivate All') }}
                         </button>
                     </div>
@@ -83,7 +83,7 @@
                     <button
                         class="nq-button-pill light-blue"
                         @click="() => unstakeAll()"
-                        :disabled="consensus !== 'established'"
+                        :disabled="stake.activeBalance < MIN_STAKE || consensus !== 'established'"
                     >
                         {{ $t('Unstake All') }}
                     </button>
@@ -166,6 +166,7 @@ import { captureException } from '@sentry/vue';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { getPayoutText } from '../../lib/StakingUtils';
+import { MIN_STAKE } from '../../lib/Constants';
 
 // import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
@@ -381,6 +382,7 @@ export default defineComponent({
             deactivateAll,
             canSwitchValidator,
             consensus,
+            MIN_STAKE,
         };
     },
     components: {

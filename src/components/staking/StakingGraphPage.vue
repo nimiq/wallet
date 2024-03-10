@@ -9,7 +9,7 @@
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </p>
                 <div v-if="validator" class="tooltip-bar flex-row">
-                    <LabelTooltip :validator="validator" @click="$emit('changeValidator')" />
+                    <LabelTooltip :validator="validator" />
                     <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" dry />
                     <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" dry />
                 </div>

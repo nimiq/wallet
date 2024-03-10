@@ -266,6 +266,10 @@ export default defineComponent({
                     ),
                 ];
 
+                const unstakedAmount = removeOnly
+                    ? stake.value!.retiredBalance
+                    : stake.value!.retiredBalance + stake.value!.inactiveBalance;
+
                 const txs = await sendStaking({
                     transaction: transactions.map((tx) => tx.serialize()),
                 });
@@ -279,10 +283,7 @@ export default defineComponent({
 
                 context.emit('statusChange', {
                     state: State.SUCCESS,
-                    title: context.root.$t(
-                        'Successfully unstaked {amount} NIM',
-                        { amount: stake.value!.inactiveBalance / 1e5 },
-                    ),
+                    title: context.root.$t('Successfully unstaked {amount} NIM', { amount: unstakedAmount / 1e5 }),
                 });
 
                 // // Close staking modal

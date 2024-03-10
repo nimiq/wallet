@@ -8,7 +8,7 @@ export function explorerTxLink(asset: CryptoCurrency, hash: string) {
         case CryptoCurrency.NIM:
             return config.environment === ENV_MAIN
                 ? `https://nimiq.watch/#${hash}`
-                : `https://nimstats.com/transaction/${hash}`;
+                : `https://www.nimiqhub.com/tx/${hash}`;
         case CryptoCurrency.BTC:
             return `https://blockstream.info${config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
         case CryptoCurrency.USDC:
@@ -23,7 +23,7 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
         case SwapAsset.NIM:
             return config.environment === ENV_MAIN
                 ? `https://nimiq.watch/#${address}`
-                : `https://nimstats.com/account/${address}`;
+                : `https://www.nimiqhub.com/wallet/${address}`;
         case SwapAsset.BTC:
             return `https://blockstream.info${config.environment === ENV_MAIN ? '' : '/testnet'}/address/${address}`;
         case SwapAsset.USDC:

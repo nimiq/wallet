@@ -127,6 +127,10 @@ export default defineComponent({
                         return;
                     }
 
+                    if (txs.some((tx) => tx.executionResult === false)) {
+                        throw new Error('The transaction did not succeed');
+                    }
+
                     context.emit('statusChange', {
                         state: State.SUCCESS,
                         title: context.root.$t(

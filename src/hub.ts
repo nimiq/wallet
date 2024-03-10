@@ -498,7 +498,9 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
     if (Array.isArray(signedTransactions)) {
         for (const signedTx of signedTransactions) {
             // Need to await here, to be sure the transactions are sent after each other
-            txDetails.push(await sendTx(signedTx)); // eslint-disable-line no-await-in-loop
+            const details = await sendTx(signedTx); // eslint-disable-line no-await-in-loop
+            txDetails.push(details);
+            if (details.executionResult === false) break;
         }
     } else { // Backward-compatibility
         txDetails.push(await sendTx(signedTransactions as SignedTransaction));

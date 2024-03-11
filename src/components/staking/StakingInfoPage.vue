@@ -83,7 +83,8 @@
                     <button
                         class="nq-button-pill light-blue"
                         @click="() => unstakeAll()"
-                        :disabled="stake.activeBalance < MIN_STAKE || consensus !== 'established'"
+                        :disabled="(stake.activeBalance > 0 && stake.activeBalance < MIN_STAKE)
+                            || consensus !== 'established'"
                     >
                         {{ $t('Unstake All') }}
                     </button>

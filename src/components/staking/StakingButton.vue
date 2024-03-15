@@ -3,7 +3,7 @@
         <Tooltip
             v-if="asButton && visible"
             class="staking-feature-tip"
-            preferredPosition="bottom center"
+            preferredPosition="bottom"
             :container="this.$parent">
             <div slot="trigger">
                 <button class="stake"

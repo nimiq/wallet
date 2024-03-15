@@ -483,28 +483,6 @@ export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'
     return sendTx(signedTransaction);
 }
 
-export async function sendStaking(request: any) {
-// export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) {
-    // const signedTransactions = await hubApi.signStaking({
-    //     appName: APP_NAME,
-    //     ...request,
-    // }).catch(onError);
-    // if (!signedTransactions) return null;
-
-    // const txDetails: PlainTransactionDetails[] = [];
-
-    // if (Array.isArray(signedTransactions)) {
-    //     for (const signedTx of signedTransactions) {
-    //         // Need to await here, to be sure the transactions are sent after each other
-    //         txDetails.push(await sendTx(signedTx)); // eslint-disable-line no-await-in-loop
-    //     }
-    // } else { // Backward-compatibility
-    //     txDetails.push(await sendTx(signedTransactions as SignedTransaction));
-    // }
-
-    // return txDetails;
-}
-
 export async function createCashlink(senderAddress: string, senderBalance?: number) {
     const cashlink = await hubApi.createCashlink({
         appName: APP_NAME,

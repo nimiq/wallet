@@ -2153,20 +2153,8 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:168
-msgid "Successfully added {amount} NIM to your stake with {validator}"
-msgstr ""
-
 #: src/components/staking/StakingValidatorPage.vue:114
 msgid "Successfully changed validator to {validator}"
-msgstr ""
-
-#: src/components/staking/StakingGraphPage.vue:207
-msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
-msgstr ""
-
-#: src/components/staking/StakingGraphPage.vue:134
-msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:109

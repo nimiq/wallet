@@ -59,4 +59,10 @@ export const validatorData: Record<string, ValidatorInfo> = {
         description: 'Minting together - mintpool.io',
         icon: 'mintpool.svg',
     },
+    'NQ62 F6HC M67U 11XS D3RF T6DL HE5J 7NKK S2GV': {
+        label: 'Helvetia Staking',
+        fee: 0.1,
+        payoutType: 'restake',
+        description: 'The Swiss-standard of NIM Staking',
+        icon: 'helvetiastakingicon.svg',
 };

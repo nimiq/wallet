@@ -85,13 +85,11 @@ export default defineComponent({
             const validatorLabelOrAddress = 'label' in validator ? validator.label : validator.address;
 
             try {
-                if (!activeStake.value || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
+                if (!activeStake.value || (!activeStake.value.balance)) {
                     setStake({
+                        balance: 0,
                         address: activeAddress.value!,
-                        activeBalance: 0,
-                        inactiveBalance: 0,
                         validator: validator.address,
-                        retiredBalance: 0,
                     });
 
                     context.emit('next');

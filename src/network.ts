@@ -8,7 +8,8 @@ import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { ENV_MAIN } from './lib/Constants';
+import { BURNER_ADDRESS, ENV_MAIN } from './lib/Constants';
+import { useStakingStore } from './stores/Staking';
 
 let isLaunched = false;
 let clientPromise: Promise<Nimiq.Client>;
@@ -131,6 +132,7 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
+    const stakingStore = useStakingStore();
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -162,6 +164,27 @@ export async function launchNetwork() {
         for (const [address, balance] of newBalances) {
             addressStore.patchAddress(address, { balance });
         }
+    }
+
+    async function updateStakes(addresses: string[] = [...balances.keys()]) {
+        if (!addresses.length) return;
+        await client.waitForConsensusEstablished();
+        const { state: transactions$ } = useTransactionsStore();
+
+        addresses.forEach((address) => {
+            const stakingTxs = Object.values(transactions$.transactions)
+                .filter((tx) => tx.sender === address && tx.recipient === BURNER_ADDRESS);
+
+            if (stakingTxs.length === 0) return;
+
+            console.log('stake', stakingTxs);
+
+            const validator = stakingTxs[stakingTxs.length - 1].data.raw;
+            const balance = stakingTxs.reduce((acc, tx) => acc + tx.value, 0);
+
+            stakingStore.setStake({ address, balance, validator });
+            console.log('stake', { address, balance, validator });
+        });
     }
 
     function forgetBalances(addresses: string[]) {
@@ -201,6 +224,7 @@ export async function launchNetwork() {
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
             updateBalances();
+            updateStakes();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -252,6 +276,11 @@ export async function launchNetwork() {
 
     function transactionListener(tx: Nimiq.Client.TransactionDetails) {
         const plain = tx.toPlain();
+
+        if (plain.recipient === BURNER_ADDRESS) {
+            updateStakes([plain.sender]);
+        }
+
         transactionsStore.addTransactions([plain]);
 
         if (plain.state === TransactionState.MINED) {
@@ -269,6 +298,7 @@ export async function launchNetwork() {
     function subscribe(addresses: string[]) {
         client.addTransactionListener(transactionListener, addresses);
         updateBalances(addresses);
+        updateStakes(addresses);
         return true;
     }
 

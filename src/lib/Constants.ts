@@ -33,3 +33,4 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 
 // Pre-Staking
 export const MIN_STAKE = 100e5;
+export const BURNER_ADDRESS = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';

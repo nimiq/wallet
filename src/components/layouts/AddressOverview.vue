@@ -133,7 +133,7 @@
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                         :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || (activeCurrency === 'btc' && !btcAccountBalance)
-                            || (activeCurrency === 'usdc' && !nativeUsdcAccountBalance)"
+                            || (activeCurrency === 'usdc' && !nativeUsdcAccountBalance /* can only send native usdc */)"
                     >
                         <ArrowRightSmallIcon />{{ $t('Send') }}
                     </button>

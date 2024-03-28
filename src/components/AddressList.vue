@@ -81,7 +81,11 @@ export default defineComponent({
     setup(props, context) {
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
         const { availableExternalAddresses, accountBalance: btcAccountBalance } = useBtcAddressStore();
-        const { addressInfo: usdcAddressInfo, accountBalance: usdcAccountBalance } = useUsdcAddressStore();
+        const {
+            addressInfo: usdcAddressInfo,
+            accountBalance: usdcAccountBalance,
+            nativeAccountBalance: nativeUsdcAccountBalance,
+        } = useUsdcAddressStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
@@ -177,7 +181,7 @@ export default defineComponent({
         const usdcInfo = computed(() => ({
             address: usdcAddressInfo.value?.address || 'usdc',
             label: context.root.$t('USD Coin') as string,
-            balance: usdcAccountBalance.value,
+            balance: usdcAccountBalance.value + nativeUsdcAccountBalance.value,
             type: CryptoCurrency.USDC,
         }));
 

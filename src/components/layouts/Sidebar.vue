@@ -250,9 +250,11 @@ export default defineComponent({
             ...(config.usdc.enabled && hasUsdcAddresses.value ? [CryptoCurrency.USDC] : []),
         ]);
 
-        const hasBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore].some((useStore) =>
-            !!useStore().accountBalance.value,
-        ));
+        const hasBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore].some((use) => {
+            const store = use();
+            return !!(store.accountBalance.value
+              || ('nativeAccountBalance' in store && store.nativeAccountBalance.value));
+        }));
 
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);

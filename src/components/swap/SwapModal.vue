@@ -1062,7 +1062,7 @@ export default defineComponent({
             switch (asset) { // eslint-disable-line default-case
                 case SwapAsset.NIM: return activeAddressInfo.value?.balance ?? 0;
                 case SwapAsset.BTC: return accountBtcBalance.value;
-                case SwapAsset.USDC: return 0;
+                case SwapAsset.USDC: return 0; // not supported for swapping
                 case SwapAsset.USDC_MATIC: return accountUsdcBalance.value;
                 case SwapAsset.EUR: return 0;
             }

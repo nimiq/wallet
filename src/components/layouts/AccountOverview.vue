@@ -79,7 +79,10 @@
                     preferredPosition="top"
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasUsdcAddresses && $config.usdc.enabled
-                        && (nimAccountBalance > 0 || usdcAccountBalance > 0)"
+                        && (
+                            nimAccountBalance > 0
+                            || nativeUsdcAccountBalance > 0 /* only swap with native USDC supported, not bridged */
+                        )"
                     noFocus>
                     <button class="reset" slot="trigger"
                         @pointerdown="onSwapButtonPointerDown($event, 'NIM-USDC_MATIC')"
@@ -130,7 +133,10 @@
                     v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && hasUsdcAddresses
                         && $config.enableBitcoin && $config.usdc.enabled
-                        && (btcAccountBalance > 0 || usdcAccountBalance > 0)"
+                        && (
+                            btcAccountBalance > 0
+                            || nativeUsdcAccountBalance > 0 /* only swap with native USDC supported, not bridged */
+                        )"
                     noFocus>
                     <button class="reset" slot="trigger"
                         @pointerdown="onSwapButtonPointerDown($event, 'BTC-USDC_MATIC')"
@@ -157,7 +163,7 @@
                     <div class="usdc-account-item reset flex-column" @click="selectUsdc">
                         <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
                         <div class="balances" v-if="hasUsdcAddresses">
-                            <template v-if="usdcAccountBalance !== null">
+                            <template v-if="usdcAccountBalance !== null && nativeUsdcAccountBalance !== null">
                                 <div class="flex-row">
                                     <AlertTriangleIcon v-if="usdcConsensus === 'connecting'" />
                                     <Amount
@@ -289,12 +295,12 @@ export default defineComponent({
             hasBitcoinAddresses,
             hasUsdcAddresses,
         } = useAccountStore();
+        const { accountBalance: nimAccountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
             accountBalance: usdcAccountBalance,
             nativeAccountBalance: nativeUsdcAccountBalance,
         } = useUsdcAddressStore();
-        const { accountBalance: nimAccountBalance } = useAddressStore();
         const { config } = useConfig();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -475,10 +481,10 @@ export default defineComponent({
             addAddress,
             activeAccountId,
             onAddressSelected,
+            nimAccountBalance,
             btcAccountBalance,
             usdcAccountBalance,
             nativeUsdcAccountBalance,
-            nimAccountBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
             selectBitcoin,

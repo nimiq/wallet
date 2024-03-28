@@ -23,7 +23,7 @@ export const useUsdcAddressStore = createStore({
             const { activeAccountInfo } = useAccountStore();
             if (!activeAccountInfo.value?.polygonAddresses?.length) return undefined;
 
-            // TODO: Subtract pending outgoing balance from addressInfo.balance
+            // TODO: Subtract pending outgoing balance from addressInfo.balance / nativeBalance
             // const { pendingTransactionsBySender } = useUsdcTransactionsStore();
 
             // Only supports one USDC address per account for now

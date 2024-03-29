@@ -109,7 +109,7 @@
         <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
             preferredPosition="bottom right"
             :container="$parent"
-            :disabled="activatedCurrencies.length > 1 && hasBalance && canUseSwaps && !hasActiveSwap"
+            :disabled="activatedCurrencies.length > 1 && hasSwappableBalance && canUseSwaps && !hasActiveSwap"
             theme="inverse"
             class="swap-tooltip"
             :styles="{ minWidth: '25rem' }"
@@ -117,7 +117,7 @@
         >
             <template #trigger>
                 <button
-                    :disabled="activatedCurrencies.length <= 1 || !hasBalance || !canUseSwaps || hasActiveSwap"
+                    :disabled="activatedCurrencies.length <= 1 || !hasSwappableBalance || !canUseSwaps || hasActiveSwap"
                     class="nq-button-s inverse"
                     @click="openModal('swap')"
                     @mousedown.prevent="hideTooltips"
@@ -126,7 +126,9 @@
             <template v-if="activatedCurrencies.length <= 1" #default>{{
                 $t('Please activate BTC or USDC in your account first to be able to swap to these currencies.')
             }}</template>
-            <template v-else-if="!hasBalance" #default>{{ $t('You currently have no balance to swap.') }}</template>
+            <template v-else-if="!hasSwappableBalance" #default>{{
+                $t('You currently have no balance to swap.')
+            }}</template>
             <template v-else-if="!canUseSwaps" #default>{{
                 /* Re-using existing, translated strings already used by BuyOptionsModal */
                 $t('Not available in your browser') + '. '
@@ -250,11 +252,13 @@ export default defineComponent({
             ...(config.usdc.enabled && hasUsdcAddresses.value ? [CryptoCurrency.USDC] : []),
         ]);
 
-        const hasBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore].some((use) => {
-            const store = use();
-            return !!(store.accountBalance.value
-              || ('nativeAccountBalance' in store && store.nativeAccountBalance.value));
-        }));
+        const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore]
+            .some((useStore) => {
+                const store = useStore();
+                // For USDC, only native USDC is supported for swapping.
+                return 'nativeAccountBalance' in store ? store.nativeAccountBalance.value : store.accountBalance.value;
+            }),
+        );
 
         const { activeSwap } = useSwapsStore();
         const hasActiveSwap = computed(() => activeSwap.value !== null);
@@ -292,7 +296,7 @@ export default defineComponent({
             switchPriceChartTimeRange,
             isLegacyAccount,
             activatedCurrencies,
-            hasBalance,
+            hasSwappableBalance,
             hasActiveSwap,
             canUseSwaps,
             updateAvailable,

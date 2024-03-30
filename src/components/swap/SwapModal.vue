@@ -290,8 +290,8 @@ import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
-import { useWindowSize } from '@/composables/useWindowSize';
 
+import Config from 'config'; // Only for use outside of setup method. Inside of setup use useConfig().
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -319,6 +319,7 @@ import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import SendModalFooter from '../SendModalFooter.vue';
 import { useConfig } from '../../composables/useConfig';
+import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwapLimits } from '../../composables/useSwapLimits';
 import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
@@ -338,8 +339,8 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 const SUPPORTED_ASSETS = [
     SwapAsset.NIM,
-    SwapAsset.BTC,
-    SwapAsset.USDC_MATIC,
+    ...(Config.enableBitcoin ? [SwapAsset.BTC] : []),
+    ...(Config.usdc.enabled ? [SwapAsset.USDC_MATIC] : []),
 ];
 
 export default defineComponent({
@@ -1943,42 +1944,27 @@ export default defineComponent({
 
         const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
 
-        const buttonGroupOptions = SUPPORTED_ASSETS.reduce((acc, asset) => {
-            if (asset === SwapAsset.BTC && !config.enableBitcoin) return acc;
-            if (asset === SwapAsset.USDC_MATIC && !config.usdc.enabled) return acc;
-
-            return {
-                ...acc,
+        // Only allow swapping between assets that have a balance in one of the sides of the swap.
+        function getButtonGroupOptions(otherSide: SwapAsset) {
+            const otherAssetBalance = accountBalance(otherSide);
+            return SUPPORTED_ASSETS.reduce((result, asset) => ({
+                ...result,
                 [asset]: {
                     label: assetToCurrency(asset).toUpperCase(),
-                    disabled: asset === SwapAsset.BTC
-                        ? !hasBitcoinAddresses.value
-                        : asset === SwapAsset.USDC_MATIC
-                            ? !hasUsdcAddresses.value
-                            : false,
-                },
-            };
-        }, {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
-
-        // Only allow swapping between assets that have a balance in one
-        // of the sides of the swap.
-        function getButtonGroupOptions(otherSide: SwapAsset, currentSide: SwapAsset) {
-            const otherHasBalance = accountBalance(otherSide) > 0;
-            if (otherHasBalance) {
-                return buttonGroupOptions;
-            }
-
-            return Object.entries(buttonGroupOptions).reduce((acc, [asset, option]) => ({
-                ...acc,
-                [asset]: {
-                    ...option,
-                    disabled: option.disabled || (!otherHasBalance && !accountBalance(asset)),
+                    disabled: (
+                        // The asset is not activated in the active account.
+                        (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
+                        || (asset === SwapAsset.USDC_MATIC && !hasUsdcAddresses.value)
+                    ) || (
+                        // Asset pair has no balance to swap.
+                        !otherAssetBalance && !accountBalance(asset)
+                    ),
                 },
             }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
         }
 
-        const leftButtonGroupOptions = computed(() => getButtonGroupOptions(rightAsset.value, leftAsset.value));
-        const rightButtonGroupOptions = computed(() => getButtonGroupOptions(leftAsset.value, rightAsset.value));
+        const leftButtonGroupOptions = computed(() => getButtonGroupOptions(rightAsset.value));
+        const rightButtonGroupOptions = computed(() => getButtonGroupOptions(leftAsset.value));
 
         function setLeftAsset(asset: SwapAsset) {
             if (rightAsset.value === asset) {
@@ -2226,7 +2212,6 @@ export default defineComponent({
             activeAddressInfo,
             kycUser,
             kycOverlayOpened,
-            SUPPORTED_ASSETS,
             setLeftAsset,
             setRightAsset,
             swapIsNotSupported,

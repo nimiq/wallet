@@ -1972,7 +1972,7 @@ export default defineComponent({
                 ...acc,
                 [asset]: {
                     ...option,
-                    disabled: option.disabled || (asset !== currentSide && asset !== otherSide),
+                    disabled: option.disabled || (!otherHasBalance && !accountBalance(asset)),
                 },
             }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
         }

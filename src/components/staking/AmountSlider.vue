@@ -117,7 +117,7 @@ export default defineComponent({
     setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
 
-        const alreadyStakedAmount = ref(props.stakedAmount);
+        const alreadyStakedAmount = computed(() => props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);
         const availableAmount = computed(() => (activeAddressInfo.value?.balance || 0) + props.stakedAmount);
         const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value);
@@ -190,7 +190,9 @@ export default defineComponent({
             startSelection = target.selectionStart as number;
             endSelection = target.selectionEnd as number;
 
-            const valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
+            let valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
+            // Ensure the entered amount does not fall below the minimum stake or already staked amount
+            valueNim = Math.max(valueNim, MIN_STAKE, alreadyStakedAmount.value);
             const amount = Math.max(
                 0,
                 Math.min(availableAmount.value, valueNim),
@@ -242,7 +244,6 @@ export default defineComponent({
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const onMove = (e: MouseEvent | TouchEvent, execute = false, skipSignals = false) => {
-            // if (execute !== true) return;
             const position = extractEventPosition(e);
             if (!position || !pivotPoint) return;
 
@@ -251,26 +252,16 @@ export default defineComponent({
             let percent = Math.min(100, Math.max(0,
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
-            if (percent < minimumStakePercent.value / 2) {
-                percent = 0;
-            } else {
-                percent = Math.max(minimumStakePercent.value, percent);
-            }
+            // Ensure the slider does not go below the minimum stake percentage
+            percent = Math.max(minimumStakePercent.value, percent);
 
             const offsetX = getPointAtPercent(percent);
-            currentAmount.value = Math.floor(
-                ((percent / 100) * availableAmount.value) / 1e5,
-            ) * 1e5;
+            // Calculate new amount from slider's position, ensuring it's not below minimum stake
+            let newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
+            // Prevent reducing below MIN_STAKE or already staked amount
+            newAmount = Math.max(newAmount, MIN_STAKE, alreadyStakedAmount.value);
+            currentAmount.value = newAmount;
 
-            if (alreadyStaked.value) {
-                if (percent < alreadyStakedPercentage.value) {
-                    if (!skipSignals) {
-                        context.emit('amount-unstaked', alreadyStakedAmount.value - currentAmount.value);
-                    }
-                } else if (!skipSignals) {
-                    context.emit('amount-unstaked', 0);
-                }
-            }
             if (!skipSignals) {
                 context.emit('amount-staked', currentAmount.value);
             }

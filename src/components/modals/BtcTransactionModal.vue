@@ -290,9 +290,10 @@
                 <span v-if="transaction.blockHeight" class="block">
                     {{ $t('Block #{height}', { height: transaction.blockHeight }) }}
                 </span>
-                <span class="confirmations">
+                <span v-if="confirmations > -1" class="confirmations">
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
+                <div v-else class="confirmations-skeleton"></div>
                 <!-- <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span> -->
 
                 <BlueLink
@@ -938,6 +939,14 @@ export default defineComponent({
         display: block;
         font-size: var(--small-label-size);
         opacity: 0.6;
+    }
+
+    .confirmations-skeleton {
+        height: 1.5rem;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 0.25rem;
+        margin-top: 0.5rem;
     }
 
     // .fee {

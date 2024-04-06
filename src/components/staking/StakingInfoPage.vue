@@ -26,6 +26,11 @@
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                     </div>
+                    <div class="flex-row">
+                        <button class="nq-button-s" @click="$emit('adjust-stake')">
+                            {{ $t('Adjust Stake') }}
+                        </button>
+                    </div>
                 </div>
             </div>
 

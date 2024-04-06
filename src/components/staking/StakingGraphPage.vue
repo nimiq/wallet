@@ -19,7 +19,7 @@
             <div style="height: 150px; background: gainsboro;"></div>
 
             <AmountSlider
-                :stakedAmount="activeStake ? activeStake.activeBalance : 0"
+                :stakedAmount="activeStake ? activeStake.balance : 0"
                 @amount-staked="updateStaked"
             />
 
@@ -50,27 +50,30 @@
 </template>
 
 <script lang="ts">
-import { captureException } from '@sentry/vue';
+// import { captureException } from '@sentry/vue';
 import { computed, defineComponent, ref } from '@vue/composition-api';
-import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
+// import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
+import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
 import { Utf8Tools } from '@nimiq/utils';
 
-import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
+import { CryptoCurrency, MIN_STAKE, BURNER_ADDRESS } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { sendTransaction } from '../../hub';
 
-import { useConfig } from '../../composables/useConfig';
+// import { useConfig } from '../../composables/useConfig';
 
 import { useStakingStore } from '../../stores/Staking';
 
 import AmountSlider from './AmountSlider.vue';
-import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
+// import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 
 import LabelTooltip from './tooltips/LabelTooltip.vue';
-import { StatusChangeType } from './StakingModal.vue';
+// import { StatusChangeType } from './StakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
+
+// import { useTransactionsStore } from '../../stores/Transactions';
 
 export default defineComponent({
     setup(props, context) {
@@ -78,8 +81,11 @@ export default defineComponent({
         const { activeAddressInfo } = useAddressStore();
         const { state: network$ } = useNetworkStore();
 
-        const newStake = ref(activeStake.value ? activeStake.value.activeBalance : 0);
+        // const { state: transactions$ } = useTransactionsStore();
+
+        const newStake = ref(activeStake.value ? activeStake.value.balance : 0);
         const stakeDelta = ref(0);
+        const amountToSend = computed(() => newStake.value - (activeStake.value?.balance || 0));
 
         const feePerByte = ref(0);
         const message = ref('');
@@ -87,23 +93,32 @@ export default defineComponent({
             ? feePerByte.value * (166 + Utf8Tools.stringToUtf8ByteArray(message.value).byteLength)
             : feePerByte.value * 138);
 
+        const maxSendableAmount = computed(() => Math.max((activeAddressInfo.value!.balance || 0) - fee.value, 0));
+
+        const hasHeight = computed(() => !!network$.height);
+
+        const canSend = computed(() =>
+            network$.consensus === 'established'
+            && hasHeight.value
+            && !!newStake.value
+            && amountToSend.value <= maxSendableAmount.value,
+        );
+
         function updateStaked(amount: number) {
             newStake.value = amount;
-            stakeDelta.value = amount - (activeStake.value?.activeBalance || 0);
+            stakeDelta.value = amount - (activeStake.value?.balance || 0);
         }
 
         async function performStaking() {
             if (newStake.value < MIN_STAKE) return;
 
             message.value = activeValidator.value!.address;
-            const burnerAddress = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';
-            const amountToSend = newStake.value - (activeStake.value?.activeBalance || 0);
 
             try {
                 const result = await sendTransaction({
                     sender: activeAddressInfo.value!.address,
-                    recipient: burnerAddress,
-                    value: amountToSend,
+                    recipient: BURNER_ADDRESS,
+                    value: amountToSend.value,
                     fee: fee.value,
                     extraData: message.value,
                     validityStartHeight: network$.height,
@@ -134,6 +149,8 @@ export default defineComponent({
             performStaking,
             isStakeBelowMinimum,
             MIN_STAKE,
+            // totalNimSentToBurner,
+            canSend,
         };
     },
     components: {

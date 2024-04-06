@@ -9,11 +9,8 @@ export type StakingState = {
 
 export type Stake = {
     address: string,
-    activeBalance: number, // activeBalance (does not include inactiveBalance)
-    inactiveBalance: number,
-    inactiveRelease?: number,
+    balance: number,
     validator?: string,
-    retiredBalance: number,
 }
 
 export type RawValidator = {
@@ -41,8 +38,6 @@ export type RegisteredValidator = {
 }
 
 export type Validator = RawValidator | RegisteredValidator;
-
-export type StakingScoringRules = any
 
 export const useStakingStore = createStore({
     id: 'staking',
@@ -73,7 +68,7 @@ export const useStakingStore = createStore({
                 for (const address of accountInfo.addresses) {
                     const stake = state.stakeByAddress[address];
                     if (stake) {
-                        sum += stake.activeBalance + stake.inactiveBalance + stake.retiredBalance;
+                        sum += stake.balance;
                     }
                 }
                 stakeByAccount[accountInfo.id] = sum;

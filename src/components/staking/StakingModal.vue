@@ -17,12 +17,12 @@
             />
         </template>
         <template v-else-if="page === Page.Already">
-            <!-- <StakingInfoPage
+            <StakingInfoPage
                 @back="page = Page.Graph" @next="page = Page.RewardsHistory"
                 @adjust-stake="adjustStake"
                 @switch-validator="switchValidator"
                 @statusChange="onStatusChange"
-            /> -->
+            />
         </template>
         <!-- <template v-else-if="page === Page.RewardsHistory">
             <StakingRewardsHistoryPage @back="page = Page.Already" />
@@ -57,7 +57,7 @@ import Modal from '../modals/Modal.vue';
 import StakingWelcomePage from './StakingWelcomePage.vue';
 import StakingValidatorPage from './StakingValidatorPage.vue';
 import StakingGraphPage from './StakingGraphPage.vue';
-// import StakingInfoPage from './StakingInfoPage.vue';
+import StakingInfoPage from './StakingInfoPage.vue';
 // import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';
 // import SelectAccountOverlay from './SelectAccountOverlay.vue';
 // import StatusScreen, { State } from '../StatusScreen.vue';
@@ -192,7 +192,7 @@ export default defineComponent({
         StakingWelcomePage,
         StakingValidatorPage,
         StakingGraphPage,
-        // StakingInfoPage,
+        StakingInfoPage,
         // StakingRewardsHistoryPage,
         // SelectAccountOverlay,
         // StatusScreen,

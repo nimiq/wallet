@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-// import { captureException } from '@sentry/vue';
+import { captureException } from '@sentry/vue';
 import { computed, defineComponent, ref } from '@vue/composition-api';
 // import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
@@ -60,15 +60,15 @@ import { CryptoCurrency, MIN_STAKE, BURNER_ADDRESS } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { sendTransaction } from '../../hub';
 
-// import { useConfig } from '../../composables/useConfig';
+import { useConfig } from '../../composables/useConfig';
 
 import { useStakingStore } from '../../stores/Staking';
 
 import AmountSlider from './AmountSlider.vue';
-// import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
+import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 
 import LabelTooltip from './tooltips/LabelTooltip.vue';
-// import { StatusChangeType } from './StakingModal.vue';
+import { StatusChangeType } from './StakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
@@ -77,6 +77,7 @@ import { useNetworkStore } from '../../stores/Network';
 
 export default defineComponent({
     setup(props, context) {
+        const { config } = useConfig();
         const { activeStake, activeValidator } = useStakingStore();
         const { activeAddressInfo } = useAddressStore();
         const { state: network$ } = useNetworkStore();
@@ -110,7 +111,12 @@ export default defineComponent({
         }
 
         async function performStaking() {
-            if (newStake.value < MIN_STAKE) return;
+            if (newStake.value < MIN_STAKE || stakeDelta.value <= 0) return;
+            context.emit('statusChange', {
+                type: StatusChangeType.STAKING,
+                state: State.LOADING,
+                title: context.root.$t('Sending Pre-Staking Transaction') as string,
+            });
 
             message.value = activeValidator.value!.address;
 
@@ -125,15 +131,38 @@ export default defineComponent({
                 });
 
                 if (!result) {
-                    // Handle failure
-                    console.error('Failed to send staking transaction');
+                    context.emit('statusChange', {
+                        type: StatusChangeType.NONE,
+                    });
                     return;
                 }
 
                 // Handle success
-                console.log('Staking transaction sent successfully');
-            } catch (error) {
-                console.error('Error sending staking transaction:', error);
+                context.emit('statusChange', {
+                    state: State.SUCCESS,
+                    title: context.root.$t(
+                        'Successfully pre-staked {amount} NIM with {validator}',
+                        {
+                            amount: Math.abs(stakeDelta.value / 1e5),
+                            validator: message.value,
+                        },
+                    ),
+                });
+
+                window.setTimeout(() => {
+                    context.emit('statusChange', { type: StatusChangeType.NONE });
+                    context.emit('next');
+                }, SUCCESS_REDIRECT_DELAY);
+            } catch (error: any) {
+                if (config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
+
+                // Show error screen
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: context.root.$t('Something went wrong') as string,
+                    message: `${error.message} - ${error.data}`,
+                });
             }
         }
 

@@ -35,14 +35,14 @@
             />
         </template>
         <template slot="overlay">
-            <!-- <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
+            <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
                 @selected="switchValidator"
             />
-            <StatusScreen v-else-if="statusType !== 'none'"
+            <StatusScreen v-else-if="statusType !== StatusChangeType.NONE"
                 :state="statusState"
                 :title="statusTitle"
                 :message="statusMessage"
-            /> -->
+            />
                 <!-- :mainAction="$t('Cancel')"
                 @main-action="onStatusMainAction" -->
         </template>
@@ -60,8 +60,8 @@ import StakingGraphPage from './StakingGraphPage.vue';
 import StakingInfoPage from './StakingInfoPage.vue';
 // import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';
 // import SelectAccountOverlay from './SelectAccountOverlay.vue';
-// import StatusScreen, { State } from '../StatusScreen.vue';
-import { State } from '../StatusScreen.vue';
+import StatusScreen, { State } from '../StatusScreen.vue';
+// import { State } from '../StatusScreen.vue';
 
 enum Page {
     Info,
@@ -195,7 +195,7 @@ export default defineComponent({
         StakingInfoPage,
         // StakingRewardsHistoryPage,
         // SelectAccountOverlay,
-        // StatusScreen,
+        StatusScreen,
     },
 });
 </script>

@@ -42,3 +42,5 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 // Pre-Staking
 export const MIN_STAKE = 100e5;
 export const BURNER_ADDRESS = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';
+export const PRESTAKING_BLOCK_H_START = 3005984; // TODO: update value to the real one
+export const PRESTAKING_BLOCK_H_END = 3200000; // TODO: update value to the real one

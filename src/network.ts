@@ -8,7 +8,7 @@ import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { BURNER_ADDRESS, ENV_MAIN } from './lib/Constants';
+import { BURNER_ADDRESS, ENV_MAIN, PRESTAKING_BLOCK_H_START, PRESTAKING_BLOCK_H_END } from './lib/Constants';
 import { useStakingStore } from './stores/Staking';
 import { parseData } from './lib/DataFormatting';
 
@@ -172,9 +172,15 @@ export async function launchNetwork() {
         await client.waitForConsensusEstablished();
         const { state: transactions$ } = useTransactionsStore();
 
-        addresses.forEach((address) => { // TODO: Update to take into account only the last validator
+        addresses.forEach((address) => {
             const stakingTxs = Object.values(transactions$.transactions)
-                .filter((tx) => tx.sender === address && tx.recipient === BURNER_ADDRESS);
+                .filter((tx) =>
+                    tx.sender === address
+                    && tx.recipient === BURNER_ADDRESS
+                    && tx.blockHeight
+                    && tx.blockHeight >= PRESTAKING_BLOCK_H_START // Only consider txs within the pre-staking period
+                    && tx.blockHeight <= PRESTAKING_BLOCK_H_END,
+                );
 
             if (stakingTxs.length === 0) return;
 

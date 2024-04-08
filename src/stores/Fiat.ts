@@ -1,5 +1,10 @@
 import { createStore } from 'pinia';
-import { getExchangeRates, isHistorySupportedFiatCurrency, FiatApiSupportedFiatCurrency } from '@nimiq/utils';
+import {
+    getExchangeRates,
+    isHistorySupportedFiatCurrency,
+    FiatApiSupportedFiatCurrency,
+    setCoingeckoApiUrl,
+} from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../lib/Constants';
 import { useTransactionsStore } from './Transactions';
 import { useBtcTransactionsStore } from './BtcTransactions';
@@ -10,6 +15,8 @@ export type FiatState = {
     timestamp: number,
     exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } },
 };
+
+setCoingeckoApiUrl('https://nq-coingecko-proxy.deno.dev/api/v3');
 
 export function guessUserCurrency(regionOverwrite?: string) {
     // parse navigator.language which is formatted according to https://tools.ietf.org/html/bcp47#section-2.1

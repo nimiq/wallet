@@ -209,7 +209,10 @@ export default defineComponent({
             const timespan = timeRangeHours * 60 * 60 * 1000; // Milliseconds
             const sampleCount = 18; // 18 is the number of points determined to look good
             const timestep = timespan / (sampleCount - 1);
-            const start = Date.now() - timespan;
+            // Request chart data from even 2 minute marks
+            // (this allows caching of the API response by our Coingecko proxy)
+            const last2MinuteMark = Math.floor(Date.now() / TWO_MINUTES) * TWO_MINUTES;
+            const start = last2MinuteMark - timespan;
             const timestamps: number[] = [];
             for (let i = 0; i < sampleCount; ++i) {
                 timestamps.push(start + i * timestep);

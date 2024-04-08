@@ -184,13 +184,22 @@ export async function launchNetwork() {
 
             if (stakingTxs.length === 0) return;
 
-            console.log('stake', stakingTxs);
+            // Sort transactions by timestamp in descending order
+            stakingTxs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-            const validator = parseData(stakingTxs[stakingTxs.length - 1].data.raw);
-            const balance = stakingTxs.reduce((acc, tx) => acc + tx.value, 0);
+            // Extract the validator from the most recent transaction
+            const mostRecentValidator = parseData(stakingTxs[0].data.raw);
 
-            stakingStore.setStake({ address, balance, validator });
-            console.log('stake', { address, balance, validator });
+            // Filter transactions to only include those with the same validator
+            const filteredStakingTxs = stakingTxs.filter((tx) => {
+                const validator = parseData(tx.data.raw);
+                return validator === mostRecentValidator;
+            });
+
+            // Calculate the balance based on the filtered transactions
+            const balance = filteredStakingTxs.reduce((acc, tx) => acc + tx.value, 0);
+
+            stakingStore.setStake({ address, balance, validator: mostRecentValidator });
         });
     }
 

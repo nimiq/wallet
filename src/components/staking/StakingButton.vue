@@ -1,7 +1,7 @@
 <template>
     <div class="staking-button">
         <Tooltip
-            v-if="asButton && visible"
+            v-if="asButton && visible && activeAddressInfo && activeAddressInfo.balance"
             class="staking-feature-tip"
             preferredPosition="bottom"
             :container="this.$parent">
@@ -41,7 +41,7 @@ import HeroIcon from '../icons/Staking/HeroIcon.vue';
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeStake } = useStakingStore();
+        // const { activeStake } = useStakingStore();
         // const visible = computed(() => !activeStake.value?.balance);
         const visible = computed(() => true);
 

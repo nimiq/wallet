@@ -129,7 +129,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim'">
+                    <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if staking-->
                         <!-- <StakingPreview v-if="stake" /> -->
                         <!-- <StakingButton v-else /> -->
                         <StakingButton />

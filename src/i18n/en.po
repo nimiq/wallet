@@ -58,7 +58,7 @@ msgstr ""
 msgid "{currency} payout pending"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:301
+#: src/components/modals/TransactionModal.vue:302
 msgid "{fee} fee"
 msgstr ""
 
@@ -413,9 +413,9 @@ msgstr ""
 msgid "Block #{height}"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:301
-#: src/components/modals/TransactionModal.vue:308
-#: src/components/modals/UsdcTransactionModal.vue:269
+#: src/components/modals/BtcTransactionModal.vue:302
+#: src/components/modals/TransactionModal.vue:309
+#: src/components/modals/UsdcTransactionModal.vue:270
 #: src/components/swap/SwapAnimation.vue:196
 #: src/components/swap/SwapAnimation.vue:276
 msgid "Block explorer"
@@ -716,7 +716,7 @@ msgstr ""
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:403
+#: src/components/modals/UsdcTransactionModal.vue:404
 #: src/composables/useUsdcTransactionInfo.ts:160
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
@@ -1144,9 +1144,9 @@ msgstr ""
 msgid "Historic value"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:436
-#: src/components/modals/TransactionModal.vue:483
-#: src/components/modals/UsdcTransactionModal.vue:399
+#: src/components/modals/BtcTransactionModal.vue:437
+#: src/components/modals/TransactionModal.vue:484
+#: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
 #: src/composables/useTransactionInfo.ts:170
 #: src/composables/useUsdcTransactionInfo.ts:150
@@ -1154,10 +1154,10 @@ msgstr ""
 msgid "HTLC Creation"
 msgstr ""
 
-#: src/components/modals/BtcTransactionModal.vue:436
-#: src/components/modals/TransactionModal.vue:498
-#: src/components/modals/TransactionModal.vue:504
-#: src/components/modals/UsdcTransactionModal.vue:399
+#: src/components/modals/BtcTransactionModal.vue:437
+#: src/components/modals/TransactionModal.vue:499
+#: src/components/modals/TransactionModal.vue:505
+#: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
 #: src/composables/useTransactionInfo.ts:185
 #: src/composables/useTransactionInfo.ts:191
@@ -1165,7 +1165,7 @@ msgstr ""
 msgid "HTLC Refund"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:487
+#: src/components/modals/TransactionModal.vue:488
 #: src/composables/useTransactionInfo.ts:174
 #: src/composables/useUsdcTransactionInfo.ts:153
 msgid "HTLC Settlement"
@@ -1745,7 +1745,7 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:563
+#: src/components/modals/UsdcTransactionModal.vue:564
 msgid "Refund failed: "
 msgstr ""
 

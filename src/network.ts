@@ -10,6 +10,7 @@ import { useConfig } from './composables/useConfig';
 import { loadNimiqJS } from './lib/NimiqJSLoader';
 import { BURNER_ADDRESS, ENV_MAIN } from './lib/Constants';
 import { useStakingStore } from './stores/Staking';
+import { parseData } from './lib/DataFormatting';
 
 let isLaunched = false;
 let clientPromise: Promise<Nimiq.Client>;
@@ -171,7 +172,7 @@ export async function launchNetwork() {
         await client.waitForConsensusEstablished();
         const { state: transactions$ } = useTransactionsStore();
 
-        addresses.forEach((address) => {
+        addresses.forEach((address) => { // TODO: Update to take into account only the last validator
             const stakingTxs = Object.values(transactions$.transactions)
                 .filter((tx) => tx.sender === address && tx.recipient === BURNER_ADDRESS);
 
@@ -179,7 +180,7 @@ export async function launchNetwork() {
 
             console.log('stake', stakingTxs);
 
-            const validator = stakingTxs[stakingTxs.length - 1].data.raw;
+            const validator = parseData(stakingTxs[stakingTxs.length - 1].data.raw);
             const balance = stakingTxs.reduce((acc, tx) => acc + tx.value, 0);
 
             stakingStore.setStake({ address, balance, validator });

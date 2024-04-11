@@ -1,0 +1,7 @@
+@function nimiq-blue($alpha: 1) {
+    @return rgba(31, 35, 72, $alpha); // #1F2348
+}
+
+@function nimiq-light-blue($alpha: 1) {
+    @return rgba(5, 130, 202, $alpha); // #0582CA
+}

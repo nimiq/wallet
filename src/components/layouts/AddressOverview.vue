@@ -129,6 +129,12 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
+                    <template v-if="activeCurrency === 'nim'">
+                        <!-- <StakingPreview v-if="stake" /> -->
+                        <!-- <StakingButton v-else /> -->
+                        <StakingButton />
+                    </template>
+
                     <button class="send nq-button-pill light-blue flex-row"
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                         :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
@@ -144,6 +150,7 @@
                     </button>
                 </div>
             </div>
+            <!-- <StakingPreview v-if="stake" class="staking-preview-mobile" /> -->
             <div
                 v-if="activeCurrency === 'usdc' && usdcAccountBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -255,6 +262,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
+import StakingButton from '../staking/StakingButton.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -559,6 +567,7 @@ export default defineComponent({
         BoxedArrowUpIcon,
         UsdcIcon,
         CashlinkButton,
+        StakingButton,
     },
 });
 </script>

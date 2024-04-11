@@ -38,3 +38,6 @@ export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 // LocalStorage flag used to determine whether the new welcome screen should be shown, ignoring whether the
 // original welcome screen was already shown.
 export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
+
+// Pre-Staking
+export const MIN_STAKE = 100e5;

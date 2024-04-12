@@ -34,10 +34,11 @@
 <script lang="ts">
 import { defineComponent, computed, watch, ref } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
+import Config from 'config';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
 import { useNetworkStore } from '../../stores/Network';
-import { PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
+import { ENV_MAIN, PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
 
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
@@ -59,7 +60,8 @@ export default defineComponent({
         const { height } = useNetworkStore();
         const { activeStake } = useStakingStore();
 
-        const visible = computed(() => height.value >= PRESTAKING_BLOCK_H_START
+        const visible = computed(() => Config.environment !== ENV_MAIN
+            && height.value >= PRESTAKING_BLOCK_H_START
             && (height.value <= PRESTAKING_BLOCK_H_END || activeStake.value));
 
         const hasStake = computed(() => !!activeStake.value);

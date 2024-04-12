@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="flex-row">
-                        <button class="nq-button-s" @click="$emit('adjust-stake')">
+                        <button class="nq-button-s" @click="$emit('adjust-stake')" :disabled="!inPrestakingWindow">
                             {{ $t('Increase Prestake') }}
                         </button>
                     </div>
@@ -86,12 +86,13 @@ import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { useNetworkStore } from '../../stores/Network';
+import { PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator } = useStakingStore();
-        const { consensus } = useNetworkStore();
+        const { consensus, height } = useNetworkStore();
 
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
         const stakedBalance = computed(() => stake.value ? stake.value.balance : 0);
@@ -106,12 +107,16 @@ export default defineComponent({
         //         ? context.root.$t('Unregistered validator')
         //         : context.root.$t('Inactive validator'));
 
+        const inPrestakingWindow = computed(() => height.value >= PRESTAKING_BLOCK_H_START
+            && height.value <= PRESTAKING_BLOCK_H_END);
+
         return {
             stake,
             validator,
             percentage,
             // payoutText,
             consensus,
+            inPrestakingWindow,
         };
     },
     components: {

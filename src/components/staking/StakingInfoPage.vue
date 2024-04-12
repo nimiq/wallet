@@ -84,7 +84,7 @@ import ShortAddress from '../ShortAddress.vue';
 import { useNetworkStore } from '../../stores/Network';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator } = useStakingStore();
         const { consensus } = useNetworkStore();
@@ -271,6 +271,11 @@ export default defineComponent({
 
             .dot {
                 margin: 0 0.675rem;
+            }
+
+            .short-address {
+                font-weight: 500;
+                margin-left: 3.75rem;
             }
         }
     }

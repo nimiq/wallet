@@ -78,7 +78,7 @@ import { useNetworkStore } from '../../stores/Network';
 export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
-        const { activeStake, activeValidator } = useStakingStore();
+        const { activeStake, activeValidator, setStake } = useStakingStore();
         const { activeAddressInfo } = useAddressStore();
         const { state: network$ } = useNetworkStore();
 
@@ -147,6 +147,12 @@ export default defineComponent({
                             validator: message.value,
                         },
                     ),
+                });
+
+                setStake({
+                    address: activeAddressInfo.value!.address,
+                    balance: newStake.value,
+                    validator: activeValidator.value!.address,
                 });
 
                 window.setTimeout(() => {

@@ -4,21 +4,22 @@
             v-if="asButton && visible && activeAddressInfo && activeAddressInfo.balance"
             class="staking-feature-tip"
             preferredPosition="bottom"
-            :container="this.$parent">
+            :container="this.$parent"
+            ref="$tooltip">
             <div slot="trigger">
                 <button class="stake"
                     :class="{
                         disabled: !activeAddressInfo || !activeAddressInfo.balance,
                         inverse: inversePalette,
+                        pulsing: !hasStake,
                     }" @click="$router.push('/staking')"
                     @mousedown.prevent
                     :disabled="!activeAddressInfo || !activeAddressInfo.balance">
                     <HeroIcon />
                 </button>
             </div>
-            <span>
-                {{ $t('Prestaking is now active') }}
-            </span>
+            <span v-if="!hasStake">{{ $t('Prestaking is now available!') }}</span>
+            <span v-else>{{ $t('Prestaking') }}</span>
         </Tooltip>
         <div class="stake"
             v-if="!asButton"
@@ -31,25 +32,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
+import { useNetworkStore } from '../../stores/Network';
+import { PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
 
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
-    setup() {
-        const { activeAddressInfo } = useAddressStore();
-        // const { activeStake } = useStakingStore();
-        // const visible = computed(() => !activeStake.value?.balance);
-        const visible = computed(() => true);
-
-        return {
-            visible,
-            activeAddressInfo,
-        };
-    },
     props: {
         asButton: {
             type: Boolean,
@@ -61,6 +53,30 @@ export default defineComponent({
             required: false,
             default: false,
         },
+    },
+    setup() {
+        const { activeAddressInfo } = useAddressStore();
+        const { height } = useNetworkStore();
+        const { activeStake } = useStakingStore();
+
+        const visible = computed(() => height.value >= PRESTAKING_BLOCK_H_START
+            && (height.value <= PRESTAKING_BLOCK_H_END || activeStake.value));
+
+        const hasStake = computed(() => !!activeStake.value);
+
+        const $tooltip = ref<Tooltip | null>(null);
+        watch([hasStake, activeAddressInfo], (has) => {
+            if (!has && $tooltip.value) {
+                ($tooltip.value.$el.querySelector('.trigger') as HTMLAnchorElement).focus();
+            }
+        });
+
+        return {
+            activeAddressInfo,
+            visible,
+            hasStake,
+            $tooltip,
+        };
     },
     components: {
         Tooltip,
@@ -76,7 +92,7 @@ export default defineComponent({
     &::v-deep .tooltip {
         position: absolute;
         right: 0;
-        top: -1.5rem;
+        top: -1.25rem;
     }
 }
 
@@ -86,13 +102,18 @@ export default defineComponent({
     border: 0;
     cursor: pointer;
     padding: 0;
-    margin-left: 0.5rem;
     transition: opacity 1s ease-in-out;
 
     svg {
         width: 6.75rem;
         height: 6.75rem;
 
+        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
+            opacity: 0;
+        }
+    }
+
+    &.pulsing svg {
         path:nth-child(1), path:nth-child(2), path:nth-child(4) {
             animation: fastwave 1s ease alternate infinite;
         }

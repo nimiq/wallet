@@ -2,12 +2,12 @@
     <div class="stake-graph-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
-                {{ $t('Set an Amount') }}
+                {{ $t('Set an amount to lock') }}
             </template>
             <template #more>
-                <p class="nq-text nq-blue">
-                    {{ $t('Use the slider to lock your NIM and earn rewards.') }}
-                </p>
+                <p class="nq-text nq-blue">{{
+                    $t('Prestake as much NIM as you can and help reach the next milestone of securing the network.')
+                }}</p>
                 <!-- <div v-if="validator" class="tooltip-bar flex-row">
                     <LabelTooltip :validator="validator" @click="$emit('changeValidator')" />
                     <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" dry />

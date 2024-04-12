@@ -4,12 +4,13 @@
             <template>
                 {{ $t('Nimiq PoS Prestaking') }}
             </template>
+            <template #more>
+                <p class="nq-text">{{
+                    $t('Prestake as much NIM as you can and help reach the next milestone of securing the network.')
+                }}</p>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
-            <p class="nq-text">{{ $t(
-                'Prestake as much NIM as you can and help reaching the next milestone of securing the network.'
-            ) }}</p>
-
             <div style="height: 152px; width: 100%; background-color: silver;"></div>
 
             <div v-if="stake">
@@ -25,10 +26,13 @@
                         <div class="amount-staked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
+                        <div class="locked-notice nq-orange">
+                            {{ $t('Prestaked funds are locked until launch') }}
+                        </div>
                     </div>
                     <div class="flex-row">
                         <button class="nq-button-s" @click="$emit('adjust-stake')">
-                            {{ $t('Adjust Stake') }}
+                            {{ $t('Increase Prestake') }}
                         </button>
                     </div>
                 </div>
@@ -132,12 +136,16 @@ export default defineComponent({
 
     .page-header {
         padding-bottom: 3rem;
+
+        p {
+            margin: 1.25rem 0;
+        }
     }
 
     .page-body {
-        padding: 0 2rem 8rem;
+        padding: 0 2rem 4rem;
         position: relative;
-        justify-content: space-between;
+        gap: 2.75rem;
         flex-grow: 1;
 
         .estimated-rewards-overlay {
@@ -203,6 +211,13 @@ export default defineComponent({
         font-size: var(--small-size);
         font-weight: 600;
         color: var(--text-50);
+        line-height: 1;
+    }
+
+    .locked-notice {
+        font-size: var(--small-size);
+        font-weight: 600;
+        margin-top: 3rem;
         line-height: 1;
     }
 

@@ -53,10 +53,11 @@
                             <ShortAddress v-else :address="validator.address"/>
                             <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
                         </div>
-                        <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
+                        <div v-if="'label' in validator" class="validator-bottom flex-row">
+                            <ShortAddress :address="validator.address"/>
+                            <!-- <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
                             <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
-                            <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
+                            <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div> -->
                         </div>
                     </div>
                 </div>
@@ -75,9 +76,9 @@ import {
 } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
-import { getPayoutText } from '../../lib/StakingUtils';
+// import { getPayoutText } from '../../lib/StakingUtils';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+// import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { useNetworkStore } from '../../stores/Network';
@@ -95,17 +96,17 @@ export default defineComponent({
             stakedBalance.value / (availableBalance.value + stakedBalance.value)
         ) * 100);
 
-        const payoutText = computed(() => validator.value && 'label' in validator.value
-            ? getPayoutText(validator.value.payoutType)
-            : validator.value?.active
-                ? context.root.$t('Unregistered validator')
-                : context.root.$t('Inactive validator'));
+        // const payoutText = computed(() => validator.value && 'label' in validator.value
+        //     ? getPayoutText(validator.value.payoutType)
+        //     : validator.value?.active
+        //         ? context.root.$t('Unregistered validator')
+        //         : context.root.$t('Inactive validator'));
 
         return {
             stake,
             validator,
             percentage,
-            payoutText,
+            // payoutText,
             consensus,
         };
     },
@@ -114,7 +115,7 @@ export default defineComponent({
         PageBody,
         StakingIcon,
         Amount,
-        ValidatorTrustScore,
+        // ValidatorTrustScore,
         ValidatorRewardBubble,
         Identicon,
         ShortAddress,

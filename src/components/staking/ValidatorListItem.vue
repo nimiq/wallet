@@ -15,12 +15,13 @@
                             <InfoCircleSmallIcon class="trigger"/>
                         </ValidatorDescriptionTooltip>
                     </template>
-                    <ShortAddress v-else :address="validator.address"/>
+                    <ShortAddress v-else :address="validator.address" :displayedCharacters="28"/>
                 </div>
-                <div class="validator-item-inner-row flex-row validator-trust">
-                    <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
+                <div v-if="'label' in validator" class="validator-item-inner-row flex-row validator-trust">
+                    <ShortAddress :address="validator.address"/>
+                    <!-- <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
                     <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
-                    <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
+                    <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div> -->
                 </div>
             </div>
             <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
@@ -29,12 +30,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { Validator } from '../../stores/Staking';
-import { getPayoutText } from '../../lib/StakingUtils';
+// import { getPayoutText } from '../../lib/StakingUtils';
 
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+// import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorDescriptionTooltip from './tooltips/ValidatorDescriptionTooltip.vue';
@@ -47,18 +48,18 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
-        const payoutText = computed(() => 'label' in props.validator
-            ? getPayoutText(props.validator.payoutType)
-            : context.root.$t('Unregistered validator'));
+    setup() {
+        // const payoutText = computed(() => 'label' in props.validator
+        //     ? getPayoutText(props.validator.payoutType)
+        //     : context.root.$t('Unregistered validator'));
 
         return {
-            payoutText,
+            // payoutText,
         };
     },
     components: {
         Identicon,
-        ValidatorTrustScore,
+        // ValidatorTrustScore,
         ValidatorRewardBubble,
         ShortAddress,
         ValidatorDescriptionTooltip,

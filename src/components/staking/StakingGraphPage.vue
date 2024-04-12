@@ -8,11 +8,11 @@
                 <p class="nq-text nq-blue">
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </p>
-                <div v-if="validator" class="tooltip-bar flex-row">
+                <!-- <div v-if="validator" class="tooltip-bar flex-row">
                     <LabelTooltip :validator="validator" @click="$emit('changeValidator')" />
-                    <!-- <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" dry />
-                    <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" dry /> -->
-                </div>
+                    <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" dry />
+                    <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" dry />
+                </div> -->
             </template>
         </PageHeader>
         <PageBody class="flex-column">
@@ -67,7 +67,7 @@ import { useStakingStore } from '../../stores/Staking';
 import AmountSlider from './AmountSlider.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 
-import LabelTooltip from './tooltips/LabelTooltip.vue';
+// import LabelTooltip from './tooltips/LabelTooltip.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
 import { useAddressStore } from '../../stores/Address';
@@ -185,7 +185,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        LabelTooltip,
+        // LabelTooltip,
         AmountSlider,
         Amount,
         MessageTransition,

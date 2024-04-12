@@ -15,26 +15,26 @@ export type Stake = {
 
 export type RawValidator = {
     address: string,
-    dominance: number, // Percentage
-    active: boolean,
+    // dominance: number, // Percentage
+    // active: boolean,
 }
 
 export type RegisteredValidator = {
     address: string,
-    active: boolean,
+    // active: boolean,
     label: string,
     icon?: string,
-    payoutType: 'direct' | 'restake',
-    fee: number,
+    // payoutType: 'direct' | 'restake',
+    // fee: number,
     description?: string,
-    // link?: string,
+    link?: string,
     // uptime: number, // Percentage
     // monthsOld: number,
 
     // Calculated fields
-    trust: number,
-    reward: number,
-    dominance: number, // Percentage
+    // trust: number,
+    // reward: number,
+    // dominance: number, // Percentage
 }
 
 export type Validator = RawValidator | RegisteredValidator;
@@ -43,11 +43,21 @@ export const useStakingStore = createStore({
     id: 'staking',
     state: () => ({
         validators: {
-            'validator-1': { address: 'NQ71 RT31 S25M 4AKJ ENDJ 0X0N T9DP C71L 8R05', dominance: 10, active: true },
-            'validator-2': { address: 'NQ37 E5H5 VE9V TAPG P793 AGP8 0HE6 CC6Q 6STN', dominance: 20, active: false },
-            'validator-3': { address: 'NQ32 23TS 4GC6 885N M2XM MUG9 1ARD 6YX2 3CVK', dominance: 30, active: true },
-            'validator-4': { address: 'NQ55 HSS8 VDEQ XMM1 HH36 UPUB H2YK 5LYL HP9Q', dominance: 40, active: false },
-            'validator-5': { address: 'NQ31 16RB 429E 8FDP BS34 H19B MQCE 2AUA MHQY', dominance: 50, active: true },
+            'NQ71 RT31 S25M 4AKJ ENDJ 0X0N T9DP C71L 8R05': {
+                address: 'NQ71 RT31 S25M 4AKJ ENDJ 0X0N T9DP C71L 8R05',
+            },
+            'NQ37 E5H5 VE9V TAPG P793 AGP8 0HE6 CC6Q 6STN': {
+                address: 'NQ37 E5H5 VE9V TAPG P793 AGP8 0HE6 CC6Q 6STN',
+            },
+            'NQ32 23TS 4GC6 885N M2XM MUG9 1ARD 6YX2 3CVK': {
+                address: 'NQ32 23TS 4GC6 885N M2XM MUG9 1ARD 6YX2 3CVK',
+            },
+            'NQ55 HSS8 VDEQ XMM1 HH36 UPUB H2YK 5LYL HP9Q': {
+                address: 'NQ55 HSS8 VDEQ XMM1 HH36 UPUB H2YK 5LYL HP9Q',
+            },
+            'NQ31 16RB 429E 8FDP BS34 H19B MQCE 2AUA MHQY': {
+                address: 'NQ31 16RB 429E 8FDP BS34 H19B MQCE 2AUA MHQY',
+            },
         },
         stakeByAddress: {},
     } as StakingState),

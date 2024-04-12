@@ -11,7 +11,7 @@
             </template>
         </PageHeader>
         <PageBody>
-            <ValidatorFilter @changed="changeFilter" @search="onSearch"/>
+            <!-- <ValidatorFilter @changed="changeFilter" @search="onSearch"/> -->
             <div class="validator-list" ref="validatorList$">
                 <div class="scroll-mask top"></div>
                 <LoadingList v-if="validatorsList.length === 0" :length="5" :type="LoadingListType.VALIDATOR" />
@@ -29,12 +29,12 @@
 
 <script lang="ts">
 import { captureException } from '@sentry/vue';
-import { computed, defineComponent, ref, onMounted } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { Validator, useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
 
-import ValidatorFilter from './ValidatorFilter.vue';
+// import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
 import { useAddressStore } from '../../stores/Address';
 // import { sendStaking } from '../../hub';
@@ -56,29 +56,30 @@ export default defineComponent({
         const filter = ref(FilterState.TRUST);
         const changeFilter = (newFilter: FilterState) => filter.value = newFilter;
 
-        const sortedList = computed(() => {
-            switch (filter.value) {
-                case FilterState.SEARCH:
-                    return validatorsList.value.filter((validator) =>
-                        'label' in validator
-                            ? validator.label.toLowerCase().includes(searchValue.value.toLowerCase())
-                            : validator.address.toLowerCase().includes(searchValue.value.toLowerCase()),
-                    );
-                case FilterState.REWARD:
-                    return validatorsList.value.slice()
-                        .sort((a, b) => {
-                            const cmp = ('reward' in b ? b.reward : 0) - ('reward' in a ? a.reward : 0);
-                            if (cmp) return cmp;
-                            return a.address < b.address ? -1 : 1;
-                        });
-                default:
-                    return validatorsList.value.slice()
-                        .sort((a, b) => {
-                            const cmp = ('trust' in b ? b.trust : 0) - ('trust' in a ? a.trust : 0);
-                            if (cmp) return cmp;
-                            return a.address < b.address ? -1 : 1;
-                        });
-            }
+        const sortedList = computed(() => { // eslint-disable-line arrow-body-style
+            return validatorsList.value;
+            // switch (filter.value) {
+            //     case FilterState.SEARCH:
+            //         return validatorsList.value.filter((validator) =>
+            //             'label' in validator
+            //                 ? validator.label.toLowerCase().includes(searchValue.value.toLowerCase())
+            //                 : validator.address.toLowerCase().includes(searchValue.value.toLowerCase()),
+            //         );
+            //     case FilterState.REWARD:
+            //         return validatorsList.value.slice()
+            //             .sort((a, b) => {
+            //                 const cmp = ('reward' in b ? b.reward : 0) - ('reward' in a ? a.reward : 0);
+            //                 if (cmp) return cmp;
+            //                 return a.address < b.address ? -1 : 1;
+            //             });
+            //     default:
+            //         return validatorsList.value.slice()
+            //             .sort((a, b) => {
+            //                 const cmp = ('trust' in b ? b.trust : 0) - ('trust' in a ? a.trust : 0);
+            //                 if (cmp) return cmp;
+            //                 return a.address < b.address ? -1 : 1;
+            //             });
+            // }
         });
 
         async function selectValidator(validator: Validator) {
@@ -153,7 +154,7 @@ export default defineComponent({
         PageHeader,
         PageBody,
         ValidatorListItem,
-        ValidatorFilter,
+        // ValidatorFilter,
         LoadingList,
     },
 });

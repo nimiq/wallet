@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
+import { ValidationUtils } from '@nimiq/utils';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
@@ -178,28 +179,27 @@ export async function launchNetwork() {
                     tx.sender === address
                     && tx.recipient === BURNER_ADDRESS
                     && tx.blockHeight
-                    && tx.blockHeight >= PRESTAKING_BLOCK_H_START // Only consider txs within the pre-staking period
-                    && tx.blockHeight <= PRESTAKING_BLOCK_H_END,
+                    && tx.blockHeight >= PRESTAKING_BLOCK_H_START // Only consider txs within the pre-staking window
+                    && tx.blockHeight <= PRESTAKING_BLOCK_H_END
+                    && tx.data.raw
+                    && ValidationUtils.isValidAddress(parseData(tx.data.raw)),
                 );
 
-            if (stakingTxs.length === 0) return;
+            if (stakingTxs.length === 0) {
+                stakingStore.removeStake(address);
+                return;
+            }
 
             // Sort transactions by timestamp in descending order
-            stakingTxs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            stakingTxs.sort((a, b) => b.blockHeight! - a.blockHeight!);
 
-            // Extract the validator from the most recent transaction
-            const mostRecentValidator = parseData(stakingTxs[0].data.raw);
+            // The current delegation is determined by the latest transaction
+            const delegation = ValidationUtils.normalizeAddress(parseData(stakingTxs[0].data.raw));
 
-            // Filter transactions to only include those with the same validator
-            const filteredStakingTxs = stakingTxs.filter((tx) => {
-                const validator = parseData(tx.data.raw);
-                return validator === mostRecentValidator;
-            });
+            // Calculate the stake from all pre-staking transactions
+            const balance = stakingTxs.reduce((acc, tx) => acc + tx.value, 0);
 
-            // Calculate the balance based on the filtered transactions
-            const balance = filteredStakingTxs.reduce((acc, tx) => acc + tx.value, 0);
-
-            stakingStore.setStake({ address, balance, validator: mostRecentValidator });
+            stakingStore.setStake({ address, balance, validator: delegation });
         });
     }
 

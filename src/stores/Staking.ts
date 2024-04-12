@@ -43,21 +43,10 @@ export const useStakingStore = createStore({
     id: 'staking',
     state: () => ({
         validators: {
-            'NQ71 RT31 S25M 4AKJ ENDJ 0X0N T9DP C71L 8R05': {
-                address: 'NQ71 RT31 S25M 4AKJ ENDJ 0X0N T9DP C71L 8R05',
-            },
-            'NQ37 E5H5 VE9V TAPG P793 AGP8 0HE6 CC6Q 6STN': {
-                address: 'NQ37 E5H5 VE9V TAPG P793 AGP8 0HE6 CC6Q 6STN',
-            },
-            'NQ32 23TS 4GC6 885N M2XM MUG9 1ARD 6YX2 3CVK': {
-                address: 'NQ32 23TS 4GC6 885N M2XM MUG9 1ARD 6YX2 3CVK',
-            },
-            'NQ55 HSS8 VDEQ XMM1 HH36 UPUB H2YK 5LYL HP9Q': {
-                address: 'NQ55 HSS8 VDEQ XMM1 HH36 UPUB H2YK 5LYL HP9Q',
-            },
-            'NQ31 16RB 429E 8FDP BS34 H19B MQCE 2AUA MHQY': {
-                address: 'NQ31 16RB 429E 8FDP BS34 H19B MQCE 2AUA MHQY',
-            },
+            // 'NQ61 V7UG HQQ2 NB45 YSJQ LJY9 LJEQ PMAN JCD4': {
+            //     address: 'NQ61 V7UG HQQ2 NB45 YSJQ LJY9 LJEQ PMAN JCD4',
+            //     // label: '',
+            // },
         },
         stakeByAddress: {},
     } as StakingState),

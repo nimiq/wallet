@@ -176,6 +176,11 @@ export default defineComponent({
     .page-body {
         padding: 1rem 0;
 
+        .stake-validator-filter {
+            margin: 0 auto;
+            margin-bottom: 0.5rem;
+        }
+
         .loading-list {
             margin: 0 3.25rem;
         }
@@ -187,6 +192,10 @@ export default defineComponent({
             overflow-y: auto;
             width: 100%;
             height: 46.5rem;
+
+            .validator-list-item {
+                margin: 0 auto;
+            }
         }
     }
     .nq-text {

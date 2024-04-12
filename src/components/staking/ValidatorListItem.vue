@@ -78,7 +78,6 @@ export default defineComponent({
 
     width: calc(100% - 4rem);
     height: 9.25rem;
-    margin: auto;
     background-color: transparent;
 
     border: 0;

@@ -81,8 +81,6 @@ export default defineComponent({
     // width: 38rem;
     width: fit-content;
     height: 3.75rem;
-    margin: auto;
-    margin-bottom: 1.5rem;
     white-space: nowrap;
 
     .validator-filter-wrapper {

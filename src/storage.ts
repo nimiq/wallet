@@ -20,6 +20,7 @@ import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
 import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
+import { useStakingStore } from './stores/Staking';
 import { useConfig } from './composables/useConfig';
 import { useGeoIp } from './composables/useGeoIp';
 
@@ -38,6 +39,7 @@ const StorageKeys = {
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
     KYC: 'wallet_kyc_v00',
+    PRESTAKING: 'wallet_prestaking_v00',
 };
 
 const PersistentStorageKeys = {
@@ -208,6 +210,15 @@ export async function initStorage() {
             PersistentStorageKeys.USDCCONTACTS,
             (state) => state.contacts,
             (storedContacts) => ({ contacts: storedContacts }),
+        ),
+        initStoreStore(
+            useStakingStore(),
+            StorageKeys.PRESTAKING,
+            (state) => state, // this is the default, but we still provide it for ts type inference
+            (storedStakingState) => ({
+                ...storedStakingState,
+                validators: {},
+            }),
         ),
     ]);
 

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
+import { ValidationUtils } from '@nimiq/utils';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
@@ -8,7 +9,9 @@ import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { ENV_MAIN } from './lib/Constants';
+import { BURNER_ADDRESS, ENV_MAIN, PRESTAKING_BLOCK_H_START, PRESTAKING_BLOCK_H_END } from './lib/Constants';
+import { useStakingStore } from './stores/Staking';
+import { parseData } from './lib/DataFormatting';
 
 let isLaunched = false;
 let clientPromise: Promise<Nimiq.Client>;
@@ -131,6 +134,7 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
+    const stakingStore = useStakingStore();
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -162,6 +166,41 @@ export async function launchNetwork() {
         for (const [address, balance] of newBalances) {
             addressStore.patchAddress(address, { balance });
         }
+    }
+
+    async function updateStakes(addresses: string[] = [...balances.keys()]) {
+        if (!addresses.length) return;
+        await client.waitForConsensusEstablished();
+        const { state: transactions$ } = useTransactionsStore();
+
+        addresses.forEach((address) => {
+            const stakingTxs = Object.values(transactions$.transactions)
+                .filter((tx) =>
+                    tx.sender === address
+                    && tx.recipient === BURNER_ADDRESS
+                    && tx.blockHeight
+                    && tx.blockHeight >= PRESTAKING_BLOCK_H_START // Only consider txs within the pre-staking window
+                    && tx.blockHeight <= PRESTAKING_BLOCK_H_END
+                    && tx.data.raw
+                    && ValidationUtils.isValidAddress(parseData(tx.data.raw)),
+                );
+
+            if (stakingTxs.length === 0) {
+                stakingStore.removeStake(address);
+                return;
+            }
+
+            // Sort transactions by timestamp in descending order
+            stakingTxs.sort((a, b) => b.blockHeight! - a.blockHeight!);
+
+            // The current delegation is determined by the latest transaction
+            const delegation = ValidationUtils.normalizeAddress(parseData(stakingTxs[0].data.raw));
+
+            // Calculate the stake from all pre-staking transactions
+            const balance = stakingTxs.reduce((acc, tx) => acc + tx.value, 0);
+
+            stakingStore.setStake({ address, balance, validator: delegation });
+        });
     }
 
     function forgetBalances(addresses: string[]) {
@@ -201,6 +240,7 @@ export async function launchNetwork() {
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
             updateBalances();
+            updateStakes();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -252,6 +292,11 @@ export async function launchNetwork() {
 
     function transactionListener(tx: Nimiq.Client.TransactionDetails) {
         const plain = tx.toPlain();
+
+        if (plain.recipient === BURNER_ADDRESS) {
+            updateStakes([plain.sender]);
+        }
+
         transactionsStore.addTransactions([plain]);
 
         if (plain.state === TransactionState.MINED) {
@@ -269,6 +314,7 @@ export async function launchNetwork() {
     function subscribe(addresses: string[]) {
         client.addTransactionListener(transactionListener, addresses);
         updateBalances(addresses);
+        updateStakes(addresses);
         return true;
     }
 

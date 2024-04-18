@@ -4,42 +4,42 @@ type ValidatorInfo = Omit<RegisteredValidator, 'address' | 'active' | 'dominance
 
 export const validatorData: Record<string, ValidatorInfo> = {
     // Team Demo validators
-    'NQ70 JM4N PU3R Y2U2 9RGX ABJE VKA4 4TBB HKF1': {
+    'NQ24 DJE3 KX3U HG5X 1BXP 8XQ3 SK7S X364 N7G7': {
         label: 'Pooly McPoolface',
         fee: 0.09,
         payoutType: 'restake',
     },
-    'NQ83 P1EH GRM8 HUE8 GS7L CBST UVDS 778L HEX4': {
+    'NQ87 FEGQ 01TF M29N T03J 3YCB JB5M X5VM XP8Q': {
         label: 'Cool Pool',
         fee: 0.09,
         payoutType: 'direct',
     },
-    'NQ79 F94K NYV6 3V7D 68X6 FXAD 4PCM XMQR PP4U': {
+    'NQ82 BHPS UR9K 07X1 X6QH 3DY3 J325 UCSP UHV3': {
         label: 'Puddle',
         fee: 0.095,
         payoutType: 'restake',
     },
-    'NQ94 58R8 YDR5 05EX JTA4 37JU N1EK 6R3Q M9C5': {
+    'NQ38 YX2J GTMX 5XAU LKFU H0GS A4AA U26L MDA3': {
         label: 'Swimming Pool',
         fee: 0.1,
         payoutType: 'restake',
     },
-    'NQ56 BBC5 B9RR PRT9 6V21 TJJ7 PJQ0 N5KA ELAU': {
+    'NQ57 UQJL 5A3H N45M 1FHS 2454 C7L5 BTE6 KEU1': {
         label: 'Kiddie Pool',
         fee: 0.1,
         payoutType: 'restake',
     },
-    'NQ69 GF5T BFJG 9YEX 97VJ JJ27 D9VA 414K 7LG5': {
+    'NQ57 2F6C X3GB Y9B7 04U5 2BVA 4BVC M2T0 ELRL': {
         label: 'Pool Billard',
         fee: 0.105,
         payoutType: 'restake',
     },
-    'NQ85 UD3C U8F9 J1L9 J32V X9QX S3NJ BQ4L SCAN': {
+    'NQ71 CK94 3V7U H62Y 4L0F GUUK DPA4 6SA6 DKKM': {
         label: 'Monopooly',
         fee: 0.11,
         payoutType: 'direct',
     },
-    'NQ84 3NMP N7X3 90XQ G8PB 48V3 M15Y B9V0 6C41': {
+    'NQ08 N4RH FQDL TE7S 8C66 65LT KYDU Q382 YG7U': {
         label: 'Not-A-Pool',
         fee: 0.11,
         payoutType: 'restake',
@@ -59,7 +59,7 @@ export const validatorData: Record<string, ValidatorInfo> = {
         description: 'Minting together - mintpool.io',
         icon: 'mintpool.svg',
     },
-    'NQ62 F6HC M67U 11XS D3RF T6DL HE5J 7NKK S2GV': {
+    'NQ49 E4LQ FN9M B9BP 0FRE BCL5 MHFY TGQE D4XX': {
         label: 'Helvetia Staking',
         fee: 0.1,
         payoutType: 'restake',

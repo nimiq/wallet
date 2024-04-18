@@ -71,7 +71,7 @@ msgstr ""
 msgid "{percentage} fees"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:26
+#: src/components/staking/StakingInfoPage.vue:27
 msgid "{percentage}% of address's balance"
 msgstr ""
 
@@ -258,10 +258,6 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
-msgstr ""
-
-#: src/components/staking/StakingInfoPage.vue:31
-msgid "Adjust Stake"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:183
@@ -574,7 +570,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/staking/StakingValidatorPage.vue:100
+#: src/components/staking/StakingValidatorPage.vue:101
 msgid "Changing validator"
 msgstr ""
 
@@ -1255,8 +1251,8 @@ msgstr ""
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:102
-msgid "Inactive validator"
+#: src/components/staking/StakingInfoPage.vue:35
+msgid "Increase Prestake"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:98
@@ -1696,17 +1692,23 @@ msgstr ""
 msgid "Popups"
 msgstr ""
 
+#: src/components/staking/StakingGraphPage.vue:9
 #: src/components/staking/StakingInfoPage.vue:9
-msgid "Prestake as much NIM as you can and help reaching the next milestone of securing the network."
+msgid "Prestake as much NIM as you can and help reach the next milestone of securing the network."
 msgstr ""
 
 #: src/components/staking/StakingGraphPage.vue:40
+#: src/components/staking/StakingInfoPage.vue:30
 #: src/components/staking/StakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:20
-msgid "Prestaking is now active"
+#: src/components/staking/StakingButton.vue:22
+msgid "Prestaking"
+msgstr ""
+
+#: src/components/staking/StakingButton.vue:21
+msgid "Prestaking is now available!"
 msgstr ""
 
 #: src/components/staking/StakingWelcomePage.vue:12
@@ -2068,7 +2070,7 @@ msgid "Set Amount"
 msgstr ""
 
 #: src/components/staking/StakingGraphPage.vue:5
-msgid "Set an Amount"
+msgid "Set an amount to lock"
 msgstr ""
 
 #: src/components/AmountMenu.vue:15
@@ -2150,8 +2152,8 @@ msgstr ""
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/staking/StakingGraphPage.vue:163
-#: src/components/staking/StakingValidatorPage.vue:130
+#: src/components/staking/StakingGraphPage.vue:169
+#: src/components/staking/StakingValidatorPage.vue:131
 msgid "Something went wrong"
 msgstr ""
 
@@ -2183,7 +2185,7 @@ msgstr ""
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:18
+#: src/components/staking/StakingInfoPage.vue:19
 msgid "Staked"
 msgstr ""
 
@@ -2199,7 +2201,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingValidatorPage.vue:112
+#: src/components/staking/StakingValidatorPage.vue:113
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
@@ -2570,11 +2572,6 @@ msgstr ""
 msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:101
-#: src/components/staking/ValidatorListItem.vue:53
-msgid "Unregistered validator"
-msgstr ""
-
 #: src/swap-kyc-handler.ts:148
 #: src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
@@ -2618,11 +2615,7 @@ msgstr ""
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:9
-msgid "Use the slider to lock your NIM and earn rewards."
-msgstr ""
-
-#: src/components/staking/StakingInfoPage.vue:41
+#: src/components/staking/StakingInfoPage.vue:45
 msgid "Validator"
 msgstr ""
 

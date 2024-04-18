@@ -80,6 +80,14 @@ msgstr "{perc}% вартості обміну."
 msgid "{percentage} fees"
 msgstr "{percentage} комісії"
 
+#: src/components/staking/StakingInfoPage.vue:27
+msgid "{percentage}% of address's balance"
+msgstr ""
+
+#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:14
+msgid "{poolName} Website"
+msgstr ""
+
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
 msgstr "{provider} надається {companyLogo}"
@@ -299,7 +307,7 @@ msgstr ""
 "Усі нові можливості працюють виключно для нових рахунків. Оновіть зараз, це "
 "займе лише кілька секунди."
 
-#: src/components/layouts/AddressOverview.vue:203
+#: src/components/layouts/AddressOverview.vue:210
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -619,6 +627,10 @@ msgstr "Змінити пароль"
 msgid "Change your language setting."
 msgstr "Змінити налаштування мови."
 
+#: src/components/staking/StakingValidatorPage.vue:101
+msgid "Changing validator"
+msgstr ""
+
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/UsdcActivationModal.vue:35
 msgid "Check the new intro"
@@ -633,6 +645,10 @@ msgstr "Виберіть одержувача"
 #: src/components/modals/AddressSelectorModal.vue:5
 msgid "Choose a Sender"
 msgstr "Виберіть відправника"
+
+#: src/components/staking/StakingValidatorPage.vue:5
+msgid "Choose a Validator"
+msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:286
@@ -658,7 +674,7 @@ msgstr "Натисніть для отримання додаткової інф
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Натисніть ‘Усунення несправностей’, щоб дізнатися більше."
 
-#: src/components/layouts/AddressOverview.vue:205
+#: src/components/layouts/AddressOverview.vue:212
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Закрити"
@@ -687,6 +703,10 @@ msgstr "Підтвердити"
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:70
 msgid "Confirm account"
 msgstr "Підтвердіть рахунок"
+
+#: src/components/staking/StakingGraphPage.vue:32
+msgid "Confirm stake"
+msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:60
@@ -765,11 +785,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:168
+#: src/components/layouts/AddressOverview.vue:175
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:160
+#: src/components/layouts/AddressOverview.vue:167
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -924,6 +944,12 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:102
 msgid "Duration and fees are estimates."
 msgstr "Тривалість і комісія є приблизними."
+
+#: src/components/staking/StakingValidatorPage.vue:9
+msgid ""
+"Earn rewards by locking NIM with a validator. Locked NIM stay under your "
+"control."
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:10
 msgid ""
@@ -1337,6 +1363,10 @@ msgstr ""
 "У разі будь-яких проблем, наприклад перевищення лімітів або недостатніх сум,"
 " автоматичне відшкодування працюватиме лише для індивідуальних IBAN адрес."
 
+#: src/components/staking/StakingInfoPage.vue:35
+msgid "Increase Prestake"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:98
 msgid ""
 "Increase the speed of your transaction by paying a higher network fee. The "
@@ -1398,7 +1428,7 @@ msgstr "Підпишіть відправника"
 msgid "Language"
 msgstr "Мова"
 
-#: src/components/layouts/AddressOverview.vue:163
+#: src/components/layouts/AddressOverview.vue:170
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr "Дізнайтеся більше"
@@ -1407,16 +1437,17 @@ msgstr "Дізнайтеся більше"
 msgid "Learn more here"
 msgstr "Дізнайтеся більше тут"
 
-#: src/components/layouts/AddressOverview.vue:153
+#: src/components/layouts/AddressOverview.vue:160
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:190
+#: src/components/layouts/AddressOverview.vue:197
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Розпочнемо! Створіть рахунок у мережі Німік."
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
+#: src/components/staking/StakingWelcomePage.vue:22
 msgid "Let's go"
 msgstr "Вперед!"
 
@@ -1455,6 +1486,10 @@ msgstr "завантаження..."
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
 msgstr "Завантаження..."
+
+#: src/components/staking/StakingWelcomePage.vue:8
+msgid "Lock NIM for Proof of Stake"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:288
 #: src/components/swap/SwapAnimation.vue:291
@@ -1573,6 +1608,10 @@ msgstr ""
 "hub.nimiq.com і keyguard.nimiq.com, а також інші бібліотеки є на стадії "
 "активної розробки."
 
+#: src/components/staking/StakingInfoPage.vue:5
+msgid "Nimiq PoS Prestaking"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:111
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Гаманець Німік не підтримує повідомлень у переказах."
@@ -1580,6 +1619,10 @@ msgstr "Гаманець Німік не підтримує повідомлен
 #: src/components/swap/SwapNotification.vue:215
 msgid "No connection to {chain} network."
 msgstr "Немає підключення до мережі {chain}."
+
+#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:8
+msgid "No description available"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "No funds were received so the swap expired."
@@ -1675,6 +1718,10 @@ msgstr "Або купіть BTC прямо в гаманці."
 #: src/components/layouts/Settings.vue:204
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Перезаписати спосіб відкриття Keyguard."
+
+#: src/components/staking/tooltips/ValidatorRewardBubble.vue:8
+msgid "p.a."
+msgstr ""
 
 #: src/components/UsdcTransactionListItem.vue:40
 msgid "partially reverted"
@@ -1788,6 +1835,33 @@ msgstr "спливаючі вікна"
 msgid "Popups"
 msgstr "Спливаючі вікна"
 
+#: src/components/staking/StakingGraphPage.vue:9
+#: src/components/staking/StakingInfoPage.vue:9
+msgid ""
+"Prestake as much NIM as you can and help reach the next milestone of "
+"securing the network."
+msgstr ""
+
+#: src/components/staking/StakingGraphPage.vue:40
+#: src/components/staking/StakingInfoPage.vue:30
+#: src/components/staking/StakingWelcomePage.vue:19
+msgid "Prestaked funds are locked until launch"
+msgstr ""
+
+#: src/components/staking/StakingButton.vue:22
+msgid "Prestaking"
+msgstr ""
+
+#: src/components/staking/StakingButton.vue:21
+msgid "Prestaking is now available!"
+msgstr ""
+
+#: src/components/staking/StakingWelcomePage.vue:12
+msgid ""
+"Prestaking NIM secures the network and is the quickest way to staking "
+"rewards."
+msgstr ""
+
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
 msgstr ""
@@ -1811,7 +1885,7 @@ msgid ""
 "intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:143
+#: src/components/layouts/AddressOverview.vue:149
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Отримати"
@@ -1936,6 +2010,10 @@ msgstr "Скинути налаштування веб-оглядача і пе�
 msgid "Resolving Unstoppable Domain..."
 msgstr "Вирішення незупинного домену..."
 
+#: src/lib/StakingUtils.ts:19
+msgid "Restake Rewards"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:638
 msgid "Restart payout process"
 msgstr ""
@@ -1953,6 +2031,10 @@ msgstr "Спробувати знову"
 #: src/components/swap/SwapAnimation.vue:337
 msgid "Retrying..."
 msgstr "Пробуємо ще..."
+
+#: src/components/staking/ValidatorFilter.vue:17
+msgid "Reward"
+msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:82
 msgid "Save and proceed"
@@ -2040,7 +2122,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Продаж зараз доступний"
 
-#: src/components/layouts/AddressOverview.vue:138
+#: src/components/layouts/AddressOverview.vue:144
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Відправити"
@@ -2084,6 +2166,10 @@ msgstr "Надіслати USDC"
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Переказуйте, отримуйте і зберігайте BTC у гаманці."
+
+#: src/components/staking/StakingGraphPage.vue:118
+msgid "Sending Pre-Staking Transaction"
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:461
 #: src/components/modals/SendModal.vue:771
@@ -2140,6 +2226,10 @@ msgstr "SEPA Instant транзакція"
 #: src/components/modals/UsdcSendModal.vue:96
 msgid "Set Amount"
 msgstr "Вкажіть суму"
+
+#: src/components/staking/StakingGraphPage.vue:5
+msgid "Set an amount to lock"
+msgstr ""
 
 #: src/components/AmountMenu.vue:15
 msgid "Set fee"
@@ -2204,7 +2294,7 @@ msgstr "Показати секретні слова"
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:198
 msgid "Signup"
 msgstr "Приєднатися"
 
@@ -2221,6 +2311,8 @@ msgstr "Пропустити"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
+#: src/components/staking/StakingGraphPage.vue:169
+#: src/components/staking/StakingValidatorPage.vue:131
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
@@ -2244,9 +2336,17 @@ msgstr ""
 msgid "Stable like USD, got it"
 msgstr ""
 
+#: src/components/staking/StakingGraphPage.vue:37
+msgid "Stake must be at least {minStake}."
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr "Стекайте NIM щоб отримати винагороду за участь у блокчейні."
+
+#: src/components/staking/StakingInfoPage.vue:19
+msgid "Staked"
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
@@ -2258,6 +2358,14 @@ msgstr "звично"
 
 #: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
+msgstr ""
+
+#: src/components/staking/StakingValidatorPage.vue:113
+msgid "Successfully changed validator to {validator}"
+msgstr ""
+
+#: src/components/staking/StakingGraphPage.vue:143
+msgid "Successfully pre-staked {amount} NIM with {validator}"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:109
@@ -2442,6 +2550,10 @@ msgstr ""
 "комісій і забезпечити швидкі транзакції, цей гаманець використовує версію "
 "Polygon."
 
+#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:11
+msgid "The validator is solely responsible for information provided above."
+msgstr ""
+
 #: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
 msgstr "Безкоштовні NIM наразі недоступні."
@@ -2603,12 +2715,20 @@ msgstr "Пробні версії"
 msgid "Troubleshooting"
 msgstr "Вирішення проблем"
 
+#: src/components/staking/ValidatorFilter.vue:7
+msgid "TrustScore"
+msgstr ""
+
 #: src/components/AnnouncementBox.vue:29
 msgid "Try it now"
 msgstr "Спробуйте зараз"
 
 #: src/components/NetworkStats.vue:21
 msgid "Tx time"
+msgstr ""
+
+#: src/components/staking/ValidatorFilter.vue:31
+msgid "Type to search..."
 msgstr ""
 
 #: src/composables/useTransactionInfo.ts:126
@@ -2691,6 +2811,10 @@ msgstr "Використовуйте мітки, щоб легко іденти�
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Використовуйте Nimiq гаманець як веб-програму поза веб-оглядачем."
 
+#: src/components/staking/StakingInfoPage.vue:45
+msgid "Validator"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "Контракт Наділення Прав"
@@ -2706,6 +2830,10 @@ msgstr "Очікування {currency}"
 #: src/components/SendModalFooter.vue:75
 msgid "Waiting for Nimiq network information"
 msgstr "Чекаємо інформації про мережу Nimiq"
+
+#: src/lib/StakingUtils.ts:18
+msgid "Wallet Payout"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -2734,6 +2862,10 @@ msgstr "Як називається ваш банк?"
 #: src/components/layouts/Settings.vue:194
 msgid "When ready"
 msgstr "Коли готово"
+
+#: src/components/staking/StakingGraphPage.vue:44
+msgid "will be available within hours."
+msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:14
 msgid ""
@@ -2796,7 +2928,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "Наразі у вас немає коштів для обміну."
 
-#: src/components/layouts/AddressOverview.vue:411
+#: src/components/layouts/AddressOverview.vue:419
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -2928,7 +3060,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Ваша виплата вже в дорозі"
 
-#: src/components/layouts/AddressOverview.vue:199
+#: src/components/layouts/AddressOverview.vue:206
 msgid "Your swap was successful!"
 msgstr "Ваш обмін пройшов успішно!"
 

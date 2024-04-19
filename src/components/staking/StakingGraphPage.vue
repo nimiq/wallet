@@ -149,12 +149,6 @@ export default defineComponent({
                     ),
                 });
 
-                setStake({
-                    address: activeAddressInfo.value!.address,
-                    balance: newStake.value,
-                    validator: activeValidator.value!.address,
-                });
-
                 window.setTimeout(() => {
                     context.emit('statusChange', { type: StatusChangeType.NONE });
                     context.emit('next');

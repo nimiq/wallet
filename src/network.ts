@@ -173,14 +173,23 @@ export async function launchNetwork() {
         await client.waitForConsensusEstablished();
         const { state: transactions$ } = useTransactionsStore();
 
+        const height = await client.getHeadHeight();
+
         addresses.forEach((address) => {
             const stakingTxs = Object.values(transactions$.transactions)
                 .filter((tx) =>
                     tx.sender === address
                     && tx.recipient === BURNER_ADDRESS
-                    && tx.blockHeight
-                    && tx.blockHeight >= PRESTAKING_BLOCK_H_START // Only consider txs within the pre-staking window
-                    && tx.blockHeight <= PRESTAKING_BLOCK_H_END
+                    // Only consider txs within the pre-staking window
+                    && ((
+                        tx.blockHeight
+                        && tx.blockHeight >= PRESTAKING_BLOCK_H_START
+                        && tx.blockHeight <= PRESTAKING_BLOCK_H_END
+                    ) || (
+                        tx.state === 'pending'
+                        && height >= PRESTAKING_BLOCK_H_START
+                        && height <= PRESTAKING_BLOCK_H_END
+                    ))
                     && tx.data.raw
                     && ValidationUtils.isValidAddress(parseData(tx.data.raw)),
                 );

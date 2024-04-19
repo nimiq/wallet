@@ -89,13 +89,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .staking-button {
-    position: relative;
-
-    &::v-deep .tooltip {
-        position: absolute;
-        right: 0;
-        top: -1.25rem;
-    }
+    height: 6.75rem;
+    margin: -1.25rem 0;
 }
 
 .stake {
@@ -148,7 +143,6 @@ export default defineComponent({
 }
 
 .tooltip.staking-feature-tip {
-    z-index: 3;
     ::v-deep .trigger::after {
         background-color: var(--nimiq-gold);
         transform: translateY(-0.9rem);

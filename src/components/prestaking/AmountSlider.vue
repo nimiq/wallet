@@ -184,7 +184,7 @@ export default defineComponent({
             }
         };
 
-        const updateAmount = (e: MouseEvent | TouchEvent) => {
+        const updateAmount = (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
             const target = e.target as HTMLInputElement;
 
             startSelection = target.selectionStart as number;
@@ -337,6 +337,8 @@ export default defineComponent({
         onMounted(() => {
             updateBoundingBoxes();
             window.addEventListener('resize', updateBoundingBoxes);
+
+            if ($prestakedNIMAmount.value) updateAmount({ target: $prestakedNIMAmount.value });
 
             if (alreadyPrestaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyPrestakedPercentage.value)

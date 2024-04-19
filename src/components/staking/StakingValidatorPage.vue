@@ -191,7 +191,7 @@ export default defineComponent({
             position: relative;
             overflow-y: auto;
             width: 100%;
-            height: 46.5rem;
+            height: 52.5rem;
 
             .validator-list-item {
                 margin: 0 auto;

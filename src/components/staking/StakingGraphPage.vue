@@ -144,7 +144,9 @@ export default defineComponent({
                         'Successfully pre-staked {amount} NIM with {validator}',
                         {
                             amount: Math.abs(stakeDelta.value / 1e5),
-                            validator: message.value,
+                            validator: activeValidator.value && 'label' in activeValidator.value
+                                ? activeValidator.value.label
+                                : message.value,
                         },
                     ),
                 });

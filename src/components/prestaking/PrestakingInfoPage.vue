@@ -1,5 +1,5 @@
 <template>
-    <div class="staking-info-page flex-column">
+    <div class="prestaking-info-page flex-column">
         <PageHeader :backArrow="false">
             <template>
                 {{ $t('Nimiq PoS Prestaking') }}
@@ -13,17 +13,17 @@
         <PageBody class="flex-column">
             <div style="height: 152px; width: 100%; background-color: silver;"></div>
 
-            <div v-if="stake">
+            <div v-if="prestake">
                 <span class="nq-label flex-row section-title">
-                    <StakingIcon />
-                    {{ $t('Staked') }}
+                    <PrestakingIcon />
+                    {{ $t('Prestaked') }}
                 </span>
                 <div class="row flex-row">
                     <div class="col flex-grow">
-                        <div class="amount-staked">
-                            <Amount :amount="stake.balance"/>
+                        <div class="amount-prestaked">
+                            <Amount :amount="prestake.balance"/>
                         </div>
-                        <div class="amount-staked-proportional">
+                        <div class="amount-prestaked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
                         <div class="locked-notice nq-orange">
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="flex-row">
-                        <button class="nq-button-s" @click="$emit('adjust-stake')" :disabled="!inPrestakingWindow">
+                        <button class="nq-button-s" @click="$emit('adjust-prestake')" :disabled="!inPrestakingWindow">
                             {{ $t('Increase Prestake') }}
                         </button>
                     </div>
@@ -49,7 +49,7 @@
                         <div class="validator-top flex-row">
                             <img v-if="'icon' in validator"
                                 class="validator-icon"
-                                :src="`/img/staking/providers/${validator.icon}`"
+                                :src="`/img/prestaking/providers/${validator.icon}`"
                                 :alt="validator.label"
                             />
                             <Identicon v-else class="validator-icon" :address="validator.address"/>
@@ -78,10 +78,10 @@ import {
     PageBody,
     Identicon,
 } from '@nimiq/vue-components';
-import { useStakingStore } from '../../stores/Staking';
+import { usePrestakingStore } from '../../stores/Prestaking';
 import { useAddressStore } from '../../stores/Address';
-// import { getPayoutText } from '../../lib/StakingUtils';
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
+// import { getPayoutText } from '../../lib/PrestakingUtils';
+import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
 // import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -91,14 +91,14 @@ import { PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Cons
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator } = useStakingStore();
+        const { activePrestake: prestake, activeValidator: validator } = usePrestakingStore();
         const { consensus, height } = useNetworkStore();
 
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value ? stake.value.balance : 0);
+        const prestakedBalance = computed(() => prestake.value ? prestake.value.balance : 0);
 
         const percentage = computed(() => (
-            stakedBalance.value / (availableBalance.value + stakedBalance.value)
+            prestakedBalance.value / (availableBalance.value + prestakedBalance.value)
         ) * 100);
 
         // const payoutText = computed(() => validator.value && 'label' in validator.value
@@ -111,7 +111,7 @@ export default defineComponent({
             && height.value <= PRESTAKING_BLOCK_H_END);
 
         return {
-            stake,
+            prestake,
             validator,
             percentage,
             // payoutText,
@@ -122,7 +122,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        StakingIcon,
+        PrestakingIcon,
         Amount,
         // ValidatorTrustScore,
         ValidatorRewardBubble,
@@ -135,7 +135,7 @@ export default defineComponent({
 <style lang="scss" scoped>
     @import '../../scss/mixins.scss';
 
-    .staking-info-page {
+    .prestaking-info-page {
         flex-grow: 1;
     }
 
@@ -192,14 +192,14 @@ export default defineComponent({
         }
     }
 
-    .amount-staked {
+    .amount-prestaked {
         font-size: var(--h2-size);
         font-weight: bold;
         line-height: 1;
         margin-bottom: 1rem;
     }
 
-    .adjust-stake {
+    .adjust-prestake {
         margin-right: 2rem;
         ::v-deep .tooltip-box {
             width: 25.75rem;
@@ -212,7 +212,7 @@ export default defineComponent({
         // pointer-events: none;
     }
 
-    .amount-staked-proportional {
+    .amount-prestaked-proportional {
         font-size: var(--small-size);
         font-weight: 600;
         color: var(--text-50);
@@ -226,7 +226,7 @@ export default defineComponent({
         line-height: 1;
     }
 
-    .unstaking {
+    .unprestaking {
         align-items: center;
         font-size: var(--body-size);
         font-weight: 600;

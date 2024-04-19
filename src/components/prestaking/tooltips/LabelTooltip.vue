@@ -1,7 +1,7 @@
 <template>
     <ValidatorDescriptionTooltip :validator="validator" preferredPosition="bottom">
         <div class="validator-label-trigger flex-row" @click="$emit('click')">
-            <img v-if="'icon' in validator" :src="`/img/staking/providers/${validator.icon}`"
+            <img v-if="'icon' in validator" :src="`/img/prestaking/providers/${validator.icon}`"
                 :alt="validator.label"/>
             <Identicon v-else :address="validator.address"/>
 
@@ -15,7 +15,7 @@
 import { defineComponent } from '@vue/composition-api';
 import { Identicon } from '@nimiq/vue-components';
 import ShortAddress from '../../ShortAddress.vue';
-import { Validator } from '../../../stores/Staking';
+import { Validator } from '../../../stores/Prestaking';
 import ValidatorDescriptionTooltip from './ValidatorDescriptionTooltip.vue';
 
 export default defineComponent({

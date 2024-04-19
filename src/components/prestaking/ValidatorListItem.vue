@@ -3,7 +3,7 @@
         <div class="validator-item-wrapper flex-row">
             <div class="validator-left validator-icon">
                 <img v-if="'icon' in validator"
-                    :src="`/img/staking/providers/${validator.icon}`" :alt="validator.label"
+                    :src="`/img/prestaking/providers/${validator.icon}`" :alt="validator.label"
                 />
                 <Identicon v-else :address="validator.address"/>
             </div>
@@ -32,10 +32,8 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
-import { Validator } from '../../stores/Staking';
-// import { getPayoutText } from '../../lib/StakingUtils';
+import { Validator } from '../../stores/Prestaking';
 
-// import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorDescriptionTooltip from './tooltips/ValidatorDescriptionTooltip.vue';

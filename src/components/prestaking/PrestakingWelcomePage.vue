@@ -1,8 +1,8 @@
 <template>
-    <div class="staking-welcome-page flex-column">
+    <div class="prestaking-welcome-page flex-column">
         <PageHeader>
             <template #default>
-                <div class="staking-icon">
+                <div class="prestaking-icon">
                     <HeroIcon />
                 </div>
                 {{ $t('Lock NIM for Proof of Stake') }}
@@ -14,11 +14,11 @@
             </template>
         </PageHeader>
         <PageBody>
-            <div class="staking-rounded-background flex-column">
-                <div class="staking-under-icons-text">
+            <div class="prestaking-rounded-background flex-column">
+                <div class="prestaking-under-icons-text">
                     {{ $t('Prestaked funds are locked until launch') }}
                 </div>
-                <button class="nq-button light-blue stake-button" @click="$emit('next')">
+                <button class="nq-button light-blue prestake-button" @click="$emit('next')">
                     {{ $t('Let\'s go') }}
                 </button>
             </div>
@@ -29,7 +29,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 
 export default defineComponent({
     setup() {
@@ -44,9 +44,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .staking-welcome-page {
+    .prestaking-welcome-page {
         flex-grow: 1;
-        background-image: url('../../assets/staking/staking-welcome-background.svg');
+        background-image: url('../../assets/prestaking/prestaking-welcome-background.svg');
         background-size: cover;
     }
 
@@ -58,7 +58,7 @@ export default defineComponent({
         ::v-deep .nq-h1 {
             font-size: var(--h1-size);
         }
-        .staking-icon {
+        .prestaking-icon {
             margin-bottom: 5rem;
 
             svg {
@@ -73,12 +73,12 @@ export default defineComponent({
         flex-grow: 1;
         overflow: hidden;
 
-        .staking-rounded-background {
+        .prestaking-rounded-background {
             justify-content: space-between;
             align-items: center;
             height: 100%;
 
-            .staking-under-icons-text {
+            .prestaking-under-icons-text {
                 font-size: var(--small-size);
                 font-weight: 600;
                 padding: 0 4rem;
@@ -88,7 +88,7 @@ export default defineComponent({
                 color: var(--nimiq-orange);
             }
 
-            .stake-button {
+            .prestake-button {
                 width: 31.5rem;
                 margin: 0;
             }
@@ -102,7 +102,7 @@ export default defineComponent({
 
     @media (max-width: 700px) { // Full mobile breakpoint
         .page-header {
-            .staking-icon {
+            .prestaking-icon {
                 margin-top: 1.375rem;
                 margin-bottom: 1.25rem;
                 svg {
@@ -113,8 +113,8 @@ export default defineComponent({
         }
 
         .page-body {
-            .staking-rounded-background {
-                .staking-under-icons-text {
+            .prestaking-rounded-background {
+                .prestaking-under-icons-text {
                     padding-bottom: .25rem;
                 }
             }

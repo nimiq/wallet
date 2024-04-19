@@ -30,7 +30,7 @@
 ^\/simplex[\/#\?]?$
 ^\/release-notes[\/#\?]?$
 ^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
-^\/staking[\/#\?]?$
+^\/prestaking[\/#\?]?$
 ^\/settings[\/#\?]?$
 ^\/accounts[\/#\?]?$
 ^\/disclaimer[\/#\?]?$

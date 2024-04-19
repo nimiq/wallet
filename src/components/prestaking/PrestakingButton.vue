@@ -1,27 +1,27 @@
 <template>
-    <div class="staking-button">
+    <div class="prestaking-button">
         <Tooltip
             v-if="asButton && visible && activeAddressInfo && activeAddressInfo.balance"
-            class="staking-feature-tip"
+            class="prestaking-feature-tip"
             preferredPosition="bottom"
             :container="this.$parent"
             ref="$tooltip">
             <div slot="trigger">
-                <button class="stake"
+                <button class="prestake"
                     :class="{
                         disabled: !activeAddressInfo || !activeAddressInfo.balance,
                         inverse: inversePalette,
-                        pulsing: !hasStake,
-                    }" @click="$router.push('/staking')"
+                        pulsing: !hasPrestake,
+                    }" @click="$router.push('/prestaking')"
                     @mousedown.prevent
                     :disabled="!activeAddressInfo || !activeAddressInfo.balance">
                     <HeroIcon />
                 </button>
             </div>
-            <span v-if="!hasStake">{{ $t('Prestaking is now available!') }}</span>
+            <span v-if="!hasPrestake">{{ $t('Prestaking is now available!') }}</span>
             <span v-else>{{ $t('Prestaking') }}</span>
         </Tooltip>
-        <div class="stake"
+        <div class="prestake"
             v-if="!asButton"
             :class="{
                 inverse: inversePalette,
@@ -32,15 +32,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
 import Config from 'config';
 import { useAddressStore } from '../../stores/Address';
-import { useStakingStore } from '../../stores/Staking';
+import { usePrestakingStore } from '../../stores/Prestaking';
 import { useNetworkStore } from '../../stores/Network';
 import { ENV_MAIN, PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
 
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 
 export default defineComponent({
     props: {
@@ -58,16 +58,16 @@ export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
         const { height } = useNetworkStore();
-        const { activeStake } = useStakingStore();
+        const { activePrestake } = usePrestakingStore();
 
         const visible = computed(() => Config.environment !== ENV_MAIN
             && height.value >= PRESTAKING_BLOCK_H_START
-            && (height.value <= PRESTAKING_BLOCK_H_END || activeStake.value));
+            && (height.value <= PRESTAKING_BLOCK_H_END || activePrestake.value));
 
-        const hasStake = computed(() => !!activeStake.value);
+        const hasPrestake = computed(() => !!activePrestake.value);
 
         const $tooltip = ref<Tooltip | null>(null);
-        // watch([hasStake, activeAddressInfo], ([has, _]) => {
+        // watch([hasPrestake, activeAddressInfo], ([has, _]) => {
         //     if (!has && $tooltip.value && visible.value) {
         //         ($tooltip.value.$el.querySelector('.trigger') as HTMLAnchorElement).focus();
         //     }
@@ -76,7 +76,7 @@ export default defineComponent({
         return {
             activeAddressInfo,
             visible,
-            hasStake,
+            hasPrestake,
             $tooltip,
         };
     },
@@ -88,12 +88,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.staking-button {
+.prestaking-button {
     height: 6.75rem;
     margin: -1.25rem 0;
 }
 
-.stake {
+.prestake {
     display: block;
     background-color: transparent;
     border: 0;
@@ -142,7 +142,7 @@ export default defineComponent({
     }
 }
 
-.tooltip.staking-feature-tip {
+.tooltip.prestaking-feature-tip {
     ::v-deep .trigger::after {
         background-color: var(--nimiq-gold);
         transform: translateY(-0.9rem);

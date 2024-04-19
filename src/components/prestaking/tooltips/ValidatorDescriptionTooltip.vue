@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Tooltip } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
-import { Validator } from '../../../stores/Staking';
+import { Validator } from '../../../stores/Prestaking';
 import BlueLink from '../../BlueLink.vue';
 
 export default defineComponent({

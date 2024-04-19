@@ -109,7 +109,7 @@
                             <p class="first">{{ $t('Super low fees, super fast payments') }}</p>
                             <p class="second">{{ $t('Censorship-resistant network connection') }}</p>
                             <p class="third">
-                                {{ $t('Creates staking rewards') }}
+                                {{ $t('Creates prestaking rewards') }}
                                 <span class="coming-soon">{{ $t('COMING SOON') }}</span>
                             </p>
                         </div>

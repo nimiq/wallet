@@ -1,5 +1,5 @@
 <template>
-    <div class="stake-graph-page flex-column">
+    <div class="prestake-graph-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template #default>
                 {{ $t('Set an amount to lock') }}
@@ -19,28 +19,31 @@
             <div style="height: 150px; background: gainsboro;"></div>
 
             <AmountSlider
-                :stakedAmount="activeStake ? activeStake.balance : 0"
-                @amount-staked="updateStaked"
+                :prestakedAmount="activePrestake ? activePrestake.balance : 0"
+                @amount-prestaked="updatePrestaked"
             />
 
             <div>
                 <button
-                    class="nq-button light-blue stake-button"
-                    :disabled="!stakeDelta || isStakeBelowMinimum"
-                    @click="performStaking"
+                    class="nq-button light-blue prestake-button"
+                    :disabled="!prestakeDelta || isPrestakeBelowMinimum"
+                    @click="performPrestaking"
                 >
-                    {{ $t('Confirm stake') }}
+                    {{ $t('Confirm prestake') }}
                 </button>
 
                 <MessageTransition>
-                    <div class="disclaimer minimum-stake-disclaimer" v-if="newStake !== 0 && isStakeBelowMinimum">
-                        {{ $t('Stake must be at least {minStake}.', { minStake: `${MIN_STAKE / 1e5} NIM` }) }}
+                    <div class="disclaimer minimum-prestake-disclaimer"
+                        v-if="newPrestake !== 0 && isPrestakeBelowMinimum">
+                        {{
+                            $t('Prestake must be at least {minPrestake}.', { minPrestake: `${MIN_PRESTAKE / 1e5} NIM` })
+                        }}
                     </div>
-                    <div class="disclaimer stake-disclaimer" v-else-if="stakeDelta >= 0">
+                    <div class="disclaimer prestake-disclaimer" v-else-if="prestakeDelta >= 0">
                         {{ $t('Prestaked funds are locked until launch') }}
                     </div>
-                    <div class="disclaimer unstake-disclaimer" v-else>
-                        <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
+                    <div class="disclaimer unprestake-disclaimer" v-else>
+                        <Amount :amount="Math.abs(prestakeDelta)" :decimals="DISPLAYED_DECIMALS" />
                         {{ $t('will be available within hours.') }}
                     </div>
                 </MessageTransition>
@@ -56,19 +59,19 @@ import { computed, defineComponent, ref } from '@vue/composition-api';
 import { Amount, PageHeader, PageBody } from '@nimiq/vue-components';
 import { Utf8Tools } from '@nimiq/utils';
 
-import { CryptoCurrency, MIN_STAKE, BURNER_ADDRESS } from '../../lib/Constants';
+import { CryptoCurrency, MIN_PRESTAKE, BURNER_ADDRESS } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { sendTransaction } from '../../hub';
 
 import { useConfig } from '../../composables/useConfig';
 
-import { useStakingStore } from '../../stores/Staking';
+import { usePrestakingStore } from '../../stores/Prestaking';
 
 import AmountSlider from './AmountSlider.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 
 // import LabelTooltip from './tooltips/LabelTooltip.vue';
-import { StatusChangeType } from './StakingModal.vue';
+import { StatusChangeType } from './PrestakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
@@ -78,15 +81,15 @@ import { useNetworkStore } from '../../stores/Network';
 export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
-        const { activeStake, activeValidator, setStake } = useStakingStore();
+        const { activePrestake, activeValidator } = usePrestakingStore();
         const { activeAddressInfo } = useAddressStore();
         const { state: network$ } = useNetworkStore();
 
         // const { state: transactions$ } = useTransactionsStore();
 
-        const newStake = ref(activeStake.value ? activeStake.value.balance : 0);
-        const stakeDelta = ref(0);
-        const amountToSend = computed(() => newStake.value - (activeStake.value?.balance || 0));
+        const newPrestake = ref(activePrestake.value ? activePrestake.value.balance : 0);
+        const prestakeDelta = ref(0);
+        const amountToSend = computed(() => newPrestake.value - (activePrestake.value?.balance || 0));
 
         const feePerByte = ref(0);
         const message = ref('');
@@ -101,21 +104,21 @@ export default defineComponent({
         const canSend = computed(() =>
             network$.consensus === 'established'
             && hasHeight.value
-            && !!newStake.value
+            && !!newPrestake.value
             && amountToSend.value <= maxSendableAmount.value,
         );
 
-        function updateStaked(amount: number) {
-            newStake.value = amount;
-            stakeDelta.value = amount - (activeStake.value?.balance || 0);
+        function updatePrestaked(amount: number) {
+            newPrestake.value = amount;
+            prestakeDelta.value = amount - (activePrestake.value?.balance || 0);
         }
 
-        async function performStaking() {
-            if (newStake.value < MIN_STAKE || stakeDelta.value <= 0) return;
+        async function performPrestaking() {
+            if (newPrestake.value < MIN_PRESTAKE || prestakeDelta.value <= 0) return;
             context.emit('statusChange', {
-                type: StatusChangeType.STAKING,
+                type: StatusChangeType.PRESTAKING,
                 state: State.LOADING,
-                title: context.root.$t('Sending Pre-Staking Transaction') as string,
+                title: context.root.$t('Sending Pre-Prestaking Transaction') as string,
             });
 
             message.value = activeValidator.value!.address;
@@ -141,9 +144,9 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.SUCCESS,
                     title: context.root.$t(
-                        'Successfully pre-staked {amount} NIM with {validator}',
+                        'Successfully prestaked {amount} NIM with {validator}',
                         {
-                            amount: Math.abs(stakeDelta.value / 1e5),
+                            amount: Math.abs(prestakeDelta.value / 1e5),
                             validator: activeValidator.value && 'label' in activeValidator.value
                                 ? activeValidator.value.label
                                 : message.value,
@@ -168,18 +171,18 @@ export default defineComponent({
             }
         }
 
-        const isStakeBelowMinimum = computed(() => newStake.value < MIN_STAKE);
+        const isPrestakeBelowMinimum = computed(() => newPrestake.value < MIN_PRESTAKE);
 
         return {
-            DISPLAYED_DECIMALS: calculateDisplayedDecimals(stakeDelta.value, CryptoCurrency.NIM),
-            activeStake,
+            DISPLAYED_DECIMALS: calculateDisplayedDecimals(prestakeDelta.value, CryptoCurrency.NIM),
+            activePrestake,
             validator: activeValidator,
-            newStake,
-            stakeDelta,
-            updateStaked,
-            performStaking,
-            isStakeBelowMinimum,
-            MIN_STAKE,
+            newPrestake,
+            prestakeDelta,
+            updatePrestaked,
+            performPrestaking,
+            isPrestakeBelowMinimum,
+            MIN_PRESTAKE,
             // totalNimSentToBurner,
             canSend,
         };
@@ -196,7 +199,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .stake-graph-page {
+    .prestake-graph-page {
         flex-grow: 1;
     }
 
@@ -244,7 +247,7 @@ export default defineComponent({
             margin: 4rem 3rem 0;
         }
 
-        .stake-button {
+        .prestake-button {
             width: 40.5rem;
         }
 
@@ -255,15 +258,15 @@ export default defineComponent({
             text-align: center;
         }
 
-        .minimum-stake-disclaimer {
+        .minimum-prestake-disclaimer {
             color: var(--nimiq-orange);
         }
 
-        .stake-disclaimer {
+        .prestake-disclaimer {
             color: var(--text-50);
         }
 
-        .unstake-disclaimer {
+        .unprestake-disclaimer {
             color: var(--nimiq-light-blue);
         }
     }

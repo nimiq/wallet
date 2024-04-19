@@ -17,7 +17,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <StakingButton />
+                    <PrestakingButton />
                 </div>
                 <button
                     class="reset icon-button"
@@ -132,10 +132,10 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if staking-->
-                        <!-- <StakingPreview v-if="stake" /> -->
-                        <!-- <StakingButton v-else /> -->
-                        <StakingButton />
+                    <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if prestaking-->
+                        <!-- <PrestakingPreview v-if="prestake" /> -->
+                        <!-- <PrestakingButton v-else /> -->
+                        <PrestakingButton />
                     </template>
 
                     <button class="send nq-button-pill light-blue flex-row"
@@ -153,7 +153,7 @@
                     </button>
                 </div>
             </div>
-            <!-- <StakingPreview v-if="stake" class="staking-preview-mobile" /> -->
+            <!-- <PrestakingPreview v-if="prestake" class="prestaking-preview-mobile" /> -->
             <div
                 v-if="activeCurrency === 'usdc' && usdcAccountBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -265,7 +265,7 @@ import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
-import StakingButton from '../staking/StakingButton.vue';
+import PrestakingButton from '../prestaking/PrestakingButton.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -290,7 +290,7 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -571,7 +571,7 @@ export default defineComponent({
         BoxedArrowUpIcon,
         UsdcIcon,
         CashlinkButton,
-        StakingButton,
+        PrestakingButton,
         HeroIcon,
     },
 });

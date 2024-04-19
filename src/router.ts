@@ -74,8 +74,9 @@ const MoonpaySellInfoModal = () =>
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
-// Staking Modals
-const StakingModal = () => import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
+// Prestaking Modals
+const PrestakingModal = () =>
+    import(/* webpackChunkName: "prestaking-modal" */ './components/prestaking/PrestakingModal.vue');
 
 Vue.use(VueRouter);
 
@@ -337,11 +338,11 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            path: '/staking',
+            path: '/prestaking',
             components: {
-                modal: StakingModal,
+                modal: PrestakingModal,
             },
-            name: 'staking',
+            name: 'prestaking',
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }],

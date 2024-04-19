@@ -20,7 +20,7 @@ import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
 import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
-import { useStakingStore } from './stores/Staking';
+import { usePrestakingStore } from './stores/Prestaking';
 import { useConfig } from './composables/useConfig';
 import { useGeoIp } from './composables/useGeoIp';
 
@@ -212,11 +212,11 @@ export async function initStorage() {
             (storedContacts) => ({ contacts: storedContacts }),
         ),
         initStoreStore(
-            useStakingStore(),
+            usePrestakingStore(),
             StorageKeys.PRESTAKING,
             (state) => state, // this is the default, but we still provide it for ts type inference
-            (storedStakingState) => ({
-                ...storedStakingState,
+            (storedPrestakingState) => ({
+                ...storedPrestakingState,
                 validators: {},
             }),
         ),

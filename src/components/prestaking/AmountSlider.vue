@@ -17,10 +17,10 @@
             <div class="slider-gradation">
                 <div
                     class="scalar-amount-text"
-                    ref="$stakedNIMText"
-                    @click="$stakedNIMAmount.focus()">
+                    ref="$prestakedNIMText"
+                    @click="$prestakedNIMAmount.focus()">
                     <input class="nq-input"
-                        ref="$stakedNIMAmount"
+                        ref="$prestakedNIMAmount"
                         @input="updateAmount"
                         @keypress.enter="$event.target.blur()"
                         :style="`width: ${inputAmountWidth}px;`"
@@ -34,7 +34,7 @@
                 </div>
                 <VerticalLineIcon v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
                     :style="`left: calc(2rem + 2px + (100% - 4rem - 4px) * (${index} / 10) - 1px)`" />
-                <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
+                <div v-if="alreadyPrestaked" class="prestake-dot-indicator" ref="$dotIndicator" />
             </div>
             <div class="slider-controls" ref="$slide" @click="onMove($event, true);">
                 <div class="slider-controls-wrapper">
@@ -43,9 +43,9 @@
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
-                        <OneLeafStakingIcon v-if="currentPercentage < 50" />
-                        <StakingIcon v-else-if="currentPercentage < 75" />
-                        <ThreeLeafStakingIcon v-else />
+                        <OneLeafPrestakingIcon v-if="currentPercentage < 50" />
+                        <PrestakingIcon v-else-if="currentPercentage < 75" />
+                        <ThreeLeafPrestakingIcon v-else />
                     </div>
                 </div>
             </div>
@@ -56,12 +56,12 @@
 <script lang="ts">
 import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { useAddressStore } from '../../stores/Address';
-import { MIN_STAKE } from '../../lib/Constants';
+import { MIN_PRESTAKE } from '../../lib/Constants';
 
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
-import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
-import ThreeLeafStakingIcon from '../icons/Staking/ThreeLeafStakingIcon.vue';
-import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
+import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
+import OneLeafPrestakingIcon from '../icons/Prestaking/OneLeafStakingIcon.vue';
+import ThreeLeafPrestakingIcon from '../icons/Prestaking/ThreeLeafStakingIcon.vue';
+import VerticalLineIcon from '../icons/Prestaking/VerticalLineIcon.vue';
 
 const getSVGNode = (n:string, attrs:Record<string, string> = {}) => {
     const e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -109,7 +109,7 @@ const extractEventPosition = (e: MouseEvent | TouchEvent):Point | null => {
 
 export default defineComponent({
     props: {
-        stakedAmount: {
+        prestakedAmount: {
             type: Number,
             required: true,
         },
@@ -117,12 +117,12 @@ export default defineComponent({
     setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
 
-        const alreadyStakedAmount = computed(() => props.stakedAmount);
-        const currentAmount = ref(alreadyStakedAmount.value);
-        const availableAmount = computed(() => (activeAddressInfo.value?.balance || 0) + props.stakedAmount);
+        const alreadyPrestakedAmount = computed(() => props.prestakedAmount);
+        const currentAmount = ref(alreadyPrestakedAmount.value);
+        const availableAmount = computed(() => (activeAddressInfo.value?.balance || 0) + props.prestakedAmount);
         const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value);
-        const alreadyStakedPercentage = ref(currentPercentage.value);
-        const alreadyStaked = ref(alreadyStakedAmount.value > 0);
+        const alreadyPrestakedPercentage = ref(currentPercentage.value);
+        const alreadyPrestaked = ref(alreadyPrestakedAmount.value > 0);
         const currentFormattedAmount = computed(() => Math.round(currentAmount.value / 1e5).toString());
         const availableFormattedAmount = computed(() => Math.round(availableAmount.value / 1e5).toString());
 
@@ -161,13 +161,13 @@ export default defineComponent({
         const $backgroundRightPlant = ref<HTMLElement>(null);
         const $progressBar = ref<HTMLElement>(null);
         const $percentText = ref<HTMLElement>(null);
-        const $stakedNIMText = ref<HTMLElement>(null);
-        const $stakedNIMAmount = ref<HTMLInputElement>(null);
+        const $prestakedNIMText = ref<HTMLElement>(null);
+        const $prestakedNIMAmount = ref<HTMLInputElement>(null);
         const $dotIndicator = ref<HTMLElement>(null);
 
-        const minimumStakePercent = computed(() => availableAmount.value < MIN_STAKE
-            ? Infinity // Makes it impossible to move the mouse above half the `minimumStakePercent`
-            : (MIN_STAKE / availableAmount.value) * 100);
+        const minimumPrestakePercent = computed(() => availableAmount.value < MIN_PRESTAKE
+            ? Infinity // Makes it impossible to move the mouse above half the `minimumPrestakePercent`
+            : (MIN_PRESTAKE / availableAmount.value) * 100);
 
         const atClick = (e: MouseEvent | TouchEvent) => {
             e.preventDefault();
@@ -191,8 +191,8 @@ export default defineComponent({
             endSelection = target.selectionEnd as number;
 
             let valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
-            // Ensure the entered amount does not fall below the minimum stake or already staked amount
-            valueNim = Math.max(valueNim, MIN_STAKE, alreadyStakedAmount.value);
+            // Ensure the entered amount does not fall below the minimum prestake or already prestaked amount
+            valueNim = Math.max(valueNim, MIN_PRESTAKE, alreadyPrestakedAmount.value);
             const amount = Math.max(
                 0,
                 Math.min(availableAmount.value, valueNim),
@@ -205,7 +205,7 @@ export default defineComponent({
             setTimeout(() => {
                 target.setSelectionRange(startSelection, endSelection);
             }, 0);
-            context.emit('amount-staked', currentAmount.value);
+            context.emit('amount-prestaked', currentAmount.value);
         };
 
         const atEndTouch = () => {
@@ -221,7 +221,7 @@ export default defineComponent({
         };
 
         const updatePosition = (offsetX: number) => {
-            amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
+            amountBox = $prestakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
             if (currentPercentage.value <= 0) {
                 $progressBar.value!.style.width = '0';
@@ -232,13 +232,13 @@ export default defineComponent({
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
             const maxXPos = containerBox.width - amountBox.width;
             if (offsetX <= 0) {
-                $stakedNIMText.value!.style.left = '0px';
+                $prestakedNIMText.value!.style.left = '0px';
             } else if (offsetX < maxXPos) {
-                $stakedNIMText.value!.style.left = `${offsetX}px`;
+                $prestakedNIMText.value!.style.left = `${offsetX}px`;
             } else {
-                $stakedNIMText.value!.style.left = `${maxXPos}px`;
+                $prestakedNIMText.value!.style.left = `${maxXPos}px`;
             }
-            $stakedNIMAmount.value!.value = currentFormattedAmount.value;
+            $prestakedNIMAmount.value!.value = currentFormattedAmount.value;
             context.emit('amount-chosen', 0);
         };
 
@@ -252,18 +252,18 @@ export default defineComponent({
             let percent = Math.min(100, Math.max(0,
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
-            // Ensure the slider does not go below the minimum stake percentage
-            percent = Math.max(minimumStakePercent.value, percent);
+            // Ensure the slider does not go below the minimum prestake percentage
+            percent = Math.max(minimumPrestakePercent.value, percent);
 
             const offsetX = getPointAtPercent(percent);
-            // Calculate new amount from slider's position, ensuring it's not below minimum stake
+            // Calculate new amount from slider's position, ensuring it's not below minimum prestake
             let newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
-            // Prevent reducing below MIN_STAKE or already staked amount
-            newAmount = Math.max(newAmount, MIN_STAKE, alreadyStakedAmount.value);
+            // Prevent reducing below MIN_PRESTAKE or already prestaked amount
+            newAmount = Math.max(newAmount, MIN_PRESTAKE, alreadyPrestakedAmount.value);
             currentAmount.value = newAmount;
 
             if (!skipSignals) {
-                context.emit('amount-staked', currentAmount.value);
+                context.emit('amount-prestaked', currentAmount.value);
             }
             updatePosition(offsetX);
         };
@@ -329,7 +329,7 @@ export default defineComponent({
             containerBox = $container.value!.getBoundingClientRect();
             sliderBox = $slide.value!.getBoundingClientRect();
             knobBox = $knob.value!.getBoundingClientRect();
-            amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
+            amountBox = $prestakedNIMAmount.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value));
             pivotPoint = { x: 0, y: knobBox.y } as Point;
         }
@@ -338,10 +338,10 @@ export default defineComponent({
             updateBoundingBoxes();
             window.addEventListener('resize', updateBoundingBoxes);
 
-            if (alreadyStaked.value) {
-                $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value)
+            if (alreadyPrestaked.value) {
+                $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyPrestakedPercentage.value)
                         + (knobBox.width / 2) - 2}px`;
-                fillBackground(0, alreadyStakedPercentage.value);
+                fillBackground(0, alreadyPrestakedPercentage.value);
             }
         });
 
@@ -354,7 +354,7 @@ export default defineComponent({
             onMove,
             currentPercentage,
             currentAmount,
-            alreadyStaked,
+            alreadyPrestaked,
             updateAmount,
             availableFormattedAmount,
             currentFormattedAmount,
@@ -363,8 +363,8 @@ export default defineComponent({
             $knob,
             $slide,
             $percentText,
-            $stakedNIMText,
-            $stakedNIMAmount,
+            $prestakedNIMText,
+            $prestakedNIMAmount,
             $backgroundLinesLeft,
             $backgroundMiddlePlant,
             $backgroundLinesRight,
@@ -375,9 +375,9 @@ export default defineComponent({
         };
     },
     components: {
-        StakingIcon,
-        OneLeafStakingIcon,
-        ThreeLeafStakingIcon,
+        PrestakingIcon,
+        OneLeafPrestakingIcon,
+        ThreeLeafPrestakingIcon,
         VerticalLineIcon,
     },
 });
@@ -417,7 +417,7 @@ export default defineComponent({
             .background-one, .background-three {
                 flex-grow: 1;
 
-                mask-image: url('../../assets/staking/vertical-line.svg');
+                mask-image: url('../../assets/prestaking/vertical-line.svg');
                 mask-size: .5rem;
                 mask-repeat: repeat-x;
                 mask-position: center;
@@ -427,13 +427,13 @@ export default defineComponent({
                 width: 3.5rem;
                 margin-right: 0.375rem;
 
-                mask-image: url('../../assets/staking/staking.svg');
+                mask-image: url('../../assets/prestaking/prestaking.svg');
                 mask-repeat: no-repeat;
                 mask-position: center;
             }
 
             .background-four {
-                mask-image: url('../../assets/staking/three-leaf-staking.svg');
+                mask-image: url('../../assets/prestaking/three-leaf-staking.svg');
             }
         }
 
@@ -502,7 +502,7 @@ export default defineComponent({
                 height: 1rem;
             }
 
-            .stake-dot-indicator {
+            .prestake-dot-indicator {
                 position: absolute;
                 bottom: 0.25rem;
                 background-color: var(--nimiq-green);

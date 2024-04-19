@@ -1,36 +1,36 @@
 <template>
     <!-- Pass down all attributes not declared as props -->
-    <Modal v-bind="$attrs" v-on="$listeners" class="staking-modal"
+    <Modal v-bind="$attrs" v-on="$listeners" class="prestaking-modal"
         :class="{ 'large-modal': [Page.Graph, Page.Already].includes(page) }"
         :showOverlay="overlay === Overlay.SelectAccount || statusType !== StatusChangeType.NONE"
         @close-overlay="closeOverlay"
     >
         <template v-if="page === Page.Info">
-            <StakingWelcomePage @next="switchValidator" />
+            <PrestakingWelcomePage @next="switchValidator" />
         </template>
         <template v-else-if="page === Page.Graph">
-            <StakingGraphPage
-                @back="page = isStaking ? Page.Already : Page.Validator"
+            <PrestakingGraphPage
+                @back="page = isPrestaking ? Page.Already : Page.Validator"
                 @next="page = Page.Already"
                 @changeValidator="switchValidator"
                 @statusChange="onStatusChange"
             />
         </template>
         <template v-else-if="page === Page.Already">
-            <StakingInfoPage
+            <PrestakingInfoPage
                 @back="page = Page.Graph" @next="page = Page.RewardsHistory"
-                @adjust-stake="adjustStake"
+                @adjust-prestake="adjustPrestake"
                 @switch-validator="switchValidator"
                 @statusChange="onStatusChange"
             />
         </template>
         <!-- <template v-else-if="page === Page.RewardsHistory">
-            <StakingRewardsHistoryPage @back="page = Page.Already" />
+            <PrestakingRewardsHistoryPage @back="page = Page.Already" />
         </template> -->
         <template v-else-if="page === Page.Validator">
-            <StakingValidatorPage
-                @back="page = isStaking ? Page.Already : Page.Info"
-                @next="page = isStaking ? Page.Already : Page.Graph; closeOverlay()"
+            <PrestakingValidatorPage
+                @back="page = isPrestaking ? Page.Already : Page.Info"
+                @next="page = isPrestaking ? Page.Already : Page.Graph; closeOverlay()"
                 @statusChange="onStatusChange"
             />
         </template>
@@ -51,17 +51,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
-import { useStakingStore } from '../../stores/Staking';
+import { usePrestakingStore } from '../../stores/Prestaking';
 import { useAddressStore } from '../../stores/Address';
 import Modal from '../modals/Modal.vue';
-import StakingWelcomePage from './StakingWelcomePage.vue';
-import StakingValidatorPage from './StakingValidatorPage.vue';
-import StakingGraphPage from './StakingGraphPage.vue';
-import StakingInfoPage from './StakingInfoPage.vue';
-// import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';
-// import SelectAccountOverlay from './SelectAccountOverlay.vue';
+import PrestakingWelcomePage from './PrestakingWelcomePage.vue';
+import PrestakingValidatorPage from './PrestakingValidatorPage.vue';
+import PrestakingGraphPage from './PrestakingGraphPage.vue';
+import PrestakingInfoPage from './PrestakingInfoPage.vue';
 import StatusScreen, { State } from '../StatusScreen.vue';
-// import { State } from '../StatusScreen.vue';
 
 enum Page {
     Info,
@@ -78,8 +75,8 @@ enum Overlay {
 
 export enum StatusChangeType {
     NONE,
-    STAKING,
-    UNSTAKING,
+    PRESTAKING,
+    UNPRESTAKING,
     VALIDATOR,
     DEACTIVATING,
 }
@@ -87,16 +84,16 @@ export enum StatusChangeType {
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeValidator, activeStake } = useStakingStore();
+        const { activeValidator, activePrestake } = usePrestakingStore();
         const page = ref(activeValidator.value ? Page.Already : Page.Info);
         const overlay = ref<Overlay | null>(null);
 
-        const isStaking = computed(() => !!(activeStake.value?.balance));
+        const isPrestaking = computed(() => !!(activePrestake.value?.balance));
         const invalidAccount = computed(() => activeAddressInfo.value
-            ? !activeAddressInfo.value.balance && !isStaking.value
+            ? !activeAddressInfo.value.balance && !isPrestaking.value
             : false);
 
-        const adjustStake = () => { page.value = Page.Graph; };
+        const adjustPrestake = () => { page.value = Page.Graph; };
         const switchValidator = () => { page.value = Page.Validator; };
         const closeOverlay = () => { overlay.value = null; };
 
@@ -144,8 +141,8 @@ export default defineComponent({
         //     // Handle main action here
         // }
 
-        watch(activeStake, (stake) => {
-            if (!stake) page.value = Page.Info;
+        watch(activePrestake, (prestake) => {
+            if (!prestake) page.value = Page.Info;
         }, { lazy: true });
 
         function showOverlayIfInvalidAccount(newPath: Overlay | Page) {
@@ -158,8 +155,8 @@ export default defineComponent({
         watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay));
 
         onBeforeUnmount(() => {
-            if (!activeStake.value?.balance) {
-                useStakingStore().removeStake(activeAddressInfo.value!.address);
+            if (!activePrestake.value?.balance) {
+                usePrestakingStore().removePrestake(activeAddressInfo.value!.address);
             }
         });
 
@@ -167,11 +164,11 @@ export default defineComponent({
             page,
             overlay,
             activeValidator,
-            adjustStake,
+            adjustPrestake,
             switchValidator,
             closeOverlay,
             invalidAccount,
-            isStaking,
+            isPrestaking,
             Page,
             Overlay,
 
@@ -189,11 +186,11 @@ export default defineComponent({
     },
     components: {
         Modal,
-        StakingWelcomePage,
-        StakingValidatorPage,
-        StakingGraphPage,
-        StakingInfoPage,
-        // StakingRewardsHistoryPage,
+        PrestakingWelcomePage,
+        PrestakingValidatorPage,
+        PrestakingGraphPage,
+        PrestakingInfoPage,
+        // PrestakingRewardsHistoryPage,
         // SelectAccountOverlay,
         StatusScreen,
     },

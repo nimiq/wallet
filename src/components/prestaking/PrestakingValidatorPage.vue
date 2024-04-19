@@ -1,5 +1,5 @@
 <template>
-    <div class="staking-validator-page flex-column">
+    <div class="prestaking-validator-page flex-column">
         <PageHeader @back="$emit('back')" :backArrow="true">
             <template #default>
                 {{ $t('Choose a Validator') }}
@@ -31,25 +31,21 @@
 import { captureException } from '@sentry/vue';
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { Validator, useStakingStore } from '../../stores/Staking';
+import { Validator, usePrestakingStore } from '../../stores/Prestaking';
 import { useConfig } from '../../composables/useConfig';
 
-// import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
 import { useAddressStore } from '../../stores/Address';
-// import { sendStaking } from '../../hub';
-// import { useNetworkStore } from '../../stores/Network';
-import { FilterState } from '../../lib/StakingUtils';
+import { FilterState } from '../../lib/PrestakingUtils';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-import { StatusChangeType } from './StakingModal.vue';
+import { StatusChangeType } from './PrestakingModal.vue';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
-// import { getNetworkClient } from '../../network';
 
 export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
         const { activeAddress } = useAddressStore();
-        const { validatorsList, activeStake, setStake } = useStakingStore();
+        const { validatorsList, activePrestake, setPrestake } = usePrestakingStore();
 
         const validatorList$ = ref<HTMLElement | null>(null);
 
@@ -86,8 +82,8 @@ export default defineComponent({
             const validatorLabelOrAddress = 'label' in validator ? validator.label : validator.address;
 
             try {
-                if (!activeStake.value || (!activeStake.value.balance)) {
-                    setStake({
+                if (!activePrestake.value || (!activePrestake.value.balance)) {
+                    setPrestake({
                         balance: 0,
                         address: activeAddress.value!,
                         validator: validator.address,
@@ -165,7 +161,7 @@ export default defineComponent({
 
     @include scroll-mask(true, true, true);
 
-    .staking-validator-page {
+    .prestaking-validator-page {
         flex-grow: 1;
     }
 
@@ -176,7 +172,7 @@ export default defineComponent({
     .page-body {
         padding: 1rem 0;
 
-        .stake-validator-filter {
+        .prestake-validator-filter {
             margin: 0 auto;
             margin-bottom: 0.5rem;
         }

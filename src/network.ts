@@ -10,7 +10,7 @@ import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { loadNimiqJS } from './lib/NimiqJSLoader';
 import { BURNER_ADDRESS, ENV_MAIN, PRESTAKING_BLOCK_H_START, PRESTAKING_BLOCK_H_END } from './lib/Constants';
-import { useStakingStore } from './stores/Staking';
+import { usePrestakingStore } from './stores/Prestaking';
 import { parseData } from './lib/DataFormatting';
 
 let isLaunched = false;
@@ -134,7 +134,7 @@ export async function launchNetwork() {
     const { state: network$ } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
-    const stakingStore = useStakingStore();
+    const prestakingStore = usePrestakingStore();
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -168,7 +168,7 @@ export async function launchNetwork() {
         }
     }
 
-    async function updateStakes(addresses: string[] = [...balances.keys()]) {
+    async function updatePrestakes(addresses: string[] = [...balances.keys()]) {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
         const { state: transactions$ } = useTransactionsStore();
@@ -176,7 +176,7 @@ export async function launchNetwork() {
         const height = await client.getHeadHeight();
 
         addresses.forEach((address) => {
-            const stakingTxs = Object.values(transactions$.transactions)
+            const prestakingTxs = Object.values(transactions$.transactions)
                 .filter((tx) =>
                     tx.sender === address
                     && tx.recipient === BURNER_ADDRESS
@@ -194,21 +194,21 @@ export async function launchNetwork() {
                     && ValidationUtils.isValidAddress(parseData(tx.data.raw)),
                 );
 
-            if (stakingTxs.length === 0) {
-                stakingStore.removeStake(address);
+            if (prestakingTxs.length === 0) {
+                prestakingStore.removePrestake(address);
                 return;
             }
 
             // Sort transactions by timestamp in descending order
-            stakingTxs.sort((a, b) => b.blockHeight! - a.blockHeight!);
+            prestakingTxs.sort((a, b) => b.blockHeight! - a.blockHeight!);
 
             // The current delegation is determined by the latest transaction
-            const delegation = ValidationUtils.normalizeAddress(parseData(stakingTxs[0].data.raw));
+            const delegation = ValidationUtils.normalizeAddress(parseData(prestakingTxs[0].data.raw));
 
-            // Calculate the stake from all pre-staking transactions
-            const balance = stakingTxs.reduce((acc, tx) => acc + tx.value, 0);
+            // Calculate the prestake from all pre-prestaking transactions
+            const balance = prestakingTxs.reduce((acc, tx) => acc + tx.value, 0);
 
-            stakingStore.setStake({ address, balance, validator: delegation });
+            prestakingStore.setPrestake({ address, balance, validator: delegation });
         });
     }
 
@@ -249,7 +249,7 @@ export async function launchNetwork() {
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
             updateBalances();
-            updateStakes();
+            updatePrestakes();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -303,7 +303,7 @@ export async function launchNetwork() {
         const plain = tx.toPlain();
 
         if (plain.recipient === BURNER_ADDRESS) {
-            updateStakes([plain.sender]);
+            updatePrestakes([plain.sender]);
         }
 
         transactionsStore.addTransactions([plain]);
@@ -323,7 +323,7 @@ export async function launchNetwork() {
     function subscribe(addresses: string[]) {
         client.addTransactionListener(transactionListener, addresses);
         updateBalances(addresses);
-        updateStakes(addresses);
+        updatePrestakes(addresses);
         return true;
     }
 

@@ -211,7 +211,7 @@ module.exports = {
                     type: "image/png"
                 },
                 // {
-                //     src: "./img/screenshots/06-Stake-NIM.png",
+                //     src: "./img/screenshots/06-Prestake-NIM.png",
                 //     sizes: "490x836",
                 //     type: "image/png"
                 // },

@@ -2,12 +2,12 @@ import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
 
-export type StakingState = {
+export type PrestakingState = {
     validators: Record<string, Validator>,
-    stakeByAddress: Record<string, Stake>,
+    prestakeByAddress: Record<string, Prestake>,
 }
 
-export type Stake = {
+export type Prestake = {
     address: string,
     balance: number,
     validator?: string,
@@ -39,8 +39,8 @@ export type RegisteredValidator = {
 
 export type Validator = RawValidator | RegisteredValidator;
 
-export const useStakingStore = createStore({
-    id: 'staking',
+export const usePrestakingStore = createStore({
+    id: 'prestaking',
     state: () => ({
         validators: {
             'NQ65 DHN8 4BSR 5YSX FC3V BB5J GKM2 GB2L H17C': {
@@ -129,78 +129,78 @@ export const useStakingStore = createStore({
                 address: 'NQ54 P3QS CQVV 6UXA GQHU QF15 MG6D 7YE1 KUSS',
             },
         },
-        stakeByAddress: {},
-    } as StakingState),
+        prestakeByAddress: {},
+    } as PrestakingState),
     getters: {
         validatorsList: (state) => Object.values(state.validators),
-        activeStake: (state) => {
+        activePrestake: (state) => {
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
-            return state.stakeByAddress[activeAddress.value] || null;
+            return state.prestakeByAddress[activeAddress.value] || null;
         },
-        stakesByAddress: (state): Readonly<Record<string, Stake>> => state.stakeByAddress,
-        stakesByAccount: (state): Readonly<Record<string, number>> => {
+        prestakesByAddress: (state): Readonly<Record<string, Prestake>> => state.prestakeByAddress,
+        prestakesByAccount: (state): Readonly<Record<string, number>> => {
             const { accountInfos } = useAccountStore();
 
-            const stakeByAccount: Record<string, number> = {};
+            const prestakeByAccount: Record<string, number> = {};
             for (const accountInfo of Object.values(accountInfos.value)) {
                 let sum = 0;
                 for (const address of accountInfo.addresses) {
-                    const stake = state.stakeByAddress[address];
-                    if (stake) {
-                        sum += stake.balance;
+                    const prestake = state.prestakeByAddress[address];
+                    if (prestake) {
+                        sum += prestake.balance;
                     }
                 }
-                stakeByAccount[accountInfo.id] = sum;
+                prestakeByAccount[accountInfo.id] = sum;
             }
 
-            return stakeByAccount;
+            return prestakeByAccount;
         },
-        accountStake: (state, { stakesByAccount }) => {
+        accountPrestake: (state, { prestakesByAccount }) => {
             const { activeAccountId } = useAccountStore();
             if (!activeAccountId.value) return 0;
-            return (stakesByAccount.value as Record<string, number>)[activeAccountId.value] ?? 0;
+            return (prestakesByAccount.value as Record<string, number>)[activeAccountId.value] ?? 0;
         },
-        activeValidator: (state, { activeStake }): Validator | null => {
-            const stake = activeStake.value as Stake | null;
-            if (!stake || !stake.validator) return null;
-            return state.validators[stake.validator] || {
-                address: stake.validator,
+        activeValidator: (state, { activePrestake }): Validator | null => {
+            const prestake = activePrestake.value as Prestake | null;
+            if (!prestake || !prestake.validator) return null;
+            return state.validators[prestake.validator] || {
+                address: prestake.validator,
                 dominance: 0,
                 active: false,
             };
         },
     },
     actions: {
-        setStake(stake: Stake) {
+        setPrestake(prestake: Prestake) {
             // Need to assign whole object for change detection of new addresses.
-            // TODO: Simply set new stake in Vue 3.
-            this.state.stakeByAddress = {
-                ...this.state.stakeByAddress,
-                [stake.address]: stake,
+            // TODO: Simply set new prestake in Vue 3.
+            this.state.prestakeByAddress = {
+                ...this.state.prestakeByAddress,
+                [prestake.address]: prestake,
             };
         },
-        setStakes(stakes: Stake[]) {
-            const newStakes: {[address: string]: Stake} = {};
+        setPrestakes(prestakes: Prestake[]) {
+            const newPrestakes: {[address: string]: Prestake} = {};
 
-            for (const stake of stakes) {
-                newStakes[stake.address] = stake;
+            for (const prestake of prestakes) {
+                newPrestakes[prestake.address] = prestake;
             }
 
-            this.state.stakeByAddress = newStakes;
+            this.state.prestakeByAddress = newPrestakes;
         },
-        patchStake(address: string, patch: Partial<Omit<Stake, 'address'>>) {
-            if (!this.state.stakeByAddress[address]) return;
+        patchPrestake(address: string, patch: Partial<Omit<Prestake, 'address'>>) {
+            if (!this.state.prestakeByAddress[address]) return;
 
-            this.setStake({
-                ...this.state.stakeByAddress[address],
+            this.setPrestake({
+                ...this.state.prestakeByAddress[address],
                 ...patch,
             });
         },
-        removeStake(address: string) {
-            const stakes = { ...this.state.stakeByAddress };
-            delete stakes[address];
-            this.state.stakeByAddress = stakes;
+        removePrestake(address: string) {
+            const prestakes = { ...this.state.prestakeByAddress };
+            delete prestakes[address];
+            this.state.prestakeByAddress = prestakes;
         },
         setValidator(validator: Validator) {
             // Need to assign whole object for change detection of new addresses.

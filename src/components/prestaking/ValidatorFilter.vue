@@ -1,5 +1,5 @@
 <template>
-    <div class="stake-validator-filter">
+    <div class="prestake-validator-filter">
         <SliderToggle class="validator-filter-wrapper" v-if="state !== FilterState.SEARCH"
             name="validator-filter" v-model="state">
             <template #[FilterState.TRUST]>
@@ -39,9 +39,9 @@
 <script lang="ts">
 import { defineComponent, watch, ref } from '@vue/composition-api';
 import { SliderToggle } from '@nimiq/vue-components';
-import { FilterState } from '../../lib/StakingUtils';
-import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
-import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
+import { FilterState } from '../../lib/PrestakingUtils';
+import FatSearchIcon from '../icons/Prestaking/FatSearchIcon.vue';
+import XCloseIcon from '../icons/Prestaking/XCloseIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -77,7 +77,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.stake-validator-filter {
+.prestake-validator-filter {
     // width: 38rem;
     width: fit-content;
     height: 3.75rem;

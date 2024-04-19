@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import StarIcon from '../../icons/Staking/StarIcon.vue';
+import StarIcon from '../../icons/Prestaking/StarIcon.vue';
 
 export default defineComponent({
     props: {

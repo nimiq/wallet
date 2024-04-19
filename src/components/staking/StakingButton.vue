@@ -67,11 +67,11 @@ export default defineComponent({
         const hasStake = computed(() => !!activeStake.value);
 
         const $tooltip = ref<Tooltip | null>(null);
-        watch([hasStake, activeAddressInfo], (has) => {
-            if (!has && $tooltip.value) {
-                ($tooltip.value.$el.querySelector('.trigger') as HTMLAnchorElement).focus();
-            }
-        });
+        // watch([hasStake, activeAddressInfo], ([has, _]) => {
+        //     if (!has && $tooltip.value && visible.value) {
+        //         ($tooltip.value.$el.querySelector('.trigger') as HTMLAnchorElement).focus();
+        //     }
+        // });
 
         return {
             activeAddressInfo,

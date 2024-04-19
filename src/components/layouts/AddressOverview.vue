@@ -1,6 +1,7 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }">
+        <HeroIcon class="svg-id-fix" />
         <template
             v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC || activeCurrency === CryptoCurrency.USDC"
         >
@@ -15,6 +16,8 @@
                         :unclaimedCashlinkCount="unclaimedCashlinkCount"
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
+
+                    <StakingButton />
                 </div>
                 <button
                     class="reset icon-button"
@@ -287,6 +290,7 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -568,12 +572,20 @@ export default defineComponent({
         UsdcIcon,
         CashlinkButton,
         StakingButton,
+        HeroIcon,
     },
 });
 </script>
 
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
+
+.address-overview > svg:first-child {
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    top: -9999px;
+}
 
 // TODO: Extract into SCSS mixin or global style
 .scroll-mask {

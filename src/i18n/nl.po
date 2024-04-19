@@ -311,7 +311,7 @@ msgstr ""
 "Alle nieuwe functies zijn exclusief voor nieuwe accounts. Upgrade nu, het "
 "duurt slechts enkele seconden."
 
-#: src/components/layouts/AddressOverview.vue:210
+#: src/components/layouts/AddressOverview.vue:213
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -442,7 +442,7 @@ msgstr "BIC werkt ook."
 
 #: src/components/AddressList.vue:176
 #: src/components/layouts/AccountOverview.vue:108
-#: src/components/layouts/AddressOverview.vue:80
+#: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:121
@@ -677,7 +677,7 @@ msgstr "Klik voor meer informatie"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Klik op ‘Probleemoplossing’ voor meer informatie."
 
-#: src/components/layouts/AddressOverview.vue:212
+#: src/components/layouts/AddressOverview.vue:215
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Sluit"
@@ -788,11 +788,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:175
+#: src/components/layouts/AddressOverview.vue:178
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:167
+#: src/components/layouts/AddressOverview.vue:170
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -1064,8 +1064,8 @@ msgstr "Verlopen"
 msgid "Expired HTLC"
 msgstr "Verlopen HTLC"
 
-#: src/components/layouts/AddressOverview.vue:41
-#: src/components/layouts/AddressOverview.vue:72
+#: src/components/layouts/AddressOverview.vue:44
+#: src/components/layouts/AddressOverview.vue:75
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
 msgstr "Geschiedenis exporteren"
@@ -1435,7 +1435,7 @@ msgstr "Label de afzender"
 msgid "Language"
 msgstr "Taal"
 
-#: src/components/layouts/AddressOverview.vue:170
+#: src/components/layouts/AddressOverview.vue:173
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr "Leer meer"
@@ -1444,11 +1444,11 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
-#: src/components/layouts/AddressOverview.vue:160
+#: src/components/layouts/AddressOverview.vue:163
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:197
+#: src/components/layouts/AddressOverview.vue:200
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Laten we beginnen! Maak je eigen Nimiq account:"
 
@@ -1898,7 +1898,7 @@ msgstr ""
 "Lees er alles over in deze {blog_post} of klik hieronder voor de "
 "introductie."
 
-#: src/components/layouts/AddressOverview.vue:149
+#: src/components/layouts/AddressOverview.vue:152
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Ontvang"
@@ -1995,8 +1995,8 @@ msgstr ""
 msgid "Release Notes"
 msgstr "Release Notes"
 
-#: src/components/layouts/AddressOverview.vue:29
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:32
+#: src/components/layouts/AddressOverview.vue:63
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Hernoemen"
@@ -2009,8 +2009,8 @@ msgstr "Verzoek mislukt"
 msgid "Required"
 msgstr "Verplicht"
 
-#: src/components/layouts/AddressOverview.vue:35
-#: src/components/layouts/AddressOverview.vue:66
+#: src/components/layouts/AddressOverview.vue:38
+#: src/components/layouts/AddressOverview.vue:69
 msgid "Rescan"
 msgstr "Opnieuw scannen"
 
@@ -2136,7 +2136,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Verkopen nu beschikbaar"
 
-#: src/components/layouts/AddressOverview.vue:144
+#: src/components/layouts/AddressOverview.vue:147
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Verstuur"
@@ -2310,7 +2310,7 @@ msgstr "Toon herstelwoorden"
 msgid "Show values as {currency}"
 msgstr "Toon waardes als {currency}"
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:201
 msgid "Signup"
 msgstr "Aanmelden"
 
@@ -2327,7 +2327,7 @@ msgstr "Overslaan"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/staking/StakingGraphPage.vue:169
+#: src/components/staking/StakingGraphPage.vue:165
 #: src/components/staking/StakingValidatorPage.vue:131
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
@@ -2806,7 +2806,7 @@ msgstr "Update nu"
 
 #: src/components/AddressList.vue:183
 #: src/components/layouts/AccountOverview.vue:164
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:112
@@ -2949,7 +2949,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "Je hebt momenteel geen tegoed om te wisselen."
 
-#: src/components/layouts/AddressOverview.vue:419
+#: src/components/layouts/AddressOverview.vue:423
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3081,7 +3081,7 @@ msgstr "Je betaling was teruggestort"
 msgid "Your payout is on its way"
 msgstr "Je uitbetaling is onderweg"
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:209
 msgid "Your swap was successful!"
 msgstr "Je swap is gelukt!"
 

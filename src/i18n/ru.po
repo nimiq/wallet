@@ -312,7 +312,7 @@ msgstr ""
 "Все новые функции доступны только для аккаунтов нового типа. Обновите "
 "аккаунт сейчас, это займет всего пару секунд. "
 
-#: src/components/layouts/AddressOverview.vue:210
+#: src/components/layouts/AddressOverview.vue:213
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -445,7 +445,7 @@ msgstr "Можно указать BIC"
 
 #: src/components/AddressList.vue:176
 #: src/components/layouts/AccountOverview.vue:108
-#: src/components/layouts/AddressOverview.vue:80
+#: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:121
@@ -676,7 +676,7 @@ msgstr "Кликните для подробной информации"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Нажмите на «Решение проблем», чтобы узнать больше."
 
-#: src/components/layouts/AddressOverview.vue:212
+#: src/components/layouts/AddressOverview.vue:215
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Закрыть"
@@ -786,11 +786,11 @@ msgstr "Конвертация с USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Конвертация с USDC.e в USDC"
 
-#: src/components/layouts/AddressOverview.vue:175
+#: src/components/layouts/AddressOverview.vue:178
 msgid "Convert to USDC"
 msgstr "Конвертировать в USDC"
 
-#: src/components/layouts/AddressOverview.vue:167
+#: src/components/layouts/AddressOverview.vue:170
 msgid "Convert your USDC.e to the new standard."
 msgstr "Конвертируйте ваши USDC.e в новый стандарт."
 
@@ -1066,8 +1066,8 @@ msgstr "Истекла"
 msgid "Expired HTLC"
 msgstr "Просроченный HTLC"
 
-#: src/components/layouts/AddressOverview.vue:41
-#: src/components/layouts/AddressOverview.vue:72
+#: src/components/layouts/AddressOverview.vue:44
+#: src/components/layouts/AddressOverview.vue:75
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
 msgstr "Экспорт истории"
@@ -1440,7 +1440,7 @@ msgstr "Имя отправителя"
 msgid "Language"
 msgstr "Язык"
 
-#: src/components/layouts/AddressOverview.vue:170
+#: src/components/layouts/AddressOverview.vue:173
 #: src/components/modals/NetworkInfoModal.vue:20
 msgid "Learn more"
 msgstr "Узнать больше"
@@ -1449,11 +1449,11 @@ msgstr "Узнать больше"
 msgid "Learn more here"
 msgstr "Узнать подробнее здесь"
 
-#: src/components/layouts/AddressOverview.vue:160
+#: src/components/layouts/AddressOverview.vue:163
 msgid "Legacy USDC (USDC.e)"
 msgstr "Устаревший USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:197
+#: src/components/layouts/AddressOverview.vue:200
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Давайте приступим! Создайте свой аккаунт Nimiq:"
 
@@ -1895,7 +1895,7 @@ msgid ""
 "intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:149
+#: src/components/layouts/AddressOverview.vue:152
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Получить"
@@ -1992,8 +1992,8 @@ msgstr ""
 msgid "Release Notes"
 msgstr "Список изменений"
 
-#: src/components/layouts/AddressOverview.vue:29
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:32
+#: src/components/layouts/AddressOverview.vue:63
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Переименовать"
@@ -2006,8 +2006,8 @@ msgstr "Запрос не удался"
 msgid "Required"
 msgstr "Обязательно"
 
-#: src/components/layouts/AddressOverview.vue:35
-#: src/components/layouts/AddressOverview.vue:66
+#: src/components/layouts/AddressOverview.vue:38
+#: src/components/layouts/AddressOverview.vue:69
 msgid "Rescan"
 msgstr "Сканировать ещё раз"
 
@@ -2133,7 +2133,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Продажа уже доступна"
 
-#: src/components/layouts/AddressOverview.vue:144
+#: src/components/layouts/AddressOverview.vue:147
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Отправить"
@@ -2307,7 +2307,7 @@ msgstr "Показать Защитную Фразу"
 msgid "Show values as {currency}"
 msgstr "Показывать в {currency}"
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:201
 msgid "Signup"
 msgstr "Зарегистрироваться"
 
@@ -2324,7 +2324,7 @@ msgstr "Пропустить"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/staking/StakingGraphPage.vue:169
+#: src/components/staking/StakingGraphPage.vue:165
 #: src/components/staking/StakingValidatorPage.vue:131
 msgid "Something went wrong"
 msgstr "Операция не удалась"
@@ -2804,7 +2804,7 @@ msgstr "Обновить"
 
 #: src/components/AddressList.vue:183
 #: src/components/layouts/AccountOverview.vue:164
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:112
@@ -2944,7 +2944,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "У вас нет средств для обмена."
 
-#: src/components/layouts/AddressOverview.vue:419
+#: src/components/layouts/AddressOverview.vue:423
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3077,7 +3077,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Платеж уже в пути"
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:209
 msgid "Your swap was successful!"
 msgstr "Ваш Своп прошел успешно!"
 

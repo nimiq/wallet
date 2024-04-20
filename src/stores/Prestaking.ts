@@ -94,6 +94,7 @@ export const usePrestakingStore = createStore({
             },
             'NQ84 S551 N1LB EL22 QHGB S701 T2DR L9A6 N6NL': {
                 address: 'NQ84 S551 N1LB EL22 QHGB S701 T2DR L9A6 N6NL',
+                label: 'Rabinovitch',
             },
             'NQ98 BEAR DD44 F7RH LD7J Y6E1 SG42 479H 8D1X': {
                 address: 'NQ98 BEAR DD44 F7RH LD7J Y6E1 SG42 479H 8D1X',

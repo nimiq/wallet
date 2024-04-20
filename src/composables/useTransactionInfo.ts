@@ -12,7 +12,13 @@ import { useContactsStore } from '@/stores/Contacts';
 import { useProxyStore } from '@/stores/Proxy';
 import { useFiatStore } from '@/stores/Fiat';
 
-import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '@/lib/Constants';
+import {
+    FiatCurrency,
+    FIAT_API_PROVIDER_TX_HISTORY,
+    FIAT_PRICE_UNAVAILABLE,
+    CASHLINK_ADDRESS,
+    BANK_ADDRESS,
+} from '@/lib/Constants';
 import { isProxyData, ProxyType } from '@/lib/ProxyDetection';
 import { parseData } from '@/lib/DataFormatting';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
@@ -198,7 +204,10 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
     const { currency: preferredFiatCurrency } = useFiatStore();
     const fiat = computed(() => {
         const preferredFiatValue = transaction.value.fiatValue?.[preferredFiatCurrency.value];
-        const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+        const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(
+            preferredFiatCurrency.value,
+            FIAT_API_PROVIDER_TX_HISTORY,
+        );
         return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
             // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
             ? { currency: FiatCurrency.USD, value: transaction.value.fiatValue?.[FiatCurrency.USD] }

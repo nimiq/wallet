@@ -12,7 +12,7 @@ import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
 import { useFiatStore } from '@/stores/Fiat';
 
-import { FiatCurrency, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
+import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '@/lib/Constants';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
 
 import { i18n } from '@/i18n/i18n-setup';
@@ -206,7 +206,10 @@ export function useBtcTransactionInfo(transaction: Ref<Transaction>) {
     };
     const fiat = computed(() => {
         const preferredFiatValue = getFiatValue(preferredFiatCurrency.value);
-        const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(preferredFiatCurrency.value);
+        const preferredFiatCurrencySupportsHistory = isHistorySupportedFiatCurrency(
+            preferredFiatCurrency.value,
+            FIAT_API_PROVIDER_TX_HISTORY,
+        );
         return !preferredFiatValue && !preferredFiatCurrencySupportsHistory
             // For currencies that do not support fetching historic values, fallback to USD if fiat value is unknown
             ? { currency: FiatCurrency.USD, value: getFiatValue(FiatCurrency.USD) }

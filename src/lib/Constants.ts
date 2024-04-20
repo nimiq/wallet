@@ -1,14 +1,8 @@
-import { FiatApiSupportedFiatCurrency, FiatApiBridgedFiatCurrency } from '@nimiq/utils';
+import { FiatCurrency, Provider } from '@nimiq/utils';
 
-export { FiatApiSupportedCryptoCurrency as CryptoCurrency } from '@nimiq/utils';
+export { FiatCurrency };
+export { CryptoCurrency } from '@nimiq/utils';
 
-export const FiatCurrency = {
-    ...FiatApiSupportedFiatCurrency,
-    ...FiatApiBridgedFiatCurrency,
-} as const;
-export type FiatCurrency = FiatApiSupportedFiatCurrency | FiatApiBridgedFiatCurrency;
-
-export const FIAT_PRICE_UNAVAILABLE = null;
 export const CASHLINK_ADDRESS = 'cashlink';
 export const BANK_ADDRESS = 'bank';
 
@@ -27,6 +21,15 @@ export const FIAT_CURRENCIES_OFFERED = ([
     'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NGN', 'NOK', 'NZD', 'PHP', 'PKR', 'PLN', 'RUB', 'SEK', 'SGD',
     'THB', 'TRY', 'TWD', 'UAH', 'USD', 'VND', 'XOF', 'ZAR',
 ] as const).map((ticker) => FiatCurrency[ticker]);
+
+// Don't use CoinGecko for transaction history, because it only allows fetching historic rates within the last 365 days
+// without an API key and has low rate limits which are not suitable for fetching tx histories in bulk. Still use
+// CoinGecko for continuously fetching current exchange rates and price charts, to balance the load between providers.
+export const FIAT_API_PROVIDER_CURRENT_PRICES = Provider.CoinGecko;
+export const FIAT_API_PROVIDER_PRICE_CHART = Provider.CoinGecko;
+export const FIAT_API_PROVIDER_TX_HISTORY = Provider.CryptoCompare;
+
+export const FIAT_PRICE_UNAVAILABLE = null;
 
 export const BTC_ADDRESS_GAP = 10; // TODO: Update to standard 20
 export const BTC_MAX_COPYABLE_ADDRESSES = 5; // TODO: Update to 10 when BTC_ADDRESS_GAP is set to 20

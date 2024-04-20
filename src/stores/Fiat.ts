@@ -2,10 +2,15 @@ import { createStore } from 'pinia';
 import {
     getExchangeRates,
     isHistorySupportedFiatCurrency,
-    FiatApiSupportedFiatCurrency,
-    setCoingeckoApiUrl,
+    isProviderSupportedFiatCurrency,
+    // setCoinGeckoApiUrl,
 } from '@nimiq/utils';
-import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../lib/Constants';
+import {
+    CryptoCurrency,
+    FiatCurrency,
+    FIAT_CURRENCIES_OFFERED,
+    FIAT_API_PROVIDER_CURRENT_PRICES,
+} from '../lib/Constants';
 import { useTransactionsStore } from './Transactions';
 import { useBtcTransactionsStore } from './BtcTransactions';
 import { useUsdcTransactionsStore } from './UsdcTransactions';
@@ -16,7 +21,8 @@ export type FiatState = {
     exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } },
 };
 
-setCoingeckoApiUrl('https://nq-coingecko-proxy.deno.dev/api/v3');
+// Use CoinGecko via a proxy.
+// setCoinGeckoApiUrl('https://nq-coingecko-proxy.deno.dev/api/v3');
 
 export function guessUserCurrency(regionOverwrite?: string) {
     // parse navigator.language which is formatted according to https://tools.ietf.org/html/bcp47#section-2.1
@@ -79,21 +85,28 @@ export const useFiatStore = createStore({
         async updateExchangeRates(failGracefully = true) {
             try {
                 const currentCurrency = this.state.currency;
-                const isCurrentCurrencyHistorySupported = isHistorySupportedFiatCurrency(currentCurrency);
-                const coingeckoSupportedFiatCurrencies = Object.values(FiatApiSupportedFiatCurrency);
+                const isCurrentCurrencyHistorySupported = isHistorySupportedFiatCurrency(
+                    currentCurrency,
+                    // Not FIAT_API_PROVIDER_TX_HISTORY because we're checking here whether the provider for current
+                    // exchange rates does not hypothetically support historic rates for the current currency, in which
+                    // case it's a currency bridged via the CPL API, which does not support historic rates.
+                    FIAT_API_PROVIDER_CURRENT_PRICES,
+                );
                 const currenciesToUpdate = FIAT_CURRENCIES_OFFERED.filter((currency) => currency === currentCurrency
-                    // Always include all currencies supported by Coingecko, as at least one always has to be fetched
-                    // via the Coingecko api, either because it's a currency directly supported by Coingecko, or because
-                    // it's a currency bridged via USD, also fetched from Coingecko, and fetching all vs. only one still
-                    // counts as only one api request.
-                    || coingeckoSupportedFiatCurrencies.includes(currency as FiatApiSupportedFiatCurrency)
+                    // Include all provider supported currencies, as at least one always has to be fetched via the
+                    // provider api, either because it's a directly supported currency, or because it's a currency
+                    // bridged via USD, also fetched from the provider, and fetching multiple currencies vs. only
+                    // one still counts as only one api request.
+                    || isProviderSupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES)
                     // If our current currency is not history enabled, it's a currency bridged via CPL, in which case we
                     // can include all other CPL bridged currencies without additional api requests.
-                    || (!isCurrentCurrencyHistorySupported && !isHistorySupportedFiatCurrency(currency)),
+                    || (!isCurrentCurrencyHistorySupported
+                        && !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES)),
                 );
                 this.state.exchangeRates = await getExchangeRates(
                     [CryptoCurrency.NIM, CryptoCurrency.BTC, CryptoCurrency.USDC],
                     currenciesToUpdate,
+                    FIAT_API_PROVIDER_CURRENT_PRICES,
                 );
                 this.state.timestamp = Date.now();
             } catch (e) {

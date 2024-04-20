@@ -39,7 +39,7 @@
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_PRICE_CHART } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
 
 export enum TimeRange {
@@ -190,8 +190,8 @@ export default defineComponent({
             props.timeRange,
             fiatCurrency.value,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], ([cryptoCurrency, timeRange, historyFiatCurrency, lastUpdate], oldValues?: any[]) => {
-            historyFiatCurrency = isHistorySupportedFiatCurrency(historyFiatCurrency)
+        ], ([cryptoCurrency, timeRange, historyFiatCurrency, lastUpdate], oldValues) => {
+            historyFiatCurrency = isHistorySupportedFiatCurrency(historyFiatCurrency, FIAT_API_PROVIDER_PRICE_CHART)
                 ? historyFiatCurrency
                 : FiatCurrency.USD;
 
@@ -231,7 +231,8 @@ export default defineComponent({
                 cryptoCurrency,
                 historyFiatCurrency,
                 timestamps,
-                true, // disable minutely data
+                FIAT_API_PROVIDER_PRICE_CHART,
+                { disableMinutelyData: true }, // disable CoinGecko minutely data; comment line if changing provider
             ).then(
                 // TODO: Replace last rate with the current price from the FiatStore?
                 //       The historic rates latest timestamp can be up to 10 minutes old.

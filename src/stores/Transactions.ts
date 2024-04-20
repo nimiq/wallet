@@ -1,15 +1,10 @@
 import Vue from 'vue';
-import {
-    getHistoricExchangeRates,
-    isHistorySupportedFiatCurrency,
-    type FiatApiSupportedFiatCurrency,
-    type FiatApiHistorySupportedBridgedFiatCurrency,
-} from '@nimiq/utils';
+import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import Config from 'config';
 import { useFiatStore } from './Fiat';
-import { CryptoCurrency, FiatCurrency, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
@@ -31,10 +26,7 @@ export enum TransactionState {
     CONFIRMED = 'confirmed',
 }
 
-const scheduledHistoricFiatAmountUpdates: Partial<Record<
-    FiatApiSupportedFiatCurrency | FiatApiHistorySupportedBridgedFiatCurrency,
-    Set<string>
->> = {};
+const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<string>>> = {};
 
 export const useTransactionsStore = createStore({
     id: 'transactions',
@@ -281,7 +273,9 @@ export const useTransactionsStore = createStore({
             // fetch fiat amounts for transactions that have a timestamp (are mined) but no fiat amount yet
             const fiatStore = useFiatStore();
             fiatCurrency = fiatCurrency || fiatStore.currency.value;
-            const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency) ? fiatCurrency : FiatCurrency.USD;
+            const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency, FIAT_API_PROVIDER_TX_HISTORY)
+                ? fiatCurrency
+                : FiatCurrency.USD;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
             const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency]; // might be pending
             const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.NIM]?.[FiatCurrency.USD];
@@ -308,11 +302,10 @@ export const useTransactionsStore = createStore({
             for (const tx of transactionsToUpdate) {
                 tx.fiatValue ||= {};
 
-                // For very recent transactions use the current exchange rate without unnecessarily querying coingecko's
-                // historic rates, which also only get updated every few minutes and might not include the newest rates
-                // yet. If the user's time is not set correctly, this will gracefully fall back to fetching rates for
-                // new transactions as historic exchange rates; old transactions at the user's system's time might be
-                // interpreted as current though.
+                // For very recent transactions use current exchange rate without unnecessarily querying historic rates,
+                // which also don't get updated minutely and might not include the newest rates yet. If the user time is
+                // not set correctly, this will gracefully fall back to fetching rates for new transactions as historic
+                // exchange rates; old transactions at the user's system's time might be interpreted as current though.
                 const timestamp = tx.timestamp * 1000;
                 const isNewTransaction = Math.abs(timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
                 if (isNewTransaction && currentRate) {
@@ -335,6 +328,7 @@ export const useTransactionsStore = createStore({
                     CryptoCurrency.NIM,
                     historyFiatCurrency,
                     historicTimestamps,
+                    FIAT_API_PROVIDER_TX_HISTORY,
                 );
 
                 for (let tx of transactionsToUpdate) {

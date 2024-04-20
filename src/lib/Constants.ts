@@ -21,6 +21,7 @@ export const FIAT_CURRENCIES_OFFERED = ([
     'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NGN', 'NOK', 'NZD', 'PHP', 'PKR', 'PLN', 'RUB', 'SEK', 'SGD',
     'THB', 'TRY', 'TWD', 'UAH', 'USD', 'VND', 'XOF', 'ZAR',
 ] as const).map((ticker) => FiatCurrency[ticker]);
+export type FiatCurrencyOffered = (typeof FIAT_CURRENCIES_OFFERED)[number];
 
 // Don't use CoinGecko for transaction history, because it only allows fetching historic rates within the last 365 days
 // without an API key and has low rate limits which are not suitable for fetching tx histories in bulk. Still use

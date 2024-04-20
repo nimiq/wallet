@@ -1,5 +1,6 @@
 import { createStore } from 'pinia';
 import {
+    Provider,
     getExchangeRates,
     isHistorySupportedFiatCurrency,
     isProviderSupportedFiatCurrency,
@@ -8,6 +9,7 @@ import {
 import {
     CryptoCurrency,
     FiatCurrency,
+    FiatCurrencyOffered,
     FIAT_CURRENCIES_OFFERED,
     FIAT_API_PROVIDER_CURRENT_PRICES,
 } from '../lib/Constants';
@@ -16,7 +18,7 @@ import { useBtcTransactionsStore } from './BtcTransactions';
 import { useUsdcTransactionsStore } from './UsdcTransactions';
 
 export type FiatState = {
-    currency: FiatCurrency,
+    currency: FiatCurrencyOffered,
     timestamp: number,
     exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } },
 };
@@ -75,7 +77,7 @@ export const useFiatStore = createStore({
         timestamp: (state): Readonly<number> => state.timestamp,
     },
     actions: {
-        setCurrency(currency: FiatCurrency) {
+        setCurrency(currency: FiatCurrencyOffered) {
             this.state.currency = currency;
             this.updateExchangeRates();
             useTransactionsStore().calculateFiatAmounts();
@@ -85,24 +87,49 @@ export const useFiatStore = createStore({
         async updateExchangeRates(failGracefully = true) {
             try {
                 const currentCurrency = this.state.currency;
-                const isCurrentCurrencyHistorySupported = isHistorySupportedFiatCurrency(
+                const isCurrentCurrencyCplBridged = !isHistorySupportedFiatCurrency(
                     currentCurrency,
                     // Not FIAT_API_PROVIDER_TX_HISTORY because we're checking here whether the provider for current
                     // exchange rates does not hypothetically support historic rates for the current currency, in which
                     // case it's a currency bridged via the CPL API, which does not support historic rates.
                     FIAT_API_PROVIDER_CURRENT_PRICES,
                 );
-                const currenciesToUpdate = FIAT_CURRENCIES_OFFERED.filter((currency) => currency === currentCurrency
-                    // Include all provider supported currencies, as at least one always has to be fetched via the
-                    // provider api, either because it's a directly supported currency, or because it's a currency
-                    // bridged via USD, also fetched from the provider, and fetching multiple currencies vs. only
-                    // one still counts as only one api request.
-                    || isProviderSupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES)
-                    // If our current currency is not history enabled, it's a currency bridged via CPL, in which case we
-                    // can include all other CPL bridged currencies without additional api requests.
-                    || (!isCurrentCurrencyHistorySupported
-                        && !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES)),
-                );
+                const prioritizedFiatCurrenciesOffered: Array<FiatCurrencyOffered> = [...new Set<FiatCurrencyOffered>([
+                    // As we limit the currencies we fetch for CryptoCompare to 25, prioritize a few currencies, we'd
+                    // prefer to be included, roughly the highest market cap currencies according to fiatmarketcap.com,
+                    // plus some smaller currencies for which Nimiq has strong communities.
+                    currentCurrency,
+                    ...(['USD', 'CNY', 'EUR', 'JPY', 'GBP', 'KRW', 'INR', 'CAD', 'HKD', 'BRL', 'AUD', 'CRC', 'GMD',
+                        'XOF'] as const).map((ticker) => FiatCurrency[ticker]),
+                    // After that, prefer to include currencies CryptoCompare supports historic rates for, because it is
+                    // for CryptoCompare that we limit the number of currencies to update. For CoinGecko, all currencies
+                    // can be updated in a single request.
+                    ...FIAT_CURRENCIES_OFFERED
+                        .filter((currency) => isProviderSupportedFiatCurrency(currency, Provider.CryptoCompare)),
+                    // Finally, all the remaining currencies
+                    ...FIAT_CURRENCIES_OFFERED,
+                ])];
+                const currenciesToUpdate: Array<FiatCurrencyOffered> = [];
+                for (const currency of prioritizedFiatCurrenciesOffered) {
+                    if (currency !== currentCurrency
+                        // Include all provider supported currencies, as at least one always has to be fetched via the
+                        // provider api, either because it's a directly supported currency, or because it's a currency
+                        // bridged via USD, also fetched from the provider, and fetching multiple currencies vs. only
+                        // one still counts as only one api request.
+                        && !isProviderSupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES)
+                        // If current currency is a CPL bridged currency, we can include other CPL bridged currencies
+                        // (checked via isHistorySupportedFiatCurrency, see above) without additional API request.
+                        && !(isCurrentCurrencyCplBridged
+                            && /* is CPL */ !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES))
+                    ) continue; // omit currency
+                    currenciesToUpdate.push(currency);
+                    // @ts-expect-error provider check on purpose as we might want to change it in the future
+                    if (FIAT_API_PROVIDER_CURRENT_PRICES === Provider.CryptoCompare
+                        && currenciesToUpdate.length >= 25) {
+                        // CryptoCompare only allows 25 currencies per request, and we don't want to send more than one.
+                        break;
+                    }
+                }
                 this.state.exchangeRates = await getExchangeRates(
                     [CryptoCurrency.NIM, CryptoCurrency.BTC, CryptoCurrency.USDC],
                     currenciesToUpdate,

@@ -1,7 +1,7 @@
 <template>
     <div class="prestaking-button">
         <Tooltip
-            v-if="asButton && visible && activeAddressInfo && activeAddressInfo.balance"
+            v-if="asButton && visible && activeAddressInfo && (activeAddressInfo.balance || hasPrestake)"
             class="prestaking-feature-tip"
             preferredPosition="bottom"
             :container="this.$parent"
@@ -9,12 +9,12 @@
             <div slot="trigger">
                 <button class="prestake"
                     :class="{
-                        disabled: !activeAddressInfo || !activeAddressInfo.balance,
+                        disabled: !activeAddressInfo || (!activeAddressInfo.balance && !hasPrestake),
                         inverse: inversePalette,
                         pulsing: !hasPrestake,
                     }" @click="$router.push('/prestaking')"
                     @mousedown.prevent
-                    :disabled="!activeAddressInfo || !activeAddressInfo.balance">
+                    :disabled="!activeAddressInfo || (!activeAddressInfo.balance && !hasPrestake)">
                     <HeroIcon />
                 </button>
             </div>
@@ -60,11 +60,11 @@ export default defineComponent({
         const { height } = useNetworkStore();
         const { activePrestake } = usePrestakingStore();
 
+        const hasPrestake = computed(() => !!activePrestake.value);
+
         const visible = computed(() => Config.environment !== ENV_MAIN
             && height.value >= PRESTAKING_BLOCK_H_START
-            && (height.value <= PRESTAKING_BLOCK_H_END || activePrestake.value));
-
-        const hasPrestake = computed(() => !!activePrestake.value);
+            && (height.value <= PRESTAKING_BLOCK_H_END || hasPrestake.value));
 
         const $tooltip = ref<Tooltip | null>(null);
         // watch([hasPrestake, activeAddressInfo], ([has, _]) => {

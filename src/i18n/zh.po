@@ -81,11 +81,11 @@ msgstr "交换价值的{perc}％"
 msgid "{percentage} fees"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:27
+#: src/components/prestaking/PrestakingInfoPage.vue:27
 msgid "{percentage}% of address's balance"
 msgstr ""
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:14
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:14
 msgid "{poolName} Website"
 msgstr ""
 
@@ -604,7 +604,7 @@ msgstr "更改密码"
 msgid "Change your language setting."
 msgstr "更改你的语言设置"
 
-#: src/components/staking/StakingValidatorPage.vue:101
+#: src/components/prestaking/PrestakingValidatorPage.vue:97
 msgid "Changing validator"
 msgstr ""
 
@@ -623,7 +623,7 @@ msgstr "选择接收者"
 msgid "Choose a Sender"
 msgstr "请选择一个发送者"
 
-#: src/components/staking/StakingValidatorPage.vue:5
+#: src/components/prestaking/PrestakingValidatorPage.vue:5
 msgid "Choose a Validator"
 msgstr ""
 
@@ -681,8 +681,8 @@ msgstr "确认"
 msgid "Confirm account"
 msgstr "确认账户"
 
-#: src/components/staking/StakingGraphPage.vue:32
-msgid "Confirm stake"
+#: src/components/prestaking/PrestakingGraphPage.vue:32
+msgid "Confirm prestake"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
@@ -835,8 +835,8 @@ msgid "Created yesterday"
 msgstr "昨天创建"
 
 #: src/components/modals/WelcomeModal.vue:112
-msgid "Creates staking rewards"
-msgstr "创建质押收益"
+msgid "Creates prestaking rewards"
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:112
 #: src/components/modals/BuyOptionsModal.vue:42
@@ -914,7 +914,7 @@ msgstr "因税务或其他原因，请将该地址的所有交易下载为文件
 msgid "Duration and fees are estimates."
 msgstr "工作时间和费用均为估计值"
 
-#: src/components/staking/StakingValidatorPage.vue:9
+#: src/components/prestaking/PrestakingValidatorPage.vue:9
 msgid ""
 "Earn rewards by locking NIM with a validator. Locked NIM stay under your "
 "control."
@@ -1313,7 +1313,7 @@ msgid ""
 "automatic refunds will only work for individual IBAN addresses."
 msgstr "如果出现任何问题，例如超出金额限制或资金不足，自动退款仅适用于个人IBAN地址"
 
-#: src/components/staking/StakingInfoPage.vue:35
+#: src/components/prestaking/PrestakingInfoPage.vue:35
 msgid "Increase Prestake"
 msgstr ""
 
@@ -1394,7 +1394,7 @@ msgstr "让我们开始吧！创建你的Nimiq帐户："
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
-#: src/components/staking/StakingWelcomePage.vue:22
+#: src/components/prestaking/PrestakingWelcomePage.vue:22
 msgid "Let's go"
 msgstr "开始吧"
 
@@ -1434,7 +1434,7 @@ msgstr "载入中..."
 msgid "Loading..."
 msgstr "载入中..."
 
-#: src/components/staking/StakingWelcomePage.vue:8
+#: src/components/prestaking/PrestakingWelcomePage.vue:8
 msgid "Lock NIM for Proof of Stake"
 msgstr ""
 
@@ -1554,7 +1554,7 @@ msgstr ""
 "Nimiq对任何损失概不负责。Nimiq, wallet.nimiq.com, hub.nimiq.com "
 "&keyguard.nimiq.com，以及一些正在积极开发中的基础代码库。"
 
-#: src/components/staking/StakingInfoPage.vue:5
+#: src/components/prestaking/PrestakingInfoPage.vue:5
 msgid "Nimiq PoS Prestaking"
 msgstr ""
 
@@ -1566,7 +1566,7 @@ msgstr "Nimiq钱包不支持比特币交易信息"
 msgid "No connection to {chain} network."
 msgstr "没有连接到 {chain} 网络"
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:8
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:8
 msgid "No description available"
 msgstr ""
 
@@ -1665,7 +1665,7 @@ msgstr "或直接在钱包中购买BTC"
 msgid "Overwrite how the Keyguard is opened."
 msgstr "覆盖Keyguard的打开方式"
 
-#: src/components/staking/tooltips/ValidatorRewardBubble.vue:8
+#: src/components/prestaking/tooltips/ValidatorRewardBubble.vue:8
 msgid "p.a."
 msgstr ""
 
@@ -1777,28 +1777,36 @@ msgstr "弹出窗口"
 msgid "Popups"
 msgstr "弹出窗口"
 
-#: src/components/staking/StakingGraphPage.vue:9
-#: src/components/staking/StakingInfoPage.vue:9
+#: src/components/prestaking/PrestakingGraphPage.vue:9
+#: src/components/prestaking/PrestakingInfoPage.vue:9
 msgid ""
 "Prestake as much NIM as you can and help reach the next milestone of "
 "securing the network."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:40
-#: src/components/staking/StakingInfoPage.vue:30
-#: src/components/staking/StakingWelcomePage.vue:19
+#: src/components/prestaking/PrestakingGraphPage.vue:39
+msgid "Prestake must be at least {minPrestake}."
+msgstr ""
+
+#: src/components/prestaking/PrestakingInfoPage.vue:19
+msgid "Prestaked"
+msgstr ""
+
+#: src/components/prestaking/PrestakingGraphPage.vue:43
+#: src/components/prestaking/PrestakingInfoPage.vue:30
+#: src/components/prestaking/PrestakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:22
+#: src/components/prestaking/PrestakingButton.vue:22
 msgid "Prestaking"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:21
+#: src/components/prestaking/PrestakingButton.vue:21
 msgid "Prestaking is now available!"
 msgstr ""
 
-#: src/components/staking/StakingWelcomePage.vue:12
+#: src/components/prestaking/PrestakingWelcomePage.vue:12
 msgid ""
 "Prestaking NIM secures the network and is the quickest way to staking "
 "rewards."
@@ -1948,7 +1956,7 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
 
-#: src/lib/StakingUtils.ts:19
+#: src/lib/PrestakingUtils.ts:19
 msgid "Restake Rewards"
 msgstr ""
 
@@ -1970,7 +1978,7 @@ msgstr "重试"
 msgid "Retrying..."
 msgstr "重试..."
 
-#: src/components/staking/ValidatorFilter.vue:17
+#: src/components/prestaking/ValidatorFilter.vue:17
 msgid "Reward"
 msgstr ""
 
@@ -2105,8 +2113,8 @@ msgstr "发送 USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/staking/StakingGraphPage.vue:118
-msgid "Sending Pre-Staking Transaction"
+#: src/components/prestaking/PrestakingGraphPage.vue:121
+msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:461
@@ -2165,7 +2173,7 @@ msgstr "SEPA即时交易"
 msgid "Set Amount"
 msgstr "设置金额"
 
-#: src/components/staking/StakingGraphPage.vue:5
+#: src/components/prestaking/PrestakingGraphPage.vue:5
 msgid "Set an amount to lock"
 msgstr ""
 
@@ -2249,8 +2257,8 @@ msgstr "跳过"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/staking/StakingGraphPage.vue:165
-#: src/components/staking/StakingValidatorPage.vue:131
+#: src/components/prestaking/PrestakingGraphPage.vue:168
+#: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -2274,17 +2282,9 @@ msgstr "稳定性与自我托管相结合"
 msgid "Stable like USD, got it"
 msgstr "稳定如 USD，收到"
 
-#: src/components/staking/StakingGraphPage.vue:37
-msgid "Stake must be at least {minStake}."
-msgstr ""
-
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr "质押NIM取得奖励，并确保网络安全"
-
-#: src/components/staking/StakingInfoPage.vue:19
-msgid "Staked"
-msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
@@ -2298,12 +2298,12 @@ msgstr "标准"
 msgid "Store of value, got it"
 msgstr "储藏价值，收到"
 
-#: src/components/staking/StakingValidatorPage.vue:113
+#: src/components/prestaking/PrestakingValidatorPage.vue:109
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:143
-msgid "Successfully pre-staked {amount} NIM with {validator}"
+#: src/components/prestaking/PrestakingGraphPage.vue:146
+msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:109
@@ -2486,7 +2486,7 @@ msgid ""
 "and enable fast transactions, this wallet uses the Polygon version."
 msgstr "USDC稳定币最初在以太坊上推出。为了避免高昂的费用并实现快速交易，该钱包使用Polygon版本。"
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:11
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:11
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
@@ -2641,7 +2641,7 @@ msgstr "试用版"
 msgid "Troubleshooting"
 msgstr "疑难解答"
 
-#: src/components/staking/ValidatorFilter.vue:7
+#: src/components/prestaking/ValidatorFilter.vue:7
 msgid "TrustScore"
 msgstr ""
 
@@ -2653,7 +2653,7 @@ msgstr "现在就试试"
 msgid "Tx time"
 msgstr "交易时长"
 
-#: src/components/staking/ValidatorFilter.vue:31
+#: src/components/prestaking/ValidatorFilter.vue:31
 msgid "Type to search..."
 msgstr ""
 
@@ -2731,7 +2731,7 @@ msgstr "使用标签轻松识别交易。"
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "将Nimiq 钱包作为网络应用程序，于浏览器之外使用。"
 
-#: src/components/staking/StakingInfoPage.vue:45
+#: src/components/prestaking/PrestakingInfoPage.vue:45
 msgid "Validator"
 msgstr ""
 
@@ -2751,7 +2751,7 @@ msgstr "等待 {currency}"
 msgid "Waiting for Nimiq network information"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:18
+#: src/lib/PrestakingUtils.ts:18
 msgid "Wallet Payout"
 msgstr ""
 
@@ -2781,7 +2781,7 @@ msgstr "你使用哪间银行？"
 msgid "When ready"
 msgstr "准备好时"
 
-#: src/components/staking/StakingGraphPage.vue:44
+#: src/components/prestaking/PrestakingGraphPage.vue:47
 msgid "will be available within hours."
 msgstr ""
 

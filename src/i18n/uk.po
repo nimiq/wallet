@@ -80,11 +80,11 @@ msgstr "{perc}% вартості обміну."
 msgid "{percentage} fees"
 msgstr "{percentage} комісії"
 
-#: src/components/staking/StakingInfoPage.vue:27
+#: src/components/prestaking/PrestakingInfoPage.vue:27
 msgid "{percentage}% of address's balance"
 msgstr ""
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:14
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:14
 msgid "{poolName} Website"
 msgstr ""
 
@@ -627,7 +627,7 @@ msgstr "Змінити пароль"
 msgid "Change your language setting."
 msgstr "Змінити налаштування мови."
 
-#: src/components/staking/StakingValidatorPage.vue:101
+#: src/components/prestaking/PrestakingValidatorPage.vue:97
 msgid "Changing validator"
 msgstr ""
 
@@ -646,7 +646,7 @@ msgstr "Виберіть одержувача"
 msgid "Choose a Sender"
 msgstr "Виберіть відправника"
 
-#: src/components/staking/StakingValidatorPage.vue:5
+#: src/components/prestaking/PrestakingValidatorPage.vue:5
 msgid "Choose a Validator"
 msgstr ""
 
@@ -704,8 +704,8 @@ msgstr "Підтвердити"
 msgid "Confirm account"
 msgstr "Підтвердіть рахунок"
 
-#: src/components/staking/StakingGraphPage.vue:32
-msgid "Confirm stake"
+#: src/components/prestaking/PrestakingGraphPage.vue:32
+msgid "Confirm prestake"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
@@ -862,7 +862,7 @@ msgid "Created yesterday"
 msgstr "Створено вчора"
 
 #: src/components/modals/WelcomeModal.vue:112
-msgid "Creates staking rewards"
+msgid "Creates prestaking rewards"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:112
@@ -945,7 +945,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr "Тривалість і комісія є приблизними."
 
-#: src/components/staking/StakingValidatorPage.vue:9
+#: src/components/prestaking/PrestakingValidatorPage.vue:9
 msgid ""
 "Earn rewards by locking NIM with a validator. Locked NIM stay under your "
 "control."
@@ -1363,7 +1363,7 @@ msgstr ""
 "У разі будь-яких проблем, наприклад перевищення лімітів або недостатніх сум,"
 " автоматичне відшкодування працюватиме лише для індивідуальних IBAN адрес."
 
-#: src/components/staking/StakingInfoPage.vue:35
+#: src/components/prestaking/PrestakingInfoPage.vue:35
 msgid "Increase Prestake"
 msgstr ""
 
@@ -1447,7 +1447,7 @@ msgstr "Розпочнемо! Створіть рахунок у мережі Н
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
-#: src/components/staking/StakingWelcomePage.vue:22
+#: src/components/prestaking/PrestakingWelcomePage.vue:22
 msgid "Let's go"
 msgstr "Вперед!"
 
@@ -1487,7 +1487,7 @@ msgstr "завантаження..."
 msgid "Loading..."
 msgstr "Завантаження..."
 
-#: src/components/staking/StakingWelcomePage.vue:8
+#: src/components/prestaking/PrestakingWelcomePage.vue:8
 msgid "Lock NIM for Proof of Stake"
 msgstr ""
 
@@ -1608,7 +1608,7 @@ msgstr ""
 "hub.nimiq.com і keyguard.nimiq.com, а також інші бібліотеки є на стадії "
 "активної розробки."
 
-#: src/components/staking/StakingInfoPage.vue:5
+#: src/components/prestaking/PrestakingInfoPage.vue:5
 msgid "Nimiq PoS Prestaking"
 msgstr ""
 
@@ -1620,7 +1620,7 @@ msgstr "Гаманець Німік не підтримує повідомлен
 msgid "No connection to {chain} network."
 msgstr "Немає підключення до мережі {chain}."
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:8
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:8
 msgid "No description available"
 msgstr ""
 
@@ -1719,7 +1719,7 @@ msgstr "Або купіть BTC прямо в гаманці."
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Перезаписати спосіб відкриття Keyguard."
 
-#: src/components/staking/tooltips/ValidatorRewardBubble.vue:8
+#: src/components/prestaking/tooltips/ValidatorRewardBubble.vue:8
 msgid "p.a."
 msgstr ""
 
@@ -1835,28 +1835,36 @@ msgstr "спливаючі вікна"
 msgid "Popups"
 msgstr "Спливаючі вікна"
 
-#: src/components/staking/StakingGraphPage.vue:9
-#: src/components/staking/StakingInfoPage.vue:9
+#: src/components/prestaking/PrestakingGraphPage.vue:9
+#: src/components/prestaking/PrestakingInfoPage.vue:9
 msgid ""
 "Prestake as much NIM as you can and help reach the next milestone of "
 "securing the network."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:40
-#: src/components/staking/StakingInfoPage.vue:30
-#: src/components/staking/StakingWelcomePage.vue:19
+#: src/components/prestaking/PrestakingGraphPage.vue:39
+msgid "Prestake must be at least {minPrestake}."
+msgstr ""
+
+#: src/components/prestaking/PrestakingInfoPage.vue:19
+msgid "Prestaked"
+msgstr ""
+
+#: src/components/prestaking/PrestakingGraphPage.vue:43
+#: src/components/prestaking/PrestakingInfoPage.vue:30
+#: src/components/prestaking/PrestakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:22
+#: src/components/prestaking/PrestakingButton.vue:22
 msgid "Prestaking"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:21
+#: src/components/prestaking/PrestakingButton.vue:21
 msgid "Prestaking is now available!"
 msgstr ""
 
-#: src/components/staking/StakingWelcomePage.vue:12
+#: src/components/prestaking/PrestakingWelcomePage.vue:12
 msgid ""
 "Prestaking NIM secures the network and is the quickest way to staking "
 "rewards."
@@ -2010,7 +2018,7 @@ msgstr "Скинути налаштування веб-оглядача і пе�
 msgid "Resolving Unstoppable Domain..."
 msgstr "Вирішення незупинного домену..."
 
-#: src/lib/StakingUtils.ts:19
+#: src/lib/PrestakingUtils.ts:19
 msgid "Restake Rewards"
 msgstr ""
 
@@ -2032,7 +2040,7 @@ msgstr "Спробувати знову"
 msgid "Retrying..."
 msgstr "Пробуємо ще..."
 
-#: src/components/staking/ValidatorFilter.vue:17
+#: src/components/prestaking/ValidatorFilter.vue:17
 msgid "Reward"
 msgstr ""
 
@@ -2167,8 +2175,8 @@ msgstr "Надіслати USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Переказуйте, отримуйте і зберігайте BTC у гаманці."
 
-#: src/components/staking/StakingGraphPage.vue:118
-msgid "Sending Pre-Staking Transaction"
+#: src/components/prestaking/PrestakingGraphPage.vue:121
+msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:461
@@ -2227,7 +2235,7 @@ msgstr "SEPA Instant транзакція"
 msgid "Set Amount"
 msgstr "Вкажіть суму"
 
-#: src/components/staking/StakingGraphPage.vue:5
+#: src/components/prestaking/PrestakingGraphPage.vue:5
 msgid "Set an amount to lock"
 msgstr ""
 
@@ -2311,8 +2319,8 @@ msgstr "Пропустити"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/staking/StakingGraphPage.vue:165
-#: src/components/staking/StakingValidatorPage.vue:131
+#: src/components/prestaking/PrestakingGraphPage.vue:168
+#: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
@@ -2336,17 +2344,9 @@ msgstr ""
 msgid "Stable like USD, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:37
-msgid "Stake must be at least {minStake}."
-msgstr ""
-
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr "Стекайте NIM щоб отримати винагороду за участь у блокчейні."
-
-#: src/components/staking/StakingInfoPage.vue:19
-msgid "Staked"
-msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
@@ -2360,12 +2360,12 @@ msgstr "звично"
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingValidatorPage.vue:113
+#: src/components/prestaking/PrestakingValidatorPage.vue:109
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:143
-msgid "Successfully pre-staked {amount} NIM with {validator}"
+#: src/components/prestaking/PrestakingGraphPage.vue:146
+msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:109
@@ -2550,7 +2550,7 @@ msgstr ""
 "комісій і забезпечити швидкі транзакції, цей гаманець використовує версію "
 "Polygon."
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:11
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:11
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
@@ -2715,7 +2715,7 @@ msgstr "Пробні версії"
 msgid "Troubleshooting"
 msgstr "Вирішення проблем"
 
-#: src/components/staking/ValidatorFilter.vue:7
+#: src/components/prestaking/ValidatorFilter.vue:7
 msgid "TrustScore"
 msgstr ""
 
@@ -2727,7 +2727,7 @@ msgstr "Спробуйте зараз"
 msgid "Tx time"
 msgstr ""
 
-#: src/components/staking/ValidatorFilter.vue:31
+#: src/components/prestaking/ValidatorFilter.vue:31
 msgid "Type to search..."
 msgstr ""
 
@@ -2811,7 +2811,7 @@ msgstr "Використовуйте мітки, щоб легко іденти�
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Використовуйте Nimiq гаманець як веб-програму поза веб-оглядачем."
 
-#: src/components/staking/StakingInfoPage.vue:45
+#: src/components/prestaking/PrestakingInfoPage.vue:45
 msgid "Validator"
 msgstr ""
 
@@ -2831,7 +2831,7 @@ msgstr "Очікування {currency}"
 msgid "Waiting for Nimiq network information"
 msgstr "Чекаємо інформації про мережу Nimiq"
 
-#: src/lib/StakingUtils.ts:18
+#: src/lib/PrestakingUtils.ts:18
 msgid "Wallet Payout"
 msgstr ""
 
@@ -2863,7 +2863,7 @@ msgstr "Як називається ваш банк?"
 msgid "When ready"
 msgstr "Коли готово"
 
-#: src/components/staking/StakingGraphPage.vue:44
+#: src/components/prestaking/PrestakingGraphPage.vue:47
 msgid "will be available within hours."
 msgstr ""
 

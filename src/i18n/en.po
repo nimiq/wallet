@@ -570,7 +570,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:101
+#: src/components/prestaking/PrestakingValidatorPage.vue:97
 msgid "Changing validator"
 msgstr ""
 
@@ -1719,6 +1719,10 @@ msgstr ""
 msgid "Prestaking is now available!"
 msgstr ""
 
+#: src/components/prestaking/PrestakingWelcomePage.vue:12
+msgid "Prestaking NIM secures the network and is the quickest way to staking rewards."
+msgstr ""
+
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
 msgstr ""
@@ -2157,7 +2161,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
 #: src/components/prestaking/PrestakingGraphPage.vue:168
-#: src/components/prestaking/PrestakingValidatorPage.vue:131
+#: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr ""
 
@@ -2189,10 +2193,6 @@ msgstr ""
 msgid "Staking"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:12
-msgid "Staking NIM secures the network and is the quickest way to prestaking rewards."
-msgstr ""
-
 #: src/components/modals/SendModal.vue:475
 msgid "standard"
 msgstr ""
@@ -2201,7 +2201,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:113
+#: src/components/prestaking/PrestakingValidatorPage.vue:109
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 

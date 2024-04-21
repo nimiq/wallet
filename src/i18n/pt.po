@@ -78,11 +78,11 @@ msgstr "{perc}% de troca de valor."
 msgid "{percentage} fees"
 msgstr "{percentage}taxas"
 
-#: src/components/staking/StakingInfoPage.vue:27
+#: src/components/prestaking/PrestakingInfoPage.vue:27
 msgid "{percentage}% of address's balance"
 msgstr "{percentage}% do saldo do endereço"
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:14
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:14
 msgid "{poolName} Website"
 msgstr "{poolName} Website"
 
@@ -631,7 +631,7 @@ msgstr "Alterar palavra passe"
 msgid "Change your language setting."
 msgstr "Alterar a tua configuração do idioma."
 
-#: src/components/staking/StakingValidatorPage.vue:101
+#: src/components/prestaking/PrestakingValidatorPage.vue:97
 msgid "Changing validator"
 msgstr "Mudar de validador"
 
@@ -650,7 +650,7 @@ msgstr "Escolher um Destinatário"
 msgid "Choose a Sender"
 msgstr "Escolher um Remetente"
 
-#: src/components/staking/StakingValidatorPage.vue:5
+#: src/components/prestaking/PrestakingValidatorPage.vue:5
 msgid "Choose a Validator"
 msgstr "Escolher um Validador"
 
@@ -708,9 +708,9 @@ msgstr "Confirmar"
 msgid "Confirm account"
 msgstr "Confirmar conta"
 
-#: src/components/staking/StakingGraphPage.vue:32
-msgid "Confirm stake"
-msgstr "Confirmar participação"
+#: src/components/prestaking/PrestakingGraphPage.vue:32
+msgid "Confirm prestake"
+msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:60
@@ -864,8 +864,8 @@ msgid "Created yesterday"
 msgstr "Criado ontem"
 
 #: src/components/modals/WelcomeModal.vue:112
-msgid "Creates staking rewards"
-msgstr "Cria recompensas de staking"
+msgid "Creates prestaking rewards"
+msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:112
 #: src/components/modals/BuyOptionsModal.vue:42
@@ -949,7 +949,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr "A duração e taxas são estimativas."
 
-#: src/components/staking/StakingValidatorPage.vue:9
+#: src/components/prestaking/PrestakingValidatorPage.vue:9
 msgid ""
 "Earn rewards by locking NIM with a validator. Locked NIM stay under your "
 "control."
@@ -1380,7 +1380,7 @@ msgstr ""
 "insuficientes, os reembolsos automáticos só vão funcionar para endereços de "
 "IBAN individuais."
 
-#: src/components/staking/StakingInfoPage.vue:35
+#: src/components/prestaking/PrestakingInfoPage.vue:35
 msgid "Increase Prestake"
 msgstr "Aumenta pré-participação"
 
@@ -1463,7 +1463,7 @@ msgstr "Vamos começar! Cria a tua conta Nimiq:"
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
-#: src/components/staking/StakingWelcomePage.vue:22
+#: src/components/prestaking/PrestakingWelcomePage.vue:22
 msgid "Let's go"
 msgstr "Vamos lá"
 
@@ -1503,7 +1503,7 @@ msgstr "a carregar..."
 msgid "Loading..."
 msgstr "A carregar..."
 
-#: src/components/staking/StakingWelcomePage.vue:8
+#: src/components/prestaking/PrestakingWelcomePage.vue:8
 msgid "Lock NIM for Proof of Stake"
 msgstr "Bloqueia NIM para Proof of Stake"
 
@@ -1626,7 +1626,7 @@ msgstr ""
 "hub.nimiq.com e keyguard.nimiq.com e algumas bibliotecas em desenvolvimento "
 "estão sob desenvolvimento constante."
 
-#: src/components/staking/StakingInfoPage.vue:5
+#: src/components/prestaking/PrestakingInfoPage.vue:5
 msgid "Nimiq PoS Prestaking"
 msgstr "Pré-participação Nimiq Proof-of-Stake"
 
@@ -1639,7 +1639,7 @@ msgstr ""
 msgid "No connection to {chain} network."
 msgstr "Sem conexão à rede {chain}."
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:8
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:8
 msgid "No description available"
 msgstr "Sem descrição disponível"
 
@@ -1740,7 +1740,7 @@ msgstr "Ou compra BTC diretamente na wallet."
 msgid "Overwrite how the Keyguard is opened."
 msgstr "Mudar a forma como a Keyguard é aberta."
 
-#: src/components/staking/tooltips/ValidatorRewardBubble.vue:8
+#: src/components/prestaking/tooltips/ValidatorRewardBubble.vue:8
 msgid "p.a."
 msgstr "p.a"
 
@@ -1858,8 +1858,8 @@ msgstr "popups"
 msgid "Popups"
 msgstr "Popups"
 
-#: src/components/staking/StakingGraphPage.vue:9
-#: src/components/staking/StakingInfoPage.vue:9
+#: src/components/prestaking/PrestakingGraphPage.vue:9
+#: src/components/prestaking/PrestakingInfoPage.vue:9
 msgid ""
 "Prestake as much NIM as you can and help reach the next milestone of "
 "securing the network."
@@ -1867,21 +1867,29 @@ msgstr ""
 "Pré-participa o máximo de NIM que puderes e ajuda a alcançar o próximo marco"
 " de segurança da rede."
 
-#: src/components/staking/StakingGraphPage.vue:40
-#: src/components/staking/StakingInfoPage.vue:30
-#: src/components/staking/StakingWelcomePage.vue:19
+#: src/components/prestaking/PrestakingGraphPage.vue:39
+msgid "Prestake must be at least {minPrestake}."
+msgstr ""
+
+#: src/components/prestaking/PrestakingInfoPage.vue:19
+msgid "Prestaked"
+msgstr ""
+
+#: src/components/prestaking/PrestakingGraphPage.vue:43
+#: src/components/prestaking/PrestakingInfoPage.vue:30
+#: src/components/prestaking/PrestakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
 msgstr "Os fundos pré-participados estão bloqueados até ao lançamento"
 
-#: src/components/staking/StakingButton.vue:22
+#: src/components/prestaking/PrestakingButton.vue:22
 msgid "Prestaking"
 msgstr "Pré-participar"
 
-#: src/components/staking/StakingButton.vue:21
+#: src/components/prestaking/PrestakingButton.vue:21
 msgid "Prestaking is now available!"
 msgstr "A pré-participação está agora disponível!"
 
-#: src/components/staking/StakingWelcomePage.vue:12
+#: src/components/prestaking/PrestakingWelcomePage.vue:12
 msgid ""
 "Prestaking NIM secures the network and is the quickest way to staking "
 "rewards."
@@ -2040,7 +2048,7 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr "A resolver Unstopable Domain..."
 
-#: src/lib/StakingUtils.ts:19
+#: src/lib/PrestakingUtils.ts:19
 msgid "Restake Rewards"
 msgstr "Participar novamente com Recompensas"
 
@@ -2062,7 +2070,7 @@ msgstr "Tentar novamente"
 msgid "Retrying..."
 msgstr "A tentar novamente..."
 
-#: src/components/staking/ValidatorFilter.vue:17
+#: src/components/prestaking/ValidatorFilter.vue:17
 msgid "Reward"
 msgstr "Recompensa"
 
@@ -2199,9 +2207,9 @@ msgstr "Enviar USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Enviar, receber e manter BTC na tua wallet."
 
-#: src/components/staking/StakingGraphPage.vue:118
-msgid "Sending Pre-Staking Transaction"
-msgstr "A enviar transação de pré-participação"
+#: src/components/prestaking/PrestakingGraphPage.vue:121
+msgid "Sending Pre-Prestaking Transaction"
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:461
 #: src/components/modals/SendModal.vue:771
@@ -2259,7 +2267,7 @@ msgstr "Transação SEPA Instant"
 msgid "Set Amount"
 msgstr "Definir Valor"
 
-#: src/components/staking/StakingGraphPage.vue:5
+#: src/components/prestaking/PrestakingGraphPage.vue:5
 msgid "Set an amount to lock"
 msgstr "Definir valor para bloquear"
 
@@ -2343,8 +2351,8 @@ msgstr "Pular"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/staking/StakingGraphPage.vue:165
-#: src/components/staking/StakingValidatorPage.vue:131
+#: src/components/prestaking/PrestakingGraphPage.vue:168
+#: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "Algo deu errado"
 
@@ -2368,17 +2376,9 @@ msgstr "Estabilidade misturada com auto-custódia"
 msgid "Stable like USD, got it"
 msgstr "Estável como USD, entendido"
 
-#: src/components/staking/StakingGraphPage.vue:37
-msgid "Stake must be at least {minStake}."
-msgstr "Participação tem de ser de pelo menos {minStake}."
-
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr "Deposite NIM para gerar recompensas ao proteger a rede."
-
-#: src/components/staking/StakingInfoPage.vue:19
-msgid "Staked"
-msgstr "Participado"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
@@ -2392,13 +2392,13 @@ msgstr "padrão"
 msgid "Store of value, got it"
 msgstr "Reserva de valor, entendido"
 
-#: src/components/staking/StakingValidatorPage.vue:113
+#: src/components/prestaking/PrestakingValidatorPage.vue:109
 msgid "Successfully changed validator to {validator}"
 msgstr "Validador alterado com sucesso para {validator}"
 
-#: src/components/staking/StakingGraphPage.vue:143
-msgid "Successfully pre-staked {amount} NIM with {validator}"
-msgstr "{amount} NIM pré-participado com sucesso com {validator}"
+#: src/components/prestaking/PrestakingGraphPage.vue:146
+msgid "Successfully prestaked {amount} NIM with {validator}"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:109
 msgid "Super low fees, super fast payments"
@@ -2588,7 +2588,7 @@ msgstr ""
 "taxas altas e permitir transações rápidas, esta carteira usa a versão "
 "Polygon."
 
-#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:11
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:11
 msgid "The validator is solely responsible for information provided above."
 msgstr "O validador é inteiramente responsável pela informação dada em cima."
 
@@ -2751,7 +2751,7 @@ msgstr "Tentativas"
 msgid "Troubleshooting"
 msgstr "Troubleshooting"
 
-#: src/components/staking/ValidatorFilter.vue:7
+#: src/components/prestaking/ValidatorFilter.vue:7
 msgid "TrustScore"
 msgstr "TrustScore"
 
@@ -2763,7 +2763,7 @@ msgstr "Tentar agora"
 msgid "Tx time"
 msgstr "Tempo de transação"
 
-#: src/components/staking/ValidatorFilter.vue:31
+#: src/components/prestaking/ValidatorFilter.vue:31
 msgid "Type to search..."
 msgstr "Escreve para pesquisares..."
 
@@ -2846,7 +2846,7 @@ msgstr "Usa marcadores para identificar facilmente transações."
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Usa a Nimiq Wallet como aplicação web fora do browser."
 
-#: src/components/staking/StakingInfoPage.vue:45
+#: src/components/prestaking/PrestakingInfoPage.vue:45
 msgid "Validator"
 msgstr "Validador"
 
@@ -2866,7 +2866,7 @@ msgstr "À espera da {currency}"
 msgid "Waiting for Nimiq network information"
 msgstr "À espera de informações da rede da Nimiq"
 
-#: src/lib/StakingUtils.ts:18
+#: src/lib/PrestakingUtils.ts:18
 msgid "Wallet Payout"
 msgstr "Pagamento da Wallet"
 
@@ -2898,7 +2898,7 @@ msgstr "Como se chama o teu banco?"
 msgid "When ready"
 msgstr "Quando estiver pronto"
 
-#: src/components/staking/StakingGraphPage.vue:44
+#: src/components/prestaking/PrestakingGraphPage.vue:47
 msgid "will be available within hours."
 msgstr "vai estar disponível em algumas horas."
 

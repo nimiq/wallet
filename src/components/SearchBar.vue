@@ -1,29 +1,15 @@
 <template>
-    <div
-        class="search-bar cover-all"
-        @click="$refs.searchBarInput.focus()"
-        @pointerdown.prevent
-        :style="{ 'max-width': `${maxWidth}` }"
-    >
+    <div class="search-bar cover-all" @click="$refs.searchBarInput.focus()" @pointerdown.prevent
+        :style="{ 'max-width': `${maxWidth}` }">
         <svg fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
             <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
                 fill="currentColor" />
         </svg>
-        <input
-            ref="searchBarInput"
-            type="text" :value="value"
-            :placeholder="placeholderText"
-            @input="$emit('input', $event.target.value)"
-            @focus="handleFocus"
-            @blur="handleBlur"
-        />
+        <input ref="searchBarInput" type="text" :value="value" :placeholder="placeholderText"
+            @input="$emit('input', $event.target.value)" @focus="handleFocus" @blur="handleBlur" />
         <transition name="fade">
-            <CrossCloseButton
-                class="cross-close-button"
-                v-if="isInputActive"
-                @click="handleClose"
-            />
+            <CrossCloseButton class="cross-close-button" v-if="isInputActive" @click="handleClose" />
         </transition>
     </div>
 </template>
@@ -49,25 +35,9 @@ export default defineComponent({
 
         let observer: ResizeObserver;
 
-        const getFontSize = (element: HTMLElement) => {
-            const style = getComputedStyle(element);
-            const fontSize = style.getPropertyValue('--body-size');
-            return fontSize;
-        };
-
-        const getTextWidth = (text: string, size: string) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return 0;
-            ctx.font = size;
-            return ctx.measureText(text).width;
-        };
-
         const maxWidth = computed(() => {
             if (!searchBarInput.value) return '100%';
-            const fontSize = getFontSize(searchBarInput.value);
-            const textSize = getTextWidth(placeholderText.value, fontSize);
-            return isInputActive.value ? '100%' : `${textSize + 120}px`;
+            return isInputActive.value ? '100%' : '0';
         });
 
         const handleFocus = () => {
@@ -149,9 +119,9 @@ export default defineComponent({
     cursor: text;
     padding: 0.75rem 0;
     margin-right: 1rem;
-    min-width: 5.5rem;
+    min-width: min-content;
 
-    transition: color var(--attr-duration) var(--nimiq-ease), max-width var(--attr-duration) var(--nimiq-ease);
+    transition: color var(--attr-duration) var(--nimiq-ease), max-width .75s var(--nimiq-ease);
 
     &::after {
         content: '';
@@ -239,7 +209,8 @@ input {
     cursor: pointer;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     transition-duration: var(--attr-duration);
 }
 

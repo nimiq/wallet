@@ -244,7 +244,7 @@ export const useBtcTransactionsStore = createStore({
             if (!transactionsToUpdate.length) return;
 
             scheduledHistoricFiatAmountUpdates[historyFiatCurrency] ||= new Set();
-            const historicTimestamps: number[] = [];
+            const historicTransactions: typeof transactionsToUpdate = [];
             const { swapByTransaction } = useSwapsStore().state;
 
             for (const tx of transactionsToUpdate) {
@@ -256,8 +256,7 @@ export const useBtcTransactionsStore = createStore({
                 // which also don't get updated minutely and might not include the newest rates yet. If the user time is
                 // not set correctly, this will gracefully fall back to fetching rates for new transactions as historic
                 // exchange rates; old transactions at the user's system's time might be interpreted as current though.
-                const timestamp = tx.timestamp * 1000;
-                const isNewTransaction = Math.abs(timestamp - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
+                const isNewTransaction = Math.abs(tx.timestamp * 1000 - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
                 if (isNewTransaction && currentRate) {
                     for (const output of tx.outputs) {
                         // Set via Vue.set to let vue handle reactivity.
@@ -265,7 +264,7 @@ export const useBtcTransactionsStore = createStore({
                         Vue.set(output.fiatValue!, fiatCurrency, currentRate * (output.value / 1e8));
                     }
                 } else {
-                    historicTimestamps.push(timestamp);
+                    historicTransactions.push(tx);
                     scheduledHistoricFiatAmountUpdates[historyFiatCurrency]!.add(tx.transactionHash);
                 }
                 // For the calculation of swap limits, USD amounts of swap transactions are required. If we have the USD
@@ -277,15 +276,15 @@ export const useBtcTransactionsStore = createStore({
                 }
             }
 
-            if (historicTimestamps.length) {
+            if (historicTransactions.length) {
                 const historicExchangeRates = await getHistoricExchangeRates(
                     CryptoCurrency.BTC,
                     historyFiatCurrency,
-                    historicTimestamps,
+                    historicTransactions.map((tx) => tx.timestamp * 1000),
                     FIAT_API_PROVIDER_TX_HISTORY,
                 );
 
-                for (let tx of transactionsToUpdate) {
+                for (let tx of historicTransactions) {
                     const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
                     // Get the newest transaction from the store in case the object changed in the meantime due to
                     // calculation of txDetails in addTransactions.

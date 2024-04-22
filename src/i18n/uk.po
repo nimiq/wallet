@@ -418,7 +418,7 @@ msgid "Back to Bank Details"
 msgstr "Назад до банкіських реквізитів"
 
 #: src/composables/useBtcTransactionInfo.ts:128
-#: src/composables/useTransactionInfo.ts:116
+#: src/composables/useTransactionInfo.ts:122
 #: src/composables/useUsdcTransactionInfo.ts:105
 msgid "Bank Account"
 msgstr "Банківський рахунок"
@@ -444,7 +444,7 @@ msgstr "BIC працює також."
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:121
 #: src/components/modals/BtcTransactionModal.vue:133
-#: src/composables/useTransactionInfo.ts:108
+#: src/composables/useTransactionInfo.ts:114
 #: src/composables/useUsdcTransactionInfo.ts:101
 msgid "Bitcoin"
 msgstr "Біткоїн"
@@ -585,7 +585,7 @@ msgstr "Скасувати обмін"
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:113
-#: src/composables/useTransactionInfo.ts:103
+#: src/composables/useTransactionInfo.ts:109
 #: src/composables/useUsdcTransactionInfo.ts:90
 msgid "Cancelled Swap"
 msgstr "Обмін скасовано"
@@ -595,7 +595,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "Не вдається імпортувати контакти, неправильний формат файлу."
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:131
 msgid "Cashlink"
 msgstr "Чек"
 
@@ -1268,7 +1268,7 @@ msgstr "Історична сума"
 #: src/components/modals/TransactionModal.vue:484
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:170
+#: src/composables/useTransactionInfo.ts:176
 #: src/composables/useUsdcTransactionInfo.ts:150 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "створення HTLC"
@@ -1278,14 +1278,14 @@ msgstr "створення HTLC"
 #: src/components/modals/TransactionModal.vue:505
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:185
 #: src/composables/useTransactionInfo.ts:191
+#: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:156
 msgid "HTLC Refund"
 msgstr "повернення HTLC"
 
 #: src/components/modals/TransactionModal.vue:488
-#: src/composables/useTransactionInfo.ts:174
+#: src/composables/useTransactionInfo.ts:180
 #: src/composables/useUsdcTransactionInfo.ts:153
 msgid "HTLC Settlement"
 msgstr "повідомлення HTLC"
@@ -2194,7 +2194,7 @@ msgid "Sent {btc} BTC to {name}"
 msgstr "Надіслано {btc} BTC до {name}"
 
 #: src/composables/useBtcTransactionInfo.ts:174
-#: src/composables/useTransactionInfo.ts:153
+#: src/composables/useTransactionInfo.ts:159
 #: src/composables/useUsdcTransactionInfo.ts:134
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Надіслано {fromAsset} – Отримано {toAsset}"
@@ -2378,7 +2378,7 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:120
-#: src/composables/useTransactionInfo.ts:99
+#: src/composables/useTransactionInfo.ts:105
 #: src/composables/useUsdcTransactionInfo.ts:97
 msgid "Swap"
 msgstr "Обмін"
@@ -2731,7 +2731,7 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
-#: src/composables/useTransactionInfo.ts:126
+#: src/composables/useTransactionInfo.ts:132
 msgid "Unclaimed Cashlink"
 msgstr "Активний чек"
 
@@ -2790,7 +2790,7 @@ msgstr "Оновити зараз"
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124
-#: src/composables/useTransactionInfo.ts:112
+#: src/composables/useTransactionInfo.ts:118
 msgid "USD Coin"
 msgstr "Монета USD"
 

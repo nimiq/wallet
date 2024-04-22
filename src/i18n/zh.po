@@ -404,7 +404,7 @@ msgid "Back to Bank Details"
 msgstr "返回银行详情"
 
 #: src/composables/useBtcTransactionInfo.ts:128
-#: src/composables/useTransactionInfo.ts:116
+#: src/composables/useTransactionInfo.ts:122
 #: src/composables/useUsdcTransactionInfo.ts:105
 msgid "Bank Account"
 msgstr "银行账户"
@@ -430,7 +430,7 @@ msgstr "BIC适用"
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:121
 #: src/components/modals/BtcTransactionModal.vue:133
-#: src/composables/useTransactionInfo.ts:108
+#: src/composables/useTransactionInfo.ts:114
 #: src/composables/useUsdcTransactionInfo.ts:101
 msgid "Bitcoin"
 msgstr "比特币"
@@ -562,7 +562,7 @@ msgstr "取消交换"
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:113
-#: src/composables/useTransactionInfo.ts:103
+#: src/composables/useTransactionInfo.ts:109
 #: src/composables/useUsdcTransactionInfo.ts:90
 msgid "Cancelled Swap"
 msgstr "取消交换"
@@ -572,7 +572,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人"
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:125
+#: src/composables/useTransactionInfo.ts:131
 msgid "Cashlink"
 msgstr "现金链接"
 
@@ -1226,7 +1226,7 @@ msgstr "历史价值"
 #: src/components/modals/TransactionModal.vue:484
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:170
+#: src/composables/useTransactionInfo.ts:176
 #: src/composables/useUsdcTransactionInfo.ts:150 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "HTLC创建"
@@ -1236,14 +1236,14 @@ msgstr "HTLC创建"
 #: src/components/modals/TransactionModal.vue:505
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:185
 #: src/composables/useTransactionInfo.ts:191
+#: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:156
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
 #: src/components/modals/TransactionModal.vue:488
-#: src/composables/useTransactionInfo.ts:174
+#: src/composables/useTransactionInfo.ts:180
 #: src/composables/useUsdcTransactionInfo.ts:153
 msgid "HTLC Settlement"
 msgstr "HTLC结算"
@@ -2132,7 +2132,7 @@ msgid "Sent {btc} BTC to {name}"
 msgstr "已发送{btc} BTC到 {name}"
 
 #: src/composables/useBtcTransactionInfo.ts:174
-#: src/composables/useTransactionInfo.ts:153
+#: src/composables/useTransactionInfo.ts:159
 #: src/composables/useUsdcTransactionInfo.ts:134
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "已发送{fromAsset} –已收到{toAsset}"
@@ -2316,7 +2316,7 @@ msgstr "超低手续费，超快支付"
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:120
-#: src/composables/useTransactionInfo.ts:99
+#: src/composables/useTransactionInfo.ts:105
 #: src/composables/useUsdcTransactionInfo.ts:97
 msgid "Swap"
 msgstr "交换"
@@ -2657,7 +2657,7 @@ msgstr "交易时长"
 msgid "Type to search..."
 msgstr ""
 
-#: src/composables/useTransactionInfo.ts:126
+#: src/composables/useTransactionInfo.ts:132
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
 
@@ -2711,7 +2711,7 @@ msgstr "现在更新"
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124
-#: src/composables/useTransactionInfo.ts:112
+#: src/composables/useTransactionInfo.ts:118
 msgid "USD Coin"
 msgstr "USD币"
 

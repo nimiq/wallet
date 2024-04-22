@@ -79,124 +79,10 @@ export const useBtcTransactionsStore = createStore({
 
             const newTxs: { [hash: string]: Transaction } = {};
             for (const plain of txDetails) {
-                // Detect swaps
                 // Async sub call to keep the main method synchronous to avoid race conditions with other places where
                 // transactions are being overwritten like in calculateFiatAmounts, and to avoid await in loop (slow
                 // sequential processing).
-                (async () => {
-                    if (useSwapsStore().state.swapByTransaction[plain.transactionHash]) return; // already known
-
-                    const [fundingData, refundingData, settlementData] = await Promise.all([
-                        isHtlcFunding(plain),
-                        isHtlcRefunding(plain),
-                        isHtlcSettlement(plain),
-                    ]);
-
-                    // HTLC Creation
-                    if (fundingData) {
-                        useSwapsStore().addFundingData(fundingData.hash, {
-                            asset: SwapAsset.BTC,
-                            transactionHash: plain.transactionHash,
-                            outputIndex: fundingData.outputIndex,
-                            htlc: {
-                                address: plain.outputs
-                                    .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
-                                    .address || undefined,
-                                script: fundingData.script,
-                                refundAddress: fundingData.refundAddress,
-                                redeemAddress: fundingData.redeemAddress,
-                                timeoutTimestamp: fundingData.timeoutTimestamp,
-                            },
-                        });
-
-                        if (!useSwapsStore().state.swaps[fundingData.hash].out) {
-                            // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            const htlcAddress = plain.outputs
-                                .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
-                                .address;
-                            if (htlcAddress) {
-                                const contractWithEstimate = await getContract(SwapAsset.BTC, htlcAddress)
-                                    .catch(() => undefined);
-                                if (contractWithEstimate?.to.asset === SwapAsset.EUR) {
-                                    const exchangeRate = {
-                                        [CryptoCurrency.BTC]: {
-                                            [FiatCurrency.EUR]: getEurPerCrypto(
-                                                SwapAsset.BTC,
-                                                contractWithEstimate,
-                                            ),
-                                        },
-                                    };
-                                    const fiatFees = getFiatFees(
-                                        contractWithEstimate,
-                                        CryptoCurrency.BTC,
-                                        exchangeRate,
-                                        FiatCurrency.EUR,
-                                        null,
-                                    );
-
-                                    useSwapsStore().addSettlementData(fundingData.hash, {
-                                        asset: SwapAsset.EUR,
-                                        amount: contractWithEstimate.to.amount,
-                                        // We cannot get bank info or EUR HTLC details from this.
-                                    }, {
-                                        fees: {
-                                            totalFee: fiatFees.funding.total,
-                                            asset: SwapAsset.EUR,
-                                        },
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    // HTLC Refunding
-                    if (refundingData) {
-                        useSwapsStore().addSettlementData(refundingData.hash, {
-                            asset: SwapAsset.BTC,
-                            transactionHash: plain.transactionHash,
-                            outputIndex: refundingData.outputIndex,
-                        });
-                    }
-                    // HTLC Settlement
-                    if (settlementData) {
-                        useSwapsStore().addSettlementData(settlementData.hash, {
-                            asset: SwapAsset.BTC,
-                            transactionHash: plain.transactionHash,
-                            outputIndex: settlementData.outputIndex,
-                        });
-
-                        if (!useSwapsStore().state.swaps[settlementData.hash].in) {
-                            // Check this swap with the Fastspot API to detect if this was a EUR swap
-                            const contractWithEstimate = await getContract(SwapAsset.BTC, plain.inputs[0].address!)
-                                .catch(() => undefined);
-                            if (contractWithEstimate?.from.asset === SwapAsset.EUR) {
-                                const exchangeRate = {
-                                    [CryptoCurrency.BTC]: {
-                                        [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.BTC, contractWithEstimate),
-                                    },
-                                };
-                                const fiatFees = getFiatFees(
-                                    contractWithEstimate,
-                                    CryptoCurrency.BTC,
-                                    exchangeRate,
-                                    FiatCurrency.EUR,
-                                    null,
-                                );
-
-                                useSwapsStore().addFundingData(settlementData.hash, {
-                                    asset: SwapAsset.EUR,
-                                    amount: contractWithEstimate.from.amount,
-                                    // We cannot get bank info or EUR HTLC details from this.
-                                }, {
-                                    fees: {
-                                        totalFee: fiatFees.settlement.total,
-                                        asset: SwapAsset.EUR,
-                                    },
-                                });
-                            }
-                        }
-                    }
-                })();
-
+                detectSwap(plain);
                 newTxs[plain.transactionHash] = plain;
             }
 
@@ -207,6 +93,7 @@ export const useBtcTransactionsStore = createStore({
                 ...newTxs,
             };
 
+            // Run async operation in background
             this.calculateFiatAmounts(Object.values(newTxs));
 
             // Update UTXOs and `used` status on affected addresses
@@ -324,3 +211,119 @@ export const useBtcTransactionsStore = createStore({
         },
     },
 });
+
+// Note: this method should not modify the transaction itself or the transaction store, to avoid race conditions with
+// other methods that do so.
+async function detectSwap(transaction: Transaction) {
+    const { state: swaps$, addFundingData, addSettlementData } = useSwapsStore();
+    if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
+
+    const [fundingData, refundingData, settlementData] = await Promise.all([
+        isHtlcFunding(transaction),
+        isHtlcRefunding(transaction),
+        isHtlcSettlement(transaction),
+    ]);
+
+    // HTLC Creation
+    if (fundingData) {
+        addFundingData(fundingData.hash, {
+            asset: SwapAsset.BTC,
+            transactionHash: transaction.transactionHash,
+            outputIndex: fundingData.outputIndex,
+            htlc: {
+                address: transaction.outputs
+                    .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
+                    .address || undefined,
+                script: fundingData.script,
+                refundAddress: fundingData.refundAddress,
+                redeemAddress: fundingData.redeemAddress,
+                timeoutTimestamp: fundingData.timeoutTimestamp,
+            },
+        });
+
+        const htlcAddress = transaction.outputs
+            .find((output) => output.address?.length === HTLC_ADDRESS_LENGTH)!
+            .address;
+        if (!swaps$.swaps[fundingData.hash].out && htlcAddress) {
+            // Check this swap with the Fastspot API to detect if this was a EUR swap
+            const contractWithEstimate = await getContract(SwapAsset.BTC, htlcAddress).catch(() => undefined);
+            if (contractWithEstimate?.to.asset === SwapAsset.EUR) {
+                const exchangeRate = {
+                    [CryptoCurrency.BTC]: {
+                        [FiatCurrency.EUR]: getEurPerCrypto(
+                            SwapAsset.BTC,
+                            contractWithEstimate,
+                        ),
+                    },
+                };
+                const fiatFees = getFiatFees(
+                    contractWithEstimate,
+                    CryptoCurrency.BTC,
+                    exchangeRate,
+                    FiatCurrency.EUR,
+                    null,
+                );
+
+                addSettlementData(fundingData.hash, {
+                    asset: SwapAsset.EUR,
+                    amount: contractWithEstimate.to.amount,
+                    // We cannot get bank info or EUR HTLC details from this.
+                }, {
+                    fees: {
+                        totalFee: fiatFees.funding.total,
+                        asset: SwapAsset.EUR,
+                    },
+                });
+            }
+        }
+    }
+
+    // HTLC Refunding
+    if (refundingData) {
+        addSettlementData(refundingData.hash, {
+            asset: SwapAsset.BTC,
+            transactionHash: transaction.transactionHash,
+            outputIndex: refundingData.outputIndex,
+        });
+    }
+
+    // HTLC Settlement
+    if (settlementData) {
+        addSettlementData(settlementData.hash, {
+            asset: SwapAsset.BTC,
+            transactionHash: transaction.transactionHash,
+            outputIndex: settlementData.outputIndex,
+        });
+
+        if (!swaps$.swaps[settlementData.hash].in) {
+            // Check this swap with the Fastspot API to detect if this was a EUR swap
+            const contractWithEstimate = await getContract(SwapAsset.BTC, transaction.inputs[0].address!)
+                .catch(() => undefined);
+            if (contractWithEstimate?.from.asset === SwapAsset.EUR) {
+                const exchangeRate = {
+                    [CryptoCurrency.BTC]: {
+                        [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.BTC, contractWithEstimate),
+                    },
+                };
+                const fiatFees = getFiatFees(
+                    contractWithEstimate,
+                    CryptoCurrency.BTC,
+                    exchangeRate,
+                    FiatCurrency.EUR,
+                    null,
+                );
+
+                addFundingData(settlementData.hash, {
+                    asset: SwapAsset.EUR,
+                    amount: contractWithEstimate.from.amount,
+                    // We cannot get bank info or EUR HTLC details from this.
+                }, {
+                    fees: {
+                        totalFee: fiatFees.settlement.total,
+                        asset: SwapAsset.EUR,
+                    },
+                });
+            }
+        }
+    }
+}

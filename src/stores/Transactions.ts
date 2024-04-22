@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { getContract, SwapAsset } from '@nimiq/fastspot-api';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import Config from 'config';
 import { useFiatStore } from './Fiat';
@@ -8,7 +8,6 @@ import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
-import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { AddressInfo, useAddressStore } from './Address';
 
 export type Transaction = ReturnType<Nimiq.Client.TransactionDetails['toPlain']> & {
@@ -223,7 +222,7 @@ export const useTransactionsStore = createStore({
 // Note: this method should not modify the transaction itself or the transaction store, to avoid race conditions with
 // other methods that do so.
 async function detectSwap(transaction: Transaction, knownTransactions: Transaction[]) {
-    const { state: swaps$, addFundingData, addSettlementData } = useSwapsStore();
+    const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
     if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
 
     // HTLC Creation
@@ -248,35 +247,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
             },
         });
 
-        if (!swaps$.swaps[fundingData.hashRoot].out) {
-            // Check this swap with the Fastspot API to detect if this was a EUR swap
-            const contractWithEstimate = await getContract(SwapAsset.NIM, transaction.recipient).catch(() => undefined);
-            if (contractWithEstimate?.to.asset === SwapAsset.EUR) {
-                const exchangeRate = {
-                    [CryptoCurrency.NIM]: {
-                        [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
-                    },
-                };
-                const fiatFees = getFiatFees(
-                    contractWithEstimate,
-                    CryptoCurrency.NIM,
-                    exchangeRate,
-                    FiatCurrency.EUR,
-                    null,
-                );
-
-                addSettlementData(fundingData.hashRoot, {
-                    asset: SwapAsset.EUR,
-                    amount: contractWithEstimate.to.amount,
-                    // We cannot get bank info or EUR HTLC details from this.
-                }, {
-                    fees: {
-                        totalFee: fiatFees.funding.total,
-                        asset: SwapAsset.EUR,
-                    },
-                });
-            }
-        }
+        await detectSwapFiatCounterpart(transaction.recipient, fundingData.hashRoot, 'settlement', SwapAsset.NIM);
     }
 
     // HTLC Refunding
@@ -334,34 +305,6 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
             transactionHash: transaction.transactionHash,
         });
 
-        if (!swaps$.swaps[settlementData.hashRoot].in) {
-            // Check this swap with the Fastspot API to detect if this was a EUR swap
-            const contractWithEstimate = await getContract(SwapAsset.NIM, transaction.sender).catch(() => undefined);
-            if (contractWithEstimate?.from.asset === SwapAsset.EUR) {
-                const exchangeRate = {
-                    [CryptoCurrency.NIM]: {
-                        [FiatCurrency.EUR]: getEurPerCrypto(SwapAsset.NIM, contractWithEstimate),
-                    },
-                };
-                const fiatFees = getFiatFees(
-                    contractWithEstimate,
-                    CryptoCurrency.NIM,
-                    exchangeRate,
-                    FiatCurrency.EUR,
-                    null,
-                );
-
-                addFundingData(settlementData.hashRoot, {
-                    asset: SwapAsset.EUR,
-                    amount: contractWithEstimate.from.amount,
-                    // We cannot get bank info or EUR HTLC details from this.
-                }, {
-                    fees: {
-                        totalFee: fiatFees.settlement.total,
-                        asset: SwapAsset.EUR,
-                    },
-                });
-            }
-        }
+        await detectSwapFiatCounterpart(transaction.sender, settlementData.hashRoot, 'funding', SwapAsset.NIM);
     }
 }

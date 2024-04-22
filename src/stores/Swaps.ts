@@ -1,7 +1,10 @@
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
-import { Swap as SwapObject, SwapAsset } from '@nimiq/fastspot-api';
+import { Swap as SwapObject, SwapAsset, getContract } from '@nimiq/fastspot-api';
 import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '@nimiq/oasis-api';
+import { FiatCurrency } from '../lib/Constants';
+import { assetToCurrency } from '../lib/swap/utils/Assets';
+import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { Transaction as PolygonTransaction } from './UsdcTransactions';
 
 export enum SwapState {
@@ -171,6 +174,47 @@ export const useSwapsStore = createStore({
         },
         setPromoBoxVisible(visible: boolean) {
             this.state.promoBoxVisible = visible;
+        },
+
+        async detectSwapFiatCounterpart(
+            contractAddress: string,
+            hashRoot: string,
+            type: 'funding' | 'settlement',
+            otherAsset: Exclude<SwapAsset, SwapAsset.EUR>,
+        ) {
+            // Check swap with the Fastspot API to detect if it was a EUR swap.
+            const [addSwapData, swapProp, contractProp, feesProp] = type === 'funding'
+                ? [this.addFundingData.bind(this), 'in', 'from', 'settlement'] as const
+                : [this.addSettlementData.bind(this), 'out', 'to', 'funding'] as const;
+            const otherCurrency = assetToCurrency(otherAsset);
+            const swap = this.state.swaps[hashRoot];
+            if (!swap || !!swap[swapProp]) return; // not a swap, or counterpart already known
+            const contractWithEstimate = await getContract(otherAsset, contractAddress).catch(() => undefined);
+            if (contractWithEstimate?.[contractProp].asset !== SwapAsset.EUR) return; // No contract or no EUR
+
+            const exchangeRate = {
+                [otherCurrency]: {
+                    [FiatCurrency.EUR]: getEurPerCrypto(otherAsset, contractWithEstimate),
+                },
+            };
+            const fees = getFiatFees(
+                contractWithEstimate,
+                otherCurrency,
+                exchangeRate,
+                FiatCurrency.EUR,
+                null,
+            );
+
+            addSwapData(hashRoot, {
+                asset: SwapAsset.EUR,
+                amount: contractWithEstimate[contractProp].amount,
+                // We cannot get bank info or EUR HTLC details from this.
+            }, {
+                fees: {
+                    totalFee: fees[feesProp].total,
+                    asset: SwapAsset.EUR,
+                },
+            });
         },
     },
 });

@@ -1,17 +1,15 @@
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
 
-export function assetToCurrency(asset: SwapAsset): string { // eslint-disable-line consistent-return
-    switch (asset) { // eslint-disable-line default-case
-        case SwapAsset.NIM:
-            return CryptoCurrency.NIM;
-        case SwapAsset.BTC:
-            return CryptoCurrency.BTC;
-        case SwapAsset.USDC:
-        case SwapAsset.USDC_MATIC:
-            return CryptoCurrency.USDC;
-        case SwapAsset.EUR:
-            return FiatCurrency.EUR;
-        // The default case is unnecessary as TypeScript throws a compiler error if a case is missing
-    }
+export function assetToCurrency(asset: Exclude<SwapAsset, SwapAsset.EUR>): CryptoCurrency;
+export function assetToCurrency(asset: SwapAsset.EUR): FiatCurrency;
+export function assetToCurrency(asset: SwapAsset): CryptoCurrency | FiatCurrency;
+export function assetToCurrency(asset: SwapAsset): CryptoCurrency | FiatCurrency {
+    return {
+        [SwapAsset.NIM]: CryptoCurrency.NIM,
+        [SwapAsset.BTC]: CryptoCurrency.BTC,
+        [SwapAsset.USDC]: CryptoCurrency.USDC,
+        [SwapAsset.USDC_MATIC]: CryptoCurrency.USDC,
+        [SwapAsset.EUR]: FiatCurrency.EUR,
+    }[asset];
 }

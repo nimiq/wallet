@@ -38,7 +38,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
-import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { Provider, getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_PRICE_CHART } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
 
@@ -50,22 +50,21 @@ export enum TimeRange {
 export default defineComponent({
     props: {
         currency: {
-            type: String,
+            type: String as () => CryptoCurrency,
             required: true,
-            validator: (currency) => Object.values(CryptoCurrency).includes(currency),
+            validator: (currency: any) => Object.values(CryptoCurrency).includes(currency),
         },
         showTimespanLabel: {
             type: Boolean,
             default: true,
         },
         timeRange: {
-            type: String,
+            type: String as () => TimeRange,
             required: false,
             default: TimeRange['24h'],
-            validator: (range) => Object.values(TimeRange).includes(range),
+            validator: (range: any) => Object.values(TimeRange).includes(range),
         },
     },
-    // @ts-expect-error (The "validator" for the currency prop throws off the automatic prop typing)
     setup(props) {
         const svg$ = ref<SVGElement>(null);
         const path$ = ref<SVGPathElement>(null);
@@ -194,7 +193,7 @@ export default defineComponent({
             historyFiatCurrency.value,
             props.timeRange,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], async ([cryptoCurrency, chartFiatCurrency, timeRange, lastUpdate], previousValues) => {
+        ] as const, async ([cryptoCurrency, chartFiatCurrency, timeRange, lastUpdate], previousValues) => {
             const [
                 previousCryptoCurrency,
                 previousChartFiatCurrency,
@@ -215,9 +214,10 @@ export default defineComponent({
             // If the exchange rate will be updated in less than 5 seconds anyway, do not query historic rates yet
             if (nextUpdateIn < 5e3) return;
 
-            const timeRangeHours = timeRange === TimeRange['24h']
-                ? 24
-                : 7 * 24; // 7d
+            const timeRangeHours = {
+                [TimeRange['24h']]: 24,
+                [TimeRange['7d']]: 7 * 24,
+            }[timeRange];
             const timespan = timeRangeHours * 60 * 60 * 1000; // Milliseconds
             const sampleCount = 18; // 18 is the number of points determined to look good
             const timestep = timespan / (sampleCount - 1);
@@ -233,13 +233,16 @@ export default defineComponent({
             // eslint-disable-next-line no-console
             console.debug(`Updating historic exchange rates for ${cryptoCurrency.toUpperCase()}`);
 
-            const historicRates = await getHistoricExchangeRates(
+            const historicRates = await getHistoricExchangeRates.apply(null, [
                 cryptoCurrency,
                 chartFiatCurrency,
                 timestamps,
                 FIAT_API_PROVIDER_PRICE_CHART,
-                { disableMinutelyData: true }, // disable CoinGecko minutely data; comment line if changing provider
-            );
+                ...(FIAT_API_PROVIDER_PRICE_CHART === Provider.CoinGecko
+                    ? [{ disableMinutelyData: true }] as const
+                    : [] as const
+                ),
+            ]);
             if (cryptoCurrency !== props.currency
                 || chartFiatCurrency !== historyFiatCurrency.value
                 || timeRange !== props.timeRange
@@ -248,7 +251,8 @@ export default defineComponent({
                 // while we were fetching the update.
                 return;
             }
-            history.value = [...historicRates.entries()] as Array<[number, number]>;
+            history.value = [...historicRates.entries()]
+                .filter((e): e is [(typeof e)[0], Exclude<(typeof e)[1], undefined>] => e[1] !== undefined);
         });
 
         watch(history, async () => {

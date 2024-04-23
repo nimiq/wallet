@@ -186,7 +186,7 @@ export default defineComponent({
             }).join(' ')}`;
         });
 
-        let switchingTimeRange = false;
+        let animateGraph = false;
 
         // Update history
         watch(() => [
@@ -194,14 +194,26 @@ export default defineComponent({
             historyFiatCurrency.value,
             props.timeRange,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], async ([cryptoCurrency, chartFiatCurrency, timeRange, lastUpdate], oldValues) => {
+        ], async ([cryptoCurrency, chartFiatCurrency, timeRange, lastUpdate], previousValues) => {
+            const [
+                previousCryptoCurrency,
+                previousChartFiatCurrency,
+                previousTimeRange,
+            ] = previousValues || [cryptoCurrency, chartFiatCurrency, timeRange];
+            if (cryptoCurrency !== previousCryptoCurrency
+                || chartFiatCurrency !== previousChartFiatCurrency
+                || timeRange !== previousTimeRange
+            ) {
+                // Clear and animate the chart if update is due to a change of chart parameters.
+                history.value = [];
+                animateGraph = true;
+            }
+
             const TWO_MINUTES = 2 * 60 * 1000;
             // Same algorithm as in main.ts where the exchange rate update is queued
             const nextUpdateIn = Math.max(0, Math.min(lastUpdate + TWO_MINUTES - Date.now(), TWO_MINUTES));
             // If the exchange rate will be updated in less than 5 seconds anyway, do not query historic rates yet
             if (nextUpdateIn < 5e3) return;
-
-            const oldTimeRange = oldValues ? oldValues[2] : props.timeRange;
 
             const timeRangeHours = timeRange === TimeRange['24h']
                 ? 24
@@ -216,12 +228,6 @@ export default defineComponent({
             const timestamps: number[] = [];
             for (let i = 0; i < sampleCount; ++i) {
                 timestamps.push(start + i * timestep);
-            }
-
-            if (oldTimeRange !== timeRange) {
-                // Clear chart when switching time range
-                switchingTimeRange = true;
-                history.value = [];
             }
 
             // eslint-disable-next-line no-console
@@ -247,7 +253,7 @@ export default defineComponent({
 
         watch(history, async () => {
             if (!path$.value) return;
-            if (!switchingTimeRange) return;
+            if (!animateGraph) return;
             // animate the chart line
             if (history.value.length) {
                 const pathLength = path$.value.getTotalLength();
@@ -257,7 +263,7 @@ export default defineComponent({
                 // ready to update strokeDasharray again
                 await new Promise((resolve) => { requestAnimationFrame(resolve); });
                 path$.value.style.strokeDasharray = `${pathLength} 0`;
-                switchingTimeRange = false;
+                animateGraph = false;
             } else {
                 path$.value.style.strokeDasharray = '';
             }

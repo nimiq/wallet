@@ -224,11 +224,6 @@ export default defineComponent({
             }
 
             const TWO_MINUTES = 2 * 60 * 1000;
-            // Same algorithm as in main.ts where the exchange rate update is queued
-            const nextUpdateIn = Math.max(0, Math.min(lastUpdate + TWO_MINUTES - Date.now(), TWO_MINUTES));
-            // If the exchange rate will be updated in less than 5 seconds anyway, do not query historic rates yet
-            if (nextUpdateIn < 5e3) return;
-
             const timeRangeHours = {
                 [TimeRange['24h']]: 24,
                 [TimeRange['7d']]: 7 * 24,

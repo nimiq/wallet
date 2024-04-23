@@ -190,7 +190,7 @@ export default defineComponent({
             props.timeRange,
             fiatCurrency.value,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], ([cryptoCurrency, timeRange, historyFiatCurrency, lastUpdate], oldValues) => {
+        ], async ([cryptoCurrency, timeRange, historyFiatCurrency, lastUpdate], oldValues) => {
             historyFiatCurrency = isHistorySupportedFiatCurrency(historyFiatCurrency, FIAT_API_PROVIDER_PRICE_CHART)
                 ? historyFiatCurrency
                 : FiatCurrency.USD;
@@ -227,17 +227,22 @@ export default defineComponent({
             // eslint-disable-next-line no-console
             console.debug(`Updating historic exchange rates for ${cryptoCurrency.toUpperCase()}`);
 
-            getHistoricExchangeRates(
+            const historicRates = await getHistoricExchangeRates(
                 cryptoCurrency,
                 historyFiatCurrency,
                 timestamps,
                 FIAT_API_PROVIDER_PRICE_CHART,
                 { disableMinutelyData: true }, // disable CoinGecko minutely data; comment line if changing provider
-            ).then(
-                // TODO: Replace last rate with the current price from the FiatStore?
-                //       The historic rates latest timestamp can be up to 10 minutes old.
-                (historicRates) => history.value = [...historicRates.entries()] as Array<[number, number]>,
             );
+            if (cryptoCurrency !== props.currency
+                || timeRange !== props.timeRange
+                || historyFiatCurrency !== fiatCurrency.value
+            ) {
+                // Discard fetched chart data, if the parameters changed from the ones we requested the update for,
+                // while we were fetching the update.
+                return;
+            }
+            history.value = [...historicRates.entries()] as Array<[number, number]>;
         });
 
         watch(history, async () => {

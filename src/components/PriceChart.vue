@@ -96,6 +96,10 @@ export default defineComponent({
         onUnmounted(() => window.removeEventListener('resize', onResize));
 
         const { exchangeRates, currency: fiatCurrency, timestamp: lastExchangeRateUpdateTime } = useFiatStore();
+        const historyFiatCurrency = computed(() => isHistorySupportedFiatCurrency(
+            fiatCurrency.value,
+            FIAT_API_PROVIDER_PRICE_CHART,
+        ) ? fiatCurrency.value : FiatCurrency.USD);
 
         // Calculate price change
         const currentPrice = computed(() => exchangeRates.value[props.currency]?.[fiatCurrency.value]);
@@ -187,21 +191,17 @@ export default defineComponent({
         // Update history
         watch(() => [
             props.currency,
+            historyFiatCurrency.value,
             props.timeRange,
-            fiatCurrency.value,
             lastExchangeRateUpdateTime.value, // Update together with main exchange rate
-        ], async ([cryptoCurrency, timeRange, historyFiatCurrency, lastUpdate], oldValues) => {
-            historyFiatCurrency = isHistorySupportedFiatCurrency(historyFiatCurrency, FIAT_API_PROVIDER_PRICE_CHART)
-                ? historyFiatCurrency
-                : FiatCurrency.USD;
-
+        ], async ([cryptoCurrency, chartFiatCurrency, timeRange, lastUpdate], oldValues) => {
             const TWO_MINUTES = 2 * 60 * 1000;
             // Same algorithm as in main.ts where the exchange rate update is queued
             const nextUpdateIn = Math.max(0, Math.min(lastUpdate + TWO_MINUTES - Date.now(), TWO_MINUTES));
             // If the exchange rate will be updated in less than 5 seconds anyway, do not query historic rates yet
             if (nextUpdateIn < 5e3) return;
 
-            const oldTimeRange = oldValues ? oldValues[1] : props.timeRange;
+            const oldTimeRange = oldValues ? oldValues[2] : props.timeRange;
 
             const timeRangeHours = timeRange === TimeRange['24h']
                 ? 24
@@ -229,14 +229,14 @@ export default defineComponent({
 
             const historicRates = await getHistoricExchangeRates(
                 cryptoCurrency,
-                historyFiatCurrency,
+                chartFiatCurrency,
                 timestamps,
                 FIAT_API_PROVIDER_PRICE_CHART,
                 { disableMinutelyData: true }, // disable CoinGecko minutely data; comment line if changing provider
             );
             if (cryptoCurrency !== props.currency
+                || chartFiatCurrency !== historyFiatCurrency.value
                 || timeRange !== props.timeRange
-                || historyFiatCurrency !== fiatCurrency.value
             ) {
                 // Discard fetched chart data, if the parameters changed from the ones we requested the update for,
                 // while we were fetching the update.

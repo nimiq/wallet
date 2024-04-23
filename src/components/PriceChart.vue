@@ -68,7 +68,11 @@ export default defineComponent({
     setup(props) {
         const svg$ = ref<SVGElement>(null);
         const path$ = ref<SVGPathElement>(null);
-        const history = ref<Array<[/* timestamp */number, /* price */number]>>([]);
+        const histories = ref<Record<TimeRange, Array<[/* timestamp */ number, /* price */ number]> | undefined>>({
+            [TimeRange['24h']]: undefined,
+            [TimeRange['7d']]: undefined,
+        });
+        const history = computed(() => histories.value[props.timeRange] || []);
 
         // Calculate SVG size
         const strokeWidth = 2.5;
@@ -198,14 +202,25 @@ export default defineComponent({
                 previousCryptoCurrency,
                 previousChartFiatCurrency,
                 previousTimeRange,
-            ] = previousValues || [cryptoCurrency, chartFiatCurrency, timeRange];
-            if (cryptoCurrency !== previousCryptoCurrency
-                || chartFiatCurrency !== previousChartFiatCurrency
-                || timeRange !== previousTimeRange
-            ) {
-                // Clear and animate the chart if update is due to a change of chart parameters.
-                history.value = [];
-                animateGraph = true;
+                previousLastUpdate,
+            ] = previousValues || [cryptoCurrency, chartFiatCurrency, timeRange, lastUpdate];
+            const isCurrenciesUpdate = cryptoCurrency !== previousCryptoCurrency
+                || chartFiatCurrency !== previousChartFiatCurrency;
+            const isTimeRangeUpdate = timeRange !== previousTimeRange;
+            const isChartParametersUpdate = isCurrenciesUpdate || isTimeRangeUpdate;
+            const isScheduledUpdate = lastUpdate !== previousLastUpdate;
+
+            animateGraph ||= isChartParametersUpdate; // Animate / re-draw the chart if chart parameters changed.
+            if (isTimeRangeUpdate && !!histories.value[timeRange] && !isCurrenciesUpdate && !isScheduledUpdate) {
+                // If only the time range changed, and we have a cached history for the new time range, use that.
+                return;
+            }
+            if (!isTimeRangeUpdate && isChartParametersUpdate) {
+                // Clear cached histories, which also clears the chart, on chart parameters update other than only a
+                // time range change, in which case we want to keep the cache for the previous time range.
+                for (const range of Object.values(TimeRange)) {
+                    histories.value[range] = undefined;
+                }
             }
 
             const TWO_MINUTES = 2 * 60 * 1000;
@@ -243,16 +258,21 @@ export default defineComponent({
                     : [] as const
                 ),
             ]);
-            if (cryptoCurrency !== props.currency
-                || chartFiatCurrency !== historyFiatCurrency.value
-                || timeRange !== props.timeRange
-            ) {
-                // Discard fetched chart data, if the parameters changed from the ones we requested the update for,
-                // while we were fetching the update.
-                return;
-            }
-            history.value = [...historicRates.entries()]
+            // Discard fetched chart data, if the parameters changed from the ones we requested the update for, while we
+            // were fetching the update. If only the time range changed, don't discard the data but add it to the cache
+            // for the previous range.
+            if (cryptoCurrency !== props.currency || chartFiatCurrency !== historyFiatCurrency.value) return;
+            histories.value[timeRange] = [...historicRates.entries()]
                 .filter((e): e is [(typeof e)[0], Exclude<(typeof e)[1], undefined>] => e[1] !== undefined);
+            // Clear outdated data of other time ranges. We do this only after the new rates were fetched, to still
+            // enable switching the chart to other time ranges with cached data, while the update has not finished yet,
+            // for example due to waiting on rate limits.
+            if (isScheduledUpdate) {
+                for (const range of Object.values(TimeRange)) {
+                    if (range === timeRange || range === props.timeRange) continue;
+                    histories.value[range] = undefined;
+                }
+            }
         });
 
         watch(history, async () => {
@@ -260,6 +280,10 @@ export default defineComponent({
             if (!animateGraph) return;
             // animate the chart line
             if (history.value.length) {
+                // Reset strokeDashArray
+                path$.value.style.strokeDasharray = '';
+                // strokeDasharray reset gets applied
+                await new Promise((resolve) => { requestAnimationFrame(resolve); });
                 const pathLength = path$.value.getTotalLength();
                 path$.value.style.strokeDasharray = `0 ${pathLength}`;
                 // strokeDasharray gets applied

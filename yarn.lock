@@ -1552,10 +1552,10 @@
   resolved "https://registry.yarnpkg.com/@nimiq/ten31-pass-api/-/ten31-pass-api-1.1.0.tgz#4e013dd23302304965ac032e521d38a25b186a24"
   integrity sha512-YLxzRyJcg/0xPMMBl+TcIugm8SdSitWZXEhotXK8wIj/wbtRQEbUoo052JCfpWJXVTsGDNS0VbS9oLA+fuFm1A==
 
-"@nimiq/utils@^0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.11.0.tgz#ef4a14025d2ebfcf66c95c797e615a52afed0149"
-  integrity sha512-/2T6sezu515PjmTVezVGC3+IHivwumT2oLZuRErRpEywC+J2RTiEt/elWSkK/a5RtAFtGdXgTIAhW5g8jB3fqQ==
+"@nimiq/utils@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/utils/-/utils-0.11.1.tgz#fe9c61fdead9b8e25a892a539b2b870cdd9cc51c"
+  integrity sha512-jwRInTkMPzyPsQN3iyf8s82mO/ChnbVtj5IzqXj9EO0PSOPd4Ix2ApIN/3NClfDfWo6HzE6NkSZOgry18p4jow==
   dependencies:
     big-integer "^1.6.44"
 

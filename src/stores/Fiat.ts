@@ -1,9 +1,11 @@
 import { createStore } from 'pinia';
 import {
     Provider,
+    RateType,
     getExchangeRates,
-    isHistorySupportedFiatCurrency,
     isProviderSupportedFiatCurrency,
+    isBridgedFiatCurrency,
+    isHistorySupportedFiatCurrency,
     // setCoinGeckoApiUrl,
 } from '@nimiq/utils';
 import {
@@ -87,13 +89,13 @@ export const useFiatStore = createStore({
         async updateExchangeRates(failGracefully = true) {
             try {
                 const currentCurrency = this.state.currency;
-                const isCurrentCurrencyCplBridged = !isHistorySupportedFiatCurrency(
-                    currentCurrency,
-                    // Not FIAT_API_PROVIDER_TX_HISTORY because we're checking here whether the provider for current
-                    // exchange rates does not hypothetically support historic rates for the current currency, in which
-                    // case it's a currency bridged via the CPL API, which does not support historic rates.
+                // If a currency is bridged, but not by a bridge that supports historic rates, it's bridged via CPL Api.
+                const isCplBridgedFiatCurrency = (currency: FiatCurrency) => isBridgedFiatCurrency(
+                    currency,
                     FIAT_API_PROVIDER_CURRENT_PRICES,
-                );
+                    RateType.CURRENT,
+                ) && !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES);
+                const isCurrentCurrencyCplBridged = isCplBridgedFiatCurrency(currentCurrency);
                 const prioritizedFiatCurrenciesOffered: Array<FiatCurrencyOffered> = [...new Set<FiatCurrencyOffered>([
                     // As we limit the currencies we fetch for CryptoCompare to 25, prioritize a few currencies, we'd
                     // prefer to be included, roughly the highest market cap currencies according to fiatmarketcap.com,
@@ -104,8 +106,11 @@ export const useFiatStore = createStore({
                     // After that, prefer to include currencies CryptoCompare supports historic rates for, because it is
                     // for CryptoCompare that we limit the number of currencies to update. For CoinGecko, all currencies
                     // can be updated in a single request.
-                    ...FIAT_CURRENCIES_OFFERED
-                        .filter((currency) => isProviderSupportedFiatCurrency(currency, Provider.CryptoCompare)),
+                    ...FIAT_CURRENCIES_OFFERED.filter((currency) => isProviderSupportedFiatCurrency(
+                        currency,
+                        Provider.CryptoCompare,
+                        RateType.HISTORIC,
+                    )),
                     // Finally, all the remaining currencies
                     ...FIAT_CURRENCIES_OFFERED,
                 ])];
@@ -116,11 +121,14 @@ export const useFiatStore = createStore({
                         // provider api, either because it's a directly supported currency, or because it's a currency
                         // bridged via USD, also fetched from the provider, and fetching multiple currencies vs. only
                         // one still counts as only one api request.
-                        && !isProviderSupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES)
+                        && !isProviderSupportedFiatCurrency(
+                            currency,
+                            FIAT_API_PROVIDER_CURRENT_PRICES,
+                            RateType.CURRENT,
+                        )
                         // If current currency is a CPL bridged currency, we can include other CPL bridged currencies
-                        // (checked via isHistorySupportedFiatCurrency, see above) without additional API request.
-                        && !(isCurrentCurrencyCplBridged
-                            && /* is CPL */ !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES))
+                        // without additional API request.
+                        && !(isCurrentCurrencyCplBridged && isCplBridgedFiatCurrency(currency))
                     ) continue; // omit currency
                     currenciesToUpdate.push(currency);
                     // @ts-expect-error provider check on purpose as we might want to change it in the future

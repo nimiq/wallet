@@ -1811,7 +1811,7 @@ export default defineComponent({
             } catch (error) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-                swapError.value = context.root.$t('Invalid swap state, swap aborted!');
+                swapError.value = context.root.$t('Invalid swap state, swap aborted!') as string;
                 cancelSwap({ id: swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();

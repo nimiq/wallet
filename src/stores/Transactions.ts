@@ -267,7 +267,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
         if (!fundingTx) {
             const client = await getNetworkClient();
             const chainTxs = await client.getTransactionsByAddress(transaction.sender);
-            fundingTx = chainTxs.map((tx) => tx.toPlain()).find(selector);
+            fundingTx = chainTxs.find(selector);
         }
 
         if (fundingTx) {

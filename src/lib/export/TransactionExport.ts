@@ -5,8 +5,8 @@ import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
 import { Transaction, useTransactionsStore } from '../../stores/Transactions';
-import { useConfig } from '../../composables/useConfig';
-import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, ENV_MAIN } from '../Constants';
+// import { useConfig } from '../../composables/useConfig';
+import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY/* , ENV_MAIN */ } from '../Constants';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
 import { GenericFormat } from './GenericFormat';
 

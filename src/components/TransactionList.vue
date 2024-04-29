@@ -93,7 +93,7 @@ import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
-import { useTransactionsStore, Transaction, TransactionState } from '../stores/Transactions';
+import { Transaction, TransactionState } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
@@ -155,8 +155,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { activeAddress, state: addresses$, activeAddressInfo } = useAddressStore();
-        const { state: transactions$ } = useTransactionsStore();
+        const { activeAddress, state: addresses$, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
         const { isFetchingTxHistory } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
         const { config } = useConfig();
@@ -168,18 +167,12 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
         const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
 
-        // Get all transactions for the active address
-        const txsForActiveAddress = computed(() => Object.values(transactions$.transactions)
-            .filter((tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value));
+        const txCount = computed(() => transactionsForActiveAddress.value.length);
 
-        const txCount = computed(() => txsForActiveAddress.value.length);
-
-        const unclaimedCashlinkTxs = computed(() => txsForActiveAddress.value
-            .filter((tx) =>
-                tx.sender === activeAddress.value && !tx.relatedTransactionHash
-                && isProxyData(tx.data.raw, ProxyType.CASHLINK, ProxyTransactionDirection.FUND))
-            .slice(0).sort((a, b) =>
-                (b.timestamp || Number.MAX_SAFE_INTEGER) - (a.timestamp || Number.MAX_SAFE_INTEGER)));
+        const unclaimedCashlinkTxs = computed(() => transactionsForActiveAddress.value.filter(
+            (tx) => tx.sender === activeAddress.value && !tx.relatedTransactionHash
+                && isProxyData(tx.data.raw, ProxyType.CASHLINK, ProxyTransactionDirection.FUND),
+        ));
 
         // Count unclaimed cashlinks
         watch(() => {
@@ -189,11 +182,11 @@ export default defineComponent({
 
         // Apply search filter
         const filteredTxs = computed(() => {
-            if (!props.searchString) return txsForActiveAddress.value;
+            if (!props.searchString) return transactionsForActiveAddress.value;
 
             const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
 
-            return txsForActiveAddress.value.filter((tx) => {
+            return transactionsForActiveAddress.value.filter((tx) => {
                 const transaction = ref<Readonly<Transaction>>(tx);
                 const { peerLabel, data } = useTransactionInfo(transaction);
 
@@ -230,19 +223,7 @@ export default defineComponent({
 
             if (!filteredTxs.value.length) return [];
 
-            // Sort transactions by descending timestamp
-            const txs = filteredTxs.value.slice(0).sort((a, b) => {
-                const aHeight = a.blockHeight
-                    || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
-                        && a.validityStartHeight)
-                    || Number.MAX_SAFE_INTEGER;
-                const bHeight = b.blockHeight
-                    || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
-                        && b.validityStartHeight)
-                    || Number.MAX_SAFE_INTEGER;
-
-                return bHeight - aHeight;
-            });
+            const txs = filteredTxs.value;
 
             // Inject "This month" label
             const transactionsWithMonths: any[] = [];

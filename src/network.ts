@@ -367,8 +367,7 @@ export async function launchNetwork() {
 
         console.debug('Scheduling transaction fetch for', address);
 
-        const knownTxDetails = Object.values(transactionsStore.state.transactions)
-            .filter((tx) => tx.sender === address || tx.recipient === address);
+        const knownTxDetails = addressStore.transactionsForActiveAddress.value;
 
         // const lastConfirmedHeight = knownTxDetails
         //     .filter((tx) => tx.state === TransactionState.CONFIRMED)

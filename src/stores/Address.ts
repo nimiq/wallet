@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
-import { useTransactionsStore } from './Transactions';
+import { TransactionState, useTransactionsStore } from './Transactions';
 
 export type AddressState = {
     addressInfos: {[id: string]: AddressInfo},
@@ -70,6 +70,30 @@ export const useAddressStore = createStore({
             (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + ((!!acc && acc.balance) || 0), 0),
         accountAddresses: (state, { addressInfos }) =>
             (addressInfos.value as AddressInfo[]).map((ai) => ai.address),
+        transactionsForActiveAddress: (state, { activeAddress }) => {
+            if (!activeAddress.value) return [];
+            const { state: transactionsState } = useTransactionsStore();
+            const { transactions } = transactionsState;
+
+            // Filter down to relevant transactions for the active address
+            const txs = Object.values(transactions).filter(
+                (tx) => tx.sender === activeAddress.value || tx.recipient === activeAddress.value,
+            );
+
+            // Sort transactions by descending timestamp
+            return txs.slice(0).sort((a, b) => {
+                const aHeight = a.blockHeight
+                    || ((a.state === TransactionState.EXPIRED || a.state === TransactionState.INVALIDATED)
+                        && a.validityStartHeight)
+                    || Number.MAX_SAFE_INTEGER;
+                const bHeight = b.blockHeight
+                    || ((b.state === TransactionState.EXPIRED || b.state === TransactionState.INVALIDATED)
+                        && b.validityStartHeight)
+                    || Number.MAX_SAFE_INTEGER;
+
+                return bHeight - aHeight;
+            });
+        },
     },
     actions: {
         selectAddress(address: string) {

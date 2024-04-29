@@ -588,7 +588,6 @@ export default defineComponent({
                 && 'signer' in transaction.value.proof
                 && Config.nimiqPay.cosignerPublicKeys.includes(transaction.value.proof.publicKey!)
             ) {
-                // @ts-expect-error Missing types for HTLC early-resolve
                 return transaction.value.proof.creator as string;
             }
 

@@ -281,7 +281,14 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
     // HTLC Settlement
     if (transaction.event?.name === 'Redeem') {
         const secret = transaction.event.secret.substring(2);
-        const hashRoot = Nimiq.Hash.sha256(Nimiq.BufferUtils.fromHex(secret)).toHex();
+        const hashRoot = bytesToHex(
+            new Uint8Array(
+                await crypto.subtle.digest( // eslint-disable-line no-await-in-loop
+                    'SHA-256',
+                    hexToBytes(secret),
+                ),
+            ),
+        );
         addSettlementData(hashRoot, {
             asset,
             transactionHash: transaction.transactionHash,

@@ -380,6 +380,7 @@ msgstr ""
 msgid "Automatic mode uses {behavior}."
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:100
 #: src/components/staking/StakingInfoPage.vue:81
 msgid "available to unstake"
 msgstr ""
@@ -696,7 +697,7 @@ msgstr ""
 msgid "Confirm stake"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:60
+#: src/components/staking/StakingGraphPage.vue:64
 msgid "Confirm stake"
 msgstr ""
 
@@ -1968,6 +1969,14 @@ msgstr ""
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
+#: src/lib/StakingUtils.ts:112
+msgid "Retire stake"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:65
+msgid "Retire validator"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:127
 #: src/components/modals/SendModal.vue:243
 #: src/components/modals/StablecoinSendModal.vue:230
@@ -2123,7 +2132,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:223
+#: src/components/staking/StakingInfoPage.vue:242
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2171,6 +2180,10 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:90
 msgid "SEPA Instant transaction"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:104
+msgid "Set active stake"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:87
@@ -2749,11 +2762,11 @@ msgstr ""
 msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:65
+#: src/components/staking/StakingGraphPage.vue:72
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:184
+#: src/components/staking/StakingInfoPage.vue:203
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
@@ -2762,7 +2775,8 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:84
+#: src/components/staking/StakingInfoPage.vue:107
+#: src/components/staking/StakingInfoPage.vue:89
 msgid "Unstake All"
 msgstr ""
 

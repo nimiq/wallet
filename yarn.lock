@@ -1491,6 +1491,13 @@
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.2.tgz#3455021822b036578693cf112378b8fc69e5b856"
   integrity sha512-b12CcwKgRy5YzSD1oDp3TU7JNm4vv3ua0OKFhxyFBW8JqbPGGqzU7GsRY9/nKtF77zMfE/dVayWweS0ecHPzVA==
 
+"@nimiq/core-web@https://gitpkg.now.sh/nimiq/core-rs-albatross/web-client/dist?5c66ba9108ad53abde22c9e39056a1bad111cb6c":
+  version "2.0.0-alpha.21.0"
+  resolved "https://gitpkg.now.sh/nimiq/core-rs-albatross/web-client/dist?5c66ba9108ad53abde22c9e39056a1bad111cb6c#8a023500a2b955c68aca95977fb6382782648c05"
+  dependencies:
+    comlink "^4.4.1"
+    websocket "^1.0.34"
+
 "@nimiq/core-web@next":
   version "2.0.0-alpha.21.0"
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.21.0.tgz#7f90948b466ad0906da92205b5b131b62e25110c"
@@ -1518,6 +1525,7 @@
     "@nimiq/fastspot-api" "^1.8.0"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
+    "@opengsn/common" "^2.2.5"
     big-integer "^1.6.48"
 
 "@nimiq/iqons@^1.5.2", "@nimiq/iqons@^1.6.0":

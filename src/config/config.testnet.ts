@@ -7,7 +7,10 @@ import { ENV_TEST } from '../lib/Constants';
 export default {
     hubEndpoint: process.env.VUE_APP_HUB_URL,
     environment: ENV_TEST,
-    nimiqSeeds: [process.env.VUE_APP_SEED_NODE_MULTIADDR],
+    nimiqSeeds: [
+        process.env.VUE_APP_SEED_NODE_MULTIADDR,
+        '/dns4/faucet.pos.nimiq-testnet.com/tcp/8443/wss',
+    ],
     faucetEndpoint: process.env.VUE_APP_FAUCET_URL,
     reportToSentry: false,
     enableBitcoin: false,

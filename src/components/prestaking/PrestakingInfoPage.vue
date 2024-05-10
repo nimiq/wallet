@@ -11,7 +11,11 @@
             </template>
         </PageHeader>
         <PageBody class="flex-column">
-            <div style="height: 152px; width: 100%; background-color: silver;"></div>
+            <PrestakingGraph
+                :prestakeAmount="prestakedBalance"
+                :accountBalance="availableBalance + prestakedBalance"
+                passive
+            />
 
             <div v-if="prestake">
                 <span class="nq-label flex-row section-title">
@@ -85,6 +89,7 @@ import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
 // import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
+import PrestakingGraph from './PrestakingGraph.vue';
 import { useNetworkStore } from '../../stores/Network';
 import { PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
 
@@ -111,7 +116,9 @@ export default defineComponent({
             && height.value <= PRESTAKING_BLOCK_H_END);
 
         return {
+            availableBalance,
             prestake,
+            prestakedBalance,
             validator,
             percentage,
             // payoutText,
@@ -124,6 +131,7 @@ export default defineComponent({
         PageBody,
         PrestakingIcon,
         Amount,
+        PrestakingGraph,
         // ValidatorTrustScore,
         ValidatorRewardBubble,
         Identicon,
@@ -152,6 +160,10 @@ export default defineComponent({
         position: relative;
         gap: 2.75rem;
         flex-grow: 1;
+
+        .prestaking-graph {
+            margin: 0 -2rem;
+        }
 
         .estimated-rewards-overlay {
             position: absolute;

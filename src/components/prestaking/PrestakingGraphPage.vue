@@ -16,7 +16,10 @@
             </template>
         </PageHeader>
         <PageBody class="flex-column">
-            <div style="height: 150px; background: gainsboro;"></div>
+            <PrestakingGraph
+                :prestakeAmount="newPrestake"
+                :accountBalance="maxSendableAmount + (activePrestake ? activePrestake.balance : 0)"
+            />
 
             <AmountSlider
                 :prestakedAmount="activePrestake ? activePrestake.balance : 0"
@@ -69,6 +72,7 @@ import { usePrestakingStore } from '../../stores/Prestaking';
 
 import AmountSlider from './AmountSlider.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
+import PrestakingGraph from './PrestakingGraph.vue';
 
 // import LabelTooltip from './tooltips/LabelTooltip.vue';
 import { StatusChangeType } from './PrestakingModal.vue';
@@ -175,6 +179,7 @@ export default defineComponent({
 
         return {
             DISPLAYED_DECIMALS: calculateDisplayedDecimals(prestakeDelta.value, CryptoCurrency.NIM),
+            maxSendableAmount,
             activePrestake,
             validator: activeValidator,
             newPrestake,
@@ -192,6 +197,7 @@ export default defineComponent({
         PageBody,
         // LabelTooltip,
         AmountSlider,
+        PrestakingGraph,
         Amount,
         MessageTransition,
     },

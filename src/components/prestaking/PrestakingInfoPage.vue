@@ -14,6 +14,7 @@
             <PrestakingGraph
                 :prestakeAmount="prestakedBalance"
                 :accountBalance="availableBalance + prestakedBalance"
+                :globalStake="globalStake"
                 passive
             />
 
@@ -96,7 +97,7 @@ import { PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Cons
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activePrestake: prestake, activeValidator: validator } = usePrestakingStore();
+        const { activePrestake: prestake, activeValidator: validator, globalStake } = usePrestakingStore();
         const { consensus, height } = useNetworkStore();
 
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
@@ -124,6 +125,7 @@ export default defineComponent({
             // payoutText,
             consensus,
             inPrestakingWindow,
+            globalStake,
         };
     },
     components: {

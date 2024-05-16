@@ -19,6 +19,7 @@
             <PrestakingGraph
                 :prestakeAmount="newPrestake"
                 :accountBalance="maxSendableAmount + (activePrestake ? activePrestake.balance : 0)"
+                :globalStake="globalStake"
             />
 
             <AmountSlider
@@ -85,7 +86,7 @@ import { useNetworkStore } from '../../stores/Network';
 export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
-        const { activePrestake, activeValidator } = usePrestakingStore();
+        const { activePrestake, activeValidator, globalStake } = usePrestakingStore();
         const { activeAddressInfo } = useAddressStore();
         const { state: network$ } = useNetworkStore();
 
@@ -190,6 +191,7 @@ export default defineComponent({
             MIN_PRESTAKE,
             // totalNimSentToBurner,
             canSend,
+            globalStake,
         };
     },
     components: {

@@ -65,6 +65,7 @@
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
 import { CaretRightSmallIcon } from '@nimiq/vue-components';
+import { useSettingsStore } from '../../stores/Settings';
 
 const PREFIX_BARS = 18;
 const BARS_BETWEEN_MARKS = 20;
@@ -126,7 +127,7 @@ export default defineComponent({
             let minimumSignificantDigits = 1;
             let valueFormatted: string;
             while (true) { // eslint-disable-line no-constant-condition
-                const formatter = Intl.NumberFormat(navigator.language, {
+                const formatter = Intl.NumberFormat(useSettingsStore().language.value, {
                     notation: 'compact',
                     minimumSignificantDigits,
                 });

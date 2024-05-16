@@ -17,14 +17,22 @@
             ></div>
             <div
                 v-for="i in numberOfInactiveBars" :key="`bar-inactive-${i}`"
-                class="bar nq-blue-bg"
+                class="bar"
                 :class="{
                     'opacity-07': i <= numberOfInactiveBars - 6,
                     'opacity-06': i === numberOfInactiveBars - 5,
                     'opacity-05': i === numberOfInactiveBars - 4,
                     'opacity-04': i > numberOfInactiveBars - 4,
+                    'extra-margin': i === numberOfInactiveBars - 12,
                 }"
-            ></div>
+            >
+                <div v-if="i === numberOfInactiveBars - 12" class="bubble-container">
+                    <div class="bubble nq-gold-bg">
+                        {{ formatBubble(secondMark) }}
+                    </div>
+                    <div class="bubble-line"></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -34,6 +42,10 @@ import { computed, defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
     props: {
+        globalStake: {
+            type: Number,
+            required: true,
+        },
         prestakeAmount: {
             type: Number,
             required: true,
@@ -50,17 +62,49 @@ export default defineComponent({
     setup(props) {
         const numberOfBars = 50;
 
+        /**
+         * The luna value between the two x-axis marks, which represents 20 bars.
+         * This amount depends on the user's account balance, as the user should always
+         * fill three bars when they stake their complete balance.
+         */
+        const valueBetweenMarks = computed(() => {
+            const extrapolatedValue = (props.accountBalance / 3) * 20;
+            // Round to one significant digit
+            let roundedValue = Number(extrapolatedValue.toPrecision(1));
+            if (roundedValue.toString(10)[0] === '1') {
+                // Do not immediately jump to the next magnitute
+                roundedValue = Number(extrapolatedValue.toPrecision(2));
+            }
+            return roundedValue;
+        });
+
+        const firstMark = computed(
+            () => Math.trunc(props.globalStake / valueBetweenMarks.value) * valueBetweenMarks.value,
+        );
+
+        const secondMark = computed(() => firstMark.value + valueBetweenMarks.value);
+
         // TODO: Compute from current total stake graph scale
         const firstActiveBarIndex = computed(() => 30);
 
         const numberOfActiveBarsFilled = computed(() => Math.ceil((props.prestakeAmount / props.accountBalance) * 3));
         const numberOfInactiveBars = computed(() => numberOfBars - firstActiveBarIndex.value + 1 - 3);
 
+        function formatBubble(value: number): string {
+            return Intl.NumberFormat(navigator.language, {
+                notation: 'compact',
+                // maximumSignificantDigits: 4,
+            }).format(value);
+        }
+
         return {
             numberOfBars,
             firstActiveBarIndex,
             numberOfInactiveBars,
             numberOfActiveBarsFilled,
+            firstMark,
+            secondMark,
+            formatBubble,
         };
     },
 });
@@ -78,6 +122,8 @@ export default defineComponent({
     justify-content: space-between;
     gap: 3px;
 
+    padding-top: 3.5rem;
+
     // Ensure bars are right-aligned (overflowing on the left)
     margin-right: -0.125rem;
     margin-left: -999rem;
@@ -93,19 +139,19 @@ export default defineComponent({
     }
 
     &.opacity-07 {
-        opacity: 0.07;
+        background: rgba(31, 35, 72, 0.07);
     }
 
     &.opacity-06 {
-        opacity: 0.06;
+        background: rgba(31, 35, 72, 0.06);
     }
 
     &.opacity-05 {
-        opacity: 0.05;
+        background: rgba(31, 35, 72, 0.05);
     }
 
     &.opacity-04 {
-        opacity: 0.04;
+        background: rgba(31, 35, 72, 0.04);
     }
 
     &.pulsing {
@@ -122,6 +168,53 @@ export default defineComponent({
         box-sizing: border-box;
         border: 0.25rem solid var(--nimiq-gold);
         opacity: 0.4;
+    }
+
+    &.extra-margin {
+        margin-right: 0.625rem;
+    }
+
+    .bubble-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 10rem;
+        margin-top: -3.5rem;
+        margin-left: -3.5rem;
+    }
+
+    .bubble {
+        position: relative;
+        border-radius: 99rem;
+        width: fit-content;
+        padding: 0.25rem 1rem;
+        font-size: var(--small-label-size);
+        font-weight: bold;
+
+        &::before {
+            position: absolute;
+            content: '';
+            top: 100%;
+            left: 50%;
+            width: 0.75rem;
+            height: 0.75rem;
+            background: var(--nimiq-gold-darkened);
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+    }
+
+    .bubble-line {
+        margin-top: 1.125rem;
+        height: 20rem; // Overflow hidden by this component's root
+        width: 0.25rem;
+        background: linear-gradient(
+            to bottom,
+            var(--nimiq-gold),
+            var(--nimiq-gold) 50%,
+            white 50%,
+            white
+        );
+        background-size: 100% 1rem;
     }
 }
 </style>

@@ -131,7 +131,7 @@ export const usePrestakingStore = createStore({
             },
         },
         prestakeByAddress: {},
-        globalStake: 0, // TODO
+        globalStake: 0,
     } as PrestakingState),
     getters: {
         validatorsList: (state) => Object.values(state.validators),
@@ -221,6 +221,9 @@ export const usePrestakingStore = createStore({
             }
 
             this.state.validators = newValidators;
+        },
+        setGlobalStake(globalStake: number) {
+            this.state.globalStake = globalStake;
         },
     },
 });

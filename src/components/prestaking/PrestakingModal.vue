@@ -84,7 +84,7 @@ export enum StatusChangeType {
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeValidator, activePrestake } = usePrestakingStore();
+        const { activeValidator, activePrestake, removePrestake, setGlobalStake } = usePrestakingStore();
         const page = ref(activeValidator.value ? Page.Already : Page.Info);
         const overlay = ref<Overlay | null>(null);
 
@@ -156,8 +156,20 @@ export default defineComponent({
 
         onBeforeUnmount(() => {
             if (!activePrestake.value?.balance) {
-                usePrestakingStore().removePrestake(activeAddressInfo.value!.address);
+                removePrestake(activeAddressInfo.value!.address);
             }
+        });
+
+        fetch('https://nimiq-watch-v2.pages.dev/api/v2/total-prestake').then((res) => {
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.text();
+        }).then((totalStakeString) => {
+            const totalStake = Number(totalStakeString);
+            setGlobalStake(totalStake);
+        }).catch((error) => {
+            console.error('Error fetching total prestake:', error.message); // eslint-disable-line no-console
         });
 
         return {

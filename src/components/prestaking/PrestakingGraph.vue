@@ -228,26 +228,23 @@ export default defineComponent({
         /* Gold background - end */
 
         /* Shining animation */
-        @keyframes pulse {
-            50% { opacity: 1 }
+        @keyframes shine {
+            0% { transform: translateY(-100%) }
+            100% { transform: translateY(100%) }
         }
 
-        --delay: 150ms;
-        --duration: 1000ms;
+        --delay: 20ms;
+        --duration: 1200ms;
         &.bar-1:after, &.bar-2:after, &.bar-3:after {
-            background-repeat: no-repeat;
-            background-color: transparent;
-            opacity: 0;
-
-            transition: {
-                property: opacity, background;
-                duration: var(--duration);
-            };
-
+            left: -2px;
+            width: calc(100% + 4px);
             animation: {
                 duration: var(--duration);
+                timing-function: cubic-bezier(0.4, 0.0, 0.2, 1); // Smooth start, quick end
+                // timing-function: cubic-bezier(0.85, 0.15, 0.15, 0.85);
+                // timing-function: linear;
                 iteration-count: infinite;
-                name: pulse;
+                name: shine;
             }
         }
         @for $i from 1 through 3 {
@@ -258,8 +255,14 @@ export default defineComponent({
 
         &.pulsing:after {
             background-repeat: no-repeat;
-            background-color: rgba(white, .3);
-            opacity: 0;
+            // background-size: 200px 50px;
+            background-image: linear-gradient(150deg,
+                transparent 5%,
+                rgba(255, 255, 255, .3) 35%,
+                rgba(255, 255, 255, .4) 50%,
+                rgba(255, 255, 255, .3) 65%,
+                transparent 95%
+            );
         }
         /* Shining animation - end */
 

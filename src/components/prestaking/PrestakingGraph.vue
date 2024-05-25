@@ -20,11 +20,11 @@
                     'extra-margin': numberOfInactiveBars < 12 && i === BARS_BETWEEN_MARKS - firstActiveBarIndex + 1,
                 }"
             >
-                <div class="bar-background" :class="{
-                    'nq-gold-bg': i <= numberOfActiveBarsFilled,
+                <div class="bar-background" :class="[`bar-${i}`, {
+                    'gold-bg': i <= numberOfActiveBarsFilled,
                     'pulsing': i <= numberOfActiveBarsFilled && !passive,
                     'bordered': i > numberOfActiveBarsFilled
-                }"></div>
+                }]"></div>
                 <div v-if="numberOfInactiveBars < 12 && i === BARS_BETWEEN_MARKS - firstActiveBarIndex + 1"
                     class="bubble-container second"
                 >
@@ -188,32 +188,86 @@ export default defineComponent({
         width: 100%;
         height: 100%;
         border-radius: 0.25rem;
+        position: relative;
+        overflow: hidden;
+        opacity: 1;
 
-        &.gold-bg {
-            background: var(--nimiq-gold);
+        /* Border */
+        box-shadow: inset 0 0 0 0.25rem transparent;
+        transition: {
+            property: opacity, box-shadow;
+            duration: 500ms;
         }
+
+        &.bordered {
+            box-shadow: inset 0 0 0 0.25rem var(--nimiq-gold);
+            opacity: .4;
+        }
+        /* Border - end */
+
+        &:before, &:after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Gold background */
+        &:before {
+            background-image: var(--nimiq-gold-bg);
+            opacity: 0;
+            transition: opacity 500ms;
+        }
+
+        &.gold-bg:before {
+            opacity: 1;
+        }
+        /* Gold background - end */
+
+        /* Shining animation */
+        @keyframes pulse {
+            50% { opacity: 1 }
+        }
+
+        --delay: 150ms;
+        --duration: 1000ms;
+        &.bar-1:after, &.bar-2:after, &.bar-3:after {
+            background-repeat: no-repeat;
+            background-color: transparent;
+            opacity: 0;
+
+            transition: {
+                property: opacity, background;
+                duration: var(--duration);
+            };
+
+            animation: {
+                duration: var(--duration);
+                iteration-count: infinite;
+                name: pulse;
+            }
+        }
+        @for $i from 1 through 3 {
+            &.bar-#{$i}:after {
+                animation-delay: calc(#{$i} * var(--delay));
+            }
+        }
+
+        &.pulsing:after {
+            background-repeat: no-repeat;
+            background-color: rgba(white, .3);
+            opacity: 0;
+        }
+        /* Shining animation - end */
 
         &.opacity-30 { opacity: 0.30; }
         &.opacity-07 { opacity: 0.07; }
         &.opacity-06 { opacity: 0.06; }
         &.opacity-05 { opacity: 0.05; }
         &.opacity-04 { opacity: 0.04; }
-
-        &.pulsing {
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-
-        &.bordered {
-            box-sizing: border-box;
-            border: 0.25rem solid var(--nimiq-gold);
-            opacity: 0.4;
-        }
     }
 
     &.extra-margin {

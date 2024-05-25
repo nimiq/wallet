@@ -71,7 +71,7 @@ msgstr ""
 msgid "{percentage} fees"
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:27
+#: src/components/prestaking/PrestakingInfoPage.vue:32
 msgid "{percentage}% of address's balance"
 msgstr ""
 
@@ -649,7 +649,7 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:32
+#: src/components/prestaking/PrestakingGraphPage.vue:36
 msgid "Confirm prestake"
 msgstr ""
 
@@ -1251,7 +1251,7 @@ msgstr ""
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:35
+#: src/components/prestaking/PrestakingInfoPage.vue:40
 msgid "Increase Prestake"
 msgstr ""
 
@@ -1697,16 +1697,16 @@ msgstr ""
 msgid "Prestake as much NIM as you can and help reach the next milestone of securing the network."
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:39
+#: src/components/prestaking/PrestakingGraphPage.vue:43
 msgid "Prestake must be at least {minPrestake}."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:19
+#: src/components/prestaking/PrestakingInfoPage.vue:24
 msgid "Prestaked"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:43
-#: src/components/prestaking/PrestakingInfoPage.vue:30
+#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingInfoPage.vue:35
 #: src/components/prestaking/PrestakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
 msgstr ""
@@ -2017,7 +2017,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:121
+#: src/components/prestaking/PrestakingGraphPage.vue:126
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
@@ -2160,7 +2160,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:168
+#: src/components/prestaking/PrestakingGraphPage.vue:173
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr ""
@@ -2205,7 +2205,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:146
+#: src/components/prestaking/PrestakingGraphPage.vue:151
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2442,8 +2442,8 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
-#: src/components/TransactionList.vue:256
-#: src/components/TransactionList.vue:278
+#: src/components/TransactionList.vue:237
+#: src/components/TransactionList.vue:259
 #: src/components/UsdcTransactionList.vue:203
 #: src/components/UsdcTransactionList.vue:225
 msgid "This month"
@@ -2615,7 +2615,7 @@ msgstr ""
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:45
+#: src/components/prestaking/PrestakingInfoPage.vue:50
 msgid "Validator"
 msgstr ""
 
@@ -2661,7 +2661,7 @@ msgstr ""
 msgid "When ready"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingGraphPage.vue:51
 msgid "will be available within hours."
 msgstr ""
 

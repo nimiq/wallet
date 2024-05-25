@@ -49,7 +49,7 @@ export default defineComponent({
 
         const maxWidth = computed(() => {
             if (!searchBarInput.value) return '100%';
-            return isInputActive.value ? '100%' : '0';
+            return isInputActive.value ? '100%' : 'var(--default-sb-width)';
         });
 
         const handleFocus = () => {
@@ -135,6 +135,7 @@ export default defineComponent({
 
 .search-bar {
     $borderTickness: .1875rem; // 1.5px
+    --default-sb-width: clamp(5.5rem, 100%, 30rem);
 
     position: relative;
     display: flex;
@@ -143,9 +144,13 @@ export default defineComponent({
     width: 100%;
     cursor: text;
     padding: 0.75rem 0;
-    min-width: clamp(5.5rem, 100%, 30rem);
+    min-width: var(--default-sb-width);
 
-    transition: color var(--attr-duration) var(--nimiq-ease), max-width var(--attr-duration) var(--nimiq-ease);
+    transition: {
+        property: color, max-width;
+        duration: var(--attr-duration);
+        timing-function: var(--nimiq-ease);
+    }
 
     &::after {
         content: '';
@@ -238,12 +243,12 @@ input {
 }
 
 .fade-enter-active {
-    transition-duration: var(--attr-duration);
-    transition-delay: var(--attr-duration);
+    transition-duration: calc(var(--attr-duration) / 2);
+    transition-delay: calc(var(--attr-duration) * 0.6);
 }
 
 .fade-leave-active {
-    transition: none;
+    transition-duration: calc(var(--attr-duration) / 2);
 }
 
 @media (min-width: 700px) and (max-width: 900px) {

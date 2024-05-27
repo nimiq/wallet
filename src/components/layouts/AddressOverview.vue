@@ -18,33 +18,33 @@
                     />
 
                     <PrestakingButton />
+                    <button
+                        class="reset icon-button"
+                        @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
+                    >
+                        <MenuDotsIcon/>
+                        <div class="popup-menu nq-blue-bg">
+                            <button v-if="activeCurrency === 'nim'"
+                                class="reset flex-row"
+                                @mousedown="rename(activeAccountId, activeAddressInfo.address)"
+                            >
+                                <RenameIcon/>{{ $t('Rename') }}
+                            </button>
+                            <button v-if="activeCurrency === 'btc'"
+                                class="reset flex-row"
+                                @mousedown="rescan"
+                            >
+                                <RefreshIcon/>{{ $t('Rescan') }}
+                            </button>
+                            <button
+                                class="reset flex-row"
+                                @mousedown="$router.push('/export-history/address')"
+                            >
+                                <BoxedArrowUpIcon />{{ $t('Export History') }}
+                            </button>
+                        </div>
+                    </button>
                 </div>
-                <button
-                    class="reset icon-button"
-                    @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
-                >
-                    <MenuDotsIcon/>
-                    <div class="popup-menu nq-blue-bg">
-                        <button v-if="activeCurrency === 'nim'"
-                            class="reset flex-row"
-                            @mousedown="rename(activeAccountId, activeAddressInfo.address)"
-                        >
-                            <RenameIcon/>{{ $t('Rename') }}
-                        </button>
-                        <button v-if="activeCurrency === 'btc'"
-                            class="reset flex-row"
-                            @mousedown="rescan"
-                        >
-                            <RefreshIcon/>{{ $t('Rescan') }}
-                        </button>
-                        <button
-                            class="reset flex-row"
-                            @mousedown="$router.push('/export-history/address')"
-                        >
-                            <BoxedArrowUpIcon />{{ $t('Export History') }}
-                        </button>
-                    </div>
-                </button>
             </div>
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">

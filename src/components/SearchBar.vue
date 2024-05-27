@@ -1,35 +1,23 @@
 <template>
-    <div
-        class="search-bar cover-all"
-        @click="$refs.searchBarInput.focus()"
-        @pointerdown.prevent
-        :style="{ 'max-width': `${maxWidth}` }"
-    >
-        <svg fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
-            <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
-                fill="currentColor" />
-        </svg>
-        <input
-            ref="searchBarInput"
-            type="text" :value="value"
-            :placeholder="placeholderText"
-            @input="$emit('input', $event.target.value)"
-            @focus="handleFocus"
-            @blur="handleBlur"
-        />
-        <transition name="fade">
-            <CrossCloseButton
-                class="cross-close-button"
-                v-if="isInputActive"
-                @click="handleClose"
-            />
-        </transition>
+    <div class="container" ref="containerDiv">
+        <div class="search-bar cover-all" @click="$refs.searchBarInput.focus()" @pointerdown.prevent
+            :style="{ 'max-width': `${maxWidth}` }">
+            <svg fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="2" />
+                <path d="M13.31 14.73a1 1 0 001.42-1.42l-1.42 1.42zM8.3 9.7l5.02 5.02 1.42-1.42L9.7 8.3 8.29 9.71z"
+                    fill="currentColor" />
+            </svg>
+            <input ref="searchBarInput" type="text" :value="value" :placeholder="placeholderText"
+                @input="$emit('input', $event.target.value)" @focus="handleFocus" @blur="handleBlur" />
+            <transition name="fade">
+                <CrossCloseButton class="cross-close-button" v-if="isInputActive" @click="handleClose" />
+            </transition>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted, computed } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from '@vue/composition-api';
 
 import CrossCloseButton from './CrossCloseButton.vue';
 
@@ -42,32 +30,26 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const containerDiv = ref<HTMLDivElement | null>(null);
         const searchBarInput = ref<HTMLInputElement | null>(null);
-        const width = ref(1000);
-        const placeholderText = ref('');
+        const inputWidth = ref(1000);
+        const containerWidth = ref(1000);
         const isInputFocused = ref(false);
 
-        let observer: ResizeObserver;
+        const observer = ref<ResizeObserver>();
 
-        const getFontSize = (element: HTMLElement) => {
-            const style = getComputedStyle(element);
-            const fontSize = style.getPropertyValue('--body-size');
-            return fontSize;
-        };
-
-        const getTextWidth = (text: string, size: string) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return 0;
-            ctx.font = size;
-            return ctx.measureText(text).width;
-        };
+        const placeholderText = computed(() => {
+            if (containerWidth.value < 100) return '';
+            if (maxWidth.value === '100%' && (containerWidth.value > 400 || inputWidth.value > 350)) {
+                return context.root.$t('Search transactions by contact, address, etc.');
+            }
+            if (containerWidth.value > 210 || inputWidth.value > 150) return context.root.$t('Search transactions');
+            return context.root.$t('Search');
+        });
 
         const maxWidth = computed(() => {
             if (!searchBarInput.value) return '100%';
-            const fontSize = getFontSize(searchBarInput.value);
-            const textSize = getTextWidth(placeholderText.value, fontSize);
-            return isInputActive.value ? '100%' : `${textSize + 120}px`;
+            return isInputActive.value ? '100%' : 'var(--default-sb-width)';
         });
 
         const handleFocus = () => {
@@ -92,37 +74,44 @@ export default defineComponent({
             e.stopImmediatePropagation();
         };
 
-        onMounted(() => {
-            if ('ResizeObserver' in window && searchBarInput.value) {
-                observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-                    const entry = entries[0];
-                    width.value = entry.contentBoxSize
-                        ? ('length' in entry.contentBoxSize
-                            ? entry.contentBoxSize[0].inlineSize
-                            : (entry.contentBoxSize as any).inlineSize)
-                        : entry.contentRect.width;
+        watch([observer, searchBarInput, containerDiv], () => {
+            if (!observer.value) return;
+            if (searchBarInput.value) observer.value.observe(searchBarInput.value);
+            if (containerDiv.value) observer.value.observe(containerDiv.value);
+        });
 
-                    placeholderText.value = (width.value < 50
-                        ? ''
-                        : width.value > 340
-                            ? context.root.$t('Search transactions by contact, address, etc.')
-                            : width.value > 130
-                                ? context.root.$t('Search transactions')
-                                : context.root.$t('Search')) as string;
+        onMounted(() => {
+            if ('ResizeObserver' in window) {
+                observer.value = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+                    for (const entry of entries) {
+                        if (entry.target === containerDiv.value) {
+                            containerWidth.value = entry.contentBoxSize
+                                ? ('length' in entry.contentBoxSize
+                                    ? entry.contentBoxSize[0].inlineSize
+                                    : (entry.contentBoxSize as any).inlineSize)
+                                : entry.contentRect.width;
+                        } else if (entry.target === searchBarInput.value) {
+                            inputWidth.value = entry.contentBoxSize
+                                ? ('length' in entry.contentBoxSize
+                                    ? entry.contentBoxSize[0].inlineSize
+                                    : (entry.contentBoxSize as any).inlineSize)
+                                : entry.contentRect.width;
+                        }
+                    }
                 });
-                observer.observe(searchBarInput.value);
             }
         });
 
         onUnmounted(() => {
-            if (observer && searchBarInput.value) {
-                observer.unobserve(searchBarInput.value);
+            if (observer.value) {
+                if (containerDiv.value) observer.value.unobserve(containerDiv.value);
+                if (searchBarInput.value) observer.value.unobserve(searchBarInput.value);
             }
         });
 
         return {
+            containerDiv,
             searchBarInput,
-            width,
             maxWidth,
             placeholderText,
             isInputActive,
@@ -138,8 +127,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.container {
+    width: 100%;
+    padding-right: 1rem;
+    min-width: 5.5rem;
+}
+
 .search-bar {
     $borderTickness: .1875rem; // 1.5px
+    --default-sb-width: clamp(5.5rem, 100%, 30rem);
 
     position: relative;
     display: flex;
@@ -148,10 +144,13 @@ export default defineComponent({
     width: 100%;
     cursor: text;
     padding: 0.75rem 0;
-    margin-right: 1rem;
-    min-width: 5.5rem;
+    min-width: var(--default-sb-width);
 
-    transition: color var(--attr-duration) var(--nimiq-ease), max-width var(--attr-duration) var(--nimiq-ease);
+    transition: {
+        property: color, max-width;
+        duration: var(--attr-duration);
+        timing-function: var(--nimiq-ease);
+    }
 
     &::after {
         content: '';
@@ -207,7 +206,7 @@ input {
     font-size: var(--body-size);
     margin: 0;
     padding: 0;
-    padding-right: 2rem;
+    padding-right: 4rem;
     background: none;
     min-width: 0;
 
@@ -230,23 +229,33 @@ input {
             font-weight: 600;
         }
     }
+
+    .fade-enter-active {
+        transition-delay: 0;
+    }
 }
 
 .cross-close-button {
     position: absolute;
     z-index: 1;
-    right: 1.75rem;
+    right: 1rem;
     cursor: pointer;
 }
 
-.fade-enter-active, .fade-leave-active {
-    transition-duration: var(--attr-duration);
+.fade-enter-active {
+    transition-duration: calc(var(--attr-duration) / 2);
+    transition-delay: calc(var(--attr-duration) * 0.6);
+}
+
+.fade-leave-active {
+    transition-duration: calc(var(--attr-duration) / 2);
 }
 
 @media (min-width: 700px) and (max-width: 900px) {
     .cover-all {
         &:focus-within {
             position: absolute;
+            top: 0;
             z-index: 10;
             background: var(--bg-primary);
             box-shadow: 0 0 0 1rem var(--bg-primary);
@@ -255,5 +264,12 @@ input {
             width: calc(100% - 5rem);
         }
     }
+}
+</style>
+
+<style>
+.actions-mobile:has(.search-bar:focus-within)
+.container ~ :is(.reset.icon-button,.prestaking-button,button:has(.cashlink-button)) {
+   display: none;
 }
 </style>

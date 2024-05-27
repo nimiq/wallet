@@ -81,7 +81,7 @@ msgstr "交换价值的{perc}％"
 msgid "{percentage} fees"
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:27
+#: src/components/prestaking/PrestakingInfoPage.vue:32
 msgid "{percentage}% of address's balance"
 msgstr ""
 
@@ -681,7 +681,7 @@ msgstr "确认"
 msgid "Confirm account"
 msgstr "确认账户"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:32
+#: src/components/prestaking/PrestakingGraphPage.vue:36
 msgid "Confirm prestake"
 msgstr ""
 
@@ -1027,7 +1027,7 @@ msgstr "已过期"
 msgid "Expired HTLC"
 msgstr "过期的 HTLC"
 
-#: src/components/layouts/AddressOverview.vue:44
+#: src/components/layouts/AddressOverview.vue:43
 #: src/components/layouts/AddressOverview.vue:75
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
@@ -1313,7 +1313,7 @@ msgid ""
 "automatic refunds will only work for individual IBAN addresses."
 msgstr "如果出现任何问题，例如超出金额限制或资金不足，自动退款仅适用于个人IBAN地址"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:35
+#: src/components/prestaking/PrestakingInfoPage.vue:40
 msgid "Increase Prestake"
 msgstr ""
 
@@ -1784,16 +1784,16 @@ msgid ""
 "securing the network."
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:39
+#: src/components/prestaking/PrestakingGraphPage.vue:43
 msgid "Prestake must be at least {minPrestake}."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:19
+#: src/components/prestaking/PrestakingInfoPage.vue:24
 msgid "Prestaked"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:43
-#: src/components/prestaking/PrestakingInfoPage.vue:30
+#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingInfoPage.vue:35
 #: src/components/prestaking/PrestakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
 msgstr ""
@@ -1927,7 +1927,7 @@ msgstr "常规交易太慢将无法处理。你的银行可能会以其他方式
 msgid "Release Notes"
 msgstr "发行说明"
 
-#: src/components/layouts/AddressOverview.vue:32
+#: src/components/layouts/AddressOverview.vue:31
 #: src/components/layouts/AddressOverview.vue:63
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
@@ -1941,7 +1941,7 @@ msgstr "请求失败"
 msgid "Required"
 msgstr "必要的"
 
-#: src/components/layouts/AddressOverview.vue:38
+#: src/components/layouts/AddressOverview.vue:37
 #: src/components/layouts/AddressOverview.vue:69
 msgid "Rescan"
 msgstr "重新扫描"
@@ -1998,15 +1998,15 @@ msgstr ""
 "扫码发送\n"
 "{currency} 到当前地址"
 
-#: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:111
+#: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:47
 msgid "Search"
 msgstr "搜索"
 
-#: src/components/SearchBar.vue:110
+#: src/components/SearchBar.vue:46
 msgid "Search transactions"
 msgstr "搜索交易"
 
-#: src/components/SearchBar.vue:108
+#: src/components/SearchBar.vue:44
 msgid "Search transactions by contact, address, etc."
 msgstr "通过联系人，地址等搜索交易"
 
@@ -2113,7 +2113,7 @@ msgstr "发送 USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:121
+#: src/components/prestaking/PrestakingGraphPage.vue:126
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
@@ -2257,7 +2257,7 @@ msgstr "跳过"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:168
+#: src/components/prestaking/PrestakingGraphPage.vue:173
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "出了些问题"
@@ -2302,7 +2302,7 @@ msgstr "储藏价值，收到"
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:146
+#: src/components/prestaking/PrestakingGraphPage.vue:151
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2550,8 +2550,8 @@ msgstr "这可能会花费{min}分钟"
 
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
-#: src/components/TransactionList.vue:256
-#: src/components/TransactionList.vue:278
+#: src/components/TransactionList.vue:237
+#: src/components/TransactionList.vue:259
 #: src/components/UsdcTransactionList.vue:203
 #: src/components/UsdcTransactionList.vue:225
 msgid "This month"
@@ -2731,7 +2731,7 @@ msgstr "使用标签轻松识别交易。"
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "将Nimiq 钱包作为网络应用程序，于浏览器之外使用。"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:45
+#: src/components/prestaking/PrestakingInfoPage.vue:50
 msgid "Validator"
 msgstr ""
 
@@ -2781,7 +2781,7 @@ msgstr "你使用哪间银行？"
 msgid "When ready"
 msgstr "准备好时"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingGraphPage.vue:51
 msgid "will be available within hours."
 msgstr ""
 

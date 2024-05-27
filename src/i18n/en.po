@@ -983,7 +983,7 @@ msgstr ""
 msgid "Expired HTLC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:44
+#: src/components/layouts/AddressOverview.vue:43
 #: src/components/layouts/AddressOverview.vue:75
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
@@ -1834,7 +1834,7 @@ msgstr ""
 msgid "Release Notes"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:32
+#: src/components/layouts/AddressOverview.vue:31
 #: src/components/layouts/AddressOverview.vue:63
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
@@ -1849,7 +1849,7 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:38
+#: src/components/layouts/AddressOverview.vue:37
 #: src/components/layouts/AddressOverview.vue:69
 msgid "Rescan"
 msgstr ""
@@ -1905,15 +1905,15 @@ msgid ""
 msgstr ""
 
 #: src/components/CountrySelector.vue:22
-#: src/components/SearchBar.vue:111
+#: src/components/SearchBar.vue:47
 msgid "Search"
 msgstr ""
 
-#: src/components/SearchBar.vue:110
+#: src/components/SearchBar.vue:46
 msgid "Search transactions"
 msgstr ""
 
-#: src/components/SearchBar.vue:108
+#: src/components/SearchBar.vue:44
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 

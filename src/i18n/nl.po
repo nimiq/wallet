@@ -82,13 +82,13 @@ msgstr "{perc}% van swap waarde."
 msgid "{percentage} fees"
 msgstr "{percentage} kosten"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:27
+#: src/components/prestaking/PrestakingInfoPage.vue:32
 msgid "{percentage}% of address's balance"
-msgstr ""
+msgstr "{percentage}% van het saldo"
 
 #: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:14
 msgid "{poolName} Website"
-msgstr ""
+msgstr "{poolName} website"
 
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
@@ -537,7 +537,7 @@ msgstr "Koop NIM op een crypto exchange:"
 
 #: src/components/modals/BuyOptionsModal.vue:5
 msgid "Buy NIM, BTC & USDC"
-msgstr ""
+msgstr "Koop NIM, BTC & USDC"
 
 #: src/components/UsdcTransactionList.vue:48
 #: src/components/UsdcTransactionList.vue:58
@@ -632,7 +632,7 @@ msgstr "Verander je taalinstelling."
 
 #: src/components/prestaking/PrestakingValidatorPage.vue:97
 msgid "Changing validator"
-msgstr ""
+msgstr "Validator wijzigen"
 
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/UsdcActivationModal.vue:35
@@ -651,7 +651,7 @@ msgstr "Kies een afzender"
 
 #: src/components/prestaking/PrestakingValidatorPage.vue:5
 msgid "Choose a Validator"
-msgstr ""
+msgstr "Kies een validator"
 
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:286
@@ -707,9 +707,9 @@ msgstr "Bevestigen"
 msgid "Confirm account"
 msgstr "Account bevestigen"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:32
+#: src/components/prestaking/PrestakingGraphPage.vue:36
 msgid "Confirm prestake"
-msgstr ""
+msgstr "Bevestig prestake"
 
 #: src/components/BtcTransactionList.vue:54
 #: src/components/TransactionList.vue:60
@@ -782,24 +782,24 @@ msgstr "Ga verder met MoonPay"
 
 #: src/components/modals/UsdcTransactionModal.vue:37
 msgid "Conversion from USDC.e"
-msgstr ""
+msgstr "Conversie van USDC.e"
 
 #: src/composables/useUsdcTransactionInfo.ts:112
 msgid "Conversion from USDC.e to USDC"
-msgstr ""
+msgstr "Conversie van USDC.e naar USDC"
 
 #: src/components/layouts/AddressOverview.vue:178
 msgid "Convert to USDC"
-msgstr ""
+msgstr "Omwisselen naar USDC"
 
 #: src/components/layouts/AddressOverview.vue:170
 msgid "Convert your USDC.e to the new standard."
-msgstr ""
+msgstr "Converteer je USDC.e naar de nieuwe standaard."
 
 #: src/components/modals/UsdcTransactionModal.vue:404
 #: src/composables/useUsdcTransactionInfo.ts:160
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
-msgstr ""
+msgstr "{amount1} USDC.e omgezet naar {amount2} USDC"
 
 #: src/components/modals/SimplexModal.vue:39
 msgid ""
@@ -867,7 +867,7 @@ msgstr "Gisteren aangemaakt"
 
 #: src/components/modals/WelcomeModal.vue:112
 msgid "Creates prestaking rewards"
-msgstr ""
+msgstr "Creëert prestaking beloningen"
 
 #: src/components/modals/BuyOptionsModal.vue:112
 #: src/components/modals/BuyOptionsModal.vue:42
@@ -952,6 +952,8 @@ msgid ""
 "Earn rewards by locking NIM with a validator. Locked NIM stay under your "
 "control."
 msgstr ""
+"Verdien beloningen door NIM te vergrendelen bij een validator. Vergrendelde "
+"NIM blijven jouw eigendom."
 
 #: src/components/modals/BtcActivationModal.vue:10
 msgid ""
@@ -1064,7 +1066,7 @@ msgstr "Verlopen"
 msgid "Expired HTLC"
 msgstr "Verlopen HTLC"
 
-#: src/components/layouts/AddressOverview.vue:44
+#: src/components/layouts/AddressOverview.vue:43
 #: src/components/layouts/AddressOverview.vue:75
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
@@ -1330,10 +1332,12 @@ msgid ""
 "If you already made a payment which was not accepted, please contact "
 "GoCrypto for a refund."
 msgstr ""
+"Als je al een betaling hebt gedaan die niet is geaccepteerd, neem dan "
+"contact op met GoCrypto voor een terugbetaling."
 
 #: src/lib/GoCrypto.ts:273
 msgid "If you already made a payment, wait for it to be confirmed instead."
-msgstr ""
+msgstr "Als je al een betaling hebt gedaan, wacht dan tot deze is bevestigd."
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1371,9 +1375,9 @@ msgstr ""
 " bedragen, werken de automatische terugbetalingen alleen voor individuele "
 "IBAN-adressen."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:35
+#: src/components/prestaking/PrestakingInfoPage.vue:40
 msgid "Increase Prestake"
-msgstr ""
+msgstr "Prestake verhogen"
 
 #: src/components/modals/BtcSendModal.vue:98
 msgid ""
@@ -1446,7 +1450,7 @@ msgstr "Leer hier meer"
 
 #: src/components/layouts/AddressOverview.vue:163
 msgid "Legacy USDC (USDC.e)"
-msgstr ""
+msgstr "Legacy USDC (USDC.e)"
 
 #: src/components/layouts/AddressOverview.vue:200
 msgid "Let's get started! Create your Nimiq account:"
@@ -1496,7 +1500,7 @@ msgstr "Laden..."
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:8
 msgid "Lock NIM for Proof of Stake"
-msgstr ""
+msgstr "Vergrendel NIM voor Proof of Stake"
 
 #: src/components/swap/SwapAnimation.vue:288
 #: src/components/swap/SwapAnimation.vue:291
@@ -1619,7 +1623,7 @@ msgstr ""
 
 #: src/components/prestaking/PrestakingInfoPage.vue:5
 msgid "Nimiq PoS Prestaking"
-msgstr ""
+msgstr "Nimiq PoS Prestaking"
 
 #: src/components/modals/BtcSendModal.vue:111
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
@@ -1631,7 +1635,7 @@ msgstr "Geen verbinding met het {chain} netwerk."
 
 #: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:8
 msgid "No description available"
-msgstr ""
+msgstr "Geen beschrijving beschikbaar"
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "No funds were received so the swap expired."
@@ -1662,7 +1666,7 @@ msgstr "Geen"
 
 #: src/lib/GoCrypto.ts:206
 msgid "Not a pending payment request"
-msgstr ""
+msgstr "Geen openstaand betalingsverzoek"
 
 #: src/components/BankCheckInput.vue:57
 msgid "Not all accounts provided by this bank support instant transactions."
@@ -1730,15 +1734,15 @@ msgstr "Overschrijf hoe de Keyguard wordt geopend."
 
 #: src/components/prestaking/tooltips/ValidatorRewardBubble.vue:8
 msgid "p.a."
-msgstr ""
+msgstr "per jaar"
 
 #: src/components/UsdcTransactionListItem.vue:40
 msgid "partially reverted"
-msgstr ""
+msgstr "gedeeltelijk teruggedraaid"
 
 #: src/components/modals/UsdcTransactionModal.vue:65
 msgid "Partially reverted"
-msgstr ""
+msgstr "Gedeeltelijk teruggedraaid"
 
 #: src/components/modals/SendModal.vue:173
 msgid "Pay within {countdown}"
@@ -1852,34 +1856,37 @@ msgid ""
 "Prestake as much NIM as you can and help reach the next milestone of "
 "securing the network."
 msgstr ""
-
-#: src/components/prestaking/PrestakingGraphPage.vue:39
-msgid "Prestake must be at least {minPrestake}."
-msgstr ""
-
-#: src/components/prestaking/PrestakingInfoPage.vue:19
-msgid "Prestaked"
-msgstr ""
+"Zet zoveel mogelijk NIM in en draag bij aan het beveiligen van het netwerk."
 
 #: src/components/prestaking/PrestakingGraphPage.vue:43
-#: src/components/prestaking/PrestakingInfoPage.vue:30
+msgid "Prestake must be at least {minPrestake}."
+msgstr "Prestake moet minimaal {minPrestake} zijn."
+
+#: src/components/prestaking/PrestakingInfoPage.vue:24
+msgid "Prestaked"
+msgstr "Prestaked"
+
+#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingInfoPage.vue:35
 #: src/components/prestaking/PrestakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
-msgstr ""
+msgstr "Prestake NIM is vergrendeld tot de lancering van Proof of Stake"
 
 #: src/components/prestaking/PrestakingButton.vue:22
 msgid "Prestaking"
-msgstr ""
+msgstr "Prestaking"
 
 #: src/components/prestaking/PrestakingButton.vue:21
 msgid "Prestaking is now available!"
-msgstr ""
+msgstr "Prestaking is nu beschikbaar!"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:12
 msgid ""
 "Prestaking NIM secures the network and is the quickest way to staking "
 "rewards."
 msgstr ""
+"Prestaking NIM beveiligt het netwerk en is de snelste manier om beloningen "
+"te verdienen."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
@@ -2003,7 +2010,7 @@ msgstr ""
 msgid "Release Notes"
 msgstr "Release Notes"
 
-#: src/components/layouts/AddressOverview.vue:32
+#: src/components/layouts/AddressOverview.vue:31
 #: src/components/layouts/AddressOverview.vue:63
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
@@ -2017,7 +2024,7 @@ msgstr "Verzoek mislukt"
 msgid "Required"
 msgstr "Verplicht"
 
-#: src/components/layouts/AddressOverview.vue:38
+#: src/components/layouts/AddressOverview.vue:37
 #: src/components/layouts/AddressOverview.vue:69
 msgid "Rescan"
 msgstr "Opnieuw scannen"
@@ -2034,11 +2041,11 @@ msgstr "Unstoppable Domain ophalen..."
 
 #: src/lib/PrestakingUtils.ts:19
 msgid "Restake Rewards"
-msgstr ""
+msgstr "Re-stake beloningen"
 
 #: src/components/swap/SwapAnimation.vue:638
 msgid "Restart payout process"
-msgstr ""
+msgstr "Start het uitbetalingsproces opnieuw"
 
 #: src/components/swap/SwapModal.vue:1042
 msgid "Resulting BTC amount is too small."
@@ -2056,7 +2063,7 @@ msgstr "Opnieuw proberen..."
 
 #: src/components/prestaking/ValidatorFilter.vue:17
 msgid "Reward"
-msgstr ""
+msgstr "Beloning"
 
 #: src/components/modals/UsdcSendModal.vue:82
 msgid "Save and proceed"
@@ -2074,15 +2081,15 @@ msgstr ""
 "Scan de code om {currency}\n"
 "te verzenden naar dit adres"
 
-#: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:111
+#: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:47
 msgid "Search"
 msgstr "Zoeken"
 
-#: src/components/SearchBar.vue:110
+#: src/components/SearchBar.vue:46
 msgid "Search transactions"
 msgstr "Zoek transacties"
 
-#: src/components/SearchBar.vue:108
+#: src/components/SearchBar.vue:44
 msgid "Search transactions by contact, address, etc."
 msgstr "Zoek transacties op contact, adres, etc."
 
@@ -2138,7 +2145,7 @@ msgstr "Verkopen en terugbetalingen werken niet met een generiek IBAN!"
 
 #: src/components/layouts/Sidebar.vue:74
 msgid "Selling NIM directly is currently unavailable in the Wallet."
-msgstr ""
+msgstr "NIM rechtstreeks verkopen is momenteel niet beschikbaar in de Wallet."
 
 #: src/components/swap/OasisLaunchModal.vue:11
 msgid "Selling now available"
@@ -2191,9 +2198,9 @@ msgstr "Verstuur USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
-#: src/components/prestaking/PrestakingGraphPage.vue:121
+#: src/components/prestaking/PrestakingGraphPage.vue:126
 msgid "Sending Pre-Prestaking Transaction"
-msgstr ""
+msgstr "Prestaking transactie verzenden"
 
 #: src/components/modals/BtcSendModal.vue:461
 #: src/components/modals/SendModal.vue:771
@@ -2253,7 +2260,7 @@ msgstr "Bedrag ingeven"
 
 #: src/components/prestaking/PrestakingGraphPage.vue:5
 msgid "Set an amount to lock"
-msgstr ""
+msgstr "Stel een bedrag in om vast te zetten"
 
 #: src/components/AmountMenu.vue:15
 msgid "Set fee"
@@ -2335,7 +2342,7 @@ msgstr "Overslaan"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:168
+#: src/components/prestaking/PrestakingGraphPage.vue:173
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
@@ -2379,11 +2386,11 @@ msgstr "Store of value, begrepen"
 
 #: src/components/prestaking/PrestakingValidatorPage.vue:109
 msgid "Successfully changed validator to {validator}"
-msgstr ""
+msgstr "Validator succesvol gewijzigd naar {validator}"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:146
+#: src/components/prestaking/PrestakingGraphPage.vue:151
 msgid "Successfully prestaked {amount} NIM with {validator}"
-msgstr ""
+msgstr "Je prestaked nu {amount} NIM bij {validator}"
 
 #: src/components/modals/WelcomeModal.vue:109
 msgid "Super low fees, super fast payments"
@@ -2510,6 +2517,9 @@ msgid ""
 "The GoCrypto payment request expires in {finalCountdown}. To ensure that "
 "your payment is confirmed in time, send it within {earlyCountdown}."
 msgstr ""
+"Het GoCrypto-betalingsverzoek verloopt over {finalCountdown}. Om ervoor te "
+"zorgen dat je betaling op tijd wordt bevestigd, verzendt deze binnen "
+"{earlyCountdown}."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
@@ -2542,11 +2552,11 @@ msgstr "Het betaalverzoek is verlopen"
 
 #: src/lib/GoCrypto.ts:270
 msgid "The payment request is about to expire"
-msgstr ""
+msgstr "Het betalingsverzoek verloopt binnenkort"
 
 #: src/lib/GoCrypto.ts:208
 msgid "The payment request might have been paid, expired, or cancelled."
-msgstr ""
+msgstr "Het betalingsverzoek is mogelijk betaald, verlopen of geannuleerd."
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
@@ -2573,7 +2583,7 @@ msgstr ""
 
 #: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:11
 msgid "The validator is solely responsible for information provided above."
-msgstr ""
+msgstr "De validator is verantwoordelijk voor de verstrekte informatie."
 
 #: src/components/TestnetFaucet.vue:136
 msgid "There are currently no free NIM available."
@@ -2639,8 +2649,8 @@ msgstr "Dit kan tot {min} minuten duren."
 
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
-#: src/components/TransactionList.vue:256
-#: src/components/TransactionList.vue:278
+#: src/components/TransactionList.vue:237
+#: src/components/TransactionList.vue:259
 #: src/components/UsdcTransactionList.vue:203
 #: src/components/UsdcTransactionList.vue:225
 msgid "This month"
@@ -2737,7 +2747,7 @@ msgstr "Probleemoplossing"
 
 #: src/components/prestaking/ValidatorFilter.vue:7
 msgid "TrustScore"
-msgstr ""
+msgstr "Trust Score"
 
 #: src/components/AnnouncementBox.vue:29
 msgid "Try it now"
@@ -2749,7 +2759,7 @@ msgstr "Transactie tijd"
 
 #: src/components/prestaking/ValidatorFilter.vue:31
 msgid "Type to search..."
-msgstr ""
+msgstr "Typ om te zoeken..."
 
 #: src/composables/useTransactionInfo.ts:132
 msgid "Unclaimed Cashlink"
@@ -2831,9 +2841,9 @@ msgstr "Gebruik labels om transacties eenvoudig te identificeren."
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Gebruik de Nimiq Wallet als web app buiten de browser om."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:45
+#: src/components/prestaking/PrestakingInfoPage.vue:50
 msgid "Validator"
-msgstr ""
+msgstr "Validator"
 
 #: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
@@ -2853,7 +2863,7 @@ msgstr "Wachten op Nimiq netwerk informatie"
 
 #: src/lib/PrestakingUtils.ts:18
 msgid "Wallet Payout"
-msgstr ""
+msgstr "Wallet Uitbetaling"
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -2883,9 +2893,9 @@ msgstr "Wat is de naam van je bank?"
 msgid "When ready"
 msgstr "Wanneer klaar"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingGraphPage.vue:51
 msgid "will be available within hours."
-msgstr ""
+msgstr "zal binnen enkele uren beschikbaar zijn."
 
 #: src/components/modals/BtcReceiveModal.vue:14
 msgid ""
@@ -2944,6 +2954,9 @@ msgid ""
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
+"Je kunt NIM verkopen\n"
+"- door in de Wallet eerst NIM om te wisselen naar BTC of USDC, deze kan je vervolgens dan verkopen.\n"
+"- op ondersteunde exchanges."
 
 #: src/components/layouts/Sidebar.vue:130
 msgid "You currently have no balance to swap."
@@ -2951,7 +2964,7 @@ msgstr "Je hebt momenteel geen tegoed om te wisselen."
 
 #: src/components/layouts/AddressOverview.vue:423
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
-msgstr ""
+msgstr "Je hebt niet genoeg USDC.e om conversiekosten ({fee}) te dekken"
 
 #: src/components/swap/SwapAnimation.vue:50
 msgid ""

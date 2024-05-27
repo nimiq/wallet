@@ -82,7 +82,7 @@ msgstr "{perc}% от суммы сделки."
 msgid "{percentage} fees"
 msgstr "{percentage} комиссии"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:27
+#: src/components/prestaking/PrestakingInfoPage.vue:32
 msgid "{percentage}% of address's balance"
 msgstr ""
 
@@ -706,7 +706,7 @@ msgstr "Подтвердить"
 msgid "Confirm account"
 msgstr "Подтвердить аккаунт"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:32
+#: src/components/prestaking/PrestakingGraphPage.vue:36
 msgid "Confirm prestake"
 msgstr ""
 
@@ -1066,7 +1066,7 @@ msgstr "Истекла"
 msgid "Expired HTLC"
 msgstr "Просроченный HTLC"
 
-#: src/components/layouts/AddressOverview.vue:44
+#: src/components/layouts/AddressOverview.vue:43
 #: src/components/layouts/AddressOverview.vue:75
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
@@ -1374,7 +1374,7 @@ msgstr ""
 "лимитов, автоматический возврат средств будет произведен только на "
 "индивидуальные IBAN-адреса."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:35
+#: src/components/prestaking/PrestakingInfoPage.vue:40
 msgid "Increase Prestake"
 msgstr ""
 
@@ -1852,16 +1852,16 @@ msgid ""
 "securing the network."
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:39
+#: src/components/prestaking/PrestakingGraphPage.vue:43
 msgid "Prestake must be at least {minPrestake}."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:19
+#: src/components/prestaking/PrestakingInfoPage.vue:24
 msgid "Prestaked"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:43
-#: src/components/prestaking/PrestakingInfoPage.vue:30
+#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingInfoPage.vue:35
 #: src/components/prestaking/PrestakingWelcomePage.vue:19
 msgid "Prestaked funds are locked until launch"
 msgstr ""
@@ -2000,7 +2000,7 @@ msgstr ""
 msgid "Release Notes"
 msgstr "Список изменений"
 
-#: src/components/layouts/AddressOverview.vue:32
+#: src/components/layouts/AddressOverview.vue:31
 #: src/components/layouts/AddressOverview.vue:63
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
@@ -2014,7 +2014,7 @@ msgstr "Запрос не удался"
 msgid "Required"
 msgstr "Обязательно"
 
-#: src/components/layouts/AddressOverview.vue:38
+#: src/components/layouts/AddressOverview.vue:37
 #: src/components/layouts/AddressOverview.vue:69
 msgid "Rescan"
 msgstr "Сканировать ещё раз"
@@ -2071,15 +2071,15 @@ msgstr ""
 "Сканируйте код чтобы\n"
 "отправить {currency} на этот адрес"
 
-#: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:111
+#: src/components/CountrySelector.vue:22 src/components/SearchBar.vue:47
 msgid "Search"
 msgstr "Поиск"
 
-#: src/components/SearchBar.vue:110
+#: src/components/SearchBar.vue:46
 msgid "Search transactions"
 msgstr "Найти транзакции"
 
-#: src/components/SearchBar.vue:108
+#: src/components/SearchBar.vue:44
 msgid "Search transactions by contact, address, etc."
 msgstr "Найти транзакцию по адресу, получателю и т.д."
 
@@ -2188,7 +2188,7 @@ msgstr "Отправить USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Получать, отправлять и хранить BTC в вашем кошельке."
 
-#: src/components/prestaking/PrestakingGraphPage.vue:121
+#: src/components/prestaking/PrestakingGraphPage.vue:126
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
@@ -2332,7 +2332,7 @@ msgstr "Пропустить"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:168
+#: src/components/prestaking/PrestakingGraphPage.vue:173
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "Операция не удалась"
@@ -2378,7 +2378,7 @@ msgstr "Сохранение стоимости, понятно"
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:146
+#: src/components/prestaking/PrestakingGraphPage.vue:151
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2636,8 +2636,8 @@ msgstr "Это может занять до {min} мин."
 
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
-#: src/components/TransactionList.vue:256
-#: src/components/TransactionList.vue:278
+#: src/components/TransactionList.vue:237
+#: src/components/TransactionList.vue:259
 #: src/components/UsdcTransactionList.vue:203
 #: src/components/UsdcTransactionList.vue:225
 msgid "This month"
@@ -2829,7 +2829,7 @@ msgstr "Помечайте транзакции чтобы проще их от�
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Пользуйтесь кошельком Nimiq Wallet вне браузера, как веб-приложением!"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:45
+#: src/components/prestaking/PrestakingInfoPage.vue:50
 msgid "Validator"
 msgstr ""
 
@@ -2881,7 +2881,7 @@ msgstr "Как называется ваш банк?"
 msgid "When ready"
 msgstr "Когда готово"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
+#: src/components/prestaking/PrestakingGraphPage.vue:51
 msgid "will be available within hours."
 msgstr ""
 

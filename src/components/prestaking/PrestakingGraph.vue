@@ -177,6 +177,18 @@ export default defineComponent({
     // Ensure bars are right-aligned (overflowing on the left)
     margin-right: -0.125rem;
     margin-left: -999rem;
+
+    @media (max-width: 430px) {
+        margin-right: -1.75rem;
+    }
+
+    @media (max-width: 400px) {
+        margin-right: -5.75rem;
+    }
+
+    @media (max-width: 370px) {
+        margin-right: -8.5rem;
+    }
 }
 
 .bar {
@@ -356,6 +368,10 @@ export default defineComponent({
     svg {
         width: 1.25rem;
         height: 1.25rem;
+    }
+
+    @media (max-width: 400px) {
+        display: none;
     }
 }
 </style>

@@ -5,6 +5,7 @@ import { useAddressStore } from './Address';
 export type PrestakingState = {
     validators: Record<string, Validator>,
     prestakeByAddress: Record<string, Prestake>,
+    globalStake: number,
 }
 
 export type Prestake = {
@@ -130,6 +131,7 @@ export const usePrestakingStore = createStore({
             },
         },
         prestakeByAddress: {},
+        globalStake: 0,
     } as PrestakingState),
     getters: {
         validatorsList: (state) => Object.values(state.validators),
@@ -170,6 +172,7 @@ export const usePrestakingStore = createStore({
                 active: false,
             };
         },
+        globalStake: (state): Readonly<number> => state.globalStake,
     },
     actions: {
         setPrestake(prestake: Prestake) {
@@ -218,6 +221,9 @@ export const usePrestakingStore = createStore({
             }
 
             this.state.validators = newValidators;
+        },
+        setGlobalStake(globalStake: number) {
+            this.state.globalStake = globalStake;
         },
     },
 });

@@ -253,7 +253,7 @@ export default defineComponent({
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
             // Ensure the slider does not go below the minimum prestake percentage
-            percent = Math.max(minimumPrestakePercent.value, percent);
+            percent = Math.max(minimumPrestakePercent.value, alreadyPrestakedPercentage.value, percent);
 
             const offsetX = getPointAtPercent(percent);
             // Calculate new amount from slider's position, ensuring it's not below minimum prestake

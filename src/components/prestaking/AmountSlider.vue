@@ -127,7 +127,7 @@ export default defineComponent({
         const availableFormattedAmount = computed(() => Math.round(availableAmount.value / 1e5).toString());
 
         const getPointAtPercent = (percent: number): number =>
-            (percent / 100.0) * (sliderBox.width - knobBox.width);
+            Math.max(2, (percent / 100.0) * (sliderBox.width - knobBox.width));
 
         const estimateTextWidth = (text: string, defaultSize: number, options:Record<string, number> = { ' ': 3 }) => {
             let result = 0;

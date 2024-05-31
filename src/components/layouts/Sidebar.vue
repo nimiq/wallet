@@ -54,7 +54,7 @@
                         class="nq-button-s inverse"
                         :disabled="($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
                             || hasActiveSwap"
-                        @click="openModal('buy')"
+                        @click="openModal(RouteName.Buy)"
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Buy') }}</button>
                 </template>
@@ -70,18 +70,18 @@
                 :container="$parent"
                 theme="inverse"
                 :styles="{ minWidth: '30.5rem' }"
-                :disabled="canSellCryptoWithMoonpay"
+                :disabled="sellEnabled"
                 ref="sellTooltip"
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"
                         :disabled="($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
-                            || !canSellCryptoWithMoonpay"
-                        @click="openModal('moonpay-sell-info')"
-                        @mousedown.prevent="hideTooltips"
-                    >{{ $t('Sell') }}</button>
+                            || !sellEnabled"
+                        @click="openSellModal()" @mousedown.prevent="hideTooltips">
+                        {{ $t('Sell') }}
+                    </button>
                 </template>
-                <template v-if="!canSellCryptoWithMoonpay" #default>
+                <template v-if="!sellEnabled" #default>
                     {{ $t('Selling NIM directly is currently unavailable in the Wallet.') }}
                     <template v-if="nimSellOptions">
                         {{ nimSellOptions.intro }}
@@ -139,7 +139,7 @@
                         || !canUseSwaps
                         || hasActiveSwap"
                     class="nq-button-s inverse"
-                    @click="openModal('swap')"
+                    @click="openModal(RouteName.Swap)"
                     @mousedown.prevent="hideTooltips"
                 >{{ $t('Swap') }}</button>
             </template>
@@ -192,7 +192,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
-import { useRouter } from '@/router';
+import { RouteName, useRouter } from '@/router';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -213,6 +213,11 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
 import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 
+enum SellProvider {
+    Simplex = 'simplex',
+    Moonpay = 'moonpay',
+}
+
 export default defineComponent({
     props: {},
     setup(props, context) {
@@ -227,7 +232,7 @@ export default defineComponent({
             return router.push(path).catch(() => { /* ignore */ });
         }
 
-        async function openModal(routeName: string, params: Record<string, string> = {}) {
+        async function openModal(routeName: RouteName, params: Record<string, string> = {}) {
             // Each modal is expected to be sitting above a specific parent route / background page. If we're not
             // currently on that route, navigate to it first, such that the modal can be closed later by a simple back
             // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
@@ -318,7 +323,31 @@ export default defineComponent({
 
         const { activeCurrency } = useAccountStore();
 
-        const canSellCryptoWithMoonpay = computed(() => activeCurrency.value !== CryptoCurrency.NIM);
+        const canSellCryptoWithMoonpay = computed(() => { // eslint-disable-line arrow-body-style
+            if (!config.moonpay.enabled) return false;
+            return activeCurrency.value !== CryptoCurrency.NIM;
+        });
+
+        const enabledSellProviders = computed(() => {
+            const providers: SellProvider[] = [];
+            if (canSellCryptoWithMoonpay.value) providers.push(SellProvider.Moonpay);
+            return providers;
+        });
+
+        const sellEnabled = computed(() => enabledSellProviders.value.length > 0);
+
+        const sellModals = {
+            [SellProvider.Moonpay]: RouteName.MoonpaySellInfo,
+            [SellProvider.Simplex]: RouteName.SellCrypto, // This is a fallback, should never be reached
+        };
+
+        function openSellModal() {
+            if (enabledSellProviders.value.length === 0) return;
+            const modalName: RouteName = enabledSellProviders.value.length === 1
+                ? sellModals[enabledSellProviders.value[0]]
+                : RouteName.SellCrypto; // SellCrypto is for SEPA operations. We need to add a new Sell Selector.
+            openModal(modalName);
+        }
 
         const nimSellOptions = computed(() => {
             const [intro, optionSwap, optionExchange] = (i18n.t('You can sell NIM\n'
@@ -349,7 +378,11 @@ export default defineComponent({
             updateAvailable,
             hideTooltips,
             openModal,
-            canSellCryptoWithMoonpay,
+            RouteName,
+            SellProvider,
+            enabledSellProviders,
+            sellEnabled,
+            openSellModal,
             nimSellOptions,
             activeCurrency,
         };

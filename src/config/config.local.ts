@@ -116,6 +116,11 @@ export default {
         apiKey: 'pk_test_0c3e2ecd-1546-4068-ae01-d49382e1266a',
     },
 
+    sinpeMovil: {
+        enabledSell: true,
+        enabledBuy: true,
+    },
+
     goCrypto: {
         enabled: true,
         apiEndpoint: 'https://api.staging.gocrypto.com/',

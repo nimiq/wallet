@@ -16,7 +16,7 @@
         <PageBody>
             <div class="prestaking-rounded-background flex-column">
                 <div class="prestaking-under-icons-text">
-                    {{ $t('Prestaked funds are locked until launch') }}
+                    <PrestakingNotice theme="warning"/>
                 </div>
                 <button class="nq-button light-blue prestake-button" @click="$emit('next')">
                     {{ $t('Let\'s go') }}
@@ -30,6 +30,7 @@
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
+import PrestakingNotice from './PrestakingNotice.vue';
 
 export default defineComponent({
     setup() {
@@ -39,6 +40,7 @@ export default defineComponent({
         PageHeader,
         PageBody,
         HeroIcon,
+        PrestakingNotice,
     },
 });
 </script>

@@ -31,9 +31,7 @@
                         <div class="amount-prestaked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
-                        <div class="locked-notice nq-orange">
-                            {{ $t('Prestaked funds are locked until launch') }}
-                        </div>
+                        <PrestakingNotice theme="warning"/>
                     </div>
                     <div class="flex-row">
                         <button class="nq-button-s" @click="$emit('adjust-prestake')" :disabled="!inPrestakingWindow">
@@ -85,10 +83,9 @@ import {
 } from '@nimiq/vue-components';
 import { usePrestakingStore } from '../../stores/Prestaking';
 import { useAddressStore } from '../../stores/Address';
-// import { getPayoutText } from '../../lib/PrestakingUtils';
 import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
-// import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+import PrestakingNotice from './PrestakingNotice.vue';
 import ShortAddress from '../ShortAddress.vue';
 import PrestakingGraph from './PrestakingGraph.vue';
 import { useNetworkStore } from '../../stores/Network';
@@ -138,6 +135,7 @@ export default defineComponent({
         ValidatorRewardBubble,
         Identicon,
         ShortAddress,
+        PrestakingNotice,
     },
 });
 </script>
@@ -230,13 +228,6 @@ export default defineComponent({
         font-size: var(--small-size);
         font-weight: 600;
         color: var(--text-50);
-        line-height: 1;
-    }
-
-    .locked-notice {
-        font-size: var(--small-size);
-        font-weight: 600;
-        margin-top: 3rem;
         line-height: 1;
     }
 

@@ -44,7 +44,7 @@
                         }}
                     </div>
                     <div class="disclaimer prestake-disclaimer" v-else-if="prestakeDelta >= 0">
-                        {{ $t('Prestaked funds are locked until launch') }}
+                        <PrestakingNotice />
                     </div>
                     <div class="disclaimer unprestake-disclaimer" v-else>
                         <Amount :amount="Math.abs(prestakeDelta)" :decimals="DISPLAYED_DECIMALS" />
@@ -80,6 +80,7 @@ import { StatusChangeType } from './PrestakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
+import PrestakingNotice from './PrestakingNotice.vue';
 
 // import { useTransactionsStore } from '../../stores/Transactions';
 
@@ -202,6 +203,7 @@ export default defineComponent({
         PrestakingGraph,
         Amount,
         MessageTransition,
+        PrestakingNotice,
     },
 });
 </script>

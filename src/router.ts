@@ -66,6 +66,8 @@ const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>
     import(/* webpackChunkName: "sell-crypto-modal" */ './components/modals/SellCryptoModal.vue');
+const AssetTransferModal = () =>
+    import(/* webpackChunkName: "asset-transfer-modal" */ './components/modals/AssetTransferModal.vue');
 
 const MoonpayModal = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
@@ -106,6 +108,7 @@ export enum RouteName {
     Buy = 'buy',
     BuyCrypto = 'buy-crypto',
     SellCrypto = 'sell-crypto',
+    AssetTransfer = 'asset-transfer',
     Scan = 'scan',
     SendViaUri = 'send-via-uri',
     Welcome = 'welcome',
@@ -249,6 +252,17 @@ const routes: RouteConfig[] = [{
             name: RouteName.SellCrypto,
             props: {
                 fiatCurrency: true,
+            },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/asset-transfer',
+            components: {
+                modal: AssetTransferModal,
+            },
+            name: RouteName.AssetTransfer,
+            props: {
+                method: true,
+                direction: true,
             },
             meta: { column: Columns.DYNAMIC },
         }, {

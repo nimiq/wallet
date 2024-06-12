@@ -22,7 +22,7 @@
                 </div>
             </transition>
         </PageHeader>
-        <ul ref="scrollerEl">
+        <ol ref="scrollerEl">
             <li>
                 <form @submit.prevent="sendSms">
                     <PageBody>
@@ -61,7 +61,7 @@
                     </button>
                 </PageFooter>
             </li>
-        </ul>
+        </ol>
     </Modal>
 </template>
 
@@ -69,13 +69,13 @@
 import { computed, defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import { useConfig } from '@/composables/useConfig';
-import { RouteName, useRouter } from '@/router';
+import { RouteName } from '@/router';
 import { captureException } from '@sentry/vue';
 import { useAddressStore } from '@/stores/Address';
 import { SwapAsset } from '@nimiq/libswap';
 import { useSinpeMovilStore } from '@/stores/SinpeMovil';
+import { AssetTransferDirection, AssetTransferMethod } from '@/composables/asset-transfer/types';
 import Modal from './Modal.vue';
-import { FiatCurrency } from '../../lib/Constants';
 
 export enum SinpeMovilFlowState {
     Idle = 'idle',
@@ -261,7 +261,7 @@ export default defineComponent({
                             + 'Please try again later.'; // TODO Wording + translations
                         return;
                     }
-                    const json = await res.json() as { token: string};
+                    const json = await res.json() as { token: string };
                     if (!json || !json.token) {
                         state.value = SinpeMovilFlowState.Error;
                         errorMessage.value = 'There was an error with the phone verification system.'
@@ -271,8 +271,11 @@ export default defineComponent({
                     state.value = SinpeMovilFlowState.PhoneVerified;
                     connect({ phoneNumber: phoneNumber.value, token: json.token! });
                     context.root.$router.push({
-                        name: RouteName.SellCrypto,
-                        params: { fiatCurrency: FiatCurrency.CRC },
+                        name: RouteName.AssetTransfer,
+                        params: {
+                            direction: AssetTransferDirection.CryptoToFiat,
+                            method: AssetTransferMethod.SinpeMovil,
+                        },
                         query: context.root.$router.currentRoute.query,
                     });
                 })
@@ -346,7 +349,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .sinpe-movil-modal {
-    ul {
+    ol {
         list-style: none;
         position: relative;
         height: 100%;
@@ -359,7 +362,7 @@ export default defineComponent({
         scroll-snap-type: x proximity;
         margin: 0;
 
-        li {
+        >li {
             scroll-snap-align: center;
             flex-shrink: 0;
             width: calc(100% - 5rem);
@@ -425,7 +428,6 @@ export default defineComponent({
                 }
             }
         }
-
     }
 }
 </style>

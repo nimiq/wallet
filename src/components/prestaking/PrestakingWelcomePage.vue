@@ -46,6 +46,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    @import '../../scss/variables.scss';
+
     .prestaking-welcome-page {
         flex-grow: 1;
         background-image: url('../../assets/prestaking/prestaking-welcome-background.svg');
@@ -104,7 +106,7 @@ export default defineComponent({
         padding: 0rem 1rem;
     }
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         .page-header {
             .prestaking-icon {
                 margin-top: 1.375rem;

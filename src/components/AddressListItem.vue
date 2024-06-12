@@ -78,6 +78,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .address-button {
     font-size: var(--body-size);
     align-items: center;
@@ -165,7 +167,7 @@ export default defineComponent({
     display: none;
 }
 
-@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
     .label {
         margin-right: 0;
     }
@@ -175,7 +177,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .label {
         margin: 0 1.5rem;
     }

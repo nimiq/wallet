@@ -243,6 +243,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .swap-sepa-funding-instructions {
     padding: 2.25rem;
     font-size: var(--body-size);
@@ -458,7 +460,7 @@ export default defineComponent({
         max-width: 100%;
         align-items: center;
 
-        @media (max-width: 700px) { // Full mobile breakpoint
+        @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
             width: calc(100% - 2rem);
         }
 

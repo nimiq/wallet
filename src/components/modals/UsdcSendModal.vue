@@ -864,6 +864,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/variables.scss';
+
 .send-modal {
     .page {
         flex-grow: 1;
@@ -1172,7 +1174,7 @@ export default defineComponent({
         }
     }
 
-    @media (max-width: 700px) { // Full Mobile Breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint
         .status-screen {
             border-top-left-radius: 1.75rem;
             border-top-right-radius: 1.75rem;

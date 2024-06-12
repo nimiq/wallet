@@ -151,11 +151,11 @@ export default BtcCopiedAddress;
 }
 
 .blue-tooltip {
-    @media (min-width: 961px) {
+    @media (min-width: ($tabletBreakpoint + 1px)) {
         @include blue-tooltip(left);
     }
 
-    @media (max-width: 960px) {
+    @media (max-width: $tabletBreakpoint) {
         @include blue-tooltip(top);
     }
 
@@ -170,11 +170,11 @@ export default BtcCopiedAddress;
 
 .label-input:focus + .blue-tooltip,
 .label-input:focus-within + .blue-tooltip {
-    @media (min-width: 961px) {
+    @media (min-width: $tabletBreakpoint + 1px) {
         @include blue-tooltip_open(left);
     }
 
-    @media (max-width: 960px) {
+    @media (max-width: $tabletBreakpoint) {
         @include blue-tooltip_open(top);
     }
 }

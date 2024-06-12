@@ -54,11 +54,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .polygon-warning-page {
     contain: size layout paint style;
     height: 100%;
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         contain: size style; // not layout and paint to make page scrollable on mobile
     }
 }
@@ -75,7 +77,7 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         contain: layout paint style; // not size to make page scrollable on mobile
     }
 

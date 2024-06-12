@@ -611,6 +611,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    @import "../../scss/variables.scss";
+
     .modal {
         font-size: var(--body-size);
         font-weight: 600;
@@ -653,7 +655,7 @@ export default defineComponent({
             z-index: 1000;
         }
 
-        @media (max-width: 700px) { // Full mobile breakpoint
+        @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
             white-space: normal;
         }
     }
@@ -805,7 +807,7 @@ export default defineComponent({
                 text-align: center;
                 margin: 7.875rem 0 0;
 
-                @media screen and (min-width: 700px) {
+                @media screen and (min-width: $mobileBreakpoint) {
                     margin-top: 4rem;
                 }
             }

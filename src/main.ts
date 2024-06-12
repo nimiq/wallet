@@ -28,7 +28,6 @@ import { init as initTrials } from './lib/Trials';
 import '@nimiq/style/nimiq-style.min.css';
 import '@nimiq/vue-components/dist/NimiqVueComponents.css';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
-import '@/assets/css/main.css';
 import '@/scss/themes.scss';
 
 // Set asset path relative to the public path defined in vue.config.json,

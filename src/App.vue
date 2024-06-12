@@ -154,6 +154,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import './scss/mixins.scss';
+
 #app {
     @include flex-full-height;
     overflow: hidden; // To prevent horizontal scrollbars during panel sliding
@@ -165,37 +166,37 @@ export default defineComponent({
     --settings-width: 131rem;
     --address-column-width: 150rem;
 
-    @media (max-width: 1499px) {
+    @media (max-width: $extraLargeDesktopBreakpoint) {
         --account-column-width: 65rem;
     }
 
-    @media (max-width: 1409px) {
+    @media (max-width: $largeDesktopBreakpoint) {
         --account-column-width: 59rem;
     }
 
-    @media (max-width: 1319px) {
+    @media (max-width: $mediumDesktopBreakpoint) {
         --account-column-width: 52rem;
     }
 
-    @media (max-width: 1199px) {
+    @media (max-width: $smallDesktopBreakpoint) {
         --account-column-width: 47.5rem;
     }
 
     // Comment the table breakpoint due to requirements of the new address list layout
-    // @media (max-width: 960px) { // Tablet breakpoint
+    // @media (max-width: $tabletBreakpoint) { // Tablet breakpoint
     //     --account-column-width: 35.125rem;
     // }
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         --account-column-width: 100vw;
         --address-column-width: 100vw;
     }
 
-    @media (min-width: 1800px) {
+    @media (min-width: $veryLargeDesktopBreakpoint) {
         --account-column-width: 80.75rem;
     }
 
-    @media (min-width: 2000px) {
+    @media (min-width: $ultraLargeDesktopBreakpoint) {
         --account-column-width: 85rem;
     }
 
@@ -258,7 +259,7 @@ export default defineComponent({
         z-index: 100;
     }
 
-    @media (max-width: 1160px) { // Half mobile breakpoint
+    @media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
         main {
             width: calc(var(--sidebar-width) + 100vw);
             transition: transform var(--transition-time) var(--nimiq-ease);
@@ -291,7 +292,7 @@ export default defineComponent({
         }
     }
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         main {
             width: calc(var(--sidebar-width) + 200vw);
 
@@ -311,7 +312,7 @@ export default defineComponent({
         }
     }
 
-    @media (min-width: 2070px) {
+    @media (min-width: $veryLargeDesktopBreakpoint) {
         ::v-deep .groundfloor {
             display: flex;
             justify-content: center;
@@ -352,6 +353,8 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
+@import './scss/variables.scss'; // Import the variables
+
 html, body {
     // Disable viewport overscrolling on iOS
     // https://www.bram.us/2016/05/02/prevent-overscroll-bounce-in-ios-mobilesafari-pure-css/
@@ -369,7 +372,7 @@ body {
     --transition-time: 0.75s;
 }
 
-@media (max-width: 1160px) { /* Half mobile breakpoint */
+@media (max-width: $halfMobileBreakpoint) { /* Half mobile breakpoint */
     :root {
         --transition-time: 0.5s;
     }
@@ -440,7 +443,7 @@ body {
     }
 }
 
-@media (max-width: 1160px) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
     .groundfloor {
         &.slide-right-enter,
         &.slide-right-leave-to {
@@ -456,7 +459,7 @@ body {
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
 
     .address-overview {
         &.slide-right-enter,

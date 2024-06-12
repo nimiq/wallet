@@ -75,6 +75,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .modal {
     position: absolute;
     background: transparent;
@@ -151,7 +153,7 @@ a {
     display: inline-flex;
 }
 
-@media (min-width: 700px) { // Full mobile breakpoint
+@media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
     .modal {
         display: block;
 
@@ -169,13 +171,13 @@ a {
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .image img {
         max-height: 36rem;
     }
 }
 
-@media screen and (min-width: 700px) {
+@media screen and (min-width: $mobileBreakpoint) {
     .modal {
         display: grid;
         place-items: center;

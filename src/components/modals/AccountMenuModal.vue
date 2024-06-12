@@ -128,7 +128,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../scss/mixins.scss';
 
-@media (min-width: 700px) { // Full mobile breakpoint
+@media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
     .menu {
         --sidebar-width: 24rem;
         display: block;
@@ -268,7 +268,7 @@ export default defineComponent({
     align-self: flex-start;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .menu {
         ::v-deep .wrapper {
             .small-page {

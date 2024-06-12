@@ -43,6 +43,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/variables.scss';
+
 .groundfloor {
     background: var(--bg-base);
     height: 100%;
@@ -58,7 +60,7 @@ export default defineComponent({
     width: calc(100vw - var(--sidebar-width));
 }
 
-@media (max-width: 1160px) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
     .mobile-tap-area {
         display: block;
         position: absolute;

@@ -94,6 +94,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .mobile-action-bar {
     justify-content: space-between;
     align-items: center;
@@ -148,7 +150,7 @@ export default defineComponent({
     margin-left: 2rem;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .mobile-action-bar {
         display: flex;
     }

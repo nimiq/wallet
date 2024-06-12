@@ -131,6 +131,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .account-balance,
 .account-balance-container {
     text-align: center;
@@ -203,7 +205,7 @@ export default defineComponent({
     margin-top: calc(var(--item-margin) / 4);
 }
 
-@media (max-width: 1160px) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
     .nq-label span {
         transform: translateX(0);
     }

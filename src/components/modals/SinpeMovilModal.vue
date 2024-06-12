@@ -187,7 +187,6 @@ export default defineComponent({
                     errorMessage.value = 'There was an error with the SMS response. Please try again later.';
                     return;
                 }
-                console.log(JSON.stringify(json));
 
                 sendSmsResponse.value = json;
                 state.value = SinpeMovilFlowState.WaitingForOtp;
@@ -233,7 +232,6 @@ export default defineComponent({
         }
 
         watch(otpCode, () => {
-            console.log('asdasd', otpCode.value, otpCodeIsValid.value);
             if (otpCodeIsValid.value) verifyOtp();
         });
 
@@ -241,14 +239,9 @@ export default defineComponent({
         resetSinpeMovilStore();
 
         async function verifyOtp() {
-            console.log('Verifying OTP...', phoneNumber.value, otpCode.value, sendSmsResponse.value);
-            console.log('Verifying OTP...', { sinpaMovilDisabled: sinpaMovilDisabled.value, validPhoneNumber: validPhoneNumber.value, sendSmsResponse: !sendSmsResponse.value, otpCode: otpCode.value });
             if (sinpaMovilDisabled.value || !validPhoneNumber.value || !sendSmsResponse.value || !otpCode.value) {
                 return;
             }
-
-            // eslint-disable-next-line no-console
-            console.log('Verifying OTP...', phoneNumber.value, otpCode.value, JSON.stringify(sendSmsResponse.value));
 
             state.value = SinpeMovilFlowState.VerifyingSms;
             errorMessage.value = '';
@@ -259,11 +252,9 @@ export default defineComponent({
                 verification_id: sendSmsResponse.value,
             };
 
-            console.log(verifySmsPostEndpoint, body);
             const h = { ...headers, 'Content-Type': 'application/json' };
             await fetch(verifySmsPostEndpoint, { method: 'POST', headers: h, body: JSON.stringify(body) })
                 .then(async (res) => {
-                    console.log({ res });
                     if (!res.ok) {
                         state.value = SinpeMovilFlowState.Error;
                         errorMessage.value = 'There was an error with the phone verification system.'
@@ -271,7 +262,6 @@ export default defineComponent({
                         return;
                     }
                     const json = await res.json() as { token: string};
-                    console.log({ json });
                     if (!json || !json.token) {
                         state.value = SinpeMovilFlowState.Error;
                         errorMessage.value = 'There was an error with the phone verification system.'

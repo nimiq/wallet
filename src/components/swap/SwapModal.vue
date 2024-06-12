@@ -284,6 +284,8 @@ import {
     RequestAsset,
     getSwap,
     Swap,
+    NimHtlcDetails,
+    Contract,
 } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
 import type { BigNumber } from 'ethers';
@@ -463,9 +465,13 @@ export default defineComponent({
         const DECIMALS = {
             [SwapAsset.NIM]: 5,
             [SwapAsset.BTC]: 8,
-            [SwapAsset.USDC]: 6, // For TS completeness
             [SwapAsset.USDC_MATIC]: 6,
-            [SwapAsset.EUR]: 2, // For TS completeness
+
+            // For TS completeness
+            [SwapAsset.USDC]: 6,
+            [SwapAsset.EUR]: 2,
+            [SwapAsset.CRC]: 0,
+            [SwapAsset.BTC_LN]: 0,
         } as const;
 
         function effectiveDecimals(asset: SwapAsset) {
@@ -1084,9 +1090,10 @@ export default defineComponent({
             switch (asset) { // eslint-disable-line default-case
                 case SwapAsset.NIM: return activeAddressInfo.value?.balance ?? 0;
                 case SwapAsset.BTC: return accountBtcBalance.value;
-                case SwapAsset.USDC: return 0; // not supported for swapping
                 case SwapAsset.USDC_MATIC: return accountUsdcBalance.value;
                 case SwapAsset.EUR: return 0;
+                case SwapAsset.CRC: return 0;
+                default: return 0; // USDC and BTC_LN
             }
         }
 
@@ -1846,10 +1853,10 @@ export default defineComponent({
 
             if (SwapAsset.NIM in confirmedSwap.contracts) {
                 // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-BTC swaps
-                const nimHtlcAddress = confirmedSwap.from.asset === SwapAsset.NIM
+                const nimHtlc = confirmedSwap.contracts[SwapAsset.NIM]!.htlc as NimHtlcDetails;
+                nimHtlc.address = confirmedSwap.from.asset === SwapAsset.NIM
                     ? signedTransactions.nim!.raw.recipient
                     : signedTransactions.nim!.raw.sender;
-                confirmedSwap.contracts[SwapAsset.NIM]!.htlc.address = nimHtlcAddress;
             }
 
             setActiveSwap({
@@ -2032,7 +2039,7 @@ export default defineComponent({
                 console.warn('No swap found'); // eslint-disable-line no-console
                 return;
             }
-            const usdcHtlc = swap.value.contracts[SwapAsset.USDC_MATIC];
+            const usdcHtlc = swap.value.contracts[SwapAsset.USDC_MATIC] as Contract<SwapAsset.USDC_MATIC>;
             if (!usdcHtlc) {
                 console.warn('No USDC HTLC found in swap', swap.value); // eslint-disable-line no-console
                 return;

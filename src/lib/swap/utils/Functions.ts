@@ -1,4 +1,5 @@
 import { AssetList, Estimate, SwapAsset } from '@nimiq/fastspot-api';
+import { useSwapsStore } from '@/stores/Swaps';
 import { estimateFees } from '../../BitcoinTransactionUtils';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { useConfig } from '../../../composables/useConfig';
@@ -29,7 +30,7 @@ export type SettlementFees = {
     isHigh: boolean,
 }
 
-export function getEurPerCrypto(
+export function getFiatPerCrypto(
     asset: SwapAsset.NIM | SwapAsset.BTC | SwapAsset.USDC | SwapAsset.USDC_MATIC,
     estimate: Estimate,
 ) {
@@ -42,17 +43,17 @@ export function getEurPerCrypto(
     }
 
     if (estimate.from.asset === asset) {
-        const eur = estimate.to.amount + estimate.to.serviceEscrowFee + estimate.to.serviceNetworkFee;
+        const fiat = estimate.to.amount + estimate.to.serviceEscrowFee + estimate.to.serviceNetworkFee;
         const crypto = estimate.from.amount - estimate.from.serviceNetworkFee;
 
-        return ((eur / 100) / (crypto / coinFactor)) * (1 + estimate.serviceFeePercentage);
+        return ((fiat / 100) / (crypto / coinFactor)) * (1 + estimate.serviceFeePercentage);
     }
 
     if (estimate.to.asset === asset) {
-        const eur = estimate.from.amount - estimate.from.serviceEscrowFee - estimate.from.serviceNetworkFee;
+        const fiat = estimate.from.amount - estimate.from.serviceEscrowFee - estimate.from.serviceNetworkFee;
         const crypto = estimate.to.amount + estimate.to.serviceNetworkFee;
 
-        return ((eur / 100) / (crypto / coinFactor)) * (1 - estimate.serviceFeePercentage);
+        return ((fiat / 100) / (crypto / coinFactor)) * (1 - estimate.serviceFeePercentage);
     }
 
     throw new Error('Asset not part of estimate');
@@ -155,14 +156,14 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
 
     const data = estimate;
 
-    if (data && data.to.asset === SwapAsset.EUR) {
+    if (data && useSwapsStore().isFiatCurrency(data.to.asset)) {
         const funding: FundingFees = {} as FundingFees;
 
-        const myEurFee = data.to.fee;
+        const myFiatFee = data.to.fee;
         const theirOasisFee = data.to.serviceEscrowFee;
         const theirSepaFee = data.to.serviceNetworkFee;
 
-        funding.oasisFeeFiat = (myEurFee + theirOasisFee) / 100;
+        funding.oasisFeeFiat = (myFiatFee + theirOasisFee) / 100;
         funding.oasisFeePercentage = funding.oasisFeeFiat === config.oasis.minFee
             ? config.oasis.feePercentage * 100
             : Math.round((funding.oasisFeeFiat / (data.to.amount / 100)) * 1000) / 10;
@@ -203,13 +204,13 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
         };
     }
 
-    if (data && data.from.asset === SwapAsset.EUR) {
+    if (data && useSwapsStore().isFiatCurrency(data.from.asset)) {
         const settlement: SettlementFees = {} as SettlementFees;
 
-        const myEurFee = data.from.serviceEscrowFee;
-        const theirEurFee = data.from.serviceNetworkFee;
+        const myFiatFee = data.from.serviceEscrowFee;
+        const theirFiatFee = data.from.serviceNetworkFee;
 
-        settlement.oasisFeeFiat = (myEurFee + theirEurFee) / 100;
+        settlement.oasisFeeFiat = (myFiatFee + theirFiatFee) / 100;
         settlement.oasisFeePercentage = settlement.oasisFeeFiat === config.oasis.minFee
             ? config.oasis.feePercentage * 100
             : Math.round((settlement.oasisFeeFiat / (data.from.amount / 100)) * 1000) / 10;
@@ -228,7 +229,7 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
             : undefined;
 
         settlement.serviceSwapFeePercentage = Math.round(data.serviceFeePercentage * 10000) / 100;
-        settlement.serviceSwapFeeFiat = ((data.from.amount - theirEurFee) * data.serviceFeePercentage) / 100;
+        settlement.serviceSwapFeeFiat = ((data.from.amount - theirFiatFee) * data.serviceFeePercentage) / 100;
 
         return {
             funding: defaultFunding,

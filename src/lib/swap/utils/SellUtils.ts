@@ -10,11 +10,18 @@ import { computed } from '@vue/composition-api';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSwapsStore } from '../../../stores/Swaps';
-import { CryptoCurrency, FiatCurrency } from '../../Constants';
+import { CryptoCurrency } from '../../Constants';
 import { estimateFees } from '../../BitcoinTransactionUtils';
 import { useBtcAddressStore } from '../../../stores/BtcAddress';
 import { i18n } from '../../../i18n/i18n-setup';
-import { assets, calculateFees, getFiatSwapParameters, selectedFiatCurrency, useSwapEstimate } from './CommonUtils';
+import {
+    assets,
+    calculateFees,
+    FiatSwapAsset,
+    getFiatSwapParameters,
+    selectedFiatCurrency,
+    useSwapEstimate,
+} from './CommonUtils';
 import { getFeePerUnit } from './Functions';
 
 const { activeSwap: swap } = useSwapsStore();
@@ -69,12 +76,15 @@ export const btcMaxSendableAmount = computed(() =>
  * Sell - Functions
  */
 
-export async function updateSellEstimate({ fiatAmount, cryptoAmount }
-    : { fiatAmount: number, cryptoAmount?: number }
-    | { fiatAmount?: number, cryptoAmount: number },
+export async function updateSellEstimate({ fiatAmount, cryptoAmount, fiatCurrency: _fiatCurrency }
+    : { fiatCurrency?: FiatSwapAsset, fiatAmount: number, cryptoAmount?: number }
+    | { fiatCurrency?: FiatSwapAsset, fiatAmount?: number, cryptoAmount: number },
 ) {
+    if (!fiatAmount && !cryptoAmount) return;
+    const fiatCurrency = _fiatCurrency || SwapAsset.EUR; // To avoid breaking the code in the app, we default to EUR
+
     const { from, to } = getFiatSwapParameters(fiatAmount
-        ? { to: { asset: SwapAsset.EUR, amount: fiatAmount } }
+        ? { to: { asset: fiatCurrency, amount: fiatAmount } }
         : { from: { amount: cryptoAmount! } },
     );
 
@@ -85,12 +95,12 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount }
     );
 
     if (!newEstimate.from || !newEstimate.to) {
-        throw new Error('UNEXPECTED: EUR or crypto price not present in estimate');
+        throw new Error(`UNEXPECTED: ${fiatCurrency} or crypto price not present in estimate`);
     }
 
     // Update local fees with latest feePerUnit values
-    const { fundingFee } = calculateFees({ to: FiatCurrency.EUR }, newEstimate.from.amount, {
-        eur: newEstimate.to.fee || 0,
+    const { fundingFee } = calculateFees({ to: fiatCurrency }, newEstimate.from.amount, {
+        fiatCurrency: newEstimate.to.fee || 0,
         nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.from.feePerUnit! : 0,
         btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.from.feePerUnit! : 0,
     });

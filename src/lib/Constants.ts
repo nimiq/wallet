@@ -39,6 +39,7 @@ export const BTC_UNCOPYABLE_ADDRESS_GAP = 1;
 export const BTC_DUST_LIMIT = 546; // satoshis
 
 export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
+export const OASIS_CRC_DETECTION_DELAY = 5; // minutes
 
 // LocalStorage flag used to determine whether the new welcome screen should be shown, ignoring whether the
 // original welcome screen was already shown.

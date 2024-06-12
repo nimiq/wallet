@@ -87,7 +87,8 @@ const Modal = defineComponent({
 
             while (context.root.$route.matched.find((routeRecord) => 'modal' in routeRecord.components
                 || 'persistent-modal' in routeRecord.components
-                || Object.values(routeRecord.components).some((component) => /modal/i.test(component.name || '')))
+                || Object.values(routeRecord.components).some((cmp) => /modal/i.test(
+                    (typeof cmp === 'object' && 'name' in cmp) ? cmp.name as string : '')))
             ) {
                 context.root.$router.back();
 

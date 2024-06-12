@@ -247,6 +247,9 @@ const routes: RouteConfig[] = [{
                 modal: SellCryptoModal,
             },
             name: RouteName.SellCrypto,
+            props: {
+                fiatCurrency: true,
+            },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/scan',
@@ -455,21 +458,21 @@ const routes: RouteConfig[] = [{
     components: {
         basement: NetworkLayout,
     },
-    name: 'network',
+    name: RouteName.Network,
     meta: { column: Columns.ACCOUNT },
     children: [{
         path: '/accounts',
         components: {
             modal: AccountMenuModal,
         },
-        name: 'network-accounts',
+        name: RouteName.NetworkAccounts,
         meta: { column: Columns.DYNAMIC },
     }, {
         path: '/release-notes',
         components: {
             modal: ReleaseNotesModal,
         },
-        name: 'network-release-notes',
+        name: RouteName.NetworkReleaseNotes,
         meta: { column: Columns.DYNAMIC },
     }],
 }];

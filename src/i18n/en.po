@@ -1199,6 +1199,10 @@ msgstr ""
 msgid "HTLC Settlement or Refund"
 msgstr ""
 
+#: src/components/prestaking/PrestakingNotice.vue:8
+msgid "https://nimiq.com/prestaking"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:82
 msgid "I paid"
 msgstr ""
@@ -1251,7 +1255,7 @@ msgstr ""
 msgid "In case of any issues, like exceeded limits or insufficient amounts, the automatic refunds will only work for individual IBAN addresses."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:40
+#: src/components/prestaking/PrestakingInfoPage.vue:38
 msgid "Increase Prestake"
 msgstr ""
 
@@ -1313,6 +1317,7 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:173
 #: src/components/modals/NetworkInfoModal.vue:20
+#: src/components/prestaking/PrestakingNotice.vue:8
 msgid "Learn more"
 msgstr ""
 
@@ -1705,10 +1710,12 @@ msgstr ""
 msgid "Prestaked"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
-#: src/components/prestaking/PrestakingInfoPage.vue:35
-#: src/components/prestaking/PrestakingWelcomePage.vue:19
+#: src/components/prestaking/PrestakingNotice.vue:3
 msgid "Prestaked funds are locked until launch"
+msgstr ""
+
+#: src/components/prestaking/PrestakingNotice.vue:7
+msgid "Prestaked funds remain locked until the Proof of Stake network goes live."
 msgstr ""
 
 #: src/components/prestaking/PrestakingButton.vue:22
@@ -2017,7 +2024,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:126
+#: src/components/prestaking/PrestakingGraphPage.vue:127
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
@@ -2160,7 +2167,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:173
+#: src/components/prestaking/PrestakingGraphPage.vue:174
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr ""
@@ -2205,7 +2212,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:151
+#: src/components/prestaking/PrestakingGraphPage.vue:152
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2615,7 +2622,7 @@ msgstr ""
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:50
+#: src/components/prestaking/PrestakingInfoPage.vue:48
 msgid "Validator"
 msgstr ""
 

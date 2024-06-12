@@ -73,7 +73,7 @@ export default defineComponent({
         margin: 0;
         padding-bottom: 5.75rem;
         flex-grow: 1;
-        overflow: hidden;
+        overflow: unset;
 
         .prestaking-rounded-background {
             justify-content: space-between;

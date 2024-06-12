@@ -146,7 +146,6 @@ export default defineComponent({
     position: relative;
     overflow: hidden;
     width: 100%;
-    max-width: 1500px;
 }
 
 .map,

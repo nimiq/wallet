@@ -1,6 +1,7 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
 import { computed, onUnmounted, ref, getCurrentInstance, Ref } from '@vue/composition-api';
+import { useSwapsStore } from '@/stores/Swaps';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSettingsStore } from '../../../stores/Settings';
@@ -12,13 +13,15 @@ import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { calculateDisplayedDecimals } from '../../NumberFormatting';
 import { estimateFees, selectOutputs } from '../../BitcoinTransactionUtils';
 import { btcMaxSendableAmount } from './SellUtils';
-import { FundingFees, getEurPerCrypto, getFeePerUnit, getFiatFees, SettlementFees } from './Functions';
+import { FundingFees, getFiatPerCrypto, getFeePerUnit, getFiatFees, SettlementFees } from './Functions';
 
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
 const { btcUnit } = useSettingsStore();
 const { accountUtxos } = useBtcAddressStore();
 const { connectedUser: kycUser } = useKycStore();
+
+export type FiatSwapAsset = SwapAsset.EUR | SwapAsset.CRC;
 
 /**
  * Common - everything common to Buy and Sell crypto
@@ -33,8 +36,8 @@ const { connectedUser: kycUser } = useKycStore();
 
 export const estimate = ref<Estimate>(null);
 export const assets = ref<AssetList>(null);
-// Currently there is only EUR available to swap, but it may change in the future.
-export const selectedFiatCurrency = ref(FiatCurrency.EUR);
+// By default we set EUR, but you need to change it if you swap to another fiat currency.
+export const selectedFiatCurrency = ref<FiatCurrency.EUR | FiatCurrency.CRC>(FiatCurrency.EUR);
 
 /**
  * Common - Computeds
@@ -54,8 +57,8 @@ export function useCurrentLimitFiat(limits: Ref<SwapLimits | undefined>) {
             kycUser.value ? config.oasis.maxKycAmount : config.oasis.maxFreeAmount,
         );
 
-        if (selectedFiatCurrency.value === FiatCurrency.EUR && limits.value.current.eur < Infinity) {
-            return Math.min(regularLimitFiat, limits.value.current.eur);
+        if (limits.value.current.fiat < Infinity) {
+            return Math.min(regularLimitFiat, limits.value.current.fiat);
         }
 
         return regularLimitFiat;
@@ -80,20 +83,20 @@ export const fiatCurrencyInfo = computed(() =>
     new CurrencyInfo(selectedFiatCurrency.value),
 );
 
-export const eurPerNim = computed(() => {
+export const fiatPerNim = computed(() => {
     const _estimate = estimate.value;
     if (!_estimate || ![_estimate.from.asset, _estimate.to.asset].includes(SwapAsset.NIM)) {
         return exchangeRates.value[CryptoCurrency.NIM][selectedFiatCurrency.value];
     }
-    return getEurPerCrypto(SwapAsset.NIM, _estimate);
+    return getFiatPerCrypto(SwapAsset.NIM, _estimate);
 });
 
-export const eurPerBtc = computed(() => {
+export const fiatPerBtc = computed(() => {
     const _estimate = estimate.value;
     if (!_estimate || ![_estimate.from.asset, _estimate.to.asset].includes(SwapAsset.BTC)) {
         return exchangeRates.value[CryptoCurrency.BTC][selectedFiatCurrency.value];
     }
-    return getEurPerCrypto(SwapAsset.BTC, _estimate);
+    return getFiatPerCrypto(SwapAsset.BTC, _estimate);
 });
 
 export const nimFeePerUnit = computed(() => getFeePerUnit(
@@ -106,8 +109,8 @@ export const fiatFees = computed<{ funding: FundingFees, settlement: SettlementF
     estimate.value,
     activeCurrency.value,
     {
-        [CryptoCurrency.NIM]: { [selectedFiatCurrency.value]: eurPerNim.value },
-        [CryptoCurrency.BTC]: { [selectedFiatCurrency.value]: eurPerBtc.value },
+        [CryptoCurrency.NIM]: { [selectedFiatCurrency.value]: fiatPerNim.value },
+        [CryptoCurrency.BTC]: { [selectedFiatCurrency.value]: fiatPerBtc.value },
     },
     selectedFiatCurrency.value,
     assets.value,
@@ -135,16 +138,16 @@ export function capDecimals(amount: number, asset: SwapAsset) {
     return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
 }
 
-export function calculateFees(
-    { to, from }: { to: 'eur', from?: CryptoCurrency }
-                | { to?: CryptoCurrency, from: 'eur' },
+export function calculateFees<FiatCurrency extends FiatSwapAsset>(
+    { to, from }: { to: FiatCurrency, from?: CryptoCurrency }
+        | { to?: CryptoCurrency, from: FiatCurrency },
     amount?: number,
-    feesPerUnit = { eur: 0, nim: 0, btc: 0 },
+    feesPerUnit = { fiatCurrency: 0, nim: 0, btc: 0 },
 ) {
     let fundingFee: number | null = null;
     let settlementFee: number | null = null;
 
-    if (to === FiatCurrency.EUR) {
+    if (useSwapsStore().isFiatCurrency(to)) {
         if ((from || activeCurrency.value) === CryptoCurrency.NIM) {
             fundingFee = (feesPerUnit.nim || nimFeePerUnit.value) * 244; // 244 = NIM HTLC funding tx size
         }
@@ -163,13 +166,13 @@ export function calculateFees(
                 - selected.changeAmount;
         }
 
-        settlementFee = feesPerUnit.eur
-            || (estimate.value && estimate.value.to.asset === SwapAsset.EUR
+        settlementFee = feesPerUnit.fiatCurrency
+            || (estimate.value && useSwapsStore().isFiatCurrency(estimate.value.to.asset)
                 && estimate.value.to.fee)
             || 0;
-    } else { // from EUR
-        fundingFee = feesPerUnit.eur
-            || (estimate.value && estimate.value.from.asset === SwapAsset.EUR
+    } else { // from Fiat
+        fundingFee = feesPerUnit.fiatCurrency
+            || (estimate.value && useSwapsStore().isFiatCurrency(estimate.value.from.asset)
                 && estimate.value.from.fee)
             || 0;
 
@@ -202,72 +205,83 @@ export function calculateFees(
     };
 }
 
-export function getFiatSwapParameters({ from, to } : {
-    from?: { asset: SwapAsset.EUR, amount: number }, // Buy
+export function getFiatSwapParameters<FiatAsset extends FiatSwapAsset>({ from, to }: {
+    from?: { asset: FiatAsset, amount: number }, // Buy
     to: { amount: number },
 } | {
     from: { amount: number }, // Sell
-    to?: { asset: SwapAsset.EUR, amount: number },
+    to?: { asset: FiatAsset, amount: number },
 }) {
     if (!to && !from) return { to: null, from: null };
 
     if ((to && !('asset' in to) && to.amount)
-    || (from && ('asset' in from) && from.asset === SwapAsset.EUR && from.amount)) { // Buy
-        const fees = calculateFees({ from: FiatCurrency.EUR });
+        || (from && ('asset' in from) && useSwapsStore().isFiatCurrency(from.asset) && from.amount)) { // Buy
+        const fees = calculateFees({ from: (from as { asset: FiatSwapAsset })!.asset });
         const toSwapAsset = activeCurrency.value === CryptoCurrency.BTC
             ? SwapAsset.BTC
             : SwapAsset.NIM;
 
-        if (from && ('asset' in from) && from.asset === SwapAsset.EUR && from.amount) {
+        if (from && ('asset' in from) && useSwapsStore().isFiatCurrency(from.asset) && from.amount) {
             return {
-                from: { [SwapAsset.EUR]: (from.amount - fees.fundingFee) / 100 },
+                from: { [from.asset]: (from.amount - fees.fundingFee) / 100 },
                 to: toSwapAsset,
             } as {
-                from: RequestAsset<SwapAsset.EUR>,
+                from: RequestAsset<FiatAsset>,
                 to: typeof toSwapAsset,
             };
         }
 
+        if (!to || !('asset' in to) || !useSwapsStore().isFiatCurrency(to.asset)) {
+            throw new Error('Invalid swap direction');
+        }
+
         return {
-            from: SwapAsset.EUR,
-            to: { [toSwapAsset]: (to!.amount + fees.settlementFee) / (
-                toSwapAsset === SwapAsset.BTC
-                    ? 1e8
-                    : 1e5
-            ) },
+            from: to?.asset,
+            to: {
+                [toSwapAsset]: (to!.amount + fees.settlementFee) / (
+                    toSwapAsset === SwapAsset.BTC
+                        ? 1e8
+                        : 1e5
+                ),
+            },
         } as {
-            from: SwapAsset.EUR,
+            from: FiatSwapAsset,
             to: RequestAsset<SwapAsset.BTC>,
         };
     }
 
     if ((from && !('asset' in from) && from.amount)
-    || (to && ('asset' in to) && to.asset === SwapAsset.EUR && to.amount)) { // Sell
-        const fees = calculateFees({ to: FiatCurrency.EUR }, to?.amount);
+        || (to && ('asset' in to) && useSwapsStore().isFiatCurrency(to.asset) && to.amount)) { // Sell
+        const fees = calculateFees({ to: (to as { asset: FiatSwapAsset }).asset }, to?.amount);
         const fromSwapAsset = activeCurrency.value === CryptoCurrency.BTC
             ? SwapAsset.BTC
             : SwapAsset.NIM;
 
-        if ((from && !('asset' in from) && from.amount)) {
+        if ((from && !('asset' in from) && from.amount) && to
+            && ('asset' in to) && useSwapsStore().isFiatCurrency(to.asset)) {
             return {
-                from: { [fromSwapAsset]: (from.amount - fees.fundingFee) / (
-                    fromSwapAsset === SwapAsset.BTC
-                        ? 1e8
-                        : 1e5
-                ) },
-                to: SwapAsset.EUR,
+                from: {
+                    [fromSwapAsset]: (from.amount - fees.fundingFee) / (
+                        fromSwapAsset === SwapAsset.BTC ? 1e8 : 1e5
+                    ),
+                },
+                to: to.asset,
             } as {
                 from: RequestAsset<SwapAsset.BTC>,
-                to: SwapAsset.EUR,
+                to: FiatSwapAsset,
             };
+        }
+
+        if (!to || !('asset' in to) || !useSwapsStore().isFiatCurrency(to.asset)) {
+            throw new Error('Invalid swap direction');
         }
 
         return {
             from: fromSwapAsset,
-            to: { [SwapAsset.EUR]: (to!.amount + fees.settlementFee) / 100 },
+            to: { [to.asset]: (to!.amount + fees.settlementFee) / 100 },
         } as {
             from: typeof fromSwapAsset,
-            to: RequestAsset<SwapAsset.EUR>,
+            to: RequestAsset<FiatAsset>,
         };
     }
 

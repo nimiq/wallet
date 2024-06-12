@@ -9,10 +9,8 @@
                 <CountrySelector @select="c => country = c">
                     <div slot="trigger" class="pill flex-row">
                         <CountryFlag v-if="country" :code="country.code" />
-                        <CircleSpinner v-else/>
-                        <span v-if="country">{{ country.name }}</span>
-                        <span v-else>{{ $t('Loading...') }}</span>
-                        <img src="../../assets/arrow-down.svg" alt="open"/>
+                        <CircleSpinner v-else />
+                        <img src="../../assets/arrow-down.svg" alt="open" />
                     </div>
                 </CountrySelector>
             </header>
@@ -307,6 +305,9 @@ header {
     }
 
     .country-selector {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
         z-index: 100;
         display: inline-block;
         margin-bottom: 3rem;
@@ -319,6 +320,11 @@ header {
                     color: var(--text-100);
                 }
             }
+        }
+
+        ::v-deep .dropdown {
+            left: 0;
+            transform: translateX(0);
         }
     }
 

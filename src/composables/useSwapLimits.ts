@@ -18,8 +18,12 @@ const { activeAddress } = useAddressStore();
 const { exchangeRates } = useFiatStore();
 const { connectedUser: kycUser } = useKycStore();
 
+// FIXME: At the moment the fiat amounts will be added into a single value
+// This will be a problem if two things happen:
+// - We start allowing swaps with two fiat currencies
+// - AND an user wants to swap a 2 different fiat currencies, which it is unlikely
 export type SwapLimits = {
-    current: { usd: number, luna: number, sat: number, cent: number, eur: number },
+    current: { usd: number, luna: number, sat: number, cent: number, fiat: number },
     monthly: { usd: number, luna: number, sat: number, cent: number },
     remaining: { usd: number, luna: number, sat: number, cent: number },
 };
@@ -71,7 +75,7 @@ watch(async () => {
     const { activeAddresses } = useBtcAddressStore();
     const { addressInfo: usdcAddressInfo } = useUsdcAddressStore();
 
-    let newUserLimitEur = Infinity;
+    let newUserLimitFiat = Infinity;
 
     if (!kycUser.value && isFiatToCrypto.value) {
         const { getSwapByTransactionHash } = useSwapsStore();
@@ -81,16 +85,15 @@ watch(async () => {
         // If we only find swaps within the last three days, count them against the 100€ limit.
 
         type TimedSwap = SwapEurData & { timestamp?: number };
-
         // Find swaps from EUR
         const nimSwaps = Object.values(useTransactionsStore().state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
                 if (!accountAddresses.value.includes(tx.recipient)) return false;
 
-                const swap = getSwapByTransactionHash.value(tx.transactionHash);
-                // Ignore all swaps that are not from EUR
-                if (swap?.in?.asset !== SwapAsset.EUR) return false;
+                const swap = getSwapByTransactionHash.value(tx.transactionHash)!;
+                // Ignore all swaps that are not from fiat
+                if (!useSwapsStore().isFiatCurrency(swap?.in?.asset)) return false;
 
                 return {
                     ...swap.in,
@@ -103,9 +106,9 @@ watch(async () => {
                 // Ignore all transactions that are not on the current account
                 if (!tx.outputs.some((output) => activeAddresses.value.includes(output.address!))) return null;
 
-                const swap = getSwapByTransactionHash.value(tx.transactionHash);
-                // Ignore all swaps that are not from EUR
-                if (swap?.in?.asset !== SwapAsset.EUR) return false;
+                const swap = getSwapByTransactionHash.value(tx.transactionHash)!;
+                // Ignore all swaps that are not from fiat
+                if (!useSwapsStore().isFiatCurrency(swap?.in?.asset)) return false;
 
                 return {
                     ...swap.in,
@@ -119,11 +122,11 @@ watch(async () => {
                 if (usdcAddressInfo.value?.address !== tx.recipient) return false;
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash);
-                // Ignore all swaps that are not from EUR
-                if (swap?.in?.asset !== SwapAsset.EUR) return false;
+                // Ignore all swaps that are not from fiat
+                if (!useSwapsStore().isFiatCurrency(swap?.in?.asset)) return false;
 
                 return {
-                    ...swap.in,
+                    ...swap!.in,
                     timestamp: tx.timestamp,
                 } as TimedSwap;
             })
@@ -141,7 +144,7 @@ watch(async () => {
         } else {
             // Sum up swap volume, see how much is left from 100€
             const swapVolume = swaps.reduce((sum, swap) => sum + swap.amount, 0);
-            newUserLimitEur = Math.max(0, 100 - (swapVolume / 100));
+            newUserLimitFiat = Math.max(0, 100 - (swapVolume / 100));
         }
     }
 
@@ -281,7 +284,7 @@ watch(async () => {
             luna: Math.floor(currentUsdLimit / lunaRate),
             sat: Math.floor(currentUsdLimit / satRate),
             cent: Math.floor(currentUsdLimit / centRate),
-            eur: newUserLimitEur,
+            fiat: newUserLimitFiat,
         },
         monthly: {
             usd: monthlyUsdLimit,

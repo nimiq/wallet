@@ -2,9 +2,10 @@ import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset, getContract } from '@nimiq/fastspot-api';
 import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '@nimiq/oasis-api';
+import { FiatSwapAsset } from '@/lib/swap/utils/CommonUtils';
 import { FiatCurrency } from '../lib/Constants';
 import { assetToCurrency } from '../lib/swap/utils/Assets';
-import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
+import { getFiatPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { Transaction as PolygonTransaction } from './UsdcTransactions';
 
 export enum SwapState {
@@ -75,7 +76,25 @@ export type SwapEurData = {
     },
 };
 
-export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | SwapEurData;
+export type SwapCrcData = {
+    asset: SwapAsset.CRC,
+    bankLabel?: string,
+    bankLogo?: string,
+    iban?: string,
+    amount: number,
+    htlc?: {
+        id: string,
+        timeoutTimestamp: number,
+        settlement?: {
+            status: SettlementStatus,
+            eta?: number,
+            reason?: DeniedReason | string,
+            lastUpdated?: number,
+        },
+    },
+};
+
+export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | SwapEurData | SwapCrcData;
 
 export type Swap = {
     id?: string,
@@ -100,12 +119,12 @@ export type ActiveSwap = SwapObject & {
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+    | PolygonTransaction,
     fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+    | PolygonTransaction,
     secret?: string,
     settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+    | PolygonTransaction,
     error?: string,
     errorAction?: SwapErrorAction,
 }
@@ -176,45 +195,53 @@ export const useSwapsStore = createStore({
             this.state.promoBoxVisible = visible;
         },
 
-        async detectSwapFiatCounterpart(
+        async detectSwapFiatCounterpart<CryptoAsset extends
+            Exclude<SwapAsset, SwapAsset.EUR | SwapAsset.CRC | SwapAsset.BTC_LN>>(
             contractAddress: string,
             hashRoot: string,
             type: 'funding' | 'settlement',
-            otherAsset: Exclude<SwapAsset, SwapAsset.EUR>,
+            otherAsset: CryptoAsset,
         ) {
-            // Check swap with the Fastspot API to detect if it was a EUR swap.
+            const otherCurrency = assetToCurrency(otherAsset);
+            // Check swap with the Fastspot API to detect if it was a `fiatCurrency` swap.
             const [addSwapData, swapProp, contractProp, feesProp] = type === 'funding'
                 ? [this.addFundingData.bind(this), 'in', 'from', 'settlement'] as const
                 : [this.addSettlementData.bind(this), 'out', 'to', 'funding'] as const;
-            const otherCurrency = assetToCurrency(otherAsset);
+
             const swap = this.state.swaps[hashRoot];
             if (!swap || !!swap[swapProp]) return; // not a swap, or counterpart already known
             const contractWithEstimate = await getContract(otherAsset, contractAddress).catch(() => undefined);
-            if (contractWithEstimate?.[contractProp].asset !== SwapAsset.EUR) return; // No contract or no EUR
+            if (!contractWithEstimate) return; // not a contract
+
+            const fiatAsset = contractWithEstimate?.[contractProp].asset as FiatSwapAsset;
+            if (!this.isFiatCurrency(otherAsset)) return; // not a fiat swap
+            const fiatCurrency = assetToCurrency(fiatAsset);
 
             const exchangeRate = {
                 [otherCurrency]: {
-                    [FiatCurrency.EUR]: getEurPerCrypto(otherAsset, contractWithEstimate),
+                    [fiatCurrency]: getFiatPerCrypto(otherAsset, contractWithEstimate),
                 },
             };
             const fees = getFiatFees(
                 contractWithEstimate,
                 otherCurrency,
                 exchangeRate,
-                FiatCurrency.EUR,
+                fiatCurrency.toLowerCase() as FiatCurrency,
                 null,
             );
 
             addSwapData(hashRoot, {
-                asset: SwapAsset.EUR,
+                asset: fiatAsset,
                 amount: contractWithEstimate[contractProp].amount,
-                // We cannot get bank info or EUR HTLC details from this.
+                // We cannot get bank info or EUR/CRC HTLC details from this.
             }, {
                 fees: {
                     totalFee: fees[feesProp].total,
-                    asset: SwapAsset.EUR,
+                    asset: fiatAsset,
                 },
             });
         },
+
+        isFiatCurrency: (c: any): c is SwapAsset.EUR | SwapAsset.CRC => c === SwapAsset.EUR || c === SwapAsset.CRC,
     },
 });

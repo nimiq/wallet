@@ -800,12 +800,21 @@ export default defineComponent({
 
             const fiatCurrencies = [
                 SwapAsset.EUR,
+                SwapAsset.CRC,
             ];
 
-            const fromAsset = activeSwap.value.from.asset;
-            const toAsset = activeSwap.value.to.asset;
+            const fromAsset = activeSwap.value.from.asset as any;
+            const toAsset = activeSwap.value.to.asset as any;
 
-            if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
+            const { sinpeMovil } = useConfig().config;
+
+            if (sinpeMovil.pairs.find(([from, to]) => from === fromAsset && to === toAsset)) {
+                // The pair from the activeSwap matches the pair that it is enabled in the Sinpe Movil config
+                context.root.$router.push('/swap');
+            } else if (fromAsset === 'BTC_LN' || toAsset === 'BTC_LN') {
+                throw new Error('Lightning Network swaps are not supported in the wallet');
+            } else if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
+                // Crypto to Crypto
                 context.root.$router.push('/swap');
             } else if (fiatCurrencies.includes(fromAsset)) {
                 context.root.$router.push('/buy-crypto');

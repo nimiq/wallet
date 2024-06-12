@@ -117,8 +117,10 @@ export default {
     },
 
     sinpeMovil: {
-        enabledSell: true,
-        enabledBuy: true,
+        enabled: true,
+        pairs: [[SwapAsset.NIM, SwapAsset.CRC]], // For now we only support selling NIM to CRC
+        sendSmsGetEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/sms/send/{phone}',
+        verifySmsPostEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/sms/verify',
     },
 
     goCrypto: {

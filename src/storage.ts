@@ -21,6 +21,7 @@ import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
 import { usePrestakingStore } from './stores/Prestaking';
+import { useSinpeMovilStore } from './stores/SinpeMovil';
 import { useConfig } from './composables/useConfig';
 import { useGeoIp } from './composables/useGeoIp';
 
@@ -40,6 +41,7 @@ const StorageKeys = {
     BANK: 'wallet_bank_v01',
     KYC: 'wallet_kyc_v00',
     PRESTAKING: 'wallet_prestaking_v00',
+    SINPE_MOVIL: 'wallet_sinpe-movil_v00',
 };
 
 const PersistentStorageKeys = {
@@ -220,6 +222,7 @@ export async function initStorage() {
                 validators: {},
             }),
         ),
+        initStoreStore(useSinpeMovilStore(), StorageKeys.SINPE_MOVIL),
     ]);
 
     // Fetch missing exchange rates.

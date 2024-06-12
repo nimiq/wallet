@@ -3,7 +3,7 @@
         <PageHeader>
             <template #default>
                 <div class="prestaking-icon">
-                    <HeroIcon />
+                    <HeroIcon pulsing />
                 </div>
                 {{ $t('Lock NIM for Proof of Stake') }}
             </template>
@@ -62,9 +62,11 @@ export default defineComponent({
         }
         .prestaking-icon {
             margin-bottom: 5rem;
+            font-size: 17rem;
 
-            svg {
-                height: 17.375rem;
+            & ::v-deep svg {
+                font-size: 17.375rem;
+                margin: 0 auto;
             }
         }
     }
@@ -107,7 +109,7 @@ export default defineComponent({
             .prestaking-icon {
                 margin-top: 1.375rem;
                 margin-bottom: 1.25rem;
-                svg {
+                & ::v-deep svg {
                     margin-left: 0.25rem;
                     height: 16rem;
                 }

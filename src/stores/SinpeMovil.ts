@@ -1,6 +1,6 @@
 import { UserLimits } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
-import { useConfig } from '../composables/useConfig'; 
+import { useConfig } from '../composables/useConfig';
 
 export type SinpeMovilState = {
     phoneNumber: string | null,

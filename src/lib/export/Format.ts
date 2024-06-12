@@ -1,4 +1,3 @@
-import { SwapAsset } from '@nimiq/fastspot-api';
 import Config from 'config';
 import { type FiatCurrency } from '../Constants';
 import { useAddressStore } from '../../stores/Address';

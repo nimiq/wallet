@@ -133,7 +133,7 @@
                     />
 
                     <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if prestaking-->
-                        <PrestakingPreview v-if="activePrestake" />
+                        <PrestakingPreview v-if="activePrestake && windowWidth > 860" />
                         <PrestakingButton v-else />
                     </template>
 
@@ -316,7 +316,7 @@ export default defineComponent({
         const address$ = ref<HTMLDivElement>(null);
         const addressMasked = ref<boolean>(false);
 
-        const { isMobile, isFullDesktop } = useWindowSize();
+        const { isMobile, isFullDesktop, width: windowWidth } = useWindowSize();
 
         useElementResize(address$, () => {
             let addressWidth: number;
@@ -550,6 +550,7 @@ export default defineComponent({
             config,
             convertBridgedUsdcToNative,
             activePrestake,
+            windowWidth,
         };
     },
     components: {
@@ -942,6 +943,10 @@ export default defineComponent({
     .nq-button-pill {
         white-space: nowrap;
     }
+}
+
+.prestaking-button {
+    margin-left: 1rem;
 }
 
 .send, .receive {

@@ -133,9 +133,8 @@
                     />
 
                     <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if prestaking-->
-                        <!-- <PrestakingPreview v-if="prestake" /> -->
-                        <!-- <PrestakingButton v-else /> -->
-                        <PrestakingButton />
+                        <PrestakingPreview v-if="activePrestake" />
+                        <PrestakingButton v-else />
                     </template>
 
                     <button class="send nq-button-pill light-blue flex-row"
@@ -291,6 +290,8 @@ import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
+import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
+import { usePrestakingStore } from '../../stores/Prestaking';
 
 export default defineComponent({
     name: 'address-overview',
@@ -304,6 +305,8 @@ export default defineComponent({
             addressInfo: usdcAddressInfo,
         } = useUsdcAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
+
+        const { activePrestake } = usePrestakingStore();
 
         const searchString = ref('');
 
@@ -546,6 +549,7 @@ export default defineComponent({
             toggleUnclaimedCashlinkList,
             config,
             convertBridgedUsdcToNative,
+            activePrestake,
         };
     },
     components: {
@@ -573,6 +577,7 @@ export default defineComponent({
         CashlinkButton,
         PrestakingButton,
         HeroIcon,
+        PrestakingPreview,
     },
 });
 </script>

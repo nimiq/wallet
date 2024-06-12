@@ -53,6 +53,10 @@ export default defineComponent({
     width: 28rem;
 }
 
+.tooltip ::v-deep .trigger {
+    cursor: help;
+}
+
 p {
     margin-bottom: 1rem;
     text-align: left;

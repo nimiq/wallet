@@ -15,7 +15,7 @@
                     }" @click="$router.push('/prestaking')"
                     @mousedown.prevent
                     :disabled="!activeAddressInfo || (!activeAddressInfo.balance && !hasPrestake)">
-                    <HeroIcon />
+                    <HeroIcon :pulsing="!hasPrestake" />
                 </button>
             </div>
             <span v-if="!hasPrestake">{{ $t('Prestaking is now available!') }}</span>
@@ -26,7 +26,7 @@
             :class="{
                 inverse: inversePalette,
             }">
-            <HeroIcon />
+            <HeroIcon :pulsing="false" />
         </div>
     </div>
 </template>
@@ -91,6 +91,10 @@ export default defineComponent({
 .prestaking-button {
     height: 6.75rem;
     margin: -1.25rem 0;
+
+    & ::v-deep svg {
+        font-size: 6.75rem;
+    }
 }
 
 .prestake {
@@ -101,38 +105,15 @@ export default defineComponent({
     padding: 0;
     transition: opacity 1s ease-in-out;
 
-    svg {
-        width: 6.75rem;
-        height: 6.75rem;
-
-        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-            opacity: 0;
-        }
-    }
-
-    &.pulsing svg {
-        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-            animation: fastwave 1s ease alternate infinite;
-        }
-        path:nth-child(1) {
-            animation-delay: .5s;
-        }
-        path:nth-child(2) {
-            animation-delay: .7s;
-        }
-        path:nth-child(4) {
-            animation-delay: .9s;
-        }
-    }
-
     &.disabled {
-        svg {
+        & ::v-deep svg {
             animation: initial;
             path:nth-child(1), path:nth-child(2), path:nth-child(4) {
                 animation: initial;
                 opacity: 0;
             }
         }
+        cursor: not-allowed;
     }
     &.inverse {
         cursor: initial;
@@ -158,18 +139,6 @@ export default defineComponent({
         padding: 0.5rem 1rem;
         white-space: nowrap;
         transform: translateY(1rem);
-    }
-}
-
-@keyframes fastwave {
-    0% {
-        opacity: 1.0;
-    }
-    50% {
-        opacity: 0.15;
-    }
-    100% {
-        opacity: 0.0;
     }
 }
 </style>

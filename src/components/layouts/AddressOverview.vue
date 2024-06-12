@@ -620,22 +620,22 @@ export default defineComponent({
     --padding: 4rem;
     --padding-bottom: 6rem;
 
-    @media (max-width: 1319px) {
+    @media (max-width: $mediumDesktopBreakpoint) {
         --padding: 3rem;
         --padding-bottom: 5rem;
     }
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         --padding: 1rem;
         --padding-bottom: 2rem;
     }
 
-    @media (min-width: 1800px) {
+    @media (min-width: $veryLargeDesktopBreakpoint) {
         --padding: 7rem;
         --padding-bottom: 6rem;
     }
 
-    @media (min-width: 2000px) {
+    @media (min-width: $ultraLargeDesktopBreakpoint) {
         --padding: 9rem;
         --padding-bottom: 6rem;
     }
@@ -1151,7 +1151,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .address-overview {
         position: relative;
     }

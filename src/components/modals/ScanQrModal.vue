@@ -255,6 +255,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .modal ::v-deep .close-button {
     display: none;
 }
@@ -271,7 +273,7 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .modal ::v-deep {
         .wrapper,
         .small-page {

@@ -86,6 +86,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../scss/variables.scss";
+
 .usdc-address-info {
     align-items: center;
     width: 13rem;
@@ -154,7 +156,7 @@ export default defineComponent({
     mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .usdc-address-info {
         flex-shrink: 0;
     }

@@ -105,6 +105,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .modal ::v-deep .small-page {
     width: 65rem !important;
     min-height: 60rem !important;
@@ -245,7 +247,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .page-body {
         flex-direction: column;
         mask: linear-gradient(0deg , white, white calc(100% - 3.75rem), rgba(255,255,255, 0) calc(100% - 0.75rem));

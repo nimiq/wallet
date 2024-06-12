@@ -54,6 +54,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .legacy-account-notice {
     flex-grow: 1;
     max-width: 46rem;
@@ -136,7 +138,7 @@ label {
     margin-bottom: 2rem;
 }
 
-@media (max-width: 1199px) {
+@media (max-width: $smallDesktopBreakpoint) {
     section {
         margin: 0 1rem;
     }
@@ -167,7 +169,7 @@ label {
     }
 }
 
-@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
     img, svg {
         display: none;
     }

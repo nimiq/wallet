@@ -728,7 +728,7 @@ input[type="file"] {
     margin-top: 1rem;
 }
 
-@media (max-width: 1160px) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
     .settings {
         padding: 5rem 3rem 3rem 4rem;
     }
@@ -767,19 +767,19 @@ input[type="file"] {
     }
 }
 
-@media (min-width: 1160px) { // Half mobile breakpoint
+@media (min-width: $halfMobileBreakpoint) { // Half mobile breakpoint
     .hub-behavior-setting {
         display: none;
     }
 }
 
-@media (min-width: 700px) { // Full mobile breakpoint
+@media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
     .swiping-setting {
         display: none;
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .settings {
         width: 100vw;
         padding: 3.25rem 3rem;

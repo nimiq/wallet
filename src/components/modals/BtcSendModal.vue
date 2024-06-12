@@ -623,6 +623,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+    @import "../../scss/variables.scss";
+
     .page {
         flex-grow: 1;
         font-size: var(--body-size);
@@ -808,7 +810,7 @@ export default defineComponent({
             color: white;
             transform: translate(-2rem, 2rem);
 
-            @media (max-width: 700px) { // Full mobile breakpoint
+            @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
                 transform: translate(0.5rem, 2rem);
             }
 
@@ -838,7 +840,7 @@ export default defineComponent({
         }
     }
 
-    @media (max-width: 700px) { // Full Mobile Breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint
         .address-section {
             .btc-address-input {
                 font-size: 14px;

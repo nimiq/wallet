@@ -36,6 +36,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .network-stats {
     flex-direction: column;
     column-gap: 5rem;
@@ -71,7 +73,7 @@ export default defineComponent({
     white-space: nowrap;
     margin: 0;
 
-    @media screen and (min-width: 1160px) {
+    @media screen and (min-width: $halfMobileBreakpoint) {
         margin-top: 0.5rem;
     }
 }
@@ -81,7 +83,7 @@ export default defineComponent({
     line-height: var(--h1-size);
     margin-top: 1rem;
 
-    @media screen and (min-width: 1160px) {
+    @media screen and (min-width: $halfMobileBreakpoint) {
         margin-top: 1rem;
     }
 
@@ -102,7 +104,7 @@ export default defineComponent({
     display: none;
 }
 
-@media screen and (min-width: 700px) {
+@media screen and (min-width: $mobileBreakpoint) {
     .network-stats {
         align-items: center;
         flex-direction: row;

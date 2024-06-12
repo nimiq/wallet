@@ -163,6 +163,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .account-menu-item {
     align-items: center;
 }
@@ -204,7 +206,7 @@ export default defineComponent({
     flex-shrink: 0;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .fiat-amount {
         font-size: 1.875rem;
     }

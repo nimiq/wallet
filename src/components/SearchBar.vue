@@ -127,6 +127,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .container {
     width: 100%;
     padding-right: 1rem;
@@ -221,9 +223,7 @@ input {
     }
 }
 
-@media (max-width: 700px) {
-
-    // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     input {
         &::placeholder {
             font-weight: 600;
@@ -251,7 +251,7 @@ input {
     transition-duration: calc(var(--attr-duration) / 2);
 }
 
-@media (min-width: 700px) and (max-width: 900px) {
+@media (min-width: $mobileBreakpoint) and (max-width: $tabletBreakpoint) {
     .cover-all {
         &:focus-within {
             position: absolute;

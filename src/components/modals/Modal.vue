@@ -210,6 +210,8 @@ export default Modal;
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .backdrop {
     position: fixed;
     top: 0;
@@ -268,7 +270,7 @@ export default Modal;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .backdrop {
         justify-content: flex-end;
     }
@@ -330,6 +332,8 @@ export default Modal;
 </style>
 
 <style lang="scss">
+@import "../../scss/variables.scss";
+
 :root {
     --modal-transition-time: 0.45s;
     --overlay-transition-time: 0.65s;
@@ -385,7 +389,7 @@ export default Modal;
     transform: translate3D(0, calc(-1.1 * ((100vh - 100%) / 2 + 100%)), 0);
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .modal-enter, .modal-leave-to {
         .wrapper {
             opacity: 1 !important;

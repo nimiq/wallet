@@ -590,7 +590,7 @@ export default defineComponent({
     opacity: 1;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .month-label {
         padding-top: 4rem;
     }

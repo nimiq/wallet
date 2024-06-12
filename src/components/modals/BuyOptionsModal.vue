@@ -281,6 +281,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .modal ::v-deep .small-page {
     width: 70rem !important;
     min-height: 63.5rem !important;
@@ -544,7 +546,7 @@ header {
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .modal ::v-deep .small-page {
         // Regular Modal size (iOS scrolling inside the BuyOptionsModal does not work without a fixed height)
         min-height: unset !important;

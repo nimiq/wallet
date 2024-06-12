@@ -2247,6 +2247,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/variables.scss';
+
 .modal ::v-deep .small-page {
     width: 63.5rem;
     // height: 74.5rem;
@@ -2666,7 +2668,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .modal ::v-deep .small-page {
         overflow-y: auto;
     }

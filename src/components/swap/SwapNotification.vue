@@ -837,6 +837,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .swap-notification {
     width: 34rem;
     height: 8rem;
@@ -930,7 +932,7 @@ export default defineComponent({
     transform: translateX(45rem);
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .swap-notification {
         right: 1.5rem;
         bottom: 10.5rem;

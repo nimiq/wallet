@@ -550,29 +550,29 @@ export default defineComponent({
     --padding-sides: 6rem;
     --padding-bottom: 0;
 
-    @media (max-width: 1319px) {
+    @media (max-width: $mediumDesktopBreakpoint) {
         --padding-top: 5rem;
         --padding-sides: 4rem;
         --padding-bottom: 0;
     }
 
-    @media (max-width: 960px) { // Tablet breakpoint
+    @media (max-width: $tabletBreakpoint) { // Tablet breakpoint
         --padding-top: 3rem;
         --padding-sides: 3rem;
     }
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         --padding-top: 1rem;
         --padding-sides: 1rem;
     }
 
-    @media (min-width: 1800px) {
+    @media (min-width: $veryLargeDesktopBreakpoint) {
         --padding-top: 9rem;
         --padding-sides: 9rem;
         --padding-bottom: 2rem;
     }
 
-    @media (min-width: 2000px) {
+    @media (min-width: $ultraLargeDesktopBreakpoint) {
         --padding-top: 11rem;
         --padding-sides: 11rem;
         --padding-bottom: 4rem;
@@ -1057,7 +1057,7 @@ export default defineComponent({
     flex-grow: 1;
 }
 
-@media (max-width: 1160px) { // Half mobile breakpoint
+@media (max-width: $halfMobileBreakpoint) { // Half mobile breakpoint
     .mobile-menu-bar {
         display: flex;
         flex-shrink: 0;
@@ -1126,14 +1126,13 @@ export default defineComponent({
         margin-top: -4rem;
     }
 }
-
-@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
     .account-balance {
         margin-top: -2rem;
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .address-list {
         margin-top: 0;
         padding-bottom: 0;

@@ -686,6 +686,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .swap-animation {
     flex-grow: 1;
     height: 100%;
@@ -1391,7 +1393,7 @@ export default defineComponent({
         white-space: pre-line;
         padding: 0 3rem;
 
-        @media (max-width: 700px) { // Full mobile breakpoint
+        @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
             padding: 0 2rem;
         }
     }

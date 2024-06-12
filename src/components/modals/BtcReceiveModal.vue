@@ -398,7 +398,7 @@ export default defineComponent({
                 font-weight: 600;
                 transform: translate(1rem, 2rem);
 
-                @media (max-width: 700px) { // Full mobile breakpoint
+                @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
                     transform: translate(0, 2rem);
                 }
 

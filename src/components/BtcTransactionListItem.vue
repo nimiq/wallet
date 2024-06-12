@@ -174,6 +174,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '../scss/variables.scss';
+
 svg {
     display: block;
 }
@@ -411,7 +413,7 @@ svg {
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .transaction {
         padding: 1rem 1rem;
 

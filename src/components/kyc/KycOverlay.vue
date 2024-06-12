@@ -85,6 +85,8 @@ export default defineComponent({
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
+@import '../../scss/variables.scss';
+
 .kyc-overlay {
     flex-grow: 1;
     justify-content: space-between;
@@ -128,7 +130,7 @@ export default defineComponent({
         box-shadow: 0 0 0 1.5px var(--text-20);
         list-style: none;
 
-        @media (max-width: 700px) { // Full mobile breakpoint
+        @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
             & {
                 width: calc((100% - 1 * /* gap + box-shadow */ 2.125rem) / 2); // 2 columns
             }

@@ -209,6 +209,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
     .prestake-graph-page {
         flex-grow: 1;
     }
@@ -285,9 +287,9 @@ export default defineComponent({
         margin: 1rem 0 1.5rem;
     }
 
-    @media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
+    @media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
     }
 
-    @media (max-width: 700px) { // Full mobile breakpoint
+    @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     }
 </style>

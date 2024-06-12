@@ -202,6 +202,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .network {
     background: var(--nimiq-blue);
     display: grid;
@@ -211,7 +213,7 @@ export default defineComponent({
     padding: 1rem;
     padding-left: 0.5rem;
 
-    @media screen and (min-width: 1160px) {
+    @media screen and (min-width: $halfMobileBreakpoint) {
         grid-template-rows: 1fr auto;
     }
 
@@ -258,7 +260,7 @@ export default defineComponent({
         opacity: 0.7;
     }
 
-    @media screen and (min-width: 1160px) {
+    @media screen and (min-width: $halfMobileBreakpoint) {
         display: none;
     }
 }
@@ -278,7 +280,7 @@ export default defineComponent({
     }
 }
 
-@media screen and (max-width: 1160px) {
+@media screen and (max-width: $halfMobileBreakpoint) {
     .nimiq-network button.reset.info-button {
         display: none;
     }
@@ -293,7 +295,7 @@ section {
     &.nimiq-network {
         display: flex;
 
-        @media screen and (max-width: 700px) {
+        @media screen and (max-width: $mobileBreakpoint) {
             padding-left: 0;
 
             & ::v-deep .network-stats {
@@ -312,7 +314,7 @@ section {
             flex-grow: 1;
             flex-shrink: 1;
 
-            @media screen and (max-width: 700px) {
+            @media screen and (max-width: $mobileBreakpoint) {
                 position: relative;
                 left: -12rem;
             }
@@ -323,7 +325,7 @@ section {
             display: flex;
             width: 100%;
 
-            @media screen and (max-width: 700px) {
+            @media screen and (max-width: $mobileBreakpoint) {
                 // Take the screen height, subtract header padding top(16px), header (59px), row-gap header-map (8px),
                 // row-gap map-btc/usdc stats (8px), btc/usdc height (160.85px), and multiply with the ratio between
                 // network map width and height.
@@ -332,7 +334,7 @@ section {
             }
         }
 
-        @media screen and (min-width: 700px) {
+        @media screen and (min-width: $mobileBreakpoint) {
             flex-direction: column;
         }
 
@@ -355,7 +357,7 @@ section {
     }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: $mobileBreakpoint) {
     .scroller {
         width: 100%;
         flex-grow: 1;

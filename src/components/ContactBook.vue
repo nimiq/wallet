@@ -249,7 +249,7 @@ export default defineComponent({
     align-self: center;
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .contact-button {
         background: none !important;
 

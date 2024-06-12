@@ -608,6 +608,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+
 .page-header {
     ::v-deep .nq-h1 {
         margin-left: 2rem;
@@ -814,7 +816,7 @@ export default defineComponent({
             margin-left: -0.6em;
         }
 
-        @media (max-width: 700px) { // Full Mobile Breakpoint
+        @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint
             font-size: 4.75rem;
         }
     }
@@ -960,7 +962,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 700px) { // Full mobile breakpoint
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .page-header {
         ::v-deep .nq-h1 {
             mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));

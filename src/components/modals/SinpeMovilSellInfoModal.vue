@@ -16,11 +16,11 @@
             </main>
         </PageBody>
         <PageFooter>
-            <button class="nq-button light-blue"
-                @click="$router.push({ name: RouteName.SinpeMovil, params: { flow: 'sell' } })">
+            <router-link class="nq-button light-blue"
+                :to="{ name: RouteName.SinpeMovil, params: { flow: 'sell' }, query: $route.query }">
                 {{ $t("Let's go") }}
-            </button>
-            <a href="" target="_blank" class="flex-row">
+            </router-link>
+            <a href="" target="_blank" class="flex-row learn-more">
                 Learn more
                 <CaretRightSmallIcon />
             </a>
@@ -136,7 +136,7 @@ ol {
 }
 
 .page-footer {
-    a {
+    a.learn-more {
         position: relative;
         top: -1rem;
         margin: 0 auto;
@@ -154,14 +154,15 @@ ol {
             transition: right 200ms var(--nimiq-ease);
             right: 0;
         }
-    }
 
-    a:hover, a:focus-visible {
-        opacity: 0.7;
-        transition: opacity 300ms var(--nimiq-ease);
+        &:hover,
+        &:focus-visible {
+            opacity: 0.7;
+            transition: opacity 300ms var(--nimiq-ease);
 
-       svg {
-            right: -0.25rem;
+            svg {
+                right: -0.25rem;
+            }
         }
     }
 }

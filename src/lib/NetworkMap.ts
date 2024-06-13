@@ -563,7 +563,7 @@ export default class NetworkMap {
      */
     private _getPeerLocator(addressInfo: PlainAddressInfo) { // eslint-disable-line class-methods-use-this
         const locator = addressInfo.multiAddress.split('/')[2];
-        if (locator && locator !== '0.0.0.0') {
+        if (locator && locator !== '0.0.0.0' && locator !== '127.0.0.1') {
             return locator;
         }
 

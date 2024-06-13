@@ -27,7 +27,8 @@ j<template>
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-import { useNetworkStore } from '../stores/Network';
+import { getNetworkClient } from '../network';
+import { Peer, useNetworkStore } from '../stores/Network';
 import NetworkMap, {
     NodeHexagon,
     NETWORK_MAP_WIDTH,
@@ -68,24 +69,48 @@ export default defineComponent({
             }
         };
 
-        onMounted(async () => {
-            // const client = await getNetworkClient();
+        let knownAddressesUpdateInterval: number | null = null;
 
+        onMounted(async () => {
             const networkMap = new NetworkMap(network$.value!, overlay$.value!, (n) => nodes.value = n);
 
             const networkStore = useNetworkStore();
 
-            watch(() => networkStore.state.peers, (peers) => {
-                if (networkMap.updateNodes(Object.values(peers))) {
-                    networkMap.draw();
+            let updateDebounce: number | null = null;
+            function updateKnownAddresses() {
+                if (updateDebounce) {
+                    window.clearTimeout(updateDebounce);
                 }
+                updateDebounce = window.setTimeout(async () => {
+                    const client = await getNetworkClient();
+                    const knownAddresses = await client.getAddressBook();
+                    const peers = knownAddresses.map(({ peerId, address, type }) => ({
+                        peerId,
+                        multiAddress: address,
+                        nodeType: type,
+                        connected: false,
+                        ...(networkStore.state.peers[peerId] as Peer | undefined),
+                    }));
+                    if (networkMap.updateNodes(peers)) {
+                        networkMap.draw();
+                    }
+                }, 500);
+            }
+
+            watch(() => networkStore.state.peers, () => {
+                updateKnownAddresses();
             });
+            updateKnownAddresses();
+            knownAddressesUpdateInterval = window.setInterval(updateKnownAddresses, 30e3);
 
             window.addEventListener('resize', setDimensions);
             requestAnimationFrame(() => setDimensions()); // use requestAnimationFrame to not cause forced layouting
         });
 
         onUnmounted(() => {
+            if (knownAddressesUpdateInterval) {
+                window.clearInterval(knownAddressesUpdateInterval);
+            }
             window.removeEventListener('resize', setDimensions);
         });
 

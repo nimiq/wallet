@@ -493,15 +493,24 @@ export default class NetworkMap {
     }
 
     private _updateOrAddNode(nodeAddressInfo: PlainAddressInfo): boolean {
+        const { peerId, connected, multiAddress, nodeType } = nodeAddressInfo;
         if (this._nodes.has(nodeAddressInfo.peerId)) { // existing peer
-            const node = this._nodes.get(nodeAddressInfo.peerId)!;
-            if (node.connected === nodeAddressInfo.connected) {
-                return false; // only case were there is no update
+            const node = this._nodes.get(peerId)!;
+            let updated = false;
+            if (node.multiAddress !== multiAddress && multiAddress.startsWith('/dns')) {
+                node.multiAddress = multiAddress;
+                node.host = this._getPeerHost(multiAddress);
+                updated = true;
             }
-            node.connected = nodeAddressInfo.connected;
-            node.hexagon.updateState(node);
-        } else if (this._getPeerLocator(nodeAddressInfo)) {
-            this._geoLocate(this._getPeerLocator(nodeAddressInfo)!).then(
+            if (node.connected !== connected) {
+                node.connected = connected;
+                updated = true;
+            }
+            return node.hexagon.updateState(node) || updated;
+        }
+
+        if (this._getPeerLocator(multiAddress)) {
+            this._geoLocate(this._getPeerLocator(multiAddress)!).then(
                 (response) => {
                     if (response && response.location && response.location.latitude && response.location.longitude) {
                         const nodePosition = this._hexagonByCoordinate(
@@ -523,9 +532,9 @@ export default class NetworkMap {
 
                         const node: Node = Object.assign(nodeAddressInfo, {
                             hexagon,
-                            type: NodeType.fromType(nodeAddressInfo.nodeType),
+                            type: NodeType.fromType(nodeType),
                             locationData: {},
-                            host: this._getPeerHost(nodeAddressInfo),
+                            host: this._getPeerHost(multiAddress),
                         });
 
                         if (response.country) {
@@ -539,11 +548,12 @@ export default class NetworkMap {
                         }
 
                         hexagon.addNode(node);
-                        this._nodes.set(nodeAddressInfo.peerId, node);
+                        this._nodes.set(peerId, node);
                     }
                 },
             ).catch(() => undefined);
         }
+
         return true;
     }
 
@@ -561,8 +571,8 @@ export default class NetworkMap {
      * 2. Hostname for WS and WSS peers if available (not 0.0.0.0)
      * 3. IP if available
      */
-    private _getPeerLocator(addressInfo: PlainAddressInfo) { // eslint-disable-line class-methods-use-this
-        const locator = addressInfo.multiAddress.split('/')[2];
+    private _getPeerLocator(multiAddress: string) { // eslint-disable-line class-methods-use-this
+        const locator = multiAddress.split('/')[2];
         if (locator && locator !== '0.0.0.0' && locator !== '127.0.0.1') {
             return locator;
         }
@@ -570,8 +580,8 @@ export default class NetworkMap {
         return null;
     }
 
-    private _getPeerHost(addressInfo: PlainAddressInfo) { // eslint-disable-line class-methods-use-this
-        const locator = this._getPeerLocator(addressInfo);
+    private _getPeerHost(multiAddress: string) { // eslint-disable-line class-methods-use-this
+        const locator = this._getPeerLocator(multiAddress);
         if (locator && !this._isIp(locator)) {
             return locator;
         }

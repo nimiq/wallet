@@ -23,24 +23,15 @@ export interface AssetTransferParams {
   amountFiat: Ref<number>;
   amountCrypto: Ref<number>;
 
-  decimalsCrypto: Readonly<Ref<Readonly<number>>>;
+  decimalsCrypto: number;
   decimalsFiat: Readonly<Ref<Readonly<number>>>;
 
   feeAmount: Ref<number>;
-  feeCurrency: FiatCurrency | CryptoCurrency;
 
   // The maximum amount of fiat currency that can be transferred.
   limitMaxAmount: Readonly<Ref<Readonly<number>>>; // Computed<number>
-  limitMaxCurrency: FiatCurrency | CryptoCurrency;
 
-  // The name of the component that will be used to display where
-  // the user is transferring the funds from.
-  // The component should use data from store to display the options.
   componentFrom: VueComponent;
-
-  // The name of the component that will be used to display where
-  // the user is transferring the funds to.
-  // The component should use data from store to display the options.
   componentTo: VueComponent;
 
   // For NIM address selector screen

@@ -84,7 +84,7 @@ export default defineComponent({
     margin-top: 0.5rem;
     color: var(--nimiq-blue);
     opacity: 0.5;
-    font-size: 1.875rem;
+    font-size: 2rem;
     font-weight: 400;
     line-height: 1.25;
     font-family: "Fira Mono";

@@ -32,9 +32,10 @@ export function useSinpeMovilSwap({ pair: [currencyFrom, currencyTo] }: AssetTra
     const isSelling = currencyFrom === cryptoCurrency;
 
     const amountFiat = ref(10);
-    const amountCrypto = ref(1);
+    const amountCrypto = ref(100_000);
 
     const decimalsCrypto = computed(() => calculateDisplayedDecimals(amountFiat.value, cryptoCurrency));
+    console.log({ decimalsCrypto: decimalsCrypto.value });
     const decimalsFiat = computed(() => fiatDecimals[fiatCurrency] || 0);
 
     const feeAmount = ref(0.5);
@@ -70,14 +71,12 @@ export function useSinpeMovilSwap({ pair: [currencyFrom, currencyTo] }: AssetTra
         amountFiat,
         amountCrypto,
 
+        // @ts-ignore - decimalsCrypto is a computed value
         decimalsCrypto,
         decimalsFiat,
 
         feeAmount,
-        feeCurrency: fiatCurrency,
-
         limitMaxAmount,
-        limitMaxCurrency: fiatCurrency,
 
         insufficientLimit,
         insufficientBalance,

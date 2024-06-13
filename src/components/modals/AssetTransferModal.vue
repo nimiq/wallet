@@ -1,23 +1,23 @@
 <template>
-  <Modal class="asset-transfer-modal" :emitClose="true" :showOverlay="p && p.addressListOpened">
+  <Modal class="asset-transfer-modal" :emitClose="true" :showOverlay="p && p.addressListOpened" @close-overlay="p.addressListOpened = false">
     <ol v-if="p">
       <li>
         <PageHeader>{{ p.modalTitle }}</PageHeader>
         <PageBody class="flex-column">
           <section class="pills">
             <div>
-              <Amount :amount="p.amountCrypto" :currency="p.currencyCrypto"></Amount>
+              <Amount :amount="oneUnitCrypto" :decimals="0" :currency="p.currencyCrypto"></Amount>
               =
-              <Amount :amount="p.amountFiat" :currency="p.currencyFiat"></Amount>
-            </div>
-            <i18n tag="div" path="{feeAmount} fees">
-              <template #feeAmount>
-                <Amount :amount="p.feeAmount" :currency="p.feeCurrency"></Amount>
-              </template>
-            </i18n>
-            <i18n tag="div" path="Max. {limitMax}" class="max-limit">
-              <template #limitMax>
-                <Amount :amount="p.limitMaxAmount" :currency="p.limitMaxCurrency"></Amount>
+              <FiatAmount :amount="p.amountFiat" :currency="p.currencyFiatFallback" />
+              </div>
+              <i18n tag="div" path="{feeAmount} fees">
+                <template #feeAmount>
+                  <FiatAmount :amount="p.feeAmount" :currency="p.currencyFiatFallback" />
+                  </template>
+                  </i18n>
+                  <i18n tag="div" path="Max. {limitMax}" class="max-limit">
+                    <template #limitMax>
+                <FiatAmount :amount="p.limitMaxAmount" :currency="p.currencyFiatFallback" />
               </template>
             </i18n>
           </section>
@@ -49,7 +49,7 @@
     <div v-if="p && p.addressListOpened" slot="overlay" class="flex-column overlay">
       <PageHeader class="header__address-list">{{ $t('Choose an Address') }}</PageHeader>
       <PageBody class="page__address-list">
-        <AddressList embedded @address-selected="p.addressListOpened = false" />
+        <AddressList embedded @address-selected="() => p.addressListOpened = false" />
       </PageBody>
     </div>
   </Modal>
@@ -62,7 +62,7 @@ import {
     AssetTransferOptions,
     AssetTransferParams,
 } from '@/composables/asset-transfer/types';
-import { PageHeader, PageBody, PageFooter, Amount } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter, Amount, FiatAmount } from '@nimiq/vue-components';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
 import Modal from './Modal.vue';
 import DualCurrencyInput from '../DualCurrencyInput.vue';
@@ -93,17 +93,28 @@ export default defineComponent({
             const options: AssetTransferOptions = { pair: [props.pairFrom, props.pairTo] };
 
             switch (props.method) {
-                case AssetTransferMethod.SinpeMovil:
+                case AssetTransferMethod.SinpeMovil: {
+                    console.log(await import('@/composables/asset-transfer/useSinpeMovilSwap').then((m) => m.useSinpeMovilSwap(options)));
                     await import('@/composables/asset-transfer/useSinpeMovilSwap')
                         .then((m) => p.value = m.useSinpeMovilSwap(options));
                     break;
+                }
                 default:
                     throw new Error('Invalid method');
             }
+            paramsUpdated();
         });
+
+        const oneUnitCrypto = ref(0);
+
+        async function paramsUpdated() {
+            if (!p.value) return;
+            oneUnitCrypto.value = 1 * 10 ** p.value.decimalsCrypto;
+        }
 
         return {
             p,
+            oneUnitCrypto,
             FiatCurrency,
             CryptoCurrency,
         };
@@ -114,6 +125,7 @@ export default defineComponent({
         PageBody,
         PageFooter,
         Amount,
+        FiatAmount,
         DualCurrencyInput,
         AddressList,
     },
@@ -142,14 +154,6 @@ export default defineComponent({
       display: flex;
       flex-direction: column;
       padding: 0 5rem;
-
-      // &:first-child {
-      //   padding-left: 5rem;
-      // }
-
-      // &:last-child {
-      //   padding-right: 5rem;
-      // }
 
       .page-body {
         display: flex;
@@ -183,6 +187,10 @@ export default defineComponent({
       font-size: 14px;
       font-weight: 800;
       line-height: 1.4;
+
+      >div {
+        display:inline;
+      }
 
       &.max-limit {
         color: #EAA617;

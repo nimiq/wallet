@@ -1,4 +1,5 @@
 import { ref, onMounted, onUnmounted, Ref, computed } from '@vue/composition-api';
+import { mobileBreakpoint, tabletBreakpoint, halfMobileBreakpoint } from '../scss/modules/variables';
 
 let numberOfListeners = 0;
 
@@ -23,9 +24,9 @@ export function useWindowSize() {
         width = ref(0);
         height = ref(0);
         listener();
-        isMobile = computed(() => width!.value <= 700); // Full mobile breakpoint
-        isTablet = computed(() => width!.value <= 960); // Tablet breakpoint
-        isFullDesktop = computed(() => width!.value > 1160); // Desktop breakpoint
+        isMobile = computed(() => width!.value <= mobileBreakpoint); // Full mobile breakpoint
+        isTablet = computed(() => width!.value <= tabletBreakpoint); // Tablet breakpoint
+        isFullDesktop = computed(() => width!.value > halfMobileBreakpoint); // Desktop breakpoint
     }
 
     onMounted(() => {

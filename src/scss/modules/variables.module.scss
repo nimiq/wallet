@@ -1,0 +1,21 @@
+@use "sass:string";
+@import '../variables.scss';
+
+/**
+ * This file should only be imported in JavaScript or TypeScript files.
+ * It is separated from variables.scss to prevent the generation of unnecessary CSS each time it is imported.
+ * Importing it in JavaScript or TypeScript files will not generate any CSS, but will allow you to access the variables.
+ * Any update to the main variables.scss should be reflected in this file as well as in variables.ts
+ */
+
+:export {
+    mobileBreakpoint: str-slice(#{$mobileBreakpoint}, 0, -3);
+    tabletBreakpoint: str-slice(#{$tabletBreakpoint}, 0, -3);
+    halfMobileBreakpoint: str-slice(#{$halfMobileBreakpoint}, 0, -3);
+    smallDesktopBreakpoint: str-slice(#{$smallDesktopBreakpoint}, 0, -3);
+    mediumDesktopBreakpoint: str-slice(#{$mediumDesktopBreakpoint}, 0, -3);
+    largeDesktopBreakpoint: str-slice(#{$largeDesktopBreakpoint}, 0, -3);
+    extraLargeDesktopBreakpoint: str-slice(#{$extraLargeDesktopBreakpoint}, 0, -3);
+    veryLargeDesktopBreakpoint: str-slice(#{$veryLargeDesktopBreakpoint}, 0, -3);
+    ultraLargeDesktopBreakpoint: str-slice(#{$ultraLargeDesktopBreakpoint}, 0, -3);
+}

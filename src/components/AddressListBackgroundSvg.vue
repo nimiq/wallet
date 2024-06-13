@@ -16,6 +16,7 @@ import {
     onUnmounted,
     ref,
 } from '@vue/composition-api';
+import { mobileBreakpoint } from '../scss/modules/variables';
 
 export default defineComponent({
     props: {
@@ -43,7 +44,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const isMobile = () => (window.innerWidth > 700);
+        const isMobile = () => (window.innerWidth > mobileBreakpoint);
 
         const GRID_GAP = 2 * 8; // 2rem
         const CORNER_SIZE = 10;

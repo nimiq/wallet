@@ -1,4 +1,4 @@
-import type { PlainTransactionDetails } from '@nimiq/core-web';
+import type { PlainTransactionDetails } from '@nimiq/core';
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';

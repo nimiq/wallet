@@ -1,4 +1,4 @@
-import type { PlainTransactionDetails } from '@nimiq/core-web';
+import type { PlainTransactionDetails } from '@nimiq/core';
 import { createStore } from 'pinia';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Swap as SwapObject, SwapAsset, getContract } from '@nimiq/fastspot-api';

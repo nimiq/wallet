@@ -14,7 +14,7 @@ import HubApi, {
     type SignedPolygonTransaction,
     type SignedTransaction,
 } from '@nimiq/hub-api';
-import type { PlainTransactionDetails } from '@nimiq/core-web';
+import type { PlainTransactionDetails } from '@nimiq/core';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
-import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core-web';
+import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
@@ -26,7 +26,7 @@ export async function getNetworkClient() {
     clientPromise = clientPromise || (async () => {
         // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
         // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
-        const { ClientConfiguration, Client } = await import('@nimiq/core-web');
+        const { ClientConfiguration, Client } = await import('@nimiq/core');
         const clientConfig = new ClientConfiguration();
         clientConfig.network(config.environment === ENV_MAIN ? 'albatross' : 'testalbatross');
         clientConfig.seedNodes(config.nimiqSeeds);

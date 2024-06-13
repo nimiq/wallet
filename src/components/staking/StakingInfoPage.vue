@@ -243,7 +243,7 @@ export default defineComponent({
             });
 
             try {
-                const { Address, TransactionBuilder } = await import('@nimiq/core-web');
+                const { Address, TransactionBuilder } = await import('@nimiq/core');
                 const client = await getNetworkClient();
 
                 const transactions = [
@@ -321,7 +321,7 @@ export default defineComponent({
                 ? validator.value.label : validator.value!.address;
 
             try {
-                const { Address, TransactionBuilder } = await import('@nimiq/core-web');
+                const { Address, TransactionBuilder } = await import('@nimiq/core');
                 const client = await getNetworkClient();
 
                 const transaction = TransactionBuilder.newSetActiveStake(

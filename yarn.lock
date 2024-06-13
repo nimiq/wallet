@@ -1491,10 +1491,10 @@
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.2.tgz#3455021822b036578693cf112378b8fc69e5b856"
   integrity sha512-b12CcwKgRy5YzSD1oDp3TU7JNm4vv3ua0OKFhxyFBW8JqbPGGqzU7GsRY9/nKtF77zMfE/dVayWweS0ecHPzVA==
 
-"@nimiq/core-web@next":
-  version "2.0.0-alpha.21.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-2.0.0-alpha.21.1.tgz#d4d6043df8f47cff6a44cc0d77a4303daa2181e1"
-  integrity sha512-ZKIvqM7O9puW3kXhV3otMlTn8lbfMon+QwW0hsvrAX0Gslq6WoOCzBz1q0jFM6X1oMFv5iyphvPLp1wV+CZczw==
+"@nimiq/core@next":
+  version "2.0.0-next.22.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0-next.22.0.tgz#23d591f37cac65a59f88e2ae4c4d051c43350236"
+  integrity sha512-d7ot5m1cciP1+PYv3hglHoZ+kKhUBNqCqByTaTYlCMeUQTnGJ8g2JowBtr3Lz1SOlyHN0QPqiLSd5K+CyiImcQ==
   dependencies:
     comlink "^4.4.1"
     websocket "^1.0.34"
@@ -1528,12 +1528,12 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@1.4.0-albatross.0":
-  version "1.4.0-albatross.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.4.0-albatross.0.tgz#4a73722fde8645da7e0f42241d5b311f8445ccc4"
-  integrity sha512-YuUdj4XGafVqYdDM9gYvcR3XRDUSKj+PPK2FLX3krvwyjK4beR/Mpg9AgVWle5lDNbnEJQ3t2sq3losJDKxqaw==
+"@nimiq/libswap@1.4.0-albatross.1":
+  version "1.4.0-albatross.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.4.0-albatross.1.tgz#028238e8c33e0e2ff084a0d32dacd581cc9d74fc"
+  integrity sha512-HW/b9BKU+QueARQP4sEu1tG39T4s73kqMNmIpLVGDcoB7EfEyOriClDiXacb+WHYQjhnw1LPuvNIo1LW/vtJQA==
   dependencies:
-    "@nimiq/core-web" next
+    "@nimiq/core" next
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
     "@nimiq/oasis-api" "^1.0.1"
     ethers "^5.7.2"

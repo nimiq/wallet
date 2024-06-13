@@ -128,7 +128,7 @@ export default defineComponent({
                 ? activeValidator.value.label
                 : activeValidator.value!.address;
 
-            const { Address, TransactionBuilder } = await import('@nimiq/core-web');
+            const { Address, TransactionBuilder } = await import('@nimiq/core');
             const client = await getNetworkClient();
 
             try {

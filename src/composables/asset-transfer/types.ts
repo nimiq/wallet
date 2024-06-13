@@ -6,34 +6,32 @@ export enum AssetTransferMethod {
   SinpeMovil = 'sinpe-movil',
 }
 
-export enum AssetTransferDirection {
-  CryptoToFiat = 'crypto-to-fiat',
-  FiatToCrypto = 'fiat-to-crypto',
+export interface AssetTransferOptions {
+  pair: (FiatCurrency | CryptoCurrency)[];
 }
 
 type VueComponent = VueConstructor<Vue>;
 
-export interface AssetTransferOptions {
-  direction: AssetTransferDirection;
-}
-
 // The object type that will be returned by the composable found in the same folder,
 // which will be used in the SwapTransfer.vue component.
 export interface AssetTransferParams {
-  fiatCurrency: FiatCurrency;
-  cryptoCurrency: CryptoCurrency;
+  currencyFrom: FiatCurrency | CryptoCurrency;
+  currencyTo: FiatCurrency | CryptoCurrency;
+  currencyFiatFallback: FiatCurrency;
+  currencyCrypto: Readonly<Ref<Readonly<CryptoCurrency>>>;
 
-  fiatAmount: Ref<number>;
+  amountFiat: Ref<number>;
+  amountCrypto: Ref<number>;
 
-  // The amount of crypto currency to be transferred.
-  // It will be computed based on the fiatAmount and the exchange rate.
-  cryptoAmount: Readonly<Ref<Readonly<number>>>; // Computed<number>
+  decimalsCrypto: Readonly<Ref<Readonly<number>>>;
+  decimalsFiat: Readonly<Ref<Readonly<number>>>;
 
-  // The exchange rate between the fiat and crypto currencies.
-  fiatFeeAmount: Readonly<Ref<Readonly<number>>>; // Computed<number>
+  feeAmount: Ref<number>;
+  feeCurrency: FiatCurrency | CryptoCurrency;
 
   // The maximum amount of fiat currency that can be transferred.
-  max: Readonly<Ref<Readonly<number>>>; // Computed<number>
+  limitMaxAmount: Readonly<Ref<Readonly<number>>>; // Computed<number>
+  limitMaxCurrency: FiatCurrency | CryptoCurrency;
 
   // The name of the component that will be used to display where
   // the user is transferring the funds from.
@@ -45,5 +43,14 @@ export interface AssetTransferParams {
   // The component should use data from store to display the options.
   componentTo: VueComponent;
 
+  // For NIM address selector screen
+  addressListOpened: Ref<boolean>;
+
+  insufficientLimit: Readonly<Ref<Readonly<boolean>>>;
+  insufficientBalance: Readonly<Ref<Readonly<boolean>>>;
+
+  modalTitle: string;
+
   // TODO Callbacks and hooks
+  setMax: () => void;
 }

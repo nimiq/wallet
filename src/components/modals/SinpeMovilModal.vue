@@ -74,7 +74,9 @@ import { captureException } from '@sentry/vue';
 import { useAddressStore } from '@/stores/Address';
 import { SwapAsset } from '@nimiq/libswap';
 import { useSinpeMovilStore } from '@/stores/SinpeMovil';
-import { AssetTransferDirection, AssetTransferMethod } from '@/composables/asset-transfer/types';
+import { AssetTransferMethod } from '@/composables/asset-transfer/types';
+import { SINPE_MOVIL_PAIRS } from '@/composables/asset-transfer/useSinpeMovilSwap';
+import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
 import Modal from './Modal.vue';
 
 export enum SinpeMovilFlowState {
@@ -124,8 +126,8 @@ export default defineComponent({
         const slidePrev = () => scrollTo(scrollerIndex.value - 1);
         const slideNext = () => scrollTo(scrollerIndex.value + 1);
 
-        const { pairs, sendSmsGetEndpoint, verifySmsPostEndpoint, enabled } = config.sinpeMovil;
-        const sinpaMovilDisabled = computed(() => !enabled && pairs.length === 0);
+        const { sendSmsGetEndpoint, verifySmsPostEndpoint, enabled } = config.sinpeMovil;
+        const sinpaMovilDisabled = computed(() => !enabled && SINPE_MOVIL_PAIRS.length === 0);
 
         const state = ref(SinpeMovilFlowState.Idle);
         const errorMessage = ref<string | null>(null);
@@ -273,7 +275,8 @@ export default defineComponent({
                     context.root.$router.push({
                         name: RouteName.AssetTransfer,
                         params: {
-                            direction: AssetTransferDirection.CryptoToFiat,
+                            pairFrom: CryptoCurrency.NIM,
+                            pairTo: FiatCurrency.CRC,
                             method: AssetTransferMethod.SinpeMovil,
                         },
                         query: context.root.$router.currentRoute.query,
@@ -291,9 +294,9 @@ export default defineComponent({
             // Validate that what the user is trying to do is enabled
             if (props.flow !== 'buy' && props.flow !== 'sell') {
                 context.root.$router.push('/');
-            } else if (props.flow === 'buy' && pairs.some(([from]) => from === SwapAsset.CRC)) {
+            } else if (props.flow === 'buy' && SINPE_MOVIL_PAIRS.some(([from]) => from === SwapAsset.CRC)) {
                 context.root.$router.push('/');
-            } else if (props.flow === 'sell' && pairs.some(([, to]) => to === SwapAsset.CRC)) {
+            } else if (props.flow === 'sell' && SINPE_MOVIL_PAIRS.some(([, to]) => to === SwapAsset.CRC)) {
                 context.root.$router.push('/');
             }
         });

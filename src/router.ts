@@ -262,7 +262,8 @@ const routes: RouteConfig[] = [{
             name: RouteName.AssetTransfer,
             props: {
                 method: true,
-                direction: true,
+                pairFrom: true,
+                pairTo: true,
             },
             meta: { column: Columns.DYNAMIC },
         }, {

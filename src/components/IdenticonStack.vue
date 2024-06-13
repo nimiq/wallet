@@ -1,15 +1,14 @@
 <template>
     <button class="reset identicon-stack flex-column" v-on="$listeners" :class="{
         interactive,
-        'triangle-indented': (!hasBitcoinAddresses && backgroundAddresses.length === 1)
-            || (hasBitcoinAddresses && backgroundAddresses.length === 0)
+        'triangle-indented': (!(withBitcoin && hasBitcoinAddresses) && backgroundAddresses.length === 1)
+            || (withBitcoin && hasBitcoinAddresses && backgroundAddresses.length === 0)
             || (activeCurrency === CryptoCurrency.BTC && backgroundAddresses.length === 1),
     }">
         <Identicon class="secondary"
             v-if="backgroundAddresses[0]" :address="backgroundAddresses[0]"/>
 
-        <BitcoinIcon class="secondary"
-            v-if="hasBitcoinAddresses && $config.enableBitcoin && activeCurrency !== CryptoCurrency.BTC" />
+        <BitcoinIcon class="secondary" v-if="withBitcoin && activeCurrency !== CryptoCurrency.BTC" />
 
         <Identicon class="secondary"
             v-else-if="backgroundAddresses[1]"
@@ -19,10 +18,9 @@
             v-if="activeCurrency === CryptoCurrency.NIM"
             :address="activeAddressInfo.address"/>
 
-        <BitcoinIcon class="primary"
-            v-else-if="activeCurrency === CryptoCurrency.BTC" />
+        <BitcoinIcon class="primary" v-else-if="activeCurrency === CryptoCurrency.BTC" />
 
-        <TriangleDownIcon v-if="backgroundAddresses.length || hasBitcoinAddresses"/>
+        <TriangleDownIcon v-if="backgroundAddresses.length || (showBitcoin && hasBitcoinAddresses)"/>
 
         <label>
             {{ activeCurrency === CryptoCurrency.BTC ? 'Bitcoin' : activeAddressInfo.label }}
@@ -31,6 +29,7 @@
 </template>
 
 <script lang="ts">
+import { useConfig } from '@/composables/useConfig';
 import { Identicon } from '@nimiq/vue-components';
 import { computed, defineComponent } from '@vue/composition-api';
 import { CryptoCurrency } from '../lib/Constants';
@@ -45,8 +44,12 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        showBitcoin: {
+            type: Boolean,
+            default: true,
+        },
     },
-    setup() {
+    setup(props) {
         const { activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { addressInfos, activeAddressInfo } = useAddressStore();
 
@@ -65,6 +68,7 @@ export default defineComponent({
             activeCurrency,
             CryptoCurrency,
             activeAddressInfo,
+            withBitcoin: computed(() => props.showBitcoin && hasBitcoinAddresses && useConfig().config.enableBitcoin),
         };
     },
     components: {

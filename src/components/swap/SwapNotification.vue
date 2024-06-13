@@ -67,6 +67,7 @@ import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
+import { SINPE_MOVIL_PAIRS } from '@/composables/asset-transfer/useSinpeMovilSwap';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -806,9 +807,7 @@ export default defineComponent({
             const fromAsset = activeSwap.value.from.asset as any;
             const toAsset = activeSwap.value.to.asset as any;
 
-            const { sinpeMovil } = useConfig().config;
-
-            if (sinpeMovil.pairs.find(([from, to]) => from === fromAsset && to === toAsset)) {
+            if (SINPE_MOVIL_PAIRS.find(([from, to]) => from === fromAsset && to === toAsset)) {
                 // The pair from the activeSwap matches the pair that it is enabled in the Sinpe Movil config
                 context.root.$router.push('/swap');
             } else if (fromAsset === 'BTC_LN' || toAsset === 'BTC_LN') {

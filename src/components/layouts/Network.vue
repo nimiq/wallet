@@ -71,10 +71,7 @@
         </section>
 
         <div class="unconnected-nodes-notice">
-            <p>
-                Only connected nodes can be displayed at this time.
-                Browsers and other disconnected nodes are not shown.
-            </p>
+            <p>Other browser nodes are not shown.</p>
         </div>
 
         <transition name="modal">

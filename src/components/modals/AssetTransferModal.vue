@@ -3,6 +3,7 @@
     class="asset-transfer-modal"
     :emitClose="true"
     :showOverlay="p && p.addressListOpened"
+    @close="$router.push('/')"
     @close-overlay="p.addressListOpened = false"
   >
     <ol v-if="p">
@@ -10,34 +11,65 @@
         <PageHeader>{{ p.modalTitle }}</PageHeader>
         <PageBody class="flex-column">
           <section class="pills">
-            <div>
-              <Amount
-                :amount="oneUnitCrypto"
-                :decimals="0"
-                :currency="p.currencyCrypto"
-              />
-              =
-              <FiatAmount
-                :amount="oneUnitCrypto * exchangeRate"
-                :currency="p.currencyFiatFallback"
-              />
-            </div>
-            <i18n tag="div" path="{feeAmount} fees">
-              <template #feeAmount>
-                <FiatAmount
-                  :amount="p.feeAmount"
-                  :currency="p.currencyFiatFallback"
-                />
-              </template>
-            </i18n>
-            <i18n tag="div" path="Max. {limitMax}" class="max-limit">
-              <template #limitMax>
-                <FiatAmount
-                  :amount="p.limitMaxAmount"
-                  :currency="p.currencyFiatFallback"
-                />
-              </template>
-            </i18n>
+              <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
+                <div slot="trigger" class="pill">
+                    <Amount :amount="oneUnitCrypto" :decimals="0" :currency="p.currencyCrypto" />
+                    =
+                    <FiatAmount :amount="oneUnitCrypto * exchangeRate" :currency="p.currencyFiatFallback"/>
+                </div>
+                <p class="explainer">
+                    {{ $t('The rate might change depending on the swap volume.') }}
+                </p>
+            </Tooltip>
+            <SwapFeesTooltip
+              preferredPosition="bottom"
+              :btcFeeFiat="p.fiatFees.btcFeeFiat"
+              :oasisFeeFiat="p.fiatFees.oasisFeeFiat"
+              :oasisFeePercentage="p.fiatFees.oasisFeePercentage"
+              :oasisMinFeeFiat="p.fiatFees.oasisMinFeeFiat"
+              :sepaFeeFiat="p.fiatFees.sepaFeeFiat"
+              :nimFeeFiat="p.fiatFees.nimFeeFiat"
+              :serviceSwapFeeFiat="p.fiatFees.serviceSwapFeeFiat"
+              :serviceSwapFeePercentage="p.fiatFees.serviceSwapFeePercentage"
+              :currency="p.currencyFiatFallback"
+              :container="this"
+            >
+              <i18n slot="trigger" tag="div" path="{feeAmount} fees" class="pill"
+                :class="{'high-fees': p.fiatFees.isHigh}">
+                <template #feeAmount>
+                  <FiatAmount
+                    :amount="p.fiatFees.total"
+                    :currency="p.currencyFiatFallback"
+                  />
+                </template>
+              </i18n>
+            </SwapFeesTooltip>
+            <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
+                class="limits-tooltip">
+                <div slot="trigger" class="pill limits flex-row">
+                    <LimitIcon />
+                    <FiatAmount v-if="p.limits"
+                      :amount="p.currentLimitFiat || 1000"
+                      :currency="p.currencyFiatFallback"
+                      hideDecimals
+                    />
+                    <CircleSpinner v-else />
+                </div>
+                <div class="price-breakdown">
+                    <label>{{ $t('30-day Limit') }}</label>
+                    <FiatConvertedAmount v-if="p.limits"
+                        :amount="p.limits.monthly.luna" roundDown
+                        currency="nim" :fiat="p.currencyFiatFallback"
+                        :max="p.limitMaxAmount"/>
+                    <span v-else>{{ $t('loading...') }}</span>
+                </div>
+                <i18n v-if="p.limits" class="explainer" path="{value} remaining" tag="p">
+                    <FiatConvertedAmount slot="value"
+                        :amount="p.limits.remaining.luna" roundDown
+                        currency="nim" :fiat="p.currencyFiatFallback"
+                        :max="p.limitMaxAmount"/>
+                </i18n>
+            </Tooltip>
           </section>
 
           <section class="options-section flex-row">
@@ -110,6 +142,8 @@ import {
     PageFooter,
     Amount,
     FiatAmount,
+    Tooltip,
+    CircleSpinner,
 } from '@nimiq/vue-components';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
 import { useFiatStore } from '@/stores/Fiat';
@@ -119,7 +153,10 @@ import { useCurrentLimitCrypto, useCurrentLimitFiat } from '@/lib/swap/utils/Com
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import AddressList from '../AddressList.vue';
 import DualCurrencyInput from '../DualCurrencyInput.vue';
+import FiatConvertedValue from '../FiatConvertedAmount.vue';
+import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import Modal from './Modal.vue';
+import LimitIcon from '../icons/LimitIcon.vue';
 
 export default defineComponent({
     props: {
@@ -141,6 +178,7 @@ export default defineComponent({
     },
     setup(props) {
         const p /* params */ = ref<AssetTransferParams>(null);
+        const cryptoAmount = computed(() => p.value?.cryptoAmount as unknown as number || 0);
 
         onMounted(async () => {
             const options: AssetTransferOptions = {
@@ -209,6 +247,8 @@ export default defineComponent({
                 default:
                     throw new Error('Invalid currency');
             }
+
+            p.value.updateFiatAmount(cryptoAmount.value * exchangeRate.value);
         }
 
         return {
@@ -224,9 +264,14 @@ export default defineComponent({
         PageBody,
         PageFooter,
         Amount,
+        Tooltip,
         FiatAmount,
+        FiatConvertedValue,
         DualCurrencyInput,
         AddressList,
+        SwapFeesTooltip,
+        CircleSpinner,
+        LimitIcon,
     },
 });
 </script>
@@ -271,29 +316,37 @@ export default defineComponent({
   .pills {
     display: flex;
     gap: 0.75rem;
-    overflow-x: auto;
-    padding: 0 5rem 1.5rem 5rem;
-    margin: 0 -5rem;
     // width: calc(100% + 10rem);
 
-    > div {
+    .pill {
       flex-shrink: 0;
-      margin: 1.5px;
-      box-shadow: 0 0 0 1.5px rgb(31 35 72 / 0.15);
-      border-radius: 999px;
-      padding: 3px 1.25rem;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
       color: rgb(31 35 72 / 0.6);
-      font-size: 14px;
+      font-size: var(--small-size);
       font-weight: 800;
       line-height: 1.4;
+      box-shadow: inset 0 0 0 1.5px rgb(31 35 72 / 0.15);
+      border-radius: 5rem;
+
+      &.limits {
+        color: rgb(234, 166, 23);
+        box-shadow: inset 0 0 0 1.5px rgba(234, 166, 23, 0.7);
+
+        ::v-deep .circle-spinner {
+          margin-left: 0.75rem;
+          height: 1.75rem;
+          width: 1.75rem;
+        }
+
+        .limit-icon {
+          margin-right: 0.75rem;
+          opacity: 0.8;
+        }
+      }
 
       > div {
         display: inline;
-      }
-
-      &.max-limit {
-        color: #eaa617;
-        box-shadow: 0 0 0 1.5px #eaa617;
       }
     }
   }
@@ -303,7 +356,7 @@ export default defineComponent({
     align-items: stretch;
     align-self: stretch;
     z-index: 10;
-    margin-top: 3.5rem;
+    margin-top: 5rem;
 
     & > .flex-column {
       align-items: center;

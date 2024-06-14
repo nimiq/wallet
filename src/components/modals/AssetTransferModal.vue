@@ -12,9 +12,9 @@
           <section class="pills">
               <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
                 <div slot="trigger" class="pill">
-                    <Amount :amount="oneUnitCrypto" :decimals="0" :currency="p.currencyCrypto" />
-                    =
-                    <FiatAmount :amount="oneUnitCrypto * exchangeRate" :currency="p.currencyFiatFallback"/>
+                    1 {{p.currencyCrypto}} =
+                    <FiatAmount :amount="1 ** 10 ** p.decimalsCrypto * exchangeRate"
+                      :currency="p.currencyFiatFallback"/>
                 </div>
                 <p class="explainer">
                     {{ $t('The rate might change depending on the swap volume.') }}
@@ -172,7 +172,6 @@ import {
     PageHeader,
     PageBody,
     PageFooter,
-    Amount,
     FiatAmount,
     Tooltip,
     CircleSpinner,
@@ -188,7 +187,7 @@ import { SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useConfig } from '@/composables/useConfig';
 import AddressList from '../AddressList.vue';
 import DualCurrencyInput from '../DualCurrencyInput.vue';
-import FiatConvertedValue from '../FiatConvertedAmount.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
 import SwapAnimation from '../swap/SwapAnimation.vue';
 import Modal from './Modal.vue';
@@ -232,10 +231,8 @@ export default defineComponent({
                 default:
                     throw new Error('Invalid method');
             }
-            paramsUpdated();
         });
 
-        const oneUnitCrypto = ref(0);
         const { exchangeRates } = useFiatStore();
         const exchangeRate = computed(() => {
             if (!p.value) return 0;
@@ -245,11 +242,6 @@ export default defineComponent({
                 ] || 0
             );
         });
-
-        async function paramsUpdated() {
-            if (!p.value) return;
-            oneUnitCrypto.value = 1 * 10 ** p.value.decimalsCrypto.value;
-        }
 
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: accountBtcBalance } = useBtcAddressStore();
@@ -307,7 +299,6 @@ export default defineComponent({
 
         return {
             p,
-            oneUnitCrypto,
             exchangeRate,
             setMax,
             finishSwap,
@@ -323,10 +314,9 @@ export default defineComponent({
         PageHeader,
         PageBody,
         PageFooter,
-        Amount,
         Tooltip,
         FiatAmount,
-        FiatConvertedValue,
+        FiatConvertedAmount,
         DualCurrencyInput,
         AddressList,
         SwapFeesTooltip,

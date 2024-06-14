@@ -1,5 +1,6 @@
 <template>
-  <section class="dual-currency-input" :class="{ orange: invalid }">
+<div class="dual-currency-input">
+  <section :class="{ orange: invalid }">
     <div class="flex-row primary-amount">
       <AmountInput v-model="_cryptoAmount" :decimals="cryptoCurrencyDecimals">
         <div class="amount-menu ticker" slot="suffix">
@@ -33,14 +34,30 @@
       </AmountInput>
     </span>
   </section>
+  <MessageTransition class="message-section">
+    <template v-if="insufficientLimit">
+        <!-- TEMP: wording TBD -->
+        <i18n path="Max swappable amount is {amount}">
+            <Amount slot="amount" :amount="maxCrypto"
+                :currency="fiatCurrency" hideDecimals />
+        </i18n><br />
+        <a @click="$emit('set-max')">{{ $t('Sell max') }}</a>
+    </template>
+    <template v-else-if="insufficientBalance">
+        {{ $t('Insufficient balance.') }} <a @click="$emit('set-max')">{{ $t('Sell max') }}</a>
+    </template>
+  </MessageTransition>
+</div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
+import { Amount } from '@nimiq/vue-components';
 import { useAddressStore } from '@/stores/Address';
 import AmountInput from './AmountInput.vue';
+import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({
     props: {
@@ -96,7 +113,7 @@ export default defineComponent({
             if (props.cryptoCurrency === CryptoCurrency.BTC) return accountBtcBalance.value;
             return 0;
         });
-        const insufficientBalance = computed(() => _cryptoAmount.value > balance.value);
+        const insufficientBalance = computed(() => _cryptoAmount.value > 0 && _cryptoAmount.value > balance.value);
         const insufficientLimit = computed(() =>
             _cryptoAmount.value > props.maxCrypto || _fiatAmount.value > props.maxFiat);
 
@@ -105,159 +122,184 @@ export default defineComponent({
             CryptoCurrency,
             _fiatAmount,
             _cryptoAmount,
-            invalid: computed(() => insufficientBalance.value || insufficientLimit),
+            insufficientBalance,
+            insufficientLimit,
+            invalid: computed(() => insufficientBalance.value || insufficientLimit.value),
         };
     },
     components: {
         AmountInput,
+        MessageTransition,
+        Amount,
     },
 });
 </script>
 
 <style lang="scss" scoped>
-section.dual-currency-input {
-        text-align: center;
-        margin-top: 3rem;
-        margin-bottom: 2rem;
+.dual-currency-input {
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
 
-        &.orange {
-            color: var(--nimiq-orange);
-            transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+    &.orange {
+        color: var(--nimiq-orange);
+        transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
 
-            .amount-input {
-                &, &:hover, &:focus {
+        .amount-input {
+            &, &:hover, &:focus {
+                color: var(--nimiq-orange);
+                transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
+
+                ::v-deep .nq-input,
+                ::v-deep .label-input + span,
+                ::v-deep .label-input + .ticker,
+                ::v-deep .label-input:focus-within + .ticker {
+                    --border-color: rgba(252, 135, 2, 0.3); // --nimiq-orange 0.3 opacity
                     color: var(--nimiq-orange);
-                    transition: color 200ms cubic-bezier(0.5, 0, 0.15, 1);
 
-                    ::v-deep .nq-input,
-                    ::v-deep .label-input + span,
-                    ::v-deep .label-input + .ticker,
-                    ::v-deep .label-input:focus-within + .ticker {
-                        --border-color: rgba(252, 135, 2, 0.3); // --nimiq-orange 0.3 opacity
-                        color: var(--nimiq-orange);
-
-                        transition: {
-                            property: border, color;
-                            duration: 200ms;
-                            timing-function: cubic-bezier(0.5, 0, 0.15, 1);
-                        }
+                    transition: {
+                        property: border, color;
+                        duration: 200ms;
+                        timing-function: cubic-bezier(0.5, 0, 0.15, 1);
                     }
-                }
-            }
-        }
-
-        .primary-amount {
-            align-items: flex-end;
-            color: var(--nimiq-light-blue);
-            margin-bottom: 1rem;
-
-            .amount-input {
-                width: auto;
-                max-width: 100%;
-                font-weight: bold;
-
-                ::v-deep .ticker {
-                    font-size: 2.5rem;
-                    margin-left: 1.25rem;
-                }
-
-                ::v-deep .label-input * {
-                    font-weight: 600;
-                    font-size: 4rem !important;
-                    padding: .5rem 1rem;
-                }
-            }
-
-            .amount-menu {
-                .button {
-                    align-items: center;
-                    cursor: pointer;
-                    transition: color var(--attr-duration) var(--nimiq-ease);
-
-                    &::after {
-                        content: '';
-                        display: block;
-                        width: 0;
-                        height: 0;
-                        border: 1rem solid transparent;
-                        border-width: 1rem 0.625rem;
-                        border-top-color: inherit;
-                        margin-left: 0.75rem;
-                        margin-bottom: -1.5rem;
-                        opacity: 0.4;
-
-                        transition: opacity var(--attr-duration) var(--nimiq-ease);
-                    }
-
-                    &:hover,
-                    &:active,
-                    &:focus-within {
-                        &::after {
-                            opacity: 0.7;
-                        }
-                    }
-                }
-
-                .menu {
-                    position: absolute;
-                    z-index: 1;
-                    padding: 1rem;
-                    border-radius: 0.5rem;
-                    background: var(--nimiq-blue-bg);
-                    box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
-
-                    button {
-                        color: white;
-                        opacity: 0.7;
-                        font-size: var(--body-size);
-                        line-height: 1.5;
-                        font-weight: 600;
-                        padding: 0.5rem;
-                        align-items: center;
-
-                        transition: opacity var(--attr-duration) var(--nimiq-ease);
-
-                        svg {
-                            width: 2rem;
-                            margin-right: 1rem;
-                        }
-
-                        &:hover,
-                        &:focus {
-                            opacity: 1 !important;
-                        }
-                    }
-                }
-            }
-        }
-
-        .secondary-amount {
-            font-weight: 600;
-
-            > svg {
-                margin: 0 1rem 0 1.5rem;
-                opacity: 0.3;
-            }
-
-            .amount-input {
-                width: auto;
-                margin-top: 0.375rem;
-
-                &.has-value:not(.focussed) {
-                    color: var(--text-60);
-                }
-
-                ::v-deep .ticker {
-                    font-weight: bold;
-                    font-size: 2rem;
-                }
-
-                ::v-deep .label-input * {
-                    font-weight: 600;
-                    font-size: 2.5rem !important;
-                    padding: 0.375rem 0.75rem;
                 }
             }
         }
     }
+
+    .primary-amount {
+        align-items: flex-end;
+        color: var(--nimiq-light-blue);
+        margin-bottom: 1rem;
+
+        .amount-input {
+            width: auto;
+            max-width: 100%;
+            font-weight: bold;
+
+            ::v-deep .ticker {
+                font-size: 2.5rem;
+                margin-left: 1.25rem;
+            }
+
+            ::v-deep .label-input * {
+                font-weight: 600;
+                font-size: 4rem !important;
+                padding: .5rem 1rem;
+            }
+        }
+
+        .amount-menu {
+            .button {
+                align-items: center;
+                cursor: pointer;
+                transition: color var(--attr-duration) var(--nimiq-ease);
+
+                &::after {
+                    content: '';
+                    display: block;
+                    width: 0;
+                    height: 0;
+                    border: 1rem solid transparent;
+                    border-width: 1rem 0.625rem;
+                    border-top-color: inherit;
+                    margin-left: 0.75rem;
+                    margin-bottom: -1.5rem;
+                    opacity: 0.4;
+
+                    transition: opacity var(--attr-duration) var(--nimiq-ease);
+                }
+
+                &:hover,
+                &:active,
+                &:focus-within {
+                    &::after {
+                        opacity: 0.7;
+                    }
+                }
+            }
+
+            .menu {
+                position: absolute;
+                z-index: 1;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                background: var(--nimiq-blue-bg);
+                box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.2);
+
+                button {
+                    color: white;
+                    opacity: 0.7;
+                    font-size: var(--body-size);
+                    line-height: 1.5;
+                    font-weight: 600;
+                    padding: 0.5rem;
+                    align-items: center;
+
+                    transition: opacity var(--attr-duration) var(--nimiq-ease);
+
+                    svg {
+                        width: 2rem;
+                        margin-right: 1rem;
+                    }
+
+                    &:hover,
+                    &:focus {
+                        opacity: 1 !important;
+                    }
+                }
+            }
+        }
+    }
+
+    .secondary-amount {
+        font-weight: 600;
+
+        > svg {
+            margin: 0 1rem 0 1.5rem;
+            opacity: 0.3;
+        }
+
+        .amount-input {
+            width: auto;
+            margin-top: 0.375rem;
+
+            &.has-value:not(.focussed) {
+                color: var(--text-60);
+            }
+
+            ::v-deep .ticker {
+                font-weight: bold;
+                font-size: 2rem;
+            }
+
+            ::v-deep .label-input * {
+                font-weight: 600;
+                font-size: 2.5rem !important;
+                padding: 0.375rem 0.75rem;
+            }
+        }
+    }
+    .message-section.message-transition {
+        width: 100%;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 21px;
+        text-align: center;
+        color: var(--nimiq-orange);
+
+        transition-delay: 0ms ;
+        --message-transition-duration: 200ms;
+
+        a {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        & ::v-deep .fadeY-enter,
+        & ::v-deep .fadeY-leave-to {
+            transform: translateY(-25%) !important;
+        }
+    }
+}
 </style>

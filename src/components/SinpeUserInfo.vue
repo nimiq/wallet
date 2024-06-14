@@ -14,8 +14,8 @@
       <span>{{ initials }}</span>
     </div>
     <div class="user-info flex-column">
-      <span class="user-name">
-        {{ userName }}
+      <span class="label">
+        {{ label }}
       </span>
       <span class="phone-number">
         {{ phoneNumber }}
@@ -25,19 +25,20 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
     props: {},
     setup() {
-        const userName = 'Miguel Morales';
-        const phoneNumber = '8888-8888';
-        const initials = computed(() => userName.split(' ').map((n) => n[0]).join(''));
+        // const { label, phoneNumber, initials } = useSinpeMovilStore();
 
         return {
-            userName,
-            initials,
-            phoneNumber,
+            // label,
+            // phoneNumber,
+            // initials,
+            label: 'Sinpe Móvil',
+            initials: 'SM',
+            phoneNumber: '+506 1234 5678',
         };
     },
     components: {
@@ -71,7 +72,7 @@ export default defineComponent({
     margin-top: 2rem;
     align-items: center;
 
-    .user-name {
+    .label {
       color: var(--nimiq-blue);
       text-align: center;
       font-size: 2.25rem;
@@ -89,6 +90,7 @@ export default defineComponent({
     line-height: 1.25;
     font-family: "Fira Mono";
     letter-spacing: 0.2px;
+    white-space: nowrap;
   }
 }
 </style>

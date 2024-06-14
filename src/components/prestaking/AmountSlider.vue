@@ -1,5 +1,5 @@
 <template>
-    <div class="amount-slider slider-container" ref="$container">
+    <div class="amount-slider slider-container" ref="$container" :class="{ animate: animate }">
         <div class="slider-body">
             <div class="slider-background">
                 <div class="background-one" ref="$backgroundLinesLeft" />
@@ -21,7 +21,7 @@
                     @click="$prestakedNIMAmount.focus()">
                     <input class="nq-input"
                         ref="$prestakedNIMAmount"
-                        @input="updateAmount"
+                        @blur="updateAmount"
                         @keypress.enter="$event.target.blur()"
                         :style="`width: ${inputAmountWidth}px;`"
                         />
@@ -43,10 +43,12 @@
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
-                        <AnimatedLeafIcon :nleaf="
-                            currentPercentage < 50 ? 1
-                            : currentPercentage < 75 ? 2
-                            : 3" />
+                        <AnimatedLeafIcon
+                            :duration="1000"
+                            :nleaf="
+                                currentPercentage < 50 ? 1
+                                : currentPercentage < 75 ? 2
+                                : 3" />
                     </div>
                 </div>
             </div>
@@ -183,7 +185,17 @@ export default defineComponent({
             }
         };
 
-        const updateAmount = (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
+        const animate = ref(false);
+        let firstRender = true;
+        let timeoutID: number;
+
+        const updateAmount = async (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
+            if (!firstRender) {
+                window.clearTimeout(timeoutID);
+                animate.value = true;
+                await context.root.$nextTick();
+            }
+
             const target = e.target as HTMLInputElement;
 
             startSelection = target.selectionStart as number;
@@ -205,6 +217,14 @@ export default defineComponent({
                 target.setSelectionRange(startSelection, endSelection);
             }, 0);
             context.emit('amount-prestaked', currentAmount.value);
+
+            if (!firstRender) {
+                timeoutID = window.setTimeout(() => {
+                    animate.value = false;
+                }, 1000);
+            } else {
+                firstRender = false;
+            }
         };
 
         const atEndTouch = () => {
@@ -334,6 +354,7 @@ export default defineComponent({
         }
 
         onMounted(() => {
+            firstRender = true;
             updateBoundingBoxes();
             window.addEventListener('resize', updateBoundingBoxes);
 
@@ -347,6 +368,7 @@ export default defineComponent({
         });
 
         onBeforeUnmount(() => {
+            firstRender = true;
             window.removeEventListener('resize', updateBoundingBoxes);
         });
 
@@ -373,6 +395,7 @@ export default defineComponent({
             $progressBar,
             $dotIndicator,
             buildSVG,
+            animate,
         };
     },
     components: {
@@ -564,5 +587,9 @@ export default defineComponent({
             }
         }
     }
+}
+
+.amount-slider.animate * {
+    transition: all 1000ms;
 }
 </style>

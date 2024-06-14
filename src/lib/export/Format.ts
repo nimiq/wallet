@@ -143,7 +143,8 @@ export abstract class Format {
 
                 if (!useSwapsStore().isFiatAsset(otherSideSwapData?.asset)) {
                     const otherTransaction = this.transactions.find(
-                        (t) => t.transactionHash === (otherSideSwapData as SwapBtcData | SwapNimData | SwapUsdcData)?.transactionHash,
+                        (t) => t.transactionHash === (otherSideSwapData as SwapBtcData | SwapNimData | SwapUsdcData)
+                            ?.transactionHash,
                     );
 
                     if (otherTransaction) {

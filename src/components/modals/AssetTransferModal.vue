@@ -173,7 +173,7 @@ export default defineComponent({
 
         async function paramsUpdated() {
             if (!p.value) return;
-            oneUnitCrypto.value = 1 * 10 ** p.value.decimalsCrypto;
+            oneUnitCrypto.value = 1 * 10 ** p.value.decimalsCrypto.value;
         }
 
         const { activeAddressInfo, activeAddress } = useAddressStore();

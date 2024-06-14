@@ -268,7 +268,11 @@ export default defineComponent({
                         return;
                     }
                     state.value = SinpeMovilFlowState.PhoneVerified;
-                    connect({ phoneNumber: phoneNumber.value, token: json.token!, tokenTimestamp: json.timestamp.toString() });
+                    connect({
+                        phoneNumber: phoneNumber.value,
+                        token: json.token!,
+                        tokenTimestamp: json.timestamp.toString(),
+                    });
                     context.root.$router.push({
                         name: RouteName.AssetTransfer,
                         params: {

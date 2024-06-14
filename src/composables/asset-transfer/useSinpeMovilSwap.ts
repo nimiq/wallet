@@ -136,8 +136,6 @@ export function useSinpeMovilSwap({ pair: [currencyFrom, currencyTo] }: AssetTra
         cryptoAmount,
         updateCryptoAmount: (value: number) => cryptoAmount.value = value,
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore - decimalsCrypto is a computed value
         decimalsCrypto,
         decimalsFiat,
 

@@ -44,11 +44,11 @@ export const useSinpeMovilStore = createStore({
             this.state = { ...user, label, userLimits: this.state.userLimits };
         },
         resetUser() {
-            this.state = { 
-                phoneNumber: null, 
-                label: null, 
-                token: null, 
-                tokenTimestamp: null, 
+            this.state = {
+                phoneNumber: null,
+                label: null,
+                token: null,
+                tokenTimestamp: null,
                 userLimits: this.state.userLimits,
             };
         },

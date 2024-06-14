@@ -4,13 +4,16 @@ import {
     capDecimals,
     useSwapEstimate,
     selectedFiatCurrency,
+    fiatFees,
 } from '@/lib/swap/utils/CommonUtils';
 import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
 import { i18n } from '@/i18n/i18n-setup';
 import { SwapAsset } from '@nimiq/libswap';
+import { useAddressStore } from '@/stores/Address';
 import { AssetTransferOptions, AssetTransferParams } from './types';
 import AddressSelector from '../../components/AddressSelector.vue';
 import SinpeUserInfo from '../../components/SinpeUserInfo.vue';
+import { useSwapLimits } from '../useSwapLimits';
 
 // Union of all the possible fiat currencies that can be used with SinpeMovil
 type SinpeFiatCurrencies = FiatCurrency.CRC;
@@ -111,8 +114,8 @@ export function useSinpeMovilSwap({ pair: [currencyFrom, currencyTo] }: AssetTra
     const decimalsCrypto = computed(() => calculateDisplayedDecimals(fiatAmount.value, cryptoCurrency));
     const decimalsFiat = computed(() => fiatDecimals[fiatCurrency] || 0);
 
-    const feeAmount = ref(0.5);
-
+    const { activeAddress } = useAddressStore();
+    const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
     const limitMaxAmount = ref(1000);
 
     const insufficientBalance = computed(() => fiatAmount.value > limitMaxAmount.value);
@@ -139,7 +142,13 @@ export function useSinpeMovilSwap({ pair: [currencyFrom, currencyTo] }: AssetTra
         decimalsCrypto,
         decimalsFiat,
 
-        feeAmount,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore - decimalsCrypto is a computed value
+        limits,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore - decimalsCrypto is a computed v
+        fiatFees: computed(() => fiatFees.value.funding),
+
         limitMaxAmount,
 
         insufficientLimit,

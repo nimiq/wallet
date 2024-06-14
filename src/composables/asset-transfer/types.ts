@@ -1,6 +1,8 @@
 import { FiatCurrency, CryptoCurrency } from '@/lib/Constants';
+import { FundingFees } from '@/lib/swap/utils/Functions';
 import { Ref } from '@vue/composition-api';
 import { VueConstructor } from 'vue';
+import { SwapLimits } from '../useSwapLimits';
 
 export enum AssetTransferMethod {
   SinpeMovil = 'sinpe-movil',
@@ -11,6 +13,7 @@ export interface AssetTransferOptions {
 }
 
 type VueComponent = VueConstructor<Vue>;
+type Computed<T> = Readonly<Ref<Readonly<T>>>;
 
 // The object type that will be returned by the composable found in the same folder,
 // which will be used in the SwapTransfer.vue component.
@@ -27,13 +30,14 @@ export interface AssetTransferParams {
   updateFiatAmount: (value: number) => void;
   updateCryptoAmount: (value: number) => void;
 
-  decimalsCrypto: Readonly<Ref<Readonly<number>>>;
-  decimalsFiat: Readonly<Ref<Readonly<number>>>;
+  decimalsCrypto: Computed<number>;
+  decimalsFiat: Computed<number>;
 
+  fiatFees: FundingFees;
   feeAmount: Ref<number>;
 
-  // The maximum amount of fiat currency that can be transferred.
-  limitMaxAmount: Readonly<Ref<Readonly<number>>>; // Computed<number>
+  currentLimitFiat: Computed<number>;
+  limits: SwapLimits;
 
   componentFrom: VueComponent;
   componentTo: VueComponent;
@@ -41,8 +45,8 @@ export interface AssetTransferParams {
   // For NIM address selector screen
   addressListOpened: Ref<boolean>;
 
-  insufficientLimit: Readonly<Ref<Readonly<boolean>>>;
-  insufficientBalance: Readonly<Ref<Readonly<boolean>>>;
+  insufficientLimit: Computed<boolean>;
+  insufficientBalance: Computed<boolean>;
 
   modalTitle: string;
 

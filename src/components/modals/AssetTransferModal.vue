@@ -92,7 +92,8 @@
             :cryptoCurrency="p.currencyCrypto"
             :fiatCurrencyDecimals="p.decimalsFiat"
             :cryptoCurrencyDecimals="p.decimalsCrypto"
-            :invalid="p.insufficientBalance || p.insufficientLimit"
+            :maxCrypto="currentLimitCrypto"
+            :maxFiat="currentLimitFiat"
             @set-max="setMax()"
           />
         </PageBody>
@@ -313,6 +314,8 @@ export default defineComponent({
             closeModal,
             isMainnet,
             SwapState,
+            currentLimitCrypto,
+            currentLimitFiat,
         };
     },
     components: {

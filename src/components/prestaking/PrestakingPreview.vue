@@ -44,7 +44,7 @@ export default defineComponent({
     --size: var(--large-button-size);
     font-size: var(--size);
     line-height: 1;
-    height: unset;
+    height: 4.25rem;
     border-radius: 5rem;
 }
 
@@ -62,5 +62,6 @@ export default defineComponent({
 
 .lock-icon {
     margin-left: 1rem;
+    font-size: 2.75rem;
 }
 </style>

@@ -1,5 +1,6 @@
 import { FiatCurrency, CryptoCurrency } from '@/lib/Constants';
 import { FundingFees } from '@/lib/swap/utils/Functions';
+import { ActiveSwap } from '@/stores/Swaps';
 import { Ref } from '@vue/composition-api';
 import { VueConstructor } from 'vue';
 import { SwapLimits } from '../useSwapLimits';
@@ -49,6 +50,12 @@ export interface AssetTransferParams {
   insufficientBalance: Computed<boolean>;
 
   modalTitle: string;
+
+  swap: Ref<Readonly<ActiveSwap | null>>;
+
+  detectionDelay: number;
+
+  oasisSellLimitExceeded: boolean;
 
   // TODO Callbacks and hooks
 }

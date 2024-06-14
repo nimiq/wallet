@@ -3,11 +3,10 @@
     class="asset-transfer-modal"
     :emitClose="true"
     :showOverlay="p && p.addressListOpened"
-    @close="$router.push('/')"
+    @close="closeModal"
     @close-overlay="p.addressListOpened = false"
   >
-    <ol v-if="p">
-      <li>
+    <div v-if="!!p" class="asset-transfer-input">
         <PageHeader>{{ p.modalTitle }}</PageHeader>
         <PageBody class="flex-column">
           <section class="pills">
@@ -102,9 +101,7 @@
             {{ $t("Confirm") }}
           </button>
         </PageFooter>
-      </li>
-      <li>animation</li>
-    </ol>
+        </div>
 
     <div
       v-if="p && p.addressListOpened"
@@ -121,6 +118,40 @@
         />
       </PageBody>
     </div>
+
+    <div v-if="!!p && !!p.swap" slot="overlay" class="page flex-column animation-overlay">
+            <PageBody style="padding: 0.75rem;" class="flex-column">
+                <SwapAnimation
+                    :swapId="p.swap.id"
+                    :swapState="p.swap.state"
+                    :fromAsset="p.swap.from.asset"
+                    :fromAmount="p.swap.from.amount + swap.from.fee"
+                    :fromAddress="p.swap.contracts[swap.from.asset].htlc.address"
+                    :toAsset="p.swap.to.asset"
+                    :toAmount="p.swap.to.amount - swap.to.fee"
+                    :toAddress="p.swap.contracts[swap.to.asset].htlc.address"
+                    :nimAddress="p.activeAddressInfo.address"
+                    :error="p.swap.error"
+                    :errorAction="p.swap.errorAction"
+                    :toFundingDurationMins="isMainnet ? p.detectionDelay : 0"
+                    :oasisLimitExceeded="p.oasisSellLimitExceeded"
+                    :stateEnteredAt="p.swap.stateEnteredAt"
+                    @finished="finishSwap"
+                    @cancel="finishSwap"
+                />
+            </PageBody>
+            <button v-if="p.swap.state !== SwapState.CREATE_OUTGOING"
+                class="nq-button-s minimize-button top-right"
+                @click="closeModal" @mousedown.prevent
+            >
+                <MinimizeIcon/>
+            </button>
+            <Timer v-else-if="!p.oasisSellLimitExceeded" :startTime="Date.now()" :endTime="swap.expires * 1000"
+                theme="white" maxUnit="minute" :tooltipProps="{
+                    preferredPosition: 'bottom left',
+                }"
+            />
+        </div>
   </Modal>
 </template>
 
@@ -144,19 +175,24 @@ import {
     FiatAmount,
     Tooltip,
     CircleSpinner,
+    Timer,
 } from '@nimiq/vue-components';
-import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
+import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
 import { useFiatStore } from '@/stores/Fiat';
 import { useAddressStore } from '@/stores/Address';
 import { useSwapLimits } from '@/composables/useSwapLimits';
 import { useCurrentLimitCrypto, useCurrentLimitFiat } from '@/lib/swap/utils/CommonUtils';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
+import { SwapState, useSwapsStore } from '@/stores/Swaps';
+import { useConfig } from '@/composables/useConfig';
 import AddressList from '../AddressList.vue';
 import DualCurrencyInput from '../DualCurrencyInput.vue';
 import FiatConvertedValue from '../FiatConvertedAmount.vue';
 import SwapFeesTooltip from '../swap/SwapFeesTooltip.vue';
+import SwapAnimation from '../swap/SwapAnimation.vue';
 import Modal from './Modal.vue';
 import LimitIcon from '../icons/LimitIcon.vue';
+import MinimizeIcon from '../icons/MinimizeIcon.vue';
 
 export default defineComponent({
     props: {
@@ -176,7 +212,7 @@ export default defineComponent({
             default: () => FiatCurrency.CRC,
         },
     },
-    setup(props) {
+    setup(props, context) {
         const p /* params */ = ref<AssetTransferParams>(null);
         const cryptoAmount = computed(() => p.value?.cryptoAmount as unknown as number || 0);
 
@@ -251,11 +287,32 @@ export default defineComponent({
             p.value.updateFiatAmount(cryptoAmount.value * exchangeRate.value);
         }
 
+        function finishSwap() {
+            const { setActiveSwap } = useSwapsStore();
+            setActiveSwap(null);
+            closeModal();
+        }
+
+        function closeModal() {
+            if (p.value?.addressListOpened.value === true) {
+                p.value.addressListOpened.value = false;
+            } else {
+                context.root.$router.back();
+            }
+        }
+
+        const { config } = useConfig();
+        const isMainnet = config.environment === ENV_MAIN;
+
         return {
             p,
             oneUnitCrypto,
             exchangeRate,
             setMax,
+            finishSwap,
+            closeModal,
+            isMainnet,
+            SwapState,
         };
     },
     components: {
@@ -271,45 +328,34 @@ export default defineComponent({
         AddressList,
         SwapFeesTooltip,
         CircleSpinner,
+        SwapAnimation,
+        Timer,
+
         LimitIcon,
+        MinimizeIcon,
     },
 });
 </script>
 
 <style scoped lang="scss">
 .asset-transfer-modal {
-  ol {
-    list-style: none;
+  .asset-transfer-input {
     position: relative;
     height: 100%;
     width: 100%;
-    padding: 0;
-    scroll-padding: 0 5rem;
-    overflow: hidden;
-    display: flex;
-    gap: 5rem;
-    scroll-snap-type: x proximity;
     margin: 0;
+    padding: 0 5rem;
 
-    > li {
-      scroll-snap-align: center;
-      flex-shrink: 0;
-      width: 100%;
+    .page-body {
       display: flex;
       flex-direction: column;
-      padding: 0 5rem;
+      align-items: center;
+      padding: 0;
+      overflow: inherit;
+    }
 
-      .page-body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0;
-        overflow: inherit;
-      }
-
-      .page-footer {
+    .page-footer {
         margin-top: auto;
-      }
     }
   }
 
@@ -424,5 +470,50 @@ export default defineComponent({
       }
     }
   }
+}
+
+.modal ::v-deep .overlay .animation-overlay + .close-button {
+    display: none;
+}
+
+.animation-overlay {
+    flex-grow: 1;
+
+    .minimize-button {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        padding: 0;
+        height: 4rem;
+        width: 4rem;
+        border-radius: 50%;
+        transition: background .2s var(--nimiq-ease);
+
+        &::before {
+            border-radius: 50%;
+        }
+
+        &:hover,
+        &:active,
+        &:focus {
+            background: rgba(255, 255, 255, 0.20);
+        }
+
+        &.top-right {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+        }
+    }
+
+    .timer {
+        position: absolute;
+        top: 2.5rem;
+        right: 2.5rem;
+
+        ::v-deep .tooltip-box {
+            font-size: var(--small-size);
+            padding: 1.25rem 1.5rem;
+        }
+    }
 }
 </style>

@@ -1,4 +1,4 @@
-import { FiatCurrency, CryptoCurrency } from '@/lib/Constants';
+import { FiatCurrency, CryptoCurrency, OASIS_CRC_DETECTION_DELAY } from '@/lib/Constants';
 import { computed, ref } from '@vue/composition-api';
 import {
     capDecimals,
@@ -10,6 +10,7 @@ import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
 import { i18n } from '@/i18n/i18n-setup';
 import { SwapAsset } from '@nimiq/libswap';
 import { useAddressStore } from '@/stores/Address';
+import { useSwapsStore } from '@/stores/Swaps';
 import { AssetTransferOptions, AssetTransferParams } from './types';
 import AddressSelector from '../../components/AddressSelector.vue';
 import SinpeUserInfo from '../../components/SinpeUserInfo.vue';
@@ -123,6 +124,8 @@ export function useSinpeMovilSwap({ pair: [currencyFrom, currencyTo] }: AssetTra
 
     const addressListOpened = ref(false);
 
+    const { activeSwap: swap } = useSwapsStore();
+
     return {
         isSelling,
 
@@ -159,5 +162,11 @@ export function useSinpeMovilSwap({ pair: [currencyFrom, currencyTo] }: AssetTra
         addressListOpened,
 
         modalTitle: i18n.t('Sell Crypto') as string,
+
+        swap,
+
+        detectionDelay: OASIS_CRC_DETECTION_DELAY,
+
+        oasisSellLimitExceeded: true,
     };
 }

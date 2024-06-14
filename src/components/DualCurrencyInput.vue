@@ -38,6 +38,8 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
+import { useBtcAddressStore } from '@/stores/BtcAddress';
+import { useAddressStore } from '@/stores/Address';
 import AmountInput from './AmountInput.vue';
 
 export default defineComponent({
@@ -66,9 +68,13 @@ export default defineComponent({
             type: Number,
             default: 2,
         },
-        invalid: {
-            type: Boolean,
-            required: true,
+        maxCrypto: {
+            type: Number,
+            default: () => Number.POSITIVE_INFINITY,
+        },
+        maxFiat: {
+            type: Number,
+            default: () => Number.POSITIVE_INFINITY,
         },
     },
     setup(props, context) {
@@ -83,11 +89,23 @@ export default defineComponent({
             set: (newValue) => context.emit('update:cryptoAmount', newValue),
         });
 
+        const { accountBalance: accountBtcBalance } = useBtcAddressStore();
+        const { accountBalance: accountNimBalance } = useAddressStore();
+        const balance = computed(() => {
+            if (props.cryptoCurrency === CryptoCurrency.NIM) return accountNimBalance.value;
+            if (props.cryptoCurrency === CryptoCurrency.BTC) return accountBtcBalance.value;
+            return 0;
+        });
+        const insufficientBalance = computed(() => _cryptoAmount.value > balance.value);
+        const insufficientLimit = computed(() =>
+            _cryptoAmount.value > props.maxCrypto || _fiatAmount.value > props.maxFiat);
+
         return {
             currencySelectorOpen,
             CryptoCurrency,
             _fiatAmount,
             _cryptoAmount,
+            invalid: computed(() => insufficientBalance.value || insufficientLimit),
         };
     },
     components: {

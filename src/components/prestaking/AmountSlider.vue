@@ -43,9 +43,10 @@
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
-                        <OneLeafPrestakingIcon v-if="currentPercentage < 50" />
-                        <PrestakingIcon v-else-if="currentPercentage < 75" />
-                        <ThreeLeafPrestakingIcon v-else />
+                        <AnimatedLeafIcon :nleaf="
+                            currentPercentage < 50 ? 1
+                            : currentPercentage < 75 ? 2
+                            : 3" />
                     </div>
                 </div>
             </div>
@@ -58,10 +59,8 @@ import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from 
 import { useAddressStore } from '../../stores/Address';
 import { MIN_PRESTAKE } from '../../lib/Constants';
 
-import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
-import OneLeafPrestakingIcon from '../icons/Prestaking/OneLeafStakingIcon.vue';
-import ThreeLeafPrestakingIcon from '../icons/Prestaking/ThreeLeafStakingIcon.vue';
 import VerticalLineIcon from '../icons/Prestaking/VerticalLineIcon.vue';
+import AnimatedLeafIcon from '../icons/Prestaking/AnimatedLeafIcon.vue';
 
 const getSVGNode = (n:string, attrs:Record<string, string> = {}) => {
     const e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -377,10 +376,8 @@ export default defineComponent({
         };
     },
     components: {
-        PrestakingIcon,
-        OneLeafPrestakingIcon,
-        ThreeLeafPrestakingIcon,
         VerticalLineIcon,
+        AnimatedLeafIcon,
     },
 });
 </script>
@@ -553,10 +550,12 @@ export default defineComponent({
                                 0rem .1875rem .375rem rgba(0, 0, 0, 0.08),
                                 0rem 0.03rem .25rem rgba(0, 0, 0, 0.06);
 
-                    svg {
-                        width: 3.5rem;
-                        height: 3.5rem;
+                    &:active { cursor: grab }
+
+                    & ::v-deep svg {
+                        font-size: 3.5rem;
                         margin-left: 0.5rem;
+
                         line, path {
                             stroke-width: 1;
                         }
@@ -565,11 +564,5 @@ export default defineComponent({
             }
         }
     }
-}
-
-@media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint
-}
-
-@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
 }
 </style>

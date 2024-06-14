@@ -14,6 +14,7 @@ import { calculateDisplayedDecimals } from '../../NumberFormatting';
 import { estimateFees, selectOutputs } from '../../BitcoinTransactionUtils';
 import { btcMaxSendableAmount } from './SellUtils';
 import { FundingFees, getFiatPerCrypto, getFeePerUnit, getFiatFees, SettlementFees } from './Functions';
+import { assetToCurrency } from './Assets';
 
 const { exchangeRates } = useFiatStore();
 const { activeCurrency } = useAccountStore();
@@ -22,6 +23,7 @@ const { accountUtxos } = useBtcAddressStore();
 const { connectedUser: kycUser } = useKycStore();
 
 export type FiatSwapAsset = SwapAsset.EUR | SwapAsset.CRC;
+export type FiatSwapCurrency = FiatCurrency.EUR | FiatCurrency.CRC;
 
 /**
  * Common - everything common to Buy and Sell crypto
@@ -37,7 +39,7 @@ export type FiatSwapAsset = SwapAsset.EUR | SwapAsset.CRC;
 export const estimate = ref<Estimate>(null);
 export const assets = ref<AssetList>(null);
 // By default we set EUR, but you need to change it if you swap to another fiat currency.
-export const selectedFiatCurrency = ref<FiatCurrency.EUR | FiatCurrency.CRC>(FiatCurrency.EUR);
+export const selectedFiatCurrency = ref<FiatSwapCurrency>(FiatCurrency.EUR);
 
 /**
  * Common - Computeds
@@ -138,16 +140,16 @@ export function capDecimals(amount: number, asset: SwapAsset) {
     return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;
 }
 
-export function calculateFees<FiatCurrency extends FiatSwapAsset>(
-    { to, from }: { to: FiatCurrency, from?: CryptoCurrency }
-        | { to?: CryptoCurrency, from: FiatCurrency },
+export function calculateFees(
+    { to, from }: { to: FiatSwapCurrency, from?: CryptoCurrency }
+        | { to?: CryptoCurrency, from: FiatSwapCurrency },
     amount?: number,
-    feesPerUnit = { fiatCurrency: 0, nim: 0, btc: 0 },
+    feesPerUnit = { fiat: 0, nim: 0, btc: 0 },
 ) {
     let fundingFee: number | null = null;
     let settlementFee: number | null = null;
 
-    if (useSwapsStore().isFiatCurrency(to)) {
+    if (to === FiatCurrency.EUR || to === FiatCurrency.CRC) {
         if ((from || activeCurrency.value) === CryptoCurrency.NIM) {
             fundingFee = (feesPerUnit.nim || nimFeePerUnit.value) * 244; // 244 = NIM HTLC funding tx size
         }
@@ -166,13 +168,13 @@ export function calculateFees<FiatCurrency extends FiatSwapAsset>(
                 - selected.changeAmount;
         }
 
-        settlementFee = feesPerUnit.fiatCurrency
-            || (estimate.value && useSwapsStore().isFiatCurrency(estimate.value.to.asset)
+        settlementFee = feesPerUnit.fiat
+            || (estimate.value && useSwapsStore().isFiatAsset(estimate.value.to.asset)
                 && estimate.value.to.fee)
             || 0;
     } else { // from Fiat
-        fundingFee = feesPerUnit.fiatCurrency
-            || (estimate.value && useSwapsStore().isFiatCurrency(estimate.value.from.asset)
+        fundingFee = feesPerUnit.fiat
+            || (estimate.value && useSwapsStore().isFiatAsset(estimate.value.from.asset)
                 && estimate.value.from.fee)
             || 0;
 
@@ -205,25 +207,25 @@ export function calculateFees<FiatCurrency extends FiatSwapAsset>(
     };
 }
 
-export function getFiatSwapParameters<FiatAsset extends FiatSwapAsset>({ from, to }: {
-    from?: { asset: FiatAsset, amount: number }, // Buy
+export function getFiatSwapParameters<FiatAsset extends FiatSwapAsset>(fiatAsset: FiatAsset, { from, to }: {
+    from?: { asset: FiatAsset, amount: number }, // Buy crypto
     to: { amount: number },
 } | {
-    from: { amount: number }, // Sell
+    from: { amount: number }, // Sell crypto
     to?: { asset: FiatAsset, amount: number },
 }) {
     if (!to && !from) return { to: null, from: null };
 
-    if ((to && !('asset' in to) && to.amount)
-        || (from && ('asset' in from) && useSwapsStore().isFiatCurrency(from.asset) && from.amount)) { // Buy
-        const fees = calculateFees({ from: (from as { asset: FiatSwapAsset })!.asset });
+    if (to && (!('asset' in to) && to.amount)
+        || (from && ('asset' in from) && useSwapsStore().isFiatAsset(from.asset) && from.amount)) { // Buy crypto
+        const fees = calculateFees({ from: assetToCurrency(fiatAsset) });
         const toSwapAsset = activeCurrency.value === CryptoCurrency.BTC
             ? SwapAsset.BTC
             : SwapAsset.NIM;
 
-        if (from && ('asset' in from) && useSwapsStore().isFiatCurrency(from.asset) && from.amount) {
+        if (from && ('asset' in from) && useSwapsStore().isFiatAsset(from.asset) && from.amount) {
             return {
-                from: { [from.asset]: (from.amount - fees.fundingFee) / 100 },
+                from: { [fiatAsset]: (from.amount - fees.fundingFee) / 100 },
                 to: toSwapAsset,
             } as {
                 from: RequestAsset<FiatAsset>,
@@ -231,54 +233,43 @@ export function getFiatSwapParameters<FiatAsset extends FiatSwapAsset>({ from, t
             };
         }
 
-        if (!to || !('asset' in to) || !useSwapsStore().isFiatCurrency(to.asset)) {
-            throw new Error('Invalid swap direction');
-        }
-
         return {
-            from: to?.asset,
+            from: fiatAsset,
             to: {
                 [toSwapAsset]: (to!.amount + fees.settlementFee) / (
-                    toSwapAsset === SwapAsset.BTC
-                        ? 1e8
-                        : 1e5
+                    toSwapAsset === SwapAsset.BTC ? 1e8 : 1e5
                 ),
             },
         } as {
-            from: FiatSwapAsset,
+            from: FiatAsset,
             to: RequestAsset<SwapAsset.BTC>,
         };
     }
 
     if ((from && !('asset' in from) && from.amount)
-        || (to && ('asset' in to) && useSwapsStore().isFiatCurrency(to.asset) && to.amount)) { // Sell
-        const fees = calculateFees({ to: (to as { asset: FiatSwapAsset }).asset }, to?.amount);
+        || (to && ('asset' in to) && useSwapsStore().isFiatAsset(to.asset) && to.amount)) { // Sell crypto
+        const fees = calculateFees({ to: assetToCurrency(fiatAsset) }, to?.amount);
         const fromSwapAsset = activeCurrency.value === CryptoCurrency.BTC
             ? SwapAsset.BTC
             : SwapAsset.NIM;
 
-        if ((from && !('asset' in from) && from.amount) && to
-            && ('asset' in to) && useSwapsStore().isFiatCurrency(to.asset)) {
+        if ((from && !('asset' in from) && from.amount)) {
             return {
                 from: {
                     [fromSwapAsset]: (from.amount - fees.fundingFee) / (
                         fromSwapAsset === SwapAsset.BTC ? 1e8 : 1e5
                     ),
                 },
-                to: to.asset,
+                to: fiatAsset,
             } as {
                 from: RequestAsset<SwapAsset.BTC>,
-                to: FiatSwapAsset,
+                to: FiatAsset,
             };
-        }
-
-        if (!to || !('asset' in to) || !useSwapsStore().isFiatCurrency(to.asset)) {
-            throw new Error('Invalid swap direction');
         }
 
         return {
             from: fromSwapAsset,
-            to: { [to.asset]: (to!.amount + fees.settlementFee) / 100 },
+            to: { [fiatAsset]: (to!.amount + fees.settlementFee) / 100 },
         } as {
             from: typeof fromSwapAsset,
             to: RequestAsset<FiatAsset>,

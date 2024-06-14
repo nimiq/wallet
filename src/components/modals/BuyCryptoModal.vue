@@ -33,11 +33,11 @@
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
                             <div v-if="activeCurrency === CryptoCurrency.NIM" slot="trigger" class="pill exchange-rate">
-                                1 NIM = <FiatAmount :amount="eurPerNim || 0"
-                                    :maxRelativeDeviation="0.001" currency="eur"/>
+                                1 NIM = <FiatAmount :amount="fiatPerNim || 0"
+                                    :maxRelativeDeviation="0.001" :currency="eur"/>
                             </div>
                             <div v-else slot="trigger" class="pill exchange-rate">
-                                1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur"/>
+                                1 BTC = <FiatAmount :amount="fiatPerBtc || 0" :currency="eur"/>
                             </div>
                             <!-- <span>{{ $t('This rate includes the swap fee.') }}</span> -->
                             <p class="explainer">
@@ -367,6 +367,7 @@ import {
     useCurrentLimitCrypto,
     useCurrentLimitFiat,
     useSwapEstimate,
+    fiatPerNim,
     fiatPerBtc,
     fetchAssets,
     fiatCurrencyInfo,
@@ -527,7 +528,7 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    const { from, to } = getFiatSwapParameters(_fiatAmount.value
+                    const { from, to } = getFiatSwapParameters(SwapAsset.EUR, _fiatAmount.value
                         ? { from: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
                         : { to: { amount: cryptoAmount.value } },
                     );
@@ -539,8 +540,8 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { settlementFee } = calculateFees({ from: SwapAsset.EUR }, undefined, {
-                        fiatCurrency: swapSuggestion.from.fee || 0,
+                    const { settlementFee } = calculateFees({ from: FiatCurrency.EUR }, undefined, {
+                        fiat: swapSuggestion.from.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.to.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.to.feePerUnit! : 0,
                     });
@@ -934,7 +935,8 @@ export default defineComponent({
             goBack,
             selectedFiatCurrency,
             CryptoCurrency,
-            eurPerBtc: fiatPerBtc,
+            fiatPerNim,
+            fiatPerBtc,
             fiatFees: computed(() => fiatFees.value.settlement),
             limits,
             activeCurrency,

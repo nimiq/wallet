@@ -1091,9 +1091,12 @@ export default defineComponent({
                 case SwapAsset.NIM: return activeAddressInfo.value?.balance ?? 0;
                 case SwapAsset.BTC: return accountBtcBalance.value;
                 case SwapAsset.USDC_MATIC: return accountUsdcBalance.value;
+
+                // Unsupported assets for swaps
+                case SwapAsset.BTC_LN: return 0;
+                case SwapAsset.USDC: return 0; // Legacy bridged USDC
                 case SwapAsset.EUR: return 0;
                 case SwapAsset.CRC: return 0;
-                default: return 0; // USDC and BTC_LN
             }
         }
 

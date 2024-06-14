@@ -93,7 +93,7 @@ watch(async () => {
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash)!;
                 // Ignore all swaps that are not from fiat
-                if (!useSwapsStore().isFiatCurrency(swap?.in?.asset)) return false;
+                if (!useSwapsStore().isFiatAsset(swap?.in?.asset)) return false;
 
                 return {
                     ...swap.in,
@@ -108,7 +108,7 @@ watch(async () => {
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash)!;
                 // Ignore all swaps that are not from fiat
-                if (!useSwapsStore().isFiatCurrency(swap?.in?.asset)) return false;
+                if (!useSwapsStore().isFiatAsset(swap?.in?.asset)) return false;
 
                 return {
                     ...swap.in,
@@ -123,10 +123,10 @@ watch(async () => {
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash);
                 // Ignore all swaps that are not from fiat
-                if (!useSwapsStore().isFiatCurrency(swap?.in?.asset)) return false;
+                if (!swap || !useSwapsStore().isFiatAsset(swap?.in?.asset)) return false;
 
                 return {
-                    ...swap!.in,
+                    ...swap.in,
                     timestamp: tx.timestamp,
                 } as TimedSwap;
             })

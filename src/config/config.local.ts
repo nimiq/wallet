@@ -72,6 +72,12 @@ export default {
         maxKycAmount: 4999, // Euro
     },
 
+    sinpeMovil: {
+        enabled: true,
+        apiEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/v1',
+        smsApiEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/sms',
+    },
+
     ten31Pass: {
         enabled: true,
         apiEndpoint: window.sessionStorage['use-local-kyc-server'] // switch that can be set to use local kyc server
@@ -114,12 +120,6 @@ export default {
         sdkScriptUrl: 'https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js',
         splxScriptUrl: null as string | null,
         apiKey: 'pk_test_0c3e2ecd-1546-4068-ae01-d49382e1266a',
-    },
-
-    sinpeMovil: {
-        enabled: true,
-        sendSmsGetEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/sms/send/{phone}',
-        verifySmsPostEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/sms/verify',
     },
 
     goCrypto: {

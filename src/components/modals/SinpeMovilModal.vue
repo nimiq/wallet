@@ -125,7 +125,7 @@ export default defineComponent({
         const slidePrev = () => scrollTo(scrollerIndex.value - 1);
         const slideNext = () => scrollTo(scrollerIndex.value + 1);
 
-        const { sendSmsGetEndpoint, verifySmsPostEndpoint, enabled } = config.sinpeMovil;
+        const { smsApiEndpoint, enabled } = config.sinpeMovil;
         const sinpaMovilDisabled = computed(() => !enabled && SINPE_MOVIL_PAIRS.length === 0);
 
         const state = ref(SinpeMovilFlowState.Idle);
@@ -172,10 +172,8 @@ export default defineComponent({
 
             sendSmsTs.value = now.value;
 
-            const url = sendSmsGetEndpoint.replace('{phone}', phoneNumber.value);
-
             try {
-                const res = await fetch(url, { headers });
+                const res = await fetch(`${smsApiEndpoint}/send/${phoneNumber.value}`, { headers });
                 if (!res.ok) {
                     state.value = SinpeMovilFlowState.Error;
                     errorMessage.value = await res.text()
@@ -254,7 +252,7 @@ export default defineComponent({
             };
 
             const h = { ...headers, 'Content-Type': 'application/json' };
-            await fetch(verifySmsPostEndpoint, { method: 'POST', headers: h, body: JSON.stringify(body) })
+            await fetch(`${smsApiEndpoint}/verify`, { method: 'POST', headers: h, body: JSON.stringify(body) })
                 .then(async (res) => {
                     if (!res.ok) {
                         state.value = SinpeMovilFlowState.Error;
@@ -262,7 +260,7 @@ export default defineComponent({
                             + 'Please try again later.'; // TODO Wording + translations
                         return;
                     }
-                    const json = await res.json() as { token: string };
+                    const json = await res.json() as { token: string, timestamp: number };
                     if (!json || !json.token) {
                         state.value = SinpeMovilFlowState.Error;
                         errorMessage.value = 'There was an error with the phone verification system.'
@@ -270,7 +268,7 @@ export default defineComponent({
                         return;
                     }
                     state.value = SinpeMovilFlowState.PhoneVerified;
-                    connect({ phoneNumber: phoneNumber.value, token: json.token! });
+                    connect({ phoneNumber: phoneNumber.value, token: json.token!, tokenTimestamp: json.timestamp.toString() });
                     context.root.$router.push({
                         name: RouteName.AssetTransfer,
                         params: {

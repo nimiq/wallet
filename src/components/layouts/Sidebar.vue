@@ -316,9 +316,8 @@ export default defineComponent({
             return activeCurrency.value !== CryptoCurrency.NIM;
         });
         const canSellCryptoWithSinpeMovil = computed(() => { // eslint-disable-line arrow-body-style
-            if (SINPE_MOVIL_PAIRS.some(([from]) => assetToCurrency(from) === activeCurrency.value)) return true;
-            if (!countryCode.value) return false;
-            // @ts-expect-error It is fine
+            if (!SINPE_MOVIL_PAIRS.some(([from]) => assetToCurrency(from) === activeCurrency.value)) return false;
+            // @ts-expect-error For dev
             return true || SINPE_MOVIL_COUNTRY_CODES.includes(countryCode.value);
         });
 
@@ -338,10 +337,10 @@ export default defineComponent({
         };
 
         function openSellModal() {
-            if (enabledSellProviders.value.length === 0) return;
+            if (!enabledSellProviders.value.length) return;
             const modalName: RouteName = enabledSellProviders.value.length === 1
                 ? sellModals[enabledSellProviders.value[0]]
-                : RouteName.SellCrypto; // SellCrypto is for SEPA operations. We need to add a new Sell Selector.
+                : RouteName.SellCrypto; // TODO: SellCrypto is for SEPA operations. We need to add a new Sell Selector.
             openModal(modalName);
         }
 

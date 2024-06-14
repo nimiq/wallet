@@ -6,15 +6,17 @@ export type SinpeMovilState = {
     phoneNumber: string | null,
     label: string | null,
     token: string | null,
+    tokenTimestamp: string | null,
     userLimits: UserLimits | null,
 };
 
 export const useSinpeMovilStore = createStore({
-    id: 'kyc',
+    id: 'sinpemovil',
     state: (): SinpeMovilState => ({
         phoneNumber: null,
         label: null,
         token: null,
+        tokenTimestamp: null,
         userLimits: null,
     }),
     getters: {
@@ -26,7 +28,7 @@ export const useSinpeMovilStore = createStore({
         isUserVerified: (state): Readonly<boolean> => {
             if (!useConfig().config.sinpeMovil.enabled) return false;
 
-            // Check if state is set and the timestamp is less than 5 minutes ago
+            // TODO: Check if state is set and the timestamp is less than 5 minutes ago
             return !!state.phoneNumber && !!state.token;
         },
         kycLimits: (state): Readonly<UserLimits | null> => state.userLimits,
@@ -42,7 +44,13 @@ export const useSinpeMovilStore = createStore({
             this.state = { ...user, label, userLimits: this.state.userLimits };
         },
         resetUser() {
-            this.state = { phoneNumber: null, label: null, token: null, userLimits: this.state.userLimits };
+            this.state = { 
+                phoneNumber: null, 
+                label: null, 
+                token: null, 
+                tokenTimestamp: null, 
+                userLimits: this.state.userLimits,
+            };
         },
     },
 });

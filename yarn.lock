@@ -1489,10 +1489,9 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.8.0.tgz#705a9e79e425c3e6536d8994fd0b39d88af1b268"
-  integrity sha512-qNkibJnxS8ndOn4tuy1m3lSNKybBYApo+wy1ajTKcQ0lHo3VfLY0sAJ+WRE7diVWCa7iumu6wsFVudyc3k8/NQ==
+"@nimiq/fastspot-api@^1.8.0", "@nimiq/fastspot-api@https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528":
+  version "1.9.0"
+  resolved "https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528"
 
 "@nimiq/hub-api@^1.8.0":
   version "1.8.0"
@@ -1513,21 +1512,19 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.3.0":
+"@nimiq/libswap@https://github.com/nimiq/libswap-js#56a3833d2483607930047336149fa999b843c367":
   version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.3.0.tgz#f7df8282ca0d192e3d5ae1af62285a25226b9d13"
-  integrity sha512-vSufBr3XKBAh/zg9cff6kt9XWD+cIiC7vM2W13pR1m/qMCZE71Z8lWfzhZBBYEPw3esOhcyLBZ/7t/lWXlCSgA==
+  resolved "https://github.com/nimiq/libswap-js#56a3833d2483607930047336149fa999b843c367"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
-    "@nimiq/oasis-api" "^1.0.1"
+    "@nimiq/oasis-api" "https://github.com/nimiq/oasis-api-js#9d63fac0ab1364e4e1494334ee2d74f3d6f96b35"
     ethers "^5.7.2"
     promise.prototype.finally "^3.1.3"
 
-"@nimiq/oasis-api@^1.0.1", "@nimiq/oasis-api@^1.1.1":
+"@nimiq/oasis-api@https://github.com/nimiq/oasis-api-js#9d63fac0ab1364e4e1494334ee2d74f3d6f96b35":
   version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/oasis-api/-/oasis-api-1.1.1.tgz#d1aa3d0f9afabf9116205809a0fc72d2e392bafa"
-  integrity sha512-jXNO7nvE0mzAyDCrucByv5AcyDWZjyqb9810YctysxqUtOxNG27hPkhomL+WW6nrnTVgvriJo3yaTFPTfLphKw==
+  resolved "https://github.com/nimiq/oasis-api-js#9d63fac0ab1364e4e1494334ee2d74f3d6f96b35"
 
 "@nimiq/oasis-bank-list@https://github.com/nimiq/oasis-bank-list#main":
   version "1.0.0"
@@ -5948,11 +5945,6 @@ fs-minipass@^1.2.7:
   dependencies:
     minipass "^2.6.0"
 
-fs-monkey@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/fs-monkey/-/fs-monkey-1.0.3.tgz#ae3ac92d53bb328efe0e9a1d9541f6ad8d48e2d3"
-  integrity sha512-cybjIfiiE+pTWicSCLFHSrXZ6EilF30oh91FDP9S2B051prEa7QWfrVTQm10/dDpswBDXZugPa1Ogu8Yh+HV0Q==
-
 fs-monkey@^1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/fs-monkey/-/fs-monkey-1.0.6.tgz#8ead082953e88d992cf3ff844faa907b26756da2"
@@ -7487,14 +7479,7 @@ media-typer@0.3.0:
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
 
-memfs@^3.1.2:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/memfs/-/memfs-3.4.1.tgz#b78092f466a0dce054d63d39275b24c71d3f1305"
-  integrity sha512-1c9VPVvW5P7I85c35zAdEr1TD5+F11IToIHIlrVIcflfnzPkJa0ZoYEoEdYDP8KgPFoSZ/opDrUsAoZWym3mtw==
-  dependencies:
-    fs-monkey "1.0.3"
-
-memfs@^3.4.3:
+memfs@^3.1.2, memfs@^3.4.3:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/memfs/-/memfs-3.6.0.tgz#d7a2110f86f79dd950a8b6df6d57bc984aa185f6"
   integrity sha512-EGowvkkgbMcIChjMTMkESFDbZeSh8xZ7kNSF0hAiAN4Jh6jgHCRS0Ga/+C8y6Au+oqpezRHCfPsmJ2+DwAgiwQ==

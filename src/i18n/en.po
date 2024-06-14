@@ -6,6 +6,10 @@ msgstr ""
 msgid "‘Digital gold’, the original crypto"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:40
+msgid "({secondsLeft}s)"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
 msgstr ""
@@ -66,6 +70,10 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:13
+msgid "{feeAmount} fees"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:56
 msgid "{perc}% of swap value."
@@ -102,11 +110,11 @@ msgstr ""
 msgid "+ network fees"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:145
+#: src/components/modals/BuyOptionsModal.vue:143
 msgid "+ network fees, registration required"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:80
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees, registration required above $700"
 msgstr ""
 
@@ -322,13 +330,17 @@ msgstr ""
 msgid "Any funds sent will be refunded."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:113
-#: src/components/modals/BuyOptionsModal.vue:43
+#: src/components/modals/BuyOptionsModal.vue:111
+#: src/components/modals/BuyOptionsModal.vue:41
 msgid "Apple/Google Pay"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:233
 msgid "Apply fee"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:13
+msgid "Approve the sale"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:34
@@ -385,8 +397,8 @@ msgstr ""
 msgid "Bank Account"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:28
-#: src/components/modals/BuyOptionsModal.vue:98
+#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:96
 msgid "Bank Transfer"
 msgstr ""
 
@@ -482,7 +494,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:157
+#: src/components/modals/BuyOptionsModal.vue:155
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -598,6 +610,7 @@ msgid "Choose a Validator"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
+#: src/components/modals/AssetTransferModal.vue:50
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:212
@@ -642,6 +655,7 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:40
 #: src/components/SendModalFooter.vue:8
 #: src/components/swap/SwapModal.vue:189
 #: src/components/swap/SwapModal.vue:194
@@ -653,8 +667,16 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:39
+msgid "Confirm Number"
+msgstr ""
+
 #: src/components/prestaking/PrestakingGraphPage.vue:36
 msgid "Confirm prestake"
+msgstr ""
+
+#: src/components/modals/SinpeMovilSellInfoModal.vue:13
+msgid "Confirm Sinpe number"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
@@ -806,8 +828,8 @@ msgstr ""
 msgid "Creates prestaking rewards"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:112
-#: src/components/modals/BuyOptionsModal.vue:42
+#: src/components/modals/BuyOptionsModal.vue:110
+#: src/components/modals/BuyOptionsModal.vue:40
 msgid "Credit Card"
 msgstr ""
 
@@ -932,8 +954,16 @@ msgstr ""
 msgid "Enter IBAN"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:29
+msgid "Enter phone number"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:20
 msgid "Enter recipient address..."
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:15
+msgid "Enter the code sent to {phoneNumber} to approve."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:249
@@ -946,6 +976,10 @@ msgstr ""
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
 msgid "Enter your bank details"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:9
+msgid "Enter your Sinpe Móvil phone number."
 msgstr ""
 
 #: src/lib/GoCrypto.ts:228
@@ -1223,7 +1257,7 @@ msgstr ""
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:216
+#: src/components/swap/SwapNotification.vue:217
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1339,6 +1373,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
+#: src/components/modals/SinpeMovilSellInfoModal.vue:21
 #: src/components/prestaking/PrestakingWelcomePage.vue:22
 msgid "Let's go"
 msgstr ""
@@ -1374,7 +1409,6 @@ msgstr ""
 msgid "loading..."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:14
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
 msgstr ""
@@ -1423,11 +1457,15 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:101
-#: src/components/modals/BuyOptionsModal.vue:118
-#: src/components/modals/BuyOptionsModal.vue:31
-#: src/components/modals/BuyOptionsModal.vue:48
-#: src/components/modals/BuyOptionsModal.vue:67
+#: src/components/modals/AssetTransferModal.vue:18
+msgid "Max. {limitMax}"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:116
+#: src/components/modals/BuyOptionsModal.vue:29
+#: src/components/modals/BuyOptionsModal.vue:46
+#: src/components/modals/BuyOptionsModal.vue:65
+#: src/components/modals/BuyOptionsModal.vue:99
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1497,7 +1535,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:215
+#: src/components/swap/SwapNotification.vue:216
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1544,8 +1582,8 @@ msgstr ""
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:151
-#: src/components/modals/BuyOptionsModal.vue:86
+#: src/components/modals/BuyOptionsModal.vue:149
+#: src/components/modals/BuyOptionsModal.vue:84
 msgid "Not available in your country"
 msgstr ""
 
@@ -1865,6 +1903,14 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:59
+msgid "Resend"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:56
+msgid "Resend ({secondsLeft}s)"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:237
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
@@ -1949,10 +1995,15 @@ msgstr ""
 msgid "Sell BTC and USDC"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:20
+msgid "Sell crypto"
+msgstr ""
+
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
 #: src/components/modals/SellCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:31
+#: src/composables/asset-transfer/useSinpeMovilSwap.ts:88
 msgid "Sell Crypto"
 msgstr ""
 
@@ -1960,6 +2011,7 @@ msgstr ""
 msgid "Sell Crypto for Fiat"
 msgstr ""
 
+#: src/components/DualCurrencyInput.vue:18
 #: src/components/modals/SellCryptoModal.vue:134
 #: src/components/modals/SellCryptoModal.vue:163
 #: src/components/modals/SellCryptoModal.vue:166
@@ -1970,6 +2022,14 @@ msgstr ""
 msgid ""
 "Sell NIM and BTC directly to your\n"
 "SEPA bank account."
+msgstr ""
+
+#: src/components/modals/SinpeMovilSellInfoModal.vue:11
+msgid "Sell NIM directly to your Sinpe Móvil account."
+msgstr ""
+
+#: src/components/modals/SinpeMovilSellInfoModal.vue:10
+msgid "Sell NIM using Sinpe Móvil"
 msgstr ""
 
 #: src/components/BankCheckInput.vue:78
@@ -2032,6 +2092,10 @@ msgstr ""
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:36
+msgid "Sending SMS..."
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:461
 #: src/components/modals/SendModal.vue:771
 #: src/components/modals/UsdcSendModal.vue:604
@@ -2090,6 +2154,10 @@ msgstr ""
 
 #: src/components/prestaking/PrestakingGraphPage.vue:5
 msgid "Set an amount to lock"
+msgstr ""
+
+#: src/components/modals/SinpeMovilSellInfoModal.vue:14
+msgid "Set an amount to sell"
 msgstr ""
 
 #: src/components/AmountMenu.vue:15
@@ -2330,8 +2398,8 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/lib/swap/utils/BuyUtils.ts:90
-#: src/lib/swap/utils/SellUtils.ts:110
+#: src/lib/swap/utils/BuyUtils.ts:97
+#: src/lib/swap/utils/SellUtils.ts:120
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -2666,6 +2734,10 @@ msgstr ""
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:6
 msgid "What is your bank called?"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:7
+msgid "What's your number?"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:194

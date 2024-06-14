@@ -109,10 +109,7 @@ export default defineComponent({
     @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         .page-header {
             .prestaking-icon {
-                margin-top: 1.375rem;
-                margin-bottom: 1.25rem;
                 & ::v-deep svg {
-                    margin-left: 0.25rem;
                     height: 16rem;
                 }
             }
@@ -121,7 +118,7 @@ export default defineComponent({
         .page-body {
             .prestaking-rounded-background {
                 .prestaking-under-icons-text {
-                    padding-bottom: .25rem;
+                    margin-bottom: 1rem;
                 }
             }
         }

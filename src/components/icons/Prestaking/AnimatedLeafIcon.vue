@@ -1,8 +1,8 @@
-<template>
+<template functional>
     <svg class="nq-icon animated-leaf-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
         fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-        :class="{ 'one-leaf': nleaf === 1, 'two-leaves': nleaf === 2, 'three-leaves': nleaf === 3 }"
-        :style="{ '--transition-duration': duration + 'ms' }">
+        :class="{ 'one-leaf': props.nleaf === 1, 'two-leaves': props.nleaf === 2, 'three-leaves': props.nleaf === 3 }"
+        :style="{ '--transition-duration': props.duration + 'ms' }">
         <line x1="7.75" y1="8.75" x2="7.75" y2="13.25"/>
         <path class="first-leaf" d="
             M 12.25,7.75
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
     props: {

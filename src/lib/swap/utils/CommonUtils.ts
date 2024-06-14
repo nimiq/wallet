@@ -216,7 +216,7 @@ export function getFiatSwapParameters<FiatAsset extends FiatSwapAsset>(fiatAsset
 }) {
     if (!to && !from) return { to: null, from: null };
 
-    if (to && (!('asset' in to) && to.amount)
+    if ((to && !('asset' in to) && to.amount)
         || (from && ('asset' in from) && useSwapsStore().isFiatAsset(from.asset) && from.amount)) { // Buy crypto
         const fees = calculateFees({ from: assetToCurrency(fiatAsset) });
         const toSwapAsset = activeCurrency.value === CryptoCurrency.BTC

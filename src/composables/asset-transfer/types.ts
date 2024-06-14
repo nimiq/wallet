@@ -27,7 +27,7 @@ export interface AssetTransferParams {
   updateFiatAmount: (value: number) => void;
   updateCryptoAmount: (value: number) => void;
 
-  decimalsCrypto: number;
+  decimalsCrypto: Readonly<Ref<Readonly<number>>>;
   decimalsFiat: Readonly<Ref<Readonly<number>>>;
 
   feeAmount: Ref<number>;

@@ -156,7 +156,7 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
 
     const data = estimate;
 
-    if (data && useSwapsStore().isFiatCurrency(data.to.asset)) {
+    if (data && useSwapsStore().isFiatAsset(data.to.asset)) {
         const funding: FundingFees = {} as FundingFees;
 
         const myFiatFee = data.to.fee;
@@ -204,7 +204,7 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
         };
     }
 
-    if (data && useSwapsStore().isFiatCurrency(data.from.asset)) {
+    if (data && useSwapsStore().isFiatAsset(data.from.asset)) {
         const settlement: SettlementFees = {} as SettlementFees;
 
         const myFiatFee = data.from.serviceEscrowFee;

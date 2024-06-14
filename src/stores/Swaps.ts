@@ -118,13 +118,19 @@ export type ActiveSwap = SwapObject & {
     settlementAuthorizationToken?: string,
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
-    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-    | PolygonTransaction,
-    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-    | PolygonTransaction,
+    remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
+        | BtcTransactionDetails
+        | OasisHtlc
+        | PolygonTransaction,
+    fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
+        | BtcTransactionDetails
+        | OasisHtlc
+        | PolygonTransaction,
     secret?: string,
-    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-    | PolygonTransaction,
+    settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>
+        | BtcTransactionDetails
+        | OasisHtlc
+        | PolygonTransaction,
     error?: string,
     errorAction?: SwapErrorAction,
 }
@@ -195,15 +201,16 @@ export const useSwapsStore = createStore({
             this.state.promoBoxVisible = visible;
         },
 
-        async detectSwapFiatCounterpart<CryptoAsset extends
-            Exclude<SwapAsset, SwapAsset.EUR | SwapAsset.CRC | SwapAsset.BTC_LN>>(
+        async detectSwapFiatCounterpart<
+            CryptoAsset extends Exclude<SwapAsset, SwapAsset.EUR | SwapAsset.CRC | SwapAsset.BTC_LN>
+        >(
             contractAddress: string,
             hashRoot: string,
             type: 'funding' | 'settlement',
             otherAsset: CryptoAsset,
         ) {
             const otherCurrency = assetToCurrency(otherAsset);
-            // Check swap with the Fastspot API to detect if it was a `fiatCurrency` swap.
+            // Check swap with the Fastspot API to detect if it was a fiat swap.
             const [addSwapData, swapProp, contractProp, feesProp] = type === 'funding'
                 ? [this.addFundingData.bind(this), 'in', 'from', 'settlement'] as const
                 : [this.addSettlementData.bind(this), 'out', 'to', 'funding'] as const;
@@ -213,8 +220,8 @@ export const useSwapsStore = createStore({
             const contractWithEstimate = await getContract(otherAsset, contractAddress).catch(() => undefined);
             if (!contractWithEstimate) return; // not a contract
 
-            const fiatAsset = contractWithEstimate?.[contractProp].asset as FiatSwapAsset;
-            if (!this.isFiatCurrency(otherAsset)) return; // not a fiat swap
+            const fiatAsset = contractWithEstimate[contractProp].asset as FiatSwapAsset;
+            if (!this.isFiatAsset(otherAsset)) return; // not a fiat swap
             const fiatCurrency = assetToCurrency(fiatAsset);
 
             const exchangeRate = {
@@ -242,6 +249,6 @@ export const useSwapsStore = createStore({
             });
         },
 
-        isFiatCurrency: (c: any): c is SwapAsset.EUR | SwapAsset.CRC => c === SwapAsset.EUR || c === SwapAsset.CRC,
+        isFiatAsset: (c: any): c is SwapAsset.EUR | SwapAsset.CRC => c === SwapAsset.EUR || c === SwapAsset.CRC,
     },
 });

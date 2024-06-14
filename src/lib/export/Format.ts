@@ -7,7 +7,7 @@ import { Transaction as BtcTx, useBtcTransactionsStore } from '../../stores/BtcT
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
 import { parseData } from '../DataFormatting';
 import { isProxyData, ProxyType } from '../ProxyDetection';
-import { SwapBtcData, SwapNimData, useSwapsStore } from '../../stores/Swaps';
+import { SwapBtcData, SwapNimData, SwapUsdcData, useSwapsStore } from '../../stores/Swaps';
 import { ExportFormat } from './TransactionExport';
 
 /* eslint-disable class-methods-use-this */
@@ -141,9 +141,9 @@ export abstract class Format {
                     messageOverride = `Swap ${swapInfo.in.asset} to ${swapInfo.out.asset}`;
                 }
 
-                if (!useSwapsStore().isFiatCurrency(otherSideSwapData?.asset)) {
+                if (!useSwapsStore().isFiatAsset(otherSideSwapData?.asset)) {
                     const otherTransaction = this.transactions.find(
-                        (t) => t.transactionHash === (otherSideSwapData as SwapBtcData | SwapNimData)?.transactionHash,
+                        (t) => t.transactionHash === (otherSideSwapData as SwapBtcData | SwapNimData | SwapUsdcData)?.transactionHash,
                     );
 
                     if (otherTransaction) {

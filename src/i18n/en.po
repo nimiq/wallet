@@ -6,6 +6,10 @@ msgstr ""
 msgid "‘Digital gold’, the original crypto"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:40
+msgid "({secondsLeft}s)"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
 msgstr ""
@@ -62,6 +66,10 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:13
+msgid "{feeAmount} fees"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:56
 msgid "{perc}% of swap value."
@@ -98,11 +106,11 @@ msgstr ""
 msgid "+ network fees"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:145
+#: src/components/modals/BuyOptionsModal.vue:143
 msgid "+ network fees, registration required"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:80
+#: src/components/modals/BuyOptionsModal.vue:78
 msgid "+ network fees, registration required above $700"
 msgstr ""
 
@@ -318,13 +326,17 @@ msgstr ""
 msgid "Any funds sent will be refunded."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:113
-#: src/components/modals/BuyOptionsModal.vue:43
+#: src/components/modals/BuyOptionsModal.vue:111
+#: src/components/modals/BuyOptionsModal.vue:41
 msgid "Apple/Google Pay"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:233
 msgid "Apply fee"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:13
+msgid "Approve the sale"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:34
@@ -381,8 +393,8 @@ msgstr ""
 msgid "Bank Account"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:28
-#: src/components/modals/BuyOptionsModal.vue:98
+#: src/components/modals/BuyOptionsModal.vue:26
+#: src/components/modals/BuyOptionsModal.vue:96
 msgid "Bank Transfer"
 msgstr ""
 
@@ -478,7 +490,7 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:157
+#: src/components/modals/BuyOptionsModal.vue:155
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -594,6 +606,7 @@ msgid "Choose a Validator"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
+#: src/components/modals/AssetTransferModal.vue:50
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:212
@@ -638,6 +651,7 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:40
 #: src/components/SendModalFooter.vue:8
 #: src/components/swap/SwapModal.vue:189
 #: src/components/swap/SwapModal.vue:194
@@ -649,8 +663,16 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:39
+msgid "Confirm Number"
+msgstr ""
+
 #: src/components/prestaking/PrestakingGraphPage.vue:36
 msgid "Confirm prestake"
+msgstr ""
+
+#: src/components/modals/SinpeMovilSellInfoModal.vue:13
+msgid "Confirm Sinpe number"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
@@ -802,8 +824,8 @@ msgstr ""
 msgid "Creates prestaking rewards"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:112
-#: src/components/modals/BuyOptionsModal.vue:42
+#: src/components/modals/BuyOptionsModal.vue:110
+#: src/components/modals/BuyOptionsModal.vue:40
 msgid "Credit Card"
 msgstr ""
 
@@ -924,8 +946,16 @@ msgstr ""
 msgid "Enter IBAN"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:29
+msgid "Enter phone number"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:20
 msgid "Enter recipient address..."
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:15
+msgid "Enter the code sent to {phoneNumber} to approve."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:249
@@ -938,6 +968,10 @@ msgstr ""
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
 msgid "Enter your bank details"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:9
+msgid "Enter your Sinpe Móvil phone number."
 msgstr ""
 
 #: src/lib/GoCrypto.ts:228
@@ -1003,7 +1037,7 @@ msgid "Failed"
 msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:722
-#: src/components/swap/SwapModal.vue:949
+#: src/components/swap/SwapModal.vue:955
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1215,7 +1249,7 @@ msgstr ""
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:216
+#: src/components/swap/SwapNotification.vue:217
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1283,7 +1317,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1814
+#: src/components/swap/SwapModal.vue:1821
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1330,6 +1364,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
+#: src/components/modals/SinpeMovilSellInfoModal.vue:21
 #: src/components/prestaking/PrestakingWelcomePage.vue:22
 msgid "Let's go"
 msgstr ""
@@ -1365,7 +1400,6 @@ msgstr ""
 msgid "loading..."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:14
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
 msgstr ""
@@ -1414,11 +1448,15 @@ msgstr ""
 msgid "Max swappable amount is {amount}"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:101
-#: src/components/modals/BuyOptionsModal.vue:118
-#: src/components/modals/BuyOptionsModal.vue:31
-#: src/components/modals/BuyOptionsModal.vue:48
-#: src/components/modals/BuyOptionsModal.vue:67
+#: src/components/modals/AssetTransferModal.vue:18
+msgid "Max. {limitMax}"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:116
+#: src/components/modals/BuyOptionsModal.vue:29
+#: src/components/modals/BuyOptionsModal.vue:46
+#: src/components/modals/BuyOptionsModal.vue:65
+#: src/components/modals/BuyOptionsModal.vue:99
 #: src/components/modals/MoonpaySellInfoModal.vue:24
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1464,7 +1502,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:154
+#: src/components/layouts/Sidebar.vue:153
 msgid "Network"
 msgstr ""
 
@@ -1488,7 +1526,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:215
+#: src/components/swap/SwapNotification.vue:216
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1531,12 +1569,12 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:134
+#: src/components/layouts/Sidebar.vue:133
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:151
-#: src/components/modals/BuyOptionsModal.vue:86
+#: src/components/modals/BuyOptionsModal.vue:149
+#: src/components/modals/BuyOptionsModal.vue:84
 msgid "Not available in your country"
 msgstr ""
 
@@ -1650,7 +1688,7 @@ msgstr ""
 msgid "Performing swap {progress}/5"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:127
+#: src/components/layouts/Sidebar.vue:126
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
@@ -1679,7 +1717,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:138
+#: src/components/layouts/Sidebar.vue:137
 #: src/components/layouts/Sidebar.vue:54
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
@@ -1854,6 +1892,14 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:59
+msgid "Resend"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:56
+msgid "Resend ({secondsLeft}s)"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:237
 msgid "Reset your wallet settings and reload data from the blockchain."
 msgstr ""
@@ -1872,7 +1918,7 @@ msgstr ""
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1042
+#: src/components/swap/SwapModal.vue:1048
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -1930,7 +1976,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:71
+#: src/components/layouts/Sidebar.vue:69
 msgid "Sell"
 msgstr ""
 
@@ -1938,10 +1984,15 @@ msgstr ""
 msgid "Sell BTC and USDC"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:20
+msgid "Sell crypto"
+msgstr ""
+
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
 #: src/components/modals/SellCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:31
+#: src/composables/asset-transfer/useSinpeMovilSwap.ts:88
 msgid "Sell Crypto"
 msgstr ""
 
@@ -1949,6 +2000,7 @@ msgstr ""
 msgid "Sell Crypto for Fiat"
 msgstr ""
 
+#: src/components/DualCurrencyInput.vue:18
 #: src/components/modals/SellCryptoModal.vue:134
 #: src/components/modals/SellCryptoModal.vue:163
 #: src/components/modals/SellCryptoModal.vue:166
@@ -1961,11 +2013,19 @@ msgid ""
 "SEPA bank account."
 msgstr ""
 
+#: src/components/modals/SinpeMovilSellInfoModal.vue:11
+msgid "Sell NIM directly to your Sinpe Móvil account."
+msgstr ""
+
+#: src/components/modals/SinpeMovilSellInfoModal.vue:10
+msgid "Sell NIM using Sinpe Móvil"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:78
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:74
+#: src/components/layouts/Sidebar.vue:73
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 
@@ -2019,6 +2079,10 @@ msgstr ""
 
 #: src/components/prestaking/PrestakingGraphPage.vue:126
 msgid "Sending Pre-Prestaking Transaction"
+msgstr ""
+
+#: src/components/modals/SinpeMovilModal.vue:36
+msgid "Sending SMS..."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:461
@@ -2081,6 +2145,10 @@ msgstr ""
 msgid "Set an amount to lock"
 msgstr ""
 
+#: src/components/modals/SinpeMovilSellInfoModal.vue:14
+msgid "Set an amount to sell"
+msgstr ""
+
 #: src/components/AmountMenu.vue:15
 msgid "Set fee"
 msgstr ""
@@ -2098,7 +2166,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:162
+#: src/components/layouts/Sidebar.vue:161
 msgid "Settings"
 msgstr ""
 
@@ -2214,7 +2282,7 @@ msgid "Super low fees, super fast payments"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:124
+#: src/components/layouts/Sidebar.vue:123
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2319,14 +2387,14 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/lib/swap/utils/BuyUtils.ts:90
-#: src/lib/swap/utils/SellUtils.ts:110
+#: src/lib/swap/utils/BuyUtils.ts:97
+#: src/lib/swap/utils/SellUtils.ts:120
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1036
-#: src/lib/swap/utils/BuyUtils.ts:95
-#: src/lib/swap/utils/SellUtils.ts:115
+#: src/components/swap/SwapModal.vue:1042
+#: src/lib/swap/utils/BuyUtils.ts:102
+#: src/lib/swap/utils/SellUtils.ts:125
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -2657,6 +2725,10 @@ msgstr ""
 msgid "What is your bank called?"
 msgstr ""
 
+#: src/components/modals/SinpeMovilModal.vue:7
+msgid "What's your number?"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:194
 msgid "When ready"
 msgstr ""
@@ -2704,14 +2776,14 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:280
+#: src/components/layouts/Sidebar.vue:324
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:130
+#: src/components/layouts/Sidebar.vue:129
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -2775,7 +2847,7 @@ msgstr ""
 msgid "Your browser"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:135
+#: src/components/layouts/Sidebar.vue:134
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 

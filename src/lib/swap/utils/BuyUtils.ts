@@ -19,6 +19,7 @@ import {
     selectedFiatCurrency,
     useSwapEstimate,
 } from './CommonUtils';
+import { assetToCurrency } from './Assets';
 
 const { activeSwap: swap } = useSwapsStore();
 const { exchangeRates } = useFiatStore();
@@ -53,15 +54,15 @@ export const oasisBuyLimitExceeded = computed(() => {
  * Buy - Functions
  */
 
-export async function updateBuyEstimate({ fiatAmount, cryptoAmount, fiatCurrency: _fiatCurrency }
-    : { fiatCurrency?: FiatSwapAsset, fiatAmount: number, cryptoAmount?: number }
-    | { fiatCurrency?: FiatSwapAsset, fiatAmount?: number, cryptoAmount: number },
+export async function updateBuyEstimate({ fiatAmount, cryptoAmount, fiatAsset: _fiatAsset }
+    : { fiatAmount: number, cryptoAmount?: number, fiatAsset?: FiatSwapAsset }
+    | { fiatAmount?: number, cryptoAmount: number, fiatAsset?: FiatSwapAsset },
 ) {
     if (!fiatAmount && !cryptoAmount) return;
-    const fiatCurrency = _fiatCurrency || SwapAsset.EUR; // To avoid breaking the code in the app, we default to EUR
+    const fiatAsset = _fiatAsset || SwapAsset.EUR; // To avoid breaking the code in the app, we default to EUR
 
-    const { from, to } = getFiatSwapParameters(fiatAmount
-        ? { from: { asset: fiatCurrency, amount: fiatAmount } }
+    const { from, to } = getFiatSwapParameters(fiatAsset, fiatAmount
+        ? { from: { asset: fiatAsset, amount: fiatAmount } }
         : { to: { amount: cryptoAmount! } },
     );
 
@@ -72,12 +73,12 @@ export async function updateBuyEstimate({ fiatAmount, cryptoAmount, fiatCurrency
     );
 
     if (!newEstimate.from || !newEstimate.to) {
-        throw new Error(`UNEXPECTED: ${fiatCurrency} or crypto price not present in estimate`);
+        throw new Error(`UNEXPECTED: ${fiatAsset} or crypto price not present in estimate`);
     }
 
     // Update local fees with latest feePerUnit values
-    const { settlementFee } = calculateFees({ from: fiatCurrency }, undefined, {
-        fiatCurrency: newEstimate.from.fee || 0,
+    const { settlementFee } = calculateFees({ from: assetToCurrency(fiatAsset) }, undefined, {
+        fiat: newEstimate.from.fee || 0,
         nim: activeCurrency.value === CryptoCurrency.NIM ? newEstimate.to.feePerUnit! : 0,
         btc: activeCurrency.value === CryptoCurrency.BTC ? newEstimate.to.feePerUnit! : 0,
     });

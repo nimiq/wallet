@@ -642,7 +642,7 @@ export default defineComponent({
                             const settlementTx = await swapHandler.settleIncoming(
                                 activeSwap.value!.settlementSerializedTx!,
                                 activeSwap.value!.secret!,
-                                activeSwap.value!.settlementAuthorizationToken,
+                                { authorization: activeSwap.value!.settlementAuthorizationToken },
                             );
 
                             if (activeSwap.value!.to.asset === SwapAsset.BTC) {
@@ -793,31 +793,31 @@ export default defineComponent({
         function openSwap() {
             if (!activeSwap.value) return;
 
-            const cryptoCurrencies = [
+            const cryptoAssets = [
                 SwapAsset.NIM,
                 SwapAsset.BTC,
                 SwapAsset.USDC_MATIC,
             ];
 
-            const fiatCurrencies = [
+            const fiatAssets = [
                 SwapAsset.EUR,
                 SwapAsset.CRC,
             ];
 
-            const fromAsset = activeSwap.value.from.asset as any;
-            const toAsset = activeSwap.value.to.asset as any;
+            const fromAsset = activeSwap.value.from.asset;
+            const toAsset = activeSwap.value.to.asset;
 
             if (SINPE_MOVIL_PAIRS.find(([from, to]) => from === fromAsset && to === toAsset)) {
                 // The pair from the activeSwap matches the pair that it is enabled in the Sinpe Movil config
                 context.root.$router.push('/swap');
             } else if (fromAsset === 'BTC_LN' || toAsset === 'BTC_LN') {
                 throw new Error('Lightning Network swaps are not supported in the wallet');
-            } else if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
+            } else if (cryptoAssets.includes(fromAsset as SwapAsset) && cryptoAssets.includes(toAsset as SwapAsset)) {
                 // Crypto to Crypto
                 context.root.$router.push('/swap');
-            } else if (fiatCurrencies.includes(fromAsset)) {
+            } else if (fiatAssets.includes(fromAsset as SwapAsset)) {
                 context.root.$router.push('/buy-crypto');
-            } else if (fiatCurrencies.includes(toAsset)) {
+            } else if (fiatAssets.includes(toAsset as SwapAsset)) {
                 context.root.$router.push('/sell-crypto');
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');

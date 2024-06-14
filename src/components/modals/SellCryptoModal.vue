@@ -277,6 +277,7 @@ import {
     createSwap,
     cancelSwap,
     getSwap,
+    Contract,
 } from '@nimiq/fastspot-api';
 import {
     getHtlc,
@@ -523,7 +524,7 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    const { from, to } = getFiatSwapParameters(_fiatAmount.value
+                    const { from, to } = getFiatSwapParameters(SwapAsset.EUR, _fiatAmount.value
                         ? { to: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
                         : { from: { amount: cryptoAmount.value } },
                     );
@@ -535,8 +536,8 @@ export default defineComponent({
                     );
 
                     // Update local fees with latest feePerUnit values
-                    const { fundingFee } = calculateFees({ to: SwapAsset.EUR }, swapSuggestion.from.amount, {
-                        fiatCurrency: swapSuggestion.to.fee || 0,
+                    const { fundingFee } = calculateFees({ to: FiatCurrency.EUR }, swapSuggestion.from.amount, {
+                        fiat: swapSuggestion.to.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.from.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.from.feePerUnit! : 0,
                     });
@@ -795,7 +796,8 @@ export default defineComponent({
             });
 
             // Fetch OASIS HTLC to get clearing instructions
-            const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
+            const eurContract = confirmedSwap.contracts[SwapAsset.EUR] as Contract<SwapAsset.EUR>;
+            const oasisHtlc = await getHtlc(eurContract.htlc.address);
             if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
                 const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);
                 if (config.reportToSentry) captureException(error);

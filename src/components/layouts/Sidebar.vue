@@ -186,7 +186,6 @@ import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { RouteName } from '@/router';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
-import { SINPE_MOVIL_PAIRS } from '@/composables/asset-transfer/useSinpeMovilSwap';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -205,7 +204,7 @@ import { useConfig } from '../../composables/useConfig';
 import { useGeoIp } from '../../composables/useGeoIp';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
-import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
+import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED, SINPE_MOVIL_PAIRS } from '../../lib/Constants';
 import { SINPE_MOVIL_COUNTRY_CODES } from '../../lib/Countries';
 
 enum SellProvider {

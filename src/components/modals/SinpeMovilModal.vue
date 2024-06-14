@@ -75,8 +75,7 @@ import { useAddressStore } from '@/stores/Address';
 import { SwapAsset } from '@nimiq/libswap';
 import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import { AssetTransferMethod } from '@/composables/asset-transfer/types';
-import { SINPE_MOVIL_PAIRS } from '@/composables/asset-transfer/useSinpeMovilSwap';
-import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
+import { CryptoCurrency, FiatCurrency, SINPE_MOVIL_PAIRS } from '@/lib/Constants';
 import Modal from './Modal.vue';
 
 export enum SinpeMovilFlowState {

@@ -15,13 +15,17 @@ type VueComponent = VueConstructor<Vue>;
 // The object type that will be returned by the composable found in the same folder,
 // which will be used in the SwapTransfer.vue component.
 export interface AssetTransferParams {
+  isSelling: boolean;
+
   currencyFrom: FiatCurrency | CryptoCurrency;
   currencyTo: FiatCurrency | CryptoCurrency;
   currencyFiatFallback: FiatCurrency;
-  currencyCrypto: Readonly<Ref<Readonly<CryptoCurrency>>>;
+  currencyCrypto: CryptoCurrency;
 
-  amountFiat: Ref<number>;
-  amountCrypto: Ref<number>;
+  fiatAmount: Ref<number>;
+  cryptoAmount: Ref<number>;
+  updateFiatAmount: (value: number) => void;
+  updateCryptoAmount: (value: number) => void;
 
   decimalsCrypto: number;
   decimalsFiat: Readonly<Ref<Readonly<number>>>;
@@ -43,5 +47,4 @@ export interface AssetTransferParams {
   modalTitle: string;
 
   // TODO Callbacks and hooks
-  setMax: () => void;
 }

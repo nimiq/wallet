@@ -1,13 +1,13 @@
 <template>
   <section class="dual-currency-input" :class="{ orange: invalid }">
     <div class="flex-row primary-amount">
-      <AmountInput v-model="_cryptoAmount" ref="cryptoAmountInput$" :decimals="cryptoCurrencyDecimals">
+      <AmountInput v-model="_cryptoAmount" :decimals="cryptoCurrencyDecimals">
         <div class="amount-menu ticker" slot="suffix">
           <button class="reset button flex-row" @click.stop="currencySelectorOpen = !currencySelectorOpen">
             {{ cryptoCurrency.toUpperCase() }}
           </button>
           <div v-if="currencySelectorOpen" class="menu flex-column">
-            <button class="reset flex-row" @click="$emit('setMax')">
+            <button class="reset flex-row" @click="()=> { $emit('set-max'); currencySelectorOpen= false}">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                 <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
                   <line class="cls-1" x1="8.25" y1="6.25" x2="8.25" y2="15.25" />

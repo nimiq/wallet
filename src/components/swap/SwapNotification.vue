@@ -67,7 +67,7 @@ import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
-import { SINPE_MOVIL_PAIRS } from '@/composables/asset-transfer/useSinpeMovilSwap';
+import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';

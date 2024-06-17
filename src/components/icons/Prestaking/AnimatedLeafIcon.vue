@@ -45,7 +45,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 
-svg {
+.animated-leaf-icon {
     font-size: 2rem;
     --transition-duration: 800ms;
 }

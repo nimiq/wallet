@@ -3,7 +3,7 @@
         @click="$router.push('/prestaking')" @mousedown.prevent>
         <!-- The percentages below should also match in AmountSlider.vue -->
         <OneLeafStakingIcon v-if="currentPercentage < 50"/>
-        <PrestakingIcon v-else-if="currentPercentage < 75"/>
+        <TwoLeafStakingIcon v-else-if="currentPercentage < 75"/>
         <ThreeLeafStakingIcon v-else/>
 
         <Amount
@@ -18,11 +18,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import Amount from '../Amount.vue';
 import { useAddressStore } from '../../stores/Address';
 import { usePrestakingStore } from '../../stores/Prestaking';
-import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
+import TwoLeafStakingIcon from '../icons/Prestaking/TwoLeafStakingIcon.vue';
 import LockIcon from '../icons/Prestaking/LockIcon.vue';
 import OneLeafStakingIcon from '../icons/Prestaking/OneLeafStakingIcon.vue';
 import ThreeLeafStakingIcon from '../icons/Prestaking/ThreeLeafStakingIcon.vue';
@@ -48,7 +48,7 @@ export default defineComponent({
     },
     components: {
         OneLeafStakingIcon,
-        PrestakingIcon,
+        TwoLeafStakingIcon,
         ThreeLeafStakingIcon,
         Amount,
         LockIcon,
@@ -72,7 +72,7 @@ export default defineComponent({
 }
 
 .one-leaf-staking-icon,
-.prestaking-icon,
+.two-leaf-staking-icon,
 .three-leaf-staking-icon {
     margin: -0.25rem 0.5rem -0.25rem 0;
 

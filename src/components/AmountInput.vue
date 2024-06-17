@@ -114,11 +114,18 @@ const AmountInput = defineComponent({
                 // regExpResult[1] contains the sign
                 // regExpResult[2] contains the whole integers
                 // regExpResult[3] contains the decimal point and decimals
-                return [
+                let formattedValue = [
                     props.preserveSign ? (regExpResult[1] || '+') : '',
                     regExpResult[2] || (regExpResult[3] ? '0' : ''),
                     regExpResult[3] || '',
                 ].join('');
+
+                // Remove trailing dot if no decimals are allowed
+                if (props.decimals === 0) {
+                    formattedValue = formattedValue.replace(/\.$/, '');
+                }
+
+                return formattedValue;
             }
             return '';
         }

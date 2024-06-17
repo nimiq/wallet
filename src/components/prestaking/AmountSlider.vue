@@ -20,7 +20,9 @@
                     ref="$prestakedNIMText"
                     @click="$prestakedNIMAmount.focus()">
                     <input class="nq-input"
+                        type="number"
                         ref="$prestakedNIMAmount"
+                        @input="onInput"
                         @blur="updateAmount"
                         @keypress.enter="$event.target.blur()"
                         :style="`width: ${inputAmountWidth}px;`"
@@ -144,15 +146,36 @@ export default defineComponent({
             return result;
         };
 
-        const inputAmountWidth = computed(() => estimateTextWidth(currentFormattedAmount.value, 9) + 69);
+        const inputAmountWidth = ref(estimateTextWidth(currentFormattedAmount.value, 9) + 69);
+
+        function updateInputWidth(value?: string) {
+            inputAmountWidth.value = estimateTextWidth(
+                value || $prestakedNIMAmount.value?.value || (MIN_PRESTAKE / 1e5).toString(),
+                9,
+            ) + 69;
+        }
+
+        function enforceMaxValue() {
+            /* Enforce max value */
+            const maxValue = availableAmount.value / 1e5;
+            const newValue = Math.min(
+                maxValue,
+                parseInt($prestakedNIMAmount.value?.value || (MIN_PRESTAKE / 1e5).toString(), 10),
+            );
+            // TODO: Should we take decimals into account? like 10000.0123 NIM instead of 1000?
+            $prestakedNIMAmount.value!.value = Math.ceil(newValue).toString();
+        }
+
+        function onInput() {
+            enforceMaxValue();
+            updateInputWidth();
+        }
 
         let containerBox:DOMRect;
         let sliderBox:DOMRect;
         let knobBox:DOMRect;
         let amountBox:DOMRect;
         let pivotPoint: Point;
-        let startSelection = 0;
-        let endSelection = 0;
 
         const $container = ref<HTMLElement>(null);
         const $knob = ref<HTMLElement>(null);
@@ -199,9 +222,6 @@ export default defineComponent({
 
             const target = e.target as HTMLInputElement;
 
-            startSelection = target.selectionStart as number;
-            endSelection = target.selectionEnd as number;
-
             let valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
             // Ensure the entered amount does not fall below the minimum prestake or already prestaked amount
             valueNim = Math.max(valueNim, MIN_PRESTAKE, alreadyPrestakedAmount.value);
@@ -214,9 +234,7 @@ export default defineComponent({
 
             const offsetX = getPointAtPercent(percent);
             updatePosition(offsetX);
-            setTimeout(() => {
-                target.setSelectionRange(startSelection, endSelection);
-            }, 0);
+            updateInputWidth((amount / 1e5).toString());
             context.emit('amount-prestaked', currentAmount.value);
 
             if (!firstRender) {
@@ -259,6 +277,7 @@ export default defineComponent({
                 $prestakedNIMText.value!.style.left = `${maxXPos}px`;
             }
             $prestakedNIMAmount.value!.value = currentFormattedAmount.value;
+            updateInputWidth();
             context.emit('amount-chosen', 0);
         };
 
@@ -397,6 +416,7 @@ export default defineComponent({
             $dotIndicator,
             buildSVG,
             animate,
+            onInput,
         };
     },
     components: {
@@ -423,6 +443,17 @@ export default defineComponent({
             background-color: #fff;
             padding: 0.75rem 1.75rem;
             font-weight: bold;
+
+            /* Hiding input's arrows (due to type=number) */
+            /* Chrome, Safari, Edge, Opera */
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Firefox */
+            -moz-appearance: textfield;
         }
 
         .slider-background {
@@ -504,6 +535,7 @@ export default defineComponent({
                 .right-suffix {
                     position: absolute;
                     right: 1.75rem;
+                    background: white; // fallback to hide input[type=number]'s arrows
                 }
             }
 

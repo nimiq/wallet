@@ -2,7 +2,7 @@
     <div class="prestaking-welcome-page flex-column">
         <PageHeader>
             <template #default>
-                <div class="prestaking-icon">
+                <div class="two-leaf-staking-icon">
                     <HeroIcon pulsing />
                 </div>
                 {{ $t('Lock NIM for Proof of Stake') }}
@@ -62,7 +62,7 @@ export default defineComponent({
         ::v-deep .nq-h1 {
             font-size: var(--h1-size);
         }
-        .prestaking-icon {
+        .two-leaf-staking-icon {
             margin-bottom: 5rem;
             font-size: 17rem;
 
@@ -108,7 +108,7 @@ export default defineComponent({
 
     @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
         .page-header {
-            .prestaking-icon {
+            .two-leaf-staking-icon {
                 & ::v-deep svg {
                     height: 16rem;
                 }

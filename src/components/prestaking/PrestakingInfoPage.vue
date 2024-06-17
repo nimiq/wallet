@@ -20,7 +20,7 @@
 
             <div v-if="prestake">
                 <span class="nq-label flex-row section-title">
-                    <PrestakingIcon />
+                    <TwoLeafStakingIcon />
                     {{ $t('Prestaked') }}
                 </span>
                 <div class="row flex-row">
@@ -83,7 +83,7 @@ import {
 } from '@nimiq/vue-components';
 import { usePrestakingStore } from '../../stores/Prestaking';
 import { useAddressStore } from '../../stores/Address';
-import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
+import TwoLeafStakingIcon from '../icons/Prestaking/TwoLeafStakingIcon.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import PrestakingNotice from './PrestakingNotice.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -128,7 +128,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        PrestakingIcon,
+        TwoLeafStakingIcon,
         Amount,
         PrestakingGraph,
         // ValidatorTrustScore,

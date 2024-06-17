@@ -72,7 +72,7 @@ async function start() {
         exchangeRateUpdateTimer = window.setTimeout(async () => {
             // Silently ignore errors. If successful, this updates fiatStore.timestamp, which then also triggers price
             // chart updates in PriceChart.vue.
-            await updateExchangeRates(/* failGracefully */ true);
+            await updateExchangeRates({ failGracefully: true });
             // In contrast to lastSuccessfulExchangeRateUpdate also update lastTriedExchangeRateUpdate on failed
             // attempts, to avoid repeated rescheduling on failure. Instead, simply skip the failed attempt and try
             // again at the regular interval. We update the time after the update attempt, instead of before it, because

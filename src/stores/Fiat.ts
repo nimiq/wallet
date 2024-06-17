@@ -119,6 +119,16 @@ class ExchangeRateRequest {
 
 let lastExchangeRateRequest: ExchangeRateRequest | undefined;
 
+export type UpdateExchangeRatesOptions = {
+    // The currency to load
+    // @default this.state.currency
+    fiatCurrency?: FiatCurrencyOffered,
+
+    // If true, the function will not throw an error if the exchange rate update fails.
+    // @default true
+    failGracefully?: boolean,
+}
+
 export const useFiatStore = createStore({
     id: 'fiat',
     state: (): FiatState => ({
@@ -139,20 +149,20 @@ export const useFiatStore = createStore({
             useBtcTransactionsStore().calculateFiatAmounts();
             useUsdcTransactionsStore().calculateFiatAmounts();
         },
-        async updateExchangeRates(failGracefully = true) {
-            const currentCurrency = this.state.currency;
+        async updateExchangeRates(options: UpdateExchangeRatesOptions = {}) {
+            const { failGracefully = true, fiatCurrency = this.state.currency } = options;
             // If a currency is bridged, but not by a bridge that supports historic rates, it's bridged via CPL Api.
             const isCplBridgedFiatCurrency = (currency: FiatCurrency) => isBridgedFiatCurrency(
                 currency,
                 FIAT_API_PROVIDER_CURRENT_PRICES,
                 RateType.CURRENT,
             ) && !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES);
-            const isCurrentCurrencyCplBridged = isCplBridgedFiatCurrency(currentCurrency);
+            const isCurrentCurrencyCplBridged = isCplBridgedFiatCurrency(fiatCurrency);
             const prioritizedFiatCurrenciesOffered: Array<FiatCurrencyOffered> = [...new Set<FiatCurrencyOffered>([
                 // As we limit the currencies we fetch for CryptoCompare to 25, prioritize a few currencies, we'd prefer
                 // to be included, roughly the highest market cap currencies according to fiatmarketcap.com, plus some
                 // smaller currencies for which Nimiq has strong communities.
-                currentCurrency,
+                fiatCurrency,
                 ...(['USD', 'CNY', 'EUR', 'JPY', 'GBP', 'KRW', 'INR', 'CAD', 'HKD', 'BRL', 'AUD', 'CRC', 'GMD',
                     'XOF'] as const).map((ticker) => FiatCurrency[ticker]),
                 // After that, prefer to include currencies CryptoCompare supports historic rates for, because it is for
@@ -174,7 +184,7 @@ export const useFiatStore = createStore({
                     FIAT_API_PROVIDER_CURRENT_PRICES,
                     RateType.CURRENT,
                 );
-                if (currency !== currentCurrency
+                if (currency !== fiatCurrency
                     && (
                         // Include all provider supported currencies, as at least one always has to be fetched via the
                         // provider api, either because it's a directly supported currency, or because it's a currency

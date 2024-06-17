@@ -158,12 +158,16 @@ export default defineComponent({
         function enforceMaxValue() {
             /* Enforce max value */
             const maxValue = availableAmount.value / 1e5;
-            const newValue = Math.min(
-                maxValue,
-                parseInt($prestakedNIMAmount.value?.value || (MIN_PRESTAKE / 1e5).toString(), 10),
-            );
+            const newValue = $prestakedNIMAmount.value?.value
+                ? Math.min(
+                    maxValue,
+                    parseInt($prestakedNIMAmount.value?.value, 10),
+                ) : false;
+
             // TODO: Should we take decimals into account? like 10000.0123 NIM instead of 1000?
-            $prestakedNIMAmount.value!.value = Math.ceil(newValue).toString();
+            if (newValue) {
+                $prestakedNIMAmount.value!.value = Math.ceil(newValue).toString();
+            }
         }
 
         function onInput() {

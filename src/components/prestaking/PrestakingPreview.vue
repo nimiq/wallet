@@ -1,7 +1,11 @@
 <template>
     <button class="prestaking-preview nq-button-pill gold flex-row"
         @click="$router.push('/prestaking')" @mousedown.prevent>
-        <PrestakingIcon />
+        <!-- The percentages below should also match in AmountSlider.vue -->
+        <OneLeafStakingIcon v-if="currentPercentage < 50"/>
+        <PrestakingIcon v-else-if="currentPercentage < 75"/>
+        <ThreeLeafStakingIcon v-else/>
+
         <Amount
             :amount="activePrestake && activePrestake.balance || 0"
             value-mask
@@ -14,23 +18,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import Amount from '../Amount.vue';
+import { useAddressStore } from '../../stores/Address';
 import { usePrestakingStore } from '../../stores/Prestaking';
 import PrestakingIcon from '../icons/Prestaking/PrestakingIcon.vue';
 import LockIcon from '../icons/Prestaking/LockIcon.vue';
+import OneLeafStakingIcon from '../icons/Prestaking/OneLeafStakingIcon.vue';
+import ThreeLeafStakingIcon from '../icons/Prestaking/ThreeLeafStakingIcon.vue';
 
 export default defineComponent({
     setup() {
         const { activePrestake, activeValidator } = usePrestakingStore();
+        const { activeAddressInfo } = useAddressStore();
+
+        const currentPercentage = computed(() => {
+            const alreadyPrestakedAmount = activePrestake.value?.balance || 0;
+            const availableAmount = (activeAddressInfo.value?.balance || 0) + alreadyPrestakedAmount;
+            const percent = (100 * alreadyPrestakedAmount) / availableAmount;
+
+            return percent;
+        });
 
         return {
             activePrestake,
             activeValidator,
+            currentPercentage,
         };
     },
     components: {
+        OneLeafStakingIcon,
         PrestakingIcon,
+        ThreeLeafStakingIcon,
         Amount,
         LockIcon,
     },
@@ -52,12 +71,18 @@ export default defineComponent({
     font-size: 3.25rem;
 }
 
-.prestaking-icon {
+.one-leaf-staking-icon,
+.prestaking-icon,
+.three-leaf-staking-icon {
     margin: -0.25rem 0.5rem -0.25rem 0;
 
     ::v-deep path {
         stroke-width: 1px;
     }
+}
+
+.one-leaf-staking-icon {
+    margin: .2rem .35rem -0.25rem .2rem;
 }
 
 .lock-icon {

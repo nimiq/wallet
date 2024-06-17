@@ -43,6 +43,7 @@
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
+                        <!-- The percentages below should also match in PrestakingPreview.vue -->
                         <AnimatedLeafIcon
                             :duration="1000"
                             :nleaf="

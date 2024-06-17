@@ -60,7 +60,7 @@ async function start() {
     function queueExchangeRateUpdate() {
         setTimeout(async () => {
             exchangeRateUpdateStart = Date.now(); // in contrast to fiatStore.timestamp set before the update
-            await updateExchangeRates(/* failGracefully */ true); // silently ignores errors
+            await updateExchangeRates({ failGracefully: true }); // silently ignores errors
             queueExchangeRateUpdate();
         // Also add 2 minutes as upper bound to be immune to the user's system clock being wrong.
         }, Math.max(0, Math.min(exchangeRateUpdateStart + TWO_MINUTES - Date.now(), TWO_MINUTES)));

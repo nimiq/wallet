@@ -140,7 +140,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim' && inPrestakingWindow"> <!-- TODO: show preview if prestaking-->
+                    <template v-if="activeCurrency === 'nim' && inPrestakingWindow">
                         <PrestakingPreview v-if="activePrestake && windowWidth > 860" />
                         <PrestakingButton v-else />
                     </template>
@@ -288,7 +288,13 @@ import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { onboard, rename, swapBridgedUsdcToNative } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { BTC_ADDRESS_GAP, CryptoCurrency, ENV_MAIN, PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
+import {
+    BTC_ADDRESS_GAP,
+    CryptoCurrency,
+    ENV_MAIN,
+    PRESTAKING_BLOCK_H_END,
+    PRESTAKING_BLOCK_H_START,
+} from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
@@ -308,7 +314,7 @@ import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
 import { usePrestakingStore } from '../../stores/Prestaking';
-import { useNetworkStore } from '@/stores/Network';
+import { useNetworkStore } from '../../stores/Network';
 
 export default defineComponent({
     name: 'address-overview',

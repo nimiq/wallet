@@ -127,8 +127,8 @@ export default defineComponent({
         const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value);
         const alreadyPrestakedPercentage = ref(currentPercentage.value);
         const alreadyPrestaked = ref(alreadyPrestakedAmount.value > 0);
-        const currentFormattedAmount = computed(() => Math.round(currentAmount.value / 1e5).toString());
-        const availableFormattedAmount = computed(() => Math.round(availableAmount.value / 1e5).toString());
+        const currentFormattedAmount = computed(() => Math.floor(currentAmount.value / 1e5).toString());
+        const availableFormattedAmount = computed(() => Math.floor(availableAmount.value / 1e5).toString());
 
         const getPointAtPercent = (percent: number): number =>
             Math.max(2, (percent / 100.0) * (sliderBox.width - knobBox.width));
@@ -166,7 +166,7 @@ export default defineComponent({
 
             // TODO: Should we take decimals into account? like 10000.0123 NIM instead of 1000?
             if (newValue) {
-                $prestakedNIMAmount.value!.value = Math.ceil(newValue).toString();
+                $prestakedNIMAmount.value!.value = Math.floor(newValue).toString();
             }
         }
 

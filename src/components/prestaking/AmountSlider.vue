@@ -218,15 +218,16 @@ export default defineComponent({
         let timeoutID: number;
 
         const updateAmount = async (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
-            if (!firstRender) {
+            const target = e.target as HTMLInputElement;
+
+            let valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
+
+            if (!firstRender && valueNim > currentAmount.value) {
                 window.clearTimeout(timeoutID);
                 animate.value = true;
                 await context.root.$nextTick();
             }
 
-            const target = e.target as HTMLInputElement;
-
-            let valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
             // Ensure the entered amount does not fall below the minimum prestake or already prestaked amount
             valueNim = Math.max(valueNim, MIN_PRESTAKE, alreadyPrestakedAmount.value);
             const amount = Math.max(

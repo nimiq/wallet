@@ -1,5 +1,6 @@
 <template>
     <div :class="`prestaking-notice ${theme === 'warning' ? 'nq-orange' : ''}`">
+        <LockIcon v-if="lock"/>
         {{ $t('Prestaked funds are locked until launch') }}
         <Tooltip preferredPosition="top">
             <InfoCircleSmallIcon slot="trigger"/>
@@ -18,6 +19,7 @@
 import { defineComponent, PropType } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import BlueLink from '../BlueLink.vue';
+import LockIcon, { LockIconType } from '../icons/Prestaking/LockIcon.vue';
 
 export default defineComponent({
     props: {
@@ -25,11 +27,21 @@ export default defineComponent({
             type: String as PropType<'normal' | 'warning'>,
             default: 'normal',
         },
+        lock: {
+            type: Boolean,
+            default: false,
+        },
     },
     components: {
         Tooltip,
         InfoCircleSmallIcon,
         BlueLink,
+        LockIcon,
+    },
+    setup() {
+        return {
+            LockIconType,
+        };
     },
 });
 </script>
@@ -43,20 +55,25 @@ export default defineComponent({
     margin-top: 3rem;
     line-height: 1;
     color: var(--text-50);
+    display: flex;
+    align-items: center;
+
+    .lock-icon {
+        font-size: 2.5rem;
+        margin-left: -.5rem;
+    }
 }
 
 .tooltip {
-    margin-left: 0.5rem;
+    margin-left: 0.7rem;
+
+    &::v-deep {
+        .tooltip-box { width: 28rem }
+        .trigger { cursor: help }
+    }
 }
 
-.tooltip ::v-deep .tooltip-box {
-    width: 28rem;
-}
-
-.tooltip ::v-deep .trigger {
-    cursor: help;
-}
-
+/* Tooltip content */
 p {
     margin-bottom: 1rem;
     text-align: left;

@@ -1707,7 +1707,7 @@ msgstr ""
 msgid "Partially reverted"
 msgstr ""
 
-#: src/components/layouts/Network.vue:121
+#: src/components/layouts/Network.vue:118
 msgid "paused"
 msgstr ""
 

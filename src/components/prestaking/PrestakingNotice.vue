@@ -57,6 +57,7 @@ export default defineComponent({
     color: var(--text-50);
     display: flex;
     align-items: center;
+    justify-content: center;
 
     .lock-icon {
         font-size: 2.5rem;

@@ -13,7 +13,7 @@
 
         <div class="flex-grow"></div>
 
-        <LockIcon />
+        <LockIcon :type="LockIconType.MASK"/>
     </button>
 </template>
 
@@ -23,7 +23,7 @@ import Amount from '../Amount.vue';
 import { useAddressStore } from '../../stores/Address';
 import { usePrestakingStore } from '../../stores/Prestaking';
 import TwoLeafStakingIcon from '../icons/Prestaking/TwoLeafStakingIcon.vue';
-import LockIcon from '../icons/Prestaking/LockIcon.vue';
+import LockIcon, { LockIconType } from '../icons/Prestaking/LockIcon.vue';
 import OneLeafStakingIcon from '../icons/Prestaking/OneLeafStakingIcon.vue';
 import ThreeLeafStakingIcon from '../icons/Prestaking/ThreeLeafStakingIcon.vue';
 
@@ -41,6 +41,8 @@ export default defineComponent({
         });
 
         return {
+            LockIconType,
+
             activePrestake,
             activeValidator,
             currentPercentage,

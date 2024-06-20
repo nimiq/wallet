@@ -48,7 +48,7 @@
 
             <div v-if="stake">
                 <span class="nq-label flex-row section-title">
-                    <StakingIcon />
+                    <TwoLeafStakingIcon />
                     {{ $t('Staked') }}
                 </span>
                 <div class="row flex-row">
@@ -170,7 +170,7 @@ import { getPayoutText } from '../../lib/StakingUtils';
 import { MIN_STAKE } from '../../lib/Constants';
 
 // import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -397,7 +397,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        StakingIcon,
+        TwoLeafStakingIcon,
         // StakingGraph,
         Amount,
         Tooltip,

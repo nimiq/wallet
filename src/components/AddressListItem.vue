@@ -6,7 +6,7 @@
             <UsdtIcon v-else-if="addressInfo.type === CryptoCurrency.USDT"/>
             <Identicon v-else :address="addressInfo.address"/>
 
-            <StakingIcon v-if="stakesByAddress[addressInfo.address]" />
+            <TwoLeafStakingIcon v-if="stakesByAddress[addressInfo.address]" />
             <VestingIcon v-else-if="addressInfo.type === AddressType.VESTING"/>
         </div>
         <span class="label">{{ addressInfo.label }}</span>
@@ -43,7 +43,7 @@ import { CryptoCurrency } from '../lib/Constants';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
-import StakingIcon from './icons/Staking/StakingIcon.vue';
+import TwoLeafStakingIcon from './icons/Staking/TwoLeafStakingIcon.vue';
 
 export default defineComponent({
     props: {
@@ -83,7 +83,7 @@ export default defineComponent({
         BitcoinIcon,
         UsdcIcon,
         UsdtIcon,
-        StakingIcon,
+        TwoLeafStakingIcon,
         CircleSpinner,
     },
 });

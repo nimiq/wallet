@@ -37,7 +37,7 @@
                                 class="reset flex-row"
                                 @mousedown="$router.push('/staking')"
                             >
-                                <StakingIcon/>{{ $t('Staking') }}
+                                <TwoLeafStakingIcon/>{{ $t('Staking') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
@@ -175,7 +175,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if staking-->
+                    <template v-if="activeCurrency === 'nim'">
                         <StakingPreview v-if="activeStake && windowWidth > 860" />
                         <StakingButton v-else-if="showStakingButton" />
                     </template>
@@ -283,7 +283,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -315,7 +315,7 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import StakingPreview from '../staking/StakingPreview.vue';
 import StakingButton from '../staking/StakingButton.vue';
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
 
 import { useAccountStore, AccountType } from '../../stores/Account';
@@ -655,7 +655,7 @@ export default defineComponent({
         UsdtIcon,
         StakingPreview,
         StakingButton,
-        StakingIcon,
+        TwoLeafStakingIcon,
         CashlinkButton,
         HeroIcon,
     },

@@ -17,7 +17,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <PrestakingButton />
+                    <StakingButton />
                     <button
                         class="reset icon-button"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
@@ -34,7 +34,7 @@
                                 class="reset flex-row"
                                 @mousedown="$router.push('/staking')"
                             >
-                                <StakingIcon/>{{ $t('Staking') }}
+                                <TwoLeafStakingIcon/>{{ $t('Staking') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
@@ -140,11 +140,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim' && inPrestakingWindow">
-                        <PrestakingPreview v-if="activePrestake && windowWidth > 860" />
-                        <PrestakingButton v-else />
-                    </template>
-                    <template v-else-if="activeCurrency === 'nim' && !inPrestakingWindow">
+                    <template v-if="activeCurrency === 'nim'">
                         <StakingPreview v-if="stake" />
                         <StakingButton v-else />
                     </template>
@@ -247,7 +243,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -277,9 +273,8 @@ import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
 import StakingPreview from '../staking/StakingPreview.vue';
 import StakingButton from '../staking/StakingButton.vue';
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
-import PrestakingButton from '../prestaking/PrestakingButton.vue';
 
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -288,13 +283,7 @@ import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { onboard, rename, swapBridgedUsdcToNative } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
-import {
-    BTC_ADDRESS_GAP,
-    CryptoCurrency,
-    ENV_MAIN,
-    PRESTAKING_BLOCK_H_END,
-    PRESTAKING_BLOCK_H_START,
-} from '../../lib/Constants';
+import { BTC_ADDRESS_GAP, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
@@ -311,10 +300,7 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
-import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
-import { usePrestakingStore } from '../../stores/Prestaking';
-import { useNetworkStore } from '../../stores/Network';
+import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -330,8 +316,6 @@ export default defineComponent({
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
         const { activeStake: stake } = useStakingStore();
 
-        const { activePrestake } = usePrestakingStore();
-
         const searchString = ref('');
 
         const unclaimedCashlinkCount = ref(0);
@@ -339,11 +323,6 @@ export default defineComponent({
 
         const address$ = ref<HTMLDivElement>(null);
         const addressMasked = ref<boolean>(false);
-
-        const { height } = useNetworkStore();
-
-        const inPrestakingWindow = computed(() => height.value >= PRESTAKING_BLOCK_H_START
-            && height.value <= PRESTAKING_BLOCK_H_END);
 
         const { isMobile, isFullDesktop, width: windowWidth } = useWindowSize();
 
@@ -579,9 +558,7 @@ export default defineComponent({
             toggleUnclaimedCashlinkList,
             config,
             convertBridgedUsdcToNative,
-            activePrestake,
             windowWidth,
-            inPrestakingWindow,
         };
     },
     components: {
@@ -608,11 +585,9 @@ export default defineComponent({
         UsdcIcon,
         StakingPreview,
         StakingButton,
-        StakingIcon,
+        TwoLeafStakingIcon,
         CashlinkButton,
-        PrestakingButton,
         HeroIcon,
-        PrestakingPreview,
     },
 });
 </script>
@@ -979,7 +954,7 @@ export default defineComponent({
     }
 }
 
-.prestaking-button {
+.staking-button {
     margin-left: 1rem;
 }
 

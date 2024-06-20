@@ -1,5 +1,5 @@
 <template>
-    <div class="amount-slider slider-container" ref="$container">
+    <div class="amount-slider slider-container" ref="$container" :class="{ animate: animate }">
         <div class="slider-body">
             <div class="slider-background">
                 <div class="background-one" ref="$backgroundLinesLeft" />
@@ -20,8 +20,10 @@
                     ref="$stakedNIMText"
                     @click="$stakedNIMAmount.focus()">
                     <input class="nq-input"
+                        type="number"
                         ref="$stakedNIMAmount"
-                        @input="updateAmount"
+                        @input="onInput"
+                        @blur="updateAmount"
                         @keypress.enter="$event.target.blur()"
                         :style="`width: ${inputAmountWidth}px;`"
                         />
@@ -43,9 +45,13 @@
                         ref="$knob"
                         @touchstart="atClick"
                         @mousedown="atClick">
-                        <OneLeafStakingIcon v-if="currentPercentage < 50" />
-                        <StakingIcon v-else-if="currentPercentage < 75" />
-                        <ThreeLeafStakingIcon v-else />
+                        <!-- The percentages below should also match in StakingPreview.vue -->
+                        <AnimatedLeafIcon
+                            :duration="1000"
+                            :nleaf="
+                                currentPercentage < 50 ? 1
+                                : currentPercentage < 75 ? 2
+                                : 3" />
                     </div>
                 </div>
             </div>
@@ -58,10 +64,8 @@ import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from 
 import { useAddressStore } from '../../stores/Address';
 import { MIN_STAKE } from '../../lib/Constants';
 
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
-import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
-import ThreeLeafStakingIcon from '../icons/Staking/ThreeLeafStakingIcon.vue';
 import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
+import AnimatedLeafIcon from '../icons/Staking/AnimatedLeafIcon.vue';
 
 const getSVGNode = (n:string, attrs:Record<string, string> = {}) => {
     const e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -117,14 +121,19 @@ export default defineComponent({
     setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
 
-        const alreadyStakedAmount = ref(props.stakedAmount);
+        const alreadyStakedAmount = computed(() => props.stakedAmount);
         const currentAmount = ref(alreadyStakedAmount.value);
         const availableAmount = computed(() => (activeAddressInfo.value?.balance || 0) + props.stakedAmount);
         const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value);
         const alreadyStakedPercentage = ref(currentPercentage.value);
         const alreadyStaked = ref(alreadyStakedAmount.value > 0);
-        const currentFormattedAmount = computed(() => Math.round(currentAmount.value / 1e5).toString());
-        const availableFormattedAmount = computed(() => Math.round(availableAmount.value / 1e5).toString());
+        const currentFormattedAmount = computed(() => {
+            if (currentAmount.value === availableAmount.value && currentAmount.value % 1e5 !== 0) {
+                return (currentAmount.value / 1e5).toFixed(5); // Display with decimals
+            }
+            return (currentAmount.value / 1e5).toFixed(0); // Display without decimals
+        });
+        const availableFormattedAmount = computed(() => Math.floor(availableAmount.value / 1e5).toString());
 
         const getPointAtPercent = (percent: number): number =>
             Math.max(2, (percent / 100.0) * (sliderBox.width - knobBox.width));
@@ -142,15 +151,40 @@ export default defineComponent({
             return result;
         };
 
-        const inputAmountWidth = computed(() => estimateTextWidth(currentFormattedAmount.value, 9) + 69);
+        const inputAmountWidth = ref(estimateTextWidth(currentFormattedAmount.value, 9) + 69);
+
+        function updateInputWidth(value?: string) {
+            inputAmountWidth.value = estimateTextWidth(
+                value || $stakedNIMAmount.value?.value || (MIN_STAKE / 1e5).toString(),
+                9,
+            ) + 69;
+        }
+
+        function enforceMaxValue() {
+            /* Enforce max value */
+            const maxValue = availableAmount.value / 1e5;
+            const newValue = $stakedNIMAmount.value?.value
+                ? Math.min(
+                    maxValue,
+                    parseInt($stakedNIMAmount.value?.value, 10),
+                ) : false;
+
+            // TODO: Should we take decimals into account? like 10000.0123 NIM instead of 1000?
+            if (newValue) {
+                $stakedNIMAmount.value!.value = Math.floor(newValue).toString();
+            }
+        }
+
+        function onInput() {
+            enforceMaxValue();
+            updateInputWidth();
+        }
 
         let containerBox:DOMRect;
         let sliderBox:DOMRect;
         let knobBox:DOMRect;
         let amountBox:DOMRect;
         let pivotPoint: Point;
-        let startSelection = 0;
-        let endSelection = 0;
 
         const $container = ref<HTMLElement>(null);
         const $knob = ref<HTMLElement>(null);
@@ -184,13 +218,23 @@ export default defineComponent({
             }
         };
 
-        const updateAmount = (e: MouseEvent | TouchEvent) => {
+        const animate = ref(false);
+        let firstRender = true;
+        let timeoutID: number;
+
+        const updateAmount = async (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
             const target = e.target as HTMLInputElement;
 
-            startSelection = target.selectionStart as number;
-            endSelection = target.selectionEnd as number;
+            let valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
 
-            const valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
+            if (!firstRender && valueNim > currentAmount.value) {
+                window.clearTimeout(timeoutID);
+                animate.value = true;
+                await context.root.$nextTick();
+            }
+
+            // Ensure the entered amount does not fall below the minimum stake or already staked amount
+            valueNim = Math.max(valueNim, MIN_STAKE, alreadyStakedAmount.value);
             const amount = Math.max(
                 0,
                 Math.min(availableAmount.value, valueNim),
@@ -200,10 +244,16 @@ export default defineComponent({
 
             const offsetX = getPointAtPercent(percent);
             updatePosition(offsetX);
-            setTimeout(() => {
-                target.setSelectionRange(startSelection, endSelection);
-            }, 0);
+            updateInputWidth((amount / 1e5).toString());
             context.emit('amount-staked', currentAmount.value);
+
+            if (!firstRender) {
+                timeoutID = window.setTimeout(() => {
+                    animate.value = false;
+                }, 1000);
+            } else {
+                firstRender = false;
+            }
         };
 
         const atEndTouch = () => {
@@ -230,13 +280,14 @@ export default defineComponent({
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
             const maxXPos = containerBox.width - amountBox.width;
             if (offsetX <= 0) {
-                $stakedNIMText.value!.style.left = '0px';
+                $stakedNIMText.value!.style.right = `${containerBox.width - amountBox.width}px`;
             } else if (offsetX < maxXPos) {
-                $stakedNIMText.value!.style.left = `${offsetX}px`;
+                $stakedNIMText.value!.style.right = `${containerBox.width - offsetX - amountBox.width}px`;
             } else {
-                $stakedNIMText.value!.style.left = `${maxXPos}px`;
+                $stakedNIMText.value!.style.right = '0px';
             }
             $stakedNIMAmount.value!.value = currentFormattedAmount.value;
+            updateInputWidth();
             context.emit('amount-chosen', 0);
         };
 
@@ -251,26 +302,24 @@ export default defineComponent({
             let percent = Math.min(100, Math.max(0,
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
-            if (percent < minimumStakePercent.value / 2) {
-                percent = 0;
-            } else {
-                percent = Math.max(minimumStakePercent.value, percent);
-            }
+            // Ensure the slider does not go below the minimum stake percentage
+            percent = Math.max(minimumStakePercent.value, alreadyStakedPercentage.value, percent);
 
             const offsetX = getPointAtPercent(percent);
-            currentAmount.value = Math.floor(
-                ((percent / 100) * availableAmount.value) / 1e5,
-            ) * 1e5;
+            let newAmount;
 
-            if (alreadyStaked.value) {
-                if (percent < alreadyStakedPercentage.value) {
-                    if (!skipSignals) {
-                        context.emit('amount-unstaked', alreadyStakedAmount.value - currentAmount.value);
-                    }
-                } else if (!skipSignals) {
-                    context.emit('amount-unstaked', 0);
-                }
+            if (percent === 100) {
+                // Set the current amount to the full available amount with decimals
+                newAmount = availableAmount.value;
+            } else {
+                // Calculate new amount from slider's position, ensuring it's not below minimum prestake
+                newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
+                // Prevent reducing below MIN_STAKE or already staked amount
+                newAmount = Math.max(newAmount, MIN_STAKE, alreadyStakedAmount.value);
             }
+
+            currentAmount.value = newAmount;
+
             if (!skipSignals) {
                 context.emit('amount-staked', currentAmount.value);
             }
@@ -344,8 +393,11 @@ export default defineComponent({
         }
 
         onMounted(() => {
+            firstRender = true;
             updateBoundingBoxes();
             window.addEventListener('resize', updateBoundingBoxes);
+
+            if ($stakedNIMAmount.value) updateAmount({ target: $stakedNIMAmount.value });
 
             if (alreadyStaked.value) {
                 $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value)
@@ -355,6 +407,7 @@ export default defineComponent({
         });
 
         onBeforeUnmount(() => {
+            firstRender = true;
             window.removeEventListener('resize', updateBoundingBoxes);
         });
 
@@ -381,18 +434,20 @@ export default defineComponent({
             $progressBar,
             $dotIndicator,
             buildSVG,
+            animate,
+            onInput,
         };
     },
     components: {
-        StakingIcon,
-        OneLeafStakingIcon,
-        ThreeLeafStakingIcon,
         VerticalLineIcon,
+        AnimatedLeafIcon,
     },
 });
 </script>
 
 <style lang="scss" scoped>
+@import '../../scss/variables.scss';
+
 .slider-container {
     padding-top: 2.5rem;
     height: 12rem;
@@ -407,6 +462,17 @@ export default defineComponent({
             background-color: #fff;
             padding: 0.75rem 1.75rem;
             font-weight: bold;
+
+            /* Hiding input's arrows (due to type=number) */
+            /* Chrome, Safari, Edge, Opera */
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Firefox */
+            -moz-appearance: textfield;
         }
 
         .slider-background {
@@ -488,6 +554,7 @@ export default defineComponent({
                 .right-suffix {
                     position: absolute;
                     right: 1.75rem;
+                    background: white; // fallback to hide input[type=number]'s arrows
                 }
             }
 
@@ -501,7 +568,7 @@ export default defineComponent({
                 font-size: 1.625rem;
                 font-weight: 700;
                 letter-spacing: .0625rem;
-                background: white;
+                z-index: 1;
             }
 
             .bottom-indicator {
@@ -558,10 +625,12 @@ export default defineComponent({
                                 0rem .1875rem .375rem rgba(0, 0, 0, 0.08),
                                 0rem 0.03rem .25rem rgba(0, 0, 0, 0.06);
 
-                    svg {
-                        width: 3.5rem;
-                        height: 3.5rem;
+                    &:active { cursor: grab }
+
+                    & ::v-deep svg {
+                        font-size: 3.5rem;
                         margin-left: 0.5rem;
+
                         line, path {
                             stroke-width: 1;
                         }
@@ -572,9 +641,7 @@ export default defineComponent({
     }
 }
 
-@media (max-width: 960px) and (min-width: 701px) { // Tablet breakpoint
-}
-
-@media (max-width: 700px) { // Full mobile breakpoint
+.amount-slider.animate * {
+    transition: all 1000ms;
 }
 </style>

@@ -1,10 +1,9 @@
 <template>
     <div class="staking-button">
         <Tooltip
-            v-if="asButton && visible"
+            v-if="asButton && visible && activeAddressInfo && activeAddressInfo.balance"
             class="staking-feature-tip"
-            :styles="{width: '25rem'}"
-            preferredPosition="bottom left"
+            preferredPosition="bottom"
             :container="this.$parent">
             <div slot="trigger">
                 <button class="stake"
@@ -40,16 +39,6 @@ import { useStakingStore } from '../../stores/Staking';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
-    setup() {
-        const { activeAddressInfo } = useAddressStore();
-        const { activeStake } = useStakingStore();
-        const visible = computed(() => !activeStake.value?.activeBalance);
-
-        return {
-            visible,
-            activeAddressInfo,
-        };
-    },
     props: {
         asButton: {
             type: Boolean,
@@ -62,6 +51,16 @@ export default defineComponent({
             default: false,
         },
     },
+    setup() {
+        const { activeAddressInfo } = useAddressStore();
+        const { activeStake } = useStakingStore();
+        const visible = computed(() => !activeStake.value?.activeBalance);
+
+        return {
+            visible,
+            activeAddressInfo,
+        };
+    },
     components: {
         Tooltip,
         HeroIcon,
@@ -71,12 +70,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .staking-button {
-    position: relative;
+    height: 6.75rem;
+    margin: -1.25rem 0;
 
-    &::v-deep .tooltip {
-        position: absolute;
-        right: 0;
-        top: -1.5rem;
+    & ::v-deep svg {
+        font-size: 6.75rem;
     }
 }
 
@@ -86,35 +84,17 @@ export default defineComponent({
     border: 0;
     cursor: pointer;
     padding: 0;
-    margin-left: 0.5rem;
     transition: opacity 1s ease-in-out;
 
-    svg {
-        width: 6.75rem;
-        height: 6.75rem;
-
-        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-            animation: fastwave 1s ease alternate infinite;
-        }
-        path:nth-child(1) {
-            animation-delay: .5s;
-        }
-        path:nth-child(2) {
-            animation-delay: .7s;
-        }
-        path:nth-child(4) {
-            animation-delay: .9s;
-        }
-    }
-
     &.disabled {
-        svg {
+        & ::v-deep svg {
             animation: initial;
             path:nth-child(1), path:nth-child(2), path:nth-child(4) {
                 animation: initial;
                 opacity: 0;
             }
         }
+        cursor: not-allowed;
     }
     &.inverse {
         cursor: initial;
@@ -125,28 +105,21 @@ export default defineComponent({
 }
 
 .tooltip.staking-feature-tip {
-    z-index: 3;
     ::v-deep .trigger::after {
         background-color: var(--nimiq-green);
+        transform: translateY(-0.9rem);
     }
 
     ::v-deep .tooltip-box {
         background: var(--nimiq-green-bg);
         color: white;
         font-size: 1.75rem;
-        font-weight: bold;
-    }
-}
-
-@keyframes fastwave {
-    0% {
-        opacity: 1.0;
-    }
-    50% {
-        opacity: 0.15;
-    }
-    100% {
-        opacity: 0.0;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 140%;
+        padding: 0.5rem 1rem;
+        white-space: nowrap;
+        transform: translateY(1rem);
     }
 }
 </style>

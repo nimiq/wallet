@@ -1,6 +1,6 @@
 <template>
     <div class="account-stake flex-row">
-        <StakingIcon />
+        <TwoLeafStakingIcon />
         <Amount :amount="accountStake" :currency="CryptoCurrency.NIM" />
     </div>
 </template>
@@ -10,7 +10,7 @@ import { defineComponent } from '@vue/composition-api';
 import Amount from '../Amount.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { CryptoCurrency } from '../../lib/Constants';
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 
 export default defineComponent({
     setup() {
@@ -23,7 +23,7 @@ export default defineComponent({
     },
     components: {
         Amount,
-        StakingIcon,
+        TwoLeafStakingIcon,
     },
 });
 </script>

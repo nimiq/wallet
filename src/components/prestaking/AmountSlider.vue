@@ -26,7 +26,7 @@
                         @blur="updateAmount"
                         @keypress.enter="$event.target.blur()"
                         :style="`width: ${inputAmountWidth}px;`"
-                        />
+                    />
                     <div class="right-suffix">
                         NIM
                     </div>
@@ -127,7 +127,12 @@ export default defineComponent({
         const currentPercentage = computed(() => (100 * currentAmount.value) / availableAmount.value);
         const alreadyPrestakedPercentage = ref(currentPercentage.value);
         const alreadyPrestaked = ref(alreadyPrestakedAmount.value > 0);
-        const currentFormattedAmount = computed(() => Math.floor(currentAmount.value / 1e5).toString());
+        const currentFormattedAmount = computed(() => {
+            if (currentAmount.value === availableAmount.value && currentAmount.value % 1e5 !== 0) {
+                return (currentAmount.value / 1e5).toFixed(5); // Display with decimals
+            }
+            return (currentAmount.value / 1e5).toFixed(0); // Display without decimals
+        });
         const availableFormattedAmount = computed(() => Math.floor(availableAmount.value / 1e5).toString());
 
         const getPointAtPercent = (percent: number): number =>
@@ -275,11 +280,11 @@ export default defineComponent({
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
             const maxXPos = containerBox.width - amountBox.width;
             if (offsetX <= 0) {
-                $prestakedNIMText.value!.style.left = '0px';
+                $prestakedNIMText.value!.style.right = `${containerBox.width - amountBox.width}px`;
             } else if (offsetX < maxXPos) {
-                $prestakedNIMText.value!.style.left = `${offsetX}px`;
+                $prestakedNIMText.value!.style.right = `${containerBox.width - offsetX - amountBox.width}px`;
             } else {
-                $prestakedNIMText.value!.style.left = `${maxXPos}px`;
+                $prestakedNIMText.value!.style.right = '0px';
             }
             $prestakedNIMAmount.value!.value = currentFormattedAmount.value;
             updateInputWidth();
@@ -300,10 +305,18 @@ export default defineComponent({
             percent = Math.max(minimumPrestakePercent.value, alreadyPrestakedPercentage.value, percent);
 
             const offsetX = getPointAtPercent(percent);
-            // Calculate new amount from slider's position, ensuring it's not below minimum prestake
-            let newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
-            // Prevent reducing below MIN_PRESTAKE or already prestaked amount
-            newAmount = Math.max(newAmount, MIN_PRESTAKE, alreadyPrestakedAmount.value);
+            let newAmount;
+
+            if (percent === 100) {
+                // Set the current amount to the full available amount with decimals
+                newAmount = availableAmount.value;
+            } else {
+                // Calculate new amount from slider's position, ensuring it's not below minimum prestake
+                newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
+                // Prevent reducing below MIN_PRESTAKE or already prestaked amount
+                newAmount = Math.max(newAmount, MIN_PRESTAKE, alreadyPrestakedAmount.value);
+            }
+
             currentAmount.value = newAmount;
 
             if (!skipSignals) {

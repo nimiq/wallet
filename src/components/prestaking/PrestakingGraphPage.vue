@@ -231,6 +231,7 @@ export default defineComponent({
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
+        overflow: hidden;
 
         .estimated-rewards-overlay {
             position: absolute;

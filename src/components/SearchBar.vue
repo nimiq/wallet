@@ -269,7 +269,7 @@ input {
 
 <style>
 .actions-mobile:has(.search-bar:focus-within)
-.container ~ :is(.reset.icon-button,.prestaking-button,button:has(.cashlink-button)) {
+.container ~ :is(.reset.icon-button,.staking-button,button:has(.cashlink-button)) {
    display: none;
 }
 </style>

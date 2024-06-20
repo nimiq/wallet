@@ -90,7 +90,7 @@ export default defineComponent({
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
-        const { accountStake } = useStakingStore();
+        const { totalAccountStake } = useStakingStore();
 
         function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
             if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
@@ -203,7 +203,7 @@ export default defineComponent({
             }, 0);
         }
 
-        watch(accountStake, (newStake, oldStake) => {
+        watch(totalAccountStake, (newStake, oldStake) => {
             if (Boolean(newStake) !== Boolean(oldStake) && activeAddress.value) {
                 adjustBackgroundOffsetAndScale(activeAddress.value);
             }
@@ -223,7 +223,7 @@ export default defineComponent({
             usdcInfo,
             selectBtcAddress,
             selectUsdcAddress,
-            accountStake,
+            totalAccountStake,
         };
     },
     components: {

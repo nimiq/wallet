@@ -46,7 +46,7 @@ export default defineComponent({
             accountBalance: usdcAccountBalance,
             nativeAccountBalance: nativeUsdcAccountBalance,
         } = useUsdcAddressStore();
-        const { accountStake } = useStakingStore();
+        const { totalAccountStake } = useStakingStore();
 
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { config } = useConfig();
@@ -58,7 +58,7 @@ export default defineComponent({
             let amount = 0;
 
             const nimFiatAmount = nimExchangeRate.value !== undefined
-                ? ((accountBalance.value + accountStake.value) / 1e5) * nimExchangeRate.value
+                ? ((accountBalance.value + totalAccountStake.value) / 1e5) * nimExchangeRate.value
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;

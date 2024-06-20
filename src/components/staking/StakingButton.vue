@@ -53,10 +53,10 @@ export default defineComponent({
     },
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeStake, accountStake } = useStakingStore();
+        const { activeStake, totalAccountStake } = useStakingStore();
         const visible = computed(() => !activeStake.value?.activeBalance);
 
-        const isAccountStaking = computed(() => !!accountStake.value);
+        const isAccountStaking = computed(() => !!totalAccountStake.value);
 
         return {
             visible,

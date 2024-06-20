@@ -13,7 +13,7 @@
                     }" @click="$router.push('/staking')"
                     @mousedown.prevent
                     :disabled="!activeAddressInfo || !activeAddressInfo.balance">
-                    <HeroIcon />
+                    <HeroIcon :pulsing="!isAccountStaking" />
                 </button>
             </div>
             <span>
@@ -53,12 +53,15 @@ export default defineComponent({
     },
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeStake } = useStakingStore();
+        const { activeStake, accountStake } = useStakingStore();
         const visible = computed(() => !activeStake.value?.activeBalance);
+
+        const isAccountStaking = computed(() => !!accountStake.value);
 
         return {
             visible,
             activeAddressInfo,
+            isAccountStaking,
         };
     },
     components: {

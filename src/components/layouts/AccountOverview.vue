@@ -45,7 +45,7 @@
         <template v-else>
             <AccountBalance />
 
-            <StakingSummaryMobile v-if="isMobile && !accountStake && nimAccountBalance" />
+            <StakingSummaryMobile v-if="isMobile && !totalAccountStake && nimAccountBalance" />
 
             <div class=account-grid>
                 <div class="nimiq-account" ref="nimiqAccount$"
@@ -53,7 +53,7 @@
                     <header class="flex-row">
                         <span class="nq-icon nimiq-logo"></span>
                         <span>NIM</span>
-                        <AccountStake v-if="accountStake" />
+                        <AccountStake v-if="totalAccountStake" />
                         <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
                             <MiniAddIcon/>
                         </button>
@@ -565,7 +565,7 @@ export default defineComponent({
             }, 100);
         }
 
-        const { accountStake } = useStakingStore();
+        const { totalAccountStake } = useStakingStore();
 
         return {
             stablecoin,
@@ -604,7 +604,7 @@ export default defineComponent({
             nimAccountBgCutouts,
             onSwapButtonPointerDown,
             isMobile,
-            accountStake,
+            totalAccountStake,
         };
     },
     components: {

@@ -42,7 +42,7 @@ import { useStakingStore } from '../stores/Staking';
 export default defineComponent({
     setup(props, context) {
         const { accountBalance } = useAddressStore();
-        const { accountStake } = useStakingStore();
+        const { totalAccountStake } = useStakingStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
             accountUsdcBalance,
@@ -58,7 +58,7 @@ export default defineComponent({
 
             const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
             const nimFiatAmount = nimExchangeRate !== undefined
-                ? ((accountBalance.value + accountStake.value) / 1e5) * nimExchangeRate
+                ? ((accountBalance.value + totalAccountStake.value) / 1e5) * nimExchangeRate
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;

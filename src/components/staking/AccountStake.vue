@@ -1,7 +1,7 @@
 <template>
     <div class="account-stake flex-row">
         <TwoLeafStakingIcon />
-        <Amount :amount="accountStake" :currency="CryptoCurrency.NIM" />
+        <Amount :amount="totalAccountStake" :currency="CryptoCurrency.NIM" />
     </div>
 </template>
 
@@ -14,10 +14,10 @@ import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 
 export default defineComponent({
     setup() {
-        const { accountStake } = useStakingStore();
+        const { totalAccountStake } = useStakingStore();
 
         return {
-            accountStake,
+            totalAccountStake,
             CryptoCurrency,
         };
     },

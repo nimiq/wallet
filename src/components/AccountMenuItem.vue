@@ -56,7 +56,7 @@ export default defineComponent({
         const { accountInfos } = useAccountStore();
         const { stakeByAccount } = useStakingStore();
         const { state: addressState } = useAddressStore();
-        const { stakesByAccount } = useStakingStore();
+        const { totalStakesByAccount } = useStakingStore();
         const { pendingTransactionsBySender } = useTransactionsStore();
 
         const accountInfo = computed(() => accountInfos.value[props.id]);
@@ -76,8 +76,9 @@ export default defineComponent({
                 .filter((tx) => !addresses.includes(tx.recipient))
                 .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
         });
-        const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, ai) =>
-            sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0) + stakesByAccount.value[props.id]);
+        const nimAccountBalance = computed(() => addressInfos.value.reduce(
+            (sum, ai) => sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0,
+        ) + totalStakesByAccount.value[props.id]);
 
         const btcAddressSet = computed(() => {
             if (accountInfo.value.type === AccountType.LEGACY) return null;

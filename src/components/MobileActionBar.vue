@@ -31,7 +31,7 @@ export default defineComponent({
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
         const { accountBalance: btcBalance } = useBtcAddressStore();
-        const { addressInfo: usdcAddressInfo } = useUsdcAddressStore();
+        const { nativeAccountBalance: nativeUsdcAccountBalance } = useUsdcAddressStore();
         const { isMobile } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
 
@@ -74,11 +74,13 @@ export default defineComponent({
             }
         }
 
-        const sendDisabled = computed(() => context.root.$route.path !== '/' && nimOrBtcOrUsdc(
-            !activeAddressInfo.value || !activeAddressInfo.value.balance,
-            !btcBalance.value,
-            !usdcAddressInfo.value || !usdcAddressInfo.value.balance,
-        ));
+        const sendDisabled = computed(() =>
+            context.root.$route.path !== '/' && nimOrBtcOrUsdc(
+                !activeAddressInfo.value || !activeAddressInfo.value.balance,
+                !btcBalance.value,
+                !nativeUsdcAccountBalance.value,
+            ),
+        );
 
         return {
             receive,

@@ -1,67 +1,108 @@
 <template>
-    <div class="staking-button">
-        <Tooltip
-            v-if="asButton && visible && activeAddressInfo && activeAddressInfo.balance"
-            class="staking-feature-tip"
+    <div class="staking-button" @click.capture="!totalAccountStake && customClickHandler($event)">
+        <Tooltip class="staking-feature-tip" ref="$CTATooltip"
+            v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
             preferredPosition="bottom"
-            :container="this.$parent">
+            :container="$parent.$el ? { $el: $parent.$el } : undefined"
+            :disabled="!!totalAccountStake || isMobile || !canStake"
+        >
             <div slot="trigger">
                 <button class="stake"
-                    :class="{
-                        disabled: !activeAddressInfo || !activeAddressInfo.balance,
-                        inverse: inversePalette,
-                    }" @click="$router.push('/staking')"
+                    :disabled="!canStake"
+                    @click="$router.push('/staking')"
                     @mousedown.prevent
-                    :disabled="!activeAddressInfo || !activeAddressInfo.balance">
-                    <HeroIcon :pulsing="!isAccountStaking" />
+                >
+                    <HeroIcon :pulsing="!totalAccountStake && canStake" />
                 </button>
             </div>
             <span>
                 {{ $t('Earn NIM every month by staking your NIM') }}
             </span>
         </Tooltip>
-        <div class="stake"
-            v-if="!asButton"
-            :class="{
-                inverse: inversePalette,
-            }">
-            <HeroIcon />
-        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
-
+import { useWindowSize } from '../../composables/useWindowSize';
+import { MIN_STAKE } from '../../lib/Constants';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
-    props: {
-        asButton: {
-            type: Boolean,
-            required: false,
-            default: true,
-        },
-        inversePalette: {
-            type: Boolean,
-            required: false,
-            default: false,
-        },
-    },
-    setup() {
+    setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
-        const { activeStake, totalAccountStake } = useStakingStore();
-        const visible = computed(() => !activeStake.value?.activeBalance);
+        const { totalAccountStake, totalActiveStake } = useStakingStore();
+        const { isMobile } = useWindowSize();
 
-        const isAccountStaking = computed(() => !!totalAccountStake.value);
+        const $CTATooltip = ref<Tooltip | null>(null);
+
+        /**
+         * The user can stake if they have a balance of at least MIN_STAKE.
+         */
+        const canStake = computed(() =>
+            !!(activeAddressInfo.value
+            && activeAddressInfo.value.balance
+            && activeAddressInfo.value.balance >= MIN_STAKE),
+        );
+
+        /**
+         * This function is implemented to prevent any user interaction on the button from closing the tooltip.
+         * Therefore, the click event is handled on the parent element instead of the tooltip trigger itself.
+         */
+        function customClickHandler(e: Event) {
+            if (canStake.value) {
+                e.stopPropagation();
+                e.preventDefault();
+                context.root.$router.push('/staking');
+            }
+        }
+
+        /**
+         * This function is used to update the tooltip visibility based on the following conditions:
+         * - If the tooltip is not shown, the user is not staking and can stake => show the tooltip.
+         * - If the tooltip is shown, the user is staking or cannot stake => hide the tooltip.
+         */
+        function updateTooltipVisibility() {
+            if (!$CTATooltip.value) return;
+
+            if (!totalActiveStake.value && canStake.value && !$CTATooltip.value.isShown) {
+                $CTATooltip.value.show();
+            } else if ($CTATooltip.value.isShown && (totalActiveStake.value || !canStake.value)) {
+                $CTATooltip.value.hide();
+            }
+        }
+
+        watch([$CTATooltip, activeAddressInfo, totalActiveStake], async () => {
+            if (!isMobile.value) {
+                updateTooltipVisibility();
+            } else if (isMobile.value && $CTATooltip.value?.isShown) {
+                $CTATooltip.value.hide();
+            }
+        });
+
+        /**
+         * TODO:
+         * - Add a "normal behaving" tooltip for when the CTA tooltip is not shown ("Stake NIM" nq-blue / dark blue)
+         * - Add a "normal behaving" warning tooltip for when the user doesn't have enough funds to stake
+         *   ("At least MIN_STAKE is required in order to stake" nq-orange)
+         */
 
         return {
-            visible,
+            // Store / Composable
             activeAddressInfo,
-            isAccountStaking,
+            totalAccountStake,
+            totalActiveStake,
+            isMobile,
+
+            // DOM References / Vue Components
+            $CTATooltip,
+
+            // Functions / ref & computed
+            canStake,
+            customClickHandler,
         };
     },
     components: {
@@ -89,22 +130,7 @@ export default defineComponent({
     padding: 0;
     transition: opacity 1s ease-in-out;
 
-    &.disabled {
-        & ::v-deep svg {
-            animation: initial;
-            path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-                animation: initial;
-                opacity: 0;
-            }
-        }
-        cursor: not-allowed;
-    }
-    &.inverse {
-        cursor: initial;
-        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-            stroke: white;
-        }
-    }
+    &[disabled] { cursor: not-allowed }
 }
 
 .tooltip.staking-feature-tip {

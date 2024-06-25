@@ -8,7 +8,7 @@
                 || activeCurrency === CryptoCurrency.USDC
                 || activeCurrency === CryptoCurrency.USDT"
         >
-            <div class="actions-mobile flex-row">
+            <div class="actions-mobile flex-row" v-if="isMobile">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <div class="flex-row justify-between w-full">
                     <SearchBar v-model="searchString"/>
@@ -164,7 +164,7 @@
                 </div>
             </div>
 
-            <div class="actions flex-row">
+            <div class="actions flex-row" v-if="!isMobile">
                 <SearchBar v-model="searchString"/>
 
                 <div class="flex-row ml-auto">
@@ -196,7 +196,7 @@
                     </button>
                 </div>
             </div>
-            <StakingPreview v-if="stake" class="staking-preview-mobile" />
+            <StakingPreview v-if="stake && isMobile" class="staking-preview-mobile" />
             <div
                 v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -627,6 +627,7 @@ export default defineComponent({
             activeStake,
             windowWidth,
             showStakingButton,
+            isMobile,
         };
     },
     components: {
@@ -1115,11 +1116,6 @@ export default defineComponent({
     }
 }
 
-.actions-mobile,
-.staking-preview-mobile {
-    display: none;
-}
-
 .transaction-list {
     flex-grow: 1;
 }
@@ -1253,10 +1249,6 @@ export default defineComponent({
 @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .address-overview {
         position: relative;
-    }
-
-    .actions {
-        display: none;
     }
 
     .staking-preview-mobile {

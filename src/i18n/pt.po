@@ -310,7 +310,7 @@ msgstr ""
 "Todas as novas funcionalidades são exclusivas a novas contas. Atualiza "
 "agora, demora apenas uns segundos."
 
-#: src/components/layouts/AddressOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:212
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -678,7 +678,7 @@ msgstr "Clicar para mais informações"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Clicar em 'Troubleshooting' para saber mais."
 
-#: src/components/layouts/AddressOverview.vue:215
+#: src/components/layouts/AddressOverview.vue:214
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fechar"
@@ -787,11 +787,11 @@ msgstr "Conversão de USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Conversão de USDC.e para USDC"
 
-#: src/components/layouts/AddressOverview.vue:178
+#: src/components/layouts/AddressOverview.vue:177
 msgid "Convert to USDC"
 msgstr "Converte para USDC"
 
-#: src/components/layouts/AddressOverview.vue:170
+#: src/components/layouts/AddressOverview.vue:169
 msgid "Convert your USDC.e to the new standard."
 msgstr "Converte o teu USDC.e para o novo standard."
 
@@ -1380,7 +1380,7 @@ msgstr ""
 "insuficientes, os reembolsos automáticos só vão funcionar para endereços de "
 "IBAN individuais."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:40
+#: src/components/prestaking/PrestakingInfoPage.vue:38
 msgid "Increase Prestake"
 msgstr "Aumenta pré-participação"
 
@@ -1444,8 +1444,9 @@ msgstr "Marcar o rementente"
 msgid "Language"
 msgstr "Idioma"
 
-#: src/components/layouts/AddressOverview.vue:173
+#: src/components/layouts/AddressOverview.vue:172
 #: src/components/modals/NetworkInfoModal.vue:20
+#: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
 msgstr "Sabe mais"
 
@@ -1453,11 +1454,11 @@ msgstr "Sabe mais"
 msgid "Learn more here"
 msgstr "Sabe mais aqui"
 
-#: src/components/layouts/AddressOverview.vue:163
+#: src/components/layouts/AddressOverview.vue:162
 msgid "Legacy USDC (USDC.e)"
 msgstr "Legacy USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Vamos começar! Cria a tua conta Nimiq:"
 
@@ -1875,11 +1876,14 @@ msgstr "Pré-participação tem de ser um mínimo de {minPrestake}."
 msgid "Prestaked"
 msgstr "Pré-participado"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
-#: src/components/prestaking/PrestakingInfoPage.vue:35
-#: src/components/prestaking/PrestakingWelcomePage.vue:19
+#: src/components/prestaking/PrestakingNotice.vue:4
 msgid "Prestaked funds are locked until launch"
 msgstr "Os fundos pré-participados estão bloqueados até ao lançamento"
+
+#: src/components/prestaking/PrestakingNotice.vue:8
+msgid ""
+"Prestaked funds remain locked until the Proof of Stake network goes live."
+msgstr ""
 
 #: src/components/prestaking/PrestakingButton.vue:22
 msgid "Prestaking"
@@ -1922,7 +1926,7 @@ msgstr ""
 "Lê tudo sobre isto aqui {blog_post} ou clica em baixo para a introdução da "
 "nova wallet."
 
-#: src/components/layouts/AddressOverview.vue:152
+#: src/components/layouts/AddressOverview.vue:151
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Receber"
@@ -2160,7 +2164,7 @@ msgstr "Vender NIM diretamente está indisponível da Wallet de momento."
 msgid "Selling now available"
 msgstr "Vender agora está disponível"
 
-#: src/components/layouts/AddressOverview.vue:147
+#: src/components/layouts/AddressOverview.vue:146
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Enviar"
@@ -2207,7 +2211,7 @@ msgstr "Enviar USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Enviar, receber e manter BTC na tua wallet."
 
-#: src/components/prestaking/PrestakingGraphPage.vue:126
+#: src/components/prestaking/PrestakingGraphPage.vue:127
 msgid "Sending Pre-Prestaking Transaction"
 msgstr "A enviar transação de pré-participação"
 
@@ -2334,7 +2338,7 @@ msgstr "Mostrar Palavra de Recuperação"
 msgid "Show values as {currency}"
 msgstr "Mostrar valores em {currency}"
 
-#: src/components/layouts/AddressOverview.vue:201
+#: src/components/layouts/AddressOverview.vue:200
 msgid "Signup"
 msgstr "Inscreve-te"
 
@@ -2351,7 +2355,7 @@ msgstr "Pular"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:173
+#: src/components/prestaking/PrestakingGraphPage.vue:174
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "Algo deu errado"
@@ -2396,7 +2400,7 @@ msgstr "Reserva de valor, entendido"
 msgid "Successfully changed validator to {validator}"
 msgstr "Validador alterado com sucesso para {validator}"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:151
+#: src/components/prestaking/PrestakingGraphPage.vue:152
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr "{amount} NIM pré-participado com sucesso com {validator}"
 
@@ -2846,7 +2850,7 @@ msgstr "Usa marcadores para identificar facilmente transações."
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Usa a Nimiq Wallet como aplicação web fora do browser."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:50
+#: src/components/prestaking/PrestakingInfoPage.vue:48
 msgid "Validator"
 msgstr "Validador"
 
@@ -2966,7 +2970,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "Atualmente não tens saldo para troca."
 
-#: src/components/layouts/AddressOverview.vue:423
+#: src/components/layouts/AddressOverview.vue:426
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "Não tens USDC.e suficiente para pagar as taxas de conversão ({fee})"
 
@@ -3097,7 +3101,7 @@ msgstr "O teu pagamento foi reembolsado"
 msgid "Your payout is on its way"
 msgstr "O teu pagamento está a caminho"
 
-#: src/components/layouts/AddressOverview.vue:209
+#: src/components/layouts/AddressOverview.vue:208
 msgid "Your swap was successful!"
 msgstr "A tua troca foi bem sucedida!"
 

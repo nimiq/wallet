@@ -309,7 +309,7 @@ msgstr ""
 "Jetzt aktualisieren um alle neuen Funktionen nutzen zu können. Es dauert "
 "auch wirklich nur ein paar Sekunden!"
 
-#: src/components/layouts/AddressOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:212
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -679,7 +679,7 @@ msgstr "Klicke hier für mehr infos"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Klicke auf 'Fehlerbehebung' um mehr zu erfahren."
 
-#: src/components/layouts/AddressOverview.vue:215
+#: src/components/layouts/AddressOverview.vue:214
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Schließen"
@@ -789,11 +789,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:178
+#: src/components/layouts/AddressOverview.vue:177
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:170
+#: src/components/layouts/AddressOverview.vue:169
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -1374,7 +1374,7 @@ msgstr ""
 "unzureichende Beträge, funktioniert die automatische Rückerstattung nur für "
 "individuelle IBAN-Adressen."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:40
+#: src/components/prestaking/PrestakingInfoPage.vue:38
 msgid "Increase Prestake"
 msgstr ""
 
@@ -1440,8 +1440,9 @@ msgstr "Benenne den Sender"
 msgid "Language"
 msgstr "Sprache"
 
-#: src/components/layouts/AddressOverview.vue:173
+#: src/components/layouts/AddressOverview.vue:172
 #: src/components/modals/NetworkInfoModal.vue:20
+#: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
 msgstr "Mehr erfahren"
 
@@ -1449,11 +1450,11 @@ msgstr "Mehr erfahren"
 msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
-#: src/components/layouts/AddressOverview.vue:163
+#: src/components/layouts/AddressOverview.vue:162
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
 
@@ -1869,10 +1870,13 @@ msgstr ""
 msgid "Prestaked"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
-#: src/components/prestaking/PrestakingInfoPage.vue:35
-#: src/components/prestaking/PrestakingWelcomePage.vue:19
+#: src/components/prestaking/PrestakingNotice.vue:4
 msgid "Prestaked funds are locked until launch"
+msgstr ""
+
+#: src/components/prestaking/PrestakingNotice.vue:8
+msgid ""
+"Prestaked funds remain locked until the Proof of Stake network goes live."
 msgstr ""
 
 #: src/components/prestaking/PrestakingButton.vue:22
@@ -1913,7 +1917,7 @@ msgstr ""
 "Lese mehr darüber ins unserem {blog_post} oder klicke unten für die neue "
 "Wallet Einführung."
 
-#: src/components/layouts/AddressOverview.vue:152
+#: src/components/layouts/AddressOverview.vue:151
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Empfangen"
@@ -2155,7 +2159,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Verkaufen jetzt möglich"
 
-#: src/components/layouts/AddressOverview.vue:147
+#: src/components/layouts/AddressOverview.vue:146
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Senden"
@@ -2202,7 +2206,7 @@ msgstr "Sende USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
 
-#: src/components/prestaking/PrestakingGraphPage.vue:126
+#: src/components/prestaking/PrestakingGraphPage.vue:127
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
@@ -2329,7 +2333,7 @@ msgstr "Wiederherstellungswörter anzeigen"
 msgid "Show values as {currency}"
 msgstr "Zeige Werte in {currency}"
 
-#: src/components/layouts/AddressOverview.vue:201
+#: src/components/layouts/AddressOverview.vue:200
 msgid "Signup"
 msgstr "Anmelden"
 
@@ -2346,7 +2350,7 @@ msgstr "Überspringen"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:173
+#: src/components/prestaking/PrestakingGraphPage.vue:174
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
@@ -2391,7 +2395,7 @@ msgstr "Wertaufbewahrung, verstanden"
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:151
+#: src/components/prestaking/PrestakingGraphPage.vue:152
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2846,7 +2850,7 @@ msgstr "Benutze Beschriftungen um Transaktionen leicht wiederzufinden."
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Nutze die Nimiq Wallet als Web-App außerhalb des Browsers."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:50
+#: src/components/prestaking/PrestakingInfoPage.vue:48
 msgid "Validator"
 msgstr ""
 
@@ -2964,7 +2968,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "Du hast aktuell kein Guthaben zum tauschen."
 
-#: src/components/layouts/AddressOverview.vue:423
+#: src/components/layouts/AddressOverview.vue:426
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3097,7 +3101,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "Deine Auszahlung ist unterwegs"
 
-#: src/components/layouts/AddressOverview.vue:209
+#: src/components/layouts/AddressOverview.vue:208
 msgid "Your swap was successful!"
 msgstr "Dein Tausch war erfolgreich!"
 

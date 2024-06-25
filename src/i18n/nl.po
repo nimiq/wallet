@@ -311,7 +311,7 @@ msgstr ""
 "Alle nieuwe functies zijn exclusief voor nieuwe accounts. Upgrade nu, het "
 "duurt slechts enkele seconden."
 
-#: src/components/layouts/AddressOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:212
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -677,7 +677,7 @@ msgstr "Klik voor meer informatie"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Klik op ‘Probleemoplossing’ voor meer informatie."
 
-#: src/components/layouts/AddressOverview.vue:215
+#: src/components/layouts/AddressOverview.vue:214
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Sluit"
@@ -788,11 +788,11 @@ msgstr "Conversie van USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Conversie van USDC.e naar USDC"
 
-#: src/components/layouts/AddressOverview.vue:178
+#: src/components/layouts/AddressOverview.vue:177
 msgid "Convert to USDC"
 msgstr "Omwisselen naar USDC"
 
-#: src/components/layouts/AddressOverview.vue:170
+#: src/components/layouts/AddressOverview.vue:169
 msgid "Convert your USDC.e to the new standard."
 msgstr "Converteer je USDC.e naar de nieuwe standaard."
 
@@ -1375,7 +1375,7 @@ msgstr ""
 " bedragen, werken de automatische terugbetalingen alleen voor individuele "
 "IBAN-adressen."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:40
+#: src/components/prestaking/PrestakingInfoPage.vue:38
 msgid "Increase Prestake"
 msgstr "Prestake verhogen"
 
@@ -1439,8 +1439,9 @@ msgstr "Label de afzender"
 msgid "Language"
 msgstr "Taal"
 
-#: src/components/layouts/AddressOverview.vue:173
+#: src/components/layouts/AddressOverview.vue:172
 #: src/components/modals/NetworkInfoModal.vue:20
+#: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
 msgstr "Leer meer"
 
@@ -1448,11 +1449,11 @@ msgstr "Leer meer"
 msgid "Learn more here"
 msgstr "Leer hier meer"
 
-#: src/components/layouts/AddressOverview.vue:163
+#: src/components/layouts/AddressOverview.vue:162
 msgid "Legacy USDC (USDC.e)"
 msgstr "Legacy USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:200
+#: src/components/layouts/AddressOverview.vue:199
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Laten we beginnen! Maak je eigen Nimiq account:"
 
@@ -1866,11 +1867,14 @@ msgstr "Prestake moet minimaal {minPrestake} zijn."
 msgid "Prestaked"
 msgstr "Prestaked"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:47
-#: src/components/prestaking/PrestakingInfoPage.vue:35
-#: src/components/prestaking/PrestakingWelcomePage.vue:19
+#: src/components/prestaking/PrestakingNotice.vue:4
 msgid "Prestaked funds are locked until launch"
 msgstr "Prestake NIM is vergrendeld tot de lancering van Proof of Stake"
+
+#: src/components/prestaking/PrestakingNotice.vue:8
+msgid ""
+"Prestaked funds remain locked until the Proof of Stake network goes live."
+msgstr ""
 
 #: src/components/prestaking/PrestakingButton.vue:22
 msgid "Prestaking"
@@ -1913,7 +1917,7 @@ msgstr ""
 "Lees er alles over in deze {blog_post} of klik hieronder voor de "
 "introductie."
 
-#: src/components/layouts/AddressOverview.vue:152
+#: src/components/layouts/AddressOverview.vue:151
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Ontvang"
@@ -2151,7 +2155,7 @@ msgstr "NIM rechtstreeks verkopen is momenteel niet beschikbaar in de Wallet."
 msgid "Selling now available"
 msgstr "Verkopen nu beschikbaar"
 
-#: src/components/layouts/AddressOverview.vue:147
+#: src/components/layouts/AddressOverview.vue:146
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Verstuur"
@@ -2198,7 +2202,7 @@ msgstr "Verstuur USDC"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Verstuur, ontvang en hodl BTC in je Wallet."
 
-#: src/components/prestaking/PrestakingGraphPage.vue:126
+#: src/components/prestaking/PrestakingGraphPage.vue:127
 msgid "Sending Pre-Prestaking Transaction"
 msgstr "Prestaking transactie verzenden"
 
@@ -2325,7 +2329,7 @@ msgstr "Toon herstelwoorden"
 msgid "Show values as {currency}"
 msgstr "Toon waardes als {currency}"
 
-#: src/components/layouts/AddressOverview.vue:201
+#: src/components/layouts/AddressOverview.vue:200
 msgid "Signup"
 msgstr "Aanmelden"
 
@@ -2342,7 +2346,7 @@ msgstr "Overslaan"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:173
+#: src/components/prestaking/PrestakingGraphPage.vue:174
 #: src/components/prestaking/PrestakingValidatorPage.vue:127
 msgid "Something went wrong"
 msgstr "Er is iets mis gegaan"
@@ -2388,7 +2392,7 @@ msgstr "Store of value, begrepen"
 msgid "Successfully changed validator to {validator}"
 msgstr "Validator succesvol gewijzigd naar {validator}"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:151
+#: src/components/prestaking/PrestakingGraphPage.vue:152
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr "Je prestaked nu {amount} NIM bij {validator}"
 
@@ -2841,7 +2845,7 @@ msgstr "Gebruik labels om transacties eenvoudig te identificeren."
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "Gebruik de Nimiq Wallet als web app buiten de browser om."
 
-#: src/components/prestaking/PrestakingInfoPage.vue:50
+#: src/components/prestaking/PrestakingInfoPage.vue:48
 msgid "Validator"
 msgstr "Validator"
 
@@ -2962,7 +2966,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "Je hebt momenteel geen tegoed om te wisselen."
 
-#: src/components/layouts/AddressOverview.vue:423
+#: src/components/layouts/AddressOverview.vue:426
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "Je hebt niet genoeg USDC.e om conversiekosten ({fee}) te dekken"
 
@@ -3094,7 +3098,7 @@ msgstr "Je betaling was teruggestort"
 msgid "Your payout is on its way"
 msgstr "Je uitbetaling is onderweg"
 
-#: src/components/layouts/AddressOverview.vue:209
+#: src/components/layouts/AddressOverview.vue:208
 msgid "Your swap was successful!"
 msgstr "Je swap is gelukt!"
 

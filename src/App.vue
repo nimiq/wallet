@@ -312,7 +312,7 @@ export default defineComponent({
         }
     }
 
-    @media (min-width: $veryLargeDesktopBreakpoint) {
+    @media (min-width: ($ultraLargeDesktopBreakpoint + 70)) {
         ::v-deep .groundfloor {
             display: flex;
             justify-content: center;

@@ -1163,9 +1163,12 @@ export async function sendTransaction(
             console.debug('Failed to also send relay transaction:', error);
         });
 
-    if (!txResponse) {
+    while (!txResponse) {
         const tx = client.ethers.utils.parseTransaction(relayTx);
+        // eslint-disable-next-line no-await-in-loop
         txResponse = await client.provider.getTransaction(tx.hash!);
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => { setTimeout(resolve, 1000); });
     }
 
     const token = relayRequest.request.to === config.usdc.nativeTransferContract

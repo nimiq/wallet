@@ -277,6 +277,15 @@ module.exports = {
         devServer: {
             https: true,
             allowedHosts: 'all',
+            client: {
+                overlay: false, // Disable the webpack overlay
+            },
         },
-    } : null),
+    } : {
+        devServer: {
+            client: {
+                overlay: false, // Disable the webpack overlay
+            },
+        },
+    }),
 };

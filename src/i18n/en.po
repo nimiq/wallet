@@ -2310,6 +2310,10 @@ msgstr ""
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
+#: src/components/staking/StakingButton.vue:29
+msgid "Stake NIM"
+msgstr ""
+
 #: src/components/staking/StakingWelcomePage.vue:8
 msgid "Stake NIM to earn NIM"
 msgstr ""

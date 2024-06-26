@@ -3,7 +3,7 @@
         <PageHeader>
             <template #default>
                 <div class="staking-icon">
-                    <HeroIcon />
+                    <HeroIcon pulsing />
                 </div>
                 {{ $t('Stake NIM to earn NIM') }}
             </template>
@@ -107,10 +107,11 @@ export default defineComponent({
         }
         .staking-icon {
             margin-top: .75rem;
-            margin-left: -.125rem;
             margin-bottom: 2.375rem;
-            svg {
-                height: 17.375rem;
+
+            & ::v-deep svg {
+                font-size: 19rem;
+                margin: 0 auto;
             }
         }
     }

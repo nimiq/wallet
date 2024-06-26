@@ -6,7 +6,16 @@
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
             :disabled="!!totalAccountStake || isMobile || !canStake"
         >
-            <div slot="trigger">
+            <span>
+                {{ $t('Earn NIM every month by staking your NIM') }}
+            </span>
+            <div slot="trigger"></div>
+        </Tooltip>
+        <Tooltip class="staking-button-tooltip"
+            preferredPosition="top"
+            :container="$parent.$el ? { $el: $parent.$el } : undefined"
+        >
+            <div  slot="trigger">
                 <button class="stake"
                     :disabled="!canStake"
                     @click="$router.push('/staking')"
@@ -16,7 +25,7 @@
                 </button>
             </div>
             <span>
-                {{ $t('Earn NIM every month by staking your NIM') }}
+                {{ $t('Stake NIM') }}
             </span>
         </Tooltip>
     </div>
@@ -114,6 +123,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .staking-button {
+    position: relative;
     height: 6.75rem;
     margin: -1.25rem 0;
 
@@ -134,9 +144,19 @@ export default defineComponent({
 }
 
 .tooltip.staking-feature-tip {
+    &, ::v-deep .trigger {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 100%;
+        width: 100%;
+        z-index: 3;
+    }
+
     ::v-deep .trigger::after {
         background-color: var(--nimiq-green);
-        transform: translateY(-0.9rem);
+        transform: translateY(calc(-1rem + 1px));
     }
 
     ::v-deep .tooltip-box {
@@ -149,6 +169,20 @@ export default defineComponent({
         padding: 0.5rem 1rem;
         white-space: nowrap;
         transform: translateY(1rem);
+    }
+}
+
+.tooltip.staking-button-tooltip {
+    z-index: 4;
+
+    ::v-deep .trigger::after {
+        transform: translateY(calc(1rem - 1px)) rotate(180deg);
+    }
+
+    ::v-deep .tooltip-box {
+        white-space: nowrap;
+        padding: 0.4375rem 1.125rem;
+        transform: translateY(-1rem);
     }
 }
 </style>

@@ -66,7 +66,7 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:13
+#: src/components/modals/AssetTransferModal.vue:37
 msgid "{feeAmount} fees"
 msgstr ""
 
@@ -91,6 +91,7 @@ msgstr ""
 msgid "{provider} is provided by {companyLogo}"
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:66
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
@@ -167,6 +168,7 @@ msgstr ""
 msgid "3"
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:59
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
 #: src/components/swap/SwapModal.vue:93
@@ -606,7 +608,7 @@ msgid "Choose a Validator"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/AssetTransferModal.vue:50
+#: src/components/modals/AssetTransferModal.vue:115
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:212
@@ -651,7 +653,7 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:40
+#: src/components/modals/AssetTransferModal.vue:104
 #: src/components/SendModalFooter.vue:8
 #: src/components/swap/SwapModal.vue:189
 #: src/components/swap/SwapModal.vue:194
@@ -1305,6 +1307,7 @@ msgstr ""
 msgid "Install Web App"
 msgstr ""
 
+#: src/components/DualCurrencyInput.vue:50
 #: src/components/modals/BtcSendModal.vue:79
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:189
@@ -1317,7 +1320,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1821
+#: src/components/swap/SwapModal.vue:1824
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1393,6 +1396,7 @@ msgstr ""
 msgid "Loading Moonpay..."
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:64
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
@@ -1443,13 +1447,10 @@ msgstr ""
 msgid "Many updates like easier address names, more accessible swaps and an improved asset overview await."
 msgstr ""
 
+#: src/components/DualCurrencyInput.vue:43
 #: src/components/modals/BuyCryptoModal.vue:167
 #: src/components/modals/SellCryptoModal.vue:156
 msgid "Max swappable amount is {amount}"
-msgstr ""
-
-#: src/components/modals/AssetTransferModal.vue:18
-msgid "Max. {limitMax}"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:116
@@ -1992,7 +1993,7 @@ msgstr ""
 #: src/components/modals/SellCryptoModal.vue:185
 #: src/components/modals/SellCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:31
-#: src/composables/asset-transfer/useSinpeMovilSwap.ts:88
+#: src/composables/asset-transfer/useSinpeMovilSwap.ts:490
 msgid "Sell Crypto"
 msgstr ""
 
@@ -2000,7 +2001,9 @@ msgstr ""
 msgid "Sell Crypto for Fiat"
 msgstr ""
 
-#: src/components/DualCurrencyInput.vue:18
+#: src/components/DualCurrencyInput.vue:21
+#: src/components/DualCurrencyInput.vue:47
+#: src/components/DualCurrencyInput.vue:50
 #: src/components/modals/SellCryptoModal.vue:134
 #: src/components/modals/SellCryptoModal.vue:163
 #: src/components/modals/SellCryptoModal.vue:166
@@ -2387,14 +2390,14 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
-#: src/lib/swap/utils/BuyUtils.ts:97
-#: src/lib/swap/utils/SellUtils.ts:120
+#: src/lib/swap/utils/BuyUtils.ts:98
+#: src/lib/swap/utils/SellUtils.ts:121
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:1042
-#: src/lib/swap/utils/BuyUtils.ts:102
-#: src/lib/swap/utils/SellUtils.ts:125
+#: src/lib/swap/utils/BuyUtils.ts:103
+#: src/lib/swap/utils/SellUtils.ts:126
 msgid "The fees determine the minimum amount."
 msgstr ""
 
@@ -2432,6 +2435,7 @@ msgstr ""
 msgid "The payment request might have been paid, expired, or cancelled."
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:21
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
 msgid "The rate might change depending on the swap volume."
@@ -2776,7 +2780,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:324
+#: src/components/layouts/Sidebar.vue:322
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"

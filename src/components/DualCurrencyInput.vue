@@ -1,6 +1,8 @@
 <template>
 <div class="dual-currency-input">
-  <section :class="{ orange: invalid }">
+
+    {{ exchangeRate }}
+  <section :class="{ orange: !!invalidReason }">
     <div class="flex-row primary-amount">
       <AmountInput v-model="_cryptoAmount" :decimals="cryptoCurrencyDecimals">
         <div class="amount-menu ticker" slot="suffix">
@@ -34,8 +36,9 @@
       </AmountInput>
     </span>
   </section>
+
   <MessageTransition class="message-section">
-    <template v-if="insufficientLimit">
+    <template v-if="invalidReason === 'insufficient-limit'">
         <!-- TEMP: wording TBD -->
         <i18n path="Max swappable amount is {amount}">
             <Amount slot="amount" :amount="maxCrypto"
@@ -43,7 +46,7 @@
         </i18n><br />
         <a @click="$emit('set-max')">{{ $t('Sell max') }}</a>
     </template>
-    <template v-else-if="insufficientBalance">
+    <template v-else-if="invalidReason === 'insufficient-balance'">
         {{ $t('Insufficient balance.') }} <a @click="$emit('set-max')">{{ $t('Sell max') }}</a>
     </template>
   </MessageTransition>
@@ -51,11 +54,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
-import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { Amount } from '@nimiq/vue-components';
-import { useAddressStore } from '@/stores/Address';
 import AmountInput from './AmountInput.vue';
 import MessageTransition from './MessageTransition.vue';
 
@@ -85,14 +86,13 @@ export default defineComponent({
             type: Number,
             default: 2,
         },
-        maxCrypto: {
+        maxCrypto: Number,
+        maxFiat: Number,
+        exchangeRate: {
             type: Number,
-            default: () => Number.POSITIVE_INFINITY,
+            default: 1,
         },
-        maxFiat: {
-            type: Number,
-            default: () => Number.POSITIVE_INFINITY,
-        },
+        invalidReason: String,
     },
     setup(props, context) {
         const currencySelectorOpen = ref(false);
@@ -103,28 +103,32 @@ export default defineComponent({
         });
         const _cryptoAmount = computed({
             get: () => props.cryptoAmount,
-            set: (newValue) => context.emit('update:cryptoAmount', newValue),
+            set: (newValue) => { context.emit('update:cryptoAmount', newValue); },
         });
 
-        const { accountBalance: accountBtcBalance } = useBtcAddressStore();
-        const { accountBalance: accountNimBalance } = useAddressStore();
-        const balance = computed(() => {
-            if (props.cryptoCurrency === CryptoCurrency.NIM) return accountNimBalance.value;
-            if (props.cryptoCurrency === CryptoCurrency.BTC) return accountBtcBalance.value;
-            return 0;
-        });
-        const insufficientBalance = computed(() => _cryptoAmount.value > 0 && _cryptoAmount.value > balance.value);
-        const insufficientLimit = computed(() =>
-            _cryptoAmount.value > props.maxCrypto || _fiatAmount.value > props.maxFiat);
+        const syncing = ref(false);
+
+        watch(_fiatAmount, (newVal) => {
+            if (syncing.value) return;
+            syncing.value = true;
+            const newCryptoValue = newVal * props.exchangeRate;
+            context.emit('update:cryptoAmount', newCryptoValue);
+            setTimeout(() => syncing.value = false, 100);
+        }, { lazy: true });
+
+        watch(_cryptoAmount, (newVal) => {
+            if (syncing.value) return;
+            syncing.value = true;
+            const newFiatValue = newVal / props.exchangeRate;
+            context.emit('update:fiatAmount', newFiatValue);
+            setTimeout(() => syncing.value = false, 100);
+        }, { lazy: true });
 
         return {
             currencySelectorOpen,
             CryptoCurrency,
             _fiatAmount,
             _cryptoAmount,
-            insufficientBalance,
-            insufficientLimit,
-            invalid: computed(() => insufficientBalance.value || insufficientLimit.value),
         };
     },
     components: {

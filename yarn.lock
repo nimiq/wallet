@@ -1489,17 +1489,15 @@
   dependencies:
     bitcoinjs-lib "^5.1.10"
 
-"@nimiq/fastspot-api@^1.8.0", "@nimiq/fastspot-api@https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528":
+"@nimiq/fastspot-api@https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528":
   version "1.9.0"
   resolved "https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528"
 
-"@nimiq/hub-api@^1.8.0":
+"@nimiq/hub-api@file:../hub/client":
   version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.8.0.tgz#750c7a0cf6cf2ca06527303cb83088e268842c89"
-  integrity sha512-AVK2U1Fm36+gpD9CSfDZkg987BbVfFcsOMm9XQZ8sM3nG+fPcAqfSr7mUMFt8pU+7apo19MP57h+P+nycGeHIA==
   dependencies:
     "@nimiq/core-web" "^1.6.1"
-    "@nimiq/fastspot-api" "^1.8.0"
+    "@nimiq/fastspot-api" "https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
     "@opengsn/common" "^2.2.5"
@@ -1512,19 +1510,19 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@https://github.com/nimiq/libswap-js#56a3833d2483607930047336149fa999b843c367":
+"@nimiq/libswap@github:nimiq/libswap-js#8f66adf":
   version "1.3.0"
-  resolved "https://github.com/nimiq/libswap-js#56a3833d2483607930047336149fa999b843c367"
+  resolved "https://codeload.github.com/nimiq/libswap-js/tar.gz/8f66adf05b291e45169a15222c66915bd6b0ad3e"
   dependencies:
     "@nimiq/core-web" "^1.5.8"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
-    "@nimiq/oasis-api" "https://github.com/nimiq/oasis-api-js#9d63fac0ab1364e4e1494334ee2d74f3d6f96b35"
+    "@nimiq/oasis-api" "github:nimiq/oasis-api-js#dbfcdf4707c8a030022b3474126f4596bacbc1c1"
     ethers "^5.7.2"
     promise.prototype.finally "^3.1.3"
 
-"@nimiq/oasis-api@https://github.com/nimiq/oasis-api-js#9d63fac0ab1364e4e1494334ee2d74f3d6f96b35":
+"@nimiq/oasis-api@github:nimiq/oasis-api-js#dbfcdf4707c8a030022b3474126f4596bacbc1c1":
   version "1.1.1"
-  resolved "https://github.com/nimiq/oasis-api-js#9d63fac0ab1364e4e1494334ee2d74f3d6f96b35"
+  resolved "https://codeload.github.com/nimiq/oasis-api-js/tar.gz/dbfcdf4707c8a030022b3474126f4596bacbc1c1"
 
 "@nimiq/oasis-bank-list@https://github.com/nimiq/oasis-bank-list#main":
   version "1.0.0"

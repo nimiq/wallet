@@ -4,16 +4,17 @@
             v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
             preferredPosition="bottom"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
-            :disabled="!!totalAccountStake || isMobile || !canStake"
+            :disabled="isCTATooltipDisabled"
         >
             <span>
                 {{ $t('Earn NIM every month by staking your NIM') }}
             </span>
             <div slot="trigger"></div>
         </Tooltip>
-        <Tooltip class="staking-button-tooltip"
+        <Tooltip class="staking-button-tooltip" ref="$tooltip"
             preferredPosition="top"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
+            :disabled="!isCTATooltipDisabled"
         >
             <div  slot="trigger">
                 <button class="stake"
@@ -47,6 +48,7 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
 
         const $CTATooltip = ref<Tooltip | null>(null);
+        const $tooltip = ref<Tooltip | null>(null);
 
         /**
          * The user can stake if they have a balance of at least MIN_STAKE.
@@ -92,9 +94,12 @@ export default defineComponent({
             }
         });
 
+        const isCTATooltipDisabled = computed(() =>
+            !!(totalAccountStake.value || isMobile.value || !canStake.value),
+        );
+
         /**
          * TODO:
-         * - Add a "normal behaving" tooltip for when the CTA tooltip is not shown ("Stake NIM" nq-blue / dark blue)
          * - Add a "normal behaving" warning tooltip for when the user doesn't have enough funds to stake
          *   ("At least MIN_STAKE is required in order to stake" nq-orange)
          */
@@ -108,10 +113,12 @@ export default defineComponent({
 
             // DOM References / Vue Components
             $CTATooltip,
+            $tooltip,
 
             // Functions / ref & computed
             canStake,
             customClickHandler,
+            isCTATooltipDisabled,
         };
     },
     components: {

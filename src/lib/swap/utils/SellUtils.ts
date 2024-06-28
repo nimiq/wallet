@@ -1,4 +1,4 @@
-import { getEstimate, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
+import { Estimate, getEstimate, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import {
     DeniedReason,
     Htlc as OasisHtlc,
@@ -82,7 +82,9 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount, fiatAsset: 
     | { fiatAmount?: number, cryptoAmount: number, fiatAsset?: FiatSwapAsset },
 ) {
     if (!fiatAmount && !cryptoAmount) return;
-    const fiatAsset = _fiatAsset || SwapAsset.EUR; // To avoid breaking the code in the app, we default to EUR
+    let fiatAsset = _fiatAsset || SwapAsset.EUR; // To avoid breaking the code in the app, we default to EUR
+    // TODO Remove this
+    fiatAsset = fiatAsset === SwapAsset.CRC ? SwapAsset.EUR : fiatAsset;
 
     const { from, to } = getFiatSwapParameters(fiatAsset, fiatAmount
         ? { to: { asset: fiatAsset, amount: fiatAmount } }
@@ -95,7 +97,7 @@ export async function updateSellEstimate({ fiatAmount, cryptoAmount, fiatAsset: 
         from as RequestAsset<SwapAsset>,
         to as SwapAsset,
     );
-
+    
     if (!newEstimate.from || !newEstimate.to) {
         throw new Error(`UNEXPECTED: ${fiatAsset} or crypto price not present in estimate`);
     }

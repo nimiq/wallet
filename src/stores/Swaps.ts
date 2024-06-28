@@ -78,9 +78,8 @@ export type SwapEurData = {
 
 export type SwapCrcData = {
     asset: SwapAsset.CRC,
-    bankLabel?: string,
-    bankLogo?: string,
-    iban?: string,
+    recipientLabel?: string,
+    phoneNumber?: string,
     amount: number,
     htlc?: {
         id: string,

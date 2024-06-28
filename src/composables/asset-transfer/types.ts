@@ -21,13 +21,14 @@ type Computed<T> = Readonly<Ref<Readonly<T>>>;
 export interface AssetTransferParams {
   isSelling: boolean;
 
-  currencyFrom: FiatCurrency | CryptoCurrency;
-  currencyTo: FiatCurrency | CryptoCurrency;
+  leftAsset: FiatCurrency | CryptoCurrency;
+  rightAsset: FiatCurrency | CryptoCurrency;
   currencyFiatFallback: FiatCurrency;
   currencyCrypto: CryptoCurrency;
 
   fiatAmount: Ref<number>;
   cryptoAmount: Ref<number>;
+  exchangeRate: Computed<number>;
   updateFiatAmount: (value: number) => void;
   updateCryptoAmount: (value: number) => void;
 
@@ -35,19 +36,16 @@ export interface AssetTransferParams {
   decimalsFiat: Computed<number>;
 
   fiatFees: FundingFees;
-  feeAmount: Ref<number>;
 
-  currentLimitFiat: Computed<number>;
   limits: SwapLimits;
+  currentLimitCrypto: Computed<number | null>;
+  currentLimitFiat: Computed<number | null>;
 
-  componentFrom: VueComponent;
-  componentTo: VueComponent;
+  componentLeft: VueComponent;
+  componentRight: VueComponent;
 
   // For NIM address selector screen
   addressListOpened: Ref<boolean>;
-
-  insufficientLimit: Computed<boolean>;
-  insufficientBalance: Computed<boolean>;
 
   modalTitle: string;
 
@@ -57,5 +55,8 @@ export interface AssetTransferParams {
 
   oasisSellLimitExceeded: boolean;
 
-  // TODO Callbacks and hooks
+  invalidReason: Computed<string>;
+
+  canSign: Computed<boolean>;
+  sign: () => Promise<void>;
 }

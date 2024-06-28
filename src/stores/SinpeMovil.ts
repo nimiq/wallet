@@ -4,17 +4,19 @@ import { useConfig } from '../composables/useConfig';
 
 export type SinpeMovilState = {
     phoneNumber: string | null,
-    label: string | null,
+    label: string,
     token: string | null,
-    tokenTimestamp: string | null,
+    tokenTimestamp: number | null,
     userLimits: UserLimits | null,
 };
+
+const defaultSinpeMovilLabel = 'Sinpe Móvil';
 
 export const useSinpeMovilStore = createStore({
     id: 'sinpemovil',
     state: (): SinpeMovilState => ({
         phoneNumber: null,
-        label: null,
+        label: defaultSinpeMovilLabel,
         token: null,
         tokenTimestamp: null,
         userLimits: null,
@@ -39,14 +41,14 @@ export const useSinpeMovilStore = createStore({
             // We might show user name instead in the future
             // const label = user.label.replace(/[^a-zA-Z0-9]/g, ' ');
             // For now, we just show the service name
-            const label = 'Sinpe Móvil';
+            const label = defaultSinpeMovilLabel;
 
             this.state = { ...user, label, userLimits: this.state.userLimits };
         },
         resetUser() {
             this.state = {
                 phoneNumber: null,
-                label: null,
+                label: defaultSinpeMovilLabel,
                 token: null,
                 tokenTimestamp: null,
                 userLimits: this.state.userLimits,

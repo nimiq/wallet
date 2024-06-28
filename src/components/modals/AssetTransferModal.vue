@@ -6,14 +6,15 @@
     @close="closeModal"
     @close-overlay="p.addressListOpened = false"
   >
-    <div v-if="!!p" class="asset-transfer-input">
+    <div v-if="!p">Loading fees</div>
+    <div v-else class="asset-transfer-input">
         <PageHeader>{{ p.modalTitle }}</PageHeader>
         <PageBody class="flex-column">
           <section class="pills">
               <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
                 <div slot="trigger" class="pill">
                     1 {{p.currencyCrypto}} =
-                    <FiatAmount :amount="1 ** 10 ** p.decimalsCrypto * exchangeRate"
+                    <FiatAmount :amount="1 ** 10 ** p.decimalsCrypto * p.exchangeRate"
                       :currency="p.currencyFiatFallback"/>
                 </div>
                 <p class="explainer">
@@ -48,7 +49,7 @@
                 <div slot="trigger" class="pill limits flex-row">
                     <LimitIcon />
                     <FiatAmount v-if="p.limits"
-                      :amount="p.currentLimitFiat || 1000"
+                      :amount="p.currentLimitFiat"
                       :currency="p.currencyFiatFallback"
                       hideDecimals
                     />
@@ -59,28 +60,28 @@
                     <FiatConvertedAmount v-if="p.limits"
                         :amount="p.limits.monthly.luna" roundDown
                         currency="nim" :fiat="p.currencyFiatFallback"
-                        :max="p.limitMaxAmount"/>
+                        :max="p.currentLimitFiat"/>
                     <span v-else>{{ $t('loading...') }}</span>
                 </div>
                 <i18n v-if="p.limits" class="explainer" path="{value} remaining" tag="p">
                     <FiatConvertedAmount slot="value"
                         :amount="p.limits.remaining.luna" roundDown
                         currency="nim" :fiat="p.currencyFiatFallback"
-                        :max="p.limitMaxAmount"/>
+                        :max="p.currentLimitFiat"/>
                 </i18n>
             </Tooltip>
           </section>
 
           <section class="options-section flex-row">
             <component
-              :is="p.componentFrom"
+              :is="p.componentLeft"
               @openAddressSelector="p.addressListOpened = true"
             />
             <div class="separator-wrapper">
               <div class="separator" />
             </div>
             <component
-              :is="p.componentTo"
+              :is="p.componentRight"
               @openAddressSelector="p.addressListOpened = true"
             />
           </section>
@@ -92,13 +93,16 @@
             :cryptoCurrency="p.currencyCrypto"
             :fiatCurrencyDecimals="p.decimalsFiat"
             :cryptoCurrencyDecimals="p.decimalsCrypto"
-            :maxCrypto="currentLimitCrypto"
-            :maxFiat="currentLimitFiat"
+            :maxCrypto="p.currentLimitCrypto"
+            :maxFiat="p.currentLimitFiat"
+            :exchangeRate="p.exchangeRate"
+            :invalid-reason="p.invalidReason"
             @set-max="setMax()"
           />
         </PageBody>
         <PageFooter>
-          <button class="nq-button light-blue" @mousedown.prevent>
+          <button class="nq-button light-blue" @mousedown.prevent
+            :disabled="p.invalid || !p.fiatAmount || !p.cryptoAmount" @click="p.sign()">
             {{ $t("Confirm") }}
           </button>
         </PageFooter>
@@ -124,19 +128,25 @@
             <PageBody style="padding: 0.75rem;" class="flex-column">
                 <SwapAnimation
                     :swapId="p.swap.id"
-                    :swapState="p.swap.state"
-                    :fromAsset="p.swap.from.asset"
-                    :fromAmount="p.swap.from.amount + swap.from.fee"
-                    :fromAddress="p.swap.contracts[swap.from.asset].htlc.address"
-                    :toAsset="p.swap.to.asset"
-                    :toAmount="p.swap.to.amount - swap.to.fee"
-                    :toAddress="p.swap.contracts[swap.to.asset].htlc.address"
-                    :nimAddress="p.activeAddressInfo.address"
-                    :error="p.swap.error"
-                    :errorAction="p.swap.errorAction"
+                    :swapState="swap.state"
+                    :fromAsset="swap.from.asset"
+                    :fromAmount="swap.from.amount + swap.from.fee"
+                    :fromAddress="'contract' in swap.contracts[swap.from.asset].htlc
+                        ? swap.contracts[swap.from.asset].htlc.contract
+                        : swap.contracts[swap.from.asset].htlc.address"
+                    :toAsset="swap.to.asset"
+                    :toAmount="swap.to.amount - swap.to.fee"
+                    :toAddress="'contract' in swap.contracts[swap.to.asset].htlc
+                        ? swap.contracts[swap.to.asset].htlc.contract
+                        : swap.contracts[swap.to.asset].htlc.address"
+                    :nimAddress="activeAddressInfo.address"
+                    :error="swap.error && swap.error.split(' req={')[0]"
+                    :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
+                    :switchSides="swap.from.asset === rightAsset"
+                    :stateEnteredAt="swap.stateEnteredAt"
+                    :errorAction="swap.errorAction"
                     :toFundingDurationMins="isMainnet ? p.detectionDelay : 0"
                     :oasisLimitExceeded="p.oasisSellLimitExceeded"
-                    :stateEnteredAt="p.swap.stateEnteredAt"
                     @finished="finishSwap"
                     @cancel="finishSwap"
                 />
@@ -178,10 +188,7 @@ import {
     Timer,
 } from '@nimiq/vue-components';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
-import { useFiatStore } from '@/stores/Fiat';
 import { useAddressStore } from '@/stores/Address';
-import { useSwapLimits } from '@/composables/useSwapLimits';
-import { useCurrentLimitCrypto, useCurrentLimitFiat } from '@/lib/swap/utils/CommonUtils';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useConfig } from '@/composables/useConfig';
@@ -223,9 +230,8 @@ export default defineComponent({
 
             switch (props.method) {
                 case AssetTransferMethod.SinpeMovil: {
-                    await import('@/composables/asset-transfer/useSinpeMovilSwap').then(
-                        (m) => (p.value = m.useSinpeMovilSwap(options)),
-                    );
+                    const module = await import('@/composables/asset-transfer/useSinpeMovilSwap');
+                    p.value = module.useSinpeMovilSwap(options);
                     break;
                 }
                 default:
@@ -233,41 +239,28 @@ export default defineComponent({
             }
         });
 
-        const { exchangeRates } = useFiatStore();
-        const exchangeRate = computed(() => {
-            if (!p.value) return 0;
-            return (
-                exchangeRates.value[p.value.currencyCrypto]?.[
-                    p.value.currencyFiatFallback
-                ] || 0
-            );
-        });
-
-        const { activeAddressInfo, activeAddress } = useAddressStore();
+        const { activeAddressInfo } = useAddressStore();
         const { accountBalance: accountBtcBalance } = useBtcAddressStore();
-        const { limits } = useSwapLimits({ nimAddress: activeAddress.value! });
-        const currentLimitFiat = useCurrentLimitFiat(limits);
-        const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
 
         function setMax() {
             if (!p.value?.isSelling) return;
 
             switch (p.value.currencyCrypto) {
                 case CryptoCurrency.NIM: {
-                    if (!currentLimitCrypto.value) {
+                    if (!p.value.currentLimitCrypto.value) {
                         p.value.updateCryptoAmount(activeAddressInfo.value?.balance || 0);
-                    } else if (currentLimitCrypto.value < (activeAddressInfo.value?.balance || 0)) {
-                        p.value.updateCryptoAmount(currentLimitCrypto.value);
+                    } else if (p.value.currentLimitCrypto.value < (activeAddressInfo.value?.balance || 0)) {
+                        p.value.updateCryptoAmount(p.value.currentLimitCrypto.value);
                     } else {
                         p.value.updateCryptoAmount(activeAddressInfo.value?.balance || 0);
                     }
                     break;
                 }
                 case CryptoCurrency.BTC: {
-                    if (!currentLimitCrypto.value) {
+                    if (!p.value.currentLimitCrypto.value) {
                         p.value.updateCryptoAmount(accountBtcBalance.value);
-                    } else if (currentLimitCrypto.value < accountBtcBalance.value) {
-                        p.value.updateCryptoAmount(currentLimitCrypto.value);
+                    } else if (p.value.currentLimitCrypto.value < accountBtcBalance.value) {
+                        p.value.updateCryptoAmount(p.value.currentLimitCrypto.value);
                     } else {
                         p.value.updateCryptoAmount(accountBtcBalance.value);
                     }
@@ -277,7 +270,7 @@ export default defineComponent({
                     throw new Error('Invalid currency');
             }
 
-            p.value.updateFiatAmount(cryptoAmount.value * exchangeRate.value);
+            p.value.updateFiatAmount(cryptoAmount.value * p.value.exchangeRate.value);
         }
 
         function finishSwap() {
@@ -299,14 +292,11 @@ export default defineComponent({
 
         return {
             p,
-            exchangeRate,
             setMax,
             finishSwap,
             closeModal,
             isMainnet,
             SwapState,
-            currentLimitCrypto,
-            currentLimitFiat,
         };
     },
     components: {

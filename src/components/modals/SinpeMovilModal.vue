@@ -271,7 +271,7 @@ export default defineComponent({
                     connect({
                         phoneNumber: phoneNumber.value,
                         token: json.token!,
-                        tokenTimestamp: json.timestamp.toString(),
+                        tokenTimestamp: sendSmsResponse.value!.timestamp,
                     });
                     context.root.$router.push({
                         name: RouteName.AssetTransfer,
@@ -282,6 +282,8 @@ export default defineComponent({
                         },
                         query: context.root.$router.currentRoute.query,
                     });
+
+                    setTimeout(() => state.value = SinpeMovilFlowState.Idle, 1000);
                 })
                 .catch((error) => {
                     errorMessage.value = error.message ? error.message : JSON.stringify(error);

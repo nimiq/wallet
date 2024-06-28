@@ -907,7 +907,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:20
+#: src/components/staking/StakingButton.vue:10
 #: src/components/staking/StakingSummaryMobile.vue:5
 msgid "Earn NIM every month by staking your NIM"
 msgstr ""
@@ -2224,6 +2224,10 @@ msgstr ""
 
 #: src/components/staking/StakingGraphPage.vue:69
 msgid "Stake must be at least {minStake}."
+msgstr ""
+
+#: src/components/staking/StakingButton.vue:29
+msgid "Stake NIM"
 msgstr ""
 
 #: src/components/staking/StakingWelcomePage.vue:8

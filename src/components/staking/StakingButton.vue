@@ -4,9 +4,19 @@
             v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
             preferredPosition="bottom"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
-            :disabled="!!totalAccountStake || isMobile || !canStake"
+            :disabled="isCTATooltipDisabled"
         >
-            <div slot="trigger">
+            <span>
+                {{ $t('Earn NIM every month by staking your NIM') }}
+            </span>
+            <div slot="trigger"></div>
+        </Tooltip>
+        <Tooltip class="staking-button-tooltip" ref="$tooltip"
+            preferredPosition="top"
+            :container="$parent.$el ? { $el: $parent.$el } : undefined"
+            :disabled="!isCTATooltipDisabled"
+        >
+            <div  slot="trigger">
                 <button class="stake"
                     :disabled="!canStake"
                     @click="$router.push('/staking')"
@@ -16,7 +26,7 @@
                 </button>
             </div>
             <span>
-                {{ $t('Earn NIM every month by staking your NIM') }}
+                {{ $t('Stake NIM') }}
             </span>
         </Tooltip>
     </div>
@@ -38,6 +48,7 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
 
         const $CTATooltip = ref<Tooltip | null>(null);
+        const $tooltip = ref<Tooltip | null>(null);
 
         /**
          * The user can stake if they have a balance of at least MIN_STAKE.
@@ -83,9 +94,12 @@ export default defineComponent({
             }
         });
 
+        const isCTATooltipDisabled = computed(() =>
+            !!(totalAccountStake.value || isMobile.value || !canStake.value),
+        );
+
         /**
          * TODO:
-         * - Add a "normal behaving" tooltip for when the CTA tooltip is not shown ("Stake NIM" nq-blue / dark blue)
          * - Add a "normal behaving" warning tooltip for when the user doesn't have enough funds to stake
          *   ("At least MIN_STAKE is required in order to stake" nq-orange)
          */
@@ -99,10 +113,12 @@ export default defineComponent({
 
             // DOM References / Vue Components
             $CTATooltip,
+            $tooltip,
 
             // Functions / ref & computed
             canStake,
             customClickHandler,
+            isCTATooltipDisabled,
         };
     },
     components: {
@@ -114,6 +130,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .staking-button {
+    position: relative;
     height: 6.75rem;
     margin: -1.25rem 0;
 
@@ -134,9 +151,19 @@ export default defineComponent({
 }
 
 .tooltip.staking-feature-tip {
+    &, ::v-deep .trigger {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 100%;
+        width: 100%;
+        z-index: 3;
+    }
+
     ::v-deep .trigger::after {
         background-color: var(--nimiq-green);
-        transform: translateY(-0.9rem);
+        transform: translateY(calc(-1rem + 1px));
     }
 
     ::v-deep .tooltip-box {
@@ -149,6 +176,20 @@ export default defineComponent({
         padding: 0.5rem 1rem;
         white-space: nowrap;
         transform: translateY(1rem);
+    }
+}
+
+.tooltip.staking-button-tooltip {
+    z-index: 4;
+
+    ::v-deep .trigger::after {
+        transform: translateY(calc(1rem - 1px)) rotate(180deg);
+    }
+
+    ::v-deep .tooltip-box {
+        white-space: nowrap;
+        padding: 0.4375rem 1.125rem;
+        transform: translateY(-1rem);
     }
 }
 </style>

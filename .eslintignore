@@ -1,1 +1,2 @@
 vue.config.js
+src/components/staking/graph/StakingGraph.vue

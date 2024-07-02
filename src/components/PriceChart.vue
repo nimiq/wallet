@@ -232,7 +232,8 @@ export default defineComponent({
             const sampleCount = 18; // 18 is the number of points determined to look good
             const timestep = timespan / (sampleCount - 1);
             // Request chart data from even 2 minute marks
-            // (this allows caching of the API response by our Coingecko proxy)
+            // (this allows API response caching by the Coingecko proxy, if used, see FIAT_API_PROVIDER_PRICE_CHART and
+            // setCoinGeckoApiUrl)
             const last2MinuteMark = Math.floor(Date.now() / TWO_MINUTES) * TWO_MINUTES;
             const start = last2MinuteMark - timespan;
             const timestamps: number[] = [];
@@ -248,6 +249,7 @@ export default defineComponent({
                 chartFiatCurrency,
                 timestamps,
                 FIAT_API_PROVIDER_PRICE_CHART,
+                // @ts-expect-error provider check on purpose as we might want to change it in the future
                 ...(FIAT_API_PROVIDER_PRICE_CHART === Provider.CoinGecko
                     ? [{ disableMinutelyData: true }] as const
                     : [] as const

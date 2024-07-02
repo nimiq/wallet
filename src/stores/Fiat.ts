@@ -131,7 +131,6 @@ export const useFiatStore = createStore({
                         && !(isCurrentCurrencyCplBridged && isCplBridgedFiatCurrency(currency))
                     ) continue; // omit currency
                     currenciesToUpdate.push(currency);
-                    // @ts-expect-error provider check on purpose as we might want to change it in the future
                     if (FIAT_API_PROVIDER_CURRENT_PRICES === Provider.CryptoCompare
                         && currenciesToUpdate.length >= 25) {
                         // CryptoCompare only allows 25 currencies per request, and we don't want to send more than one.

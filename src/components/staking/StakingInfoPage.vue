@@ -69,25 +69,25 @@
                             </button>
                             <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                         </Tooltip>
-                        <button class="nq-button-pill red" @click="deactivateAll"
+                        <!-- <button class="nq-button-pill red" @click="deactivateAll"
                             :disabled="!stake.activeBalance || consensus !== 'established'">
                             {{ $t('Deactivate All') }}
-                        </button>
+                        </button> -->
                     </div>
                 </div>
                 <div v-if="stake && stake.inactiveBalance && hasUnstakableStake"
                     class="unstaking row flex-row nq-light-blue"
                 >
                     <Amount :amount="stake.inactiveBalance"/>&nbsp;{{ $t('available to unstake') }}
-                    <div class="flex-grow"></div>
-                    <button
+                    <!-- <div class="flex-grow"></div> -->
+                    <!-- <button
                         class="nq-button-pill light-blue"
                         @click="() => unstakeAll()"
                         :disabled="(stake.activeBalance > 0 && stake.activeBalance < MIN_STAKE)
                             || consensus !== 'established'"
                     >
                         {{ $t('Unstake All') }}
-                    </button>
+                    </button> -->
                 </div>
                 <div v-else-if="stake && stake.inactiveBalance" class="unstaking row flex-row nq-light-blue">
                     <CircleSpinner/> {{ $t('Deactivating') }}&nbsp;<Amount :amount="stake.inactiveBalance"/>
@@ -98,14 +98,14 @@
                     class="unstaking row flex-row nq-light-blue"
                 >
                     <Amount :amount="stake.retiredBalance"/>&nbsp;{{ $t('available to unstake') }}
-                    <div class="flex-grow"></div>
-                    <button
+                    <!-- <div class="flex-grow"></div> -->
+                    <!-- <button
                         class="nq-button-pill light-blue"
                         @click="() => unstakeAll(true)"
                         :disabled="consensus !== 'established'"
                     >
                         {{ $t('Unstake All') }}
-                    </button>
+                    </button> -->
                 </div>
             </div>
 
@@ -235,146 +235,146 @@ export default defineComponent({
             && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value),
         );
 
-        async function unstakeAll(removeOnly = false) {
-            context.emit('statusChange', {
-                type: StatusChangeType.UNSTAKING,
-                state: State.LOADING,
-                title: context.root.$t('Sending Unstaking Transaction') as string,
-            });
+        // async function unstakeAll(removeOnly = false) {
+        //     context.emit('statusChange', {
+        //         type: StatusChangeType.UNSTAKING,
+        //         state: State.LOADING,
+        //         title: context.root.$t('Sending Unstaking Transaction') as string,
+        //     });
 
-            try {
-                const { Address, TransactionBuilder } = await import('@nimiq/core');
-                const client = await getNetworkClient();
+        //     try {
+        //         const { Address, TransactionBuilder } = await import('@nimiq/core');
+        //         const client = await getNetworkClient();
 
-                const transactions = [
-                    ...(removeOnly ? [] : [
-                        TransactionBuilder.newRetireStake(
-                            Address.fromUserFriendlyAddress(activeAddress.value!),
-                            BigInt(stake.value!.inactiveBalance),
-                            BigInt(0),
-                            useNetworkStore().state.height,
-                            await client.getNetworkId(),
-                        ),
-                    ]),
-                    // It is only allowed to remove the complete retired balance, not only parts of it.
-                    TransactionBuilder.newRemoveStake(
-                        Address.fromUserFriendlyAddress(activeAddress.value!),
-                        BigInt(removeOnly
-                            ? stake.value!.retiredBalance
-                            : stake.value!.retiredBalance + stake.value!.inactiveBalance),
-                        BigInt(0),
-                        useNetworkStore().state.height,
-                        await client.getNetworkId(),
-                    ),
-                ];
+        //         const transactions = [
+        //             ...(removeOnly ? [] : [
+        //                 TransactionBuilder.newRetireStake(
+        //                     Address.fromUserFriendlyAddress(activeAddress.value!),
+        //                     BigInt(stake.value!.inactiveBalance),
+        //                     BigInt(0),
+        //                     useNetworkStore().state.height,
+        //                     await client.getNetworkId(),
+        //                 ),
+        //             ]),
+        //             // It is only allowed to remove the complete retired balance, not only parts of it.
+        //             TransactionBuilder.newRemoveStake(
+        //                 Address.fromUserFriendlyAddress(activeAddress.value!),
+        //                 BigInt(removeOnly
+        //                     ? stake.value!.retiredBalance
+        //                     : stake.value!.retiredBalance + stake.value!.inactiveBalance),
+        //                 BigInt(0),
+        //                 useNetworkStore().state.height,
+        //                 await client.getNetworkId(),
+        //             ),
+        //         ];
 
-                const unstakedAmount = removeOnly
-                    ? stake.value!.retiredBalance
-                    : stake.value!.retiredBalance + stake.value!.inactiveBalance;
+        //         const unstakedAmount = removeOnly
+        //             ? stake.value!.retiredBalance
+        //             : stake.value!.retiredBalance + stake.value!.inactiveBalance;
 
-                const txs = await sendStaking({
-                    transaction: transactions.map((tx) => tx.serialize()),
-                });
+        //         const txs = await sendStaking({
+        //             transaction: transactions.map((tx) => tx.serialize()),
+        //         });
 
-                if (!txs) {
-                    context.emit('statusChange', {
-                        type: StatusChangeType.NONE,
-                    });
-                    return;
-                }
+        //         if (!txs) {
+        //             context.emit('statusChange', {
+        //                 type: StatusChangeType.NONE,
+        //             });
+        //             return;
+        //         }
 
-                if (txs.some((tx) => tx.executionResult === false)) {
-                    throw new Error('The transaction did not succeed');
-                }
+        //         if (txs.some((tx) => tx.executionResult === false)) {
+        //             throw new Error('The transaction did not succeed');
+        //         }
 
-                context.emit('statusChange', {
-                    state: State.SUCCESS,
-                    title: context.root.$t('Successfully unstaked {amount} NIM', { amount: unstakedAmount / 1e5 }),
-                });
+        //         context.emit('statusChange', {
+        //             state: State.SUCCESS,
+        //             title: context.root.$t('Successfully unstaked {amount} NIM', { amount: unstakedAmount / 1e5 }),
+        //         });
 
-                // // Close staking modal
-                // context.root.$router.back();
-                context.emit('statusChange', {
-                    type: StatusChangeType.NONE,
-                    timeout: SUCCESS_REDIRECT_DELAY,
-                });
-            } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+        //         // // Close staking modal
+        //         // context.root.$router.back();
+        //         context.emit('statusChange', {
+        //             type: StatusChangeType.NONE,
+        //             timeout: SUCCESS_REDIRECT_DELAY,
+        //         });
+        //     } catch (error: any) {
+        //         if (config.reportToSentry) captureException(error);
+        //         else console.error(error); // eslint-disable-line no-console
 
-                context.emit('statusChange', {
-                    state: State.WARNING,
-                    title: context.root.$t('Something went wrong') as string,
-                    message: `${error.message} - ${error.data}`,
-                });
-            }
-        }
+        //         context.emit('statusChange', {
+        //             state: State.WARNING,
+        //             title: context.root.$t('Something went wrong') as string,
+        //             message: `${error.message} - ${error.data}`,
+        //         });
+        //     }
+        // }
 
-        async function deactivateAll() {
-            context.emit('statusChange', {
-                type: StatusChangeType.DEACTIVATING,
-                state: State.LOADING,
-                title: context.root.$t('Sending Staking Transaction') as string,
-            });
+        // async function deactivateAll() {
+        //     context.emit('statusChange', {
+        //         type: StatusChangeType.DEACTIVATING,
+        //         state: State.LOADING,
+        //         title: context.root.$t('Sending Staking Transaction') as string,
+        //     });
 
-            const validatorLabelOrAddress = 'label' in validator.value!
-                ? validator.value.label : validator.value!.address;
+        //     const validatorLabelOrAddress = 'label' in validator.value!
+        //         ? validator.value.label : validator.value!.address;
 
-            try {
-                const { Address, TransactionBuilder } = await import('@nimiq/core');
-                const client = await getNetworkClient();
+        //     try {
+        //         const { Address, TransactionBuilder } = await import('@nimiq/core');
+        //         const client = await getNetworkClient();
 
-                const transaction = TransactionBuilder.newSetActiveStake(
-                    Address.fromUserFriendlyAddress(activeAddress.value!),
-                    BigInt(0),
-                    BigInt(0),
-                    useNetworkStore().state.height,
-                    await client.getNetworkId(),
-                );
-                const txs = await sendStaking({
-                    transaction: transaction.serialize(),
-                }).catch((error) => {
-                    throw new Error(error.data);
-                });
+        //         const transaction = TransactionBuilder.newSetActiveStake(
+        //             Address.fromUserFriendlyAddress(activeAddress.value!),
+        //             BigInt(0),
+        //             BigInt(0),
+        //             useNetworkStore().state.height,
+        //             await client.getNetworkId(),
+        //         );
+        //         const txs = await sendStaking({
+        //             transaction: transaction.serialize(),
+        //         }).catch((error) => {
+        //             throw new Error(error.data);
+        //         });
 
-                if (!txs) {
-                    context.emit('statusChange', {
-                        type: StatusChangeType.NONE,
-                    });
-                    return;
-                }
+        //         if (!txs) {
+        //             context.emit('statusChange', {
+        //                 type: StatusChangeType.NONE,
+        //             });
+        //             return;
+        //         }
 
-                if (txs.some((tx) => tx.executionResult === false)) {
-                    throw new Error('The transaction did not succeed');
-                }
+        //         if (txs.some((tx) => tx.executionResult === false)) {
+        //             throw new Error('The transaction did not succeed');
+        //         }
 
-                context.emit('statusChange', {
-                    state: State.SUCCESS,
-                    title: context.root.$t(
-                        'Successfully deactivated {amount} NIM from your stake with {validator}',
-                        {
-                            amount: Math.abs(stake.value!.activeBalance / 1e5),
-                            validator: validatorLabelOrAddress,
-                        },
-                    ),
-                });
+        //         context.emit('statusChange', {
+        //             state: State.SUCCESS,
+        //             title: context.root.$t(
+        //                 'Successfully deactivated {amount} NIM from your stake with {validator}',
+        //                 {
+        //                     amount: Math.abs(stake.value!.activeBalance / 1e5),
+        //                     validator: validatorLabelOrAddress,
+        //                 },
+        //             ),
+        //         });
 
-                context.emit('statusChange', {
-                    type: StatusChangeType.NONE,
-                    timeout: SUCCESS_REDIRECT_DELAY,
-                });
-            } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+        //         context.emit('statusChange', {
+        //             type: StatusChangeType.NONE,
+        //             timeout: SUCCESS_REDIRECT_DELAY,
+        //         });
+        //     } catch (error: any) {
+        //         if (config.reportToSentry) captureException(error);
+        //         else console.error(error); // eslint-disable-line no-console
 
-                // Show error screen
-                context.emit('statusChange', {
-                    state: State.WARNING,
-                    title: context.root.$t('Something went wrong') as string,
-                    message: `${error.message} - ${error.data}`,
-                });
-            }
-        }
+        //         // Show error screen
+        //         context.emit('statusChange', {
+        //             state: State.WARNING,
+        //             title: context.root.$t('Something went wrong') as string,
+        //             message: `${error.message} - ${error.data}`,
+        //         });
+        //     }
+        // }
 
         return {
             // NOW,
@@ -387,8 +387,8 @@ export default defineComponent({
             inactiveReleaseTime,
             hasUnstakableStake,
             isStakeDeactivating,
-            unstakeAll,
-            deactivateAll,
+            // unstakeAll,
+            // deactivateAll,
             canSwitchValidator,
             consensus,
             MIN_STAKE,
@@ -475,7 +475,7 @@ export default defineComponent({
     }
 
     .adjust-stake {
-        margin-right: 2rem;
+        // margin-right: 2rem;
         ::v-deep .tooltip-box {
             width: 25.75rem;
         }

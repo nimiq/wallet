@@ -233,8 +233,8 @@ export default defineComponent({
                 await context.root.$nextTick();
             }
 
-            // Ensure the entered amount does not fall below the minimum stake or already staked amount
-            valueNim = Math.max(valueNim, MIN_STAKE, alreadyStakedAmount.value);
+            // Ensure the entered amount does not fall below the minimum stake
+            valueNim = Math.max(valueNim, MIN_STAKE);
             const amount = Math.max(
                 0,
                 Math.min(availableAmount.value, valueNim),
@@ -303,7 +303,7 @@ export default defineComponent({
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
             // Ensure the slider does not go below the minimum stake percentage
-            percent = Math.max(minimumStakePercent.value, alreadyStakedPercentage.value, percent);
+            percent = Math.max(minimumStakePercent.value, percent);
 
             const offsetX = getPointAtPercent(percent);
             let newAmount;
@@ -314,8 +314,8 @@ export default defineComponent({
             } else {
                 // Calculate new amount from slider's position, ensuring it's not below minimum prestake
                 newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
-                // Prevent reducing below MIN_STAKE or already staked amount
-                newAmount = Math.max(newAmount, MIN_STAKE, alreadyStakedAmount.value);
+                // Prevent reducing below MIN_STAKE
+                newAmount = Math.max(newAmount, MIN_STAKE);
             }
 
             currentAmount.value = newAmount;

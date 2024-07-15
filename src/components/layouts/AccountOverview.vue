@@ -85,7 +85,7 @@
 
                 <Tooltip
                     v-if="$config.fastspot.enabled
-                        && activeAccountInfo.type !== AccountType.LEDGER
+                        && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
                         && (
                             nimAccountBalance > 0
@@ -155,7 +155,7 @@
 
                 <Tooltip
                     v-if="$config.fastspot.enabled
-                        && activeAccountInfo.type !== AccountType.LEDGER
+                        && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled
                         && (
@@ -193,7 +193,7 @@
                     </template>
                 </Tooltip>
 
-                <button v-if="activeAccountInfo.type !== AccountType.LEDGER
+                <button v-if="activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && canHaveMultipleAddresses
                         && $config.polygon.enabled" ref="usdcAccount$"
                     class="reset usdc-account flex-column"

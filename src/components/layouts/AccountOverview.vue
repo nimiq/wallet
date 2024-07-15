@@ -80,7 +80,7 @@
 
                 <Tooltip class="nim-usdc-swap-button" ref="nimUsdcSwapTooltip$" :container="this"
                     preferredPosition="top"
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER
+                    v-if="activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasUsdcAddresses && $config.usdc.enabled
                         && (
                             nimAccountBalance > 0
@@ -133,7 +133,7 @@
 
                 <Tooltip class="btc-usdc-swap-button" ref="btcUsdcSwapTooltip$" :container="this"
                     preferredPosition="top"
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER
+                    v-if="activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && hasUsdcAddresses
                         && $config.enableBitcoin && $config.usdc.enabled
                         && (
@@ -154,7 +154,7 @@
                     </i18n>
                 </Tooltip>
 
-                <button v-if="activeAccountInfo.type !== AccountType.LEDGER
+                <button v-if="activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && canHaveMultipleAddresses
                         && $config.usdc.enabled" ref="usdcAccount$"
                     class="reset usdc-account flex-column"

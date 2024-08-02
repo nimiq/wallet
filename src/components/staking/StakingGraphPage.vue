@@ -122,7 +122,7 @@ export default defineComponent({
         }
 
         async function performStaking() {
-            if (newStake.value < MIN_STAKE) return;
+            if (isStakeBelowMinimum.value) return;
 
             const validatorLabelOrAddress = 'label' in activeValidator.value!
                 ? activeValidator.value.label
@@ -279,7 +279,7 @@ export default defineComponent({
             }
         }
 
-        const isStakeBelowMinimum = computed(() => newStake.value < MIN_STAKE);
+        const isStakeBelowMinimum = computed(() => newStake.value < MIN_STAKE && newStake.value > 0);
 
         return {
             // NOW,

@@ -62,7 +62,6 @@
 <script lang="ts">
 import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { useAddressStore } from '../../stores/Address';
-import { MIN_STAKE } from '../../lib/Constants';
 
 import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
 import AnimatedLeafIcon from '../icons/Staking/AnimatedLeafIcon.vue';
@@ -155,7 +154,7 @@ export default defineComponent({
 
         function updateInputWidth(value?: string) {
             inputAmountWidth.value = estimateTextWidth(
-                value || $stakedNIMAmount.value?.value || (MIN_STAKE / 1e5).toString(),
+                value || $stakedNIMAmount.value?.value || '0',
                 9,
             ) + 69;
         }
@@ -166,12 +165,11 @@ export default defineComponent({
             const newValue = $stakedNIMAmount.value?.value
                 ? Math.min(
                     maxValue,
-                    parseInt($stakedNIMAmount.value?.value, 10),
+                    parseFloat($stakedNIMAmount.value?.value),
                 ) : false;
 
-            // TODO: Should we take decimals into account? like 10000.0123 NIM instead of 1000?
-            if (newValue) {
-                $stakedNIMAmount.value!.value = Math.floor(newValue).toString();
+            if (newValue !== false) {
+                $stakedNIMAmount.value!.value = newValue.toString();
             }
         }
 
@@ -199,10 +197,6 @@ export default defineComponent({
         const $stakedNIMAmount = ref<HTMLInputElement>(null);
         const $dotIndicator = ref<HTMLElement>(null);
 
-        const minimumStakePercent = computed(() => availableAmount.value < MIN_STAKE
-            ? Infinity // Makes it impossible to move the mouse above half the `minimumStakePercent`
-            : (MIN_STAKE / availableAmount.value) * 100);
-
         const atClick = (e: MouseEvent | TouchEvent) => {
             e.preventDefault();
 
@@ -225,7 +219,7 @@ export default defineComponent({
         const updateAmount = async (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
             const target = e.target as HTMLInputElement;
 
-            let valueNim = (parseInt(target.value.replace(/[^\d.]/g, ''), 10) || 0) * 1e5;
+            let valueNim = (parseFloat(target.value.replace(/[^\d.]/g, '')) || 0) * 1e5;
 
             if (!firstRender && valueNim > currentAmount.value) {
                 window.clearTimeout(timeoutID);
@@ -233,8 +227,6 @@ export default defineComponent({
                 await context.root.$nextTick();
             }
 
-            // Ensure the entered amount does not fall below the minimum stake
-            valueNim = Math.max(valueNim, MIN_STAKE);
             const amount = Math.max(
                 0,
                 Math.min(availableAmount.value, valueNim),
@@ -291,9 +283,7 @@ export default defineComponent({
             context.emit('amount-chosen', 0);
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const onMove = (e: MouseEvent | TouchEvent, execute = false, skipSignals = false) => {
-            // if (execute !== true) return;
             const position = extractEventPosition(e);
             if (!position || !pivotPoint) return;
 
@@ -302,20 +292,15 @@ export default defineComponent({
             let percent = Math.min(100, Math.max(0,
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
-            // Ensure the slider does not go below the minimum stake percentage
-            percent = Math.max(minimumStakePercent.value, percent);
 
             const offsetX = getPointAtPercent(percent);
             let newAmount;
 
             if (percent === 100) {
-                // Set the current amount to the full available amount with decimals
                 newAmount = availableAmount.value;
             } else {
-                // Calculate new amount from slider's position, ensuring it's not below minimum prestake
                 newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
-                // Prevent reducing below MIN_STAKE
-                newAmount = Math.max(newAmount, MIN_STAKE);
+                newAmount = Math.max(newAmount, 0);
             }
 
             currentAmount.value = newAmount;

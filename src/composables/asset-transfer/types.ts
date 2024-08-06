@@ -1,6 +1,7 @@
-import { FiatCurrency, CryptoCurrency } from '@/lib/Constants';
 import { FundingFees } from '@/lib/swap/utils/Functions';
 import { ActiveSwap } from '@/stores/Swaps';
+import { SwapAsset } from '@nimiq/libswap';
+import { CryptoSwapAsset, FiatSwapAsset } from '@/lib/swap/utils/CommonUtils';
 import { Ref } from '@vue/composition-api';
 import { VueConstructor } from 'vue';
 import { SwapLimits } from '../useSwapLimits';
@@ -10,7 +11,7 @@ export enum AssetTransferMethod {
 }
 
 export interface AssetTransferOptions {
-  pair: (FiatCurrency | CryptoCurrency)[];
+  pair: [SwapAsset, SwapAsset];
 }
 
 type VueComponent = VueConstructor<Vue>;
@@ -21,10 +22,10 @@ type Computed<T> = Readonly<Ref<Readonly<T>>>;
 export interface AssetTransferParams {
   isSelling: boolean;
 
-  leftAsset: FiatCurrency | CryptoCurrency;
-  rightAsset: FiatCurrency | CryptoCurrency;
-  currencyFiatFallback: FiatCurrency;
-  currencyCrypto: CryptoCurrency;
+  leftAsset: SwapAsset;
+  rightAsset: SwapAsset;
+  currencyFiatFallback: FiatSwapAsset;
+  currencyCrypto: CryptoSwapAsset;
 
   fiatAmount: Ref<number>;
   cryptoAmount: Ref<number>;
@@ -49,7 +50,8 @@ export interface AssetTransferParams {
 
   modalTitle: string;
 
-  swap: Ref<Readonly<ActiveSwap | null>>;
+  swap: Computed<ActiveSwap | null>;
+  estimateError: Computed<string | null>;
 
   detectionDelay: number;
 

@@ -68,8 +68,10 @@ import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest'
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
 import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
+import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
-import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
+import { useSwapsStore,
+    SwapState, ActiveSwap, SwapEurData, SwapErrorAction, isFiatAsset, SwapCrcData } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useBankStore } from '../../stores/Bank';
@@ -104,6 +106,7 @@ export default defineComponent({
             state: swap$,
         } = useSwapsStore();
         const { bank, bankAccount } = useBankStore();
+        const { phoneNumber } = useSinpeMovilStore();
         const { config } = useConfig();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
@@ -153,8 +156,10 @@ export default defineComponent({
                     }
                     case SwapAsset.BTC:
                     case SwapAsset.USDC_MATIC:
+                    case SwapAsset.CRC:
                     case SwapAsset.EUR: {
-                        const { timeout } = contract as Contract<SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.EUR>;
+                        const { timeout } = contract as Contract<
+                            SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.EUR | SwapAsset.CRC>;
                         if (timeout <= timestamp) return true;
                         remainingTimes.push(timeout - timestamp);
                         break;
@@ -281,7 +286,9 @@ export default defineComponent({
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
                     };
                 }
-                case SwapAsset.EUR: return { getHtlc, settleHtlc };
+                case SwapAsset.CRC:
+                case SwapAsset.EUR:
+                    return { getHtlc, settleHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
         }
@@ -639,35 +646,53 @@ export default defineComponent({
                         }
                     } else {
                         try {
+                            let smsApi: string | undefined;
+                            if (activeSwap.value.to.asset === SwapAsset.CRC) {
+                                const { smsApiToken } = await import('@/stores/SinpeMovil')
+                                    .then((module) => module.useSinpeMovilStore());
+                                if (!smsApiToken.value) {
+                                    throw new Error('Sinpe Movil API token not available');
+                                }
+                                smsApi = smsApiToken.value;
+                            }
                             const settlementTx = await swapHandler.settleIncoming(
                                 activeSwap.value!.settlementSerializedTx!,
                                 activeSwap.value!.secret!,
-                                { authorization: activeSwap.value!.settlementAuthorizationToken },
+                                {
+                                    authorization: activeSwap.value!.settlementAuthorizationToken,
+                                    smsApi,
+                                },
                             );
 
                             if (activeSwap.value!.to.asset === SwapAsset.BTC) {
                                 subscribeToAddresses([(settlementTx as BtcTransactionDetails).outputs[0].address!]);
                             }
 
-                            if (activeSwap.value!.to.asset === SwapAsset.EUR) {
+                            if (isFiatAsset(activeSwap.value!.to.asset)) {
                                 let htlc = settlementTx as OasisHtlc<HtlcStatus.SETTLED>;
 
-                                // As EUR payments are not otherwise detected by the Wallet, we use this
+                                // As EUR/CRC payments are not otherwise detected by the Wallet, we use this
                                 // place to persist the relevant information in our store.
-                                const swapData: SwapEurData = {
+                                const htlcData: SwapEurData['htlc'] = {
+                                    id: htlc.id,
+                                    timeoutTimestamp: htlc.expires,
+                                    settlement: {
+                                        status: htlc.settlement.status,
+                                    },
+                                };
+                                const swapData = activeSwap.value!.to.asset === SwapAsset.EUR ? ({
                                     asset: SwapAsset.EUR,
                                     bankLabel: bank.value!.name,
                                     // bankLogo?: string,
                                     iban: bankAccount.value!.iban,
                                     amount: htlc.amount,
-                                    htlc: {
-                                        id: htlc.id,
-                                        timeoutTimestamp: htlc.expires,
-                                        settlement: {
-                                            status: htlc.settlement.status,
-                                        },
-                                    },
-                                };
+                                    htlc: htlcData,
+                                } as SwapEurData) : ({
+                                    asset: SwapAsset.CRC,
+                                    amount: htlc.amount,
+                                    phoneNumber: phoneNumber.value,
+                                    htlc: htlcData,
+                                } as SwapCrcData);
 
                                 if (htlc.settlement.status === SettlementStatus.PENDING) {
                                     // Add swap data to store so the tx history already shows the tx as a swap

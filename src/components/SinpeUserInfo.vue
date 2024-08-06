@@ -25,20 +25,18 @@
 </template>
 
 <script lang="ts">
+import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
     props: {},
     setup() {
-        // const { label, phoneNumber, initials } = useSinpeMovilStore();
+        const { label, phoneNumber, initials } = useSinpeMovilStore();
 
         return {
-            // label,
-            // phoneNumber,
-            // initials,
-            label: 'Sinpe Móvil',
-            initials: 'SM',
-            phoneNumber: '+506 1234 5678',
+            label,
+            phoneNumber,
+            initials,
         };
     },
     components: {

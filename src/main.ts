@@ -93,13 +93,15 @@ async function start() {
     const { config } = useConfig();
 
     watch(() => {
+        // TODO Fastspot lib should allow dynamic reconfiguration or each function accepting the endpoint and key
+        // as arguments. For now, we just initialize the API with SINPE conf since it is the only one available.
         if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
     });
 
     watch(() => {
-        if (!config.oasis.apiEndpoint) return;
-        initOasisApi(config.oasis.apiEndpoint);
+        if (!config.sinpeMovil.apiEndpoint) return;
+        initOasisApi(config.sinpeMovil.apiEndpoint);
     });
 
     watch(() => {

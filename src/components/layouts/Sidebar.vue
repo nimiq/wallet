@@ -58,9 +58,7 @@
                 }}</template>
             </Tooltip>
 
-            <Tooltip
-                v-if="/* (fastspotEnabledCryptoSwapAssets.length && fastspotEnabledFiatSwapAssets.length)
-                    || */ $config.moonpay.enabled"
+            <Tooltip v-if="enabledSellProviders.length > 0"
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -332,7 +330,7 @@ export default defineComponent({
 
         const sellModals = {
             [SellProvider.Moonpay]: RouteName.MoonpaySellInfo,
-            [SellProvider.SinpeMovil]: RouteName.SinpeMovilSellInfo,
+            [SellProvider.SinpeMovil]: RouteName.SinpeMovilInfo,
             [SellProvider.Simplex]: RouteName.SellCrypto, // This is a fallback, should never be reached
         };
 
@@ -341,7 +339,10 @@ export default defineComponent({
             const modalName: RouteName = enabledSellProviders.value.length === 1
                 ? sellModals[enabledSellProviders.value[0]]
                 : RouteName.SellCrypto; // TODO: SellCrypto is for SEPA operations. We need to add a new Sell Selector.
-            openModal(modalName);
+            const params = enabledSellProviders.value.includes(SellProvider.SinpeMovil)
+                ? { pair: JSON.stringify([SwapAsset.NIM, SwapAsset.CRC]) }
+                : undefined;
+            openModal(modalName, params);
         }
 
         const nimSellOptions = computed(() => {

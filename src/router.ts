@@ -75,10 +75,10 @@ const MoonpaySellInfoModal = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpaySellInfoModal.vue');
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
-const SinpeMovilModal = () =>
-    import(/* webpackChunkName: "sinpe-movil-modal" */ './components/modals/SinpeMovilModal.vue');
-const SinpeMovileSellInfoModal = () =>
-    import(/* webpackChunkName: "sinpe-movil-info-modal" */ './components/modals/SinpeMovilSellInfoModal.vue');
+const SinpeMovilMobileVerificationModal = () =>
+    import(/* webpackChunkName: "sinpe-movil-modal" */ './components/modals/SinpeMovilMobileVerificationModal.vue');
+const SinpeMovileInfoModal = () =>
+    import(/* webpackChunkName: "sinpe-movil-info-modal" */ './components/modals/SinpeMovilInfoModal.vue');
 
 // Prestaking Modals
 const PrestakingModal = () =>
@@ -123,8 +123,8 @@ export enum RouteName {
     MoonpaySellInfo = 'moonpay-sell-info',
     Moonpay = 'moonpay',
     Simplex = 'simplex',
-    SinpeMovilSellInfo = 'sinpe-movil-sell-info',
-    SinpeMovil = 'sinpe-movil',
+    SinpeMovilInfo = 'sinpe-movil-info',
+    SinpeMovilMobileVerification = 'sinpe-movil-mobile-verification',
     RootReleaseNotes = 'root-release-notes',
     ExportHistory = 'export-history',
     Prestaking = 'prestaking',
@@ -389,18 +389,18 @@ const routes: RouteConfig[] = [{
             name: RouteName.Simplex,
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/sinpe-movil-sell-info',
+            path: '/sinpe-movil-info',
             components: {
-                'persistent-modal': SinpeMovileSellInfoModal,
+                'persistent-modal': SinpeMovileInfoModal,
             },
-            name: RouteName.SinpeMovilSellInfo,
+            name: RouteName.SinpeMovilInfo,
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/sinpe-movil',
+            path: '/sinpe-movil-mobile-verification',
             components: {
-                'persistent-modal': SinpeMovilModal,
+                'persistent-modal': SinpeMovilMobileVerificationModal,
             },
-            name: RouteName.SinpeMovil,
+            name: RouteName.SinpeMovilMobileVerification,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/release-notes',

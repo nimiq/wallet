@@ -3,7 +3,7 @@
         :class="{
             'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING,
             'to-funding-delay': toFundingDurationMins && state === SwapState.AWAIT_INCOMING,
-            'to-limit-exceeded': oasisLimitExceeded && toAsset === SwapAsset.EUR,
+            'to-limit-exceeded': oasisLimitExceeded && isFiatAsset(toAsset),
             'from-funding-delay': fromFundingDurationMins && state === SwapState.CREATE_OUTGOING,
         }"
     >
@@ -19,14 +19,14 @@
             <h1 class="title nq-h1">{{ $t('The swap expired') }}</h1>
             <p class="expired-text">
                 {{ $t('No funds were received so the swap expired.') }}<br>
-                <template v-if="fromAsset === SwapAsset.EUR">
+                <template v-if="isFiatAsset(fromAsset)">
                     {{ $t('Any funds sent will be refunded within 1-3 days.') }}
                 </template>
                 <template v-else>
                     {{ $t('Any funds sent will be refunded.') }}
                 </template>
             </p>
-            <template v-if="fromAsset === SwapAsset.EUR">
+            <template v-if="isFiatAsset(fromAsset)">
                 <p class="expired-text">
                     {{ $t('Click on ‘Troubleshooting’ to learn more.') }}
                 </p>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="oasis-limit-exceeded-background flex-column nq-orange-bg"
-            :class="{'visible': oasisLimitExceeded && fromAsset === SwapAsset.EUR}"
+            :class="{'visible': oasisLimitExceeded && isFiatAsset(fromAsset)}"
         >
             <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
             <div class="flex-grow"></div>
@@ -99,7 +99,7 @@
         </transition>
 
         <transition name="fade">
-            <div v-if="oasisLimitExceeded && toAsset === SwapAsset.EUR"
+            <div v-if="oasisLimitExceeded && isFiatAsset(toAsset)"
                 class="to-limit-exceeded-container flex-column"
             >
                 <div class="header flex-row">
@@ -116,7 +116,10 @@
                         {{ $t('You have exceeded your OASIS limit.') }}
                     </h2>
                     <p class="nq-gray">
-                        {{ $t('Your EUR will be transferred to your bank account as soon as new limit is available.') }}
+                        {{
+                            $t('Your {fiatCurrency} will be transferred to your bank account' +
+                            'as soon as new limit is available.', toAsset)
+                        }}
                     </p>
                 </div>
             </div>
@@ -129,7 +132,7 @@
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
                         || (fromFundingDurationMins && state === SwapState.CREATE_OUTGOING)
-                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
+                        || (oasisLimitExceeded && isFiatAsset(toAsset))
                     ? 'bottom'
                     : 'top'
                 } right`"
@@ -185,7 +188,7 @@
                     <div class="flex-row swap-amount">
                         <GroundedArrowUpIcon v-if="!switchSides"/>
                         <GroundedArrowDownIcon v-if="switchSides"/>
-                        <Amount v-if="leftAsset !== SwapAsset.EUR" :amount="!switchSides ? fromAmount : toAmount" :currency="assetToCurrency(leftAsset)"/>
+                        <Amount v-if="!isFiatAsset(leftAsset)" :amount="!switchSides ? fromAmount : toAmount" :currency="assetToCurrency(leftAsset)"/>
                         <FiatAmount v-else :amount="(!switchSides ? fromAmount : toAmount) / 100" :currency="assetToCurrency(leftAsset)"/>
                     </div>
                 </div>
@@ -209,7 +212,7 @@
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
                         || (fromFundingDurationMins && state === SwapState.CREATE_OUTGOING)
-                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
+                        || (oasisLimitExceeded && isFiatAsset(toAsset))
                     ? 'bottom'
                     : 'top'
                 } right`"
@@ -265,7 +268,7 @@
                     <div class="flex-row swap-amount">
                         <GroundedArrowDownIcon v-if="!switchSides"/>
                         <GroundedArrowUpIcon v-if="switchSides"/>
-                        <Amount v-if="rightAsset !== SwapAsset.EUR" :amount="!switchSides ? toAmount : fromAmount" :currency="assetToCurrency(rightAsset)"/>
+                        <Amount v-if="!isFiatAsset(rightAsset)" :amount="!switchSides ? toAmount : fromAmount" :currency="assetToCurrency(rightAsset)"/>
                         <FiatAmount v-else :amount="(!switchSides ? toAmount : fromAmount) / 100" :currency="assetToCurrency(rightAsset)"/>
                     </div>
                 </div>
@@ -294,7 +297,7 @@
                 4/5 {{ $t('Awaiting swap secret') }}
             </div>
             <div v-if="state === SwapState.SETTLE_INCOMING || state === SwapState.COMPLETE" class="nq-h2">
-                <template v-if="toAsset === SwapAsset.EUR">
+                <template v-if="isFiatAsset(toAsset)">
                     5/5 {{ $t('Processing payout') }}
                 </template>
                 <template v-else>
@@ -303,7 +306,7 @@
             </div>
 
             <MessageTransition>
-                <template v-if="fromAsset === SwapAsset.EUR && state <= SwapState.CREATE_OUTGOING">
+                <template v-if="isFiatAsset(fromAsset) && state <= SwapState.CREATE_OUTGOING">
                     <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
                         class="dont-close-wallet-notice nq-light-blue">{{
                         $t('You will finalize your purchase by bank transfer.')
@@ -315,7 +318,7 @@
                     }}</div>
                 </template>
 
-                <template v-else-if="toAsset === SwapAsset.EUR && state === SwapState.SETTLE_INCOMING">
+                <template v-else-if="isFiatAsset(toAsset) && state === SwapState.SETTLE_INCOMING">
                     <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
                         class="dont-close-wallet-notice nq-orange">{{
                         $t('Don\'t close your wallet until the swap is complete!')
@@ -364,7 +367,7 @@ import OverflowingCup from '../icons/OverflowingCup.vue';
 import Amount from '../Amount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import BlueLink from '../BlueLink.vue';
-import { SwapState, SwapErrorAction } from '../../stores/Swaps';
+import { SwapState, SwapErrorAction, isFiatAsset } from '../../stores/Swaps';
 import { formatDuration } from '../../lib/Time';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
@@ -483,12 +486,13 @@ export default defineComponent({
                 case SwapAsset.BTC: return '#f7931a';
                 case SwapAsset.USDC_MATIC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
+                case SwapAsset.CRC: return '#0D2D49';
                 default: return '';
             }
         });
 
         const rightColor = computed(() => {
-            if (props.oasisLimitExceeded && rightAsset.value === SwapAsset.EUR) return 'white';
+            if (props.oasisLimitExceeded && isFiatAsset(rightAsset.value)) return 'white';
 
             switch (rightAsset.value) {
                 case SwapAsset.NIM: {
@@ -502,6 +506,7 @@ export default defineComponent({
                 case SwapAsset.BTC: return '#f7931a';
                 case SwapAsset.USDC_MATIC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
+                case SwapAsset.CRC: return '#0D2D49';
                 default: return '';
             }
         });
@@ -512,6 +517,7 @@ export default defineComponent({
                 case SwapAsset.BTC: return 'Bitcoin';
                 case SwapAsset.USDC_MATIC: return 'USD Coin';
                 case SwapAsset.EUR: return 'Euro';
+                case SwapAsset.CRC: return 'Costa Rican Colón';
                 default: throw new Error(`Invalid asset ${asset}`);
             }
         }
@@ -664,6 +670,7 @@ export default defineComponent({
             timer,
             assetToCurrency,
             errorActionText,
+            isFiatAsset,
         };
     },
     components: {

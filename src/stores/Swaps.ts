@@ -220,7 +220,7 @@ export const useSwapsStore = createStore({
             if (!contractWithEstimate) return; // not a contract
 
             const fiatAsset = contractWithEstimate[contractProp].asset as FiatSwapAsset;
-            if (!this.isFiatAsset(otherAsset)) return; // not a fiat swap
+            if (!isFiatAsset(otherAsset)) return; // not a fiat swap
             const fiatCurrency = assetToCurrency(fiatAsset);
 
             const exchangeRate = {
@@ -247,7 +247,9 @@ export const useSwapsStore = createStore({
                 },
             });
         },
-
-        isFiatAsset: (c: any): c is SwapAsset.EUR | SwapAsset.CRC => c === SwapAsset.EUR || c === SwapAsset.CRC,
     },
 });
+
+export function isFiatAsset(c: any): c is SwapAsset.EUR | SwapAsset.CRC {
+    return c === SwapAsset.EUR || c === SwapAsset.CRC;
+}

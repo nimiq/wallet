@@ -2,8 +2,8 @@ import {
     FiatCurrency,
     CryptoCurrency,
     OASIS_CRC_DETECTION_DELAY,
-    FiatCurrencyOffered,
     FIAT_CURRENCIES_OFFERED,
+    ENV_MAIN,
 } from '@/lib/Constants';
 import { computed, ref, watch } from '@vue/composition-api';
 import { selectedFiatCurrency,
@@ -12,8 +12,10 @@ import { selectedFiatCurrency,
     useCurrentLimitCrypto,
     calculateFees,
     getFiatSwapParameters,
-    useSwapEstimate } from '@/lib/swap/utils/CommonUtils';
-import { calculateDisplayedDecimals } from '@/lib/NumberFormatting';
+    useSwapEstimate,
+    capDecimals,
+    FiatSwapCurrency,
+} from '@/lib/swap/utils/CommonUtils';
 import { i18n } from '@/i18n/i18n-setup';
 import { useAddressStore } from '@/stores/Address';
 import { useSwapsStore, SwapState } from '@/stores/Swaps';
@@ -23,7 +25,7 @@ import { setupSwap } from '@/hub';
 import { getNetworkClient } from '@/network';
 import { useAccountStore } from '@/stores/Account';
 import { useNetworkStore } from '@/stores/Network';
-import { cancelSwap, Contract, createSwap, getSwap, PreSwap, RequestAsset, Swap } from '@nimiq/fastspot-api';
+import { cancelSwap, Contract, createSwap, getSwap, PreSwap, RequestAsset, Swap, SwapAsset } from '@nimiq/fastspot-api';
 import {
     SinpeMovilHtlcSettlementInstructions,
     HtlcCreationInstructions,
@@ -33,7 +35,6 @@ import {
     NimiqHtlcCreationInstructions,
     SinpeMovilHtlcCreationInstructions,
 } from '@nimiq/hub-api';
-import { SwapAsset } from '@nimiq/libswap';
 import {
     getHtlc,
     HtlcStatus,
@@ -41,6 +42,7 @@ import {
 } from '@nimiq/oasis-api';
 import { captureException } from '@sentry/vue';
 import { useSinpeMovilStore } from '@/stores/SinpeMovil';
+import router, { RouteName } from '@/router';
 import { SwapLimits, useSwapLimits } from '../useSwapLimits';
 import SinpeUserInfo from '../../components/SinpeUserInfo.vue';
 import AddressSelector from '../../components/AddressSelector.vue';
@@ -51,52 +53,63 @@ import { useConfig } from '../useConfig';
 type SinpeFiatCurrencies = FiatCurrency.CRC;
 
 function isCryptoCurrency(currency: any): currency is CryptoCurrency {
-    return Object.values(CryptoCurrency).includes(currency);
+    return Object.values(CryptoCurrency).includes(currency.toLocaleLowerCase() as CryptoCurrency);
 }
 
 function isFiatCurrency(currency: any): currency is SinpeFiatCurrencies {
-    return Object.values(FiatCurrency).includes(currency);
+    return Object.values(FiatCurrency).includes(currency.toLocaleLowerCase() as FiatCurrency);
 }
 
-const fiatDecimals: Partial<Record<SinpeFiatCurrencies, number>> = {
-    [FiatCurrency.CRC]: 2,
-};
+export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<AssetTransferParams> {
+    const { label: sinpeLabel, phoneNumber, smsApiToken } = useSinpeMovilStore();
+    if (!smsApiToken.value) {
+        // eslint-disable-next-line no-console
+        console.error('SinpeMovil API token not set. Redirecting to Mobile verification');
+        router.push({ name: RouteName.SinpeMovilMobileVerification, params: { pair: JSON.stringify(options.pair) } });
+    }
 
-export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferParams {
     const [leftAsset, rightAsset] = options.pair;
-    const fiatCurrency = isFiatCurrency(leftAsset) ? leftAsset : rightAsset as SinpeFiatCurrencies;
-    const cryptoCurrency = isCryptoCurrency(leftAsset) ? leftAsset : rightAsset as CryptoCurrency;
-    selectedFiatCurrency.value = fiatCurrency;
+    const fiatCurrency = isFiatCurrency(leftAsset) ? leftAsset : rightAsset;
+    const cryptoCurrency = isCryptoCurrency(leftAsset) ? leftAsset : rightAsset;
+
+    // Code in the wallet rely on the global "selectedFiatCurrency" for swaps
+    selectedFiatCurrency.value = fiatCurrency.toLocaleLowerCase() as FiatSwapCurrency;
 
     // Loading the CRC currency is lazy, we need to explicitly set it
-    useFiatStore().updateExchangeRates({ fiatCurrency: selectedFiatCurrency.value as FiatCurrencyOffered });
+    await useFiatStore().updateExchangeRates({ fiatCurrency: selectedFiatCurrency.value });
 
     const isSelling = leftAsset === cryptoCurrency;
+
+    const { estimate } = useSwapEstimate();
 
     const fiatAmount = ref(0);
     const cryptoAmount = ref(0);
 
-    const decimalsCrypto = computed(() => calculateDisplayedDecimals(fiatAmount.value, cryptoCurrency));
-    const decimalsFiat = computed(() => fiatDecimals[fiatCurrency] || 0);
+    // const decimalsCrypto = computed(() => calculateDisplayedDecimals(fiatAmount.value, cryptoCurrency));
+    const decimalsCrypto = computed(() => 5);
+    const decimalsFiat = computed(() => 0);
 
     const { activeAddress, accountBalance } = useAddressStore();
 
     const { exchangeRates } = useFiatStore();
     const exchangeRate = computed(() => {
-        if (!FIAT_CURRENCIES_OFFERED.includes(selectedFiatCurrency.value as FiatCurrencyOffered)) {
+        if (!FIAT_CURRENCIES_OFFERED.includes(selectedFiatCurrency.value)) {
             return 0; // No exchange rate available yet
         }
 
-        const rate = exchangeRates.value[cryptoCurrency]?.[selectedFiatCurrency.value] || 0;
+        const rate = exchangeRates.value[cryptoCurrency]?.[fiatCurrency] || 0;
         return rate;
     });
 
     const nimAddress = computed(() => activeAddress.value!);
     const { limits } = useSwapLimits({ nimAddress: nimAddress.value });
     const currentLimitUsd = useCurrentLimitFiat(limits);
+    let a = 0;
     const currentLimitFiat = computed(() => {
+        // TODO Remove this console.log
+        console.log({currentLimitUsd: currentLimitUsd.value, a: a++});
         if (!currentLimitUsd.value) return 0;
-        const usdRate = exchangeRates.value[CryptoCurrency.USDC][selectedFiatCurrency.value] || 0;
+        const usdRate = exchangeRates.value[CryptoCurrency.USDC][fiatCurrency] || 0;
         return currentLimitUsd.value * usdRate;
     });
 
@@ -104,6 +117,7 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
     const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
     const insufficientLimit = computed(() => {
         const cryptoLimit = currentLimitCrypto?.value || Number.POSITIVE_INFINITY;
+        console.log({cryptoLimit});
         return (cryptoAmount.value > cryptoLimit || fiatAmount.value > currentLimitFiat.value);
     });
 
@@ -111,14 +125,11 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
 
     const addressListOpened = ref(false);
 
-    const { label: sinpeLabel, phoneNumber } = useSinpeMovilStore();
-
     const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
     const { config } = useConfig();
 
     const swapError = ref<string>(null);
 
-    const { estimate } = useSwapEstimate();
     const fetchingEstimate = ref(false);
 
     let timeoutId: number;
@@ -138,8 +149,8 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
         }
 
         const args = fiatAmount.value
-            ? { fiatAmount: fiatAmount.value, fiatAsset: selectedFiatCurrency.value.toUpperCase() }
-            : { cryptoAmount: cryptoAmount.value, fiatAsset: selectedFiatCurrency.value.toUpperCase() };
+            ? { fiatAmount: fiatAmount.value, fiatAsset: fiatCurrency.toUpperCase() }
+            : { cryptoAmount: cryptoAmount.value, fiatAsset: fiatCurrency.toUpperCase() };
         await updateEstimateFn!(args).then(() => {
             estimateError.value = null;
         }).catch((error: any) => {
@@ -150,52 +161,47 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
         fetchingEstimate.value = false;
     }
 
-    watch([fiatAmount, cryptoAmount], ([newFiat, newCrypto]) => {
+    const syncing = ref(false);
+
+    watch([fiatAmount, cryptoAmount], ([newFiat, newCrypto], oldValues) => {
+        if (syncing.value) return;
         if (!newFiat && !newCrypto) {
             estimate.value = null;
             estimateError.value = null;
             return;
         }
 
+        const [oldFiat, oldCrypto] = oldValues || [undefined, undefined];
+        syncing.value = true;
         clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(updateEstimate, 500);
+        timeoutId = window.setTimeout(() => {
+            updateEstimate();
+            syncing.value = false;
+        }, 500);
+        if (estimate.value && newFiat !== oldFiat) {
+            cryptoAmount.value = capDecimals(
+                estimate.value.from.amount + estimate.value.from.fee, estimate.value.from.asset);
+        } else if (estimate.value && newCrypto !== oldCrypto) {
+            fiatAmount.value = estimate.value.to.amount - estimate.value.to.fee;
+        }
         fetchingEstimate.value = true;
     });
 
     const canSign = computed(() =>
-        fiatAmount.value
-        && !estimateError.value && !swapError.value
-        && estimate.value
-        && !!sinpeLabel.value && !!phoneNumber.value
-        && limits.value?.current.usd
+        !!fiatAmount.value
+        && estimateError.value === null
+        && swapError.value === null
+        && estimate.value !== null
+        && sinpeLabel.value !== null && phoneNumber.value !== null
+        && (limits.value?.current?.usd || 0) > 0
         && !fetchingEstimate.value
         && !insufficientBalance.value
         && !insufficientLimit.value,
     );
 
     async function sign() {
-        console.log('Signing swap...'); // eslint-disable-line no-console
-        console.log(canSign.value);
-        console.log({
-            estimateError: estimateError.value,
-            isEstimateErrorTheProblem: !estimateError.value,
-            swapError: swapError.value,
-            isSwapErrorTheProblem: !swapError.value,
-            estimate: estimate.value,
-            isEstimateTheProblem: !!estimate.value,
-            sinpeLabel: sinpeLabel.value,
-            isSinpeLabelTheProblem: !sinpeLabel.value,
-            phoneNumber: phoneNumber.value,
-            isPhoneNumberTheProblem: !phoneNumber.value,
-            limits: limits.value?.current.usd,
-            isLimitsTheProblem: !!limits.value?.current.usd,
-            fetchingEstimate: fetchingEstimate.value,
-            isFetchingEstimateTheProblem: !fetchingEstimate.value,
-            insufficientBalance: insufficientBalance.value,
-            isInsufficientBalanceTheProblem: !insufficientBalance.value,
-            insufficientLimit: insufficientLimit.value,
-            isInsufficientLimitTheProblem: !insufficientLimit.value,
-        });
+        console.log('Signing swap...', canSign.value); // eslint-disable-line no-console
+
         if (!canSign.value) return;
 
         // eslint-disable-next-line no-async-promise-executor
@@ -204,21 +210,21 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
 
             try {
                 const args: Parameters<typeof getFiatSwapParameters>[1] = fiatAmount.value
-                    ? { to: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
+                    ? { to: { asset: SwapAsset.CRC, amount: fiatAmount.value } }
                     : { from: { amount: cryptoAmount.value } };
                 const { from, to } = getFiatSwapParameters(SwapAsset.CRC, args);
 
                 swapSuggestion = await createSwap(from as RequestAsset<SwapAsset>, to as SwapAsset);
 
                 // Update local fees with latest feePerUnit values
-                const { fundingFee } = calculateFees({ to: FiatCurrency.EUR }, swapSuggestion.from.amount, {
+                const { fundingFee } = calculateFees({ to: FiatCurrency.CRC }, swapSuggestion.from.amount, {
                     fiat: swapSuggestion.to.fee || 0,
                     nim: swapSuggestion.from.feePerUnit!,
                     btc: 0,
                 });
 
                 swapSuggestion.from.fee = fundingFee;
-                swapSuggestion.to.fee = 0; // OASIS' SEPA Instant fees are already included
+                swapSuggestion.to.fee = 0;
 
                 console.log('Swap ID:', swapSuggestion.id); // eslint-disable-line no-console
 
@@ -271,15 +277,11 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
                     value: swapSuggestion.to.amount,
                     fee: swapSuggestion.to.fee,
                     recipientLabel: sinpeLabel.value!,
-                    // settlement: config.environment === ENV_MAIN ? {
-                    //     type: OasisTransactionType.SINPEMOVIL,
-                    //     phoneNumber: phoneNumber.value,
-                    // } : {
-                    //     type: OasisTransactionType.MOCK,
-                    // },
-                    settlement: {
+                    settlement: config.environment === ENV_MAIN ? {
                         type: OasisTransactionType.SINPEMOVIL,
                         phoneNumber: phoneNumber.value!,
+                    } : {
+                        type: OasisTransactionType.MOCK,
                     },
                 };
             }
@@ -299,10 +301,10 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
                 swapId: swapSuggestion.id,
                 fund,
                 redeem,
-                fiatCurrency: selectedFiatCurrency.value,
+                fiatCurrency,
                 fundingFiatRate:
                         exchangeRates.value[swapSuggestion.from.asset.toLowerCase()][selectedFiatCurrency.value]!,
-                redeemingFiatRate: 1, // 1 EUR = 1 EUR
+                redeemingFiatRate: 1, // 1 CRC = 1 CRC
                 fundFees: {
                     processing: 0,
                     redeeming: swapSuggestion.from.serviceNetworkFee,
@@ -342,8 +344,8 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
             return;
         }
 
-        if (typeof signedTransactions.eur !== 'string' || (!signedTransactions.nim && !signedTransactions.btc)) {
-            const error = new Error('Internal error: Hub result did not contain EUR or (NIM|BTC) data');
+        if (typeof signedTransactions.crc !== 'string' || (!signedTransactions.nim && !signedTransactions.btc)) {
+            const error = new Error('Internal error: Hub result did not contain CRC or (NIM|BTC) data');
             if (config.reportToSentry) captureException(error);
             else console.error(error); // eslint-disable-line no-console
             swapError.value = error.message;
@@ -390,7 +392,7 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
 
         setActiveSwap({
             ...confirmedSwap,
-            // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-EUR swaps
+            // Place NIM HTLC address into the swap object, as it's otherwise unknown for NIM-to-CRC swaps
             ...(nimHtlcAddress ? { contracts: {
                 ...confirmedSwap.contracts,
                 [SwapAsset.NIM]: {
@@ -407,15 +409,15 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
             fundingSerializedTx: confirmedSwap.from.asset === SwapAsset.NIM
                 ? signedTransactions.nim!.serializedTx
                 : signedTransactions.btc!.serializedTx,
-            settlementSerializedTx: signedTransactions.eur,
+            settlementSerializedTx: signedTransactions.crc,
             settlementAuthorizationToken,
         });
 
         // Fetch OASIS HTLC to get clearing instructions
-        const eurContract = confirmedSwap.contracts[SwapAsset.EUR] as Contract<SwapAsset.EUR>;
-        const oasisHtlc = await getHtlc(eurContract.htlc.address);
-        if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
-            const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);
+        const crcContract = confirmedSwap.contracts[SwapAsset.CRC] as Contract<SwapAsset.CRC>;
+        const oasisHtlc = await getHtlc(crcContract.htlc.address);
+        if (!oasisHtlc || (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED)) {
+            const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc?.status}'`);
             if (config.reportToSentry) captureException(error);
             else console.error(error); // eslint-disable-line no-console
             swapError.value = 'Invalid OASIS contract state, swap aborted!';
@@ -433,13 +435,14 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
             }
             // Check amount (OASIS processing fee is not included in Fastspot amount)
             if (oasisHtlc.amount !== confirmedSwap.to.amount) {
-                throw new Error('OASIS HTLC amount does not match swap amount');
+                throw new Error(`OASIS HTLC amount (${oasisHtlc.amount}) doesn't match with `
+                    + `confirmed swap (${confirmedSwap.to.amount})`);
             }
 
-                // For selling, Fastspot can sometimes report a wrongly rounded fee. Since for this direction
-                // it is not important for the user what the exact fee is (that Fastspot pays to OASIS),
-                // we are taking the fee that OASIS reports, so we don't run into an HTLC validation error.
-                swap.value!.to.serviceEscrowFee = oasisHtlc.fee;
+            // For selling, Fastspot can sometimes report a wrongly rounded fee. Since for this direction
+            // it is not important for the user what the exact fee is (that Fastspot pays to OASIS),
+            // we are taking the fee that OASIS reports, so we don't run into an HTLC validation error.
+            swap.value!.to.serviceEscrowFee = oasisHtlc.fee;
         } catch (error) {
             if (config.reportToSentry) captureException(error);
             else console.error(error); // eslint-disable-line no-console
@@ -469,7 +472,7 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
             let settlementSerializedTx = swap.value!.settlementSerializedTx!;
 
             // In case of a OASIS settlement instruction, we need to wrap it into a JSON object
-            if (swap.value!.to.asset === 'EUR') {
+            if (swap.value!.to.asset === SwapAsset.CRC) {
                 settlementSerializedTx = JSON.stringify({
                     preimage: '0000000000000000000000000000000000000000000000000000000000000000',
                     settlement: settlementSerializedTx,
@@ -481,7 +484,7 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    ...(swap.value!.to.asset === 'EUR' && settlementAuthorizationToken
+                    ...(swap.value!.to.asset === SwapAsset.CRC && settlementAuthorizationToken
                         ? { 'X-OASIS-Settle-Token': settlementAuthorizationToken }
                         : null
                     ),
@@ -516,7 +519,7 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
         leftAsset,
         rightAsset,
         currencyFiatFallback: fiatCurrency,
-        currencyCrypto: isCryptoCurrency(rightAsset) ? rightAsset : leftAsset as CryptoCurrency,
+        currencyCrypto: isCryptoCurrency(rightAsset) ? rightAsset : leftAsset,
 
         fiatAmount,
         updateFiatAmount: (value: number) => fiatAmount.value = value,
@@ -539,6 +542,7 @@ export function useSinpeMovilSwap(options: AssetTransferOptions): AssetTransferP
         modalTitle: i18n.t('Sell Crypto') as string,
 
         swap,
+        estimateError,
 
         detectionDelay: OASIS_CRC_DETECTION_DELAY,
 

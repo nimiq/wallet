@@ -15,6 +15,7 @@ import { FormattableNumber } from '@nimiq/utils';
 import Config from 'config'; // Not using useConfig composable because we try to avoid Vue as dependency here.
 import { KycProvider, KycUser } from './stores/Kyc';
 import { i18n, detectLanguage, loadLanguage } from './i18n/i18n-setup';
+import { isFiatAsset } from './stores/Swaps';
 
 export interface SetupSwapWithKycResult extends SetupSwapResult {
     kyc: {
@@ -145,6 +146,7 @@ async function run() {
                                     case 'NIM': return toDecimalString(request.fund.value, 5);
                                     case 'BTC': return toDecimalString(request.fund.output.value, 8);
                                     case 'EUR': return toDecimalString(request.fund.value + request.fund.fee, 2);
+                                    case 'CRC': return toDecimalString(request.fund.value + request.fund.fee, 0);
                                     default: throw new Error($t('Unsupported currency', 'Unsupported currency'));
                                 }
                             })(),
@@ -154,6 +156,7 @@ async function run() {
                                     case 'NIM': return toDecimalString(request.redeem.value + request.redeem.fee, 5);
                                     case 'BTC': return toDecimalString(request.redeem.input.value, 8);
                                     case 'EUR': return toDecimalString(request.redeem.value, 2);
+                                    case 'CRC': return toDecimalString(request.redeem.value, 0);
                                     default: throw new Error($t('Unsupported currency', 'Unsupported currency'));
                                 }
                             })(),
@@ -203,7 +206,7 @@ async function run() {
             if (grantResponse && (!kycResponse || isChangedGrantResponse)) {
                 const s3Grant = grantResponse.services[s3ServiceId];
                 const oasisGrant = grantResponse.services[oasisServiceId];
-                const isOasisSwap = request.fund.type === 'EUR' || request.redeem.type === 'EUR';
+                const isOasisSwap = isFiatAsset(request.fund.type) || isFiatAsset(request.redeem.type);
                 if (!s3Grant || (isOasisSwap && !oasisGrant)) {
                     throw new Error($t(
                         'TEN31 Pass didn\'t return expected grants.',

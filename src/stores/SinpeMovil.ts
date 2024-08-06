@@ -24,6 +24,7 @@ export const useSinpeMovilStore = createStore({
     getters: {
         phoneNumber: (state): Readonly<string | null> => state.phoneNumber || '',
         label: (state): Readonly<string | null> => state.label || '',
+        smsApiToken: (state): Readonly<string | null> => state.token || '',
         initials: (state): Readonly<string | null> =>
             // Split by non-alphabetic characters (name can be), take the first character of each word and join them
             state.label?.split(/[^a-zA-Z]+/).map((word) => word[0]).join('') || '',
@@ -36,7 +37,7 @@ export const useSinpeMovilStore = createStore({
         kycLimits: (state): Readonly<UserLimits | null> => state.userLimits,
     },
     actions: {
-        connect(user: Omit<SinpeMovilState, 'userLimits' | 'label'>) {
+        setData(user: Omit<SinpeMovilState, 'userLimits' | 'label'>) {
             // replace non-alphanumeric characters with spaces
             // We might show user name instead in the future
             // const label = user.label.replace(/[^a-zA-Z0-9]/g, ' ');

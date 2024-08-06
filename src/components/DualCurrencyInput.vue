@@ -1,7 +1,5 @@
 <template>
 <div class="dual-currency-input">
-
-    {{ exchangeRate }}
   <section :class="{ orange: !!invalidReason }">
     <div class="flex-row primary-amount">
       <AmountInput v-model="_cryptoAmount" :decimals="cryptoCurrencyDecimals">
@@ -36,29 +34,13 @@
       </AmountInput>
     </span>
   </section>
-
-  <MessageTransition class="message-section">
-    <template v-if="invalidReason === 'insufficient-limit'">
-        <!-- TEMP: wording TBD -->
-        <i18n path="Max swappable amount is {amount}">
-            <Amount slot="amount" :amount="maxCrypto"
-                :currency="fiatCurrency" hideDecimals />
-        </i18n><br />
-        <a @click="$emit('set-max')">{{ $t('Sell max') }}</a>
-    </template>
-    <template v-else-if="invalidReason === 'insufficient-balance'">
-        {{ $t('Insufficient balance.') }} <a @click="$emit('set-max')">{{ $t('Sell max') }}</a>
-    </template>
-  </MessageTransition>
 </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
-import { Amount } from '@nimiq/vue-components';
 import AmountInput from './AmountInput.vue';
-import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({
     props: {
@@ -84,7 +66,7 @@ export default defineComponent({
         },
         cryptoCurrencyDecimals: {
             type: Number,
-            default: 2,
+            default: 5,
         },
         maxCrypto: Number,
         maxFiat: Number,
@@ -111,7 +93,8 @@ export default defineComponent({
         watch(_fiatAmount, (newVal) => {
             if (syncing.value) return;
             syncing.value = true;
-            const newCryptoValue = newVal * props.exchangeRate;
+            const newCryptoValue = Number(((newVal / props.exchangeRate) * 10 ** props.cryptoCurrencyDecimals)
+                .toFixed(props.cryptoCurrencyDecimals));
             context.emit('update:cryptoAmount', newCryptoValue);
             setTimeout(() => syncing.value = false, 100);
         }, { lazy: true });
@@ -119,7 +102,8 @@ export default defineComponent({
         watch(_cryptoAmount, (newVal) => {
             if (syncing.value) return;
             syncing.value = true;
-            const newFiatValue = newVal / props.exchangeRate;
+            const newFiatValue = Number(((newVal / 10 ** props.cryptoCurrencyDecimals) * props.exchangeRate)
+                .toFixed(props.fiatCurrencyDecimals));
             context.emit('update:fiatAmount', newFiatValue);
             setTimeout(() => syncing.value = false, 100);
         }, { lazy: true });
@@ -133,8 +117,6 @@ export default defineComponent({
     },
     components: {
         AmountInput,
-        MessageTransition,
-        Amount,
     },
 });
 </script>
@@ -143,7 +125,6 @@ export default defineComponent({
 .dual-currency-input {
     text-align: center;
     margin-top: 3rem;
-    margin-bottom: 2rem;
 
     &.orange {
         color: var(--nimiq-orange);
@@ -282,27 +263,6 @@ export default defineComponent({
                 font-size: 2.5rem !important;
                 padding: 0.375rem 0.75rem;
             }
-        }
-    }
-    .message-section.message-transition {
-        width: 100%;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 21px;
-        text-align: center;
-        color: var(--nimiq-orange);
-
-        transition-delay: 0ms ;
-        --message-transition-duration: 200ms;
-
-        a {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        & ::v-deep .fadeY-enter,
-        & ::v-deep .fadeY-leave-to {
-            transform: translateY(-25%) !important;
         }
     }
 }

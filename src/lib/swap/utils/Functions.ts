@@ -1,5 +1,5 @@
 import { AssetList, Estimate, SwapAsset } from '@nimiq/fastspot-api';
-import { useSwapsStore } from '@/stores/Swaps';
+import { isFiatAsset } from '@/stores/Swaps';
 import { estimateFees } from '../../BitcoinTransactionUtils';
 import { CryptoCurrency, FiatCurrency } from '../../Constants';
 import { useConfig } from '../../../composables/useConfig';
@@ -156,7 +156,7 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
 
     const data = estimate;
 
-    if (data && useSwapsStore().isFiatAsset(data.to.asset)) {
+    if (data && isFiatAsset(data.to.asset)) {
         const funding: FundingFees = {} as FundingFees;
 
         const myFiatFee = data.to.fee;
@@ -204,7 +204,7 @@ export function getFiatFees(estimate: Estimate | null, cryptoCurrency: CryptoCur
         };
     }
 
-    if (data && useSwapsStore().isFiatAsset(data.from.asset)) {
+    if (data && isFiatAsset(data.from.asset)) {
         const settlement: SettlementFees = {} as SettlementFees;
 
         const myFiatFee = data.from.serviceEscrowFee;

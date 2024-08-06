@@ -1,7 +1,7 @@
 import { ref, watch } from '@vue/composition-api';
 import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
 import { useTransactionsStore, Transaction as NimTransaction } from '../stores/Transactions';
-import { SwapEurData, useSwapsStore } from '../stores/Swaps';
+import { isFiatAsset, SwapEurData, useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../stores/BtcTransactions';
 import { useFiatStore } from '../stores/Fiat';
 import { CryptoCurrency, FiatCurrency } from '../lib/Constants';
@@ -93,7 +93,7 @@ watch(async () => {
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash)!;
                 // Ignore all swaps that are not from fiat
-                if (!useSwapsStore().isFiatAsset(swap?.in?.asset)) return false;
+                if (!isFiatAsset(swap?.in?.asset)) return false;
 
                 return {
                     ...swap.in,
@@ -108,7 +108,7 @@ watch(async () => {
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash)!;
                 // Ignore all swaps that are not from fiat
-                if (!useSwapsStore().isFiatAsset(swap?.in?.asset)) return false;
+                if (!isFiatAsset(swap?.in?.asset)) return false;
 
                 return {
                     ...swap.in,
@@ -123,7 +123,7 @@ watch(async () => {
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash);
                 // Ignore all swaps that are not from fiat
-                if (!swap || !useSwapsStore().isFiatAsset(swap?.in?.asset)) return false;
+                if (!swap || !isFiatAsset(swap?.in?.asset)) return false;
 
                 return {
                     ...swap.in,

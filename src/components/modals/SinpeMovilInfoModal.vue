@@ -7,44 +7,72 @@
             </header>
 
             <main class="flex-column">
-                <h1 class="nq-h1">{{ $t('Sell NIM using Sinpe Móvil') }}</h1>
-                <p class="subline">{{ $t('Sell NIM directly to your Sinpe Móvil account.') }}</p>
+                <h1 class="nq-h1">{{ isSelling ? $t('Sell NIM using Sinpe Móvil') : '' }}</h1>
+                <p class="subline">{{ isSelling ? $t('Sell NIM directly to your Sinpe Móvil account.') : '' }}</p>
                 <ol class="flex-col">
                     <li>{{ $t('Confirm Sinpe number') }}</li>
-                    <li>{{ $t('Set an amount to sell') }}</li>
+                    <li>{{ isSelling ? $t('Set an amount to sell') : '' }}</li>
                 </ol>
             </main>
         </PageBody>
         <PageFooter>
-            <router-link class="nq-button light-blue"
-                :to="{ name: RouteName.SinpeMovil, params: { flow: 'sell' }, query: $route.query }">
+            <button class="nq-button light-blue" @click="startSinpeFlow">
                 {{ $t("Let's go") }}
-            </router-link>
-            <a href="" target="_blank" class="flex-row learn-more">
+            </button>
+
+            <!-- TODO link -->
+            <!-- <a href="" target="_blank" class="flex-row learn-more">
                 Learn more
                 <CaretRightSmallIcon />
-            </a>
+            </a> -->
         </PageFooter>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import { PageBody, PageFooter, CaretRightSmallIcon } from '@nimiq/vue-components';
+import { defineComponent, onMounted } from '@vue/composition-api';
+import { PageBody, PageFooter } from '@nimiq/vue-components';
 import { RouteName } from '@/router';
+import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
+import { isFiatAsset } from '@/stores/Swaps';
+import { SwapAsset } from '@nimiq/libswap';
 import Modal from './Modal.vue';
 
 export default defineComponent({
-    setup() {
+    props: {
+        pair: {
+            type: Array as unknown as () => [SwapAsset, SwapAsset],
+            // TODO Remove comment
+            // required: true, Just for testing is commented
+            default: () => [SwapAsset.NIM, SwapAsset.CRC] as [SwapAsset, SwapAsset],
+        },
+    },
+    setup(props, context) {
+        onMounted(() => {
+            if (!SINPE_MOVIL_PAIRS.some(([from, to]) => from === props.pair[0] && to === props.pair[1])) {
+                console.error('Invalid pair:', props.pair); // eslint-disable-line no-console
+                context.root.$router.push('/');
+            }
+        });
+
+        async function startSinpeFlow() {
+            return context.root.$router.push({
+                name: RouteName.SinpeMovilMobileVerification,
+                params: { pair: JSON.stringify(props.pair) },
+            }).catch(() => { /* ignore */ });
+        }
+
         return {
             RouteName,
+            isSelling: isFiatAsset(props.pair[1]),
+            startSinpeFlow,
         };
     },
     components: {
         Modal,
         PageBody,
         PageFooter,
-        CaretRightSmallIcon,
+        // CaretRightSmallIcon,
     },
 });
 </script>

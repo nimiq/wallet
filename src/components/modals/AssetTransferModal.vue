@@ -2,111 +2,167 @@
   <Modal
     class="asset-transfer-modal"
     :emitClose="true"
-    :showOverlay="p && p.addressListOpened"
+    :showOverlay="!!p && p.addressListOpened"
     @close="closeModal"
-    @close-overlay="p.addressListOpened = false"
+    @close-overlay="() => (p.addressListOpened = false)"
   >
     <div v-if="!p">Loading fees</div>
     <div v-else class="asset-transfer-input">
-        <PageHeader>{{ p.modalTitle }}</PageHeader>
-        <PageBody class="flex-column">
-          <section class="pills">
-              <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
-                <div slot="trigger" class="pill">
-                    1 {{p.currencyCrypto}} =
-                    <FiatAmount :amount="1 ** 10 ** p.decimalsCrypto * p.exchangeRate"
-                      :currency="p.currencyFiatFallback"/>
-                </div>
-                <p class="explainer">
-                    {{ $t('The rate might change depending on the swap volume.') }}
-                </p>
-            </Tooltip>
-            <SwapFeesTooltip
-              preferredPosition="bottom"
-              :btcFeeFiat="p.fiatFees.btcFeeFiat"
-              :oasisFeeFiat="p.fiatFees.oasisFeeFiat"
-              :oasisFeePercentage="p.fiatFees.oasisFeePercentage"
-              :oasisMinFeeFiat="p.fiatFees.oasisMinFeeFiat"
-              :sepaFeeFiat="p.fiatFees.sepaFeeFiat"
-              :nimFeeFiat="p.fiatFees.nimFeeFiat"
-              :serviceSwapFeeFiat="p.fiatFees.serviceSwapFeeFiat"
-              :serviceSwapFeePercentage="p.fiatFees.serviceSwapFeePercentage"
-              :currency="p.currencyFiatFallback"
-              :container="this"
-            >
-              <i18n slot="trigger" tag="div" path="{feeAmount} fees" class="pill"
-                :class="{'high-fees': p.fiatFees.isHigh}">
-                <template #feeAmount>
-                  <FiatAmount
-                    :amount="p.fiatFees.total"
-                    :currency="p.currencyFiatFallback"
-                  />
-                </template>
-              </i18n>
-            </SwapFeesTooltip>
-            <Tooltip :styles="{width: '28.75rem'}" preferredPosition="bottom left" :container="this"
-                class="limits-tooltip">
-                <div slot="trigger" class="pill limits flex-row">
-                    <LimitIcon />
-                    <FiatAmount v-if="p.limits"
-                      :amount="p.currentLimitFiat"
-                      :currency="p.currencyFiatFallback"
-                      hideDecimals
-                    />
-                    <CircleSpinner v-else />
-                </div>
-                <div class="price-breakdown">
-                    <label>{{ $t('30-day Limit') }}</label>
-                    <FiatConvertedAmount v-if="p.limits"
-                        :amount="p.limits.monthly.luna" roundDown
-                        currency="nim" :fiat="p.currencyFiatFallback"
-                        :max="p.currentLimitFiat"/>
-                    <span v-else>{{ $t('loading...') }}</span>
-                </div>
-                <i18n v-if="p.limits" class="explainer" path="{value} remaining" tag="p">
-                    <FiatConvertedAmount slot="value"
-                        :amount="p.limits.remaining.luna" roundDown
-                        currency="nim" :fiat="p.currencyFiatFallback"
-                        :max="p.currentLimitFiat"/>
-                </i18n>
-            </Tooltip>
-          </section>
-
-          <section class="options-section flex-row">
-            <component
-              :is="p.componentLeft"
-              @openAddressSelector="p.addressListOpened = true"
-            />
-            <div class="separator-wrapper">
-              <div class="separator" />
+      <PageHeader>{{ p.modalTitle }}</PageHeader>
+      <PageBody class="flex-column">
+        <section class="pills">
+          <Tooltip
+            :styles="{ width: '25.5rem' }"
+            preferredPosition="bottom right"
+            :container="this"
+          >
+            <div slot="trigger" class="pill">
+              1 {{ p.currencyCrypto }} =
+              <FiatAmount
+                :amount="1 ** (10 ** p.decimalsCrypto) * p.exchangeRate"
+                :currency="p.currencyFiatFallback.toLocaleLowerCase()"
+              />
             </div>
-            <component
-              :is="p.componentRight"
-              @openAddressSelector="p.addressListOpened = true"
-            />
-          </section>
+            <p class="explainer">
+              {{ $t("The rate might change depending on the swap volume.") }}
+            </p>
+          </Tooltip>
+          <SwapFeesTooltip
+            preferredPosition="bottom"
+            :btcFeeFiat="p.fiatFees.btcFeeFiat"
+            :oasisFeeFiat="p.fiatFees.oasisFeeFiat"
+            :oasisFeePercentage="p.fiatFees.oasisFeePercentage"
+            :oasisMinFeeFiat="p.fiatFees.oasisMinFeeFiat"
+            :sepaFeeFiat="p.fiatFees.sepaFeeFiat"
+            :nimFeeFiat="p.fiatFees.nimFeeFiat"
+            :serviceSwapFeeFiat="p.fiatFees.serviceSwapFeeFiat"
+            :serviceSwapFeePercentage="p.fiatFees.serviceSwapFeePercentage"
+            :currency="p.currencyFiatFallback.toLocaleLowerCase()"
+            :container="this"
+          >
+            <i18n
+              slot="trigger"
+              tag="div"
+              path="{feeAmount} fees"
+              class="pill"
+              :class="{ 'high-fees': p.fiatFees.isHigh }"
+            >
+              <template #feeAmount>
+                <FiatAmount
+                  :amount="p.fiatFees.total"
+                  :currency="p.currencyFiatFallback.toLocaleLowerCase()"
+                />
+              </template>
+            </i18n>
+          </SwapFeesTooltip>
+          {{p.limits}}
+          current: {{p.currentLimitFiat}}
+          <Tooltip
+            :styles="{ width: '28.75rem' }"
+            preferredPosition="bottom left"
+            :container="this"
+            class="limits-tooltip"
+          >
+            <div slot="trigger" class="pill limits flex-row">
+              <LimitIcon />
+              <FiatAmount
+                v-if="p.limits"
+                :amount="p.currentLimitFiat"
+                :currency="p.currencyFiatFallback.toLocaleLowerCase()"
+                hideDecimals
+              />
+              <CircleSpinner v-else />
+            </div>
+            <div class="price-breakdown">
+              <label>{{ $t("30-day Limit") }}</label>
+              <FiatConvertedAmount
+                v-if="p.limits"
+                :amount="p.limits.monthly.luna"
+                roundDown
+                :currency="p.currencyCrypto.toLocaleLowerCase()"
+                :fiat="p.currencyFiatFallback.toLocaleLowerCase()"
+                :max="p.currentLimitFiat"
+              />
+              <span v-else>{{ $t("loading...") }}</span>
+            </div>
+            <i18n
+              v-if="p.limits"
+              class="explainer"
+              path="{value} remaining"
+              tag="p"
+            >
+              <FiatConvertedAmount
+                slot="value"
+                :amount="p.limits.remaining.luna"
+                roundDown
+                :currency="p.currencyCrypto.toLocaleLowerCase()"
+                :fiat="p.currencyFiatFallback.toLocaleLowerCase()"
+                :max="p.currentLimitFiat"
+              />
+            </i18n>
+          </Tooltip>
+        </section>
 
-          <DualCurrencyInput
-            :fiatAmount.sync="p.fiatAmount"
-            :cryptoAmount.sync="p.cryptoAmount"
-            :fiatCurrency="p.currencyFiatFallback"
-            :cryptoCurrency="p.currencyCrypto"
-            :fiatCurrencyDecimals="p.decimalsFiat"
-            :cryptoCurrencyDecimals="p.decimalsCrypto"
-            :maxCrypto="p.currentLimitCrypto"
-            :maxFiat="p.currentLimitFiat"
-            :exchangeRate="p.exchangeRate"
-            :invalid-reason="p.invalidReason"
-            @set-max="setMax()"
+        <section class="options-section flex-row">
+          <component
+            :is="p.componentLeft"
+            @openAddressSelector="p.addressListOpened = true"
           />
-        </PageBody>
-        <PageFooter>
-          <button class="nq-button light-blue" @mousedown.prevent
-            :disabled="p.invalid || !p.fiatAmount || !p.cryptoAmount" @click="p.sign()">
-            {{ $t("Confirm") }}
-          </button>
-        </PageFooter>
-        </div>
+          <div class="separator-wrapper">
+            <div class="separator" />
+          </div>
+          <component
+            :is="p.componentRight"
+            @openAddressSelector="p.addressListOpened = true"
+          />
+        </section>
+
+        <DualCurrencyInput
+          :fiatAmount.sync="p.fiatAmount"
+          :cryptoAmount.sync="p.cryptoAmount"
+          :fiatCurrency="p.currencyFiatFallback.toLocaleLowerCase()"
+          :cryptoCurrency="p.currencyCrypto.toLocaleLowerCase()"
+          :fiatCurrencyDecimals="p.decimalsFiat"
+          :cryptoCurrencyDecimals="p.decimalsCrypto"
+          :maxCrypto="p.currentLimitCrypto"
+          :maxFiat="p.currentLimitFiat"
+          :exchangeRate="p.exchangeRate"
+          :invalid-reason="p.invalidReason"
+          @set-max="setMax()"
+        />
+        <MessageTransition class="message-section">
+          <template v-if="p.invalidReason === 'insufficient-limit' && p.currentLimitCrypto">
+            <!-- TEMP: wording TBD -->
+            <i18n path="Max swappable amount is {amount}">
+              <Amount
+                slot="amount"
+                :amount="p.currentLimitCrypto"
+                :currency="p.currencyFiatFallback.toLocaleLowerCase()"
+                hideDecimals
+              /> </i18n
+            ><br />
+            <a @click="$emit('set-max')">{{ $t("Sell max") }}</a>
+          </template>
+          <template v-else-if="p.invalidReason === 'insufficient-balance'">
+            {{ $t("Insufficient balance.") }}
+            <a @click="() => setMax()">{{ $t("Sell max") }}</a>
+          </template>
+          <template v-else-if="p.estimateError">
+            {{ p.estimateError }}
+          </template>
+        </MessageTransition>
+      </PageBody>
+      <PageFooter>
+        <button
+          class="nq-button light-blue"
+          @mousedown.prevent
+          :disabled="!p.canSign || p.invalid || !p.fiatAmount || !p.cryptoAmount"
+          @click="p.sign()"
+        >
+          {{ $t("Confirm") }}
+        </button>
+      </PageFooter>
+    </div>
 
     <div
       v-if="p && p.addressListOpened"
@@ -124,45 +180,62 @@
       </PageBody>
     </div>
 
-    <div v-if="!!p && !!p.swap" slot="overlay" class="page flex-column animation-overlay">
-            <PageBody style="padding: 0.75rem;" class="flex-column">
-                <SwapAnimation
-                    :swapId="p.swap.id"
-                    :swapState="swap.state"
-                    :fromAsset="swap.from.asset"
-                    :fromAmount="swap.from.amount + swap.from.fee"
-                    :fromAddress="'contract' in swap.contracts[swap.from.asset].htlc
-                        ? swap.contracts[swap.from.asset].htlc.contract
-                        : swap.contracts[swap.from.asset].htlc.address"
-                    :toAsset="swap.to.asset"
-                    :toAmount="swap.to.amount - swap.to.fee"
-                    :toAddress="'contract' in swap.contracts[swap.to.asset].htlc
-                        ? swap.contracts[swap.to.asset].htlc.contract
-                        : swap.contracts[swap.to.asset].htlc.address"
-                    :nimAddress="activeAddressInfo.address"
-                    :error="swap.error && swap.error.split(' req={')[0]"
-                    :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
-                    :switchSides="swap.from.asset === rightAsset"
-                    :stateEnteredAt="swap.stateEnteredAt"
-                    :errorAction="swap.errorAction"
-                    :toFundingDurationMins="isMainnet ? p.detectionDelay : 0"
-                    :oasisLimitExceeded="p.oasisSellLimitExceeded"
-                    @finished="finishSwap"
-                    @cancel="finishSwap"
-                />
-            </PageBody>
-            <button v-if="p.swap.state !== SwapState.CREATE_OUTGOING"
-                class="nq-button-s minimize-button top-right"
-                @click="closeModal" @mousedown.prevent
-            >
-                <MinimizeIcon/>
-            </button>
-            <Timer v-else-if="!p.oasisSellLimitExceeded" :startTime="Date.now()" :endTime="swap.expires * 1000"
-                theme="white" maxUnit="minute" :tooltipProps="{
-                    preferredPosition: 'bottom left',
-                }"
-            />
-        </div>
+    <div
+      v-if="!!p && !!p.swap"
+      slot="overlay"
+      class="page flex-column animation-overlay"
+    >
+      <PageBody style="padding: 0.75rem" class="flex-column">
+        <SwapAnimation
+          :swapId="p.swap.id"
+          :swapState="p.swap.state"
+          :fromAsset="p.swap.from.asset"
+          :fromAmot="p.swap.from.amount + p.swap.from.fee"
+          :fromAddress="
+            'contract' in p.swap.contracts[p.swap.from.asset].htlc
+              ? p.swap.contracts[p.swap.from.asset].htlc.contract
+              : p.swap.contracts[p.swap.from.asset].htlc.address
+          "
+          :toAsset="p.swap.to.asset"
+          :toAmount="p.swap.to.amount - p.swap.to.fee"
+          :toAddress="
+            'contract' in p.swap.contracts[p.swap.to.asset].htlc
+              ? p.swap.contracts[p.swap.to.asset].htlc.contract
+              : p.swap.contracts[p.swap.to.asset].htlc.address
+          "
+          :nimAddress="activeAddressInfo.address"
+          :error="p.swap.error && p.swap.error.split(' req={')[0]"
+          :fromFundingDurationMins="
+            p.swap.from.asset === SwapAsset.BTC ? 10 : 0
+          "
+          :switchSides="p.swap.from.asset === p.rightAsset"
+          :stateEnteredAt="p.swap.stateEnteredAt"
+          :errorAction="p.swap.errorAction"
+          :toFundingDurationMins="isMainnet ? p.detectionDelay : 0"
+          :oasisLimitExceeded="p.oasisSellLimitExceeded"
+          @finished="finishSwap"
+          @cancel="finishSwap"
+        />
+      </PageBody>
+      <button
+        v-if="p.swap.state !== SwapState.CREATE_OUTGOING"
+        class="nq-button-s minimize-button top-right"
+        @click="closeModal"
+        @mousedown.prevent
+      >
+        <MinimizeIcon />
+      </button>
+      <Timer
+        v-else-if="!p.oasisSellLimitExceeded"
+        :startTime="Date.now()"
+        :endTime="p.swap.expires * 1000"
+        theme="white"
+        maxUnit="minute"
+        :tooltipProps="{
+          preferredPosition: 'bottom left',
+        }"
+      />
+    </div>
   </Modal>
 </template>
 
@@ -186,11 +259,13 @@ import {
     Tooltip,
     CircleSpinner,
     Timer,
+    Amount,
 } from '@nimiq/vue-components';
-import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '@/lib/Constants';
+import { ENV_MAIN } from '@/lib/Constants';
 import { useAddressStore } from '@/stores/Address';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
 import { SwapState, useSwapsStore } from '@/stores/Swaps';
+import { SwapAsset } from '@nimiq/libswap';
 import { useConfig } from '@/composables/useConfig';
 import AddressList from '../AddressList.vue';
 import DualCurrencyInput from '../DualCurrencyInput.vue';
@@ -200,38 +275,39 @@ import SwapAnimation from '../swap/SwapAnimation.vue';
 import Modal from './Modal.vue';
 import LimitIcon from '../icons/LimitIcon.vue';
 import MinimizeIcon from '../icons/MinimizeIcon.vue';
+import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
     props: {
         method: {
             type: String as () => AssetTransferMethod,
-            // required: true, JUst for testing is commented
+            // TODO
+            // required: true, Just for testing is commented
             default: () => AssetTransferMethod.SinpeMovil,
         },
-        pairFrom: {
-            type: String as () => CryptoCurrency,
-            // required: true, JUst for testing is commented
-            default: () => CryptoCurrency.NIM,
-        },
-        pairTo: {
-            type: String as () => FiatCurrency,
-            // required: true, JUst for testing is commented
-            default: () => FiatCurrency.CRC,
+        pair: {
+            type: Array as unknown as () => [SwapAsset, SwapAsset],
+            // required: true, Just for testing is commented
+            default: () => [SwapAsset.NIM, SwapAsset.CRC] as [SwapAsset, SwapAsset],
         },
     },
     setup(props, context) {
         const p /* params */ = ref<AssetTransferParams>(null);
-        const cryptoAmount = computed(() => p.value?.cryptoAmount as unknown as number || 0);
+        const cryptoAmount = computed(
+            () => (p.value?.cryptoAmount as unknown as number) || 0,
+        );
 
         onMounted(async () => {
             const options: AssetTransferOptions = {
-                pair: [props.pairFrom, props.pairTo],
+                pair: props.pair,
             };
 
             switch (props.method) {
                 case AssetTransferMethod.SinpeMovil: {
-                    const module = await import('@/composables/asset-transfer/useSinpeMovilSwap');
-                    p.value = module.useSinpeMovilSwap(options);
+                    const module = await import(
+                        '@/composables/asset-transfer/useSinpeMovilSwap'
+                    );
+                    p.value = await module.useSinpeMovilSwap(options);
                     break;
                 }
                 default:
@@ -246,20 +322,25 @@ export default defineComponent({
             if (!p.value?.isSelling) return;
 
             switch (p.value.currencyCrypto) {
-                case CryptoCurrency.NIM: {
+                case SwapAsset.NIM: {
                     if (!p.value.currentLimitCrypto.value) {
                         p.value.updateCryptoAmount(activeAddressInfo.value?.balance || 0);
-                    } else if (p.value.currentLimitCrypto.value < (activeAddressInfo.value?.balance || 0)) {
+                    } else if (
+                        p.value.currentLimitCrypto.value
+            < (activeAddressInfo.value?.balance || 0)
+                    ) {
                         p.value.updateCryptoAmount(p.value.currentLimitCrypto.value);
                     } else {
                         p.value.updateCryptoAmount(activeAddressInfo.value?.balance || 0);
                     }
                     break;
                 }
-                case CryptoCurrency.BTC: {
+                case SwapAsset.BTC: {
                     if (!p.value.currentLimitCrypto.value) {
                         p.value.updateCryptoAmount(accountBtcBalance.value);
-                    } else if (p.value.currentLimitCrypto.value < accountBtcBalance.value) {
+                    } else if (
+                        p.value.currentLimitCrypto.value < accountBtcBalance.value
+                    ) {
                         p.value.updateCryptoAmount(p.value.currentLimitCrypto.value);
                     } else {
                         p.value.updateCryptoAmount(accountBtcBalance.value);
@@ -283,7 +364,7 @@ export default defineComponent({
             if (p.value?.addressListOpened.value === true) {
                 p.value.addressListOpened.value = false;
             } else {
-                context.root.$router.back();
+                context.root.$router.push('/');
             }
         }
 
@@ -297,6 +378,8 @@ export default defineComponent({
             closeModal,
             isMainnet,
             SwapState,
+            SwapAsset,
+            activeAddressInfo,
         };
     },
     components: {
@@ -313,9 +396,10 @@ export default defineComponent({
         CircleSpinner,
         SwapAnimation,
         Timer,
-
         LimitIcon,
         MinimizeIcon,
+        MessageTransition,
+        Amount,
     },
 });
 </script>
@@ -338,7 +422,7 @@ export default defineComponent({
     }
 
     .page-footer {
-        margin-top: auto;
+      margin-top: auto;
     }
   }
 
@@ -433,6 +517,29 @@ export default defineComponent({
     }
   }
 
+  .message-section.message-transition {
+    width: 100%;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--nimiq-orange);
+
+    transition-delay: 0ms;
+    --message-transition-duration: 200ms;
+
+    a {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    & ::v-deep .fadeY-enter,
+    & ::v-deep .fadeY-leave-to {
+      transform: translateY(-25%) !important;
+    }
+  }
+
   .overlay {
     overflow: hidden;
 
@@ -456,47 +563,47 @@ export default defineComponent({
 }
 
 .modal ::v-deep .overlay .animation-overlay + .close-button {
-    display: none;
+  display: none;
 }
 
 .animation-overlay {
-    flex-grow: 1;
+  flex-grow: 1;
 
-    .minimize-button {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-        padding: 0;
-        height: 4rem;
-        width: 4rem;
-        border-radius: 50%;
-        transition: background .2s var(--nimiq-ease);
+  .minimize-button {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0;
+    height: 4rem;
+    width: 4rem;
+    border-radius: 50%;
+    transition: background 0.2s var(--nimiq-ease);
 
-        &::before {
-            border-radius: 50%;
-        }
-
-        &:hover,
-        &:active,
-        &:focus {
-            background: rgba(255, 255, 255, 0.20);
-        }
-
-        &.top-right {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-        }
+    &::before {
+      border-radius: 50%;
     }
 
-    .timer {
-        position: absolute;
-        top: 2.5rem;
-        right: 2.5rem;
-
-        ::v-deep .tooltip-box {
-            font-size: var(--small-size);
-            padding: 1.25rem 1.5rem;
-        }
+    &:hover,
+    &:active,
+    &:focus {
+      background: rgba(255, 255, 255, 0.2);
     }
+
+    &.top-right {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+    }
+  }
+
+  .timer {
+    position: absolute;
+    top: 2.5rem;
+    right: 2.5rem;
+
+    ::v-deep .tooltip-box {
+      font-size: var(--small-size);
+      padding: 1.25rem 1.5rem;
+    }
+  }
 }
 </style>

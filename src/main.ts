@@ -22,6 +22,7 @@ import { CryptoCurrency } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
 import { useConfig } from './composables/useConfig';
 import { initPwa } from './composables/usePwaInstallPrompt';
+import { useInactivityDetection } from './composables/useInactivityDetection';
 import { init as initKycConnection } from './lib/KycConnection';
 import { init as initTrials } from './lib/Trials';
 
@@ -50,21 +51,28 @@ async function start() {
 
     serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 
-    // Update exchange rates every 2 minutes. If an update takes longer than 2 minutes due to a provider's rate limit,
-    // wait until the update succeeds before queueing the next update. If the last update before page load was less than
-    // 2 minutes ago, wait the remaining time first.
+    // Update exchange rates every 2 minutes or every 10 minutes, depending on whether the Wallet is currently actively
+    // used. If an update takes longer than that time due to a provider's rate limit, wait until the update succeeds
+    // before queueing the next update. If the last update before page load was less than 2 minutes ago, wait the
+    // remaining time first.
     const { timestamp: { value: lastExchangeRateUpdateTime }, updateExchangeRates } = useFiatStore();
+    const { isUserInactive } = useInactivityDetection();
     let exchangeRateUpdateStart = lastExchangeRateUpdateTime;
     const TWO_MINUTES = 2 * 60 * 1000;
+    const TEN_MINUTES = 5 * TWO_MINUTES;
+    let exchangeRateUpdateTimer = -1;
     function queueExchangeRateUpdate() {
-        setTimeout(async () => {
+        const interval = isUserInactive.value ? TEN_MINUTES : TWO_MINUTES;
+        // Also set interval as upper bound to be immune to the user's system clock being wrong.
+        const remainingTime = Math.max(0, Math.min(exchangeRateUpdateStart + interval - Date.now(), interval));
+        clearTimeout(exchangeRateUpdateTimer);
+        exchangeRateUpdateTimer = window.setTimeout(async () => {
             exchangeRateUpdateStart = Date.now(); // in contrast to fiatStore.timestamp set before the update
             await updateExchangeRates(/* failGracefully */ true); // silently ignores errors
             queueExchangeRateUpdate();
-        // Also add 2 minutes as upper bound to be immune to the user's system clock being wrong.
-        }, Math.max(0, Math.min(exchangeRateUpdateStart + TWO_MINUTES - Date.now(), TWO_MINUTES)));
+        }, remainingTime);
     }
-    queueExchangeRateUpdate();
+    watch(isUserInactive, queueExchangeRateUpdate); // (Re)schedule exchange rate updates at the desired interval.
 
     // Fetch language file
     const { language } = useSettingsStore();

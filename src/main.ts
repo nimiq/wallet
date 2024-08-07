@@ -55,20 +55,30 @@ async function start() {
     // used. If an update takes longer than that time due to a provider's rate limit, wait until the update succeeds
     // before queueing the next update. If the last update before page load was less than 2 minutes ago, wait the
     // remaining time first.
-    const { timestamp: { value: lastExchangeRateUpdateTime }, updateExchangeRates } = useFiatStore();
+    const { timestamp: lastSuccessfulExchangeRateUpdate, updateExchangeRates } = useFiatStore();
     const { isUserInactive } = useInactivityDetection();
-    let exchangeRateUpdateStart = lastExchangeRateUpdateTime;
+    let lastTriedExchangeRateUpdate = lastSuccessfulExchangeRateUpdate.value;
     const TWO_MINUTES = 2 * 60 * 1000;
     const TEN_MINUTES = 5 * TWO_MINUTES;
     let exchangeRateUpdateTimer = -1;
     function queueExchangeRateUpdate() {
         const interval = isUserInactive.value ? TEN_MINUTES : TWO_MINUTES;
+        // Update lastTriedExchangeRateUpdate as there might have been other exchange rate updates in the meantime, for
+        // example on currency change.
+        lastTriedExchangeRateUpdate = Math.max(lastTriedExchangeRateUpdate, lastSuccessfulExchangeRateUpdate.value);
         // Also set interval as upper bound to be immune to the user's system clock being wrong.
-        const remainingTime = Math.max(0, Math.min(exchangeRateUpdateStart + interval - Date.now(), interval));
+        const remainingTime = Math.max(0, Math.min(lastTriedExchangeRateUpdate + interval - Date.now(), interval));
         clearTimeout(exchangeRateUpdateTimer);
         exchangeRateUpdateTimer = window.setTimeout(async () => {
-            exchangeRateUpdateStart = Date.now(); // in contrast to fiatStore.timestamp set before the update
-            await updateExchangeRates(/* failGracefully */ true); // silently ignores errors
+            // Silently ignore errors. If successful, this updates fiatStore.timestamp, which then also triggers price
+            // chart updates in PriceChart.vue.
+            await updateExchangeRates(/* failGracefully */ true);
+            // In contrast to lastSuccessfulExchangeRateUpdate also update lastTriedExchangeRateUpdate on failed
+            // attempts, to avoid repeated rescheduling on failure. Instead, simply skip the failed attempt and try
+            // again at the regular interval. We update the time after the update attempt, instead of before it, because
+            // exchange rates are up-to-date at the time an update successfully finishes, and get old from that point,
+            // and not from the time the update was started.
+            lastTriedExchangeRateUpdate = Date.now();
             queueExchangeRateUpdate();
         }, remainingTime);
     }

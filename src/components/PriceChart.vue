@@ -72,6 +72,13 @@ export default defineComponent({
             [TimeRange['24h']]: undefined,
             [TimeRange['7d']]: undefined,
         });
+        // The timestamps at which the latest requested time ranges begin. This refers to the latest requested histories
+        // which might still be pending, and are thus not necessarily the already retrieved histories cached in variable
+        // histories.
+        const historiesLatestRequestedStartTimes: Record<TimeRange, number> = {
+            [TimeRange['24h']]: -1,
+            [TimeRange['7d']]: -1,
+        };
         const history = computed(() => histories.value[props.timeRange] || []);
 
         // Calculate SVG size
@@ -196,7 +203,9 @@ export default defineComponent({
             props.currency,
             historyFiatCurrency.value,
             props.timeRange,
-            lastExchangeRateUpdateTime.value, // Update together with main exchange rate
+            // Update together with Fiat store exchange rate updates triggered from main.ts or by currency changes via
+            // setCurrency from Settings.
+            lastExchangeRateUpdateTime.value,
         ] as const, async ([cryptoCurrency, chartFiatCurrency, timeRange, lastUpdate], previousValues) => {
             const [
                 previousCryptoCurrency,
@@ -211,16 +220,13 @@ export default defineComponent({
             const isScheduledUpdate = lastUpdate !== previousLastUpdate;
 
             animateGraph ||= isChartParametersUpdate; // Animate / re-draw the chart if chart parameters changed.
-            if (isTimeRangeUpdate && !!histories.value[timeRange] && !isCurrenciesUpdate && !isScheduledUpdate) {
-                // If only the time range changed, and we have a cached history for the new time range, use that.
-                return;
-            }
+            // Clear cached histories, which also clears the chart, on chart parameters update other than only a time
+            // range change, in which case we want to keep the cache for the other time range. Note that the condition
+            // is not as concise as it could be, but maybe it's better readable like this.
             if (isChartParametersUpdate && isCurrenciesUpdate) {
-                // Clear cached histories, which also clears the chart, on chart parameters update other than only a
-                // time range change, in which case we want to keep the cache for the previous time range. Note that the
-                // condition is not as concise as it could be, but maybe it's better readable like this.
                 for (const range of Object.values(TimeRange)) {
                     histories.value[range] = undefined;
+                    historiesLatestRequestedStartTimes[range] = -1;
                 }
             }
 
@@ -230,21 +236,26 @@ export default defineComponent({
                 [TimeRange['7d']]: 7 * 24,
             }[timeRange];
             const timespan = timeRangeHours * 60 * 60 * 1000; // Milliseconds
-            const sampleCount = 18; // 18 is the number of points determined to look good
-            const timestep = timespan / (sampleCount - 1);
-            // Request chart data from even 2 minute marks
-            // (this allows API response caching by the Coingecko proxy, if used, see FIAT_API_PROVIDER_PRICE_CHART and
-            // setCoinGeckoApiUrl)
+            // Request chart data from even 2-minute marks. This allows skipping updates falling into the same 2-minute
+            // window, and API response caching by the Coingecko proxy, if used, see FIAT_API_PROVIDER_PRICE_CHART and
+            // setCoinGeckoApiUrl.
             const last2MinuteMark = Math.floor(Date.now() / TWO_MINUTES) * TWO_MINUTES;
             const start = last2MinuteMark - timespan;
+            // Check whether the exact same history time range from the same start time was already requested previously
+            // and does not need to be processed again. Such duplication of requests can for example happen due to the
+            // fact that a change of the Wallet's fiat currency in the fiat store triggers an exchange rate update,
+            // which eventually triggers an additional invocation of this watcher via the lastExchangeRateUpdateTime.
+            // Similarly, regular exchange rate updates scheduled in main.ts soon after switching the fiat currency
+            // result in double invocations, too.
+            if (historiesLatestRequestedStartTimes[timeRange] === start) return;
+            historiesLatestRequestedStartTimes[timeRange] = start;
+
             const timestamps: number[] = [];
+            const sampleCount = 18; // 18 is the number of points determined to look good
+            const timestep = timespan / (sampleCount - 1);
             for (let i = 0; i < sampleCount; ++i) {
                 timestamps.push(start + i * timestep);
             }
-
-            // eslint-disable-next-line no-console
-            console.debug(`Updating historic exchange rates for ${cryptoCurrency.toUpperCase()}`);
-
             const historicRates = await getHistoricExchangeRates.apply(null, [
                 cryptoCurrency,
                 chartFiatCurrency,
@@ -256,12 +267,14 @@ export default defineComponent({
                     : [] as const
                 ),
             ]);
+
             // Discard fetched chart data, if the parameters changed from the ones we requested the update for, while we
             // were fetching the update. If only the time range changed, don't discard the data but add it to the cache
             // for the previous range.
             if (cryptoCurrency !== props.currency || chartFiatCurrency !== historyFiatCurrency.value) return;
             histories.value[timeRange] = [...historicRates.entries()]
                 .filter((e): e is [(typeof e)[0], Exclude<(typeof e)[1], undefined>] => e[1] !== undefined);
+
             // Clear outdated data of other time ranges. We do this only after the new rates were fetched, to still
             // enable switching the chart to other time ranges with cached data, while the update has not finished yet,
             // for example due to waiting on rate limits.
@@ -269,6 +282,9 @@ export default defineComponent({
                 for (const range of Object.values(TimeRange)) {
                     if (range === timeRange || range === props.timeRange) continue;
                     histories.value[range] = undefined;
+                    // Don't clear historiesLatestRequestedStartTimes[range] on a scheduled update, because it encodes
+                    // time information itself and is specifically used for determining whether initiated requests are
+                    // outdated.
                 }
             }
         });

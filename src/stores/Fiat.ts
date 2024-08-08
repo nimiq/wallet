@@ -167,26 +167,34 @@ export const useFiatStore = createStore({
                 ...FIAT_CURRENCIES_OFFERED,
             ])];
             const currenciesToUpdate = new Set<FiatCurrencyOffered>();
+            let providerCurrenciesToUpdateCount = 0;
             for (const currency of prioritizedFiatCurrenciesOffered) {
+                const isProviderCurrency = isProviderSupportedFiatCurrency(
+                    currency,
+                    FIAT_API_PROVIDER_CURRENT_PRICES,
+                    RateType.CURRENT,
+                );
                 if (currency !== currentCurrency
-                    // Include all provider supported currencies, as at least one always has to be fetched via the
-                    // provider api, either because it's a directly supported currency, or because it's a currency
-                    // bridged via USD, also fetched from the provider, and fetching multiple currencies vs. only one
-                    // still counts as only one api request.
-                    && !isProviderSupportedFiatCurrency(
-                        currency,
-                        FIAT_API_PROVIDER_CURRENT_PRICES,
-                        RateType.CURRENT,
+                    && (
+                        // Include all provider supported currencies, as at least one always has to be fetched via the
+                        // provider api, either because it's a directly supported currency, or because it's a currency
+                        // bridged via USD, also fetched from the provider, and fetching multiple currencies vs. only
+                        // one still counts as only one api request, as long as we're not above the limit of currencies
+                        // that can be fetched in a single request, see next condition.
+                        !isProviderCurrency
+                        // CryptoCompare only allows 25 currencies per request, and we don't want to send more than one.
+                        || (
+                            FIAT_API_PROVIDER_CURRENT_PRICES === Provider.CryptoCompare
+                            && providerCurrenciesToUpdateCount >= 25
+                        )
                     )
                     // If current currency is a CPL bridged currency, we can include other CPL bridged currencies
                     // without additional API request.
                     && !(isCurrentCurrencyCplBridged && isCplBridgedFiatCurrency(currency))
                 ) continue; // omit currency
                 currenciesToUpdate.add(currency);
-                if (FIAT_API_PROVIDER_CURRENT_PRICES === Provider.CryptoCompare
-                    && currenciesToUpdate.size >= 25) {
-                    // CryptoCompare only allows 25 currencies per request, and we don't want to send more than one.
-                    break;
+                if (isProviderCurrency) {
+                    providerCurrenciesToUpdateCount++;
                 }
             }
             const exchangeRateRequest = new ExchangeRateRequest(

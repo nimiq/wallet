@@ -215,9 +215,10 @@ export default defineComponent({
                 // If only the time range changed, and we have a cached history for the new time range, use that.
                 return;
             }
-            if (!isTimeRangeUpdate && isChartParametersUpdate) {
+            if (isChartParametersUpdate && isCurrenciesUpdate) {
                 // Clear cached histories, which also clears the chart, on chart parameters update other than only a
-                // time range change, in which case we want to keep the cache for the previous time range.
+                // time range change, in which case we want to keep the cache for the previous time range. Note that the
+                // condition is not as concise as it could be, but maybe it's better readable like this.
                 for (const range of Object.values(TimeRange)) {
                     histories.value[range] = undefined;
                 }

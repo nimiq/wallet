@@ -15,7 +15,7 @@
                         <CircleSpinner v-else/>
                         <span v-if="country">{{ country.name }}</span>
                         <span v-else>{{ $t('Loading...') }}</span>
-                        <img src="../../assets/arrow-down.svg" alt="open"/>
+                        <img src="../../assets/mini-arrow-down.svg" alt="open"/>
                     </div>
                 </CountrySelector>
             </header>

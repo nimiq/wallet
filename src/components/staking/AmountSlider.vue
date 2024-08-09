@@ -219,7 +219,7 @@ export default defineComponent({
         const updateAmount = async (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
             const target = e.target as HTMLInputElement;
 
-            let valueNim = (parseFloat(target.value.replace(/[^\d.]/g, '')) || 0) * 1e5;
+            const valueNim = (parseFloat(target.value.replace(/[^\d.]/g, '')) || 0) * 1e5;
 
             if (!firstRender && valueNim > currentAmount.value) {
                 window.clearTimeout(timeoutID);
@@ -289,7 +289,7 @@ export default defineComponent({
 
             position.x += $container.value?.closest('.small-page')?.scrollLeft || 0;
 
-            let percent = Math.min(100, Math.max(0,
+            const percent = Math.min(100, Math.max(0,
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
 

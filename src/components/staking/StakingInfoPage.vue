@@ -69,43 +69,46 @@
                             </button>
                             <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                         </Tooltip>
-                        <!-- <button class="nq-button-pill red" @click="deactivateAll"
-                            :disabled="!stake.activeBalance || consensus !== 'established'">
-                            {{ $t('Deactivate All') }}
-                        </button> -->
                     </div>
                 </div>
                 <div v-if="stake && stake.inactiveBalance && hasUnstakableStake"
                     class="unstaking row flex-row nq-light-blue"
                 >
-                    <Amount :amount="stake.inactiveBalance"/>&nbsp;{{ $t('available to unstake') }}
-                    <!-- <div class="flex-grow"></div> -->
-                    <!-- <button
-                        class="nq-button-pill light-blue"
-                        @click="() => unstakeAll()"
-                        :disabled="(stake.activeBalance > 0 && stake.activeBalance < MIN_STAKE)
-                            || consensus !== 'established'"
-                    >
-                        {{ $t('Unstake All') }}
-                    </button> -->
+                    <span class="nq-button-pill">
+                        <Amount :amount="stake.inactiveBalance"/>
+                    </span>
+                    <button class="nq-button-pill light-blue" @click="() => unstakeAll()">
+                        Pay out <ArrowRightSmallIcon />
+                    </button>
+                    <div class="flex-grow"></div>
+                    <!-- <p>{{ $t('Auto-payout failed, please pay out manually.') }}</p> -->
                 </div>
                 <div v-else-if="stake && stake.inactiveBalance" class="unstaking row flex-row nq-light-blue">
-                    <CircleSpinner/> {{ $t('Deactivating') }}&nbsp;<Amount :amount="stake.inactiveBalance"/>
+                    <span class="nq-button-s unstaking-amount">
+                        <ArrowDownIcon />
+                        <Amount :amount="stake.inactiveBalance"/>
+                    </span>
+                    <button class="nq-button-s unstaking-progress">
+                        {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
+                        <!-- TODO: Add cancel function -->
+                    </button>
                     <div class="flex-grow"></div>
-                    <span class="inactive-release-timer">{{ inactiveReleaseTime }}</span>
                 </div>
                 <div v-if="stake && stake.retiredBalance"
                     class="unstaking row flex-row nq-light-blue"
                 >
-                    <Amount :amount="stake.retiredBalance"/>&nbsp;{{ $t('available to unstake') }}
-                    <!-- <div class="flex-grow"></div> -->
-                    <!-- <button
-                        class="nq-button-pill light-blue"
+                    <span class="nq-button-pill">
+                        <Amount :amount="stake.retiredBalance"/>
+                    </span>
+                    <button class="nq-button-pill light-blue"
                         @click="() => unstakeAll(true)"
                         :disabled="consensus !== 'established'"
                     >
-                        {{ $t('Unstake All') }}
-                    </button> -->
+                        Pay out <ArrowRightSmallIcon />
+                    </button>
+                    <div class="flex-grow"></div>
+                    <!-- <p>{{ $t('Auto-payout failed, please pay out manually.') }}</p> -->
+                    <!-- TODO: Setup watch tower for auto payout -->
                 </div>
             </div>
 
@@ -160,7 +163,7 @@ import {
     PageBody,
     Tooltip,
     Identicon,
-    CircleSpinner,
+    ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 import { captureException } from '@sentry/vue';
 
@@ -181,6 +184,7 @@ import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
 import { useConfig } from '../../composables/useConfig';
 import { getNetworkClient } from '../../network';
+import ArrowDownIcon from '../icons/ArrowDownIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -235,146 +239,80 @@ export default defineComponent({
             && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value),
         );
 
-        // async function unstakeAll(removeOnly = false) {
-        //     context.emit('statusChange', {
-        //         type: StatusChangeType.UNSTAKING,
-        //         state: State.LOADING,
-        //         title: context.root.$t('Sending Unstaking Transaction') as string,
-        //     });
+        async function unstakeAll(removeOnly = false) {
+            context.emit('statusChange', {
+                type: StatusChangeType.UNSTAKING,
+                state: State.LOADING,
+                title: context.root.$t('Sending Unstaking Transaction') as string,
+            });
 
-        //     try {
-        //         const { Address, TransactionBuilder } = await import('@nimiq/core');
-        //         const client = await getNetworkClient();
+            try {
+                const { Address, TransactionBuilder } = await import('@nimiq/core');
+                const client = await getNetworkClient();
 
-        //         const transactions = [
-        //             ...(removeOnly ? [] : [
-        //                 TransactionBuilder.newRetireStake(
-        //                     Address.fromUserFriendlyAddress(activeAddress.value!),
-        //                     BigInt(stake.value!.inactiveBalance),
-        //                     BigInt(0),
-        //                     useNetworkStore().state.height,
-        //                     await client.getNetworkId(),
-        //                 ),
-        //             ]),
-        //             // It is only allowed to remove the complete retired balance, not only parts of it.
-        //             TransactionBuilder.newRemoveStake(
-        //                 Address.fromUserFriendlyAddress(activeAddress.value!),
-        //                 BigInt(removeOnly
-        //                     ? stake.value!.retiredBalance
-        //                     : stake.value!.retiredBalance + stake.value!.inactiveBalance),
-        //                 BigInt(0),
-        //                 useNetworkStore().state.height,
-        //                 await client.getNetworkId(),
-        //             ),
-        //         ];
+                const transactions = [
+                    ...(removeOnly ? [] : [
+                        TransactionBuilder.newRetireStake(
+                            Address.fromUserFriendlyAddress(activeAddress.value!),
+                            BigInt(stake.value!.inactiveBalance),
+                            BigInt(0),
+                            useNetworkStore().state.height,
+                            await client.getNetworkId(),
+                        ),
+                    ]),
+                    // It is only allowed to remove the complete retired balance, not only parts of it.
+                    TransactionBuilder.newRemoveStake(
+                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        BigInt(removeOnly
+                            ? stake.value!.retiredBalance
+                            : stake.value!.retiredBalance + stake.value!.inactiveBalance),
+                        BigInt(0),
+                        useNetworkStore().state.height,
+                        await client.getNetworkId(),
+                    ),
+                ];
 
-        //         const unstakedAmount = removeOnly
-        //             ? stake.value!.retiredBalance
-        //             : stake.value!.retiredBalance + stake.value!.inactiveBalance;
+                const unstakedAmount = removeOnly
+                    ? stake.value!.retiredBalance
+                    : stake.value!.retiredBalance + stake.value!.inactiveBalance;
 
-        //         const txs = await sendStaking({
-        //             transaction: transactions.map((tx) => tx.serialize()),
-        //         });
+                const txs = await sendStaking({
+                    transaction: transactions.map((tx) => tx.serialize()),
+                });
 
-        //         if (!txs) {
-        //             context.emit('statusChange', {
-        //                 type: StatusChangeType.NONE,
-        //             });
-        //             return;
-        //         }
+                if (!txs) {
+                    context.emit('statusChange', {
+                        type: StatusChangeType.NONE,
+                    });
+                    return;
+                }
 
-        //         if (txs.some((tx) => tx.executionResult === false)) {
-        //             throw new Error('The transaction did not succeed');
-        //         }
+                if (txs.some((tx) => tx.executionResult === false)) {
+                    throw new Error('The transaction did not succeed');
+                }
 
-        //         context.emit('statusChange', {
-        //             state: State.SUCCESS,
-        //             title: context.root.$t('Successfully unstaked {amount} NIM', { amount: unstakedAmount / 1e5 }),
-        //         });
+                context.emit('statusChange', {
+                    state: State.SUCCESS,
+                    title: context.root.$t('Successfully unstaked {amount} NIM', { amount: unstakedAmount / 1e5 }),
+                });
 
-        //         // // Close staking modal
-        //         // context.root.$router.back();
-        //         context.emit('statusChange', {
-        //             type: StatusChangeType.NONE,
-        //             timeout: SUCCESS_REDIRECT_DELAY,
-        //         });
-        //     } catch (error: any) {
-        //         if (config.reportToSentry) captureException(error);
-        //         else console.error(error); // eslint-disable-line no-console
+                // // Close staking modal
+                // context.root.$router.back();
+                context.emit('statusChange', {
+                    type: StatusChangeType.NONE,
+                    timeout: SUCCESS_REDIRECT_DELAY,
+                });
+            } catch (error: any) {
+                if (config.reportToSentry) captureException(error);
+                else console.error(error); // eslint-disable-line no-console
 
-        //         context.emit('statusChange', {
-        //             state: State.WARNING,
-        //             title: context.root.$t('Something went wrong') as string,
-        //             message: `${error.message} - ${error.data}`,
-        //         });
-        //     }
-        // }
-
-        // async function deactivateAll() {
-        //     context.emit('statusChange', {
-        //         type: StatusChangeType.DEACTIVATING,
-        //         state: State.LOADING,
-        //         title: context.root.$t('Sending Staking Transaction') as string,
-        //     });
-
-        //     const validatorLabelOrAddress = 'label' in validator.value!
-        //         ? validator.value.label : validator.value!.address;
-
-        //     try {
-        //         const { Address, TransactionBuilder } = await import('@nimiq/core');
-        //         const client = await getNetworkClient();
-
-        //         const transaction = TransactionBuilder.newSetActiveStake(
-        //             Address.fromUserFriendlyAddress(activeAddress.value!),
-        //             BigInt(0),
-        //             BigInt(0),
-        //             useNetworkStore().state.height,
-        //             await client.getNetworkId(),
-        //         );
-        //         const txs = await sendStaking({
-        //             transaction: transaction.serialize(),
-        //         }).catch((error) => {
-        //             throw new Error(error.data);
-        //         });
-
-        //         if (!txs) {
-        //             context.emit('statusChange', {
-        //                 type: StatusChangeType.NONE,
-        //             });
-        //             return;
-        //         }
-
-        //         if (txs.some((tx) => tx.executionResult === false)) {
-        //             throw new Error('The transaction did not succeed');
-        //         }
-
-        //         context.emit('statusChange', {
-        //             state: State.SUCCESS,
-        //             title: context.root.$t(
-        //                 'Successfully deactivated {amount} NIM from your stake with {validator}',
-        //                 {
-        //                     amount: Math.abs(stake.value!.activeBalance / 1e5),
-        //                     validator: validatorLabelOrAddress,
-        //                 },
-        //             ),
-        //         });
-
-        //         context.emit('statusChange', {
-        //             type: StatusChangeType.NONE,
-        //             timeout: SUCCESS_REDIRECT_DELAY,
-        //         });
-        //     } catch (error: any) {
-        //         if (config.reportToSentry) captureException(error);
-        //         else console.error(error); // eslint-disable-line no-console
-
-        //         // Show error screen
-        //         context.emit('statusChange', {
-        //             state: State.WARNING,
-        //             title: context.root.$t('Something went wrong') as string,
-        //             message: `${error.message} - ${error.data}`,
-        //         });
-        //     }
-        // }
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: context.root.$t('Something went wrong') as string,
+                    message: `${error.message} - ${error.data}`,
+                });
+            }
+        }
 
         return {
             // NOW,
@@ -387,8 +325,7 @@ export default defineComponent({
             inactiveReleaseTime,
             hasUnstakableStake,
             isStakeDeactivating,
-            // unstakeAll,
-            // deactivateAll,
+            unstakeAll,
             canSwitchValidator,
             consensus,
             MIN_STAKE,
@@ -405,8 +342,9 @@ export default defineComponent({
         ValidatorTrustScore,
         ValidatorRewardBubble,
         Identicon,
-        CircleSpinner,
         ShortAddress,
+        ArrowDownIcon,
+        ArrowRightSmallIcon,
     },
 });
 </script>
@@ -495,21 +433,62 @@ export default defineComponent({
     }
 
     .unstaking {
+        flex-wrap: wrap;
         align-items: center;
         font-size: var(--body-size);
         font-weight: 600;
         margin-top: 2rem;
 
-        ::v-deep .circle-spinner {
-            margin-right: 1rem;
-        }
+        .nq-button-s,
+        .nq-button-pill {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            color: white;
 
-        .inactive-release-timer {
-            box-shadow: 0 0 0 1.5px nimiq-light-blue(0.4);
-            border-radius: 5rem;
-            line-height: 1;
-            padding: 0.25rem 0.75rem;
-            font-size: var(--small-size);
+            &:first-child {
+                z-index: 2;
+                box-shadow: 0px 0px 0px 3px white;
+                cursor: default;
+
+                .nq-icon {
+                    margin-right: 0.75rem;
+                }
+            }
+
+            &:nth-child(2) {
+                padding-left: 2rem;
+                margin-left: -0.4rem;
+
+                --left-radius: 0px;
+                border-top-left-radius: var(--left-radius);
+                border-bottom-left-radius: var(--left-radius);
+
+                .nq-icon {
+                    margin-left: 0.75rem;
+                }
+            }
+
+            &.unstaking-amount { background-color: #797B91 }
+
+            &.unstaking-progress {
+                color: nimiq-blue(0.6);
+
+                pointer-events: none;
+                cursor: default;
+
+                span {
+                    color: nimiq-blue(1);
+                    margin-left: 1rem;
+                }
+            }
+        }
+        p {
+            color: nimiq-blue(0.6);
+            font-size: 1.5rem;
+            margin: 0;
+            margin-top: 1rem;
+            width: 100%;
         }
     }
 

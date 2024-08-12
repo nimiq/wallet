@@ -380,11 +380,6 @@ msgstr ""
 msgid "Automatic mode uses {behavior}."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:100
-#: src/components/staking/StakingInfoPage.vue:81
-msgid "available to unstake"
-msgstr ""
-
 #: src/components/swap/SwapAnimation.vue:294
 msgid "Awaiting swap secret"
 msgstr ""
@@ -2132,7 +2127,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:242
+#: src/components/staking/StakingInfoPage.vue:246
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2770,18 +2765,13 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:203
+#: src/components/staking/StakingInfoPage.vue:207
 #: src/components/staking/ValidatorListItem.vue:53
 msgid "Unregistered validator"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:33
 msgid "Unstake"
-msgstr ""
-
-#: src/components/staking/StakingInfoPage.vue:107
-#: src/components/staking/StakingInfoPage.vue:89
-msgid "Unstake All"
 msgstr ""
 
 #: src/swap-kyc-handler.ts:148

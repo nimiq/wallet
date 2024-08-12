@@ -17,9 +17,9 @@ export const TESTNET_ORIGIN = window.location.hostname === 'localhost' || window
 
 // Manually curated list of fiat currencies to offer in the Wallet. Arguably somewhat arbitrary.
 export const FIAT_CURRENCIES_OFFERED = ([
-    'AED', 'ARS', 'AUD', 'BRL', 'CAD', 'CHF', 'CLP', 'CNY', 'CRC', 'CZK', 'DKK', 'EUR', 'GBP', 'GMD', 'HKD', 'HUF',
-    'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NGN', 'NOK', 'NZD', 'PHP', 'PKR', 'PLN', 'RUB', 'SEK', 'SGD',
-    'THB', 'TRY', 'TWD', 'UAH', 'USD', 'VND', 'XOF', 'ZAR',
+    'AED', 'ARS', 'AUD', 'BRL', 'CAD', 'CHF', 'CLP', 'CNY', 'CRC', 'CZK', 'DKK', 'EUR', 'GBP', 'GMD', 'GTQ', 'HKD',
+    'HUF', 'IDR', 'ILS', 'INR', 'JPY', 'KRW', 'MXN', 'MYR', 'NGN', 'NOK', 'NZD', 'PHP', 'PKR', 'PLN', 'RUB', 'SEK',
+    'SGD', 'THB', 'TRY', 'TWD', 'UAH', 'USD', 'VND', 'XOF', 'ZAR',
 ] as const).map((ticker) => FiatCurrency[ticker]);
 export type FiatCurrencyOffered = (typeof FIAT_CURRENCIES_OFFERED)[number];
 

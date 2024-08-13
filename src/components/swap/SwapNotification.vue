@@ -56,10 +56,8 @@ import {
     ClearingInfo,
     ClearingStatus,
     DeniedReason,
-    getHtlc,
     Htlc as OasisHtlc,
     HtlcStatus,
-    settleHtlc,
     SettlementInfo,
     SettlementStatus,
 } from '@nimiq/oasis-api';
@@ -88,6 +86,8 @@ import {
 } from '../../ethers';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { getHtlc as getEurHtlc, settleHtlc as settleEurHtlc } from '../../lib/OasisEur';
+import { getHtlc as getCrcHtlc, settleHtlc as settleCrcHtlc } from '../../lib/OasisCrc';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -285,8 +285,9 @@ export default defineComponent({
                     };
                 }
                 case SwapAsset.CRC:
+                    return { getHtlc: getCrcHtlc, settleHtlc: settleCrcHtlc };
                 case SwapAsset.EUR:
-                    return { getHtlc, settleHtlc };
+                    return { getHtlc: getEurHtlc, settleHtlc: settleEurHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
         }

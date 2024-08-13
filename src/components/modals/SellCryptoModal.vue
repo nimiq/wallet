@@ -280,8 +280,6 @@ import {
     Contract,
 } from '@nimiq/fastspot-api';
 import {
-    getHtlc,
-    exchangeAuthorizationToken,
     HtlcStatus,
     TransactionType as OasisTransactionType,
 } from '@nimiq/oasis-api';
@@ -344,6 +342,7 @@ import {
 import { useKycStore } from '../../stores/Kyc';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
+import { exchangeAuthorizationToken, getHtlc } from '../../lib/OasisEur';
 
 type KycResult = import('../../swap-kyc-handler').SetupSwapWithKycResult['kyc'];
 

@@ -1,7 +1,9 @@
 import { onUnmounted, Ref, watch } from '@vue/composition-api';
-import { getHtlc, SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
+import { SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { SwapData, SwapEurData, useSwapsStore } from '../stores/Swaps';
+import { SwapCrcData, SwapData, SwapEurData, useSwapsStore } from '../stores/Swaps';
+import { getHtlc as getEurHtlc } from '../lib/OasisEur';
+import { getHtlc as getCrcHtlc } from '../lib/OasisCrc';
 
 // TODO: Remove logging when stable
 /* eslint-disable no-console */
@@ -16,7 +18,7 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
             return;
         }
 
-        const data = swapData.value as SwapEurData;
+        const data = swapData.value as SwapEurData | SwapCrcData;
         const settlement = data.htlc!.settlement!;
 
         // Determine check interval
@@ -30,7 +32,9 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
             oasisPayoutCheckTimeout = 1; // Ensure no parallel executions
             console.log('Fetching HTLC now');
 
-            const htlc = await getHtlc(data.htlc!.id);
+            const htlc = data.asset === SwapAsset.EUR
+                ? await getEurHtlc(data.htlc!.id)
+                : await getCrcHtlc(data.htlc!.id);
             console.log('Got HTLC:', htlc);
 
             settlement.status = htlc.settlement.status;
@@ -73,10 +77,10 @@ export function useOasisPayoutStatusUpdater(swapData: Ref<SwapData | null>) {
     }
 
     watch(swapData, (data, previousData) => { // eslint-disable-line consistent-return
-        if (previousData?.asset === SwapAsset.EUR) {
+        if (previousData?.asset === SwapAsset.EUR || previousData?.asset === SwapAsset.CRC) {
             stop();
         }
-        if (data?.asset !== SwapAsset.EUR) return stop();
+        if (data?.asset !== SwapAsset.EUR && data?.asset !== SwapAsset.CRC) return stop();
         if (data.htlc?.settlement?.status !== SettlementStatus.ACCEPTED) return stop();
         if (oasisPayoutCheckTimeout) return; // eslint-disable-line consistent-return
         checkOasisPayoutStatus();

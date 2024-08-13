@@ -34,7 +34,6 @@ import {
     SinpeMovilHtlcCreationInstructions,
 } from '@nimiq/hub-api';
 import {
-    getHtlc,
     HtlcStatus,
     TransactionType as OasisTransactionType,
 } from '@nimiq/oasis-api';
@@ -46,6 +45,7 @@ import SinpeUserInfo from '../../components/SinpeUserInfo.vue';
 import AddressSelector from '../../components/AddressSelector.vue';
 import { AssetTransferOptions, AssetTransferParams } from './types';
 import { useConfig } from '../useConfig';
+import { getHtlc } from '../../lib/OasisCrc';
 
 function isCryptoCurrency(currency: any): currency is CryptoCurrency {
     return Object.values(CryptoCurrency).includes(currency.toLocaleLowerCase() as CryptoCurrency);

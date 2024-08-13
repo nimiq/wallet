@@ -6,7 +6,7 @@ msgstr ""
 msgid "‘Digital gold’, the original crypto"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:40
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:40
 msgid "({secondsLeft}s)"
 msgstr ""
 
@@ -70,7 +70,7 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:37
+#: src/components/modals/AssetTransferModal.vue:53
 msgid "{feeAmount} fees"
 msgstr ""
 
@@ -95,7 +95,7 @@ msgstr ""
 msgid "{provider} is provided by {companyLogo}"
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:66
+#: src/components/modals/AssetTransferModal.vue:96
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
@@ -172,7 +172,7 @@ msgstr ""
 msgid "3"
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:59
+#: src/components/modals/AssetTransferModal.vue:82
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
 #: src/components/swap/SwapModal.vue:93
@@ -308,7 +308,7 @@ msgstr ""
 msgid "Always backup your Recovery Words, Password and Login Files."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:281
+#: src/swap-kyc-handler.ts:284
 msgid "An error occurred: {message}"
 msgstr ""
 
@@ -341,7 +341,7 @@ msgstr ""
 msgid "Apply fee"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:13
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:51
 msgid "Approve the sale"
 msgstr ""
 
@@ -442,7 +442,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:302
 #: src/components/modals/TransactionModal.vue:309
 #: src/components/modals/UsdcTransactionModal.vue:270
-#: src/components/swap/SwapAnimation.vue:196
+#: src/components/swap/SwapAnimation.vue:199
 #: src/components/swap/SwapAnimation.vue:276
 msgid "Block explorer"
 msgstr ""
@@ -476,6 +476,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:204
 #: src/components/modals/BuyCryptoModal.vue:218
 #: src/components/modals/BuyCryptoModal.vue:32
+#: src/composables/asset-transfer/useSinpeMovilSwap.ts:483
 msgid "Buy Crypto"
 msgstr ""
 
@@ -612,7 +613,7 @@ msgid "Choose a Validator"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/AssetTransferModal.vue:115
+#: src/components/modals/AssetTransferModal.vue:176
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:212
@@ -657,7 +658,7 @@ msgstr ""
 msgid "Comparably high transaction fees/time"
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:104
+#: src/components/modals/AssetTransferModal.vue:165
 #: src/components/SendModalFooter.vue:8
 #: src/components/swap/SwapModal.vue:189
 #: src/components/swap/SwapModal.vue:194
@@ -669,7 +670,7 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:39
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:37
 msgid "Confirm Number"
 msgstr ""
 
@@ -677,7 +678,7 @@ msgstr ""
 msgid "Confirm prestake"
 msgstr ""
 
-#: src/components/modals/SinpeMovilSellInfoModal.vue:13
+#: src/components/modals/SinpeMovilInfoModal.vue:13
 msgid "Confirm Sinpe number"
 msgstr ""
 
@@ -956,7 +957,7 @@ msgstr ""
 msgid "Enter IBAN"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:29
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:18
 msgid "Enter phone number"
 msgstr ""
 
@@ -964,7 +965,7 @@ msgstr ""
 msgid "Enter recipient address..."
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:15
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:54
 msgid "Enter the code sent to {phoneNumber} to approve."
 msgstr ""
 
@@ -980,7 +981,7 @@ msgstr ""
 msgid "Enter your bank details"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:9
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:11
 msgid "Enter your Sinpe Móvil phone number."
 msgstr ""
 
@@ -1182,6 +1183,10 @@ msgstr ""
 msgid "Get verified for higher limits by authenticating with {provider}. These are the requirements:"
 msgstr ""
 
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:3
+msgid "Go back"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/UsdcActivationModal.vue:35
@@ -1259,7 +1264,7 @@ msgstr ""
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:217
+#: src/components/swap/SwapNotification.vue:220
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1315,7 +1320,7 @@ msgstr ""
 msgid "Install Web App"
 msgstr ""
 
-#: src/components/DualCurrencyInput.vue:50
+#: src/components/modals/AssetTransferModal.vue:150
 #: src/components/modals/BtcSendModal.vue:79
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:189
@@ -1376,7 +1381,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
-#: src/components/modals/SinpeMovilSellInfoModal.vue:21
+#: src/components/modals/SinpeMovilInfoModal.vue:20
 #: src/components/prestaking/PrestakingWelcomePage.vue:22
 msgid "Let's go"
 msgstr ""
@@ -1405,7 +1410,7 @@ msgstr ""
 msgid "Loading Moonpay..."
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:64
+#: src/components/modals/AssetTransferModal.vue:91
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
@@ -1413,6 +1418,7 @@ msgstr ""
 msgid "loading..."
 msgstr ""
 
+#: src/components/modals/AssetTransferModal.vue:13
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
 msgstr ""
@@ -1456,7 +1462,7 @@ msgstr ""
 msgid "Many updates like easier address names, more accessible swaps and an improved asset overview await."
 msgstr ""
 
-#: src/components/DualCurrencyInput.vue:43
+#: src/components/modals/AssetTransferModal.vue:139
 #: src/components/modals/BuyCryptoModal.vue:167
 #: src/components/modals/SellCryptoModal.vue:156
 msgid "Max swappable amount is {amount}"
@@ -1536,7 +1542,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:216
+#: src/components/swap/SwapNotification.vue:219
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -1556,7 +1562,7 @@ msgstr ""
 msgid "No registration"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:119
+#: src/swap-kyc-handler.ts:120
 msgid "No request received."
 msgstr ""
 
@@ -1904,11 +1910,11 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:59
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:89
 msgid "Resend"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:56
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:82
 msgid "Resend ({secondsLeft}s)"
 msgstr ""
 
@@ -1926,7 +1932,7 @@ msgstr ""
 msgid "Restake Rewards"
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:638
+#: src/components/swap/SwapAnimation.vue:642
 msgid "Restart payout process"
 msgstr ""
 
@@ -1996,15 +2002,11 @@ msgstr ""
 msgid "Sell BTC and USDC"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:20
-msgid "Sell crypto"
-msgstr ""
-
 #: src/components/modals/SellCryptoModal.vue:180
 #: src/components/modals/SellCryptoModal.vue:185
 #: src/components/modals/SellCryptoModal.vue:199
 #: src/components/modals/SellCryptoModal.vue:31
-#: src/composables/asset-transfer/useSinpeMovilSwap.ts:490
+#: src/composables/asset-transfer/useSinpeMovilSwap.ts:483
 msgid "Sell Crypto"
 msgstr ""
 
@@ -2012,9 +2014,9 @@ msgstr ""
 msgid "Sell Crypto for Fiat"
 msgstr ""
 
-#: src/components/DualCurrencyInput.vue:21
-#: src/components/DualCurrencyInput.vue:47
-#: src/components/DualCurrencyInput.vue:50
+#: src/components/DualCurrencyInput.vue:20
+#: src/components/modals/AssetTransferModal.vue:147
+#: src/components/modals/AssetTransferModal.vue:151
 #: src/components/modals/SellCryptoModal.vue:134
 #: src/components/modals/SellCryptoModal.vue:163
 #: src/components/modals/SellCryptoModal.vue:166
@@ -2027,11 +2029,11 @@ msgid ""
 "SEPA bank account."
 msgstr ""
 
-#: src/components/modals/SinpeMovilSellInfoModal.vue:11
+#: src/components/modals/SinpeMovilInfoModal.vue:11
 msgid "Sell NIM directly to your Sinpe Móvil account."
 msgstr ""
 
-#: src/components/modals/SinpeMovilSellInfoModal.vue:10
+#: src/components/modals/SinpeMovilInfoModal.vue:10
 msgid "Sell NIM using Sinpe Móvil"
 msgstr ""
 
@@ -2095,7 +2097,7 @@ msgstr ""
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:36
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:34
 msgid "Sending SMS..."
 msgstr ""
 
@@ -2159,7 +2161,7 @@ msgstr ""
 msgid "Set an amount to lock"
 msgstr ""
 
-#: src/components/modals/SinpeMovilSellInfoModal.vue:14
+#: src/components/modals/SinpeMovilInfoModal.vue:14
 msgid "Set an amount to sell"
 msgstr ""
 
@@ -2384,8 +2386,8 @@ msgstr ""
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:208
-#: src/swap-kyc-handler.ts:225
+#: src/swap-kyc-handler.ts:211
+#: src/swap-kyc-handler.ts:228
 msgid "TEN31 Pass didn't return expected grants."
 msgstr ""
 
@@ -2401,8 +2403,12 @@ msgstr ""
 msgid "The bank is processing your transaction."
 msgstr ""
 
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:350
+msgid "The code you entered is incorrect. Please try again."
+msgstr ""
+
 #: src/lib/swap/utils/BuyUtils.ts:98
-#: src/lib/swap/utils/SellUtils.ts:121
+#: src/lib/swap/utils/SellUtils.ts:122
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
@@ -2446,7 +2452,7 @@ msgstr ""
 msgid "The payment request might have been paid, expired, or cancelled."
 msgstr ""
 
-#: src/components/modals/AssetTransferModal.vue:21
+#: src/components/modals/AssetTransferModal.vue:34
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
 msgid "The rate might change depending on the swap volume."
@@ -2479,6 +2485,11 @@ msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:21
 msgid "There is no ‘forgot password’"
+msgstr ""
+
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:351
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:359
+msgid "There was an error with the phone verification system. Please try again later."
 msgstr ""
 
 #: src/components/swap/SwapNotification.vue:23
@@ -2636,7 +2647,7 @@ msgstr ""
 msgid "Unexpected GoCrypto error"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:214
+#: src/swap-kyc-handler.ts:217
 msgid "Unexpected user. This account is currently connected to the TEN31 Pass of {userName}."
 msgstr ""
 
@@ -2655,12 +2666,12 @@ msgstr ""
 msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/swap-kyc-handler.ts:148
-#: src/swap-kyc-handler.ts:157
+#: src/swap-kyc-handler.ts:150
+#: src/swap-kyc-handler.ts:160
 msgid "Unsupported currency"
 msgstr ""
 
-#: src/swap-kyc-handler.ts:242
+#: src/swap-kyc-handler.ts:245
 msgid "Unsupported KYC provider {provider}."
 msgstr ""
 
@@ -2740,7 +2751,7 @@ msgstr ""
 msgid "What is your bank called?"
 msgstr ""
 
-#: src/components/modals/SinpeMovilModal.vue:7
+#: src/components/modals/SinpeMovilMobileVerificationModal.vue:9
 msgid "What's your number?"
 msgstr ""
 
@@ -2840,6 +2851,10 @@ msgstr ""
 msgid "You will send {amount} USDC"
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:120
+msgid "Your {fiatCurrency} will be transferred to your bank accountas soon as new limit is available."
+msgstr ""
+
 #: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
 msgstr ""
@@ -2866,7 +2881,6 @@ msgstr ""
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 
-#: src/components/swap/SwapAnimation.vue:119
 #: src/components/TransactionDetailOasisPayoutStatus.vue:20
 msgid "Your EUR will be transferred to your bank account as soon as new limit is available."
 msgstr ""

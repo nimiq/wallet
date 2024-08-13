@@ -4,7 +4,6 @@ import VueCompositionApi, { watch } from '@vue/composition-api';
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
-import { init as initOasisApi } from '@nimiq/oasis-api';
 
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
@@ -97,14 +96,6 @@ async function start() {
         // as arguments. For now, we just initialize the API with SINPE conf since it is the only one available.
         if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
-    });
-
-    watch(() => {
-        if (!config.sinpeMovil.apiEndpoint) return;
-        // TODO We need to look for another solution to support dual enpoints:
-        // 1. Support to retrieve old tx made with EUR
-        // 2. Support to work SINPE
-        initOasisApi(config.sinpeMovil.apiEndpoint);
     });
 
     watch(() => {

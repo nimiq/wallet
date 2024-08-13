@@ -316,10 +316,8 @@ import {
     EurHtlcDetails,
 } from '@nimiq/fastspot-api';
 import {
-    getHtlc,
     Htlc as OasisHtlc,
     HtlcStatus,
-    sandboxMockClearHtlc,
     TransactionType,
     SepaClearingInstruction,
 } from '@nimiq/oasis-api';
@@ -379,6 +377,7 @@ import { useBankStore } from '../../stores/Bank';
 import { useKycStore } from '../../stores/Kyc';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
+import { getHtlc, sandboxMockClearHtlc } from '../../lib/OasisEur';
 
 enum Pages {
     WELCOME,

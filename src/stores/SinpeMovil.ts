@@ -5,8 +5,7 @@ import { useConfig } from '../composables/useConfig';
 export type SinpeMovilState = {
     phoneNumber: string | null,
     label: string,
-    token: string | null,
-    tokenTimestamp: number | null,
+    smsApiToken: string | null,
     userLimits: UserLimits | null,
 };
 
@@ -17,22 +16,20 @@ export const useSinpeMovilStore = createStore({
     state: (): SinpeMovilState => ({
         phoneNumber: null,
         label: defaultSinpeMovilLabel,
-        token: null,
-        tokenTimestamp: null,
+        smsApiToken: null,
         userLimits: null,
     }),
     getters: {
         phoneNumber: (state): Readonly<string | null> => state.phoneNumber || '',
         label: (state): Readonly<string | null> => state.label || '',
-        smsApiToken: (state): Readonly<string | null> => state.token || '',
+        smsApiToken: (state): Readonly<string | null> => state.smsApiToken || '',
         initials: (state): Readonly<string | null> =>
             // Split by non-alphabetic characters (name can be), take the first character of each word and join them
-            state.label?.split(/[^a-zA-Z]+/).map((word) => word[0]).join('') || '',
+            state.label?.split(/[^\p{L}]+/u).map((word) => word[0]).join('') || '',
+
         isUserVerified: (state): Readonly<boolean> => {
             if (!useConfig().config.sinpeMovil.enabled) return false;
-
-            // TODO: Check if state is set and the timestamp is less than 5 minutes ago
-            return !!state.phoneNumber && !!state.token;
+            return !!state.phoneNumber && !!state.smsApiToken;
         },
         kycLimits: (state): Readonly<UserLimits | null> => state.userLimits,
     },
@@ -45,15 +42,6 @@ export const useSinpeMovilStore = createStore({
             const label = defaultSinpeMovilLabel;
 
             this.state = { ...user, label, userLimits: this.state.userLimits };
-        },
-        resetUser() {
-            this.state = {
-                phoneNumber: null,
-                label: defaultSinpeMovilLabel,
-                token: null,
-                tokenTimestamp: null,
-                userLimits: this.state.userLimits,
-            };
         },
     },
 });

@@ -68,7 +68,6 @@ import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest'
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
 import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
-import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore,
     SwapState, ActiveSwap, SwapEurData, SwapErrorAction, isFiatAsset, SwapCrcData } from '../../stores/Swaps';
@@ -106,7 +105,6 @@ export default defineComponent({
             state: swap$,
         } = useSwapsStore();
         const { bank, bankAccount } = useBankStore();
-        const { phoneNumber } = useSinpeMovilStore();
         const { config } = useConfig();
 
         const swapIsComplete = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.COMPLETE);
@@ -646,21 +644,12 @@ export default defineComponent({
                         }
                     } else {
                         try {
-                            let smsApi: string | undefined;
-                            if (activeSwap.value.to.asset === SwapAsset.CRC) {
-                                const { smsApiToken } = await import('@/stores/SinpeMovil')
-                                    .then((module) => module.useSinpeMovilStore());
-                                if (!smsApiToken.value) {
-                                    throw new Error('Sinpe Movil API token not available');
-                                }
-                                smsApi = smsApiToken.value;
-                            }
                             const settlementTx = await swapHandler.settleIncoming(
                                 activeSwap.value!.settlementSerializedTx!,
                                 activeSwap.value!.secret!,
                                 {
                                     authorization: activeSwap.value!.settlementAuthorizationToken,
-                                    smsApi,
+                                    smsApi: swap$.activeSwap?.settlementSmsToken,
                                 },
                             );
 
@@ -690,7 +679,7 @@ export default defineComponent({
                                 } as SwapEurData) : ({
                                     asset: SwapAsset.CRC,
                                     amount: htlc.amount,
-                                    phoneNumber: phoneNumber.value,
+                                    phoneNumber: activeSwap.value.phoneNumber,
                                     htlc: htlcData,
                                 } as SwapCrcData);
 

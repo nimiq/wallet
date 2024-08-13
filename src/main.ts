@@ -101,6 +101,9 @@ async function start() {
 
     watch(() => {
         if (!config.sinpeMovil.apiEndpoint) return;
+        // TODO We need to look for another solution to support dual enpoints:
+        // 1. Support to retrieve old tx made with EUR
+        // 2. Support to work SINPE
         initOasisApi(config.sinpeMovil.apiEndpoint);
     });
 

@@ -2,7 +2,8 @@
 <div class="dual-currency-input">
   <section :class="{ orange: !!invalidReason }">
     <div class="flex-row primary-amount">
-      <AmountInput v-model="_cryptoAmount" :decimals="cryptoCurrencyDecimals">
+      <AmountInput :value="cryptoAmount" @input="$emit('update:cryptoAmount', $event)"
+        :decimals="cryptoCurrencyDecimals">
         <div class="amount-menu ticker" slot="suffix">
           <button class="reset button flex-row" @click.stop="currencySelectorOpen = !currencySelectorOpen">
             {{ cryptoCurrency.toUpperCase() }}
@@ -29,7 +30,8 @@
           <path d="M23.75 15.25l6.5 6.5-6.5 6.5" stroke-linejoin="round" />
         </g>
       </svg>
-      <AmountInput v-model="_fiatAmount" :decimals="fiatCurrencyDecimals" placeholder="0.00">
+      <AmountInput :value="fiatAmount" @input="$emit('update:fiatAmount', $event)"
+        :decimals="fiatCurrencyDecimals" placeholder="0.00">
         <span slot="suffix" class="ticker">{{ fiatCurrency.toUpperCase() }}</span>
       </AmountInput>
     </span>
@@ -38,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
 import AmountInput from './AmountInput.vue';
 
@@ -76,43 +78,12 @@ export default defineComponent({
         },
         invalidReason: String,
     },
-    setup(props, context) {
+    setup() {
         const currencySelectorOpen = ref(false);
-
-        const _fiatAmount = computed({
-            get: () => props.fiatAmount,
-            set: (newValue) => context.emit('update:fiatAmount', newValue),
-        });
-        const _cryptoAmount = computed({
-            get: () => props.cryptoAmount,
-            set: (newValue) => { context.emit('update:cryptoAmount', newValue); },
-        });
-
-        const syncing = ref(false);
-
-        watch(_fiatAmount, (newVal) => {
-            if (syncing.value) return;
-            syncing.value = true;
-            const newCryptoValue = Number(((newVal / props.exchangeRate) * 10 ** props.cryptoCurrencyDecimals)
-                .toFixed(props.cryptoCurrencyDecimals));
-            context.emit('update:cryptoAmount', newCryptoValue);
-            setTimeout(() => syncing.value = false, 100);
-        }, { lazy: true });
-
-        watch(_cryptoAmount, (newVal) => {
-            if (syncing.value) return;
-            syncing.value = true;
-            const newFiatValue = Number(((newVal / 10 ** props.cryptoCurrencyDecimals) * props.exchangeRate)
-                .toFixed(props.fiatCurrencyDecimals));
-            context.emit('update:fiatAmount', newFiatValue);
-            setTimeout(() => syncing.value = false, 100);
-        }, { lazy: true });
 
         return {
             currencySelectorOpen,
             CryptoCurrency,
-            _fiatAmount,
-            _cryptoAmount,
         };
     },
     components: {

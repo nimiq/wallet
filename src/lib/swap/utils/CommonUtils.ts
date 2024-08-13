@@ -226,6 +226,7 @@ export function getFiatSwapParameters<FiatAsset extends FiatSwapAsset>(fiatAsset
 
         if (from && ('asset' in from) && isFiatAsset(from.asset) && from.amount) {
             return {
+                // TODO 100 is hardcoded and it works because EUR and CRC have 2 digits in the cents
                 from: { [fiatAsset]: (from.amount - fees.fundingFee) / 100 },
                 to: toSwapAsset,
             } as {
@@ -270,7 +271,8 @@ export function getFiatSwapParameters<FiatAsset extends FiatSwapAsset>(fiatAsset
 
         return {
             from: fromSwapAsset,
-            to: { [fiatAsset]: (to!.amount + fees.settlementFee) },
+            // TODO 100 is hardcoded and it works because EUR and CRC have 2 digits in the cents
+            to: { [fiatAsset]: (to!.amount + fees.settlementFee) / 100 },
         } as {
             from: typeof fromSwapAsset,
             to: RequestAsset<FiatAsset>,

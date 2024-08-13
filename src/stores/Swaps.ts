@@ -115,6 +115,8 @@ export type ActiveSwap = SwapObject & {
     // S3 KYC grant tokens and KYC enabled OASIS clearing authorization tokens (buying crypto), don't have to be handled
     // during the swap process in wallet, as those tokens are passed to S3 already in the Hub during swap confirmation.
     settlementAuthorizationToken?: string,
+    settlementSmsToken?: string, // Token for Sinpe Móvil swap for the HTLC settlement
+    phoneNumber?: string, // Phone number for Sinpe Móvil swap for the HTLC settlement
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']>

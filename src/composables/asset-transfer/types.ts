@@ -2,6 +2,7 @@ import { FundingFees } from '@/lib/swap/utils/Functions';
 import { ActiveSwap } from '@/stores/Swaps';
 import { SwapAsset } from '@nimiq/libswap';
 import { CryptoSwapAsset, FiatSwapAsset } from '@/lib/swap/utils/CommonUtils';
+import { Estimate } from '@nimiq/fastspot-api';
 import { Ref } from '@vue/composition-api';
 import { VueConstructor } from 'vue';
 import { SwapLimits } from '../useSwapLimits';
@@ -12,6 +13,12 @@ export enum AssetTransferMethod {
 
 export interface AssetTransferOptions {
   pair: [SwapAsset, SwapAsset];
+  fiatAmount: Ref<number>;
+  cryptoAmount: Ref<number>;
+  estimate: Ref<Estimate | null>;
+  updateEstimate: () => Promise<void>;
+  estimateError: Ref<string | null>;
+  fetchingEstimate: Ref<boolean>;
 }
 
 type VueComponent = VueConstructor<Vue>;
@@ -27,11 +34,7 @@ export interface AssetTransferParams {
   currencyFiatFallback: FiatSwapAsset;
   currencyCrypto: CryptoSwapAsset;
 
-  fiatAmount: Ref<number>;
-  cryptoAmount: Ref<number>;
   exchangeRate: Computed<number>;
-  updateFiatAmount: (value: number) => void;
-  updateCryptoAmount: (value: number) => void;
 
   decimalsCrypto: Computed<number>;
   decimalsFiat: Computed<number>;
@@ -55,7 +58,7 @@ export interface AssetTransferParams {
 
   detectionDelay: number;
 
-  oasisSellLimitExceeded: boolean;
+  oasisLimitExceeded: Computed<boolean>;
 
   invalidReason: Computed<string>;
 

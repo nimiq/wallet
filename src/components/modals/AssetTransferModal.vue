@@ -6,7 +6,14 @@
     @close="closeModal"
     @close-overlay="() => (p.addressListOpened = false)"
   >
-    <div v-if="!p">Loading fees</div>
+    <div v-if="!p" class="loading-wrapper">
+      <div class="loading-container">
+      <CircleSpinner />
+      <p>
+        {{ $t("Loading...") }}
+      </p>
+      </div>
+    </div>
     <div v-else class="asset-transfer-input">
       <PageHeader>{{ p.modalTitle }}</PageHeader>
       <PageBody class="flex-column">
@@ -55,8 +62,6 @@
               </template>
             </i18n>
           </SwapFeesTooltip>
-          {{p.limits}}
-          current: {{p.currentLimitFiat}}
           <Tooltip
             :styles="{ width: '28.75rem' }"
             preferredPosition="bottom left"
@@ -69,7 +74,7 @@
                 v-if="p.limits"
                 :amount="p.currentLimitFiat"
                 :currency="p.currencyFiatFallback.toLocaleLowerCase()"
-                hideDecimals
+                hide-decimals
               />
               <CircleSpinner v-else />
             </div>
@@ -118,14 +123,12 @@
         </section>
 
         <DualCurrencyInput
-          :fiatAmount.sync="p.fiatAmount"
-          :cryptoAmount.sync="p.cryptoAmount"
+          :fiatAmount.sync="fiatAmount"
+          :cryptoAmount.sync="cryptoAmount"
           :fiatCurrency="p.currencyFiatFallback.toLocaleLowerCase()"
           :cryptoCurrency="p.currencyCrypto.toLocaleLowerCase()"
           :fiatCurrencyDecimals="p.decimalsFiat"
           :cryptoCurrencyDecimals="p.decimalsCrypto"
-          :maxCrypto="p.currentLimitCrypto"
-          :maxFiat="p.currentLimitFiat"
           :exchangeRate="p.exchangeRate"
           :invalid-reason="p.invalidReason"
           @set-max="setMax()"
@@ -147,8 +150,8 @@
             {{ $t("Insufficient balance.") }}
             <a @click="() => setMax()">{{ $t("Sell max") }}</a>
           </template>
-          <template v-else-if="p.estimateError">
-            {{ p.estimateError }}
+          <template v-else-if="estimateError">
+            {{ estimateError }}
           </template>
         </MessageTransition>
       </PageBody>
@@ -156,7 +159,7 @@
         <button
           class="nq-button light-blue"
           @mousedown.prevent
-          :disabled="!p.canSign || p.invalid || !p.fiatAmount || !p.cryptoAmount"
+          :disabled="!p.canSign || p.invalid || !fiatAmount || !cryptoAmount"
           @click="p.sign()"
         >
           {{ $t("Confirm") }}
@@ -245,6 +248,7 @@ import {
     defineComponent,
     onMounted,
     ref,
+    watch,
 } from '@vue/composition-api';
 import {
     AssetTransferMethod,
@@ -264,9 +268,10 @@ import {
 import { ENV_MAIN } from '@/lib/Constants';
 import { useAddressStore } from '@/stores/Address';
 import { useBtcAddressStore } from '@/stores/BtcAddress';
-import { SwapState, useSwapsStore } from '@/stores/Swaps';
+import { isFiatAsset, SwapState, useSwapsStore } from '@/stores/Swaps';
 import { SwapAsset } from '@nimiq/libswap';
 import { useConfig } from '@/composables/useConfig';
+import { capDecimals, useSwapEstimate } from '@/lib/swap/utils/CommonUtils';
 import AddressList from '../AddressList.vue';
 import DualCurrencyInput from '../DualCurrencyInput.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -293,13 +298,50 @@ export default defineComponent({
     },
     setup(props, context) {
         const p /* params */ = ref<AssetTransferParams>(null);
-        const cryptoAmount = computed(
-            () => (p.value?.cryptoAmount as unknown as number) || 0,
-        );
+
+        const { estimate } = useSwapEstimate();
+
+        const _fiatAmount = ref(0);
+        const fiatAmount = computed({
+            get: () => {
+                if (_fiatAmount.value !== 0) return _fiatAmount.value;
+                if (!estimate?.value) return 0;
+                if (!isFiatAsset(estimate.value.to.asset)) return 0;
+                return estimate.value.to.amount - estimate.value.to.fee;
+            },
+            set: (value: number) => {
+                _cryptoAmount.value = 0;
+                _fiatAmount.value = value;
+                onInput(value);
+            },
+        });
+
+        const _cryptoAmount = ref(0);
+        const cryptoAmount = computed({
+            get: () => {
+                if (_cryptoAmount.value !== 0) return _cryptoAmount.value;
+                if (!estimate.value || !p.value?.currencyCrypto) return 0;
+                if (estimate.value.from.asset !== p.value.currencyCrypto) return 0;
+                return capDecimals(estimate.value.from.amount + estimate.value.from.fee, estimate.value.from.asset);
+            },
+            set: (value: number) => {
+                _fiatAmount.value = 0;
+                _cryptoAmount.value = value;
+                onInput(value);
+            },
+        });
+
+        const fetchingEstimate = ref<boolean>(false);
 
         onMounted(async () => {
             const options: AssetTransferOptions = {
                 pair: props.pair,
+                cryptoAmount,
+                fiatAmount,
+                estimate,
+                updateEstimate,
+                estimateError,
+                fetchingEstimate,
             };
 
             switch (props.method) {
@@ -315,35 +357,73 @@ export default defineComponent({
             }
         });
 
+        let updateEstimateFn: (args: any) => Promise<void>;
+        const estimateError = ref<string>(null);
+        let timeoutId: number | undefined;
+
+        async function updateEstimate() {
+            if (!p.value) return;
+            clearTimeout(timeoutId);
+
+            fetchingEstimate.value = true;
+
+            if (!updateEstimateFn) {
+                updateEstimateFn = p.value?.isSelling
+                    ? (await import('@/lib/swap/utils/SellUtils')).updateSellEstimate
+                    : (await import('@/lib/swap/utils/BuyUtils')).updateBuyEstimate;
+            }
+
+            const args = _fiatAmount.value
+                ? { fiatAmount: fiatAmount.value, fiatAsset: p.value.currencyFiatFallback }
+                : { cryptoAmount: cryptoAmount.value, fiatAsset: p.value.currencyFiatFallback };
+            await updateEstimateFn(args).then(() => {
+                estimateError.value = null;
+            }).catch((error) => {
+                console.warn(error); // eslint-disable-line no-console
+                estimateError.value = error.message;
+            });
+
+            fetchingEstimate.value = false;
+        }
+
+        function onInput(val: number) {
+            clearTimeout(timeoutId);
+
+            if (!val) {
+                estimate.value = null;
+                estimateError.value = null;
+                return;
+            }
+
+            timeoutId = window.setTimeout(updateEstimate, 500);
+            fetchingEstimate.value = true;
+        }
+
         const { activeAddressInfo } = useAddressStore();
         const { accountBalance: accountBtcBalance } = useBtcAddressStore();
 
         function setMax() {
             if (!p.value?.isSelling) return;
+            const currentLimitCrypto = p.value.currentLimitCrypto.value;
 
             switch (p.value.currencyCrypto) {
                 case SwapAsset.NIM: {
-                    if (!p.value.currentLimitCrypto.value) {
-                        p.value.updateCryptoAmount(activeAddressInfo.value?.balance || 0);
-                    } else if (
-                        p.value.currentLimitCrypto.value
-            < (activeAddressInfo.value?.balance || 0)
-                    ) {
-                        p.value.updateCryptoAmount(p.value.currentLimitCrypto.value);
+                    if (!currentLimitCrypto) {
+                        cryptoAmount.value = activeAddressInfo.value?.balance || 0;
+                    } else if (currentLimitCrypto < (activeAddressInfo.value?.balance || 0)) {
+                        cryptoAmount.value = currentLimitCrypto;
                     } else {
-                        p.value.updateCryptoAmount(activeAddressInfo.value?.balance || 0);
+                        cryptoAmount.value = activeAddressInfo.value?.balance || 0;
                     }
                     break;
                 }
                 case SwapAsset.BTC: {
-                    if (!p.value.currentLimitCrypto.value) {
-                        p.value.updateCryptoAmount(accountBtcBalance.value);
-                    } else if (
-                        p.value.currentLimitCrypto.value < accountBtcBalance.value
-                    ) {
-                        p.value.updateCryptoAmount(p.value.currentLimitCrypto.value);
+                    if (!currentLimitCrypto) {
+                        cryptoAmount.value = accountBtcBalance.value;
+                    } else if (currentLimitCrypto < accountBtcBalance.value) {
+                        cryptoAmount.value = currentLimitCrypto;
                     } else {
-                        p.value.updateCryptoAmount(accountBtcBalance.value);
+                        cryptoAmount.value = accountBtcBalance.value;
                     }
                     break;
                 }
@@ -351,7 +431,7 @@ export default defineComponent({
                     throw new Error('Invalid currency');
             }
 
-            p.value.updateFiatAmount(cryptoAmount.value * p.value.exchangeRate.value);
+            fiatAmount.value = cryptoAmount.value * p.value.exchangeRate.value;
         }
 
         function finishSwap() {
@@ -368,6 +448,13 @@ export default defineComponent({
             }
         }
 
+        const { activeSwap } = useSwapsStore();
+        watch(activeSwap, () => {
+            if (activeSwap.value) {
+                closeModal();
+            }
+        });
+
         const { config } = useConfig();
         const isMainnet = config.environment === ENV_MAIN;
 
@@ -380,6 +467,9 @@ export default defineComponent({
             SwapState,
             SwapAsset,
             activeAddressInfo,
+            cryptoAmount,
+            fiatAmount,
+            estimateError,
         };
     },
     components: {
@@ -406,6 +496,19 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .asset-transfer-modal {
+  .loading-wrapper {
+    display: grid;
+    place-content: center;
+    height: 100%;
+
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+  }
+
   .asset-transfer-input {
     position: relative;
     height: 100%;

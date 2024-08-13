@@ -59,6 +59,7 @@
         </PageHeader>
         <PageBody>
           <input
+            ref="otpCode$"
             type="text"
             v-model="otpCode"
             autocomplete="one-time-code"
@@ -66,6 +67,7 @@
             inputmode="numeric"
             maxlength="6"
             pattern="\d{6}"
+            @input="onOtpCodeInput()"
           />
           <p class="nq-notice error">{{ errorMessage }}</p>
         </PageBody>
@@ -116,11 +118,7 @@ import { useAddressStore } from '@/stores/Address';
 import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import { SwapAsset } from '@nimiq/libswap';
 import { AssetTransferMethod } from '@/composables/asset-transfer/types';
-import {
-    CryptoCurrency,
-    FiatCurrency,
-    SINPE_MOVIL_PAIRS,
-} from '@/lib/Constants';
+import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
 import { isFiatAsset } from '@/stores/Swaps';
 import Modal from './Modal.vue';
 
@@ -156,6 +154,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const otpCode$ = ref<HTMLInputElement | null>(null);
         onMounted(() => {
             if (!SINPE_MOVIL_PAIRS.some(([from, to]) => from === props.pair[0] && to === props.pair[1])) {
                 console.error('Invalid pair:', props.pair); // eslint-disable-line no-console
@@ -284,6 +283,7 @@ export default defineComponent({
 
         /**
      * Detects the OTP code from the browser's autofill feature and fills the input.
+     * https://developer.chrome.com/docs/identity/web-apis/web-otp
      */
         function detectOtp() {
             if (!('OTPCredential' in window)) return;
@@ -316,8 +316,7 @@ export default defineComponent({
             if (otpCodeIsValid.value) verifyOtp();
         });
 
-        const { setData, reset: resetSinpeMovilStore } = useSinpeMovilStore();
-        resetSinpeMovilStore();
+        const { setData } = useSinpeMovilStore();
 
         async function verifyOtp() {
             if (
@@ -347,7 +346,6 @@ export default defineComponent({
                 .then(async (res) => {
                     if (!res.ok) {
                         state.value = SinpeMovilFlowState.Error;
-                        console.log(res.status);
                         errorMessage.value = res.status === 412
                             ? (context.root.$t('The code you entered is incorrect. Please try again.') as string)
                             : (context.root.$t(
@@ -365,8 +363,7 @@ export default defineComponent({
                     state.value = SinpeMovilFlowState.PhoneVerified;
                     setData({
                         phoneNumber: phoneNumber.value,
-                        token: json.token!,
-                        tokenTimestamp: sendSmsResponse.value!.timestamp,
+                        smsApiToken: json.token!,
                     });
                     context.root.$router.push({
                         name: RouteName.AssetTransfer,
@@ -376,8 +373,6 @@ export default defineComponent({
                         },
                         query: context.root.$router.currentRoute.query,
                     });
-
-                    setTimeout(reset, 1000);
                 })
                 .catch((error) => {
                     errorMessage.value = error.message
@@ -406,12 +401,19 @@ export default defineComponent({
             errorMessage.value = null;
             state.value = SinpeMovilFlowState.Idle;
             sendSmsTs.value = null;
-            resetSinpeMovilStore();
+            scrollerIndex.value = 0;
         }
 
         function closeModal() {
             reset();
             context.root.$router.push('/');
+        }
+
+        function onOtpCodeInput() {
+            // if user inputs 6 chars blue
+            if (otpCode.value?.length === 6) {
+                otpCode$.value?.blur();
+            }
         }
 
         return {
@@ -432,7 +434,9 @@ export default defineComponent({
             sendSmsTimeleft,
 
             otpCode,
+            otpCode$,
             verifyOtp,
+            onOtpCodeInput,
 
             isSelling,
             closeModal,
@@ -545,7 +549,6 @@ export default defineComponent({
         :where([autocomplete="one-time-code"]) {
           font-size: 3rem;
           font-weight: 600;
-          padding: 1.25rem 2.25rem;
           border: none;
           --border-color: rgba(31, 35, 72, 0.1);
           box-shadow: inset 0 0 0 0.25rem var(--border-color);
@@ -556,8 +559,15 @@ export default defineComponent({
           outline: 0;
           transition: color 0.2s ease, box-shadow 0.2s ease;
           background-clip: padding-box;
-          width: 26rem;
-          letter-spacing: 2rem;
+          --width: 26rem;
+          width: var(--width);
+          --px: 1.25rem;
+          padding: var(--px) 2.25rem;
+          --otp-length: 6;
+          --input-inner-width: calc(var(--width) - 2 * var(--px));
+          // The inner width is the available space for the input characters, we know there will be
+          // var(--otp-length) characters and var(--otp-length) - 1 spaces between them.
+          letter-spacing: calc(var(--input-inner-width) / ((var(--otp-length) * 2)));
           overflow: hidden;
 
           &:focus,

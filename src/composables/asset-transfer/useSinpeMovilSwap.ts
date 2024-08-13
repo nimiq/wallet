@@ -4,18 +4,16 @@ import {
     OASIS_CRC_DETECTION_DELAY,
     FIAT_CURRENCIES_OFFERED,
     ENV_MAIN,
+    SINPE_MOVIL_PAIRS,
 } from '@/lib/Constants';
-import { computed, ref, watch } from '@vue/composition-api';
+import { computed, ref } from '@vue/composition-api';
 import { selectedFiatCurrency,
     fiatFees,
     useCurrentLimitFiat,
     useCurrentLimitCrypto,
     calculateFees,
     getFiatSwapParameters,
-    useSwapEstimate,
-    capDecimals,
-    FiatSwapCurrency,
-} from '@/lib/swap/utils/CommonUtils';
+    FiatSwapCurrency } from '@/lib/swap/utils/CommonUtils';
 import { i18n } from '@/i18n/i18n-setup';
 import { useAddressStore } from '@/stores/Address';
 import { useSwapsStore, SwapState } from '@/stores/Swaps';
@@ -41,34 +39,37 @@ import {
     TransactionType as OasisTransactionType,
 } from '@nimiq/oasis-api';
 import { captureException } from '@sentry/vue';
-import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import router, { RouteName } from '@/router';
+import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import { SwapLimits, useSwapLimits } from '../useSwapLimits';
 import SinpeUserInfo from '../../components/SinpeUserInfo.vue';
 import AddressSelector from '../../components/AddressSelector.vue';
 import { AssetTransferOptions, AssetTransferParams } from './types';
 import { useConfig } from '../useConfig';
 
-// Union of all the possible fiat currencies that can be used with SinpeMovil
-type SinpeFiatCurrencies = FiatCurrency.CRC;
-
 function isCryptoCurrency(currency: any): currency is CryptoCurrency {
     return Object.values(CryptoCurrency).includes(currency.toLocaleLowerCase() as CryptoCurrency);
 }
 
-function isFiatCurrency(currency: any): currency is SinpeFiatCurrencies {
+function isFiatCurrency(currency: any): currency is FiatCurrency {
     return Object.values(FiatCurrency).includes(currency.toLocaleLowerCase() as FiatCurrency);
 }
 
 export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<AssetTransferParams> {
+    const { fiatAmount, cryptoAmount, estimate, estimateError, pair, updateEstimate, fetchingEstimate } = options;
+    const [leftAsset, rightAsset] = pair;
+
+    if (!SINPE_MOVIL_PAIRS.some(([from, to]) => from === leftAsset && to === rightAsset)) {
+        throw new Error('Invalid pair for SinpeMovil swap');
+    }
+
     const { label: sinpeLabel, phoneNumber, smsApiToken } = useSinpeMovilStore();
     if (!smsApiToken.value) {
         // eslint-disable-next-line no-console
         console.error('SinpeMovil API token not set. Redirecting to Mobile verification');
-        router.push({ name: RouteName.SinpeMovilMobileVerification, params: { pair: JSON.stringify(options.pair) } });
+        router.push({ name: RouteName.SinpeMovilMobileVerification, params: { pair: JSON.stringify(pair) } });
     }
 
-    const [leftAsset, rightAsset] = options.pair;
     const fiatCurrency = isFiatCurrency(leftAsset) ? leftAsset : rightAsset;
     const cryptoCurrency = isCryptoCurrency(leftAsset) ? leftAsset : rightAsset;
 
@@ -80,44 +81,36 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
 
     const isSelling = leftAsset === cryptoCurrency;
 
-    const { estimate } = useSwapEstimate();
-
-    const fiatAmount = ref(0);
-    const cryptoAmount = ref(0);
-
     // const decimalsCrypto = computed(() => calculateDisplayedDecimals(fiatAmount.value, cryptoCurrency));
     const decimalsCrypto = computed(() => 5);
-    const decimalsFiat = computed(() => 0);
+    const decimalsFiat = computed(() => 2);
 
     const { activeAddress, accountBalance } = useAddressStore();
 
     const { exchangeRates } = useFiatStore();
     const exchangeRate = computed(() => {
-        if (!FIAT_CURRENCIES_OFFERED.includes(selectedFiatCurrency.value)) {
+        if (!FIAT_CURRENCIES_OFFERED.includes(selectedFiatCurrency.value as any)) {
             return 0; // No exchange rate available yet
         }
 
-        const rate = exchangeRates.value[cryptoCurrency]?.[fiatCurrency] || 0;
+        const rate = exchangeRates.value[cryptoCurrency.toLocaleLowerCase()]?.[selectedFiatCurrency.value] || 0;
         return rate;
     });
 
     const nimAddress = computed(() => activeAddress.value!);
     const { limits } = useSwapLimits({ nimAddress: nimAddress.value });
     const currentLimitUsd = useCurrentLimitFiat(limits);
-    let a = 0;
     const currentLimitFiat = computed(() => {
-        // TODO Remove this console.log
-        console.log({currentLimitUsd: currentLimitUsd.value, a: a++});
         if (!currentLimitUsd.value) return 0;
-        const usdRate = exchangeRates.value[CryptoCurrency.USDC][fiatCurrency] || 0;
+        const usdRate = exchangeRates.value.usdc?.[selectedFiatCurrency.value] || 0;
         return currentLimitUsd.value * usdRate;
     });
 
+    // TODO move this to vue component
     const insufficientBalance = computed(() => cryptoAmount.value > 0 && cryptoAmount.value > accountBalance.value);
     const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
     const insufficientLimit = computed(() => {
         const cryptoLimit = currentLimitCrypto?.value || Number.POSITIVE_INFINITY;
-        console.log({cryptoLimit});
         return (cryptoAmount.value > cryptoLimit || fiatAmount.value > currentLimitFiat.value);
     });
 
@@ -128,75 +121,23 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
     const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
     const { config } = useConfig();
 
+    const oasisLimitExceeded = isSelling
+        ? ((await import('@/lib/swap/utils/SellUtils')).oasisSellLimitExceeded)
+        : ((await import('@/lib/swap/utils/BuyUtils')).oasisBuyLimitExceeded);
+
     const swapError = ref<string>(null);
-
-    const fetchingEstimate = ref(false);
-
-    let timeoutId: number;
-
-    let updateEstimateFn: (args: any) => Promise<void>;
-    const estimateError = ref<string>(null);
-
-    async function updateEstimate() {
-        clearTimeout(timeoutId);
-
-        fetchingEstimate.value = true;
-
-        if (!updateEstimateFn) {
-            updateEstimateFn = isSelling
-                ? await import('@/lib/swap/utils/SellUtils').then((module) => module.updateSellEstimate)
-                : await import('@/lib/swap/utils/BuyUtils').then((module) => module.updateBuyEstimate);
-        }
-
-        const args = fiatAmount.value
-            ? { fiatAmount: fiatAmount.value, fiatAsset: fiatCurrency.toUpperCase() }
-            : { cryptoAmount: cryptoAmount.value, fiatAsset: fiatCurrency.toUpperCase() };
-        await updateEstimateFn!(args).then(() => {
-            estimateError.value = null;
-        }).catch((error: any) => {
-            console.warn(error); // eslint-disable-line no-console
-            estimateError.value = error.message;
-        });
-
-        fetchingEstimate.value = false;
-    }
-
-    const syncing = ref(false);
-
-    watch([fiatAmount, cryptoAmount], ([newFiat, newCrypto], oldValues) => {
-        if (syncing.value) return;
-        if (!newFiat && !newCrypto) {
-            estimate.value = null;
-            estimateError.value = null;
-            return;
-        }
-
-        const [oldFiat, oldCrypto] = oldValues || [undefined, undefined];
-        syncing.value = true;
-        clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(() => {
-            updateEstimate();
-            syncing.value = false;
-        }, 500);
-        if (estimate.value && newFiat !== oldFiat) {
-            cryptoAmount.value = capDecimals(
-                estimate.value.from.amount + estimate.value.from.fee, estimate.value.from.asset);
-        } else if (estimate.value && newCrypto !== oldCrypto) {
-            fiatAmount.value = estimate.value.to.amount - estimate.value.to.fee;
-        }
-        fetchingEstimate.value = true;
-    });
 
     const canSign = computed(() =>
         !!fiatAmount.value
         && estimateError.value === null
         && swapError.value === null
         && estimate.value !== null
-        && sinpeLabel.value !== null && phoneNumber.value !== null
+        && sinpeLabel.value !== null && phoneNumber.value !== null && smsApiToken.value !== null
         && (limits.value?.current?.usd || 0) > 0
         && !fetchingEstimate.value
         && !insufficientBalance.value
-        && !insufficientLimit.value,
+        && !insufficientLimit.value
+        && !oasisLimitExceeded.value,
     );
 
     async function sign() {
@@ -366,9 +307,8 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
             const request = await hubRequest; // already resolved
             if (!request) return;
 
-            // TODO: Retry getting the swap if first time fails
-            const swapOrPreSwap: Swap | PreSwap = await getSwap(swapId);
-            if (!('contracts' in swapOrPreSwap)) {
+            const swapOrPreSwap = await retryOperation(() => getSwap(swapId), { retries: 5, delay: 5_000 });
+            if (!swapOrPreSwap || !('contracts' in swapOrPreSwap)) {
                 throw new Error('UNEXPECTED: No `contracts` in supposedly confirmed swap');
             }
             confirmedSwap = swapOrPreSwap;
@@ -411,18 +351,20 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
                 : signedTransactions.btc!.serializedTx,
             settlementSerializedTx: signedTransactions.crc,
             settlementAuthorizationToken,
+            settlementSmsToken: smsApiToken.value!,
+            phoneNumber: phoneNumber.value!,
         });
 
         // Fetch OASIS HTLC to get clearing instructions
         const crcContract = confirmedSwap.contracts[SwapAsset.CRC] as Contract<SwapAsset.CRC>;
-        const oasisHtlc = await getHtlc(crcContract.htlc.address);
+        const oasisHtlc = await retryOperation(() => getHtlc(crcContract.htlc.address), { delay: 10_000, retries: 10 });
+
         if (!oasisHtlc || (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED)) {
             const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc?.status}'`);
             if (config.reportToSentry) captureException(error);
             else console.error(error); // eslint-disable-line no-console
             swapError.value = 'Invalid OASIS contract state, swap aborted!';
             cancelSwap({ id: swapId } as PreSwap);
-            // currentlySigning.value = false;
             updateEstimate();
             return;
         }
@@ -466,6 +408,8 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
             ...swap.value!,
             state: SwapState.AWAIT_INCOMING,
             stateEnteredAt: Date.now(),
+            settlementSmsToken: smsApiToken.value!,
+            phoneNumber: phoneNumber.value!,
         });
 
         if (config.fastspot.watchtowerEndpoint) {
@@ -518,13 +462,10 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
 
         leftAsset,
         rightAsset,
-        currencyFiatFallback: fiatCurrency,
-        currencyCrypto: isCryptoCurrency(rightAsset) ? rightAsset : leftAsset,
 
-        fiatAmount,
-        updateFiatAmount: (value: number) => fiatAmount.value = value,
-        cryptoAmount,
-        updateCryptoAmount: (value: number) => cryptoAmount.value = value,
+        currencyFiatFallback: fiatCurrency,
+        currencyCrypto: cryptoCurrency,
+
         exchangeRate,
 
         decimalsCrypto,
@@ -539,14 +480,15 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
         componentRight: !isSelling ? AddressSelector : SinpeUserInfo,
         addressListOpened,
 
-        modalTitle: i18n.t('Sell Crypto') as string,
+        modalTitle: isSelling ? (i18n.t('Sell Crypto') as string) : (i18n.t('Buy Crypto') as string),
 
         swap,
         estimateError,
+        estimate,
 
         detectionDelay: OASIS_CRC_DETECTION_DELAY,
 
-        oasisSellLimitExceeded: true,
+        oasisLimitExceeded,
 
         invalidReason: computed(() => {
             if (insufficientBalance.value) return 'insufficient-balance';
@@ -557,4 +499,48 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
         canSign,
         sign,
     } as AssetTransferParams;
+}
+
+interface RetryOperationOptions {
+    /**
+     * The number of retries to attempt before giving up.
+     * @default 3
+     */
+    retries?: number;
+    /**
+     * The delay between retries in milliseconds.
+     * @default 1_000
+     */
+    delay?: number;
+}
+
+/**
+ * Attempts to execute a given asynchronous operation with a specified number of retries.
+ *
+ * @template T - The return type of the operation.
+ * @param operation - The asynchronous operation to be performed.
+ * @param options - The options for retrying the operation.
+ * @param _attempt - The current attempt count (used internally for recursion).
+ * @returns A promise that resolves with the operation result, or null if all attempts fail.
+ */
+async function retryOperation<T>(
+    operation: () => Promise<T>,
+    { delay = 1_000, retries = 3 }: RetryOperationOptions = {},
+    _attempt = 1,
+): Promise<T | null> {
+    try {
+        return await operation();
+    } catch (error) {
+        if (_attempt > retries) {
+            // eslint-disable-next-line no-console
+            console.error(`Operation failed after ${retries} attempts:`, error);
+            return null;
+        }
+
+        // eslint-disable-next-line no-console
+        console.warn(`${_attempt} attempt failed, retrying in ${delay / 1000} seconds...`);
+        // eslint-disable-next-line no-promise-executor-return
+        await new Promise((resolve) => window.setTimeout(resolve, delay));
+        return retryOperation(operation, { delay, retries }, _attempt + 1);
+    }
 }

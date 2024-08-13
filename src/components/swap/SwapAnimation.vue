@@ -237,10 +237,7 @@
                         </g>
                         <g class="logo" fill="none" opacity="1">
                             <path :fill="rightAsset === SwapAsset.EUR ? bankColor : 'currentColor'" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
-                            <image
-                                :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : rightAsset === SwapAsset.USDC_MATIC ? UsdcSvg : (bankLogo || BankSvg)"
-                                x="92" y="22" width="52" height="52"
-                            />
+                            <image :href="rightLogo" x="92" y="22" width="52" height="52" />
                         </g>
                     </svg>
                     <svg v-else xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
@@ -375,6 +372,7 @@ import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import BitcoinSvg from './animation/bitcoin.svg';
 import UsdcSvg from './animation/usdc.svg';
 import BankSvg from './animation/bank.svg';
+import SinpeMovilSvg from './animation/sinpe-movil.svg';
 import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
@@ -506,7 +504,7 @@ export default defineComponent({
                 case SwapAsset.BTC: return '#f7931a';
                 case SwapAsset.USDC_MATIC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
-                case SwapAsset.CRC: return '#0D2D49';
+                case SwapAsset.CRC: return '#225AA8';
                 default: return '';
             }
         });
@@ -647,6 +645,11 @@ export default defineComponent({
             return false;
         });
 
+        const rightLogo = rightAsset.value === SwapAsset.BTC ? BitcoinSvg
+            : rightAsset.value === SwapAsset.USDC_MATIC ? UsdcSvg
+                : rightAsset.value === SwapAsset.CRC ? SinpeMovilSvg
+                    : (props.bankLogo || BankSvg);
+
         return {
             SwapState,
             state,
@@ -671,6 +674,7 @@ export default defineComponent({
             assetToCurrency,
             errorActionText,
             isFiatAsset,
+            rightLogo,
         };
     },
     components: {

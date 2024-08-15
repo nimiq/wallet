@@ -28,7 +28,7 @@
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528",
-    "@nimiq/hub-api": "file:../hub/client",
+    "@nimiq/hub-api": "https://gitpkg.now.sh/nimiq/hub/client?f3daa852a1d7c34d31893b61c6f4f20a432bff8a",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "github:nimiq/libswap-js#f868f6407b122806a89f29c71351e8fb8289e879",
     "@nimiq/oasis-api": "github:nimiq/oasis-api-js#fbd74179a5b9590f8e6dfe9b08ca47122db2ce1e",

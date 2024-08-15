@@ -1493,8 +1493,9 @@
   version "1.9.0"
   resolved "https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528"
 
-"@nimiq/hub-api@file:../hub/client":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?f3daa852a1d7c34d31893b61c6f4f20a432bff8a":
   version "1.8.0"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?f3daa852a1d7c34d31893b61c6f4f20a432bff8a#736206e22f28c44b8064ebd392f00ae74d4217ba"
   dependencies:
     "@nimiq/core-web" "^1.6.1"
     "@nimiq/fastspot-api" "https://github.com/nimiq/fastspot-api#3a7c4b68529d7ec9ba8955a399412eaae946c528"

@@ -40,6 +40,7 @@ import {
 import { captureException } from '@sentry/vue';
 import router, { RouteName } from '@/router';
 import { useSinpeMovilStore } from '@/stores/SinpeMovil';
+import { useSettingsStore } from '@/stores/Settings';
 import { SwapLimits, useSwapLimits } from '../useSwapLimits';
 import SinpeUserInfo from '../../components/SinpeUserInfo.vue';
 import AddressSelector from '../../components/AddressSelector.vue';
@@ -72,6 +73,7 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
 
     const fiatCurrency = isFiatCurrency(leftAsset) ? leftAsset : rightAsset;
     const cryptoCurrency = isCryptoCurrency(leftAsset) ? leftAsset : rightAsset;
+    useSettingsStore().setDecimals(2);
 
     // Code in the wallet rely on the global "selectedFiatCurrency" for swaps
     selectedFiatCurrency.value = fiatCurrency.toLocaleLowerCase() as FiatSwapCurrency;

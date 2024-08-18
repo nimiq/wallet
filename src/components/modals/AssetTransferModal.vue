@@ -542,7 +542,7 @@ export default defineComponent({
       padding: 0.75rem 1.5rem;
       color: rgb(31 35 72 / 0.6);
       font-size: var(--small-size);
-      font-weight: 800;
+      font-weight: 600;
       line-height: 1.4;
       box-shadow: inset 0 0 0 1.5px rgb(31 35 72 / 0.15);
       border-radius: 5rem;

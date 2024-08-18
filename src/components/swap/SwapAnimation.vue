@@ -515,7 +515,7 @@ export default defineComponent({
                 case SwapAsset.BTC: return 'Bitcoin';
                 case SwapAsset.USDC_MATIC: return 'USD Coin';
                 case SwapAsset.EUR: return 'Euro';
-                case SwapAsset.CRC: return 'Costa Rican Colón';
+                case SwapAsset.CRC: return 'Colones';
                 default: throw new Error(`Invalid asset ${asset}`);
             }
         }

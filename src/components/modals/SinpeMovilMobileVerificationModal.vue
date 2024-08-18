@@ -14,6 +14,11 @@
 
         <form @submit.prevent="sendSms">
           <PageBody>
+            <!--
+              When the https://github.com/nimiq/vue3-components/pull/5 is merged,
+              we can add this and remove the watcher at the end of <script>
+            -->
+            <!-- :tabindex="scrollerIndex === 0 ? 0 : -1" -->
             <LabelInput
               :placeholder="$t('Enter phone number')"
               v-model="phoneNumber"
@@ -27,7 +32,7 @@
               :disabled="
                 sinpaMovilDisabled ||
                 !validPhoneNumber ||
-                state !== SinpeMovilFlowState.Idle
+                (state !== SinpeMovilFlowState.Idle && state !== SinpeMovilFlowState.AllowResendSms)
               "
             >
               <template v-if="state === SinpeMovilFlowState.SendingSms">
@@ -35,9 +40,9 @@
               </template>
               <template v-else>
                 {{ $t("Confirm Number") }}
-                <template v-if="sendSmsTimeleft > 0"
+                <template v-if="sendSmsTimeLeft > 0"
                   >{{
-                    $tc("({secondsLeft}s)", Math.ceil(sendSmsTimeleft / 1000))
+                    $tc("({secondsLeft}s)", Math.ceil(sendSmsTimeLeft / 1000))
                   }}
                 </template>
               </template>
@@ -68,6 +73,7 @@
             maxlength="6"
             pattern="\d{6}"
             @input="onOtpCodeInput()"
+            :tabindex="scrollerIndex === 1 ? 0 : -1"
           />
           <p class="nq-notice error">{{ errorMessage }}</p>
         </PageBody>
@@ -75,13 +81,14 @@
           <button
             class="nq-button-s"
             @click="sendSms"
-            :disabled="sendSmsTimeleft > 0"
+            :disabled="sendSmsTimeLeft > 0"
+            :tabindex="scrollerIndex === 1 ? 0 : -1"
           >
-            <template v-if="sendSmsTimeleft > 0">
+            <template v-if="sendSmsTimeLeft > 0">
               {{
                 $tc(
                   "Resend ({secondsLeft}s)",
-                  Math.ceil(sendSmsTimeleft / 1000)
+                  Math.ceil(sendSmsTimeLeft / 1000)
                 )
               }}
             </template>
@@ -122,13 +129,34 @@ import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
 import { isFiatAsset } from '@/stores/Swaps';
 import Modal from './Modal.vue';
 
+/**
+        ErrorSendingSms           ErrorVerifyingSms
+            ▲                          ▲
+            │                          │
+Idle──►SendingSms─►WaitingForOtp─►VerifyingSms──►PhoneVerified
+            ▲         │      │
+            │         │      ▼
+       AllowResend◄───┴────WaitingForTimeout
+ */
 export enum SinpeMovilFlowState {
+  // Initial state
   Idle = 'idle',
+  // User sends phone number to server and server sends SMS
   SendingSms = 'sending-sms',
+  // Error sending SMS
+  ErrorSendingSms = 'error-sending-sms',
+  // User entered phone number and we are waiting for the OTP BUT he cannot send another SMS yet
   WaitingForOtp = 'waiting-for-otp',
+  // User entered phone number and we are waiting for the OTP AND he can send another SMS
+  AllowResendSms = 'allow-resend-sms',
+  // User went back to the phone number input but he cannot send another SMS yet
+  WaitingForTimeout = 'waiting-for-timeout',
+  // User input the OTP and we are verifying it
   VerifyingSms = 'verifying-sms',
+  // Error verifying the OTP
+  ÈrrorVerifyingSms = 'error-verifying-sms',
+  // User input the OTP and it was correct
   PhoneVerified = 'phone-verified',
-  Error = 'error',
 }
 
 const headers = { Authorization: `Basic ${btoa('nimiq:run8.deadest')}` };
@@ -215,28 +243,32 @@ export default defineComponent({
         );
         onUnmounted(() => clearInterval(stopIntervalNow));
 
-        const sendSmsTimeout = 60 * 1000; // 1 minute
+        const sendSmsTimeout = 5 * 1000; // 1 minute
         // Time left for the user to be able to send another SMS
-        const sendSmsTimeleft = computed(() => {
+        const sendSmsTimeLeft = computed(() => {
             if (!sendSmsTs.value) return 0;
             const timeleft = sendSmsTimeout - (now.value - sendSmsTs.value);
             return timeleft > 0 ? timeleft : 0;
         });
+        watch(sendSmsTimeLeft, (timeleft) => {
+            if (timeleft > 0) return;
+            state.value = SinpeMovilFlowState.AllowResendSms;
+        });
 
         /**
-     * How to do verify the phone number:
-     * 1. User enters phone number and we send it to the server.
-     * 2. Server sends an SMS with a code to the phone number.
-     * 3. Immediately after sending the SMS, we get a response with an HMAC and a timestamp.
-     * 4. User enters the code they received in the SMS.
-     * 5. We send the phone number + the code + the HMAC + timestamp to the server to verify
-     * 6. We get a new HMAC and timestamp if the verification was successful. This new hmac
-     * will be used in the /settle request in the swap.
-     */
+         * How to do verify the phone number:
+         * 1. User enters phone number and we send it to the server.
+         * 2. Server sends an SMS with a code to the phone number.
+         * 3. Immediately after sending the SMS, we get a response with an HMAC and a timestamp.
+         * 4. User enters the code they received in the SMS.
+         * 5. We send the phone number + the code + the HMAC + timestamp to the server to verify
+         * 6. We get a new HMAC and timestamp if the verification was successful. This new hmac
+         * will be used in the /settle request in the swap.
+         */
 
         async function sendSms() {
             if (sinpaMovilDisabled.value || !validPhoneNumber.value) return;
-            if (sendSmsTs.value && sendSmsTimeleft.value > 0) return;
+            if (sendSmsTs.value && sendSmsTimeLeft.value > 0) return;
             state.value = SinpeMovilFlowState.SendingSms;
             errorMessage.value = '';
 
@@ -247,14 +279,14 @@ export default defineComponent({
                     headers,
                 });
                 if (!res.ok) {
-                    state.value = SinpeMovilFlowState.Error;
+                    state.value = SinpeMovilFlowState.ErrorSendingSms;
                     errorMessage.value = (await res.text())
             || 'We could not send the SMS. Please try again later.';
                     return;
                 }
                 const json = (await res.json()) as HmacVerificationResponse;
                 if (!json.hmac || !json.timestamp) {
-                    state.value = SinpeMovilFlowState.Error;
+                    state.value = SinpeMovilFlowState.ErrorSendingSms;
                     errorMessage.value = 'There was an error with the SMS response. Please try again later.';
                     return;
                 }
@@ -264,15 +296,10 @@ export default defineComponent({
                 slideNext();
                 detectOtp();
             } catch (error: unknown) {
-                state.value = SinpeMovilFlowState.Error;
+                state.value = SinpeMovilFlowState.ErrorSendingSms;
                 errorMessage.value = 'There was an error with the phone verification system. Please try again later.';
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-
-                // TODO Remove
-                // state.value = SinpeMovilFlowState.WaitingForOtp;
-                // sendSmsResponse.value = { hmac: '123456', timestamp: Date.now() };
-                // slideNext();
             }
         }
 
@@ -345,7 +372,7 @@ export default defineComponent({
             })
                 .then(async (res) => {
                     if (!res.ok) {
-                        state.value = SinpeMovilFlowState.Error;
+                        state.value = SinpeMovilFlowState.ÈrrorVerifyingSms;
                         errorMessage.value = res.status === 412
                             ? (context.root.$t('The code you entered is incorrect. Please try again.') as string)
                             : (context.root.$t(
@@ -355,7 +382,7 @@ export default defineComponent({
                     }
                     const json = (await res.json()) as { token: string, timestamp: number };
                     if (!json || !json.token) {
-                        state.value = SinpeMovilFlowState.Error;
+                        state.value = SinpeMovilFlowState.ÈrrorVerifyingSms;
                         errorMessage.value = context.root.$t(
                             'There was an error with the phone verification system. Please try again later.') as string;
                         return;
@@ -373,6 +400,9 @@ export default defineComponent({
                         },
                         query: context.root.$router.currentRoute.query,
                     });
+                    setTimeout(() => {
+                        reset();
+                    }, 1000);
                 })
                 .catch((error) => {
                     errorMessage.value = error.message
@@ -380,17 +410,23 @@ export default defineComponent({
                         : JSON.stringify(error);
                     if (config.reportToSentry) captureException(error);
                     else console.error(error); // eslint-disable-line no-console
-                    state.value = SinpeMovilFlowState.Error;
+                    state.value = SinpeMovilFlowState.ÈrrorVerifyingSms;
                 });
         }
 
         function goBack() {
             if (scrollerIndex.value === 0) {
+                setTimeout(() => {
+                    reset();
+                }, 400);
                 context.root.$router.push({
                     name: RouteName.SinpeMovilInfo,
                     params: { pair: JSON.stringify(props.pair) },
                 });
             } else {
+                state.value = sendSmsTimeLeft.value > 0
+                    ? SinpeMovilFlowState.WaitingForTimeout
+                    : SinpeMovilFlowState.AllowResendSms;
                 slidePrev();
             }
         }
@@ -416,6 +452,19 @@ export default defineComponent({
             }
         }
 
+        // Workaround until this PR is merged:
+        // https://github.com/nimiq/vue3-components/pull/5
+        watch(scrollerIndex, () => {
+            const lis = scrollerEl.value?.querySelectorAll('li');
+            lis?.forEach((li, liIndex) => {
+                const liInputs = li.querySelectorAll('input, button');
+                liInputs.forEach((input) => {
+                    // Set tabindex to 0 if the li is currently shown, otherwise set it to -1
+                    (input as HTMLInputElement | HTMLButtonElement).tabIndex = liIndex === scrollerIndex.value ? 0 : -1;
+                });
+            });
+        });
+
         return {
             activeAddressInfo,
             addressListOpened,
@@ -431,7 +480,7 @@ export default defineComponent({
             errorMessage,
 
             sendSms,
-            sendSmsTimeleft,
+            sendSmsTimeLeft,
 
             otpCode,
             otpCode$,

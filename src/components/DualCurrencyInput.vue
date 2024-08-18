@@ -1,5 +1,5 @@
 <template>
-<div class="dual-currency-input">
+<div class="dual-currency-input" @keydown="handleKeydown">
   <section :class="{ orange: !!invalidReason }">
     <div class="flex-row primary-amount">
       <AmountInput :value="cryptoAmount" @input="$emit('update:cryptoAmount', $event)"
@@ -86,10 +86,19 @@ export default defineComponent({
             currencySelectorOpen.value = false;
         }
 
+        function handleKeydown(event: KeyboardEvent) {
+            if (event.key === 'Escape' && currencySelectorOpen.value) {
+                currencySelectorOpen.value = false;
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }
+
         return {
             currencySelectorOpen,
             CryptoCurrency,
             setMax,
+            handleKeydown,
         };
     },
     components: {

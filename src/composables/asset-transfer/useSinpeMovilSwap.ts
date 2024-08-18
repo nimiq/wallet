@@ -43,7 +43,7 @@ import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import { SwapLimits, useSwapLimits } from '../useSwapLimits';
 import SinpeUserInfo from '../../components/SinpeUserInfo.vue';
 import AddressSelector from '../../components/AddressSelector.vue';
-import { AssetTransferOptions, AssetTransferParams } from './types';
+import { AssetTransferOptions, AssetTransferParams, InvalidSwapReason } from './types';
 import { useConfig } from '../useConfig';
 import { getHtlc } from '../../lib/OasisCrc';
 
@@ -106,8 +106,10 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
         return currentLimitUsd.value * usdRate;
     });
 
-    // TODO move this to vue component
-    const insufficientBalance = computed(() => cryptoAmount.value > 0 && cryptoAmount.value > accountBalance.value);
+    const insufficientBalance = computed(() => {
+        if (!isSelling) return true;
+        return cryptoAmount.value > 0 && cryptoAmount.value > accountBalance.value;
+    });
     const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
     const insufficientLimit = computed(() => {
         const cryptoLimit = currentLimitCrypto?.value || Number.POSITIVE_INFINITY;
@@ -491,9 +493,9 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
         oasisLimitExceeded,
 
         invalidReason: computed(() => {
-            if (insufficientBalance.value) return 'insufficient-balance';
-            if (insufficientLimit.value) return 'insufficient-limit';
-            return '';
+            if (insufficientBalance.value) return InvalidSwapReason.InsufficientFunds;
+            if (insufficientLimit.value) return InvalidSwapReason.LimitReached;
+            return InvalidSwapReason.None;
         }),
 
         canSign,

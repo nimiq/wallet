@@ -24,6 +24,12 @@ export interface AssetTransferOptions {
 type VueComponent = VueConstructor<Vue>;
 type Computed<T> = Readonly<Ref<Readonly<T>>>;
 
+export enum InvalidSwapReason {
+  None = '',
+  InsufficientFunds = 'insufficient-funds',
+  LimitReached = 'limit-reached',
+}
+
 // The object type that will be returned by the composable found in the same folder,
 // which will be used in the SwapTransfer.vue component.
 export interface AssetTransferParams {
@@ -60,7 +66,7 @@ export interface AssetTransferParams {
 
   oasisLimitExceeded: Computed<boolean>;
 
-  invalidReason: Computed<string>;
+  invalidReason: Computed<InvalidSwapReason>;
 
   canSign: Computed<boolean>;
   sign: () => Promise<void>;

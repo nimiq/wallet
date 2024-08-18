@@ -134,7 +134,7 @@
           @set-max="setMax()"
         />
         <MessageTransition class="message-section">
-          <template v-if="p.invalidReason === 'insufficient-limit' && p.currentLimitCrypto">
+          <template v-if="p.invalidReason === InvalidSwapReason.ReachedLimit && p.currentLimitCrypto">
             <!-- TEMP: wording TBD -->
             <i18n path="Max swappable amount is {amount}">
               <Amount
@@ -146,7 +146,7 @@
             ><br />
             <a @click="$emit('set-max')">{{ $t("Sell max") }}</a>
           </template>
-          <template v-else-if="p.invalidReason === 'insufficient-balance'">
+          <template v-else-if="p.invalidReason === InvalidSwapReason.InsufficientFunds">
             {{ $t("Insufficient balance.") }}
             <a @click="() => setMax()">{{ $t("Sell max") }}</a>
           </template>
@@ -254,6 +254,7 @@ import {
     AssetTransferMethod,
     AssetTransferOptions,
     AssetTransferParams,
+    InvalidSwapReason,
 } from '@/composables/asset-transfer/types';
 import {
     PageHeader,
@@ -470,6 +471,7 @@ export default defineComponent({
             cryptoAmount,
             fiatAmount,
             estimateError,
+            InvalidSwapReason,
         };
     },
     components: {

@@ -431,7 +431,7 @@ export default defineComponent({
                     throw new Error('Invalid currency');
             }
 
-            fiatAmount.value = cryptoAmount.value * p.value.exchangeRate.value;
+            // fiatAmount.value = cryptoAmount.value * p.value.exchangeRate.value;
         }
 
         function finishSwap() {

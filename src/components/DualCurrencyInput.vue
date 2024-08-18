@@ -9,7 +9,7 @@
             {{ cryptoCurrency.toUpperCase() }}
           </button>
           <div v-if="currencySelectorOpen" class="menu flex-column">
-            <button class="reset flex-row" @click="()=> { $emit('set-max'); currencySelectorOpen= false}">
+            <button class="reset flex-row" @click="setMax">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                 <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
                   <line class="cls-1" x1="8.25" y1="6.25" x2="8.25" y2="15.25" />
@@ -78,12 +78,18 @@ export default defineComponent({
         },
         invalidReason: String,
     },
-    setup() {
+    setup(_props, ctx) {
         const currencySelectorOpen = ref(false);
+
+        function setMax() {
+            ctx.emit('set-max');
+            currencySelectorOpen.value = false;
+        }
 
         return {
             currencySelectorOpen,
             CryptoCurrency,
+            setMax,
         };
     },
     components: {

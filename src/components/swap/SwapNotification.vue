@@ -1,7 +1,7 @@
 <template>
     <transition :name="swapIsComplete ? 'slide' : 'minimize'">
         <button
-            v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto' && $route.name !== 'sell-crypto'"
+            v-if="activeSwap && !isSwapRoute"
             class="reset swap-notification flex-row" :class="{
                 'complete': swapIsComplete,
                 'expired': swapIsExpired,
@@ -66,6 +66,7 @@ import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest'
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
 import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
+import { RouteName } from '@/router';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore,
     SwapState, ActiveSwap, SwapEurData, SwapErrorAction, isFiatAsset, SwapCrcData } from '../../stores/Swaps';
@@ -824,7 +825,10 @@ export default defineComponent({
 
             if (SINPE_MOVIL_PAIRS.find(([from, to]) => from === fromAsset && to === toAsset)) {
                 // The pair from the activeSwap matches the pair that it is enabled in the Sinpe Movil config
-                context.root.$router.push('/swap');
+                context.root.$router.push({
+                    name: RouteName.AssetTransfer,
+                    params: { method: 'sinpe-movil', pair: JSON.stringify([fromAsset, toAsset]) },
+                });
             } else if (fromAsset === 'BTC_LN' || toAsset === 'BTC_LN') {
                 throw new Error('Lightning Network swaps are not supported in the wallet');
             } else if (cryptoAssets.includes(fromAsset as SwapAsset) && cryptoAssets.includes(toAsset as SwapAsset)) {
@@ -847,6 +851,8 @@ export default defineComponent({
             oasisLimitExceeded,
             oasisPayoutFailed,
             openSwap,
+            isSwapRoute: [RouteName.Swap, RouteName.BuyCrypto, RouteName.SellCrypto, RouteName.AssetTransfer]
+                .includes(context.root.$route.name as RouteName),
         };
     },
     components: {

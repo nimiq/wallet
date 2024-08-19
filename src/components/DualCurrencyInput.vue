@@ -3,7 +3,7 @@
   <section :class="{ orange: !!invalidReason }">
     <div class="flex-row primary-amount">
       <AmountInput :value="cryptoAmount" @input="$emit('update:cryptoAmount', $event)"
-        :decimals="cryptoCurrencyDecimals">
+        :decimals="cryptoCurrencyDecimals" ref="cryptoAmount$">
         <div class="amount-menu ticker" slot="suffix">
           <button class="reset button flex-row" @click.stop="currencySelectorOpen = !currencySelectorOpen">
             {{ cryptoCurrency.toUpperCase() }}
@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { CryptoCurrency, FiatCurrency } from '@/lib/Constants';
 import AmountInput from './AmountInput.vue';
 
@@ -77,9 +77,17 @@ export default defineComponent({
             default: 1,
         },
         invalidReason: String,
+        autoFocus: Boolean,
     },
     setup(_props, ctx) {
         const currencySelectorOpen = ref(false);
+        const cryptoInput$ = ref<HTMLInputElement | null>(null);
+
+        onMounted(() => {
+            if (_props.autoFocus) {
+                cryptoInput$.value?.focus();
+            }
+        });
 
         function setMax() {
             ctx.emit('set-max');
@@ -99,6 +107,7 @@ export default defineComponent({
             CryptoCurrency,
             setMax,
             handleKeydown,
+            cryptoInput$,
         };
     },
     components: {

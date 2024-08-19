@@ -28,6 +28,8 @@ export enum InvalidSwapReason {
   None = '',
   InsufficientFunds = 'insufficient-funds',
   LimitReached = 'limit-reached',
+  LedgerAccountNotSupported = 'ledger-account-not-supported',
+  EstimateError = 'estimate-error',
 }
 
 // The object type that will be returned by the composable found in the same folder,

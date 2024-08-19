@@ -131,6 +131,7 @@
           :cryptoCurrencyDecimals="p.decimalsCrypto"
           :exchangeRate="p.exchangeRate"
           :invalid-reason="p.invalidReason"
+          :auto-focus="isMobile && !p.value"
           @set-max="setMax()"
         />
         <MessageTransition class="message-section">
@@ -150,7 +151,10 @@
             {{ $t("Insufficient balance.") }}
             <a @click="() => setMax()">{{ $t("Sell max") }}</a>
           </template>
-          <template v-else-if="estimateError">
+          <template v-else-if="p.invalidReason === InvalidSwapReason.LedgerAccountNotSupported">
+            {{ $t("Ledger account not supported.") }}
+          </template>
+          <template v-else-if="p.invalidReason === InvalidSwapReason.EstimateError">
             {{ estimateError }}
           </template>
         </MessageTransition>
@@ -248,7 +252,6 @@ import {
     defineComponent,
     onMounted,
     ref,
-    watch,
 } from '@vue/composition-api';
 import {
     AssetTransferMethod,
@@ -273,6 +276,7 @@ import { isFiatAsset, SwapState, useSwapsStore } from '@/stores/Swaps';
 import { SwapAsset } from '@nimiq/libswap';
 import { useConfig } from '@/composables/useConfig';
 import { capDecimals, useSwapEstimate } from '@/lib/swap/utils/CommonUtils';
+import { useWindowSize } from '@/composables/useWindowSize';
 import AddressList from '../AddressList.vue';
 import DualCurrencyInput from '../DualCurrencyInput.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -333,6 +337,8 @@ export default defineComponent({
         });
 
         const fetchingEstimate = ref<boolean>(false);
+
+        const { isMobile } = useWindowSize();
 
         onMounted(async () => {
             const options: AssetTransferOptions = {
@@ -449,13 +455,6 @@ export default defineComponent({
             }
         }
 
-        const { activeSwap } = useSwapsStore();
-        watch(activeSwap, () => {
-            if (activeSwap.value) {
-                closeModal();
-            }
-        });
-
         const { config } = useConfig();
         const isMainnet = config.environment === ENV_MAIN;
 
@@ -472,6 +471,7 @@ export default defineComponent({
             fiatAmount,
             estimateError,
             InvalidSwapReason,
+            isMobile,
         };
     },
     components: {

@@ -13,7 +13,8 @@ import { selectedFiatCurrency,
     useCurrentLimitCrypto,
     calculateFees,
     getFiatSwapParameters,
-    FiatSwapCurrency } from '@/lib/swap/utils/CommonUtils';
+    FiatSwapCurrency,
+    fetchAssets } from '@/lib/swap/utils/CommonUtils';
 import { i18n } from '@/i18n/i18n-setup';
 import { useAddressStore } from '@/stores/Address';
 import { useSwapsStore, SwapState } from '@/stores/Swaps';
@@ -21,7 +22,7 @@ import { useFiatStore } from '@/stores/Fiat';
 import { FundingFees } from '@/lib/swap/utils/Functions';
 import { setupSwap } from '@/hub';
 import { getNetworkClient } from '@/network';
-import { useAccountStore } from '@/stores/Account';
+import { AccountType, useAccountStore } from '@/stores/Account';
 import { useNetworkStore } from '@/stores/Network';
 import { cancelSwap, Contract, createSwap, getSwap, PreSwap, RequestAsset, Swap, SwapAsset } from '@nimiq/fastspot-api';
 import {
@@ -64,8 +65,10 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
         throw new Error('Invalid pair for SinpeMovil swap');
     }
 
+    const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
+
     const { label: sinpeLabel, phoneNumber, smsApiToken } = useSinpeMovilStore();
-    if (!smsApiToken.value) {
+    if (!swap.value && !smsApiToken.value) {
         // eslint-disable-next-line no-console
         console.error('SinpeMovil API token not set. Redirecting to Mobile verification');
         router.push({ name: RouteName.SinpeMovilMobileVerification, params: { pair: JSON.stringify(pair) } });
@@ -78,8 +81,11 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
     // Code in the wallet rely on the global "selectedFiatCurrency" for swaps
     selectedFiatCurrency.value = fiatCurrency.toLocaleLowerCase() as FiatSwapCurrency;
 
-    // Loading the CRC currency is lazy, we need to explicitly set it
-    await useFiatStore().updateExchangeRates({ fiatCurrency: selectedFiatCurrency.value });
+    await Promise.all([
+        // Loading the CRC currency is lazy, we need to explicitly set it
+        useFiatStore().updateExchangeRates({ fiatCurrency: selectedFiatCurrency.value }),
+        fetchAssets(),
+    ]);
 
     const isSelling = leftAsset === cryptoCurrency;
 
@@ -117,12 +123,19 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
         const cryptoLimit = currentLimitCrypto?.value || Number.POSITIVE_INFINITY;
         return (cryptoAmount.value > cryptoLimit || fiatAmount.value > currentLimitFiat.value);
     });
+    const isLedgerAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER);
+    const invalidReason = computed(() => {
+        if (insufficientBalance.value) return InvalidSwapReason.InsufficientFunds;
+        if (insufficientLimit.value) return InvalidSwapReason.LimitReached;
+        if (isLedgerAccount.value) return InvalidSwapReason.LedgerAccountNotSupported;
+        if (estimateError.value) return InvalidSwapReason.EstimateError;
+        return InvalidSwapReason.None;
+    });
 
     const { activeAccountInfo } = useAccountStore();
 
     const addressListOpened = ref(false);
 
-    const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
     const { config } = useConfig();
 
     const oasisLimitExceeded = isSelling
@@ -133,14 +146,12 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
 
     const canSign = computed(() =>
         !!fiatAmount.value
-        && estimateError.value === null
         && swapError.value === null
         && estimate.value !== null
         && sinpeLabel.value !== null && phoneNumber.value !== null && smsApiToken.value !== null
         && (limits.value?.current?.usd || 0) > 0
         && !fetchingEstimate.value
-        && !insufficientBalance.value
-        && !insufficientLimit.value
+        && invalidReason.value === InvalidSwapReason.None
         && !oasisLimitExceeded.value,
     );
 
@@ -494,12 +505,7 @@ export async function useSinpeMovilSwap(options: AssetTransferOptions): Promise<
 
         oasisLimitExceeded,
 
-        invalidReason: computed(() => {
-            if (insufficientBalance.value) return InvalidSwapReason.InsufficientFunds;
-            if (insufficientLimit.value) return InvalidSwapReason.LimitReached;
-            return InvalidSwapReason.None;
-        }),
-
+        invalidReason,
         canSign,
         sign,
     } as AssetTransferParams;

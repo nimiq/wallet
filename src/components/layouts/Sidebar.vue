@@ -58,7 +58,11 @@
                 }}</template>
             </Tooltip>
 
-            <Tooltip v-if="enabledSellProviders.length > 0"
+            <button class="nq-button-s inverse" v-if="enabledSellProviders.lengt > 0"
+                @click="openSellModal()">
+                        {{ $t('Sell') }}
+            </button>
+            <Tooltip v-else
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -72,7 +76,7 @@
                         {{ $t('Sell') }}
                     </button>
                 </template>
-                <template v-if="sellEnabled" #default>
+                <template #default>
                     {{ $t('Selling NIM directly is currently unavailable in the Wallet.') }}
                     <template v-if="nimSellOptions">
                         {{ nimSellOptions.intro }}
@@ -184,6 +188,7 @@ import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { RouteName } from '@/router';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
+import { useFiatStore } from '@/stores/Fiat';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -197,7 +202,7 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
-import { useSwapsStore } from '../../stores/Swaps';
+import { isFiatAsset, useSwapsStore } from '../../stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useGeoIp } from '../../composables/useGeoIp';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -306,6 +311,7 @@ export default defineComponent({
         }
 
         const { activeCurrency } = useAccountStore();
+        const { currency: fiatCurrency } = useFiatStore();
 
         const countryCode = ref<string | null>(null);
 
@@ -314,9 +320,18 @@ export default defineComponent({
             return activeCurrency.value !== CryptoCurrency.NIM;
         });
         const canSellCryptoWithSinpeMovil = computed(() => { // eslint-disable-line arrow-body-style
-            if (!SINPE_MOVIL_PAIRS.some(([from]) => assetToCurrency(from) === activeCurrency.value)) return false;
-            // @ts-expect-error For dev
-            return true || SINPE_MOVIL_COUNTRY_CODES.includes(countryCode.value);
+            if (ENV_DEV || ENV_TEST) return true; // Always enabled on dev
+            const sinpeMovilFiatAssets = new Set([
+                ...SINPE_MOVIL_PAIRS.map(([to, from]) => assetToCurrency(isFiatAsset(to) ? to : from))]);
+            const userHasSinpeMovilFiatAsset = sinpeMovilFiatAssets.has(fiatCurrency.value);
+            const userInCostaRica = SINPE_MOVIL_COUNTRY_CODES.includes(countryCode.value || '');
+            return userHasSinpeMovilFiatAsset || userInCostaRica;
+        });
+
+        onMounted(async () => {
+            const { locate } = useGeoIp();
+            const { country } = await locate();
+            countryCode.value = country || null;
         });
 
         const enabledSellProviders = computed(() => {

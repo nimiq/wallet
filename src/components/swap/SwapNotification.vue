@@ -815,11 +815,6 @@ export default defineComponent({
                 SwapAsset.USDC_MATIC,
             ];
 
-            const fiatAssets = [
-                SwapAsset.EUR,
-                SwapAsset.CRC,
-            ];
-
             const fromAsset = activeSwap.value.from.asset;
             const toAsset = activeSwap.value.to.asset;
 
@@ -834,9 +829,9 @@ export default defineComponent({
             } else if (cryptoAssets.includes(fromAsset as SwapAsset) && cryptoAssets.includes(toAsset as SwapAsset)) {
                 // Crypto to Crypto
                 context.root.$router.push('/swap');
-            } else if (fiatAssets.includes(fromAsset as SwapAsset)) {
+            } else if (fromAsset === SwapAsset.EUR) {
                 context.root.$router.push('/buy-crypto');
-            } else if (fiatAssets.includes(toAsset as SwapAsset)) {
+            } else if (toAsset === SwapAsset.EUR) {
                 context.root.$router.push('/sell-crypto');
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');

@@ -774,7 +774,8 @@ export default defineComponent({
                                 state: SwapState.COMPLETE,
                                 stateEnteredAt: Date.now(),
                                 settlementTx:
-                                    settlementTx as Transaction<SwapAsset.NIM | SwapAsset.BTC | SwapAsset.EUR>,
+                                    settlementTx as Transaction<
+                                        SwapAsset.NIM | SwapAsset.BTC | SwapAsset.EUR | SwapAsset.CRC>,
                             });
                         } catch (error: any) {
                             if (error.message === SwapError.EXPIRED) return;

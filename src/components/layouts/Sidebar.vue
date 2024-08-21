@@ -58,7 +58,7 @@
                 }}</template>
             </Tooltip>
 
-            <button class="nq-button-s inverse" v-if="enabledSellProviders.lengt > 0"
+            <button class="nq-button-s inverse" v-if="enabledSellProviders.length > 0"
                 @click="openSellModal()">
                         {{ $t('Sell') }}
             </button>

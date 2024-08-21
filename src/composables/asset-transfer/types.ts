@@ -45,6 +45,7 @@ export interface AssetTransferParams {
   exchangeRate: Computed<number>;
 
   decimalsCrypto: Computed<number>;
+  displayedDecimalsCrypto: Computed<number>;
   decimalsFiat: Computed<number>;
 
   fiatFees: FundingFees;

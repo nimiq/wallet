@@ -75,10 +75,8 @@ export function useCurrentLimitCrypto(currentLimitFiat: Ref<number | null>) {
         const rate = exchangeRates.value[activeCurrency.value][selectedFiatCurrency.value];
         if (!rate) return null;
 
-        return capDecimals(
-            (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8),
-            activeCurrency.value.toUpperCase() as SwapAsset,
-        );
+        const amount = (currentLimitFiat.value / rate) * (activeCurrency.value === CryptoCurrency.NIM ? 1e5 : 1e8);
+        return capDecimals(amount, { asset: activeCurrency.value.toUpperCase() as SwapAsset });
     });
 }
 
@@ -127,7 +125,12 @@ export async function fetchAssets() {
     assets.value = await getAssets();
 }
 
-export function capDecimals(amount: number, asset: SwapAsset) {
+export interface CapDecimalsOptions {
+    asset: SwapAsset;
+    decimals?: number;
+}
+
+export function capDecimals(amount: number, { asset, decimals }: CapDecimalsOptions) {
     if (!amount) return 0;
 
     const numberSign = amount / Math.abs(amount); // 1 or -1
@@ -135,7 +138,7 @@ export function capDecimals(amount: number, asset: SwapAsset) {
     amount = Math.abs(amount);
 
     const currencyDecimals = asset === SwapAsset.NIM ? 5 : btcUnit.value.decimals;
-    const displayDecimals = calculateDisplayedDecimals(amount, asset.toLowerCase() as CryptoCurrency);
+    const displayDecimals = decimals || calculateDisplayedDecimals(amount, asset.toLowerCase() as CryptoCurrency);
     const roundingFactor = 10 ** (currencyDecimals - displayDecimals);
 
     return Math.floor(amount / roundingFactor) * roundingFactor * numberSign;

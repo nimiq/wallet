@@ -326,8 +326,9 @@ export default defineComponent({
             get: () => {
                 if (_cryptoAmount.value !== 0) return _cryptoAmount.value;
                 if (!estimate.value || !p.value?.currencyCrypto) return 0;
-                if (estimate.value.from.asset !== p.value.currencyCrypto) return 0;
-                return capDecimals(estimate.value.from.amount + estimate.value.from.fee, estimate.value.from.asset);
+                const { asset, amount, fee } = estimate.value.from;
+                if (asset !== p.value.currencyCrypto) return 0;
+                return capDecimals(amount + fee, { asset, decimals: p.value.displayedDecimalsCrypto?.value });
             },
             set: (value: number) => {
                 _fiatAmount.value = 0;

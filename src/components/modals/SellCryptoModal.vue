@@ -420,8 +420,10 @@ export default defineComponent({
                 if (_cryptoAmount.value !== 0) return _cryptoAmount.value;
                 if (!estimate.value) return 0;
 
+                const { asset, amount, fee } = estimate.value.from;
                 if (estimate.value.from.asset !== activeCurrency.value.toUpperCase()) return 0;
-                return capDecimals(estimate.value.from.amount + estimate.value.from.fee, estimate.value.from.asset);
+                if (asset !== activeCurrency.value.toUpperCase()) return 0;
+                return capDecimals(amount + fee, { asset });
             },
             set: (value: number) => {
                 _fiatAmount.value = 0;

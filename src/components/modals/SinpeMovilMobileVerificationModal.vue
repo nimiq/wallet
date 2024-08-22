@@ -504,6 +504,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .sinpe-movil-modal {
+    h1, h2, h3, h4, h5, h6 {
+        text-wrap: pretty;
+        width: max-content;
+    }
+
+    p, li {
+        text-wrap: balance;
+        width: max-content;
+    }
+
     .page-header-back-button {
       font-size: 3rem;
       position: absolute;

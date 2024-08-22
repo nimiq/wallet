@@ -78,6 +78,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+h1, h2, h3, h4, h5, h6 {
+    text-wrap: pretty;
+    width: max-content;
+}
+
+p, li {
+    text-wrap: balance;
+    width: max-content;
+}
+
 .page-body {
     padding: 0;
 }

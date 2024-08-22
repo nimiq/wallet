@@ -499,6 +499,16 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .asset-transfer-modal {
+  h1, h2, h3, h4, h5, h6 {
+      text-wrap: pretty;
+      width: max-content;
+  }
+
+  p, li {
+      text-wrap: balance;
+      width: max-content;
+  }
+
   .loading-wrapper {
     display: grid;
     place-content: center;

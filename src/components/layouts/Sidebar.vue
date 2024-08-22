@@ -58,11 +58,7 @@
                 }}</template>
             </Tooltip>
 
-            <button class="nq-button-s inverse" v-if="enabledSellProviders.length > 0"
-                @click="openSellModal()">
-                        {{ $t('Sell') }}
-            </button>
-            <Tooltip v-else
+            <Tooltip
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -320,7 +316,8 @@ export default defineComponent({
             return activeCurrency.value !== CryptoCurrency.NIM;
         });
         const canSellCryptoWithSinpeMovil = computed(() => { // eslint-disable-line arrow-body-style
-            if (ENV_DEV || ENV_TEST) return true; // Always enabled on dev
+            if (activeCurrency.value !== CryptoCurrency.NIM) return false; // Sinpe Movil is only supported for NIM
+            if (config.environment === ENV_DEV || config.environment === ENV_TEST) return true; // Always enabled in dev
             const sinpeMovilFiatAssets = new Set([
                 ...SINPE_MOVIL_PAIRS.map(([to, from]) => assetToCurrency(isFiatAsset(to) ? to : from))]);
             const userHasSinpeMovilFiatAsset = sinpeMovilFiatAssets.has(fiatCurrency.value);
@@ -395,8 +392,6 @@ export default defineComponent({
             hideTooltips,
             openModal,
             RouteName,
-            SellProvider,
-            enabledSellProviders,
             sellEnabled,
             openSellModal,
             nimSellOptions,

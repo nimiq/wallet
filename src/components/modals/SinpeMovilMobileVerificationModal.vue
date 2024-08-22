@@ -1,14 +1,11 @@
 <template>
-  <Modal class="sinpe-movil-modal" emit-close @close="closeModal">
-    <a href="#" class="page-header-back-button" @click.prevent="goBack" :aria-label="$t('Go back')">
-      <ArrowLeftIcon />
-    </a>
+  <Modal class="sinpe-movil-modal">
     <ol ref="scrollerEl">
       <li>
-        <PageHeader>
+        <PageHeader backArrow @back="goBack">
           {{ $t("What's your number?") }}
           <p slot="more" class="nq-notice">
-            {{ $t("Enter your Sinpe Móvil phone number.") }}
+            {{ $t("Enter your Sinpe\xa0Móvil phone number.") }}
           </p>
         </PageHeader>
 
@@ -20,7 +17,7 @@
             -->
             <!-- :tabindex="scrollerIndex === 0 ? 0 : -1" -->
             <LabelInput
-              :placeholder="$t('Enter phone number')"
+              :placeholder="$t('Your phone number')"
               v-model="phoneNumber"
             />
             <p class="nq-notice error">{{ errorMessage }}</p>
@@ -30,7 +27,7 @@
               class="nq-button light-blue confirm"
               type="submit"
               :disabled="
-                sinpaMovilDisabled ||
+                sinpeMovilDisabled ||
                 !validPhoneNumber ||
                 (state !== SinpeMovilFlowState.Idle && state !== SinpeMovilFlowState.AllowResendSms)
               "
@@ -52,8 +49,8 @@
       </li>
 
       <li>
-        <PageHeader>
-          {{ $t("Approve the sale") }}
+        <PageHeader backArrow @back="goBack">
+          {{ $t("Enter the SMS code") }}
           <p slot="more" class="nq-notice">
             {{
               $t("Enter the code sent to {phoneNumber} to approve.", {
@@ -113,7 +110,6 @@ import {
 } from '@vue/composition-api';
 import {
     PageHeader,
-    ArrowLeftIcon,
     PageBody,
     PageFooter,
     LabelInput,
@@ -125,7 +121,7 @@ import { useAddressStore } from '@/stores/Address';
 import { useSinpeMovilStore } from '@/stores/SinpeMovil';
 import { SwapAsset } from '@nimiq/libswap';
 import { AssetTransferMethod } from '@/composables/asset-transfer/types';
-import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
+import { ENV_MAIN, SINPE_MOVIL_PAIRS } from '@/lib/Constants';
 import { isFiatAsset } from '@/stores/Swaps';
 import Modal from './Modal.vue';
 
@@ -154,7 +150,7 @@ export enum SinpeMovilFlowState {
   // User input the OTP and we are verifying it
   VerifyingSms = 'verifying-sms',
   // Error verifying the OTP
-  ÈrrorVerifyingSms = 'error-verifying-sms',
+  ErrorVerifyingSms = 'error-verifying-sms',
   // User input the OTP and it was correct
   PhoneVerified = 'phone-verified',
 }
@@ -217,7 +213,7 @@ export default defineComponent({
         const slideNext = () => scrollTo(scrollerIndex.value + 1);
 
         const { smsApiEndpoint, enabled } = config.sinpeMovil;
-        const sinpaMovilDisabled = computed(
+        const sinpeMovilDisabled = computed(
             () => !enabled && SINPE_MOVIL_PAIRS.length === 0,
         );
 
@@ -226,7 +222,7 @@ export default defineComponent({
 
         const sendSmsResponse = ref<HmacVerificationResponse | null>(null);
 
-        const phoneNumber = ref('+50688888888');
+        const phoneNumber = ref(config.environment !== ENV_MAIN ? '+50688888888' : '');
         const costaRicanPhoneRegex = /^(\+506)?(\s*\d{8}\s*$)/;
         const validPhoneNumber = computed(() =>
             costaRicanPhoneRegex.test(phoneNumber.value),
@@ -267,7 +263,7 @@ export default defineComponent({
          */
 
         async function sendSms() {
-            if (sinpaMovilDisabled.value || !validPhoneNumber.value) return;
+            if (sinpeMovilDisabled.value || !validPhoneNumber.value) return;
             if (sendSmsTs.value && sendSmsTimeLeft.value > 0) return;
             state.value = SinpeMovilFlowState.SendingSms;
             errorMessage.value = '';
@@ -347,10 +343,10 @@ export default defineComponent({
 
         async function verifyOtp() {
             if (
-                sinpaMovilDisabled.value
-        || !validPhoneNumber.value
-        || !sendSmsResponse.value
-        || !otpCode.value
+                sinpeMovilDisabled.value
+                || !validPhoneNumber.value
+                || !sendSmsResponse.value
+                || !otpCode.value
             ) {
                 return;
             }
@@ -372,7 +368,7 @@ export default defineComponent({
             })
                 .then(async (res) => {
                     if (!res.ok) {
-                        state.value = SinpeMovilFlowState.ÈrrorVerifyingSms;
+                        state.value = SinpeMovilFlowState.ErrorVerifyingSms;
                         errorMessage.value = res.status === 412
                             ? (context.root.$t('The code you entered is incorrect. Please try again.') as string)
                             : (context.root.$t(
@@ -382,7 +378,7 @@ export default defineComponent({
                     }
                     const json = (await res.json()) as { token: string, timestamp: number };
                     if (!json || !json.token) {
-                        state.value = SinpeMovilFlowState.ÈrrorVerifyingSms;
+                        state.value = SinpeMovilFlowState.ErrorVerifyingSms;
                         errorMessage.value = context.root.$t(
                             'There was an error with the phone verification system. Please try again later.') as string;
                         return;
@@ -410,7 +406,7 @@ export default defineComponent({
                         : JSON.stringify(error);
                     if (config.reportToSentry) captureException(error);
                     else console.error(error); // eslint-disable-line no-console
-                    state.value = SinpeMovilFlowState.ÈrrorVerifyingSms;
+                    state.value = SinpeMovilFlowState.ErrorVerifyingSms;
                 });
         }
 
@@ -419,10 +415,7 @@ export default defineComponent({
                 setTimeout(() => {
                     reset();
                 }, 400);
-                context.root.$router.push({
-                    name: RouteName.SinpeMovilInfo,
-                    params: { pair: JSON.stringify(props.pair) },
-                });
+                context.root.$router.back();
             } else {
                 state.value = sendSmsTimeLeft.value > 0
                     ? SinpeMovilFlowState.WaitingForTimeout
@@ -438,11 +431,6 @@ export default defineComponent({
             state.value = SinpeMovilFlowState.Idle;
             sendSmsTs.value = null;
             scrollerIndex.value = 0;
-        }
-
-        function closeModal() {
-            reset();
-            context.root.$router.push('/');
         }
 
         function onOtpCodeInput() {
@@ -475,7 +463,7 @@ export default defineComponent({
             state,
             SinpeMovilFlowState,
             phoneNumber,
-            sinpaMovilDisabled,
+            sinpeMovilDisabled,
             validPhoneNumber,
             errorMessage,
 
@@ -488,13 +476,11 @@ export default defineComponent({
             onOtpCodeInput,
 
             isSelling,
-            closeModal,
         };
     },
     components: {
         Modal,
         PageHeader,
-        ArrowLeftIcon,
         PageBody,
         PageFooter,
         LabelInput,
@@ -506,60 +492,13 @@ export default defineComponent({
 .sinpe-movil-modal {
     h1, h2, h3, h4, h5, h6 {
         text-wrap: pretty;
-        width: max-content;
+        // width: max-content;
     }
 
     p, li {
         text-wrap: balance;
-        width: max-content;
+        // width: max-content;
     }
-
-    .page-header-back-button {
-      font-size: 3rem;
-      position: absolute;
-      left: 4rem;
-      top: 4rem;
-      padding-top: 0.25rem;
-      opacity: 0.4;
-      transition: opacity 0.3s var(--nimiq-ease),
-        transform 0.3s var(--nimiq-ease);
-      color: inherit;
-      z-index: 10;
-    }
-
-    .page-header-back-button svg {
-      display: block;
-    }
-
-    .page-header-back-button:hover,
-    .page-header-back-button:focus {
-      opacity: 1;
-      transform: translate3D(-0.375rem, 0, 0);
-      outline: none;
-    }
-
-    @media (max-width: 450px) {
-      .page-header-back-button,
-        /* Don't move button left on mobile */
-        .page-header-back-button:hover,
-        .page-header-back-button:focus {
-        left: 3rem;
-        transform: none;
-      }
-    }
-
-    .page-header-back-button::after {
-      content: "";
-      display: block;
-      position: absolute;
-      inset: -1.5rem;
-    }
-
-  .page-header {
-    .nq-notice {
-      min-height: 2lh;
-    }
-  }
 
   ol {
     list-style: none;
@@ -567,27 +506,19 @@ export default defineComponent({
     height: 100%;
     width: 100%;
     padding: 0;
-    scroll-padding: 0 5rem;
+    // scroll-padding: 0 5rem;
     overflow: hidden;
     display: flex;
-    gap: 5rem;
-    scroll-snap-type: x proximity;
+    // gap: 5rem;
+    // scroll-snap-type: x proximity;
     margin: 0;
 
     > li {
       scroll-snap-align: center;
       flex-shrink: 0;
-      width: calc(100% - 5rem);
+      width: 100%;
       display: flex;
       flex-direction: column;
-
-      &:first-child {
-        padding-left: 5rem;
-      }
-
-      &:last-child {
-        padding-right: 5rem;
-      }
 
       form {
         height: 100%;
@@ -595,15 +526,17 @@ export default defineComponent({
         flex-direction: column;
       }
 
+      .page-header {
+        .nq-notice {
+          margin-top: 1rem;
+          font-weight: normal;
+        }
+      }
+
       .page-body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 0 4rem;
-
-        .nq-notice {
-          text-align: center;
-        }
 
         :where([autocomplete="one-time-code"]) {
           font-size: 3rem;

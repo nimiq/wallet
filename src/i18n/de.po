@@ -217,8 +217,8 @@ msgstr "Konto-Limits"
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/layouts/AccountOverview.vue:127
-#: src/components/layouts/AccountOverview.vue:188
+#: src/components/layouts/AccountOverview.vue:136
+#: src/components/layouts/AccountOverview.vue:200
 msgid "Activate"
 msgstr "Aktivieren"
 
@@ -300,7 +300,7 @@ msgstr "alle"
 msgid "All countries"
 msgstr "Alle Länder"
 
-#: src/components/layouts/AccountOverview.vue:226
+#: src/components/layouts/AccountOverview.vue:238
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -441,7 +441,7 @@ msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
 #: src/components/AddressList.vue:176
-#: src/components/layouts/AccountOverview.vue:108
+#: src/components/layouts/AccountOverview.vue:117
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -2414,7 +2414,7 @@ msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 msgid "Swap"
 msgstr "Tausch"
 
-#: src/components/layouts/AccountOverview.vue:149
+#: src/components/layouts/AccountOverview.vue:161
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "Tausche BTC {arrowIcon} USDC"
 
@@ -2448,11 +2448,11 @@ msgstr "Tausch ist abgelaufen"
 msgid "Swap more per 30 days."
 msgstr "Tausche mehr pro 30 Tage."
 
-#: src/components/layouts/AccountOverview.vue:73
+#: src/components/layouts/AccountOverview.vue:79
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Tausche NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:95
+#: src/components/layouts/AccountOverview.vue:104
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Tausche NIM {arrowIcon} USDC"
 
@@ -2825,7 +2825,7 @@ msgid "Update now"
 msgstr "Jetzt aktualisieren"
 
 #: src/components/AddressList.vue:183
-#: src/components/layouts/AccountOverview.vue:164
+#: src/components/layouts/AccountOverview.vue:176
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124

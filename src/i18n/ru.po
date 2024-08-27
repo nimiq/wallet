@@ -218,8 +218,8 @@ msgstr "Лимиты Аккаунта"
 msgid "Accounts"
 msgstr "Аккаунты"
 
-#: src/components/layouts/AccountOverview.vue:127
-#: src/components/layouts/AccountOverview.vue:188
+#: src/components/layouts/AccountOverview.vue:136
+#: src/components/layouts/AccountOverview.vue:200
 msgid "Activate"
 msgstr "Активировать"
 
@@ -303,7 +303,7 @@ msgstr "все"
 msgid "All countries"
 msgstr "Все страны"
 
-#: src/components/layouts/AccountOverview.vue:226
+#: src/components/layouts/AccountOverview.vue:238
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -444,7 +444,7 @@ msgid "BIC works, too."
 msgstr "Можно указать BIC"
 
 #: src/components/AddressList.vue:176
-#: src/components/layouts/AccountOverview.vue:108
+#: src/components/layouts/AccountOverview.vue:117
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -2401,7 +2401,7 @@ msgstr "Супер-низкие комиссии, супер-быстрые пл
 msgid "Swap"
 msgstr "Обмен"
 
-#: src/components/layouts/AccountOverview.vue:149
+#: src/components/layouts/AccountOverview.vue:161
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "Обмен BTC {arrowIcon} USDC"
 
@@ -2433,11 +2433,11 @@ msgstr "Время обмена истекло"
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:73
+#: src/components/layouts/AccountOverview.vue:79
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Обмен NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:95
+#: src/components/layouts/AccountOverview.vue:104
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Обмен NIM {arrowIcon} USDC"
 
@@ -2807,7 +2807,7 @@ msgid "Update now"
 msgstr "Обновить"
 
 #: src/components/AddressList.vue:183
-#: src/components/layouts/AccountOverview.vue:164
+#: src/components/layouts/AccountOverview.vue:176
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124

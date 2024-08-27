@@ -215,8 +215,8 @@ msgstr "Limites de Conta"
 msgid "Accounts"
 msgstr "Contas"
 
-#: src/components/layouts/AccountOverview.vue:127
-#: src/components/layouts/AccountOverview.vue:188
+#: src/components/layouts/AccountOverview.vue:136
+#: src/components/layouts/AccountOverview.vue:200
 msgid "Activate"
 msgstr "Ativar"
 
@@ -301,7 +301,7 @@ msgstr "todos"
 msgid "All countries"
 msgstr "Todos os países"
 
-#: src/components/layouts/AccountOverview.vue:226
+#: src/components/layouts/AccountOverview.vue:238
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -440,7 +440,7 @@ msgid "BIC works, too."
 msgstr "O BIC também funciona."
 
 #: src/components/AddressList.vue:176
-#: src/components/layouts/AccountOverview.vue:108
+#: src/components/layouts/AccountOverview.vue:117
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -1884,6 +1884,8 @@ msgstr "Os fundos pré-participados estão bloqueados até ao lançamento"
 msgid ""
 "Prestaked funds remain locked until the Proof of Stake network goes live."
 msgstr ""
+"Os fundos transferidos permanecem bloqueados até que a rede Proof of Stake "
+"entre em operação."
 
 #: src/components/prestaking/PrestakingButton.vue:22
 msgid "Prestaking"
@@ -2419,7 +2421,7 @@ msgstr "Taxas muito baixas, pagamentos muito rápidos"
 msgid "Swap"
 msgstr "Troca"
 
-#: src/components/layouts/AccountOverview.vue:149
+#: src/components/layouts/AccountOverview.vue:161
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr "Troca BTC {arrowIcon} USDC"
 
@@ -2453,11 +2455,11 @@ msgstr "A Troca expirou"
 msgid "Swap more per 30 days."
 msgstr "Troca mais por 30 dias."
 
-#: src/components/layouts/AccountOverview.vue:73
+#: src/components/layouts/AccountOverview.vue:79
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Troca NIM {arrowIcon} BTC"
 
-#: src/components/layouts/AccountOverview.vue:95
+#: src/components/layouts/AccountOverview.vue:104
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr "Troca NIM {arrowIcon}  USDC"
 
@@ -2826,7 +2828,7 @@ msgid "Update now"
 msgstr "Atualizar agora"
 
 #: src/components/AddressList.vue:183
-#: src/components/layouts/AccountOverview.vue:164
+#: src/components/layouts/AccountOverview.vue:176
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124

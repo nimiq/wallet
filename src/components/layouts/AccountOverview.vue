@@ -58,10 +58,16 @@
                     <AddressList @address-selected="onAddressSelected"/>
                 </div>
 
-                <Tooltip class="nim-btc-swap-button" ref="nimBtcSwapTooltip$" :container="this" preferredPosition="top"
-                    v-if="hasBitcoinAddresses && $config.enableBitcoin
+                <Tooltip
+                    v-if="$config.fastspot.enabled
+                        && hasBitcoinAddresses && $config.enableBitcoin
                         && (nimAccountBalance > 0 || btcAccountBalance > 0)"
-                    noFocus>
+                    class="nim-btc-swap-button"
+                    ref="nimBtcSwapTooltip$"
+                    :container="this"
+                    preferredPosition="top"
+                    noFocus
+                >
                     <button class="reset" slot="trigger"
                         @pointerdown="onSwapButtonPointerDown($event, 'NIM-BTC')"
                         @keydown.space.enter="$router.push('/swap/NIM-BTC')"
@@ -75,15 +81,18 @@
                     </i18n>
                 </Tooltip>
 
-                <Tooltip class="nim-usdc-swap-button" ref="nimUsdcSwapTooltip$" :container="this"
-                    preferredPosition="top"
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER
+                <Tooltip
+                    v-if="$config.fastspot.enabled
+                        && activeAccountInfo.type !== AccountType.LEDGER
                         && hasUsdcAddresses && $config.usdc.enabled
-                        && (
-                            nimAccountBalance > 0
-                            || nativeUsdcAccountBalance > 0 /* only swap with native USDC supported, not bridged */
-                        )"
-                    noFocus>
+                        /* only swap with native USDC supported, not bridged */
+                        && (nimAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
+                    class="nim-usdc-swap-button"
+                    ref="nimUsdcSwapTooltip$"
+                    :container="this"
+                    preferredPosition="top"
+                    noFocus
+                >
                     <button class="reset" slot="trigger"
                         @pointerdown="onSwapButtonPointerDown($event, 'NIM-USDC_MATIC')"
                         @keydown.space.enter="$router.push('/swap/NIM-USDC_MATIC')"
@@ -128,16 +137,19 @@
                     </div>
                 </button>
 
-                <Tooltip class="btc-usdc-swap-button" ref="btcUsdcSwapTooltip$" :container="this"
+                <Tooltip
+                    v-if="$config.fastspot.enabled
+                        && activeAccountInfo.type !== AccountType.LEDGER
+                        && hasBitcoinAddresses && $config.enableBitcoin
+                        && hasUsdcAddresses && $config.usdc.enabled
+                         /* only swap with native USDC supported, not bridged */
+                        && (btcAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
+                    class="btc-usdc-swap-button"
+                    ref="btcUsdcSwapTooltip$"
+                    :container="this"
                     preferredPosition="top"
-                    v-if="activeAccountInfo.type !== AccountType.LEDGER
-                        && hasBitcoinAddresses && hasUsdcAddresses
-                        && $config.enableBitcoin && $config.usdc.enabled
-                        && (
-                            btcAccountBalance > 0
-                            || nativeUsdcAccountBalance > 0 /* only swap with native USDC supported, not bridged */
-                        )"
-                    noFocus>
+                    noFocus
+                >
                     <button class="reset" slot="trigger"
                         @pointerdown="onSwapButtonPointerDown($event, 'BTC-USDC_MATIC')"
                         @keydown.space.enter="$router.push('/swap/BTC-USDC_MATIC')"

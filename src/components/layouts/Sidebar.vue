@@ -34,7 +34,10 @@
         </div>
 
         <div class="trade-actions" v-if="!isLegacyAccount">
-            <Tooltip v-if="$config.fastspot.enabled || $config.moonpay.enabled || $config.simplex.enabled"
+            <Tooltip
+                v-if="(fastspotEnabledCryptoSwapAssets.length && fastspotEnabledFiatSwapAssets.length)
+                    || $config.moonpay.enabled
+                    || $config.simplex.enabled"
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -55,7 +58,9 @@
                 }}</template>
             </Tooltip>
 
-            <Tooltip v-if="$config.moonpay.enabled"
+            <Tooltip
+                v-if="/* (fastspotEnabledCryptoSwapAssets.length && fastspotEnabledFiatSwapAssets.length)
+                    || */ $config.moonpay.enabled"
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -106,10 +111,10 @@
             <BalanceDistribution />
         </div>
 
-        <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
+        <Tooltip v-if="fastspotEnabledCryptoSwapAssets.length > 1 && !isLegacyAccount"
             preferredPosition="bottom right"
             :container="$parent"
-            :disabled="activatedCurrencies.length > 1 && hasSwappableBalance && canUseSwaps && !hasActiveSwap"
+            :disabled="walletActivatedCurrencies.length > 1 && hasSwappableBalance && canUseSwaps && !hasActiveSwap"
             theme="inverse"
             class="swap-tooltip"
             :styles="{ minWidth: '25rem' }"
@@ -117,13 +122,16 @@
         >
             <template #trigger>
                 <button
-                    :disabled="activatedCurrencies.length <= 1 || !hasSwappableBalance || !canUseSwaps || hasActiveSwap"
+                    :disabled="walletActivatedCurrencies.length <= 1
+                        || !hasSwappableBalance
+                        || !canUseSwaps
+                        || hasActiveSwap"
                     class="nq-button-s inverse"
                     @click="openModal('swap')"
                     @mousedown.prevent="hideTooltips"
                 >{{ $t('Swap') }}</button>
             </template>
-            <template v-if="activatedCurrencies.length <= 1" #default>{{
+            <template v-if="walletActivatedCurrencies.length <= 1" #default>{{
                 $t('Please activate BTC or USDC in your account first to be able to swap to these currencies.')
             }}</template>
             <template v-else-if="!hasSwappableBalance" #default>{{
@@ -167,6 +175,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
@@ -185,7 +194,7 @@ import { useSwapsStore } from '../../stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
-import { ENV_TEST, ENV_DEV, CryptoCurrency } from '../../lib/Constants';
+import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 
 export default defineComponent({
     setup(props, context) {
@@ -246,11 +255,20 @@ export default defineComponent({
         const { activeAccountInfo, hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
 
-        const activatedCurrencies = computed(() => [
+        const walletActivatedCurrencies = computed(() => [
             CryptoCurrency.NIM, // NIM is always activated
             ...(config.enableBitcoin && hasBitcoinAddresses.value ? [CryptoCurrency.BTC] : []),
             ...(config.usdc.enabled && hasUsdcAddresses.value ? [CryptoCurrency.USDC] : []),
         ]);
+
+        const fastspotEnabledFiatSwapAssets = computed(() => config.fastspot.enabledSwapAssets
+            .filter((asset) => (FIAT_CURRENCIES_OFFERED as string[]).includes(asset.toLowerCase())));
+        const fastspotEnabledCryptoSwapAssets = computed(() => config.fastspot.enabledSwapAssets
+            .filter((asset) => !fastspotEnabledFiatSwapAssets.value.includes(asset)
+                && (config.enableBitcoin || asset !== SwapAsset.BTC)
+                && (config.usdc.enabled || (asset !== SwapAsset.USDC_MATIC && asset !== SwapAsset.USDC)),
+            ),
+        );
 
         const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore]
             .some((useStore) => {
@@ -295,7 +313,9 @@ export default defineComponent({
             priceChartTimeRange,
             switchPriceChartTimeRange,
             isLegacyAccount,
-            activatedCurrencies,
+            walletActivatedCurrencies,
+            fastspotEnabledFiatSwapAssets,
+            fastspotEnabledCryptoSwapAssets,
             hasSwappableBalance,
             hasActiveSwap,
             canUseSwaps,

@@ -392,6 +392,7 @@ export default defineComponent({
         async function convertBridgedUsdcToNative() {
             let relayUrl: string;
 
+            // Note that this is an on-chain swap, with no involvement of Fastspot.
             // eslint-disable-next-line no-async-promise-executor
             const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve, reject) => {
                 try {

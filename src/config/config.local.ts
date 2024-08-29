@@ -1,3 +1,4 @@
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { ENV_DEV } from '../lib/Constants';
 
 // Note: you'll usually want to use the reactive variant exported by useConfig instead of the plain Config, especially
@@ -51,7 +52,8 @@ export default {
     },
 
     fastspot: {
-        enabled: true,
+        // To disable Fastspot entirely, set an empty enabledSwapAssets array of type string[].
+        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC],
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',

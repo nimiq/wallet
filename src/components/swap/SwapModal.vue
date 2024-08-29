@@ -182,7 +182,7 @@
             :assets="[assetToCurrency(leftAsset), assetToCurrency(rightAsset)]"
             :buttonColor="kycUser ? 'purple' : 'light-blue'"
             :disabled="!canSign || currentlySigning"
-            :error="estimateError || swapError || usdcFeeError"
+            :error="disabledAssetError || estimateError || swapError || usdcFeeError"
             requireCompleteBtcHistory
             @click="sign"
         >
@@ -304,6 +304,7 @@ import SwapFeesTooltip from './SwapFeesTooltip.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { BTC_DUST_LIMIT, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
+import { i18n } from '../../i18n/i18n-setup';
 import { setupSwap, signPolygonTransaction } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
@@ -337,7 +338,10 @@ import SwapIcon from '../icons/SwapIcon.vue';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
-const SUPPORTED_ASSETS = [
+// Swap assets enabled in the Wallet, which are to be displayed. These might differ from the swap assets enabled in
+// Fastspot, see Config.fastspot.enabledSwapAssets. For currencies enabled in the Wallet but disabled in Fastspot, a
+// maintenance message is shown.
+const WALLET_ENABLED_ASSETS = [
     SwapAsset.NIM,
     ...(Config.enableBitcoin ? [SwapAsset.BTC] : []),
     ...(Config.usdc.enabled ? [SwapAsset.USDC_MATIC] : []),
@@ -351,12 +355,14 @@ export default defineComponent({
             default: `${SwapAsset.NIM}-${SwapAsset.BTC}`,
             validator: (value) => {
                 const [left, right] = value.split('-');
-                return SUPPORTED_ASSETS.includes(left) && SUPPORTED_ASSETS.includes(right);
+                return WALLET_ENABLED_ASSETS.includes(left) && WALLET_ENABLED_ASSETS.includes(right);
             },
         },
     },
     // @ts-expect-error Cannot derive types of props and context
     setup(props, context) {
+        const { config } = useConfig();
+
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
 
@@ -380,6 +386,13 @@ export default defineComponent({
 
         const fixedAsset = ref<SwapAsset>(leftAsset.value);
 
+        const disabledAssetError = computed(() => {
+            const disabledAsset = [leftAsset.value, rightAsset.value]
+                .find((asset) => !config.fastspot.enabledSwapAssets.includes(asset));
+            if (!disabledAsset) return null;
+            return i18n.t('{disabledAsset} swaps are currently under maintenance.', { disabledAsset }) as string;
+        });
+
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
         const swapError = ref<string>(null);
 
@@ -402,7 +415,6 @@ export default defineComponent({
             }
         });
 
-        const { config } = useConfig();
         const { limits, nimAddress: limitsNimAddress, recalculate: recalculateLimits } = useSwapLimits({
             nimAddress: activeAddress.value!,
             usdcAddress: activeUsdcAddress.value,
@@ -1947,10 +1959,12 @@ export default defineComponent({
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
-            return SUPPORTED_ASSETS.reduce((result, asset) => ({
+            return WALLET_ENABLED_ASSETS.reduce((result, asset) => ({
                 ...result,
                 [asset]: {
                     label: assetToCurrency(asset).toUpperCase(),
+                    // Note that currencies which are disabled in Fastspot, are not disabled in the button group, but
+                    // instead show a maintenance message in the footer.
                     disabled: (
                         // The asset is not activated in the active account.
                         (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
@@ -2188,6 +2202,7 @@ export default defineComponent({
             newLeftBalance,
             newRightBalance,
             accountBalance,
+            disabledAssetError,
             estimateError,
             swap,
             swapError,

@@ -111,10 +111,14 @@
             <BalanceDistribution />
         </div>
 
-        <Tooltip v-if="fastspotEnabledCryptoSwapAssets.length > 1 && !isLegacyAccount"
+        <Tooltip v-if="!isLegacyAccount"
             preferredPosition="bottom right"
             :container="$parent"
-            :disabled="walletActivatedCurrencies.length > 1 && hasSwappableBalance && canUseSwaps && !hasActiveSwap"
+            :disabled="fastspotEnabledCryptoSwapAssets.length > 1
+                && walletActivatedCurrencies.length > 1
+                && hasSwappableBalance
+                && canUseSwaps
+                && !hasActiveSwap"
             theme="inverse"
             class="swap-tooltip"
             :styles="{ minWidth: '25rem' }"
@@ -122,7 +126,8 @@
         >
             <template #trigger>
                 <button
-                    :disabled="walletActivatedCurrencies.length <= 1
+                    :disabled="fastspotEnabledCryptoSwapAssets.length <= 1
+                        || walletActivatedCurrencies.length <= 1
                         || !hasSwappableBalance
                         || !canUseSwaps
                         || hasActiveSwap"
@@ -131,7 +136,10 @@
                     @mousedown.prevent="hideTooltips"
                 >{{ $t('Swap') }}</button>
             </template>
-            <template v-if="walletActivatedCurrencies.length <= 1" #default>{{
+            <template v-if="fastspotEnabledCryptoSwapAssets.length <= 1" #default>{{
+                $t('Crypto swaps are currently under maintenance.')
+            }}</template>
+            <template v-else-if="walletActivatedCurrencies.length <= 1" #default>{{
                 $t('Please activate BTC or USDC in your account first to be able to swap to these currencies.')
             }}</template>
             <template v-else-if="!hasSwappableBalance" #default>{{

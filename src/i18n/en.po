@@ -811,6 +811,10 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
+#: src/components/layouts/Sidebar.vue:140
+msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
@@ -1469,7 +1473,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:162
+#: src/components/layouts/Sidebar.vue:170
 msgid "Network"
 msgstr ""
 
@@ -1536,7 +1540,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:142
+#: src/components/layouts/Sidebar.vue:150
 msgid "Not available in your browser"
 msgstr ""
 
@@ -1655,7 +1659,7 @@ msgstr ""
 msgid "Performing swap {progress}/5"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:135
+#: src/components/layouts/Sidebar.vue:143
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
@@ -1684,7 +1688,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:146
+#: src/components/layouts/Sidebar.vue:154
 #: src/components/layouts/Sidebar.vue:57
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
@@ -2105,7 +2109,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:170
+#: src/components/layouts/Sidebar.vue:178
 msgid "Settings"
 msgstr ""
 
@@ -2221,7 +2225,7 @@ msgid "Super low fees, super fast payments"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:132
+#: src/components/layouts/Sidebar.vue:137
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2711,14 +2715,14 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:298
+#: src/components/layouts/Sidebar.vue:306
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:138
+#: src/components/layouts/Sidebar.vue:146
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -2782,7 +2786,7 @@ msgstr ""
 msgid "Your browser"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:143
+#: src/components/layouts/Sidebar.vue:151
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 

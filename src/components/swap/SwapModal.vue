@@ -291,7 +291,6 @@ import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
 
-import Config from 'config'; // Only for use outside of setup method. Inside of setup use useConfig().
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -340,12 +339,15 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 // Swap assets enabled in the Wallet, which are to be displayed. These might differ from the swap assets enabled in
 // Fastspot, see Config.fastspot.enabledSwapAssets. For currencies enabled in the Wallet but disabled in Fastspot, a
-// maintenance message is shown.
-const WALLET_ENABLED_ASSETS = [
-    SwapAsset.NIM,
-    ...(Config.enableBitcoin ? [SwapAsset.BTC] : []),
-    ...(Config.usdc.enabled ? [SwapAsset.USDC_MATIC] : []),
-];
+// maintenance message is shown. As a method instead of a const, to use latest config values.
+function getWalletEnabledAssets() {
+    const { config } = useConfig();
+    return [
+        SwapAsset.NIM,
+        ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
+        ...(config.usdc.enabled ? [SwapAsset.USDC_MATIC] : []),
+    ];
+}
 
 export default defineComponent({
     name: 'swap-modal',
@@ -355,7 +357,8 @@ export default defineComponent({
             default: `${SwapAsset.NIM}-${SwapAsset.BTC}`,
             validator: (value) => {
                 const [left, right] = value.split('-');
-                return WALLET_ENABLED_ASSETS.includes(left) && WALLET_ENABLED_ASSETS.includes(right);
+                const enabledAssets = getWalletEnabledAssets();
+                return enabledAssets.includes(left) && enabledAssets.includes(right);
             },
         },
     },
@@ -1959,7 +1962,7 @@ export default defineComponent({
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
-            return WALLET_ENABLED_ASSETS.reduce((result, asset) => ({
+            return getWalletEnabledAssets().reduce((result, asset) => ({
                 ...result,
                 [asset]: {
                     label: assetToCurrency(asset).toUpperCase(),

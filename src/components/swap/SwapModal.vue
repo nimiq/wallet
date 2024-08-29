@@ -354,11 +354,17 @@ export default defineComponent({
     props: {
         pair: {
             type: String,
-            default: `${SwapAsset.NIM}-${SwapAsset.BTC}`,
-            validator: (value) => {
+            default() {
+                const walletEnabledAssets = getWalletEnabledAssets();
+                const fastspotEnabledAssets = useConfig().config.fastspot.enabledSwapAssets;
+                const overallEnabledAssets = walletEnabledAssets.filter((a) => fastspotEnabledAssets.includes(a));
+                if (overallEnabledAssets.length < 2) return `${SwapAsset.NIM}-${SwapAsset.BTC}`; // fallback
+                return `${overallEnabledAssets[0]}-${overallEnabledAssets[1]}`;
+            },
+            validator(value) {
                 const [left, right] = value.split('-');
-                const enabledAssets = getWalletEnabledAssets();
-                return enabledAssets.includes(left) && enabledAssets.includes(right);
+                const walletEnabledAssets = getWalletEnabledAssets();
+                return walletEnabledAssets.includes(left) && walletEnabledAssets.includes(right);
             },
         },
     },

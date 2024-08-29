@@ -58,7 +58,7 @@ msgstr ""
 msgid "{currency} payout pending"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:396
+#: src/components/swap/SwapModal.vue:402
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
@@ -1007,7 +1007,7 @@ msgid "Failed"
 msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:722
-#: src/components/swap/SwapModal.vue:964
+#: src/components/swap/SwapModal.vue:970
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1287,7 +1287,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1829
+#: src/components/swap/SwapModal.vue:1835
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1879,7 +1879,7 @@ msgstr ""
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1057
+#: src/components/swap/SwapModal.vue:1063
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2331,7 +2331,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1051
+#: src/components/swap/SwapModal.vue:1057
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."

@@ -193,7 +193,7 @@ select {
     }
 
     background-color: transparent;
-    background-image: url('../../assets/arrow-down.svg');
+    background-image: url('../../assets/mini-arrow-down.svg');
     background-size: 1.25rem;
     background-repeat: no-repeat;
     background-position-x: calc(100% - 1.75rem);

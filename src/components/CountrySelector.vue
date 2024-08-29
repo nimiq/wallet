@@ -4,7 +4,7 @@
             <slot name="trigger">
                 <div class="flex-row">
                     <CountryFlag :code="currentCountryCode || 'all'" />
-                    <img src="../assets/arrow-down.svg" alt="open"/>
+                    <img src="../assets/mini-arrow-down.svg" alt="open"/>
                 </div>
             </slot>
         </button>

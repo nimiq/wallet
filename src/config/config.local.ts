@@ -52,7 +52,7 @@ export default {
     },
 
     fastspot: {
-        // To disable Fastspot entirely, set an empty enabledSwapAssets array of type string[].
+        enabled: true, // Set to false to hide the swap feature.
         enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC],
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key

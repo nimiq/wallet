@@ -35,7 +35,11 @@
 
         <div class="trade-actions" v-if="!isLegacyAccount">
             <Tooltip
-                v-if="(fastspotEnabledCryptoSwapAssets.length && fastspotEnabledFiatSwapAssets.length)
+                v-if="(
+                        $config.fastspot.enabled
+                        && fastspotEnabledCryptoSwapAssets.length
+                        && fastspotEnabledFiatSwapAssets.length
+                    )
                     || $config.moonpay.enabled
                     || $config.simplex.enabled"
                 preferredPosition="top right"
@@ -111,7 +115,7 @@
             <BalanceDistribution />
         </div>
 
-        <Tooltip v-if="!isLegacyAccount"
+        <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
             preferredPosition="bottom right"
             :container="$parent"
             :disabled="fastspotEnabledCryptoSwapAssets.length > 1

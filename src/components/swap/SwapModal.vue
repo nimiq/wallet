@@ -396,6 +396,7 @@ export default defineComponent({
         const fixedAsset = ref<SwapAsset>(leftAsset.value);
 
         const disabledAssetError = computed(() => {
+            if (!config.fastspot.enabled) return i18n.t('Crypto swaps are currently under maintenance.') as string;
             const disabledAsset = [leftAsset.value, rightAsset.value]
                 .find((asset) => !config.fastspot.enabledSwapAssets.includes(asset));
             if (!disabledAsset) return null;
@@ -1358,7 +1359,10 @@ export default defineComponent({
         const canSign = computed(() => { // eslint-disable-line arrow-body-style
             // console.log(
             //     'canSign:\n',
-            //     `!estimateError: ${!estimateError.value} (estimateError: ${estimateError.value})\n`
+            //     `config.fastspot.enabled: ${config.fastspot.enabled}\n`
+            //         + `!disabledAssetError: ${!disabledAssetError.value} `
+            //             + `(disabledAssetError: ${disabledAssetError.value})\n`
+            //         + `!estimateError: ${!estimateError.value} (estimateError: ${estimateError.value})\n`
             //         + `!swapError: ${!swapError.value} (swapError: ${swapError.value})\n`
             //         + `!usdcFeeError: ${!usdcFeeError.value} (usdcFeeError: ${usdcFeeError.value})\n`
             //         + `!!estimate: ${!!estimate.value} (estimate: ${estimate.value})\n`
@@ -1370,7 +1374,8 @@ export default defineComponent({
             // Don't need to wait for fees because they're calculated from the estimate and swapSuggestion for NIM and
             // BTC, and for USDC waiting for usdcFeeStuff is covered by fetchingEstimate via calculateMyFees in
             // updateEstimate, which waits for usdcFeeStuff (but usdcFeeStuff is also re-fetched in sign() anyways).
-            return !estimateError.value && !swapError.value && !usdcFeeError.value
+            return config.fastspot.enabled
+                && !disabledAssetError.value && !estimateError.value && !swapError.value && !usdcFeeError.value
                 && estimate.value
                 && limits.value?.current.usd
                 && !fetchingEstimate.value

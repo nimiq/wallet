@@ -58,7 +58,7 @@ msgstr ""
 msgid "{currency} payout pending"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:402
+#: src/components/swap/SwapModal.vue:403
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
@@ -203,8 +203,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:138
-#: src/components/layouts/AccountOverview.vue:203
+#: src/components/layouts/AccountOverview.vue:136
+#: src/components/layouts/AccountOverview.vue:200
 msgid "Activate"
 msgstr ""
 
@@ -281,7 +281,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:241
+#: src/components/layouts/AccountOverview.vue:238
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -400,7 +400,7 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/AddressList.vue:176
-#: src/components/layouts/AccountOverview.vue:119
+#: src/components/layouts/AccountOverview.vue:117
 #: src/components/layouts/AddressOverview.vue:83
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -445,7 +445,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:54
+#: src/components/layouts/Sidebar.vue:58
 msgid "Buy"
 msgstr ""
 
@@ -811,7 +811,8 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:140
+#: src/components/layouts/Sidebar.vue:144
+#: src/components/swap/SwapModal.vue:399
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
@@ -1011,7 +1012,7 @@ msgid "Failed"
 msgstr ""
 
 #: src/components/modals/UsdcSendModal.vue:722
-#: src/components/swap/SwapModal.vue:970
+#: src/components/swap/SwapModal.vue:971
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1291,7 +1292,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1835
+#: src/components/swap/SwapModal.vue:1840
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1473,7 +1474,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:170
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr ""
 
@@ -1540,7 +1541,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:150
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr ""
 
@@ -1659,7 +1660,7 @@ msgstr ""
 msgid "Performing swap {progress}/5"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:143
+#: src/components/layouts/Sidebar.vue:147
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
@@ -1688,8 +1689,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:154
-#: src/components/layouts/Sidebar.vue:57
+#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:61
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 
@@ -1883,7 +1884,7 @@ msgstr ""
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1063
+#: src/components/swap/SwapModal.vue:1064
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -1941,7 +1942,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:76
+#: src/components/layouts/Sidebar.vue:80
 msgid "Sell"
 msgstr ""
 
@@ -1976,7 +1977,7 @@ msgstr ""
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:79
+#: src/components/layouts/Sidebar.vue:83
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 
@@ -2109,7 +2110,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:178
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr ""
 
@@ -2225,7 +2226,7 @@ msgid "Super low fees, super fast payments"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:137
+#: src/components/layouts/Sidebar.vue:141
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2235,7 +2236,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:164
+#: src/components/layouts/AccountOverview.vue:161
 msgid "Swap BTC {arrowIcon} USDC"
 msgstr ""
 
@@ -2267,11 +2268,11 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:80
+#: src/components/layouts/AccountOverview.vue:79
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:106
+#: src/components/layouts/AccountOverview.vue:104
 msgid "Swap NIM {arrowIcon} USDC"
 msgstr ""
 
@@ -2335,7 +2336,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1057
+#: src/components/swap/SwapModal.vue:1058
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -2602,7 +2603,7 @@ msgid "Update now"
 msgstr ""
 
 #: src/components/AddressList.vue:183
-#: src/components/layouts/AccountOverview.vue:179
+#: src/components/layouts/AccountOverview.vue:176
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124
@@ -2715,14 +2716,14 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:306
+#: src/components/layouts/Sidebar.vue:310
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:146
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -2786,7 +2787,7 @@ msgstr ""
 msgid "Your browser"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:151
+#: src/components/layouts/Sidebar.vue:155
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 

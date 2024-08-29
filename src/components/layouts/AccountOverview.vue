@@ -59,8 +59,7 @@
                 </div>
 
                 <Tooltip
-                    v-if="$config.fastspot.enabledSwapAssets.includes(SwapAsset.NIM)
-                        && $config.fastspot.enabledSwapAssets.includes(SwapAsset.BTC)
+                    v-if="$config.fastspot.enabled
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && (nimAccountBalance > 0 || btcAccountBalance > 0)"
                     class="nim-btc-swap-button"
@@ -83,11 +82,10 @@
                 </Tooltip>
 
                 <Tooltip
-                    v-if="$config.fastspot.enabledSwapAssets.includes(SwapAsset.NIM)
-                        /* only swap with native USDC supported, not bridged */
-                        && $config.fastspot.enabledSwapAssets.includes(SwapAsset.USDC_MATIC)
+                    v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasUsdcAddresses && $config.usdc.enabled
+                        /* only swap with native USDC supported, not bridged */
                         && (nimAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
                     class="nim-usdc-swap-button"
                     ref="nimUsdcSwapTooltip$"
@@ -140,12 +138,11 @@
                 </button>
 
                 <Tooltip
-                    v-if="$config.fastspot.enabledSwapAssets.includes(SwapAsset.BTC)
-                        /* only swap with native USDC supported, not bridged */
-                        && $config.fastspot.enabledSwapAssets.includes(SwapAsset.USDC_MATIC)
+                    v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasUsdcAddresses && $config.usdc.enabled
+                        /* only swap with native USDC supported, not bridged */
                         && (btcAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
                     class="btc-usdc-swap-button"
                     ref="btcUsdcSwapTooltip$"

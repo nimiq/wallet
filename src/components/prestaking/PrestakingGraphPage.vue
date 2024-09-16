@@ -265,7 +265,6 @@ export default defineComponent({
         }
 
         .disclaimer {
-            margin-top: 1.5rem;
             font-weight: 600;
             font-size: var(--small-size);
             text-align: center;
@@ -277,10 +276,10 @@ export default defineComponent({
 
         .prestake-disclaimer {
             color: var(--text-50);
-        }
 
-        .unprestake-disclaimer {
-            color: var(--nimiq-light-blue);
+            .prestaking-notice {
+                justify-content: center;
+            }
         }
     }
 

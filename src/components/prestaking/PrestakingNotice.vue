@@ -6,7 +6,7 @@
             <InfoCircleSmallIcon slot="trigger"/>
             <template>
                 <p>{{ $t('Prestaked funds remain locked until the Proof of Stake network goes live.') }}</p>
-                <BlueLink href="https://www.nimiq.com/blog/migration-process-to-nimiq-proof-of-stake/">
+                <BlueLink href="https://www.nimiq.com/blog/migration-process-to-nimiq-proof-of-stake/" target="_blank">
                     <!-- TODO: Change to the correct link -->
                     {{ $t('Learn more') }}
                 </BlueLink>
@@ -52,12 +52,10 @@ export default defineComponent({
 .prestaking-notice {
     font-size: var(--small-size);
     font-weight: 600;
-    margin-top: 3rem;
     line-height: 1;
     color: var(--text-50);
     display: flex;
     align-items: center;
-    justify-content: center;
 
     .lock-icon {
         font-size: 2.5rem;

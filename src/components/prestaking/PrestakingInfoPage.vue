@@ -233,23 +233,8 @@ export default defineComponent({
         line-height: 1;
     }
 
-    .unprestaking {
-        align-items: center;
-        font-size: var(--body-size);
-        font-weight: 600;
-        margin-top: 2rem;
-
-        ::v-deep .circle-spinner {
-            margin-right: 1rem;
-        }
-
-        .inactive-release-timer {
-            box-shadow: 0 0 0 1.5px nimiq-light-blue(0.4);
-            border-radius: 5rem;
-            line-height: 1;
-            padding: 0.25rem 0.75rem;
-            font-size: var(--small-size);
-        }
+    .prestaking-notice {
+        margin-top: 0.75rem;
     }
 
     .horizontal-separator {

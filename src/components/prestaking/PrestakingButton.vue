@@ -34,11 +34,10 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-import Config from 'config';
 import { useAddressStore } from '../../stores/Address';
 import { usePrestakingStore } from '../../stores/Prestaking';
 import { useNetworkStore } from '../../stores/Network';
-import { ENV_MAIN, PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
+import { useConfig } from '../../composables/useConfig';
 
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 
@@ -62,9 +61,10 @@ export default defineComponent({
 
         const hasPrestake = computed(() => !!activePrestake.value);
 
-        const visible = computed(() => Config.environment !== ENV_MAIN
-            && height.value >= PRESTAKING_BLOCK_H_START
-            && (height.value <= PRESTAKING_BLOCK_H_END || hasPrestake.value));
+        const { config } = useConfig();
+
+        const visible = computed(() => height.value >= config.prestaking.startBlock
+            && (height.value <= config.prestaking.endBlock || hasPrestake.value));
 
         const $tooltip = ref<Tooltip | null>(null);
         // watch([hasPrestake, activeAddressInfo], ([has, _]) => {

@@ -89,7 +89,7 @@ import PrestakingNotice from './PrestakingNotice.vue';
 import ShortAddress from '../ShortAddress.vue';
 import PrestakingGraph from './PrestakingGraph.vue';
 import { useNetworkStore } from '../../stores/Network';
-import { PRESTAKING_BLOCK_H_END, PRESTAKING_BLOCK_H_START } from '../../lib/Constants';
+import { useConfig } from '../../composables/useConfig';
 
 export default defineComponent({
     setup() {
@@ -110,8 +110,10 @@ export default defineComponent({
         //         ? context.root.$t('Unregistered validator')
         //         : context.root.$t('Inactive validator'));
 
-        const inPrestakingWindow = computed(() => height.value >= PRESTAKING_BLOCK_H_START
-            && height.value <= PRESTAKING_BLOCK_H_END);
+        const { config } = useConfig();
+
+        const inPrestakingWindow = computed(() => height.value >= config.prestaking.startBlock
+            && height.value <= config.prestaking.endBlock);
 
         return {
             availableBalance,

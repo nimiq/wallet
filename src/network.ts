@@ -9,7 +9,7 @@ import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { BURNER_ADDRESS, ENV_MAIN, PRESTAKING_BLOCK_H_START, PRESTAKING_BLOCK_H_END } from './lib/Constants';
+import { BURNER_ADDRESS, ENV_MAIN, MIN_PRESTAKE } from './lib/Constants';
 import { usePrestakingStore } from './stores/Prestaking';
 import { parseData } from './lib/DataFormatting';
 
@@ -175,6 +175,8 @@ export async function launchNetwork() {
 
         const height = await client.getHeadHeight();
 
+        const { config } = useConfig();
+
         addresses.forEach((address) => {
             const prestakingTxs = Object.values(transactions$.transactions)
                 .filter((tx) =>
@@ -183,12 +185,12 @@ export async function launchNetwork() {
                     // Only consider txs within the pre-staking window
                     && ((
                         tx.blockHeight
-                        && tx.blockHeight >= PRESTAKING_BLOCK_H_START
-                        && tx.blockHeight <= PRESTAKING_BLOCK_H_END
+                        && tx.blockHeight >= config.prestaking.startBlock
+                        && tx.blockHeight <= config.prestaking.endBlock
                     ) || (
                         tx.state === 'pending'
-                        && height >= PRESTAKING_BLOCK_H_START
-                        && height <= PRESTAKING_BLOCK_H_END
+                        && height >= config.prestaking.startBlock
+                        && height <= config.prestaking.endBlock
                     ))
                     && tx.data.raw
                     && ValidationUtils.isValidAddress(parseData(tx.data.raw)),

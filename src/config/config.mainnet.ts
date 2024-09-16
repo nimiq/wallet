@@ -12,6 +12,11 @@ export default {
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes
 
+    prestaking: {
+        startBlock: 3_393_640, // October 7th, ~00:00 UTC
+        endBlock: 3_443_980, // November 11th, ~00:00 UTC
+    },
+
     usdc: {
         enabled: true,
         networkId: 137,

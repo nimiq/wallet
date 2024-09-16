@@ -47,8 +47,3 @@ export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 // Pre-Staking
 export const MIN_PRESTAKE = 100e5;
 export const BURNER_ADDRESS = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';
-
-// Parameters for first testnet migration test
-// Taken from https://github.com/nimiq/core-rs-albatross/blob/albatross/pow-migration/src/lib.rs
-export const PRESTAKING_BLOCK_H_START = 3023730; // 2024-04-19 00:00
-export const PRESTAKING_BLOCK_H_END = 3028050; // 2024-04-22 00:00

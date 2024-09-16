@@ -12,6 +12,11 @@ export default {
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
+    prestaking: {
+        startBlock: 3_239_300,
+        endBlock: Infinity,
+    },
+
     usdc: {
         enabled: true,
         networkId: 80001,

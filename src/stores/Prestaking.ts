@@ -1,6 +1,8 @@
 import { createStore } from 'pinia';
+import Config from 'config';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
+import { ENV_MAIN } from '../lib/Constants';
 
 export type PrestakingState = {
     validators: Record<string, Validator>,
@@ -43,7 +45,25 @@ export type Validator = RawValidator | RegisteredValidator;
 export const usePrestakingStore = createStore({
     id: 'prestaking',
     state: () => ({
-        validators: {
+        validators: Config.environment === ENV_MAIN ? {
+            // '': {
+            //     address: '',
+            //     label: 'AceStaking',
+            //     description: 'The Ace in staking',
+            // },
+            'NQ37 6EL5 BP9K XL1A 3ED0 L3EC NPR5 C9D3 BRKG': {
+                address: 'NQ37 6EL5 BP9K XL1A 3ED0 L3EC NPR5 C9D3 BRKG',
+                label: 'Helvetia Staking',
+                description: 'The Swiss-standard of NIMIQ Staking',
+                icon: 'helvetiastakingicon.svg',
+            },
+            'NQ53 M1NT S3JD TAGM CBTK 01PX YD3U B1DE GYHB': {
+                address: 'NQ53 M1NT S3JD TAGM CBTK 01PX YD3U B1DE GYHB',
+                label: 'Mint Pool',
+                description: 'Minting together - mintpool.io',
+                icon: 'mintpool.svg',
+            },
+        } : {
             'NQ65 DHN8 4BSR 5YSX FC3V BB5J GKM2 GB2L H17C': {
                 address: 'NQ65 DHN8 4BSR 5YSX FC3V BB5J GKM2 GB2L H17C',
                 label: 'AceStaking',

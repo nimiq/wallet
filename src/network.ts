@@ -178,7 +178,7 @@ export async function launchNetwork() {
         const { config } = useConfig();
 
         addresses.forEach((address) => {
-            const prestakingTxs = Object.values(transactions$.transactions)
+            let prestakingTxs = Object.values(transactions$.transactions)
                 .filter((tx) =>
                     tx.sender === address
                     && tx.recipient === BURNER_ADDRESS
@@ -196,13 +196,25 @@ export async function launchNetwork() {
                     && ValidationUtils.isValidAddress(parseData(tx.data.raw)),
                 );
 
+            // Sort transactions by timestamp in ascending order
+            prestakingTxs.sort((a, b) => (a.blockHeight || Infinity) - (b.blockHeight || Infinity));
+
+            // Prestaking transactions only count once a transaction had a value of at least MIN_PRESTAKE luna
+            let stakedMinimum = false;
+            prestakingTxs = prestakingTxs.filter((tx) => {
+                if (tx.value >= MIN_PRESTAKE) {
+                    stakedMinimum = true;
+                }
+                return stakedMinimum;
+            });
+
             if (prestakingTxs.length === 0) {
                 prestakingStore.removePrestake(address);
                 return;
             }
 
             // Sort transactions by timestamp in descending order
-            prestakingTxs.sort((a, b) => b.blockHeight! - a.blockHeight!);
+            prestakingTxs.reverse();
 
             // The current delegation is determined by the latest transaction
             const delegation = ValidationUtils.normalizeAddress(parseData(prestakingTxs[0].data.raw));

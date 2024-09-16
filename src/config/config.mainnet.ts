@@ -15,6 +15,7 @@ export default {
     prestaking: {
         startBlock: 3_393_640, // October 7th, ~00:00 UTC
         endBlock: 3_443_980, // November 11th, ~00:00 UTC
+        totalPrestakeEndpoint: 'https://v2.nimiqwatch.com/api/v2/total-prestake',
     },
 
     usdc: {

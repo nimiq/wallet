@@ -15,6 +15,7 @@ export default {
     prestaking: {
         startBlock: Infinity,
         endBlock: Infinity,
+        totalPrestakeEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/total-prestake',
     },
 
     usdc: {

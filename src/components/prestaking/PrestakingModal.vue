@@ -53,6 +53,7 @@
 import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
 import { usePrestakingStore } from '../../stores/Prestaking';
 import { useAddressStore } from '../../stores/Address';
+import { useConfig } from '../../composables/useConfig';
 import Modal from '../modals/Modal.vue';
 import PrestakingWelcomePage from './PrestakingWelcomePage.vue';
 import PrestakingValidatorPage from './PrestakingValidatorPage.vue';
@@ -160,7 +161,7 @@ export default defineComponent({
             }
         });
 
-        fetch('https://nimiq-watch-v2.pages.dev/api/v2/total-prestake').then((res) => {
+        fetch(useConfig().config.prestaking.totalPrestakeEndpoint).then((res) => {
             if (!res.ok) {
                 throw new Error('Network response was not ok');
             }

@@ -253,6 +253,7 @@ svg {
             width: 6rem;
             height: 6rem;
             padding: 0.375rem;
+            overflow: initial;
 
             &.bitcoin {
                 color: var(--bitcoin-orange);

@@ -40,7 +40,7 @@ export default {
 
     fastspot: {
         enabled: true, // Set to false to hide the swap feature.
-        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.USDC_MATIC],
+        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC],
         apiEndpoint: 'https://api.go.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'c20d43d0-8f60-4fca-a298-85e80f64d042',

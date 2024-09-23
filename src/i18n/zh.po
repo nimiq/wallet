@@ -68,6 +68,10 @@ msgstr "{currency} 未支付"
 msgid "{currency} payout pending"
 msgstr "{currency} 付款待处理"
 
+#: src/components/swap/SwapModal.vue:403
+msgid "{disabledAsset} swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:302
 msgid "{fee} fee"
 msgstr "{fee} 费用"
@@ -471,7 +475,7 @@ msgstr "浏览器 | {count} 浏览器"
 msgid "BTC network fee"
 msgstr "BTC网络费"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:58
 msgid "Buy"
 msgstr "买入"
 
@@ -843,6 +847,11 @@ msgstr ""
 msgid "Credit Card"
 msgstr "信用卡"
 
+#: src/components/layouts/Sidebar.vue:144
+#: src/components/swap/SwapModal.vue:399
+msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
@@ -1047,7 +1056,7 @@ msgid "Failed"
 msgstr "失败"
 
 #: src/components/modals/UsdcSendModal.vue:722
-#: src/components/swap/SwapModal.vue:949
+#: src/components/swap/SwapModal.vue:971
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1347,7 +1356,7 @@ msgstr "余额不足"
 msgid "invalid"
 msgstr "无效"
 
-#: src/components/swap/SwapModal.vue:1814
+#: src/components/swap/SwapModal.vue:1840
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1534,7 +1543,7 @@ msgstr "命名此收件人..."
 msgid "Name your contact"
 msgstr "为你的联系人命名"
 
-#: src/components/layouts/Sidebar.vue:154
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr "网络"
 
@@ -1606,7 +1615,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "此银行提供的帐户并非全部都支持即时交易"
 
-#: src/components/layouts/Sidebar.vue:134
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr "在你的浏览器中无法使用"
 
@@ -1725,7 +1734,7 @@ msgstr "执行原子交换"
 msgid "Performing swap {progress}/5"
 msgstr "进行交换{progress} / 5"
 
-#: src/components/layouts/Sidebar.vue:127
+#: src/components/layouts/Sidebar.vue:147
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -1765,8 +1774,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "请转账"
 
-#: src/components/layouts/Sidebar.vue:138
-#: src/components/layouts/Sidebar.vue:54
+#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:61
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr "在开始新的交换前，请等待当前兑换完成。"
 
@@ -1968,7 +1977,7 @@ msgstr ""
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1042
+#: src/components/swap/SwapModal.vue:1064
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2027,7 +2036,7 @@ msgstr "请选择货币和金额"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "选择显示比特币金额的单位"
 
-#: src/components/layouts/Sidebar.vue:71
+#: src/components/layouts/Sidebar.vue:80
 msgid "Sell"
 msgstr "卖出"
 
@@ -2064,7 +2073,7 @@ msgstr ""
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr "销售和退款不适用于通用 IBAN！"
 
-#: src/components/layouts/Sidebar.vue:74
+#: src/components/layouts/Sidebar.vue:83
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 
@@ -2198,7 +2207,7 @@ msgstr "设置原子交换"
 msgid "Setting up the {currency} side of the swap."
 msgstr "设置交换的 {currency} "
 
-#: src/components/layouts/Sidebar.vue:162
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr "设置"
 
@@ -2315,7 +2324,7 @@ msgid "Super low fees, super fast payments"
 msgstr "超低手续费，超快支付"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:124
+#: src/components/layouts/Sidebar.vue:141
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2425,7 +2434,7 @@ msgstr "银行正在处理你的交易"
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "费用（当前为 {amount} ）决定了最低金额"
 
-#: src/components/swap/SwapModal.vue:1036 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1058 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "费用将决定最低金额"
@@ -2832,18 +2841,18 @@ msgstr "您仅可以接受来自于 Polygon USDC的地址！"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "你可以在{waitTime}小时内收到更多的免费NIM"
 
-#: src/components/layouts/Sidebar.vue:280
+#: src/components/layouts/Sidebar.vue:310
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:130
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr "您当前没有余额可以进行兑换。"
 
-#: src/components/layouts/AddressOverview.vue:426
+#: src/components/layouts/AddressOverview.vue:427
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -2909,7 +2918,7 @@ msgstr "你的银行不符合条件？"
 msgid "Your browser"
 msgstr "你的浏览器"
 
-#: src/components/layouts/Sidebar.vue:135
+#: src/components/layouts/Sidebar.vue:155
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

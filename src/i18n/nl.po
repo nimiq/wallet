@@ -69,6 +69,10 @@ msgstr "{currency} niet uitbetaald"
 msgid "{currency} payout pending"
 msgstr "Uitbetaling van {currency} in behandeling"
 
+#: src/components/swap/SwapModal.vue:403
+msgid "{disabledAsset} swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:302
 msgid "{fee} fee"
 msgstr "{fee} heffing"
@@ -491,7 +495,7 @@ msgstr "Browser | {count} Browser"
 msgid "BTC network fee"
 msgstr "BTC netwerk fee"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:58
 msgid "Buy"
 msgstr "Kopen"
 
@@ -874,6 +878,11 @@ msgstr "Creëert prestaking beloningen"
 msgid "Credit Card"
 msgstr "Creditcard"
 
+#: src/components/layouts/Sidebar.vue:144
+#: src/components/swap/SwapModal.vue:399
+msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
@@ -1086,7 +1095,7 @@ msgid "Failed"
 msgstr "Mislukt"
 
 #: src/components/modals/UsdcSendModal.vue:722
-#: src/components/swap/SwapModal.vue:949
+#: src/components/swap/SwapModal.vue:971
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr "Kan USDC-kosten niet ophalen. Opnieuw proberen... (Error: {message})"
 
@@ -1411,7 +1420,7 @@ msgstr "Onvoldoende saldo."
 msgid "invalid"
 msgstr "ongeldig"
 
-#: src/components/swap/SwapModal.vue:1814
+#: src/components/swap/SwapModal.vue:1840
 msgid "Invalid swap state, swap aborted!"
 msgstr "Ongeldige status, swap afgebroken!"
 
@@ -1600,7 +1609,7 @@ msgstr "Geef deze ontvanger een naam..."
 msgid "Name your contact"
 msgstr "Geef je contact een naam"
 
-#: src/components/layouts/Sidebar.vue:154
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr "Netwerk"
 
@@ -1673,7 +1682,7 @@ msgstr "Geen openstaand betalingsverzoek"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Niet alle rekeningen van deze bank ondersteunen directe transacties."
 
-#: src/components/layouts/Sidebar.vue:134
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr "Niet beschikbaar in jouw browser"
 
@@ -1792,7 +1801,7 @@ msgstr "Atomic Swap uitvoeren"
 msgid "Performing swap {progress}/5"
 msgstr "Swap {progress} / 5 uitvoeren"
 
-#: src/components/layouts/Sidebar.vue:127
+#: src/components/layouts/Sidebar.vue:147
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -1837,8 +1846,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Gelieve over te maken"
 
-#: src/components/layouts/Sidebar.vue:138
-#: src/components/layouts/Sidebar.vue:54
+#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:61
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 "Wacht tot je huidige swap is voltooid voordat je een nieuwe kan starten."
@@ -2053,7 +2062,7 @@ msgstr "Re-stake beloningen"
 msgid "Restart payout process"
 msgstr "Start het uitbetalingsproces opnieuw"
 
-#: src/components/swap/SwapModal.vue:1042
+#: src/components/swap/SwapModal.vue:1064
 msgid "Resulting BTC amount is too small."
 msgstr "Het resulterende BTC-bedrag is te klein."
 
@@ -2112,7 +2121,7 @@ msgstr "Selecteer een valuta en een bedrag."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Selecteer in welke Bitcoin eenheid je de bedragen wilt weergeven."
 
-#: src/components/layouts/Sidebar.vue:71
+#: src/components/layouts/Sidebar.vue:80
 msgid "Sell"
 msgstr "Verkopen"
 
@@ -2149,7 +2158,7 @@ msgstr ""
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr "Verkopen en terugbetalingen werken niet met een generiek IBAN!"
 
-#: src/components/layouts/Sidebar.vue:74
+#: src/components/layouts/Sidebar.vue:83
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr "NIM rechtstreeks verkopen is momenteel niet beschikbaar in de Wallet."
 
@@ -2285,7 +2294,7 @@ msgstr "Atomic Swap opzetten"
 msgid "Setting up the {currency} side of the swap."
 msgstr "De {currency} kant van de swap instellen."
 
-#: src/components/layouts/Sidebar.vue:162
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr "Instellingen"
 
@@ -2403,7 +2412,7 @@ msgid "Super low fees, super fast payments"
 msgstr "Super lage kosten, super snelle betalingen"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:124
+#: src/components/layouts/Sidebar.vue:141
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2513,7 +2522,7 @@ msgstr "De bank verwerkt je transactie."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
-#: src/components/swap/SwapModal.vue:1036 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1058 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "De kosten bepalen het minimumbedrag."
@@ -2954,7 +2963,7 @@ msgstr "Je kunt alleen van Polygon USDC-adressen ontvangen!"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Je kan meer gratis NIM ontvangen in {waitTime} uren."
 
-#: src/components/layouts/Sidebar.vue:280
+#: src/components/layouts/Sidebar.vue:310
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -2964,11 +2973,11 @@ msgstr ""
 "- door in de Wallet eerst NIM om te wisselen naar BTC of USDC, deze kan je vervolgens dan verkopen.\n"
 "- op ondersteunde exchanges."
 
-#: src/components/layouts/Sidebar.vue:130
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr "Je hebt momenteel geen tegoed om te wisselen."
 
-#: src/components/layouts/AddressOverview.vue:426
+#: src/components/layouts/AddressOverview.vue:427
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "Je hebt niet genoeg USDC.e om conversiekosten ({fee}) te dekken"
 
@@ -3039,7 +3048,7 @@ msgstr "Komt je bank niet in aanmerking?"
 msgid "Your browser"
 msgstr "Je browser"
 
-#: src/components/layouts/Sidebar.vue:135
+#: src/components/layouts/Sidebar.vue:155
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

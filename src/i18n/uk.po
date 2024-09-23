@@ -67,6 +67,10 @@ msgstr "Кошти в {currency} не виплачені"
 msgid "{currency} payout pending"
 msgstr "Очікується платіж в {currency}"
 
+#: src/components/swap/SwapModal.vue:403
+msgid "{disabledAsset} swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:302
 msgid "{fee} fee"
 msgstr "{fee} комісія"
@@ -487,7 +491,7 @@ msgstr "Веб-оглядач | {count} Веб-оглядач"
 msgid "BTC network fee"
 msgstr "Комісія BTC"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:58
 msgid "Buy"
 msgstr "Купити"
 
@@ -870,6 +874,11 @@ msgstr ""
 msgid "Credit Card"
 msgstr "Кредитна карта"
 
+#: src/components/layouts/Sidebar.vue:144
+#: src/components/swap/SwapModal.vue:399
+msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
@@ -1083,7 +1092,7 @@ msgid "Failed"
 msgstr "Неуспішний"
 
 #: src/components/modals/UsdcSendModal.vue:722
-#: src/components/swap/SwapModal.vue:949
+#: src/components/swap/SwapModal.vue:971
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
 "Не вдалося отримати USDC комісії. Повторна спроба... (Помилка: {message})"
@@ -1399,7 +1408,7 @@ msgstr "Недостатньо коштів."
 msgid "invalid"
 msgstr "некоректний"
 
-#: src/components/swap/SwapModal.vue:1814
+#: src/components/swap/SwapModal.vue:1840
 msgid "Invalid swap state, swap aborted!"
 msgstr "Невірний стан обміну, обмін перервано!"
 
@@ -1587,7 +1596,7 @@ msgstr "Вкажіть ім'я відправника..."
 msgid "Name your contact"
 msgstr "Назвіть контакт"
 
-#: src/components/layouts/Sidebar.vue:154
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr "Мережа"
 
@@ -1660,7 +1669,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не всі рахунки, надані цим банком, підтримують миттєві операції."
 
-#: src/components/layouts/Sidebar.vue:134
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr "Недоступно у вашому веб-оглядачі"
 
@@ -1779,7 +1788,7 @@ msgstr "Виконання Атомарного обміну"
 msgid "Performing swap {progress}/5"
 msgstr "Проводиться обмін {progress}/5"
 
-#: src/components/layouts/Sidebar.vue:127
+#: src/components/layouts/Sidebar.vue:147
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -1821,8 +1830,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Будь ласка, перекажіть"
 
-#: src/components/layouts/Sidebar.vue:138
-#: src/components/layouts/Sidebar.vue:54
+#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:61
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 "Будь ласка, дочекайтеся завершення поточного обміну, перш ніж починати "
@@ -2030,7 +2039,7 @@ msgstr ""
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1042
+#: src/components/swap/SwapModal.vue:1064
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2089,7 +2098,7 @@ msgstr "Виберіть валюту та суму."
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Обрати у яких одиницях відображати Біткоїн."
 
-#: src/components/layouts/Sidebar.vue:71
+#: src/components/layouts/Sidebar.vue:80
 msgid "Sell"
 msgstr "Продати"
 
@@ -2126,7 +2135,7 @@ msgstr ""
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr "Продаж і повернення коштів не працюватимуть із загальним IBAN!"
 
-#: src/components/layouts/Sidebar.vue:74
+#: src/components/layouts/Sidebar.vue:83
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 
@@ -2260,7 +2269,7 @@ msgstr "Атомарний обмін налаштовується"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Налаштування сторони обміну {currency}."
 
-#: src/components/layouts/Sidebar.vue:162
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -2377,7 +2386,7 @@ msgid "Super low fees, super fast payments"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:124
+#: src/components/layouts/Sidebar.vue:141
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2485,7 +2494,7 @@ msgstr "Банк обробляє вашу операцію."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
-#: src/components/swap/SwapModal.vue:1036 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1058 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Комісія визначає мінімальну суму."
@@ -2921,18 +2930,18 @@ msgstr "Ви можете отримувати тільки від Polygon USDC 
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Ви можете отримати безкоштовні NIM через {waitTime} години."
 
-#: src/components/layouts/Sidebar.vue:280
+#: src/components/layouts/Sidebar.vue:310
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:130
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr "Наразі у вас немає коштів для обміну."
 
-#: src/components/layouts/AddressOverview.vue:426
+#: src/components/layouts/AddressOverview.vue:427
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3003,7 +3012,7 @@ msgstr "Ваш банк не відповідає вимогам?"
 msgid "Your browser"
 msgstr "Ваш веб-оглядач"
 
-#: src/components/layouts/Sidebar.vue:135
+#: src/components/layouts/Sidebar.vue:155
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

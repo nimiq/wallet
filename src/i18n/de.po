@@ -70,6 +70,10 @@ msgstr "{currency} nicht ausgezahlt"
 msgid "{currency} payout pending"
 msgstr "{currency} Auszahlung ausstehend"
 
+#: src/components/swap/SwapModal.vue:403
+msgid "{disabledAsset} swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/TransactionModal.vue:302
 msgid "{fee} fee"
 msgstr "{fee} Gebühr"
@@ -491,7 +495,7 @@ msgstr "Browser | {count} Browser"
 msgid "BTC network fee"
 msgstr "BTC-Netzwerkgebühr"
 
-#: src/components/layouts/Sidebar.vue:51
+#: src/components/layouts/Sidebar.vue:58
 msgid "Buy"
 msgstr "Kaufen"
 
@@ -876,6 +880,11 @@ msgstr ""
 msgid "Credit Card"
 msgstr "Kreditkarte"
 
+#: src/components/layouts/Sidebar.vue:144
+#: src/components/swap/SwapModal.vue:399
+msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
 #: src/components/modals/BuyOptionsModal.vue:7
 msgid ""
 "Depending on your country of residence,\n"
@@ -1091,7 +1100,7 @@ msgid "Failed"
 msgstr "Fehlgeschlagen"
 
 #: src/components/modals/UsdcSendModal.vue:722
-#: src/components/swap/SwapModal.vue:949
+#: src/components/swap/SwapModal.vue:971
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1410,7 +1419,7 @@ msgstr "Unzureichendes Guthaben."
 msgid "invalid"
 msgstr "ungültig"
 
-#: src/components/swap/SwapModal.vue:1814
+#: src/components/swap/SwapModal.vue:1840
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1601,7 +1610,7 @@ msgstr "Benenne den Empfänger..."
 msgid "Name your contact"
 msgstr "Benenne deinen Kontakt"
 
-#: src/components/layouts/Sidebar.vue:154
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr "Netzwerk"
 
@@ -1675,7 +1684,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
 
-#: src/components/layouts/Sidebar.vue:134
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr "Nicht verfügbar in deinem Browser"
 
@@ -1794,7 +1803,7 @@ msgstr "Sicherer Tausch wird durchgeführt"
 msgid "Performing swap {progress}/5"
 msgstr "Tausch wird durchgeführt {progress}/5"
 
-#: src/components/layouts/Sidebar.vue:127
+#: src/components/layouts/Sidebar.vue:147
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -1840,8 +1849,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Bitte überweise"
 
-#: src/components/layouts/Sidebar.vue:138
-#: src/components/layouts/Sidebar.vue:54
+#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:61
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 "Bitte warte, bis dein aktueller Tausch beendet ist, bevor du einen neuen "
@@ -2053,7 +2062,7 @@ msgstr ""
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1042
+#: src/components/swap/SwapModal.vue:1064
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2113,7 +2122,7 @@ msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 "Wähle aus, in welcher Einheit Bitcoin-Beträge angezeigt werden sollen."
 
-#: src/components/layouts/Sidebar.vue:71
+#: src/components/layouts/Sidebar.vue:80
 msgid "Sell"
 msgstr "Verkaufen"
 
@@ -2151,7 +2160,7 @@ msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr ""
 "Verkaufen und Rückerstattung funktionieren nicht mit einer generischen IBAN!"
 
-#: src/components/layouts/Sidebar.vue:74
+#: src/components/layouts/Sidebar.vue:83
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 
@@ -2287,7 +2296,7 @@ msgstr "Sicherer Tausch wird vorbereitet"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Die {currency}-Seite des Tauschs wird vorbereitet."
 
-#: src/components/layouts/Sidebar.vue:162
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -2404,7 +2413,7 @@ msgid "Super low fees, super fast payments"
 msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:124
+#: src/components/layouts/Sidebar.vue:141
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2516,7 +2525,7 @@ msgstr "Die Bank bearbeitet deine Überweisung."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Die Gebühren (momentan {amount}) bestimmen den Mindestbetrag."
 
-#: src/components/swap/SwapModal.vue:1036 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1058 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Die Gebühren bestimmen den Mindestbetrag."
@@ -2957,18 +2966,18 @@ msgstr "Du kannst nur von Polygon USDC-Adressen empfangen!"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "In {waitTime} Stunden kannst du erneut kostenlose NIM erhalten."
 
-#: src/components/layouts/Sidebar.vue:280
+#: src/components/layouts/Sidebar.vue:310
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:130
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr "Du hast aktuell kein Guthaben zum tauschen."
 
-#: src/components/layouts/AddressOverview.vue:426
+#: src/components/layouts/AddressOverview.vue:427
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3039,7 +3048,7 @@ msgstr "Deine Bank ist nicht geeignet?"
 msgid "Your browser"
 msgstr "Dein Browser"
 
-#: src/components/layouts/Sidebar.vue:135
+#: src/components/layouts/Sidebar.vue:155
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

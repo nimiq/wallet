@@ -28,6 +28,7 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
         case SwapAsset.USDC_MATIC:
             return `https://${config.environment === ENV_MAIN ? '' : 'mumbai.'}polygonscan.com/address/${address}`;
         case SwapAsset.EUR:
+        case SwapAsset.CRC:
             if (config.environment === ENV_MAIN) return `https://oasis.watch/?id=${address}`;
             return `${config.oasis.apiEndpoint}/htlc/${address}`;
         default: throw new Error('Invalid asset');

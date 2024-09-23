@@ -59,6 +59,12 @@ export default {
         maxKycAmount: 4999, // Euro
     },
 
+    sinpeMovil: {
+        enabled: false,
+        apiEndpoint: '',
+        smsApiEndpoint: '',
+    },
+
     ten31Pass: {
         enabled: false,
         apiEndpoint: 'https://pass.ten31.com',

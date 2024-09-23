@@ -367,3 +367,5 @@ const SIMPLEX_UNSUPPORTED_COUNTRY_CODES: string[] = [
 
 export const SIMPLEX_COUNTRY_CODES = ALL_COUNTRY_CODES
     .filter((code) => !SIMPLEX_UNSUPPORTED_COUNTRY_CODES.includes(code));
+
+export const SINPE_MOVIL_COUNTRY_CODES = [CC['Costa Rica']] as string[];

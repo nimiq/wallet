@@ -1,7 +1,7 @@
 <template>
     <transition :name="swapIsComplete ? 'slide' : 'minimize'">
         <button
-            v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto' && $route.name !== 'sell-crypto'"
+            v-if="activeSwap && !isSwapRoute"
             class="reset swap-notification flex-row" :class="{
                 'complete': swapIsComplete,
                 'expired': swapIsExpired,
@@ -56,10 +56,8 @@ import {
     ClearingInfo,
     ClearingStatus,
     DeniedReason,
-    getHtlc,
     Htlc as OasisHtlc,
     HtlcStatus,
-    settleHtlc,
     SettlementInfo,
     SettlementStatus,
 } from '@nimiq/oasis-api';
@@ -67,8 +65,11 @@ import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
 import { captureException } from '@sentry/vue';
+import { SINPE_MOVIL_PAIRS } from '@/lib/Constants';
+import { RouteName } from '@/router';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
-import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
+import { useSwapsStore,
+    SwapState, ActiveSwap, SwapEurData, SwapErrorAction, isFiatAsset, SwapCrcData } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useBankStore } from '../../stores/Bank';
@@ -86,6 +87,8 @@ import {
 } from '../../ethers';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { getHtlc as getEurHtlc, settleHtlc as settleEurHtlc } from '../../lib/OasisEur';
+import { getHtlc as getCrcHtlc, settleHtlc as settleCrcHtlc } from '../../lib/OasisCrc';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -152,8 +155,10 @@ export default defineComponent({
                     }
                     case SwapAsset.BTC:
                     case SwapAsset.USDC_MATIC:
+                    case SwapAsset.CRC:
                     case SwapAsset.EUR: {
-                        const { timeout } = contract as Contract<SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.EUR>;
+                        const { timeout } = contract as Contract<
+                            SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.EUR | SwapAsset.CRC>;
                         if (timeout <= timestamp) return true;
                         remainingTimes.push(timeout - timestamp);
                         break;
@@ -280,7 +285,10 @@ export default defineComponent({
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
                     };
                 }
-                case SwapAsset.EUR: return { getHtlc, settleHtlc };
+                case SwapAsset.CRC:
+                    return { getHtlc: getCrcHtlc, settleHtlc: settleCrcHtlc };
+                case SwapAsset.EUR:
+                    return { getHtlc: getEurHtlc, settleHtlc: settleEurHtlc };
                 default: throw new Error(`Unsupported asset: ${asset}`);
             }
         }
@@ -641,32 +649,41 @@ export default defineComponent({
                             const settlementTx = await swapHandler.settleIncoming(
                                 activeSwap.value!.settlementSerializedTx!,
                                 activeSwap.value!.secret!,
-                                activeSwap.value!.settlementAuthorizationToken,
+                                {
+                                    authorization: activeSwap.value!.settlementAuthorizationToken,
+                                    smsApi: swap$.activeSwap?.settlementSmsToken,
+                                },
                             );
 
                             if (activeSwap.value!.to.asset === SwapAsset.BTC) {
                                 subscribeToAddresses([(settlementTx as BtcTransactionDetails).outputs[0].address!]);
                             }
 
-                            if (activeSwap.value!.to.asset === SwapAsset.EUR) {
+                            if (isFiatAsset(activeSwap.value!.to.asset)) {
                                 let htlc = settlementTx as OasisHtlc<HtlcStatus.SETTLED>;
 
-                                // As EUR payments are not otherwise detected by the Wallet, we use this
+                                // As EUR/CRC payments are not otherwise detected by the Wallet, we use this
                                 // place to persist the relevant information in our store.
-                                const swapData: SwapEurData = {
+                                const htlcData: SwapEurData['htlc'] = {
+                                    id: htlc.id,
+                                    timeoutTimestamp: htlc.expires,
+                                    settlement: {
+                                        status: htlc.settlement.status,
+                                    },
+                                };
+                                const swapData = activeSwap.value!.to.asset === SwapAsset.EUR ? ({
                                     asset: SwapAsset.EUR,
                                     bankLabel: bank.value!.name,
                                     // bankLogo?: string,
                                     iban: bankAccount.value!.iban,
                                     amount: htlc.amount,
-                                    htlc: {
-                                        id: htlc.id,
-                                        timeoutTimestamp: htlc.expires,
-                                        settlement: {
-                                            status: htlc.settlement.status,
-                                        },
-                                    },
-                                };
+                                    htlc: htlcData,
+                                } as SwapEurData) : ({
+                                    asset: SwapAsset.CRC,
+                                    amount: htlc.amount,
+                                    phoneNumber: activeSwap.value.phoneNumber,
+                                    htlc: htlcData,
+                                } as SwapCrcData);
 
                                 if (htlc.settlement.status === SettlementStatus.PENDING) {
                                     // Add swap data to store so the tx history already shows the tx as a swap
@@ -757,7 +774,8 @@ export default defineComponent({
                                 state: SwapState.COMPLETE,
                                 stateEnteredAt: Date.now(),
                                 settlementTx:
-                                    settlementTx as Transaction<SwapAsset.NIM | SwapAsset.BTC | SwapAsset.EUR>,
+                                    settlementTx as Transaction<
+                                        SwapAsset.NIM | SwapAsset.BTC | SwapAsset.EUR | SwapAsset.CRC>,
                             });
                         } catch (error: any) {
                             if (error.message === SwapError.EXPIRED) return;
@@ -792,24 +810,29 @@ export default defineComponent({
         function openSwap() {
             if (!activeSwap.value) return;
 
-            const cryptoCurrencies = [
+            const cryptoAssets = [
                 SwapAsset.NIM,
                 SwapAsset.BTC,
                 SwapAsset.USDC_MATIC,
             ];
 
-            const fiatCurrencies = [
-                SwapAsset.EUR,
-            ];
-
             const fromAsset = activeSwap.value.from.asset;
             const toAsset = activeSwap.value.to.asset;
 
-            if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
+            if (SINPE_MOVIL_PAIRS.find(([from, to]) => from === fromAsset && to === toAsset)) {
+                // The pair from the activeSwap matches the pair that it is enabled in the Sinpe Movil config
+                context.root.$router.push({
+                    name: RouteName.AssetTransfer,
+                    params: { method: 'sinpe-movil', pair: JSON.stringify([fromAsset, toAsset]) },
+                });
+            } else if (fromAsset === 'BTC_LN' || toAsset === 'BTC_LN') {
+                throw new Error('Lightning Network swaps are not supported in the wallet');
+            } else if (cryptoAssets.includes(fromAsset as SwapAsset) && cryptoAssets.includes(toAsset as SwapAsset)) {
+                // Crypto to Crypto
                 context.root.$router.push('/swap');
-            } else if (fiatCurrencies.includes(fromAsset)) {
+            } else if (fromAsset === SwapAsset.EUR) {
                 context.root.$router.push('/buy-crypto');
-            } else if (fiatCurrencies.includes(toAsset)) {
+            } else if (toAsset === SwapAsset.EUR) {
                 context.root.$router.push('/sell-crypto');
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');
@@ -824,6 +847,8 @@ export default defineComponent({
             oasisLimitExceeded,
             oasisPayoutFailed,
             openSwap,
+            isSwapRoute: [RouteName.Swap, RouteName.BuyCrypto, RouteName.SellCrypto, RouteName.AssetTransfer]
+                .includes(context.root.$route.name as RouteName),
         };
     },
     components: {

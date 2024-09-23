@@ -360,9 +360,13 @@ export default defineComponent({
         const DECIMALS = {
             [SwapAsset.NIM]: 5,
             [SwapAsset.BTC]: 8,
-            [SwapAsset.USDC]: 6, // For TS completeness
             [SwapAsset.USDC_MATIC]: 6,
-            [SwapAsset.EUR]: 2, // For TS completeness
+
+            // For TS completeness
+            [SwapAsset.USDC]: 6,
+            [SwapAsset.EUR]: 2,
+            [SwapAsset.CRC]: 0,
+            [SwapAsset.BTC_LN]: 8,
         } as const;
 
         function updateSwapBalanceBar(cursorPosition?: number) {

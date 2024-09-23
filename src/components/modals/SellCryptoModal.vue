@@ -32,11 +32,11 @@
                     <div slot="more" class="pills flex-row">
                         <Tooltip :styles="{width: '25.5rem'}" preferredPosition="bottom right" :container="this">
                             <div v-if="activeCurrency === CryptoCurrency.NIM" slot="trigger" class="pill exchange-rate">
-                                1 NIM = <FiatAmount :amount="eurPerNim || 0"
+                                1 NIM = <FiatAmount :amount="fiatPerNim || 0"
                                     :maxRelativeDeviation="0.001" currency="eur"/>
                             </div>
                             <div v-else slot="trigger" class="pill exchange-rate">
-                                1 BTC = <FiatAmount :amount="eurPerBtc || 0" currency="eur"/>
+                                1 BTC = <FiatAmount :amount="fiatPerBtc || 0" currency="eur"/>
                             </div>
                             <!-- <span>{{ $t('This rate includes the swap fee.') }}</span> -->
                             <p class="explainer">
@@ -277,10 +277,9 @@ import {
     createSwap,
     cancelSwap,
     getSwap,
+    Contract,
 } from '@nimiq/fastspot-api';
 import {
-    getHtlc,
-    exchangeAuthorizationToken,
     HtlcStatus,
     TransactionType as OasisTransactionType,
 } from '@nimiq/oasis-api';
@@ -329,8 +328,8 @@ import {
     useCurrentLimitCrypto,
     useCurrentLimitFiat,
     useSwapEstimate,
-    eurPerBtc,
-    eurPerNim,
+    fiatPerBtc,
+    fiatPerNim,
     fetchAssets,
     fiatCurrencyInfo,
     getFiatSwapParameters,
@@ -343,6 +342,7 @@ import {
 import { useKycStore } from '../../stores/Kyc';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
+import { exchangeAuthorizationToken, getHtlc } from '../../lib/OasisEur';
 
 type KycResult = import('../../swap-kyc-handler').SetupSwapWithKycResult['kyc'];
 
@@ -356,6 +356,12 @@ enum Pages {
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
+    props: {
+        fiatCurrency: {
+            type: String as () => FiatCurrency,
+            default: FiatCurrency.EUR,
+        },
+    },
     setup(props, context) {
         const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
@@ -414,8 +420,10 @@ export default defineComponent({
                 if (_cryptoAmount.value !== 0) return _cryptoAmount.value;
                 if (!estimate.value) return 0;
 
+                const { asset, amount, fee } = estimate.value.from;
                 if (estimate.value.from.asset !== activeCurrency.value.toUpperCase()) return 0;
-                return capDecimals(estimate.value.from.amount + estimate.value.from.fee, estimate.value.from.asset);
+                if (asset !== activeCurrency.value.toUpperCase()) return 0;
+                return capDecimals(amount + fee, { asset });
             },
             set: (value: number) => {
                 _fiatAmount.value = 0;
@@ -517,7 +525,7 @@ export default defineComponent({
                 const btcAddress = availableExternalAddresses.value[0];
 
                 try {
-                    const { from, to } = getFiatSwapParameters(_fiatAmount.value
+                    const { from, to } = getFiatSwapParameters(SwapAsset.EUR, _fiatAmount.value
                         ? { to: { asset: SwapAsset.EUR, amount: fiatAmount.value } }
                         : { from: { amount: cryptoAmount.value } },
                     );
@@ -530,7 +538,7 @@ export default defineComponent({
 
                     // Update local fees with latest feePerUnit values
                     const { fundingFee } = calculateFees({ to: FiatCurrency.EUR }, swapSuggestion.from.amount, {
-                        eur: swapSuggestion.to.fee || 0,
+                        fiat: swapSuggestion.to.fee || 0,
                         nim: activeCurrency.value === CryptoCurrency.NIM ? swapSuggestion.from.feePerUnit! : 0,
                         btc: activeCurrency.value === CryptoCurrency.BTC ? swapSuggestion.from.feePerUnit! : 0,
                     });
@@ -789,7 +797,8 @@ export default defineComponent({
             });
 
             // Fetch OASIS HTLC to get clearing instructions
-            const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
+            const eurContract = confirmedSwap.contracts[SwapAsset.EUR] as Contract<SwapAsset.EUR>;
+            const oasisHtlc = await getHtlc(eurContract.htlc.address);
             if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
                 const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);
                 if (config.reportToSentry) captureException(error);
@@ -983,8 +992,8 @@ export default defineComponent({
             goBack,
             selectedFiatCurrency,
             CryptoCurrency,
-            eurPerNim,
-            eurPerBtc,
+            fiatPerNim,
+            fiatPerBtc,
             fiatFees: computed(() => fiatFees.value.funding),
             limits,
             activeCurrency,

@@ -59,6 +59,12 @@ export default {
         maxKycAmount: 4999, // Euro
     },
 
+    sinpeMovil: {
+        enabled: true,
+        apiEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/v1',
+        smsApiEndpoint: 'https://sinpemovil.sandbox.nimiqoasis.com/sms',
+    },
+
     ten31Pass: {
         enabled: false,
         apiEndpoint: 'https://test.pass.ten31.com',

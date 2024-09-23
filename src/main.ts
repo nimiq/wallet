@@ -4,7 +4,6 @@ import VueCompositionApi, { watch } from '@vue/composition-api';
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
-import { init as initOasisApi } from '@nimiq/oasis-api';
 
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
@@ -72,7 +71,7 @@ async function start() {
         exchangeRateUpdateTimer = window.setTimeout(async () => {
             // Silently ignore errors. If successful, this updates fiatStore.timestamp, which then also triggers price
             // chart updates in PriceChart.vue.
-            await updateExchangeRates(/* failGracefully */ true);
+            await updateExchangeRates({ failGracefully: true });
             // In contrast to lastSuccessfulExchangeRateUpdate also update lastTriedExchangeRateUpdate on failed
             // attempts, to avoid repeated rescheduling on failure. Instead, simply skip the failed attempt and try
             // again at the regular interval. We update the time after the update attempt, instead of before it, because
@@ -93,13 +92,10 @@ async function start() {
     const { config } = useConfig();
 
     watch(() => {
+        // TODO Fastspot lib should allow dynamic reconfiguration or each function accepting the endpoint and key
+        // as arguments. For now, we just initialize the API with SINPE conf since it is the only one available.
         if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
-    });
-
-    watch(() => {
-        if (!config.oasis.apiEndpoint) return;
-        initOasisApi(config.oasis.apiEndpoint);
     });
 
     watch(() => {

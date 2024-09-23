@@ -3,7 +3,7 @@
         :class="{
             'manual-funding': manualFunding && state === SwapState.CREATE_OUTGOING,
             'to-funding-delay': toFundingDurationMins && state === SwapState.AWAIT_INCOMING,
-            'to-limit-exceeded': oasisLimitExceeded && toAsset === SwapAsset.EUR,
+            'to-limit-exceeded': oasisLimitExceeded && isFiatAsset(toAsset),
             'from-funding-delay': fromFundingDurationMins && state === SwapState.CREATE_OUTGOING,
         }"
     >
@@ -19,14 +19,14 @@
             <h1 class="title nq-h1">{{ $t('The swap expired') }}</h1>
             <p class="expired-text">
                 {{ $t('No funds were received so the swap expired.') }}<br>
-                <template v-if="fromAsset === SwapAsset.EUR">
+                <template v-if="isFiatAsset(fromAsset)">
                     {{ $t('Any funds sent will be refunded within 1-3 days.') }}
                 </template>
                 <template v-else>
                     {{ $t('Any funds sent will be refunded.') }}
                 </template>
             </p>
-            <template v-if="fromAsset === SwapAsset.EUR">
+            <template v-if="isFiatAsset(fromAsset)">
                 <p class="expired-text">
                     {{ $t('Click on ‘Troubleshooting’ to learn more.') }}
                 </p>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="oasis-limit-exceeded-background flex-column nq-orange-bg"
-            :class="{'visible': oasisLimitExceeded && fromAsset === SwapAsset.EUR}"
+            :class="{'visible': oasisLimitExceeded && isFiatAsset(fromAsset)}"
         >
             <CloseButton class="top-right inverse" @click="$emit('cancel')"/>
             <div class="flex-grow"></div>
@@ -99,7 +99,7 @@
         </transition>
 
         <transition name="fade">
-            <div v-if="oasisLimitExceeded && toAsset === SwapAsset.EUR"
+            <div v-if="oasisLimitExceeded && isFiatAsset(toAsset)"
                 class="to-limit-exceeded-container flex-column"
             >
                 <div class="header flex-row">
@@ -116,7 +116,10 @@
                         {{ $t('You have exceeded your OASIS limit.') }}
                     </h2>
                     <p class="nq-gray">
-                        {{ $t('Your EUR will be transferred to your bank account as soon as new limit is available.') }}
+                        {{
+                            $t('Your {fiatCurrency} will be transferred to your bank account' +
+                            'as soon as new limit is available.', toAsset)
+                        }}
                     </p>
                 </div>
             </div>
@@ -129,13 +132,13 @@
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
                         || (fromFundingDurationMins && state === SwapState.CREATE_OUTGOING)
-                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
+                        || (oasisLimitExceeded && isFiatAsset(toAsset))
                     ? 'bottom'
                     : 'top'
                 } right`"
             >
                 <div slot="trigger" class="piece-container">
-                    <svg v-if="leftAsset === SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
+                    <svg v-if="leftAsset === SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${getColor(leftAsset)}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M10.5 68.63L1.62 53.12a6.5 6.5 0 01-.86-3.22V4A3.26 3.26 0 014 .75h76.6" />
                             <path opacity=".25" d="M95.71 67.27l8.88-15.52a7.69 7.69 0 000-7.63l-7.41-13a1.69 1.69 0 011.47-2.52H100a3.3 3.3 0 012.86 1.65l7.69 13.29a8.66 8.66 0 010 8.59l-7 12.39a1.87 1.87 0 001.63 2.8h13.1a4.31 4.31 0 003.75-2.18c1.76-3.06 5-8.76 6.47-11.49a2.49 2.49 0 012.16-1.31c.53 0 1.19 0 2-.13a1.65 1.65 0 011.62 2.42c-.52 1-.94 1.69-.94 1.69L124 72.76l-1.57 2.76a6.36 6.36 0 01-5.54 3.23H98.44A5.16 5.16 0 0094 81.37l-4.79 8.51c-2.53 4.85-5.56 5.37-10 5.37H4A3.25 3.25 0 01.75 92V62.63" />
@@ -158,7 +161,7 @@
                             <image :href="identiconUrl" x="30" y="19" width="58" height="58" />
                         </g>
                     </svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${leftColor}`">
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${getColor(leftAsset)}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M88.83 55.44a30.74 30.74 0 11-22.39-37.27 30.74 30.74 0 0122.39 37.27zm41.8 28.85H99a4.12 4.12 0 00-2.9 1.21 51.15 51.15 0 01-4.35 3.85 2.72 2.72 0 01-1.69.58H90A2.73 2.73 0 0188.34 85a48.25 48.25 0 005-4.53 5.6 5.6 0 014.09-1.75h27.54a3.33 3.33 0 003.08-2 75.89 75.89 0 003.51-10.65h0a75.31 75.31 0 001.89-11 2.77 2.77 0 00-2.8-3h0a2.73 2.73 0 00-2.67 2.46 70.51 70.51 0 01-1.76 10.22h0v0a3.26 3.26 0 01-3.22 2.5h-11.16a2.64 2.64 0 01-2.53-3.41q.48-1.51.87-3.09h0a52.85 52.85 0 001.45-16.41"/>
                             <path opacity=".25" d="M25.62 23a41.8 41.8 0 00-6.92 35.86 3.8 3.8 0 003.68 2.78H23a3.77 3.77 0 013.39 2.15 36.24 36.24 0 0051.8 15M36 6.22H21.21a6.73 6.73 0 00-4.9 2.14A57.74 57.74 0 009 18.18a1.43 1.43 0 01-2.65-.73v-3.13a7.31 7.31 0 011.34-4 35.07 35.07 0 013.2-4m81.69 66.51v-.06a41.57 41.57 0 006.93-14.67h0a41.52 41.52 0 00-1.81-25.76 2.75 2.75 0 012.54-3.79h0a2.78 2.78 0 012.57 1.75 47 47 0 012 29.13h0a47.28 47.28 0 01-4.16 10.84 1.72 1.72 0 001.51 2.54h21.42"/>
@@ -185,7 +188,7 @@
                     <div class="flex-row swap-amount">
                         <GroundedArrowUpIcon v-if="!switchSides"/>
                         <GroundedArrowDownIcon v-if="switchSides"/>
-                        <Amount v-if="leftAsset !== SwapAsset.EUR" :amount="!switchSides ? fromAmount : toAmount" :currency="assetToCurrency(leftAsset)"/>
+                        <Amount v-if="!isFiatAsset(leftAsset)" :amount="!switchSides ? fromAmount : toAmount" :currency="assetToCurrency(leftAsset)"/>
                         <FiatAmount v-else :amount="(!switchSides ? fromAmount : toAmount) / 100" :currency="assetToCurrency(leftAsset)"/>
                     </div>
                 </div>
@@ -209,13 +212,13 @@
                     (manualFunding && state === SwapState.CREATE_OUTGOING)
                         || (toFundingDurationMins && state === SwapState.AWAIT_INCOMING)
                         || (fromFundingDurationMins && state === SwapState.CREATE_OUTGOING)
-                        || (oasisLimitExceeded && toAsset === SwapAsset.EUR)
+                        || (oasisLimitExceeded && isFiatAsset(toAsset))
                     ? 'bottom'
                     : 'top'
                 } right`"
             >
                 <div slot="trigger" class="piece-container">
-                    <svg v-if="rightAsset !== SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
+                    <svg v-if="rightAsset !== SwapAsset.NIM" xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${getColor(rightAsset)}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M88.17 40.56a30.74 30.74 0 1122.39 37.27 30.74 30.74 0 01-22.39-37.27zM46.37 11.71H78a4.12 4.12 0 002.9-1.21 51.15 51.15 0 014.35-3.85 2.72 2.72 0 011.69-.58H87A2.73 2.73 0 0188.66 11a48.25 48.25 0 00-5 4.53 5.6 5.6 0 01-4.09 1.75h-27.5a3.33 3.33 0 00-3.08 2 75.89 75.89 0 00-3.51 10.65h0a75.31 75.31 0 00-1.89 11 2.77 2.77 0 002.8 3h0a2.73 2.73 0 002.67-2.46 70.51 70.51 0 011.76-10.22h0v0a3.26 3.26 0 013.18-2.5h11.16a2.64 2.64 0 012.53 3.41q-.48 1.51-.87 3.09h0a52.85 52.85 0 00-1.45 16.41" />
                             <path opacity=".25" d="M33.48 18.42c.15.29.28.59.41.89a17.28 17.28 0 01.17 13 1.5 1.5 0 001.42 2H37a2.32 2.32 0 002.27-1.89q.39-1.93.87-3.87h0a65.6 65.6 0 012.7-8.55A2 2 0 0041 17.25h0a2 2 0 01-1.85-2.82q1.29-3.18 2.85-6.21a4 4 0 013.54-2.11h31.85" />
@@ -234,13 +237,10 @@
                         </g>
                         <g class="logo" fill="none" opacity="1">
                             <path :fill="rightAsset === SwapAsset.EUR ? bankColor : 'currentColor'" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
-                            <image
-                                :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : rightAsset === SwapAsset.USDC_MATIC ? UsdcSvg : (bankLogo || BankSvg)"
-                                x="92" y="22" width="52" height="52"
-                            />
+                            <image :href="rightLogo" x="92" y="22" width="52" height="52" />
                         </g>
                     </svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${rightColor}`">
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="177" height="96" viewBox="0 0 177 96" class="piece" :style="`color: ${getColor(rightAsset)}`">
                         <g class="lines" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                             <path opacity=".25" d="M84.51 50.88l14.27 25a5.71 5.71 0 005 2.88h28.54a5.72 5.72 0 004.94-2.88l14.28-25a5.85 5.85 0 000-5.76l-14.27-25a5.71 5.71 0 00-4.95-2.88h-28.59a5.72 5.72 0 00-4.94 2.88l-14.27 25a5.78 5.78 0 00-.01 5.76zm91.74 11.75V92a3.25 3.25 0 01-3.25 3.25H96.4"/>
                             <path opacity=".25" d="M81.29 28.73l-8.88 15.52a7.69 7.69 0 000 7.63l7.41 13.05a1.69 1.69 0 01-1.47 2.52H77a3.3 3.3 0 01-2.86-1.65l-7.71-13.29a8.66 8.66 0 010-8.59l7-12.39a1.87 1.87 0 00-1.63-2.8H58.65a4.31 4.31 0 00-3.75 2.18c-1.76 3.06-5 8.76-6.47 11.49a2.49 2.49 0 01-2.16 1.31c-.53 0-1.19 0-2 .13a1.65 1.65 0 01-1.62-2.42c.52-1 .94-1.69.94-1.69L53 23.24l1.57-2.76a6.36 6.36 0 015.54-3.23h18.45a5.16 5.16 0 004.49-2.62l4.79-8.51C90.37 1.27 93.4.75 97.83.75H173A3.26 3.26 0 01176.25 4v45.9a6.5 6.5 0 01-.86 3.22l-8.89 15.51"/>
@@ -265,7 +265,7 @@
                     <div class="flex-row swap-amount">
                         <GroundedArrowDownIcon v-if="!switchSides"/>
                         <GroundedArrowUpIcon v-if="switchSides"/>
-                        <Amount v-if="rightAsset !== SwapAsset.EUR" :amount="!switchSides ? toAmount : fromAmount" :currency="assetToCurrency(rightAsset)"/>
+                        <Amount v-if="!isFiatAsset(rightAsset)" :amount="!switchSides ? toAmount : fromAmount" :currency="assetToCurrency(rightAsset)"/>
                         <FiatAmount v-else :amount="(!switchSides ? toAmount : fromAmount) / 100" :currency="assetToCurrency(rightAsset)"/>
                     </div>
                 </div>
@@ -294,7 +294,7 @@
                 4/5 {{ $t('Awaiting swap secret') }}
             </div>
             <div v-if="state === SwapState.SETTLE_INCOMING || state === SwapState.COMPLETE" class="nq-h2">
-                <template v-if="toAsset === SwapAsset.EUR">
+                <template v-if="isFiatAsset(toAsset)">
                     5/5 {{ $t('Processing payout') }}
                 </template>
                 <template v-else>
@@ -303,7 +303,7 @@
             </div>
 
             <MessageTransition>
-                <template v-if="fromAsset === SwapAsset.EUR && state <= SwapState.CREATE_OUTGOING">
+                <template v-if="isFiatAsset(fromAsset) && state <= SwapState.CREATE_OUTGOING">
                     <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
                         class="dont-close-wallet-notice nq-light-blue">{{
                         $t('You will finalize your purchase by bank transfer.')
@@ -315,7 +315,7 @@
                     }}</div>
                 </template>
 
-                <template v-else-if="toAsset === SwapAsset.EUR && state === SwapState.SETTLE_INCOMING">
+                <template v-else-if="isFiatAsset(toAsset) && state === SwapState.SETTLE_INCOMING">
                     <div v-if="bottomNoticeMsg === BottomNoticeMessage.FIRST"
                         class="dont-close-wallet-notice nq-orange">{{
                         $t('Don\'t close your wallet until the swap is complete!')
@@ -364,7 +364,7 @@ import OverflowingCup from '../icons/OverflowingCup.vue';
 import Amount from '../Amount.vue';
 import ShortAddress from '../ShortAddress.vue';
 import BlueLink from '../BlueLink.vue';
-import { SwapState, SwapErrorAction } from '../../stores/Swaps';
+import { SwapState, SwapErrorAction, isFiatAsset } from '../../stores/Swaps';
 import { formatDuration } from '../../lib/Time';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
@@ -372,6 +372,7 @@ import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import BitcoinSvg from './animation/bitcoin.svg';
 import UsdcSvg from './animation/usdc.svg';
 import BankSvg from './animation/bank.svg';
+import SinpeMovilSvg from './animation/sinpe-movil.svg';
 import MessageTransition from '../MessageTransition.vue';
 
 export default defineComponent({
@@ -469,9 +470,8 @@ export default defineComponent({
         const leftAsset = computed(() => props.switchSides ? props.toAsset : props.fromAsset);
         const rightAsset = computed(() => props.switchSides ? props.fromAsset : props.toAsset);
 
-        // TODO: Deduplicate leftColor vs rightColor code
-        const leftColor = computed(() => {
-            switch (leftAsset.value) {
+        function getColor(asset: SwapAsset) {
+            switch (asset) {
                 case SwapAsset.NIM: {
                     if (!props.nimAddress) return '';
 
@@ -483,28 +483,10 @@ export default defineComponent({
                 case SwapAsset.BTC: return '#f7931a';
                 case SwapAsset.USDC_MATIC: return '#2775ca';
                 case SwapAsset.EUR: return props.bankColor;
+                case SwapAsset.CRC: return '#0D2D49';
                 default: return '';
             }
-        });
-
-        const rightColor = computed(() => {
-            if (props.oasisLimitExceeded && rightAsset.value === SwapAsset.EUR) return 'white';
-
-            switch (rightAsset.value) {
-                case SwapAsset.NIM: {
-                    if (!props.nimAddress) return '';
-
-                    const className = getColorClass(props.nimAddress);
-                    if (className === 'nq-blue') return 'white';
-
-                    return `var(--${className.replace('nq-', 'nimiq-')})`;
-                }
-                case SwapAsset.BTC: return '#f7931a';
-                case SwapAsset.USDC_MATIC: return '#2775ca';
-                case SwapAsset.EUR: return props.bankColor;
-                default: return '';
-            }
-        });
+        }
 
         function assetToName(asset: SwapAsset) {
             switch (asset) {
@@ -512,6 +494,7 @@ export default defineComponent({
                 case SwapAsset.BTC: return 'Bitcoin';
                 case SwapAsset.USDC_MATIC: return 'USD Coin';
                 case SwapAsset.EUR: return 'Euro';
+                case SwapAsset.CRC: return 'Colones';
                 default: throw new Error(`Invalid asset ${asset}`);
             }
         }
@@ -641,14 +624,18 @@ export default defineComponent({
             return false;
         });
 
+        const rightLogo = rightAsset.value === SwapAsset.BTC ? BitcoinSvg
+            : rightAsset.value === SwapAsset.USDC_MATIC ? UsdcSvg
+                : rightAsset.value === SwapAsset.CRC ? SinpeMovilSvg
+                    : (props.bankLogo || BankSvg);
+
         return {
             SwapState,
             state,
             animationClassName,
             leftAsset,
             rightAsset,
-            leftColor,
-            rightColor,
+            getColor,
             identicon$,
             identiconUrl,
             setState,
@@ -664,6 +651,8 @@ export default defineComponent({
             timer,
             assetToCurrency,
             errorActionText,
+            isFiatAsset,
+            rightLogo,
         };
     },
     components: {

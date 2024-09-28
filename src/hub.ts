@@ -31,10 +31,11 @@ import router from './router';
 import { useSettingsStore } from './stores/Settings';
 import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
-import { WELCOME_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
+import { useNetworkStore } from './stores/Network';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
@@ -115,6 +116,7 @@ const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     const { config } = useConfig();
+    const networkStore = useNetworkStore();
 
     // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
     // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
@@ -125,13 +127,23 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     await new Promise((resolve) => { router.onReady(resolve); });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
+    const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
+        WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
+    );
     const { requestType } = accounts[0];
+    const currentBlockNumber = networkStore.height;
+    const isPreStakingPeriod = currentBlockNumber.value >= config.prestaking.startBlock
+        && currentBlockNumber.value <= config.prestaking.endBlock;
+
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
             // Signup of a Keyguard account
             if (!welcomeModalAlreadyShown && config.enableBitcoin && config.usdc.enabled) {
                 // Show regular first-time welcome flow which talks about Bitcoin and USDC.
                 router.push('/welcome');
+            } else if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
+                // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
+                router.push('/welcome-prestaking');
             }
             break;
         case HubApi.RequestType.LOGIN:
@@ -151,6 +163,11 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
             // We currently don't need to handle the case that USDC is not activated yet after logins, because for
             // Legacy and Ledger accounts it's currently not supported yet, and for Keyguard accounts it's automatically
             // activated on login.
+
+            if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
+                // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
+                router.push('/welcome-prestaking');
+            }
             break;
         // We don't need to do Bitcoin/USDC activation checks for RequestType.Onboard, which happens when in Safari the
         // Hub reported no accounts from the cookie, but still had accounts in the database, which could be accessed and

@@ -1151,6 +1151,7 @@ msgstr ""
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/UsdcActivationModal.vue:35
 #: src/components/modals/WelcomeModal.vue:352
+#: src/components/modals/WelcomePreStakingModal.vue:9
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -2209,6 +2210,10 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
+#: src/components/modals/WelcomePreStakingModal.vue:6
+msgid "Start earning rewards by pre-staking your NIM tokens. It's easy and secure."
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
 msgstr ""
@@ -2649,6 +2654,10 @@ msgstr ""
 
 #: src/lib/PrestakingUtils.ts:18
 msgid "Wallet Payout"
+msgstr ""
+
+#: src/components/modals/WelcomePreStakingModal.vue:4
+msgid "Welcome to Pre-Staking!"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:14

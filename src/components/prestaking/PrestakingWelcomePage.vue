@@ -1,5 +1,7 @@
 <template>
     <div class="prestaking-welcome-page flex-column">
+        <StepProgressBar :currentStep="currentStep" />
+
         <!-- Step 1 -->
         <template v-if="currentStep === 1">
             <PageHeader>
@@ -82,6 +84,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 import PrestakingNotice from './PrestakingNotice.vue';
+import StepProgressBar from '../StepProgressBar.vue';
 
 export default defineComponent({
     setup(props, { emit }) {
@@ -105,6 +108,7 @@ export default defineComponent({
         PageBody,
         HeroIcon,
         PrestakingNotice,
+        StepProgressBar,
     },
 });
 </script>
@@ -116,6 +120,7 @@ export default defineComponent({
         flex-grow: 1;
         background-image: url('../../assets/prestaking/prestaking-welcome-background.svg');
         background-size: cover;
+        position: relative;
     }
 
     .page-header {

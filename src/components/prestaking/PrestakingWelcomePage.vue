@@ -1,40 +1,104 @@
 <template>
     <div class="prestaking-welcome-page flex-column">
-        <PageHeader>
-            <template #default>
-                <div class="two-leaf-staking-icon">
-                    <HeroIcon pulsing />
+        <!-- Step 1 -->
+        <template v-if="currentStep === 1">
+            <PageHeader>
+                <template #default>
+                    <div class="two-leaf-staking-icon">
+                        <HeroIcon pulsing />
+                    </div>
+                    {{ $t('Lock NIM for Proof of Stake') }}
+                </template>
+                <template #more>
+                    <p class="nq-text nq-blue">
+                        {{ $t('Prestaking NIM secures the network and is the quickest way to staking rewards.') }}
+                    </p>
+                </template>
+            </PageHeader>
+            <PageBody>
+                <div class="prestaking-rounded-background flex-column">
+                    <div class="prestaking-under-icons-text">
+                        <PrestakingNotice theme="warning"/>
+                    </div>
+                    <button class="nq-button light-blue prestake-button" @click="nextStep">
+                        {{ $t('Next') }}
+                    </button>
                 </div>
-                {{ $t('Lock NIM for Proof of Stake') }}
-            </template>
-            <template #more>
-                <p class="nq-text nq-blue">
-                    {{ $t('Prestaking NIM secures the network and is the quickest way to staking rewards.') }}
-                </p>
-            </template>
-        </PageHeader>
-        <PageBody>
-            <div class="prestaking-rounded-background flex-column">
-                <div class="prestaking-under-icons-text">
-                    <PrestakingNotice theme="warning"/>
+            </PageBody>
+        </template>
+
+        <!-- Step 2 -->
+        <template v-if="currentStep === 2">
+            <PageHeader>
+                <template #default>
+                    {{ $t('Step 2 Header') }}
+                </template>
+                <template #more>
+                    <p class="nq-text nq-blue">
+                        {{ $t('Step 2 subheader text goes here.') }}
+                    </p>
+                </template>
+            </PageHeader>
+            <PageBody>
+                <div class="prestaking-rounded-background flex-column">
+                    <div class="prestaking-under-icons-text">
+                        {{ $t('Step 2 content goes here') }}
+                    </div>
+                    <button class="nq-button light-blue prestake-button" @click="nextStep">
+                        {{ $t('Next') }}
+                    </button>
                 </div>
-                <button class="nq-button light-blue prestake-button" @click="$emit('next')">
-                    {{ $t('Let\'s go') }}
-                </button>
-            </div>
-        </PageBody>
+            </PageBody>
+        </template>
+
+        <!-- Step 3 -->
+        <template v-if="currentStep === 3">
+            <PageHeader>
+                <template #default>
+                    {{ $t('Step 3 Header') }}
+                </template>
+                <template #more>
+                    <p class="nq-text nq-blue">
+                        {{ $t('Step 3 subheader text goes here.') }}
+                    </p>
+                </template>
+            </PageHeader>
+            <PageBody>
+                <div class="prestaking-rounded-background flex-column">
+                    <div class="prestaking-under-icons-text">
+                        {{ $t('Step 3 content goes here') }}
+                    </div>
+                    <button class="nq-button light-blue prestake-button" @click="nextStep">
+                        {{ $t('Let\'s go') }}
+                    </button>
+                </div>
+            </PageBody>
+        </template>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 import PrestakingNotice from './PrestakingNotice.vue';
 
 export default defineComponent({
-    setup() {
-        return {};
+    setup(props, { emit }) {
+        const currentStep = ref(1);
+
+        const nextStep = () => {
+            if (currentStep.value < 3) {
+                currentStep.value++;
+            } else {
+                emit('next');
+            }
+        };
+
+        return {
+            currentStep,
+            nextStep,
+        };
     },
     components: {
         PageHeader,

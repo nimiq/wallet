@@ -46,11 +46,11 @@ export const usePrestakingStore = createStore({
     id: 'prestaking',
     state: () => ({
         validators: Config.environment === ENV_MAIN ? {
-            // '': {
-            //     address: '',
-            //     label: 'AceStaking',
-            //     description: 'The Ace in staking',
-            // },
+            'NQ97 H1NR S3X0 CVFQ VJ9Y 9A0Y FRQN Q6EU D0PL': {
+                address: 'NQ97 H1NR S3X0 CVFQ VJ9Y 9A0Y FRQN Q6EU D0PL',
+                label: 'AceStaking',
+                description: 'The Ace in staking',
+            },
             'NQ37 6EL5 BP9K XL1A 3ED0 L3EC NPR5 C9D3 BRKG': {
                 address: 'NQ37 6EL5 BP9K XL1A 3ED0 L3EC NPR5 C9D3 BRKG',
                 label: 'Helvetia Staking',
@@ -62,6 +62,12 @@ export const usePrestakingStore = createStore({
                 label: 'Mint Pool',
                 description: 'Minting together - mintpool.io',
                 icon: 'mintpool.svg',
+            },
+            'NQ38 VK34 DRBL S3CN M9KM 8UJN 9JY2 2KFN VQQH': {
+                address: 'NQ38 VK34 DRBL S3CN M9KM 8UJN 9JY2 2KFN VQQH',
+                label: 'Siam Pool',
+                // description: '',
+                icon: 'siampool.png',
             },
         } : {
             'NQ65 DHN8 4BSR 5YSX FC3V BB5J GKM2 GB2L H17C': {

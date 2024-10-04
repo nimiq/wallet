@@ -90,15 +90,25 @@ export default defineComponent({
 @import '../../scss/functions.scss';
 
 .modal ::v-deep .small-page {
-    width: 111.5rem;
-    height: 66.625rem;
+    width: 100%;
+    max-width: 111.5rem;
+    height: auto;
     min-height: unset;
-    // overflow: hidden;
+    overflow: auto;
+}
+
+.modal ::v-deep .close-button {
+    display: none;
 }
 
 .modal-content {
     display: flex;
+    flex-direction: column; // Stack columns on mobile
     height: 100%;
+
+    @media (min-width: $tabletBreakpoint) {
+        flex-direction: row; // Side by side on tablet and larger
+    }
 }
 
 .left-column {
@@ -163,12 +173,12 @@ export default defineComponent({
     }
 
     .nq-button-s {
-        align-self: center; // Center the button
+        align-self: center;
     }
 }
 
 .right-column {
-    width: 46%;
+    width: 100%; // Full width on mobile
     background: url('../../../public/img/prestaking/welcome/background.png') no-repeat center center;
     background-size: cover;
     background-color: nimiq-blue(1);
@@ -177,9 +187,15 @@ export default defineComponent({
     flex-direction: column;
     justify-content: space-between;
     padding: 5.375rem 5.75rem 4rem; // top, horizontal, bottom
-    margin: 4px;
-    border-radius: 0.75rem;
+    margin: 0; // No margin on mobile
+    border-radius: 0; // No border radius on mobile
     text-align: center;
+
+    @media (min-width: $tabletBreakpoint) {
+        width: 46%;
+        margin: 4px;
+        border-radius: 0.75rem;
+    }
 
     .tickets-image {
         width: 100%;

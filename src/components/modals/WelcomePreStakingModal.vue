@@ -1,6 +1,6 @@
 <template>
     <Modal class="welcome-prestaking-modal" ref="modal$" v-bind="$attrs" v-on="$listeners"
-        v-if="!welcomePreStakingModalAlreadyShown" emitClose :swipeToClose="false">
+        emitClose :swipeToClose="false">
         <div class="modal-content">
             <div class="left-column">
                 <h1 class="nq-h1">{{ $t('Nimiq Proof-of-Stake is coming!') }}</h1>
@@ -60,17 +60,12 @@ export default defineComponent({
     setup() {
         const modal$ = ref<Modal>(null);
 
-        const welcomePreStakingModalAlreadyShown = !!window.localStorage.getItem(
-            WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
-        );
-
         async function closeModal() {
             window.localStorage.setItem(WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY, 'true');
             await modal$.value!.forceClose();
         }
 
         return {
-            welcomePreStakingModalAlreadyShown,
             closeModal,
             modal$,
         };

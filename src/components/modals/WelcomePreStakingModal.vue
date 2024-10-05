@@ -22,7 +22,7 @@
                     </li>
                 </ul>
                 <p class="nq-notice">
-                    {{ $t('The migration happens automatically, no action required.') }}
+                    {{ $t('The migration will happen automatically around November 19, no action required.') }}
                 </p>
                 <button class="nq-button-s" @click="closeModal" @mousedown.prevent>
                     {{ $t('Continue to wallet') }}

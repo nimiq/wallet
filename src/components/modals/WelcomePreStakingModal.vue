@@ -32,15 +32,18 @@
                 <img src="/img/prestaking/welcome/tickets.png" alt="Tickets" class="tickets-image">
                 <div class="rewards">
                     <h2 class="nq-h2">{{ $t('200 Mil NIM in giveaways!') }}</h2>
-                    <p>{{ $t('Join the launch campaign and pre-stake to win big NIM rewards.') }}</p>
-                    <button class="nq-button light-blue" @click="goToCampaignPage">
-                        {{ $t('CAMPAIGN PAGE') }}
+                    <p>{{ $t('Join the giveaway campaign and pre-stake to win big NIM rewards.') }}</p>
+                    <a
+                        href="https://prestaking.nimiq.network" target="_blank" rel="noopener"
+                        class="nq-button light-blue"
+                    >
+                        {{ $t('Campaign Page') }}
                         <!-- <ArrowRightSmallIcon /> -->
                         <svg class="nq-icon" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 11">
                             <path d="M10.069 1.033 1.937 9.164M3.379 1l6.686.032.032 6.685"
                                 stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -66,15 +69,9 @@ export default defineComponent({
             await modal$.value!.forceClose();
         }
 
-        function goToCampaignPage() {
-            // closeModal();
-            window.open('https://prestaking.nimiq.network', '_blank');
-        }
-
         return {
             welcomePreStakingModalAlreadyShown,
             closeModal,
-            goToCampaignPage,
             modal$,
         };
     },

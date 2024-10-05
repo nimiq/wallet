@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import {
     Amount,
     PageHeader,
@@ -95,7 +95,7 @@ export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
         const { activePrestake: prestake, activeValidator: validator, globalStake } = usePrestakingStore();
-        const { consensus, height } = useNetworkStore();
+        const { consensus } = useNetworkStore();
 
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
         const prestakedBalance = computed(() => prestake.value ? prestake.value.balance : 0);
@@ -112,8 +112,12 @@ export default defineComponent({
 
         const { config } = useConfig();
 
-        const inPrestakingWindow = computed(() => height.value >= config.prestaking.startBlock
-            && height.value <= config.prestaking.endBlock);
+        const now = ref(Date.now());
+        setInterval(() => {
+            now.value = Date.now();
+        }, 1000);
+        const inPrestakingWindow = computed(() => now.value >= config.prestaking.startDate.getTime()
+            && now.value <= config.prestaking.endDate.getTime());
 
         return {
             availableBalance,

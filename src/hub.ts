@@ -35,7 +35,6 @@ import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
-import { useNetworkStore } from './stores/Network';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
@@ -116,7 +115,6 @@ const hubApi = new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     const { config } = useConfig();
-    const networkStore = useNetworkStore();
 
     // Store the returned account(s). Also enriches the added accounts with btc addresses already known to wallet.
     // For first-time signups on iOS/Safari, this is the only time that we receive the BTC addresses (as they are not
@@ -131,9 +129,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
         WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
     );
     const { requestType } = accounts[0];
-    const currentBlockNumber = networkStore.height;
-    const isPreStakingPeriod = currentBlockNumber.value >= config.prestaking.startBlock
-        && currentBlockNumber.value <= config.prestaking.endBlock;
+    const isPreStakingPeriod = new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate;
 
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:

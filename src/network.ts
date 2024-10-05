@@ -173,8 +173,6 @@ export async function launchNetwork() {
         await client.waitForConsensusEstablished();
         const { state: transactions$ } = useTransactionsStore();
 
-        const height = await client.getHeadHeight();
-
         const { config } = useConfig();
 
         addresses.forEach((address) => {
@@ -184,13 +182,13 @@ export async function launchNetwork() {
                     && tx.recipient === BURNER_ADDRESS
                     // Only consider txs within the pre-staking window
                     && ((
-                        tx.blockHeight
-                        && tx.blockHeight >= config.prestaking.startBlock
-                        && tx.blockHeight <= config.prestaking.endBlock
+                        tx.timestamp
+                        && new Date(tx.timestamp * 1e3) >= config.prestaking.startDate
+                        && new Date(tx.timestamp * 1e3) <= config.prestaking.endDate
                     ) || (
                         tx.state === 'pending'
-                        && height >= config.prestaking.startBlock
-                        && height <= config.prestaking.endBlock
+                        && new Date() >= config.prestaking.startDate
+                        && new Date() <= config.prestaking.endDate
                     ))
                     && tx.data.raw
                     && ValidationUtils.isValidAddress(parseData(tx.data.raw)),

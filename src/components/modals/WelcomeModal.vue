@@ -391,7 +391,6 @@ import {
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { useNetworkStore } from '../../stores/Network';
 import { useConfig } from '../../composables/useConfig';
 import router from '../../router';
 
@@ -402,15 +401,12 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
         const { currency, setCurrency, state: fiat$ } = useFiatStore();
         const { config } = useConfig();
-        const networkStore = useNetworkStore();
 
         const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
             WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
         );
 
-        const currentBlockNumber = networkStore.height;
-        const isPreStakingPeriod = currentBlockNumber.value >= config.prestaking.startBlock
-            && currentBlockNumber.value <= config.prestaking.endBlock;
+        const isPreStakingPeriod = new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate;
 
         const currencies = [
             CryptoCurrency.NIM,

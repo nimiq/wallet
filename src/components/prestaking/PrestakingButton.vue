@@ -36,7 +36,6 @@ import { defineComponent, computed, ref } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { usePrestakingStore } from '../../stores/Prestaking';
-import { useNetworkStore } from '../../stores/Network';
 import { useConfig } from '../../composables/useConfig';
 
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
@@ -56,15 +55,18 @@ export default defineComponent({
     },
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { height } = useNetworkStore();
         const { activePrestake } = usePrestakingStore();
 
         const hasPrestake = computed(() => !!activePrestake.value);
 
         const { config } = useConfig();
 
-        const visible = computed(() => height.value >= config.prestaking.startBlock
-            && (height.value <= config.prestaking.endBlock || hasPrestake.value));
+        const now = ref(Date.now());
+        setInterval(() => {
+            now.value = Date.now();
+        }, 1000);
+        const visible = computed(() => now.value >= config.prestaking.startDate.getTime()
+            && (now.value <= config.prestaking.endDate.getTime() || hasPrestake.value));
 
         const $tooltip = ref<Tooltip | null>(null);
         // watch([hasPrestake, activeAddressInfo], ([has, _]) => {

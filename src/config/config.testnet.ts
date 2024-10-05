@@ -13,8 +13,8 @@ export default {
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     prestaking: {
-        startBlock: Infinity,
-        endBlock: Infinity,
+        startDate: new Date('3024-10-07T00:00:00Z'),
+        endDate: new Date('3024-11-11T00:00:00Z'),
         totalPrestakeEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/total-prestake',
     },
 

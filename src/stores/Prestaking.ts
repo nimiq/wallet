@@ -74,10 +74,8 @@ export const usePrestakingStore = createStore({
             'NQ05 U1RF QJNH JCS1 RDQX 4M3Y 60KR K6CN 5LKC': {
                 address: 'NQ05 U1RF QJNH JCS1 RDQX 4M3Y 60KR K6CN 5LKC',
                 label: 'NimiqHub Staking',
-                description: 'Stake with NimiqHub and earn rewards while supporting the NimiqHub explorer! '
-                    + 'Join our secure, low-fee staking pool to grow your NIM and contribute to the development '
-                    + 'of the tools that power the Nimiq community. Maximize your rewards and help shape the future '
-                    + 'of Nimiq!',
+                description: 'Stake smarter with NimiqHub! Secure, reliable staking with low fees to grow your '
+                    + 'NIM and contribute to the success of the Nimiq community.',
                 icon: 'nimiqhubstaking.png',
                 website: 'https://nimiqhub.com',
                 stake: null,

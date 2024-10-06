@@ -231,10 +231,12 @@ export default defineComponent({
         .search {
             flex-direction: row-reverse;
             margin: 0 4rem;
+            margin-bottom: 1rem;
             position: relative;
 
             input {
                 padding-left: 5rem;
+                border-radius: 4rem;
             }
 
             svg {
@@ -276,6 +278,7 @@ export default defineComponent({
         margin-top: .875rem;
         margin-bottom: 0.5rem;
         line-height: 1.4;
+        padding: 0 4rem;
     }
 
     @media (max-width: $tabletBreakpoint) and (min-width: ($mobileBreakpoint + 1px)) { // Tablet breakpoint

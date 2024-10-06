@@ -1,7 +1,7 @@
 <template>
     <!-- Pass down all attributes not declared as props -->
     <Modal v-bind="$attrs" v-on="$listeners" class="prestaking-modal"
-        :class="{ 'large-modal': [Page.Graph, Page.Already].includes(page) }"
+        :class="{ 'large-modal': [Page.Graph, Page.Already, Page.Validator].includes(page) }"
         :showOverlay="overlay === Overlay.SelectAccount || statusType !== StatusChangeType.NONE"
         @close-overlay="closeOverlay"
     >

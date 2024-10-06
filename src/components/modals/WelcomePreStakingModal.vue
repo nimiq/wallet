@@ -171,7 +171,7 @@ export default defineComponent({
 
 .right-column {
     width: 100%; // Full width on mobile
-    background: url('../../../public/img/prestaking/background.png') no-repeat center center;
+    background: url('../../assets/prestaking/background.png') no-repeat center center;
     background-size: cover;
     background-color: nimiq-blue(1);
     color: white;

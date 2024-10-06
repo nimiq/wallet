@@ -44,11 +44,8 @@
                 :title="statusTitle"
                 :message="statusMessage"
             />
-            <PrestakingClaimPage
-                v-if="overlay === Overlay.Claim"
-                @back="page = Page.Graph"
-                @next="page = Page.Already"
-                @statusChange="onStatusChange"
+            <PrestakingClaimPage v-if="overlay === Overlay.Claim"
+                @close="closeOverlay"
             />
 
                 <!-- :mainAction="$t('Cancel')"

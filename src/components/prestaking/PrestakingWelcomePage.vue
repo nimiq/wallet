@@ -17,8 +17,8 @@
                 </template>
             </PageHeader>
             <PageBody>
-                <div class="prestaking-content-container flex-column">
-                    <div class="prestaking-cards">
+                <div class="content flex-column">
+                    <div class="cards">
                         <div class="card">
                             <img src="../../assets/prestaking/cards/bronze.png" alt="Guardian">
                         </div>
@@ -29,7 +29,7 @@
                             <img src="../../assets/prestaking/cards/gold.png" alt="Hero">
                         </div>
                     </div>
-                    <button class="nq-button light-blue prestake-button" @click="nextStep">
+                    <button class="nq-button light-blue next-button" @click="nextStep">
                         {{ $t('Let\'s go') }}
                     </button>
                 </div>
@@ -49,11 +49,11 @@
                 </template>
             </PageHeader>
             <PageBody>
-                <div class="prestaking-content-container flex-column">
+                <div class="content flex-column">
                     <div class="prestaking-under-icons-text">
                         {{ $t('Step 2 content goes here') }}
                     </div>
-                    <button class="nq-button light-blue prestake-button" @click="nextStep">
+                    <button class="nq-button light-blue next-button" @click="nextStep">
                         {{ $t('Next') }}
                     </button>
                 </div>
@@ -73,11 +73,11 @@
                 </template>
             </PageHeader>
             <PageBody>
-                <div class="prestaking-content-container flex-column">
+                <div class="content flex-column">
                     <div class="prestaking-under-icons-text">
                         {{ $t('Step 3 content goes here') }}
                     </div>
-                    <button class="nq-button light-blue prestake-button" @click="nextStep">
+                    <button class="nq-button light-blue next-button" @click="nextStep">
                         {{ $t('Let\'s go') }}
                     </button>
                 </div>
@@ -122,8 +122,8 @@ export default defineComponent({
 
     .prestaking-welcome-page {
         flex-grow: 1;
-        background: url('../../assets/prestaking/background.png') no-repeat center center;
-        background-size: cover;
+        background: url('../../assets/prestaking/background.png') no-repeat bottom center;
+        background-size: 100% auto;
         background-color: nimiq-blue(1);
         border-radius: 0.75rem;
         position: relative;
@@ -132,8 +132,8 @@ export default defineComponent({
     }
 
     .page-header {
-        padding-top: 9.5rem;
-        padding-bottom: 6.25rem;
+        padding-top: 4rem;
+        padding-bottom: 7rem;
     }
     .page-body {
         padding: 0;
@@ -141,17 +141,17 @@ export default defineComponent({
         flex-grow: 1;
         overflow: unset;
 
-        .prestaking-content-container {
+        .content {
             justify-content: space-between;
             align-items: center;
             height: 100%;
             overflow: hidden; // Hide overflow on the container
         }
 
-        .prestake-button {
-            width: 31.5rem;
+        .next-button {
+            width: 40.875rem;
             margin: 0;
-            margin-bottom: 5.75rem;
+            margin-bottom: 5.375rem;
         }
     }
 
@@ -161,22 +161,22 @@ export default defineComponent({
         color: white;
     }
 
-    .prestaking-cards {
+    .cards {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 1.5rem; // 12px
-        margin-bottom: 3rem; // 24px
+        margin-bottom: 5rem;
         width: 115%;
-    }
 
-    .card {
-        flex: 0 0 auto;
-        width: 33.33%; // Each card takes up a third of the container width
+        .card {
+            flex: 0 0 auto;
+            width: 33.33%; // Each card takes up a third of the container width
 
-        img {
-            width: 100%;
-            height: auto;
+            img {
+                width: 100%;
+                height: auto;
+            }
         }
     }
 

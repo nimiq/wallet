@@ -6,24 +6,31 @@
         <template v-if="currentStep === 1">
             <PageHeader>
                 <template #default>
-                    <div class="two-leaf-staking-icon">
-                        <HeroIcon pulsing />
-                    </div>
-                    {{ $t('Lock NIM for Proof of Stake') }}
+                    {{ $t('Pre-stake your NIM!') }} <br/>
+                    {{ $t('1000 NIM = 1 Giveaway point') }}
                 </template>
                 <template #more>
-                    <p class="nq-text nq-blue">
-                        {{ $t('Prestaking NIM secures the network and is the quickest way to staking rewards.') }}
+                    <p class="nq-text">
+                        {{ $t('Collect points for the big giveaway and get a shiny Identicon upgrade \
+                            – the more the better.') }}
                     </p>
                 </template>
             </PageHeader>
             <PageBody>
-                <div class="prestaking-rounded-background flex-column">
-                    <div class="prestaking-under-icons-text">
-                        <PrestakingNotice theme="warning"/>
+                <div class="prestaking-content-container flex-column">
+                    <div class="prestaking-cards">
+                        <div class="card">
+                            <img src="../../assets/prestaking/cards/bronze.png" alt="Guardian">
+                        </div>
+                        <div class="card">
+                            <img src="../../assets/prestaking/cards/silver.png" alt="Protector">
+                        </div>
+                        <div class="card">
+                            <img src="../../assets/prestaking/cards/gold.png" alt="Hero">
+                        </div>
                     </div>
                     <button class="nq-button light-blue prestake-button" @click="nextStep">
-                        {{ $t('Next') }}
+                        {{ $t('Let\'s go') }}
                     </button>
                 </div>
             </PageBody>
@@ -42,7 +49,7 @@
                 </template>
             </PageHeader>
             <PageBody>
-                <div class="prestaking-rounded-background flex-column">
+                <div class="prestaking-content-container flex-column">
                     <div class="prestaking-under-icons-text">
                         {{ $t('Step 2 content goes here') }}
                     </div>
@@ -66,7 +73,7 @@
                 </template>
             </PageHeader>
             <PageBody>
-                <div class="prestaking-rounded-background flex-column">
+                <div class="prestaking-content-container flex-column">
                     <div class="prestaking-under-icons-text">
                         {{ $t('Step 3 content goes here') }}
                     </div>
@@ -82,8 +89,6 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
-import PrestakingNotice from './PrestakingNotice.vue';
 import StepProgressBar from '../StepProgressBar.vue';
 
 export default defineComponent({
@@ -106,8 +111,6 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        HeroIcon,
-        PrestakingNotice,
         StepProgressBar,
     },
 });
@@ -115,84 +118,74 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     @import '../../scss/variables.scss';
+    @import '../../scss/functions.scss';
 
     .prestaking-welcome-page {
         flex-grow: 1;
-        background-image: url('../../assets/prestaking/prestaking-welcome-background.svg');
+        background: url('../../assets/prestaking/background.png') no-repeat center center;
         background-size: cover;
+        background-color: nimiq-blue(1);
+        border-radius: 0.75rem;
         position: relative;
+        color: white;
+        width: 62rem;
     }
 
     .page-header {
         padding-top: 9.5rem;
         padding-bottom: 6.25rem;
-        line-height: 1;
-
-        ::v-deep .nq-h1 {
-            font-size: var(--h1-size);
-        }
-        .two-leaf-staking-icon {
-            margin-bottom: 5rem;
-            font-size: 17rem;
-
-            & ::v-deep svg {
-                font-size: 17.375rem;
-                margin: 0 auto;
-            }
-        }
     }
     .page-body {
         padding: 0;
         margin: 0;
-        padding-bottom: 5.75rem;
         flex-grow: 1;
         overflow: unset;
 
-        .prestaking-rounded-background {
+        .prestaking-content-container {
             justify-content: space-between;
             align-items: center;
             height: 100%;
+            overflow: hidden; // Hide overflow on the container
+        }
 
-            .prestaking-under-icons-text {
-                font-size: var(--small-size);
-                font-weight: 600;
-                padding: 0 4rem;
-                padding-bottom: 1.25rem;
-                line-height: 2.45rem;
-                text-align: center;
-                color: var(--nimiq-orange);
-            }
-
-            .prestake-button {
-                width: 31.5rem;
-                margin: 0;
-            }
+        .prestake-button {
+            width: 31.5rem;
+            margin: 0;
+            margin-bottom: 5.75rem;
         }
     }
 
     .nq-text {
         margin: 1.25rem 0 0;
         padding: 0rem 1rem;
+        color: white;
+    }
+
+    .prestaking-cards {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem; // 12px
+        margin-bottom: 3rem; // 24px
+        width: 115%;
+    }
+
+    .card {
+        flex: 0 0 auto;
+        width: 33.33%; // Each card takes up a third of the container width
+
+        img {
+            width: 100%;
+            height: auto;
+        }
     }
 
     @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
-        .page-header {
-            .two-leaf-staking-icon {
-                & ::v-deep svg {
-                    height: 16rem;
-                }
-            }
-        }
-
-        .page-body {
-            .prestaking-rounded-background {
-                .prestaking-under-icons-text {
-                    margin-bottom: 1rem;
-                }
-            }
-        }
-        .nq-text {
-            margin: 1rem 0 0;
+        .prestaking-welcome-page {
+            width: 100%;
+            margin-top: -.5rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
         }
     }
 </style>

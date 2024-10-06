@@ -94,7 +94,7 @@ export default defineComponent({
 .step {
     height: 0.5rem;
     flex-grow: 1;
-    background-color: var(--nimiq-light-blue);
+    background-color: rgba(255, 255, 255, 0.2); // white 20% opacity
     margin: 0 0.25rem;
     border-radius: 0.25rem;
     overflow: hidden;
@@ -102,7 +102,7 @@ export default defineComponent({
 
 .step-fill {
     height: 100%;
-    background-color: var(--nimiq-blue);
+    background-color: white;
     transition: width 0.3s linear;
 }
 </style>

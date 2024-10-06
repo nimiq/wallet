@@ -46,6 +46,7 @@ export const usePrestakingStore = createStore({
     id: 'prestaking',
     state: () => ({
         validators: Config.environment === ENV_MAIN ? {
+            // Order of pools in the UI will be based on delegated stake (ascending).
             'NQ97 H1NR S3X0 CVFQ VJ9Y 9A0Y FRQN Q6EU D0PL': {
                 address: 'NQ97 H1NR S3X0 CVFQ VJ9Y 9A0Y FRQN Q6EU D0PL',
                 label: 'AceStaking',
@@ -54,8 +55,9 @@ export const usePrestakingStore = createStore({
             'NQ37 6EL5 BP9K XL1A 3ED0 L3EC NPR5 C9D3 BRKG': {
                 address: 'NQ37 6EL5 BP9K XL1A 3ED0 L3EC NPR5 C9D3 BRKG',
                 label: 'Helvetia Staking',
-                description: 'The Swiss-standard of NIMIQ Staking',
-                icon: 'helvetiastakingicon.svg',
+                description: 'Secure.Reliable.Swiss.',
+                icon: 'helvetiastaking.svg',
+                website: 'https://helvetia-staking.ch',
             },
             'NQ53 M1NT S3JD TAGM CBTK 01PX YD3U B1DE GYHB': {
                 address: 'NQ53 M1NT S3JD TAGM CBTK 01PX YD3U B1DE GYHB',
@@ -63,11 +65,148 @@ export const usePrestakingStore = createStore({
                 description: 'Minting together - mintpool.io',
                 icon: 'mintpool.svg',
             },
+            'NQ05 U1RF QJNH JCS1 RDQX 4M3Y 60KR K6CN 5LKC': {
+                address: 'NQ05 U1RF QJNH JCS1 RDQX 4M3Y 60KR K6CN 5LKC',
+                label: 'NimiqHub Staking',
+                description: 'Stake with NimiqHub and earn rewards while supporting the NimiqHub explorer! '
+                    + 'Join our secure, low-fee staking pool to grow your NIM and contribute to the development '
+                    + 'of the tools that power the Nimiq community. Maximize your rewards and help shape the future '
+                    + 'of Nimiq!',
+                icon: 'nimiqhubstaking.png',
+                website: 'https://nimiqhub.com',
+            },
             'NQ38 VK34 DRBL S3CN M9KM 8UJN 9JY2 2KFN VQQH': {
                 address: 'NQ38 VK34 DRBL S3CN M9KM 8UJN 9JY2 2KFN VQQH',
                 label: 'Siam Pool',
-                // description: '',
-                icon: 'siampool.png',
+                description: 'Staking, Simplified',
+                icon: 'siampool.svg',
+                website: 'https://siampool.co',
+            },
+            'NQ49 ASVT YBA4 9STX CMPM 6MQQ A17M AQ33 D3EL': {
+                address: 'NQ49 ASVT YBA4 9STX CMPM 6MQQ A17M AQ33 D3EL',
+            },
+            'NQ68 71A2 LBX7 R5RD PESQ ANBU 0G7T 7H11 6DPR': {
+                address: 'NQ68 71A2 LBX7 R5RD PESQ ANBU 0G7T 7H11 6DPR',
+            },
+            'NQ44 V95C ABVY RARR SBMC V8VE M6UH EJP0 RXYQ': {
+                address: 'NQ44 V95C ABVY RARR SBMC V8VE M6UH EJP0 RXYQ',
+            },
+            'NQ34 7GJ1 V2DB H9PE TJDP 22SU Y8B2 GAD5 82PN': {
+                address: 'NQ34 7GJ1 V2DB H9PE TJDP 22SU Y8B2 GAD5 82PN',
+            },
+            'NQ60 GH2T VEA2 CUR5 SXAD QU9B 7ELD YMG5 5T7U': {
+                address: 'NQ60 GH2T VEA2 CUR5 SXAD QU9B 7ELD YMG5 5T7U',
+            },
+            'NQ87 TQPY 9J74 AQCV A8S9 ADQ7 YC28 NKQ2 5QFV': {
+                address: 'NQ87 TQPY 9J74 AQCV A8S9 ADQ7 YC28 NKQ2 5QFV',
+            },
+            'NQ51 LM8E Q8LS 53TX GGDG 26M4 VX4Y XRE2 8JDT': {
+                address: 'NQ51 LM8E Q8LS 53TX GGDG 26M4 VX4Y XRE2 8JDT',
+            },
+            'NQ90 5MY4 G2NV G8V4 LVCM UNEJ 3YM4 P7XH U2BX': {
+                address: 'NQ90 5MY4 G2NV G8V4 LVCM UNEJ 3YM4 P7XH U2BX',
+            },
+            'NQ12 M1PJ QH7K DNAC JREU 0LD0 M4YS TQKA 751B': {
+                address: 'NQ12 M1PJ QH7K DNAC JREU 0LD0 M4YS TQKA 751B',
+            },
+            'NQ51 PA86 3G1G M70T H220 UUKL 4CN9 MCXQ LMJH': {
+                address: 'NQ51 PA86 3G1G M70T H220 UUKL 4CN9 MCXQ LMJH',
+            },
+            'NQ19 PG3E A5D8 TSU7 Y1J6 RDVE 0STB QGMV FFRS': {
+                address: 'NQ19 PG3E A5D8 TSU7 Y1J6 RDVE 0STB QGMV FFRS',
+            },
+            'NQ88 CJ1X RJRK PN2H SMV6 VR1Y 77LD CT9G EBNP': {
+                address: 'NQ88 CJ1X RJRK PN2H SMV6 VR1Y 77LD CT9G EBNP',
+            },
+            'NQ96 X97C 94M1 6MV3 KJ0G JA5U 6VB4 6Y63 EUH4': {
+                address: 'NQ96 X97C 94M1 6MV3 KJ0G JA5U 6VB4 6Y63 EUH4',
+            },
+            'NQ85 TC1G HU2J ELHE PR5R P5KR DBGL 6ND1 090V': {
+                address: 'NQ85 TC1G HU2J ELHE PR5R P5KR DBGL 6ND1 090V',
+            },
+            'NQ22 JK2P AYYN YJKK C9SR X0VR SUHG NBFE N449': {
+                address: 'NQ22 JK2P AYYN YJKK C9SR X0VR SUHG NBFE N449',
+            },
+            'NQ15 HNAH YRVH DFVM YHAG BSXG 0QHK KA0Q XDR7': {
+                address: 'NQ15 HNAH YRVH DFVM YHAG BSXG 0QHK KA0Q XDR7',
+            },
+            'NQ19 AC1J 0S6V KDYU 6YDQ RC57 9VH9 EEHP 9RFK': {
+                address: 'NQ19 AC1J 0S6V KDYU 6YDQ RC57 9VH9 EEHP 9RFK',
+            },
+            'NQ92 DBSV VQY5 3B7X 24UK EMJD FDHH 1GE6 N0D2': {
+                address: 'NQ92 DBSV VQY5 3B7X 24UK EMJD FDHH 1GE6 N0D2',
+            },
+            'NQ32 1U9X 7P3X B2H5 XA00 5LC2 5KFE VBQE X3BU': {
+                address: 'NQ32 1U9X 7P3X B2H5 XA00 5LC2 5KFE VBQE X3BU',
+            },
+            'NQ15 5JNS U7CE RAH5 3T02 F8A9 JCT6 QMG9 7TSV': {
+                address: 'NQ15 5JNS U7CE RAH5 3T02 F8A9 JCT6 QMG9 7TSV',
+            },
+            'NQ04 CR27 XURG V48S PK1X 1039 1EPS VR35 EK50': {
+                address: 'NQ04 CR27 XURG V48S PK1X 1039 1EPS VR35 EK50',
+            },
+            'NQ18 T043 QC8S TEF3 UFYJ GYB2 JM26 J2CT TQMC': {
+                address: 'NQ18 T043 QC8S TEF3 UFYJ GYB2 JM26 J2CT TQMC',
+            },
+            'NQ88 7C24 EYFB U2DE M07L Q2NS 99NG 08YC 1D33': {
+                address: 'NQ88 7C24 EYFB U2DE M07L Q2NS 99NG 08YC 1D33',
+            },
+            'NQ37 JVR8 E652 XT34 DDU6 VQTJ VQHG 9B62 LQDL': {
+                address: 'NQ37 JVR8 E652 XT34 DDU6 VQTJ VQHG 9B62 LQDL',
+            },
+            'NQ08 LMAK 00XK YYN9 CDXV ADVG CL0U HUBM J670': {
+                address: 'NQ08 LMAK 00XK YYN9 CDXV ADVG CL0U HUBM J670',
+            },
+            'NQ26 0000 0000 02A5 YAK7 4QNF 9MH0 TE2B GVRU': {
+                address: 'NQ26 0000 0000 02A5 YAK7 4QNF 9MH0 TE2B GVRU',
+            },
+            'NQ26 TT94 M4LL F8QS UH4M XPQK 9P42 QNH9 XVNY': {
+                address: 'NQ26 TT94 M4LL F8QS UH4M XPQK 9P42 QNH9 XVNY',
+            },
+            'NQ29 FBVT B4GM S27H UBP4 1MTC GNKQ VPBT 099M': {
+                address: 'NQ29 FBVT B4GM S27H UBP4 1MTC GNKQ VPBT 099M',
+            },
+            'NQ74 HBNA LCQ3 700S CNP4 E26H G1L3 P6GX N5TV': {
+                address: 'NQ74 HBNA LCQ3 700S CNP4 E26H G1L3 P6GX N5TV',
+            },
+            'NQ95 CN40 JSKR 353D 55J3 FK5S J66U 3908 KKF6': {
+                address: 'NQ95 CN40 JSKR 353D 55J3 FK5S J66U 3908 KKF6',
+            },
+            'NQ26 JHY9 M74D BD00 D6TQ CB0J KR38 5YGV 8CQ4': {
+                address: 'NQ26 JHY9 M74D BD00 D6TQ CB0J KR38 5YGV 8CQ4',
+            },
+            'NQ98 D3KE 8EQ8 Y7DK G1MT 3P5T 2PHX 18V5 UEC1': {
+                address: 'NQ98 D3KE 8EQ8 Y7DK G1MT 3P5T 2PHX 18V5 UEC1',
+            },
+            'NQ39 5HN4 GVA4 SLS7 LX07 68QP DB86 BP3G PQ87': {
+                address: 'NQ39 5HN4 GVA4 SLS7 LX07 68QP DB86 BP3G PQ87',
+            },
+            'NQ23 DPNH MAUE NXB4 5MFP 40H2 VXR8 81EC TCNN': {
+                address: 'NQ23 DPNH MAUE NXB4 5MFP 40H2 VXR8 81EC TCNN',
+            },
+            'NQ15 BRC2 5TMJ DKGK T747 MC0C DLAF KDLE 0BBF': {
+                address: 'NQ15 BRC2 5TMJ DKGK T747 MC0C DLAF KDLE 0BBF',
+            },
+            'NQ36 U0BH 0BHM J0EH UAE5 FMV6 D2EY 8TBP 50M3': {
+                address: 'NQ36 U0BH 0BHM J0EH UAE5 FMV6 D2EY 8TBP 50M3',
+            },
+            'NQ57 8QQT DDTN PGMF 02L0 QQXF 9TGB X8KM PPM6': {
+                address: 'NQ57 8QQT DDTN PGMF 02L0 QQXF 9TGB X8KM PPM6',
+            },
+            'NQ85 EA0M YF3E P9AX SM2C 58KX GD0B SXJE K2PJ': {
+                address: 'NQ85 EA0M YF3E P9AX SM2C 58KX GD0B SXJE K2PJ',
+            },
+            'NQ13 SY9E HDV2 TYHG XHNR 5LGX VUF6 0HX6 AHSL': {
+                address: 'NQ13 SY9E HDV2 TYHG XHNR 5LGX VUF6 0HX6 AHSL',
+            },
+            'NQ52 FF24 6C9N E9FH Q05R SUCY CBD9 HRVA 32F6': {
+                address: 'NQ52 FF24 6C9N E9FH Q05R SUCY CBD9 HRVA 32F6',
+            },
+            'NQ97 UJ1C 9ABP K3QK SCFA 57FT 04XE 0RJD SJKJ': {
+                address: 'NQ97 UJ1C 9ABP K3QK SCFA 57FT 04XE 0RJD SJKJ',
+            },
+            'NQ65 0UVT 5CMU X4J9 L3F3 VCUP U8VF 8C37 RRCB': {
+                address: 'NQ65 0UVT 5CMU X4J9 L3F3 VCUP U8VF 8C37 RRCB',
             },
         } : {
             'NQ65 DHN8 4BSR 5YSX FC3V BB5J GKM2 GB2L H17C': {

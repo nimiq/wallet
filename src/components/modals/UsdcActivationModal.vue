@@ -32,14 +32,17 @@
             <div class="flex-grow"></div>
 
             <button v-if="hasUsdcAddresses" class="nq-button light-blue" @click="close()" @mousedown.prevent>
-                {{ shouldOpenWelcomeModal ? $t('Check the new intro') : $t('Got it') }}
+                {{ buttonText }}
             </button>
             <button v-else class="nq-button light-blue" @click="enableUsdc" @mousedown.prevent>
                 {{ $t('Activate USDC') }}
             </button>
 
-            <a v-if="!hasUsdcAddresses || shouldOpenWelcomeModal" class="nq-link"
-                @click="close(hasUsdcAddresses && shouldOpenWelcomeModal)">
+            <a
+                v-if="!hasUsdcAddresses || shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal"
+                class="nq-link"
+                @click="close(hasUsdcAddresses && (shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal))"
+            >
                 {{ $t('Skip') }}
             </a>
         </PageBody>
@@ -47,11 +50,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { activateUsdc } from '../../hub';
-import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import {
+    CryptoCurrency,
+    WELCOME_MODAL_LOCALSTORAGE_KEY,
+    WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
+} from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -62,17 +69,35 @@ export default defineComponent({
     },
     setup(props, context) {
         const { activeAccountId, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
-
         const { isMobile } = useWindowSize();
-
+        const { config } = useConfig();
         const modal$ = ref<Modal>(null);
 
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
         //  Welcome modal for new accounts/users anymore which hold no balance.
-        const shouldOpenWelcomeModal = !welcomeModalAlreadyShown
+        const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
+            WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
+        );
+        const isPreStakingPeriod = computed(() =>
+            new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate,
+        );
+
+        const shouldOpenWelcomeModal = computed(() =>
+            !welcomeModalAlreadyShown
             && !props.redirect // if a redirect is set, don't redirect to Welcome modal and don't offer going there.
-            && useConfig().config.enableBitcoin; // Welcome modal talks about BTC.
+            && config.enableBitcoin, // Welcome modal talks about BTC.
+        );
+
+        const shouldOpenWelcomePreStakingModal = computed(() =>
+            !welcomePreStakingModalAlreadyShown && !props.redirect && isPreStakingPeriod.value,
+        );
+
+        const buttonText = computed(() => {
+            if (shouldOpenWelcomeModal.value) return context.root.$t('Check the new intro');
+            if (shouldOpenWelcomePreStakingModal.value) return context.root.$t('Learn about pre-staking');
+            return context.root.$t('Got it');
+        });
 
         async function enableUsdc() {
             await activateUsdc(activeAccountId.value!);
@@ -96,9 +121,11 @@ export default defineComponent({
                     await context.root.$router.push('/transactions');
                 }
 
-                if (shouldOpenWelcomeModal) {
+                if (shouldOpenWelcomeModal.value) {
                     // Open welcome modal with additional BTC and USDC info if not shown yet.
                     await context.root.$router.push('/welcome');
+                } else if (shouldOpenWelcomePreStakingModal.value) {
+                    await context.root.$router.push('/welcome-prestaking');
                 }
             }
         }
@@ -106,6 +133,8 @@ export default defineComponent({
         return {
             hasUsdcAddresses,
             shouldOpenWelcomeModal,
+            shouldOpenWelcomePreStakingModal,
+            buttonText,
             modal$,
             enableUsdc,
             close,

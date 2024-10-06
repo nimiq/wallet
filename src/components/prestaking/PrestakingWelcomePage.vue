@@ -30,7 +30,7 @@
                         </div>
                     </div>
                     <button class="nq-button light-blue next-button" @click="nextStep">
-                        {{ $t('Let\'s go') }}
+                        {{ $t('Let\'s go!') }}
                     </button>
                 </div>
             </PageBody>
@@ -40,21 +40,32 @@
         <template v-if="currentStep === 2">
             <PageHeader>
                 <template #default>
-                    {{ $t('Step 2 Header') }}
+                    {{ $t('Stake early to get more points!') }}
                 </template>
                 <template #more>
-                    <p class="nq-text nq-blue">
-                        {{ $t('Step 2 subheader text goes here.') }}
+                    <p class="nq-text">
+                        {{ $t('Pre-stake as early as possible to earn more points.') }}
                     </p>
                 </template>
             </PageHeader>
             <PageBody>
                 <div class="content flex-column">
-                    <div class="prestaking-under-icons-text">
-                        {{ $t('Step 2 content goes here') }}
+                    <div class="icon-container">
+                        <img src="../../assets/prestaking/step-2-icon.svg" alt="Hourglass icon"/>
+                        <div class="icon-label">{{ $t('EARLY BIRD MULTIPLIERS') }}</div>
+                    </div>
+                    <div class="multipliers">
+                        <div class="multiplier-card">
+                            <div class="multiplier">{{ $t('3x') }}</div>
+                            <div class="period">{{ $t('First week') }}</div>
+                        </div>
+                        <div class="multiplier-card">
+                            <div class="multiplier">{{ $t('2x') }}</div>
+                            <div class="period">{{ $t('Second week') }}</div>
+                        </div>
                     </div>
                     <button class="nq-button light-blue next-button" @click="nextStep">
-                        {{ $t('Next') }}
+                        {{ $t('Let\'s go!') }}
                     </button>
                 </div>
             </PageBody>
@@ -64,21 +75,29 @@
         <template v-if="currentStep === 3">
             <PageHeader>
                 <template #default>
-                    {{ $t('Step 3 Header') }}
+                    {{ $t('Go for small validator pools to earn even more points!') }}
                 </template>
                 <template #more>
-                    <p class="nq-text nq-blue">
-                        {{ $t('Step 3 subheader text goes here.') }}
+                    <p class="nq-text">
+                        {{ $t('Spreading the pre-staked NIM across validators helps decentralization.\
+                        Choose an underdog for another bonus.') }}
                     </p>
                 </template>
             </PageHeader>
             <PageBody>
                 <div class="content flex-column">
-                    <div class="prestaking-under-icons-text">
-                        {{ $t('Step 3 content goes here') }}
+                    <div class="icon-container">
+                        <img src="../../assets/prestaking/step-3-icon.svg" alt="Hourglass icon"/>
+                        <div class="icon-label">{{ $t('UNDERDOG MULTIPLIERS') }}</div>
+                    </div>
+                    <div class="multipliers">
+                        <div class="multiplier-card step-3">
+                            <div class="multiplier">{{ $t('5x') }}</div>
+                            <div class="period">{{ $t('Small validators') }}</div>
+                        </div>
                     </div>
                     <button class="nq-button light-blue next-button" @click="nextStep">
-                        {{ $t('Let\'s go') }}
+                        {{ $t('Let\'s go!') }}
                     </button>
                 </div>
             </PageBody>
@@ -135,6 +154,7 @@ export default defineComponent({
         padding-top: 4rem;
         padding-bottom: 7rem;
     }
+
     .page-body {
         padding: 0;
         margin: 0;
@@ -158,7 +178,28 @@ export default defineComponent({
     .nq-text {
         margin: 1.25rem 0 0;
         padding: 0rem 1rem;
-        color: white;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .icon-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+
+        img {
+            height: 150px;
+            width: auto;
+            margin-bottom: 2rem;
+        }
+
+        .icon-label {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            // letter-spacing: 0.0625rem;
+        }
     }
 
     .cards {
@@ -178,6 +219,53 @@ export default defineComponent({
                 height: auto;
             }
         }
+    }
+
+    .multipliers {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem; // 12px
+        margin-bottom: 8.375rem;
+    }
+
+    .multiplier-card {
+        border-radius: 1rem;
+        padding: 2.5rem;
+
+        width: 162px;
+        height: 80px;
+
+        &.step-3 {
+            width: 210px;
+        }
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        // figma
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        background-blend-mode: color-dodge;
+        background: radial-gradient(101.48% 101.48% at 50% 100%, rgba(31, 35, 72, 0) 0%, rgba(31, 35, 72, 0.15) 100%);
+        background: radial-gradient(83.64% 49.88% at 50% 0%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+        background-color: rgba(255, 255, 255, 0.05);
+        // border-image-source: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+        //     radial-gradient(50% 100% at 50% 0%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .multiplier {
+        font-size: 2rem;
+        font-weight: 600;
+        padding: 1rem;
+        margin-right: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+    }
+
+    .period {
+        font-size: 2rem;
+        line-height: 1.25;
+        opacity: 0.6;
     }
 
     @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint

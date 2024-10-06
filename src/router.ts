@@ -77,6 +77,8 @@ const SimplexModal = () =>
 // Prestaking Modals
 const PrestakingModal = () =>
     import(/* webpackChunkName: "prestaking-modal" */ './components/prestaking/PrestakingModal.vue');
+const WelcomePreStakingModal = () =>
+    import(/* webpackChunkName: "welcome-prestaking-modal" */ './components/modals/WelcomePreStakingModal.vue');
 
 Vue.use(VueRouter);
 
@@ -344,6 +346,13 @@ const routes: RouteConfig[] = [{
             },
             name: 'prestaking',
             props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/welcome-prestaking',
+            name: 'welcome-prestaking',
+            components: {
+                modal: WelcomePreStakingModal,
+            },
             meta: { column: Columns.DYNAMIC },
         }],
         beforeEnter: (to, from, next) => {

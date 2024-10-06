@@ -13,8 +13,15 @@ export default {
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
     prestaking: {
-        startBlock: 3_239_300,
-        endBlock: Infinity,
+        // The block heights determining the on-chain pre-staking window. All transactions inside this window count
+        // for pre-staking.
+        startBlock: 3_392_200, // 2024-10-06T02:53:18Z
+        endBlock: 3_456_000, // ~2024-11-19T07:00:00Z
+        // The dates determining the display of the pre-staking UI in the Wallet. This window is deliberately smaller
+        // than the on-chain window to allow for grace periods for the UI to be updated.
+        // The UI is still shown for address who have pre-staked even after the `endDate`.
+        startDate: new Date('2024-10-07T00:00:00Z'),
+        endDate: new Date('2024-11-11T00:00:00Z'),
         totalPrestakeEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/total-prestake',
     },
 

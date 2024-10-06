@@ -186,11 +186,11 @@ export async function launchNetwork() {
                     && ((
                         tx.blockHeight
                         && tx.blockHeight >= config.prestaking.startBlock
-                        && tx.blockHeight <= config.prestaking.endBlock
+                        && tx.blockHeight < config.prestaking.endBlock
                     ) || (
                         tx.state === 'pending'
                         && height >= config.prestaking.startBlock
-                        && height <= config.prestaking.endBlock
+                        && height < config.prestaking.endBlock
                     ))
                     && tx.data.raw
                     && ValidationUtils.isValidAddress(parseData(tx.data.raw)),

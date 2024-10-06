@@ -411,6 +411,17 @@ export async function syncFromHub() {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.push('/usdc-activation');
     }
+
+    // Check if the WelcomePreStakingModal should be shown
+    const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
+        WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
+    );
+    const isPreStakingPeriod = new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate;
+
+    if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
+        // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
+        router.push('/welcome-prestaking');
+    }
 }
 
 export async function onboard(asRedirect = false) {

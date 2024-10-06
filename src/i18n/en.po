@@ -79,10 +79,6 @@ msgstr ""
 msgid "{percentage}% of address's balance"
 msgstr ""
 
-#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:14
-msgid "{poolName} Website"
-msgstr ""
-
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
 msgstr ""
@@ -137,6 +133,10 @@ msgstr ""
 msgid "10 min"
 msgstr ""
 
+#: src/components/prestaking/PrestakingWelcomePage.vue:11
+msgid "1000 NIM = 1 Giveaway point"
+msgstr ""
+
 #: src/components/FeeSelector.vue:8
 msgid "15m"
 msgstr ""
@@ -154,8 +154,16 @@ msgstr ""
 msgid "20 sec"
 msgstr ""
 
+#: src/components/modals/WelcomePreStakingModal.vue:34
+msgid "200 Mil NIM in giveaways!"
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Support"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:64
+msgid "2x"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:22
@@ -167,6 +175,19 @@ msgstr ""
 #: src/components/modals/SellCryptoModal.vue:79
 #: src/components/swap/SwapModal.vue:93
 msgid "30-day Limit"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:60
+msgid "3x"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:96
+msgid "5x"
+msgstr ""
+
+#: src/components/prestaking/ValidatorListItem.vue:34
+#: src/components/prestaking/ValidatorListItem.vue:48
+msgid "5x points"
 msgstr ""
 
 #: src/components/FeeSelector.vue:6
@@ -380,7 +401,7 @@ msgid "Back to Bank Details"
 msgstr ""
 
 #: src/composables/useBtcTransactionInfo.ts:128
-#: src/composables/useTransactionInfo.ts:122
+#: src/composables/useTransactionInfo.ts:141
 #: src/composables/useUsdcTransactionInfo.ts:105
 msgid "Bank Account"
 msgstr ""
@@ -406,7 +427,7 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:121
 #: src/components/modals/BtcTransactionModal.vue:133
-#: src/composables/useTransactionInfo.ts:114
+#: src/composables/useTransactionInfo.ts:133
 #: src/composables/useUsdcTransactionInfo.ts:101
 msgid "Bitcoin"
 msgstr ""
@@ -519,6 +540,10 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
+#: src/components/modals/WelcomePreStakingModal.vue:40
+msgid "Campaign Page"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:243
 #: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
@@ -532,7 +557,7 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:5
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:113
-#: src/composables/useTransactionInfo.ts:109
+#: src/composables/useTransactionInfo.ts:128
 #: src/composables/useUsdcTransactionInfo.ts:90
 msgid "Cancelled Swap"
 msgstr ""
@@ -542,7 +567,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:131
+#: src/composables/useTransactionInfo.ts:150
 msgid "Cashlink"
 msgstr ""
 
@@ -574,12 +599,12 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:97
+#: src/components/prestaking/PrestakingValidatorPage.vue:145
 msgid "Changing validator"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:35
+#: src/components/modals/UsdcActivationModal.vue:97
 msgid "Check the new intro"
 msgstr ""
 
@@ -605,6 +630,18 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
+#: src/components/prestaking/PrestakingGraphPage.vue:9
+msgid "Choose an amount you want to pre-stake. Pre-staked NIM remain locked until the migration is complete."
+msgstr ""
+
+#: src/components/prestaking/PrestakingClaimPage.vue:45
+msgid "Claim your Points"
+msgstr ""
+
+#: src/components/prestaking/PrestakingClaimPage.vue:5
+msgid "Claim your points to join the big giveaway!"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:241
 msgid "Clear"
 msgstr ""
@@ -624,6 +661,10 @@ msgstr ""
 #: src/components/layouts/AddressOverview.vue:214
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:15
+msgid "Collect points for the big giveaway and get a shiny Identicon upgrade                                 – the more the better."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
@@ -653,7 +694,7 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:36
+#: src/components/prestaking/PrestakingGraphPage.vue:39
 msgid "Confirm prestake"
 msgstr ""
 
@@ -718,6 +759,10 @@ msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
+msgstr ""
+
+#: src/components/modals/WelcomePreStakingModal.vue:28
+msgid "Continue to wallet"
 msgstr ""
 
 #: src/components/modals/MoonpaySellInfoModal.vue:38
@@ -880,6 +925,14 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:102
 msgid "Duration and fees are estimates."
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:56
+msgid "EARLY BIRD MULTIPLIERS"
+msgstr ""
+
+#: src/components/modals/WelcomePreStakingModal.vue:21
+msgid "Earn new NIM by staking"
 msgstr ""
 
 #: src/components/prestaking/PrestakingValidatorPage.vue:9
@@ -1074,6 +1127,10 @@ msgstr ""
 msgid "Finalizing swap"
 msgstr ""
 
+#: src/components/prestaking/PrestakingWelcomePage.vue:61
+msgid "First week"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:124
 msgid ""
 "For a decentralized\n"
@@ -1135,6 +1192,10 @@ msgstr ""
 msgid "Get NIM"
 msgstr ""
 
+#: src/components/modals/WelcomePreStakingModal.vue:8
+msgid "Get ready for a massive performance boost and earning NIM by staking your NIM."
+msgstr ""
+
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
 msgstr ""
@@ -1147,11 +1208,14 @@ msgstr ""
 msgid "Get verified for higher limits by authenticating with {provider}. These are the requirements:"
 msgstr ""
 
+#: src/components/prestaking/PrestakingWelcomePage.vue:79
+msgid "Go for small validator pools to earn even more points!"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:35
+#: src/components/modals/UsdcActivationModal.vue:99
 #: src/components/modals/WelcomeModal.vue:352
-#: src/components/modals/WelcomePreStakingModal.vue:9
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1163,6 +1227,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
+msgstr ""
+
+#: src/components/prestaking/ValidatorListItem.vue:40
+msgid "High stake!"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:178
@@ -1182,7 +1250,7 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:484
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:176
+#: src/composables/useTransactionInfo.ts:195
 #: src/composables/useUsdcTransactionInfo.ts:150
 #: src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
@@ -1193,14 +1261,14 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:505
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:191
-#: src/composables/useTransactionInfo.ts:197
+#: src/composables/useTransactionInfo.ts:210
+#: src/composables/useTransactionInfo.ts:216
 #: src/composables/useUsdcTransactionInfo.ts:156
 msgid "HTLC Refund"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:488
-#: src/composables/useTransactionInfo.ts:180
+#: src/composables/useTransactionInfo.ts:199
 #: src/composables/useUsdcTransactionInfo.ts:153
 msgid "HTLC Settlement"
 msgstr ""
@@ -1309,6 +1377,10 @@ msgstr ""
 msgid "It's safe to close your wallet now"
 msgstr ""
 
+#: src/components/modals/WelcomePreStakingModal.vue:35
+msgid "Join the giveaway campaign and pre-stake to win big NIM rewards."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
 msgstr ""
@@ -1319,6 +1391,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:48
 msgid "Language"
+msgstr ""
+
+#: src/components/modals/UsdcActivationModal.vue:98
+msgid "Learn about pre-staking"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:172
@@ -1341,8 +1417,13 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
-#: src/components/prestaking/PrestakingWelcomePage.vue:22
 msgid "Let's go"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:101
+#: src/components/prestaking/PrestakingWelcomePage.vue:34
+#: src/components/prestaking/PrestakingWelcomePage.vue:69
+msgid "Let's go!"
 msgstr ""
 
 #: src/components/NetworkMapPeerList.vue:14
@@ -1379,10 +1460,6 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:14
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
-msgstr ""
-
-#: src/components/prestaking/PrestakingWelcomePage.vue:8
-msgid "Lock NIM for Proof of Stake"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:288
@@ -1423,6 +1500,10 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:167
 #: src/components/modals/SellCryptoModal.vue:156
 msgid "Max swappable amount is {amount}"
+msgstr ""
+
+#: src/components/prestaking/PrestakingClaimPage.vue:48
+msgid "Maybe later"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:101
@@ -1487,12 +1568,24 @@ msgstr ""
 msgid "NIM network fee"
 msgstr ""
 
+#: src/components/prestaking/PrestakingClaimPage.vue:37
+msgid "NIM pre-staked"
+msgstr ""
+
+#: src/components/modals/WelcomePreStakingModal.vue:17
+msgid "Nimiq becomes super eco-friendly"
+msgstr ""
+
 #: src/components/modals/DisclaimerModal.vue:16
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
 msgstr ""
 
 #: src/components/prestaking/PrestakingInfoPage.vue:5
 msgid "Nimiq PoS Prestaking"
+msgstr ""
+
+#: src/components/modals/WelcomePreStakingModal.vue:6
+msgid "Nimiq Proof-of-Stake is coming!"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:111
@@ -1703,21 +1796,33 @@ msgstr ""
 msgid "Popups"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:9
+#: src/components/prestaking/PrestakingWelcomePage.vue:48
+msgid "Pre-stake as early as possible to earn more points."
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:10
+msgid "Pre-stake your NIM!"
+msgstr ""
+
+#: src/components/prestaking/PrestakingNotice.vue:4
+msgid "Pre-staked funds are locked until the migration is complete"
+msgstr ""
+
+#: src/components/prestaking/PrestakingGraphPage.vue:139
+#: src/composables/useTransactionInfo.ts:119
+msgid "Pre-staking Migration Address"
+msgstr ""
+
 #: src/components/prestaking/PrestakingInfoPage.vue:9
 msgid "Prestake as much NIM as you can and help reach the next milestone of securing the network."
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:43
+#: src/components/prestaking/PrestakingGraphPage.vue:46
 msgid "Prestake must be at least {minPrestake}."
 msgstr ""
 
 #: src/components/prestaking/PrestakingInfoPage.vue:24
 msgid "Prestaked"
-msgstr ""
-
-#: src/components/prestaking/PrestakingNotice.vue:4
-msgid "Prestaked funds are locked until launch"
 msgstr ""
 
 #: src/components/prestaking/PrestakingNotice.vue:8
@@ -1730,10 +1835,6 @@ msgstr ""
 
 #: src/components/prestaking/PrestakingButton.vue:21
 msgid "Prestaking is now available!"
-msgstr ""
-
-#: src/components/prestaking/PrestakingWelcomePage.vue:12
-msgid "Prestaking NIM secures the network and is the quickest way to staking rewards."
 msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
@@ -1922,12 +2023,20 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+#: src/components/prestaking/PrestakingValidatorPage.vue:17
+msgid "Search for validators..."
+msgstr ""
+
 #: src/components/SearchBar.vue:46
 msgid "Search transactions"
 msgstr ""
 
 #: src/components/SearchBar.vue:44
 msgid "Search transactions by contact, address, etc."
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:65
+msgid "Second week"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:43
@@ -2030,7 +2139,7 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:127
+#: src/components/prestaking/PrestakingGraphPage.vue:130
 msgid "Sending Pre-Prestaking Transaction"
 msgstr ""
 
@@ -2049,7 +2158,7 @@ msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
 #: src/composables/useBtcTransactionInfo.ts:174
-#: src/composables/useTransactionInfo.ts:159
+#: src/composables/useTransactionInfo.ts:178
 #: src/composables/useUsdcTransactionInfo.ts:134
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
@@ -2165,16 +2274,20 @@ msgid "Simulate EUR payment"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:28
-#: src/components/modals/UsdcActivationModal.vue:43
+#: src/components/modals/UsdcActivationModal.vue:46
 msgid "Skip"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:97
+msgid "Small validators"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:525
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
-#: src/components/prestaking/PrestakingGraphPage.vue:174
-#: src/components/prestaking/PrestakingValidatorPage.vue:127
+#: src/components/prestaking/PrestakingGraphPage.vue:178
+#: src/components/prestaking/PrestakingValidatorPage.vue:175
 msgid "Something went wrong"
 msgstr ""
 
@@ -2184,6 +2297,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:220
 msgid "Speed up your Transaction"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:83
+msgid "Spreading the pre-staked NIM across validators helps decentralization.                            Choose an underdog for another bonus."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:44
@@ -2196,6 +2313,10 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:355
 msgid "Stable like USD, got it"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:44
+msgid "Stake early to get more points!"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:29
@@ -2214,19 +2335,15 @@ msgstr ""
 msgid "standard"
 msgstr ""
 
-#: src/components/modals/WelcomePreStakingModal.vue:6
-msgid "Start earning rewards by pre-staking your NIM tokens. It's easy and secure."
-msgstr ""
-
 #: src/components/modals/WelcomeModal.vue:354
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:109
+#: src/components/prestaking/PrestakingValidatorPage.vue:157
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:152
+#: src/components/prestaking/PrestakingGraphPage.vue:156
 msgid "Successfully prestaked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2240,7 +2357,7 @@ msgstr ""
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:120
-#: src/composables/useTransactionInfo.ts:105
+#: src/composables/useTransactionInfo.ts:124
 #: src/composables/useUsdcTransactionInfo.ts:97
 msgid "Swap"
 msgstr ""
@@ -2359,6 +2476,10 @@ msgstr ""
 msgid "The limit on your IBAN has been reached"
 msgstr ""
 
+#: src/components/modals/WelcomePreStakingModal.vue:25
+msgid "The migration will happen automatically around November 19, no action required."
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved accounts\n"
@@ -2403,7 +2524,7 @@ msgstr ""
 msgid "The USDC stablecoin was originally launched on Ethereum. To avoid high fees and enable fast transactions, this wallet uses the Polygon version."
 msgstr ""
 
-#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:11
+#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:15
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
@@ -2533,6 +2654,10 @@ msgstr ""
 msgid "Transaction to {address}"
 msgstr ""
 
+#: src/components/modals/WelcomePreStakingModal.vue:13
+msgid "Transactions are almost instant"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:112
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
 msgstr ""
@@ -2566,8 +2691,16 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
-#: src/composables/useTransactionInfo.ts:132
+#: src/composables/useTransactionInfo.ts:151
 msgid "Unclaimed Cashlink"
+msgstr ""
+
+#: src/components/prestaking/ValidatorListItem.vue:30
+msgid "Underdog"
+msgstr ""
+
+#: src/components/prestaking/PrestakingWelcomePage.vue:92
+msgid "UNDERDOG MULTIPLIERS"
 msgstr ""
 
 #: src/lib/GoCrypto.ts:225
@@ -2616,7 +2749,7 @@ msgstr ""
 #: src/components/layouts/AddressOverview.vue:84
 #: src/components/UsdcAddressInfo.vue:12
 #: src/composables/useBtcTransactionInfo.ts:124
-#: src/composables/useTransactionInfo.ts:118
+#: src/composables/useTransactionInfo.ts:137
 msgid "USD Coin"
 msgstr ""
 
@@ -2636,7 +2769,7 @@ msgstr ""
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:48
+#: src/components/prestaking/PrestakingInfoPage.vue:49
 msgid "Validator"
 msgstr ""
 
@@ -2658,10 +2791,6 @@ msgstr ""
 
 #: src/lib/PrestakingUtils.ts:18
 msgid "Wallet Payout"
-msgstr ""
-
-#: src/components/modals/WelcomePreStakingModal.vue:4
-msgid "Welcome to Pre-Staking!"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:14
@@ -2686,7 +2815,7 @@ msgstr ""
 msgid "When ready"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:51
+#: src/components/prestaking/PrestakingGraphPage.vue:54
 msgid "will be available within hours."
 msgstr ""
 

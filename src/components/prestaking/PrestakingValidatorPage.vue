@@ -12,6 +12,12 @@
         </PageHeader>
         <PageBody>
             <!-- <ValidatorFilter @changed="changeFilter" @search="onSearch"/> -->
+            <div class="search flex-row">
+                <input type="text" class="search-field nq-input flex-grow"
+                    v-model="searchValue" :placeholder="$t('Search for validators...')"
+                />
+                <FatSearchIcon />
+            </div>
             <div class="validator-list" ref="validatorList$">
                 <div class="scroll-mask top"></div>
                 <LoadingList v-if="!stakeFetched" :length="4" :type="LoadingListType.VALIDATOR" />
@@ -40,6 +46,7 @@ import { FilterState } from '../../lib/PrestakingUtils';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './PrestakingModal.vue';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
+import FatSearchIcon from '../icons/Prestaking/FatSearchIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -98,7 +105,17 @@ export default defineComponent({
                 //         });
                 default: {
                     const list = validatorsList.value
-                        .filter((validator) => 'label' in validator) // Only show pools by default
+                        .filter((validator) => {
+                            if (!searchValue.value) {
+                                // Only show pools by default
+                                return 'label' in validator;
+                            }
+
+                            return [
+                                ('label' in validator ? validator.label : '').toLowerCase(),
+                                validator.address.toLowerCase(),
+                            ].join('').includes(searchValue.value.toLowerCase());
+                        })
                         .sort((a, b) => {
                             const cmp = (a.stake ? a.stake : 0) - (b.stake ? b.stake : 0);
                             if (cmp) return cmp;
@@ -176,6 +193,7 @@ export default defineComponent({
             sortedList,
             selectValidator,
             onSearch,
+            searchValue,
         };
     },
     components: {
@@ -184,6 +202,7 @@ export default defineComponent({
         ValidatorListItem,
         // ValidatorFilter,
         LoadingList,
+        FatSearchIcon,
     },
 });
 </script>
@@ -207,6 +226,33 @@ export default defineComponent({
         .prestake-validator-filter {
             margin: 0 auto;
             margin-bottom: 0.5rem;
+        }
+
+        .search {
+            flex-direction: row-reverse;
+            margin: 0 4rem;
+            position: relative;
+
+            input {
+                padding-left: 5rem;
+            }
+
+            svg {
+                width: 2.5rem;
+                margin-right: -2.5rem;
+                position: relative;
+                left: 1.5rem;
+                transition: color 200ms ease;
+
+                line, circle {
+                    stroke-width: 2.0;
+                }
+            }
+
+            input:focus + svg,
+            input:hover + svg {
+                color: var(--nimiq-light-blue);
+            }
         }
 
         .loading-list {

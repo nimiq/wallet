@@ -1,8 +1,8 @@
 <template>
     <div :class="`prestaking-notice ${theme === 'warning' ? 'nq-orange' : ''}`">
         <LockIcon v-if="lock"/>
-        {{ $t('Prestaked funds are locked until launch') }}
-        <Tooltip preferredPosition="top">
+        {{ $t('Pre-staked funds are locked until the migration is complete') }}
+        <Tooltip preferredPosition="top left">
             <InfoCircleSmallIcon slot="trigger"/>
             <template>
                 <p>{{ $t('Prestaked funds remain locked until the Proof of Stake network goes live.') }}</p>

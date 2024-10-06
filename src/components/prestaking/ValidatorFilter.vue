@@ -120,12 +120,7 @@ export default defineComponent({
                 width: 2.375rem;
                 height: 2.375rem;
 
-                * {
-                    stroke: currentColor;
-                }
-
                 line, circle {
-                    stroke: rgb(31, 35, 72);
                     stroke-width: 2.0;
                 }
             }

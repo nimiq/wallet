@@ -6,7 +6,10 @@
             </template>
             <template #more>
                 <p class="nq-text nq-blue">{{
-                    $t('Prestake as much NIM as you can and help reach the next milestone of securing the network.')
+                    $t(
+                        'Choose an amount you want to pre-stake. '
+                        + 'Pre-staked NIM remain locked until the migration is complete.',
+                    )
                 }}</p>
                 <!-- <div v-if="validator" class="tooltip-bar flex-row">
                     <LabelTooltip :validator="validator" @click="$emit('changeValidator')" />

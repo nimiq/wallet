@@ -2,7 +2,8 @@
     <!-- Pass down all attributes not declared as props -->
     <Modal v-bind="$attrs" v-on="$listeners" class="prestaking-modal"
         :class="{ 'large-modal': [Page.Graph, Page.Already, Page.Validator].includes(page) }"
-        :showOverlay="overlay === Overlay.SelectAccount || statusType !== StatusChangeType.NONE"
+        :showOverlay="overlay === Overlay.SelectAccount || statusType !== StatusChangeType.NONE
+                    || overlay === Overlay.Claim"
         @close-overlay="closeOverlay"
     >
         <template v-if="page === Page.Info">
@@ -43,6 +44,13 @@
                 :title="statusTitle"
                 :message="statusMessage"
             />
+            <PrestakingClaimPage
+                v-if="overlay === Overlay.Claim"
+                @back="page = Page.Graph"
+                @next="page = Page.Already"
+                @statusChange="onStatusChange"
+            />
+
                 <!-- :mainAction="$t('Cancel')"
                 @main-action="onStatusMainAction" -->
         </template>
@@ -59,7 +67,8 @@ import PrestakingWelcomePage from './PrestakingWelcomePage.vue';
 import PrestakingValidatorPage from './PrestakingValidatorPage.vue';
 import PrestakingGraphPage from './PrestakingGraphPage.vue';
 import PrestakingInfoPage from './PrestakingInfoPage.vue';
-import StatusScreen, { State } from '../StatusScreen.vue';
+import PrestakingClaimPage from './PrestakingClaimPage.vue';
+import StatusScreen, { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 
 enum Page {
     Info,
@@ -72,6 +81,7 @@ enum Page {
 enum Overlay {
     SelectAccount,
     Validator,
+    Claim,
 }
 
 export enum StatusChangeType {
@@ -130,11 +140,25 @@ export default defineComponent({
             if (statusChangeTimeout) clearTimeout(statusChangeTimeout);
 
             if (statusChangeObj.timeout) {
-                statusChangeTimeout = window.setTimeout(() =>
-                    updateStatusScreen(statusChangeObj),
-                statusChangeObj.timeout);
+                statusChangeTimeout = window.setTimeout(() => {
+                    updateStatusScreen(statusChangeObj);
+                    // Check if the status is successful
+                    if (statusChangeObj.state === State.SUCCESS) {
+                        // Wait for SUCCESS_REDIRECT_DELAY plus additional time
+                        setTimeout(() => {
+                            overlay.value = Overlay.Claim;
+                        }, SUCCESS_REDIRECT_DELAY + 600); // 500ms additional delay
+                    }
+                }, statusChangeObj.timeout);
             } else {
                 updateStatusScreen(statusChangeObj);
+                // Check if the status is successful
+                if (statusChangeObj.state === State.SUCCESS) {
+                    // Wait for SUCCESS_REDIRECT_DELAY plus additional time
+                    setTimeout(() => {
+                        overlay.value = Overlay.Claim;
+                    }, SUCCESS_REDIRECT_DELAY + 600); // 500ms additional delay
+                }
             }
         }
 
@@ -206,6 +230,7 @@ export default defineComponent({
         // PrestakingRewardsHistoryPage,
         // SelectAccountOverlay,
         StatusScreen,
+        PrestakingClaimPage,
     },
 });
 </script>

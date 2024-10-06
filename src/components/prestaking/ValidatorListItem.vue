@@ -1,7 +1,7 @@
 <template>
     <button class="validator-list-item reset flex-row">
         <div class="validator-item-wrapper flex-row">
-            <div class="validator-left validator-icon">
+            <div class="validator-icon">
                 <img v-if="'icon' in validator"
                     :src="`/img/prestaking/providers/${validator.icon}`" :alt="validator.label"
                 />
@@ -26,6 +26,10 @@
                     </div>
                     <template v-if="isUnderdog">
                         <strong class="dot">&middot;</strong>
+                        <div class="validator-underdog">
+                            {{ $t('Underdog') }}
+                        </div>
+                        <strong class="dot">&middot;</strong>
                         <div class="validator-5x-points nq-green">
                             {{ $t('5x points') }}
                         </div>
@@ -38,7 +42,11 @@
                     </template>
                 </div>
             </div>
-            <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
+            <!-- <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" /> -->
+            <div v-if="isUnderdog" class="underdog-info flex-row">
+                <img src="../../assets/prestaking/underdog-icon.svg" alt="Underdog" class="underdog-icon">
+                <div class="points-pill">{{ $t('5x points') }}</div>
+            </div>
         </div>
     </button>
 </template>
@@ -48,7 +56,7 @@ import { computed, defineComponent, watch } from '@vue/composition-api';
 import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { usePrestakingStore, Validator } from '../../stores/Prestaking';
 
-import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+// import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorDescriptionTooltip from './tooltips/ValidatorDescriptionTooltip.vue';
 
@@ -88,7 +96,7 @@ export default defineComponent({
     components: {
         Identicon,
         // ValidatorTrustScore,
-        ValidatorRewardBubble,
+        // ValidatorRewardBubble,
         ShortAddress,
         ValidatorDescriptionTooltip,
         InfoCircleSmallIcon,
@@ -98,6 +106,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/functions.scss';
+@import '../../scss/variables.scss';
 
 .validator-list-item {
     box-sizing: border-box;
@@ -177,6 +186,35 @@ export default defineComponent({
     .validator-5x-points,
     .validator-high-stake {
         font-weight: bold;
+    }
+}
+
+.underdog-info {
+    align-items: center;
+    display: flex; // Ensure it's displayed by default
+}
+
+.underdog-icon {
+    --size: 3.25rem;
+
+    width: var(--size);
+    height: var(--size);
+    margin-right: 1rem;
+}
+
+.points-pill {
+    font-weight: bold;
+    font-size: var(--small-size);
+    color: var(--nimiq-green);
+    border-radius: 1.75rem;
+    border: 1.5px solid var(--Green, var(--nimiq-green));
+    padding: 0.25rem 0.75rem;
+}
+
+// Add this media query at the end of the style block
+@media (max-width: $mobileBreakpoint) {
+    .underdog-info {
+        display: none;
     }
 }
 </style>

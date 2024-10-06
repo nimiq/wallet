@@ -14,8 +14,8 @@
             <!-- <ValidatorFilter @changed="changeFilter" @search="onSearch"/> -->
             <div class="validator-list" ref="validatorList$">
                 <div class="scroll-mask top"></div>
-                <LoadingList v-if="validatorsList.length === 0" :length="5" :type="LoadingListType.VALIDATOR" />
-                <ValidatorListItem
+                <LoadingList v-if="!stakeFetched" :length="4" :type="LoadingListType.VALIDATOR" />
+                <ValidatorListItem v-else
                     v-for="validator in sortedList" :key="validator.address"
                     :validator="validator"
                     :container="validatorList$"
@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { captureException } from '@sentry/vue';
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, onBeforeUnmount, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { Validator, usePrestakingStore } from '../../stores/Prestaking';
 import { useConfig } from '../../composables/useConfig';
@@ -48,34 +48,65 @@ export default defineComponent({
         const { validatorsList, activePrestake, setPrestake } = usePrestakingStore();
 
         const validatorList$ = ref<HTMLElement | null>(null);
+        const stakeFetched = ref(false);
+
+        async function fetchValidators() {
+            const stakes = await fetch(config.prestaking.validatorsEndpoint).then((res) => res.json()) as {
+                address: string,
+                deposit: number,
+                delegatedStake: number,
+            }[];
+
+            let globalStake = 0;
+
+            const { validators } = usePrestakingStore().state;
+            for (const stake of stakes) {
+                const validatorStake = stake.deposit + stake.delegatedStake;
+                validators[stake.address].stake = validatorStake;
+                globalStake += validatorStake;
+            }
+            usePrestakingStore().patch({
+                validators,
+                globalStake,
+            });
+        }
+        fetchValidators().finally(() => {
+            stakeFetched.value = true;
+        });
+        const validatorFetchInterval = window.setInterval(fetchValidators, 60 * 1e3);
+        onBeforeUnmount(() => {
+            window.clearInterval(validatorFetchInterval);
+        });
 
         const filter = ref(FilterState.TRUST);
         const changeFilter = (newFilter: FilterState) => filter.value = newFilter;
 
         const sortedList = computed(() => { // eslint-disable-line arrow-body-style
-            return validatorsList.value;
-            // switch (filter.value) {
-            //     case FilterState.SEARCH:
-            //         return validatorsList.value.filter((validator) =>
-            //             'label' in validator
-            //                 ? validator.label.toLowerCase().includes(searchValue.value.toLowerCase())
-            //                 : validator.address.toLowerCase().includes(searchValue.value.toLowerCase()),
-            //         );
-            //     case FilterState.REWARD:
-            //         return validatorsList.value.slice()
-            //             .sort((a, b) => {
-            //                 const cmp = ('reward' in b ? b.reward : 0) - ('reward' in a ? a.reward : 0);
-            //                 if (cmp) return cmp;
-            //                 return a.address < b.address ? -1 : 1;
-            //             });
-            //     default:
-            //         return validatorsList.value.slice()
-            //             .sort((a, b) => {
-            //                 const cmp = ('trust' in b ? b.trust : 0) - ('trust' in a ? a.trust : 0);
-            //                 if (cmp) return cmp;
-            //                 return a.address < b.address ? -1 : 1;
-            //             });
-            // }
+            switch (filter.value) {
+                // case FilterState.SEARCH:
+                //     return validatorsList.value.filter((validator) =>
+                //         'label' in validator
+                //             ? validator.label.toLowerCase().includes(searchValue.value.toLowerCase())
+                //             : validator.address.toLowerCase().includes(searchValue.value.toLowerCase()),
+                //     );
+                // case FilterState.REWARD:
+                //     return validatorsList.value.slice()
+                //         .sort((a, b) => {
+                //             const cmp = ('reward' in b ? b.reward : 0) - ('reward' in a ? a.reward : 0);
+                //             if (cmp) return cmp;
+                //             return a.address < b.address ? -1 : 1;
+                //         });
+                default: {
+                    const list = validatorsList.value
+                        .filter((validator) => 'label' in validator) // Only show pools by default
+                        .sort((a, b) => {
+                            const cmp = (a.stake ? a.stake : 0) - (b.stake ? b.stake : 0);
+                            if (cmp) return cmp;
+                            return a.address < b.address ? -1 : 1;
+                        });
+                    return list;
+                }
+            }
         });
 
         async function selectValidator(validator: Validator) {
@@ -137,6 +168,7 @@ export default defineComponent({
         }
 
         return {
+            stakeFetched,
             LoadingListType,
             validatorList$,
             changeFilter,

@@ -2202,6 +2202,10 @@ msgstr ""
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr ""
 
+#: src/components/prestaking/ValidatorListItem.vue:25
+msgid "Stake: {validatorStake}%"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
 msgstr ""

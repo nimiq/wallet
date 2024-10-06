@@ -17,11 +17,25 @@
                     </template>
                     <ShortAddress v-else :address="validator.address" :displayedCharacters="28"/>
                 </div>
-                <div v-if="'label' in validator" class="validator-item-inner-row flex-row validator-trust">
-                    <ShortAddress :address="validator.address"/>
+                <div class="validator-item-inner-row flex-row validator-trust">
                     <!-- <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
                     <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
                     <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div> -->
+                    <div v-if="validatorStake" class="validator-stake">
+                        {{ $t('Stake: {validatorStake}%', { validatorStake }) }}
+                    </div>
+                    <template v-if="isUnderdog">
+                        <strong class="dot">&middot;</strong>
+                        <div class="validator-5x-points nq-green">
+                            {{ $t('5x points') }}
+                        </div>
+                    </template>
+                    <template v-if="hasHighStake">
+                        <strong class="dot">&middot;</strong>
+                        <div class="validator-high-stake nq-orange">
+                            {{ $t('High stake!') }}
+                        </div>
+                    </template>
                 </div>
             </div>
             <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
@@ -30,9 +44,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent, watch } from '@vue/composition-api';
 import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
-import { Validator } from '../../stores/Prestaking';
+import { usePrestakingStore, Validator } from '../../stores/Prestaking';
 
 import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -46,13 +60,29 @@ export default defineComponent({
             required: true,
         },
     },
-    setup() {
+    setup(props) {
         // const payoutText = computed(() => 'label' in props.validator
         //     ? getPayoutText(props.validator.payoutType)
         //     : context.root.$t('Unregistered validator'));
 
+        const { globalStake } = usePrestakingStore();
+
+        watch(() => props.validator, () => {
+            console.log('validator changed', props.validator.stake); // eslint-disable-line no-console
+        });
+
+        const validatorStake = computed(
+            () => Math.round(((props.validator.stake || 0) / globalStake.value) * 1000) / 10,
+        );
+
+        const isUnderdog = computed(() => validatorStake.value && validatorStake.value < 10);
+        const hasHighStake = computed(() => validatorStake.value && validatorStake.value >= 20);
+
         return {
             // payoutText,
+            validatorStake,
+            isUnderdog,
+            hasHighStake,
         };
     },
     components: {
@@ -137,5 +167,16 @@ export default defineComponent({
 
     .dot { margin: 0 0.675rem }
     .validator-payout { white-space: nowrap }
+
+    .validator-stake,
+    .validator-underdog {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .validator-5x-points,
+    .validator-high-stake {
+        font-weight: bold;
+    }
 }
 </style>

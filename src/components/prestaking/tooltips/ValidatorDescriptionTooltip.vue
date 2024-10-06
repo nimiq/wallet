@@ -7,19 +7,19 @@
             <p v-if="'description' in validator" class="description">{{ validator.description }}</p>
             <span v-else class="no-description">{{ $t('No description available') }}</span>
         </blockquote>
+        <BlueLink v-if="'website' in validator && 'label' in validator"
+            :href="validator.website" target="_blank" rel="noopener">
+            {{ hostname }}
+        </BlueLink>
 
         <p>{{ $t('The validator is solely responsible for information provided above.') }}</p>
-        <BlueLink v-if="'link' in validator && 'label' in validator"
-            :href="validator.link" target="_blank" rel="noopener">
-            {{ $t('{poolName} Website', { poolName: validator.label }) }}
-        </BlueLink>
 
     </Tooltip>
 </template>
 
 <script lang="ts">
+import { computed, defineComponent } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-import { defineComponent } from '@vue/composition-api';
 import { Validator } from '../../../stores/Prestaking';
 import BlueLink from '../../BlueLink.vue';
 
@@ -32,8 +32,17 @@ export default defineComponent({
         },
         preferredPosition: {
             type: String,
-            default: 'top',
+            default: 'bottom',
         },
+    },
+    setup(props) {
+        const hostname = computed(() => 'website' in props.validator && props.validator.website
+            ? new URL(props.validator.website).hostname
+            : null);
+
+        return {
+            hostname,
+        };
     },
     components: {
         Tooltip,
@@ -84,5 +93,6 @@ p:not(.description) {
 
 .blue-link {
     color: var(--nimiq-light-blue-on-dark);
+    margin-top: 1rem;
 }
 </style>

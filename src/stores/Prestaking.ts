@@ -98,6 +98,10 @@ export const usePrestakingStore = createStore({
             },
             'NQ44 V95C ABVY RARR SBMC V8VE M6UH EJP0 RXYQ': {
                 address: 'NQ44 V95C ABVY RARR SBMC V8VE M6UH EJP0 RXYQ',
+                label: 'nim.re Staking Pool',
+                // description: '',
+                icon: 'nimrestakingpool.png',
+                website: 'https://nim.re/pool',
                 stake: null,
             },
             'NQ34 7GJ1 V2DB H9PE TJDP 22SU Y8B2 GAD5 82PN': {

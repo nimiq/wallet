@@ -24,21 +24,22 @@
                     {{ $t('Prestaked') }}
                 </span>
                 <div class="row flex-row">
-                    <div class="col flex-grow">
+                    <div class="col flex-grow flex-1">
                         <div class="amount-prestaked">
                             <Amount :amount="prestake.balance"/>
                         </div>
                         <div class="amount-prestaked-proportional">
                             {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
                         </div>
-                        <PrestakingNotice theme="warning" lock/>
                     </div>
                     <div class="flex-row">
-                        <button class="nq-button-s" @click="$emit('adjust-prestake')" :disabled="!inPrestakingWindow">
+                        <button class="nq-button-s increase-prestake"
+                            @click="$emit('adjust-prestake')" :disabled="!inPrestakingWindow">
                             {{ $t('Increase Prestake') }}
                         </button>
                     </div>
                 </div>
+                <PrestakingNotice theme="warning" lock/>
             </div>
 
             <div class="horizontal-separator" />
@@ -215,6 +216,10 @@ export default defineComponent({
         font-weight: bold;
         line-height: 1;
         margin-bottom: 1rem;
+    }
+
+    .flex-1 {
+        flex: 1;
     }
 
     .adjust-prestake {

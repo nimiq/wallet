@@ -136,6 +136,7 @@ export default defineComponent({
                 const result = await sendTransaction({
                     sender: activeAddressInfo.value!.address,
                     recipient: BURNER_ADDRESS,
+                    recipientLabel: context.root.$t('Pre-staking Migration Address') as string,
                     value: amountToSend.value,
                     fee: fee.value,
                     extraData: message.value,

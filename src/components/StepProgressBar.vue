@@ -26,14 +26,20 @@ export default defineComponent({
     setup(props) {
         const animationProgress = ref(0);
         const isFirstStepAnimated = ref(false);
+        const ANIMATION_DURATION = 1500; // 1500ms = 1.5s
 
         const getFillWidth = computed(() => (step: number) => {
             if (props.currentStep > step) return '100%';
             if (props.currentStep === step) {
-                return `${animationProgress.value}%`;
+                // Apply easing function to the animation progress
+                const easedProgress = easeOutCubic(animationProgress.value / 100) * 100;
+                return `${easedProgress}%`;
             }
             return '0%';
         });
+
+        // Easing function: easeOutCubic
+        const easeOutCubic = (t: number): number => 1 - (1 - t) ** 3;
 
         let animationFrame: number;
 
@@ -42,7 +48,7 @@ export default defineComponent({
                 animationStartTime = timestamp;
             }
             const elapsed = timestamp - animationStartTime;
-            const progress = Math.min(elapsed / 2000, 1); // 2000ms = 2s
+            const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
             animationProgress.value = progress * 100;
 
             if (progress < 1) {
@@ -103,6 +109,6 @@ export default defineComponent({
 .step-fill {
     height: 100%;
     background-color: white;
-    transition: width 0.3s linear;
+    transition: width 0.3s cubic-bezier(0.33, 1, 0.68, 1); // Easing curve added here
 }
 </style>

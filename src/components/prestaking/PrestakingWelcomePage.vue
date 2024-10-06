@@ -2,106 +2,108 @@
     <div class="prestaking-welcome-page flex-column">
         <StepProgressBar :currentStep="currentStep" />
 
-        <!-- Step 1 -->
-        <template v-if="currentStep === 1">
-            <PageHeader>
-                <template #default>
-                    {{ $t('Pre-stake your NIM!') }} <br/>
-                    {{ $t('1000 NIM = 1 Giveaway point') }}
-                </template>
-                <template #more>
-                    <p class="nq-text">
-                        {{ $t('Collect points for the big giveaway and get a shiny Identicon upgrade \
-                            – the more the better.') }}
-                    </p>
-                </template>
-            </PageHeader>
-            <PageBody>
-                <div class="content flex-column">
-                    <div class="cards">
-                        <div class="card">
-                            <img src="../../assets/prestaking/cards/bronze.png" alt="Guardian">
+        <transition name="fade" mode="out-in">
+            <!-- Step 1 -->
+            <div v-if="currentStep === 1" key="step1">
+                <PageHeader>
+                    <template #default>
+                        {{ $t('Pre-stake your NIM!') }} <br/>
+                        {{ $t('1000 NIM = 1 Giveaway point') }}
+                    </template>
+                    <template #more>
+                        <p class="nq-text">
+                            {{ $t('Collect points for the big giveaway and get a shiny Identicon upgrade \
+                                – the more the better.') }}
+                        </p>
+                    </template>
+                </PageHeader>
+                <PageBody>
+                    <div class="content flex-column">
+                        <div class="cards">
+                            <div class="card">
+                                <img src="../../assets/prestaking/cards/bronze.png" alt="Guardian">
+                            </div>
+                            <div class="card">
+                                <img src="../../assets/prestaking/cards/silver.png" alt="Protector">
+                            </div>
+                            <div class="card">
+                                <img src="../../assets/prestaking/cards/gold.png" alt="Hero">
+                            </div>
                         </div>
-                        <div class="card">
-                            <img src="../../assets/prestaking/cards/silver.png" alt="Protector">
-                        </div>
-                        <div class="card">
-                            <img src="../../assets/prestaking/cards/gold.png" alt="Hero">
-                        </div>
+                        <button class="nq-button light-blue next-button" @click="nextStep">
+                            {{ $t('Let\'s go!') }}
+                        </button>
                     </div>
-                    <button class="nq-button light-blue next-button" @click="nextStep">
-                        {{ $t('Let\'s go!') }}
-                    </button>
-                </div>
-            </PageBody>
-        </template>
+                </PageBody>
+            </div>
 
-        <!-- Step 2 -->
-        <template v-if="currentStep === 2">
-            <PageHeader>
-                <template #default>
-                    {{ $t('Stake early to get more points!') }}
-                </template>
-                <template #more>
-                    <p class="nq-text">
-                        {{ $t('Pre-stake as early as possible to earn more points.') }}
-                    </p>
-                </template>
-            </PageHeader>
-            <PageBody>
-                <div class="content flex-column">
-                    <div class="icon-container">
-                        <img src="../../assets/prestaking/step-2-icon.svg" alt="Hourglass icon"/>
-                        <div class="icon-label">{{ $t('EARLY BIRD MULTIPLIERS') }}</div>
-                    </div>
-                    <div class="multipliers">
-                        <div class="multiplier-card">
-                            <div class="multiplier">{{ $t('3x') }}</div>
-                            <div class="period">{{ $t('First week') }}</div>
+            <!-- Step 2 -->
+            <div v-if="currentStep === 2" key="step2">
+                <PageHeader>
+                    <template #default>
+                        {{ $t('Stake early to get more points!') }}
+                    </template>
+                    <template #more>
+                        <p class="nq-text">
+                            {{ $t('Pre-stake as early as possible to earn more points.') }}
+                        </p>
+                    </template>
+                </PageHeader>
+                <PageBody>
+                    <div class="content flex-column">
+                        <div class="icon-container">
+                            <img src="../../assets/prestaking/step-2-icon.svg" alt="Hourglass icon"/>
+                            <div class="icon-label">{{ $t('EARLY BIRD MULTIPLIERS') }}</div>
                         </div>
-                        <div class="multiplier-card">
-                            <div class="multiplier">{{ $t('2x') }}</div>
-                            <div class="period">{{ $t('Second week') }}</div>
+                        <div class="multipliers">
+                            <div class="multiplier-card">
+                                <div class="multiplier">{{ $t('3x') }}</div>
+                                <div class="period">{{ $t('First week') }}</div>
+                            </div>
+                            <div class="multiplier-card">
+                                <div class="multiplier">{{ $t('2x') }}</div>
+                                <div class="period">{{ $t('Second week') }}</div>
+                            </div>
                         </div>
+                        <button class="nq-button light-blue next-button" @click="nextStep">
+                            {{ $t('Let\'s go!') }}
+                        </button>
                     </div>
-                    <button class="nq-button light-blue next-button" @click="nextStep">
-                        {{ $t('Let\'s go!') }}
-                    </button>
-                </div>
-            </PageBody>
-        </template>
+                </PageBody>
+            </div>
 
-        <!-- Step 3 -->
-        <template v-if="currentStep === 3">
-            <PageHeader>
-                <template #default>
-                    {{ $t('Go for small validator pools to earn even more points!') }}
-                </template>
-                <template #more>
-                    <p class="nq-text">
-                        {{ $t('Spreading the pre-staked NIM across validators helps decentralization.\
-                        Choose an underdog for another bonus.') }}
-                    </p>
-                </template>
-            </PageHeader>
-            <PageBody>
-                <div class="content flex-column">
-                    <div class="icon-container">
-                        <img src="../../assets/prestaking/step-3-icon.svg" alt="Hourglass icon"/>
-                        <div class="icon-label">{{ $t('UNDERDOG MULTIPLIERS') }}</div>
-                    </div>
-                    <div class="multipliers">
-                        <div class="multiplier-card step-3">
-                            <div class="multiplier">{{ $t('5x') }}</div>
-                            <div class="period">{{ $t('Small validators') }}</div>
+            <!-- Step 3 -->
+            <div v-if="currentStep === 3" key="step3">
+                <PageHeader>
+                    <template #default>
+                        {{ $t('Go for small validator pools to earn even more points!') }}
+                    </template>
+                    <template #more>
+                        <p class="nq-text">
+                            {{ $t('Spreading the pre-staked NIM across validators helps decentralization.\
+                            Choose an underdog for another bonus.') }}
+                        </p>
+                    </template>
+                </PageHeader>
+                <PageBody>
+                    <div class="content flex-column">
+                        <div class="icon-container">
+                            <img src="../../assets/prestaking/step-3-icon.svg" alt="Hourglass icon"/>
+                            <div class="icon-label">{{ $t('UNDERDOG MULTIPLIERS') }}</div>
                         </div>
+                        <div class="multipliers">
+                            <div class="multiplier-card step-3">
+                                <div class="multiplier">{{ $t('5x') }}</div>
+                                <div class="period">{{ $t('Small validators') }}</div>
+                            </div>
+                        </div>
+                        <button class="nq-button light-blue next-button" @click="nextStep">
+                            {{ $t('Let\'s go!') }}
+                        </button>
                     </div>
-                    <button class="nq-button light-blue next-button" @click="nextStep">
-                        {{ $t('Let\'s go!') }}
-                    </button>
-                </div>
-            </PageBody>
-        </template>
+                </PageBody>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -275,5 +277,15 @@ export default defineComponent({
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 450ms ease;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0;
     }
 </style>

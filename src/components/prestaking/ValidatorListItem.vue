@@ -21,8 +21,8 @@
                     <!-- <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
                     <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
                     <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div> -->
-                    <div v-if="validatorStake" class="validator-stake">
-                        {{ $t('Stake: {validatorStake}%', { validatorStake }) }}
+                    <div v-if="validator.stake !== null" class="validator-stake">
+                        {{ $t('Stake: {validatorStake}%', { validatorStake: validatorStakePercentage }) }}
                     </div>
                     <template v-if="isUnderdog">
                         <strong class="dot">&middot;</strong>
@@ -79,16 +79,16 @@ export default defineComponent({
             console.log('validator changed', props.validator.stake); // eslint-disable-line no-console
         });
 
-        const validatorStake = computed(
+        const validatorStakePercentage = computed(
             () => Math.round(((props.validator.stake || 0) / globalStake.value) * 1000) / 10,
         );
 
-        const isUnderdog = computed(() => validatorStake.value && validatorStake.value < 10);
-        const hasHighStake = computed(() => validatorStake.value && validatorStake.value >= 20);
+        const isUnderdog = computed(() => props.validator.stake !== null && validatorStakePercentage.value < 10);
+        const hasHighStake = computed(() => props.validator.stake !== null && validatorStakePercentage.value >= 20);
 
         return {
             // payoutText,
-            validatorStake,
+            validatorStakePercentage,
             isUnderdog,
             hasHighStake,
         };

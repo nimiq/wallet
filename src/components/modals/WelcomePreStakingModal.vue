@@ -9,15 +9,15 @@
                 </h2>
                 <ul class="features">
                     <li>
-                        <img src="/img/prestaking/welcome/icon-1.svg" alt="Fast transactions">
+                        <img src="../../assets/prestaking/welcome/icon-1.svg" alt="Fast transactions">
                         <span class="nq-text">{{ $t('Transactions are almost instant') }}</span>
                     </li>
                     <li>
-                        <img src="/img/prestaking/welcome/icon-2.svg" alt="Eco-friendly">
+                        <img src="../../assets/prestaking/welcome/icon-2.svg" alt="Eco-friendly">
                         <span class="nq-text">{{ $t('Nimiq becomes super eco-friendly') }}</span>
                     </li>
                     <li>
-                        <img src="/img/prestaking/welcome/icon-3.svg" alt="Earn NIM">
+                        <img src="../../assets/prestaking/welcome/icon-3.svg" alt="Earn NIM">
                         <span class="nq-text">{{ $t('Earn new NIM by staking') }}</span>
                     </li>
                 </ul>
@@ -29,7 +29,7 @@
                 </button>
             </div>
             <div class="right-column">
-                <img src="/img/prestaking/welcome/tickets.png" alt="Tickets" class="tickets-image">
+                <img src="../../assets/prestaking/welcome/tickets.png" alt="Tickets" class="tickets-image">
                 <div class="rewards">
                     <h2 class="nq-h2">{{ $t('200 Mil NIM in giveaways!') }}</h2>
                     <p>{{ $t('Join the giveaway campaign and pre-stake to win big NIM rewards.') }}</p>

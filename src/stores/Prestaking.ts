@@ -142,6 +142,10 @@ export const usePrestakingStore = createStore({
             },
             'NQ96 X97C 94M1 6MV3 KJ0G JA5U 6VB4 6Y63 EUH4': {
                 address: 'NQ96 X97C 94M1 6MV3 KJ0G JA5U 6VB4 6Y63 EUH4',
+                label: 'Keyring Staking',
+                description: 'Smooth Staking and Rewards Distribution Experience',
+                icon: 'keyringstaking.png',
+                website: 'https://keyring.so/nimiq',
                 stake: null,
             },
             'NQ85 TC1G HU2J ELHE PR5R P5KR DBGL 6ND1 090V': {

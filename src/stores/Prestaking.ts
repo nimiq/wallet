@@ -52,7 +52,9 @@ export const usePrestakingStore = createStore({
             'NQ97 H1NR S3X0 CVFQ VJ9Y 9A0Y FRQN Q6EU D0PL': {
                 address: 'NQ97 H1NR S3X0 CVFQ VJ9Y 9A0Y FRQN Q6EU D0PL',
                 label: 'AceStaking',
-                description: 'The Ace in staking',
+                description: 'Ace your staking journey with our secure and efficient pool. Maximize your NIM rewards today!',
+                icon: 'acestaking.png',
+                website: 'https://acestaking.com',
                 stake: null,
             },
             'NQ37 6EL5 BP9K XL1A 3ED0 L3EC NPR5 C9D3 BRKG': {

@@ -80,7 +80,7 @@ export default defineComponent({
         fetchValidators().finally(() => {
             stakeFetched.value = true;
         });
-        const validatorFetchInterval = window.setInterval(fetchValidators, 60 * 1e3);
+        const validatorFetchInterval = window.setInterval(fetchValidators, 10 * 1e3);
         onBeforeUnmount(() => {
             window.clearInterval(validatorFetchInterval);
         });

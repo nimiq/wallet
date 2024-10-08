@@ -55,7 +55,7 @@ export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
         const { activeAddress } = useAddressStore();
-        const { validatorsList, activePrestake, setPrestake } = usePrestakingStore();
+        const { validatorsList, activePrestake, setPrestake, globalStake: totalStake } = usePrestakingStore();
 
         const validatorList$ = ref<HTMLElement | null>(null);
         const stakeFetched = ref(false);
@@ -127,16 +127,13 @@ export default defineComponent({
                             return a.address < b.address ? -1 : 1;
                         });
 
-                    // Calculate underdog status
-                    const poolsWithStake = list.filter((v) => 'label' in v && v.stake !== null);
-                    const totalStake = poolsWithStake.reduce((sum, v) => sum + (v.stake || 0), 0);
-                    const hasUnderdog = poolsWithStake.some((v) => (v.stake || 0) / totalStake < 0.1);
+                    const hasUnderdog = list.some((v) => (v.stake || 0) / totalStake.value < 0.1);
 
                     return list.map((validator) => ({
                         ...validator,
                         isUnderdog: 'label' in validator
-                            && ((validator.stake || 0) / totalStake < 0.1
-                                || (!hasUnderdog && validator === poolsWithStake[0])),
+                            && ((validator.stake || 0) / totalStake.value < 0.1
+                                || (!hasUnderdog && validator === list[0])),
                     }));
                 }
             }

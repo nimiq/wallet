@@ -109,8 +109,8 @@ export default defineComponent({
                 default: {
                     const list = validatorsList.value
                         .filter((validator) => {
-                            if (!searchValue.value) {
-                                // Only show pools by default
+                            if (searchValue.value.length < 3) {
+                                // Only show pools by default when search string is less than 3 characters
                                 return 'label' in validator;
                             }
 

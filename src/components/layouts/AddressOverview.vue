@@ -17,7 +17,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <PrestakingButton />
+                    <PrestakingButton v-if="showPrestakingButton" />
                     <button
                         class="reset icon-button"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
@@ -134,7 +134,7 @@
 
                     <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if prestaking-->
                         <PrestakingPreview v-if="activePrestake && windowWidth > 860" />
-                        <PrestakingButton v-else />
+                        <PrestakingButton v-else-if="showPrestakingButton" />
                     </template>
 
                     <button class="send nq-button-pill light-blue flex-row"
@@ -235,7 +235,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -266,7 +266,7 @@ import RefreshIcon from '../icons/RefreshIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
 import PrestakingButton from '../prestaking/PrestakingButton.vue';
 
-import { useAccountStore } from '../../stores/Account';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
@@ -296,7 +296,7 @@ import { usePrestakingStore } from '../../stores/Prestaking';
 export default defineComponent({
     name: 'address-overview',
     setup() {
-        const { activeAccountId, activeCurrency } = useAccountStore();
+        const { activeAccountId, activeCurrency, activeAccountInfo } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
@@ -306,7 +306,7 @@ export default defineComponent({
         } = useUsdcAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
-        const { activePrestake } = usePrestakingStore();
+        const { activePrestake, accountPrestake } = usePrestakingStore();
 
         const searchString = ref('');
 
@@ -525,6 +525,13 @@ export default defineComponent({
             return tx;
         }
 
+        const showPrestakingButton = computed(() => {
+            // Hide button for legacy accounts except if they're already prestaking
+            if (!activeAccountInfo.value) return false;
+            if (activeAccountInfo.value.type !== AccountType.LEGACY) return true;
+            return accountPrestake.value > 0;
+        });
+
         return {
             activeCurrency,
             searchString,
@@ -552,6 +559,7 @@ export default defineComponent({
             convertBridgedUsdcToNative,
             activePrestake,
             windowWidth,
+            showPrestakingButton,
         };
     },
     components: {

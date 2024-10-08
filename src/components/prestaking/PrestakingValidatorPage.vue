@@ -127,6 +127,11 @@ export default defineComponent({
                             return a.address < b.address ? -1 : 1;
                         });
 
+                    if (searchValue.value.length >= 3) {
+                        // Don't calculate underdog status for search results
+                        return list;
+                    }
+
                     const hasUnderdog = list.some((v) => (v.stake || 0) / totalStake.value < 0.1);
 
                     return list.map((validator) => ({

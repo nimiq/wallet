@@ -194,8 +194,7 @@ msgstr ""
 msgid "5x"
 msgstr ""
 
-#: src/components/prestaking/ValidatorListItem.vue:34
-#: src/components/prestaking/ValidatorListItem.vue:48
+#: src/components/prestaking/ValidatorListItem.vue:44
 msgid "5x points"
 msgstr ""
 
@@ -656,7 +655,7 @@ msgstr "Змінити пароль"
 msgid "Change your language setting."
 msgstr "Змінити налаштування мови."
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:145
+#: src/components/prestaking/PrestakingValidatorPage.vue:162
 msgid "Changing validator"
 msgstr ""
 
@@ -1331,7 +1330,7 @@ msgstr ""
 "Тепер можна з легкістю керувати декількома адресами за допомогою єдиного "
 "паролю."
 
-#: src/components/prestaking/ValidatorListItem.vue:40
+#: src/components/prestaking/ValidatorListItem.vue:36
 msgid "High stake!"
 msgstr ""
 
@@ -1547,7 +1546,7 @@ msgstr "Вперед!"
 #: src/components/prestaking/PrestakingWelcomePage.vue:34
 #: src/components/prestaking/PrestakingWelcomePage.vue:69
 msgid "Let's go!"
-msgstr ""
+msgstr "Вперед!"
 
 #: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
@@ -2451,7 +2450,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
 #: src/components/prestaking/PrestakingGraphPage.vue:178
-#: src/components/prestaking/PrestakingValidatorPage.vue:175
+#: src/components/prestaking/PrestakingValidatorPage.vue:192
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
@@ -2505,7 +2504,7 @@ msgstr "звично"
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:157
+#: src/components/prestaking/PrestakingValidatorPage.vue:174
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 

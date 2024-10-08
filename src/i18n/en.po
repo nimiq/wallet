@@ -185,8 +185,7 @@ msgstr ""
 msgid "5x"
 msgstr ""
 
-#: src/components/prestaking/ValidatorListItem.vue:34
-#: src/components/prestaking/ValidatorListItem.vue:48
+#: src/components/prestaking/ValidatorListItem.vue:44
 msgid "5x points"
 msgstr ""
 
@@ -599,7 +598,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:145
+#: src/components/prestaking/PrestakingValidatorPage.vue:162
 msgid "Changing validator"
 msgstr ""
 
@@ -1229,7 +1228,7 @@ msgstr ""
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
-#: src/components/prestaking/ValidatorListItem.vue:40
+#: src/components/prestaking/ValidatorListItem.vue:36
 msgid "High stake!"
 msgstr ""
 
@@ -2287,7 +2286,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/UsdcSendModal.vue:646
 #: src/components/prestaking/PrestakingGraphPage.vue:178
-#: src/components/prestaking/PrestakingValidatorPage.vue:175
+#: src/components/prestaking/PrestakingValidatorPage.vue:192
 msgid "Something went wrong"
 msgstr ""
 
@@ -2339,7 +2338,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:157
+#: src/components/prestaking/PrestakingValidatorPage.vue:174
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 

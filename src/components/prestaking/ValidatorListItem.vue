@@ -15,7 +15,7 @@
                             <InfoCircleSmallIcon class="trigger"/>
                         </ValidatorDescriptionTooltip>
                     </template>
-                    <ShortAddress v-else :address="validator.address" :displayedCharacters="28"/>
+                    <ShortAddress v-else :address="validator.address" :displayedCharacters="18"/>
                 </div>
                 <div class="validator-item-inner-row flex-row validator-trust">
                     <!-- <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
@@ -28,10 +28,6 @@
                         <strong class="dot">&middot;</strong>
                         <div class="validator-underdog">
                             {{ $t('Underdog') }}
-                        </div>
-                        <strong class="dot">&middot;</strong>
-                        <div class="validator-5x-points nq-green">
-                            {{ $t('5x points') }}
                         </div>
                     </template>
                     <template v-if="hasHighStake">
@@ -80,7 +76,7 @@ export default defineComponent({
         });
 
         const validatorStakePercentage = computed(
-            () => Math.round(((props.validator.stake || 0) / globalStake.value) * 1000) / 10,
+            () => Math.floor(((props.validator.stake || 0) / globalStake.value) * 1000) / 10,
         );
 
         const hasHighStake = computed(() => props.validator.stake !== null && validatorStakePercentage.value >= 20);

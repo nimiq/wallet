@@ -55,7 +55,7 @@ export default defineComponent({
     setup(props, context) {
         const { config } = useConfig();
         const { activeAddress } = useAddressStore();
-        const { validatorsList, activePrestake, setPrestake, globalStake: totalStake } = usePrestakingStore();
+        const { validatorsList, activePrestake, setPrestake, globalStake } = usePrestakingStore();
 
         const validatorList$ = ref<HTMLElement | null>(null);
         const stakeFetched = ref(false);
@@ -67,17 +67,17 @@ export default defineComponent({
                 delegatedStake: number,
             }[];
 
-            let globalStake = 0;
+            let newGlobalStake = 0;
 
             const { validators } = usePrestakingStore().state;
             for (const stake of stakes) {
                 const validatorStake = stake.deposit + stake.delegatedStake;
                 validators[stake.address].stake = validatorStake;
-                globalStake += validatorStake;
+                newGlobalStake += validatorStake;
             }
             usePrestakingStore().patch({
                 validators,
-                globalStake,
+                globalStake: newGlobalStake,
             });
         }
         fetchValidators().finally(() => {
@@ -107,10 +107,13 @@ export default defineComponent({
                 //             return a.address < b.address ? -1 : 1;
                 //         });
                 default: {
+                    // Only show pools by default when search string is less than 3 characters
+                    const showDefaultList = searchValue.value.length < 3;
+
                     const list = validatorsList.value
                         .filter((validator) => {
-                            if (searchValue.value.length < 3) {
-                                // Only show pools by default when search string is less than 3 characters
+                            if (showDefaultList) {
+                                // Filter to show only pools
                                 return 'label' in validator;
                             }
 
@@ -127,18 +130,14 @@ export default defineComponent({
                             return a.address < b.address ? -1 : 1;
                         });
 
-                    if (searchValue.value.length >= 3) {
-                        // Don't calculate underdog status for search results
-                        return list;
-                    }
-
-                    const hasUnderdog = list.some((v) => (v.stake || 0) / totalStake.value < 0.1);
+                    const hasUnderdog = list.some((v) => v.stake! / globalStake.value < 0.1);
 
                     return list.map((validator) => ({
                         ...validator,
-                        isUnderdog: 'label' in validator
-                            && ((validator.stake || 0) / totalStake.value < 0.1
-                                || (!hasUnderdog && validator === list[0])),
+                        isUnderdog: validator.stake! / globalStake.value < 0.1
+                            // Make the smallest pool the underdog when no pool has underdog status and
+                            // only the default list is shown
+                            || (!hasUnderdog && showDefaultList && validator === list[0]),
                     }));
                 }
             }

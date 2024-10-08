@@ -63,7 +63,7 @@ import { usePrestakingStore } from '../../stores/Prestaking';
 import TicketIcon from '../icons/Prestaking/TicketIcon.vue';
 
 export default defineComponent({
-    setup(props, { emit }) { // Add emit to the setup function parameters
+    setup() {
         const { activePrestake } = usePrestakingStore();
 
         const preStakedAmount = computed(() => (activePrestake.value?.balance || 0) / 1e5);

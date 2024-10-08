@@ -59,7 +59,7 @@ import {
     WELCOME_MODAL_LOCALSTORAGE_KEY,
     WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
-import { useAccountStore } from '../../stores/Account';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 
@@ -68,7 +68,7 @@ export default defineComponent({
         redirect: String,
     },
     setup(props, context) {
-        const { activeAccountId, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
+        const { activeAccountId, activeAccountInfo, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);
@@ -90,7 +90,10 @@ export default defineComponent({
         );
 
         const shouldOpenWelcomePreStakingModal = computed(() =>
-            !welcomePreStakingModalAlreadyShown && !props.redirect && isPreStakingPeriod.value,
+            !welcomePreStakingModalAlreadyShown
+            && !props.redirect
+            && isPreStakingPeriod.value
+            && activeAccountInfo.value?.type !== AccountType.LEGACY, // Prevent opening for legacy accounts
         );
 
         const buttonText = computed(() => {

@@ -420,6 +420,7 @@ export async function syncFromHub() {
         if (areOptionalRedirectsAllowed(router.currentRoute)
             && !welcomePreStakingModalAlreadyShown
             && isPreStakingPeriod
+            && activeAccountInfo.value?.type !== AccountType.LEGACY // Prevent opening for legacy accounts
         ) {
             // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
             router.push('/welcome-prestaking');

@@ -225,6 +225,10 @@ export const usePrestakingStore = createStore({
             },
             'NQ98 D3KE 8EQ8 Y7DK G1MT 3P5T 2PHX 18V5 UEC1': {
                 address: 'NQ98 D3KE 8EQ8 Y7DK G1MT 3P5T 2PHX 18V5 UEC1',
+                label: 'Moon Pool',
+                // description: '',
+                icon: 'moonpool.png',
+                // website: '',
                 stake: null,
             },
             'NQ39 5HN4 GVA4 SLS7 LX07 68QP DB86 BP3G PQ87': {

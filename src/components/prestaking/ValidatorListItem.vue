@@ -24,7 +24,7 @@
                     <div v-if="validator.stake !== null" class="validator-stake">
                         {{ $t('Stake: {validatorStake}%', { validatorStake: validatorStakePercentage }) }}
                     </div>
-                    <template v-if="isUnderdog">
+                    <template v-if="validator.isUnderdog">
                         <strong class="dot">&middot;</strong>
                         <div class="validator-underdog">
                             {{ $t('Underdog') }}
@@ -43,7 +43,7 @@
                 </div>
             </div>
             <!-- <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" /> -->
-            <div v-if="isUnderdog" class="underdog-info flex-row">
+            <div v-if="validator.isUnderdog" class="underdog-info flex-row">
                 <img src="../../assets/prestaking/underdog-icon.svg" alt="Underdog" class="underdog-icon">
                 <div class="points-pill">{{ $t('5x points') }}</div>
             </div>
@@ -64,7 +64,7 @@ export default defineComponent({
     props: {
         container: HTMLElement,
         validator: {
-            type: Object as () => Validator,
+            type: Object as () => Validator & { isUnderdog?: boolean },
             required: true,
         },
     },
@@ -83,13 +83,11 @@ export default defineComponent({
             () => Math.round(((props.validator.stake || 0) / globalStake.value) * 1000) / 10,
         );
 
-        const isUnderdog = computed(() => props.validator.stake !== null && validatorStakePercentage.value < 10);
         const hasHighStake = computed(() => props.validator.stake !== null && validatorStakePercentage.value >= 20);
 
         return {
             // payoutText,
             validatorStakePercentage,
-            isUnderdog,
             hasHighStake,
         };
     },

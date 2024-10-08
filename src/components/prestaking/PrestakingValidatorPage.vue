@@ -21,12 +21,15 @@
             <div class="validator-list" ref="validatorList$">
                 <div class="scroll-mask top"></div>
                 <LoadingList v-if="!stakeFetched" :length="4" :type="LoadingListType.VALIDATOR" />
-                <ValidatorListItem v-else
-                    v-for="validator in sortedList" :key="validator.address"
-                    :validator="validator"
-                    :container="validatorList$"
-                    @click.native="selectValidator(validator)"
-                />
+                <template v-else>
+                    <ValidatorListItem
+                        v-for="validator in sortedList"
+                        :key="validator.address"
+                        :validator="validator"
+                        :container="validatorList$"
+                        @click.native="selectValidator(validator)"
+                    />
+                </template>
                 <div class="scroll-mask bottom"></div>
             </div>
         </PageBody>
@@ -121,7 +124,18 @@ export default defineComponent({
                             if (cmp) return cmp;
                             return a.address < b.address ? -1 : 1;
                         });
-                    return list;
+
+                    // Calculate underdog status
+                    const poolsWithStake = list.filter((v) => 'label' in v && v.stake !== null);
+                    const totalStake = poolsWithStake.reduce((sum, v) => sum + (v.stake || 0), 0);
+                    const hasUnderdog = poolsWithStake.some((v) => (v.stake || 0) / totalStake < 0.1);
+
+                    return list.map((validator) => ({
+                        ...validator,
+                        isUnderdog: 'label' in validator
+                            && ((validator.stake || 0) / totalStake < 0.1
+                                || (!hasUnderdog && validator === poolsWithStake[0])),
+                    }));
                 }
             }
         });

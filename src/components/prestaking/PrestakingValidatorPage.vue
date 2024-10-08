@@ -114,10 +114,12 @@ export default defineComponent({
                                 return 'label' in validator;
                             }
 
-                            return [
-                                ('label' in validator ? validator.label : '').toLowerCase(),
-                                validator.address.toLowerCase(),
-                            ].join('').includes(searchValue.value.toLowerCase());
+                            const searchTerm = searchValue.value.toLowerCase().replace(/\s+/g, '');
+                            const validatorLabel = ('label' in validator ? validator.label : '')
+                                .toLowerCase().replace(/\s+/g, '');
+                            const validatorAddress = validator.address.toLowerCase().replace(/\s+/g, '');
+
+                            return validatorLabel.includes(searchTerm) || validatorAddress.includes(searchTerm);
                         })
                         .sort((a, b) => {
                             const cmp = (a.stake ? a.stake : 0) - (b.stake ? b.stake : 0);

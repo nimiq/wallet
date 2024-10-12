@@ -9,24 +9,24 @@
             <div class="content flex-column">
                 <div class="card">
                     <img
-                        v-if="preStakedAmount < 100000"
+                        v-if="preStakedNIM < 100000"
                         src="../../assets/prestaking/cards/bronze-2.png"
-                        alt="Bronze Protector"
+                        alt="Bronze: Guardian of the Chain"
                     >
                     <img
-                        v-else-if="preStakedAmount < 1000000"
+                        v-else-if="preStakedNIM < 1000000"
                         src="../../assets/prestaking/cards/silver-2.png"
-                        alt="Silver Protector"
+                        alt="Silver: Protector of the Chain"
                     >
                     <img
-                        v-else-if="preStakedAmount < 10000000"
+                        v-else-if="preStakedNIM < 10000000"
                         src="../../assets/prestaking/cards/gold-2.png"
-                        alt="Gold Protector"
+                        alt="Gold: Hero of the Chain"
                     >
                     <img
                         v-else
                         src="../../assets/prestaking/cards/platinum-2.png"
-                        alt="Platinum Protector"
+                        alt="Platinum: Champion of the Chain"
                     >
                     <div class="ticket-count">
                         <span>{{ ticketCount }}</span>
@@ -37,7 +37,7 @@
                     {{ formattedPreStakedAmount }} {{ $t('NIM pre-staked') }}
                 </div>
                 <a
-                    href="https://prestaking.nimiq.network"
+                    href="https://prestaking.nimiq.network/prestaking"
                     target="_blank"
                     rel="noopener"
                     class="nq-button light-blue claim-button"
@@ -66,23 +66,23 @@ export default defineComponent({
     setup() {
         const { activePrestake } = usePrestakingStore();
 
-        const preStakedAmount = computed(() => (activePrestake.value?.balance || 0) / 1e5);
+        const preStakedNIM = computed(() => (activePrestake.value?.balance || 0) / 1e5);
 
         const formattedPreStakedAmount = computed(() =>
-            Math.floor(preStakedAmount.value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '),
+            Math.floor(preStakedNIM.value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' '), // Thin space
         );
 
-        const ticketCount = computed(() => Math.floor(preStakedAmount.value / 1000));
+        const ticketCount = computed(() => Math.floor(preStakedNIM.value / 1000));
 
         const cardClass = computed(() => {
-            if (preStakedAmount.value >= 10000000) return 'platinum';
-            if (preStakedAmount.value >= 1000000) return 'gold';
-            if (preStakedAmount.value >= 100000) return 'silver';
+            if (preStakedNIM.value >= 10000000) return 'platinum';
+            if (preStakedNIM.value >= 1000000) return 'gold';
+            if (preStakedNIM.value >= 100000) return 'silver';
             return 'bronze';
         });
 
         return {
-            preStakedAmount,
+            preStakedNIM,
             formattedPreStakedAmount,
             ticketCount,
             cardClass,

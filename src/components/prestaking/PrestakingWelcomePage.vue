@@ -141,6 +141,10 @@ export default defineComponent({
     @import '../../scss/variables.scss';
     @import '../../scss/functions.scss';
 
+    .modal ::v-deep .close-button {
+        display: none;
+    }
+
     .prestaking-welcome-page {
         flex-grow: 1;
         background: url('../../assets/prestaking/background.png') no-repeat bottom center;

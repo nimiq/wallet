@@ -153,7 +153,7 @@ export default defineComponent({
     }
 
     .page-header {
-        padding-top: 4rem;
+        padding-top: 5.5rem; // 32px from progress bar. (which has height 4px & top pos 8px)
         padding-bottom: 7rem;
     }
 

@@ -637,7 +637,7 @@ msgid "Changing validator"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:97
+#: src/components/modals/UsdcActivationModal.vue:100
 msgid "Check the new intro"
 msgstr "请看新介绍"
 
@@ -1271,7 +1271,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:99
+#: src/components/modals/UsdcActivationModal.vue:102
 #: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1462,7 +1462,7 @@ msgstr "标注发件人"
 msgid "Language"
 msgstr "语言"
 
-#: src/components/modals/UsdcActivationModal.vue:98
+#: src/components/modals/UsdcActivationModal.vue:101
 msgid "Learn about pre-staking"
 msgstr ""
 

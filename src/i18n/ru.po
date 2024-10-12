@@ -662,7 +662,7 @@ msgid "Changing validator"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:97
+#: src/components/modals/UsdcActivationModal.vue:100
 msgid "Check the new intro"
 msgstr "Посмотреть вступление"
 
@@ -1319,7 +1319,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:99
+#: src/components/modals/UsdcActivationModal.vue:102
 #: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1527,7 +1527,7 @@ msgstr "Имя отправителя"
 msgid "Language"
 msgstr "Язык"
 
-#: src/components/modals/UsdcActivationModal.vue:98
+#: src/components/modals/UsdcActivationModal.vue:101
 msgid "Learn about pre-staking"
 msgstr ""
 

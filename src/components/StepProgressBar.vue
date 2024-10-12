@@ -22,26 +22,26 @@ export default defineComponent({
             type: Number,
             required: true,
         },
+        shouldAnimate: {
+            type: Boolean,
+            default: true,
+        },
     },
-    setup(props) {
-        const animationProgress = ref(0);
+    setup(props, { emit }) {
+        const animationProgress = ref(100); // Start with full progress
         const isFirstStepAnimated = ref(false);
-        const ANIMATION_DURATION = 1500; // 1500ms = 1.5s
+        const ANIMATION_DURATION = 5000; // 5000ms = 5s (adjust as needed)
 
         const getFillWidth = computed(() => (step: number) => {
             if (props.currentStep > step) return '100%';
             if (props.currentStep === step) {
-                // Apply easing function to the animation progress
-                const easedProgress = easeOutCubic(animationProgress.value / 100) * 100;
-                return `${easedProgress}%`;
+                return props.shouldAnimate ? `${animationProgress.value}%` : '100%';
             }
             return '0%';
         });
 
-        // Easing function: easeOutCubic
-        const easeOutCubic = (t: number): number => 1 - (1 - t) ** 3;
-
         let animationFrame: number;
+        let animationStartTime: number | null = null;
 
         const animateStep = (timestamp: number) => {
             if (!animationStartTime) {
@@ -51,26 +51,30 @@ export default defineComponent({
             const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
             animationProgress.value = progress * 100;
 
-            if (progress < 1) {
+            if (progress < 1 && props.shouldAnimate) {
                 animationFrame = requestAnimationFrame(animateStep);
             } else {
                 isFirstStepAnimated.value = true;
+                emit('stepCompleted');
             }
         };
 
-        let animationStartTime: number | null = null;
-
         const startAnimation = () => {
-            animationStartTime = null;
-            cancelAnimationFrame(animationFrame);
-            animationFrame = requestAnimationFrame(animateStep);
+            if (props.shouldAnimate) {
+                animationStartTime = null;
+                cancelAnimationFrame(animationFrame);
+                animationProgress.value = 0; // Reset progress before starting animation
+                animationFrame = requestAnimationFrame(animateStep);
+            } else {
+                animationProgress.value = 100; // Set to full progress immediately
+            }
         };
 
         watch(() => props.currentStep, (newStep, oldStep) => {
             if (newStep > oldStep || (newStep === 1 && !isFirstStepAnimated.value)) {
                 startAnimation();
             } else if (newStep < oldStep) {
-                animationProgress.value = 0;
+                animationProgress.value = 100; // Set to full progress when going back
             }
         });
 

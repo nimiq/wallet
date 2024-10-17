@@ -1492,9 +1492,9 @@
   integrity sha512-b12CcwKgRy5YzSD1oDp3TU7JNm4vv3ua0OKFhxyFBW8JqbPGGqzU7GsRY9/nKtF77zMfE/dVayWweS0ecHPzVA==
 
 "@nimiq/core@next":
-  version "2.0.0-next.24.4"
-  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0-next.24.4.tgz#3201bc70c219c1ff09e0e192eb62303242d58418"
-  integrity sha512-O4n3nM6d7cvxo9UddIBzPnf3JbVXBExt80yV+wY0IPS1JA4aIIQA+4L4m+QwWiW3uGuNiGigpidFY0zLDC1i0Q==
+  version "2.0.0-next.rc.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0-next.rc.0.tgz#402dbbf4bf40a815e4c2a323df7ebe253be18063"
+  integrity sha512-mExuJIO9VIuH/MO/Od0o357hcUQ5hxdRzReTieGP1XO7tD/X+saHDsCWfCM+SowWyrbqzOBtEDzWmRpAktQzzg==
   dependencies:
     comlink "^4.4.1"
     websocket "^1.0.34"

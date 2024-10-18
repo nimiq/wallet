@@ -508,7 +508,7 @@ export default defineComponent({
             //   is interpreted directly as USDC balance.
             const allowedChains = [
                 EthereumChain.POLYGON_MAINNET,
-                ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_MUMBAI_TESTNET] : []),
+                ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_AMOY_TESTNET] : []),
             ];
             // We don't normalize and validate addresses in parseRequestLink yet because it requires asynchronously
             // loading ethers, and event.preventDefault() needs to be called synchronously below. Instead, the
@@ -706,7 +706,7 @@ export default defineComponent({
             try {
                 const method = 'transferWithPermit';
                 const feeInformation = await calculateFee(
-                    config.usdc.nativeUsdcContract,
+                    config.polygon.usdc.tokenContract,
                     method,
                     relay.value || undefined,
                 );

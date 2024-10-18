@@ -420,7 +420,7 @@ export default defineComponent({
                         gasLimit,
                         gasPrice,
                         relay,
-                    } = await calculateFee(config.usdc.usdcContract, method, undefined, swapContract);
+                    } = await calculateFee(config.polygon.usdc_bridged.tokenContract, method, undefined, swapContract);
                     relayUrl = relay.url;
 
                     if (fee.toNumber() >= usdcAddressInfo.value!.balance!) {
@@ -438,9 +438,9 @@ export default defineComponent({
                     const minTargetAmountPercentage = config.environment === ENV_MAIN ? 0.995 : 0.95;
 
                     const data = swapContract.interface.encodeFunctionData(method, [
-                        /* address token */ config.usdc.usdcContract,
+                        /* address token */ config.polygon.usdc_bridged.tokenContract,
                         /* uint256 amount */ amount,
-                        /* address pool */ config.usdc.swapPoolContract,
+                        /* address pool */ config.polygon.usdcConversion.swapPoolContract,
                         /* uint256 targetAmount */ Math.floor(amount * minTargetAmountPercentage),
                         /* uint256 fee */ fee,
                         ...(method === 'swapWithApproval' ? [
@@ -459,7 +459,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: fromAddress,
-                            to: config.usdc.swapContract,
+                            to: config.polygon.usdcConversion.swapContract,
                             data,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -472,10 +472,10 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.swapContract,
+                            paymaster: config.polygon.usdcConversion.swapContract,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.swapContract,
+                            forwarder: config.polygon.usdcConversion.swapContract,
                         },
                     };
 

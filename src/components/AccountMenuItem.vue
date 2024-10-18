@@ -133,7 +133,7 @@ export default defineComponent({
                 if (btcFiatAmount === undefined) return undefined;
                 amount += btcFiatAmount;
             }
-            if (config.usdc.enabled) {
+            if (config.polygon.enabled) {
                 const usdcFiatAmount = usdcExchangeRate.value !== undefined
                     ? ((usdcAccountBalance.value + nativeUsdcAccountBalance.value) / 1e6) * usdcExchangeRate.value
                     : undefined;

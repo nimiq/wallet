@@ -126,13 +126,13 @@ async function start() {
     });
 
     watch(() => {
-        if (!config.usdc.enabled) return;
+        if (!config.polygon.enabled) return;
         launchPolygon();
     });
 
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
-        || (activeCurrency === CryptoCurrency.USDC && !config.usdc.enabled)
+        || (activeCurrency === CryptoCurrency.USDC && !config.polygon.enabled)
     ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }

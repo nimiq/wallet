@@ -10,7 +10,7 @@ export function explorerTxLink(asset: CryptoCurrency, hash: string) {
         case CryptoCurrency.BTC:
             return `https://blockstream.info${config.environment === ENV_MAIN ? '' : '/testnet'}/tx/${hash}`;
         case CryptoCurrency.USDC:
-            return `https://${config.environment === ENV_MAIN ? '' : 'mumbai.'}polygonscan.com/tx/${hash}`;
+            return `https://${config.environment === ENV_MAIN ? '' : 'amoy.'}polygonscan.com/tx/${hash}`;
         default: throw new Error('Invalid asset');
     }
 }
@@ -26,7 +26,7 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
                 + `/address/${address}`;
         case SwapAsset.USDC:
         case SwapAsset.USDC_MATIC:
-            return `https://${config.environment === ENV_MAIN ? '' : 'mumbai.'}polygonscan.com/address/${address}`;
+            return `https://${config.environment === ENV_MAIN ? '' : 'amoy.'}polygonscan.com/address/${address}`;
         case SwapAsset.EUR:
             if (config.environment === ENV_MAIN) return `https://oasis.watch/?id=${address}`;
             return `${config.oasis.apiEndpoint}/htlc/${address}`;

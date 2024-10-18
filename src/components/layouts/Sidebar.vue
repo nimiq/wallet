@@ -270,7 +270,7 @@ export default defineComponent({
         const walletActivatedCurrencies = computed(() => [
             CryptoCurrency.NIM, // NIM is always activated
             ...(config.enableBitcoin && hasBitcoinAddresses.value ? [CryptoCurrency.BTC] : []),
-            ...(config.usdc.enabled && hasPolygonAddresses.value ? [CryptoCurrency.USDC] : []),
+            ...(config.polygon.enabled && hasPolygonAddresses.value ? [CryptoCurrency.USDC] : []),
         ]);
 
         const fastspotEnabledFiatSwapAssets = computed(() => config.fastspot.enabledSwapAssets
@@ -278,7 +278,7 @@ export default defineComponent({
         const fastspotEnabledCryptoSwapAssets = computed(() => config.fastspot.enabledSwapAssets
             .filter((asset) => !fastspotEnabledFiatSwapAssets.value.includes(asset)
                 && (config.enableBitcoin || asset !== SwapAsset.BTC)
-                && (config.usdc.enabled || (asset !== SwapAsset.USDC_MATIC && asset !== SwapAsset.USDC)),
+                && (config.polygon.enabled || (asset !== SwapAsset.USDC_MATIC && asset !== SwapAsset.USDC)),
             ),
         );
 

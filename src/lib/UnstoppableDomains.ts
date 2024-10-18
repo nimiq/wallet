@@ -38,8 +38,8 @@ async function getResolver() {
                             network: config.environment === ENV_MAIN ? 'mainnet' : 'goerli',
                         },
                         Layer2: {
-                            url: await replaceKey(config.usdc.rpcEndpoint.replace('wss', 'https')),
-                            network: config.environment === ENV_MAIN ? 'polygon-mainnet' : 'polygon-mumbai',
+                            url: await replaceKey(config.polygon.rpcEndpoint.replace('wss', 'https')),
+                            network: config.environment === ENV_MAIN ? 'polygon-mainnet' : 'polygon-amoy',
                         },
                     },
                 },

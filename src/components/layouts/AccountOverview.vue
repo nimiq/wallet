@@ -84,7 +84,7 @@
                 <Tooltip
                     v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
-                        && hasPolygonAddresses && $config.usdc.enabled
+                        && hasPolygonAddresses && $config.polygon.enabled
                         /* only swap with native USDC supported, not bridged */
                         && (nimAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
                     class="nim-usdc-swap-button"
@@ -141,7 +141,7 @@
                     v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
-                        && hasPolygonAddresses && $config.usdc.enabled
+                        && hasPolygonAddresses && $config.polygon.enabled
                         /* only swap with native USDC supported, not bridged */
                         && (btcAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
                     class="btc-usdc-swap-button"
@@ -165,7 +165,7 @@
 
                 <button v-if="activeAccountInfo.type !== AccountType.LEDGER
                         && canHaveMultipleAddresses
-                        && $config.usdc.enabled" ref="usdcAccount$"
+                        && $config.polygon.enabled" ref="usdcAccount$"
                     class="reset usdc-account flex-column"
                     :class="{
                             'active': activeCurrency === CryptoCurrency.USDC,
@@ -465,7 +465,7 @@ export default defineComponent({
             if (nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {
                 bottom = [nimBtcSwapTooltip$.value.isShown, nimUsdcSwapTooltip$.value.isShown];
             } else if (nimBtcSwapTooltip$.value && !nimUsdcSwapTooltip$.value) {
-                bottom = (hasPolygonAddresses.value && config.usdc.enabled)
+                bottom = (hasPolygonAddresses.value && config.polygon.enabled)
                     ? [nimBtcSwapTooltip$.value.isShown, null]
                     : [nimBtcSwapTooltip$.value.isShown];
             } else if (!nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {

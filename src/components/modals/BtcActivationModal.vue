@@ -58,7 +58,7 @@ export default defineComponent({
         //  Welcome modal for new accounts/users anymore which hold no balance.
         const shouldOpenWelcomeModal = !welcomeModalAlreadyShown
             && !props.redirect // if a redirect is set, don't redirect to Welcome modal and don't offer going there.
-            && useConfig().config.usdc.enabled; // Welcome modal talks about USDC.
+            && useConfig().config.polygon.enabled; // Welcome modal talks about USDC.
 
         async function enableBitcoin() {
             await activateBitcoin(activeAccountId.value!);

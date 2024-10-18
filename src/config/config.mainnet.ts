@@ -26,24 +26,30 @@ export default {
         validatorsEndpoint: 'https://v2.nimiqwatch.com/api/v2/validators',
     },
 
-    usdc: {
+    polygon: {
         enabled: true,
         networkId: 137,
         rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
-        usdcContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-        nativeUsdcContract: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-        transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
-        nativeTransferContract: '0x3157d422cd1be13AC4a7cb00957ed717e648DFf2',
-        htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
-        nativeHtlcContract: '0x0cFD862bE942846Cebad797d7c1BC6e47714959b',
-        swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
-        swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',
-        relayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
+        usdc_bridged: {
+            tokenContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+            transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
+            htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
+            earliestHistoryScanHeight: 39624290, // see config.local.ts
+        },
+        usdc: {
+            tokenContract: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+            transferContract: '0x3157d422cd1be13AC4a7cb00957ed717e648DFf2',
+            htlcContract: '0x0cFD862bE942846Cebad797d7c1BC6e47714959b',
+            earliestHistoryScanHeight: 45319261, // Native USDC contract creation block
+        },
+        usdcConversion: {
+            swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
+            swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',
+        },
+        openGsnRelayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-        wmaticContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-        earliestHistoryScanHeight: 39624290, // see config.local.ts
-        earliestNativeHistoryScanHeight: 45319261, // Native USDC contract creation block
+        wpolContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     },
 
     fastspot: {

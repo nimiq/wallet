@@ -249,12 +249,12 @@ export default defineComponent({
                 // Validate that we are talking about the same USDC
                 if (
                     !properties.cryptoCurrency.chainId
-                    || parseInt(properties.cryptoCurrency.chainId, 10) !== config.usdc.networkId
+                    || parseInt(properties.cryptoCurrency.chainId, 10) !== config.polygon.networkId
                 ) {
                     throw new Error('Invalid network ID given by Moonpay');
                 }
 
-                if (properties.cryptoCurrency.contractAddress !== config.usdc.nativeUsdcContract.toLowerCase()) {
+                if (properties.cryptoCurrency.contractAddress !== config.polygon.usdc.tokenContract.toLowerCase()) {
                     throw new Error('Invalid USDC contract address given by Moonpay');
                 }
 

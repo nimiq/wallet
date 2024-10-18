@@ -93,7 +93,7 @@ export default defineComponent({
         const currencies = computed<Array<SupportedCurrency>>(() => [
             CryptoCurrency.NIM,
             ...(config.enableBitcoin ? [CryptoCurrency.BTC] as Array<CryptoCurrency.BTC> : []),
-            ...(config.usdc.enabled ? [CryptoCurrency.USDC] as Array<CryptoCurrency.USDC> : []),
+            ...(config.polygon.enabled ? [CryptoCurrency.USDC] as Array<CryptoCurrency.USDC> : []),
         ]);
 
         // Can be used for testing by manually defining balances either here or in the browser's dev tools.

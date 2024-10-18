@@ -20,7 +20,7 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
     const { config } = useConfig();
 
     if (!poolFees.has(token)) {
-        const transferContract = token === config.usdc.nativeUsdcContract
+        const transferContract = token === config.polygon.usdc.tokenContract
             ? client.nativeUsdcTransfer
             : client.usdcTransfer;
         const poolContract = new client.ethers.Contract(
@@ -32,7 +32,7 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
     }
 
     const quoterContract = new client.ethers.Contract(
-        config.usdc.uniswapQuoterContract,
+        config.polygon.uniswapQuoterContract,
         UNISWAP_QUOTER_CONTRACT_ABI,
         client.provider,
     );
@@ -40,7 +40,7 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
     // MATIC amount that would be received for swapping 1 USDC
     const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
         token, // in
-        config.usdc.wmaticContract, // out
+        config.polygon.wpolContract, // out
         poolFees.get(token)!,
         1_000_000, // 1 USDC
         0,

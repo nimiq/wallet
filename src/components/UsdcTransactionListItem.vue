@@ -136,7 +136,7 @@ export default defineComponent({
                 return CryptoCurrency.USDC;
             }
 
-            return transaction.value.token === config.usdc.nativeUsdcContract
+            return transaction.value.token === config.polygon.usdc.tokenContract
                 ? CryptoCurrency.USDC
                 : 'usdc.e';
         });

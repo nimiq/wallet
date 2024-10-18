@@ -2,15 +2,24 @@
     <div class="prestaking-welcome-page flex-column"
          @touchstart="handleTouchStart"
          @touchmove="handleTouchMove"
-         @touchend="handleTouchEnd">
+         @touchend="handleTouchEnd"
+         @mousedown="handleMouseDown"
+         @mouseup="handleMouseUp"
+         @mouseleave="setPaused(false)"
+         @focusout="setPaused(false)">
         <StepProgressBar
             :currentStep="currentStep"
             :shouldAnimate="shouldAnimate"
+            :isPaused="isPaused"
             @stepCompleted="onStepCompleted"
         />
 
         <!-- Navigation arrows -->
-        <div v-if="currentStep > 1" class="arrow-area left-arrow" @click.stop="handleArrowClick('prev')">
+        <div v-if="currentStep > 1" class="arrow-area left-arrow"
+             @mousedown.stop="handleArrowMouseDown('prev')"
+             @mouseup.stop="handleArrowMouseUp('prev')"
+             @touchstart.stop="handleArrowTouchStart('prev')"
+             @touchend.stop="handleArrowTouchEnd('prev')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M15 18L9 12L15 6"
@@ -21,7 +30,11 @@
                 />
             </svg>
         </div>
-        <div v-if="currentStep < 3" class="arrow-area right-arrow" @click.stop="handleArrowClick('next')">
+        <div v-if="currentStep < 3" class="arrow-area right-arrow"
+             @mousedown.stop="handleArrowMouseDown('next')"
+             @mouseup.stop="handleArrowMouseUp('next')"
+             @touchstart.stop="handleArrowTouchStart('next')"
+             @touchend.stop="handleArrowTouchEnd('next')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M9 18L15 12L9 6"
@@ -152,10 +165,17 @@ export default defineComponent({
         const shouldAnimate = ref(true);
         const lastNavigationTime = ref(0);
         const navigationCooldown = 300; // ms
+        const isPaused = ref(false);
+        const isArrowClicked = ref(false);
+        const arrowDirection = ref<'prev' | 'next' | null>(null);
+        const pauseTimer = ref<number | ReturnType<typeof setTimeout> | null>(null);
+        const navigationTimer = ref<number | ReturnType<typeof setTimeout> | null>(null);
+        const PAUSE_DELAY = 200; // 200ms delay before pausing
+        const NAVIGATION_DELAY = 300; // 300ms delay before allowing navigation after unpausing
 
         const touchStartX = ref(0);
         const touchEndX = ref(0);
-        const isArrowClick = ref(false);
+        const isSwiping = ref(false);
 
         const hasReachedStep3 = computed(() => maxReachedStep.value >= 3);
 
@@ -205,7 +225,7 @@ export default defineComponent({
         // Handle navigation between steps
         const navigate = (direction: 'next' | 'prev') => {
             const currentTime = Date.now();
-            if (currentTime - lastNavigationTime.value > navigationCooldown) {
+            if (currentTime - lastNavigationTime.value > navigationCooldown && !isPaused.value) {
                 if (direction === 'next' && currentStep.value < 3) {
                     currentStep.value++;
                     maxReachedStep.value = Math.max(maxReachedStep.value, currentStep.value);
@@ -236,19 +256,24 @@ export default defineComponent({
 
         // Touch event handlers for swipe navigation
         const handleTouchStart = (e: TouchEvent) => {
-            if (!isArrowClick.value) {
+            if (!isArrowClicked.value) {
                 touchStartX.value = e.touches[0].clientX;
+                isSwiping.value = false;
+                startPauseTimer();
             }
         };
 
         const handleTouchMove = (e: TouchEvent) => {
-            if (!isArrowClick.value) {
+            if (!isArrowClicked.value) {
                 touchEndX.value = e.touches[0].clientX;
+                if (Math.abs(touchEndX.value - touchStartX.value) > 10) {
+                    isSwiping.value = true;
+                }
             }
         };
 
         const handleTouchEnd = () => {
-            if (!isArrowClick.value) {
+            if (!isArrowClicked.value && isSwiping.value) {
                 const swipeThreshold = 50; // Minimum distance to trigger swipe
                 const swipeDistance = touchEndX.value - touchStartX.value;
 
@@ -260,18 +285,83 @@ export default defineComponent({
             // Reset touch values
             touchStartX.value = 0;
             touchEndX.value = 0;
-            isArrowClick.value = false;
+            isSwiping.value = false;
+            isArrowClicked.value = false;
+            setPaused(false);
         };
 
-        // Handle arrow click navigation
-        const handleArrowClick = (direction: 'next' | 'prev') => {
-            isArrowClick.value = true;
-            navigate(direction);
+        const handleMouseDown = (e: MouseEvent) => {
+            if (!isArrowClicked.value) {
+                startPauseTimer();
+            }
+        };
+
+        const handleMouseUp = (e: MouseEvent) => {
+            if (!isArrowClicked.value) {
+                setPaused(false);
+            }
+        };
+
+        const handleArrowMouseDown = (direction: 'prev' | 'next') => {
+            isArrowClicked.value = true;
+            arrowDirection.value = direction;
+            startPauseTimer();
+        };
+
+        const handleArrowMouseUp = (direction: 'prev' | 'next') => {
+            if (isArrowClicked.value && arrowDirection.value === direction && navigationTimer.value === null) {
+                navigate(direction);
+            }
+            isArrowClicked.value = false;
+            arrowDirection.value = null;
+            setPaused(false);
+        };
+
+        const setPaused = (value: boolean) => {
+            if (pauseTimer.value !== null) {
+                clearTimeout(pauseTimer.value as ReturnType<typeof setTimeout>);
+                pauseTimer.value = null;
+            }
+            if (navigationTimer.value !== null) {
+                clearTimeout(navigationTimer.value as ReturnType<typeof setTimeout>);
+                navigationTimer.value = null;
+            }
+            isPaused.value = value;
+            if (!value) {
+                navigationTimer.value = setTimeout(() => {
+                    navigationTimer.value = null;
+                }, NAVIGATION_DELAY);
+            }
+        };
+
+        const startPauseTimer = () => {
+            if (pauseTimer.value === null) {
+                pauseTimer.value = setTimeout(() => {
+                    setPaused(true);
+                    pauseTimer.value = null;
+                }, PAUSE_DELAY);
+            }
+        };
+
+        const handleArrowTouchStart = (direction: 'prev' | 'next') => {
+            isArrowClicked.value = true;
+            arrowDirection.value = direction;
+            startPauseTimer();
+        };
+
+        const handleArrowTouchEnd = (direction: 'prev' | 'next') => {
+            if (isArrowClicked.value && arrowDirection.value === direction && navigationTimer.value === null) {
+                navigate(direction);
+            }
+            isArrowClicked.value = false;
+            arrowDirection.value = null;
+            setPaused(false);
         };
 
         return {
             currentStep,
             shouldAnimate,
+            isPaused,
             navigate,
             emitNext,
             onStepCompleted,
@@ -281,10 +371,19 @@ export default defineComponent({
             handleTouchStart,
             handleTouchMove,
             handleTouchEnd,
-            handleArrowClick,
+            handleMouseDown,
+            handleMouseUp,
+            handleArrowMouseDown,
+            handleArrowMouseUp,
             contentWrapper,
             stepContent,
             onTransitionEnter,
+            setPaused,
+            startPauseTimer,
+            navigationTimer,
+            isSwiping,
+            handleArrowTouchStart,
+            handleArrowTouchEnd,
         };
     },
     components: {
@@ -520,6 +619,12 @@ export default defineComponent({
             width: 2.25rem;
             height: 2.25rem;
         }
+    }
+
+    // Improve touch area on mobile
+    @media (max-width: $mobileBreakpoint) {
+        width: 25%; // Decrease touch area width
+        min-width: 50px; // Ensure a minimum width for small screens
     }
 }
 

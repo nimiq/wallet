@@ -915,7 +915,7 @@ export default defineComponent({
                 gasLimit,
                 gasPrice,
                 relay,
-                usdcPrice,
+                usdPrice,
             } = await calculateUsdcFee(config.polygon.usdc.tokenContract, method, forceRelay, htlcContract);
 
             if (!forceRelay) {
@@ -926,7 +926,7 @@ export default defineComponent({
                 };
             }
 
-            usdcPriceInWei.value = usdcPrice.toNumber();
+            usdcPriceInWei.value = usdPrice.toNumber();
             usdcGasPrice.value = gasPrice.toNumber();
 
             return {

@@ -258,9 +258,9 @@ export default defineComponent({
                     throw new Error('Invalid USDC contract address given by Moonpay');
                 }
 
-                const { nativeAccountBalance } = useUsdcAddressStore();
+                const { accountUsdcBalance } = useUsdcAddressStore();
                 // TODO: Preselect a relay to be able to check balance against the fee as well
-                if (nativeAccountBalance.value < value) {
+                if (accountUsdcBalance.value < value) {
                     throw new Error('Insufficient USDC balance');
                 }
 

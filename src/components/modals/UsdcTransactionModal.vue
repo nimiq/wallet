@@ -319,8 +319,8 @@ import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
 import {
     calculateFee,
-    getHtlcContract,
-    getNativeHtlcContract,
+    getUsdcHtlcContract,
+    getUsdcBridgedHtlcContract,
     getPolygonBlockNumber,
     sendTransaction,
 } from '../../ethers';
@@ -484,8 +484,8 @@ export default defineComponent({
                     const method = 'refund';
 
                     const htlcContract = transaction.value.token === config.polygon.usdc.tokenContract
-                        ? await getNativeHtlcContract()
-                        : await getHtlcContract();
+                        ? await getUsdcHtlcContract()
+                        : await getUsdcBridgedHtlcContract();
 
                     const [
                         forwarderNonce,

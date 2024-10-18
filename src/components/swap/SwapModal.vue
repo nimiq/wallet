@@ -328,7 +328,7 @@ import KycOverlay from '../kyc/KycOverlay.vue';
 import {
     getPolygonClient,
     calculateFee as calculateUsdcFee,
-    getNativeHtlcContract,
+    getUsdcHtlcContract,
     getPolygonBlockNumber,
 } from '../../ethers';
 import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
@@ -414,7 +414,7 @@ export default defineComponent({
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
         const {
             activeAddress: activeUsdcAddress,
-            nativeAccountBalance: accountUsdcBalance,
+            accountUsdcBalance,
         } = useUsdcAddressStore();
         const { exchangeRates, currency, state: fiat$ } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
@@ -900,7 +900,7 @@ export default defineComponent({
                 } else {
                     // // Otherwise check allowance now
                     // const client = await getPolygonClient();
-                    // const allowance = await client.nativeUsdc.allowance(
+                    // const allowance = await client.usdcToken.allowance(
                     //     activeUsdcAddress.value!,
                     //     config.polygon.usdc.htlcContract,
                     // ) as BigNumber;
@@ -908,7 +908,7 @@ export default defineComponent({
                 }
             }
 
-            const htlcContract = await getNativeHtlcContract();
+            const htlcContract = await getUsdcHtlcContract();
 
             const {
                 fee,
@@ -1545,7 +1545,7 @@ export default defineComponent({
                 if (swapSuggestion.from.asset === SwapAsset.USDC_MATIC) {
                     const [client, htlcContract] = await Promise.all([
                         getPolygonClient(),
-                        getNativeHtlcContract(),
+                        getUsdcHtlcContract(),
                     ]);
                     const fromAddress = activeUsdcAddress.value!;
 
@@ -1661,7 +1661,7 @@ export default defineComponent({
                 }
 
                 if (swapSuggestion.to.asset === SwapAsset.USDC_MATIC) {
-                    const htlcContract = await getNativeHtlcContract();
+                    const htlcContract = await getUsdcHtlcContract();
                     const toAddress = activeUsdcAddress.value!;
 
                     const [
@@ -2051,7 +2051,7 @@ export default defineComponent({
 
             // eslint-disable-next-line no-async-promise-executor
             const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve) => {
-                const htlcContract = await getNativeHtlcContract(); // This promise is already resolved
+                const htlcContract = await getUsdcHtlcContract(); // This promise is already resolved
                 const toAddress = usdcHtlc.redeemAddress;
 
                 // Unset stored relay so we can select a new one that hopefully works then

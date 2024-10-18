@@ -42,8 +42,8 @@ export default defineComponent({
         const { accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
-            accountBalance: usdcAccountBalance,
-            nativeAccountBalance: nativeUsdcAccountBalance,
+            accountUsdcBridgedBalance,
+            accountUsdcBalance,
         } = useUsdcAddressStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { config } = useConfig();
@@ -70,7 +70,7 @@ export default defineComponent({
 
             if (config.polygon.enabled) {
                 const usdcFiatAmount = usdcExchangeRate.value !== undefined
-                    ? ((usdcAccountBalance.value + nativeUsdcAccountBalance.value) / 1e6) * usdcExchangeRate.value
+                    ? ((accountUsdcBridgedBalance.value + accountUsdcBalance.value) / 1e6) * usdcExchangeRate.value
                     : undefined;
                 if (usdcFiatAmount === undefined) return undefined;
                 amount += usdcFiatAmount;

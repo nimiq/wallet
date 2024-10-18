@@ -86,7 +86,7 @@
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
                         /* only swap with native USDC supported, not bridged */
-                        && (nimAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
+                        && (nimAccountBalance > 0 || accountUsdcBalance > 0)"
                     class="nim-usdc-swap-button"
                     ref="nimUsdcSwapTooltip$"
                     :container="this"
@@ -143,7 +143,7 @@
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled
                         /* only swap with native USDC supported, not bridged */
-                        && (btcAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
+                        && (btcAccountBalance > 0 || accountUsdcBalance > 0)"
                     class="btc-usdc-swap-button"
                     ref="btcUsdcSwapTooltip$"
                     :container="this"
@@ -175,17 +175,17 @@
                     <div class="usdc-account-item reset flex-column" @click="selectUsdc">
                         <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
                         <div class="balances" v-if="hasPolygonAddresses">
-                            <template v-if="usdcAccountBalance !== null && nativeUsdcAccountBalance !== null">
+                            <template v-if="accountUsdcBridgedBalance !== null && accountUsdcBalance !== null">
                                 <div class="flex-row">
                                     <AlertTriangleIcon v-if="polygonConsensus === 'connecting'" />
                                     <Amount
-                                        :amount="usdcAccountBalance + nativeUsdcAccountBalance"
+                                        :amount="accountUsdcBridgedBalance + accountUsdcBalance"
                                         :currency="CryptoCurrency.USDC"
                                         value-mask
                                     />
                                 </div>
                                 <FiatConvertedAmount class="fiat-balance"
-                                    :amount="usdcAccountBalance + nativeUsdcAccountBalance"
+                                    :amount="accountUsdcBridgedBalance + accountUsdcBalance"
                                     :currency="CryptoCurrency.USDC"
                                     value-mask
                                 />
@@ -311,8 +311,8 @@ export default defineComponent({
         const { accountBalance: nimAccountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
-            accountBalance: usdcAccountBalance,
-            nativeAccountBalance: nativeUsdcAccountBalance,
+            accountUsdcBridgedBalance,
+            accountUsdcBalance,
         } = useUsdcAddressStore();
         const { config } = useConfig();
 
@@ -496,8 +496,8 @@ export default defineComponent({
             onAddressSelected,
             nimAccountBalance,
             btcAccountBalance,
-            usdcAccountBalance,
-            nativeUsdcAccountBalance,
+            accountUsdcBridgedBalance,
+            accountUsdcBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
             selectBitcoin,

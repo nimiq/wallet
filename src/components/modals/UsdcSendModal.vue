@@ -433,7 +433,7 @@ export default defineComponent({
 
         // Use 2.00 USDC as safe fallback fee
         const maxSendableAmount = computed(() => {
-            const balance = addressInfo.value!.nativeBalance;
+            const balance = addressInfo.value!.balanceUsdc;
             return Math.max((balance || 0) - (fee.value || 2e6), 0);
         });
 

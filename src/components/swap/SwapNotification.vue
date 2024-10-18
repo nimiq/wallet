@@ -78,7 +78,7 @@ import { getNetworkClient } from '../../network';
 import { getServerTime } from '../../lib/Time';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import {
-    getNativeHtlcContract,
+    getUsdcHtlcContract,
     getPolygonBlockNumber,
     getPolygonClient,
     receiptToTransaction,
@@ -274,7 +274,7 @@ export default defineComponent({
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
                     return {
-                        htlcContract: await getNativeHtlcContract(),
+                        htlcContract: await getUsdcHtlcContract(),
                         currentBlock: () => getPolygonBlockNumber(),
                         startBlock: blockHeightAtStart,
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,

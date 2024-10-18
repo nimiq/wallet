@@ -515,7 +515,7 @@ router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
     new Set([UsdcSendModal, UsdcReceiveModal]),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
-    () => useAccountStore().hasUsdcAddresses.value,
+    () => useAccountStore().hasPolygonAddresses.value,
 ));
 
 function parseActivationRedirect(route: Route) {

@@ -76,7 +76,7 @@ import { useConfig } from '../../composables/useConfig';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { getNetworkClient } from '../../network';
 import { getServerTime } from '../../lib/Time';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import {
     getNativeHtlcContract,
     getPolygonBlockNumber,
@@ -229,7 +229,7 @@ export default defineComponent({
                     }
                     if (
                         swap.to.asset === SwapAsset.USDC_MATIC
-                        && useUsdcNetworkStore().state.consensus !== 'established'
+                        && usePolygonNetworkStore().state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
                     }
@@ -244,7 +244,7 @@ export default defineComponent({
                     }
                     if (
                         swap.from.asset === SwapAsset.USDC_MATIC
-                        && useUsdcNetworkStore().state.consensus !== 'established'
+                        && usePolygonNetworkStore().state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
                     }
@@ -319,7 +319,7 @@ export default defineComponent({
                 const electrum = await getElectrumClient();
                 await electrum.waitForConsensusEstablished();
             }
-            if (swapsUsdc && useUsdcNetworkStore().state.consensus !== 'established') {
+            if (swapsUsdc && usePolygonNetworkStore().state.consensus !== 'established') {
                 await getPolygonClient();
             }
 

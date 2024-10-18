@@ -26,7 +26,7 @@ import { computed, defineComponent } from '@vue/composition-api';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useNetworkStore } from '../stores/Network';
-import { useUsdcNetworkStore } from '../stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
 import { CryptoCurrency } from '../lib/Constants';
 import MessageTransition from './MessageTransition.vue';
 
@@ -77,9 +77,9 @@ export default defineComponent({
             }
 
             if (props.assets.includes(CryptoCurrency.USDC)) {
-                const { consensus: usdcConsensus } = useUsdcNetworkStore();
+                const { consensus: polygonConsensus } = usePolygonNetworkStore();
 
-                if (usdcConsensus.value !== 'established') {
+                if (polygonConsensus.value !== 'established') {
                     message = context.root.$i18n.t('Connecting to USDC on Polygon') as string;
                 }
             }

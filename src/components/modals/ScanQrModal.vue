@@ -57,7 +57,7 @@ export default defineComponent({
     setup() {
         const { config } = useConfig();
         const router = useRouter();
-        const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
 
         const checkResult = (result: string) => {
             console.debug('Scanned QR code:', result); // eslint-disable-line no-console
@@ -137,7 +137,7 @@ export default defineComponent({
                 });
             }
 
-            if (config.usdc.enabled && hasUsdcAddresses.value) {
+            if (config.usdc.enabled && hasPolygonAddresses.value) {
                 // Run in parallel, without awaiting.
                 loadEthersLibrary().then((ethers) => {
                     // Support scanning plain addresses. The send modal shows a warning for unknown addresses

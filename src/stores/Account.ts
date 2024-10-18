@@ -41,7 +41,7 @@ export const useAccountStore = createStore({
         activeCurrency: (state) => state.activeCurrency,
         hasBitcoinAddresses: (state, { activeAccountInfo }) =>
             Boolean((activeAccountInfo.value as AccountInfo | null)?.btcAddresses?.external.length),
-        hasUsdcAddresses: (state, { activeAccountInfo }) =>
+        hasPolygonAddresses: (state, { activeAccountInfo }) =>
             Boolean((activeAccountInfo.value as AccountInfo | null)?.polygonAddresses?.length),
     },
     actions: {
@@ -52,7 +52,7 @@ export const useAccountStore = createStore({
             // switch active currency to NIM
             if (
                 (this.activeCurrency.value === CryptoCurrency.BTC && !this.hasBitcoinAddresses.value)
-                || (this.activeCurrency.value === CryptoCurrency.USDC && !this.hasUsdcAddresses.value)
+                || (this.activeCurrency.value === CryptoCurrency.USDC && !this.hasPolygonAddresses.value)
             ) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
             }

@@ -1968,7 +1968,7 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
-        const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
 
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SwapAsset) {
@@ -1982,7 +1982,7 @@ export default defineComponent({
                     disabled: (
                         // The asset is not activated in the active account.
                         (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
-                        || (asset === SwapAsset.USDC_MATIC && !hasUsdcAddresses.value)
+                        || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
                     ) || (
                         // Asset pair has no balance to swap.
                         !otherAssetBalance && !accountBalance(asset)

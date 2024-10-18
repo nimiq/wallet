@@ -15,7 +15,7 @@
             <AddressList
                 embedded
                 :showBitcoin="hasBitcoinAddresses && $config.enableBitcoin"
-                :showUsdc="hasUsdcAddresses && $config.usdc.enabled"
+                :showUsdc="hasPolygonAddresses && $config.usdc.enabled"
                 @address-selected="addressSelected"
             />
         </PageBody>
@@ -31,7 +31,7 @@ import { useAccountStore } from '../../stores/Account';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeCurrency, hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
 
         const { name } = context.root.$router.currentRoute;
 
@@ -53,7 +53,7 @@ export default defineComponent({
             name,
             addressSelected,
             hasBitcoinAddresses,
-            hasUsdcAddresses,
+            hasPolygonAddresses,
         };
     },
     components: {

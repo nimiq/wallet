@@ -31,7 +31,7 @@
 
             <div class="flex-grow"></div>
 
-            <button v-if="hasUsdcAddresses" class="nq-button light-blue" @click="close()" @mousedown.prevent>
+            <button v-if="hasPolygonAddresses" class="nq-button light-blue" @click="close()" @mousedown.prevent>
                 {{ buttonText }}
             </button>
             <button v-else class="nq-button light-blue" @click="enableUsdc" @mousedown.prevent>
@@ -39,9 +39,9 @@
             </button>
 
             <a
-                v-if="!hasUsdcAddresses || shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal"
+                v-if="!hasPolygonAddresses || shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal"
                 class="nq-link"
-                @click="close(hasUsdcAddresses && (shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal))"
+                @click="close(hasPolygonAddresses && (shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal))"
             >
                 {{ $t('Skip') }}
             </a>
@@ -68,7 +68,7 @@ export default defineComponent({
         redirect: String,
     },
     setup(props, context) {
-        const { activeAccountId, activeAccountInfo, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
+        const { activeAccountId, activeAccountInfo, setActiveCurrency, hasPolygonAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);
@@ -104,13 +104,13 @@ export default defineComponent({
 
         async function enableUsdc() {
             await activateUsdc(activeAccountId.value!);
-            if (!hasUsdcAddresses.value) return;
+            if (!hasPolygonAddresses.value) return;
             setActiveCurrency(CryptoCurrency.USDC);
             await close();
         }
 
         async function close(skipDefaultRedirects = false) {
-            if (hasUsdcAddresses.value && props.redirect) {
+            if (hasPolygonAddresses.value && props.redirect) {
                 // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
                 // a malicious link.
                 await context.root.$router.push(props.redirect);
@@ -118,7 +118,7 @@ export default defineComponent({
                 await modal$.value!.forceClose();
                 if (skipDefaultRedirects) return;
 
-                if (isMobile.value && hasUsdcAddresses.value) {
+                if (isMobile.value && hasPolygonAddresses.value) {
                     // On mobile, forward to the USDC transactions overview, after USDC got activated and the
                     // redirects by forceClose finished.
                     await context.root.$router.push('/transactions');
@@ -134,7 +134,7 @@ export default defineComponent({
         }
 
         return {
-            hasUsdcAddresses,
+            hasPolygonAddresses,
             shouldOpenWelcomeModal,
             shouldOpenWelcomePreStakingModal,
             buttonText,

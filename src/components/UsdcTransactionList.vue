@@ -1,7 +1,7 @@
 <template>
     <div class="transaction-list flex-row" ref="root">
         <RecycleScroller
-            v-if="isFetchingTxHistory || transactions.length"
+            v-if="isFetchingUsdcTxHistory || transactions.length"
             :items="transactions"
             :item-size="itemSize"
             key-field="transactionHash"
@@ -31,7 +31,7 @@
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
                     <div v-if="!item.sender" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
-                        <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
+                        <div v-if="item.isLatestMonth && isFetchingUsdcTxHistory" class="fetching flex-row">
                             <CircleSpinner/>
                             <span>{{ $t('Fetching') }}</span>
                         </div>
@@ -71,7 +71,7 @@ import UsdcTransactionListItem from '@/components/UsdcTransactionListItem.vue';
 import { useUsdcAddressStore } from '../stores/UsdcAddress';
 import { useUsdcTransactionsStore, Transaction, TransactionState } from '../stores/UsdcTransactions';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
-import { useUsdcNetworkStore } from '../stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
 import { ENV_MAIN } from '../lib/Constants';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
@@ -126,7 +126,7 @@ export default defineComponent({
     setup(props, context) {
         const { addressInfo } = useUsdcAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
-        const { isFetchingTxHistory } = useUsdcNetworkStore();
+        const { isFetchingUsdcTxHistory } = usePolygonNetworkStore();
         const { getLabel: getContactLabel } = useUsdcContactsStore();
         const { config } = useConfig();
 
@@ -173,7 +173,7 @@ export default defineComponent({
 
         const transactions = computed(() => {
             // Display loading transactions
-            if (!filteredTxs.value.length && isFetchingTxHistory.value) {
+            if (!filteredTxs.value.length && isFetchingUsdcTxHistory.value) {
                 // create just as many placeholders that the scroller doesn't start recycling them because the loading
                 // animation breaks for recycled entries due to the animation delay being off.
                 const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
@@ -352,7 +352,7 @@ export default defineComponent({
             txCount,
             transactions,
             root,
-            isFetchingTxHistory,
+            isFetchingUsdcTxHistory,
             isMainnet,
             scroller,
         };

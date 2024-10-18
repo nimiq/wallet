@@ -21,24 +21,30 @@ export default {
         validatorsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/validators',
     },
 
-    usdc: {
+    polygon: {
         enabled: true,
-        networkId: 80001,
-        rpcEndpoint: 'wss://polygon-mumbai.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
+        networkId: 80002,
+        rpcEndpoint: 'wss://polygon-amoy.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
-        usdcContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
-        nativeUsdcContract: '0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97',
-        transferContract: '0x2805f3187dcDfa424EFA8c55Db6012Cf08Fa6eEc', // v3
-        nativeTransferContract: '0x5D101A320547f8D640c44fDfe5d1f35224f00B8B', // v1
-        htlcContract: '0x2EB7cd7791b947A25d629219ead941fCd8f364BF', // v3
-        nativeHtlcContract: '0xA9fAbABE97375565e4A9Ac69A57Df33c91FCB897',
-        swapContract: '0xf4a619F6561CeE543BDa9BBA0cAC68758B607714', // v2
-        swapPoolContract: '0x8292Be650A20D30A21436601bFb1ea0e1143d901',
-        relayHubContract: '0x6646cD15d33cE3a6933e36de38990121e8ba2806',
-        uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-        wmaticContract: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
-        earliestHistoryScanHeight: 29621817, // see config.local.ts
-        earliestNativeHistoryScanHeight: 36560732, // Native USDC contract creation block
+        usdc_bridged: {
+            tokenContract: '',
+            transferContract: '', // v3
+            htlcContract: '', // v3
+            earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
+        },
+        usdc: {
+            tokenContract: '0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582',
+            transferContract: '', // v1
+            htlcContract: '',
+            earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
+        },
+        usdcConversion: {
+            swapContract: '', // v2
+            swapPoolContract: '',
+        },
+        openGsnRelayHubContract: '',
+        uniswapQuoterContract: '',
+        wpolContract: '0xA5733b3A8e62A8faF43b0376d5fAF46E89B3033E',
     },
 
     fastspot: {

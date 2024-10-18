@@ -483,7 +483,7 @@ export default defineComponent({
 
                     const method = 'refund';
 
-                    const htlcContract = transaction.value.token === config.usdc.nativeUsdcContract
+                    const htlcContract = transaction.value.token === config.polygon.usdc.tokenContract
                         ? await getNativeHtlcContract()
                         : await getHtlcContract();
 
@@ -493,7 +493,7 @@ export default defineComponent({
                     ] = await Promise.all([
                         htlcContract.getNonce(myAddress) as Promise<BigNumber>,
                         calculateFee(
-                            transaction.value.token || config.usdc.usdcContract,
+                            transaction.value.token || config.polygon.usdc_bridged.tokenContract,
                             method,
                             undefined,
                             htlcContract,
@@ -534,7 +534,7 @@ export default defineComponent({
                     const request: Omit<RefundSwapRequest, 'appName'> = {
                         accountId: useAccountStore().activeAccountId.value!,
                         refund: {
-                            type: transaction.value.token === config.usdc.nativeUsdcContract
+                            type: transaction.value.token === config.polygon.usdc.tokenContract
                                 ? SwapAsset.USDC_MATIC
                                 : SwapAsset.USDC,
                             ...relayRequest,
@@ -571,7 +571,7 @@ export default defineComponent({
                 return CryptoCurrency.USDC;
             }
 
-            return transaction.value.token === config.usdc.nativeUsdcContract
+            return transaction.value.token === config.polygon.usdc.tokenContract
                 ? CryptoCurrency.USDC
                 : 'usdc.e';
         });

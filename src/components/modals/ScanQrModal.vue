@@ -137,7 +137,7 @@ export default defineComponent({
                 });
             }
 
-            if (config.usdc.enabled && hasPolygonAddresses.value) {
+            if (config.polygon.enabled && hasPolygonAddresses.value) {
                 // Run in parallel, without awaiting.
                 loadEthersLibrary().then((ethers) => {
                     // Support scanning plain addresses. The send modal shows a warning for unknown addresses
@@ -150,7 +150,7 @@ export default defineComponent({
                             {
                                 chainId: config.environment === ENV_MAIN
                                     ? EthereumChain.POLYGON_MAINNET
-                                    : EthereumChain.POLYGON_MUMBAI_TESTNET,
+                                    : EthereumChain.POLYGON_AMOY_TESTNET,
                             },
                         )}`);
                     }
@@ -168,7 +168,7 @@ export default defineComponent({
                     //   ignored. The amount in the link is interpreted directly as USDC balance.
                     const allowedChains = [
                         EthereumChain.POLYGON_MAINNET,
-                        ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_MUMBAI_TESTNET] : []),
+                        ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_AMOY_TESTNET] : []),
                     ];
                     const usdcRequestLink = parseRequestLink(result, {
                         currencies: [Currency.USDC, Currency.MATIC],

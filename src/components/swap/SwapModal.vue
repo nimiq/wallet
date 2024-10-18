@@ -345,7 +345,7 @@ function getWalletEnabledAssets() {
     return [
         SwapAsset.NIM,
         ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
-        ...(config.usdc.enabled ? [SwapAsset.USDC_MATIC] : []),
+        ...(config.polygon.enabled ? [SwapAsset.USDC_MATIC] : []),
     ];
 }
 
@@ -902,7 +902,7 @@ export default defineComponent({
                     // const client = await getPolygonClient();
                     // const allowance = await client.nativeUsdc.allowance(
                     //     activeUsdcAddress.value!,
-                    //     config.usdc.nativeHtlcContract,
+                    //     config.polygon.usdc.htlcContract,
                     // ) as BigNumber;
                     // if (allowance.gte(accountUsdcBalance.value)) method = 'open';
                 }
@@ -916,7 +916,7 @@ export default defineComponent({
                 gasPrice,
                 relay,
                 usdcPrice,
-            } = await calculateUsdcFee(config.usdc.nativeUsdcContract, method, forceRelay, htlcContract);
+            } = await calculateUsdcFee(config.polygon.usdc.tokenContract, method, forceRelay, htlcContract);
 
             if (!forceRelay) {
                 // Store the new relay
@@ -1568,7 +1568,7 @@ export default defineComponent({
                     // Keyguard's SwapIFrameApi.
                     const data = htlcContract.interface.encodeFunctionData(method, [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address token */ config.usdc.nativeUsdcContract,
+                        /* address token */ config.polygon.usdc.tokenContract,
                         /* uint256 amount */ swapSuggestion.from.amount,
                         /* address refundAddress */ fromAddress,
                         /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
@@ -1591,7 +1591,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: fromAddress,
-                            to: config.usdc.nativeHtlcContract,
+                            to: config.polygon.usdc.htlcContract,
                             data,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -1604,10 +1604,10 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.nativeHtlcContract,
+                            paymaster: config.polygon.usdc.htlcContract,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.nativeHtlcContract,
+                            forwarder: config.polygon.usdc.htlcContract,
                         },
                     };
 
@@ -1686,7 +1686,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: toAddress,
-                            to: config.usdc.nativeHtlcContract,
+                            to: config.polygon.usdc.htlcContract,
                             data,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -1699,10 +1699,10 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.nativeHtlcContract,
+                            paymaster: config.polygon.usdc.htlcContract,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.nativeHtlcContract,
+                            forwarder: config.polygon.usdc.htlcContract,
                         },
                     };
 
@@ -2085,7 +2085,7 @@ export default defineComponent({
                 const relayRequest: RelayRequest = {
                     request: {
                         from: toAddress,
-                        to: config.usdc.nativeHtlcContract,
+                        to: config.polygon.usdc.htlcContract,
                         data,
                         value: '0',
                         nonce: forwarderNonce.toString(),
@@ -2098,10 +2098,10 @@ export default defineComponent({
                         pctRelayFee: relay.pctRelayFee.toString(),
                         baseRelayFee: relay.baseRelayFee.toString(),
                         relayWorker: relay.relayWorkerAddress,
-                        paymaster: config.usdc.nativeHtlcContract,
+                        paymaster: config.polygon.usdc.htlcContract,
                         paymasterData: '0x',
                         clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        forwarder: config.usdc.nativeHtlcContract,
+                        forwarder: config.polygon.usdc.htlcContract,
                     },
                 };
 

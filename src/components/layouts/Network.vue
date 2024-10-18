@@ -40,7 +40,7 @@
             </div>
         </section>
 
-        <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.usdc.enabled}">
+        <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.polygon.enabled}">
             <NetworkStats>
                 <template #network>BTC</template>
                 <template v-if="btcFee" #fee>
@@ -55,7 +55,7 @@
             </NetworkStats>
         </section>
 
-        <section v-if="$config.usdc.enabled" :class="{'full-width': !$config.enableBitcoin}">
+        <section v-if="$config.polygon.enabled" :class="{'full-width': !$config.enableBitcoin}">
             <NetworkStats>
                 <template #network>USDC</template>
                 <template v-if="usdcFee" #fee>
@@ -147,7 +147,7 @@ export default defineComponent({
 
         onMounted(() => {
             setFees();
-            if (config.enableBitcoin || config.usdc.enabled) {
+            if (config.enableBitcoin || config.polygon.enabled) {
                 interval = window.setInterval(setFees, 60 * 1000); // every minute
             }
         });
@@ -165,9 +165,9 @@ export default defineComponent({
                 btcFee.value = estimateFees(2, 2, fees[12]);
             }
 
-            if (config.usdc.enabled) {
+            if (config.polygon.enabled) {
                 usdcFee.value = (await calculateUsdcFee(
-                    config.usdc.nativeUsdcContract,
+                    config.polygon.usdc.tokenContract,
                     'transferWithPermit',
                 )).fee.toNumber();
             }

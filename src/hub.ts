@@ -134,7 +134,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
             // Signup of a Keyguard account
-            if (!welcomeModalAlreadyShown && config.enableBitcoin && config.usdc.enabled) {
+            if (!welcomeModalAlreadyShown && config.enableBitcoin && config.polygon.enabled) {
                 // Show regular first-time welcome flow which talks about Bitcoin and USDC.
                 router.push('/welcome');
             } else if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
@@ -144,7 +144,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
             break;
         case HubApi.RequestType.LOGIN:
             // Login of a Keyguard or Ledger account
-            if (accounts[0].polygonAddresses.length && !welcomeModalAlreadyShown && config.usdc.enabled) {
+            if (accounts[0].polygonAddresses.length && !welcomeModalAlreadyShown && config.polygon.enabled) {
                 // If USDC is enabled for this account, show "USDC is now available" info in activation modal which
                 // afterwards leads into the welcome flow if not shown yet.
                 router.push('/usdc-activation');
@@ -406,7 +406,7 @@ export async function syncFromHub() {
         areOptionalRedirectsAllowed(router.currentRoute)
         && activeAccountInfo.value?.type === AccountType.BIP39 // Legacy accounts and Ledgers are not supported.
         && !activeAccountInfo.value.polygonAddresses?.length
-        && config.usdc.enabled
+        && config.polygon.enabled
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.push('/usdc-activation');

@@ -231,7 +231,7 @@ export const useUsdcTransactionsStore = createStore({
 async function detectSwap(transaction: Transaction, knownTransactions: Transaction[]) {
     const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
     if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
-    const asset = transaction.token === config.usdc.nativeUsdcContract ? SwapAsset.USDC_MATIC : SwapAsset.USDC;
+    const asset = transaction.token === config.polygon.usdc.tokenContract ? SwapAsset.USDC_MATIC : SwapAsset.USDC;
 
     // HTLC Creation
     if (transaction.event?.name === 'Open') {

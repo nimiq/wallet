@@ -15,7 +15,7 @@
             <AddressList
                 embedded
                 :showBitcoin="hasBitcoinAddresses && $config.enableBitcoin"
-                :showUsdc="hasPolygonAddresses && $config.usdc.enabled"
+                :showUsdc="hasPolygonAddresses && $config.polygon.enabled"
                 @address-selected="addressSelected"
             />
         </PageBody>

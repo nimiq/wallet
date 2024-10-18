@@ -344,8 +344,8 @@ export default defineComponent({
     transition: opacity 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 
     &.disabled {
-        color: rgba(255, 255, 255, 0.7);
-        background-color: rgba(31, 35, 72, 0.5);
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
         opacity: 0.6;
         cursor: not-allowed;
         pointer-events: none;

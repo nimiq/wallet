@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 
 export default defineComponent({
     props: {
@@ -26,9 +26,13 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        isPaused: {
+            type: Boolean,
+            default: false,
+        },
     },
     setup(props, { emit }) {
-        const animationProgress = ref(100); // Start with full progress
+        const animationProgress = ref(0);
         const isFirstStepAnimated = ref(false);
         const ANIMATION_DURATION = 5000; // 5000ms = 5s (adjust as needed)
 
@@ -41,18 +45,32 @@ export default defineComponent({
         });
 
         let animationFrame: number;
-        let animationStartTime: number | null = null;
+        let startTime: number;
+        let pausedTime = 0;
+        let lastPauseTime: number | null = null;
 
-        const animateStep = (timestamp: number) => {
-            if (!animationStartTime) {
-                animationStartTime = timestamp;
+        const animate = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+
+            if (props.isPaused) {
+                if (lastPauseTime === null) {
+                    lastPauseTime = timestamp;
+                }
+                animationFrame = requestAnimationFrame(animate);
+                return;
             }
-            const elapsed = timestamp - animationStartTime;
-            const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
+
+            if (lastPauseTime !== null) {
+                pausedTime += timestamp - lastPauseTime;
+                lastPauseTime = null;
+            }
+
+            const elapsedTime = timestamp - startTime - pausedTime;
+            const progress = Math.min(elapsedTime / ANIMATION_DURATION, 1);
             animationProgress.value = progress * 100;
 
             if (progress < 1 && props.shouldAnimate) {
-                animationFrame = requestAnimationFrame(animateStep);
+                animationFrame = requestAnimationFrame(animate);
             } else {
                 isFirstStepAnimated.value = true;
                 emit('stepCompleted');
@@ -60,13 +78,15 @@ export default defineComponent({
         };
 
         const startAnimation = () => {
+            cancelAnimationFrame(animationFrame);
+            startTime = 0;
+            pausedTime = 0;
+            lastPauseTime = null;
+            animationProgress.value = 0;
             if (props.shouldAnimate) {
-                animationStartTime = null;
-                cancelAnimationFrame(animationFrame);
-                animationProgress.value = 0; // Reset progress before starting animation
-                animationFrame = requestAnimationFrame(animateStep);
+                animationFrame = requestAnimationFrame(animate);
             } else {
-                animationProgress.value = 100; // Set to full progress immediately
+                animationProgress.value = 100;
             }
         };
 
@@ -74,7 +94,7 @@ export default defineComponent({
             if (newStep > oldStep || (newStep === 1 && !isFirstStepAnimated.value)) {
                 startAnimation();
             } else if (newStep < oldStep) {
-                animationProgress.value = 100; // Set to full progress when going back
+                animationProgress.value = 100;
             }
         });
 
@@ -82,6 +102,10 @@ export default defineComponent({
             if (props.currentStep === 1) {
                 startAnimation();
             }
+        });
+
+        onUnmounted(() => {
+            cancelAnimationFrame(animationFrame);
         });
 
         return {

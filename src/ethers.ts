@@ -42,11 +42,11 @@ export async function loadEthersLibrary() {
 export interface PolygonClient {
     provider: providers.Provider;
     /** @deprecated */
-    usdc: Contract;
+    usdcBridgedToken: Contract;
     /** @deprecated */
+    usdcBridgedTransfer: Contract;
+    usdcToken: Contract;
     usdcTransfer: Contract;
-    nativeUsdc: Contract;
-    nativeUsdcTransfer: Contract;
     ethers: typeof ethers;
 }
 
@@ -139,20 +139,22 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         });
     });
 
-    const usdc = new ethers.Contract(config.polygon.usdc_bridged.tokenContract, USDC_BRIDGED_TOKEN_CONTRACT_ABI, provider);
-    const usdcTransfer = new ethers.Contract(
+    const usdcBridgedToken = new ethers.Contract(
+        config.polygon.usdc_bridged.tokenContract, USDC_BRIDGED_TOKEN_CONTRACT_ABI, provider);
+    const usdcBridgedTransfer = new ethers.Contract(
         config.polygon.usdc_bridged.transferContract, USDC_BRIDGED_TRANSFER_CONTRACT_ABI, provider);
 
-    const nativeUsdc = new ethers.Contract(config.polygon.usdc.tokenContract, USDC_TOKEN_CONTRACT_ABI, provider);
-    const nativeUsdcTransfer = new ethers.Contract(
+    const usdcToken = new ethers.Contract(
+        config.polygon.usdc.tokenContract, USDC_TOKEN_CONTRACT_ABI, provider);
+    const usdcTransfer = new ethers.Contract(
         config.polygon.usdc.transferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
 
     resolver!({
         provider,
-        usdc,
+        usdcBridgedToken,
+        usdcBridgedTransfer,
+        usdcToken,
         usdcTransfer,
-        nativeUsdc,
-        nativeUsdcTransfer,
         ethers,
     });
 
@@ -161,13 +163,13 @@ export async function getPolygonClient(): Promise<PolygonClient> {
 
 async function getBalance(address: string) {
     const client = await getPolygonClient();
-    const balance = await client.usdc.balanceOf(address) as BigNumber;
+    const balance = await client.usdcBridgedToken.balanceOf(address) as BigNumber;
     return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDC, enough for now
 }
 
 async function getNativeBalance(address: string) {
     const client = await getPolygonClient();
-    const balance = await client.nativeUsdc.balanceOf(address) as BigNumber;
+    const balance = await client.usdcToken.balanceOf(address) as BigNumber;
     return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDC, enough for now
 }
 
@@ -243,17 +245,17 @@ let currentNativeSubscriptionFilter: EventFilter | undefined;
 function subscribe(addresses: string[]) {
     getPolygonClient().then((client) => {
         // Only subscribe to incoming logs
-        const newFilterIncoming = client.usdc.filters.Transfer(null, [...subscribedAddresses]);
-        client.usdc.on(newFilterIncoming, transactionListener);
+        const newFilterIncoming = client.usdcBridgedToken.filters.Transfer(null, [...subscribedAddresses]);
+        client.usdcBridgedToken.on(newFilterIncoming, transactionListener);
         if (currentSubscriptionFilter) {
-            client.usdc.off(currentSubscriptionFilter, transactionListener);
+            client.usdcBridgedToken.off(currentSubscriptionFilter, transactionListener);
         }
         currentSubscriptionFilter = newFilterIncoming;
 
-        const newNativeFilterIncoming = client.nativeUsdc.filters.Transfer(null, [...subscribedAddresses]);
-        client.nativeUsdc.on(newNativeFilterIncoming, transactionListener);
+        const newNativeFilterIncoming = client.usdcToken.filters.Transfer(null, [...subscribedAddresses]);
+        client.usdcToken.on(newNativeFilterIncoming, transactionListener);
         if (currentNativeSubscriptionFilter) {
-            client.nativeUsdc.off(currentNativeSubscriptionFilter, transactionListener);
+            client.usdcToken.off(currentNativeSubscriptionFilter, transactionListener);
         }
         currentNativeSubscriptionFilter = newNativeFilterIncoming;
     });
@@ -379,15 +381,15 @@ export async function launchPolygon() {
         if ((trigger as number) > 0) updateBalances([address]);
 
         const client = await getPolygonClient();
-        const poolAddress = await getPoolAddress(client.usdcTransfer, config.polygon.usdc_bridged.tokenContract);
+        const poolAddress = await getPoolAddress(client.usdcBridgedTransfer, config.polygon.usdc_bridged.tokenContract);
 
         console.debug('Fetching USDC transaction history for', address, knownTxs);
 
         // EventFilters only allow to query with an AND condition between arguments (topics). So while
         // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
         // OR two AND pairs. That requires two separate requests.
-        const filterIncoming = client.usdc.filters.Transfer(null, address);
-        const filterOutgoing = client.usdc.filters.Transfer(address);
+        const filterIncoming = client.usdcBridgedToken.filters.Transfer(null, address);
+        const filterOutgoing = client.usdcBridgedToken.filters.Transfer(address);
 
         const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
@@ -400,14 +402,14 @@ export async function launchPolygon() {
             .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
 
         Promise.all([
-            client.usdc.balanceOf(address) as Promise<BigNumber>,
-            client.usdc.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            client.usdc.allowance(address, config.polygon.usdc_bridged.transferContract)
+            client.usdcBridgedToken.balanceOf(address) as Promise<BigNumber>,
+            client.usdcBridgedToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+            client.usdcBridgedToken.allowance(address, config.polygon.usdc_bridged.transferContract)
                 .then((allowance: BigNumber) => {
                     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
                     return MAX_ALLOWANCE.sub(allowance);
                 }) as Promise<BigNumber>,
-            client.usdc.allowance(address, config.polygon.usdc_bridged.htlcContract)
+            client.usdcBridgedToken.allowance(address, config.polygon.usdc_bridged.htlcContract)
                 .then((allowance: BigNumber) => {
                     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
                     return MAX_ALLOWANCE.sub(allowance);
@@ -444,8 +446,8 @@ export async function launchPolygon() {
                 console.debug(`Querying logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    client.usdc.queryFilter(filterIncoming, startHeight, endHeight),
-                    client.usdc.queryFilter(filterOutgoing, startHeight, endHeight),
+                    client.usdcBridgedToken.queryFilter(filterIncoming, startHeight, endHeight),
+                    client.usdcBridgedToken.queryFilter(filterOutgoing, startHeight, endHeight),
                 ]);
 
                 // Ignore address poisoning transactions
@@ -601,7 +603,7 @@ export async function launchPolygon() {
                             for (const innerLog of receipt.logs) {
                                 if (innerLog.address !== config.polygon.usdc.tokenContract) continue;
                                 try {
-                                    const { args, name } = client.nativeUsdc.interface.parseLog(innerLog);
+                                    const { args, name } = client.usdcToken.interface.parseLog(innerLog);
                                     if (name === 'Transfer') {
                                         const event: UniswapEvent = {
                                             name: 'Swap',
@@ -679,16 +681,16 @@ export async function launchPolygon() {
         if ((trigger as number) > 0) updateNativeBalances([address]);
 
         const client = await getPolygonClient();
-        const poolAddress = await getPoolAddress(client.nativeUsdcTransfer, config.polygon.usdc.tokenContract);
+        const poolAddress = await getPoolAddress(client.usdcTransfer, config.polygon.usdc.tokenContract);
 
         console.debug('Fetching native USDC transaction history for', address, knownTxs);
 
         // EventFilters only allow to query with an AND condition between arguments (topics). So while
         // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
         // OR two AND pairs. That requires two separate requests.
-        const filterIncoming = client.nativeUsdc.filters.Transfer(null, address);
-        const filterOutgoing = client.nativeUsdc.filters.Transfer(address);
-        // const filterMetaTx = client.usdc.filters.MetaTransactionExecuted();
+        const filterIncoming = client.usdcToken.filters.Transfer(null, address);
+        const filterOutgoing = client.usdcToken.filters.Transfer(address);
+        // const filterMetaTx = client.usdcBridgedToken.filters.MetaTransactionExecuted();
 
         const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
@@ -701,14 +703,14 @@ export async function launchPolygon() {
             .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
 
         Promise.all([
-            client.nativeUsdc.balanceOf(address) as Promise<BigNumber>,
-            client.nativeUsdc.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            client.nativeUsdc.allowance(address, config.polygon.usdc.transferContract)
+            client.usdcToken.balanceOf(address) as Promise<BigNumber>,
+            client.usdcToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+            client.usdcToken.allowance(address, config.polygon.usdc.transferContract)
                 .then((allowance: BigNumber) => {
                     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
                     return MAX_ALLOWANCE.sub(allowance);
                 }) as Promise<BigNumber>,
-            client.nativeUsdc.allowance(address, config.polygon.usdc.htlcContract)
+            client.usdcToken.allowance(address, config.polygon.usdc.htlcContract)
                 .then((allowance: BigNumber) => {
                     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
                     return MAX_ALLOWANCE.sub(allowance);
@@ -744,8 +746,8 @@ export async function launchPolygon() {
                 console.debug(`Querying native logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    client.nativeUsdc.queryFilter(filterIncoming, startHeight, endHeight),
-                    client.nativeUsdc.queryFilter(filterOutgoing, startHeight, endHeight),
+                    client.usdcToken.queryFilter(filterIncoming, startHeight, endHeight),
+                    client.usdcToken.queryFilter(filterOutgoing, startHeight, endHeight),
                 ]);
 
                 // Ignore address poisoning transactions
@@ -950,8 +952,8 @@ export async function calculateFee(
     const client = await getPolygonClient();
     const { config } = useConfig();
     if (!contract) {
-        if (token === config.polygon.usdc_bridged.tokenContract) contract = client.usdcTransfer;
-        else contract = client.nativeUsdcTransfer;
+        if (token === config.polygon.usdc_bridged.tokenContract) contract = client.usdcBridgedTransfer;
+        else contract = client.usdcTransfer;
     }
 
     // The byte size of `data` of the wrapper relay transaction, plus 4 bytes for the `relayCall` method identifier
@@ -1052,9 +1054,9 @@ export async function createTransactionRequest(
     const client = await getPolygonClient();
 
     const tokenAddress = config.polygon.usdc.tokenContract;
-    const tokenContract = client.nativeUsdc;
+    const tokenContract = client.usdcToken;
     const transferAddress = config.polygon.usdc.transferContract;
-    const transferContract = client.nativeUsdcTransfer;
+    const transferContract = client.usdcTransfer;
 
     const [
         usdcNonce,
@@ -1222,8 +1224,8 @@ export async function receiptToTransaction(
     const client = await getPolygonClient();
 
     const [tokenContract, transferContract] = token === config.polygon.usdc.tokenContract
-        ? [client.nativeUsdc, client.nativeUsdcTransfer]
-        : [client.usdc, client.usdcTransfer];
+        ? [client.usdcToken, client.usdcTransfer]
+        : [client.usdcBridgedToken, client.usdcBridgedTransfer];
 
     const htlcContractAddress = token === config.polygon.usdc.tokenContract
         ? config.polygon.usdc.htlcContract
@@ -1310,7 +1312,7 @@ export async function receiptToTransaction(
                 for (const innerLog of receipt.logs) {
                     if (innerLog.address !== config.polygon.usdc.tokenContract) continue;
                     try {
-                        const { args, name } = client.nativeUsdc.interface.parseLog(innerLog);
+                        const { args, name } = client.usdcToken.interface.parseLog(innerLog);
                         if (name === 'Transfer' && args.from === config.polygon.usdcConversion.swapContract) {
                             uniswapEvent = {
                                 name: 'Swap',

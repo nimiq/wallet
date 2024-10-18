@@ -1554,7 +1554,7 @@ export default defineComponent({
                         forwarderNonce,
                         blockHeight,
                     ] = await Promise.all([
-                        client.nativeUsdc.nonces(fromAddress) as Promise<BigNumber>,
+                        client.usdcToken.nonces(fromAddress) as Promise<BigNumber>,
                         htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
                         getPolygonBlockNumber(),
                     ]);

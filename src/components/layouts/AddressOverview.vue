@@ -407,7 +407,7 @@ export default defineComponent({
                         forwarderNonce,
                         blockHeight,
                     ] = await Promise.all([
-                        client.usdc.nonces(fromAddress) as Promise<BigNumber>,
+                        client.usdcBridgedToken.nonces(fromAddress) as Promise<BigNumber>,
                         swapContract.getNonce(fromAddress) as Promise<BigNumber>,
                         getPolygonBlockNumber(),
                     ]);

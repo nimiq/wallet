@@ -253,6 +253,10 @@ export const usePrestakingStore = createStore({
             },
             'NQ85 EA0M YF3E P9AX SM2C 58KX GD0B SXJE K2PJ': {
                 address: 'NQ85 EA0M YF3E P9AX SM2C 58KX GD0B SXJE K2PJ',
+                label: 'Nova Pool',
+                description: 'A Staking Pool',
+                icon: 'novapool.png',
+                website: 'https://www.nimiqnovapool.com',
                 stake: null,
             },
             'NQ13 SY9E HDV2 TYHG XHNR 5LGX VUF6 0HX6 AHSL': {

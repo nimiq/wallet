@@ -10,6 +10,7 @@ export type PolygonAddressInfo = {
     address: string,
     balanceUsdcBridged: number | null,
     balanceUsdc: number | null,
+    balanceUsdtBridged: number | null,
     pol: number | null, // For testing until OpenGSN contract is available
 };
 
@@ -23,8 +24,10 @@ export const usePolygonAddressStore = createStore({
             const { activeAccountInfo } = useAccountStore();
             if (!activeAccountInfo.value?.polygonAddresses?.length) return undefined;
 
-            // TODO: Subtract pending outgoing balance from addressInfo.balanceUsdcBridged / balanceUsdc
+            // TODO: Subtract pending outgoing balance from
+            // addressInfo.balanceUsdcBridged / balanceUsdc / balanceUsdtBridged
             // const { pendingTransactionsBySender } = useUsdcTransactionsStore();
+            // const { pendingTransactionsBySender } = useUsdtTransactionsStore();
 
             // Only supports one USDC address per account for now
             return state.addressInfos[activeAccountInfo.value.polygonAddresses[0]];
@@ -40,6 +43,11 @@ export const usePolygonAddressStore = createStore({
             const ai = addressInfo.value as PolygonAddressInfo | undefined;
             if (!ai || ai.balanceUsdc === null) return 0;
             return ai.balanceUsdc;
+        },
+        accountUsdtBridgedBalance: (state, { addressInfo }) => {
+            const ai = addressInfo.value as PolygonAddressInfo | undefined;
+            if (!ai || ai.balanceUsdtBridged === null) return 0;
+            return ai.balanceUsdtBridged;
         },
     },
     actions: {

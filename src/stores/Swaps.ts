@@ -6,6 +6,7 @@ import { FiatCurrency } from '../lib/Constants';
 import { assetToCurrency } from '../lib/swap/utils/Assets';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { Transaction as UsdcTransaction } from './UsdcTransactions';
+import { Transaction as UsdtTransaction } from './UsdtTransactions';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -100,18 +101,19 @@ export type ActiveSwap = SwapObject & {
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | UsdcTransaction,
+        | UsdcTransaction | UsdtTransaction,
     fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | UsdcTransaction,
+        | UsdcTransaction | UsdtTransaction,
     secret?: string,
     settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | UsdcTransaction,
+        | UsdcTransaction | UsdtTransaction,
     error?: string,
     errorAction?: SwapErrorAction,
 }
 
 export enum SwapErrorAction {
     USDC_RESIGN_REDEEM = 'usdc-resign-redeem',
+    USDT_RESIGN_REDEEM = 'usdt-resign-redeem',
 }
 
 export type SwapsState = {

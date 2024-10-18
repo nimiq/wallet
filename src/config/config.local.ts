@@ -63,6 +63,12 @@ export default {
             htlcContract: '',
             earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
         },
+        usdt_bridged: {
+            tokenContract: '0x1616d425Cd540B256475cBfb604586C8598eC0FB',
+            transferContract: '',
+            htlcContract: '',
+            earliestHistoryScanHeight: 13320830, // Block when USDT was added to the Wallet
+        },
         usdcConversion: {
             swapContract: '',
             swapPoolContract: '',

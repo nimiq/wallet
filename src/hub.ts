@@ -304,6 +304,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
                 address: polygonAddress,
                 balanceUsdcBridged: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
                 balanceUsdc: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
+                balanceUsdtBridged: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdtBridged ?? null,
                 pol: usdcAddressStore.state.addressInfos[polygonAddress]?.pol ?? null,
             });
         }

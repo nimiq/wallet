@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import type { BigNumber, Contract } from 'ethers';
 import { getPolygonBlockNumber, PolygonClient } from '../../ethers';
-import { RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
+import { OPENGSN_RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../Constants';
 
@@ -10,7 +10,7 @@ let relayHubContract: Contract | undefined;
 export function getRelayHub({ ethers, provider }: PolygonClient) {
     return relayHubContract || (relayHubContract = new ethers.Contract(
         useConfig().config.polygon.openGsnRelayHubContract,
-        RELAY_HUB_CONTRACT_ABI,
+        OPENGSN_RELAY_HUB_CONTRACT_ABI,
         provider,
     ));
 }

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-export const USDC_CONTRACT_ABI = [
+export const USDC_BRIDGED_TOKEN_CONTRACT_ABI = [
     // 'event Approval(address indexed owner, address indexed spender, uint256 value)',
     // 'event AuthorizationCanceled(address indexed authorizer, bytes32 indexed nonce)',
     // 'event AuthorizationUsed(address indexed authorizer, bytes32 indexed nonce)',
@@ -74,7 +74,7 @@ export const USDC_CONTRACT_ABI = [
     // 'function withdrawWithAuthorization(address owner, uint256 value, uint256 validAfter, uint256 validBefore, bytes32 nonce, uint8 v, bytes32 r, bytes32 s)',
 ];
 
-export const NATIVE_USDC_CONTRACT_ABI = [
+export const USDC_TOKEN_CONTRACT_ABI = [
     // 'event Approval(address indexed owner, address indexed spender, uint256 value)',
     // 'event AuthorizationCanceled(address indexed authorizer, bytes32 indexed nonce)',
     // 'event AuthorizationUsed(address indexed authorizer, bytes32 indexed nonce)',
@@ -144,7 +144,7 @@ export const NATIVE_USDC_CONTRACT_ABI = [
     // 'function version() view returns (string)',
 ];
 
-export const USDC_TRANSFER_CONTRACT_ABI = [
+export const USDC_BRIDGED_TRANSFER_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
@@ -192,7 +192,7 @@ export const USDC_TRANSFER_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
-export const NATIVE_USDC_TRANSFER_CONTRACT_ABI = [
+export const USDC_TRANSFER_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
@@ -241,7 +241,7 @@ export const NATIVE_USDC_TRANSFER_CONTRACT_ABI = [
 ];
 
 // TODO add variable names
-export const RELAY_HUB_CONTRACT_ABI = [
+export const OPENGSN_RELAY_HUB_CONTRACT_ABI = [
     // 'constructor(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)',
     // 'event Deposited(address indexed,address indexed,uint256)',
     // 'event HubDeprecated(uint256)',
@@ -329,7 +329,7 @@ export const UNISWAP_QUOTER_CONTRACT_ABI = [
     // 'function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes path) view'
 ];
 
-export const USDC_HTLC_CONTRACT_ABI = [
+export const USDC_BRIDGED_HTLC_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     'event Open(bytes32 indexed id, address token, uint256 amount, address recipient, bytes32 hash, uint256 timeout)',
@@ -385,7 +385,7 @@ export const USDC_HTLC_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
-export const NATIVE_USDC_HTLC_CONTRACT_ABI = [
+export const USDC_HTLC_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     'event Open(bytes32 indexed id, address token, uint256 amount, address recipient, bytes32 hash, uint256 timeout)',
@@ -441,7 +441,7 @@ export const NATIVE_USDC_HTLC_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
-export const SWAP_CONTRACT_ABI = [
+export const CONVERSION_SWAP_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',

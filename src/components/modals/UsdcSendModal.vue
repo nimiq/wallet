@@ -262,7 +262,7 @@ import {
 import { useAccountStore } from '../../stores/Account';
 import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
@@ -302,7 +302,7 @@ export default defineComponent({
 
         const modal$ = ref<Modal>(null);
 
-        const { state: addresses$, addressInfo } = useUsdcAddressStore();
+        const { state: addresses$, addressInfo } = usePolygonAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
         const { contactsArray: contacts, setContact, getLabel } = useUsdcContactsStore();
         const { state: network$ } = usePolygonNetworkStore();

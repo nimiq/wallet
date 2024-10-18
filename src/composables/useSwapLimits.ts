@@ -11,7 +11,7 @@ import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useKycStore } from '../stores/Kyc';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../stores/UsdcTransactions';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 
 const { activeCurrency } = useAccountStore();
 const { activeAddress } = useAddressStore();
@@ -69,7 +69,7 @@ watch(async () => {
 
     const { accountAddresses } = useAddressStore();
     const { activeAddresses } = useBtcAddressStore();
-    const { addressInfo: usdcAddressInfo } = useUsdcAddressStore();
+    const { addressInfo: usdcAddressInfo } = usePolygonAddressStore();
 
     let newUserLimitEur = Infinity;
 

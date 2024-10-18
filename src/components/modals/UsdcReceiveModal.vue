@@ -43,7 +43,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useWindowSize } from '../../composables/useWindowSize';
 import Modal, { disableNextModalTransition } from './Modal.vue';
@@ -59,7 +59,7 @@ export default defineComponent({
             RECEIVE,
         }
 
-        const { state: addresses$, addressInfo } = useUsdcAddressStore();
+        const { state: addresses$, addressInfo } = usePolygonAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
         // These are non-reactive because we're only interested in whether the user had ever received USDC when the
         // modal was initially opened.

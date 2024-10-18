@@ -269,7 +269,7 @@ import PrestakingButton from '../prestaking/PrestakingButton.vue';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { onboard, rename, swapBridgedUsdcToNative } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -303,7 +303,7 @@ export default defineComponent({
             accountUsdcBridgedBalance,
             accountUsdcBalance,
             addressInfo: usdcAddressInfo,
-        } = useUsdcAddressStore();
+        } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
         const { activePrestake, accountPrestake } = usePrestakingStore();

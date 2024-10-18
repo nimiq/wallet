@@ -30,7 +30,7 @@ import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useSettingsStore } from '../stores/Settings';
 import { useFiatStore } from '../stores/Fiat';
 import { useConfig } from '../composables/useConfig';
@@ -44,7 +44,7 @@ export default defineComponent({
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
-        } = useUsdcAddressStore();
+        } = usePolygonAddressStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { config } = useConfig();
 

@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { useConfig } from '@/composables/useConfig';
-import { useUsdcAddressStore } from '@/stores/UsdcAddress';
+import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components';
 import { computed, defineComponent } from '@vue/composition-api';
 import { getBackgroundClass } from '../lib/AddressColor';
@@ -103,7 +103,7 @@ export default defineComponent({
             return internalBalance + externalBalance;
         });
 
-        const { accountUsdcBalance, accountUsdcBridgedBalance } = useUsdcAddressStore();
+        const { accountUsdcBalance, accountUsdcBridgedBalance } = usePolygonAddressStore();
 
         // TODO: Dedupe double code with AccountBalance
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();

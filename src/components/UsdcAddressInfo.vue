@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import Avatar from './Avatar.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
@@ -59,7 +59,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { addressInfo } = useUsdcAddressStore();
+        const { addressInfo } = usePolygonAddressStore();
         const { setContact, getLabel } = useUsdcContactsStore();
 
         const isOwnAddress = computed(() => addressInfo.value?.address === props.address);

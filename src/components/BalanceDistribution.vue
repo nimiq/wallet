@@ -38,7 +38,7 @@ import Vue from 'vue';
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useConfig } from '../composables/useConfig';
 import { CryptoCurrency } from '../lib/Constants';
@@ -61,7 +61,8 @@ export default defineComponent({
             [CryptoCurrency.NIM]: useAddressStore().accountBalance.value / 1e5,
             [CryptoCurrency.BTC]: useBtcAddressStore().accountBalance.value / 1e8,
             [CryptoCurrency.USDC]: (
-                useUsdcAddressStore().accountUsdcBridgedBalance.value + useUsdcAddressStore().accountUsdcBalance.value
+                usePolygonAddressStore().accountUsdcBridgedBalance.value
+                + usePolygonAddressStore().accountUsdcBalance.value
             ) / 1e6,
         }));
 

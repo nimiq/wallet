@@ -5,7 +5,7 @@ import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log, TransactionReceipt } from '@ethersproject/abstract-provider';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
-import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
+import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
 import { usePolygonNetworkStore } from './stores/PolygonNetwork';
 import {
     HtlcEvent,
@@ -194,7 +194,7 @@ async function updateUsdcBridgedBalances(addresses: string[] = [...usdcBridgedBa
     if (newBalances.size) {
         console.debug('Got new bridged USDC balances for', [...newBalances.keys()], [...newBalances.values()]);
     }
-    const { patchAddress } = useUsdcAddressStore();
+    const { patchAddress } = usePolygonAddressStore();
     for (const [address, balanceUsdcBridged] of newBalances) {
         patchAddress(address, { balanceUsdcBridged });
     }
@@ -223,7 +223,7 @@ async function updateUsdcBalances(addresses: string[] = [...usdcBridgedBalances.
             'Got new native USDC balances for', [...newBalances.keys()], [...newBalances.values()],
         );
     }
-    const { patchAddress } = useUsdcAddressStore();
+    const { patchAddress } = usePolygonAddressStore();
     for (const [address, balanceUsdc] of newBalances) {
         patchAddress(address, { balanceUsdc });
     }
@@ -324,7 +324,7 @@ export async function launchPolygon() {
 
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
-    const addressStore = useUsdcAddressStore();
+    const addressStore = usePolygonAddressStore();
     watch(addressStore.addressInfo, () => {
         const newAddresses: string[] = [];
         const removedAddresses = new Set(subscribedAddresses);
@@ -366,7 +366,7 @@ export async function launchPolygon() {
         addressInfo,
         trigger,
     ]) => {
-        const address = (addressInfo as UsdcAddressInfo | null)?.address;
+        const address = (addressInfo as PolygonAddressInfo | null)?.address;
         if (!address || fetchedUsdcBridgedAddresses.has(address)) return;
         fetchedUsdcBridgedAddresses.add(address);
 
@@ -673,7 +673,7 @@ export async function launchPolygon() {
         addressInfo,
         trigger,
     ]) => {
-        const address = (addressInfo as UsdcAddressInfo | null)?.address;
+        const address = (addressInfo as PolygonAddressInfo | null)?.address;
         if (!address || fetchedUsdcAddresses.has(address)) return;
         fetchedUsdcAddresses.add(address);
 
@@ -1059,8 +1059,8 @@ export async function createTransactionRequest(
     amount: number,
     forceRelay?: RelayServerInfo,
 ) {
-    const addressInfo = useUsdcAddressStore().addressInfo.value;
-    if (!addressInfo) throw new Error('No active USDC address');
+    const addressInfo = usePolygonAddressStore().addressInfo.value;
+    if (!addressInfo) throw new Error('No active Polygon address');
     const fromAddress = addressInfo.address;
 
     const { config } = useConfig();

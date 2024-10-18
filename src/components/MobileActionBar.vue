@@ -24,14 +24,14 @@ import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useWindowSize } from '../composables/useWindowSize';
 import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobileColumn';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 
 export default defineComponent({
     setup(props, context) {
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
         const { accountBalance: btcBalance } = useBtcAddressStore();
-        const { accountUsdcBalance } = useUsdcAddressStore();
+        const { accountUsdcBalance } = usePolygonAddressStore();
         const { isMobile } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
 

@@ -283,7 +283,7 @@ import AttentionDot from '../AttentionDot.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
@@ -313,7 +313,7 @@ export default defineComponent({
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
-        } = useUsdcAddressStore();
+        } = usePolygonAddressStore();
         const { config } = useConfig();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)

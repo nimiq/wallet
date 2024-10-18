@@ -199,7 +199,7 @@ import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSwapsStore } from '../../stores/Swaps';
@@ -282,7 +282,7 @@ export default defineComponent({
             ),
         );
 
-        const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore]
+        const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, usePolygonAddressStore]
             .some((useStore) => {
                 const store = useStore();
                 // For USDC, only native USDC is supported for swapping.

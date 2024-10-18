@@ -68,7 +68,7 @@
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import UsdcTransactionListItem from '@/components/UsdcTransactionListItem.vue';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useUsdcTransactionsStore, Transaction, TransactionState } from '../stores/UsdcTransactions';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
@@ -124,7 +124,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { addressInfo } = useUsdcAddressStore();
+        const { addressInfo } = usePolygonAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
         const { isFetchingUsdcTxHistory } = usePolygonNetworkStore();
         const { getLabel: getContactLabel } = useUsdcContactsStore();

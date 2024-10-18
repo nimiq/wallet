@@ -68,16 +68,16 @@ import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import TrashIcon from './icons/TrashIcon.vue';
 import { RecipientType } from './modals/UsdcSendModal.vue';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
-import { UsdcAddressInfo, useUsdcAddressStore } from '../stores/UsdcAddress';
+import { PolygonAddressInfo, usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useAccountStore } from '../stores/Account';
 
 export default defineComponent({
     setup() {
         const { contactsArray: contacts, setContact } = useUsdcContactsStore();
 
-        const { state: $usdcAddresses, addressInfo: activeAddressInfo } = useUsdcAddressStore();
+        const { state: $usdcAddresses, addressInfo: activeAddressInfo } = usePolygonAddressStore();
 
-        type LabeledUsdcAddressInfo = UsdcAddressInfo & {
+        type LabeledUsdcAddressInfo = PolygonAddressInfo & {
             label: string,
         };
 

@@ -28,7 +28,7 @@ import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useConfig } from '../../composables/useConfig';
@@ -94,7 +94,7 @@ export default defineComponent({
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = useUsdcAddressStore().activeAddress.value;
+        const usdcAddress = usePolygonAddressStore().activeAddress.value;
 
         const walletAddresses = {
             // Remove spaces in NIM address, as spaces are invalid URI components
@@ -258,7 +258,7 @@ export default defineComponent({
                     throw new Error('Invalid USDC contract address given by Moonpay');
                 }
 
-                const { accountUsdcBalance } = useUsdcAddressStore();
+                const { accountUsdcBalance } = usePolygonAddressStore();
                 // TODO: Preselect a relay to be able to check balance against the fee as well
                 if (accountUsdcBalance.value < value) {
                     throw new Error('Insufficient USDC balance');

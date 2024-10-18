@@ -213,6 +213,7 @@ export async function initStorage() {
                     balanceUsdcBridged: ai.balanceUsdcBridged ?? ai.balance,
                     // @ts-expect-error Old property no longer typed
                     balanceUsdc: ai.balanceUsdc ?? ai.nativeBalance,
+                    balanceUsdtBridged: ai.balanceUsdtBridged ?? null,
                     // @ts-expect-error Old property no longer typed
                     pol: ai.pol ?? ai.matic,
                 }] as [string, typeof ai]);

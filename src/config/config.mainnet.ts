@@ -43,6 +43,12 @@ export default {
             htlcContract: '0x0cFD862bE942846Cebad797d7c1BC6e47714959b',
             earliestHistoryScanHeight: 45319261, // Native USDC contract creation block
         },
+        usdt_bridged: {
+            tokenContract: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+            transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
+            htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
+            earliestHistoryScanHeight: 63189500, // Block when USDT was added to the Wallet
+        },
         usdcConversion: {
             swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
             swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',

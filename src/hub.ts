@@ -302,9 +302,9 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         for (const polygonAddress of account.polygonAddresses) {
             usdcAddressInfos.push({
                 address: polygonAddress,
-                balance: usdcAddressStore.state.addressInfos[polygonAddress]?.balance ?? null,
-                nativeBalance: usdcAddressStore.state.addressInfos[polygonAddress]?.nativeBalance ?? null,
-                matic: usdcAddressStore.state.addressInfos[polygonAddress]?.matic ?? null,
+                balanceUsdcBridged: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
+                balanceUsdc: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
+                pol: usdcAddressStore.state.addressInfos[polygonAddress]?.pol ?? null,
             });
         }
 

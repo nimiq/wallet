@@ -61,7 +61,7 @@ export default defineComponent({
             [CryptoCurrency.NIM]: useAddressStore().accountBalance.value / 1e5,
             [CryptoCurrency.BTC]: useBtcAddressStore().accountBalance.value / 1e8,
             [CryptoCurrency.USDC]: (
-                useUsdcAddressStore().accountBalance.value + useUsdcAddressStore().nativeAccountBalance.value
+                useUsdcAddressStore().accountUsdcBridgedBalance.value + useUsdcAddressStore().accountUsdcBalance.value
             ) / 1e6,
         }));
 

@@ -8,9 +8,9 @@ export type UsdcAddressState = {
 
 export type UsdcAddressInfo = {
     address: string,
-    balance: number | null,
-    nativeBalance: number | null,
-    matic: number | null, // For testing until OpenGSN contract is available
+    balanceUsdcBridged: number | null,
+    balanceUsdc: number | null,
+    pol: number | null, // For testing until OpenGSN contract is available
 };
 
 export const useUsdcAddressStore = createStore({
@@ -23,7 +23,7 @@ export const useUsdcAddressStore = createStore({
             const { activeAccountInfo } = useAccountStore();
             if (!activeAccountInfo.value?.polygonAddresses?.length) return undefined;
 
-            // TODO: Subtract pending outgoing balance from addressInfo.balance / nativeBalance
+            // TODO: Subtract pending outgoing balance from addressInfo.balanceUsdcBridged / balanceUsdc
             // const { pendingTransactionsBySender } = useUsdcTransactionsStore();
 
             // Only supports one USDC address per account for now
@@ -31,15 +31,15 @@ export const useUsdcAddressStore = createStore({
         },
         activeAddress: (state, { addressInfo }): string | undefined =>
             (addressInfo.value as UsdcAddressInfo | undefined)?.address,
-        accountBalance: (state, { addressInfo }) => {
+        accountUsdcBridgedBalance: (state, { addressInfo }) => {
             const ai = addressInfo.value as UsdcAddressInfo | undefined;
-            if (!ai || ai.balance === null) return 0;
-            return ai.balance;
+            if (!ai || ai.balanceUsdcBridged === null) return 0;
+            return ai.balanceUsdcBridged;
         },
-        nativeAccountBalance: (state, { addressInfo }) => {
+        accountUsdcBalance: (state, { addressInfo }) => {
             const ai = addressInfo.value as UsdcAddressInfo | undefined;
-            if (!ai || ai.nativeBalance === null) return 0;
-            return ai.nativeBalance;
+            if (!ai || ai.balanceUsdc === null) return 0;
+            return ai.balanceUsdc;
         },
     },
     actions: {

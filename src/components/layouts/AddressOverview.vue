@@ -85,7 +85,7 @@
                         <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
                         <Amount v-if="activeCurrency === 'btc'" :amount="btcAccountBalance" currency="btc" value-mask/>
                         <Amount v-if="activeCurrency === 'usdc'"
-                            :amount="usdcAccountBalance + nativeUsdcAccountBalance" currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance" currency="usdc" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -117,7 +117,7 @@
                             :amount="btcAccountBalance" currency="btc" value-mask/>
 
                         <FiatConvertedAmount v-if="activeCurrency === 'usdc'"
-                            :amount="usdcAccountBalance + nativeUsdcAccountBalance  " currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance  " currency="usdc" value-mask/>
                     </div>
                 </div>
             </div>
@@ -141,7 +141,7 @@
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                         :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || (activeCurrency === 'btc' && !btcAccountBalance)
-                            || (activeCurrency === 'usdc' && !nativeUsdcAccountBalance /* can only send native usdc */)"
+                            || (activeCurrency === 'usdc' && !accountUsdcBalance /* can only send native usdc */)"
                     >
                         <ArrowRightSmallIcon />{{ $t('Send') }}
                     </button>
@@ -154,14 +154,14 @@
             </div>
             <!-- <PrestakingPreview v-if="prestake" class="prestaking-preview-mobile" /> -->
             <div
-                v-if="activeCurrency === 'usdc' && usdcAccountBalance >= 0.1e6"
+                v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
             >
                 <div class="flex-row">
                     <UsdcIcon />
                     {{ $t('Legacy USDC (USDC.e)') }}
                     <div class="flex-grow"></div>
-                    <Amount :amount="usdcAccountBalance" currency="usdc.e" value-mask/>
+                    <Amount :amount="accountUsdcBridgedBalance" currency="usdc.e" value-mask/>
                 </div>
                 <div class="flex-row">
                     <span class="description">
@@ -300,8 +300,8 @@ export default defineComponent({
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
-            accountBalance: usdcAccountBalance,
-            nativeAccountBalance: nativeUsdcAccountBalance,
+            accountUsdcBridgedBalance,
+            accountUsdcBalance,
             addressInfo: usdcAddressInfo,
         } = useUsdcAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
@@ -423,7 +423,7 @@ export default defineComponent({
                     } = await calculateFee(config.polygon.usdc_bridged.tokenContract, method, undefined, swapContract);
                     relayUrl = relay.url;
 
-                    if (fee.toNumber() >= usdcAddressInfo.value!.balance!) {
+                    if (fee.toNumber() >= usdcAddressInfo.value!.balanceUsdcBridged!) {
                         reject(new Error(i18n.t(
                             'You do not have enough USDC.e to pay conversion fees ({fee})',
                             { fee: `${fee.toNumber() / 1e6} USDC.e` },
@@ -432,7 +432,7 @@ export default defineComponent({
                     }
 
                     // Limit swap amount to 100k USDC.e, to not unbalance the pool too much
-                    const amount = Math.min(100_000e6, usdcAddressInfo.value!.balance! - fee.toNumber());
+                    const amount = Math.min(100_000e6, usdcAddressInfo.value!.balanceUsdcBridged! - fee.toNumber());
 
                     // Only allow 0.5% slippage on mainnet, but up to 5% on testnet
                     const minTargetAmountPercentage = config.environment === ENV_MAIN ? 0.995 : 0.95;
@@ -545,8 +545,8 @@ export default defineComponent({
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
             btcAccountBalance,
-            usdcAccountBalance,
-            nativeUsdcAccountBalance,
+            accountUsdcBridgedBalance,
+            accountUsdcBalance,
             usdcAddressInfo,
             CryptoCurrency,
             promoBoxVisible,

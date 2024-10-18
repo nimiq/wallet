@@ -173,7 +173,7 @@ export default defineComponent({
     setup(props, context) {
         const { addressInfos, selectAddress, activeAddressInfo } = useAddressStore();
         const { accountBalance: btcAccountBalance, availableExternalAddresses } = useBtcAddressStore();
-        const { addressInfo: usdcAddressInfo, nativeAccountBalance: usdcAccountBalance } = useUsdcAddressStore();
+        const { addressInfo: usdcAddressInfo, accountUsdcBalance } = useUsdcAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
         const root = ref<HTMLDivElement | null>(null);
@@ -225,12 +225,12 @@ export default defineComponent({
                 case SwapAsset.USDC_MATIC:
                     return [{
                         address: usdcAddressInfo.value?.address || 'usdc',
-                        balance: usdcAccountBalance.value,
+                        balance: accountUsdcBalance.value,
                         active: true,
                         newFiatBalance: (props.newLeftBalance / 1e6) * leftExchangeRate.value,
                         barColorClass: 'usdc',
-                        balanceChange: (props.newLeftBalance - usdcAccountBalance.value),
-                        fiatBalanceChange: ((props.newLeftBalance - usdcAccountBalance.value) / 1e6)
+                        balanceChange: (props.newLeftBalance - accountUsdcBalance.value),
+                        fiatBalanceChange: ((props.newLeftBalance - accountUsdcBalance.value) / 1e6)
                             * leftExchangeRate.value,
                     }];
                 default:
@@ -278,12 +278,12 @@ export default defineComponent({
                 case SwapAsset.USDC_MATIC:
                     return [{
                         address: usdcAddressInfo.value?.address || 'usdc',
-                        balance: usdcAccountBalance.value,
+                        balance: accountUsdcBalance.value,
                         active: true,
                         newFiatBalance: (props.newRightBalance / 1e6) * rightExchangeRate.value,
                         barColorClass: 'usdc',
-                        balanceChange: (props.newRightBalance - usdcAccountBalance.value),
-                        fiatBalanceChange: ((props.newRightBalance - usdcAccountBalance.value) / 1e6)
+                        balanceChange: (props.newRightBalance - accountUsdcBalance.value),
+                        fiatBalanceChange: ((props.newRightBalance - accountUsdcBalance.value) / 1e6)
                             * rightExchangeRate.value,
                     }];
                 default:

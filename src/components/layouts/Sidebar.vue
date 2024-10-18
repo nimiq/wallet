@@ -286,7 +286,7 @@ export default defineComponent({
             .some((useStore) => {
                 const store = useStore();
                 // For USDC, only native USDC is supported for swapping.
-                return 'nativeAccountBalance' in store ? store.nativeAccountBalance.value : store.accountBalance.value;
+                return 'accountUsdcBalance' in store ? store.accountUsdcBalance.value : store.accountBalance.value;
             }),
         );
 

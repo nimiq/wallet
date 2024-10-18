@@ -31,7 +31,7 @@ export default defineComponent({
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
         const { accountBalance: btcBalance } = useBtcAddressStore();
-        const { nativeAccountBalance: nativeUsdcAccountBalance } = useUsdcAddressStore();
+        const { accountUsdcBalance } = useUsdcAddressStore();
         const { isMobile } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
 
@@ -78,7 +78,7 @@ export default defineComponent({
             context.root.$route.path !== '/' && nimOrBtcOrUsdc(
                 !activeAddressInfo.value || !activeAddressInfo.value.balance,
                 !btcBalance.value,
-                !nativeUsdcAccountBalance.value,
+                !accountUsdcBalance.value,
             ),
         );
 

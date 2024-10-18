@@ -17,13 +17,13 @@ import {
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
 import {
+    USDC_BRIDGED_TOKEN_CONTRACT_ABI,
+    USDC_BRIDGED_TRANSFER_CONTRACT_ABI,
+    USDC_BRIDGED_HTLC_CONTRACT_ABI,
+    USDC_TOKEN_CONTRACT_ABI,
     USDC_TRANSFER_CONTRACT_ABI,
-    USDC_CONTRACT_ABI,
     USDC_HTLC_CONTRACT_ABI,
-    NATIVE_USDC_CONTRACT_ABI,
-    NATIVE_USDC_TRANSFER_CONTRACT_ABI,
-    SWAP_CONTRACT_ABI,
-    NATIVE_USDC_HTLC_CONTRACT_ABI,
+    CONVERSION_SWAP_CONTRACT_ABI,
 } from './lib/usdc/ContractABIs';
 import {
     getBestRelay,
@@ -139,13 +139,13 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         });
     });
 
-    const usdc = new ethers.Contract(config.polygon.usdc_bridged.tokenContract, USDC_CONTRACT_ABI, provider);
+    const usdc = new ethers.Contract(config.polygon.usdc_bridged.tokenContract, USDC_BRIDGED_TOKEN_CONTRACT_ABI, provider);
     const usdcTransfer = new ethers.Contract(
-        config.polygon.usdc_bridged.transferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
+        config.polygon.usdc_bridged.transferContract, USDC_BRIDGED_TRANSFER_CONTRACT_ABI, provider);
 
-    const nativeUsdc = new ethers.Contract(config.polygon.usdc.tokenContract, NATIVE_USDC_CONTRACT_ABI, provider);
+    const nativeUsdc = new ethers.Contract(config.polygon.usdc.tokenContract, USDC_TOKEN_CONTRACT_ABI, provider);
     const nativeUsdcTransfer = new ethers.Contract(
-        config.polygon.usdc.transferContract, NATIVE_USDC_TRANSFER_CONTRACT_ABI, provider);
+        config.polygon.usdc.transferContract, USDC_TRANSFER_CONTRACT_ABI, provider);
 
     resolver!({
         provider,
@@ -1391,7 +1391,7 @@ export async function getHtlcContract() {
     const { config } = useConfig();
     htlcContract = new ethers.Contract(
         config.polygon.usdc_bridged.htlcContract,
-        USDC_HTLC_CONTRACT_ABI,
+        USDC_BRIDGED_HTLC_CONTRACT_ABI,
         provider,
     );
     return htlcContract;
@@ -1405,7 +1405,7 @@ export async function getNativeHtlcContract() {
     const { config } = useConfig();
     nativeHtlcContract = new ethers.Contract(
         config.polygon.usdc.htlcContract,
-        NATIVE_USDC_HTLC_CONTRACT_ABI,
+        USDC_HTLC_CONTRACT_ABI,
         provider,
     );
     return nativeHtlcContract;
@@ -1419,7 +1419,7 @@ export async function getSwapContract() {
     const { config } = useConfig();
     swapContract = new ethers.Contract(
         config.polygon.usdcConversion.swapContract,
-        SWAP_CONTRACT_ABI,
+        CONVERSION_SWAP_CONTRACT_ABI,
         provider,
     );
     return swapContract;

@@ -298,7 +298,7 @@ import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
-import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -450,7 +450,7 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Top left tooltip
-        const { outdatedHeight: outdatedBlockHeight } = useUsdcNetworkStore();
+        const { outdatedHeight: outdatedBlockHeight } = usePolygonNetworkStore();
         getPolygonBlockNumber(); // Trigger blockHeight update
 
         const confirmations = computed(() =>

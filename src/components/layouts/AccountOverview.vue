@@ -84,7 +84,7 @@
                 <Tooltip
                     v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
-                        && hasUsdcAddresses && $config.usdc.enabled
+                        && hasPolygonAddresses && $config.usdc.enabled
                         /* only swap with native USDC supported, not bridged */
                         && (nimAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
                     class="nim-usdc-swap-button"
@@ -141,7 +141,7 @@
                     v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
-                        && hasUsdcAddresses && $config.usdc.enabled
+                        && hasPolygonAddresses && $config.usdc.enabled
                         /* only swap with native USDC supported, not bridged */
                         && (btcAccountBalance > 0 || nativeUsdcAccountBalance > 0)"
                     class="btc-usdc-swap-button"
@@ -169,15 +169,15 @@
                     class="reset usdc-account flex-column"
                     :class="{
                             'active': activeCurrency === CryptoCurrency.USDC,
-                            'requires-activation': !hasUsdcAddresses,
+                            'requires-activation': !hasPolygonAddresses,
                         }"
                     >
                     <div class="usdc-account-item reset flex-column" @click="selectUsdc">
                         <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
-                        <div class="balances" v-if="hasUsdcAddresses">
+                        <div class="balances" v-if="hasPolygonAddresses">
                             <template v-if="usdcAccountBalance !== null && nativeUsdcAccountBalance !== null">
                                 <div class="flex-row">
-                                    <AlertTriangleIcon v-if="usdcConsensus === 'connecting'" />
+                                    <AlertTriangleIcon v-if="polygonConsensus === 'connecting'" />
                                     <Amount
                                         :amount="usdcAccountBalance + nativeUsdcAccountBalance"
                                         :currency="CryptoCurrency.USDC"
@@ -288,7 +288,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useBtcNetworkStore } from '../../stores/BtcNetwork';
 import { useSettingsStore } from '../../stores/Settings';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import MiniAddIcon from '../icons/MiniAddIcon.vue';
 import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
@@ -306,7 +306,7 @@ export default defineComponent({
             setActiveCurrency,
             activeCurrency,
             hasBitcoinAddresses,
-            hasUsdcAddresses,
+            hasPolygonAddresses,
         } = useAccountStore();
         const { accountBalance: nimAccountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
@@ -343,7 +343,7 @@ export default defineComponent({
         }
 
         function selectUsdc() {
-            if (!hasUsdcAddresses.value) return;
+            if (!hasPolygonAddresses.value) return;
 
             setActiveCurrency(CryptoCurrency.USDC);
 
@@ -370,7 +370,7 @@ export default defineComponent({
         watch(activeAccountInfo, determineModalToShow);
 
         const { consensus: btcConsensus } = useBtcNetworkStore();
-        const { consensus: usdcConsensus } = useUsdcNetworkStore();
+        const { consensus: polygonConsensus } = usePolygonNetworkStore();
 
         const { updateAvailable } = useSettingsStore();
 
@@ -465,7 +465,7 @@ export default defineComponent({
             if (nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {
                 bottom = [nimBtcSwapTooltip$.value.isShown, nimUsdcSwapTooltip$.value.isShown];
             } else if (nimBtcSwapTooltip$.value && !nimUsdcSwapTooltip$.value) {
-                bottom = (hasUsdcAddresses.value && config.usdc.enabled)
+                bottom = (hasPolygonAddresses.value && config.usdc.enabled)
                     ? [nimBtcSwapTooltip$.value.isShown, null]
                     : [nimBtcSwapTooltip$.value.isShown];
             } else if (!nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {
@@ -506,9 +506,9 @@ export default defineComponent({
             CryptoCurrency,
             SwapAsset,
             hasBitcoinAddresses,
-            hasUsdcAddresses,
+            hasPolygonAddresses,
             btcConsensus,
-            usdcConsensus,
+            polygonConsensus,
             updateAvailable,
             root$,
             usdcAccount$,

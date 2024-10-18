@@ -6,7 +6,7 @@ import type { Result } from 'ethers/lib/utils';
 import type { Block, Log, TransactionReceipt } from '@ethersproject/abstract-provider';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
-import { useUsdcNetworkStore } from './stores/UsdcNetwork';
+import { usePolygonNetworkStore } from './stores/PolygonNetwork';
 import {
     HtlcEvent,
     Transaction,
@@ -51,9 +51,9 @@ export interface PolygonClient {
 }
 
 function consensusEstablishedHandler(height: number) {
-    useUsdcNetworkStore().state.outdatedHeight = height;
+    usePolygonNetworkStore().state.outdatedHeight = height;
     console.log('Polygon connection established');
-    useUsdcNetworkStore().state.consensus = 'established';
+    usePolygonNetworkStore().state.consensus = 'established';
 }
 
 let isLaunched = false;
@@ -114,10 +114,10 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         });
         socket.addEventListener('down', () => {
             console.log('Polygon connection lost');
-            useUsdcNetworkStore().state.consensus = 'connecting';
+            usePolygonNetworkStore().state.consensus = 'connecting';
         });
         socket.addEventListener('reopen', async () => {
-            useUsdcNetworkStore().state.consensus = 'syncing';
+            usePolygonNetworkStore().state.consensus = 'syncing';
             const client = await getPolygonClient();
             client.provider.once('block', consensusEstablishedHandler);
         });
@@ -315,7 +315,7 @@ export async function launchPolygon() {
     if (isLaunched) return;
     isLaunched = true;
 
-    const { state: network$ } = useUsdcNetworkStore();
+    const { state: network$ } = usePolygonNetworkStore();
     const transactionsStore = useUsdcTransactionsStore();
     const { config } = useConfig();
 
@@ -370,7 +370,7 @@ export async function launchPolygon() {
             .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
         const earliestHeightToCheck = Math.max(config.usdc.earliestHistoryScanHeight, lastConfirmedHeight - 1000);
 
-        network$.fetchingTxHistory++;
+        network$.fetchingUsdcTxHistory++;
 
         if ((trigger as number) > 0) updateBalances([address]);
 
@@ -648,7 +648,7 @@ export async function launchPolygon() {
                 console.error(error);
                 fetchedAddresses.delete(address);
             })
-            .then(() => network$.fetchingTxHistory--);
+            .then(() => network$.fetchingUsdcTxHistory--);
     });
 
     const nativeTxFetchTrigger = ref(0);
@@ -667,7 +667,7 @@ export async function launchPolygon() {
             .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
         const earliestHeightToCheck = Math.max(config.usdc.earliestNativeHistoryScanHeight, lastConfirmedHeight - 1000);
 
-        network$.fetchingTxHistory++;
+        network$.fetchingUsdcTxHistory++;
 
         if ((trigger as number) > 0) updateNativeBalances([address]);
 
@@ -898,7 +898,7 @@ export async function launchPolygon() {
                 console.error(error);
                 fetchedNativeAddresses.delete(address);
             })
-            .then(() => network$.fetchingTxHistory--);
+            .then(() => network$.fetchingUsdcTxHistory--);
     });
 }
 
@@ -1368,7 +1368,7 @@ export async function receiptToTransaction(
 export async function getPolygonBlockNumber() {
     const client = await getPolygonClient();
     const blockNumber = await client.provider.getBlockNumber();
-    useUsdcNetworkStore().state.outdatedHeight = blockNumber;
+    usePolygonNetworkStore().state.outdatedHeight = blockNumber;
     return blockNumber;
 }
 

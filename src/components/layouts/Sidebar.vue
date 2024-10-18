@@ -264,13 +264,13 @@ export default defineComponent({
 
         const { updateAvailable, canUseSwaps } = useSettingsStore();
 
-        const { activeAccountInfo, hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const { activeAccountInfo, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
 
         const walletActivatedCurrencies = computed(() => [
             CryptoCurrency.NIM, // NIM is always activated
             ...(config.enableBitcoin && hasBitcoinAddresses.value ? [CryptoCurrency.BTC] : []),
-            ...(config.usdc.enabled && hasUsdcAddresses.value ? [CryptoCurrency.USDC] : []),
+            ...(config.usdc.enabled && hasPolygonAddresses.value ? [CryptoCurrency.USDC] : []),
         ]);
 
         const fastspotEnabledFiatSwapAssets = computed(() => config.fastspot.enabledSwapAssets

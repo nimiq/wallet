@@ -5,7 +5,7 @@ import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementSta
 import { FiatCurrency } from '../lib/Constants';
 import { assetToCurrency } from '../lib/swap/utils/Assets';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
-import { Transaction as PolygonTransaction } from './UsdcTransactions';
+import { Transaction as UsdcTransaction } from './UsdcTransactions';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -100,12 +100,12 @@ export type ActiveSwap = SwapObject & {
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+        | UsdcTransaction,
     fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+        | UsdcTransaction,
     secret?: string,
     settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+        | UsdcTransaction,
     error?: string,
     errorAction?: SwapErrorAction,
 }

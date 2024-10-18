@@ -264,7 +264,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useSettingsStore } from '../../stores/Settings';
 import { useUsdcAddressStore } from '../../stores/UsdcAddress';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
 import PolygonWarningFooter from '../PolygonWarningFooter.vue';
@@ -305,7 +305,7 @@ export default defineComponent({
         const { state: addresses$, addressInfo } = useUsdcAddressStore();
         const { state: transactions$ } = useUsdcTransactionsStore();
         const { contactsArray: contacts, setContact, getLabel } = useUsdcContactsStore();
-        const { state: network$ } = useUsdcNetworkStore();
+        const { state: network$ } = usePolygonNetworkStore();
         const { config } = useConfig();
 
         // These are non-reactive because we're only interested in whether the user had ever sent USDC when the modal

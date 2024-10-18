@@ -290,13 +290,13 @@ export default defineComponent({
             setPaused(false);
         };
 
-        const handleMouseDown = (e: MouseEvent) => {
+        const handleMouseDown = () => {
             if (!isArrowClicked.value) {
                 startPauseTimer();
             }
         };
 
-        const handleMouseUp = (e: MouseEvent) => {
+        const handleMouseUp = () => {
             if (!isArrowClicked.value) {
                 setPaused(false);
             }
@@ -420,7 +420,7 @@ export default defineComponent({
 }
 
 .page-header {
-    padding: 5.5rem 0 7rem;
+    padding: 5.5rem 4.5rem 7rem;
 }
 
 .page-body {

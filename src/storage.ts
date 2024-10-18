@@ -8,6 +8,7 @@ import { useTransactionsStore } from './stores/Transactions';
 import { useAddressStore } from './stores/Address';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
+import { useAccountSettingsStore } from './stores/AccountSettings';
 import { useContactsStore } from './stores/Contacts';
 import { useFiatStore, guessUserCurrency } from './stores/Fiat';
 import { useProxyStore } from './stores/Proxy';
@@ -29,6 +30,7 @@ const StorageKeys = {
     ACCOUNTINFOS: 'wallet_accounts_v01',
     ADDRESSINFOS: 'wallet_addresses_v01',
     SETTINGS: 'wallet_settings_v01',
+    ACCOUNT_SETTINGS: 'wallet_account_settings_v00',
     FIAT: 'wallet_exchange-rates_v01',
     DEPRECATED_CASHLINKS: 'wallet_cashlinks_v01', // TODO deprecated; remove in the future
     PROXIES: 'wallet_proxies_v01',
@@ -141,6 +143,7 @@ export async function initStorage() {
                 btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
             }),
         ),
+        initStoreStore(useAccountSettingsStore(), StorageKeys.ACCOUNT_SETTINGS),
         initStoreStore(useFiatStore(), StorageKeys.FIAT).then((storedFiatState) => {
             if (storedFiatState) return;
             // Get location from GeoIP service to set initial fiat currency. We do this in the background to not block

@@ -32,7 +32,7 @@ import {
     POLYGON_BLOCKS_PER_MINUTE,
     RelayServerInfo,
 } from './lib/usdc/OpenGSN';
-import { getPoolAddress, getUsdcPrice } from './lib/usdc/Uniswap';
+import { getPoolAddress, getUsdPrice } from './lib/usdc/Uniswap';
 import { replaceKey } from './lib/KeyReplacer';
 
 export async function loadEthersLibrary() {
@@ -82,12 +82,8 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     unwatchGetPolygonClientConfig = watch(() => [
         config.polygon.rpcEndpoint,
         config.polygon.networkId,
-        config.polygon.usdc_bridged.tokenContract,
-        config.polygon.usdc_bridged.transferContract,
-        config.polygon.usdc_bridged.htlcContract,
-        config.polygon.usdc.tokenContract,
-        config.polygon.usdc.transferContract,
-        config.polygon.usdc.htlcContract,
+        config.polygon.usdc_bridged,
+        config.polygon.usdc,
     ], () => {
         // Reset clientPromise when the usdc config changes.
         clientPromise = null;
@@ -246,16 +242,16 @@ function subscribe(addresses: string[]) {
     getPolygonClient().then((client) => {
         // Only subscribe to incoming logs
         const newUsdcBridgedFilterIncoming = client.usdcBridgedToken.filters.Transfer(null, [...subscribedAddresses]);
-        client.usdcBridgedToken.on(newUsdcBridgedFilterIncoming, transactionListener);
+        client.usdcBridgedToken.on(newUsdcBridgedFilterIncoming, usdcTransactionListener);
         if (currentUsdcBridgedSubscriptionFilter) {
-            client.usdcBridgedToken.off(currentUsdcBridgedSubscriptionFilter, transactionListener);
+            client.usdcBridgedToken.off(currentUsdcBridgedSubscriptionFilter, usdcTransactionListener);
         }
         currentUsdcBridgedSubscriptionFilter = newUsdcBridgedFilterIncoming;
 
         const newUsdcFilterIncoming = client.usdcToken.filters.Transfer(null, [...subscribedAddresses]);
-        client.usdcToken.on(newUsdcFilterIncoming, transactionListener);
+        client.usdcToken.on(newUsdcFilterIncoming, usdcTransactionListener);
         if (currentUsdcSubscriptionFilter) {
-            client.usdcToken.off(currentUsdcSubscriptionFilter, transactionListener);
+            client.usdcToken.off(currentUsdcSubscriptionFilter, usdcTransactionListener);
         }
         currentUsdcSubscriptionFilter = newUsdcFilterIncoming;
     });
@@ -265,7 +261,7 @@ function subscribe(addresses: string[]) {
 }
 
 // Is only called for incoming transfers
-async function transactionListener(from: string, to: string, value: BigNumber, log: TransferEvent) {
+async function usdcTransactionListener(from: string, to: string, value: BigNumber, log: TransferEvent) {
     if (!usdcBridgedBalances.has(from) && !usdcBridgedBalances.has(to)) return;
     if (value.isZero()) return; // Ignore address poisoning scam transactions
 
@@ -319,7 +315,7 @@ export async function launchPolygon() {
     isLaunched = true;
 
     const { state: network$ } = usePolygonNetworkStore();
-    const transactionsStore = useUsdcTransactionsStore();
+    const usdcTransactionsStore = useUsdcTransactionsStore();
     const { config } = useConfig();
 
     // Subscribe to new addresses (for balance updates and transactions)
@@ -372,7 +368,7 @@ export async function launchPolygon() {
 
         console.debug('Scheduling bridged USDC transaction fetch for', address);
 
-        const knownTxs = Object.values(transactionsStore.state.transactions)
+        const knownTxs = Object.values(usdcTransactionsStore.state.transactions)
             .filter((tx) => (!tx.token || tx.token === config.polygon.usdc_bridged.tokenContract)
                 && (tx.sender === address || tx.recipient === address));
         const lastConfirmedHeight = knownTxs
@@ -445,7 +441,7 @@ export async function launchPolygon() {
 
                 console.debug('Bridged USDC Sync start', {
                     balance: balance.toNumber() / 1e6,
-                    usdcNonce: nonce,
+                    nonce,
                     transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
                     htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
                 });
@@ -478,7 +474,7 @@ export async function launchPolygon() {
                 const newLogs = allTransferLogs.filter((log) => {
                     if (!log.args) return false;
 
-                    // TODO: When switching to use max-approval, remove usdcNonce <= 0 check, so allowances get reduced first
+                    // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
                     if (log.args.from === address && nonce <= 0) {
                         balance = balance.add(log.args.value);
 
@@ -645,7 +641,7 @@ export async function launchPolygon() {
                         await event,
                     ),
                 )).then((transactions) => {
-                    transactionsStore.addTransactions(transactions);
+                    usdcTransactionsStore.addTransactions(transactions);
                 });
             } // End while loop
             /* eslint-enable max-len */
@@ -679,7 +675,7 @@ export async function launchPolygon() {
 
         console.debug('Scheduling native USDC transaction fetch for', address);
 
-        const knownTxs = Object.values(transactionsStore.state.transactions)
+        const knownTxs = Object.values(usdcTransactionsStore.state.transactions)
             .filter((tx) => tx.token === config.polygon.usdc.tokenContract
                 && (tx.sender === address || tx.recipient === address));
         const lastConfirmedHeight = knownTxs
@@ -752,7 +748,7 @@ export async function launchPolygon() {
 
                 console.debug('Native USDC Sync start', {
                     balance: balance.toNumber() / 1e6,
-                    usdcNonce: nonce,
+                    nonce,
                     transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
                     htlcAllowance: htlcAllowanceUsed.toNumber() / 1e6,
                 });
@@ -785,7 +781,7 @@ export async function launchPolygon() {
                 const newLogs = allTransferLogs.filter((log) => {
                     if (!log.args) return false;
 
-                    // TODO: When switching to use max-approval, remove usdcNonce <= 0 check, so allowances get reduced first
+                    // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
                     if (log.args.from === address && nonce <= 0) {
                         balance = balance.add(log.args.value);
 
@@ -905,7 +901,7 @@ export async function launchPolygon() {
                         await event,
                     ),
                 )).then((transactions) => {
-                    transactionsStore.addTransactions(transactions);
+                    usdcTransactionsStore.addTransactions(transactions);
                 });
             } // End while loop
             /* eslint-enable max-len */
@@ -1002,7 +998,7 @@ export async function calculateFee(
         gasLimit,
         [acceptanceBudget],
         dataGasCost,
-        usdcPrice,
+        usdPrice,
     ] = await Promise.all([
         client.provider.getGasPrice(),
         contract.getRequiredRelayGas(contract.interface.getSighash(method)) as Promise<BigNumber>,
@@ -1012,7 +1008,7 @@ export async function calculateFee(
         relay
             ? Promise.resolve(client.ethers.BigNumber.from(0))
             : getRelayHub(client).calldataGasCost(dataSize) as Promise<BigNumber>,
-        getUsdcPrice(token, client),
+        getUsdPrice(token, client),
     ]);
 
     function calculateChainTokenFee(baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) {
@@ -1042,7 +1038,7 @@ export async function calculateFee(
 
     // main 10%, test 25% as it is more volatile
     const uniswapBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
-    const fee = chainTokenFee.div(usdcPrice).mul(uniswapBufferPercentage).div(100);
+    const fee = chainTokenFee.div(usdPrice).mul(uniswapBufferPercentage).div(100);
 
     return {
         chainTokenFee,
@@ -1050,7 +1046,7 @@ export async function calculateFee(
         gasPrice,
         gasLimit,
         relay,
-        usdcPrice,
+        usdPrice,
     };
 }
 
@@ -1428,7 +1424,7 @@ export async function getUsdcHtlcContract() {
 }
 
 let swapContract: Contract | undefined;
-export async function getSwapContract() {
+export async function getConversionSwapContract() {
     if (swapContract) return swapContract;
 
     const { ethers, provider } = await getPolygonClient();

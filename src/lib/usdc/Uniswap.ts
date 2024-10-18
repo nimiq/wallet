@@ -16,7 +16,7 @@ export async function getPoolAddress(contract: Contract, token: string) {
 }
 
 // https://docs.uniswap.org/sdk/v3/guides/quoting
-export async function getUsdcPrice(token: string, client: PolygonClient) {
+export async function getUsdPrice(token: string, client: PolygonClient) {
     const { config } = useConfig();
 
     if (!poolFees.has(token)) {
@@ -37,8 +37,8 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
         client.provider,
     );
 
-    // MATIC amount that would be received for swapping 1 USDC
-    const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
+    // POL amount that would be received for swapping 1 USDC
+    const prize = await quoterContract.callStatic.quoteExactInputSingle(
         token, // in
         config.polygon.wpolContract, // out
         poolFees.get(token)!,
@@ -49,5 +49,5 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
     // Convert to USDC smallest unit. We cannot get directly the USDC price for
     // USDC smallest unit because is so small that the result is 0, which is
     // not true.
-    return usdcPrice.div(1_000_000);
+    return prize.div(1_000_000);
 }

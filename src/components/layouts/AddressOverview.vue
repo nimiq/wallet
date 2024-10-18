@@ -283,7 +283,7 @@ import {
     calculateFee,
     getPolygonBlockNumber,
     getPolygonClient,
-    getSwapContract,
+    getConversionSwapContract,
     sendTransaction as sendPolygonTransaction,
 } from '../../ethers';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
@@ -398,7 +398,7 @@ export default defineComponent({
                 try {
                     const [client, swapContract] = await Promise.all([
                         getPolygonClient(),
-                        getSwapContract(),
+                        getConversionSwapContract(),
                     ]);
                     const fromAddress = usdcAddressInfo.value!.address;
 

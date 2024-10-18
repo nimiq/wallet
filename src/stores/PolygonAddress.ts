@@ -2,24 +2,24 @@ import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 // import { useUsdcTransactionsStore } from './UsdcTransactions';
 
-export type UsdcAddressState = {
-    addressInfos: {[id: string]: UsdcAddressInfo},
+export type PolygonAddressState = {
+    addressInfos: {[id: string]: PolygonAddressInfo},
 }
 
-export type UsdcAddressInfo = {
+export type PolygonAddressInfo = {
     address: string,
     balanceUsdcBridged: number | null,
     balanceUsdc: number | null,
     pol: number | null, // For testing until OpenGSN contract is available
 };
 
-export const useUsdcAddressStore = createStore({
-    id: 'usdcAddresses',
-    state: (): UsdcAddressState => ({
+export const usePolygonAddressStore = createStore({
+    id: 'polygonAddresses',
+    state: (): PolygonAddressState => ({
         addressInfos: {},
     }),
     getters: {
-        addressInfo: (state): UsdcAddressInfo | undefined => {
+        addressInfo: (state): PolygonAddressInfo | undefined => {
             const { activeAccountInfo } = useAccountStore();
             if (!activeAccountInfo.value?.polygonAddresses?.length) return undefined;
 
@@ -30,20 +30,20 @@ export const useUsdcAddressStore = createStore({
             return state.addressInfos[activeAccountInfo.value.polygonAddresses[0]];
         },
         activeAddress: (state, { addressInfo }): string | undefined =>
-            (addressInfo.value as UsdcAddressInfo | undefined)?.address,
+            (addressInfo.value as PolygonAddressInfo | undefined)?.address,
         accountUsdcBridgedBalance: (state, { addressInfo }) => {
-            const ai = addressInfo.value as UsdcAddressInfo | undefined;
+            const ai = addressInfo.value as PolygonAddressInfo | undefined;
             if (!ai || ai.balanceUsdcBridged === null) return 0;
             return ai.balanceUsdcBridged;
         },
         accountUsdcBalance: (state, { addressInfo }) => {
-            const ai = addressInfo.value as UsdcAddressInfo | undefined;
+            const ai = addressInfo.value as PolygonAddressInfo | undefined;
             if (!ai || ai.balanceUsdc === null) return 0;
             return ai.balanceUsdc;
         },
     },
     actions: {
-        addAddressInfo(addressInfo: UsdcAddressInfo) {
+        addAddressInfo(addressInfo: PolygonAddressInfo) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new addressInfo in Vue 3.
             this.state.addressInfos = {
@@ -51,8 +51,8 @@ export const useUsdcAddressStore = createStore({
                 [addressInfo.address]: addressInfo,
             };
         },
-        setAddressInfos(addressInfos: UsdcAddressInfo[]) {
-            const newAddressInfos: {[address: string]: UsdcAddressInfo} = {};
+        setAddressInfos(addressInfos: PolygonAddressInfo[]) {
+            const newAddressInfos: {[address: string]: PolygonAddressInfo} = {};
 
             for (const addressInfo of addressInfos) {
                 newAddressInfos[addressInfo.address] = addressInfo;
@@ -62,7 +62,7 @@ export const useUsdcAddressStore = createStore({
 
             // TODO: Remove transactions that became obsolete because their address was removed?
         },
-        patchAddress(address: string, patch: Partial<UsdcAddressInfo>) {
+        patchAddress(address: string, patch: Partial<PolygonAddressInfo>) {
             if (!this.state.addressInfos[address]) return;
 
             this.state.addressInfos[address] = {

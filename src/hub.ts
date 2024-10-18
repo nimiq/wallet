@@ -20,7 +20,7 @@ import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
-import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
+import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
 import { useProxyStore, Cashlink } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { sendTransaction as sendTx } from './network';
@@ -228,12 +228,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
     const btcAddressInfos: BtcAddressInfo[] = [];
-    const usdcAddressInfos: UsdcAddressInfo[] = [];
+    const usdcAddressInfos: PolygonAddressInfo[] = [];
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const btcAddressStore = useBtcAddressStore();
-    const usdcAddressStore = useUsdcAddressStore();
+    const usdcAddressStore = usePolygonAddressStore();
 
     for (const account of accounts) {
         const addresses: string[] = [];

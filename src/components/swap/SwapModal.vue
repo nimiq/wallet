@@ -312,7 +312,7 @@ import { SwapState, SwapDirection, useSwapsStore, SwapErrorAction } from '../../
 import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import AddressList from '../AddressList.vue';
@@ -415,7 +415,7 @@ export default defineComponent({
         const {
             activeAddress: activeUsdcAddress,
             accountUsdcBalance,
-        } = useUsdcAddressStore();
+        } = usePolygonAddressStore();
         const { exchangeRates, currency, state: fiat$ } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
 

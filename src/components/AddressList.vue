@@ -50,7 +50,7 @@ import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
 import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
 import { useBtcAddressStore } from '../stores/BtcAddress';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
 import { useSettingsStore } from '../stores/Settings';
@@ -85,7 +85,7 @@ export default defineComponent({
             addressInfo: usdcAddressInfo,
             accountUsdcBridgedBalance,
             accountUsdcBalance,
-        } = useUsdcAddressStore();
+        } = usePolygonAddressStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();

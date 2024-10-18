@@ -7,7 +7,7 @@ import { useSwapsStore } from '@/stores/Swaps';
 import { Transaction } from '@/stores/UsdcTransactions';
 import { useTransactionsStore } from '@/stores/Transactions';
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
-import { useUsdcAddressStore } from '@/stores/UsdcAddress';
+import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
 import { useFiatStore } from '@/stores/Fiat';
@@ -21,7 +21,7 @@ import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
 export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
     const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
-    const { addressInfo, state: addresses$ } = useUsdcAddressStore();
+    const { addressInfo, state: addresses$ } = usePolygonAddressStore();
     const { getLabel } = useUsdcContactsStore();
 
     const txValue = computed(() => {

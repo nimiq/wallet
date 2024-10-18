@@ -125,7 +125,7 @@ import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
 import { getColorClass } from '../../lib/AddressColor';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 
 type BarDefinition = {
@@ -173,7 +173,7 @@ export default defineComponent({
     setup(props, context) {
         const { addressInfos, selectAddress, activeAddressInfo } = useAddressStore();
         const { accountBalance: btcAccountBalance, availableExternalAddresses } = useBtcAddressStore();
-        const { addressInfo: usdcAddressInfo, accountUsdcBalance } = useUsdcAddressStore();
+        const { addressInfo: usdcAddressInfo, accountUsdcBalance } = usePolygonAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
         const root = ref<HTMLDivElement | null>(null);

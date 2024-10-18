@@ -51,7 +51,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency, ENV_DEV } from '../../lib/Constants';
 
@@ -102,7 +102,7 @@ export default defineComponent({
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = useUsdcAddressStore().activeAddress.value;
+        const usdcAddress = usePolygonAddressStore().activeAddress.value;
 
         const walletAddresses: {[c: string]: string | undefined} = {
             // Remove spaces in NIM address, as spaces are invalid URI components

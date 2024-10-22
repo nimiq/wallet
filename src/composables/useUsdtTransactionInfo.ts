@@ -115,13 +115,11 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
             const { accountInfos } = useAccountStore();
             return Object.values(accountInfos.value)
                 .find((accountInfo) => accountInfo
-                    .polygonAddresses?.includes(ownedAddressInfo.address))?.label || false;
+                    .polygonAddresses?.includes(ownedAddressInfo.address))?.label;
         }
 
         // Search contacts
-        if (getLabel.value(peerAddress.value)) return getLabel.value(peerAddress.value)!;
-
-        return false;
+        return getLabel.value(peerAddress.value);
     });
 
     // Data

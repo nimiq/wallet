@@ -53,6 +53,7 @@ export const useAccountStore = createStore({
             if (
                 (this.activeCurrency.value === CryptoCurrency.BTC && !this.hasBitcoinAddresses.value)
                 || (this.activeCurrency.value === CryptoCurrency.USDC && !this.hasPolygonAddresses.value)
+                || (this.activeCurrency.value === CryptoCurrency.USDT && !this.hasPolygonAddresses.value)
             ) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
             }

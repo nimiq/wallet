@@ -25,7 +25,12 @@ export type FiatState = {
     exchangeRates: { [crypto: string]: { [fiat: string]: number | undefined } },
 };
 
-const CRYPTO_CURRENCIES = new Set([CryptoCurrency.NIM, CryptoCurrency.BTC, CryptoCurrency.USDC]);
+const CRYPTO_CURRENCIES = new Set([
+    CryptoCurrency.NIM,
+    CryptoCurrency.BTC,
+    CryptoCurrency.USDC,
+    CryptoCurrency.USDT,
+]);
 
 function areSetsEqual(a: Set<unknown>, b: Set<unknown>): boolean {
     return a === b || (a.size === b.size && [...a].every((entry) => b.has(entry)));

@@ -30,7 +30,7 @@ export type SettlementFees = {
 }
 
 export function getEurPerCrypto(
-    asset: SwapAsset.NIM | SwapAsset.BTC | SwapAsset.USDC | SwapAsset.USDC_MATIC,
+    asset: SwapAsset.NIM | SwapAsset.BTC | SwapAsset.USDC | SwapAsset.USDC_MATIC /* | SwapAsset.USDT */,
     estimate: Estimate,
 ) {
     let coinFactor: number;
@@ -39,6 +39,7 @@ export function getEurPerCrypto(
         case SwapAsset.BTC: coinFactor = 1e8; break;
         case SwapAsset.USDC: coinFactor = 1e6; break;
         case SwapAsset.USDC_MATIC: coinFactor = 1e6; break;
+        // case SwapAsset.USDT: coinFactor = 1e6; break;
     }
 
     if (estimate.from.asset === asset) {

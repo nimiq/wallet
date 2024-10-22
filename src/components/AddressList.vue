@@ -19,7 +19,7 @@
             <span class="label add-address-label">{{ $t('Add\u00a0address') }}</span>
         </button>
         <div class="scroll-mask bottom" v-if="embedded"></div>
-        <hr class="separator" v-if="showBitcoin || showUsdc"/>
+        <hr class="separator" v-if="showBitcoin || showStablecoin"/>
         <AddressListItem
             v-if="showBitcoin"
             :addressInfo="btcInfo"
@@ -27,11 +27,11 @@
             @click="selectBtcAddress()"
             :ref="`address-button-${btcInfo.address}`"/>
         <AddressListItem
-            v-if="showUsdc"
-            :addressInfo="usdcInfo"
-            :class="{ 'active': activeCurrency === CryptoCurrency.USDC }"
-            @click="selectUsdcAddress()"
-            :ref="`address-button-${usdcInfo.address}`"/>
+            v-if="showStablecoin"
+            :addressInfo="stablecoinInfo"
+            :class="{ 'active': activeCurrency === CryptoCurrency.USDC || activeCurrency === CryptoCurrency.USDT }"
+            @click="selectStablecoinAddress()"
+            :ref="`address-button-${stablecoinInfo.address}`"/>
         <div v-if="!embedded"
             class="active-box"
             :class="{ enabled: activeCurrency === CryptoCurrency.NIM }"
@@ -54,6 +54,7 @@ import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
 import { useSettingsStore } from '../stores/Settings';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     props: {
@@ -69,7 +70,7 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
-        showUsdc: {
+        showStablecoin: {
             type: Boolean,
             default: false,
         },
@@ -82,10 +83,12 @@ export default defineComponent({
         const { addressInfos, activeAddress, selectAddress } = useAddressStore();
         const { availableExternalAddresses, accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
-            addressInfo: usdcAddressInfo,
-            accountUsdcBridgedBalance,
+            addressInfo: polygonAddressInfo,
             accountUsdcBalance,
+            accountUsdcBridgedBalance,
+            accountUsdtBridgedBalance,
         } = usePolygonAddressStore();
+        const { stablecoin } = useAccountSettingsStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { state: network$ } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
@@ -178,12 +181,28 @@ export default defineComponent({
             type: CryptoCurrency.BTC,
         }));
 
-        const usdcInfo = computed(() => ({
-            address: usdcAddressInfo.value?.address || 'usdc',
-            label: context.root.$t('USD Coin') as string,
-            balance: accountUsdcBridgedBalance.value + accountUsdcBalance.value,
-            type: CryptoCurrency.USDC,
-        }));
+        const stablecoinInfo = computed(() => {
+            if (stablecoin.value === CryptoCurrency.USDC) {
+                return {
+                    address: polygonAddressInfo.value?.address || 'usdc',
+                    label: context.root.$t('USD Coin') as string,
+                    balance: accountUsdcBalance.value
+                        + accountUsdcBridgedBalance.value,
+                    type: CryptoCurrency.USDC,
+                };
+            }
+
+            if (stablecoin.value === CryptoCurrency.USDT) {
+                return {
+                    address: polygonAddressInfo.value?.address || 'usdt',
+                    label: context.root.$t('Tether USD') as string,
+                    balance: accountUsdtBridgedBalance.value,
+                    type: CryptoCurrency.USDT,
+                };
+            }
+
+            return null;
+        });
 
         function selectBtcAddress() {
             adjustBackgroundOffsetAndScale(btcInfo.value.address);
@@ -193,11 +212,12 @@ export default defineComponent({
             }, 0);
         }
 
-        function selectUsdcAddress() {
-            adjustBackgroundOffsetAndScale(usdcInfo.value.address);
+        function selectStablecoinAddress() {
+            if (!stablecoin.value || !stablecoinInfo.value) return;
+            adjustBackgroundOffsetAndScale(stablecoinInfo.value.address);
             setTimeout(() => {
-                setActiveCurrency(CryptoCurrency.USDC);
-                context.emit('address-selected', usdcInfo.value.address);
+                setActiveCurrency(stablecoin.value!);
+                context.emit('address-selected', stablecoinInfo.value!.address);
             }, 0);
         }
 
@@ -212,9 +232,9 @@ export default defineComponent({
             activeCurrency,
             CryptoCurrency,
             btcInfo,
-            usdcInfo,
+            stablecoinInfo,
             selectBtcAddress,
-            selectUsdcAddress,
+            selectStablecoinAddress,
         };
     },
     components: {

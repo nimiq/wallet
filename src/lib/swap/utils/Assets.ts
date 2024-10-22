@@ -10,6 +10,8 @@ export function assetToCurrency(asset: SwapAsset): CryptoCurrency | FiatCurrency
         [SwapAsset.BTC]: CryptoCurrency.BTC,
         [SwapAsset.USDC]: CryptoCurrency.USDC,
         [SwapAsset.USDC_MATIC]: CryptoCurrency.USDC,
+        // [SwapAsset.USDT]: CryptoCurrency.USDT,
         [SwapAsset.EUR]: FiatCurrency.EUR,
+        ['CRC']: FiatCurrency.CRC, // eslint-disable-line no-useless-computed-key
     }[asset];
 }

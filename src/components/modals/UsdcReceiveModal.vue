@@ -10,10 +10,11 @@
         </transition>
 
         <PageHeader :backArrow="!!$route.params.canUserGoBack || page !== initialPage" @back="back">
-            {{ $t('Receive USDC') }}
+            {{ $t('Receive {ticker}', { ticker: stablecoin.toUpperCase() }) }}
             <template #more>{{
                 /* Split into multiple strings to share translation of the first sentence with ReceiveModal. */
-                $t('Share your address with the sender.') + ' ' + $t('Make sure they are sending Polygon USDC.')
+                $t('Share your address with the sender.') + ' '
+                    + $t('Make sure they are sending Polygon {ticker}.', { ticker: stablecoin.toUpperCase() })
             }}</template>
         </PageHeader>
         <PageBody class="flex-column">
@@ -43,13 +44,16 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
+import { CryptoCurrency } from '@nimiq/utils';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
 import { useWindowSize } from '../../composables/useWindowSize';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import PolygonWarningFooter from '../PolygonWarningFooter.vue';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
     name: 'usdc-receive-modal',
@@ -60,15 +64,18 @@ export default defineComponent({
         }
 
         const { state: addresses$, addressInfo } = usePolygonAddressStore();
-        const { state: transactions$ } = useUsdcTransactionsStore();
-        // These are non-reactive because we're only interested in whether the user had ever received USDC when the
+        const { stablecoin } = useAccountSettingsStore();
+        const { state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcTransactionsStore()
+            : useUsdtTransactionsStore();
+        // These are non-reactive because we're only interested in whether the user had ever received USDC/T when the
         // modal was initially opened.
         const normalizedUserAddresses = Object.values(addresses$.addressInfos)
             .map(({ address }) => address.toLowerCase());
-        const hasEverReceivedUsdc = Object.values(transactions$.transactions)
+        const hasEverReceived = Object.values(transactions$.transactions)
             .some(({ recipient }) => normalizedUserAddresses.includes(recipient.toLowerCase()));
 
-        const page = ref(hasEverReceivedUsdc ? Pages.RECEIVE : Pages.WARNING);
+        const page = ref(hasEverReceived ? Pages.RECEIVE : Pages.WARNING);
         const initialPage = page.value;
         const address = computed(() => addressInfo.value?.address);
         const hasSeenAddress = ref(false);
@@ -99,6 +106,7 @@ export default defineComponent({
             qrCodeCanvasSize,
             displayedAddressCharacters,
             back,
+            stablecoin,
         };
     },
     components: {

@@ -30,8 +30,9 @@ import { computed, defineComponent } from '@vue/composition-api';
 import { getBackgroundClass } from '../lib/AddressColor';
 import { CryptoCurrency } from '../lib/Constants';
 import { AccountType, useAccountStore } from '../stores/Account';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { useAddressStore } from '../stores/Address';
-import { BtcAddressSet, useBtcAddressStore } from '../stores/BtcAddress';
+import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { Transaction, useTransactionsStore } from '../stores/Transactions';
 import LedgerIcon from './icons/LedgerIcon.vue';
@@ -74,8 +75,8 @@ export default defineComponent({
         const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, ai) =>
             sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0));
 
-        const addressSet = computed(() => {
-            if (accountInfo.value.type === AccountType.LEGACY) return [];
+        const btcAddressSet = computed(() => {
+            if (accountInfo.value.type === AccountType.LEGACY) return null;
 
             const { state: btcAddressState } = useBtcAddressStore();
             return accountInfo.value.btcAddresses
@@ -91,46 +92,64 @@ export default defineComponent({
                 };
         });
         const btcAccountBalance = computed(() => {
-            if (accountInfo.value.type === AccountType.LEGACY) return 0;
+            if (!btcAddressSet.value) return 0;
 
-            const internalBalance = (addressSet.value as BtcAddressSet).internal
+            const internalBalance = (btcAddressSet.value).internal
                 .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
                     .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
-            const externalBalance = (addressSet.value as BtcAddressSet).external
+            const externalBalance = (btcAddressSet.value).external
                 .reduce((sum1, addressInfo) => sum1 + addressInfo.utxos
                     .reduce((sum2, utxo) => sum2 + utxo.witness.value, 0), 0);
 
             return internalBalance + externalBalance;
         });
 
-        const { accountUsdcBalance, accountUsdcBridgedBalance } = usePolygonAddressStore();
+        const { state: polygonAddressState } = usePolygonAddressStore();
+        const polygonAddressInfos = computed(() => accountInfo.value.polygonAddresses
+            ? accountInfo.value.polygonAddresses.map((addr) => polygonAddressState.addressInfos[addr])
+            : []);
+
+        const { state: accountSettingsState } = useAccountSettingsStore();
+        const stablecoin = computed(() => accountSettingsState.settings[props.id]?.stablecoin);
+
+        const stablecoinAccountBalance = computed(() => polygonAddressInfos.value.reduce((sum, ai) => sum + {
+            [CryptoCurrency.USDC]: (ai.balanceUsdc || 0) + (ai.balanceUsdcBridged || 0),
+            [CryptoCurrency.USDT]: (ai.balanceUsdtBridged || 0),
+            none: 0,
+        }[stablecoin.value || 'none'], 0));
 
         // TODO: Dedupe double code with AccountBalance
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
-        const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
-        const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
-        const usdcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value]);
         const fiatAccountBalance = computed(() => {
             let amount = 0;
-            const nimFiatAmount = nimExchangeRate.value !== undefined
-                ? (nimAccountBalance.value / 1e5) * nimExchangeRate.value
+
+            const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
+            const nimFiatAmount = nimExchangeRate !== undefined
+                ? (nimAccountBalance.value / 1e5) * nimExchangeRate
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;
+
             if (config.enableBitcoin) {
-                const btcFiatAmount = btcExchangeRate.value !== undefined
-                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                const btcExchangeRate = exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value];
+                const btcFiatAmount = btcExchangeRate !== undefined
+                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate
                     : undefined;
                 if (btcFiatAmount === undefined) return undefined;
                 amount += btcFiatAmount;
             }
-            if (config.polygon.enabled) {
-                const usdcFiatAmount = usdcExchangeRate.value !== undefined
-                    ? ((accountUsdcBridgedBalance.value + accountUsdcBalance.value) / 1e6) * usdcExchangeRate.value
+
+            if (config.polygon.enabled && stablecoin) {
+                const stableExchangeRate = stablecoin.value === CryptoCurrency.USDC
+                    ? exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value]
+                    : exchangeRates.value[CryptoCurrency.USDT]?.[fiatCurrency.value];
+                const usdFiatAmount = stableExchangeRate !== undefined
+                    ? (stablecoinAccountBalance.value / 1e6) * stableExchangeRate
                     : undefined;
-                if (usdcFiatAmount === undefined) return undefined;
-                amount += usdcFiatAmount;
+                if (usdFiatAmount === undefined) return undefined;
+                amount += usdFiatAmount;
             }
+
             return amount;
         });
 

@@ -58,6 +58,17 @@ export type SwapUsdcData = {
     },
 };
 
+// export type SwapUsdtData = {
+//     asset: SwapAsset.USDT,
+//     transactionHash: string,
+//     htlc?: {
+//         address?: string,
+//         refundAddress: string,
+//         redeemAddress: string,
+//         timeoutTimestamp: number,
+//     },
+// };
+
 export type SwapEurData = {
     asset: SwapAsset.EUR,
     bankLabel?: string,
@@ -76,7 +87,7 @@ export type SwapEurData = {
     },
 };
 
-export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | SwapEurData;
+export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | /* SwapUsdtData | */ SwapEurData;
 
 export type Swap = {
     id?: string,

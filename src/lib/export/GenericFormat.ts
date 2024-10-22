@@ -4,6 +4,7 @@ import { useFiatStore } from '../../stores/Fiat';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
+import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
 import { Format } from './Format';
 import { ExportFormat } from './TransactionExport';
 
@@ -35,19 +36,28 @@ export class GenericFormat extends Format {
         public override nimAddresses: string[],
         public override btcAddresses: { internal: string[], external: string[] },
         public override usdcAddresses: string[],
-        public override transactions: (NimTx | BtcTx | UsdcTx)[],
+        public override usdtAddresses: string[],
+        public override transactions: (NimTx | BtcTx | UsdcTx | UsdtTx)[],
         public override year: number,
     ) {
         super(
-            ExportFormat.GENERIC, GenericFormat.HEADERS, nimAddresses, btcAddresses, usdcAddresses, transactions, year);
+            ExportFormat.GENERIC,
+            GenericFormat.HEADERS,
+            nimAddresses,
+            btcAddresses,
+            usdcAddresses,
+            usdtAddresses,
+            transactions,
+            year,
+        );
 
         this.referenceAsset = useFiatStore().state.currency;
         this.referenceDecimals = new CurrencyInfo(this.referenceAsset.toUpperCase()).decimals;
     }
 
     protected override addRow(
-        txIn?: BtcTx | NimTx | UsdcTx,
-        txOut?: BtcTx | NimTx | UsdcTx,
+        txIn?: BtcTx | NimTx | UsdcTx | UsdtTx,
+        txOut?: BtcTx | NimTx | UsdcTx | UsdtTx,
         messageOverride?: string,
     ) {
         if (!txIn && !txOut) return;

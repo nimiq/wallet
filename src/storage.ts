@@ -18,6 +18,8 @@ import { useBtcLabelsStore } from './stores/BtcLabels';
 import { usePolygonAddressStore } from './stores/PolygonAddress';
 import { useUsdcContactsStore } from './stores/UsdcContacts';
 import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
+import { useUsdtContactsStore } from './stores/UsdtContacts';
+import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
@@ -30,7 +32,7 @@ const StorageKeys = {
     ACCOUNTINFOS: 'wallet_accounts_v01',
     ADDRESSINFOS: 'wallet_addresses_v01',
     SETTINGS: 'wallet_settings_v01',
-    ACCOUNT_SETTINGS: 'wallet_account_settings_v00',
+    ACCOUNTSETTINGS: 'wallet_accountsettings_v00',
     FIAT: 'wallet_exchange-rates_v01',
     DEPRECATED_CASHLINKS: 'wallet_cashlinks_v01', // TODO deprecated; remove in the future
     PROXIES: 'wallet_proxies_v01',
@@ -38,6 +40,7 @@ const StorageKeys = {
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
     POLYGONADDRESSINFOS: 'wallet_usdcaddresses_v01', // Legacy value to not delete all user's Polygon addresses
     USDCTRANSACTIONS: 'wallet_usdctransactions_v01',
+    USDTTRANSACTIONS: 'wallet_usdttransactions_v01',
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
     KYC: 'wallet_kyc_v00',
@@ -48,6 +51,7 @@ const PersistentStorageKeys = {
     CONTACTS: 'wallet_contacts_v01',
     BTCLABELS: 'wallet_btclabels_v01',
     USDCCONTACTS: 'wallet_usdccontacts_v01',
+    USDTCONTACTS: 'wallet_usdtcontacts_v01',
 };
 
 const unsubscriptions: (() => void)[] = [];
@@ -130,6 +134,7 @@ export async function initStorage() {
     const transactionsStore = useTransactionsStore();
     const btcTransactionsStore = useBtcTransactionsStore();
     const usdcTransactionsStore = useUsdcTransactionsStore();
+    const usdtTransactionsStore = useUsdtTransactionsStore();
     const proxyStore = useProxyStore();
 
     await Promise.all([
@@ -143,7 +148,12 @@ export async function initStorage() {
                 btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
             }),
         ),
-        initStoreStore(useAccountSettingsStore(), StorageKeys.ACCOUNT_SETTINGS),
+        initStoreStore(
+            useAccountSettingsStore(),
+            StorageKeys.ACCOUNTSETTINGS,
+            (state) => state.settings,
+            (storedAccountSettings) => ({ settings: storedAccountSettings }),
+        ),
         initStoreStore(useFiatStore(), StorageKeys.FIAT).then((storedFiatState) => {
             if (storedFiatState) return;
             // Get location from GeoIP service to set initial fiat currency. We do this in the background to not block
@@ -235,6 +245,18 @@ export async function initStorage() {
             (storedContacts) => ({ contacts: storedContacts }),
         ),
         initStoreStore(
+            usdtTransactionsStore,
+            StorageKeys.USDTTRANSACTIONS,
+            (store) => store.transactions,
+            (storedUsdtTransactions) => ({ transactions: storedUsdtTransactions }),
+        ),
+        initStoreStore(
+            useUsdtContactsStore(),
+            PersistentStorageKeys.USDTCONTACTS,
+            (state) => state.contacts,
+            (storedContacts) => ({ contacts: storedContacts }),
+        ),
+        initStoreStore(
             usePrestakingStore(),
             StorageKeys.PRESTAKING,
             (state) => state, // this is the default, but we still provide it for ts type inference
@@ -249,6 +271,7 @@ export async function initStorage() {
     transactionsStore.calculateFiatAmounts();
     btcTransactionsStore.calculateFiatAmounts();
     usdcTransactionsStore.calculateFiatAmounts();
+    usdtTransactionsStore.calculateFiatAmounts();
 }
 
 async function initStoreStore<State extends StateTree, StoredState>(

@@ -1,8 +1,8 @@
 <template>
     <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
         <PageHeader
-            :class="{'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash)}">
-
+            :class="{'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash)}"
+        >
             <template v-if="isCancelledSwap">{{ $t('Cancelled Swap') }}</template>
 
             <template v-else-if="usesNimSwapProxy && !swapTransaction.relatedTransactionHash">{{
@@ -10,10 +10,8 @@
             }}</template>
 
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.NIM
-                    || swapData.asset === SwapAsset.USDC
-                    || swapData.asset === SwapAsset.USDC_MATIC" v-slot:address>
-                    <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
+                <template v-if="swapData.asset === SwapAsset.NIM || swapData.asset === SwapAsset.BTC" v-slot:address>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
@@ -24,10 +22,8 @@
             </i18n>
 
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
-                <template v-if="swapData.asset === SwapAsset.NIM
-                    || swapData.asset === SwapAsset.USDC
-                    || swapData.asset === SwapAsset.USDC_MATIC" v-slot:address>
-                    <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
+                <template v-if="swapData.asset === SwapAsset.NIM || swapData.asset === SwapAsset.BTC" v-slot:address>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
 
                 <template v-else-if="swapData.asset === SwapAsset.EUR" v-slot:address>
@@ -39,36 +35,30 @@
 
             <i18n v-else-if="isIncoming" path="Transaction from {address}" :tag="false">
                 <template v-slot:address>
-                    <label>{{ peerLabel || peerAddresses[0].substring(0, 6) }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
             </i18n>
 
-            <i18n v-else path="Transaction to {address}" :tag="false">
+            <i18n v-else-if="!isIncoming" path="Transaction to {address}" :tag="false">
                 <template v-slot:address>
-                    <label>{{ peerLabel || peerAddresses[0].substring(0, 6) }}</label>
+                    <label>{{ peerLabel || peerAddress.substring(0, 9) }}</label>
                 </template>
             </i18n>
 
             <TransactionDetailOasisPayoutStatus
-                v-if="swapData && swapData.asset === SwapAsset.EUR && swapData.htlc
-                    && swapData.htlc.settlement && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED"
+                v-if="swapData && swapData.asset === SwapAsset.EUR
+                    && swapData.htlc && swapData.htlc.settlement
+                    && swapData.htlc.settlement.status !== SettlementStatus.CONFIRMED"
+                slot="more"
                 :data="swapData"
             />
             <span
-                v-else-if="state === TransactionState.NEW || state === TransactionState.PENDING"
-                slot="more"
-                class="nq-light-blue flex-row"
-            >
-                <CircleSpinner/>
-                {{ $t('Pending...') }}
-            </span>
-            <span
-                v-else-if="state === TransactionState.EXPIRED || state === TransactionState.INVALIDATED"
+                v-else-if="transaction.state === TransactionState.FAILED"
                 slot="more"
                 class="nq-red failed flex-row"
             >
                 <CrossIcon/>
-                {{ state === TransactionState.EXPIRED ? $t('Expired') : $t('Failed') }}
+                {{ $t('Partially reverted') }}
             </span>
             <span v-else slot="more" class="date" :class="isIncoming ? 'nq-green' : 'opacity-60'">
                 <i18n v-if="isIncoming" path="Received at {dateAndTime}" :tag="false">
@@ -83,103 +73,58 @@
                 </i18n>
             </span>
         </PageHeader>
-        <PageBody class="flex-column" :class="state">
-            <div v-if="isIncoming" class="flex-row sender-recipient">
-                <div class="address-info flex-column">
-                    <div v-if="swapInfo" class="identicon-container">
+        <PageBody class="flex-column" :class="transaction.state">
+            <div class="flex-row sender-recipient">
+                <div v-if="isIncoming && swapInfo" class="swap-peer flex-column">
+                    <div class="identicon-container">
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
-                            :address="peerAddresses[0]"/>
-                        <UsdcIcon v-else-if="swapData
-                            && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
-                        <UsdtIcon v-else-if="swapData
-                            && (swapData.asset === SwapAsset.USDT)"/>
+                            :address="peerAddress"/>
+                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
-                    <Avatar v-else :label="peerLabel || ''"/>
-                    <input type="text" class="nq-input-s vanishing"
-                        v-if="senderLabelAddress || !peerLabel"
-                        :placeholder="$t('Unknown')"
-                        :value="peerLabel || ''"
-                        @input="setSenderLabel(senderLabelAddress || ownAddresses[0], $event.target.value)"
-                    />
-                    <span v-else class="label" :class="{'unlabelled': !peerLabel}">
-                        {{ peerLabel || $t('Unknown') }}
-                    </span>
-                    <template v-if="peerAddresses[0]">
-                        <InteractiveShortAddress v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                            :address="address" copyable tooltipPosition="bottom right"/>
-                    </template>
-
-                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
-                        target="_blank" rel="noopener" class="nq-link"
-                    >{{ $t('+{n} more', {n: peerAddresses.length - 3}) }}</a>
+                    <span class="label">{{ peerLabel }}</span>
+                    <InteractiveShortAddress v-if="swapData && peerAddress"
+                        :address="peerAddress" copyable tooltipPosition="bottom right"/>
                 </div>
+                <UsdcAddressInfo v-else
+                    :address="transaction.sender"
+                    :label="isIncoming ? peerLabel : undefined"
+                    copyable
+                    :editable="isIncoming ? (peerIsContact || !peerLabel) : false"
+                    tooltipPosition="bottom right"
+                />
                 <ArrowRightIcon class="arrow"/>
-                <div class="address-info flex-column">
-                    <BitcoinIcon/>
-                    <span class="label">{{ $t('Bitcoin') }}</span>
-                    <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
-                        :address="address" copyable tooltipPosition="bottom left"/>
-
-                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
-                        target="_blank" rel="noopener" class="nq-link"
-                    >{{ $t('+{n} more', {n: ownAddresses.length - 3}) }}</a>
-                </div>
-            </div>
-            <div v-else class="flex-row sender-recipient">
-                <div class="address-info flex-column">
-                    <BitcoinIcon/>
-                    <span class="label">{{ $t('Bitcoin') }}</span>
-                    <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
-                        :address="address" copyable tooltipPosition="bottom right"/>
-                    <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"
-                        target="_blank" rel="noopener" class="nq-link"
-                    >{{ $t('+{n} more', {n: ownAddresses.length - 3}) }}</a>
-                </div>
-                <ArrowRightIcon class="arrow"/>
-                <div class="address-info flex-column">
-                    <div v-if="swapInfo" class="identicon-container">
+                <div v-if="!isIncoming && swapInfo" class="swap-peer flex-column">
+                    <div class="identicon-container">
                         <Identicon
                             v-if="swapData && swapData.asset === SwapAsset.NIM && swapTransaction"
-                            :address="peerAddresses[0]"/>
-                        <UsdcIcon v-else-if="swapData
-                            && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
-                        <UsdtIcon v-else-if="swapData
-                            && (swapData.asset === SwapAsset.USDT)"/>
+                            :address="peerAddress"/>
+                        <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
-                    <Avatar v-else :label="peerLabel || ''"/>
-                    <input type="text" class="nq-input-s vanishing"
-                        v-if="peerAddresses[0] && (recipientLabelAddress || !peerLabel)"
-                        :placeholder="$t('Unknown')"
-                        :value="peerLabel || ''"
-                        @input="setRecipientLabel(recipientLabelAddress || peerAddresses[0], $event.target.value)"
-                    />
-                    <span v-else class="label" :class="{'unlabelled': !peerLabel}">
-                        {{ peerLabel || $t('Unknown') }}
-                    </span>
-                    <template v-if="peerAddresses[0]">
-                        <InteractiveShortAddress v-for="address in peerAddresses.slice(0, 3)" :key="address"
-                            :address="address" copyable tooltipPosition="bottom left"/>
-                    </template>
-                    <a v-if="peerAddresses.length > 3" :href="blockExplorerLink"
-                        target="_blank" rel="noopener" class="nq-link"
-                    >{{ $t('+{n} more', {n: peerAddresses.length - 3}) }}</a>
+                    <span class="label">{{ peerLabel || (showRefundButton ? $t('Expired HTLC') : '&nbsp;') }}</span>
+                    <InteractiveShortAddress :address="peerAddress" copyable tooltipPosition="bottom left"/>
                 </div>
+                <UsdcAddressInfo v-else
+                    :address="transaction.recipient"
+                    :label="!isIncoming ? peerLabel : undefined"
+                    copyable
+                    :editable="!isIncoming ? (peerIsContact || !peerLabel) : false"
+                    tooltipPosition="bottom left"
+                />
             </div>
 
             <div class="amount-block flex-column">
-                <Amount :amount="isIncoming ? amountReceived : amountSent" class="transaction-value" :class="{
+                <Amount :amount="txValue" :currency="ticker" value-mask
+                    class="transaction-value" :class="{
                     isIncoming,
-                    'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
-                    'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
-                        && isIncoming,
-                }" currency="btc" value-mask/>
+                    'nq-green': isIncoming,
+                }" />
 
                 <div class="flex-row">
                     <div v-if="
@@ -195,16 +140,16 @@
                             </template>
                             <span>{{ $t('Historic value') }}</span>
                             <p class="explainer">
-                                {{ $t('This historic value is based on an average of cross-exchange prices.'
-                                    + ' It might vary due to market volatility and liquidity.') }}
+                                {{ $t('This value is based on the historic exchange rate of the USD and your ' +
+                                    'reference currency.') }}
                             </p>
                         </Tooltip>
                     </div>
                     <transition v-else-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                         <FiatConvertedAmount
-                            v-if="state === TransactionState.PENDING"
-                            :amount="isIncoming ? amountReceived : amountSent"
-                            currency="btc"
+                            v-if="transaction.state === TransactionState.PENDING"
+                            :amount="txValue"
+                            currency="usdt"
                             value-mask/>
                         <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
                         <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
@@ -215,14 +160,14 @@
                                 <template slot="trigger">
                                     <!-- <HistoricValueIcon/> -->
                                     <FiatAmount
-                                        :amount="fiat.value"
+                                        :amount="fiat.value / transaction.value * txValue"
                                         :currency="fiat.currency"
                                         value-mask/>
                                 </template>
                                 <span>{{ $t('Historic value') }}</span>
                                 <p class="explainer">
-                                    {{ $t('This historic value is based on an average of cross-exchange prices.'
-                                        + ' It might vary due to market volatility and liquidity.') }}
+                                    {{ $t('This value is based on the historic exchange rate of the USD and your ' +
+                                        'reference currency.') }}
                                 </p>
                             </Tooltip>
                         </div>
@@ -250,17 +195,16 @@
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
-                        <button v-if="(swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)
-                            && swapTransaction"
+                        <button v-if="swapData.asset === SwapAsset.BTC && swapTransaction"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace(`/usdc-transaction/${swapTransaction.transactionHash}`)"
+                            @click="$router.replace(`/btc-transaction/${swapTransaction.transactionHash}`)"
                         >
                             <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
                                 <GroundedArrowDownIcon v-else/>
                             </div>
                             <Amount
-                                :amount="swapTransaction.value"
+                                :amount="swapTransaction.outputs[0].value"
                                 :currency="assetToCurrency(swapData.asset)"
                                 class="swapped-amount"
                                 value-mask/>
@@ -283,7 +227,6 @@
                 <div v-if="data" class="message">{{ data }}</div>
             </div>
 
-            <!-- <button class="nq-button-s">Send more</button> -->
             <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
                 {{ $t('Refund') }}
             </button>
@@ -298,7 +241,9 @@
                     {{ $tc('{count} Confirmation | {count} Confirmations', confirmations) }}
                 </span>
                 <div v-else class="confirmations-skeleton"></div>
-                <!-- <span v-if="transaction.fee" class="fee"><Amount :amount="transaction.fee"/> fee</span> -->
+                <span v-if="transaction.fee" class="fee">
+                    <Amount :amount="transaction.fee" :currency="ticker" /> fee
+                </span>
 
                 <BlueLink
                     :href="blockExplorerLink"
@@ -310,59 +255,64 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import {
-    PageHeader,
-    PageBody,
     ArrowRightIcon,
     FiatAmount,
-    Tooltip,
     InfoCircleSmallIcon,
-    CircleSpinner,
-    CrossIcon,
+    PageBody,
+    PageHeader,
+    Tooltip,
     Identicon,
+    CrossIcon,
 } from '@nimiq/vue-components';
-import { TransactionState } from '@nimiq/electrum-client';
-import { RefundSwapRequest, SignedBtcTransaction } from '@nimiq/hub-api';
-import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { RefundSwapRequest, SignedPolygonTransaction } from '@nimiq/hub-api';
+import type { BigNumber } from 'ethers';
+import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
+import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
+import { explorerTxLink } from '@/lib/ExplorerUtils';
+import { twoDigit } from '@/lib/NumberFormatting';
+import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import { useAccountStore } from '@/stores/Account';
+import { useSettingsStore } from '@/stores/Settings';
+import { useUsdtTransactionsStore, TransactionState } from '@/stores/UsdtTransactions';
+import { useUsdtContactsStore } from '@/stores/UsdtContacts';
+import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
 import Amount from '../Amount.vue';
-import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import Modal from './Modal.vue';
-// import HistoricValueIcon from '../icons/HistoricValueIcon.vue';
 import BlueLink from '../BlueLink.vue';
-import Avatar from '../Avatar.vue';
-import BitcoinIcon from '../icons/BitcoinIcon.vue';
-import InteractiveShortAddress from '../InteractiveShortAddress.vue';
-import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
-import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
+import Modal from './Modal.vue';
+import UsdcAddressInfo from '../UsdcAddressInfo.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import BankIcon from '../icons/BankIcon.vue';
-import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
-import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import { useAccountStore, AccountType } from '../../stores/Account';
-import { useSettingsStore } from '../../stores/Settings';
-import { useBtcNetworkStore } from '../../stores/BtcNetwork';
-import { twoDigit } from '../../lib/NumberFormatting';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '../../lib/Constants';
-import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
-import { SwapBtcData } from '../../stores/Swaps';
-import { useTransactionsStore } from '../../stores/Transactions';
-import { useAddressStore } from '../../stores/Address';
-import { estimateFees } from '../../lib/BitcoinTransactionUtils';
-import { refundSwap } from '../../hub';
-import { sendTransaction } from '../../electrum';
-import { explorerTxLink } from '../../lib/ExplorerUtils';
-import { assetToCurrency } from '../../lib/swap/utils/Assets';
+import BitcoinIcon from '../icons/BitcoinIcon.vue';
+import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
+import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
+import Avatar from '../Avatar.vue';
+import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
-import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
-import { useBtcTransactionInfo } from '../../composables/useBtcTransactionInfo';
-import UsdcIcon from '../icons/UsdcIcon.vue';
-import UsdtIcon from '../icons/UsdtIcon.vue';
+// import { SwapUsdtData } from '../../stores/Swaps';
+import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
+import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
+import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
+import { useAddressStore } from '../../stores/Address';
+import {
+    calculateFee,
+    getUsdtBridgedHtlcContract,
+    getPolygonBlockNumber,
+    sendTransaction,
+} from '../../ethers';
+import { useConfig } from '../../composables/useConfig';
+import { useUsdtTransactionInfo } from '../../composables/useUsdtTransactionInfo';
+import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { assetToCurrency } from '../../lib/swap/utils/Assets';
+
+import { refundSwap } from '../../hub';
 
 export default defineComponent({
-    name: 'btc-transaction-modal',
+    name: 'usdt-transaction-modal',
     props: {
         hash: {
             type: String,
@@ -370,40 +320,23 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { amountsHidden } = useSettingsStore();
+
         const constants = { FIAT_PRICE_UNAVAILABLE };
-        const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
+
+        const transaction = computed(() => useUsdtTransactionsStore().state.transactions[props.hash]);
 
         const {
-            setRecipientLabel,
-            getRecipientLabel,
-            setSenderLabel,
-            getSenderLabel,
-        } = useBtcLabelsStore();
-
-        const state = computed(() => transaction.value.state);
-
-        // Note that as the transaction modal is typically opened from the active account's transaction history, we base
-        // our calculations here on the active account and its addresses. This yields wrong results if the opened
-        // transaction modal (e.g. opened via url) does not belong to the active account but saves us scanning through
-        // all accounts in the common case.
-        const {
-            amountReceived,
-            amountSent,
+            txValue,
             isIncoming,
             isCancelledSwap,
-            inputsSent,
             peerLabel,
-            outputsReceived,
-            outputsSent,
             swapData,
             swapInfo,
             fiat,
-        } = useBtcTransactionInfo(transaction);
+        } = useUsdtTransactionInfo(transaction);
 
-        const ownAddresses = computed(() => (isIncoming.value
-            ? outputsReceived.value.map((output) => output.address || output.script)
-            : inputsSent.value.map((input) => input.address || input.script)
-        ).filter((address, index, array) => array.indexOf(address) === index)); // dedupe
+        const { config } = useConfig();
 
         const swapTransaction = computed(() => {
             if (!swapData.value) return null;
@@ -417,8 +350,13 @@ export default defineComponent({
                 return swapTx || null;
             }
 
-            if (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC) {
-                return useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
+            if (swapData.value.asset === SwapAsset.BTC) {
+                const btcTx = useBtcTransactionsStore().state.transactions[swapData.value.transactionHash];
+                if (!btcTx) return null;
+                return {
+                    ...btcTx,
+                    outputs: [btcTx.outputs[swapData.value.outputIndex]],
+                } as BtcTransaction;
             }
 
             return null;
@@ -446,41 +384,37 @@ export default defineComponent({
         });
 
         // Peer
-        const peerAddresses = computed(() => {
+        const { getLabel, setContact } = useUsdtContactsStore();
+
+        const peerAddress = computed(() => {
             if (swapData.value) {
                 if (swapData.value.asset === SwapAsset.NIM && swapTransaction.value) {
-                    if (usesNimSwapProxy.value
-                        && !(swapTransaction.value as Extract<
-                            typeof swapTransaction.value,
-                            { relatedTransactionHash?: string }
-                        >).relatedTransactionHash) {
+                    const swapTx = swapTransaction.value as NimTransaction;
+                    if (usesNimSwapProxy.value && !swapTx.relatedTransactionHash) {
                         // Avoid displaying proxy address identicon until we know related address.
-                        return [''];
+                        return '';
                     }
-                    return isIncoming.value ? [swapTransaction.value.sender] : [swapTransaction.value.recipient];
+                    return isIncoming.value ? swapTx.sender : swapTx.recipient;
                 }
 
-                if (
-                    (swapData.value.asset === SwapAsset.USDC || swapData.value.asset === SwapAsset.USDC_MATIC)
-                    && swapTransaction.value
-                ) {
-                    const swapTx = swapTransaction.value as UsdcTransaction;
-                    return isIncoming.value ? [swapTx.sender] : [swapTx.recipient];
+                if (swapData.value.asset === SwapAsset.BTC) {
+                    const swapTx = swapTransaction.value as BtcTransaction | null;
+                    return swapTx
+                        ? isIncoming.value
+                            ? swapTx.inputs[0].address!
+                            : swapTx.outputs[0].address!
+                        : ''; // we don't know the peer address
                 }
 
-                if (swapData.value.asset === SwapAsset.EUR) return [swapData.value.iban || ''];
+                if (swapData.value.asset === SwapAsset.EUR) {
+                    return swapData.value.iban || '';
+                }
             }
 
-            return (isIncoming.value
-                ? transaction.value.inputs.map((input) => input.address || input.script)
-                : outputsSent.value.map((output) => output.address || output.script)
-            ).filter((address, index, array) => array.indexOf(address) === index); // dedupe
+            return isIncoming.value ? transaction.value.sender : transaction.value.recipient;
         });
 
-        const senderLabelAddress = computed(() => isIncoming.value
-            && (ownAddresses.value.find((address) => !!getSenderLabel.value(address)) || false));
-        const recipientLabelAddress = computed(() => !isIncoming.value
-            && (peerAddresses.value.find((address) => !!getRecipientLabel.value(address)) || false));
+        const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
         // Date
         const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
@@ -488,127 +422,173 @@ export default defineComponent({
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
-        const { height: blockHeight, timestamp: blockTimestamp } = useBtcNetworkStore();
+        // Top left tooltip
+        const { outdatedHeight: outdatedBlockHeight } = usePolygonNetworkStore();
+        getPolygonBlockNumber(); // Trigger blockHeight update
+
         const confirmations = computed(() =>
-            transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
+            transaction.value.blockHeight ? outdatedBlockHeight.value - transaction.value.blockHeight + 1 : 0);
+        const blockExplorerLink = computed(() =>
+            explorerTxLink(CryptoCurrency.USDT, transaction.value.transactionHash));
 
-        const { amountsHidden } = useSettingsStore();
-
-        const showRefundButton = computed(() => !isIncoming.value
-            && swapInfo.value?.in?.asset === SwapAsset.BTC
-            && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= blockTimestamp.value
-            && !swapInfo.value.out
-            // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
-            && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
+        const showRefundButton = computed(() => false && !isIncoming.value,
+            // // funded but not redeemed htlc which is now expired
+            // && (swapInfo.value?.in?.asset === SwapAsset.USDT)
+            // && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
+            // && !swapInfo.value.out,
+            // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
+            // && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
-        const blockExplorerLink = computed(() =>
-            explorerTxLink(CryptoCurrency.BTC, transaction.value.transactionHash));
-
         async function refundHtlc() {
-            const swapIn = swapInfo.value!.in as SwapBtcData;
-            const htlcDetails = swapIn.htlc!;
-            const htlcOutput = outputsSent.value[0];
+            // const htlcDetails = (swapInfo.value?.in as SwapUsdtData | undefined)?.htlc;
+            // if (!htlcDetails) {
+            //     alert('Unexpected: unknown HTLC refund details'); // eslint-disable-line no-alert
+            //     return;
+            // }
 
-            // eslint-disable-next-line no-async-promise-executor
-            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve) => {
-                const assets = await getAssets();
-                const { feePerUnit } = assets[SwapAsset.BTC];
-                // 102 extra weight units for BTC HTLC refund tx
-                const fee = estimateFees(1, 1, feePerUnit, 102);
+            // let relayUrl: string;
 
-                const request: Omit<RefundSwapRequest, 'appName'> = {
-                    accountId: useAccountStore().activeAccountId.value!,
-                    refund: {
-                        type: SwapAsset.BTC,
-                        input: {
-                            transactionHash: transaction.value.transactionHash,
-                            outputIndex: htlcOutput.index,
-                            outputScript: htlcOutput.script,
-                            value: htlcOutput.value,
-                            witnessScript: htlcDetails.script,
-                        },
-                        output: {
-                            address: useBtcAddressStore().availableExternalAddresses.value[0],
-                            value: htlcOutput.value - fee,
-                        },
-                        refundAddress: htlcDetails.refundAddress, // My address, must be refund address of HTLC
-                    },
-                };
+            // // eslint-disable-next-line no-async-promise-executor
+            // const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve, reject) => {
+            //     try {
+            //         const myAddress = transaction.value.sender;
 
-                resolve(request);
-            });
+            //         const method = 'refund';
 
-            const tx = await refundSwap(requestPromise);
-            if (!tx) return;
-            const plainTx = await sendTransaction(tx as SignedBtcTransaction);
-            await context.root.$nextTick();
-            context.root.$router.replace(`/btc-transaction/${plainTx.transactionHash}`);
+            //         const htlcContract = await getUsdtBridgedHtlcContract();
+
+            //         const [
+            //             forwarderNonce,
+            //             { fee, gasPrice, gasLimit, relay },
+            //         ] = await Promise.all([
+            //             htlcContract.getNonce(myAddress) as Promise<BigNumber>,
+            //             calculateFee(
+            //                 transaction.value.token || config.polygon.usdt_bridged.tokenContract,
+            //                 method,
+            //                 undefined,
+            //                 htlcContract,
+            //             ),
+            //         ]);
+
+            //         relayUrl = relay.url;
+
+            //         const functionData = htlcContract.interface.encodeFunctionData(method, [
+            //             /** bytes32 id */ htlcDetails.address,
+            //             /** address target */ myAddress,
+            //             /** uint256 fee */ fee,
+            //         ]);
+
+            //         const relayRequest: RelayRequest = {
+            //             request: {
+            //                 from: myAddress,
+            //                 to: htlcContract.address,
+            //                 data: functionData,
+            //                 value: '0',
+            //                 nonce: forwarderNonce.toString(),
+            //                 gas: gasLimit.toString(),
+            //                 validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+            //                     .toString(10),
+            //             },
+            //             relayData: {
+            //                 gasPrice: gasPrice.toString(),
+            //                 pctRelayFee: relay.pctRelayFee.toString(),
+            //                 baseRelayFee: relay.baseRelayFee.toString(),
+            //                 relayWorker: relay.relayWorkerAddress,
+            //                 paymaster: htlcContract.address,
+            //                 paymasterData: '0x',
+            //                 clientId: Math.floor(Math.random() * 1e6).toString(10),
+            //                 forwarder: htlcContract.address,
+            //             },
+            //         };
+
+            //         const request: Omit<RefundSwapRequest, 'appName'> = {
+            //             accountId: useAccountStore().activeAccountId.value!,
+            //             refund: {
+            //                 type: SwapAsset.USDT,
+            //                 ...relayRequest,
+            //                 amount: transaction.value.value - fee.toNumber(),
+            //             },
+            //         };
+
+            //         resolve(request);
+            //     } catch (e) {
+            //         reject(e);
+            //     }
+            // });
+
+            // try {
+            //     const tx = await refundSwap(requestPromise);
+            //     if (!tx) return;
+            //     const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
+            //     const plainTx = await sendTransaction(
+            //         { request: relayRequest as ForwardRequest, relayData },
+            //         (tx as SignedPolygonTransaction).signature,
+            //         relayUrl!,
+            //     );
+            //     await context.root.$nextTick();
+            //     context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
+            // } catch (e) {
+            //     const errorMessage = e instanceof Error ? e.message : String(e);
+            //     alert(context.root.$t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
+            // }
         }
 
+        const ticker = CryptoCurrency.USDT;
+
         return {
-            transaction,
-            constants,
-            state,
-            TransactionState,
-            datum,
-            time,
-            data,
-            outputsReceived,
-            amountReceived,
-            inputsSent,
-            amountSent,
-            fiat,
-            isIncoming,
-            peerAddresses,
-            peerLabel,
-            ownAddresses,
-            confirmations,
-            // peerIsContact,
-            // setContact,
             amountsHidden,
+            isIncoming,
             blockExplorerLink,
-            senderLabelAddress,
-            recipientLabelAddress,
-            setSenderLabel,
-            setRecipientLabel,
+            confirmations,
+            datum,
+            txValue,
+            fiat,
+            peerAddress,
+            peerLabel,
+            peerIsContact,
+            getLabel,
+            setContact,
+            time,
+            transaction,
+            TransactionState,
+            SwapAsset,
             swapInfo,
             swapData,
-            swapTransaction,
-            SwapAsset,
-            usesNimSwapProxy,
             isCancelledSwap,
+            swapTransaction,
+            usesNimSwapProxy,
+            data,
+            SettlementStatus,
+            constants,
             showRefundButton,
             refundHtlc,
-            SettlementStatus,
+            ticker,
             assetToCurrency,
         };
     },
     components: {
         Amount,
-        FiatConvertedAmount,
         ArrowRightIcon,
-        Avatar,
-        BitcoinIcon,
+        BlueLink,
+        FiatAmount,
+        InfoCircleSmallIcon,
+        Modal,
         PageBody,
         PageHeader,
-        Modal,
-        InteractiveShortAddress,
-        FiatAmount,
         Tooltip,
-        InfoCircleSmallIcon,
-        CircleSpinner,
-        CrossIcon,
-        // HistoricValueIcon,
-        BlueLink,
+        UsdcAddressInfo,
+        FiatConvertedAmount,
+        SwapMediumIcon,
+        Identicon,
+        BankIcon,
+        BitcoinIcon,
         GroundedArrowUpIcon,
         GroundedArrowDownIcon,
-        BankIcon,
-        Identicon,
-        SwapMediumIcon,
+        Avatar,
+        InteractiveShortAddress,
         TransactionDetailOasisPayoutStatus,
-        UsdcIcon,
-        UsdtIcon,
+        CrossIcon,
     },
 });
 </script>
@@ -659,26 +639,6 @@ export default defineComponent({
     padding-bottom: 3rem;
     overflow-y: initial;
 
-    &.expired,
-    &.invalidated {
-        .avatar {
-            filter: saturate(0);
-            opacity: 0.5;
-        }
-
-        .label {
-            opacity: 0.5;
-        }
-
-        .address-display {
-            opacity: 0.3;
-        }
-
-        .amount-block {
-            opacity: 0.4;
-        }
-    }
-
     button.swap-other-side {
         border-radius: 8rem;
         padding: 0.25rem 1.5rem;
@@ -706,96 +666,66 @@ export default defineComponent({
     width: 100%;
     padding: 0 1rem;
 
+    .usdc-address-info {
+        width: 19rem;
+    }
+
     .arrow {
         font-size: 3rem;
         margin-top: 2.5rem;
         opacity: 0.4;
         flex-shrink: 0;
     }
-}
 
-.address-info {
-    align-items: center;
-    width: 19rem;
+    .swap-peer {
+        align-items: center;
+        width: 19rem;
 
-    .nq-link {
-        font-size: var(--small-size);
-        color: inherit;
-        opacity: 0.5;
+        .identicon-container {
+            position: relative;
+
+            > svg:last-child {
+                position: absolute;
+                right: 0;
+                bottom: -1.125rem;
+
+                width: 3.75rem; // 3rem + border
+                height: 3.75rem;
+                color: white;
+                background: var(--nimiq-blue-bg);
+                border-radius: 50%;
+                border: 0.375rem solid white;
+            }
+
+            .identicon {
+                width: 9rem;
+                height: 9rem;
+                margin: -0.5rem 0; // Identicon should be 72x63
+            }
+
+            svg,
+            .avatar {
+                width: 8rem;
+                height: 8rem;
+                display: block;
+            }
+
+            svg.bitcoin {
+                color: var(--bitcoin-orange);
+            }
+        }
+
+        .label {
+            font-size: var(--body-size);
+            font-weight: 600;
+            text-align: center;
+            margin: 2rem 0 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
     }
-}
-
-.avatar,
-.bank-icon,
-.address-info svg {
-    position: relative;
-    width: 8rem;
-    height: 8rem;
-    font-size: 3.75rem;
-    display: block;
-}
-
-.address-info > svg {
-    color: var(--bitcoin-orange);
-}
-
-.address-info .identicon-container {
-    position: relative;
-
-    > svg:last-child {
-        position: absolute;
-        right: 0;
-        bottom: -1.125rem;
-
-        width: 3.75rem; // 3rem + border
-        height: 3.75rem;
-        color: white;
-        background: var(--nimiq-blue-bg);
-        border-radius: 50%;
-        border: 0.375rem solid white;
-    }
-
-    .identicon {
-        width: 9rem;
-        height: 9rem;
-        margin: -0.5rem 0; // Identicon should be 72x63
-    }
-
-    svg.usdc {
-        color: var(--usdc-blue);
-    }
-
-    svg.usdt {
-        color: var(--usdt-green);
-    }
-}
-
-.label,
-.nq-input-s {
-    font-size: var(--body-size);
-    font-weight: 600;
-    text-align: center;
-}
-
-.label {
-    margin: 2rem 0 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 100%;
-    mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
-
-    &.unlabelled {
-        font-style: italic;
-    }
-}
-
-.nq-input-s {
-    margin: 1.25rem 0 0.375rem;
-    max-width: 100%;
-}
-
-.nq-input-s:not(:focus):not(:hover) {
-    mask: linear-gradient(90deg , white, white calc(100% - 4rem), rgba(255,255,255, 0) calc(100% - 1rem));
 }
 
 .amount-block {
@@ -961,10 +891,10 @@ export default defineComponent({
         margin-top: 0.5rem;
     }
 
-    // .fee {
-    //     display: inline-block;
-    //     margin-top: 1.25rem;
-    // }
+    .fee {
+        display: inline-block;
+        margin-top: 1.25rem;
+    }
 
     .blue-link {
         color: var(--nimiq-light-blue-on-dark);
@@ -993,12 +923,10 @@ export default defineComponent({
         }
     }
 
-    .address-info {
-        flex-shrink: 0;
-    }
-
-    .tooltip ::v-deep .tooltip-box {
-        transform: translate(1rem, 2rem);
+    .tooltip {
+        ::v-deep .tooltip-box {
+            transform: translate(1rem, 2rem);
+        }
     }
 }
 

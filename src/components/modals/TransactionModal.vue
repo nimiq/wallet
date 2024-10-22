@@ -106,6 +106,8 @@
                         <BitcoinIcon v-if="swapData && swapData.asset === SwapAsset.BTC"/>
                         <UsdcIcon v-else-if="swapData
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
+                        <UsdtIcon v-else-if="swapData
+                            && (swapData.asset === SwapAsset.USDT)"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
@@ -148,6 +150,8 @@
                         <BitcoinIcon v-else-if="swapData && swapData.asset === SwapAsset.BTC"/>
                         <UsdcIcon v-else-if="swapData
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
+                        <UsdtIcon v-else-if="swapData
+                            && (swapData.asset === SwapAsset.USDT)"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
@@ -341,6 +345,7 @@ import UnclaimedCashlinkIcon from '../icons/UnclaimedCashlinkIcon.vue';
 import BlueLink from '../BlueLink.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import UsdtIcon from '../icons/UsdtIcon.vue';
 import BankIcon from '../icons/BankIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
@@ -677,6 +682,7 @@ export default defineComponent({
         BlueLink,
         BitcoinIcon,
         UsdcIcon,
+        UsdtIcon,
         BankIcon,
         GroundedArrowUpIcon,
         GroundedArrowDownIcon,
@@ -822,6 +828,10 @@ export default defineComponent({
 
         &.usdc {
             color: var(--usdc-blue);
+        }
+
+        &.usdt {
+            color: var(--usdt-green);
         }
     }
 

@@ -66,6 +66,7 @@ export default defineComponent({
                 external: [] as string[],
             };
             let usdcAddresses = [] as string[];
+            let usdtAddresses = [] as string[];
             let filename = '';
 
             if (props.type === 'address') {
@@ -81,11 +82,15 @@ export default defineComponent({
                 } else if (activeCurrency.value === CryptoCurrency.USDC) {
                     usdcAddresses = activeAccountInfo.value.polygonAddresses || [];
                     filename = `Nimiq-Wallet-USDC-Export-${activeAccountInfo.value.label}`;
+                } else if (activeCurrency.value === CryptoCurrency.USDT) {
+                    usdtAddresses = activeAccountInfo.value.polygonAddresses || [];
+                    filename = `Nimiq-Wallet-USDT-Export-${activeAccountInfo.value.label}`;
                 }
             } else {
                 nimAddresses = activeAccountInfo.value.addresses;
                 btcAddresses = activeAccountInfo.value.btcAddresses;
                 usdcAddresses = activeAccountInfo.value.polygonAddresses || [];
+                usdtAddresses = activeAccountInfo.value.polygonAddresses || [];
                 filename = `Nimiq-Wallet-Account-Export-${activeAccountInfo.value.label.replace(/\s/g, '-')}`;
             }
 
@@ -95,6 +100,7 @@ export default defineComponent({
                 nimAddresses,
                 btcAddresses,
                 usdcAddresses,
+                usdtAddresses,
                 parseInt(selectedYear.value, 10),
                 format.value,
                 filename,

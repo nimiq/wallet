@@ -42,8 +42,9 @@ import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useFiatStore } from '../stores/Fiat';
 import { useConfig } from '../composables/useConfig';
 import { CryptoCurrency } from '../lib/Constants';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
-type SupportedCurrency = CryptoCurrency.NIM | CryptoCurrency.BTC | CryptoCurrency.USDC;
+type SupportedCurrency = CryptoCurrency.NIM | CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT;
 
 interface CurrencyArc {
     currency: SupportedCurrency;
@@ -57,13 +58,19 @@ export default defineComponent({
     name: 'balance-distribution',
     setup() {
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
+        const { stablecoin } = useAccountSettingsStore();
         const cryptoBalances = computed(() => ({
             [CryptoCurrency.NIM]: useAddressStore().accountBalance.value / 1e5,
             [CryptoCurrency.BTC]: useBtcAddressStore().accountBalance.value / 1e8,
-            [CryptoCurrency.USDC]: (
-                usePolygonAddressStore().accountUsdcBridgedBalance.value
-                + usePolygonAddressStore().accountUsdcBalance.value
-            ) / 1e6,
+            ...(stablecoin.value === CryptoCurrency.USDC ? {
+                [CryptoCurrency.USDC]: (
+                    usePolygonAddressStore().accountUsdcBalance.value
+                    + usePolygonAddressStore().accountUsdcBridgedBalance.value
+                ) / 1e6,
+            } : {}),
+            ...(stablecoin.value === CryptoCurrency.USDT ? {
+                [CryptoCurrency.USDT]: usePolygonAddressStore().accountUsdtBridgedBalance.value / 1e6,
+            } : {}),
         }));
 
         const { config } = useConfig();
@@ -94,7 +101,12 @@ export default defineComponent({
         const currencies = computed<Array<SupportedCurrency>>(() => [
             CryptoCurrency.NIM,
             ...(config.enableBitcoin ? [CryptoCurrency.BTC] as Array<CryptoCurrency.BTC> : []),
-            ...(config.polygon.enabled ? [CryptoCurrency.USDC] as Array<CryptoCurrency.USDC> : []),
+            ...(config.polygon.enabled && stablecoin.value === CryptoCurrency.USDC
+                ? [CryptoCurrency.USDC] as Array<CryptoCurrency.USDC>
+                : []),
+            ...(config.polygon.enabled && stablecoin.value === CryptoCurrency.USDT
+                ? [CryptoCurrency.USDT] as Array<CryptoCurrency.USDT>
+                : []),
         ]);
 
         // Can be used for testing by manually defining balances either here or in the browser's dev tools.
@@ -103,7 +115,8 @@ export default defineComponent({
         const balanceDistribution = computed(() => {
             const fiatBalances = testFiatBalances.value || currencies.value.reduce((balances, currency) => ({
                 ...balances,
-                [currency]: cryptoBalances.value[currency] * (exchangeRates.value[currency]?.[fiatCurrency.value] ?? 0),
+                [currency]: cryptoBalances.value[currency]!
+                    * (exchangeRates.value[currency]?.[fiatCurrency.value] ?? 0),
             }), {} as Record<SupportedCurrency, number>);
 
             const totalFiatBalance = currencies.value.reduce((sum, currency) => sum + fiatBalances[currency], 0);
@@ -278,6 +291,9 @@ svg {
         }
         &.usdc {
             stroke: var(--usdc-blue);
+        }
+        &.usdt {
+            stroke: var(--usdt-green);
         }
         &.inactive {
             stroke: rgba(255, 255, 255, .2);

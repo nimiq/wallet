@@ -32,6 +32,10 @@
                             {{ option.label }}
                         </option>
                     </select>
+                    <Tooltip v-if="!stablecoin" class="stablecoin-tooltip" preferredPosition="bottom left">
+                        <InfoCircleSmallIcon slot="trigger" />
+                        {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
+                    </Tooltip>
                 </div>
                 <div v-if="disabledSwap" class="swap-disabled-text">
                     {{ $t('Swap not possible. Your balance is lower than the fee.') }}
@@ -261,6 +265,7 @@ import {
     Tooltip,
     FiatAmount,
     CircleSpinner,
+    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import {
     SetupSwapRequest,
@@ -313,6 +318,7 @@ import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import AddressList from '../AddressList.vue';
@@ -416,6 +422,7 @@ export default defineComponent({
             activeAddress: activeUsdcAddress,
             accountUsdcBalance,
         } = usePolygonAddressStore();
+        const { stablecoin } = useAccountSettingsStore();
         const { exchangeRates, currency, state: fiat$ } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
 
@@ -1973,22 +1980,26 @@ export default defineComponent({
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
-            return getWalletEnabledAssets().reduce((result, asset) => ({
-                ...result,
-                [asset]: {
-                    label: assetToCurrency(asset).toUpperCase(),
-                    // Note that currencies which are disabled in Fastspot, are not disabled in the button group, but
-                    // instead show a maintenance message in the footer.
-                    disabled: (
-                        // The asset is not activated in the active account.
-                        (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
-                        || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
-                    ) || (
-                        // Asset pair has no balance to swap.
-                        !otherAssetBalance && !accountBalance(asset)
-                    ),
-                },
-            }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
+            return getWalletEnabledAssets().reduce((result, asset) => {
+                if (asset === SwapAsset.USDC_MATIC && !stablecoin.value) return result;
+
+                return {
+                    ...result,
+                    [asset]: {
+                        label: assetToCurrency(asset).toUpperCase(),
+                        // Note that currencies which are disabled in Fastspot, are not disabled in the button group,
+                        // but instead show a maintenance message in the footer.
+                        disabled: (
+                            // The asset is not activated in the active account.
+                            (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
+                            || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
+                        ) || (
+                            // Asset pair has no balance to swap.
+                            !otherAssetBalance && !accountBalance(asset)
+                        ),
+                    },
+                };
+            }, {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
         }
 
         const leftButtonGroupOptions = computed(() => getButtonGroupOptions(rightAsset.value));
@@ -2246,6 +2257,7 @@ export default defineComponent({
             swapIsNotSupported,
             assetToCurrency,
             handleSwapErrorAction,
+            stablecoin,
         };
     },
     components: {
@@ -2258,6 +2270,7 @@ export default defineComponent({
         Tooltip,
         FiatAmount,
         CircleSpinner,
+        InfoCircleSmallIcon,
         SwapBalanceBar,
         MinimizeIcon,
         // LimitIcon,
@@ -2340,6 +2353,21 @@ export default defineComponent({
         background-repeat: no-repeat;
         background-position-x: calc(100% - 1.75rem);
         background-position-y: 55%;
+    }
+
+    .stablecoin-tooltip {
+        margin-left: 1.5rem;
+        align-self: center;
+
+        ::v-deep .trigger svg {
+            height: 2rem;
+            margin: 0;
+        }
+
+        ::v-deep .tooltip-box {
+            text-align: left;
+            width: 30rem;
+        }
     }
 }
 

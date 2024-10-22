@@ -17,7 +17,7 @@
 
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
             <PageHeader :backArrow="!!$route.params.canUserGoBack || page !== initialPage" @back="back">
-                {{ $t('Send USDC') }}
+                {{ stablecoin === CryptoCurrency.USDC ? $t('Send USDC') : $t('Send USDT') }}
             </PageHeader>
             <PageBody class="page__recipient-input flex-column">
                 <UsdcContactShortcuts
@@ -121,12 +121,12 @@
                     class="amount-section"
                     :class="{'insufficient-balance': maxSendableAmount < amount}"
                 >
-                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== CryptoCurrency.USDC}">
-                        <AmountInput v-if="activeCurrency === CryptoCurrency.USDC" v-model="amount"
+                    <div class="flex-row amount-row" :class="{'estimate': activeCurrency !== stablecoin}">
+                        <AmountInput v-if="activeCurrency === stablecoin" v-model="amount"
                             :decimals="6" :disabled="gotRequestUriAmount" ref="amountInput$">
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
-                                currency="usdc"
+                                :currency="stablecoin"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
@@ -141,7 +141,7 @@
                             <span slot="prefix" class="tilde">~</span>
                             <AmountMenu slot="suffix" class="ticker"
                                 :open="amountMenuOpened"
-                                currency="usdc"
+                                :currency="stablecoin"
                                 :activeCurrency="activeCurrency"
                                 :fiatCurrency="fiatCurrency"
                                 :otherFiatCurrencies="otherFiatCurrencies"
@@ -154,8 +154,8 @@
                     </div>
 
                     <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
-                        <span v-if="activeCurrency === CryptoCurrency.USDC" key="fiat-amount">
-                            <FiatConvertedAmount :data-amount="amount" :amount="amount" currency="usdc"/>
+                        <span v-if="activeCurrency === stablecoin" key="fiat-amount">
+                            <FiatConvertedAmount :data-amount="amount" :amount="amount" :currency="stablecoin"/>
                             <svg class="dot" viewBox="0 0 3 3"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <circle data-v-3d79c726="" cx="1.5" cy="1.5" r="1.5" fill="currentColor" />
@@ -180,7 +180,10 @@
                         </span>
                         <div v-else key="usdc-amount" class="usdc-amount">
                             <span>
-                                {{ $t('You will send {amount} USDC', { amount: amount / 1e6 }) }}
+                                {{ $t('You will send {amount} {ticker}', {
+                                    amount: amount / 1e6,
+                                    ticker: stablecoin.toUpperCase(),
+                                }) }}
                             </span>
                             <div>
                                 <template v-if="feeLoading">
@@ -212,11 +215,11 @@
                 </section>
             </PageBody>
             <SendModalFooter
-                :assets="[CryptoCurrency.USDC]"
+                :assets="[stablecoin]"
                 :disabled="!canSend"
                 :error="feeError"
                 @click="sign"
-            ><template #cta>{{ $t('Send {currency}', { currency: 'USDC' }) }}</template></SendModalFooter>
+            ><template #cta>{{ $t('Send {currency}', { currency: stablecoin }) }}</template></SendModalFooter>
         </div>
 
         <div v-if="statusScreenOpened" slot="overlay" class="page">
@@ -251,7 +254,7 @@ import { captureException } from '@sentry/vue';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { sendUsdcTransaction } from '../../hub';
+import { sendPolygonTransaction } from '../../hub';
 import { loadEthersLibrary, calculateFee } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
 import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
@@ -266,6 +269,7 @@ import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
 import PolygonWarningPage from '../PolygonWarningPage.vue';
 import PolygonWarningFooter from '../PolygonWarningFooter.vue';
 import AmountInput from '../AmountInput.vue';
@@ -278,6 +282,8 @@ import UsdcAddressInfo from '../UsdcAddressInfo.vue';
 import UsdcContactBook from '../UsdcContactBook.vue';
 import UsdcContactShortcuts from '../UsdcContactShortcuts.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useUsdtContactsStore } from '../../stores/UsdtContacts';
 
 export enum RecipientType {
     CONTACT,
@@ -303,18 +309,23 @@ export default defineComponent({
         const modal$ = ref<Modal>(null);
 
         const { state: addresses$, addressInfo } = usePolygonAddressStore();
-        const { state: transactions$ } = useUsdcTransactionsStore();
-        const { contactsArray: contacts, setContact, getLabel } = useUsdcContactsStore();
+        const { stablecoin } = useAccountSettingsStore();
+        const { state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcTransactionsStore()
+            : useUsdtTransactionsStore();
+        const { contactsArray: contacts, setContact, getLabel } = stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore();
         const { state: network$ } = usePolygonNetworkStore();
         const { config } = useConfig();
 
-        // These are non-reactive because we're only interested in whether the user had ever sent USDC when the modal
+        // These are non-reactive because we're only interested in whether the user had ever sent USDC/T when the modal
         // was initially opened.
         const normalizedUserAddresses = Object.values(addresses$.addressInfos)
             .map(({ address }) => address.toLowerCase());
-        const hasEverSentUsdc = Object.values(transactions$.transactions)
+        const hasEverSent = Object.values(transactions$.transactions)
             .some(({ sender }) => normalizedUserAddresses.includes(sender.toLowerCase()));
-        const page = ref(hasEverSentUsdc ? Pages.RECIPIENT_INPUT : Pages.WARNING);
+        const page = ref(hasEverSent ? Pages.RECIPIENT_INPUT : Pages.WARNING);
 
         const recipientDetailsOpened = ref(false);
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
@@ -348,10 +359,10 @@ export default defineComponent({
             if (isValidUnstoppableDomain(address)) {
                 isResolvingUnstoppableDomain.value = true;
                 const domain = address;
-                const ticker = 'USDC';
+                const ticker = stablecoin.value!.toUpperCase();
                 try {
                     const [resolvedAddress, ethers] = await Promise.all([
-                        resolveUnstoppableDomain(domain, ticker),
+                        resolveUnstoppableDomain(domain, ticker as 'USDC' | 'USDT'),
                         loadEthersLibrary(),
                     ]);
                     if (resolvedAddress && ethers.utils.isAddress(resolvedAddress)) {
@@ -431,54 +442,62 @@ export default defineComponent({
 
         const relay = ref<RelayServerInfo | null>(null);
 
-        // Use 2.00 USDC as safe fallback fee
+        // Use 2.00 USDC/T as safe fallback fee
         const maxSendableAmount = computed(() => {
-            const balance = addressInfo.value!.balanceUsdc;
+            const balance = stablecoin.value === CryptoCurrency.USDC
+                ? addressInfo.value!.balanceUsdc
+                : addressInfo.value!.balanceUsdtBridged;
             return Math.max((balance || 0) - (fee.value || 2e6), 0);
         });
 
         const amountMenuOpened = ref(false);
 
-        const activeCurrency = ref<CryptoCurrency.USDC | FiatCurrency>(CryptoCurrency.USDC);
+        const activeCurrency = ref<CryptoCurrency.USDC | CryptoCurrency.USDT | FiatCurrency>(stablecoin.value!);
         const fiatAmount = ref(0);
 
         const { state: fiat$, exchangeRates, currency: referenceCurrency } = useFiatStore();
         const otherFiatCurrencies = computed(() => FIAT_CURRENCIES_OFFERED.filter((fiat) => fiat !== fiat$.currency));
 
         const fiatCurrencyInfo = computed(() => {
-            if (activeCurrency.value === CryptoCurrency.USDC) {
+            if (activeCurrency.value === CryptoCurrency.USDC || activeCurrency.value === CryptoCurrency.USDT) {
                 return new CurrencyInfo(referenceCurrency.value);
             }
             return new CurrencyInfo(activeCurrency.value);
         });
 
-        const fiatToUsdcDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e6);
+        const fiatToCoinDecimalRatio = computed(() => 10 ** fiatCurrencyInfo.value.decimals / 1e6);
 
         watch(activeCurrency, (currency) => {
-            if (currency === CryptoCurrency.USDC) {
+            if (currency === CryptoCurrency.USDC || currency === CryptoCurrency.USDT) {
                 fiatAmount.value = 0;
                 return;
             }
 
             // Fiat store already has all exchange rates for all supported fiat currencies
             // TODO: What to do when exchange rates are not yet populated?
-            fiatAmount.value = amount.value * fiat$.exchangeRates.usdc[currency]! * fiatToUsdcDecimalRatio.value;
+            fiatAmount.value = amount.value
+                * fiat$.exchangeRates[stablecoin.value!][currency]!
+                * fiatToCoinDecimalRatio.value;
         });
 
         watch(() => {
-            if (activeCurrency.value === CryptoCurrency.USDC || gotRequestUriAmount.value) return;
+            if (
+                activeCurrency.value === CryptoCurrency.USDC
+                || activeCurrency.value === CryptoCurrency.USDT
+                || gotRequestUriAmount.value
+            ) return;
             amount.value = Math.floor(
                 fiatAmount.value
-                / exchangeRates.value.usdc[activeCurrency.value]!
-                / fiatToUsdcDecimalRatio.value);
+                / exchangeRates.value[stablecoin.value!][activeCurrency.value]!
+                / fiatToCoinDecimalRatio.value);
         });
 
         async function sendMax() {
             if (gotRequestUriAmount.value) return;
-            if (activeCurrency.value !== CryptoCurrency.USDC) {
+            if (activeCurrency.value !== CryptoCurrency.USDC && activeCurrency.value !== CryptoCurrency.USDT) {
                 fiatAmount.value = maxSendableAmount.value
-                    * fiat$.exchangeRates.usdc[activeCurrency.value]!
-                    * fiatToUsdcDecimalRatio.value;
+                    * fiat$.exchangeRates[stablecoin.value!][activeCurrency.value]!
+                    * fiatToCoinDecimalRatio.value;
             }
             // Need to wait here for the next processing tick, as otherwise we would have a
             // race condition between the amount assignment and the fiatAmount watcher.
@@ -497,15 +516,16 @@ export default defineComponent({
         const gotRequestUriRecipient = ref(false);
         const gotRequestUriAmount = ref(false);
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
-            // We only accept links on Polygon to avoid users sending Polygon USDC to an Ethereum wallet. We accept:
-            // - links for USDC, i.e. links specifying the Polygon USDC contract address, both with the polygon: and the
-            //   ethereum: protocol (which strictly speaking is the only correct protocol according to eip681), but only
-            //   as long as they specify a Polygon USDC contract address and not an Ethereum USDC contract address.
+            // We only accept links on Polygon to avoid users sending Polygon USDC/T to an Ethereum wallet. We accept:
+            // - links for USDC/T, i.e. links specifying the Polygon USDC/T contract address, both with the polygon: and
+            //   the ethereum: protocol (which strictly speaking is the only correct protocol according to eip681), but
+            //   only as long as they specify a Polygon USDC/T contract address and not an Ethereum USDC/T contract
+            //   address.
             // - also links for MATIC, i.e. links with the polygon: protocol, or the ethereum: protocol if they specify
-            //   a Polygon chain id. This is to be a bit more lenient, to not only accept strict USDC links but also
+            //   a Polygon chain id. This is to be a bit more lenient, to not only accept strict USDC/T links but also
             //   simple links like polygon:<address>, as long as they are unmistakably Polygon links via the polygon:
             //   protocol or a Polygon chain id. Thus, links like ethereum:<address> are ignored. The amount in the link
-            //   is interpreted directly as USDC balance.
+            //   is interpreted directly as USDC/T balance.
             const allowedChains = [
                 EthereumChain.POLYGON_MAINNET,
                 ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_AMOY_TESTNET] : []),
@@ -513,7 +533,12 @@ export default defineComponent({
             // We don't normalize and validate addresses in parseRequestLink yet because it requires asynchronously
             // loading ethers, and event.preventDefault() needs to be called synchronously below. Instead, the
             // normalization and validation happen afterward.
-            const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.USDC, Currency.MATIC] });
+            const parsedRequestLink = parseRequestLink(uri, {
+                currencies: [
+                    /* stablecoin.value === CryptoCurrency.USDC ? */ Currency.USDC /*: Currency.USDT */, // TODO: USDT
+                    Currency.MATIC,
+                ],
+            });
             if (!parsedRequestLink || !parsedRequestLink.chainId
                 || !allowedChains.includes(parsedRequestLink.chainId)) return;
             if (event) {
@@ -536,7 +561,7 @@ export default defineComponent({
             initialPage = page.value;
 
             if (typeof parsedRequestLink.amount === 'number') {
-                // As USDC only has 6 decimal places, we can expect it to not be a bigint in real life use.
+                // As USDC/T only has 6 decimal places, we can expect it to not be a bigint in real life use.
                 gotRequestUriAmount.value = true;
                 amount.value = parsedRequestLink.amount;
             }
@@ -605,7 +630,10 @@ export default defineComponent({
             statusMessage.value = '';
 
             try {
-                const tx = await sendUsdcTransaction(
+                const tx = await sendPolygonTransaction(
+                    stablecoin.value === CryptoCurrency.USDC
+                        ? config.polygon.usdc.tokenContract
+                        : config.polygon.usdt_bridged.tokenContract,
                     recipientWithLabel.value!.address,
                     amount.value,
                     recipientWithLabel.value!.label,
@@ -619,17 +647,23 @@ export default defineComponent({
 
                 saveRecipientLabel();
 
-                useUsdcTransactionsStore().addTransactions([tx]);
+                if (stablecoin.value === CryptoCurrency.USDC) {
+                    useUsdcTransactionsStore().addTransactions([tx]);
+                } else {
+                    useUsdtTransactionsStore().addTransactions([tx]);
+                }
 
                 // Show success screen
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientWithLabel.value!.label
-                    ? context.root.$t('Sent {usdc} USDC to {name}', {
-                        usdc: amount.value / 1e6,
+                    ? context.root.$t('Sent {coin} {ticker} to {name}', {
+                        coin: amount.value / 1e6,
                         name: recipientWithLabel.value!.label,
+                        ticker: stablecoin.value!.toUpperCase(),
                     }) as string
-                    : context.root.$t('Sent {usdc} USDC', {
-                        usdc: amount.value / 1e6,
+                    : context.root.$t('Sent {coin} {ticker}', {
+                        coin: amount.value / 1e6,
+                        ticker: stablecoin.value!.toUpperCase(),
                     }) as string;
 
                 // Close modal
@@ -704,9 +738,11 @@ export default defineComponent({
             window.clearTimeout(feeUpdateTimeout); // Reset potentially existing update timeout.
             feeUpdateTimeout = 0; // 0: timer is to be started after the initial update
             try {
-                const method = 'transferWithPermit';
+                const method = stablecoin.value === CryptoCurrency.USDC ? 'transferWithPermit' : 'transferWithApproval';
                 const feeInformation = await calculateFee(
-                    config.polygon.usdc.tokenContract,
+                    stablecoin.value === CryptoCurrency.USDC
+                        ? config.polygon.usdc.tokenContract
+                        : config.polygon.usdt_bridged.tokenContract,
                     method,
                     relay.value || undefined,
                 );
@@ -719,10 +755,10 @@ export default defineComponent({
                     feeUpdateTimeout = window.setTimeout(startFeeUpdates, 20e3);
                 }
             } catch (e: unknown) {
-                feeError.value = context.root.$t(
-                    'Failed to fetch USDC fees. Retrying... (Error: {message})',
-                    { message: e instanceof Error ? e.message : String(e) },
-                ) as string;
+                feeError.value = context.root.$t('Failed to fetch {ticker} fees. Retrying... (Error: {message})', {
+                    message: e instanceof Error ? e.message : String(e),
+                    ticker: stablecoin.value!.toUpperCase(),
+                }) as string;
                 if (feeUpdateTimeout === 0) {
                     // Retry in 10s if timer is still to be started and has not been started yet.
                     feeUpdateTimeout = window.setTimeout(startFeeUpdates, 10e3);
@@ -736,7 +772,7 @@ export default defineComponent({
             feeError.value = null;
         }
 
-        // USDC fee does not depend on the amount, therefore it is not reactive to amount
+        // USDC/T fee does not depend on the amount, therefore it is not reactive to amount
         watch(statusScreenOpened, (statusScreenOpen) => {
             if (!statusScreenOpen) {
                 startFeeUpdates();
@@ -757,7 +793,7 @@ export default defineComponent({
         });
 
         const feeInFiat = computed(() => {
-            const exchangeRate = fiat$.exchangeRates.usdc[fiat$.currency]!;
+            const exchangeRate = fiat$.exchangeRates[stablecoin.value!][fiat$.currency]!;
             return (fee.value / 1e6) * exchangeRate;
         });
 
@@ -809,6 +845,7 @@ export default defineComponent({
             maxSendableAmount,
             amountMenuOpened,
             activeCurrency,
+            stablecoin,
             fiatAmount,
             fiatCurrencyInfo,
             sendMax,

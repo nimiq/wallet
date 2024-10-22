@@ -2,6 +2,7 @@ import { useAccountStore } from '../../stores/Account';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
+import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
 import { Format } from './Format';
 import { useAddressStore } from '../../stores/Address';
 import { ExportFormat } from './TransactionExport';
@@ -34,7 +35,8 @@ export class BlockpitAppFormat extends Format {
         public override nimAddresses: string[],
         public override btcAddresses: { internal: string[], external: string[] },
         public override usdcAddresses: string[],
-        public override transactions: (NimTx | BtcTx | UsdcTx)[],
+        public override usdtAddresses: string[],
+        public override transactions: (NimTx | BtcTx | UsdcTx | UsdtTx)[],
         public override year: number,
     ) {
         super(
@@ -43,6 +45,7 @@ export class BlockpitAppFormat extends Format {
             nimAddresses,
             btcAddresses,
             usdcAddresses,
+            usdtAddresses,
             transactions,
             year,
         );
@@ -52,25 +55,27 @@ export class BlockpitAppFormat extends Format {
             && this.btcAddresses.internal.length === 0
             && this.btcAddresses.external.length === 0
             && this.usdcAddresses.length === 0
+            && this.usdtAddresses.length === 0
         ) {
             // We are exporting one NIM address only
             this.depotLabel = useAddressStore().state.addressInfos[this.nimAddresses[0]].label;
         } else {
-            // We are exporting all addresses, or the BTC or USDC account. Find the label of the account that contains
-            // the addresses.
+            // We are exporting all addresses, or the BTC or USDC or USDT account. Find the label of the account that
+            // contains the addresses.
             this.depotLabel = Object.values(useAccountStore().state.accountInfos).find((accountInfo) => {
                 if (this.nimAddresses[0]) return accountInfo.addresses.includes(this.nimAddresses[0]);
                 if (this.btcAddresses.external.length) {
                     return accountInfo.btcAddresses.external[0] === this.btcAddresses.external[0];
                 }
-                return !!accountInfo.polygonAddresses?.includes(this.usdcAddresses[0]);
+                return !!accountInfo.polygonAddresses?.includes(this.usdcAddresses[0])
+                    || !!accountInfo.polygonAddresses?.includes(this.usdtAddresses[0]);
             })!.label;
         }
     }
 
     protected override addRow(
-        txIn?: BtcTx | NimTx | UsdcTx,
-        txOut?: BtcTx | NimTx | UsdcTx,
+        txIn?: BtcTx | NimTx | UsdcTx | UsdtTx,
+        txOut?: BtcTx | NimTx | UsdcTx | UsdtTx,
         messageOverride?: string,
         // linkedTransaction?: number,
     ) {

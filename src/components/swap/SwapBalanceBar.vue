@@ -16,13 +16,18 @@
             </button>
             <div v-if="leftAsset === SwapAsset.BTC" class="currency left bitcoin">
                 <BitcoinIcon />
-                <label>Bitcoin</label>
+                <label>{{ $t('Bitcoin') }}</label>
                 <Amount :amount="newLeftBalance" currency="btc" :currency-decimals="8" />
             </div>
             <div v-if="leftAsset === SwapAsset.USDC_MATIC" class="currency left usdc">
                 <UsdcIcon />
-                <label>USD Coin</label>
+                <label>{{ $t('USD Coin') }}</label>
                 <Amount :amount="newLeftBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
+            </div>
+            <div v-if="leftAsset === SwapAsset.USDT" class="currency left usdt">
+                <UsdtIcon />
+                <label>{{ $t('Tether USD') }}</label>
+                <Amount :amount="newLeftBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
             </div>
             <button v-if="rightAsset === SwapAsset.NIM" class="reset right nimiq currency"
                 :class="{ single: backgroundAddresses.length === 0 }"
@@ -37,14 +42,19 @@
                 </div>
             </button>
             <div v-if="rightAsset === SwapAsset.BTC" class="currency right bitcoin">
-                <label>Bitcoin</label>
+                <label>{{ $t('Bitcoin') }}</label>
                 <Amount :amount="newRightBalance" currency="btc" :currency-decimals="8" />
                 <BitcoinIcon />
             </div>
             <div v-if="rightAsset === SwapAsset.USDC_MATIC" class="currency right usdc">
-                <label>USD Coin</label>
+                <label>{{ $t('USD Coin') }}</label>
                 <Amount :amount="newRightBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
                 <UsdcIcon />
+            </div>
+            <div v-if="rightAsset === SwapAsset.USDT" class="currency right usdt">
+                <label>{{ $t('Tether USD') }}</label>
+                <Amount :amount="newRightBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
+                <UsdtIcon />
             </div>
         </div>
         <div class="connecting-lines">
@@ -127,6 +137,7 @@ import { getColorClass } from '../../lib/AddressColor';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import UsdtIcon from '../icons/UsdtIcon.vue';
 
 type BarDefinition = {
     readonly address: string,
@@ -362,6 +373,7 @@ export default defineComponent({
             [SwapAsset.BTC]: 8,
             [SwapAsset.USDC]: 6, // For TS completeness
             [SwapAsset.USDC_MATIC]: 6,
+            // [SwapAsset.USDT]: 6,
             [SwapAsset.EUR]: 2, // For TS completeness
         } as const;
 
@@ -624,6 +636,7 @@ export default defineComponent({
         CurvedLine,
         SlideHint,
         UsdcIcon,
+        UsdtIcon,
         Amount,
     },
 });
@@ -805,6 +818,10 @@ export default defineComponent({
     color: var(--usdc-blue);
 }
 
+.balance-bar-header .usdt svg {
+    color: var(--usdt-green);
+}
+
 .identicon-stack {
     align-items: stretch;
     position: relative;
@@ -920,6 +937,11 @@ export default defineComponent({
     &.usdc {
         background-color: var(--usdc-blue);
         border: .25rem solid var(--usdc-blue);
+    }
+
+    &.usdt {
+        background-color: var(--usdt-green);
+        border: .25rem solid var(--usdt-green);
     }
 
     .change {

@@ -69,8 +69,7 @@
                     noFocus
                 >
                     <button class="reset" slot="trigger"
-                        @pointerdown="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.BTC}`)"
-                        @keydown.space.enter="$router.push(`/swap/${SwapAsset.NIM}-${SwapAsset.BTC}`)"
+                        @click="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.BTC}`)"
                         @focus="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.show()"
                         @blur="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.hide()"
                     >
@@ -86,24 +85,38 @@
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
                         /* only swap with native USDC supported, not bridged */
-                        && (nimAccountBalance > 0 || accountUsdcBalance > 0)"
+                        && (
+                            nimAccountBalance > 0
+                            || (stablecoin === CryptoCurrency.USDC
+                                ? accountUsdcBalance
+                                : accountUsdtBridgedBalance) > 0
+                        )"
                     class="nim-usdc-swap-button"
+                    :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="nimUsdcSwapTooltip$"
                     :container="this"
                     preferredPosition="top"
                     noFocus
                 >
-                    <button class="reset" slot="trigger"
-                        @pointerdown="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.USDC_MATIC}`)"
-                        @keydown.space.enter="$router.push(`/swap/${SwapAsset.NIM}-${SwapAsset.USDC_MATIC}`)"
+                    <button class="reset" slot="trigger" :disabled="!stablecoin"
+                        @click="onSwapButtonPointerDown(
+                            $event,
+                            `${SwapAsset.NIM}-${stablecoin === CryptoCurrency.USDC
+                                ? SwapAsset.USDC_MATIC
+                                : SwapAsset.USDT}`
+                        )"
                         @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
                         @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
                     >
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
-                    <i18n path="Swap NIM {arrowIcon} USDC">
+                    <i18n v-if="stablecoin" path="Swap NIM {arrowIcon} {ticker}">
                         <LinkedDoubleArrowIcon slot="arrowIcon" />
+                        <template slot="ticker">{{ stablecoin.toUpperCase() }}</template>
                     </i18n>
+                    <template v-else>
+                        {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
+                    </template>
                 </Tooltip>
 
                 <button v-if="canHaveMultipleAddresses && $config.enableBitcoin" ref="bitcoinAccount$"
@@ -143,24 +156,38 @@
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled
                         /* only swap with native USDC supported, not bridged */
-                        && (btcAccountBalance > 0 || accountUsdcBalance > 0)"
+                        && (
+                            btcAccountBalance > 0
+                            || (stablecoin === CryptoCurrency.USDC
+                                ? accountUsdcBalance
+                                : accountUsdtBridgedBalance) > 0
+                        )"
                     class="btc-usdc-swap-button"
+                    :class="{ 'stablecoin-tooltip': !stablecoin }"
                     ref="btcUsdcSwapTooltip$"
                     :container="this"
                     preferredPosition="top"
                     noFocus
                 >
-                    <button class="reset" slot="trigger"
-                        @pointerdown="onSwapButtonPointerDown($event, `${SwapAsset.BTC}-${SwapAsset.USDC_MATIC}`)"
-                        @keydown.space.enter="$router.push(`/swap/${SwapAsset.BTC}-${SwapAsset.USDC_MATIC}`)"
+                    <button class="reset" slot="trigger" :disabled="!stablecoin"
+                        @click="onSwapButtonPointerDown(
+                            $event,
+                            `${SwapAsset.BTC}-${stablecoin === CryptoCurrency.USDC
+                                ? SwapAsset.USDC_MATIC
+                                : SwapAsset.USDT}`
+                        )"
                         @focus="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.show()"
                         @blur="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.hide()"
                     >
                         <div class="inner-circle"><DoubleArrowIcon /></div>
                     </button>
-                    <i18n path="Swap BTC {arrowIcon} USDC">
+                    <i18n v-if="stablecoin" path="Swap BTC {arrowIcon} {ticker}">
                         <LinkedDoubleArrowIcon slot="arrowIcon" />
+                        <template slot="ticker">{{ stablecoin.toUpperCase() }}</template>
                     </i18n>
+                    <template v-else>
+                        {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
+                    </template>
                 </Tooltip>
 
                 <button v-if="activeAccountInfo.type !== AccountType.LEDGER
@@ -168,14 +195,33 @@
                         && $config.polygon.enabled" ref="usdcAccount$"
                     class="reset usdc-account flex-column"
                     :class="{
-                            'active': activeCurrency === CryptoCurrency.USDC,
+                            'active': activeCurrency === CryptoCurrency.USDC || activeCurrency === CryptoCurrency.USDT,
                             'requires-activation': !hasPolygonAddresses,
                         }"
                     >
-                    <div class="usdc-account-item reset flex-column" @click="selectUsdc">
-                        <div class="usdc-account-item-name flex-row"><UsdcIcon/>{{ $t('USD Coin') }}</div>
+                    <div class="usdc-account-item reset flex-column" @click="selectStablecoin">
+                        <div class="usdc-account-item-name flex-row">
+                            <template v-if="!stablecoin">
+                                <UsdcIcon/><UsdtIcon class="pull-left"/>{{ $t('USDC/USDT') }}
+                            </template>
+                            <template v-if="stablecoin === CryptoCurrency.USDC">
+                                <UsdcIcon/>{{ $t('USD Coin') }}
+                            </template>
+                            <template v-if="stablecoin === CryptoCurrency.USDT">
+                                <UsdtIcon/>{{ $t('Tether USD') }}
+                            </template>
+                        </div>
                         <div class="balances" v-if="hasPolygonAddresses">
-                            <template v-if="accountUsdcBridgedBalance !== null && accountUsdcBalance !== null">
+                            <template v-if="!stablecoin">
+                                <button
+                                    class="nq-button-pill light-blue"
+                                    @click.stop="$router.push({ name: 'stablecoin-selection' })" @mousedown.prevent
+                                >{{ $t('Choose Stablecoin') }}</button>
+                            </template>
+                            <template v-else-if="stablecoin === CryptoCurrency.USDC
+                                && accountUsdcBalance !== null
+                                && accountUsdcBridgedBalance !== null"
+                            >
                                 <div class="flex-row">
                                     <AlertTriangleIcon v-if="polygonConsensus === 'connecting'" />
                                     <Amount
@@ -187,6 +233,23 @@
                                 <FiatConvertedAmount class="fiat-balance"
                                     :amount="accountUsdcBridgedBalance + accountUsdcBalance"
                                     :currency="CryptoCurrency.USDC"
+                                    value-mask
+                                />
+                            </template>
+                            <template v-else-if="stablecoin === CryptoCurrency.USDT
+                                && accountUsdtBridgedBalance !== null"
+                            >
+                                <div class="flex-row">
+                                    <AlertTriangleIcon v-if="polygonConsensus === 'connecting'" />
+                                    <Amount
+                                        :amount="accountUsdtBridgedBalance"
+                                        :currency="CryptoCurrency.USDT"
+                                        value-mask
+                                    />
+                                </div>
+                                <FiatConvertedAmount class="fiat-balance"
+                                    :amount="accountUsdtBridgedBalance"
+                                    :currency="CryptoCurrency.USDT"
                                     value-mask
                                 />
                             </template>
@@ -270,6 +333,7 @@ import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import UsdtIcon from '../icons/UsdtIcon.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -296,6 +360,7 @@ import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
 import router from '../../router';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
     name: 'account-overview',
@@ -313,7 +378,9 @@ export default defineComponent({
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
+            accountUsdtBridgedBalance,
         } = usePolygonAddressStore();
+        const { stablecoin } = useAccountSettingsStore();
         const { config } = useConfig();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -342,10 +409,10 @@ export default defineComponent({
             }
         }
 
-        function selectUsdc() {
-            if (!hasPolygonAddresses.value) return;
+        function selectStablecoin() {
+            if (!hasPolygonAddresses.value || !stablecoin.value) return;
 
-            setActiveCurrency(CryptoCurrency.USDC);
+            setActiveCurrency(stablecoin.value);
 
             if (isMobile.value) {
                 context.root.$router.push('/transactions');
@@ -487,6 +554,7 @@ export default defineComponent({
         }
 
         return {
+            stablecoin,
             activeAccountInfo,
             AccountType,
             backup,
@@ -498,10 +566,11 @@ export default defineComponent({
             btcAccountBalance,
             accountUsdcBridgedBalance,
             accountUsdcBalance,
+            accountUsdtBridgedBalance,
             showFullLegacyAccountNotice,
             showModalLegacyAccountNotice,
             selectBitcoin,
-            selectUsdc,
+            selectStablecoin,
             activeCurrency,
             CryptoCurrency,
             SwapAsset,
@@ -529,6 +598,7 @@ export default defineComponent({
         AddressList,
         BitcoinIcon,
         UsdcIcon,
+        UsdtIcon,
         MenuIcon,
         ConsensusIcon,
         MobileActionBar,
@@ -669,7 +739,6 @@ export default defineComponent({
     grid-template-columns: calc(50% - var(--grid-gap) / 2) calc(50% - var(--grid-gap) / 2);
     grid-template-rows: minmax(0px, 1fr) auto auto;
     gap: var(--grid-gap);
-    align-items: center;
     min-height: 0;
 
     margin-top: 7rem;
@@ -709,6 +778,7 @@ export default defineComponent({
     .btc-usdc-swap-button {
         grid-row: 3;
         grid-column: 1 / 3;
+        align-self: center;
         margin-top: calc(-1 * var(--grid-gap) / 2);
     }
     .usdc-account {
@@ -720,9 +790,21 @@ export default defineComponent({
     & > .tooltip {
         display: flex;
         justify-content: center;
-        height: 0;
+        height: 3rem;
         justify-self: center;
         white-space: nowrap;
+        margin-top: -1.5rem;
+        margin-bottom: -1.5rem;
+
+        &.btc-usdc-swap-button {
+            margin-top: -2.5rem;
+        }
+
+        &.stablecoin-tooltip ::v-deep .tooltip-box {
+            // text-align: left;
+            width: 30rem;
+            white-space: normal;
+        }
     }
 }
 
@@ -907,7 +989,7 @@ export default defineComponent({
 
         svg {
             margin-right: 1rem;
-            width: 2.75rem;
+            width: 3rem;
             height: auto;
 
             &.bitcoin {
@@ -916,6 +998,14 @@ export default defineComponent({
 
             &.usdc {
                 color: var(--usdc-blue);
+            }
+
+            &.usdt {
+                color: var(--usdt-green);
+            }
+
+            &.pull-left {
+                margin-left: -2.5rem;
             }
         }
     }
@@ -959,6 +1049,7 @@ export default defineComponent({
         border-radius: 50%;
         border: none;
         position: relative;
+        top: 50%;
         z-index: 2;
         transform: translateY(-50%);
         display: flex;

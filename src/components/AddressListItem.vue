@@ -3,6 +3,7 @@
         <div class="identicon-wrapper">
             <BitcoinIcon v-if="addressInfo.type === CryptoCurrency.BTC"/>
             <UsdcIcon v-else-if="addressInfo.type === CryptoCurrency.USDC"/>
+            <UsdtIcon v-else-if="addressInfo.type === CryptoCurrency.USDT"/>
             <Identicon v-else :address="addressInfo.address"/>
             <VestingIcon v-if="addressInfo.type === AddressType.VESTING"/>
         </div>
@@ -38,13 +39,14 @@ import { AddressInfo, AddressType } from '../stores/Address';
 import { CryptoCurrency } from '../lib/Constants';
 import BitcoinIcon from './icons/BitcoinIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
+import UsdtIcon from './icons/UsdtIcon.vue';
 
 export default defineComponent({
     props: {
         addressInfo: {
             type: Object as () => AddressInfo |
                 Pick<AddressInfo, 'address' | 'label' | 'balance'> & {
-                    type: CryptoCurrency.BTC | CryptoCurrency.USDC,
+                    type: CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT,
                 },
             required: true,
         },
@@ -54,6 +56,7 @@ export default defineComponent({
             switch (props.addressInfo.type) {
                 case CryptoCurrency.BTC: return CryptoCurrency.BTC;
                 case CryptoCurrency.USDC: return CryptoCurrency.USDC;
+                case CryptoCurrency.USDT: return CryptoCurrency.USDT;
                 default: return CryptoCurrency.NIM;
             }
         });
@@ -72,6 +75,7 @@ export default defineComponent({
         VestingIcon,
         BitcoinIcon,
         UsdcIcon,
+        UsdtIcon,
         CircleSpinner,
     },
 });
@@ -94,7 +98,8 @@ export default defineComponent({
 
 .identicon,
 .bitcoin,
-.usdc {
+.usdc,
+.usdt {
     width: 5.75rem !important;
     height: 5.75rem;
     flex-shrink: 0;
@@ -109,10 +114,14 @@ export default defineComponent({
     color: var(--usdc-blue);
 }
 
+.usdt {
+    color: var(--usdt-green);
+}
+
 .identicon-wrapper {
     position: relative;
 
-    > svg:not(.bitcoin):not(.usdc) {
+    > svg:not(.bitcoin):not(.usdc):not(.usdt) {
         position: absolute;
         right: -1rem;
         bottom: -0.5rem;

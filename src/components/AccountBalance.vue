@@ -36,44 +36,54 @@ import { useFiatStore } from '../stores/Fiat';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 import { CryptoCurrency } from '../lib/Constants';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     setup(props, context) {
         const { accountBalance } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
-            accountUsdcBridgedBalance,
             accountUsdcBalance,
+            accountUsdcBridgedBalance,
+            accountUsdtBridgedBalance,
         } = usePolygonAddressStore();
+        const { stablecoin } = useAccountSettingsStore();
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { config } = useConfig();
 
-        const nimExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value]);
-        const btcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value]);
-        const usdcExchangeRate = computed(() => exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value]);
         const fiatAmount = computed(() => {
             let amount = 0;
 
-            const nimFiatAmount = nimExchangeRate.value !== undefined
-                ? (accountBalance.value / 1e5) * nimExchangeRate.value
+            const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
+            const nimFiatAmount = nimExchangeRate !== undefined
+                ? (accountBalance.value / 1e5) * nimExchangeRate
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;
 
             if (config.enableBitcoin) {
-                const btcFiatAmount = btcExchangeRate.value !== undefined
-                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate.value
+                const btcExchangeRate = exchangeRates.value[CryptoCurrency.BTC]?.[fiatCurrency.value];
+                const btcFiatAmount = btcExchangeRate !== undefined
+                    ? (btcAccountBalance.value / 1e8) * btcExchangeRate
                     : undefined;
                 if (btcFiatAmount === undefined) return undefined;
                 amount += btcFiatAmount;
             }
 
             if (config.polygon.enabled) {
-                const usdcFiatAmount = usdcExchangeRate.value !== undefined
-                    ? ((accountUsdcBridgedBalance.value + accountUsdcBalance.value) / 1e6) * usdcExchangeRate.value
-                    : undefined;
-                if (usdcFiatAmount === undefined) return undefined;
-                amount += usdcFiatAmount;
+                const usdcExchangeRate = exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency.value];
+                const usdtExchangeRate = exchangeRates.value[CryptoCurrency.USDT]?.[fiatCurrency.value];
+                const usdFiatAmount = {
+                    [CryptoCurrency.USDC]: usdcExchangeRate !== undefined
+                        ? ((accountUsdcBalance.value + accountUsdcBridgedBalance.value) / 1e6) * usdcExchangeRate
+                        : undefined,
+                    [CryptoCurrency.USDT]: usdtExchangeRate !== undefined
+                        ? (accountUsdtBridgedBalance.value / 1e6) * usdtExchangeRate
+                        : undefined,
+                    none: 0,
+                }[stablecoin.value || 'none'];
+                if (usdFiatAmount === undefined) return undefined;
+                amount += usdFiatAmount;
             }
 
             return amount;

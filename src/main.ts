@@ -133,6 +133,7 @@ async function start() {
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
         || (activeCurrency === CryptoCurrency.USDC && !config.polygon.enabled)
+        || (activeCurrency === CryptoCurrency.USDT && !config.polygon.enabled)
     ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }

@@ -14,7 +14,8 @@
                 <p class="subline">{{ $t('MoonPay is a third-party service requiring registration and KYC.') }}</p>
                 <div class="crypto-logos flex-row">
                     <BitcoinIcon />
-                    <UsdcIcon />
+                    <UsdcIcon v-if="stablecoin === CryptoCurrency.USDC" />
+                    <UsdtIcon v-if="stablecoin === CryptoCurrency.USDT" />
                 </div>
                 <p class="fees flex-row">
                     {{ $t('{percentage} fees', { percentage: '1%'}) }}
@@ -47,16 +48,21 @@ import { PageBody, PageFooter, FiatAmount } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import UsdtIcon from '../icons/UsdtIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { FiatCurrency } from '../../lib/Constants';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
         const { currency } = useFiatStore();
+        const { stablecoin } = useAccountSettingsStore();
 
         return {
             currency,
             FiatCurrency,
+            stablecoin,
+            CryptoCurrency,
         };
     },
     components: {
@@ -65,6 +71,7 @@ export default defineComponent({
         PageFooter,
         BitcoinIcon,
         UsdcIcon,
+        UsdtIcon,
         FiatAmount,
     },
 });
@@ -136,6 +143,10 @@ export default defineComponent({
 
         .usdc {
             color: var(--usdc-blue);
+        }
+
+        .usdt {
+            color: var(--usdt-green);
         }
     }
 

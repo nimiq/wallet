@@ -2,7 +2,6 @@ import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 // import { SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
-// import config from 'config';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useSwapsStore } from './Swaps';

@@ -34,8 +34,8 @@
             <button v-if="hasPolygonAddresses" class="nq-button light-blue" @click="close()" @mousedown.prevent>
                 {{ buttonText }}
             </button>
-            <button v-else class="nq-button light-blue" @click="enableUsdc" @mousedown.prevent>
-                {{ $t('Activate USDC') }}
+            <button v-else class="nq-button light-blue" @click="enablePolygon" @mousedown.prevent>
+                {{ $t('Activate USDC & USDT') }}
             </button>
 
             <a
@@ -53,7 +53,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
-import { activateUsdc } from '../../hub';
+import { activatePolygon } from '../../hub';
 import {
     CryptoCurrency,
     WELCOME_MODAL_LOCALSTORAGE_KEY,
@@ -102,10 +102,10 @@ export default defineComponent({
             return context.root.$t('Got it');
         });
 
-        async function enableUsdc() {
-            await activateUsdc(activeAccountId.value!);
+        async function enablePolygon() {
+            await activatePolygon(activeAccountId.value!);
             if (!hasPolygonAddresses.value) return;
-            setActiveCurrency(CryptoCurrency.USDC);
+            setActiveCurrency(CryptoCurrency.USDC); // TODO: USDT Let user choose
             await close();
         }
 
@@ -139,7 +139,7 @@ export default defineComponent({
             shouldOpenWelcomePreStakingModal,
             buttonText,
             modal$,
-            enableUsdc,
+            enablePolygon,
             close,
         };
     },

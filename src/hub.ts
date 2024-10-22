@@ -25,7 +25,7 @@ import { useProxyStore, Cashlink } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
-import { createTransactionRequest, sendTransaction as sendUsdcTx } from './ethers';
+import { createTransactionRequest, sendTransaction as sendPolygonTx } from './ethers';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
@@ -228,12 +228,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
     const btcAddressInfos: BtcAddressInfo[] = [];
-    const usdcAddressInfos: PolygonAddressInfo[] = [];
+    const polygonAddressInfos: PolygonAddressInfo[] = [];
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const btcAddressStore = useBtcAddressStore();
-    const usdcAddressStore = usePolygonAddressStore();
+    const polygonAddressStore = usePolygonAddressStore();
 
     for (const account of accounts) {
         const addresses: string[] = [];
@@ -300,12 +300,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         }
 
         for (const polygonAddress of account.polygonAddresses) {
-            usdcAddressInfos.push({
+            polygonAddressInfos.push({
                 address: polygonAddress,
-                balanceUsdcBridged: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
-                balanceUsdc: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
-                balanceUsdtBridged: usdcAddressStore.state.addressInfos[polygonAddress]?.balanceUsdtBridged ?? null,
-                pol: usdcAddressStore.state.addressInfos[polygonAddress]?.pol ?? null,
+                balanceUsdcBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
+                balanceUsdc: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
+                balanceUsdtBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdtBridged ?? null,
+                pol: polygonAddressStore.state.addressInfos[polygonAddress]?.pol ?? null,
             });
         }
 
@@ -332,15 +332,15 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
     if (replaceState) {
         addressStore.setAddressInfos(addressInfos);
-        usdcAddressStore.setAddressInfos(usdcAddressInfos);
+        polygonAddressStore.setAddressInfos(polygonAddressInfos);
         // Accounts set last, so all their address infos exist already
         accountStore.setAccountInfos(accountInfos);
     } else {
         for (const addressInfo of addressInfos) {
             addressStore.addAddressInfo(addressInfo);
         }
-        for (const usdcAddressInfo of usdcAddressInfos) {
-            usdcAddressStore.addAddressInfo(usdcAddressInfo);
+        for (const polygonAddressInfo of polygonAddressInfos) {
+            polygonAddressStore.addAddressInfo(polygonAddressInfo);
         }
         // Accounts set last, so all their address infos exist already
         for (const accountInfo of accountInfos) {
@@ -701,7 +701,7 @@ export async function activateBitcoin(accountId: string) {
     return true;
 }
 
-export async function activateUsdc(accountId: string) {
+export async function activatePolygon(accountId: string) {
     const account = await hubApi.activatePolygon({
         appName: APP_NAME,
         accountId,
@@ -713,7 +713,8 @@ export async function activateUsdc(accountId: string) {
     return true;
 }
 
-export async function sendUsdcTransaction(
+export async function sendPolygonTransaction(
+    tokenAddress: string,
     recipient: string,
     amount: number,
     recipientLabel?: string,
@@ -730,7 +731,7 @@ export async function sendUsdcTransaction(
                 relayRequest,
                 permit,
                 relay,
-            } = await createTransactionRequest(recipient, amount, forceRelay);
+            } = await createTransactionRequest(tokenAddress, recipient, amount, forceRelay);
             relayUrl = relay.url;
             resolve({
                 ...relayRequest,
@@ -751,7 +752,11 @@ export async function sendUsdcTransaction(
     if (!signedTransaction) return false;
 
     const { relayData, ...relayRequest } = signedTransaction.message;
-    return sendUsdcTx({ request: relayRequest as ForwardRequest, relayData }, signedTransaction.signature, relayUrl!);
+    return sendPolygonTx(
+        { request: relayRequest as ForwardRequest, relayData },
+        signedTransaction.signature,
+        relayUrl!,
+    );
 }
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {

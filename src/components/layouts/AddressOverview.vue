@@ -3,7 +3,10 @@
         :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }">
         <HeroIcon class="svg-id-fix" />
         <template
-            v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC || activeCurrency === CryptoCurrency.USDC"
+            v-if="activeAddressInfo
+                || activeCurrency === CryptoCurrency.BTC
+                || activeCurrency === CryptoCurrency.USDC
+                || activeCurrency === CryptoCurrency.USDT"
         >
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
@@ -26,21 +29,33 @@
                         <div class="popup-menu nq-blue-bg">
                             <button v-if="activeCurrency === 'nim'"
                                 class="reset flex-row"
-                                @mousedown="rename(activeAccountId, activeAddressInfo.address)"
+                                @click="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
-                                @mousedown="rescan"
+                                @click="rescan"
                             >
                                 <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                             <button
                                 class="reset flex-row"
-                                @mousedown="$router.push('/export-history/address')"
+                                @click="$router.push('/export-history/address')"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
+                            </button>
+                            <button v-if="activeCurrency === CryptoCurrency.USDC"
+                                class="reset flex-row"
+                                @click="switchStablecoin($event, CryptoCurrency.USDT)"
+                            >
+                                <UsdtIcon/>{{ $t('Switch to USDT') }}
+                            </button>
+                            <button v-if="activeCurrency === CryptoCurrency.USDT"
+                                class="reset flex-row"
+                                @click="switchStablecoin($event, CryptoCurrency.USDC)"
+                            >
+                                <UsdcIcon/>{{ $t('Switch to USDC') }}
                             </button>
                         </div>
                     </button>
@@ -51,6 +66,7 @@
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
                     <BitcoinIcon v-if="activeCurrency === 'btc'"/>
                     <UsdcIcon v-if="activeCurrency === 'usdc'"/>
+                    <UsdtIcon v-if="activeCurrency === CryptoCurrency.USDT"/>
                     <button class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
@@ -58,21 +74,33 @@
                         <div class="popup-menu nq-blue-bg">
                             <button v-if="activeCurrency === 'nim'"
                                 class="reset flex-row"
-                                @mousedown="rename(activeAccountId, activeAddressInfo.address)"
+                                @click="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
-                                @mousedown="rescan"
+                                @click="rescan"
                             >
                                 <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                             <button
                                 class="reset flex-row"
-                                @mousedown="$router.push('/export-history/address')"
+                                @click="$router.push('/export-history/address')"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
+                            </button>
+                            <button v-if="activeCurrency === CryptoCurrency.USDC"
+                                class="reset flex-row"
+                                @click="switchStablecoin($event, CryptoCurrency.USDT)"
+                            >
+                                <UsdtIcon/>{{ $t('Switch to USDT') }}
+                            </button>
+                            <button v-if="activeCurrency === CryptoCurrency.USDT"
+                                class="reset flex-row"
+                                @click="switchStablecoin($event, CryptoCurrency.USDC)"
+                            >
+                                <UsdcIcon/>{{ $t('Switch to USDC') }}
                             </button>
                         </div>
                     </button>
@@ -82,10 +110,15 @@
                         <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
                         <div v-if="activeCurrency === 'btc'" class="label bitcoin">{{ $t('Bitcoin') }}</div>
                         <div v-if="activeCurrency === 'usdc'" class="label usdc">{{ $t('USD Coin') }}</div>
+                        <div v-if="activeCurrency === CryptoCurrency.USDT" class="label usdt">
+                            {{ $t('Tether USD') }}
+                        </div>
                         <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
                         <Amount v-if="activeCurrency === 'btc'" :amount="btcAccountBalance" currency="btc" value-mask/>
                         <Amount v-if="activeCurrency === 'usdc'"
                             :amount="accountUsdcBridgedBalance + accountUsdcBalance" currency="usdc" value-mask/>
+                        <Amount v-if="activeCurrency === CryptoCurrency.USDT"
+                            :amount="accountUsdtBridgedBalance" :currency="CryptoCurrency.USDT" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -118,6 +151,8 @@
 
                         <FiatConvertedAmount v-if="activeCurrency === 'usdc'"
                             :amount="accountUsdcBridgedBalance + accountUsdcBalance  " currency="usdc" value-mask/>
+                        <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDT"
+                            :amount="accountUsdtBridgedBalance  " currency="usdt" value-mask/>
                     </div>
                 </div>
             </div>
@@ -141,7 +176,8 @@
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                         :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || (activeCurrency === 'btc' && !btcAccountBalance)
-                            || (activeCurrency === 'usdc' && !accountUsdcBalance /* can only send native usdc */)"
+                            || (activeCurrency === 'usdc' && !accountUsdcBalance /* can only send native usdc */)
+                            || (activeCurrency === CryptoCurrency.USDT && !accountUsdtBridgedBalance)"
                     >
                         <ArrowRightSmallIcon />{{ $t('Send') }}
                     </button>
@@ -192,6 +228,10 @@
             />
             <UsdcTransactionList
                 v-if="activeCurrency === CryptoCurrency.USDC"
+                :searchString="searchString"
+            />
+            <UsdtTransactionList
+                v-if="activeCurrency === CryptoCurrency.USDT"
                 :searchString="searchString"
             />
         </template>
@@ -254,12 +294,14 @@ import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import UsdtIcon from '../icons/UsdtIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
 import BtcTransactionList from '../BtcTransactionList.vue';
 import UsdcTransactionList from '../UsdcTransactionList.vue';
+import UsdtTransactionList from '../UsdtTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
@@ -292,6 +334,7 @@ import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
 import { usePrestakingStore } from '../../stores/Prestaking';
+import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
     name: 'address-overview',
@@ -302,6 +345,7 @@ export default defineComponent({
         const {
             accountUsdcBridgedBalance,
             accountUsdcBalance,
+            accountUsdtBridgedBalance,
             addressInfo: usdcAddressInfo,
         } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
@@ -525,8 +569,14 @@ export default defineComponent({
             return tx;
         }
 
+        function switchStablecoin(event: PointerEvent, stablecoin: Stablecoin) {
+            useAccountSettingsStore().setStablecoin(stablecoin);
+            useAccountStore().setActiveCurrency(stablecoin);
+        }
+
         const showPrestakingButton = computed(() => {
             // Hide button for legacy accounts except if they're already prestaking
+            if (activeCurrency.value !== CryptoCurrency.NIM) return false;
             if (!activeAccountInfo.value) return false;
             if (activeAccountInfo.value.type !== AccountType.LEGACY) return true;
             return accountPrestake.value > 0;
@@ -547,6 +597,7 @@ export default defineComponent({
             btcAccountBalance,
             accountUsdcBridgedBalance,
             accountUsdcBalance,
+            accountUsdtBridgedBalance,
             usdcAddressInfo,
             CryptoCurrency,
             promoBoxVisible,
@@ -557,6 +608,7 @@ export default defineComponent({
             toggleUnclaimedCashlinkList,
             config,
             convertBridgedUsdcToNative,
+            switchStablecoin,
             activePrestake,
             windowWidth,
             showPrestakingButton,
@@ -577,6 +629,7 @@ export default defineComponent({
         TransactionList,
         BtcTransactionList,
         UsdcTransactionList,
+        UsdtTransactionList,
         ArrowLeftIcon,
         MenuDotsIcon,
         MobileActionBar,
@@ -584,6 +637,7 @@ export default defineComponent({
         HighFiveIcon,
         BoxedArrowUpIcon,
         UsdcIcon,
+        UsdtIcon,
         CashlinkButton,
         PrestakingButton,
         HeroIcon,
@@ -709,6 +763,10 @@ export default defineComponent({
             &.usdc {
                 color: var(--usdc-blue);
             }
+
+            &.usdt {
+                color: var(--usdt-green);
+            }
         }
     }
 
@@ -755,7 +813,7 @@ export default defineComponent({
         margin-right: 3rem;
         mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
-        &.bitcoin, &.usdc {
+        &.bitcoin, &.usdc, &.usdt {
             position: relative;
             top: 1.25rem;
         }
@@ -864,6 +922,16 @@ export default defineComponent({
                 height: 3rem;
                 margin: -0.125rem 1rem -0.125rem 0;
                 opacity: 0.8;
+
+                &.usdc {
+                    color: var(--usdc-blue);
+                    opacity: 1;
+                }
+
+                &.usdt {
+                    color: var(--usdt-green);
+                    opacity: 1;
+                }
             }
 
             &:hover,
@@ -921,7 +989,6 @@ export default defineComponent({
     }
 
     svg.usdc {
-        // color: var(--usdc-blue);
         width: 3rem;
         height: 3rem;
     }

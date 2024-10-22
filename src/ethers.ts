@@ -1304,6 +1304,7 @@ function logAndBlockToPlain(
 type ContractMethods =
     'transfer'
     | 'transferWithPermit'
+    | 'transferWithApproval'
     | 'open'
     | 'openWithPermit'
     | 'redeemWithSecretInData'
@@ -1330,6 +1331,7 @@ export async function calculateFee(
     const dataSize = {
         transfer: 1092,
         transferWithPermit: 1220,
+        transferWithApproval: 1220,
         open: 1220,
         openWithPermit: 1348, // TODO: Recheck this value
         redeemWithSecretInData: 1092,
@@ -1411,6 +1413,7 @@ export async function calculateFee(
 }
 
 export async function createTransactionRequest(
+    tokenAddress: string,
     recipient: string,
     amount: number,
     forceRelay?: RelayServerInfo,
@@ -1423,29 +1426,43 @@ export async function createTransactionRequest(
 
     const client = await getPolygonClient();
 
-    const tokenAddress = config.polygon.usdc.tokenContract;
-    const tokenContract = client.usdcToken;
-    const transferAddress = config.polygon.usdc.transferContract;
-    const transferContract = client.usdcTransfer;
+    const tokenContract = tokenAddress === config.polygon.usdc.tokenContract
+        ? client.usdcToken
+        : client.usdtBridgedToken;
+    const transferAddress = tokenAddress === config.polygon.usdc.tokenContract
+        ? config.polygon.usdc.transferContract
+        : config.polygon.usdt_bridged.transferContract;
+    const transferContract = tokenAddress === config.polygon.usdc.tokenContract
+        ? client.usdcTransfer
+        : client.usdtBridgedTransfer;
 
     const [
-        usdcNonce,
+        nonce,
         // usdcAllowance,
         forwarderNonce,
     ] = await Promise.all([
-        tokenContract.nonces(fromAddress) as Promise<BigNumber>,
+        ('nonces' in tokenContract
+            ? tokenContract.nonces(fromAddress)
+            : tokenContract.getNonce(fromAddress)
+        ) as Promise<BigNumber>,
         // tokenContract.allowance(fromAddress, transferAddress) as Promise<BigNumber>,
         transferContract.getNonce(fromAddress) as Promise<BigNumber>,
     ]);
 
-    const method: 'transfer' | 'transferWithPermit' = 'transferWithPermit';
-    // This sets the fee buffer to 10 USDC, which should be enough.
+    type Methods = 'transfer' | 'transferWithPermit' | 'transferWithApproval';
+    const method: Methods = tokenAddress === config.polygon.usdc.tokenContract
+        ? 'transferWithPermit'
+        : 'transferWithApproval';
+
+    // // This sets the fee buffer to 10 USDC, which should be enough.
     // method = usdcAllowance.gte(amount + 10e6) ? 'transfer' : method;
 
     const { fee, gasPrice, gasLimit, relay } = await calculateFee(tokenAddress, method, forceRelay);
 
     // Ensure we send only what's possible with the updated fee
-    const accountBalance = addressInfo.balanceUsdc;
+    const accountBalance = tokenAddress === config.polygon.usdc.tokenContract
+        ? addressInfo.balanceUsdc
+        : addressInfo.balanceUsdtBridged;
     amount = Math.min(amount, (accountBalance || 0) - fee.toNumber());
 
     // // To be safe, we still check that amount + fee fits into the current allowance
@@ -1458,11 +1475,11 @@ export async function createTransactionRequest(
         /* uint256 amount */ amount,
         /* address target */ recipient,
         /* uint256 fee */ fee,
-        ...(method === 'transferWithPermit' ? [
+        ...(method === 'transferWithPermit' || method === 'transferWithApproval' ? [
             // // Approve the maximum possible amount so afterwards we can use the `transfer` method for lower fees
-            // /* uint256 value */ client.ethers
+            // /* uint256 value/approval */ client.ethers
             //     .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-            /* uint256 value */ fee.add(amount),
+            /* uint256 value/approval */ fee.add(amount),
 
             // Dummy values, replaced by real signature bytes in Keyguard
             /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -1501,7 +1518,12 @@ export async function createTransactionRequest(
         },
         ...(method === 'transferWithPermit' ? {
             permit: {
-                tokenNonce: usdcNonce.toNumber(),
+                tokenNonce: nonce.toNumber(),
+            },
+        } : null),
+        ...(method === 'transferWithApproval' ? {
+            approval: {
+                tokenNonce: nonce.toNumber(),
             },
         } : null),
     };
@@ -1553,14 +1575,19 @@ export async function sendTransaction(
     const token = relayRequest.request.to === config.polygon.usdc.transferContract
         || relayRequest.request.to === config.polygon.usdc.htlcContract
         ? config.polygon.usdc.tokenContract
-        : config.polygon.usdc_bridged.tokenContract;
+        : relayRequest.request.to === config.polygon.usdc_bridged.htlcContract
+            || relayRequest.request.to === config.polygon.usdcConversion.swapContract
+            ? config.polygon.usdc_bridged.tokenContract
+            : config.polygon.usdt_bridged.tokenContract;
 
     // If `approvalData` is present, this is a redeem transaction
     const isHtlcRedeemTx = approvalData.length > 2;
     const isHtlcRefundTx = relayRequest.request.data.startsWith(
         relayRequest.request.to === config.polygon.usdc.htlcContract
             ? (await getUsdcHtlcContract()).interface.getSighash('refund')
-            : (await getUsdcBridgedHtlcContract()).interface.getSighash('refund'),
+            : relayRequest.request.to === config.polygon.usdc_bridged.htlcContract
+                ? (await getUsdcBridgedHtlcContract()).interface.getSighash('refund')
+                : (await getUsdtBridgedHtlcContract()).interface.getSighash('refund'),
     );
 
     const isIncomingTx = isHtlcRedeemTx || isHtlcRefundTx;
@@ -1576,8 +1603,10 @@ export async function sendTransaction(
         // Trigger manual balance update for outgoing transactions
         if (token === config.polygon.usdc.tokenContract) {
             updateUsdcBalances([relayRequest.request.from]);
-        } else {
+        } else if (token === config.polygon.usdc_bridged.tokenContract) {
             updateUsdcBridgedBalances([relayRequest.request.from]);
+        } else {
+            updateUsdtBridgedBalances([relayRequest.request.from]);
         }
     }
 
@@ -1792,7 +1821,6 @@ export async function getUsdcHtlcContract() {
 }
 
 let usdtBridgedHtlcContract: Contract | undefined;
-/** @deprecated */
 export async function getUsdtBridgedHtlcContract() {
     if (usdtBridgedHtlcContract) return usdtBridgedHtlcContract;
 

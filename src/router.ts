@@ -41,6 +41,8 @@ const ReleaseNotesModal = () =>
     import(/* webpackChunkName: "release-notes-modal" */ './components/modals/ReleaseNotesModal.vue');
 const HistoryExportModal = () =>
     import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
+const StablecoinSelectionModal = () =>
+    import(/* webpackChunkName: "history-export-modal" */ './components/modals/StablecoinSelectionModal.vue');
 
 // Bitcoin Modals
 const BtcActivationModal = () =>
@@ -59,6 +61,10 @@ const UsdcReceiveModal = () =>
 const UsdcTransactionModal = () =>
     import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdcTransactionModal.vue');
 const UsdcSendModal = () => import(/* webpackChunkName: "Usdc-send-modal" */ './components/modals/UsdcSendModal.vue');
+
+// USDT Modals
+const UsdtTransactionModal = () =>
+    import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
 
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
@@ -132,6 +138,7 @@ const routes: RouteConfig[] = [{
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send/usdc',
+            alias: '/send/usdt',
             components: {
                 modal: UsdcSendModal,
             },
@@ -161,6 +168,7 @@ const routes: RouteConfig[] = [{
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive/usdc',
+            alias: '/receive/usdt',
             components: {
                 modal: UsdcReceiveModal,
             },
@@ -282,6 +290,14 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
+            path: '/usdt-transaction/:hash',
+            components: {
+                modal: UsdtTransactionModal,
+            },
+            name: 'usdt-transaction',
+            props: { modal: true },
+            meta: { column: Columns.ADDRESS },
+        }, {
             // Match complete pathname with all segments, which is important for polygon request links with contract
             // functions as the contract function name is a separate path segment, e.g. /transfer.
             path: '/:requestUri(polygon:.+)',
@@ -294,6 +310,13 @@ const routes: RouteConfig[] = [{
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/stablecoin-selection',
+            components: {
+                modal: StablecoinSelectionModal,
+            },
+            name: 'stablecoin-selection',
+            meta: { column: Columns.ACCOUNT },
         }, {
             path: '/swap/:pair?',
             components: {

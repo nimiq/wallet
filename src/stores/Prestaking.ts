@@ -177,6 +177,10 @@ export const usePrestakingStore = createStore({
             },
             'NQ15 5JNS U7CE RAH5 3T02 F8A9 JCT6 QMG9 7TSV': {
                 address: 'NQ15 5JNS U7CE RAH5 3T02 F8A9 JCT6 QMG9 7TSV',
+                label: 'ObsidianStake',
+                description: '10% Pool Fee | Payout after every epoch',
+                icon: 'obsidianstake.png',
+                // website: '',
                 stake: null,
             },
             'NQ04 CR27 XURG V48S PK1X 1039 1EPS VR35 EK50': {

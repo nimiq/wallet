@@ -144,7 +144,7 @@ msgstr "1 мин"
 msgid "10 min"
 msgstr "10 мин"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:11
+#: src/components/prestaking/PrestakingWelcomePage.vue:57
 msgid "1000 NIM = 1 Giveaway point"
 msgstr ""
 
@@ -173,7 +173,7 @@ msgstr ""
 msgid "24/7 Support"
 msgstr "Поддержка 24/7"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:64
+#: src/components/prestaking/PrestakingWelcomePage.vue:103
 msgid "2x"
 msgstr ""
 
@@ -188,11 +188,11 @@ msgstr "3"
 msgid "30-day Limit"
 msgstr "30-ти дневный лимит"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:60
+#: src/components/prestaking/PrestakingWelcomePage.vue:99
 msgid "3x"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:96
+#: src/components/prestaking/PrestakingWelcomePage.vue:132
 msgid "5x"
 msgstr ""
 
@@ -723,10 +723,10 @@ msgstr "Нажмите на «Решение проблем», чтобы узн
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:15
+#: src/components/prestaking/PrestakingWelcomePage.vue:61
 msgid ""
-"Collect points for the big giveaway and get a shiny Identicon upgrade"
-"                                 – the more the better."
+"Collect points for the big giveaway and get a shiny Identicon upgrade –"
+"                                     the more the better."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
@@ -1005,7 +1005,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr "Скорость и комиссия могут меняться"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:56
+#: src/components/prestaking/PrestakingWelcomePage.vue:95
 msgid "EARLY BIRD MULTIPLIERS"
 msgstr ""
 
@@ -1213,7 +1213,7 @@ msgstr "Завершите обмен, отправив банковский п�
 msgid "Finalizing swap"
 msgstr "Завершаем обмен"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:61
+#: src/components/prestaking/PrestakingWelcomePage.vue:100
 msgid "First week"
 msgstr ""
 
@@ -1313,7 +1313,7 @@ msgstr ""
 "Пройдите проверку на повышенные лимиты, авторизовавшись с {provider}.\n"
 "Вам потребуется:"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:79
+#: src/components/prestaking/PrestakingWelcomePage.vue:115
 msgid "Go for small validator pools to earn even more points!"
 msgstr ""
 
@@ -1554,9 +1554,7 @@ msgstr "Давайте приступим! Создайте свой аккау�
 msgid "Let's go"
 msgstr "Поехали"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:101
-#: src/components/prestaking/PrestakingWelcomePage.vue:34
-#: src/components/prestaking/PrestakingWelcomePage.vue:69
+#: src/components/prestaking/PrestakingWelcomePage.vue:147
 msgid "Let's go!"
 msgstr "Поехали!"
 
@@ -1954,11 +1952,11 @@ msgstr "всплывающие окна"
 msgid "Popups"
 msgstr "Всплывающие окна"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:48
+#: src/components/prestaking/PrestakingWelcomePage.vue:87
 msgid "Pre-stake as early as possible to earn more points."
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:10
+#: src/components/prestaking/PrestakingWelcomePage.vue:56
 msgid "Pre-stake your NIM!"
 msgstr ""
 
@@ -2205,7 +2203,7 @@ msgstr "Найти транзакции"
 msgid "Search transactions by contact, address, etc."
 msgstr "Найти транзакцию по адресу, получателю и т.д."
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:65
+#: src/components/prestaking/PrestakingWelcomePage.vue:104
 msgid "Second week"
 msgstr ""
 
@@ -2454,7 +2452,7 @@ msgstr "Симулировать платёж в евро"
 msgid "Skip"
 msgstr "Пропустить"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:97
+#: src/components/prestaking/PrestakingWelcomePage.vue:133
 msgid "Small validators"
 msgstr ""
 
@@ -2475,10 +2473,10 @@ msgstr "С вашей транзакцией что-то не то"
 msgid "Speed up your Transaction"
 msgstr "Ускорьте свою транзакцию"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:83
+#: src/components/prestaking/PrestakingWelcomePage.vue:119
 msgid ""
 "Spreading the pre-staked NIM across validators helps decentralization."
-"                            Choose an underdog for another bonus."
+"                                    Choose an underdog for another bonus."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:44
@@ -2493,7 +2491,7 @@ msgstr "Стабильность вкупе с самообеспечением"
 msgid "Stable like USD, got it"
 msgstr "Стабилен как доллар, ясно"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:44
+#: src/components/prestaking/PrestakingWelcomePage.vue:83
 msgid "Stake early to get more points!"
 msgstr ""
 
@@ -2911,7 +2909,7 @@ msgstr "Активный Cashlink"
 msgid "Underdog"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:92
+#: src/components/prestaking/PrestakingWelcomePage.vue:128
 msgid "UNDERDOG MULTIPLIERS"
 msgstr ""
 

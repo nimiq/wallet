@@ -133,7 +133,7 @@ msgstr ""
 msgid "10 min"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:11
+#: src/components/prestaking/PrestakingWelcomePage.vue:57
 msgid "1000 NIM = 1 Giveaway point"
 msgstr ""
 
@@ -162,7 +162,7 @@ msgstr ""
 msgid "24/7 Support"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:64
+#: src/components/prestaking/PrestakingWelcomePage.vue:103
 msgid "2x"
 msgstr ""
 
@@ -177,11 +177,11 @@ msgstr ""
 msgid "30-day Limit"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:60
+#: src/components/prestaking/PrestakingWelcomePage.vue:99
 msgid "3x"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:96
+#: src/components/prestaking/PrestakingWelcomePage.vue:132
 msgid "5x"
 msgstr ""
 
@@ -662,8 +662,8 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:15
-msgid "Collect points for the big giveaway and get a shiny Identicon upgrade                                 – the more the better."
+#: src/components/prestaking/PrestakingWelcomePage.vue:61
+msgid "Collect points for the big giveaway and get a shiny Identicon upgrade –                                     the more the better."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
@@ -926,7 +926,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:56
+#: src/components/prestaking/PrestakingWelcomePage.vue:95
 msgid "EARLY BIRD MULTIPLIERS"
 msgstr ""
 
@@ -1126,7 +1126,7 @@ msgstr ""
 msgid "Finalizing swap"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:61
+#: src/components/prestaking/PrestakingWelcomePage.vue:100
 msgid "First week"
 msgstr ""
 
@@ -1207,7 +1207,7 @@ msgstr ""
 msgid "Get verified for higher limits by authenticating with {provider}. These are the requirements:"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:79
+#: src/components/prestaking/PrestakingWelcomePage.vue:115
 msgid "Go for small validator pools to earn even more points!"
 msgstr ""
 
@@ -1419,9 +1419,7 @@ msgstr ""
 msgid "Let's go"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:101
-#: src/components/prestaking/PrestakingWelcomePage.vue:34
-#: src/components/prestaking/PrestakingWelcomePage.vue:69
+#: src/components/prestaking/PrestakingWelcomePage.vue:147
 msgid "Let's go!"
 msgstr ""
 
@@ -1795,11 +1793,11 @@ msgstr ""
 msgid "Popups"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:48
+#: src/components/prestaking/PrestakingWelcomePage.vue:87
 msgid "Pre-stake as early as possible to earn more points."
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:10
+#: src/components/prestaking/PrestakingWelcomePage.vue:56
 msgid "Pre-stake your NIM!"
 msgstr ""
 
@@ -2034,7 +2032,7 @@ msgstr ""
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:65
+#: src/components/prestaking/PrestakingWelcomePage.vue:104
 msgid "Second week"
 msgstr ""
 
@@ -2277,7 +2275,7 @@ msgstr ""
 msgid "Skip"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:97
+#: src/components/prestaking/PrestakingWelcomePage.vue:133
 msgid "Small validators"
 msgstr ""
 
@@ -2298,8 +2296,8 @@ msgstr ""
 msgid "Speed up your Transaction"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:83
-msgid "Spreading the pre-staked NIM across validators helps decentralization.                            Choose an underdog for another bonus."
+#: src/components/prestaking/PrestakingWelcomePage.vue:119
+msgid "Spreading the pre-staked NIM across validators helps decentralization.                                    Choose an underdog for another bonus."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:44
@@ -2314,7 +2312,7 @@ msgstr ""
 msgid "Stable like USD, got it"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:44
+#: src/components/prestaking/PrestakingWelcomePage.vue:83
 msgid "Stake early to get more points!"
 msgstr ""
 
@@ -2698,7 +2696,7 @@ msgstr ""
 msgid "Underdog"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:92
+#: src/components/prestaking/PrestakingWelcomePage.vue:128
 msgid "UNDERDOG MULTIPLIERS"
 msgstr ""
 

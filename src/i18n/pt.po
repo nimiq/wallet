@@ -140,7 +140,7 @@ msgstr "1 minuto"
 msgid "10 min"
 msgstr "10 minutos"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:11
+#: src/components/prestaking/PrestakingWelcomePage.vue:57
 msgid "1000 NIM = 1 Giveaway point"
 msgstr ""
 
@@ -169,7 +169,7 @@ msgstr ""
 msgid "24/7 Support"
 msgstr "Suporte 24/7"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:64
+#: src/components/prestaking/PrestakingWelcomePage.vue:103
 msgid "2x"
 msgstr ""
 
@@ -184,11 +184,11 @@ msgstr "3"
 msgid "30-day Limit"
 msgstr "Limite de 30 dias"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:60
+#: src/components/prestaking/PrestakingWelcomePage.vue:99
 msgid "3x"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:96
+#: src/components/prestaking/PrestakingWelcomePage.vue:132
 msgid "5x"
 msgstr ""
 
@@ -725,10 +725,10 @@ msgstr "Clicar em 'Troubleshooting' para saber mais."
 msgid "Close"
 msgstr "Fechar"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:15
+#: src/components/prestaking/PrestakingWelcomePage.vue:61
 msgid ""
-"Collect points for the big giveaway and get a shiny Identicon upgrade"
-"                                 – the more the better."
+"Collect points for the big giveaway and get a shiny Identicon upgrade –"
+"                                     the more the better."
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
@@ -1006,7 +1006,7 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr "A duração e taxas são estimativas."
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:56
+#: src/components/prestaking/PrestakingWelcomePage.vue:95
 msgid "EARLY BIRD MULTIPLIERS"
 msgstr ""
 
@@ -1218,7 +1218,7 @@ msgstr "Finaliza a troca por transferência bancária."
 msgid "Finalizing swap"
 msgstr "A finalizar a troca"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:61
+#: src/components/prestaking/PrestakingWelcomePage.vue:100
 msgid "First week"
 msgstr ""
 
@@ -1319,7 +1319,7 @@ msgstr ""
 "Sê verificado para limites mais altos ao autenticar com {provider}. Estes "
 "são os requesitos:"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:79
+#: src/components/prestaking/PrestakingWelcomePage.vue:115
 msgid "Go for small validator pools to earn even more points!"
 msgstr ""
 
@@ -1558,9 +1558,7 @@ msgstr "Vamos começar! Cria a tua conta Nimiq:"
 msgid "Let's go"
 msgstr "Vamos lá"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:101
-#: src/components/prestaking/PrestakingWelcomePage.vue:34
-#: src/components/prestaking/PrestakingWelcomePage.vue:69
+#: src/components/prestaking/PrestakingWelcomePage.vue:147
 msgid "Let's go!"
 msgstr "Vamos lá!"
 
@@ -1967,11 +1965,11 @@ msgstr "popups"
 msgid "Popups"
 msgstr "Popups"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:48
+#: src/components/prestaking/PrestakingWelcomePage.vue:87
 msgid "Pre-stake as early as possible to earn more points."
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:10
+#: src/components/prestaking/PrestakingWelcomePage.vue:56
 msgid "Pre-stake your NIM!"
 msgstr ""
 
@@ -2224,7 +2222,7 @@ msgstr "Procurar transações"
 msgid "Search transactions by contact, address, etc."
 msgstr "Procurar transações por contacto, endereço, etc."
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:65
+#: src/components/prestaking/PrestakingWelcomePage.vue:104
 msgid "Second week"
 msgstr ""
 
@@ -2473,7 +2471,7 @@ msgstr "Simula pagamento Euro"
 msgid "Skip"
 msgstr "Pular"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:97
+#: src/components/prestaking/PrestakingWelcomePage.vue:133
 msgid "Small validators"
 msgstr ""
 
@@ -2494,10 +2492,10 @@ msgstr "Algo deu errado com a tua transação"
 msgid "Speed up your Transaction"
 msgstr "Torna a tua transação mais rápida"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:83
+#: src/components/prestaking/PrestakingWelcomePage.vue:119
 msgid ""
 "Spreading the pre-staked NIM across validators helps decentralization."
-"                            Choose an underdog for another bonus."
+"                                    Choose an underdog for another bonus."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:44
@@ -2512,7 +2510,7 @@ msgstr "Estabilidade misturada com auto-custódia"
 msgid "Stable like USD, got it"
 msgstr "Estável como USD, entendido"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:44
+#: src/components/prestaking/PrestakingWelcomePage.vue:83
 msgid "Stake early to get more points!"
 msgstr ""
 
@@ -2929,7 +2927,7 @@ msgstr "Cashlink não reivindicado"
 msgid "Underdog"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:92
+#: src/components/prestaking/PrestakingWelcomePage.vue:128
 msgid "UNDERDOG MULTIPLIERS"
 msgstr ""
 

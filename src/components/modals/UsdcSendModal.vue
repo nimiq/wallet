@@ -535,7 +535,7 @@ export default defineComponent({
             // normalization and validation happen afterward.
             const parsedRequestLink = parseRequestLink(uri, {
                 currencies: [
-                    /* stablecoin.value === CryptoCurrency.USDC ? */ Currency.USDC /*: Currency.USDT */, // TODO: USDT
+                    stablecoin.value === CryptoCurrency.USDC ? Currency.USDC : Currency.USDT,
                     Currency.MATIC,
                 ],
             });

@@ -202,6 +202,7 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -282,11 +283,18 @@ export default defineComponent({
             ),
         );
 
+        const { stablecoin } = useAccountSettingsStore();
         const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, usePolygonAddressStore]
             .some((useStore) => {
                 const store = useStore();
-                // For USDC, only native USDC is supported for swapping.
-                return 'accountUsdcBalance' in store ? store.accountUsdcBalance.value : store.accountBalance.value;
+                return 'accountUsdcBalance' in store
+                    ? stablecoin.value === CryptoCurrency.USDC
+                        // For USDC, only native USDC is supported for swapping.
+                        ? store.accountUsdcBalance.value
+                        // : stablecoin.value === CryptoCurrency.USDT
+                        //     ? store.accountUsdtBridgedBalance.value
+                        : 0
+                    : store.accountBalance.value;
             }),
         );
 

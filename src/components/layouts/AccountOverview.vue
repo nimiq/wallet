@@ -89,7 +89,7 @@
                             nimAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
                                 ? accountUsdcBalance
-                                : accountUsdtBridgedBalance) > 0
+                                : /* accountUsdtBridgedBalance */ 0) > 0
                         )"
                     class="nim-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
@@ -160,7 +160,7 @@
                             btcAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
                                 ? accountUsdcBalance
-                                : accountUsdtBridgedBalance) > 0
+                                : /* accountUsdtBridgedBalance */ 0) > 0
                         )"
                     class="btc-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"

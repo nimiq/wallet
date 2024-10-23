@@ -1,6 +1,7 @@
 import { createStore } from 'pinia';
 import HubApi, { Account, AccountType as AccountTypeEnumType } from '@nimiq/hub-api';
 import { useAddressStore } from './Address';
+import { useAccountSettingsStore } from './AccountSettings';
 import { CryptoCurrency } from '../lib/Constants';
 
 export type AccountState = {
@@ -56,6 +57,15 @@ export const useAccountStore = createStore({
                 || (this.activeCurrency.value === CryptoCurrency.USDT && !this.hasPolygonAddresses.value)
             ) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
+            }
+
+            if ([CryptoCurrency.USDC, CryptoCurrency.USDT].includes(this.activeCurrency.value)) {
+                const stablecoin = useAccountSettingsStore().state.settings[accountId]?.stablecoin;
+                if (!stablecoin) {
+                    this.setActiveCurrency(CryptoCurrency.NIM);
+                } else if (stablecoin !== this.activeCurrency.value) {
+                    this.setActiveCurrency(stablecoin);
+                }
             }
 
             const { selectAddress } = useAddressStore();

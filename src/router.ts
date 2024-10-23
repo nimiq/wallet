@@ -53,20 +53,19 @@ const BtcReceiveModal = () =>
 const BtcTransactionModal = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
-// USDC Modals
-const UsdcActivationModal = () =>
-    import(/* webpackChunkName: "usdc-activation-modal" */ './components/modals/UsdcActivationModal.vue');
-const UsdcReceiveModal = () =>
-    import(/* webpackChunkName: "usdc-receive-modal" */ './components/modals/UsdcReceiveModal.vue');
+// Stablecoin Modals
+const PolygonActivationModal = () =>
+    import(/* webpackChunkName: "polygon-activation-modal" */ './components/modals/PolygonActivationModal.vue');
+const StablecoinSendModal = () =>
+    import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue');
+const StablecoinReceiveModal = () =>
+    import(/* webpackChunkName: "stablecoin-receive-modal" */ './components/modals/StablecoinReceiveModal.vue');
 const UsdcTransactionModal = () =>
     import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdcTransactionModal.vue');
-const UsdcSendModal = () => import(/* webpackChunkName: "Usdc-send-modal" */ './components/modals/UsdcSendModal.vue');
-
-// USDT Modals
 const UsdtTransactionModal = () =>
-    import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
+    import(/* webpackChunkName: "usdt-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
 const UsdtAddedModal = () =>
-    import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdtAddedModal.vue');
+    import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
 
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
@@ -142,7 +141,7 @@ const routes: RouteConfig[] = [{
             path: '/send/usdc',
             alias: '/send/usdt',
             components: {
-                modal: UsdcSendModal,
+                modal: StablecoinSendModal,
             },
             name: 'send-usdc',
             props: { modal: true },
@@ -172,7 +171,7 @@ const routes: RouteConfig[] = [{
             path: '/receive/usdc',
             alias: '/receive/usdt',
             components: {
-                modal: UsdcReceiveModal,
+                modal: StablecoinReceiveModal,
             },
             name: 'receive-usdc',
             meta: { column: Columns.DYNAMIC },
@@ -275,8 +274,9 @@ const routes: RouteConfig[] = [{
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/usdc-activation',
+            alias: '/usdt-activation',
             components: {
-                modal: UsdcActivationModal,
+                modal: PolygonActivationModal,
             },
             name: 'usdc-activation',
             props: {
@@ -304,7 +304,7 @@ const routes: RouteConfig[] = [{
             // functions as the contract function name is a separate path segment, e.g. /transfer.
             path: '/:requestUri(polygon:.+)',
             components: {
-                modal: UsdcSendModal,
+                modal: StablecoinSendModal,
             },
             name: 'send-via-polygon-uri',
             props: {
@@ -500,7 +500,7 @@ const router = new VueRouter({
 
 // Offer to activate Bitcoin or USDC if a route requires it, but it's not activated yet
 function createActivationNavigationGuard(
-    currency: CryptoCurrency.BTC | CryptoCurrency.USDC,
+    currency: CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT,
     viewsRequiringActivation: Set<Component>,
     // As method instead of just passing AccountType[] of supported types because AccountType is not available for
     // passing in the top level yet due to a webpack bug (https://github.com/webpack/webpack/issues/3509).
@@ -545,7 +545,13 @@ router.beforeEach(createActivationNavigationGuard(
 ));
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
-    new Set([UsdcSendModal, UsdcReceiveModal]),
+    new Set([StablecoinSendModal, StablecoinReceiveModal]),
+    (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
+    () => useAccountStore().hasPolygonAddresses.value,
+));
+router.beforeEach(createActivationNavigationGuard(
+    CryptoCurrency.USDT,
+    new Set([StablecoinSendModal, StablecoinReceiveModal]),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasPolygonAddresses.value,
 ));

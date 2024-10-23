@@ -14,8 +14,8 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:199
+#: src/components/modals/StablecoinSendModal.vue:173
+#: src/components/modals/StablecoinSendModal.vue:199
 #: src/components/swap/SwapModal.vue:65
 msgid "{amount} fee"
 msgstr ""
@@ -115,8 +115,8 @@ msgstr ""
 msgid "+{n} more"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:167
-#: src/components/modals/UsdcSendModal.vue:193
+#: src/components/modals/StablecoinSendModal.vue:167
+#: src/components/modals/StablecoinSendModal.vue:193
 #: src/components/swap/SwapModal.vue:59
 msgid "< {amount} fee"
 msgstr ""
@@ -233,7 +233,7 @@ msgstr ""
 msgid "Activate Bitcoin"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:38
+#: src/components/modals/PolygonActivationModal.vue:38
 msgid "Activate USDC & USDT"
 msgstr ""
 
@@ -460,7 +460,7 @@ msgstr ""
 msgid "Block explorer"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:28
+#: src/components/modals/PolygonActivationModal.vue:28
 msgid "blog post"
 msgstr ""
 
@@ -621,17 +621,17 @@ msgid "Changing validator"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:100
+#: src/components/modals/PolygonActivationModal.vue:100
 msgid "Check the new intro"
 msgstr ""
 
-#: src/components/modals/StablecoinSelectionModal.vue:14
+#: src/components/modals/StablecoinSelectionModal.vue:26
 msgid "Choose {ticker}"
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:65
+#: src/components/modals/StablecoinSendModal.vue:65
 msgid "Choose a Recipient"
 msgstr ""
 
@@ -918,7 +918,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:100
 #: src/components/modals/SendModal.vue:380
-#: src/components/modals/UsdcSendModal.vue:372
+#: src/components/modals/StablecoinSendModal.vue:372
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -988,7 +988,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:128
 #: src/components/modals/SendModal.vue:244
-#: src/components/modals/UsdcSendModal.vue:231
+#: src/components/modals/StablecoinSendModal.vue:231
 msgid "Edit transaction"
 msgstr ""
 
@@ -1001,7 +1001,7 @@ msgid "Enter account holder name"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:24
-#: src/components/modals/UsdcSendModal.vue:30
+#: src/components/modals/StablecoinSendModal.vue:30
 msgid "Enter address"
 msgstr ""
 
@@ -1098,7 +1098,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:758
+#: src/components/modals/StablecoinSendModal.vue:758
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1253,7 +1253,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:102
+#: src/components/modals/PolygonActivationModal.vue:102
 #: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1270,6 +1270,14 @@ msgstr ""
 
 #: src/components/prestaking/ValidatorListItem.vue:36
 msgid "High stake!"
+msgstr ""
+
+#: src/components/modals/StablecoinSelectionModal.vue:15
+msgid "Higher liquidity and global market adoption."
+msgstr ""
+
+#: src/components/modals/StablecoinSelectionModal.vue:12
+msgid "Higher transparency and regulatory compliance."
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:178
@@ -1329,6 +1337,10 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:88
 msgid "I understand that I have to send a {sepaInstantLink}."
+msgstr ""
+
+#: src/components/modals/UsdtAddedModal.vue:20
+msgid "I’m happy, stick with USDC"
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
@@ -1398,7 +1410,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:79
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:189
-#: src/components/modals/UsdcSendModal.vue:210
+#: src/components/modals/StablecoinSendModal.vue:210
 msgid "Insufficient balance."
 msgstr ""
 
@@ -1439,12 +1451,14 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:101
+#: src/components/modals/PolygonActivationModal.vue:101
 msgid "Learn about pre-staking"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
+#: src/components/modals/StablecoinSelectionModal.vue:20
+#: src/components/modals/UsdtAddedModal.vue:17
 #: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
 msgstr ""
@@ -1525,7 +1539,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:83
+#: src/components/modals/StablecoinSendModal.vue:83
 msgid "Long press to confirm"
 msgstr ""
 
@@ -1533,11 +1547,11 @@ msgstr ""
 msgid "lost"
 msgstr ""
 
-#: src/components/modals/UsdcReceiveModal.vue:17
+#: src/components/modals/StablecoinReceiveModal.vue:17
 msgid "Make sure they are sending Polygon {ticker}."
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:19
+#: src/components/modals/PolygonActivationModal.vue:19
 msgid "Many updates like easier address names, more accessible swaps and an improved asset overview await."
 msgstr ""
 
@@ -1587,7 +1601,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:77
+#: src/components/modals/StablecoinSendModal.vue:77
 msgid "Name this contact..."
 msgstr ""
 
@@ -1907,7 +1921,7 @@ msgstr ""
 msgid "Raise your limits"
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:22
+#: src/components/modals/PolygonActivationModal.vue:22
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
@@ -1916,7 +1930,7 @@ msgstr ""
 msgid "Receive"
 msgstr ""
 
-#: src/components/modals/UsdcReceiveModal.vue:13
+#: src/components/modals/StablecoinReceiveModal.vue:13
 msgid "Receive {ticker}"
 msgstr ""
 
@@ -2029,7 +2043,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:24
 #: src/components/modals/SendModal.vue:39
-#: src/components/modals/UsdcSendModal.vue:47
+#: src/components/modals/StablecoinSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr ""
 
@@ -2047,7 +2061,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:127
 #: src/components/modals/SendModal.vue:243
-#: src/components/modals/UsdcSendModal.vue:230
+#: src/components/modals/StablecoinSendModal.vue:230
 msgid "Retry"
 msgstr ""
 
@@ -2059,7 +2073,7 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:82
+#: src/components/modals/StablecoinSendModal.vue:82
 msgid "Save and proceed"
 msgstr ""
 
@@ -2161,14 +2175,14 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:119
 #: src/components/modals/SendModal.vue:208
-#: src/components/modals/UsdcSendModal.vue:222
+#: src/components/modals/StablecoinSendModal.vue:222
 msgid "Send {currency}"
 msgstr ""
 
 #: src/components/AmountMenu.vue:25
 #: src/components/modals/BtcSendModal.vue:81
 #: src/components/modals/SendModal.vue:190
-#: src/components/modals/UsdcSendModal.vue:212
+#: src/components/modals/StablecoinSendModal.vue:212
 msgid "Send all"
 msgstr ""
 
@@ -2190,11 +2204,11 @@ msgstr ""
 msgid "Send Transaction"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:20
+#: src/components/modals/StablecoinSendModal.vue:20
 msgid "Send USDC"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:20
+#: src/components/modals/StablecoinSendModal.vue:20
 msgid "Send USDT"
 msgstr ""
 
@@ -2208,7 +2222,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:461
 #: src/components/modals/SendModal.vue:771
-#: src/components/modals/UsdcSendModal.vue:629
+#: src/components/modals/StablecoinSendModal.vue:629
 msgid "Sending Transaction"
 msgstr ""
 
@@ -2220,11 +2234,11 @@ msgstr ""
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:664
+#: src/components/modals/StablecoinSendModal.vue:664
 msgid "Sent {coin} {ticker}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:659
+#: src/components/modals/StablecoinSendModal.vue:659
 msgid "Sent {coin} {ticker} to {name}"
 msgstr ""
 
@@ -2259,7 +2273,7 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:87
 #: src/components/modals/SendModal.vue:99
-#: src/components/modals/UsdcSendModal.vue:96
+#: src/components/modals/StablecoinSendModal.vue:96
 msgid "Set Amount"
 msgstr ""
 
@@ -2299,7 +2313,7 @@ msgid ""
 msgstr ""
 
 #: src/components/modals/ReceiveModal.vue:8
-#: src/components/modals/UsdcReceiveModal.vue:16
+#: src/components/modals/StablecoinReceiveModal.vue:16
 msgid "Share your address with the sender."
 msgstr ""
 
@@ -2338,7 +2352,7 @@ msgid "Simulate EUR payment"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:28
-#: src/components/modals/UsdcActivationModal.vue:46
+#: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr ""
 
@@ -2349,7 +2363,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:525
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
-#: src/components/modals/UsdcSendModal.vue:680
+#: src/components/modals/StablecoinSendModal.vue:680
 #: src/components/prestaking/PrestakingGraphPage.vue:178
 #: src/components/prestaking/PrestakingValidatorPage.vue:192
 msgid "Something went wrong"
@@ -2602,7 +2616,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:122
-#: src/components/modals/UsdcSendModal.vue:115
+#: src/components/modals/StablecoinSendModal.vue:115
 msgid "The sender and recipient cannot be identical."
 msgstr ""
 
@@ -2901,11 +2915,15 @@ msgstr ""
 msgid "Wallet Payout"
 msgstr ""
 
+#: src/components/modals/UsdtAddedModal.vue:8
+msgid "We added support for USDT, which you can now use instead of USDC."
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and decentralized."
 msgstr ""
 
-#: src/components/modals/UsdcActivationModal.vue:16
+#: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
 "Welcome to the updated\n"
 "wallet, now with USDC"
@@ -2958,6 +2976,10 @@ msgstr ""
 msgid "You are using a Legacy Account "
 msgstr ""
 
+#: src/components/modals/UsdtAddedModal.vue:4
+msgid "You can now choose{linebreak}between USDC and USDT"
+msgstr ""
+
 #: src/components/PolygonWarningFooter.vue:9
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr ""
@@ -3008,7 +3030,7 @@ msgstr ""
 msgid "You will send {amount}"
 msgstr ""
 
-#: src/components/modals/UsdcSendModal.vue:183
+#: src/components/modals/StablecoinSendModal.vue:183
 msgid "You will send {amount} {ticker}"
 msgstr ""
 

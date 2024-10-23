@@ -292,7 +292,7 @@ export enum RecipientType {
 }
 
 export default defineComponent({
-    name: 'usdc-send-modal',
+    name: 'stablecoin-send-modal',
     props: {
         requestUri: {
             type: String,

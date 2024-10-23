@@ -55,7 +55,6 @@ import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { activatePolygon } from '../../hub';
 import {
-    CryptoCurrency,
     WELCOME_MODAL_LOCALSTORAGE_KEY,
     WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
@@ -68,7 +67,7 @@ export default defineComponent({
         redirect: String,
     },
     setup(props, context) {
-        const { activeAccountId, activeAccountInfo, setActiveCurrency, hasPolygonAddresses } = useAccountStore();
+        const { activeAccountId, activeAccountInfo, hasPolygonAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);

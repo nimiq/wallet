@@ -33,7 +33,6 @@ import { useAccountStore } from '../../stores/Account';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { useRouter } from '../../router';
 
 export default defineComponent({
     name: 'usdt-added-modal',

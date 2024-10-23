@@ -67,7 +67,7 @@ import { CryptoCurrency } from '@nimiq/utils';
 import Avatar from './Avatar.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import TrashIcon from './icons/TrashIcon.vue';
-import { RecipientType } from './modals/UsdcSendModal.vue';
+import { RecipientType } from './modals/StablecoinSendModal.vue';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
 import { useUsdtContactsStore } from '../stores/UsdtContacts';
 import { PolygonAddressInfo, usePolygonAddressStore } from '../stores/PolygonAddress';

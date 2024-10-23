@@ -56,7 +56,7 @@ import PolygonWarningFooter from '../PolygonWarningFooter.vue';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
-    name: 'usdc-receive-modal',
+    name: 'stablecoin-receive-modal',
     setup(props, context) {
         enum Pages {
             WARNING,

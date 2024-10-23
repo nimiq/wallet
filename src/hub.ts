@@ -730,6 +730,7 @@ export async function sendPolygonTransaction(
             const {
                 relayRequest,
                 permit,
+                approval,
                 relay,
             } = await createTransactionRequest(tokenAddress, recipient, amount, forceRelay);
             relayUrl = relay.url;
@@ -741,6 +742,12 @@ export async function sendPolygonTransaction(
                 ...(permit ? {
                     permit: {
                         tokenNonce: permit.tokenNonce,
+                    },
+                } : null),
+
+                ...(approval ? {
+                    approval: {
+                        tokenNonce: approval.tokenNonce,
                     },
                 } : null),
             });

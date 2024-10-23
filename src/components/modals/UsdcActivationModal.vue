@@ -105,8 +105,10 @@ export default defineComponent({
         async function enablePolygon() {
             await activatePolygon(activeAccountId.value!);
             if (!hasPolygonAddresses.value) return;
-            setActiveCurrency(CryptoCurrency.USDC); // TODO: USDT Let user choose
-            await close();
+            await close(true);
+            if (!props.redirect) {
+                context.root.$router.push('/stablecoin-selection');
+            }
         }
 
         async function close(skipDefaultRedirects = false) {

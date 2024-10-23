@@ -144,11 +144,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
             break;
         case HubApi.RequestType.LOGIN:
             // Login of a Keyguard or Ledger account
-            if (accounts[0].polygonAddresses.length && !welcomeModalAlreadyShown && config.polygon.enabled) {
-                // If USDC is enabled for this account, show "USDC is now available" info in activation modal which
-                // afterwards leads into the welcome flow if not shown yet.
-                router.push('/usdc-activation');
-            } else if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length
+            if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length
                 && config.enableBitcoin) {
                 // After adding an account that supports Bitcoin without it being activated yet (this is the case for
                 // Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for

@@ -6,8 +6,20 @@
                 {{ $t('Pick a stable coin for your wallet. You can always switch between the two.') }}
             </div>
         </PageHeader>
-        <PageBody>
-            <ButtonGroup :options="options" v-model="selection" />
+        <PageBody class="flex-column">
+            <div class="argument-grid">
+                <div class="usdc" :class="{ 'active': selection === 'usdc' }">
+                    {{ $t('Higher transparency and regulatory compliance.')}}
+                </div>
+                <div class="usdt" :class="{ 'active': selection === 'usdt' }">
+                    {{ $t('Higher liquidity and global market adoption.')}}
+                </div>
+            </div>
+            <StablecoinSelector v-model="selection" />
+            <a href="https://example.com" target="_blank" rel="noopener" class="nq-link flex-row">
+                {{ $t('Learn more') }}
+                <CaretRightSmallIcon />
+            </a>
         </PageBody>
         <PageFooter>
             <button class="nq-button light-blue" @click="choose" @mousedown.prevent>
@@ -19,35 +31,37 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
+import { PageBody, PageHeader, PageFooter, CaretRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import { CryptoCurrency } from '../../lib/Constants';
-import ButtonGroup from '../ButtonGroup.vue';
+import StablecoinSelector from '../StablecoinSelector.vue';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useAccountStore } from '../../stores/Account';
+import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'stablecoin-selection-modal',
-    setup() {
+    setup(props, context) {
         const modal$ = ref<Modal>(null);
 
         const selection = ref<Stablecoin>(CryptoCurrency.USDC);
 
-        const options = {
-            [CryptoCurrency.USDC]: { label: 'USDC' },
-            [CryptoCurrency.USDT]: { label: 'USDT' },
-        };
+        useAccountSettingsStore().setKnowsAboutUsdt(true);
 
-        function choose() {
+        const { isMobile } = useWindowSize();
+
+        async function choose() {
             useAccountSettingsStore().setStablecoin(selection.value);
             useAccountStore().setActiveCurrency(selection.value);
-            modal$.value?.forceClose();
+            await modal$.value?.forceClose();
+            if (isMobile.value) {
+                context.root.$router.push('/transactions');
+            }
         }
 
         return {
             modal$,
             selection,
-            options,
             choose,
         };
     },
@@ -56,15 +70,22 @@ export default defineComponent({
         PageHeader,
         PageFooter,
         Modal,
-        ButtonGroup,
+        StablecoinSelector,
+        CaretRightSmallIcon,
     },
 });
 </script>
 
 <style lang="scss" scoped>
+.modal ::v-deep .small-page {
+    width: 500px;
+}
+
 .subtitle {
-    margin-top: 1.25rem;
+    margin: 1.25rem auto 0;
+    max-width: 400px;
     font-size: var(--body-size);
+    color: var(--text-60);
 }
 
 .page-header {
@@ -73,72 +94,68 @@ export default defineComponent({
 
 .page-body {
     padding-top: 0;
+    justify-content: center;
 }
 
-.button-group {
-    margin: 0 auto 4rem;
-    text-align: center;
-}
-
-.row {
-    box-shadow: 0 0 0 1.5px rgba(31, 35, 72, 0.1);
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    &:first-of-type {
-        border-top-left-radius: 1rem;
-        border-top-right-radius: 1rem;
-    }
-
-    &:last-of-type {
-        border-bottom-left-radius: 1rem;
-        border-bottom-right-radius: 1rem;
-    }
-
-    label {
-        font-size: var(--body-size);
-    }
-}
-
-// select.nq-input {
-//     padding: 0.75rem 1.5rem;
-//     border-radius: 5rem;
-//     font-size: var(--small-size);
-//     font-weight: 600;
-// }
-
-select {
+.argument-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     font-size: var(--body-size);
-    font-family: inherit;
-    font-weight: bold;
-    line-height: inherit;
-    color: inherit;
-    border: none;
-    appearance: none;
-    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-50);
+    gap: 2rem;
+    transition: color 300ms var(--nimiq-ease);
 
-    box-shadow: inset 0 0 0 1.5px var(--text-16);
-    border-radius: 2.5rem;
-    padding: {
-        top: 0.625rem;
-        bottom: 0.875rem;
-        left: 2rem;
-        right: 3.5rem;
+    .usdc {
+        grid-column: 1/2;
+
+        &.active {
+            color: var(--usdc-blue);
+        }
     }
 
-    background-color: transparent;
-    background-image: url('../../assets/arrow-down.svg');
-    background-size: 1.25rem;
-    background-repeat: no-repeat;
-    background-position-x: calc(100% - 1.75rem);
-    background-position-y: 55%;
+    .usdt {
+        grid-column: 2/3;
 
-    // &:disabled {
-    //     opacity: .5;
-    //     cursor: default;
-    // }
+        &.active {
+            color: var(--usdt-green);
+        }
+    }
+}
+
+.nq-link {
+    margin: 5rem auto 0;
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--text-60);
+    align-items: center;
+    gap: 0.125rem;
+    transition: color 300ms var(--nimiq-ease);
+
+    .nq-icon {
+        font-size: 1.5rem;
+        margin-bottom: -0.125rem;
+        transition: transform 300ms var(--nimiq-ease);
+        will-change: transform;
+
+        ::v-deep path {
+            stroke-width: 1.25;
+        }
+    }
+
+    &:hover {
+        color: var(--text-70);
+        text-decoration: none;
+
+        .nq-icon {
+            transform: translateX(0.25rem);
+        }
+    }
+}
+
+.stablecoin-selector {
+    margin: 5rem auto 0;
 }
 
 .page-footer .nq-button {

@@ -65,6 +65,8 @@ const UsdcSendModal = () => import(/* webpackChunkName: "Usdc-send-modal" */ './
 // USDT Modals
 const UsdtTransactionModal = () =>
     import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
+const UsdtAddedModal = () =>
+    import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdtAddedModal.vue');
 
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
@@ -310,6 +312,13 @@ const routes: RouteConfig[] = [{
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
             },
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/usdt-added',
+            components: {
+                modal: UsdtAddedModal,
+            },
+            name: 'usdt-added',
+            meta: { column: Columns.ACCOUNT },
         }, {
             path: '/stablecoin-selection',
             components: {

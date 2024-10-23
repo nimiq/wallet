@@ -359,7 +359,7 @@ import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
-import router from '../../router';
+import router, { useRouter } from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
@@ -380,7 +380,7 @@ export default defineComponent({
             accountUsdcBalance,
             accountUsdtBridgedBalance,
         } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin, knowsAboutUsdt } = useAccountSettingsStore();
         const { config } = useConfig();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
@@ -411,6 +411,11 @@ export default defineComponent({
 
         function selectStablecoin() {
             if (!hasPolygonAddresses.value || !stablecoin.value) return;
+
+            if (stablecoin.value === CryptoCurrency.USDC && !knowsAboutUsdt.value) {
+                useRouter().push({ name: 'usdt-added' });
+                return;
+            }
 
             setActiveCurrency(stablecoin.value);
 

@@ -15,7 +15,7 @@ import {
     UniswapEvent,
 } from './stores/UsdcTransactions';
 import { useConfig } from './composables/useConfig';
-import { ENV_MAIN } from './lib/Constants';
+import { ENV_MAIN, CryptoCurrency } from './lib/Constants';
 import {
     USDC_BRIDGED_TOKEN_CONTRACT_ABI,
     USDC_BRIDGED_TRANSFER_CONTRACT_ABI,
@@ -38,6 +38,7 @@ import {
 import { getPoolAddress, getUsdPrice } from './lib/usdc/Uniswap';
 import { replaceKey } from './lib/KeyReplacer';
 import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
+import { useAccountSettingsStore } from './stores/AccountSettings';
 
 export async function loadEthersLibrary() {
     return import(/* webpackChunkName: "ethers-js" */ 'ethers');
@@ -454,6 +455,59 @@ export async function launchPolygon() {
 
         console.debug('Subscribing to Polygon addresses', newAddresses);
         subscribe(newAddresses);
+    });
+
+    // Auto-detect stablecoin from balances and transactions
+    const { stablecoin, setStablecoin } = useAccountSettingsStore();
+    watch(addressStore.addressInfo, (ai) => {
+        if (!ai || stablecoin.value) {
+            return;
+        }
+
+        const usdcNativeBalance = ai.balanceUsdc ?? undefined;
+        const usdcBridgedBalance = ai.balanceUsdcBridged ?? undefined;
+        const usdcBalance = usdcNativeBalance !== undefined && usdcBridgedBalance !== undefined
+            ? usdcNativeBalance + usdcBridgedBalance
+            : usdcNativeBalance !== undefined
+                ? usdcNativeBalance
+                : usdcBridgedBalance;
+
+        const usdtBalance = ai.balanceUsdtBridged ?? undefined;
+
+        if (usdcBalance !== undefined && usdtBalance !== undefined) {
+            if (usdcBalance > 0.01e6 && !usdtBalance) {
+                setStablecoin(CryptoCurrency.USDC);
+            } else if (usdtBalance > 0.01e6 && !usdcBalance) {
+                setStablecoin(CryptoCurrency.USDT);
+            }
+        }
+    });
+
+    watch(() => [
+        usdcTransactionsStore.state.transactions,
+        usdtTransactionsStore.state.transactions,
+    ], ([usdcTxs, usdtTxs]) => {
+        if (stablecoin.value || !addressStore.addressInfo.value) {
+            return;
+        }
+
+        const ai = addressStore.addressInfo.value;
+
+        // Check transaction history
+        const latestUsdcTx = Object.values(usdcTxs)
+            .filter((tx) => tx.sender === ai.address || tx.recipient === ai.address)
+            .sort((a, b) => (b.timestamp || Infinity) - (a.timestamp || Infinity))[0];
+        const latestUsdtTx = Object.values(usdtTxs)
+            .filter((tx) => tx.sender === ai.address || tx.recipient === ai.address)
+            .sort((a, b) => (b.timestamp || Infinity) - (a.timestamp || Infinity))[0];
+
+        if (latestUsdcTx
+            && (!latestUsdtTx || (latestUsdcTx.timestamp || Infinity) > (latestUsdtTx.timestamp || Infinity))) {
+            setStablecoin(CryptoCurrency.USDC);
+        } else if (latestUsdtTx
+            && (!latestUsdcTx || (latestUsdtTx.timestamp || Infinity) > (latestUsdcTx.timestamp || Infinity))) {
+            setStablecoin(CryptoCurrency.USDT);
+        }
     });
 
     // Fetch transactions for active address

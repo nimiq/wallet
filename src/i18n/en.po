@@ -72,7 +72,7 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:21
+#: src/components/modals/MoonpaySellInfoModal.vue:27
 msgid "{percentage} fees"
 msgstr ""
 
@@ -95,15 +95,15 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:34
+#: src/components/modals/MoonpaySellInfoModal.vue:40
 msgid "+ network fees"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:145
+#: src/components/modals/BuyOptionsModal.vue:148
 msgid "+ network fees, registration required"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:80
+#: src/components/modals/BuyOptionsModal.vue:83
 msgid "+ network fees, registration required above $700"
 msgstr ""
 
@@ -343,8 +343,8 @@ msgstr ""
 msgid "Any funds sent will be refunded."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:113
-#: src/components/modals/BuyOptionsModal.vue:43
+#: src/components/modals/BuyOptionsModal.vue:116
+#: src/components/modals/BuyOptionsModal.vue:46
 msgid "Apple/Google Pay"
 msgstr ""
 
@@ -407,8 +407,8 @@ msgstr ""
 msgid "Bank Account"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:28
-#: src/components/modals/BuyOptionsModal.vue:98
+#: src/components/modals/BuyOptionsModal.vue:101
+#: src/components/modals/BuyOptionsModal.vue:31
 msgid "Bank Transfer"
 msgstr ""
 
@@ -509,12 +509,16 @@ msgstr ""
 msgid "Buy NIM"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:157
+#: src/components/modals/BuyOptionsModal.vue:8
+msgid "Buy NIM & BTC"
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:160
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:5
-msgid "Buy NIM, BTC & USDC"
+#: src/components/modals/BuyOptionsModal.vue:6
+msgid "Buy NIM, BTC & {ticker}"
 msgstr ""
 
 #: src/components/UsdcTransactionList.vue:48
@@ -791,7 +795,7 @@ msgstr ""
 msgid "Continue to wallet"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:39
+#: src/components/modals/MoonpaySellInfoModal.vue:45
 msgid "Continue with Moonpay"
 msgstr ""
 
@@ -812,7 +816,7 @@ msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
 #: src/components/modals/UsdcTransactionModal.vue:404
-#: src/composables/useUsdcTransactionInfo.ts:160
+#: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
 
@@ -877,8 +881,8 @@ msgstr ""
 msgid "Creates prestaking rewards"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:112
-#: src/components/modals/BuyOptionsModal.vue:42
+#: src/components/modals/BuyOptionsModal.vue:115
+#: src/components/modals/BuyOptionsModal.vue:45
 msgid "Credit Card"
 msgstr ""
 
@@ -887,7 +891,7 @@ msgstr ""
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:7
+#: src/components/modals/BuyOptionsModal.vue:10
 msgid ""
 "Depending on your country of residence,\n"
 "different options are available."
@@ -1145,8 +1149,8 @@ msgstr ""
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:216
 #: src/components/TransactionListItem.vue:60
-#: src/components/UsdcTransactionListItem.vue:57
-#: src/components/UsdtTransactionListItem.vue:57
+#: src/components/UsdcTransactionListItem.vue:59
+#: src/components/UsdtTransactionListItem.vue:59
 msgid "Fiat value unavailable"
 msgstr ""
 
@@ -1289,8 +1293,8 @@ msgstr ""
 #: src/components/modals/UsdtTransactionModal.vue:380
 #: src/composables/useBtcTransactionInfo.ts:189
 #: src/composables/useTransactionInfo.ts:195
-#: src/composables/useUsdcTransactionInfo.ts:150
-#: src/composables/useUsdtTransactionInfo.ts:146
+#: src/composables/useUsdcTransactionInfo.ts:148
+#: src/composables/useUsdtTransactionInfo.ts:144
 #: src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr ""
@@ -1303,15 +1307,15 @@ msgstr ""
 #: src/composables/useBtcTransactionInfo.ts:189
 #: src/composables/useTransactionInfo.ts:210
 #: src/composables/useTransactionInfo.ts:216
-#: src/composables/useUsdcTransactionInfo.ts:156
-#: src/composables/useUsdtTransactionInfo.ts:152
+#: src/composables/useUsdcTransactionInfo.ts:154
+#: src/composables/useUsdtTransactionInfo.ts:150
 msgid "HTLC Refund"
 msgstr ""
 
 #: src/components/modals/TransactionModal.vue:493
 #: src/composables/useTransactionInfo.ts:199
-#: src/composables/useUsdcTransactionInfo.ts:153
-#: src/composables/useUsdtTransactionInfo.ts:149
+#: src/composables/useUsdcTransactionInfo.ts:151
+#: src/composables/useUsdtTransactionInfo.ts:147
 msgid "HTLC Settlement"
 msgstr ""
 
@@ -1497,7 +1501,7 @@ msgstr ""
 msgid "loading..."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:14
+#: src/components/modals/BuyOptionsModal.vue:17
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
 msgstr ""
@@ -1546,12 +1550,12 @@ msgstr ""
 msgid "Maybe later"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:101
-#: src/components/modals/BuyOptionsModal.vue:118
-#: src/components/modals/BuyOptionsModal.vue:31
-#: src/components/modals/BuyOptionsModal.vue:48
-#: src/components/modals/BuyOptionsModal.vue:67
-#: src/components/modals/MoonpaySellInfoModal.vue:25
+#: src/components/modals/BuyOptionsModal.vue:104
+#: src/components/modals/BuyOptionsModal.vue:121
+#: src/components/modals/BuyOptionsModal.vue:34
+#: src/components/modals/BuyOptionsModal.vue:51
+#: src/components/modals/BuyOptionsModal.vue:70
+#: src/components/modals/MoonpaySellInfoModal.vue:31
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
 msgstr ""
@@ -1564,7 +1568,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:14
+#: src/components/modals/MoonpaySellInfoModal.vue:18
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr ""
 
@@ -1680,8 +1684,8 @@ msgstr ""
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:151
-#: src/components/modals/BuyOptionsModal.vue:86
+#: src/components/modals/BuyOptionsModal.vue:154
+#: src/components/modals/BuyOptionsModal.vue:89
 msgid "Not available in your country"
 msgstr ""
 
@@ -2107,8 +2111,12 @@ msgstr ""
 msgid "Sell"
 msgstr ""
 
-#: src/components/modals/MoonpaySellInfoModal.vue:13
-msgid "Sell BTC and USDC"
+#: src/components/modals/MoonpaySellInfoModal.vue:16
+msgid "Sell BTC"
+msgstr ""
+
+#: src/components/modals/MoonpaySellInfoModal.vue:14
+msgid "Sell BTC and {ticker}"
 msgstr ""
 
 #: src/components/modals/SellCryptoModal.vue:180
@@ -2222,7 +2230,7 @@ msgstr ""
 
 #: src/composables/useBtcTransactionInfo.ts:174
 #: src/composables/useTransactionInfo.ts:178
-#: src/composables/useUsdcTransactionInfo.ts:134
+#: src/composables/useUsdcTransactionInfo.ts:132
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr ""
 
@@ -2958,7 +2966,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:310
+#: src/components/layouts/Sidebar.vue:318
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"

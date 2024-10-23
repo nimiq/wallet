@@ -10,13 +10,19 @@
             </header>
 
             <main class="flex-column">
-                <h1 class="nq-h1">{{ $t('Sell BTC and USDC') }}</h1>
+                <h1 class="nq-h1" v-if="stablecoin">
+                    {{ $t('Sell BTC and {ticker}', { ticker: stablecoin.toUpperCase() }) }}
+                </h1>
+                <h1 class="nq-h1" v-else>{{ $t('Sell BTC') }}</h1>
+
                 <p class="subline">{{ $t('MoonPay is a third-party service requiring registration and KYC.') }}</p>
+
                 <div class="crypto-logos flex-row">
-                    <BitcoinIcon />
-                    <UsdcIcon v-if="stablecoin === CryptoCurrency.USDC" />
-                    <UsdtIcon v-if="stablecoin === CryptoCurrency.USDT" />
+                    <BitcoinIcon title="BTC" />
+                    <UsdcIcon v-if="stablecoin === CryptoCurrency.USDC" :title="stablecoin.toUpperCase()" />
+                    <UsdtIcon v-if="stablecoin === CryptoCurrency.USDT" :title="stablecoin.toUpperCase()" />
                 </div>
+
                 <p class="fees flex-row">
                     {{ $t('{percentage} fees', { percentage: '1%'}) }}
                     <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">

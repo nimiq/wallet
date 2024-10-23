@@ -2,7 +2,10 @@
     <Modal class="buy-options-modal">
         <PageBody class="flex-column">
             <header>
-                <h1 class="nq-h1">{{ $t('Buy NIM, BTC & USDC') }}</h1>
+                <h1 class="nq-h1" v-if="stablecoin">
+                    {{ $t('Buy NIM, BTC & {ticker}', { ticker: stablecoin.toUpperCase()}) }}
+                </h1>
+                <h1 class="nq-h1" v-else>{{ $t('Buy NIM & BTC') }}</h1>
                 <p class="nq-text">
                     {{ $t('Depending on your country of residence,\ndifferent options are available.') }}
                 </p>
@@ -213,6 +216,7 @@ import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
 import { MOONPAY_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
 import { useSettingsStore } from '../../stores/Settings';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 // import { Trial } from '../../lib/Trials';
 
 type Country = {
@@ -225,6 +229,7 @@ export default defineComponent({
     setup() {
         const { currency } = useFiatStore();
         const { canUseSwaps/* , trials */ } = useSettingsStore();
+        const { stablecoin } = useAccountSettingsStore();
         const { config } = useConfig();
 
         const country = ref<Country>(null);
@@ -258,6 +263,7 @@ export default defineComponent({
         });
 
         return {
+            stablecoin,
             country,
             isMoonpayAvailable,
             isSimplexAvailable,

@@ -47,6 +47,7 @@ import {
 import { loadEthersLibrary } from '../../ethers';
 
 import { sendBtcTransaction, sendPolygonTransaction } from '../../hub';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 declare global {
     interface Window {
@@ -96,13 +97,19 @@ export default defineComponent({
         // for legacy or non-bitcoin-activated accounts.
         const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0] as string | undefined;
 
+        const { stablecoin } = useAccountSettingsStore();
+
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = usePolygonAddressStore().activeAddress.value;
+        const usdcAddress = stablecoin.value === CryptoCurrency.USDC
+            ? usePolygonAddressStore().activeAddress.value
+            : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdtAddress = usePolygonAddressStore().activeAddress.value;
+        const usdtAddress = stablecoin.value === CryptoCurrency.USDT
+            ? usePolygonAddressStore().activeAddress.value
+            : undefined;
 
         const walletAddresses = {
             // Remove spaces in NIM address, as spaces are invalid URI components
@@ -266,7 +273,9 @@ export default defineComponent({
                     throw new Error('Invalid network ID given by Moonpay');
                 }
 
-                if (properties.cryptoCurrency.contractAddress !== config.polygon.usdc.tokenContract.toLowerCase()) {
+                const { tokenContract } = config.polygon.usdt_bridged;
+
+                if (properties.cryptoCurrency.contractAddress !== tokenContract.toLowerCase()) {
                     throw new Error('Invalid USDC contract address given by Moonpay');
                 }
 
@@ -277,7 +286,7 @@ export default defineComponent({
                 }
 
                 const tx = await sendPolygonTransaction(
-                    config.polygon.usdc.tokenContract,
+                    tokenContract,
                     normalizedDepositAddress,
                     value,
                     'Moonpay',

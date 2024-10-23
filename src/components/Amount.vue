@@ -32,6 +32,7 @@ export default defineComponent({
                 case CryptoCurrency.BTC: return btcUnit.value.decimals;
                 case CryptoCurrency.USDC:
                 case 'usdc.e':
+                case CryptoCurrency.USDT:
                     return 6;
                 default: return 5;
             }

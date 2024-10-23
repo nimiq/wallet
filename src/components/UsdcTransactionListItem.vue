@@ -51,7 +51,9 @@
         <div class="amounts" :class="{isIncoming}">
             <Amount :amount="txValue" :currency="ticker" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
-                <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="txValue" value-mask/>
+                <FiatConvertedAmount v-if="state === TransactionState.PENDING"
+                    :amount="txValue" currency="usdc" value-mask
+                />
                 <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
                 <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
                     {{ $t('Fiat value unavailable') }}

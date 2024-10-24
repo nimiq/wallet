@@ -2659,6 +2659,7 @@ msgstr "测试网"
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
+#: src/components/UsdcAddressInfo.vue:14
 msgid "Tether USD"
 msgstr ""
 
@@ -2950,7 +2951,7 @@ msgid ""
 "{userName}."
 msgstr "用户异常。该账户目前连接到{userName}的TEN31 通行证。"
 
-#: src/components/UsdcAddressInfo.vue:15
+#: src/components/UsdcAddressInfo.vue:17
 msgid "unknown"
 msgstr "未知"
 
@@ -2990,7 +2991,7 @@ msgstr "现在更新"
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
-#: src/components/UsdcAddressInfo.vue:13
+#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:137
 msgid "USD Coin"

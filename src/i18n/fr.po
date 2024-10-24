@@ -4,12 +4,12 @@
 # Daniel, 2022
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2023
 # Matheo <matheo@nimiq.com>, 2024
-# Robinson BARAIS, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
+# Robinson BARAIS, 2024
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2024\n"
+"Last-Translator: Robinson BARAIS, 2024\n"
 "Language-Team: French (https://app.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -693,7 +693,7 @@ msgstr "Regarder la nouvelle intro"
 
 #: src/components/modals/StablecoinSelectionModal.vue:26
 msgid "Choose {ticker}"
-msgstr ""
+msgstr "Choisir {ticker}"
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
@@ -727,11 +727,11 @@ msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:219
 msgid "Choose Stablecoin"
-msgstr ""
+msgstr "Choisir un Stablecoin"
 
 #: src/components/modals/StablecoinSelectionModal.vue:4
 msgid "Choose your stablecoin"
-msgstr ""
+msgstr "Choisissez votre Stablecoin"
 
 #: src/components/prestaking/PrestakingClaimPage.vue:45
 msgid "Claim your Points"
@@ -767,6 +767,8 @@ msgid ""
 "Collect points for the big giveaway and get a shiny Identicon upgrade –"
 "                                     the more the better."
 msgstr ""
+"Collectez des points pour le grand tirage au sort et obtenez une amélioration\n"
+"brillante pour votre Identicon - plus vous en avez, mieux c'est."
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -1409,11 +1411,11 @@ msgstr "Un enjeu important !"
 
 #: src/components/modals/StablecoinSelectionModal.vue:15
 msgid "Higher liquidity and global market adoption."
-msgstr ""
+msgstr "Plus de liquidité et adoption par un marché mondial."
 
 #: src/components/modals/StablecoinSelectionModal.vue:12
 msgid "Higher transparency and regulatory compliance."
-msgstr ""
+msgstr "Transparence accrue et respect des réglementations."
 
 #: src/components/modals/WelcomeModal.vue:178
 msgid "Highest degree of decentralization"
@@ -1475,7 +1477,7 @@ msgstr "Je comprends que je dois envoyer un {sepaInstantLink}."
 
 #: src/components/modals/UsdtAddedModal.vue:20
 msgid "I’m happy, stick with USDC"
-msgstr ""
+msgstr "Je suis satisfait, je reste avec l'USDC"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
@@ -2002,6 +2004,8 @@ msgstr "Exécution du Swap {progress}/5"
 msgid ""
 "Pick a stable coin for your wallet. You can always switch between the two."
 msgstr ""
+"Choisissez un Stablecoin pour votre wallet. Vous pourrez toujours passer de "
+"l'un à l'autre."
 
 #: src/components/layouts/Sidebar.vue:147
 msgid ""
@@ -2614,6 +2618,9 @@ msgid ""
 "Spreading the pre-staked NIM across validators helps decentralization."
 "                                    Choose an underdog for another bonus."
 msgstr ""
+"La répartition du NIM pré-stacké entre les validateurs aide à la "
+"décentralisation. Choisissez un outsider pour obtenir un bonus "
+"supplémentaire."
 
 #: src/components/modals/WelcomeModal.vue:44
 msgid "Stability"
@@ -2749,12 +2756,12 @@ msgstr "Navigation par gestes"
 #: src/components/layouts/AddressOverview.vue:106
 #: src/components/layouts/AddressOverview.vue:59
 msgid "Switch to USDC"
-msgstr ""
+msgstr "Passer à l'USDC"
 
 #: src/components/layouts/AddressOverview.vue:100
 #: src/components/layouts/AddressOverview.vue:53
 msgid "Switch to USDT"
-msgstr ""
+msgstr "Passer à l'USDT"
 
 #: src/components/layouts/Network.vue:117
 msgid "syncing"
@@ -2786,8 +2793,9 @@ msgstr "Testnet"
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
+#: src/components/UsdcAddressInfo.vue:14
 msgid "Tether USD"
-msgstr ""
+msgstr "Tether USD"
 
 #: src/components/PolygonWarningFooter.vue:22
 msgid ""
@@ -3012,7 +3020,7 @@ msgstr "Aller sur {exchange}"
 #: src/components/layouts/AccountOverview.vue:189
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
-msgstr ""
+msgstr "Pour échanger avec de l'USDC/USDT, choisissez un Stablecoin."
 
 #: src/components/AccountBalance.vue:5
 msgid "Total Balance"
@@ -3103,7 +3111,7 @@ msgstr ""
 "Utilisateur inattendu. Ce compte est actuellement connecté au Pass TEN31 de "
 "{userName}."
 
-#: src/components/UsdcAddressInfo.vue:15
+#: src/components/UsdcAddressInfo.vue:17
 msgid "unknown"
 msgstr "inconnu"
 
@@ -3146,7 +3154,7 @@ msgstr "Mettre à jour"
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
-#: src/components/UsdcAddressInfo.vue:13
+#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:137
 msgid "USD Coin"
@@ -3202,6 +3210,8 @@ msgstr "Paiements du Wallet"
 #: src/components/modals/UsdtAddedModal.vue:8
 msgid "We added support for USDT, which you can now use instead of USDC."
 msgstr ""
+"Nous avons ajouté la prise en charge de l'USDT, que vous pouvez désormais "
+"utiliser à la place de l'USDC."
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -3278,7 +3288,7 @@ msgstr "Vous utilisez un ancien type de compte."
 
 #: src/components/modals/UsdtAddedModal.vue:4
 msgid "You can now choose{linebreak}between USDC and USDT"
-msgstr ""
+msgstr "Vous pouvez désormais choisir {linebreak}entre l'USDC et l'USDT"
 
 #: src/components/PolygonWarningFooter.vue:9
 msgid "You can receive from Polygon {ticker} addresses only!"

@@ -2747,6 +2747,7 @@ msgstr "Testnet"
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
+#: src/components/UsdcAddressInfo.vue:14
 msgid "Tether USD"
 msgstr ""
 
@@ -3058,7 +3059,7 @@ msgstr ""
 "Onverwachte gebruiker. Dit account is momenteel gekoppeld aan de TEN31 Pass "
 "van {userName}."
 
-#: src/components/UsdcAddressInfo.vue:15
+#: src/components/UsdcAddressInfo.vue:17
 msgid "unknown"
 msgstr "onbekend"
 
@@ -3100,7 +3101,7 @@ msgstr "Update nu"
 #: src/components/layouts/AddressOverview.vue:116
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
-#: src/components/UsdcAddressInfo.vue:13
+#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:137
 msgid "USD Coin"

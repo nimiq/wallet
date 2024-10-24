@@ -36,6 +36,7 @@ import {
 import Modal from './Modal.vue';
 import StatusScreen, { State as StatusScreenState, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { useAccountStore } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
 import {
@@ -58,6 +59,7 @@ export default defineComponent({
         const { config } = useConfig();
         const router = useRouter();
         const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
+        const { stablecoin } = useAccountSettingsStore();
 
         const checkResult = (result: string) => {
             console.debug('Scanned QR code:', result); // eslint-disable-line no-console
@@ -121,7 +123,7 @@ export default defineComponent({
                     }
 
                     // BTC Request Link
-                    const btcRequestLink = parseRequestLink(result, {
+                    const requestLink = parseRequestLink(result, {
                         currencies: [Currency.BTC],
                         normalizeAddress: {
                             [Currency.BTC]: normalizeBitcoinAddress,
@@ -130,14 +132,15 @@ export default defineComponent({
                             [Currency.BTC]: validateBitcoinAddress,
                         },
                     });
-                    if (btcRequestLink) {
+                    if (requestLink) {
                         // Redirect to the valid Bitcoin request link as path which will be handled by the router.
                         router.replace(`/${result}`);
                     }
                 });
             }
 
-            if (config.polygon.enabled && hasPolygonAddresses.value) {
+            // TODO: Promt user to select a stablecoin when not yet selected.
+            if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
                 // Run in parallel, without awaiting.
                 loadEthersLibrary().then((ethers) => {
                     // Support scanning plain addresses. The send modal shows a warning for unknown addresses
@@ -146,7 +149,7 @@ export default defineComponent({
                         const normalizedAddress = ethers.utils.getAddress(result);
                         router.replace(`/${createEthereumRequestLink(
                             normalizedAddress,
-                            Currency.USDC,
+                            stablecoin.value!,
                             {
                                 chainId: config.environment === ENV_MAIN
                                     ? EthereumChain.POLYGON_MAINNET
@@ -155,23 +158,26 @@ export default defineComponent({
                         )}`);
                     }
 
-                    // USDC Request Link
-                    // We only accept links on Polygon to avoid sending Polygon USDC to an Ethereum wallet. We accept:
-                    // - links for USDC, i.e. links specifying the Polygon USDC contract address, both with the polygon:
-                    //   and the ethereum: protocol (which strictly speaking is the only correct protocol according to
-                    //   eip681), but only as long as they specify a Polygon USDC contract address and not an Ethereum
-                    //   USDC contract address.
+                    // USDC/T Request Link
+                    // We only accept links on Polygon to avoid sending Polygon USDC/T to an Ethereum wallet. We accept:
+                    // - links for USDC/T, i.e. links specifying the Polygon USDC/T contract address, both with the
+                    //   polygon: and the ethereum: protocol (which strictly speaking is the only correct protocol
+                    //   according to eip681), but only as long as they specify a Polygon USDC/T contract address and
+                    //   not an Ethereum USDC/T contract address.
                     // - also links for MATIC, i.e. links with the polygon: protocol, or the ethereum: protocol if they
-                    //   specify a Polygon chain id. This is to be a bit more lenient, to not only accept strict USDC
+                    //   specify a Polygon chain id. This is to be a bit more lenient, to not only accept strict USDC/T
                     //   links but also simple links like polygon:<address>, as long as they are unmistakably Polygon
                     //   links via the polygon: protocol or a Polygon chain id. Thus, links like ethereum:<address> are
-                    //   ignored. The amount in the link is interpreted directly as USDC balance.
+                    //   ignored. The amount in the link is interpreted directly as USDC/T balance.
                     const allowedChains = [
                         EthereumChain.POLYGON_MAINNET,
                         ...(config.environment !== ENV_MAIN ? [EthereumChain.POLYGON_AMOY_TESTNET] : []),
                     ];
-                    const usdcRequestLink = parseRequestLink(result, {
-                        currencies: [Currency.USDC, Currency.MATIC],
+                    const requestLink = parseRequestLink(result, {
+                        currencies: [
+                            stablecoin.value! as unknown as Currency.USDC | Currency.USDT,
+                            Currency.MATIC,
+                        ],
                         // The address normalization and validation are shared between ETH, MATIC and USDC.
                         normalizeAddress: {
                             [Currency.ETH]: (address: string) => {
@@ -187,14 +193,18 @@ export default defineComponent({
                             [Currency.ETH]: (address: string) => ethers.utils.isAddress(address),
                         },
                     });
-                    if (usdcRequestLink && usdcRequestLink.chainId && allowedChains.includes(usdcRequestLink.chainId)) {
+                    if (
+                        requestLink
+                        && (requestLink.chainId && allowedChains.includes(requestLink.chainId))
+                        && requestLink.currency.toString() === stablecoin.value!.toString()
+                    ) {
                         // Reformat into a request link with polygon: protocol, in case it has the ethereum: protocol
                         // because we only define a route for polygon: in router.ts, and redirect to the request link as
                         // path which will be handled by the router.
                         router.replace(`/${createEthereumRequestLink(
-                            usdcRequestLink.recipient,
-                            Currency.USDC,
-                            usdcRequestLink,
+                            requestLink.recipient,
+                            requestLink.currency,
+                            requestLink,
                         )}`);
                     }
                 });

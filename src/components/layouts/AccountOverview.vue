@@ -360,7 +360,7 @@ import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
-import router, { useRouter } from '../../router';
+import router from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
@@ -414,7 +414,7 @@ export default defineComponent({
             if (!hasPolygonAddresses.value || !stablecoin.value) return;
 
             if (stablecoin.value === CryptoCurrency.USDC && !knowsAboutUsdt.value) {
-                useRouter().push({ name: 'usdt-added' });
+                context.root.$router.push({ name: 'usdt-added' });
                 return;
             }
 

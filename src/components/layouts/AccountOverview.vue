@@ -202,7 +202,7 @@
                     <div class="usdc-account-item reset flex-column" @click="selectStablecoin">
                         <div class="usdc-account-item-name flex-row">
                             <template v-if="!stablecoin">
-                                <UsdcIcon/><UsdtIconPadded class="pull-left"/>{{ $t('USDC/USDT') }}
+                                <UsdcIcon/><UsdtIconPadded class="pull-left"/>USDC/USDT
                             </template>
                             <template v-if="stablecoin === CryptoCurrency.USDC">
                                 <UsdcIcon/>{{ $t('USD Coin') }}

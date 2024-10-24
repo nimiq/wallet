@@ -5,10 +5,12 @@
 ^\/send\/nim[\/#\?]?$
 ^\/send\/btc[\/#\?]?$
 ^\/send\/usdc[\/#\?]?$
+^\/send\/usdt[\/#\?]?$
 ^\/receive[\/#\?]?$
 ^\/receive\/nim[\/#\?]?$
 ^\/receive\/btc[\/#\?]?$
 ^\/receive\/usdc[\/#\?]?$
+^\/receive\/usdt[\/#\?]?$
 ^\/transaction(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/trade[\/#\?]?$
 ^\/buy[\/#\?]?$
@@ -22,8 +24,12 @@
 ^\/btc-transaction(?:\/([^\/#\?]+?))[\/#\?]?$
 ^(?:\/(bitcoin:.+))[\/#\?]?$
 ^\/usdc-activation[\/#\?]?$
+^\/usdt-activation[\/#\?]?$
 ^\/usdc-transaction(?:\/([^\/#\?]+?))[\/#\?]?$
+^\/usdt-transaction(?:\/([^\/#\?]+?))[\/#\?]?$
 ^(?:\/(polygon:.+))[\/#\?]?$
+^\/usdt-added[\/#\?]?$
+^\/stablecoin-selection[\/#\?]?$
 ^\/swap(?:\/([^\/#\?]+?))?[\/#\?]?$
 ^\/moonpay-sell-info[\/#\?]?$
 ^\/moonpay[\/#\?]?$

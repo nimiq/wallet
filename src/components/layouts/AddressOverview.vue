@@ -761,9 +761,9 @@ export default defineComponent({
         }
 
         > svg {
-            width: 10.5rem;
-            height: 10.5rem;
-            margin: -0.25rem 0.375rem;
+            width: 10rem;
+            height: 10rem;
+            margin: 0 0.625rem;
             display: block;
 
             &.bitcoin {
@@ -776,6 +776,8 @@ export default defineComponent({
 
             &.usdt {
                 color: var(--usdt-green);
+                width: 10.75rem;
+                margin: 0 0.25rem;
             }
         }
     }
@@ -1280,6 +1282,11 @@ export default defineComponent({
                 color: var(--bitcoin-orange);
                 margin: 0 0.25rem;
                 display: block;
+
+                &.usdt {
+                    width: 5.25rem;
+                    margin: 0 0.25rem;
+                }
             }
         }
 
@@ -1304,8 +1311,10 @@ export default defineComponent({
             margin-bottom: 0;
         }
 
-        .label.bitcoin {
-            top: 0.625rem;
+        .label {
+            &.bitcoin, &.usdc, &.usdt {
+                top: 0.625rem;
+            }
         }
 
         .address,

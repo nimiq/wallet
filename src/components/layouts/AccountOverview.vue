@@ -202,7 +202,7 @@
                     <div class="usdc-account-item reset flex-column" @click="selectStablecoin">
                         <div class="usdc-account-item-name flex-row">
                             <template v-if="!stablecoin">
-                                <UsdcIcon/><UsdtIcon class="pull-left"/>{{ $t('USDC/USDT') }}
+                                <UsdcIcon/><UsdtIconPadded class="pull-left"/>{{ $t('USDC/USDT') }}
                             </template>
                             <template v-if="stablecoin === CryptoCurrency.USDC">
                                 <UsdcIcon/>{{ $t('USD Coin') }}
@@ -334,6 +334,7 @@ import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
+import UsdtIconPadded from '../icons/UsdtIconPadded.vue';
 import MenuIcon from '../icons/MenuIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -604,6 +605,7 @@ export default defineComponent({
         BitcoinIcon,
         UsdcIcon,
         UsdtIcon,
+        UsdtIconPadded,
         MenuIcon,
         ConsensusIcon,
         MobileActionBar,
@@ -995,7 +997,7 @@ export default defineComponent({
         svg {
             margin-right: 1rem;
             width: 3rem;
-            height: auto;
+            height: 3rem;
 
             &.bitcoin {
                 color: var(--bitcoin-orange);
@@ -1010,7 +1012,11 @@ export default defineComponent({
             }
 
             &.pull-left {
-                margin-left: -2.5rem;
+                width: 3.75rem;
+                margin-left: -2rem;
+                stroke: #E7E8EA;
+                stroke-width: 14;
+                paint-order: stroke fill;
             }
         }
     }

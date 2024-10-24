@@ -10,7 +10,7 @@
         </PageHeader>
         <PageBody class="flex-row">
             <UsdcIcon />
-            <UsdtIcon />
+            <UsdtIconPadded />
         </PageBody>
         <PageFooter>
             <button class="nq-button light-blue" @click="$router.push('/stablecoin-selection')" @mousedown.prevent>
@@ -31,7 +31,7 @@ import { CryptoCurrency } from '../../lib/Constants';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useAccountStore } from '../../stores/Account';
 import UsdcIcon from '../icons/UsdcIcon.vue';
-import UsdtIcon from '../icons/UsdtIcon.vue';
+import UsdtIconPadded from '../icons/UsdtIconPadded.vue';
 import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
@@ -63,7 +63,7 @@ export default defineComponent({
         PageFooter,
         Modal,
         UsdcIcon,
-        UsdtIcon,
+        UsdtIconPadded,
     },
 });
 </script>
@@ -91,16 +91,17 @@ export default defineComponent({
 }
 
 .usdc {
-    width: 14rem;
+    width: 15.5rem;
     color: var(--usdc-blue);
 }
 
 .usdt {
-    width: 16rem;
-    border: 1rem solid white;
-    border-radius: 100%;
+    width: 19rem;
     color: var(--usdt-green);
     margin-left: -10%;
+    stroke: white;
+    stroke-width: 14;
+    paint-order: stroke fill;
 }
 
 .page-footer {

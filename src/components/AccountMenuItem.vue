@@ -29,11 +29,13 @@ import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components'
 import { computed, defineComponent } from '@vue/composition-api';
 import { getBackgroundClass } from '../lib/AddressColor';
 import { CryptoCurrency } from '../lib/Constants';
+import { Trial } from '../lib/Trials';
 import { AccountType, useAccountStore } from '../stores/Account';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
+import { useSettingsStore } from '../stores/Settings';
 import { Transaction, useTransactionsStore } from '../stores/Transactions';
 import LedgerIcon from './icons/LedgerIcon.vue';
 import LoginFileIcon from './icons/LoginFileIcon.vue';
@@ -110,7 +112,10 @@ export default defineComponent({
             : []);
 
         const { state: accountSettingsState } = useAccountSettingsStore();
-        const stablecoin = computed(() => accountSettingsState.settings[props.id]?.stablecoin);
+        const { trials } = useSettingsStore();
+        const stablecoin = computed(() => trials.value.includes(Trial.USDT)
+            ? accountSettingsState.settings[props.id]?.stablecoin
+            : CryptoCurrency.USDC);
 
         const stablecoinAccountBalance = computed(() => polygonAddressInfos.value.reduce((sum, ai) => sum + {
             [CryptoCurrency.USDC]: (ai.balanceUsdc || 0) + (ai.balanceUsdcBridged || 0),

@@ -10,7 +10,9 @@
             :placeholder="$t('Add contact')"
             v-model="localLabel"
         />
-        <span v-else-if="isOwnAddress" class="label">{{ localLabel || $t('USD Coin') }}</span>
+        <span v-else-if="isOwnAddress" class="label">
+            {{ localLabel || (stablecoin === CryptoCurrency.USDC ? $t('USD Coin') : $t('Tether USD')) }}
+        </span>
         <span v-else class="label" :class="{ unlabelled: !localLabel }">
             {{ localLabel || $t('unknown') }}
         </span>

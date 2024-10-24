@@ -76,9 +76,9 @@ import { useConfig } from '../../composables/useConfig';
 import { getElectrumClient, subscribeToAddresses } from '../../electrum';
 import { getNetworkClient } from '../../network';
 import { getServerTime } from '../../lib/Time';
-import { useUsdcNetworkStore } from '../../stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import {
-    getNativeHtlcContract,
+    getUsdcHtlcContract,
     getPolygonBlockNumber,
     getPolygonClient,
     receiptToTransaction,
@@ -229,7 +229,7 @@ export default defineComponent({
                     }
                     if (
                         swap.to.asset === SwapAsset.USDC_MATIC
-                        && useUsdcNetworkStore().state.consensus !== 'established'
+                        && usePolygonNetworkStore().state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
                     }
@@ -244,7 +244,7 @@ export default defineComponent({
                     }
                     if (
                         swap.from.asset === SwapAsset.USDC_MATIC
-                        && useUsdcNetworkStore().state.consensus !== 'established'
+                        && usePolygonNetworkStore().state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
                     }
@@ -274,7 +274,7 @@ export default defineComponent({
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
                     return {
-                        htlcContract: await getNativeHtlcContract(),
+                        htlcContract: await getUsdcHtlcContract(),
                         currentBlock: () => getPolygonBlockNumber(),
                         startBlock: blockHeightAtStart,
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
@@ -319,7 +319,7 @@ export default defineComponent({
                 const electrum = await getElectrumClient();
                 await electrum.waitForConsensusEstablished();
             }
-            if (swapsUsdc && useUsdcNetworkStore().state.consensus !== 'established') {
+            if (swapsUsdc && usePolygonNetworkStore().state.consensus !== 'established') {
                 await getPolygonClient();
             }
 
@@ -379,7 +379,7 @@ export default defineComponent({
 
                     if ('getBlock' in remoteFundingTx) {
                         const receipt = await remoteFundingTx.getTransactionReceipt();
-                        const polygonTx = await receiptToTransaction(config.usdc.nativeUsdcContract, receipt);
+                        const polygonTx = await receiptToTransaction(config.polygon.usdc.tokenContract, receipt);
                         updateSwap({
                             state: SwapState.CREATE_OUTGOING,
                             stateEnteredAt: Date.now(),
@@ -476,7 +476,7 @@ export default defineComponent({
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
                                     fundingTx = await receiptToTransaction(
-                                        config.usdc.nativeUsdcContract,
+                                        config.polygon.usdc.tokenContract,
                                         await event.getTransactionReceipt(),
                                     );
                                 } else {
@@ -608,7 +608,7 @@ export default defineComponent({
                                 if (isUsdcListenerResolved) {
                                     const event = await usdcListener;
                                     settlementTx = await receiptToTransaction(
-                                        config.usdc.nativeUsdcContract,
+                                        config.polygon.usdc.tokenContract,
                                         await event.getTransactionReceipt(),
                                     );
                                 } else {

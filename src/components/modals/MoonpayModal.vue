@@ -28,9 +28,11 @@ import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
+import { useUsdtContactsStore } from '../../stores/UsdtContacts';
+import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
 import { useConfig } from '../../composables/useConfig';
 import { loadScript } from '../../lib/ScriptLoader';
 import { CryptoCurrency, ENV_MAIN, FiatCurrency } from '../../lib/Constants';
@@ -44,7 +46,8 @@ import {
 
 import { loadEthersLibrary } from '../../ethers';
 
-import { sendBtcTransaction, sendUsdcTransaction } from '../../hub';
+import { sendBtcTransaction, sendPolygonTransaction } from '../../hub';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 declare global {
     interface Window {
@@ -57,7 +60,7 @@ type InitiateDepositProperties = {
     cryptoCurrency: {
         id: string,
         name: string,
-        code: CryptoCurrency | 'usdc_polygon',
+        code: CryptoCurrency | 'usdc_polygon' | 'usdt_polygon',
         contractAddress: string | null,
         chainId: string | null,
         coinType: string,
@@ -85,22 +88,35 @@ export default defineComponent({
     setup(props) {
         const { language } = useSettingsStore().state;
         const baseCurrencyCode = useFiatStore().state.currency;
-        let defaultCurrencyCode: CryptoCurrency | 'usdc_polygon' = useAccountStore().state.activeCurrency;
-        if (defaultCurrencyCode === 'usdc') defaultCurrencyCode = 'usdc_polygon';
+        type MoonpayCurrencyCode = CryptoCurrency | 'usdc_polygon' | 'usdt_polygon';
+        let defaultCurrencyCode: MoonpayCurrencyCode = useAccountStore().state.activeCurrency;
+        if (defaultCurrencyCode === CryptoCurrency.USDC) defaultCurrencyCode = 'usdc_polygon';
+        if (defaultCurrencyCode === CryptoCurrency.USDT) defaultCurrencyCode = 'usdt_polygon';
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
         const btcAddress = useBtcAddressStore().availableExternalAddresses.value[0] as string | undefined;
 
+        const { stablecoin } = useAccountSettingsStore();
+
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = useUsdcAddressStore().activeAddress.value;
+        const usdcAddress = stablecoin.value === CryptoCurrency.USDC
+            ? usePolygonAddressStore().activeAddress.value
+            : undefined;
+
+        // Having a USDT address must be optional, so that the widget also works
+        // for legacy or non-polygon-activated accounts.
+        const usdtAddress = stablecoin.value === CryptoCurrency.USDT
+            ? usePolygonAddressStore().activeAddress.value
+            : undefined;
 
         const walletAddresses = {
             // Remove spaces in NIM address, as spaces are invalid URI components
             nim: useAddressStore().state.activeAddress?.replace(/\s/g, ''),
             ...(btcAddress ? { btc: btcAddress } : {}),
             ...(usdcAddress ? { usdc_polygon: usdcAddress } : {}),
+            ...(usdtAddress ? { usdt_polygon: usdtAddress } : {}),
         };
 
         const { config } = useConfig();
@@ -144,6 +160,9 @@ export default defineComponent({
                             } else if (properties.cryptoCurrency.code === 'usdc_polygon') {
                                 useAccountStore().setActiveCurrency(CryptoCurrency.USDC);
                                 sendUsdc(properties);
+                            } else if (properties.cryptoCurrency.code === 'usdt_polygon') {
+                                useAccountStore().setActiveCurrency(CryptoCurrency.USDT);
+                                sendUsdt(properties);
                             }
                         },
                     },
@@ -249,22 +268,25 @@ export default defineComponent({
                 // Validate that we are talking about the same USDC
                 if (
                     !properties.cryptoCurrency.chainId
-                    || parseInt(properties.cryptoCurrency.chainId, 10) !== config.usdc.networkId
+                    || parseInt(properties.cryptoCurrency.chainId, 10) !== config.polygon.networkId
                 ) {
                     throw new Error('Invalid network ID given by Moonpay');
                 }
 
-                if (properties.cryptoCurrency.contractAddress !== config.usdc.nativeUsdcContract.toLowerCase()) {
+                const { tokenContract } = config.polygon.usdt_bridged;
+
+                if (properties.cryptoCurrency.contractAddress !== tokenContract.toLowerCase()) {
                     throw new Error('Invalid USDC contract address given by Moonpay');
                 }
 
-                const { nativeAccountBalance } = useUsdcAddressStore();
+                const { accountUsdcBalance } = usePolygonAddressStore();
                 // TODO: Preselect a relay to be able to check balance against the fee as well
-                if (nativeAccountBalance.value < value) {
+                if (accountUsdcBalance.value < value) {
                     throw new Error('Insufficient USDC balance');
                 }
 
-                const tx = await sendUsdcTransaction(
+                const tx = await sendPolygonTransaction(
+                    tokenContract,
                     normalizedDepositAddress,
                     value,
                     'Moonpay',
@@ -278,6 +300,54 @@ export default defineComponent({
                 useUsdcContactsStore().setContact(normalizedDepositAddress, 'Moonpay');
 
                 useUsdcTransactionsStore().addTransactions([tx]);
+            } catch (error) {
+                console.error(error); // eslint-disable-line no-console
+                // eslint-disable-next-line no-alert
+                alert(`Something went wrong: ${(error as Error).message.split(' req={')[0]}`);
+            }
+        }
+
+        async function sendUsdt(properties: InitiateDepositProperties) {
+            try {
+                const ethers = await loadEthersLibrary();
+                const normalizedDepositAddress = ethers.utils.getAddress(properties.depositWalletAddress);
+                const value = parseInt(properties.cryptoCurrencyAmountSmallestDenomination, 10);
+
+                // Validate that we are talking about the same USDT
+                if (
+                    !properties.cryptoCurrency.chainId
+                    || parseInt(properties.cryptoCurrency.chainId, 10) !== config.polygon.networkId
+                ) {
+                    throw new Error('Invalid network ID given by Moonpay');
+                }
+
+                const { tokenContract } = config.polygon.usdt_bridged;
+
+                if (properties.cryptoCurrency.contractAddress !== tokenContract.toLowerCase()) {
+                    throw new Error('Invalid USDT contract address given by Moonpay');
+                }
+
+                const { accountUsdtBridgedBalance } = usePolygonAddressStore();
+                // TODO: Preselect a relay to be able to check balance against the fee as well
+                if (accountUsdtBridgedBalance.value < value) {
+                    throw new Error('Insufficient USDT balance');
+                }
+
+                const tx = await sendPolygonTransaction(
+                    tokenContract,
+                    normalizedDepositAddress,
+                    value,
+                    'Moonpay',
+                    // relay,
+                );
+
+                if (!tx) {
+                    throw new Error('Failed to sign and/or send USDT transaction');
+                }
+
+                useUsdtContactsStore().setContact(normalizedDepositAddress, 'Moonpay');
+
+                useUsdtTransactionsStore().addTransactions([tx]);
             } catch (error) {
                 console.error(error); // eslint-disable-line no-console
                 // eslint-disable-next-line no-alert

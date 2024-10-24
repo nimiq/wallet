@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import type { BigNumber, Contract } from 'ethers';
 import { getPolygonBlockNumber, PolygonClient } from '../../ethers';
-import { RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
+import { OPENGSN_RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../Constants';
 
@@ -9,8 +9,8 @@ let relayHubContract: Contract | undefined;
 
 export function getRelayHub({ ethers, provider }: PolygonClient) {
     return relayHubContract || (relayHubContract = new ethers.Contract(
-        useConfig().config.usdc.relayHubContract,
-        RELAY_HUB_CONTRACT_ABI,
+        useConfig().config.polygon.openGsnRelayHubContract,
+        OPENGSN_RELAY_HUB_CONTRACT_ABI,
         provider,
     ));
 }
@@ -204,7 +204,7 @@ async function* relayServerRegisterGen(
                 console.debug('Skipping relay: wrong version:', relayAddr.version);
                 return;
             }
-            if (relayAddr.networkId !== config.usdc.networkId.toString(10)) {
+            if (relayAddr.networkId !== config.polygon.networkId.toString(10)) {
                 console.debug('Skipping relay: wrong networkId:', relayAddr.networkId);
                 return;
             }
@@ -257,7 +257,7 @@ async function* relayServerRegisterGen(
             const hoursToLookBackwards = config.environment === ENV_MAIN ? 48 : 24;
             const earliestBlock = startBlock - hoursToLookBackwards * 60 * POLYGON_BLOCKS_PER_MINUTE;
 
-            const STEP_BLOCKS = config.usdc.rpcMaxBlockRange;
+            const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
             while (startBlock > earliestBlock) {
                 const filterToBlock = startBlock;

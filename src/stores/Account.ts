@@ -1,6 +1,7 @@
 import { createStore } from 'pinia';
 import HubApi, { Account, AccountType as AccountTypeEnumType } from '@nimiq/hub-api';
 import { useAddressStore } from './Address';
+import { useAccountSettingsStore } from './AccountSettings';
 import { CryptoCurrency } from '../lib/Constants';
 
 export type AccountState = {
@@ -41,7 +42,7 @@ export const useAccountStore = createStore({
         activeCurrency: (state) => state.activeCurrency,
         hasBitcoinAddresses: (state, { activeAccountInfo }) =>
             Boolean((activeAccountInfo.value as AccountInfo | null)?.btcAddresses?.external.length),
-        hasUsdcAddresses: (state, { activeAccountInfo }) =>
+        hasPolygonAddresses: (state, { activeAccountInfo }) =>
             Boolean((activeAccountInfo.value as AccountInfo | null)?.polygonAddresses?.length),
     },
     actions: {
@@ -52,9 +53,19 @@ export const useAccountStore = createStore({
             // switch active currency to NIM
             if (
                 (this.activeCurrency.value === CryptoCurrency.BTC && !this.hasBitcoinAddresses.value)
-                || (this.activeCurrency.value === CryptoCurrency.USDC && !this.hasUsdcAddresses.value)
+                || (this.activeCurrency.value === CryptoCurrency.USDC && !this.hasPolygonAddresses.value)
+                || (this.activeCurrency.value === CryptoCurrency.USDT && !this.hasPolygonAddresses.value)
             ) {
                 this.setActiveCurrency(CryptoCurrency.NIM);
+            }
+
+            if ([CryptoCurrency.USDC, CryptoCurrency.USDT].includes(this.activeCurrency.value)) {
+                const stablecoin = useAccountSettingsStore().state.settings[accountId]?.stablecoin;
+                if (!stablecoin) {
+                    this.setActiveCurrency(CryptoCurrency.NIM);
+                } else if (stablecoin !== this.activeCurrency.value) {
+                    this.setActiveCurrency(stablecoin);
+                }
             }
 
             const { selectAddress } = useAddressStore();

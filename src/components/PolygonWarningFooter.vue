@@ -3,11 +3,11 @@
         <div class="nq-text-s" :class="[level, level === 'info' ? 'nq-light-blue' : 'nq-orange']">
             {{ type === 'sending'
                 ? level === 'info'
-                    ? $t('Send to Polygon USDC addresses only!')
-                    : $t('Funds sent to non-Polygon USDC addresses could be permanently lost!')
+                    ? $t('Send to Polygon {ticker} addresses only!', { ticker })
+                    : $t('Funds sent to non-Polygon {ticker} addresses could be permanently lost!', { ticker })
                 : level === 'info'
-                    ? $t('You can receive from Polygon USDC addresses only!')
-                    : $t('Funds sent from non-Polygon USDC addresses could be permanently lost!')
+                    ? $t('You can receive from Polygon {ticker} addresses only!', { ticker })
+                    : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
             }}
             <Tooltip :container="this" autoWidth :margin="{
                 left: Math.min(88, .18 * windowWidth),
@@ -15,16 +15,16 @@
             }">
                 <template #trigger><InfoCircleSmallIcon/></template>
                 <p>{{ type === 'sending'
-                    ? $t('Ask the receiver to ensure they have a Polygon USDC address.')
-                    : $t('Ask the sender to ensure they have a Polygon USDC address.')
+                    ? $t('Ask the receiver to ensure they have a Polygon {ticker} address.', { ticker })
+                    : $t('Ask the sender to ensure they have a Polygon {ticker} address.', { ticker })
                 }}</p>
                 <p class="explainer">
-                    {{ $t('The USDC stablecoin was originally launched on Ethereum. To avoid high fees and '
-                    + 'enable fast transactions, this wallet uses the Polygon version.') }}
+                    {{ $t('The {ticker} stablecoin was originally launched on Ethereum. To avoid high fees and '
+                    + 'enable fast transactions, this wallet uses the Polygon version.', { ticker }) }}
                 </p>
                 <p class="nq-orange">{{ type === 'sending'
-                    ? $t('Funds sent to non-Polygon USDC versions could be permanently lost!')
-                    : $t('Funds sent from non-Polygon USDC versions could be permanently lost!')
+                    ? $t('Funds sent to non-Polygon {ticker} versions could be permanently lost!', { ticker })
+                    : $t('Funds sent from non-Polygon {ticker} versions could be permanently lost!', { ticker })
                 }}</p>
             </Tooltip>
         </div>
@@ -32,9 +32,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import { PageFooter, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { useWindowSize } from '../composables/useWindowSize';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     props: {
@@ -51,9 +52,13 @@ export default defineComponent({
     },
     setup() {
         const { width: windowWidth } = useWindowSize();
+        const { stablecoin } = useAccountSettingsStore();
+
+        const ticker = computed(() => (stablecoin.value || 'usdc').toUpperCase());
 
         return {
             windowWidth,
+            ticker,
         };
     },
     components: {

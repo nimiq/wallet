@@ -6,6 +6,7 @@ import { useProxyStore } from '../../stores/Proxy';
 import { Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx, useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
+import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
 import { parseData } from '../DataFormatting';
 import { isProxyData, ProxyType } from '../ProxyDetection';
 import { useSwapsStore } from '../../stores/Swaps';
@@ -15,7 +16,7 @@ import { ExportFormat } from './TransactionExport';
 /* eslint-disable default-case */
 /* eslint-disable no-case-declarations */
 
-type CryptoAsset = 'NIM' | 'USDC' | 'BTC';
+type CryptoAsset = 'NIM' | 'USDC' | 'USDT' | 'BTC';
 
 export abstract class Format {
     protected rows: string[][] = [];
@@ -26,7 +27,8 @@ export abstract class Format {
         public nimAddresses: string[],
         public btcAddresses: { internal: string[], external: string[] },
         public usdcAddresses: string[],
-        public transactions: (NimTx | BtcTx | UsdcTx)[],
+        public usdtAddresses: string[],
+        public transactions: (NimTx | BtcTx | UsdcTx | UsdtTx)[],
         public year: number,
     ) {}
 
@@ -58,6 +60,10 @@ export abstract class Format {
 
     protected formatUsdc(usdc: number) {
         return (usdc / 1e6).toString();
+    }
+
+    protected formatUsdt(usdt: number) {
+        return (usdt / 1e6).toString();
     }
 
     protected formatNimiqData(transaction: NimTx, isIncoming: boolean) {
@@ -95,15 +101,29 @@ export abstract class Format {
         return message;
     }
 
-    protected assertAndSetCryptoAsset<T extends NimTx | BtcTx | UsdcTx>(tx: T)
+    protected assertAndSetCryptoAsset<T extends NimTx | BtcTx | UsdcTx | UsdtTx>(tx: T)
     : asserts tx is T & { readonly asset: CryptoAsset } {
         let asset: CryptoAsset;
         if ('sender' in tx && 'senderType' in tx) {
             asset = 'NIM';
         } else if ('outputs' in tx) {
             asset = 'BTC';
-        } else if ('sender' in tx && 'logIndex' in tx) {
+        } else if (
+            'sender' in tx
+            && 'logIndex' in tx
+            && (
+                !tx.token
+                || tx.token === Config.polygon.usdc.tokenContract
+                || tx.token === Config.polygon.usdc_bridged.tokenContract
+            )
+        ) {
             asset = 'USDC';
+        } else if (
+            'sender' in tx
+            && 'logIndex' in tx
+            && tx.token === Config.polygon.usdt_bridged.tokenContract
+        ) {
+            asset = 'USDT';
         } else {
             throw new Error('Unable to detect tx asset');
         }
@@ -131,6 +151,7 @@ export abstract class Format {
                 switch (tx.asset) {
                     case 'NIM': isIncoming = this.nimAddresses.includes((tx as NimTx).recipient); break;
                     case 'USDC': isIncoming = this.usdcAddresses.includes((tx as UsdcTx).recipient); break;
+                    case 'USDT': isIncoming = this.usdtAddresses.includes((tx as UsdtTx).recipient); break;
                     case 'BTC': isIncoming = Boolean((tx as BtcTx).outputs.some((output) =>
                         output.address && (this.btcAddresses.external.includes(output.address))));
                         break;
@@ -194,6 +215,13 @@ export abstract class Format {
                     if (usdcIsSender) this.addRow(undefined, tx, messageOverride);
                     if (usdcIsRecipient) this.addRow(tx, undefined, messageOverride);
                     break;
+                case 'USDT':
+                    const usdtIsSender = this.usdtAddresses.includes((tx as UsdtTx).sender);
+                    const usdtIsRecipient = this.usdtAddresses.includes((tx as UsdtTx).recipient);
+
+                    if (usdtIsSender) this.addRow(undefined, tx, messageOverride);
+                    if (usdtIsRecipient) this.addRow(tx, undefined, messageOverride);
+                    break;
             }
         }
 
@@ -201,8 +229,8 @@ export abstract class Format {
     }
 
     protected abstract addRow(
-        txIn?: BtcTx | NimTx | UsdcTx,
-        txOut?: BtcTx | NimTx | UsdcTx,
+        txIn?: BtcTx | NimTx | UsdcTx | UsdtTx,
+        txOut?: BtcTx | NimTx | UsdcTx | UsdtTx,
         messageOverride?: string,
     ): void
 
@@ -225,7 +253,7 @@ export abstract class Format {
         link.click();
     }
 
-    protected getTxAsset(tx: BtcTx | NimTx | UsdcTx) {
+    protected getTxAsset(tx: BtcTx | NimTx | UsdcTx | UsdtTx) {
         this.assertAndSetCryptoAsset(tx);
         return tx.asset;
     }
@@ -234,21 +262,22 @@ export abstract class Format {
         if (asset === 'NIM') return this.formatLunas(value);
         if (asset === 'BTC') return this.formatSatoshis(value);
         if (asset === 'USDC') return this.formatUsdc(value);
+        if (asset === 'USDT') return this.formatUsdt(value);
         return '0';
     }
 
-    protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean): {
+    protected getValue(tx: BtcTx | NimTx | UsdcTx | UsdtTx, isIncoming: boolean): {
         value: number,
         outgoingFee: number,
     }
 
-    protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean, fiatAsset: FiatCurrency): {
+    protected getValue(tx: BtcTx | NimTx | UsdcTx | UsdtTx, isIncoming: boolean, fiatAsset: FiatCurrency): {
         value: number,
         outgoingFee: number,
         fiatValue?: number,
     }
 
-    protected getValue(tx: BtcTx | NimTx | UsdcTx, isIncoming: boolean, fiatAsset?: FiatCurrency): {
+    protected getValue(tx: BtcTx | NimTx | UsdcTx | UsdtTx, isIncoming: boolean, fiatAsset?: FiatCurrency): {
         value: number,
         outgoingFee: number,
         // note: different to the transaction list and to transaction modals in the UI, in the transaction export we do
@@ -328,6 +357,12 @@ export abstract class Format {
                     value: (tx as UsdcTx).value,
                     outgoingFee: (tx as UsdcTx).fee || 0,
                     ...(fiatAsset ? { fiatValue: (tx as UsdcTx).fiatValue?.[fiatAsset] || undefined } : {}),
+                };
+            case 'USDT':
+                return {
+                    value: (tx as UsdtTx).value,
+                    outgoingFee: (tx as UsdtTx).fee || 0,
+                    ...(fiatAsset ? { fiatValue: (tx as UsdtTx).fiatValue?.[fiatAsset] || undefined } : {}),
                 };
             default:
                 throw new Error(`Unsupported currency ${tx.asset}`);

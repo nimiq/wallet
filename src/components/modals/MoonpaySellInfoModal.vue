@@ -10,12 +10,19 @@
             </header>
 
             <main class="flex-column">
-                <h1 class="nq-h1">{{ $t('Sell BTC and USDC') }}</h1>
+                <h1 class="nq-h1" v-if="stablecoin">
+                    {{ $t('Sell BTC and {ticker}', { ticker: stablecoin.toUpperCase() }) }}
+                </h1>
+                <h1 class="nq-h1" v-else>{{ $t('Sell BTC') }}</h1>
+
                 <p class="subline">{{ $t('MoonPay is a third-party service requiring registration and KYC.') }}</p>
+
                 <div class="crypto-logos flex-row">
-                    <BitcoinIcon />
-                    <UsdcIcon />
+                    <BitcoinIcon title="BTC" />
+                    <UsdcIcon v-if="stablecoin === CryptoCurrency.USDC" :title="stablecoin.toUpperCase()" />
+                    <UsdtIcon v-if="stablecoin === CryptoCurrency.USDT" :title="stablecoin.toUpperCase()" />
                 </div>
+
                 <p class="fees flex-row">
                     {{ $t('{percentage} fees', { percentage: '1%'}) }}
                     <svg viewBox="0 0 3 3" xmlns="http://www.w3.org/2000/svg" class="dot">
@@ -47,16 +54,21 @@ import { PageBody, PageFooter, FiatAmount } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import UsdtIcon from '../icons/UsdtIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { FiatCurrency } from '../../lib/Constants';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
         const { currency } = useFiatStore();
+        const { stablecoin } = useAccountSettingsStore();
 
         return {
             currency,
             FiatCurrency,
+            stablecoin,
+            CryptoCurrency,
         };
     },
     components: {
@@ -65,6 +77,7 @@ export default defineComponent({
         PageFooter,
         BitcoinIcon,
         UsdcIcon,
+        UsdtIcon,
         FiatAmount,
     },
 });
@@ -136,6 +149,10 @@ export default defineComponent({
 
         .usdc {
             color: var(--usdc-blue);
+        }
+
+        .usdt {
+            color: var(--usdt-green);
         }
     }
 

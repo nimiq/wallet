@@ -28,6 +28,8 @@
             />
             <UsdcIcon v-else-if="swapData
                 && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
+            <UsdtIcon v-else-if="swapData
+                && (swapData.asset === SwapAsset.USDT)"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
             <SwapSmallIcon/>
@@ -96,6 +98,7 @@ import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 // import HistoricValueIcon from './icons/HistoricValueIcon.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
+import UsdtIcon from './icons/UsdtIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
 import { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS } from '../lib/Constants';
@@ -166,6 +169,7 @@ export default defineComponent({
         // HistoricValueIcon,
         Identicon,
         UsdcIcon,
+        UsdtIcon,
         BankIcon,
         SwapSmallIcon,
         TransactionListOasisPayoutStatus,
@@ -262,6 +266,10 @@ svg {
 
             &.usdc {
                 color: var(--usdc-blue);
+            }
+
+            &.usdt {
+                color: var(--usdt-green);
             }
         }
 

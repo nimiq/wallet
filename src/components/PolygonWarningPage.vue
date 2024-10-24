@@ -4,19 +4,21 @@
         <PageBody class="flex-column">
             <StopSignIcon/>
             <h3 class="nq-h3">{{ $t('Before you start') }}</h3>
-            <h1 class="nq-h1">{{ $t('The Nimiq Wallet uses Polygon USDC for speed and low fees.') }}</h1>
+            <h1 class="nq-h1">
+                {{ $t('The Nimiq Wallet uses Polygon {ticker} for speed and low fees.', { ticker }) }}
+            </h1>
             <p class="nq-text nq-light-blue">
                 <AlertCircleIcon/>
                 {{ type === 'sending'
-                    ? $t('Send to Polygon USDC addresses only!')
-                    : $t('Receive from Polygon USDC addresses only!')
+                    ? $t('Send to Polygon {ticker} addresses only!', { ticker })
+                    : $t('Receive from Polygon {ticker} addresses only!', { ticker })
                 }}
             </p>
             <p class="nq-text nq-orange">
                 <AlertTriangleIcon/>
                 {{ type === 'sending'
-                    ? $t('Funds sent to non-Polygon USDC addresses could be permanently lost!')
-                    : $t('Funds sent from non-Polygon USDC addresses could be permanently lost!')
+                    ? $t('Funds sent to non-Polygon {ticker} addresses could be permanently lost!', { ticker })
+                    : $t('Funds sent from non-Polygon {ticker} addresses could be permanently lost!', { ticker })
                 }}
             </p>
             <button class="nq-button light-blue" @click="$emit('continue')" @mousedown.prevent>
@@ -27,9 +29,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody, AlertCircleIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import StopSignIcon from './icons/StopSignIcon.vue';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     props: {
@@ -42,6 +45,15 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+    },
+    setup() {
+        const { stablecoin } = useAccountSettingsStore();
+
+        const ticker = computed(() => (stablecoin.value || 'usdc').toUpperCase());
+
+        return {
+            ticker,
+        };
     },
     components: {
         PageHeader,

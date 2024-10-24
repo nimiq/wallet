@@ -8,15 +8,18 @@ import { useTransactionsStore } from './stores/Transactions';
 import { useAddressStore } from './stores/Address';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
+import { useAccountSettingsStore } from './stores/AccountSettings';
 import { useContactsStore } from './stores/Contacts';
 import { useFiatStore, guessUserCurrency } from './stores/Fiat';
 import { useProxyStore } from './stores/Proxy';
 import { useBtcAddressStore } from './stores/BtcAddress';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { useBtcLabelsStore } from './stores/BtcLabels';
-import { useUsdcAddressStore } from './stores/UsdcAddress';
+import { usePolygonAddressStore } from './stores/PolygonAddress';
 import { useUsdcContactsStore } from './stores/UsdcContacts';
 import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
+import { useUsdtContactsStore } from './stores/UsdtContacts';
+import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
@@ -29,13 +32,15 @@ const StorageKeys = {
     ACCOUNTINFOS: 'wallet_accounts_v01',
     ADDRESSINFOS: 'wallet_addresses_v01',
     SETTINGS: 'wallet_settings_v01',
+    ACCOUNTSETTINGS: 'wallet_accountsettings_v00',
     FIAT: 'wallet_exchange-rates_v01',
     DEPRECATED_CASHLINKS: 'wallet_cashlinks_v01', // TODO deprecated; remove in the future
     PROXIES: 'wallet_proxies_v01',
     BTCTRANSACTIONS: 'wallet_btctransactions_v01',
     BTCADDRESSINFOS: 'wallet_btcaddresses_v01',
-    USDCADDRESSINFOS: 'wallet_usdcaddresses_v01',
+    POLYGONADDRESSINFOS: 'wallet_usdcaddresses_v01', // Legacy value to not delete all user's Polygon addresses
     USDCTRANSACTIONS: 'wallet_usdctransactions_v01',
+    USDTTRANSACTIONS: 'wallet_usdttransactions_v01',
     SWAPS: 'wallet_swaps_v01',
     BANK: 'wallet_bank_v01',
     KYC: 'wallet_kyc_v00',
@@ -46,6 +51,7 @@ const PersistentStorageKeys = {
     CONTACTS: 'wallet_contacts_v01',
     BTCLABELS: 'wallet_btclabels_v01',
     USDCCONTACTS: 'wallet_usdccontacts_v01',
+    USDTCONTACTS: 'wallet_usdtcontacts_v01',
 };
 
 const unsubscriptions: (() => void)[] = [];
@@ -128,6 +134,7 @@ export async function initStorage() {
     const transactionsStore = useTransactionsStore();
     const btcTransactionsStore = useBtcTransactionsStore();
     const usdcTransactionsStore = useUsdcTransactionsStore();
+    const usdtTransactionsStore = useUsdtTransactionsStore();
     const proxyStore = useProxyStore();
 
     await Promise.all([
@@ -140,6 +147,12 @@ export async function initStorage() {
                 updateAvailable: false,
                 btcDecimals: storedSettings.btcDecimals === 3 ? 5 : storedSettings.btcDecimals,
             }),
+        ),
+        initStoreStore(
+            useAccountSettingsStore(),
+            StorageKeys.ACCOUNTSETTINGS,
+            (state) => state.settings,
+            (storedAccountSettings) => ({ settings: storedAccountSettings }),
         ),
         initStoreStore(useFiatStore(), StorageKeys.FIAT).then((storedFiatState) => {
             if (storedFiatState) return;
@@ -198,7 +211,27 @@ export async function initStorage() {
             (state) => state.transactions,
             (storedBtcTransactions) => ({ transactions: storedBtcTransactions }),
         ),
-        initStoreStore(useUsdcAddressStore(), StorageKeys.USDCADDRESSINFOS),
+        initStoreStore(
+            usePolygonAddressStore(),
+            StorageKeys.POLYGONADDRESSINFOS,
+            (state) => state, // this is the default, but we still provide it for ts type inference
+            ({ addressInfos }) => {
+                const mapped = Object.entries(addressInfos).map(([id, ai]) => [id, {
+                    address: ai.address,
+                    // Map old properties to new properties
+                    // @ts-expect-error Old property no longer typed
+                    balanceUsdcBridged: ai.balanceUsdcBridged ?? ai.balance,
+                    // @ts-expect-error Old property no longer typed
+                    balanceUsdc: ai.balanceUsdc ?? ai.nativeBalance,
+                    balanceUsdtBridged: ai.balanceUsdtBridged ?? null,
+                    // @ts-expect-error Old property no longer typed
+                    pol: ai.pol ?? ai.matic,
+                }] as [string, typeof ai]);
+                return {
+                    addressInfos: Object.fromEntries(mapped),
+                };
+            },
+        ),
         initStoreStore(
             usdcTransactionsStore,
             StorageKeys.USDCTRANSACTIONS,
@@ -208,6 +241,18 @@ export async function initStorage() {
         initStoreStore(
             useUsdcContactsStore(),
             PersistentStorageKeys.USDCCONTACTS,
+            (state) => state.contacts,
+            (storedContacts) => ({ contacts: storedContacts }),
+        ),
+        initStoreStore(
+            usdtTransactionsStore,
+            StorageKeys.USDTTRANSACTIONS,
+            (store) => store.transactions,
+            (storedUsdtTransactions) => ({ transactions: storedUsdtTransactions }),
+        ),
+        initStoreStore(
+            useUsdtContactsStore(),
+            PersistentStorageKeys.USDTCONTACTS,
             (state) => state.contacts,
             (storedContacts) => ({ contacts: storedContacts }),
         ),
@@ -226,6 +271,7 @@ export async function initStorage() {
     transactionsStore.calculateFiatAmounts();
     btcTransactionsStore.calculateFiatAmounts();
     usdcTransactionsStore.calculateFiatAmounts();
+    usdtTransactionsStore.calculateFiatAmounts();
 }
 
 async function initStoreStore<State extends StateTree, StoredState>(

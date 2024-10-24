@@ -15,7 +15,7 @@
             <AddressList
                 embedded
                 :showBitcoin="hasBitcoinAddresses && $config.enableBitcoin"
-                :showUsdc="hasUsdcAddresses && $config.usdc.enabled"
+                :showStablecoin="hasPolygonAddresses && $config.polygon.enabled && stablecoin"
                 @address-selected="addressSelected"
             />
         </PageBody>
@@ -28,10 +28,12 @@ import { defineComponent } from '@vue/composition-api';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import AddressList from '../AddressList.vue';
 import { useAccountStore } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
     setup(props, context) {
-        const { activeCurrency, hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
+        const { stablecoin } = useAccountSettingsStore();
 
         const { name } = context.root.$router.currentRoute;
 
@@ -53,7 +55,8 @@ export default defineComponent({
             name,
             addressSelected,
             hasBitcoinAddresses,
-            hasUsdcAddresses,
+            hasPolygonAddresses,
+            stablecoin,
         };
     },
     components: {

@@ -31,17 +31,17 @@
 
             <div class="flex-grow"></div>
 
-            <button v-if="hasUsdcAddresses" class="nq-button light-blue" @click="close()" @mousedown.prevent>
+            <button v-if="hasPolygonAddresses" class="nq-button light-blue" @click="close()" @mousedown.prevent>
                 {{ buttonText }}
             </button>
-            <button v-else class="nq-button light-blue" @click="enableUsdc" @mousedown.prevent>
-                {{ $t('Activate USDC') }}
+            <button v-else class="nq-button light-blue" @click="enablePolygon" @mousedown.prevent>
+                {{ $t('Activate USDC & USDT') }}
             </button>
 
             <a
-                v-if="!hasUsdcAddresses || shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal"
+                v-if="!hasPolygonAddresses || shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal"
                 class="nq-link"
-                @click="close(hasUsdcAddresses && (shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal))"
+                @click="close(hasPolygonAddresses && (shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal))"
             >
                 {{ $t('Skip') }}
             </a>
@@ -53,9 +53,8 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
-import { activateUsdc } from '../../hub';
+import { activatePolygon } from '../../hub';
 import {
-    CryptoCurrency,
     WELCOME_MODAL_LOCALSTORAGE_KEY,
     WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
@@ -68,7 +67,7 @@ export default defineComponent({
         redirect: String,
     },
     setup(props, context) {
-        const { activeAccountId, activeAccountInfo, setActiveCurrency, hasUsdcAddresses } = useAccountStore();
+        const { activeAccountId, activeAccountInfo, hasPolygonAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);
@@ -102,15 +101,17 @@ export default defineComponent({
             return context.root.$t('Got it');
         });
 
-        async function enableUsdc() {
-            await activateUsdc(activeAccountId.value!);
-            if (!hasUsdcAddresses.value) return;
-            setActiveCurrency(CryptoCurrency.USDC);
-            await close();
+        async function enablePolygon() {
+            await activatePolygon(activeAccountId.value!);
+            if (!hasPolygonAddresses.value) return;
+            await close(true);
+            if (!props.redirect) {
+                context.root.$router.push('/stablecoin-selection');
+            }
         }
 
         async function close(skipDefaultRedirects = false) {
-            if (hasUsdcAddresses.value && props.redirect) {
+            if (hasPolygonAddresses.value && props.redirect) {
                 // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
                 // a malicious link.
                 await context.root.$router.push(props.redirect);
@@ -118,7 +119,7 @@ export default defineComponent({
                 await modal$.value!.forceClose();
                 if (skipDefaultRedirects) return;
 
-                if (isMobile.value && hasUsdcAddresses.value) {
+                if (isMobile.value && hasPolygonAddresses.value) {
                     // On mobile, forward to the USDC transactions overview, after USDC got activated and the
                     // redirects by forceClose finished.
                     await context.root.$router.push('/transactions');
@@ -134,12 +135,12 @@ export default defineComponent({
         }
 
         return {
-            hasUsdcAddresses,
+            hasPolygonAddresses,
             shouldOpenWelcomeModal,
             shouldOpenWelcomePreStakingModal,
             buttonText,
             modal$,
-            enableUsdc,
+            enablePolygon,
             close,
         };
     },

@@ -63,21 +63,27 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { LabelInput } from '@nimiq/vue-components';
+import { CryptoCurrency } from '@nimiq/utils';
 import Avatar from './Avatar.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import TrashIcon from './icons/TrashIcon.vue';
-import { RecipientType } from './modals/UsdcSendModal.vue';
+import { RecipientType } from './modals/StablecoinSendModal.vue';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
-import { UsdcAddressInfo, useUsdcAddressStore } from '../stores/UsdcAddress';
+import { useUsdtContactsStore } from '../stores/UsdtContacts';
+import { PolygonAddressInfo, usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useAccountStore } from '../stores/Account';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     setup() {
-        const { contactsArray: contacts, setContact } = useUsdcContactsStore();
+        const { stablecoin } = useAccountSettingsStore();
+        const { contactsArray: contacts, setContact } = stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore();
 
-        const { state: $usdcAddresses, addressInfo: activeAddressInfo } = useUsdcAddressStore();
+        const { state: $polygonAddresses, addressInfo: activeAddressInfo } = usePolygonAddressStore();
 
-        type LabeledUsdcAddressInfo = UsdcAddressInfo & {
+        type LabeledPolygonAddressInfo = PolygonAddressInfo & {
             label: string,
         };
 
@@ -85,13 +91,13 @@ export default defineComponent({
 
         const list$ = ref<HTMLDivElement>(null);
 
-        const ownAddressInfos = computed(() => Object.values($usdcAddresses.addressInfos)
+        const ownAddressInfos = computed(() => Object.values($polygonAddresses.addressInfos)
             .filter((addressInfo) => addressInfo.address !== activeAddressInfo.value?.address)
             .map((addressInfo) => ({
                 ...addressInfo,
                 label: Object.values(accountInfos.value).find((accountInfo) =>
                     accountInfo.polygonAddresses?.includes(addressInfo.address))!.label,
-            } as LabeledUsdcAddressInfo)),
+            } as LabeledPolygonAddressInfo)),
         );
 
         const showAllOwnAddresses = ref(false);

@@ -1,4 +1,4 @@
-# 
+#
 # Translators:
 # Talleyrand, 2020
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2023
@@ -6,7 +6,7 @@
 # Sören Schwert <hello@soerenschwert.de>, 2023
 # Matheo <matheo@nimiq.com>, 2024
 # Robinson BARAIS, 2024
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: Robinson BARAIS, 2024\n"
@@ -27,8 +27,8 @@ msgstr "{accounts} conserver, gérer et regrouper les adresses."
 msgid "{addresses} send and receive transactions."
 msgstr "{addresses} envoyer et recevoir des transactions"
 
-#: src/components/modals/UsdcSendModal.vue:173
-#: src/components/modals/UsdcSendModal.vue:196
+#: src/components/modals/StablecoinSendModal.vue:173
+#: src/components/modals/StablecoinSendModal.vue:196
 #: src/components/swap/SwapModal.vue:61
 msgid "{amount} fee"
 msgstr "{amount} de frais"
@@ -125,8 +125,8 @@ msgstr "+ frais de réseau, inscription obligatoire à partir de 700$"
 msgid "+{n} more"
 msgstr "+{n} de plus"
 
-#: src/components/modals/UsdcSendModal.vue:167
-#: src/components/modals/UsdcSendModal.vue:190
+#: src/components/modals/StablecoinSendModal.vue:167
+#: src/components/modals/StablecoinSendModal.vue:190
 #: src/components/swap/SwapModal.vue:55
 msgid "< {amount} fee"
 msgstr "< {amount} de frais"
@@ -252,7 +252,7 @@ msgstr "Activer"
 msgid "Activate Bitcoin"
 msgstr "Activer Bitcoin"
 
-#: src/components/modals/UsdcActivationModal.vue:38
+#: src/components/modals/PolygonActivationModal.vue:38
 msgid "Activate USDC"
 msgstr "Activer l'USDC"
 
@@ -510,7 +510,7 @@ msgstr "Bloc #{height}"
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
-#: src/components/modals/UsdcActivationModal.vue:28
+#: src/components/modals/PolygonActivationModal.vue:28
 msgid "blog post"
 msgstr "article de blog"
 
@@ -669,13 +669,13 @@ msgid "Changing validator"
 msgstr "Changement du validateur"
 
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:100
+#: src/components/modals/PolygonActivationModal.vue:100
 msgid "Check the new intro"
 msgstr "Regarder la nouvelle intro"
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
-#: src/components/modals/UsdcSendModal.vue:65
+#: src/components/modals/StablecoinSendModal.vue:65
 msgid "Choose a Recipient"
 msgstr "Choisissez un destinataire"
 
@@ -969,7 +969,7 @@ msgstr "Déconnexion"
 
 #: src/components/BtcAddressInput.vue:100
 #: src/components/modals/SendModal.vue:380
-#: src/components/modals/UsdcSendModal.vue:361
+#: src/components/modals/StablecoinSendModal.vue:361
 msgid "Domain does not resolve to a valid address"
 msgstr "Le domaine ne correspond pas à une adresse valide"
 
@@ -1053,7 +1053,7 @@ msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
 #: src/components/modals/BtcSendModal.vue:128
 #: src/components/modals/SendModal.vue:244
-#: src/components/modals/UsdcSendModal.vue:228
+#: src/components/modals/StablecoinSendModal.vue:228
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
 
@@ -1068,7 +1068,7 @@ msgid "Enter account holder name"
 msgstr "Entrer le nom du titulaire du compte"
 
 #: src/components/modals/SendModal.vue:24
-#: src/components/modals/UsdcSendModal.vue:30
+#: src/components/modals/StablecoinSendModal.vue:30
 msgid "Enter address"
 msgstr "Entrez l'adresse"
 
@@ -1163,7 +1163,7 @@ msgstr "express"
 msgid "Failed"
 msgstr "Échoué"
 
-#: src/components/modals/UsdcSendModal.vue:722
+#: src/components/modals/StablecoinSendModal.vue:722
 #: src/components/swap/SwapModal.vue:971
 msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
 msgstr ""
@@ -1339,7 +1339,7 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/UsdcActivationModal.vue:102
+#: src/components/modals/PolygonActivationModal.vue:102
 #: src/components/modals/WelcomeModal.vue:352
 #: src/components/PolygonWarningPage.vue:23
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1504,7 +1504,7 @@ msgstr "Installer l'application web"
 #: src/components/modals/BtcSendModal.vue:79
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:189
-#: src/components/modals/UsdcSendModal.vue:207
+#: src/components/modals/StablecoinSendModal.vue:207
 msgid "Insufficient balance."
 msgstr "Solde insuffisant."
 
@@ -1549,7 +1549,7 @@ msgstr "Étiquetez l'expéditeur"
 msgid "Language"
 msgstr "Langue"
 
-#: src/components/modals/UsdcActivationModal.vue:101
+#: src/components/modals/PolygonActivationModal.vue:101
 msgid "Learn about pre-staking"
 msgstr "En savoir plus sur le pré-stacking"
 
@@ -1637,7 +1637,7 @@ msgstr "Fichier de connexion"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: src/components/modals/UsdcSendModal.vue:83
+#: src/components/modals/StablecoinSendModal.vue:83
 msgid "Long press to confirm"
 msgstr "Appui long pour confirmer"
 
@@ -1645,11 +1645,11 @@ msgstr "Appui long pour confirmer"
 msgid "lost"
 msgstr "perdu"
 
-#: src/components/modals/UsdcReceiveModal.vue:16
+#: src/components/modals/StablecoinReceiveModal.vue:16
 msgid "Make sure they are sending Polygon USDC."
 msgstr "Assurez-vous que c'est du Polygon USDC qui est envoyé."
 
-#: src/components/modals/UsdcActivationModal.vue:19
+#: src/components/modals/PolygonActivationModal.vue:19
 msgid ""
 "Many updates like easier address names, more accessible swaps and an "
 "improved asset overview await."
@@ -1708,7 +1708,7 @@ msgstr ""
 "sont supportés seulement sur le nouveau type de compte."
 
 #: src/components/modals/SendModal.vue:76
-#: src/components/modals/UsdcSendModal.vue:77
+#: src/components/modals/StablecoinSendModal.vue:77
 msgid "Name this contact..."
 msgstr "Nommez ce contact..."
 
@@ -2054,7 +2054,7 @@ msgstr "Motif"
 msgid "Raise your limits"
 msgstr "Augmentez vos limites"
 
-#: src/components/modals/UsdcActivationModal.vue:22
+#: src/components/modals/PolygonActivationModal.vue:22
 msgid ""
 "Read all about it in this {blog_post} or click below for the new wallet "
 "intro."
@@ -2087,7 +2087,7 @@ msgstr "Recevoir de l'USDC uniquement depuis une adresse Polygon USDC !"
 msgid "Receive NIM"
 msgstr "Recevoir des NIM"
 
-#: src/components/modals/UsdcReceiveModal.vue:13
+#: src/components/modals/StablecoinReceiveModal.vue:13
 msgid "Receive USDC"
 msgstr "Recevoir de l'USDC"
 
@@ -2187,7 +2187,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:24
 #: src/components/modals/SendModal.vue:39
-#: src/components/modals/UsdcSendModal.vue:47
+#: src/components/modals/StablecoinSendModal.vue:47
 msgid "Resolving Unstoppable Domain..."
 msgstr "Résolution du domaine Unstoppable"
 
@@ -2205,7 +2205,7 @@ msgstr "Le montant de BTC obtenu est trop faible."
 
 #: src/components/modals/BtcSendModal.vue:127
 #: src/components/modals/SendModal.vue:243
-#: src/components/modals/UsdcSendModal.vue:227
+#: src/components/modals/StablecoinSendModal.vue:227
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -2217,7 +2217,7 @@ msgstr "Nouvelle tentative..."
 msgid "Reward"
 msgstr "Récompense"
 
-#: src/components/modals/UsdcSendModal.vue:82
+#: src/components/modals/StablecoinSendModal.vue:82
 msgid "Save and proceed"
 msgstr "Sauvegarder et continuer"
 
@@ -2321,13 +2321,13 @@ msgstr "Envoyer"
 
 #: src/components/modals/BtcSendModal.vue:119
 #: src/components/modals/SendModal.vue:208
-#: src/components/modals/UsdcSendModal.vue:219
+#: src/components/modals/StablecoinSendModal.vue:219
 msgid "Send {currency}"
 msgstr "Envoyer {currency}"
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:81
 #: src/components/modals/SendModal.vue:190
-#: src/components/modals/UsdcSendModal.vue:209
+#: src/components/modals/StablecoinSendModal.vue:209
 msgid "Send all"
 msgstr "Tout envoyer"
 
@@ -2353,7 +2353,7 @@ msgstr "Envoyez uniquement aux adresses Polygon USDC !"
 msgid "Send Transaction"
 msgstr "Envoyer la Transaction"
 
-#: src/components/modals/UsdcSendModal.vue:20
+#: src/components/modals/StablecoinSendModal.vue:20
 msgid "Send USDC"
 msgstr "Envoyer de l'USDC"
 
@@ -2367,7 +2367,7 @@ msgstr "Envoi de la transaction Pré-Stake"
 
 #: src/components/modals/BtcSendModal.vue:461
 #: src/components/modals/SendModal.vue:771
-#: src/components/modals/UsdcSendModal.vue:604
+#: src/components/modals/StablecoinSendModal.vue:604
 msgid "Sending Transaction"
 msgstr "Envoi de la transaction en cours"
 
@@ -2393,11 +2393,11 @@ msgstr "{nim} NIM envoyés"
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
-#: src/components/modals/UsdcSendModal.vue:631
+#: src/components/modals/StablecoinSendModal.vue:631
 msgid "Sent {usdc} USDC"
 msgstr "{usdc} USDC envoyés"
 
-#: src/components/modals/UsdcSendModal.vue:627
+#: src/components/modals/StablecoinSendModal.vue:627
 msgid "Sent {usdc} USDC to {name}"
 msgstr "{usdc} USDC envoyés à {name}"
 
@@ -2417,7 +2417,7 @@ msgstr "virement SEPA instantané"
 
 #: src/components/modals/SendModal.vue:87
 #: src/components/modals/SendModal.vue:99
-#: src/components/modals/UsdcSendModal.vue:96
+#: src/components/modals/StablecoinSendModal.vue:96
 msgid "Set Amount"
 msgstr "Définir le montant"
 
@@ -2459,7 +2459,7 @@ msgstr ""
 "Incluez éventuellement un montant."
 
 #: src/components/modals/ReceiveModal.vue:8
-#: src/components/modals/UsdcReceiveModal.vue:16
+#: src/components/modals/StablecoinReceiveModal.vue:16
 msgid "Share your address with the sender."
 msgstr "Partagez votre adresse avec l'expéditeur."
 
@@ -2497,7 +2497,7 @@ msgid "Simulate EUR payment"
 msgstr "Simuler le paiement en Euro"
 
 #: src/components/modals/BtcActivationModal.vue:28
-#: src/components/modals/UsdcActivationModal.vue:46
+#: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "Passer"
 
@@ -2508,7 +2508,7 @@ msgstr "Petits validateurs"
 #: src/components/modals/BtcSendModal.vue:525
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
-#: src/components/modals/UsdcSendModal.vue:646
+#: src/components/modals/StablecoinSendModal.vue:646
 #: src/components/prestaking/PrestakingGraphPage.vue:178
 #: src/components/prestaking/PrestakingValidatorPage.vue:192
 msgid "Something went wrong"
@@ -2753,7 +2753,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr "Le taux peut changer en fonction du volume à swap."
 
 #: src/components/modals/SendModal.vue:122
-#: src/components/modals/UsdcSendModal.vue:115
+#: src/components/modals/StablecoinSendModal.vue:115
 msgid "The sender and recipient cannot be identical."
 msgstr "L'expéditeur et le bénéficiaire ne peuvent pas être identiques."
 
@@ -3079,7 +3079,7 @@ msgstr ""
 "Bienvenue dans le premier swap atomic entre fiat et crypto. C'est simple, "
 "rapide, et décentralisé."
 
-#: src/components/modals/UsdcActivationModal.vue:16
+#: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
 "Welcome to the updated\n"
 "wallet, now with USDC"
@@ -3208,7 +3208,7 @@ msgstr "Vous allez envoyer {amount}"
 msgid "You will send {amount} NIM"
 msgstr "Vous enverrez {amount} NIM"
 
-#: src/components/modals/UsdcSendModal.vue:183
+#: src/components/modals/StablecoinSendModal.vue:183
 msgid "You will send {amount} USDC"
 msgstr "Vous enverrez {amount} USDC"
 

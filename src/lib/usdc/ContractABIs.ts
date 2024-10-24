@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-export const USDC_CONTRACT_ABI = [
+export const USDC_BRIDGED_TOKEN_CONTRACT_ABI = [
     // 'event Approval(address indexed owner, address indexed spender, uint256 value)',
     // 'event AuthorizationCanceled(address indexed authorizer, bytes32 indexed nonce)',
     // 'event AuthorizationUsed(address indexed authorizer, bytes32 indexed nonce)',
@@ -74,7 +74,7 @@ export const USDC_CONTRACT_ABI = [
     // 'function withdrawWithAuthorization(address owner, uint256 value, uint256 validAfter, uint256 validBefore, bytes32 nonce, uint8 v, bytes32 r, bytes32 s)',
 ];
 
-export const NATIVE_USDC_CONTRACT_ABI = [
+export const USDC_TOKEN_CONTRACT_ABI = [
     // 'event Approval(address indexed owner, address indexed spender, uint256 value)',
     // 'event AuthorizationCanceled(address indexed authorizer, bytes32 indexed nonce)',
     // 'event AuthorizationUsed(address indexed authorizer, bytes32 indexed nonce)',
@@ -144,7 +144,50 @@ export const NATIVE_USDC_CONTRACT_ABI = [
     // 'function version() view returns (string)',
 ];
 
-export const USDC_TRANSFER_CONTRACT_ABI = [
+export const USDT_BRIDGED_TOKEN_CONTRACT_ABI = [
+    // 'constructor()',
+    // 'event Approval(address indexed owner, address indexed spender, uint256 value)',
+    'event MetaTransactionExecuted(address userAddress, address relayerAddress, bytes functionSignature)',
+    // 'event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)',
+    // 'event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)',
+    // 'event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)',
+    'event Transfer(address indexed from, address indexed to, uint256 value)',
+    // 'function CHILD_CHAIN_ID() view returns (uint256)',
+    // 'function CHILD_CHAIN_ID_BYTES() view returns (bytes)',
+    // 'function DEFAULT_ADMIN_ROLE() view returns (bytes32)',
+    // 'function DEPOSITOR_ROLE() view returns (bytes32)',
+    // 'function ERC712_VERSION() view returns (string)',
+    // 'function ROOT_CHAIN_ID() view returns (uint256)',
+    // 'function ROOT_CHAIN_ID_BYTES() view returns (bytes)',
+    'function allowance(address owner, address spender) view returns (uint256)',
+    // 'function approve(address spender, uint256 amount) returns (bool)',
+    'function balanceOf(address account) view returns (uint256)',
+    // 'function changeName(string name_)',
+    // 'function decimals() view returns (uint8)',
+    // 'function decreaseAllowance(address spender, uint256 subtractedValue) returns (bool)',
+    // 'function deposit(address user, bytes depositData)',
+    // 'function executeMetaTransaction(address userAddress, bytes functionSignature, bytes32 sigR, bytes32 sigS, uint8 sigV) payable returns (bytes)',
+    // 'function getChainId() pure returns (uint256)',
+    // 'function getDomainSeperator() view returns (bytes32)',
+    'function getNonce(address user) view returns (uint256 nonce)',
+    // 'function getRoleAdmin(bytes32 role) view returns (bytes32)',
+    // 'function getRoleMember(bytes32 role, uint256 index) view returns (address)',
+    // 'function getRoleMemberCount(bytes32 role) view returns (uint256)',
+    // 'function grantRole(bytes32 role, address account)',
+    // 'function hasRole(bytes32 role, address account) view returns (bool)',
+    // 'function increaseAllowance(address spender, uint256 addedValue) returns (bool)',
+    // 'function initialize(string name_, string symbol_, uint8 decimals_, address childChainManager)',
+    // 'function name() view returns (string)',
+    // 'function renounceRole(bytes32 role, address account)',
+    // 'function revokeRole(bytes32 role, address account)',
+    // 'function symbol() view returns (string)',
+    // 'function totalSupply() view returns (uint256)',
+    // 'function transfer(address recipient, uint256 amount) returns (bool)',
+    // 'function transferFrom(address sender, address recipient, uint256 amount) returns (bool)',
+    // 'function withdraw(uint256 amount)',
+];
+
+export const USDC_BRIDGED_TRANSFER_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
@@ -192,7 +235,7 @@ export const USDC_TRANSFER_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
-export const NATIVE_USDC_TRANSFER_CONTRACT_ABI = [
+export const USDC_TRANSFER_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
@@ -240,8 +283,57 @@ export const NATIVE_USDC_TRANSFER_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
+export const USDT_BRIDGED_TRANSFER_CONTRACT_ABI = [
+    // 'constructor()',
+    // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
+    // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
+    // 'event RequestTypeRegistered(bytes32 indexed typeHash, string typeStr)',
+    // 'function EIP712_DOMAIN_TYPE() view returns (string)',
+    // 'function deposits(address) view returns (uint256)',
+    // 'function domains(bytes32) view returns (bool)',
+    // 'function execute((address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) request, bytes32 domainSeparator, bytes32 requestTypeHash, bytes suffixData, bytes signature) payable returns (bool success, bytes ret)',
+    'function getGasAndDataLimits() view returns ((uint256 acceptanceBudget, uint256 preRelayedCallGasLimit, uint256 postRelayedCallGasLimit, uint256 calldataSizeLimit) limits)',
+    // 'function getHubAddr() view returns (address)',
+    // 'function getMinimumRelayFee((uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) view returns (uint256 amount)',
+    'function getNonce(address from) view returns (uint256)',
+    // 'function getRelayHubDeposit() view returns (uint256)',
+    // 'function getRequiredRelayFee((uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData, bytes4 methodId) view returns (uint256 amount)',
+    'function getRequiredRelayGas(bytes4 methodId) view returns (uint256 gas)',
+    // 'function isTrustedForwarder(address forwarder) view returns (bool)',
+    // 'function owner() view returns (address)',
+    // 'function postRelayedCall(bytes context, bool success, uint256 gasUseWithoutPost, (uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData)',
+    // 'function preRelayedCall(((address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) request, (uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) relayRequest, bytes signature, bytes approvalData, uint256 maxPossibleGas) returns (bytes context, bool revertOnRecipientRevert)',
+    // 'function registerDomainSeparator(string name, string version)',
+    // 'function registerRequestType(string typeName, string typeSuffix)',
+    // 'function registerToken(address token, address pool)',
+    'function registeredTokenPool(address) view returns (address)',
+    // 'function registeredTokenPoolFee(address token) view returns (uint24 fee)',
+    // 'function renounceOwnership()',
+    // 'function requiredRelayGas() view returns (uint256)',
+    // 'function setGasAndDataLimits((uint256 acceptanceBudget, uint256 preRelayedCallGasLimit, uint256 postRelayedCallGasLimit, uint256 calldataSizeLimit) limits)',
+    // 'function setMaxRequiredRelayGas(uint256 gas)',
+    // 'function setRelayHub(address hub)',
+    // 'function setRequiredRelayGas(bytes4 methodId, uint256 gas)',
+    // 'function setWrappedChainToken(address _wrappedChainToken)',
+    'function transfer(address token, uint256 amount, address target, uint256 fee)',
+    // 'function transferOwnership(address newOwner)',
+    'function transferWithApproval(address token, uint256 amount, address target, uint256 fee, uint256 approval, bytes32 sigR, bytes32 sigS, uint8 sigV)',
+    // 'function trustedForwarder() view returns (address forwarder)',
+    // 'function typeHashes(bytes32) view returns (bool)',
+    // 'function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes _data)',
+    // 'function unregisterToken(address token)',
+    // 'function verify((address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) forwardRequest, bytes32 domainSeparator, bytes32 requestTypeHash, bytes suffixData, bytes signature) view',
+    // 'function versionPaymaster() view returns (string)',
+    // 'function versionRecipient() view returns (string)',
+    // 'function withdraw(uint256 amount, address target)',
+    // 'function withdrawRelayHubDeposit(uint256 amount, address target)',
+    // 'function withdrawToken(address token, uint256 amount, address target)',
+    // 'function wrappedChainToken() view returns (address)',
+    // 'receive() payable',
+];
+
 // TODO add variable names
-export const RELAY_HUB_CONTRACT_ABI = [
+export const OPENGSN_RELAY_HUB_CONTRACT_ABI = [
     // 'constructor(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)',
     // 'event Deposited(address indexed,address indexed,uint256)',
     // 'event HubDeprecated(uint256)',
@@ -329,7 +421,7 @@ export const UNISWAP_QUOTER_CONTRACT_ABI = [
     // 'function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes path) view'
 ];
 
-export const USDC_HTLC_CONTRACT_ABI = [
+export const USDC_BRIDGED_HTLC_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     'event Open(bytes32 indexed id, address token, uint256 amount, address recipient, bytes32 hash, uint256 timeout)',
@@ -385,7 +477,7 @@ export const USDC_HTLC_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
-export const NATIVE_USDC_HTLC_CONTRACT_ABI = [
+export const USDC_HTLC_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     'event Open(bytes32 indexed id, address token, uint256 amount, address recipient, bytes32 hash, uint256 timeout)',
@@ -441,7 +533,64 @@ export const NATIVE_USDC_HTLC_CONTRACT_ABI = [
     // 'function wrappedChainToken() view returns (address)',
 ];
 
-export const SWAP_CONTRACT_ABI = [
+export const USDT_BRIDGED_HTLC_CONTRACT_ABI = [
+    // 'constructor()',
+    // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
+    'event Open(bytes32 indexed id, address token, uint256 amount, address recipient, bytes32 hash, uint256 timeout)',
+    // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
+    'event Redeem(bytes32 indexed id, bytes32 secret)',
+    'event Refund(bytes32 indexed id)',
+    // 'event RequestTypeRegistered(bytes32 indexed typeHash, string typeStr)',
+    // 'function EIP712_DOMAIN_TYPE() view returns (string)',
+    // 'function deposits(address) view returns (uint256)',
+    // 'function domains(bytes32) view returns (bool)',
+    // 'function execute((address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) request, bytes32 domainSeparator, bytes32 requestTypeHash, bytes suffixData, bytes signature) payable returns (bool success, bytes ret)',
+    'function getGasAndDataLimits() view returns ((uint256 acceptanceBudget, uint256 preRelayedCallGasLimit, uint256 postRelayedCallGasLimit, uint256 calldataSizeLimit) limits)',
+    // 'function getHubAddr() view returns (address)',
+    // 'function getMinimumRelayFee((uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) view returns (uint256 amount)',
+    'function getNonce(address from) view returns (uint256)',
+    // 'function getRelayHubDeposit() view returns (uint256)',
+    // 'function getRequiredRelayFee((uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData, bytes4 methodId) view returns (uint256 amount)',
+    'function getRequiredRelayGas(bytes4 methodId) view returns (uint256 gas)',
+    // 'function htlcs(bytes32) view returns (address token, uint256 amount, address refund, address recipient, bytes32 hash, uint256 timeout)',
+    // 'function isTrustedForwarder(address forwarder) view returns (bool)',
+    'function open(bytes32 id, address token, uint256 amount, address refundAddress, address recipientAddress, bytes32 hash, uint256 timeout, uint256 fee)',
+    'function openWithApproval(bytes32 id, address token, uint256 amount, address refundAddress, address recipientAddress, bytes32 hash, uint256 timeout, uint256 fee, uint256 approval, bytes32 sigR, bytes32 sigS, uint8 sigV)',
+    // 'function owner() view returns (address)',
+    // 'function postRelayedCall(bytes context, bool success, uint256 gasUseWithoutPost, (uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData)',
+    // 'function preRelayedCall(((address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) request, (uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) relayRequest, bytes signature, bytes approvalData, uint256 maxPossibleGas) returns (bytes context, bool revertOnRecipientRevert)',
+    // 'function redeem(bytes32 id, address target, bytes32 secret, uint256 fee)',
+    'function redeemWithSecretInData(bytes32 id, address target, uint256 fee)',
+    'function refund(bytes32 id, address target, uint256 fee)',
+    // 'function registerDomainSeparator(string name, string version)',
+    // 'function registerRequestType(string typeName, string typeSuffix)',
+    // 'function registerToken(address token, address pool)',
+    // 'function registeredTokenPool(address) view returns (address)',
+    // 'function registeredTokenPoolFee(address token) view returns (uint24 fee)',
+    // 'function relayWithoutGsn(((address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) request, (uint256 gasPrice, uint256 pctRelayFee, uint256 baseRelayFee, address relayWorker, address paymaster, address forwarder, bytes paymasterData, uint256 clientId) relayData) relayRequest, bytes signature, bytes approvalData, address relay)',
+    // 'function renounceOwnership()',
+    // 'function requiredRelayGas() view returns (uint256)',
+    // 'function setGasAndDataLimits((uint256 acceptanceBudget, uint256 preRelayedCallGasLimit, uint256 postRelayedCallGasLimit, uint256 calldataSizeLimit) limits)',
+    // 'function setMaxRequiredRelayGas(uint256 gas)',
+    // 'function setRelayHub(address hub)',
+    // 'function setRequiredRelayGas(bytes4 methodId, uint256 gas)',
+    // 'function setWrappedChainToken(address _wrappedChainToken)',
+    // 'function transferOwnership(address newOwner)',
+    // 'function trustedForwarder() view returns (address forwarder)',
+    // 'function typeHashes(bytes32) view returns (bool)',
+    // 'function uniswapV3SwapCallback(int256 amount0Delta, int256 amount1Delta, bytes _data)',
+    // 'function unregisterToken(address token)',
+    // 'function verify((address from, address to, uint256 value, uint256 gas, uint256 nonce, bytes data, uint256 validUntil) forwardRequest, bytes32 domainSeparator, bytes32 requestTypeHash, bytes suffixData, bytes signature) view',
+    // 'function versionPaymaster() view returns (string)',
+    // 'function versionRecipient() view returns (string)',
+    // 'function withdraw(uint256 amount, address target)',
+    // 'function withdrawRelayHubDeposit(uint256 amount, address target)',
+    // 'function withdrawToken(address token, uint256 amount, address target)',
+    // 'function wrappedChainToken() view returns (address)',
+    // 'receive() payable',
+];
+
+export const CONVERSION_SWAP_CONTRACT_ABI = [
     // 'constructor()',
     // 'event DomainRegistered(bytes32 indexed domainSeparator, bytes domainValue)',
     // 'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',

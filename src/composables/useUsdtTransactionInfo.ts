@@ -4,9 +4,9 @@ import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SettlementStatus } from '@nimiq/oasis-api';
 
 import { useSwapsStore } from '@/stores/Swaps';
-import { Transaction } from '@/stores/UsdcTransactions';
+import { Transaction } from '@/stores/UsdtTransactions';
 import { useTransactionsStore } from '@/stores/Transactions';
-import { useUsdcContactsStore } from '@/stores/UsdcContacts';
+import { useUsdtContactsStore } from '@/stores/UsdtContacts';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import { useAddressStore } from '@/stores/Address';
 import { useAccountStore } from '@/stores/Account';
@@ -18,11 +18,11 @@ import { assetToCurrency } from '@/lib/swap/utils/Assets';
 import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
 
-export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
+export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
     const constants = { FIAT_PRICE_UNAVAILABLE, BANK_ADDRESS };
 
     const { addressInfo, state: addresses$ } = usePolygonAddressStore();
-    const { getLabel } = useUsdcContactsStore();
+    const { getLabel } = useUsdtContactsStore();
 
     const txValue = computed(() => {
         if (transaction.value.event?.name === 'Swap') {
@@ -108,10 +108,6 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
             return swapData.value.asset.toUpperCase();
         }
 
-        if (transaction.value.event?.name === 'Swap') {
-            return i18n.t('Conversion from USDC.e to USDC') as string;
-        }
-
         // Search other stored addresses
         const ownedAddressInfo = addresses$.addressInfos[peerAddress.value];
         if (ownedAddressInfo) {
@@ -128,21 +124,21 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
 
     // Data
     const data = computed(() => { // eslint-disable-line arrow-body-style
-        if (swapData.value && !isCancelledSwap.value) {
-            const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
-                fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : SwapAsset.USDC,
-                toAsset: isIncoming.value ? SwapAsset.USDC : assetToCurrency(swapData.value.asset).toUpperCase(),
-            }) as string;
+        // if (swapData.value && !isCancelledSwap.value) {
+        //     const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
+        //         fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : SwapAsset.USDT,
+        //         toAsset: isIncoming.value ? SwapAsset.USDT : assetToCurrency(swapData.value.asset).toUpperCase(),
+        //     }) as string;
 
-            // The TransactionListOasisPayoutStatus takes care of the second half of the message
-            if (
-                swapData.value.asset === SwapAsset.EUR
-                && swapData.value.htlc?.settlement
-                && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
-            ) return `${message.split('–')[0]} –`;
+        //     // The TransactionListOasisPayoutStatus takes care of the second half of the message
+        //     if (
+        //         swapData.value.asset === SwapAsset.EUR
+        //         && swapData.value.htlc?.settlement
+        //         && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
+        //     ) return `${message.split('–')[0]} –`;
 
-            return message;
-        }
+        //     return message;
+        // }
 
         if (transaction.value.event?.name === 'Open') {
             return i18n.t('HTLC Creation') as string;
@@ -152,13 +148,6 @@ export function useUsdcTransactionInfo(transaction: Ref<Transaction>) {
         }
         if (transaction.value.event?.name === 'Refund') {
             return i18n.t('HTLC Refund') as string;
-        }
-
-        if (transaction.value.event?.name === 'Swap') {
-            return i18n.t('Converted {amount1} USDC.e to {amount2} USDC', {
-                amount1: (transaction.value.event.amountIn / 1e6).toFixed(2),
-                amount2: (transaction.value.event.amountOut / 1e6).toFixed(2),
-            }) as string;
         }
 
         return null;

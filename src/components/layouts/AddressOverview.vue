@@ -3,7 +3,10 @@
         :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }">
         <HeroIcon class="svg-id-fix" />
         <template
-            v-if="activeAddressInfo || activeCurrency === CryptoCurrency.BTC || activeCurrency === CryptoCurrency.USDC"
+            v-if="activeAddressInfo
+                || activeCurrency === CryptoCurrency.BTC
+                || activeCurrency === CryptoCurrency.USDC
+                || activeCurrency === CryptoCurrency.USDT"
         >
             <div class="actions-mobile flex-row">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
@@ -26,22 +29,36 @@
                         <div class="popup-menu nq-blue-bg">
                             <button v-if="activeCurrency === 'nim'"
                                 class="reset flex-row"
-                                @mousedown="rename(activeAccountId, activeAddressInfo.address)"
+                                @click="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
-                                @mousedown="rescan"
+                                @click="rescan"
                             >
                                 <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                             <button
                                 class="reset flex-row"
-                                @mousedown="$router.push('/export-history/address')"
+                                @click="$router.push('/export-history/address')"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
+                            <template v-if="hasUsdtTrial">
+                                <button v-if="activeCurrency === CryptoCurrency.USDC"
+                                    class="reset flex-row"
+                                    @click="switchStablecoin($event, CryptoCurrency.USDT)"
+                                >
+                                    <UsdtIcon/>{{ $t('Switch to USDT') }}
+                                </button>
+                                <button v-if="activeCurrency === CryptoCurrency.USDT"
+                                    class="reset flex-row"
+                                    @click="switchStablecoin($event, CryptoCurrency.USDC)"
+                                >
+                                    <UsdcIcon/>{{ $t('Switch to USDC') }}
+                                </button>
+                            </template>
                         </div>
                     </button>
                 </div>
@@ -51,6 +68,7 @@
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
                     <BitcoinIcon v-if="activeCurrency === 'btc'"/>
                     <UsdcIcon v-if="activeCurrency === 'usdc'"/>
+                    <UsdtIcon v-if="activeCurrency === CryptoCurrency.USDT"/>
                     <button class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
@@ -58,22 +76,36 @@
                         <div class="popup-menu nq-blue-bg">
                             <button v-if="activeCurrency === 'nim'"
                                 class="reset flex-row"
-                                @mousedown="rename(activeAccountId, activeAddressInfo.address)"
+                                @click="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
-                                @mousedown="rescan"
+                                @click="rescan"
                             >
                                 <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                             <button
                                 class="reset flex-row"
-                                @mousedown="$router.push('/export-history/address')"
+                                @click="$router.push('/export-history/address')"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
+                            <template v-if="hasUsdtTrial">
+                                <button v-if="activeCurrency === CryptoCurrency.USDC"
+                                    class="reset flex-row"
+                                    @click="switchStablecoin($event, CryptoCurrency.USDT)"
+                                >
+                                    <UsdtIcon/>{{ $t('Switch to USDT') }}
+                                </button>
+                                <button v-if="activeCurrency === CryptoCurrency.USDT"
+                                    class="reset flex-row"
+                                    @click="switchStablecoin($event, CryptoCurrency.USDC)"
+                                >
+                                    <UsdcIcon/>{{ $t('Switch to USDC') }}
+                                </button>
+                            </template>
                         </div>
                     </button>
                 </div>
@@ -82,10 +114,15 @@
                         <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
                         <div v-if="activeCurrency === 'btc'" class="label bitcoin">{{ $t('Bitcoin') }}</div>
                         <div v-if="activeCurrency === 'usdc'" class="label usdc">{{ $t('USD Coin') }}</div>
+                        <div v-if="activeCurrency === CryptoCurrency.USDT" class="label usdt">
+                            {{ $t('Tether USD') }}
+                        </div>
                         <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
                         <Amount v-if="activeCurrency === 'btc'" :amount="btcAccountBalance" currency="btc" value-mask/>
                         <Amount v-if="activeCurrency === 'usdc'"
-                            :amount="usdcAccountBalance + nativeUsdcAccountBalance" currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance" currency="usdc" value-mask/>
+                        <Amount v-if="activeCurrency === CryptoCurrency.USDT"
+                            :amount="accountUsdtBridgedBalance" :currency="CryptoCurrency.USDT" value-mask/>
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -117,7 +154,9 @@
                             :amount="btcAccountBalance" currency="btc" value-mask/>
 
                         <FiatConvertedAmount v-if="activeCurrency === 'usdc'"
-                            :amount="usdcAccountBalance + nativeUsdcAccountBalance  " currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance  " currency="usdc" value-mask/>
+                        <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDT"
+                            :amount="accountUsdtBridgedBalance  " currency="usdt" value-mask/>
                     </div>
                 </div>
             </div>
@@ -141,7 +180,8 @@
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                         :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
                             || (activeCurrency === 'btc' && !btcAccountBalance)
-                            || (activeCurrency === 'usdc' && !nativeUsdcAccountBalance /* can only send native usdc */)"
+                            || (activeCurrency === 'usdc' && !accountUsdcBalance /* can only send native usdc */)
+                            || (activeCurrency === CryptoCurrency.USDT && !accountUsdtBridgedBalance)"
                     >
                         <ArrowRightSmallIcon />{{ $t('Send') }}
                     </button>
@@ -154,14 +194,14 @@
             </div>
             <!-- <PrestakingPreview v-if="prestake" class="prestaking-preview-mobile" /> -->
             <div
-                v-if="activeCurrency === 'usdc' && usdcAccountBalance >= 0.1e6"
+                v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
             >
                 <div class="flex-row">
                     <UsdcIcon />
                     {{ $t('Legacy USDC (USDC.e)') }}
                     <div class="flex-grow"></div>
-                    <Amount :amount="usdcAccountBalance" currency="usdc.e" value-mask/>
+                    <Amount :amount="accountUsdcBridgedBalance" currency="usdc.e" value-mask/>
                 </div>
                 <div class="flex-row">
                     <span class="description">
@@ -192,6 +232,10 @@
             />
             <UsdcTransactionList
                 v-if="activeCurrency === CryptoCurrency.USDC"
+                :searchString="searchString"
+            />
+            <UsdtTransactionList
+                v-if="activeCurrency === CryptoCurrency.USDT"
                 :searchString="searchString"
             />
         </template>
@@ -254,12 +298,14 @@ import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
+import UsdtIcon from '../icons/UsdtIcon.vue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import SearchBar from '../SearchBar.vue';
 import TransactionList from '../TransactionList.vue';
 import BtcTransactionList from '../BtcTransactionList.vue';
 import UsdcTransactionList from '../UsdcTransactionList.vue';
+import UsdtTransactionList from '../UsdtTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
@@ -269,7 +315,7 @@ import PrestakingButton from '../prestaking/PrestakingButton.vue';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { onboard, rename, swapBridgedUsdcToNative } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -283,7 +329,7 @@ import {
     calculateFee,
     getPolygonBlockNumber,
     getPolygonClient,
-    getSwapContract,
+    getConversionSwapContract,
     sendTransaction as sendPolygonTransaction,
 } from '../../ethers';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
@@ -292,6 +338,9 @@ import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
 import { usePrestakingStore } from '../../stores/Prestaking';
+import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useSettingsStore } from '../../stores/Settings';
+import { Trial } from '../../lib/Trials';
 
 export default defineComponent({
     name: 'address-overview',
@@ -300,10 +349,11 @@ export default defineComponent({
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
-            accountBalance: usdcAccountBalance,
-            nativeAccountBalance: nativeUsdcAccountBalance,
+            accountUsdcBridgedBalance,
+            accountUsdcBalance,
+            accountUsdtBridgedBalance,
             addressInfo: usdcAddressInfo,
-        } = useUsdcAddressStore();
+        } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
 
         const { activePrestake, accountPrestake } = usePrestakingStore();
@@ -398,7 +448,7 @@ export default defineComponent({
                 try {
                     const [client, swapContract] = await Promise.all([
                         getPolygonClient(),
-                        getSwapContract(),
+                        getConversionSwapContract(),
                     ]);
                     const fromAddress = usdcAddressInfo.value!.address;
 
@@ -407,7 +457,7 @@ export default defineComponent({
                         forwarderNonce,
                         blockHeight,
                     ] = await Promise.all([
-                        client.usdc.nonces(fromAddress) as Promise<BigNumber>,
+                        client.usdcBridgedToken.nonces(fromAddress) as Promise<BigNumber>,
                         swapContract.getNonce(fromAddress) as Promise<BigNumber>,
                         getPolygonBlockNumber(),
                     ]);
@@ -420,10 +470,10 @@ export default defineComponent({
                         gasLimit,
                         gasPrice,
                         relay,
-                    } = await calculateFee(config.usdc.usdcContract, method, undefined, swapContract);
+                    } = await calculateFee(config.polygon.usdc_bridged.tokenContract, method, undefined, swapContract);
                     relayUrl = relay.url;
 
-                    if (fee.toNumber() >= usdcAddressInfo.value!.balance!) {
+                    if (fee.toNumber() >= usdcAddressInfo.value!.balanceUsdcBridged!) {
                         reject(new Error(i18n.t(
                             'You do not have enough USDC.e to pay conversion fees ({fee})',
                             { fee: `${fee.toNumber() / 1e6} USDC.e` },
@@ -432,15 +482,15 @@ export default defineComponent({
                     }
 
                     // Limit swap amount to 100k USDC.e, to not unbalance the pool too much
-                    const amount = Math.min(100_000e6, usdcAddressInfo.value!.balance! - fee.toNumber());
+                    const amount = Math.min(100_000e6, usdcAddressInfo.value!.balanceUsdcBridged! - fee.toNumber());
 
                     // Only allow 0.5% slippage on mainnet, but up to 5% on testnet
                     const minTargetAmountPercentage = config.environment === ENV_MAIN ? 0.995 : 0.95;
 
                     const data = swapContract.interface.encodeFunctionData(method, [
-                        /* address token */ config.usdc.usdcContract,
+                        /* address token */ config.polygon.usdc_bridged.tokenContract,
                         /* uint256 amount */ amount,
-                        /* address pool */ config.usdc.swapPoolContract,
+                        /* address pool */ config.polygon.usdcConversion.swapPoolContract,
                         /* uint256 targetAmount */ Math.floor(amount * minTargetAmountPercentage),
                         /* uint256 fee */ fee,
                         ...(method === 'swapWithApproval' ? [
@@ -459,7 +509,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: fromAddress,
-                            to: config.usdc.swapContract,
+                            to: config.polygon.usdcConversion.swapContract,
                             data,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -472,10 +522,10 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.swapContract,
+                            paymaster: config.polygon.usdcConversion.swapContract,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.swapContract,
+                            forwarder: config.polygon.usdcConversion.swapContract,
                         },
                     };
 
@@ -525,12 +575,21 @@ export default defineComponent({
             return tx;
         }
 
+        function switchStablecoin(event: PointerEvent, stablecoin: Stablecoin) {
+            useAccountSettingsStore().setStablecoin(stablecoin);
+            useAccountStore().setActiveCurrency(stablecoin);
+        }
+
         const showPrestakingButton = computed(() => {
             // Hide button for legacy accounts except if they're already prestaking
+            if (activeCurrency.value !== CryptoCurrency.NIM) return false;
             if (!activeAccountInfo.value) return false;
             if (activeAccountInfo.value.type !== AccountType.LEGACY) return true;
             return accountPrestake.value > 0;
         });
+
+        const { trials } = useSettingsStore();
+        const hasUsdtTrial = computed(() => trials.value.includes(Trial.USDT));
 
         return {
             activeCurrency,
@@ -545,8 +604,9 @@ export default defineComponent({
             showUnclaimedCashlinkList,
             hideUnclaimedCashlinkList,
             btcAccountBalance,
-            usdcAccountBalance,
-            nativeUsdcAccountBalance,
+            accountUsdcBridgedBalance,
+            accountUsdcBalance,
+            accountUsdtBridgedBalance,
             usdcAddressInfo,
             CryptoCurrency,
             promoBoxVisible,
@@ -557,9 +617,11 @@ export default defineComponent({
             toggleUnclaimedCashlinkList,
             config,
             convertBridgedUsdcToNative,
+            switchStablecoin,
             activePrestake,
             windowWidth,
             showPrestakingButton,
+            hasUsdtTrial,
         };
     },
     components: {
@@ -577,6 +639,7 @@ export default defineComponent({
         TransactionList,
         BtcTransactionList,
         UsdcTransactionList,
+        UsdtTransactionList,
         ArrowLeftIcon,
         MenuDotsIcon,
         MobileActionBar,
@@ -584,6 +647,7 @@ export default defineComponent({
         HighFiveIcon,
         BoxedArrowUpIcon,
         UsdcIcon,
+        UsdtIcon,
         CashlinkButton,
         PrestakingButton,
         HeroIcon,
@@ -697,9 +761,9 @@ export default defineComponent({
         }
 
         > svg {
-            width: 10.5rem;
-            height: 10.5rem;
-            margin: -0.25rem 0.375rem;
+            width: 10rem;
+            height: 10rem;
+            margin: 0 0.625rem;
             display: block;
 
             &.bitcoin {
@@ -708,6 +772,12 @@ export default defineComponent({
 
             &.usdc {
                 color: var(--usdc-blue);
+            }
+
+            &.usdt {
+                color: var(--usdt-green);
+                width: 10.75rem;
+                margin: 0 0.25rem;
             }
         }
     }
@@ -755,7 +825,7 @@ export default defineComponent({
         margin-right: 3rem;
         mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
 
-        &.bitcoin, &.usdc {
+        &.bitcoin, &.usdc, &.usdt {
             position: relative;
             top: 1.25rem;
         }
@@ -864,6 +934,16 @@ export default defineComponent({
                 height: 3rem;
                 margin: -0.125rem 1rem -0.125rem 0;
                 opacity: 0.8;
+
+                &.usdc {
+                    color: var(--usdc-blue);
+                    opacity: 1;
+                }
+
+                &.usdt {
+                    color: var(--usdt-green);
+                    opacity: 1;
+                }
             }
 
             &:hover,
@@ -921,7 +1001,6 @@ export default defineComponent({
     }
 
     svg.usdc {
-        // color: var(--usdc-blue);
         width: 3rem;
         height: 3rem;
     }
@@ -1203,6 +1282,11 @@ export default defineComponent({
                 color: var(--bitcoin-orange);
                 margin: 0 0.25rem;
                 display: block;
+
+                &.usdt {
+                    width: 5.25rem;
+                    margin: 0 0.25rem;
+                }
             }
         }
 
@@ -1227,8 +1311,10 @@ export default defineComponent({
             margin-bottom: 0;
         }
 
-        .label.bitcoin {
-            top: 0.625rem;
+        .label {
+            &.bitcoin, &.usdc, &.usdt {
+                top: 0.625rem;
+            }
         }
 
         .address,

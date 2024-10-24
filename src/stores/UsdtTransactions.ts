@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { SwapAsset } from '@nimiq/fastspot-api';
+// import { SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
-import config from 'config';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { useSwapsStore } from './Swaps';
@@ -32,8 +31,8 @@ type HtlcRefundEvent = {
 export type HtlcEvent = HtlcOpenEvent | HtlcRedeemEvent | HtlcRefundEvent;
 
 /**
- * These events are created from the viewpoint of bridged USDC, to be able to include the
- * (bridged USDC) fee in the resulting Transaction object.
+ * These events are created from the viewpoint of bridged USDT, to be able to include the
+ * (bridged USDT) fee in the resulting Transaction object.
  */
 export type UniswapEvent = {
     name: 'Swap',
@@ -43,7 +42,7 @@ export type UniswapEvent = {
 
 // This is a simplified transaction, only storing the token transfer.
 // It is NOT a full Ethereum/Polygon transaction.
-// Might be better named `UsdcTokenTransfer`...
+// Might be better named `UsdtTokenTransfer`...
 export type Transaction = {
     token?: string,
     transactionHash: string,
@@ -71,8 +70,8 @@ export enum TransactionState {
 
 const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<string>>> = {};
 
-export const useUsdcTransactionsStore = createStore({
-    id: 'usdcTransactions',
+export const useUsdtTransactionsStore = createStore({
+    id: 'usdtTransactions',
     state: () => ({
         transactions: {} as {[hash: string]: Transaction},
     }),
@@ -143,8 +142,8 @@ export const useUsdcTransactionsStore = createStore({
                 ? fiatCurrency
                 : FiatCurrency.USD;
             const lastExchangeRateUpdateTime = fiatStore.timestamp.value;
-            const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.USDC]?.[fiatCurrency]; // might be pending
-            const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.USDC]?.[FiatCurrency.USD];
+            const currentRate = fiatStore.exchangeRates.value[CryptoCurrency.USDT]?.[fiatCurrency]; // might be pending
+            const currentUsdRate = fiatStore.exchangeRates.value[CryptoCurrency.USDT]?.[FiatCurrency.USD];
             const transactionsToUpdate = (transactions || Object.values(this.state.transactions)).filter((tx) =>
                 // Only update the fiat amount if it's neither set for the actual fiatCurrency nor historyFiatCurrency.
                 // Generally, the amount for the actually requested fiatCurrency is preferred, so if that is already set
@@ -154,9 +153,9 @@ export const useUsdcTransactionsStore = createStore({
                 typeof tx.fiatValue?.[fiatCurrency!] !== 'number'
                     && typeof tx.fiatValue?.[historyFiatCurrency] !== 'number'
                     && !scheduledHistoricFiatAmountUpdates[historyFiatCurrency]?.has(tx.transactionHash)
-                    // USDC price is only available starting 2018-10-05T00:00:00Z, and this timestamp
+                    // USDT price is only available starting 2015-03-06T00:00:00Z, and this timestamp
                     // check prevents us from re-querying older transactions again and again.
-                    && tx.timestamp && tx.timestamp >= 1538697600,
+                    && tx.timestamp && tx.timestamp >= 1425600000,
             ) as Array<Transaction & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
@@ -190,7 +189,7 @@ export const useUsdcTransactionsStore = createStore({
 
             if (historicTransactions.length) {
                 const historicExchangeRates = await getHistoricExchangeRates(
-                    CryptoCurrency.USDC,
+                    CryptoCurrency.USDT,
                     historyFiatCurrency,
                     historicTransactions.map((tx) => tx.timestamp * 1000),
                     FIAT_API_PROVIDER_TX_HISTORY,
@@ -198,7 +197,7 @@ export const useUsdcTransactionsStore = createStore({
 
                 for (let tx of historicTransactions) {
                     const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
-                    // Get the newest transaction object from the store in case it changed (which for the USDC
+                    // Get the newest transaction object from the store in case it changed (which for the USDT
                     // transaction store it doesn't do, but doesn't hurt to make the code more resilient).
                     tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
                     Vue.set(tx.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
@@ -229,63 +228,63 @@ export const useUsdcTransactionsStore = createStore({
 // Note: this method should not modify the transaction itself or the transaction store, to avoid race conditions with
 // other methods that do so.
 async function detectSwap(transaction: Transaction, knownTransactions: Transaction[]) {
-    const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
-    if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
-    const asset = transaction.token === config.polygon.usdc.tokenContract ? SwapAsset.USDC_MATIC : SwapAsset.USDC;
+    // const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
+    // if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
+    // const asset = SwapAsset.USDT;
 
-    // HTLC Creation
-    if (transaction.event?.name === 'Open') {
-        const hashRoot = transaction.event.hash.substring(2);
-        addFundingData(hashRoot, {
-            asset,
-            transactionHash: transaction.transactionHash,
-            htlc: {
-                address: transaction.event.id,
-                refundAddress: transaction.sender,
-                redeemAddress: transaction.event.recipient,
-                timeoutTimestamp: transaction.event.timeout,
-            },
-        });
+    // // HTLC Creation
+    // if (transaction.event?.name === 'Open') {
+    //     const hashRoot = transaction.event.hash.substring(2);
+    //     addFundingData(hashRoot, {
+    //         asset,
+    //         transactionHash: transaction.transactionHash,
+    //         htlc: {
+    //             address: transaction.event.id,
+    //             refundAddress: transaction.sender,
+    //             redeemAddress: transaction.event.recipient,
+    //             timeoutTimestamp: transaction.event.timeout,
+    //         },
+    //     });
 
-        await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'settlement', asset);
-    }
+    //     await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'settlement', asset);
+    // }
 
-    // HTLC Refunding
-    if (transaction.event?.name === 'Refund') {
-        const swapId = transaction.event.id;
-        // Find funding transaction
-        const selector = (testedTx: Transaction) =>
-            testedTx.event?.name === 'Open' && testedTx.event.id === swapId;
+    // // HTLC Refunding
+    // if (transaction.event?.name === 'Refund') {
+    //     const swapId = transaction.event.id;
+    //     // Find funding transaction
+    //     const selector = (testedTx: Transaction) =>
+    //         testedTx.event?.name === 'Open' && testedTx.event.id === swapId;
 
-        // First search known transactions
-        const fundingTx = knownTransactions.find(selector);
+    //     // First search known transactions
+    //     const fundingTx = knownTransactions.find(selector);
 
-        // Then get funding transaction from the blockchain
-        if (!fundingTx) {
-            // TODO: Find Open event for transaction.event!.id
-            // const client = await getPolygonClient();
-            // const chainTxs = await client.getTransactionsByAddress(transaction.sender);
-            // fundingTx = chainTxs.map((transaction) => transaction.toPlain()).find(selector);
-        }
+    //     // Then get funding transaction from the blockchain
+    //     if (!fundingTx) {
+    //         // TODO: Find Open event for transaction.event!.id
+    //         // const client = await getPolygonClient();
+    //         // const chainTxs = await client.getTransactionsByAddress(transaction.sender);
+    //         // fundingTx = chainTxs.map((transaction) => transaction.toPlain()).find(selector);
+    //     }
 
-        if (fundingTx) {
-            const hashRoot = (fundingTx.event as HtlcOpenEvent).hash.substring(2);
-            addSettlementData(hashRoot, {
-                asset,
-                transactionHash: transaction.transactionHash,
-            });
-        }
-    }
+    //     if (fundingTx) {
+    //         const hashRoot = (fundingTx.event as HtlcOpenEvent).hash.substring(2);
+    //         addSettlementData(hashRoot, {
+    //             asset,
+    //             transactionHash: transaction.transactionHash,
+    //         });
+    //     }
+    // }
 
-    // HTLC Settlement
-    if (transaction.event?.name === 'Redeem') {
-        const secret = transaction.event.secret.substring(2);
-        const hashRoot = Nimiq.Hash.sha256(Nimiq.BufferUtils.fromHex(secret)).toHex();
-        addSettlementData(hashRoot, {
-            asset,
-            transactionHash: transaction.transactionHash,
-        });
+    // // HTLC Settlement
+    // if (transaction.event?.name === 'Redeem') {
+    //     const secret = transaction.event.secret.substring(2);
+    //     const hashRoot = Nimiq.Hash.sha256(Nimiq.BufferUtils.fromHex(secret)).toHex();
+    //     addSettlementData(hashRoot, {
+    //         asset,
+    //         transactionHash: transaction.transactionHash,
+    //     });
 
-        await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'funding', asset);
-    }
+    //     await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'funding', asset);
+    // }
 }

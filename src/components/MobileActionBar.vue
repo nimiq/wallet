@@ -24,22 +24,26 @@ import { CryptoCurrency } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useWindowSize } from '../composables/useWindowSize';
 import { ColumnType, useActiveMobileColumn } from '../composables/useActiveMobileColumn';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     setup(props, context) {
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
+        const { stablecoin } = useAccountSettingsStore();
         const { accountBalance: btcBalance } = useBtcAddressStore();
-        const { nativeAccountBalance: nativeUsdcAccountBalance } = useUsdcAddressStore();
+        const { accountUsdcBalance, accountUsdtBridgedBalance } = usePolygonAddressStore();
         const { isMobile } = useWindowSize();
         const { activeMobileColumn } = useActiveMobileColumn();
 
-        function nimOrBtcOrUsdc<T>(nim: T, btc: T, usdc: T): T {
+        function nimOrBtcOrStable<T>(nim: T, btc: T, stable: T): T {
             switch (activeCurrency.value) {
                 case CryptoCurrency.NIM: return nim;
                 case CryptoCurrency.BTC: return btc;
-                case CryptoCurrency.USDC: return usdc;
+                case CryptoCurrency.USDC:
+                case CryptoCurrency.USDT:
+                    return stable;
                 default: throw new Error('Invalid active currency');
             }
         }
@@ -55,7 +59,7 @@ export default defineComponent({
                 // redirect to the address selector
                 context.root.$router.push('/receive');
             } else {
-                context.root.$router.push(nimOrBtcOrUsdc('/receive/nim', '/receive/btc', '/receive/usdc'));
+                context.root.$router.push(nimOrBtcOrStable('/receive/nim', '/receive/btc', '/receive/usdc'));
             }
         }
 
@@ -70,15 +74,19 @@ export default defineComponent({
                 // redirect to the address selector
                 context.root.$router.push('/send');
             } else {
-                context.root.$router.push(nimOrBtcOrUsdc('/send/nim', '/send/btc', '/send/usdc'));
+                context.root.$router.push(nimOrBtcOrStable('/send/nim', '/send/btc', '/send/usdc'));
             }
         }
 
         const sendDisabled = computed(() =>
-            context.root.$route.path !== '/' && nimOrBtcOrUsdc(
+            context.root.$route.path !== '/' && nimOrBtcOrStable(
                 !activeAddressInfo.value || !activeAddressInfo.value.balance,
                 !btcBalance.value,
-                !nativeUsdcAccountBalance.value,
+                (stablecoin.value === CryptoCurrency.USDC
+                    ? !accountUsdcBalance.value
+                    : stablecoin.value === CryptoCurrency.USDT
+                        ? !accountUsdtBridgedBalance.value
+                        : true),
             ),
         );
 

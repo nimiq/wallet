@@ -298,7 +298,7 @@ import { useAccountStore } from '@/stores/Account';
 import { useSettingsStore } from '@/stores/Settings';
 import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
-import { useUsdcNetworkStore } from '@/stores/UsdcNetwork';
+import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -319,8 +319,8 @@ import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
 import {
     calculateFee,
-    getHtlcContract,
-    getNativeHtlcContract,
+    getUsdcHtlcContract,
+    getUsdcBridgedHtlcContract,
     getPolygonBlockNumber,
     sendTransaction,
 } from '../../ethers';
@@ -450,7 +450,7 @@ export default defineComponent({
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
 
         // Top left tooltip
-        const { outdatedHeight: outdatedBlockHeight } = useUsdcNetworkStore();
+        const { outdatedHeight: outdatedBlockHeight } = usePolygonNetworkStore();
         getPolygonBlockNumber(); // Trigger blockHeight update
 
         const confirmations = computed(() =>
@@ -483,9 +483,9 @@ export default defineComponent({
 
                     const method = 'refund';
 
-                    const htlcContract = transaction.value.token === config.usdc.nativeUsdcContract
-                        ? await getNativeHtlcContract()
-                        : await getHtlcContract();
+                    const htlcContract = transaction.value.token === config.polygon.usdc.tokenContract
+                        ? await getUsdcHtlcContract()
+                        : await getUsdcBridgedHtlcContract();
 
                     const [
                         forwarderNonce,
@@ -493,7 +493,7 @@ export default defineComponent({
                     ] = await Promise.all([
                         htlcContract.getNonce(myAddress) as Promise<BigNumber>,
                         calculateFee(
-                            transaction.value.token || config.usdc.usdcContract,
+                            transaction.value.token || config.polygon.usdc_bridged.tokenContract,
                             method,
                             undefined,
                             htlcContract,
@@ -534,7 +534,7 @@ export default defineComponent({
                     const request: Omit<RefundSwapRequest, 'appName'> = {
                         accountId: useAccountStore().activeAccountId.value!,
                         refund: {
-                            type: transaction.value.token === config.usdc.nativeUsdcContract
+                            type: transaction.value.token === config.polygon.usdc.tokenContract
                                 ? SwapAsset.USDC_MATIC
                                 : SwapAsset.USDC,
                             ...relayRequest,
@@ -571,7 +571,7 @@ export default defineComponent({
                 return CryptoCurrency.USDC;
             }
 
-            return transaction.value.token === config.usdc.nativeUsdcContract
+            return transaction.value.token === config.polygon.usdc.tokenContract
                 ? CryptoCurrency.USDC
                 : 'usdc.e';
         });

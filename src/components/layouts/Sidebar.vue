@@ -199,9 +199,10 @@ import AttentionDot from '../AttentionDot.vue';
 
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useSwapsStore } from '../../stores/Swaps';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -264,13 +265,13 @@ export default defineComponent({
 
         const { updateAvailable, canUseSwaps } = useSettingsStore();
 
-        const { activeAccountInfo, hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const { activeAccountInfo, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
         const isLegacyAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEGACY);
 
         const walletActivatedCurrencies = computed(() => [
             CryptoCurrency.NIM, // NIM is always activated
             ...(config.enableBitcoin && hasBitcoinAddresses.value ? [CryptoCurrency.BTC] : []),
-            ...(config.usdc.enabled && hasUsdcAddresses.value ? [CryptoCurrency.USDC] : []),
+            ...(config.polygon.enabled && hasPolygonAddresses.value ? [CryptoCurrency.USDC] : []),
         ]);
 
         const fastspotEnabledFiatSwapAssets = computed(() => config.fastspot.enabledSwapAssets
@@ -278,15 +279,22 @@ export default defineComponent({
         const fastspotEnabledCryptoSwapAssets = computed(() => config.fastspot.enabledSwapAssets
             .filter((asset) => !fastspotEnabledFiatSwapAssets.value.includes(asset)
                 && (config.enableBitcoin || asset !== SwapAsset.BTC)
-                && (config.usdc.enabled || (asset !== SwapAsset.USDC_MATIC && asset !== SwapAsset.USDC)),
+                && (config.polygon.enabled || (asset !== SwapAsset.USDC_MATIC && asset !== SwapAsset.USDC)),
             ),
         );
 
-        const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, useUsdcAddressStore]
+        const { stablecoin } = useAccountSettingsStore();
+        const hasSwappableBalance = computed(() => [useAddressStore, useBtcAddressStore, usePolygonAddressStore]
             .some((useStore) => {
                 const store = useStore();
-                // For USDC, only native USDC is supported for swapping.
-                return 'nativeAccountBalance' in store ? store.nativeAccountBalance.value : store.accountBalance.value;
+                return 'accountUsdcBalance' in store
+                    ? stablecoin.value === CryptoCurrency.USDC
+                        // For USDC, only native USDC is supported for swapping.
+                        ? store.accountUsdcBalance.value
+                        // : stablecoin.value === CryptoCurrency.USDT
+                        //     ? store.accountUsdtBridgedBalance.value
+                        : 0
+                    : store.accountBalance.value;
             }),
         );
 

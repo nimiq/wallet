@@ -1,7 +1,8 @@
 <template>
     <div class="reset usdc-address-info flex-column" v-on="$listeners">
         <div class="crypto-logo-container">
-            <UsdcIcon v-if="isOwnAddress" :class="{'nq-blue': dark}" />
+            <UsdcIcon v-if="isOwnAddress && stablecoin === CryptoCurrency.USDC" :class="{'nq-blue': dark}" />
+            <UsdtIcon v-if="isOwnAddress && stablecoin === CryptoCurrency.USDT" />
             <Avatar v-else :label="localLabel || ''"/>
         </div>
         <input type="text" class="nq-input-s vanishing"
@@ -19,11 +20,15 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
-import { useUsdcAddressStore } from '../stores/UsdcAddress';
+import { CryptoCurrency } from '@nimiq/utils';
+import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import Avatar from './Avatar.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import UsdcIcon from './icons/UsdcIcon.vue';
+import UsdtIcon from './icons/UsdtIcon.vue';
 import { useUsdcContactsStore } from '../stores/UsdcContacts';
+import { useUsdtContactsStore } from '../stores/UsdtContacts';
+import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 enum TooltipPosition {
     BOTTOM_LEFT = 'bottom left',
@@ -59,8 +64,11 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { addressInfo } = useUsdcAddressStore();
-        const { setContact, getLabel } = useUsdcContactsStore();
+        const { addressInfo } = usePolygonAddressStore();
+        const { stablecoin } = useAccountSettingsStore();
+        const { setContact, getLabel } = stablecoin.value === CryptoCurrency.USDC
+            ? useUsdcContactsStore()
+            : useUsdtContactsStore();
 
         const isOwnAddress = computed(() => addressInfo.value?.address === props.address);
 
@@ -71,6 +79,8 @@ export default defineComponent({
         });
 
         return {
+            CryptoCurrency,
+            stablecoin,
             isOwnAddress,
             setContact,
             localLabel,
@@ -81,6 +91,7 @@ export default defineComponent({
         InteractiveShortAddress,
         Avatar,
         UsdcIcon,
+        UsdtIcon,
     },
 });
 </script>
@@ -123,6 +134,10 @@ export default defineComponent({
 
         &.usdc {
             color: var(--usdc-blue);
+        }
+
+        &.usdt {
+            color: var(--usdt-green);
         }
     }
 }

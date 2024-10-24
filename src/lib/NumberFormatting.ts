@@ -36,7 +36,7 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
         return maxDecimals;
     }
 
-    if (currency === CryptoCurrency.USDC || currency === 'usdc.e') {
+    if (currency === CryptoCurrency.USDC || currency === 'usdc.e' || currency === CryptoCurrency.USDT) {
         // For USDC, make sure that 2 significant digits are always displayed
         if (amount === 0) return usdcDecimals.value;
         if (amount < 0.0001 * 1e6) return 6;

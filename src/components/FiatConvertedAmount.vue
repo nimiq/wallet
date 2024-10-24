@@ -47,7 +47,9 @@ export default defineComponent({
         const currencyDecimals = computed(() => {
             switch (props.currency) {
                 case CryptoCurrency.BTC: return 8;
-                case CryptoCurrency.USDC: return 6;
+                case CryptoCurrency.USDC:
+                case CryptoCurrency.USDT:
+                    return 6;
                 default: return 5;
             }
         });

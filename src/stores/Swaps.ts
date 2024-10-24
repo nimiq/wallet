@@ -5,7 +5,8 @@ import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementSta
 import { FiatCurrency } from '../lib/Constants';
 import { assetToCurrency } from '../lib/swap/utils/Assets';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
-import { Transaction as PolygonTransaction } from './UsdcTransactions';
+import { Transaction as UsdcTransaction } from './UsdcTransactions';
+import { Transaction as UsdtTransaction } from './UsdtTransactions';
 
 export enum SwapState {
     SIGN_SWAP,
@@ -57,6 +58,17 @@ export type SwapUsdcData = {
     },
 };
 
+// export type SwapUsdtData = {
+//     asset: SwapAsset.USDT,
+//     transactionHash: string,
+//     htlc?: {
+//         address?: string,
+//         refundAddress: string,
+//         redeemAddress: string,
+//         timeoutTimestamp: number,
+//     },
+// };
+
 export type SwapEurData = {
     asset: SwapAsset.EUR,
     bankLabel?: string,
@@ -75,7 +87,7 @@ export type SwapEurData = {
     },
 };
 
-export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | SwapEurData;
+export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | /* SwapUsdtData | */ SwapEurData;
 
 export type Swap = {
     id?: string,
@@ -100,18 +112,19 @@ export type ActiveSwap = SwapObject & {
     settlementSerializedTx?: string,
     nimiqProxySerializedTx?: string,
     remoteFundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+        | UsdcTransaction | UsdtTransaction,
     fundingTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+        | UsdcTransaction | UsdtTransaction,
     secret?: string,
     settlementTx?: ReturnType<Nimiq.Client.TransactionDetails['toPlain']> | BtcTransactionDetails | OasisHtlc
-        | PolygonTransaction,
+        | UsdcTransaction | UsdtTransaction,
     error?: string,
     errorAction?: SwapErrorAction,
 }
 
 export enum SwapErrorAction {
     USDC_RESIGN_REDEEM = 'usdc-resign-redeem',
+    USDT_RESIGN_REDEEM = 'usdt-resign-redeem',
 }
 
 export type SwapsState = {

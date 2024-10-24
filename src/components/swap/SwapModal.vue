@@ -32,6 +32,10 @@
                             {{ option.label }}
                         </option>
                     </select>
+                    <Tooltip v-if="!stablecoin" class="stablecoin-tooltip" preferredPosition="bottom left">
+                        <InfoCircleSmallIcon slot="trigger" />
+                        {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
+                    </Tooltip>
                 </div>
                 <div v-if="disabledSwap" class="swap-disabled-text">
                     {{ $t('Swap not possible. Your balance is lower than the fee.') }}
@@ -261,6 +265,7 @@ import {
     Tooltip,
     FiatAmount,
     CircleSpinner,
+    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import {
     SetupSwapRequest,
@@ -312,7 +317,8 @@ import { SwapState, SwapDirection, useSwapsStore, SwapErrorAction } from '../../
 import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import AddressList from '../AddressList.vue';
@@ -328,7 +334,7 @@ import KycOverlay from '../kyc/KycOverlay.vue';
 import {
     getPolygonClient,
     calculateFee as calculateUsdcFee,
-    getNativeHtlcContract,
+    getUsdcHtlcContract,
     getPolygonBlockNumber,
 } from '../../ethers';
 import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
@@ -345,7 +351,7 @@ function getWalletEnabledAssets() {
     return [
         SwapAsset.NIM,
         ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
-        ...(config.usdc.enabled ? [SwapAsset.USDC_MATIC] : []),
+        ...(config.polygon.enabled ? [SwapAsset.USDC_MATIC] : []),
     ];
 }
 
@@ -414,8 +420,9 @@ export default defineComponent({
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
         const {
             activeAddress: activeUsdcAddress,
-            nativeAccountBalance: accountUsdcBalance,
-        } = useUsdcAddressStore();
+            accountUsdcBalance,
+        } = usePolygonAddressStore();
+        const { stablecoin } = useAccountSettingsStore();
         const { exchangeRates, currency, state: fiat$ } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
 
@@ -900,23 +907,23 @@ export default defineComponent({
                 } else {
                     // // Otherwise check allowance now
                     // const client = await getPolygonClient();
-                    // const allowance = await client.nativeUsdc.allowance(
+                    // const allowance = await client.usdcToken.allowance(
                     //     activeUsdcAddress.value!,
-                    //     config.usdc.nativeHtlcContract,
+                    //     config.polygon.usdc.htlcContract,
                     // ) as BigNumber;
                     // if (allowance.gte(accountUsdcBalance.value)) method = 'open';
                 }
             }
 
-            const htlcContract = await getNativeHtlcContract();
+            const htlcContract = await getUsdcHtlcContract();
 
             const {
                 fee,
                 gasLimit,
                 gasPrice,
                 relay,
-                usdcPrice,
-            } = await calculateUsdcFee(config.usdc.nativeUsdcContract, method, forceRelay, htlcContract);
+                usdPrice,
+            } = await calculateUsdcFee(config.polygon.usdc.tokenContract, method, forceRelay, htlcContract);
 
             if (!forceRelay) {
                 // Store the new relay
@@ -926,7 +933,7 @@ export default defineComponent({
                 };
             }
 
-            usdcPriceInWei.value = usdcPrice.toNumber();
+            usdcPriceInWei.value = usdPrice.toNumber();
             usdcGasPrice.value = gasPrice.toNumber();
 
             return {
@@ -1545,7 +1552,7 @@ export default defineComponent({
                 if (swapSuggestion.from.asset === SwapAsset.USDC_MATIC) {
                     const [client, htlcContract] = await Promise.all([
                         getPolygonClient(),
-                        getNativeHtlcContract(),
+                        getUsdcHtlcContract(),
                     ]);
                     const fromAddress = activeUsdcAddress.value!;
 
@@ -1554,7 +1561,7 @@ export default defineComponent({
                         forwarderNonce,
                         blockHeight,
                     ] = await Promise.all([
-                        client.nativeUsdc.nonces(fromAddress) as Promise<BigNumber>,
+                        client.usdcToken.nonces(fromAddress) as Promise<BigNumber>,
                         htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
                         getPolygonBlockNumber(),
                     ]);
@@ -1568,7 +1575,7 @@ export default defineComponent({
                     // Keyguard's SwapIFrameApi.
                     const data = htlcContract.interface.encodeFunctionData(method, [
                         /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address token */ config.usdc.nativeUsdcContract,
+                        /* address token */ config.polygon.usdc.tokenContract,
                         /* uint256 amount */ swapSuggestion.from.amount,
                         /* address refundAddress */ fromAddress,
                         /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
@@ -1591,7 +1598,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: fromAddress,
-                            to: config.usdc.nativeHtlcContract,
+                            to: config.polygon.usdc.htlcContract,
                             data,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -1604,10 +1611,10 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.nativeHtlcContract,
+                            paymaster: config.polygon.usdc.htlcContract,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.nativeHtlcContract,
+                            forwarder: config.polygon.usdc.htlcContract,
                         },
                     };
 
@@ -1661,7 +1668,7 @@ export default defineComponent({
                 }
 
                 if (swapSuggestion.to.asset === SwapAsset.USDC_MATIC) {
-                    const htlcContract = await getNativeHtlcContract();
+                    const htlcContract = await getUsdcHtlcContract();
                     const toAddress = activeUsdcAddress.value!;
 
                     const [
@@ -1686,7 +1693,7 @@ export default defineComponent({
                     const relayRequest: RelayRequest = {
                         request: {
                             from: toAddress,
-                            to: config.usdc.nativeHtlcContract,
+                            to: config.polygon.usdc.htlcContract,
                             data,
                             value: '0',
                             nonce: forwarderNonce.toString(),
@@ -1699,10 +1706,10 @@ export default defineComponent({
                             pctRelayFee: relay.pctRelayFee.toString(),
                             baseRelayFee: relay.baseRelayFee.toString(),
                             relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.usdc.nativeHtlcContract,
+                            paymaster: config.polygon.usdc.htlcContract,
                             paymasterData: '0x',
                             clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.usdc.nativeHtlcContract,
+                            forwarder: config.polygon.usdc.htlcContract,
                         },
                     };
 
@@ -1968,27 +1975,31 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
-        const { hasBitcoinAddresses, hasUsdcAddresses } = useAccountStore();
+        const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
 
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
-            return getWalletEnabledAssets().reduce((result, asset) => ({
-                ...result,
-                [asset]: {
-                    label: assetToCurrency(asset).toUpperCase(),
-                    // Note that currencies which are disabled in Fastspot, are not disabled in the button group, but
-                    // instead show a maintenance message in the footer.
-                    disabled: (
-                        // The asset is not activated in the active account.
-                        (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
-                        || (asset === SwapAsset.USDC_MATIC && !hasUsdcAddresses.value)
-                    ) || (
-                        // Asset pair has no balance to swap.
-                        !otherAssetBalance && !accountBalance(asset)
-                    ),
-                },
-            }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
+            return getWalletEnabledAssets().reduce((result, asset) => {
+                if (asset === SwapAsset.USDC_MATIC && !stablecoin.value) return result;
+
+                return {
+                    ...result,
+                    [asset]: {
+                        label: assetToCurrency(asset).toUpperCase(),
+                        // Note that currencies which are disabled in Fastspot, are not disabled in the button group,
+                        // but instead show a maintenance message in the footer.
+                        disabled: (
+                            // The asset is not activated in the active account.
+                            (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
+                            || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
+                        ) || (
+                            // Asset pair has no balance to swap.
+                            !otherAssetBalance && !accountBalance(asset)
+                        ),
+                    },
+                };
+            }, {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
         }
 
         const leftButtonGroupOptions = computed(() => getButtonGroupOptions(rightAsset.value));
@@ -2051,7 +2062,7 @@ export default defineComponent({
 
             // eslint-disable-next-line no-async-promise-executor
             const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve) => {
-                const htlcContract = await getNativeHtlcContract(); // This promise is already resolved
+                const htlcContract = await getUsdcHtlcContract(); // This promise is already resolved
                 const toAddress = usdcHtlc.redeemAddress;
 
                 // Unset stored relay so we can select a new one that hopefully works then
@@ -2085,7 +2096,7 @@ export default defineComponent({
                 const relayRequest: RelayRequest = {
                     request: {
                         from: toAddress,
-                        to: config.usdc.nativeHtlcContract,
+                        to: config.polygon.usdc.htlcContract,
                         data,
                         value: '0',
                         nonce: forwarderNonce.toString(),
@@ -2098,10 +2109,10 @@ export default defineComponent({
                         pctRelayFee: relay.pctRelayFee.toString(),
                         baseRelayFee: relay.baseRelayFee.toString(),
                         relayWorker: relay.relayWorkerAddress,
-                        paymaster: config.usdc.nativeHtlcContract,
+                        paymaster: config.polygon.usdc.htlcContract,
                         paymasterData: '0x',
                         clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        forwarder: config.usdc.nativeHtlcContract,
+                        forwarder: config.polygon.usdc.htlcContract,
                     },
                 };
 
@@ -2246,6 +2257,7 @@ export default defineComponent({
             swapIsNotSupported,
             assetToCurrency,
             handleSwapErrorAction,
+            stablecoin,
         };
     },
     components: {
@@ -2258,6 +2270,7 @@ export default defineComponent({
         Tooltip,
         FiatAmount,
         CircleSpinner,
+        InfoCircleSmallIcon,
         SwapBalanceBar,
         MinimizeIcon,
         // LimitIcon,
@@ -2340,6 +2353,21 @@ export default defineComponent({
         background-repeat: no-repeat;
         background-position-x: calc(100% - 1.75rem);
         background-position-y: 55%;
+    }
+
+    .stablecoin-tooltip {
+        margin-left: 1.5rem;
+        align-self: center;
+
+        ::v-deep .trigger svg {
+            height: 2rem;
+            margin: 0;
+        }
+
+        ::v-deep .tooltip-box {
+            text-align: left;
+            width: 30rem;
+        }
     }
 }
 

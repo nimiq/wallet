@@ -16,13 +16,15 @@ export async function getPoolAddress(contract: Contract, token: string) {
 }
 
 // https://docs.uniswap.org/sdk/v3/guides/quoting
-export async function getUsdcPrice(token: string, client: PolygonClient) {
+export async function getUsdPrice(token: string, client: PolygonClient) {
     const { config } = useConfig();
 
     if (!poolFees.has(token)) {
-        const transferContract = token === config.usdc.nativeUsdcContract
-            ? client.nativeUsdcTransfer
-            : client.usdcTransfer;
+        const transferContract = token === config.polygon.usdc.tokenContract
+            ? client.usdcTransfer
+            : token === config.polygon.usdc_bridged.tokenContract
+                ? client.usdcBridgedTransfer
+                : client.usdtBridgedTransfer;
         const poolContract = new client.ethers.Contract(
             await getPoolAddress(transferContract, token),
             UNISWAP_POOL_CONTRACT_ABI,
@@ -32,22 +34,22 @@ export async function getUsdcPrice(token: string, client: PolygonClient) {
     }
 
     const quoterContract = new client.ethers.Contract(
-        config.usdc.uniswapQuoterContract,
+        config.polygon.uniswapQuoterContract,
         UNISWAP_QUOTER_CONTRACT_ABI,
         client.provider,
     );
 
-    // MATIC amount that would be received for swapping 1 USDC
-    const usdcPrice = await quoterContract.callStatic.quoteExactInputSingle(
+    // POL amount that would be received for swapping 1 USDC/T
+    const prize = await quoterContract.callStatic.quoteExactInputSingle(
         token, // in
-        config.usdc.wmaticContract, // out
+        config.polygon.wpolContract, // out
         poolFees.get(token)!,
-        1_000_000, // 1 USDC
+        1_000_000, // 1 USDC/T
         0,
     ) as BigNumber;
 
-    // Convert to USDC smallest unit. We cannot get directly the USDC price for
-    // USDC smallest unit because is so small that the result is 0, which is
+    // Convert to USDC/T smallest unit. We cannot get directly the USDC/T price for
+    // USDC/T smallest unit because is so small that the result is 0, which is
     // not true.
-    return usdcPrice.div(1_000_000);
+    return prize.div(1_000_000);
 }

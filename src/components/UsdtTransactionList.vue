@@ -1,7 +1,7 @@
 <template>
     <div class="transaction-list flex-row" ref="root">
         <RecycleScroller
-            v-if="isFetchingUsdcTxHistory || transactions.length"
+            v-if="isFetchingUsdtTxHistory || transactions.length"
             :items="transactions"
             :item-size="itemSize"
             key-field="transactionHash"
@@ -31,12 +31,12 @@
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
                     <div v-if="!item.sender" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
-                        <div v-if="item.isLatestMonth && isFetchingUsdcTxHistory" class="fetching flex-row">
+                        <div v-if="item.isLatestMonth && isFetchingUsdtTxHistory" class="fetching flex-row">
                             <CircleSpinner/>
                             <span>{{ $t('Fetching') }}</span>
                         </div>
                     </div>
-                    <UsdcTransactionListItem v-else :transaction="item"/>
+                    <UsdtTransactionListItem v-else :transaction="item"/>
                 </div>
             </template>
 
@@ -45,7 +45,7 @@
                     <h1 class="nq-h1">{{ $t('Congrats') }} 🎉</h1>
                     <h1 class="nq-h1">{{ $t('You now own crypto!') }}</h1>
                     <router-link to="buy" class="nq-button light-blue">
-                        {{ $t('Buy USDC') }}
+                        {{ $t('Buy USDT') }}
                     </router-link>
                 </div>
             </template>
@@ -55,7 +55,7 @@
             <h2 class="nq-h1">{{ $t('Your transactions will appear here') }}</h2>
 
             <router-link v-if="isMainnet" to="buy" class="nq-button light-blue">
-                {{ $t('Buy USDC') }}
+                {{ $t('Buy USDT') }}
             </router-link>
         </div>
         <div v-else class="empty-state flex-column">
@@ -67,15 +67,15 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
-import UsdcTransactionListItem from '@/components/UsdcTransactionListItem.vue';
+import UsdtTransactionListItem from '@/components/UsdtTransactionListItem.vue';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
-import { useUsdcTransactionsStore, Transaction, TransactionState } from '../stores/UsdcTransactions';
-import { useUsdcContactsStore } from '../stores/UsdcContacts';
+import { useUsdtTransactionsStore, Transaction, TransactionState } from '../stores/UsdtTransactions';
+import { useUsdtContactsStore } from '../stores/UsdtContacts';
 import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
 import { ENV_MAIN } from '../lib/Constants';
 import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
-import { useUsdcTransactionInfo } from '../composables/useUsdcTransactionInfo';
+import { useUsdtTransactionInfo } from '../composables/useUsdtTransactionInfo';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -125,9 +125,9 @@ export default defineComponent({
     },
     setup(props, context) {
         const { addressInfo } = usePolygonAddressStore();
-        const { state: transactions$ } = useUsdcTransactionsStore();
-        const { isFetchingUsdcTxHistory } = usePolygonNetworkStore();
-        const { getLabel: getContactLabel } = useUsdcContactsStore();
+        const { state: transactions$ } = useUsdtTransactionsStore();
+        const { isFetchingUsdtTxHistory } = usePolygonNetworkStore();
+        const { getLabel: getContactLabel } = useUsdtContactsStore();
         const { config } = useConfig();
 
         const activeAddress = computed(() => addressInfo.value?.address);
@@ -153,7 +153,7 @@ export default defineComponent({
 
             return txsForActiveAddress.value.filter((tx) => {
                 const transaction = ref<Readonly<Transaction>>(tx);
-                const { peerLabel, data } = useUsdcTransactionInfo(transaction);
+                const { peerLabel, data } = useUsdtTransactionInfo(transaction);
 
                 const senderLabel = getContactLabel.value(tx.sender) || '';
 
@@ -173,7 +173,7 @@ export default defineComponent({
 
         const transactions = computed(() => {
             // Display loading transactions
-            if (!filteredTxs.value.length && isFetchingUsdcTxHistory.value) {
+            if (!filteredTxs.value.length && isFetchingUsdtTxHistory.value) {
                 // create just as many placeholders that the scroller doesn't start recycling them because the loading
                 // animation breaks for recycled entries due to the animation delay being off.
                 const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
@@ -352,13 +352,13 @@ export default defineComponent({
             txCount,
             transactions,
             root,
-            isFetchingUsdcTxHistory,
+            isFetchingUsdtTxHistory,
             isMainnet,
             scroller,
         };
     },
     components: {
-        UsdcTransactionListItem,
+        UsdtTransactionListItem,
         CircleSpinner,
         HexagonIcon,
     },

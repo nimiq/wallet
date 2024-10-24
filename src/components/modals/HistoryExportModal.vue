@@ -36,6 +36,8 @@ import Modal from './Modal.vue';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore } from '../../stores/Address';
 import ButtonGroup from '../ButtonGroup.vue';
+import { useSettingsStore } from '../../stores/Settings';
+import { Trial } from '../../lib/Trials';
 
 export default defineComponent({
     name: 'history-export-modal',
@@ -66,6 +68,7 @@ export default defineComponent({
                 external: [] as string[],
             };
             let usdcAddresses = [] as string[];
+            let usdtAddresses = [] as string[];
             let filename = '';
 
             if (props.type === 'address') {
@@ -81,11 +84,20 @@ export default defineComponent({
                 } else if (activeCurrency.value === CryptoCurrency.USDC) {
                     usdcAddresses = activeAccountInfo.value.polygonAddresses || [];
                     filename = `Nimiq-Wallet-USDC-Export-${activeAccountInfo.value.label}`;
+                } else if (activeCurrency.value === CryptoCurrency.USDT) {
+                    usdtAddresses = activeAccountInfo.value.polygonAddresses || [];
+                    filename = `Nimiq-Wallet-USDT-Export-${activeAccountInfo.value.label}`;
                 }
             } else {
                 nimAddresses = activeAccountInfo.value.addresses;
                 btcAddresses = activeAccountInfo.value.btcAddresses;
                 usdcAddresses = activeAccountInfo.value.polygonAddresses || [];
+                const { trials } = useSettingsStore();
+                if (trials.value.includes(Trial.USDT)) {
+                    usdtAddresses = activeAccountInfo.value.polygonAddresses || [];
+                } else {
+                    usdtAddresses = [];
+                }
                 filename = `Nimiq-Wallet-Account-Export-${activeAccountInfo.value.label.replace(/\s/g, '-')}`;
             }
 
@@ -95,6 +107,7 @@ export default defineComponent({
                 nimAddresses,
                 btcAddresses,
                 usdcAddresses,
+                usdtAddresses,
                 parseInt(selectedYear.value, 10),
                 format.value,
                 filename,

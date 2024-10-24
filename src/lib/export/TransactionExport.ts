@@ -9,6 +9,7 @@ import { useConfig } from '../../composables/useConfig';
 import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, ENV_MAIN } from '../Constants';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
 import { GenericFormat } from './GenericFormat';
+import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
 
 export enum ExportFormat {
     GENERIC = 'generic',
@@ -18,6 +19,7 @@ export async function exportTransactions(
     nimAddresses: string[],
     btcAddresses: { internal: string[], external: string[] },
     usdcAddresses: string[],
+    usdtAddresses: string[],
     year: number,
     format: ExportFormat,
     filename?: string,
@@ -111,10 +113,17 @@ export async function exportTransactions(
         .filter((tx) => tx.timestamp) // Only confirmed transactions
         .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
 
+    const { state: usdtTransactions$ } = useUsdtTransactionsStore();
+    const usdtTransactions = usdtAddresses.length === 0 ? [] : Object.values(usdtTransactions$.transactions)
+        .filter((tx) => usdtAddresses.includes(tx.sender) || usdtAddresses.includes(tx.recipient))
+        .filter((tx) => tx.timestamp) // Only confirmed transactions
+        .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
+
     const transactions = [
         ...nimTransactions,
         ...btcTransactions,
         ...usdcTransactions,
+        ...usdtTransactions,
     ].sort((a, b) => a.timestamp! - b.timestamp!); // Sort ascending;
 
     // if (!transactions.length) {
@@ -124,10 +133,24 @@ export async function exportTransactions(
 
     switch (format) {
         case ExportFormat.GENERIC:
-            new GenericFormat(nimAddresses, btcAddresses, usdcAddresses, transactions, year).export(filename);
+            new GenericFormat(
+                nimAddresses,
+                btcAddresses,
+                usdcAddresses,
+                usdtAddresses,
+                transactions,
+                year,
+            ).export(filename);
             break;
         case ExportFormat.BLOCKPIT:
-            new BlockpitAppFormat(nimAddresses, btcAddresses, usdcAddresses, transactions, year).export(filename);
+            new BlockpitAppFormat(
+                nimAddresses,
+                btcAddresses,
+                usdcAddresses,
+                usdtAddresses,
+                transactions,
+                year,
+            ).export(filename);
             break;
         default:
             throw new Error('Unknown export format');

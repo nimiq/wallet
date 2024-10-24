@@ -51,7 +51,8 @@ import { useFiatStore } from '../../stores/Fiat';
 import { useAccountStore } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
-import { useUsdcAddressStore } from '../../stores/UsdcAddress';
+import { usePolygonAddressStore } from '../../stores/PolygonAddress';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency, ENV_DEV } from '../../lib/Constants';
 
@@ -95,6 +96,7 @@ export default defineComponent({
         const language = useSettingsStore().state.language; // eslint-disable-line prefer-destructuring
         const fiatCurrencyCode = useFiatStore().state.currency;
         const cryptoCurrencyCode = ref(useAccountStore().state.activeCurrency);
+        const { stablecoin } = useAccountSettingsStore();
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
@@ -102,13 +104,22 @@ export default defineComponent({
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = useUsdcAddressStore().activeAddress.value;
+        const usdcAddress = stablecoin.value === CryptoCurrency.USDC
+            ? usePolygonAddressStore().activeAddress.value
+            : undefined;
+
+        // Having a USDT address must be optional, so that the widget also works
+        // for legacy or non-polygon-activated accounts.
+        const usdtAddress = stablecoin.value === CryptoCurrency.USDT
+            ? usePolygonAddressStore().activeAddress.value
+            : undefined;
 
         const walletAddresses: {[c: string]: string | undefined} = {
             // Remove spaces in NIM address, as spaces are invalid URI components
             nim: useAddressStore().state.activeAddress || undefined,
             ...(btcAddress ? { btc: btcAddress } : {}),
             ...(usdcAddress ? { usdc: usdcAddress } : {}),
+            ...(usdtAddress ? { usdt: usdtAddress } : {}),
         };
 
         const { config } = useConfig();
@@ -257,6 +268,7 @@ export default defineComponent({
 
             let cryptoCurrency = cryptoCurrencyCode.value.toUpperCase();
             if (cryptoCurrency === 'USDC') cryptoCurrency = 'USDC-MATIC';
+            if (cryptoCurrency === 'USDT') cryptoCurrency = 'USDT-MATIC';
 
             await window.simplex.createForm({
                 showFiatFirst: true,
@@ -277,6 +289,7 @@ export default defineComponent({
 
             window.simplex.on('crypto-changed', (crypto: string) => {
                 if (crypto === 'USDC-MATIC') crypto = 'USDC';
+                if (crypto === 'USDT-MATIC') crypto = 'USDT';
                 cryptoCurrencyCode.value = crypto.toLowerCase() as CryptoCurrency;
             });
         });

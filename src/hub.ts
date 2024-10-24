@@ -20,12 +20,12 @@ import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
-import { UsdcAddressInfo, useUsdcAddressStore } from './stores/UsdcAddress';
+import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
 import { useProxyStore, Cashlink } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
-import { createTransactionRequest, sendTransaction as sendUsdcTx } from './ethers';
+import { createTransactionRequest, sendTransaction as sendPolygonTx } from './ethers';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router from './router';
 import { useSettingsStore } from './stores/Settings';
@@ -134,7 +134,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
             // Signup of a Keyguard account
-            if (!welcomeModalAlreadyShown && config.enableBitcoin && config.usdc.enabled) {
+            if (!welcomeModalAlreadyShown && config.enableBitcoin && config.polygon.enabled) {
                 // Show regular first-time welcome flow which talks about Bitcoin and USDC.
                 router.push('/welcome');
             } else if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
@@ -144,11 +144,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
             break;
         case HubApi.RequestType.LOGIN:
             // Login of a Keyguard or Ledger account
-            if (accounts[0].polygonAddresses.length && !welcomeModalAlreadyShown && config.usdc.enabled) {
-                // If USDC is enabled for this account, show "USDC is now available" info in activation modal which
-                // afterwards leads into the welcome flow if not shown yet.
-                router.push('/usdc-activation');
-            } else if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length
+            if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length
                 && config.enableBitcoin) {
                 // After adding an account that supports Bitcoin without it being activated yet (this is the case for
                 // Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for
@@ -228,12 +224,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     const accountInfos: AccountInfo[] = [];
     const addressInfos: AddressInfo[] = [];
     const btcAddressInfos: BtcAddressInfo[] = [];
-    const usdcAddressInfos: UsdcAddressInfo[] = [];
+    const polygonAddressInfos: PolygonAddressInfo[] = [];
 
     const accountStore = useAccountStore();
     const addressStore = useAddressStore();
     const btcAddressStore = useBtcAddressStore();
-    const usdcAddressStore = useUsdcAddressStore();
+    const polygonAddressStore = usePolygonAddressStore();
 
     for (const account of accounts) {
         const addresses: string[] = [];
@@ -300,11 +296,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
         }
 
         for (const polygonAddress of account.polygonAddresses) {
-            usdcAddressInfos.push({
+            polygonAddressInfos.push({
                 address: polygonAddress,
-                balance: usdcAddressStore.state.addressInfos[polygonAddress]?.balance ?? null,
-                nativeBalance: usdcAddressStore.state.addressInfos[polygonAddress]?.nativeBalance ?? null,
-                matic: usdcAddressStore.state.addressInfos[polygonAddress]?.matic ?? null,
+                balanceUsdcBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
+                balanceUsdc: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
+                balanceUsdtBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdtBridged ?? null,
+                pol: polygonAddressStore.state.addressInfos[polygonAddress]?.pol ?? null,
             });
         }
 
@@ -331,15 +328,15 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
     if (replaceState) {
         addressStore.setAddressInfos(addressInfos);
-        usdcAddressStore.setAddressInfos(usdcAddressInfos);
+        polygonAddressStore.setAddressInfos(polygonAddressInfos);
         // Accounts set last, so all their address infos exist already
         accountStore.setAccountInfos(accountInfos);
     } else {
         for (const addressInfo of addressInfos) {
             addressStore.addAddressInfo(addressInfo);
         }
-        for (const usdcAddressInfo of usdcAddressInfos) {
-            usdcAddressStore.addAddressInfo(usdcAddressInfo);
+        for (const polygonAddressInfo of polygonAddressInfos) {
+            polygonAddressStore.addAddressInfo(polygonAddressInfo);
         }
         // Accounts set last, so all their address infos exist already
         for (const accountInfo of accountInfos) {
@@ -406,7 +403,7 @@ export async function syncFromHub() {
         areOptionalRedirectsAllowed(router.currentRoute)
         && activeAccountInfo.value?.type === AccountType.BIP39 // Legacy accounts and Ledgers are not supported.
         && !activeAccountInfo.value.polygonAddresses?.length
-        && config.usdc.enabled
+        && config.polygon.enabled
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.push('/usdc-activation');
@@ -700,7 +697,7 @@ export async function activateBitcoin(accountId: string) {
     return true;
 }
 
-export async function activateUsdc(accountId: string) {
+export async function activatePolygon(accountId: string) {
     const account = await hubApi.activatePolygon({
         appName: APP_NAME,
         accountId,
@@ -712,7 +709,8 @@ export async function activateUsdc(accountId: string) {
     return true;
 }
 
-export async function sendUsdcTransaction(
+export async function sendPolygonTransaction(
+    tokenAddress: string,
     recipient: string,
     amount: number,
     recipientLabel?: string,
@@ -728,8 +726,9 @@ export async function sendUsdcTransaction(
             const {
                 relayRequest,
                 permit,
+                approval,
                 relay,
-            } = await createTransactionRequest(recipient, amount, forceRelay);
+            } = await createTransactionRequest(tokenAddress, recipient, amount, forceRelay);
             relayUrl = relay.url;
             resolve({
                 ...relayRequest,
@@ -741,6 +740,12 @@ export async function sendUsdcTransaction(
                         tokenNonce: permit.tokenNonce,
                     },
                 } : null),
+
+                ...(approval ? {
+                    approval: {
+                        tokenNonce: approval.tokenNonce,
+                    },
+                } : null),
             });
         } catch (e) {
             reject(e);
@@ -750,7 +755,11 @@ export async function sendUsdcTransaction(
     if (!signedTransaction) return false;
 
     const { relayData, ...relayRequest } = signedTransaction.message;
-    return sendUsdcTx({ request: relayRequest as ForwardRequest, relayData }, signedTransaction.signature, relayUrl!);
+    return sendPolygonTx(
+        { request: relayRequest as ForwardRequest, relayData },
+        signedTransaction.signature,
+        relayUrl!,
+    );
 }
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {

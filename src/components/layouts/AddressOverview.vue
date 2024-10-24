@@ -29,32 +29,32 @@
                         <div class="popup-menu nq-blue-bg">
                             <button v-if="activeCurrency === 'nim'"
                                 class="reset flex-row"
-                                @click="rename(activeAccountId, activeAddressInfo.address)"
+                                @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
-                                @click="rescan"
+                                @pointerdown="rescan"
                             >
                                 <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                             <button
                                 class="reset flex-row"
-                                @click="$router.push('/export-history/address')"
+                                @pointerdown="$router.push('/export-history/address')"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
                             <template v-if="hasUsdtTrial">
                                 <button v-if="activeCurrency === CryptoCurrency.USDC"
                                     class="reset flex-row"
-                                    @click="switchStablecoin($event, CryptoCurrency.USDT)"
+                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
                                 >
                                     <UsdtIcon/>{{ $t('Switch to USDT') }}
                                 </button>
                                 <button v-if="activeCurrency === CryptoCurrency.USDT"
                                     class="reset flex-row"
-                                    @click="switchStablecoin($event, CryptoCurrency.USDC)"
+                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
                                 >
                                     <UsdcIcon/>{{ $t('Switch to USDC') }}
                                 </button>
@@ -76,32 +76,32 @@
                         <div class="popup-menu nq-blue-bg">
                             <button v-if="activeCurrency === 'nim'"
                                 class="reset flex-row"
-                                @click="rename(activeAccountId, activeAddressInfo.address)"
+                                @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
-                                @click="rescan"
+                                @pointerdown="rescan"
                             >
                                 <RefreshIcon/>{{ $t('Rescan') }}
                             </button>
                             <button
                                 class="reset flex-row"
-                                @click="$router.push('/export-history/address')"
+                                @pointerdown="$router.push('/export-history/address')"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
                             <template v-if="hasUsdtTrial">
                                 <button v-if="activeCurrency === CryptoCurrency.USDC"
                                     class="reset flex-row"
-                                    @click="switchStablecoin($event, CryptoCurrency.USDT)"
+                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
                                 >
                                     <UsdtIcon/>{{ $t('Switch to USDT') }}
                                 </button>
                                 <button v-if="activeCurrency === CryptoCurrency.USDT"
                                     class="reset flex-row"
-                                    @click="switchStablecoin($event, CryptoCurrency.USDC)"
+                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
                                 >
                                     <UsdcIcon/>{{ $t('Switch to USDC') }}
                                 </button>

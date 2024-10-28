@@ -13,7 +13,7 @@
             </svg>
             <!-- eslint-enable max-len -->
 
-            <h1 class="nq-h1">{{ $t('Welcome to the updated\nwallet, now with USDC') }}</h1>
+            <h1 class="nq-h1">{{ $t('Welcome to the updated\nwallet, now with USDC/USDT') }}</h1>
 
             <p class="nq-text">
                 {{ $t('Many updates like easier address names, more accessible swaps and an improved '
@@ -35,7 +35,7 @@
                 {{ buttonText }}
             </button>
             <button v-else class="nq-button light-blue" @click="enablePolygon" @mousedown.prevent>
-                {{ $t('Activate USDC & USDT') }}
+                {{ $t('Activate USDC/USDT') }}
             </button>
 
             <a

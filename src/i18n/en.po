@@ -234,7 +234,7 @@ msgid "Activate Bitcoin"
 msgstr ""
 
 #: src/components/modals/PolygonActivationModal.vue:38
-msgid "Activate USDC & USDT"
+msgid "Activate USDC/USDT"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:229
@@ -2923,7 +2923,7 @@ msgstr ""
 #: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
 "Welcome to the updated\n"
-"wallet, now with USDC"
+"wallet, now with USDC/USDT"
 msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:88

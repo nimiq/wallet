@@ -1,7 +1,5 @@
 import { useSettingsStore } from '../stores/Settings';
 import { useConfig } from '../composables/useConfig';
-import { useAccountStore } from '../stores/Account';
-import { CryptoCurrency } from './Constants';
 
 declare global {
     function digestMessage(message: string): Promise<string>;
@@ -20,7 +18,6 @@ window.digestMessage = async function (message: string): Promise<string> { // es
 export enum Trial {
     OASIS2 = 'OASIS2',
     TEN31Pass = 'TEN31Pass',
-    USDT = 'USDT',
 }
 
 export function init() {
@@ -31,9 +28,6 @@ export function init() {
         switch (trial) { // eslint-disable-line default-case
             case Trial.TEN31Pass:
                 config.ten31Pass.enabled = true;
-                break;
-            case Trial.USDT:
-                useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
                 break;
         }
     }
@@ -52,7 +46,6 @@ export async function enableTrial(password: string): Promise<boolean> {
     const trialToEnable = {
         'a3c06b88640ae4a5344a94238aa12746b032634bba1431163137129fe6ee1230': Trial.OASIS2,
         'd8082502f1f6cf61125f9d87b1a848590a5c56aa593abcb59f5d3225afdfc8b0': Trial.TEN31Pass,
-        '85e1699f426868d902b2371dc8b5bff1f504018536f0aa465a408ff7300fa348': Trial.USDT,
     }[hash];
     /* eslint-enable quote-props */
 

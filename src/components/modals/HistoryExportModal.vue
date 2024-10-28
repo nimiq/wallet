@@ -36,8 +36,6 @@ import Modal from './Modal.vue';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAddressStore } from '../../stores/Address';
 import ButtonGroup from '../ButtonGroup.vue';
-import { useSettingsStore } from '../../stores/Settings';
-import { Trial } from '../../lib/Trials';
 
 export default defineComponent({
     name: 'history-export-modal',
@@ -92,12 +90,7 @@ export default defineComponent({
                 nimAddresses = activeAccountInfo.value.addresses;
                 btcAddresses = activeAccountInfo.value.btcAddresses;
                 usdcAddresses = activeAccountInfo.value.polygonAddresses || [];
-                const { trials } = useSettingsStore();
-                if (trials.value.includes(Trial.USDT)) {
-                    usdtAddresses = activeAccountInfo.value.polygonAddresses || [];
-                } else {
-                    usdtAddresses = [];
-                }
+                usdtAddresses = activeAccountInfo.value.polygonAddresses || [];
                 filename = `Nimiq-Wallet-Account-Export-${activeAccountInfo.value.label.replace(/\s/g, '-')}`;
             }
 

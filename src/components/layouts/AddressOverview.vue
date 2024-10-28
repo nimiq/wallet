@@ -45,20 +45,18 @@
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
-                            <template v-if="hasUsdtTrial">
-                                <button v-if="activeCurrency === CryptoCurrency.USDC"
-                                    class="reset flex-row"
-                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
-                                >
-                                    <UsdtIcon/>{{ $t('Switch to USDT') }}
-                                </button>
-                                <button v-if="activeCurrency === CryptoCurrency.USDT"
-                                    class="reset flex-row"
-                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
-                                >
-                                    <UsdcIcon/>{{ $t('Switch to USDC') }}
-                                </button>
-                            </template>
+                            <button v-if="activeCurrency === CryptoCurrency.USDC"
+                                class="reset flex-row"
+                                @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
+                            >
+                                <UsdtIcon/>{{ $t('Switch to USDT') }}
+                            </button>
+                            <button v-if="activeCurrency === CryptoCurrency.USDT"
+                                class="reset flex-row"
+                                @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
+                            >
+                                <UsdcIcon/>{{ $t('Switch to USDC') }}
+                            </button>
                         </div>
                     </button>
                 </div>
@@ -92,20 +90,18 @@
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
-                            <template v-if="hasUsdtTrial">
-                                <button v-if="activeCurrency === CryptoCurrency.USDC"
-                                    class="reset flex-row"
-                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
-                                >
-                                    <UsdtIcon/>{{ $t('Switch to USDT') }}
-                                </button>
-                                <button v-if="activeCurrency === CryptoCurrency.USDT"
-                                    class="reset flex-row"
-                                    @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
-                                >
-                                    <UsdcIcon/>{{ $t('Switch to USDC') }}
-                                </button>
-                            </template>
+                            <button v-if="activeCurrency === CryptoCurrency.USDC"
+                                class="reset flex-row"
+                                @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
+                            >
+                                <UsdtIcon/>{{ $t('Switch to USDT') }}
+                            </button>
+                            <button v-if="activeCurrency === CryptoCurrency.USDT"
+                                class="reset flex-row"
+                                @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
+                            >
+                                <UsdcIcon/>{{ $t('Switch to USDC') }}
+                            </button>
                         </div>
                     </button>
                 </div>
@@ -339,8 +335,6 @@ import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
 import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
 import { usePrestakingStore } from '../../stores/Prestaking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
-import { useSettingsStore } from '../../stores/Settings';
-import { Trial } from '../../lib/Trials';
 
 export default defineComponent({
     name: 'address-overview',
@@ -588,9 +582,6 @@ export default defineComponent({
             return accountPrestake.value > 0;
         });
 
-        const { trials } = useSettingsStore();
-        const hasUsdtTrial = computed(() => trials.value.includes(Trial.USDT));
-
         return {
             activeCurrency,
             searchString,
@@ -621,7 +612,6 @@ export default defineComponent({
             activePrestake,
             windowWidth,
             showPrestakingButton,
-            hasUsdtTrial,
         };
     },
     components: {

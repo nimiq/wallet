@@ -1,8 +1,6 @@
 import { CryptoCurrency } from '@nimiq/utils';
 import { createStore } from 'pinia';
-import { Trial } from '../lib/Trials';
 import { useAccountStore } from './Account';
-import { useSettingsStore } from './Settings';
 
 export type Stablecoin = CryptoCurrency.USDC | CryptoCurrency.USDT;
 
@@ -22,15 +20,11 @@ export const useAccountSettingsStore = createStore({
     }),
     getters: {
         stablecoin: ({ settings }): Readonly<Stablecoin | null> => {
-            if (!useSettingsStore().state.trials.includes(Trial.USDT)) return CryptoCurrency.USDC;
-
             const activeAccountId = useAccountStore().activeAccountId.value;
             if (!activeAccountId) return null;
             return settings[activeAccountId]?.stablecoin ?? null;
         },
         knowsAboutUsdt: ({ settings }): Readonly<boolean | null> => {
-            if (!useSettingsStore().state.trials.includes(Trial.USDT)) return true;
-
             const activeAccountId = useAccountStore().activeAccountId.value;
             if (!activeAccountId) return null;
             return settings[activeAccountId]?.knowsAboutUsdt ?? false;

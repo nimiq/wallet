@@ -22,11 +22,7 @@
     <label for="stablecoinSelector-usdt" tabindex="0" class="flex-row"
         @keyup.enter="setKey('usdt')" :class="{ active: innerKey === 'usdt' }"
     >
-        <!-- eslint-disable max-len -->
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 12C0 5.373 5.373 0 12 0c6.628 0 12 5.371 12 12s-5.373 12-12 12S0 18.627 0 12Zm10.519-3.384v1.785h-.001c-3.312.154-5.802.81-5.802 1.597 0 .786 2.49 1.443 5.802 1.596v5.718h2.952v-5.718c3.317-.153 5.813-.81 5.813-1.598 0-.787-2.495-1.444-5.813-1.596V8.616h4.083v-2.72H6.437v2.72h4.082Zm-.001 4.492v.001c-2.925-.131-5.11-.643-5.11-1.251 0-.609 2.184-1.12 5.11-1.25v1.993c.083.008.541.046 1.451.046a22.7 22.7 0 0 0 1.5-.046v-1.993c2.93.13 5.119.64 5.119 1.25 0 .611-2.188 1.122-5.12 1.252v-.003c-.188.01-.724.032-1.486.032-.953 0-1.38-.026-1.464-.031Z" fill="currentColor"/>
-        </svg>
-        <!-- eslint-enable max-len -->
+        <UsdtIcon hole />
         USDT
     </label>
 
@@ -36,6 +32,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import UsdtIcon from './icons/UsdtIcon.vue';
 
 export default defineComponent({
     props: {
@@ -84,6 +81,9 @@ export default defineComponent({
             pill$,
         };
     },
+    components: {
+        UsdtIcon,
+    },
 });
 </script>
 
@@ -116,6 +116,10 @@ export default defineComponent({
         svg {
             flex-shrink: 0;
             width: 3rem;
+
+            &.usdt {
+                width: 3.25rem;
+            }
         }
 
         &:not(.active) {

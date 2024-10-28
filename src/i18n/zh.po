@@ -249,8 +249,8 @@ msgid "Activate Bitcoin"
 msgstr "激活比特币"
 
 #: src/components/modals/PolygonActivationModal.vue:38
-msgid "Activate USDC & USDT"
-msgstr ""
+msgid "Activate USDC/USDT"
+msgstr "激活 USDC/USDT"
 
 #: src/components/layouts/Settings.vue:229
 msgid "Add"
@@ -328,7 +328,7 @@ msgid ""
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟"
 
-#: src/components/layouts/AddressOverview.vue:256
+#: src/components/layouts/AddressOverview.vue:252
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -451,7 +451,7 @@ msgstr "BIC适用"
 
 #: src/components/AddressList.vue:179
 #: src/components/layouts/AccountOverview.vue:130
-#: src/components/layouts/AddressOverview.vue:115
+#: src/components/layouts/AddressOverview.vue:111
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:123
@@ -723,7 +723,7 @@ msgstr "点击了解更多信息"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
-#: src/components/layouts/AddressOverview.vue:258
+#: src/components/layouts/AddressOverview.vue:254
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"
@@ -843,11 +843,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:217
+#: src/components/layouts/AddressOverview.vue:213
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:209
+#: src/components/layouts/AddressOverview.vue:205
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -1128,7 +1128,7 @@ msgid "Expired HTLC"
 msgstr "过期的 HTLC"
 
 #: src/components/layouts/AddressOverview.vue:46
-#: src/components/layouts/AddressOverview.vue:93
+#: src/components/layouts/AddressOverview.vue:91
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
 msgstr "导出历史记录"
@@ -1279,7 +1279,7 @@ msgstr "发送到非Polygon {ticker}版本的资金可能会永久丢失。"
 msgid "General"
 msgstr "一般设置"
 
-#: src/components/modals/HistoryExportModal.vue:52
+#: src/components/modals/HistoryExportModal.vue:50
 msgid "Generic"
 msgstr "动态的"
 
@@ -1528,7 +1528,7 @@ msgstr "语言"
 msgid "Learn about pre-staking"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:212
+#: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:20
 #: src/components/modals/UsdtAddedModal.vue:17
@@ -1540,11 +1540,11 @@ msgstr "了解更多"
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/AddressOverview.vue:202
+#: src/components/layouts/AddressOverview.vue:198
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:243
+#: src/components/layouts/AddressOverview.vue:239
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
 
@@ -2024,7 +2024,7 @@ msgid ""
 "intro."
 msgstr "在这个{blog_post}中阅读更多信息，或点击下方查看新的钱包介绍。"
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:187
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "接收"
@@ -2120,7 +2120,7 @@ msgid "Release Notes"
 msgstr "发行说明"
 
 #: src/components/layouts/AddressOverview.vue:34
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:79
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "重新命名"
@@ -2134,7 +2134,7 @@ msgid "Required"
 msgstr "必要的"
 
 #: src/components/layouts/AddressOverview.vue:40
-#: src/components/layouts/AddressOverview.vue:87
+#: src/components/layouts/AddressOverview.vue:85
 msgid "Rescan"
 msgstr "重新扫描"
 
@@ -2272,7 +2272,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "出售功能现在可用了"
 
-#: src/components/layouts/AddressOverview.vue:186
+#: src/components/layouts/AddressOverview.vue:182
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "发送"
@@ -2449,7 +2449,7 @@ msgstr "显示恢复字"
 msgid "Show values as {currency}"
 msgstr "显示价值为 {currency}"
 
-#: src/components/layouts/AddressOverview.vue:244
+#: src/components/layouts/AddressOverview.vue:240
 msgid "Signup"
 msgstr "注册"
 
@@ -2620,13 +2620,13 @@ msgstr "每30天最多兑换{limit}。"
 msgid "Swiping Gestures"
 msgstr "滑动手势"
 
-#: src/components/layouts/AddressOverview.vue:106
-#: src/components/layouts/AddressOverview.vue:59
+#: src/components/layouts/AddressOverview.vue:103
+#: src/components/layouts/AddressOverview.vue:58
 msgid "Switch to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:100
-#: src/components/layouts/AddressOverview.vue:53
+#: src/components/layouts/AddressOverview.vue:52
+#: src/components/layouts/AddressOverview.vue:97
 msgid "Switch to USDT"
 msgstr ""
 
@@ -2656,7 +2656,7 @@ msgstr "测试网"
 
 #: src/components/AddressList.vue:198
 #: src/components/layouts/AccountOverview.vue:211
-#: src/components/layouts/AddressOverview.vue:118
+#: src/components/layouts/AddressOverview.vue:114
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
 #: src/components/UsdcAddressInfo.vue:14
@@ -2988,7 +2988,7 @@ msgstr "现在更新"
 
 #: src/components/AddressList.vue:188
 #: src/components/layouts/AccountOverview.vue:208
-#: src/components/layouts/AddressOverview.vue:116
+#: src/components/layouts/AddressOverview.vue:112
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
@@ -3054,10 +3054,10 @@ msgstr "欢迎来到第一个法币与加密的原子交换。 它简单、快�
 #: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
 "Welcome to the updated\n"
-"wallet, now with USDC"
+"wallet, now with USDC/USDT"
 msgstr ""
 "欢迎来到这次更新\n"
-"钱包，现在已支持USDC"
+"钱包，现在已支持USDC/USDT"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
@@ -3133,7 +3133,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "您当前没有余额可以进行兑换。"
 
-#: src/components/layouts/AddressOverview.vue:477
+#: src/components/layouts/AddressOverview.vue:471
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3255,7 +3255,7 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "你的付款正在处理中"
 
-#: src/components/layouts/AddressOverview.vue:252
+#: src/components/layouts/AddressOverview.vue:248
 msgid "Your swap was successful!"
 msgstr "你的交换成功了！"
 

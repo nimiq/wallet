@@ -255,8 +255,8 @@ msgid "Activate Bitcoin"
 msgstr "Activar Bitcoin"
 
 #: src/components/modals/PolygonActivationModal.vue:38
-msgid "Activate USDC & USDT"
-msgstr "Activar USDC y USDT"
+msgid "Activate USDC/USDT"
+msgstr "Activar USDC/USDT"
 
 #: src/components/layouts/Settings.vue:229
 msgid "Add"
@@ -340,7 +340,7 @@ msgstr ""
 "Todas las nuevas características son exclusivas para nuevas cuentas. Mejora "
 "a la nueva versión ahora, solo toma unos segundos."
 
-#: src/components/layouts/AddressOverview.vue:256
+#: src/components/layouts/AddressOverview.vue:252
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -475,7 +475,7 @@ msgstr "BIC también funciona."
 
 #: src/components/AddressList.vue:179
 #: src/components/layouts/AccountOverview.vue:130
-#: src/components/layouts/AddressOverview.vue:115
+#: src/components/layouts/AddressOverview.vue:111
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:123
@@ -760,7 +760,7 @@ msgstr "Haga click para obtener más información"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Haga click en ‘Solución de problemas’ para aprender más."
 
-#: src/components/layouts/AddressOverview.vue:258
+#: src/components/layouts/AddressOverview.vue:254
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Cerrar"
@@ -880,11 +880,11 @@ msgstr "Conversión desde USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Conversión desde USDC.e a USDC"
 
-#: src/components/layouts/AddressOverview.vue:217
+#: src/components/layouts/AddressOverview.vue:213
 msgid "Convert to USDC"
 msgstr "Convertir a USDC"
 
-#: src/components/layouts/AddressOverview.vue:209
+#: src/components/layouts/AddressOverview.vue:205
 msgid "Convert your USDC.e to the new standard."
 msgstr "Convierta su USDC.e al estándar nuevo."
 
@@ -1178,7 +1178,7 @@ msgid "Expired HTLC"
 msgstr "HTLC Expirado"
 
 #: src/components/layouts/AddressOverview.vue:46
-#: src/components/layouts/AddressOverview.vue:93
+#: src/components/layouts/AddressOverview.vue:91
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
 msgstr "Exportar Historíal"
@@ -1340,7 +1340,7 @@ msgstr ""
 msgid "General"
 msgstr "General"
 
-#: src/components/modals/HistoryExportModal.vue:52
+#: src/components/modals/HistoryExportModal.vue:50
 msgid "Generic"
 msgstr "Genérico"
 
@@ -1608,7 +1608,7 @@ msgstr "Idioma"
 msgid "Learn about pre-staking"
 msgstr "Aprenda acerca de pre-staking"
 
-#: src/components/layouts/AddressOverview.vue:212
+#: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:20
 #: src/components/modals/UsdtAddedModal.vue:17
@@ -1620,11 +1620,11 @@ msgstr "Aprenda más"
 msgid "Learn more here"
 msgstr "Aprenda más aquí"
 
-#: src/components/layouts/AddressOverview.vue:202
+#: src/components/layouts/AddressOverview.vue:198
 msgid "Legacy USDC (USDC.e)"
 msgstr "Antiguo USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:243
+#: src/components/layouts/AddressOverview.vue:239
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "¡Comencemos! Cree su cuenta Nimiq:"
 
@@ -2124,7 +2124,7 @@ msgstr ""
 "Lea todo acerca de esto en esta {blog_post} o haga click abajo para ver la "
 "nueva información de la billetera."
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:187
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Recibir"
@@ -2224,7 +2224,7 @@ msgid "Release Notes"
 msgstr "Notas de Lanzamiento"
 
 #: src/components/layouts/AddressOverview.vue:34
-#: src/components/layouts/AddressOverview.vue:81
+#: src/components/layouts/AddressOverview.vue:79
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Renombrar"
@@ -2238,7 +2238,7 @@ msgid "Required"
 msgstr "Requerido"
 
 #: src/components/layouts/AddressOverview.vue:40
-#: src/components/layouts/AddressOverview.vue:87
+#: src/components/layouts/AddressOverview.vue:85
 msgid "Rescan"
 msgstr "Volver a escanear"
 
@@ -2380,7 +2380,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Ventas ahora disponibles"
 
-#: src/components/layouts/AddressOverview.vue:186
+#: src/components/layouts/AddressOverview.vue:182
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Enviar"
@@ -2559,7 +2559,7 @@ msgstr "Mostrar Palabras de Recuperación"
 msgid "Show values as {currency}"
 msgstr "Mostrar montos en {currency}"
 
-#: src/components/layouts/AddressOverview.vue:244
+#: src/components/layouts/AddressOverview.vue:240
 msgid "Signup"
 msgstr "Regístrate"
 
@@ -2734,13 +2734,13 @@ msgstr "Haga intercambios de hasta  {limit} cada 30 días."
 msgid "Swiping Gestures"
 msgstr "Gestos de deslizamiento"
 
-#: src/components/layouts/AddressOverview.vue:106
-#: src/components/layouts/AddressOverview.vue:59
+#: src/components/layouts/AddressOverview.vue:103
+#: src/components/layouts/AddressOverview.vue:58
 msgid "Switch to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:100
-#: src/components/layouts/AddressOverview.vue:53
+#: src/components/layouts/AddressOverview.vue:52
+#: src/components/layouts/AddressOverview.vue:97
 msgid "Switch to USDT"
 msgstr ""
 
@@ -2770,7 +2770,7 @@ msgstr "Testnet"
 
 #: src/components/AddressList.vue:198
 #: src/components/layouts/AccountOverview.vue:211
-#: src/components/layouts/AddressOverview.vue:118
+#: src/components/layouts/AddressOverview.vue:114
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
 #: src/components/UsdcAddressInfo.vue:14
@@ -3130,7 +3130,7 @@ msgstr "Actualizar ahora"
 
 #: src/components/AddressList.vue:188
 #: src/components/layouts/AccountOverview.vue:208
-#: src/components/layouts/AddressOverview.vue:116
+#: src/components/layouts/AddressOverview.vue:112
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
@@ -3198,10 +3198,10 @@ msgstr ""
 #: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
 "Welcome to the updated\n"
-"wallet, now with USDC"
+"wallet, now with USDC/USDT"
 msgstr ""
 "Bienvenido a la nueva versión\n"
-"de la billetera, ahora con USDC"
+"de la billetera, ahora con USDC/USDT"
 
 #: src/components/modals/MigrationWelcomeModal.vue:88
 msgid "What else?"
@@ -3288,7 +3288,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "En estos momentos no tiene balance para intercambiar."
 
-#: src/components/layouts/AddressOverview.vue:477
+#: src/components/layouts/AddressOverview.vue:471
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "No tiene el USDC.e suficiente para pagar fees de conversión ({fee})"
 
@@ -3421,7 +3421,7 @@ msgstr "Su pago fue re-financiado"
 msgid "Your payout is on its way"
 msgstr "Su pago esta de camino"
 
-#: src/components/layouts/AddressOverview.vue:252
+#: src/components/layouts/AddressOverview.vue:248
 msgid "Your swap was successful!"
 msgstr "¡Su intercambio fue exitoso!"
 

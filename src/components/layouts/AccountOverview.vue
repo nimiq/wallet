@@ -196,7 +196,7 @@
                     class="reset usdc-account flex-column"
                     :class="{
                             'active': activeCurrency === CryptoCurrency.USDC || activeCurrency === CryptoCurrency.USDT,
-                            'requires-activation': !hasPolygonAddresses,
+                            'requires-activation': !hasPolygonAddresses || !stablecoin,
                         }"
                     >
                     <div class="usdc-account-item reset flex-column" @click="selectStablecoin">

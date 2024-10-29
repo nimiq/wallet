@@ -65,7 +65,7 @@ import {
 } from '@nimiq/oasis-api';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
-import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
+import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
 import { captureException } from '@sentry/vue';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
@@ -796,14 +796,16 @@ export default defineComponent({
                 SwapAsset.NIM,
                 SwapAsset.BTC,
                 SwapAsset.USDC_MATIC,
+                SwapAsset.USDT,
             ];
 
             const fiatCurrencies = [
                 SwapAsset.EUR,
             ];
 
-            const fromAsset = activeSwap.value.from.asset;
-            const toAsset = activeSwap.value.to.asset;
+            // Convert from Fastspot SwapAsset to LibSwap SwapAsset
+            const fromAsset = activeSwap.value.from.asset as SwapAsset;
+            const toAsset = activeSwap.value.to.asset as SwapAsset;
 
             if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
                 context.root.$router.push('/swap');

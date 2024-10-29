@@ -289,6 +289,7 @@ import {
     RequestAsset,
     getSwap,
     Swap,
+    Contract,
 } from '@nimiq/fastspot-api';
 import { captureException } from '@sentry/vue';
 import type { BigNumber } from 'ethers';
@@ -320,7 +321,7 @@ import { useKycStore } from '../../stores/Kyc';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
-import { assetToCurrency } from '../../lib/swap/utils/Assets';
+import { assetToCurrency, SupportedSwapAsset } from '../../lib/swap/utils/Assets';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import SendModalFooter from '../SendModalFooter.vue';
@@ -386,12 +387,12 @@ export default defineComponent({
         const leftAsset = ref(
             activeAccountInfo.value?.type === AccountType.LEDGER
                 ? SwapAsset.NIM
-                : props.pair.split('-')[0] as SwapAsset,
+                : props.pair.split('-')[0] as SupportedSwapAsset,
         );
         const rightAsset = ref(
             activeAccountInfo.value?.type === AccountType.LEDGER
                 ? SwapAsset.BTC
-                : props.pair.split('-')[1] as SwapAsset,
+                : props.pair.split('-')[1] as SupportedSwapAsset,
         );
 
         const swapHasBtc = computed(() => leftAsset.value === SwapAsset.BTC || rightAsset.value === SwapAsset.BTC);
@@ -399,7 +400,7 @@ export default defineComponent({
             () => leftAsset.value === SwapAsset.USDC_MATIC || rightAsset.value === SwapAsset.USDC_MATIC,
         );
 
-        const fixedAsset = ref<SwapAsset>(leftAsset.value);
+        const fixedAsset = ref<SupportedSwapAsset>(leftAsset.value);
 
         const disabledAssetError = computed(() => {
             if (!config.fastspot.enabled) return i18n.t('Crypto swaps are currently under maintenance.') as string;
@@ -421,6 +422,7 @@ export default defineComponent({
         const {
             activeAddress: activeUsdcAddress,
             accountUsdcBalance,
+            accountUsdtBridgedBalance,
         } = usePolygonAddressStore();
         const { stablecoin } = useAccountSettingsStore();
         const { exchangeRates, currency, state: fiat$ } = useFiatStore();
@@ -473,17 +475,18 @@ export default defineComponent({
             [SwapAsset.BTC]: 8,
             [SwapAsset.USDC]: 6, // For TS completeness
             [SwapAsset.USDC_MATIC]: 6,
+            [SwapAsset.USDT]: 6,
             [SwapAsset.EUR]: 2, // For TS completeness
         } as const;
 
-        function effectiveDecimals(asset: SwapAsset) {
+        function effectiveDecimals(asset: SupportedSwapAsset) {
             return {
                 ...DECIMALS,
                 [SwapAsset.BTC]: btcUnit.value.decimals,
             }[asset];
         }
 
-        function capDecimals(amount: number, asset: SwapAsset) {
+        function capDecimals(amount: number, asset: SupportedSwapAsset) {
             if (!amount) return 0;
 
             const numberSign = amount / Math.abs(amount); // 1 or -1
@@ -1088,12 +1091,13 @@ export default defineComponent({
 
         const isLimitReached = ref(false);
 
-        function accountBalance(asset: SwapAsset): number { // eslint-disable-line consistent-return
+        function accountBalance(asset: SupportedSwapAsset): number { // eslint-disable-line consistent-return
             switch (asset) { // eslint-disable-line default-case
                 case SwapAsset.NIM: return activeAddressInfo.value?.balance ?? 0;
                 case SwapAsset.BTC: return accountBtcBalance.value;
                 case SwapAsset.USDC: return 0; // not supported for swapping
                 case SwapAsset.USDC_MATIC: return accountUsdcBalance.value;
+                case SwapAsset.USDT: return accountUsdtBridgedBalance.value;
                 case SwapAsset.EUR: return 0;
             }
         }
@@ -1150,7 +1154,7 @@ export default defineComponent({
             }
         }
 
-        function otherAsset(asset: SwapAsset) {
+        function otherAsset(asset: SupportedSwapAsset) {
             if (asset === leftAsset.value) return rightAsset.value;
             if (asset === rightAsset.value) return leftAsset.value;
             throw new Error(`Cannot get other asset to ${asset} as it's not currently selected`);
@@ -1158,7 +1162,7 @@ export default defineComponent({
 
         // If user only has one asset, then we know that there is only one available operation,
         // so we show only one icon: '-' or '+' depending on the asset
-        function getPlaceholder(asset: SwapAsset) {
+        function getPlaceholder(asset: SupportedSwapAsset) {
             if (!accountBalance(otherAsset(asset))) {
                 return '- 0';
             }
@@ -1168,7 +1172,7 @@ export default defineComponent({
             return '± 0';
         }
 
-        function onFocus(asset: SwapAsset, input: HTMLInputElement) {
+        function onFocus(asset: SupportedSwapAsset, input: HTMLInputElement) {
             // If user has 0 assets in the other asset than the one selected, the input should start with a - symbol
 
             // If user has already changed the input, do nothing
@@ -1312,11 +1316,11 @@ export default defineComponent({
 
             const data = swap.value || estimate.value;
             const feeAmount = (data.from.amount - data.from.serviceNetworkFee) * data.serviceFeePercentage;
-            return (Math.max(0, feeAmount) / 10 ** DECIMALS[data.from.asset])
-                * (exchangeRates.value[assetToCurrency(data.from.asset)][currency.value] || 0);
+            return (Math.max(0, feeAmount) / 10 ** DECIMALS[data.from.asset as SupportedSwapAsset])
+                * (exchangeRates.value[assetToCurrency(data.from.asset as SupportedSwapAsset)][currency.value] || 0);
         });
 
-        const feeFiat = (asset: SwapAsset) => {
+        const feeFiat = (asset: SupportedSwapAsset) => {
             if (leftAsset.value === asset) return myLeftFeeFiat.value + serviceLeftFeeFiat.value;
             if (rightAsset.value === asset) return myRightFeeFiat.value + serviceRightFeeFiat.value;
             return undefined;
@@ -1338,8 +1342,8 @@ export default defineComponent({
 
             const data = swap.value || estimate.value;
             const fromAmount = data.from.amount - data.from.serviceNetworkFee;
-            const fromFiat = (fromAmount / 10 ** DECIMALS[data.from.asset])
-                * (exchangeRates.value[assetToCurrency(data.from.asset)][currency.value] || 0);
+            const fromFiat = (fromAmount / 10 ** DECIMALS[data.from.asset as SupportedSwapAsset])
+                * (exchangeRates.value[assetToCurrency(data.from.asset as SupportedSwapAsset)][currency.value] || 0);
             return (totalFeeFiat.value / fromFiat) >= 0.3;
         });
 
@@ -1433,8 +1437,8 @@ export default defineComponent({
                     }
 
                     swapSuggestion = await createSwap(
-                        from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
-                        to as SwapAsset,
+                        from as RequestAsset<SupportedSwapAsset>, // Need to force one of the function signatures
+                        to as SupportedSwapAsset,
                     );
 
                     // Update local fees with latest feePerUnit values
@@ -1741,8 +1745,12 @@ export default defineComponent({
                     layout: 'slider',
                     direction: leftAsset.value === fund.type ? 'left-to-right' : 'right-to-left',
                     fiatCurrency: currency.value,
-                    fundingFiatRate: exchangeRates.value[assetToCurrency(fund.type as SwapAsset)][currency.value]!,
-                    redeemingFiatRate: exchangeRates.value[assetToCurrency(redeem.type as SwapAsset)][currency.value]!,
+                    fundingFiatRate: exchangeRates.value[assetToCurrency(
+                        fund.type as SupportedSwapAsset,
+                    )][currency.value]!,
+                    redeemingFiatRate: exchangeRates.value[assetToCurrency(
+                        redeem.type as SupportedSwapAsset,
+                    )][currency.value]!,
                     fundFees: {
                         processing: 0,
                         redeeming: swapSuggestion.from.serviceNetworkFee,
@@ -1793,10 +1801,10 @@ export default defineComponent({
             }
 
             const fundingSignedTx = signedTransactions[
-                assetToCurrency(fund.type as SwapAsset) as keyof SetupSwapResult
+                assetToCurrency(fund.type as SupportedSwapAsset) as keyof SetupSwapResult
             ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
             const redeemingSignedTx = signedTransactions[
-                assetToCurrency(redeem.type as SwapAsset) as keyof SetupSwapResult
+                assetToCurrency(redeem.type as SupportedSwapAsset) as keyof SetupSwapResult
             ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
 
             if (!fundingSignedTx || !redeemingSignedTx) {
@@ -1844,7 +1852,7 @@ export default defineComponent({
             } catch (error) {
                 if (config.reportToSentry) captureException(error);
                 else console.error(error); // eslint-disable-line no-console
-                swapError.value = context.root.$t('Invalid swap state, swap aborted!');
+                swapError.value = context.root.$t('Invalid swap state, swap aborted!') as string;
                 cancelSwap({ id: swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();
@@ -1861,7 +1869,7 @@ export default defineComponent({
                 const nimHtlcAddress = confirmedSwap.from.asset === SwapAsset.NIM
                     ? signedTransactions.nim!.raw.recipient
                     : signedTransactions.nim!.raw.sender;
-                confirmedSwap.contracts[SwapAsset.NIM]!.htlc.address = nimHtlcAddress;
+                (confirmedSwap.contracts[SwapAsset.NIM] as Contract<SwapAsset.NIM>).htlc.address = nimHtlcAddress;
             }
 
             setActiveSwap({
@@ -1950,7 +1958,7 @@ export default defineComponent({
             onClose();
         }
 
-        function onSwapBalanceBarChange(swapInfo: { asset: SwapAsset, amount: number }) {
+        function onSwapBalanceBarChange(swapInfo: { asset: SupportedSwapAsset, amount: number }) {
             const { asset, amount } = swapInfo;
 
             // Only cap decimals on the amount when not the whole address/account balance is used
@@ -1978,7 +1986,7 @@ export default defineComponent({
         const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
 
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
-        function getButtonGroupOptions(otherSide: SwapAsset) {
+        function getButtonGroupOptions(otherSide: SupportedSwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
             return getWalletEnabledAssets().reduce((result, asset) => {
                 if (
@@ -1989,7 +1997,7 @@ export default defineComponent({
                 return {
                     ...result,
                     [asset]: {
-                        label: assetToCurrency(asset).toUpperCase(),
+                        label: assetToCurrency(asset as SupportedSwapAsset).toUpperCase(),
                         // Note that currencies which are disabled in Fastspot, are not disabled in the button group,
                         // but instead show a maintenance message in the footer.
                         disabled: (
@@ -1998,7 +2006,7 @@ export default defineComponent({
                             || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
                         ) || (
                             // Asset pair has no balance to swap.
-                            !otherAssetBalance && !accountBalance(asset)
+                            !otherAssetBalance && !accountBalance(asset as SupportedSwapAsset)
                         ),
                     },
                 };
@@ -2008,7 +2016,7 @@ export default defineComponent({
         const leftButtonGroupOptions = computed(() => getButtonGroupOptions(rightAsset.value));
         const rightButtonGroupOptions = computed(() => getButtonGroupOptions(leftAsset.value));
 
-        function setLeftAsset(asset: SwapAsset) {
+        function setLeftAsset(asset: SupportedSwapAsset) {
             if (rightAsset.value === asset) {
                 rightAsset.value = leftAsset.value;
             }
@@ -2016,7 +2024,7 @@ export default defineComponent({
             context.root.$router.replace(`/swap/${leftAsset.value}-${rightAsset.value}`);
         }
 
-        function setRightAsset(asset: SwapAsset) {
+        function setRightAsset(asset: SupportedSwapAsset) {
             if (leftAsset.value === asset) {
                 leftAsset.value = rightAsset.value;
             }
@@ -2051,7 +2059,7 @@ export default defineComponent({
                 console.warn('No swap found'); // eslint-disable-line no-console
                 return;
             }
-            const usdcHtlc = swap.value.contracts[SwapAsset.USDC_MATIC];
+            const usdcHtlc = swap.value.contracts[SwapAsset.USDC_MATIC] as Contract<SwapAsset.USDC_MATIC> | undefined;
             if (!usdcHtlc) {
                 console.warn('No USDC HTLC found in swap', swap.value); // eslint-disable-line no-console
                 return;

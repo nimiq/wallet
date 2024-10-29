@@ -3,7 +3,7 @@ import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-cli
 import { Swap as SwapObject, SwapAsset, getContract } from '@nimiq/fastspot-api';
 import { DeniedReason, Htlc as OasisHtlc, SepaClearingInstruction, SettlementStatus } from '@nimiq/oasis-api';
 import { FiatCurrency } from '../lib/Constants';
-import { assetToCurrency } from '../lib/swap/utils/Assets';
+import { assetToCurrency, SupportedSwapAsset } from '../lib/swap/utils/Assets';
 import { getEurPerCrypto, getFiatFees } from '../lib/swap/utils/Functions';
 import { Transaction as UsdcTransaction } from './UsdcTransactions';
 import { Transaction as UsdtTransaction } from './UsdtTransactions';
@@ -47,8 +47,8 @@ export type SwapBtcData = {
     },
 };
 
-export type SwapUsdcData = {
-    asset: SwapAsset.USDC | SwapAsset.USDC_MATIC,
+export type SwapErc20Data = {
+    asset: SwapAsset.USDC | SwapAsset.USDC_MATIC | SwapAsset.USDT,
     transactionHash: string,
     htlc?: {
         address?: string,
@@ -57,17 +57,6 @@ export type SwapUsdcData = {
         timeoutTimestamp: number,
     },
 };
-
-// export type SwapUsdtData = {
-//     asset: SwapAsset.USDT,
-//     transactionHash: string,
-//     htlc?: {
-//         address?: string,
-//         refundAddress: string,
-//         redeemAddress: string,
-//         timeoutTimestamp: number,
-//     },
-// };
 
 export type SwapEurData = {
     asset: SwapAsset.EUR,
@@ -87,7 +76,7 @@ export type SwapEurData = {
     },
 };
 
-export type SwapData = SwapNimData | SwapBtcData | SwapUsdcData | /* SwapUsdtData | */ SwapEurData;
+export type SwapData = SwapNimData | SwapBtcData | SwapErc20Data | SwapEurData;
 
 export type Swap = {
     id?: string,
@@ -193,7 +182,7 @@ export const useSwapsStore = createStore({
             contractAddress: string,
             hashRoot: string,
             type: 'funding' | 'settlement',
-            otherAsset: Exclude<SwapAsset, SwapAsset.EUR>,
+            otherAsset: Exclude<SupportedSwapAsset, SwapAsset.EUR>,
         ) {
             // Check swap with the Fastspot API to detect if it was a EUR swap.
             const [addSwapData, swapProp, contractProp, feesProp] = type === 'funding'

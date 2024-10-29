@@ -277,6 +277,7 @@ import {
     createSwap,
     cancelSwap,
     getSwap,
+    Contract,
 } from '@nimiq/fastspot-api';
 import {
     getHtlc,
@@ -789,7 +790,8 @@ export default defineComponent({
             });
 
             // Fetch OASIS HTLC to get clearing instructions
-            const oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
+            const contract = confirmedSwap.contracts[SwapAsset.EUR] as Contract<SwapAsset.EUR>;
+            const oasisHtlc = await getHtlc(contract.htlc.address);
             if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
                 const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);
                 if (config.reportToSentry) captureException(error);

@@ -134,7 +134,7 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import CurvedLine from '../icons/SwapBalanceBar/CurvedLine.vue';
 import SlideHint from '../icons/SwapBalanceBar/SlideHint.vue';
 import { getColorClass } from '../../lib/AddressColor';
-import { assetToCurrency } from '../../lib/swap/utils/Assets';
+import { assetToCurrency, SupportedSwapAsset } from '../../lib/swap/utils/Assets';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
@@ -158,11 +158,11 @@ export default defineComponent({
     name: 'swap-balance-bar',
     props: {
         leftAsset: {
-            type: String as () => SwapAsset,
+            type: String as () => SupportedSwapAsset,
             required: true,
         },
         rightAsset: {
-            type: String as () => SwapAsset,
+            type: String as () => SupportedSwapAsset,
             required: true,
         },
         newLeftBalance: {
@@ -373,7 +373,7 @@ export default defineComponent({
             [SwapAsset.BTC]: 8,
             [SwapAsset.USDC]: 6, // For TS completeness
             [SwapAsset.USDC_MATIC]: 6,
-            // [SwapAsset.USDT]: 6,
+            [SwapAsset.USDT]: 6,
             [SwapAsset.EUR]: 2, // For TS completeness
         } as const;
 

@@ -312,7 +312,7 @@ import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import Avatar from '../Avatar.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
-import { SwapUsdcData } from '../../stores/Swaps';
+import { SwapErc20Data } from '../../stores/Swaps';
 import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
@@ -468,7 +468,7 @@ export default defineComponent({
         );
 
         async function refundHtlc() {
-            const htlcDetails = (swapInfo.value?.in as SwapUsdcData | undefined)?.htlc;
+            const htlcDetails = (swapInfo.value?.in as SwapErc20Data | undefined)?.htlc;
             if (!htlcDetails) {
                 alert('Unexpected: unknown HTLC refund details'); // eslint-disable-line no-alert
                 return;

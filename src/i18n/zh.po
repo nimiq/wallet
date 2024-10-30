@@ -239,8 +239,8 @@ msgstr "账户限额"
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:149
-#: src/components/layouts/AccountOverview.vue:263
+#: src/components/layouts/AccountOverview.vue:150
+#: src/components/layouts/AccountOverview.vue:265
 msgid "Activate"
 msgstr "激活"
 
@@ -321,7 +321,7 @@ msgstr "全部"
 msgid "All countries"
 msgstr "所有国家"
 
-#: src/components/layouts/AccountOverview.vue:301
+#: src/components/layouts/AccountOverview.vue:303
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -450,7 +450,7 @@ msgid "BIC works, too."
 msgstr "BIC适用"
 
 #: src/components/AddressList.vue:179
-#: src/components/layouts/AccountOverview.vue:130
+#: src/components/layouts/AccountOverview.vue:131
 #: src/components/layouts/AddressOverview.vue:111
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -691,7 +691,7 @@ msgid ""
 "the migration is complete."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:219
+#: src/components/layouts/AccountOverview.vue:221
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -2550,7 +2550,7 @@ msgstr "超低手续费，超快支付"
 msgid "Swap"
 msgstr "交换"
 
-#: src/components/layouts/AccountOverview.vue:184
+#: src/components/layouts/AccountOverview.vue:186
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "兑换 BTC {arrowIcon} {ticker}"
 
@@ -2585,7 +2585,7 @@ msgstr "交换已过期"
 msgid "Swap more per 30 days."
 msgstr "每30天进行更多的兑换。"
 
-#: src/components/layouts/AccountOverview.vue:113
+#: src/components/layouts/AccountOverview.vue:114
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "兑换 NIM {arrowIcon} {ticker}"
 
@@ -2655,7 +2655,7 @@ msgid "Testnet"
 msgstr "测试网"
 
 #: src/components/AddressList.vue:198
-#: src/components/layouts/AccountOverview.vue:211
+#: src/components/layouts/AccountOverview.vue:213
 #: src/components/layouts/AddressOverview.vue:114
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -2860,8 +2860,8 @@ msgstr "时间范围"
 msgid "To {exchange}"
 msgstr "返回{exchange}"
 
-#: src/components/layouts/AccountOverview.vue:118
-#: src/components/layouts/AccountOverview.vue:189
+#: src/components/layouts/AccountOverview.vue:119
+#: src/components/layouts/AccountOverview.vue:191
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -2987,7 +2987,7 @@ msgid "Update now"
 msgstr "现在更新"
 
 #: src/components/AddressList.vue:188
-#: src/components/layouts/AccountOverview.vue:208
+#: src/components/layouts/AccountOverview.vue:210
 #: src/components/layouts/AddressOverview.vue:112
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50

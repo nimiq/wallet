@@ -244,8 +244,8 @@ msgstr "Limites du compte"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/components/layouts/AccountOverview.vue:149
-#: src/components/layouts/AccountOverview.vue:263
+#: src/components/layouts/AccountOverview.vue:150
+#: src/components/layouts/AccountOverview.vue:265
 msgid "Activate"
 msgstr "Activer"
 
@@ -330,7 +330,7 @@ msgstr "Toutes"
 msgid "All countries"
 msgstr "Tous les pays"
 
-#: src/components/layouts/AccountOverview.vue:301
+#: src/components/layouts/AccountOverview.vue:303
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -474,7 +474,7 @@ msgid "BIC works, too."
 msgstr "Le BIC fonctionne également."
 
 #: src/components/AddressList.vue:179
-#: src/components/layouts/AccountOverview.vue:130
+#: src/components/layouts/AccountOverview.vue:131
 #: src/components/layouts/AddressOverview.vue:111
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -725,7 +725,7 @@ msgstr ""
 "Choisissez le montant que vous souhaitez pré-stacker. Les NIM pré-stackés "
 "restent bloqués jusqu'à ce que la migration soit terminée."
 
-#: src/components/layouts/AccountOverview.vue:219
+#: src/components/layouts/AccountOverview.vue:221
 msgid "Choose Stablecoin"
 msgstr "Choisir un Stablecoin"
 
@@ -2683,7 +2683,7 @@ msgstr "Frais minimes et paiements très rapides"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/layouts/AccountOverview.vue:184
+#: src/components/layouts/AccountOverview.vue:186
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "Swap BTC {arrowIcon} {ticker}"
 
@@ -2718,7 +2718,7 @@ msgstr "Le Swap a expiré"
 msgid "Swap more per 30 days."
 msgstr "Swappez-en plus par période de 30 jours."
 
-#: src/components/layouts/AccountOverview.vue:113
+#: src/components/layouts/AccountOverview.vue:114
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "Swap NIM {arrowIcon} {ticker}"
 
@@ -2789,7 +2789,7 @@ msgid "Testnet"
 msgstr "Testnet"
 
 #: src/components/AddressList.vue:198
-#: src/components/layouts/AccountOverview.vue:211
+#: src/components/layouts/AccountOverview.vue:213
 #: src/components/layouts/AddressOverview.vue:114
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -3016,8 +3016,8 @@ msgstr "Période"
 msgid "To {exchange}"
 msgstr "Aller sur {exchange}"
 
-#: src/components/layouts/AccountOverview.vue:118
-#: src/components/layouts/AccountOverview.vue:189
+#: src/components/layouts/AccountOverview.vue:119
+#: src/components/layouts/AccountOverview.vue:191
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr "Pour échanger avec de l'USDC/USDT, choisissez un Stablecoin."
@@ -3150,7 +3150,7 @@ msgid "Update now"
 msgstr "Mettre à jour"
 
 #: src/components/AddressList.vue:188
-#: src/components/layouts/AccountOverview.vue:208
+#: src/components/layouts/AccountOverview.vue:210
 #: src/components/layouts/AddressOverview.vue:112
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50

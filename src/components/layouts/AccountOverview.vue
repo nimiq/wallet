@@ -84,12 +84,13 @@
                     v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
-                        /* only swap with native USDC supported, not bridged */
+                        && stablecoin === CryptoCurrency.USDC
                         && (
                             nimAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
+                                /* only swap with native USDC supported, not bridged */
                                 ? accountUsdcBalance
-                                : /* accountUsdtBridgedBalance */ 0) > 0
+                                : accountUsdtBridgedBalance) > 0
                         )"
                     class="nim-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"
@@ -155,12 +156,13 @@
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled
-                        /* only swap with native USDC supported, not bridged */
+                        && stablecoin === CryptoCurrency.USDC
                         && (
                             btcAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
+                                /* only swap with native USDC supported, not bridged */
                                 ? accountUsdcBalance
-                                : /* accountUsdtBridgedBalance */ 0) > 0
+                                : accountUsdtBridgedBalance) > 0
                         )"
                     class="btc-usdc-swap-button"
                     :class="{ 'stablecoin-tooltip': !stablecoin }"

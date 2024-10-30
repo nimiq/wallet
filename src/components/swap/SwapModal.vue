@@ -1981,7 +1981,10 @@ export default defineComponent({
         function getButtonGroupOptions(otherSide: SwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
             return getWalletEnabledAssets().reduce((result, asset) => {
-                if (asset === SwapAsset.USDC_MATIC && !stablecoin.value) return result;
+                if (
+                    asset === SwapAsset.USDC_MATIC
+                    && (!stablecoin.value || stablecoin.value === CryptoCurrency.USDT)
+                ) return result;
 
                 return {
                     ...result,

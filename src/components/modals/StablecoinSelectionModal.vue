@@ -16,7 +16,11 @@
                 </div>
             </div>
             <StablecoinSelector v-model="selection" />
-            <a href="https://example.com" target="_blank" rel="noopener" class="nq-link flex-row">
+            <a
+                href="https://www.moonpay.com/learn/cryptocurrency/what-is-the-difference-between-usdt-and-usdc"
+                target="_blank" rel="noopener"
+                class="nq-link flex-row"
+            >
                 {{ $t('Learn more') }}
                 <CaretRightSmallIcon />
             </a>

@@ -691,7 +691,7 @@ msgstr "Changement du validateur"
 msgid "Check the new intro"
 msgstr "Regarder la nouvelle intro"
 
-#: src/components/modals/StablecoinSelectionModal.vue:26
+#: src/components/modals/StablecoinSelectionModal.vue:30
 msgid "Choose {ticker}"
 msgstr "Choisir {ticker}"
 
@@ -822,7 +822,7 @@ msgstr "Connectez-vous à TEN31 Pass pour des limites de swap plus élevées."
 msgid "Connected to"
 msgstr "Connecté à"
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:119
 msgid "connecting"
 msgstr "connexion"
 
@@ -1146,7 +1146,7 @@ msgstr "Erreur {errorCode} : {errorMessage}"
 msgid "Error:"
 msgstr "Erreur :"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:120
 msgid "established"
 msgstr "établi"
 
@@ -1621,7 +1621,7 @@ msgstr "En savoir plus sur le pré-stacking"
 
 #: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
-#: src/components/modals/StablecoinSelectionModal.vue:20
+#: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
 #: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
@@ -1709,7 +1709,7 @@ msgstr "Déconnexion"
 msgid "Long press to confirm"
 msgstr "Appui long pour confirmer"
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:117
 msgid "lost"
 msgstr "perdu"
 
@@ -2763,7 +2763,7 @@ msgstr "Passer à l'USDC"
 msgid "Switch to USDT"
 msgstr "Passer à l'USDT"
 
-#: src/components/layouts/Network.vue:117
+#: src/components/layouts/Network.vue:118
 msgid "syncing"
 msgstr "synchronisation"
 

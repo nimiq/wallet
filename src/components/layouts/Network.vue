@@ -40,7 +40,7 @@
             </div>
         </section>
 
-        <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.polygon.enabled}">
+        <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.polygon.enabled || !stablecoin}">
             <NetworkStats>
                 <template #network>BTC</template>
                 <template v-if="btcFee" #fee>
@@ -55,13 +55,13 @@
             </NetworkStats>
         </section>
 
-        <section v-if="$config.polygon.enabled" :class="{'full-width': !$config.enableBitcoin}">
+        <section v-if="$config.polygon.enabled && stablecoin" :class="{'full-width': !$config.enableBitcoin}">
             <NetworkStats>
-                <template #network>USDC</template>
-                <template v-if="usdcFee" #fee>
+                <template #network>{{ stablecoin.toUpperCase() }}</template>
+                <template v-if="polygonFee" #fee>
                     <i18n tag="span" path="{amount}/tx">
                         <template #amount>
-                            <FiatConvertedAmount :amount="usdcFee" :currency="CryptoCurrency.USDC"/>
+                            <FiatConvertedAmount :amount="polygonFee" :currency="stablecoin"/>
                         </template>
                     </i18n>
                 </template>
@@ -85,13 +85,14 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed } from '@vue/composition-api';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
-import { calculateFee as calculateUsdcFee } from '@/ethers';
+import { calculateFee as calculatePolygonFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '@/electrum';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
 import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
+import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useConfig } from '../../composables/useConfig';
 import { CryptoCurrency } from '../../lib/Constants';
 import { WIDTH } from '../../lib/NetworkMap';
@@ -140,7 +141,7 @@ export default defineComponent({
         const { updateAvailable } = useSettingsStore();
 
         const btcFee = ref(0);
-        const usdcFee = ref(0);
+        const polygonFee = ref(0);
 
         // we are going to set up a timer to update the fees every minute
         let interval: number;
@@ -165,13 +166,25 @@ export default defineComponent({
                 btcFee.value = estimateFees(2, 2, fees[12]);
             }
 
-            if (config.polygon.enabled) {
-                usdcFee.value = (await calculateUsdcFee(
-                    config.polygon.usdc.tokenContract,
-                    'transferWithPermit',
-                )).fee.toNumber();
+            if (config.polygon.enabled && stablecoin.value) {
+                switch (stablecoin.value) { // eslint-disable-line default-case
+                    case CryptoCurrency.USDC:
+                        polygonFee.value = (await calculatePolygonFee(
+                            config.polygon.usdc.tokenContract,
+                            'transferWithPermit',
+                        )).fee.toNumber();
+                        break;
+                    case CryptoCurrency.USDT:
+                        polygonFee.value = (await calculatePolygonFee(
+                            config.polygon.usdt_bridged.tokenContract,
+                            'transferWithApproval',
+                        )).fee.toNumber();
+                        break;
+                }
             }
         }
+
+        const { stablecoin } = useAccountSettingsStore();
 
         return {
             CryptoCurrency,
@@ -183,8 +196,9 @@ export default defineComponent({
             peerCount,
             consensusState,
             btcFee,
-            usdcFee,
+            polygonFee,
             router,
+            stablecoin,
         };
     },
     components: {

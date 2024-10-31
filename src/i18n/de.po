@@ -693,7 +693,7 @@ msgstr "Validator ändern"
 msgid "Check the new intro"
 msgstr "Sieh dir die Einführung an"
 
-#: src/components/modals/StablecoinSelectionModal.vue:26
+#: src/components/modals/StablecoinSelectionModal.vue:30
 msgid "Choose {ticker}"
 msgstr "Wähle {ticker}"
 
@@ -824,7 +824,7 @@ msgstr "Verknüpfe dein Konto mit TEN31 Pass für höhere Tausch-Limits."
 msgid "Connected to"
 msgstr "Verbunden"
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:119
 msgid "connecting"
 msgstr "verbinden"
 
@@ -1148,7 +1148,7 @@ msgstr "Fehler {errorCode} : {errorMessage}"
 msgid "Error:"
 msgstr "Fehler:"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:120
 msgid "established"
 msgstr "hergestellt"
 
@@ -1620,7 +1620,7 @@ msgstr "Erfahre mehr über Prestaking"
 
 #: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
-#: src/components/modals/StablecoinSelectionModal.vue:20
+#: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
 #: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
@@ -1708,7 +1708,7 @@ msgstr "Ausloggen"
 msgid "Long press to confirm"
 msgstr "Gedrückt halten um zu bestätigen."
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:117
 msgid "lost"
 msgstr "unterbrochen"
 
@@ -2754,7 +2754,7 @@ msgstr "Wechsel zu USDC"
 msgid "Switch to USDT"
 msgstr "Wechsel zu USDT"
 
-#: src/components/layouts/Network.vue:117
+#: src/components/layouts/Network.vue:118
 msgid "syncing"
 msgstr "abgleichen"
 

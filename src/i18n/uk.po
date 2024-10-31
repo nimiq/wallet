@@ -683,7 +683,7 @@ msgstr ""
 msgid "Check the new intro"
 msgstr ""
 
-#: src/components/modals/StablecoinSelectionModal.vue:26
+#: src/components/modals/StablecoinSelectionModal.vue:30
 msgid "Choose {ticker}"
 msgstr ""
 
@@ -810,7 +810,7 @@ msgstr "Підключіться до TEN31 Pass, щоб отримати вищ
 msgid "Connected to"
 msgstr "Підключено до"
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:119
 msgid "connecting"
 msgstr "Підключення"
 
@@ -1129,7 +1129,7 @@ msgstr ""
 msgid "Error:"
 msgstr "Помилка:"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:120
 msgid "established"
 msgstr "встановлений"
 
@@ -1586,7 +1586,7 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
-#: src/components/modals/StablecoinSelectionModal.vue:20
+#: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
 #: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
@@ -1674,7 +1674,7 @@ msgstr "Вийти"
 msgid "Long press to confirm"
 msgstr "Довге натискання для підтвердження"
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:117
 msgid "lost"
 msgstr "Втрачено"
 
@@ -2693,7 +2693,7 @@ msgstr ""
 msgid "Switch to USDT"
 msgstr ""
 
-#: src/components/layouts/Network.vue:117
+#: src/components/layouts/Network.vue:118
 msgid "syncing"
 msgstr "синхронізую"
 

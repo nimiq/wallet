@@ -659,7 +659,7 @@ msgstr ""
 msgid "Check the new intro"
 msgstr "请看新介绍"
 
-#: src/components/modals/StablecoinSelectionModal.vue:26
+#: src/components/modals/StablecoinSelectionModal.vue:30
 msgid "Choose {ticker}"
 msgstr ""
 
@@ -786,7 +786,7 @@ msgstr "连接到更高兑换限额的 TEN31 通行证"
 msgid "Connected to"
 msgstr "已连接至"
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:119
 msgid "connecting"
 msgstr "連接中"
 
@@ -1092,7 +1092,7 @@ msgstr ""
 msgid "Error:"
 msgstr "错误:"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:120
 msgid "established"
 msgstr "已建立"
 
@@ -1530,7 +1530,7 @@ msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
-#: src/components/modals/StablecoinSelectionModal.vue:20
+#: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
 #: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
@@ -1618,7 +1618,7 @@ msgstr "登出"
 msgid "Long press to confirm"
 msgstr "请长按确认"
 
-#: src/components/layouts/Network.vue:116
+#: src/components/layouts/Network.vue:117
 msgid "lost"
 msgstr "遗失"
 
@@ -2630,7 +2630,7 @@ msgstr ""
 msgid "Switch to USDT"
 msgstr ""
 
-#: src/components/layouts/Network.vue:117
+#: src/components/layouts/Network.vue:118
 msgid "syncing"
 msgstr "正在同步"
 

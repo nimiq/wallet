@@ -12,7 +12,8 @@
             <i18n v-else-if="swapData && isIncoming" path="Swap from {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM
                     || swapData.asset === SwapAsset.USDC
-                    || swapData.asset === SwapAsset.USDC_MATIC" v-slot:address>
+                    || swapData.asset === SwapAsset.USDC_MATIC
+                    || swapData.asset === SwapAsset.USDT_MATIC" v-slot:address>
                     <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
@@ -26,7 +27,8 @@
             <i18n v-else-if="swapData" path="Swap to {address}" :tag="false">
                 <template v-if="swapData.asset === SwapAsset.NIM
                     || swapData.asset === SwapAsset.USDC
-                    || swapData.asset === SwapAsset.USDC_MATIC" v-slot:address>
+                    || swapData.asset === SwapAsset.USDC_MATIC
+                    || swapData.asset === SwapAsset.USDT_MATIC" v-slot:address>
                     <label>{{ peerLabel || peerAddresses[0].substring(0, 9) }}</label>
                 </template>
 
@@ -92,8 +94,7 @@
                             :address="peerAddresses[0]"/>
                         <UsdcIcon v-else-if="swapData
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
-                        <UsdtIcon v-else-if="swapData
-                            && (swapData.asset === SwapAsset.USDT)"/>
+                        <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
@@ -147,8 +148,7 @@
                             :address="peerAddresses[0]"/>
                         <UsdcIcon v-else-if="swapData
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
-                        <UsdtIcon v-else-if="swapData
-                            && (swapData.asset === SwapAsset.USDT)"/>
+                        <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
@@ -265,6 +265,20 @@
                                 class="swapped-amount"
                                 value-mask/>
                         </button>
+                        <button v-if="swapData.asset === SwapAsset.USDT_MATIC && swapTransaction"
+                            class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
+                            @click="$router.replace(`/usdt-transaction/${swapTransaction.transactionHash}`)"
+                        >
+                            <div class="icon">
+                                <GroundedArrowUpIcon v-if="isIncoming"/>
+                                <GroundedArrowDownIcon v-else/>
+                            </div>
+                            <Amount
+                                :amount="swapTransaction.value"
+                                :currency="assetToCurrency(swapData.asset)"
+                                class="swapped-amount"
+                                value-mask/>
+                        </button>
                         <div v-else-if="swapData.asset === SwapAsset.EUR"
                             class="swap-other-side flex-row" :class="{'incoming': !isIncoming}">
                             <div class="icon">
@@ -357,6 +371,7 @@ import { explorerTxLink } from '../../lib/ExplorerUtils';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
+import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../../stores/UsdtTransactions';
 import { useBtcTransactionInfo } from '../../composables/useBtcTransactionInfo';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
@@ -421,6 +436,10 @@ export default defineComponent({
                 return useUsdcTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
             }
 
+            if (swapData.value.asset === SwapAsset.USDT_MATIC) {
+                return useUsdtTransactionsStore().state.transactions[swapData.value.transactionHash] || null;
+            }
+
             return null;
         });
 
@@ -465,6 +484,11 @@ export default defineComponent({
                     && swapTransaction.value
                 ) {
                     const swapTx = swapTransaction.value as UsdcTransaction;
+                    return isIncoming.value ? [swapTx.sender] : [swapTx.recipient];
+                }
+
+                if (swapData.value.asset === SwapAsset.USDT_MATIC && swapTransaction.value) {
+                    const swapTx = swapTransaction.value as UsdtTransaction;
                     return isIncoming.value ? [swapTx.sender] : [swapTx.recipient];
                 }
 

@@ -11,6 +11,7 @@ import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useKycStore } from '../stores/Kyc';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../stores/UsdcTransactions';
+import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../stores/UsdtTransactions';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 
 const { activeCurrency } = useAccountStore();
@@ -29,6 +30,7 @@ const limits = ref<SwapLimits | undefined>(undefined);
 const nimAddress = ref<string | undefined>(undefined);
 const btcAddress = ref<string | undefined>(undefined);
 const usdcAddress = ref<string | undefined>(undefined);
+const usdtAddress = ref<string | undefined>(undefined);
 const isFiatToCrypto = ref(false);
 
 const trigger = ref(0);
@@ -66,10 +68,15 @@ watch(async () => {
         usdcAddress.value || '0x0000000000000000000000000000000000000000', // Burn address
         kycUser.value?.id,
     );
+    const usdtAddressLimitsPromise = getLimits(
+        SwapAsset.USDT_MATIC,
+        usdtAddress.value || '0x0000000000000000000000000000000000000000', // Burn address
+        kycUser.value?.id,
+    );
 
     const { accountAddresses } = useAddressStore();
     const { activeAddresses } = useBtcAddressStore();
-    const { addressInfo: usdcAddressInfo } = usePolygonAddressStore();
+    const { addressInfo: polygonAddressInfo } = usePolygonAddressStore();
 
     let newUserLimitEur = Infinity;
 
@@ -116,7 +123,22 @@ watch(async () => {
         const usdcSwaps = Object.values(useUsdcTransactionsStore().state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
-                if (usdcAddressInfo.value?.address !== tx.recipient) return false;
+                if (polygonAddressInfo.value?.address !== tx.recipient) return false;
+
+                const swap = getSwapByTransactionHash.value(tx.transactionHash);
+                // Ignore all swaps that are not from EUR
+                if (swap?.in?.asset !== SwapAsset.EUR) return false;
+
+                return {
+                    ...swap.in,
+                    timestamp: tx.timestamp,
+                } as TimedSwap;
+            })
+            .filter(Boolean) as TimedSwap[];
+        const usdtSwaps = Object.values(useUsdtTransactionsStore().state.transactions)
+            .map((tx) => {
+                // Ignore all transactions that are not on the current account
+                if (polygonAddressInfo.value?.address !== tx.recipient) return false;
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash);
                 // Ignore all swaps that are not from EUR
@@ -130,7 +152,7 @@ watch(async () => {
             .filter(Boolean) as TimedSwap[];
 
         // Sort them chronologically
-        const swaps = [...nimSwaps, ...btcSwaps, ...usdcSwaps]
+        const swaps = [...nimSwaps, ...btcSwaps, ...usdcSwaps, ...usdtSwaps]
             .sort((a, b) => (a.timestamp || Infinity) - (b.timestamp || Infinity));
 
         // Check if the first swap happened more than three days ago, otherwise calculate available limit
@@ -201,12 +223,16 @@ watch(async () => {
         if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
-        if (![tx.sender, tx.recipient].includes(usdcAddressInfo.value?.address as string)) return null;
+        if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
 
         const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
         // Ignore all transactions that are not part of a swap or whose swap is already
         // part of the NIM or BTC transactions
-        if (!swapHash || nimSwapHashes.includes(swapHash) || btcSwapHashes.includes(swapHash)) return null;
+        if (
+            !swapHash
+            || nimSwapHashes.includes(swapHash)
+            || btcSwapHashes.includes(swapHash)
+        ) return null;
 
         return {
             tx,
@@ -217,10 +243,40 @@ watch(async () => {
         swapHash: string,
     })[];
 
+    const usdcSwapHashes = swapUsdcTxs.map((obj) => obj.swapHash);
+
+    // Find USDT tx that were involved in a swap, but not in a swap with NIM or BTC
+    const swapUsdtTxs = Object.values(useUsdtTransactionsStore().state.transactions).map((tx) => {
+        // Ignore all transactions before the cut-off
+        if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+
+        // Ignore all transactions that are not on the current account
+        if (![tx.sender, tx.recipient].includes(polygonAddressInfo.value?.address as string)) return null;
+
+        const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
+        // Ignore all transactions that are not part of a swap or whose swap is already
+        // part of the NIM or BTC transactions
+        if (
+            !swapHash
+            || nimSwapHashes.includes(swapHash)
+            || btcSwapHashes.includes(swapHash)
+            || usdcSwapHashes.includes(swapHash)
+        ) return null;
+
+        return {
+            tx,
+            swapHash,
+        };
+    }).filter(Boolean) as ({
+        tx: UsdtTransaction,
+        swapHash: string,
+    })[];
+
     // Find historic tx values in USD
     await useTransactionsStore().calculateFiatAmounts(swapNimTxs.map(({ tx }) => tx), FiatCurrency.USD);
     await useBtcTransactionsStore().calculateFiatAmounts(swapBtcTxs.map(({ tx }) => tx), FiatCurrency.USD);
     await useUsdcTransactionsStore().calculateFiatAmounts(swapUsdcTxs.map(({ tx }) => tx), FiatCurrency.USD);
+    await useUsdtTransactionsStore().calculateFiatAmounts(swapUsdtTxs.map(({ tx }) => tx), FiatCurrency.USD);
 
     const swappedAmount = swapNimTxs.reduce((sum, obj) => {
         const usdValue = obj.tx.timestamp
@@ -246,16 +302,25 @@ watch(async () => {
             : (useFiatStore().state.exchangeRates[CryptoCurrency.USDC][FiatCurrency.USD] || 0)
                 * (obj.tx.value / 1e6);
         return sum + usdValue;
+    }, 0)
+    + swapUsdtTxs.reduce((sum, obj) => {
+        const usdValue = obj.tx.timestamp
+            ? obj.tx.fiatValue ? obj.tx.fiatValue[FiatCurrency.USD] || 0 : 0
+            : (useFiatStore().state.exchangeRates[CryptoCurrency.USDT][FiatCurrency.USD] || 0)
+                * (obj.tx.value / 1e6);
+        return sum + usdValue;
     }, 0);
 
     const userLimits = await userLimitsPromise;
     const nimAddressLimits = await nimAddressLimitsPromise;
     const btcAddressLimits = await btcAddressLimitsPromise;
     const usdcAddressLimits = await usdcAddressLimitsPromise;
+    const usdtAddressLimits = await usdtAddressLimitsPromise;
 
     const lunaRate = (nimAddressLimits.reference.monthly / 100) / nimAddressLimits.monthly;
     const satRate = (btcAddressLimits.reference.monthly / 100) / btcAddressLimits.monthly;
     const centRate = (usdcAddressLimits.reference.monthly / 100) / usdcAddressLimits.monthly;
+    // const centRate = (usdtAddressLimits.reference.monthly / 100) / usdtAddressLimits.monthly;
 
     const monthlyUsdLimit = (userLimits || nimAddressLimits.reference).monthly / 100;
 
@@ -265,6 +330,7 @@ watch(async () => {
         nimAddress.value ? (nimAddressLimits.reference.current / 100) : Infinity,
         btcAddress.value ? (btcAddressLimits.reference.current / 100) : Infinity,
         usdcAddress.value ? (usdcAddressLimits.reference.current / 100) : Infinity,
+        usdtAddress.value ? (usdtAddressLimits.reference.current / 100) : Infinity,
     ));
 
     const remainingUsdLimits = Math.max(0, Math.min(
@@ -273,6 +339,7 @@ watch(async () => {
         nimAddress.value ? (nimAddressLimits.reference.monthlyRemaining / 100) : Infinity,
         btcAddress.value ? (btcAddressLimits.reference.monthlyRemaining / 100) : Infinity,
         usdcAddress.value ? (usdcAddressLimits.reference.monthlyRemaining / 100) : Infinity,
+        usdtAddress.value ? (usdtAddressLimits.reference.monthlyRemaining / 100) : Infinity,
     ));
 
     limits.value = {
@@ -322,11 +389,13 @@ export function useSwapLimits(options: {
     nimAddress?: string,
     btcAddress?: string,
     usdcAddress?: string,
+    usdtAddress?: string,
     isFiatToCrypto?: boolean,
 }) {
     nimAddress.value = options.nimAddress;
     btcAddress.value = options.btcAddress;
     usdcAddress.value = options.usdcAddress;
+    usdtAddress.value = options.usdtAddress;
     isFiatToCrypto.value = options.isFiatToCrypto || false;
     recalculate();
 
@@ -335,6 +404,7 @@ export function useSwapLimits(options: {
         nimAddress,
         btcAddress,
         usdcAddress,
+        usdtAddress,
         recalculate,
     };
 }

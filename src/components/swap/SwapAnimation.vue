@@ -177,7 +177,7 @@
                         <g class="logo" fill="none" opacity="1">
                             <path fill="currentColor" d="M84.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z"/>
                             <image
-                                :href="leftAsset === SwapAsset.BTC ? BitcoinSvg : leftAsset === SwapAsset.USDC_MATIC ? UsdcSvg : (bankLogo || BankSvg)"
+                                :href="leftAsset === SwapAsset.BTC ? BitcoinSvg : leftAsset === SwapAsset.USDC_MATIC ? UsdcSvg : leftAsset === SwapAsset.USDT_MATIC ? UsdtSvg : (bankLogo || BankSvg)"
                                 x="33" y="22" width="52" height="52"
                             />
                         </g>
@@ -235,7 +235,7 @@
                         <g class="logo" fill="none" opacity="1">
                             <path :fill="rightAsset === SwapAsset.EUR ? bankColor : 'currentColor'" d="M143.22 54.29a26 26 0 11-18.93-31.51 26 26 0 0118.93 31.51z" />
                             <image
-                                :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : rightAsset === SwapAsset.USDC_MATIC ? UsdcSvg : (bankLogo || BankSvg)"
+                                :href="rightAsset === SwapAsset.BTC ? BitcoinSvg : rightAsset === SwapAsset.USDC_MATIC ? UsdcSvg : rightAsset === SwapAsset.USDT_MATIC ? UsdtSvg : (bankLogo || BankSvg)"
                                 x="92" y="22" width="52" height="52"
                             />
                         </g>
@@ -368,9 +368,10 @@ import { SwapState, SwapErrorAction } from '../../stores/Swaps';
 import { formatDuration } from '../../lib/Time';
 import { getColorClass } from '../../lib/AddressColor';
 import { explorerAddrLink } from '../../lib/ExplorerUtils';
-import { assetToCurrency } from '../../lib/swap/utils/Assets';
+import { assetToCurrency, SupportedSwapAsset } from '../../lib/swap/utils/Assets';
 import BitcoinSvg from './animation/bitcoin.svg';
 import UsdcSvg from './animation/usdc.svg';
+import UsdtSvg from './animation/usdt.svg';
 import BankSvg from './animation/bank.svg';
 import MessageTransition from '../MessageTransition.vue';
 
@@ -385,7 +386,7 @@ export default defineComponent({
             required: true,
         },
         fromAsset: {
-            type: String as () => SwapAsset,
+            type: String as () => SupportedSwapAsset,
             required: true,
         },
         fromAmount: {
@@ -397,7 +398,7 @@ export default defineComponent({
             default: '',
         },
         toAsset: {
-            type: String as () => SwapAsset,
+            type: String as () => SupportedSwapAsset,
             required: true,
         },
         toAmount: {
@@ -482,6 +483,7 @@ export default defineComponent({
                 }
                 case SwapAsset.BTC: return '#f7931a';
                 case SwapAsset.USDC_MATIC: return '#2775ca';
+                case SwapAsset.USDT_MATIC: return '#009393';
                 case SwapAsset.EUR: return props.bankColor;
                 default: return '';
             }
@@ -501,6 +503,7 @@ export default defineComponent({
                 }
                 case SwapAsset.BTC: return '#f7931a';
                 case SwapAsset.USDC_MATIC: return '#2775ca';
+                case SwapAsset.USDT_MATIC: return '#009393';
                 case SwapAsset.EUR: return props.bankColor;
                 default: return '';
             }
@@ -511,6 +514,7 @@ export default defineComponent({
                 case SwapAsset.NIM: return 'Nimiq';
                 case SwapAsset.BTC: return 'Bitcoin';
                 case SwapAsset.USDC_MATIC: return 'USD Coin';
+                case SwapAsset.USDT_MATIC: return 'Tether USD';
                 case SwapAsset.EUR: return 'Euro';
                 default: throw new Error(`Invalid asset ${asset}`);
             }
@@ -631,9 +635,14 @@ export default defineComponent({
         const errorActionText = computed(() => {
             if (!props.error) return false;
 
-            if (props.errorAction === SwapErrorAction.USDC_RESIGN_REDEEM
-                && props.swapState === SwapState.SETTLE_INCOMING
-                && props.toAsset === SwapAsset.USDC_MATIC
+            if (props.swapState === SwapState.SETTLE_INCOMING
+                && ((
+                    props.errorAction === SwapErrorAction.USDC_RESIGN_REDEEM
+                    && props.toAsset === SwapAsset.USDC_MATIC
+                ) || (
+                    props.errorAction === SwapErrorAction.USDT_RESIGN_REDEEM
+                    && props.toAsset === SwapAsset.USDT_MATIC
+                ))
             ) {
                 return context.root.$t('Restart payout process') as string;
             }
@@ -658,6 +667,7 @@ export default defineComponent({
             SwapAsset,
             BitcoinSvg,
             UsdcSvg,
+            UsdtSvg,
             BankSvg,
             BottomNoticeMessage,
             bottomNoticeMsg,

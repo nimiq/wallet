@@ -24,7 +24,7 @@
                 <label>{{ $t('USD Coin') }}</label>
                 <Amount :amount="newLeftBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
             </div>
-            <div v-if="leftAsset === SwapAsset.USDT" class="currency left usdt">
+            <div v-if="leftAsset === SwapAsset.USDT_MATIC" class="currency left usdt">
                 <UsdtIcon />
                 <label>{{ $t('Tether USD') }}</label>
                 <Amount :amount="newLeftBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
@@ -51,7 +51,7 @@
                 <Amount :amount="newRightBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
                 <UsdcIcon />
             </div>
-            <div v-if="rightAsset === SwapAsset.USDT" class="currency right usdt">
+            <div v-if="rightAsset === SwapAsset.USDT_MATIC" class="currency right usdt">
                 <label>{{ $t('Tether USD') }}</label>
                 <Amount :amount="newRightBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
                 <UsdtIcon />
@@ -184,7 +184,11 @@ export default defineComponent({
     setup(props, context) {
         const { addressInfos, selectAddress, activeAddressInfo } = useAddressStore();
         const { accountBalance: btcAccountBalance, availableExternalAddresses } = useBtcAddressStore();
-        const { addressInfo: usdcAddressInfo, accountUsdcBalance } = usePolygonAddressStore();
+        const {
+            addressInfo: polygonAddressInfo,
+            accountUsdcBalance,
+            accountUsdtBridgedBalance,
+        } = usePolygonAddressStore();
         const { exchangeRates, currency } = useFiatStore();
 
         const root = ref<HTMLDivElement | null>(null);
@@ -235,13 +239,24 @@ export default defineComponent({
                     }];
                 case SwapAsset.USDC_MATIC:
                     return [{
-                        address: usdcAddressInfo.value?.address || 'usdc',
+                        address: polygonAddressInfo.value?.address || 'usdc',
                         balance: accountUsdcBalance.value,
                         active: true,
                         newFiatBalance: (props.newLeftBalance / 1e6) * leftExchangeRate.value,
                         barColorClass: 'usdc',
                         balanceChange: (props.newLeftBalance - accountUsdcBalance.value),
                         fiatBalanceChange: ((props.newLeftBalance - accountUsdcBalance.value) / 1e6)
+                            * leftExchangeRate.value,
+                    }];
+                case SwapAsset.USDT_MATIC:
+                    return [{
+                        address: polygonAddressInfo.value?.address || 'usdt',
+                        balance: accountUsdtBridgedBalance.value,
+                        active: true,
+                        newFiatBalance: (props.newLeftBalance / 1e6) * leftExchangeRate.value,
+                        barColorClass: 'usdt',
+                        balanceChange: (props.newLeftBalance - accountUsdtBridgedBalance.value),
+                        fiatBalanceChange: ((props.newLeftBalance - accountUsdtBridgedBalance.value) / 1e6)
                             * leftExchangeRate.value,
                     }];
                 default:
@@ -288,13 +303,24 @@ export default defineComponent({
                     }];
                 case SwapAsset.USDC_MATIC:
                     return [{
-                        address: usdcAddressInfo.value?.address || 'usdc',
+                        address: polygonAddressInfo.value?.address || 'usdc',
                         balance: accountUsdcBalance.value,
                         active: true,
                         newFiatBalance: (props.newRightBalance / 1e6) * rightExchangeRate.value,
                         barColorClass: 'usdc',
                         balanceChange: (props.newRightBalance - accountUsdcBalance.value),
                         fiatBalanceChange: ((props.newRightBalance - accountUsdcBalance.value) / 1e6)
+                            * rightExchangeRate.value,
+                    }];
+                case SwapAsset.USDT_MATIC:
+                    return [{
+                        address: polygonAddressInfo.value?.address || 'usdt',
+                        balance: accountUsdtBridgedBalance.value,
+                        active: true,
+                        newFiatBalance: (props.newRightBalance / 1e6) * rightExchangeRate.value,
+                        barColorClass: 'usdt',
+                        balanceChange: (props.newRightBalance - accountUsdtBridgedBalance.value),
+                        fiatBalanceChange: ((props.newRightBalance - accountUsdtBridgedBalance.value) / 1e6)
                             * rightExchangeRate.value,
                     }];
                 default:
@@ -373,7 +399,7 @@ export default defineComponent({
             [SwapAsset.BTC]: 8,
             [SwapAsset.USDC]: 6, // For TS completeness
             [SwapAsset.USDC_MATIC]: 6,
-            [SwapAsset.USDT]: 6,
+            [SwapAsset.USDT_MATIC]: 6,
             [SwapAsset.EUR]: 2, // For TS completeness
         } as const;
 
@@ -779,7 +805,8 @@ export default defineComponent({
     }
 
     &.bitcoin,
-    &.usdc {
+    &.usdc,
+    &.usdt {
         --column-gap: 2rem;
     }
 }

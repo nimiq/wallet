@@ -124,21 +124,25 @@ export function useUsdtTransactionInfo(transaction: Ref<Transaction>) {
 
     // Data
     const data = computed(() => { // eslint-disable-line arrow-body-style
-        // if (swapData.value && !isCancelledSwap.value) {
-        //     const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
-        //         fromAsset: isIncoming.value ? assetToCurrency(swapData.value.asset).toUpperCase() : SwapAsset.USDT,
-        //         toAsset: isIncoming.value ? SwapAsset.USDT : assetToCurrency(swapData.value.asset).toUpperCase(),
-        //     }) as string;
+        if (swapData.value && !isCancelledSwap.value) {
+            const message = i18n.t('Sent {fromAsset} – Received {toAsset}', {
+                fromAsset: isIncoming.value
+                    ? assetToCurrency(swapData.value.asset).toUpperCase()
+                    : 'USDT',
+                toAsset: isIncoming.value
+                    ? 'USDT'
+                    : assetToCurrency(swapData.value.asset).toUpperCase(),
+            }) as string;
 
-        //     // The TransactionListOasisPayoutStatus takes care of the second half of the message
-        //     if (
-        //         swapData.value.asset === SwapAsset.EUR
-        //         && swapData.value.htlc?.settlement
-        //         && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
-        //     ) return `${message.split('–')[0]} –`;
+            // The TransactionListOasisPayoutStatus takes care of the second half of the message
+            if (
+                swapData.value.asset === SwapAsset.EUR
+                && swapData.value.htlc?.settlement
+                && swapData.value.htlc.settlement.status !== SettlementStatus.CONFIRMED
+            ) return `${message.split('–')[0]} –`;
 
-        //     return message;
-        // }
+            return message;
+        }
 
         if (transaction.value.event?.name === 'Open') {
             return i18n.t('HTLC Creation') as string;

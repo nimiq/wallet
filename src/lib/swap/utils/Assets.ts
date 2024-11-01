@@ -6,7 +6,7 @@ export type SupportedSwapAsset =
     | SwapAsset.BTC
     | SwapAsset.USDC
     | SwapAsset.USDC_MATIC
-    | SwapAsset.USDT
+    | SwapAsset.USDT_MATIC
     | SwapAsset.EUR;
 
 export function assetToCurrency(asset: Exclude<SupportedSwapAsset, SwapAsset.EUR>): CryptoCurrency;
@@ -18,7 +18,7 @@ export function assetToCurrency(asset: SupportedSwapAsset): CryptoCurrency | Fia
         [SwapAsset.BTC]: CryptoCurrency.BTC,
         [SwapAsset.USDC]: CryptoCurrency.USDC,
         [SwapAsset.USDC_MATIC]: CryptoCurrency.USDC,
-        [SwapAsset.USDT]: CryptoCurrency.USDT,
+        [SwapAsset.USDT_MATIC]: CryptoCurrency.USDT,
         [SwapAsset.EUR]: FiatCurrency.EUR,
         ['CRC']: FiatCurrency.CRC, // eslint-disable-line no-useless-computed-key
     }[asset];

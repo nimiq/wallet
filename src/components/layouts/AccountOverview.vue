@@ -84,7 +84,6 @@
                     v-if="$config.fastspot.enabled
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
-                        && stablecoin === CryptoCurrency.USDC
                         && (
                             nimAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
@@ -104,7 +103,7 @@
                             $event,
                             `${SwapAsset.NIM}-${stablecoin === CryptoCurrency.USDC
                                 ? SwapAsset.USDC_MATIC
-                                : SwapAsset.USDT}`
+                                : SwapAsset.USDT_MATIC}`
                         )"
                         @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
                         @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
@@ -156,7 +155,6 @@
                         && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled
-                        && stablecoin === CryptoCurrency.USDC
                         && (
                             btcAccountBalance > 0
                             || (stablecoin === CryptoCurrency.USDC
@@ -176,7 +174,7 @@
                             $event,
                             `${SwapAsset.BTC}-${stablecoin === CryptoCurrency.USDC
                                 ? SwapAsset.USDC_MATIC
-                                : SwapAsset.USDT}`
+                                : SwapAsset.USDT_MATIC}`
                         )"
                         @focus="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.show()"
                         @blur="btcUsdcSwapTooltip$ && btcUsdcSwapTooltip$.hide()"

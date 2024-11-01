@@ -1361,6 +1361,7 @@ type ContractMethods =
     | 'transferWithApproval'
     | 'open'
     | 'openWithPermit'
+    | 'openWithApproval'
     | 'redeemWithSecretInData'
     | 'refund'
     // | 'swap'
@@ -1388,6 +1389,7 @@ export async function calculateFee(
         transferWithApproval: 1220,
         open: 1220,
         openWithPermit: 1348, // TODO: Recheck this value
+        openWithApproval: 1348, // TODO: Recheck this value
         redeemWithSecretInData: 1092,
         refund: 1092,
         // swap: 0,

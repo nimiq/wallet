@@ -291,9 +291,9 @@ export default defineComponent({
                     ? stablecoin.value === CryptoCurrency.USDC
                         // For USDC, only native USDC is supported for swapping.
                         ? store.accountUsdcBalance.value
-                        // : stablecoin.value === CryptoCurrency.USDT
-                        //     ? store.accountUsdtBridgedBalance.value
-                        : 0
+                        : stablecoin.value === CryptoCurrency.USDT
+                            ? store.accountUsdtBridgedBalance.value
+                            : 0
                     : store.accountBalance.value;
             }),
         );

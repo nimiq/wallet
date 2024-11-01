@@ -293,7 +293,7 @@ import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import Avatar from '../Avatar.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
-// import { SwapUsdtData } from '../../stores/Swaps';
+import { SwapErc20Data } from '../../stores/Swaps';
 import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
@@ -431,107 +431,107 @@ export default defineComponent({
         const blockExplorerLink = computed(() =>
             explorerTxLink(CryptoCurrency.USDT, transaction.value.transactionHash));
 
-        const showRefundButton = computed(() => false && !isIncoming.value,
-            // // funded but not redeemed htlc which is now expired
-            // && (swapInfo.value?.in?.asset === SwapAsset.USDT)
-            // && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
-            // && !swapInfo.value.out,
+        const showRefundButton = computed(() => !isIncoming.value
+            // funded but not redeemed htlc which is now expired
+            && (swapInfo.value?.in?.asset === SwapAsset.USDT_MATIC)
+            && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
+            && !swapInfo.value.out,
             // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
             // && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
         async function refundHtlc() {
-            // const htlcDetails = (swapInfo.value?.in as SwapUsdtData | undefined)?.htlc;
-            // if (!htlcDetails) {
-            //     alert('Unexpected: unknown HTLC refund details'); // eslint-disable-line no-alert
-            //     return;
-            // }
+            const htlcDetails = (swapInfo.value?.in as SwapErc20Data | undefined)?.htlc;
+            if (!htlcDetails) {
+                alert('Unexpected: unknown HTLC refund details'); // eslint-disable-line no-alert
+                return;
+            }
 
-            // let relayUrl: string;
+            let relayUrl: string;
 
-            // // eslint-disable-next-line no-async-promise-executor
-            // const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve, reject) => {
-            //     try {
-            //         const myAddress = transaction.value.sender;
+            // eslint-disable-next-line no-async-promise-executor
+            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve, reject) => {
+                try {
+                    const myAddress = transaction.value.sender;
 
-            //         const method = 'refund';
+                    const method = 'refund';
 
-            //         const htlcContract = await getUsdtBridgedHtlcContract();
+                    const htlcContract = await getUsdtBridgedHtlcContract();
 
-            //         const [
-            //             forwarderNonce,
-            //             { fee, gasPrice, gasLimit, relay },
-            //         ] = await Promise.all([
-            //             htlcContract.getNonce(myAddress) as Promise<BigNumber>,
-            //             calculateFee(
-            //                 transaction.value.token || config.polygon.usdt_bridged.tokenContract,
-            //                 method,
-            //                 undefined,
-            //                 htlcContract,
-            //             ),
-            //         ]);
+                    const [
+                        forwarderNonce,
+                        { fee, gasPrice, gasLimit, relay },
+                    ] = await Promise.all([
+                        htlcContract.getNonce(myAddress) as Promise<BigNumber>,
+                        calculateFee(
+                            transaction.value.token || config.polygon.usdt_bridged.tokenContract,
+                            method,
+                            undefined,
+                            htlcContract,
+                        ),
+                    ]);
 
-            //         relayUrl = relay.url;
+                    relayUrl = relay.url;
 
-            //         const functionData = htlcContract.interface.encodeFunctionData(method, [
-            //             /** bytes32 id */ htlcDetails.address,
-            //             /** address target */ myAddress,
-            //             /** uint256 fee */ fee,
-            //         ]);
+                    const functionData = htlcContract.interface.encodeFunctionData(method, [
+                        /** bytes32 id */ htlcDetails.address,
+                        /** address target */ myAddress,
+                        /** uint256 fee */ fee,
+                    ]);
 
-            //         const relayRequest: RelayRequest = {
-            //             request: {
-            //                 from: myAddress,
-            //                 to: htlcContract.address,
-            //                 data: functionData,
-            //                 value: '0',
-            //                 nonce: forwarderNonce.toString(),
-            //                 gas: gasLimit.toString(),
-            //                 validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-            //                     .toString(10),
-            //             },
-            //             relayData: {
-            //                 gasPrice: gasPrice.toString(),
-            //                 pctRelayFee: relay.pctRelayFee.toString(),
-            //                 baseRelayFee: relay.baseRelayFee.toString(),
-            //                 relayWorker: relay.relayWorkerAddress,
-            //                 paymaster: htlcContract.address,
-            //                 paymasterData: '0x',
-            //                 clientId: Math.floor(Math.random() * 1e6).toString(10),
-            //                 forwarder: htlcContract.address,
-            //             },
-            //         };
+                    const relayRequest: RelayRequest = {
+                        request: {
+                            from: myAddress,
+                            to: htlcContract.address,
+                            data: functionData,
+                            value: '0',
+                            nonce: forwarderNonce.toString(),
+                            gas: gasLimit.toString(),
+                            validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                                .toString(10),
+                        },
+                        relayData: {
+                            gasPrice: gasPrice.toString(),
+                            pctRelayFee: relay.pctRelayFee.toString(),
+                            baseRelayFee: relay.baseRelayFee.toString(),
+                            relayWorker: relay.relayWorkerAddress,
+                            paymaster: htlcContract.address,
+                            paymasterData: '0x',
+                            clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            forwarder: htlcContract.address,
+                        },
+                    };
 
-            //         const request: Omit<RefundSwapRequest, 'appName'> = {
-            //             accountId: useAccountStore().activeAccountId.value!,
-            //             refund: {
-            //                 type: SwapAsset.USDT,
-            //                 ...relayRequest,
-            //                 amount: transaction.value.value - fee.toNumber(),
-            //             },
-            //         };
+                    const request: Omit<RefundSwapRequest, 'appName'> = {
+                        accountId: useAccountStore().activeAccountId.value!,
+                        refund: {
+                            type: SwapAsset.USDT_MATIC,
+                            ...relayRequest,
+                            amount: transaction.value.value - fee.toNumber(),
+                        },
+                    };
 
-            //         resolve(request);
-            //     } catch (e) {
-            //         reject(e);
-            //     }
-            // });
+                    resolve(request);
+                } catch (e) {
+                    reject(e);
+                }
+            });
 
-            // try {
-            //     const tx = await refundSwap(requestPromise);
-            //     if (!tx) return;
-            //     const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
-            //     const plainTx = await sendTransaction(
-            //         { request: relayRequest as ForwardRequest, relayData },
-            //         (tx as SignedPolygonTransaction).signature,
-            //         relayUrl!,
-            //     );
-            //     await context.root.$nextTick();
-            //     context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
-            // } catch (e) {
-            //     const errorMessage = e instanceof Error ? e.message : String(e);
-            //     alert(context.root.$t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
-            // }
+            try {
+                const tx = await refundSwap(requestPromise);
+                if (!tx) return;
+                const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
+                const plainTx = await sendTransaction(
+                    { request: relayRequest as ForwardRequest, relayData },
+                    (tx as SignedPolygonTransaction).signature,
+                    relayUrl!,
+                );
+                await context.root.$nextTick();
+                context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
+            } catch (e) {
+                const errorMessage = e instanceof Error ? e.message : String(e);
+                alert(context.root.$t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
+            }
         }
 
         const ticker = CryptoCurrency.USDT;

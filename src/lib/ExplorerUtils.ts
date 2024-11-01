@@ -27,7 +27,7 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
                 + `/address/${address}`;
         case SwapAsset.USDC:
         case SwapAsset.USDC_MATIC:
-        // case SwapAsset.USDT:
+        case SwapAsset.USDT_MATIC:
             return `https://${config.environment === ENV_MAIN ? '' : 'amoy.'}polygonscan.com/address/${address}`;
         case SwapAsset.EUR:
             if (config.environment === ENV_MAIN) return `https://oasis.watch/?id=${address}`;

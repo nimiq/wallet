@@ -161,6 +161,10 @@ export const usePrestakingStore = createStore({
             },
             'NQ15 HNAH YRVH DFVM YHAG BSXG 0QHK KA0Q XDR7': {
                 address: 'NQ15 HNAH YRVH DFVM YHAG BSXG 0QHK KA0Q XDR7',
+                label: 'Garuda Pool',
+                // description: '',
+                icon: 'garudapool.png',
+                // website: '',
                 stake: null,
             },
             'NQ19 AC1J 0S6V KDYU 6YDQ RC57 9VH9 EEHP 9RFK': {

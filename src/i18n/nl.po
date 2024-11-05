@@ -4,12 +4,12 @@
 # Jim <jimvendrig10@gmail.com>, 2021
 # Daniel, 2021
 # Fons <Fonsdesigns@hotmail.com>, 2022
-# Stefan, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
+# Stefan, 2024
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2024\n"
+"Last-Translator: Stefan, 2024\n"
 "Language-Team: Dutch (https://app.transifex.com/nimiq-foundation/teams/110181/nl/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: nl\n"
@@ -29,7 +29,7 @@ msgstr "{addresses} verzenden en ontvangen transacties."
 
 #: src/components/modals/StablecoinSendModal.vue:173
 #: src/components/modals/StablecoinSendModal.vue:199
-#: src/components/swap/SwapModal.vue:65
+#: src/components/swap/SwapModal.vue:66
 msgid "{amount} fee"
 msgstr "{amount} toeslag"
 
@@ -42,8 +42,8 @@ msgstr "{amount}/transactie"
 msgid "{bankName} offers generic and individual IBANs."
 msgstr "{bankName} biedt algemene en individuele IBAN's."
 
-#: src/components/modals/BtcTransactionModal.vue:298
-#: src/components/modals/TransactionModal.vue:303
+#: src/components/modals/BtcTransactionModal.vue:312
+#: src/components/modals/TransactionModal.vue:317
 #: src/components/modals/UsdcTransactionModal.vue:260
 #: src/components/modals/UsdtTransactionModal.vue:241
 msgid "{count} Confirmation | {count} Confirmations"
@@ -70,11 +70,11 @@ msgstr "{currency} niet uitbetaald"
 msgid "{currency} payout pending"
 msgstr "Uitbetaling van {currency} in behandeling"
 
-#: src/components/swap/SwapModal.vue:409
+#: src/components/swap/SwapModal.vue:415
 msgid "{disabledAsset} swaps are currently under maintenance."
-msgstr ""
+msgstr "{disabledAsset} swaps zijn momenteel in onderhoud."
 
-#: src/components/modals/TransactionModal.vue:306
+#: src/components/modals/TransactionModal.vue:320
 msgid "{fee} fee"
 msgstr "{fee} heffing"
 
@@ -98,7 +98,7 @@ msgstr "{provider} is mogelijk gemaakt door {companyLogo}"
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:102
+#: src/components/swap/SwapModal.vue:103
 msgid "{value} remaining"
 msgstr "{value} resterend"
 
@@ -118,9 +118,9 @@ msgstr "+ transactiekosten, registratie vereist"
 msgid "+ network fees, registration required above $700"
 msgstr "+ transactiekosten, registratie vereist vanaf $700"
 
-#: src/components/modals/BtcTransactionModal.vue:118
-#: src/components/modals/BtcTransactionModal.vue:129
-#: src/components/modals/BtcTransactionModal.vue:140
+#: src/components/modals/BtcTransactionModal.vue:119
+#: src/components/modals/BtcTransactionModal.vue:130
+#: src/components/modals/BtcTransactionModal.vue:141
 #: src/components/modals/BtcTransactionModal.vue:172
 #: src/components/NetworkMapPeerList.vue:24
 msgid "+{n} more"
@@ -128,7 +128,7 @@ msgstr "+{n} meer"
 
 #: src/components/modals/StablecoinSendModal.vue:167
 #: src/components/modals/StablecoinSendModal.vue:193
-#: src/components/swap/SwapModal.vue:59
+#: src/components/swap/SwapModal.vue:60
 msgid "< {amount} fee"
 msgstr "< {amount} toeslag"
 
@@ -147,7 +147,7 @@ msgstr "10 min"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:57
 msgid "1000 NIM = 1 Giveaway point"
-msgstr ""
+msgstr "1000 NIM = 1 Giveaway Punt"
 
 #: src/components/FeeSelector.vue:8
 msgid "15m"
@@ -168,7 +168,7 @@ msgstr "20 sec"
 
 #: src/components/modals/WelcomePreStakingModal.vue:34
 msgid "200 Mil NIM in giveaways!"
-msgstr ""
+msgstr "200M NIM aan weggeefacties!"
 
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Support"
@@ -176,7 +176,7 @@ msgstr "24/7 support"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:103
 msgid "2x"
-msgstr ""
+msgstr "2x"
 
 #: src/components/modals/BuyCryptoModal.vue:22
 #: src/components/modals/SellCryptoModal.vue:21
@@ -185,21 +185,21 @@ msgstr "3"
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:97
+#: src/components/swap/SwapModal.vue:98
 msgid "30-day Limit"
 msgstr "30 dagen limiet"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:99
 msgid "3x"
-msgstr ""
+msgstr "3x"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:132
 msgid "5x"
-msgstr ""
+msgstr "5x"
 
 #: src/components/prestaking/ValidatorListItem.vue:44
 msgid "5x points"
-msgstr ""
+msgstr "5x punten"
 
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
@@ -242,8 +242,8 @@ msgstr "Account Limieten"
 msgid "Accounts"
 msgstr "Accounts"
 
-#: src/components/layouts/AccountOverview.vue:150
-#: src/components/layouts/AccountOverview.vue:265
+#: src/components/layouts/AccountOverview.vue:149
+#: src/components/layouts/AccountOverview.vue:263
 msgid "Activate"
 msgstr "Activeren"
 
@@ -296,7 +296,7 @@ msgstr ""
 "Bitcoin toevoegen\n"
 "aan je account"
 
-#: src/components/modals/TransactionModal.vue:118
+#: src/components/modals/TransactionModal.vue:119
 #: src/components/modals/TransactionModal.vue:162
 #: src/components/UsdcAddressInfo.vue:10
 msgid "Add contact"
@@ -327,7 +327,7 @@ msgstr "alles"
 msgid "All countries"
 msgstr "Alle landen"
 
-#: src/components/layouts/AccountOverview.vue:303
+#: src/components/layouts/AccountOverview.vue:301
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -446,8 +446,8 @@ msgstr "Terug naar adressen"
 msgid "Back to Bank Details"
 msgstr "Terug naar bankgegevens"
 
-#: src/composables/useBtcTransactionInfo.ts:128
-#: src/composables/useTransactionInfo.ts:141
+#: src/composables/useBtcTransactionInfo.ts:132
+#: src/composables/useTransactionInfo.ts:145
 #: src/composables/useUsdcTransactionInfo.ts:105
 #: src/composables/useUsdtTransactionInfo.ts:105
 msgid "Bank Account"
@@ -468,12 +468,12 @@ msgid "BIC works, too."
 msgstr "BIC werkt ook."
 
 #: src/components/AddressList.vue:179
-#: src/components/layouts/AccountOverview.vue:131
+#: src/components/layouts/AccountOverview.vue:130
 #: src/components/layouts/AddressOverview.vue:111
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
-#: src/components/modals/BtcTransactionModal.vue:123
-#: src/components/modals/BtcTransactionModal.vue:135
+#: src/components/modals/BtcTransactionModal.vue:124
+#: src/components/modals/BtcTransactionModal.vue:136
 #: src/components/swap/SwapBalanceBar.vue:19
 #: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:133
@@ -495,15 +495,15 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr "Bitcoin eenheid"
 
-#: src/components/modals/BtcTransactionModal.vue:295
-#: src/components/modals/TransactionModal.vue:300
+#: src/components/modals/BtcTransactionModal.vue:309
+#: src/components/modals/TransactionModal.vue:314
 #: src/components/modals/UsdcTransactionModal.vue:257
 #: src/components/modals/UsdtTransactionModal.vue:238
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:306
-#: src/components/modals/TransactionModal.vue:313
+#: src/components/modals/BtcTransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:327
 #: src/components/modals/UsdcTransactionModal.vue:270
 #: src/components/modals/UsdtTransactionModal.vue:251
 #: src/components/swap/SwapAnimation.vue:196
@@ -603,7 +603,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:201
 #: src/components/modals/SellCryptoModal.vue:182
-#: src/components/swap/SwapModal.vue:195
+#: src/components/swap/SwapModal.vue:196
 msgid ""
 "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
@@ -612,13 +612,13 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:215
 #: src/components/modals/SellCryptoModal.vue:196
-#: src/components/swap/SwapModal.vue:207
+#: src/components/swap/SwapModal.vue:208
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "Door op '{text}' te klikken, ga je akkoord met de ToS van {Fastspot}."
 
 #: src/components/modals/WelcomePreStakingModal.vue:40
 msgid "Campaign Page"
-msgstr ""
+msgstr "Campagne Pagina"
 
 #: src/components/modals/SendModal.vue:243
 #: src/components/swap/SwapSepaFundingInstructions.vue:80
@@ -645,7 +645,7 @@ msgid "Cannot import contacts, wrong file format."
 msgstr "Kan geen contacten importeren, fout bestandformaat."
 
 #: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:150
+#: src/composables/useTransactionInfo.ts:154
 msgid "Cashlink"
 msgstr "Cashlink"
 
@@ -653,7 +653,7 @@ msgstr "Cashlink"
 msgid "Cashlink Claiming"
 msgstr "Cashlink claimen"
 
-#: src/components/modals/TransactionModal.vue:41
+#: src/components/modals/TransactionModal.vue:43
 msgid "Cashlink from {address}"
 msgstr "Cashlink van {address}"
 
@@ -661,7 +661,7 @@ msgstr "Cashlink van {address}"
 msgid "Cashlink Funding"
 msgstr "Cashlink funding"
 
-#: src/components/modals/TransactionModal.vue:47
+#: src/components/modals/TransactionModal.vue:49
 msgid "Cashlink to {address}"
 msgstr "Cashlink naar {address}"
 
@@ -688,7 +688,7 @@ msgstr "Bekijk de nieuwe introductie"
 
 #: src/components/modals/StablecoinSelectionModal.vue:30
 msgid "Choose {ticker}"
-msgstr ""
+msgstr "Kies {ticker}"
 
 #: src/components/modals/AddressSelectorModal.vue:8
 #: src/components/modals/SendModal.vue:62
@@ -708,7 +708,7 @@ msgstr "Kies een validator"
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:212
-#: src/components/swap/SwapModal.vue:250
+#: src/components/swap/SwapModal.vue:251
 msgid "Choose an Address"
 msgstr "Kies een adres"
 
@@ -717,22 +717,24 @@ msgid ""
 "Choose an amount you want to pre-stake. Pre-staked NIM remain locked until "
 "the migration is complete."
 msgstr ""
+"Kies vooraf een bedrag dat je wilt inzetten. Vooraf ingezette NIM's blijven "
+"vergrendeld totdat de migratie is voltooid."
 
-#: src/components/layouts/AccountOverview.vue:221
+#: src/components/layouts/AccountOverview.vue:219
 msgid "Choose Stablecoin"
-msgstr ""
+msgstr "Selecteer stablecoin"
 
 #: src/components/modals/StablecoinSelectionModal.vue:4
 msgid "Choose your stablecoin"
-msgstr ""
+msgstr "Selecteer je stablecoin"
 
 #: src/components/prestaking/PrestakingClaimPage.vue:45
 msgid "Claim your Points"
-msgstr ""
+msgstr "Claim je punten"
 
 #: src/components/prestaking/PrestakingClaimPage.vue:5
 msgid "Claim your points to join the big giveaway!"
-msgstr ""
+msgstr "Claim je punten om mee te doen aan de grote winactie!"
 
 #: src/components/layouts/Settings.vue:241
 msgid "Clear"
@@ -760,6 +762,8 @@ msgid ""
 "Collect points for the big giveaway and get a shiny Identicon upgrade –"
 "                                     the more the better."
 msgstr ""
+"Verzamel punten voor de grote winactie en ontvang een Identicon-upgrade – "
+"hoe meer punten, hoe beter."
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
@@ -777,8 +781,8 @@ msgstr "Vergelijkbaar gecentraliseerd"
 msgid "Comparably high transaction fees/time"
 msgstr "Vergelijkbare hoge transactiekosten en tijd"
 
-#: src/components/SendModalFooter.vue:8 src/components/swap/SwapModal.vue:193
-#: src/components/swap/SwapModal.vue:198 src/components/swap/SwapModal.vue:210
+#: src/components/SendModalFooter.vue:8 src/components/swap/SwapModal.vue:194
+#: src/components/swap/SwapModal.vue:199 src/components/swap/SwapModal.vue:211
 msgid "Confirm"
 msgstr "Bevestigen"
 
@@ -858,7 +862,7 @@ msgstr "Swap voortzetten"
 
 #: src/components/modals/WelcomePreStakingModal.vue:28
 msgid "Continue to wallet"
-msgstr ""
+msgstr "Doorgaan naar wallet"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:45
 msgid "Continue with Moonpay"
@@ -959,9 +963,9 @@ msgid "Credit Card"
 msgstr "Creditcard"
 
 #: src/components/layouts/Sidebar.vue:144
-#: src/components/swap/SwapModal.vue:405
+#: src/components/swap/SwapModal.vue:411
 msgid "Crypto swaps are currently under maintenance."
-msgstr ""
+msgstr "Crypto swaps zijn op dit moment in onderhoud."
 
 #: src/components/modals/BuyOptionsModal.vue:10
 msgid ""
@@ -1038,11 +1042,11 @@ msgstr "Looptijd en kosten zijn geschat."
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:95
 msgid "EARLY BIRD MULTIPLIERS"
-msgstr ""
+msgstr "EARLY BIRD VERDUBBELAARS"
 
 #: src/components/modals/WelcomePreStakingModal.vue:21
 msgid "Earn new NIM by staking"
-msgstr ""
+msgstr "Verdien nieuwe NIM door te staken"
 
 #: src/components/prestaking/PrestakingValidatorPage.vue:9
 msgid ""
@@ -1136,10 +1140,10 @@ msgstr "Fout:"
 msgid "established"
 msgstr "opgezet"
 
-#: src/components/modals/BtcTransactionModal.vue:20
-#: src/components/modals/BtcTransactionModal.vue:34
-#: src/components/modals/TransactionModal.vue:17
-#: src/components/modals/TransactionModal.vue:31
+#: src/components/modals/BtcTransactionModal.vue:21
+#: src/components/modals/BtcTransactionModal.vue:36
+#: src/components/modals/TransactionModal.vue:18
+#: src/components/modals/TransactionModal.vue:33
 #: src/components/modals/UsdcTransactionModal.vue:18
 #: src/components/modals/UsdcTransactionModal.vue:30
 #: src/components/modals/UsdtTransactionModal.vue:18
@@ -1147,18 +1151,18 @@ msgstr "opgezet"
 msgid "Euro"
 msgstr "Euro"
 
-#: src/components/swap/SwapModal.vue:81
+#: src/components/swap/SwapModal.vue:82
 msgid "Exchange rate"
 msgstr "Wisselkoers"
 
-#: src/components/TransactionListItem.vue:42
+#: src/components/TransactionListItem.vue:41
 #: src/components/UsdcTransactionListItem.vue:39
 #: src/components/UsdtTransactionListItem.vue:39
 msgid "expired"
 msgstr "verlopen"
 
-#: src/components/modals/BtcTransactionModal.vue:71
-#: src/components/modals/TransactionModal.vue:87
+#: src/components/modals/BtcTransactionModal.vue:73
+#: src/components/modals/TransactionModal.vue:89
 msgid "Expired"
 msgstr "Verlopen"
 
@@ -1181,8 +1185,8 @@ msgstr "Exporteer je geschiedenis"
 msgid "express"
 msgstr "express"
 
-#: src/components/modals/BtcTransactionModal.vue:71
-#: src/components/modals/TransactionModal.vue:87
+#: src/components/modals/BtcTransactionModal.vue:73
+#: src/components/modals/TransactionModal.vue:89
 msgid "Failed"
 msgstr "Mislukt"
 
@@ -1191,9 +1195,9 @@ msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 "Kan {ticker}-kosten niet ophalen. Opnieuw proberen... (Error: {message})"
 
-#: src/components/swap/SwapModal.vue:978
-msgid "Failed to fetch USDC fees. Retrying... (Error: {message})"
-msgstr "Kan USDC-kosten niet ophalen. Opnieuw proberen... (Error: {message})"
+#: src/components/swap/SwapModal.vue:1001
+msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
+msgstr ""
 
 #: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."
@@ -1237,7 +1241,7 @@ msgstr "Ophalen"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:216
-#: src/components/TransactionListItem.vue:60
+#: src/components/TransactionListItem.vue:59
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
 msgid "Fiat value unavailable"
@@ -1257,7 +1261,7 @@ msgstr "Swap afronden"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:100
 msgid "First week"
-msgstr ""
+msgstr "Eerste week"
 
 #: src/components/modals/WelcomeModal.vue:124
 msgid ""
@@ -1342,6 +1346,8 @@ msgid ""
 "Get ready for a massive performance boost and earning NIM by staking your "
 "NIM."
 msgstr ""
+"Zet je schrap voor een enorme prestatieverbetering en verdien NIM door je "
+"NIM in te 'staken'."
 
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
@@ -1361,7 +1367,7 @@ msgstr ""
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:115
 msgid "Go for small validator pools to earn even more points!"
-msgstr ""
+msgstr "Kies voor kleine validator pools om nog meer punten te verdienen!"
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
@@ -1386,15 +1392,15 @@ msgstr ""
 
 #: src/components/prestaking/ValidatorListItem.vue:36
 msgid "High stake!"
-msgstr ""
+msgstr "Hoge stake!"
 
 #: src/components/modals/StablecoinSelectionModal.vue:15
 msgid "Higher liquidity and global market adoption."
-msgstr ""
+msgstr "Hogere liquiditeit en wereldwijde marktacceptatie."
 
 #: src/components/modals/StablecoinSelectionModal.vue:12
 msgid "Higher transparency and regulatory compliance."
-msgstr ""
+msgstr "Hogere transparantie en betere naleving van regelgeving."
 
 #: src/components/modals/WelcomeModal.vue:178
 msgid "Highest degree of decentralization"
@@ -1411,34 +1417,34 @@ msgstr "Hoogste graad van decentralisatie"
 msgid "Historic value"
 msgstr "Historische waarde"
 
-#: src/components/modals/BtcTransactionModal.vue:442
-#: src/components/modals/TransactionModal.vue:489
-#: src/components/modals/UsdcTransactionModal.vue:400
-#: src/components/modals/UsdtTransactionModal.vue:380
-#: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:195
-#: src/composables/useUsdcTransactionInfo.ts:148
-#: src/composables/useUsdtTransactionInfo.ts:144 src/lib/DataFormatting.ts:21
-msgid "HTLC Creation"
-msgstr "HTLC Creatie"
-
-#: src/components/modals/BtcTransactionModal.vue:442
-#: src/components/modals/TransactionModal.vue:504
+#: src/components/modals/BtcTransactionModal.vue:461
 #: src/components/modals/TransactionModal.vue:510
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/components/modals/UsdtTransactionModal.vue:380
-#: src/composables/useBtcTransactionInfo.ts:189
-#: src/composables/useTransactionInfo.ts:210
-#: src/composables/useTransactionInfo.ts:216
+#: src/composables/useBtcTransactionInfo.ts:193
+#: src/composables/useTransactionInfo.ts:199
+#: src/composables/useUsdcTransactionInfo.ts:148
+#: src/composables/useUsdtTransactionInfo.ts:148 src/lib/DataFormatting.ts:21
+msgid "HTLC Creation"
+msgstr "HTLC Creatie"
+
+#: src/components/modals/BtcTransactionModal.vue:461
+#: src/components/modals/TransactionModal.vue:525
+#: src/components/modals/TransactionModal.vue:531
+#: src/components/modals/UsdcTransactionModal.vue:400
+#: src/components/modals/UsdtTransactionModal.vue:380
+#: src/composables/useBtcTransactionInfo.ts:193
+#: src/composables/useTransactionInfo.ts:214
+#: src/composables/useTransactionInfo.ts:220
 #: src/composables/useUsdcTransactionInfo.ts:154
-#: src/composables/useUsdtTransactionInfo.ts:150
+#: src/composables/useUsdtTransactionInfo.ts:154
 msgid "HTLC Refund"
 msgstr "HTLC terugbetaling"
 
-#: src/components/modals/TransactionModal.vue:493
-#: src/composables/useTransactionInfo.ts:199
+#: src/components/modals/TransactionModal.vue:514
+#: src/composables/useTransactionInfo.ts:203
 #: src/composables/useUsdcTransactionInfo.ts:151
-#: src/composables/useUsdtTransactionInfo.ts:147
+#: src/composables/useUsdtTransactionInfo.ts:151
 msgid "HTLC Settlement"
 msgstr "HTLC schikking"
 
@@ -1456,7 +1462,7 @@ msgstr "Ik begrijp dat ik een {sepaInstantLink} moet sturen."
 
 #: src/components/modals/UsdtAddedModal.vue:20
 msgid "I’m happy, stick with USDC"
-msgstr ""
+msgstr "Ik blijf bij USDC"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:42
 msgid "IBAN"
@@ -1466,7 +1472,7 @@ msgstr "IBAN"
 msgid "ID document"
 msgstr "ID document"
 
-#: src/components/swap/SwapNotification.vue:216
+#: src/components/swap/SwapNotification.vue:221
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1554,11 +1560,11 @@ msgid "Insufficient balance."
 msgstr "Onvoldoende saldo."
 
 #: src/components/BtcTransactionListItem.vue:48
-#: src/components/TransactionListItem.vue:43
+#: src/components/TransactionListItem.vue:42
 msgid "invalid"
 msgstr "ongeldig"
 
-#: src/components/swap/SwapModal.vue:1847
+#: src/components/swap/SwapModal.vue:2028
 msgid "Invalid swap state, swap aborted!"
 msgstr "Ongeldige status, swap afgebroken!"
 
@@ -1577,6 +1583,7 @@ msgstr "Je kan je wallet nu veilig afsluiten"
 #: src/components/modals/WelcomePreStakingModal.vue:35
 msgid "Join the giveaway campaign and pre-stake to win big NIM rewards."
 msgstr ""
+"Doe mee aan de winactie en pre-stake om grote NIM-beloningen te winnen."
 
 #: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
@@ -1592,7 +1599,7 @@ msgstr "Taal"
 
 #: src/components/modals/PolygonActivationModal.vue:100
 msgid "Learn about pre-staking"
-msgstr ""
+msgstr "Leer meer over pre-staking"
 
 #: src/components/layouts/AddressOverview.vue:208
 #: src/components/modals/NetworkInfoModal.vue:20
@@ -1639,7 +1646,7 @@ msgstr "Link niet beschikbaar in deze browser"
 msgid "Load file"
 msgstr "Bestand laden"
 
-#: src/components/swap/SwapModal.vue:115
+#: src/components/swap/SwapModal.vue:116
 msgid "Loading fees and limits"
 msgstr "Toeslag en limieten ophalen"
 
@@ -1650,7 +1657,7 @@ msgstr "MoonPay laden..."
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:100
+#: src/components/swap/SwapModal.vue:101
 msgid "loading..."
 msgstr "laden..."
 
@@ -1707,7 +1714,7 @@ msgstr "Maximale omwisselbaar bedrag is {amount}"
 
 #: src/components/prestaking/PrestakingClaimPage.vue:48
 msgid "Maybe later"
-msgstr ""
+msgstr "Misschien later"
 
 #: src/components/modals/BuyOptionsModal.vue:104
 #: src/components/modals/BuyOptionsModal.vue:121
@@ -1774,11 +1781,11 @@ msgstr "NIM netwerkkosten"
 
 #: src/components/prestaking/PrestakingClaimPage.vue:37
 msgid "NIM pre-staked"
-msgstr ""
+msgstr "NIM pre-staked"
 
 #: src/components/modals/WelcomePreStakingModal.vue:17
 msgid "Nimiq becomes super eco-friendly"
-msgstr ""
+msgstr "Nimiq wordt super milieuvriendelijk"
 
 #: src/components/modals/DisclaimerModal.vue:16
 msgid ""
@@ -1796,13 +1803,13 @@ msgstr "Nimiq PoS Prestaking"
 
 #: src/components/modals/WelcomePreStakingModal.vue:6
 msgid "Nimiq Proof-of-Stake is coming!"
-msgstr ""
+msgstr "Nimiq Proof-of-Stake is onderweg!"
 
 #: src/components/modals/BtcSendModal.vue:111
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "De Nimiq wallet ondersteunt geen transactieberichten voor Bitcoin."
 
-#: src/components/swap/SwapNotification.vue:215
+#: src/components/swap/SwapNotification.vue:220
 msgid "No connection to {chain} network."
 msgstr "Geen verbinding met het {chain} netwerk."
 
@@ -1856,7 +1863,7 @@ msgid "Not available in your country"
 msgstr "Niet beschikbaar in jouw land"
 
 #: src/components/BtcTransactionListItem.vue:46
-#: src/components/TransactionListItem.vue:40
+#: src/components/TransactionListItem.vue:39
 #: src/components/UsdcTransactionListItem.vue:37
 #: src/components/UsdtTransactionListItem.vue:37
 msgid "not sent"
@@ -1938,7 +1945,7 @@ msgid "Pegged 1:1 to the U.S. Dollar"
 msgstr "1:1 gekoppeld aan de Amerikaanse dollar"
 
 #: src/components/BtcTransactionListItem.vue:47
-#: src/components/TransactionListItem.vue:41
+#: src/components/TransactionListItem.vue:40
 #: src/components/UsdcTransactionListItem.vue:38
 #: src/components/UsdtTransactionListItem.vue:38
 msgid "pending"
@@ -1948,8 +1955,8 @@ msgstr "In afwachting"
 msgid "Pending Cashlinks"
 msgstr "In afwachting van cashlinks"
 
-#: src/components/modals/BtcTransactionModal.vue:63
-#: src/components/modals/TransactionModal.vue:79
+#: src/components/modals/BtcTransactionModal.vue:65
+#: src/components/modals/TransactionModal.vue:81
 msgid "Pending..."
 msgstr "In afwachting..."
 
@@ -1973,6 +1980,7 @@ msgstr "Swap {progress} / 5 uitvoeren"
 msgid ""
 "Pick a stable coin for your wallet. You can always switch between the two."
 msgstr ""
+"Kies een stablecoin voor je wallet. Je kunt altijd tussen de twee wisselen."
 
 #: src/components/layouts/Sidebar.vue:147
 msgid ""
@@ -2035,20 +2043,20 @@ msgstr "Pop-ups"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:87
 msgid "Pre-stake as early as possible to earn more points."
-msgstr ""
+msgstr "Pre-stake zo vroeg mogelijk in om meer punten te verdienen."
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:56
 msgid "Pre-stake your NIM!"
-msgstr ""
+msgstr "Pre-stake je NIM!"
 
 #: src/components/prestaking/PrestakingNotice.vue:4
 msgid "Pre-staked funds are locked until the migration is complete"
-msgstr ""
+msgstr "Pre-stake NIM wordt staan vast totdat de migratie is voltooid"
 
 #: src/components/prestaking/PrestakingGraphPage.vue:139
 #: src/composables/useTransactionInfo.ts:119
 msgid "Pre-staking Migration Address"
-msgstr ""
+msgstr "Pre-staking Migratie Adres"
 
 #: src/components/prestaking/PrestakingInfoPage.vue:9
 msgid ""
@@ -2134,8 +2142,8 @@ msgstr "Ontvang alleen van Polygon {ticker}-adressen!"
 msgid "Receive NIM"
 msgstr "Ontvang NIM"
 
-#: src/components/modals/BtcTransactionModal.vue:74
-#: src/components/modals/TransactionModal.vue:90
+#: src/components/modals/BtcTransactionModal.vue:76
+#: src/components/modals/TransactionModal.vue:92
 #: src/components/modals/UsdcTransactionModal.vue:68
 #: src/components/modals/UsdtTransactionModal.vue:64
 msgid "Received at {dateAndTime}"
@@ -2180,14 +2188,15 @@ msgstr "Referentie Valuta"
 msgid "Refresh the page to continue."
 msgstr "Ververs de pagina om door te gaan."
 
-#: src/components/modals/BtcTransactionModal.vue:288
-#: src/components/modals/TransactionModal.vue:293
+#: src/components/modals/BtcTransactionModal.vue:302
+#: src/components/modals/TransactionModal.vue:307
 #: src/components/modals/UsdcTransactionModal.vue:250
 #: src/components/modals/UsdtTransactionModal.vue:231
 msgid "Refund"
 msgstr "Terugbetaling"
 
-#: src/components/modals/UsdcTransactionModal.vue:564
+#: src/components/modals/UsdcTransactionModal.vue:565
+#: src/components/modals/UsdtTransactionModal.vue:534
 msgid "Refund failed: "
 msgstr "Terugbetaling mislukt:"
 
@@ -2237,11 +2246,11 @@ msgstr "Unstoppable Domain ophalen..."
 msgid "Restake Rewards"
 msgstr "Re-stake beloningen"
 
-#: src/components/swap/SwapAnimation.vue:638
+#: src/components/swap/SwapAnimation.vue:647
 msgid "Restart payout process"
 msgstr "Start het uitbetalingsproces opnieuw"
 
-#: src/components/swap/SwapModal.vue:1071
+#: src/components/swap/SwapModal.vue:1094
 msgid "Resulting BTC amount is too small."
 msgstr "Het resulterende BTC-bedrag is te klein."
 
@@ -2281,7 +2290,7 @@ msgstr "Zoeken"
 
 #: src/components/prestaking/PrestakingValidatorPage.vue:17
 msgid "Search for validators..."
-msgstr ""
+msgstr "Zoek naar validators..."
 
 #: src/components/SearchBar.vue:46
 msgid "Search transactions"
@@ -2293,7 +2302,7 @@ msgstr "Zoek transacties op contact, adres, etc."
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:104
 msgid "Second week"
-msgstr ""
+msgstr "Tweede week"
 
 #: src/components/modals/WelcomeModal.vue:43
 msgid "Security"
@@ -2434,9 +2443,10 @@ msgstr "Stuur {coin} {ticker}"
 msgid "Sent {coin} {ticker} to {name}"
 msgstr "Stuur {coin} {ticker} naar {name}"
 
-#: src/composables/useBtcTransactionInfo.ts:174
-#: src/composables/useTransactionInfo.ts:178
+#: src/composables/useBtcTransactionInfo.ts:178
+#: src/composables/useTransactionInfo.ts:182
 #: src/composables/useUsdcTransactionInfo.ts:132
+#: src/composables/useUsdtTransactionInfo.ts:128
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Verzonden {fromAsset} - Ontvangen {toAsset}"
 
@@ -2448,8 +2458,8 @@ msgstr "Stuur {nim} NIM"
 msgid "Sent {nim} NIM to {name}"
 msgstr "Stuur {nim} NIM naar {name}"
 
-#: src/components/modals/BtcTransactionModal.vue:79
-#: src/components/modals/TransactionModal.vue:95
+#: src/components/modals/BtcTransactionModal.vue:81
+#: src/components/modals/TransactionModal.vue:97
 #: src/components/modals/UsdcTransactionModal.vue:73
 #: src/components/modals/UsdtTransactionModal.vue:69
 msgid "Sent at {dateAndTime}"
@@ -2551,7 +2561,7 @@ msgstr "Overslaan"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:133
 msgid "Small validators"
-msgstr ""
+msgstr "Kleine validators"
 
 #: src/components/modals/BtcSendModal.vue:525
 #: src/components/modals/SendModal.vue:640
@@ -2575,6 +2585,8 @@ msgid ""
 "Spreading the pre-staked NIM across validators helps decentralization."
 "                                    Choose an underdog for another bonus."
 msgstr ""
+"Het verspreiden van de pre-staked NIM over verschillende validators helpt "
+"decentralisatie. Kies een underdog voor een extra bonus."
 
 #: src/components/modals/WelcomeModal.vue:44
 msgid "Stability"
@@ -2590,7 +2602,7 @@ msgstr "Stabiel als USD, begrepen"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:83
 msgid "Stake early to get more points!"
-msgstr ""
+msgstr "Stake vroeg om meer punten te krijgen!"
 
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
@@ -2599,7 +2611,7 @@ msgstr ""
 
 #: src/components/prestaking/ValidatorListItem.vue:25
 msgid "Stake: {validatorStake}%"
-msgstr ""
+msgstr "Stake: {validatorStake}%"
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Staking"
@@ -2638,7 +2650,7 @@ msgstr "Super lage kosten, super snelle betalingen"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/layouts/AccountOverview.vue:186
+#: src/components/layouts/AccountOverview.vue:184
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "BTC {arrowIcon} {ticker} omwisselen"
 
@@ -2673,7 +2685,7 @@ msgstr "Swap is verlopen"
 msgid "Swap more per 30 days."
 msgstr "Meer omwisselen per 30 dagen."
 
-#: src/components/layouts/AccountOverview.vue:114
+#: src/components/layouts/AccountOverview.vue:113
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "NIM {arrowIcon} {ticker} omwisselen"
 
@@ -2693,8 +2705,8 @@ msgstr "Omwisselen niet mogelijk. Je saldo is lager dan de toeslag."
 msgid "Swap successful!"
 msgstr "Swap succesvol!"
 
-#: src/components/modals/BtcTransactionModal.vue:26
-#: src/components/modals/TransactionModal.vue:23
+#: src/components/modals/BtcTransactionModal.vue:27
+#: src/components/modals/TransactionModal.vue:24
 #: src/components/modals/UsdcTransactionModal.vue:24
 #: src/components/modals/UsdtTransactionModal.vue:24
 msgid "Swap to {address}"
@@ -2711,12 +2723,12 @@ msgstr "Swiping Gestures"
 #: src/components/layouts/AddressOverview.vue:103
 #: src/components/layouts/AddressOverview.vue:58
 msgid "Switch to USDC"
-msgstr ""
+msgstr "Switch naar USDC"
 
 #: src/components/layouts/AddressOverview.vue:52
 #: src/components/layouts/AddressOverview.vue:97
 msgid "Switch to USDT"
-msgstr ""
+msgstr "Switch naar USDT"
 
 #: src/components/layouts/Network.vue:118
 msgid "syncing"
@@ -2743,13 +2755,15 @@ msgid "Testnet"
 msgstr "Testnet"
 
 #: src/components/AddressList.vue:198
-#: src/components/layouts/AccountOverview.vue:213
+#: src/components/layouts/AccountOverview.vue:211
 #: src/components/layouts/AddressOverview.vue:114
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
 #: src/components/UsdcAddressInfo.vue:14
+#: src/composables/useBtcTransactionInfo.ts:128
+#: src/composables/useTransactionInfo.ts:141
 msgid "Tether USD"
-msgstr ""
+msgstr "Tether USD"
 
 #: src/components/PolygonWarningFooter.vue:22
 msgid ""
@@ -2768,7 +2782,7 @@ msgstr "De bank verwerkt je transactie."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "De kosten (momenteel {amount}) bepalen het minimumbedrag."
 
-#: src/components/swap/SwapModal.vue:1065 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1088 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "De kosten bepalen het minimumbedrag."
@@ -2791,6 +2805,8 @@ msgid ""
 "The migration will happen automatically around November 19, no action "
 "required."
 msgstr ""
+"De migratie vindt automatisch plaats rond 19 november. Je hoeft zelf niets "
+"te doen."
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -2965,11 +2981,11 @@ msgstr "Tijdsspanne"
 msgid "To {exchange}"
 msgstr "Naar {exchange}"
 
-#: src/components/layouts/AccountOverview.vue:119
-#: src/components/layouts/AccountOverview.vue:191
+#: src/components/layouts/AccountOverview.vue:118
+#: src/components/layouts/AccountOverview.vue:189
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
-msgstr ""
+msgstr "Om te swappen met USDC/USDT, kies een stablecoin."
 
 #: src/components/AccountBalance.vue:5
 msgid "Total Balance"
@@ -2983,15 +2999,15 @@ msgstr "Totale kosten"
 msgid "Trade NIM and BTC"
 msgstr "Verhandel NIM en BTC"
 
-#: src/components/modals/BtcTransactionModal.vue:40
-#: src/components/modals/TransactionModal.vue:53
+#: src/components/modals/BtcTransactionModal.vue:42
+#: src/components/modals/TransactionModal.vue:55
 #: src/components/modals/UsdcTransactionModal.vue:40
 #: src/components/modals/UsdtTransactionModal.vue:36
 msgid "Transaction from {address}"
 msgstr "Transacties van {address}"
 
-#: src/components/modals/BtcTransactionModal.vue:46
-#: src/components/modals/TransactionModal.vue:59
+#: src/components/modals/BtcTransactionModal.vue:48
+#: src/components/modals/TransactionModal.vue:61
 #: src/components/modals/UsdcTransactionModal.vue:46
 #: src/components/modals/UsdtTransactionModal.vue:42
 msgid "Transaction to {address}"
@@ -2999,7 +3015,7 @@ msgstr "Transacties naar {address}"
 
 #: src/components/modals/WelcomePreStakingModal.vue:13
 msgid "Transactions are almost instant"
-msgstr ""
+msgstr "Transacties zijn vrijwel direct"
 
 #: src/components/modals/BtcSendModal.vue:112
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
@@ -3035,17 +3051,17 @@ msgstr "Transactie tijd"
 msgid "Type to search..."
 msgstr "Typ om te zoeken..."
 
-#: src/composables/useTransactionInfo.ts:151
+#: src/composables/useTransactionInfo.ts:155
 msgid "Unclaimed Cashlink"
 msgstr "Niet geclaimde Cashlink"
 
 #: src/components/prestaking/ValidatorListItem.vue:30
 msgid "Underdog"
-msgstr ""
+msgstr "Underdog"
 
 #: src/components/prestaking/PrestakingWelcomePage.vue:128
 msgid "UNDERDOG MULTIPLIERS"
-msgstr ""
+msgstr "UNDERDOG VERDUBBELAARS"
 
 #: src/lib/GoCrypto.ts:225
 msgid "Unexpected GoCrypto error"
@@ -3063,8 +3079,8 @@ msgstr ""
 msgid "unknown"
 msgstr "onbekend"
 
-#: src/components/modals/BtcTransactionModal.vue:104
-#: src/components/modals/BtcTransactionModal.vue:109
+#: src/components/modals/BtcTransactionModal.vue:105
+#: src/components/modals/BtcTransactionModal.vue:110
 #: src/components/modals/BtcTransactionModal.vue:159
 #: src/components/modals/BtcTransactionModal.vue:164
 msgid "Unknown"
@@ -3097,7 +3113,7 @@ msgid "Update now"
 msgstr "Update nu"
 
 #: src/components/AddressList.vue:188
-#: src/components/layouts/AccountOverview.vue:210
+#: src/components/layouts/AccountOverview.vue:208
 #: src/components/layouts/AddressOverview.vue:112
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
@@ -3156,6 +3172,8 @@ msgstr "Wallet Uitbetaling"
 #: src/components/modals/UsdtAddedModal.vue:8
 msgid "We added support for USDT, which you can now use instead of USDC."
 msgstr ""
+"We hebben ondersteuning toegevoegd voor USDT, deze kan nu gebruikt worden in"
+" plaats van USDC."
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -3234,7 +3252,7 @@ msgstr "Je gebruikt een Legacy Account"
 
 #: src/components/modals/UsdtAddedModal.vue:4
 msgid "You can now choose{linebreak}between USDC and USDT"
-msgstr ""
+msgstr "Je kan nu kiezen{linebreak}tussen USDC en USDT"
 
 #: src/components/PolygonWarningFooter.vue:9
 msgid "You can receive from Polygon {ticker} addresses only!"

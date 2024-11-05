@@ -539,6 +539,7 @@ export default defineComponent({
                                 : SwapAsset.USDC,
                             ...relayRequest,
                             amount: transaction.value.value - fee.toNumber(),
+                            token: transaction.value.token || config.polygon.usdc_bridged.tokenContract,
                         },
                     };
 

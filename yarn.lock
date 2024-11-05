@@ -1491,13 +1491,6 @@
   resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.1.tgz#97cb5b43b257c7f6f6808ef603e9bf686377241f"
   integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
 
-"@nimiq/electrum-client@git+https://github.com/nimiq/electrum-client.git#build":
-  version "0.2.2"
-  uid "4f706a0acb13b8e8abdf5be68cfc036eb102e3fc"
-  resolved "git+https://github.com/nimiq/electrum-client.git#4f706a0acb13b8e8abdf5be68cfc036eb102e3fc"
-  dependencies:
-    bitcoinjs-lib "^5.1.10"
-
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
   resolved "https://github.com/nimiq/electrum-client#4f706a0acb13b8e8abdf5be68cfc036eb102e3fc"
@@ -1509,9 +1502,9 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.2.tgz#ae2cbe5b41359875bece9ce0957209ca1b486d21"
   integrity sha512-rPy3DhWlqTOj4k9/YMS2mizjR1rLsQzqWzMnJ+xDEGprgb6/jhDBZs/CW+jONccRQWrvuyBYTrrxdLgn3imKjQ==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?73c31757aa9e93912f7540a272914ecdb51a23ad":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?06769aa130f3778254613205d523f29c05630aae":
   version "1.8.0"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?73c31757aa9e93912f7540a272914ecdb51a23ad#d49a63372ce17760fbc37781102db6300c0e832d"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?06769aa130f3778254613205d523f29c05630aae#855f1d77e57671d2ba389e32dcfb5b57b8299226"
   dependencies:
     "@nimiq/core-web" "^1.6.1"
     "@nimiq/fastspot-api" "^1.10.2"

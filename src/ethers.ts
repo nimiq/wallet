@@ -1641,9 +1641,8 @@ export async function sendTransaction(
     const isHtlcRefundTx = relayRequest.request.data.startsWith(
         relayRequest.request.to === config.polygon.usdc.htlcContract
             ? (await getUsdcHtlcContract()).interface.getSighash('refund')
-            : relayRequest.request.to === config.polygon.usdc_bridged.htlcContract
-                ? (await getUsdcBridgedHtlcContract()).interface.getSighash('refund')
-                : (await getUsdtBridgedHtlcContract()).interface.getSighash('refund'),
+            // The contract and sighash is the same for bridged USDC and bridged USDT
+            : (await getUsdtBridgedHtlcContract()).interface.getSighash('refund'),
     );
 
     const isIncomingTx = isHtlcRedeemTx || isHtlcRefundTx;

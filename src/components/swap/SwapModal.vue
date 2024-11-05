@@ -2453,6 +2453,7 @@ export default defineComponent({
                     ...relayRequest,
                     amount: swap.value!.to.amount - swap.value!.to.fee,
                     senderLabel: 'Swap HTLC',
+                    token: config.polygon.usdt_bridged.tokenContract,
                 });
             });
 

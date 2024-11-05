@@ -508,6 +508,7 @@ export default defineComponent({
                             type: SwapAsset.USDT_MATIC,
                             ...relayRequest,
                             amount: transaction.value.value - fee.toNumber(),
+                            token: config.polygon.usdt_bridged.tokenContract,
                         },
                     };
 

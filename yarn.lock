@@ -1481,15 +1481,10 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core-web@1.5.8":
-  version "1.5.8"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.5.8.tgz#da8abef84c6d293cbb9ca495a77f08daa08886b9"
-  integrity sha512-MNpFbGZetz2eZcHtJVa5tpmLjPf65mTcJBRQkOHS8kWE+f+Z++hdnwWUBQCEAph4oC6bsE5JSuU7VpwcogN7+w==
-
-"@nimiq/core-web@^1.5.8", "@nimiq/core-web@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.1.tgz#97cb5b43b257c7f6f6808ef603e9bf686377241f"
-  integrity sha512-WYw2brIxUXa/SQ0JRp0RXWQKzBFhROXrEjF9Eh+tRlC+NrI2ObwRQkwJCbP2qmPtYldIimfyECmsDVHFoyLXjQ==
+"@nimiq/core-web@1.6.3", "@nimiq/core-web@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.3.tgz#b4a8f8c5d289850b20cb4009766af5b1cafd6e20"
+  integrity sha512-D6RrJi2cRU81odNpmwczhUBvOQ47+/Db1svrTkH/G4xNd72lr9MS5nMdfpUz+rBRnSprljrzW2mdUtZ6W9bPaA==
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
@@ -1502,11 +1497,12 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.2.tgz#ae2cbe5b41359875bece9ce0957209ca1b486d21"
   integrity sha512-rPy3DhWlqTOj4k9/YMS2mizjR1rLsQzqWzMnJ+xDEGprgb6/jhDBZs/CW+jONccRQWrvuyBYTrrxdLgn3imKjQ==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?06769aa130f3778254613205d523f29c05630aae":
-  version "1.8.0"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?06769aa130f3778254613205d523f29c05630aae#855f1d77e57671d2ba389e32dcfb5b57b8299226"
+"@nimiq/hub-api@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.9.0.tgz#48bf5de19581d83249027b1bbb317ff20fe3d6dd"
+  integrity sha512-AKNHYEAiBKoqtfAspNk5qdq6pp1E0mG+6zQLr3r/avNKPRkntXLto//UYjgv+YcY5RA5Q6Dy3spwGxa+9Xjh9g==
   dependencies:
-    "@nimiq/core-web" "^1.6.1"
+    "@nimiq/core-web" "^1.6.3"
     "@nimiq/fastspot-api" "^1.10.2"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
@@ -1520,12 +1516,12 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.4.1.tgz#f24aa54be6a20d12a20206b1c9585a32bb4cab17"
-  integrity sha512-wWffPQCJQLGYamu1RTO1LwX5XjYjFHOc1C3KttXzFUSJvMlAjU+9/H6cBKycqnbHyO6OSN2R+bBLWKIcpS6ccA==
+"@nimiq/libswap@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.4.2.tgz#a50b038df7ce3c352e365c41db2873ee5c3ce8f2"
+  integrity sha512-+H/3ev6vazm7UNvZRakdGA+wFyfcv9jT3LwfPGnRmiUeVHFuEOb2Zgsycac3VVSCCnfAGL6pBw2HtUyQx3tK2A==
   dependencies:
-    "@nimiq/core-web" "^1.5.8"
+    "@nimiq/core-web" "^1.6.3"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
     "@nimiq/oasis-api" "^1.0.1"
     ethers "^5.7.2"

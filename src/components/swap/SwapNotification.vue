@@ -65,7 +65,7 @@ import {
 } from '@nimiq/oasis-api';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
-import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/UsdcAssetAdapter';
+import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
 import { captureException } from '@sentry/vue';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
@@ -79,12 +79,14 @@ import { getServerTime } from '../../lib/Time';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import {
     getUsdcHtlcContract,
+    getUsdtBridgedHtlcContract,
     getPolygonBlockNumber,
     getPolygonClient,
     receiptToTransaction,
     sendTransaction as sendPolygonTransaction,
 } from '../../ethers';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
+import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../../stores/UsdtTransactions';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 
 enum SwapError {
@@ -152,8 +154,11 @@ export default defineComponent({
                     }
                     case SwapAsset.BTC:
                     case SwapAsset.USDC_MATIC:
+                    case SwapAsset.USDT_MATIC:
                     case SwapAsset.EUR: {
-                        const { timeout } = contract as Contract<SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.EUR>;
+                        const { timeout } = contract as Contract<
+                            SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.USDT_MATIC | SwapAsset.EUR
+                        >;
                         if (timeout <= timestamp) return true;
                         remainingTimes.push(timeout - timestamp);
                         break;
@@ -228,7 +233,7 @@ export default defineComponent({
                         return consensusErrorMsg('Bitcoin');
                     }
                     if (
-                        swap.to.asset === SwapAsset.USDC_MATIC
+                        (swap.to.asset === SwapAsset.USDC_MATIC || swap.to.asset === SwapAsset.USDT_MATIC)
                         && usePolygonNetworkStore().state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
@@ -243,7 +248,7 @@ export default defineComponent({
                         return consensusErrorMsg('Bitcoin');
                     }
                     if (
-                        swap.from.asset === SwapAsset.USDC_MATIC
+                        (swap.from.asset === SwapAsset.USDC_MATIC || swap.from.asset === SwapAsset.USDT_MATIC)
                         && usePolygonNetworkStore().state.consensus !== 'established'
                     ) {
                         return consensusErrorMsg('Polygon');
@@ -263,8 +268,9 @@ export default defineComponent({
             switch (asset) {
                 case SwapAsset.NIM: return getNetworkClient() as Promise<Client<SwapAsset.NIM>>;
                 case SwapAsset.BTC: return getElectrumClient();
-                case SwapAsset.USDC_MATIC: {
-                    const { timeout } = swap.contracts[SwapAsset.USDC_MATIC]!;
+                case SwapAsset.USDC_MATIC:
+                case SwapAsset.USDT_MATIC: {
+                    const { timeout } = swap.contracts[asset]!;
                     const secondsUntilTimeout = timeout - Math.floor(Date.now() / 1e3);
                     const blocksUntilTimeout = Math.ceil((secondsUntilTimeout / 60) * POLYGON_BLOCKS_PER_MINUTE);
 
@@ -274,7 +280,9 @@ export default defineComponent({
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
                     return {
-                        htlcContract: await getUsdcHtlcContract(),
+                        htlcContract: asset === SwapAsset.USDC_MATIC
+                            ? await getUsdcHtlcContract()
+                            : await getUsdtBridgedHtlcContract(),
                         currentBlock: () => getPolygonBlockNumber(),
                         startBlock: blockHeightAtStart,
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
@@ -291,8 +299,8 @@ export default defineComponent({
         // The listener should run in the background, even if the transaction-sending itself fails and
         // `processSwap` thus throws. To keep the same listener across retries, it is scoped outside the
         // `processSwap` function.
-        let usdcListener: Promise<PolygonEvent<PolygonEventType>> | undefined;
-        let isUsdcListenerResolved = false;
+        let polygonListener: Promise<PolygonEvent<PolygonEventType>> | undefined;
+        let isPolygonListenerResolved = false;
 
         async function processSwap() {
             if (!activeSwap.value || !activeSwap.value.id || !activeSwap.value.from) {
@@ -308,6 +316,7 @@ export default defineComponent({
             const swapsNim = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.NIM);
             const swapsBtc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.BTC);
             const swapsUsdc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.USDC_MATIC);
+            const swapsUsdt = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.USDT_MATIC);
             // const swapsEur = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.EUR);
 
             // Await Nimiq and Bitcoin consensus
@@ -319,7 +328,7 @@ export default defineComponent({
                 const electrum = await getElectrumClient();
                 await electrum.waitForConsensusEstablished();
             }
-            if (swapsUsdc && usePolygonNetworkStore().state.consensus !== 'established') {
+            if ((swapsUsdc || swapsUsdt) && usePolygonNetworkStore().state.consensus !== 'established') {
                 await getPolygonClient();
             }
 
@@ -369,7 +378,7 @@ export default defineComponent({
 
                     const remoteFundingTx = await swapHandler.awaitIncoming(async (tx) => {
                         if ('getBlock' in tx) {
-                            // Unreachable, as UsdcAssetHandler does not fire onUpdate
+                            // Unreachable, as Erc20AssetHandler does not fire onUpdate
                         } else {
                             updateSwap({
                                 remoteFundingTx: tx,
@@ -379,7 +388,10 @@ export default defineComponent({
 
                     if ('getBlock' in remoteFundingTx) {
                         const receipt = await remoteFundingTx.getTransactionReceipt();
-                        const polygonTx = await receiptToTransaction(config.polygon.usdc.tokenContract, receipt);
+                        const tokenAddress = activeSwap.value!.to.asset === SwapAsset.USDC_MATIC
+                            ? config.polygon.usdc.tokenContract
+                            : config.polygon.usdt_bridged.tokenContract;
+                        const polygonTx = await receiptToTransaction(tokenAddress, receipt);
                         updateSwap({
                             state: SwapState.CREATE_OUTGOING,
                             stateEnteredAt: Date.now(),
@@ -452,11 +464,11 @@ export default defineComponent({
                     } else if (activeSwap.value!.from.asset === SwapAsset.USDC_MATIC) {
                         try {
                             // Start background listener
-                            usdcListener = usdcListener || swapHandler.awaitOutgoing((/* event */) => {
+                            polygonListener = polygonListener || swapHandler.awaitOutgoing((/* event */) => {
                                 // const openEvent = event as PolygonEvent<PolygonEventType.OPEN>;
                                 // ...
                             }).then((tx) => {
-                                isUsdcListenerResolved = true;
+                                isPolygonListenerResolved = true;
                                 currentError.value = null;
                                 return tx as PolygonEvent<PolygonEventType.OPEN>;
                             });
@@ -473,8 +485,8 @@ export default defineComponent({
                                 );
                                 currentError.value = null;
                             } catch (error) {
-                                if (isUsdcListenerResolved) {
-                                    const event = await usdcListener;
+                                if (isPolygonListenerResolved) {
+                                    const event = await polygonListener;
                                     fundingTx = await receiptToTransaction(
                                         config.polygon.usdc.tokenContract,
                                         await event.getTransactionReceipt(),
@@ -488,7 +500,62 @@ export default defineComponent({
                             // We need to add it to the store ourselves.
                             useUsdcTransactionsStore().addTransactions([fundingTx]);
 
-                            await usdcListener;
+                            await polygonListener;
+
+                            updateSwap({
+                                state: SwapState.AWAIT_SECRET,
+                                stateEnteredAt: Date.now(),
+                                fundingTx,
+                            });
+                        } catch (error: any) {
+                            if (error.message === SwapError.EXPIRED) return;
+                            if (error.message === SwapError.DELETED) return;
+
+                            currentError.value = error.message;
+                            setTimeout(processSwap, 2000); // 2 seconds
+                            cleanUp();
+                            return;
+                        }
+                    } else if (activeSwap.value!.from.asset === SwapAsset.USDT_MATIC) {
+                        try {
+                            // Start background listener
+                            polygonListener = polygonListener || swapHandler.awaitOutgoing((/* event */) => {
+                                // const openEvent = event as PolygonEvent<PolygonEventType.OPEN>;
+                                // ...
+                            }).then((tx) => {
+                                isPolygonListenerResolved = true;
+                                currentError.value = null;
+                                return tx as PolygonEvent<PolygonEventType.OPEN>;
+                            });
+
+                            const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
+                            const { relayData, ...relayRequest } = request;
+
+                            let fundingTx: UsdtTransaction;
+                            try {
+                                fundingTx = await sendPolygonTransaction(
+                                    { request: relayRequest as ForwardRequest, relayData },
+                                    signature,
+                                    relayUrl,
+                                );
+                                currentError.value = null;
+                            } catch (error) {
+                                if (isPolygonListenerResolved) {
+                                    const event = await polygonListener;
+                                    fundingTx = await receiptToTransaction(
+                                        config.polygon.usdt_bridged.tokenContract,
+                                        await event.getTransactionReceipt(),
+                                    );
+                                } else {
+                                    throw error;
+                                }
+                            }
+
+                            // This is an outgoing transfer, so it won't be detected automatically.
+                            // We need to add it to the store ourselves.
+                            useUsdtTransactionsStore().addTransactions([fundingTx]);
+
+                            await polygonListener;
 
                             updateSwap({
                                 state: SwapState.AWAIT_SECRET,
@@ -582,8 +649,8 @@ export default defineComponent({
                     if (activeSwap.value.to.asset === SwapAsset.USDC_MATIC) {
                         try {
                             // Start background listener
-                            usdcListener = usdcListener || swapHandler.awaitIncomingConfirmation().then((tx) => {
-                                isUsdcListenerResolved = true;
+                            polygonListener = polygonListener || swapHandler.awaitIncomingConfirmation().then((tx) => {
+                                isPolygonListenerResolved = true;
                                 currentError.value = null;
                                 return tx as PolygonEvent<PolygonEventType.REDEEM>;
                             });
@@ -605,8 +672,8 @@ export default defineComponent({
                                 );
                                 currentError.value = null;
                             } catch (error) {
-                                if (isUsdcListenerResolved) {
-                                    const event = await usdcListener;
+                                if (isPolygonListenerResolved) {
+                                    const event = await polygonListener;
                                     settlementTx = await receiptToTransaction(
                                         config.polygon.usdc.tokenContract,
                                         await event.getTransactionReceipt(),
@@ -616,7 +683,11 @@ export default defineComponent({
                                 }
                             }
 
-                            await usdcListener;
+                            await polygonListener;
+
+                            // This is an incoming transfer, so it should be detected automatically.
+                            // But in my testing this did not work reliably, so we add it to the store ourselves.
+                            useUsdcTransactionsStore().addTransactions([settlementTx]);
 
                             updateSwap({
                                 state: SwapState.COMPLETE,
@@ -631,6 +702,67 @@ export default defineComponent({
                             currentError.value = error.message;
                             updateSwap({
                                 errorAction: SwapErrorAction.USDC_RESIGN_REDEEM,
+                            });
+                            setTimeout(processSwap, 2000); // 2 seconds
+                            cleanUp();
+                            return;
+                        }
+                    } else if (activeSwap.value.to.asset === SwapAsset.USDT_MATIC) {
+                        try {
+                            // Start background listener
+                            polygonListener = polygonListener || swapHandler.awaitIncomingConfirmation().then((tx) => {
+                                isPolygonListenerResolved = true;
+                                currentError.value = null;
+                                return tx as PolygonEvent<PolygonEventType.REDEEM>;
+                            });
+
+                            const {
+                                request,
+                                signature,
+                                relayUrl,
+                            } = JSON.parse(activeSwap.value.settlementSerializedTx!);
+                            const { relayData, ...relayRequest } = request;
+
+                            let settlementTx: UsdtTransaction;
+                            try {
+                                settlementTx = await sendPolygonTransaction(
+                                    { request: relayRequest as ForwardRequest, relayData },
+                                    signature,
+                                    relayUrl,
+                                    `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
+                                );
+                                currentError.value = null;
+                            } catch (error) {
+                                if (isPolygonListenerResolved) {
+                                    const event = await polygonListener;
+                                    settlementTx = await receiptToTransaction(
+                                        config.polygon.usdt_bridged.tokenContract,
+                                        await event.getTransactionReceipt(),
+                                    );
+                                } else {
+                                    throw error;
+                                }
+                            }
+
+                            await polygonListener;
+
+                            // This is an incoming transfer, so it should be detected automatically.
+                            // But in my testing this did not work reliably, so we add it to the store ourselves.
+                            useUsdtTransactionsStore().addTransactions([settlementTx]);
+
+                            updateSwap({
+                                state: SwapState.COMPLETE,
+                                stateEnteredAt: Date.now(),
+                                settlementTx,
+                                errorAction: undefined,
+                            });
+                        } catch (error: any) {
+                            if (error.message === SwapError.EXPIRED) return;
+                            if (error.message === SwapError.DELETED) return;
+
+                            currentError.value = error.message;
+                            updateSwap({
+                                errorAction: SwapErrorAction.USDT_RESIGN_REDEEM,
                             });
                             setTimeout(processSwap, 2000); // 2 seconds
                             cleanUp();
@@ -796,14 +928,16 @@ export default defineComponent({
                 SwapAsset.NIM,
                 SwapAsset.BTC,
                 SwapAsset.USDC_MATIC,
+                SwapAsset.USDT_MATIC,
             ];
 
             const fiatCurrencies = [
                 SwapAsset.EUR,
             ];
 
-            const fromAsset = activeSwap.value.from.asset;
-            const toAsset = activeSwap.value.to.asset;
+            // Convert from Fastspot SwapAsset to LibSwap SwapAsset
+            const fromAsset = activeSwap.value.from.asset as SwapAsset;
+            const toAsset = activeSwap.value.to.asset as SwapAsset;
 
             if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
                 context.root.$router.push('/swap');

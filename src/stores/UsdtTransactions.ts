@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-// import { SwapAsset } from '@nimiq/fastspot-api';
+import { SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import { useFiatStore } from './Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
@@ -228,63 +228,63 @@ export const useUsdtTransactionsStore = createStore({
 // Note: this method should not modify the transaction itself or the transaction store, to avoid race conditions with
 // other methods that do so.
 async function detectSwap(transaction: Transaction, knownTransactions: Transaction[]) {
-    // const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
-    // if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
-    // const asset = SwapAsset.USDT;
+    const { state: swaps$, addFundingData, addSettlementData, detectSwapFiatCounterpart } = useSwapsStore();
+    if (swaps$.swapByTransaction[transaction.transactionHash]) return; // already known
+    const asset = SwapAsset.USDT_MATIC;
 
-    // // HTLC Creation
-    // if (transaction.event?.name === 'Open') {
-    //     const hashRoot = transaction.event.hash.substring(2);
-    //     addFundingData(hashRoot, {
-    //         asset,
-    //         transactionHash: transaction.transactionHash,
-    //         htlc: {
-    //             address: transaction.event.id,
-    //             refundAddress: transaction.sender,
-    //             redeemAddress: transaction.event.recipient,
-    //             timeoutTimestamp: transaction.event.timeout,
-    //         },
-    //     });
+    // HTLC Creation
+    if (transaction.event?.name === 'Open') {
+        const hashRoot = transaction.event.hash.substring(2);
+        addFundingData(hashRoot, {
+            asset,
+            transactionHash: transaction.transactionHash,
+            htlc: {
+                address: transaction.event.id,
+                refundAddress: transaction.sender,
+                redeemAddress: transaction.event.recipient,
+                timeoutTimestamp: transaction.event.timeout,
+            },
+        });
 
-    //     await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'settlement', asset);
-    // }
+        await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'settlement', asset);
+    }
 
-    // // HTLC Refunding
-    // if (transaction.event?.name === 'Refund') {
-    //     const swapId = transaction.event.id;
-    //     // Find funding transaction
-    //     const selector = (testedTx: Transaction) =>
-    //         testedTx.event?.name === 'Open' && testedTx.event.id === swapId;
+    // HTLC Refunding
+    if (transaction.event?.name === 'Refund') {
+        const swapId = transaction.event.id;
+        // Find funding transaction
+        const selector = (testedTx: Transaction) =>
+            testedTx.event?.name === 'Open' && testedTx.event.id === swapId;
 
-    //     // First search known transactions
-    //     const fundingTx = knownTransactions.find(selector);
+        // First search known transactions
+        const fundingTx = knownTransactions.find(selector);
 
-    //     // Then get funding transaction from the blockchain
-    //     if (!fundingTx) {
-    //         // TODO: Find Open event for transaction.event!.id
-    //         // const client = await getPolygonClient();
-    //         // const chainTxs = await client.getTransactionsByAddress(transaction.sender);
-    //         // fundingTx = chainTxs.map((transaction) => transaction.toPlain()).find(selector);
-    //     }
+        // Then get funding transaction from the blockchain
+        if (!fundingTx) {
+            // TODO: Find Open event for transaction.event!.id
+            // const client = await getPolygonClient();
+            // const chainTxs = await client.getTransactionsByAddress(transaction.sender);
+            // fundingTx = chainTxs.map((transaction) => transaction.toPlain()).find(selector);
+        }
 
-    //     if (fundingTx) {
-    //         const hashRoot = (fundingTx.event as HtlcOpenEvent).hash.substring(2);
-    //         addSettlementData(hashRoot, {
-    //             asset,
-    //             transactionHash: transaction.transactionHash,
-    //         });
-    //     }
-    // }
+        if (fundingTx) {
+            const hashRoot = (fundingTx.event as HtlcOpenEvent).hash.substring(2);
+            addSettlementData(hashRoot, {
+                asset,
+                transactionHash: transaction.transactionHash,
+            });
+        }
+    }
 
-    // // HTLC Settlement
-    // if (transaction.event?.name === 'Redeem') {
-    //     const secret = transaction.event.secret.substring(2);
-    //     const hashRoot = Nimiq.Hash.sha256(Nimiq.BufferUtils.fromHex(secret)).toHex();
-    //     addSettlementData(hashRoot, {
-    //         asset,
-    //         transactionHash: transaction.transactionHash,
-    //     });
+    // HTLC Settlement
+    if (transaction.event?.name === 'Redeem') {
+        const secret = transaction.event.secret.substring(2);
+        const hashRoot = Nimiq.Hash.sha256(Nimiq.BufferUtils.fromHex(secret)).toHex();
+        addSettlementData(hashRoot, {
+            asset,
+            transactionHash: transaction.transactionHash,
+        });
 
-    //     await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'funding', asset);
-    // }
+        await detectSwapFiatCounterpart(transaction.event.id.substring(2), hashRoot, 'funding', asset);
+    }
 }

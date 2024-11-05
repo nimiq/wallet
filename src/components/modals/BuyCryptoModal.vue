@@ -313,6 +313,7 @@ import {
     cancelSwap,
     getSwap,
     Swap,
+    Contract,
 } from '@nimiq/fastspot-api';
 import {
     getHtlc,
@@ -741,7 +742,8 @@ export default defineComponent({
             let oasisHtlc: OasisHtlc;
             try {
                 // TODO: Retry getting the HTLC if first time fails
-                oasisHtlc = await getHtlc(confirmedSwap.contracts[SwapAsset.EUR]!.htlc.address);
+                const contract = confirmedSwap.contracts[SwapAsset.EUR] as Contract<SwapAsset.EUR>;
+                oasisHtlc = await getHtlc(contract.htlc.address);
                 if (oasisHtlc.status !== HtlcStatus.PENDING) {
                     throw new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
                 }
@@ -883,7 +885,8 @@ export default defineComponent({
         function onPaid() {
             if (!swap.value!.fundingInstructions || swap.value!.fundingInstructions.type !== 'sepa') {
                 // We are in a test environment
-                sandboxMockClearHtlc(swap.value!.contracts.EUR!.htlc.address);
+                const contract = swap.value!.contracts[SwapAsset.EUR] as Contract<SwapAsset.EUR>;
+                sandboxMockClearHtlc(contract.htlc.address);
             }
 
             if (!swap.value!.stateEnteredAt) {

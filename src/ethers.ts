@@ -1361,6 +1361,7 @@ type ContractMethods =
     | 'transferWithApproval'
     | 'open'
     | 'openWithPermit'
+    | 'openWithApproval'
     | 'redeemWithSecretInData'
     | 'refund'
     // | 'swap'
@@ -1388,6 +1389,7 @@ export async function calculateFee(
         transferWithApproval: 1220,
         open: 1220,
         openWithPermit: 1348, // TODO: Recheck this value
+        openWithApproval: 1348, // TODO: Recheck this value
         redeemWithSecretInData: 1092,
         refund: 1092,
         // swap: 0,
@@ -1639,9 +1641,8 @@ export async function sendTransaction(
     const isHtlcRefundTx = relayRequest.request.data.startsWith(
         relayRequest.request.to === config.polygon.usdc.htlcContract
             ? (await getUsdcHtlcContract()).interface.getSighash('refund')
-            : relayRequest.request.to === config.polygon.usdc_bridged.htlcContract
-                ? (await getUsdcBridgedHtlcContract()).interface.getSighash('refund')
-                : (await getUsdtBridgedHtlcContract()).interface.getSighash('refund'),
+            // The contract and sighash is the same for bridged USDC and bridged USDT
+            : (await getUsdtBridgedHtlcContract()).interface.getSighash('refund'),
     );
 
     const isIncomingTx = isHtlcRedeemTx || isHtlcRefundTx;

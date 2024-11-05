@@ -36,7 +36,6 @@ export async function getNetworkClient() {
 async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
     const client = await getNetworkClient();
 
-    // @ts-expect-error This method was added in v1.5.8, but not added to type declarations
     await client.resetConsensus();
 
     // Re-add deep listeners to new consensus

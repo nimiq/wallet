@@ -29,7 +29,7 @@
             <UsdcIcon v-else-if="swapData
                 && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
             <UsdtIcon v-else-if="swapData
-                && (swapData.asset === SwapAsset.USDT)"/>
+                && (swapData.asset === SwapAsset.USDT_MATIC)"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
             <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
             <SwapSmallIcon/>

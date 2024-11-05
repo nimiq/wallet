@@ -137,6 +137,10 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
                 return i18n.t('USD Coin') as string;
             }
 
+            if (swapData.value.asset === SwapAsset.USDT_MATIC) {
+                return i18n.t('Tether USD') as string;
+            }
+
             if (swapData.value.asset === SwapAsset.EUR) {
                 return swapData.value.bankLabel || i18n.t('Bank Account') as string;
             }

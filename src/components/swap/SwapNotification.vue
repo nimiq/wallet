@@ -479,6 +479,7 @@ export default defineComponent({
                             let fundingTx: UsdcTransaction;
                             try {
                                 fundingTx = await sendPolygonTransaction(
+                                    config.polygon.usdc.tokenContract,
                                     { request: relayRequest as ForwardRequest, relayData },
                                     signature,
                                     relayUrl,
@@ -534,6 +535,7 @@ export default defineComponent({
                             let fundingTx: UsdtTransaction;
                             try {
                                 fundingTx = await sendPolygonTransaction(
+                                    config.polygon.usdt_bridged.tokenContract,
                                     { request: relayRequest as ForwardRequest, relayData },
                                     signature,
                                     relayUrl,
@@ -665,6 +667,7 @@ export default defineComponent({
                             let settlementTx: UsdcTransaction;
                             try {
                                 settlementTx = await sendPolygonTransaction(
+                                    config.polygon.usdc.tokenContract,
                                     { request: relayRequest as ForwardRequest, relayData },
                                     signature,
                                     relayUrl,
@@ -726,6 +729,7 @@ export default defineComponent({
                             let settlementTx: UsdtTransaction;
                             try {
                                 settlementTx = await sendPolygonTransaction(
+                                    config.polygon.usdt_bridged.tokenContract,
                                     { request: relayRequest as ForwardRequest, relayData },
                                     signature,
                                     relayUrl,

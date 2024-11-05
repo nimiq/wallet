@@ -1586,6 +1586,7 @@ export async function createTransactionRequest(
 }
 
 export async function sendTransaction(
+    token: string,
     relayRequest: RelayRequest,
     signature: string,
     relayUrl: string,
@@ -1627,14 +1628,6 @@ export async function sendTransaction(
         // eslint-disable-next-line no-await-in-loop
         await new Promise((resolve) => { setTimeout(resolve, 1000); });
     }
-
-    const token = relayRequest.request.to === config.polygon.usdc.transferContract
-        || relayRequest.request.to === config.polygon.usdc.htlcContract
-        ? config.polygon.usdc.tokenContract
-        : relayRequest.request.to === config.polygon.usdc_bridged.htlcContract
-            || relayRequest.request.to === config.polygon.usdcConversion.swapContract
-            ? config.polygon.usdc_bridged.tokenContract
-            : config.polygon.usdt_bridged.tokenContract;
 
     // If `approvalData` is present, this is a redeem transaction
     const isHtlcRedeemTx = approvalData.length > 2;

@@ -2174,8 +2174,8 @@ msgstr "Для продолжения обновите страницу."
 msgid "Refund"
 msgstr "Возврат"
 
-#: src/components/modals/UsdcTransactionModal.vue:565
-#: src/components/modals/UsdtTransactionModal.vue:534
+#: src/components/modals/UsdcTransactionModal.vue:566
+#: src/components/modals/UsdtTransactionModal.vue:535
 msgid "Refund failed: "
 msgstr ""
 

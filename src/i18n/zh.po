@@ -2104,8 +2104,8 @@ msgstr "刷新页面以继续"
 msgid "Refund"
 msgstr "退款"
 
-#: src/components/modals/UsdcTransactionModal.vue:565
-#: src/components/modals/UsdtTransactionModal.vue:534
+#: src/components/modals/UsdcTransactionModal.vue:566
+#: src/components/modals/UsdtTransactionModal.vue:535
 msgid "Refund failed: "
 msgstr ""
 

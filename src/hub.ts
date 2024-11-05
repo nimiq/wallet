@@ -756,6 +756,7 @@ export async function sendPolygonTransaction(
 
     const { relayData, ...relayRequest } = signedTransaction.message;
     return sendPolygonTx(
+        tokenAddress,
         { request: relayRequest as ForwardRequest, relayData },
         signedTransaction.signature,
         relayUrl!,

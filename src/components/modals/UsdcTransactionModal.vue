@@ -554,6 +554,7 @@ export default defineComponent({
                 if (!tx) return;
                 const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
                 const plainTx = await sendTransaction(
+                    transaction.value.token || config.polygon.usdc_bridged.tokenContract,
                     { request: relayRequest as ForwardRequest, relayData },
                     (tx as SignedPolygonTransaction).signature,
                     relayUrl!,

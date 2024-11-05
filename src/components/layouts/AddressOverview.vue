@@ -555,6 +555,7 @@ export default defineComponent({
 
             const { relayData, ...relayRequest } = signedTransaction.message;
             const tx = await sendPolygonTransaction(
+                config.polygon.usdc_bridged.tokenContract,
                 { request: relayRequest as ForwardRequest, relayData },
                 signedTransaction.signature,
                 relayUrl!,

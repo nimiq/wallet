@@ -4,12 +4,12 @@
 # Daniel, 2022
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2023
 # Matheo <matheo@nimiq.com>, 2024
-# Robinson BARAIS, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
+# Robinson BARAIS, 2024
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2024\n"
+"Last-Translator: Robinson BARAIS, 2024\n"
 "Language-Team: French (https://app.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -1209,6 +1209,8 @@ msgstr ""
 #: src/components/swap/SwapModal.vue:1001
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
+"Échec de la récupération des frais de Polygon. Nouvel essai en cours... "
+"(Erreur : {message})"
 
 #: src/components/TestnetFaucet.vue:140
 msgid "Faucet error - please try again."

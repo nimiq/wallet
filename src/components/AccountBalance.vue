@@ -37,10 +37,12 @@ import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 import { CryptoCurrency } from '../lib/Constants';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { usePrestakingStore } from '../stores/Prestaking';
 
 export default defineComponent({
     setup(props, context) {
         const { accountBalance } = useAddressStore();
+        const { accountPrestake } = usePrestakingStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
         const {
             accountUsdcBalance,
@@ -56,7 +58,7 @@ export default defineComponent({
 
             const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
             const nimFiatAmount = nimExchangeRate !== undefined
-                ? (accountBalance.value / 1e5) * nimExchangeRate
+                ? ((accountBalance.value + accountPrestake.value) / 1e5) * nimExchangeRate
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;

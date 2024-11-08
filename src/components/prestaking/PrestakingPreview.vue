@@ -29,7 +29,7 @@ import ThreeLeafStakingIcon from '../icons/Prestaking/ThreeLeafStakingIcon.vue';
 
 export default defineComponent({
     setup() {
-        const { activePrestake, activeValidator } = usePrestakingStore();
+        const { activePrestake } = usePrestakingStore();
         const { activeAddressInfo } = useAddressStore();
 
         const currentPercentage = computed(() => {
@@ -44,7 +44,6 @@ export default defineComponent({
             LockIconType,
 
             activePrestake,
-            activeValidator,
             currentPercentage,
         };
     },

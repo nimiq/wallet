@@ -38,31 +38,27 @@ svg {
         opacity: 0;
     }
 
+    path:nth-child(1) { stroke-opacity: .8 }
+    path:nth-child(2) { stroke-opacity: .6 }
+    path:nth-child(4) { stroke-opacity: .4 }
+
     &.pulsing {
         path:nth-child(1), path:nth-child(2), path:nth-child(4) {
             animation: fastwave 1s ease alternate infinite;
         }
-        path:nth-child(1) {
-            animation-delay: .5s;
-        }
-        path:nth-child(2) {
-            animation-delay: .7s;
-        }
-        path:nth-child(4) {
-            animation-delay: .9s;
+
+        $delay: 200ms;
+        @for $i from 1 through 3 {
+            path:nth-child(#{if($i == 3, 4, $i)}) {
+                animation-delay: $delay * $i;
+            }
         }
     }
 }
 
 @keyframes fastwave {
-    0% {
-        opacity: 1.0;
-    }
-    50% {
-        opacity: 0.15;
-    }
-    100% {
-        opacity: 0.0;
-    }
+    0%      { opacity: 1 }
+    50%     { opacity: .15 }
+    100%    { opacity: 0 }
 }
 </style>

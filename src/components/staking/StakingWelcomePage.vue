@@ -72,7 +72,7 @@ export default defineComponent({
         );
 
         function getTopPosition(index: number) {
-            return `${((Math.sin((index + 1) * (Math.PI / 10))) * 20)}px`;
+            return `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)}px`;
         }
 
         return {
@@ -95,12 +95,18 @@ export default defineComponent({
 <style lang="scss" scoped>
     .staking-welcome-page {
         flex-grow: 1;
+        background-color: #F8F8F8;
+        border-radius: 1.25rem;
     }
 
     .page-header {
         height: 36.625rem;
         padding-top: 3rem;
         line-height: 1;
+        background-color: white;
+        flex-grow: 1;
+
+        clip-path: ellipse(170% 100% at 50% 0%);
 
         ::v-deep .nq-h1 {
             font-size: var(--h1-size);
@@ -118,7 +124,6 @@ export default defineComponent({
     .page-body {
         padding: 0;
         margin: 0;
-        flex-grow: 1;
         overflow: hidden;
 
         .staking-rounded-background {
@@ -132,7 +137,6 @@ export default defineComponent({
             .staking-icons-lace {
                 position: relative;
                 left: -2rem;
-                margin-top: 3rem;
                 white-space: nowrap;
                 flex-grow: 1;
                 min-height: 9rem;

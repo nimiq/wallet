@@ -108,9 +108,8 @@ export default defineComponent({
 
         clip-path: ellipse(170% 100% at 50% 0%);
 
-        ::v-deep .nq-h1 {
-            font-size: var(--h1-size);
-        }
+        ::v-deep .nq-h1 { font-size: var(--h1-size) }
+
         .staking-icon {
             margin-top: .75rem;
             margin-bottom: 2.375rem;
@@ -121,6 +120,7 @@ export default defineComponent({
             }
         }
     }
+
     .page-body {
         padding: 0;
         margin: 0;
@@ -140,17 +140,15 @@ export default defineComponent({
                 white-space: nowrap;
                 flex-grow: 1;
                 min-height: 9rem;
-                .nq-icon {
-                    --delay: 0ms;
-                    color: var(--text-10);
 
-                    animation-name: breathing;
-                    animation-duration: 1s;
-                    animation-iteration-count: infinite;
-                    animation-delay: var(--delay);
+                .nq-icon {
+                    color: var(--text-10);
 
                     opacity: 1;
                     transform: translateY(0);
+
+                    --delay: 0ms; // set in the vue template for each icon
+                    animation: breathing 1s infinite var(--delay);
 
                     @keyframes breathing {
                         50% {
@@ -195,6 +193,7 @@ export default defineComponent({
             .staking-icon {
                 margin-top: 1.375rem;
                 margin-bottom: 1.25rem;
+
                 svg {
                     margin-left: 0.25rem;
                     height: 16rem;
@@ -206,19 +205,18 @@ export default defineComponent({
             .staking-rounded-background {
                 .staking-icons-lace {
                     margin-top: 2.5rem;
+
                     img {
                         margin-left: .65rem;
                         width: 4.75rem;
                         height: 4.75rem;
                     }
                 }
-                .staking-under-icons-text {
-                    padding-bottom: .25rem;
-                }
+
+                .staking-under-icons-text { padding-bottom: .25rem }
             }
         }
-        .nq-text {
-            margin: 1rem 0 0;
-        }
+
+        .nq-text { margin: 1rem 0 0 }
     }
 </style>

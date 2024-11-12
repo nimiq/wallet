@@ -5,35 +5,37 @@
         :showOverlay="overlay === Overlay.SelectAccount || statusType !== StatusChangeType.NONE"
         @close-overlay="closeOverlay"
     >
-        <template v-if="page === Page.Info">
-            <StakingWelcomePage @next="switchValidator" />
-        </template>
-        <template v-else-if="page === Page.Graph">
-            <StakingGraphPage
-                @back="page = isStaking ? Page.Already : Page.Validator"
-                @next="page = Page.Already"
-                @changeValidator="switchValidator"
-                @statusChange="onStatusChange"
-            />
-        </template>
-        <template v-else-if="page === Page.Already">
-            <StakingInfoPage
-                @back="page = Page.Graph" @next="page = Page.RewardsHistory"
-                @adjust-stake="adjustStake"
-                @switch-validator="switchValidator"
-                @statusChange="onStatusChange"
-            />
-        </template>
-        <template v-else-if="page === Page.RewardsHistory">
-            <StakingRewardsHistoryPage @back="page = Page.Already" />
-        </template>
-        <template v-else-if="page === Page.Validator">
-            <StakingValidatorPage
-                @back="page = isStaking ? Page.Already : Page.Info"
-                @next="page = isStaking ? Page.Already : Page.Graph; closeOverlay()"
-                @statusChange="onStatusChange"
-            />
-        </template>
+        <transition name="fade" mode="out-in">
+            <template v-if="page === Page.Info">
+                <StakingWelcomePage @next="switchValidator" />
+            </template>
+            <template v-else-if="page === Page.Graph">
+                <StakingGraphPage
+                    @back="page = isStaking ? Page.Already : Page.Validator"
+                    @next="page = Page.Already"
+                    @changeValidator="switchValidator"
+                    @statusChange="onStatusChange"
+                />
+            </template>
+            <template v-else-if="page === Page.Already">
+                <StakingInfoPage
+                    @back="page = Page.Graph" @next="page = Page.RewardsHistory"
+                    @adjust-stake="adjustStake"
+                    @switch-validator="switchValidator"
+                    @statusChange="onStatusChange"
+                />
+            </template>
+            <template v-else-if="page === Page.RewardsHistory">
+                <StakingRewardsHistoryPage @back="page = Page.Already" />
+            </template>
+            <template v-else-if="page === Page.Validator">
+                <StakingValidatorPage
+                    @back="page = isStaking ? Page.Already : Page.Info"
+                    @next="page = isStaking ? Page.Already : Page.Graph; closeOverlay()"
+                    @statusChange="onStatusChange"
+                />
+            </template>
+        </transition>
         <template slot="overlay">
             <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
                 @selected="switchValidator"
@@ -201,15 +203,24 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     .modal {
+        ::v-deep .small-page {
+            transition: width 250ms ease;
+        }
+
         &.large-modal {
             ::v-deep .small-page {
-                // transition: transform var(--transition-time) var(--nimiq-ease),
-                //             width 200ms var(--nimiq-ease);
                 width: 63.5rem;
-                // height: 74.875rem;
-                // transition: width 1.5s ease-out;
             }
-            // transition: width 0.75s ease-out;
         }
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 250ms ease;
+    }
+
+    .fade-enter,
+    .fade-leave-to {
+        opacity: 0;
     }
 </style>

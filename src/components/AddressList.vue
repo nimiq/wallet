@@ -47,7 +47,6 @@ import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmoun
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
-import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
@@ -91,24 +90,23 @@ export default defineComponent({
         } = usePolygonAddressStore();
         const { stablecoin } = useAccountSettingsStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
-        const { state: network$ } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
         const { totalAccountStake } = useStakingStore();
 
-        function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
+        function hasLockedBalance(addressInfo: AddressInfo): boolean {
             if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
 
             const numberVestingSteps = Math.ceil(addressInfo.totalAmount / addressInfo.stepAmount);
 
-            const passedBlocks = Math.max(0, height - addressInfo.start);
-            const passedSteps = Math.floor(passedBlocks / addressInfo.stepBlocks);
+            const passedTime = Math.max(0, Date.now() - addressInfo.startTime);
+            const passedSteps = Math.floor(passedTime / addressInfo.timeStep);
 
             return passedSteps < numberVestingSteps;
         }
 
         const processedAddressInfos = computed(() => addressInfos.value.map((addressInfo) => ({
             ...addressInfo,
-            hasLockedBalance: hasLockedBalance(addressInfo, network$.height),
+            hasLockedBalance: hasLockedBalance(addressInfo),
         })));
 
         const backgroundYOffset = ref(4 + 20); // px - Top margin of the address-buttons (0.5rem) + 2.5rem padding-top

@@ -387,8 +387,6 @@ import {
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { useConfig } from '../../composables/useConfig';
-import router from '../../router';
 
 export default defineComponent({
     setup(props, context) {
@@ -396,7 +394,6 @@ export default defineComponent({
         const { activeAddress } = useAddressStore();
         const { isMobile } = useWindowSize();
         const { currency, setCurrency, state: fiat$ } = useFiatStore();
-        const { config } = useConfig();
 
         const currencies = [
             CryptoCurrency.NIM,

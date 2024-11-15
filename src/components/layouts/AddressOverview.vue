@@ -196,7 +196,7 @@
                     </button>
                 </div>
             </div>
-            <StakingPreview v-if="stake && isMobile" class="staking-preview-mobile" />
+            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" />
             <div
                 v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -283,7 +283,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -344,7 +344,6 @@ import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
-import { useNetworkStore } from '@/stores/Network';
 
 export default defineComponent({
     name: 'address-overview',
@@ -359,9 +358,7 @@ export default defineComponent({
             addressInfo: usdcAddressInfo,
         } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
-        const { activeStake: stake } = useStakingStore();
-
-        const { activeStake, accountStake } = useStakingStore();
+        const { activeStake, totalAccountStake } = useStakingStore();
 
         const searchString = ref('');
 
@@ -370,8 +367,6 @@ export default defineComponent({
 
         const address$ = ref<HTMLDivElement>(null);
         const addressMasked = ref<boolean>(false);
-
-        const { height } = useNetworkStore();
 
         const { isMobile, isFullDesktop, width: windowWidth } = useWindowSize();
 
@@ -593,7 +588,7 @@ export default defineComponent({
             if (activeCurrency.value !== CryptoCurrency.NIM) return false;
             if (!activeAccountInfo.value) return false;
             if (activeAccountInfo.value.type !== AccountType.LEGACY) return true;
-            return accountStake.value > 0;
+            return totalAccountStake.value > 0;
         });
 
         return {
@@ -619,12 +614,11 @@ export default defineComponent({
             onTransactionListScroll,
             address$,
             addressMasked,
-            stake,
+            activeStake,
             toggleUnclaimedCashlinkList,
             config,
             convertBridgedUsdcToNative,
             switchStablecoin,
-            activeStake,
             windowWidth,
             showStakingButton,
             isMobile,

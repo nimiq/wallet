@@ -28,9 +28,9 @@ export type BasicAddressInfo = {
 export type ContractAddressInfo = {
     type: AddressType.VESTING,
     owner: string,
-    start: number,
+    startTime: number,
     stepAmount: number,
-    stepBlocks: number,
+    timeStep: number,
     totalAmount: number,
 }
 

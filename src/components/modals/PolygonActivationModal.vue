@@ -57,7 +57,7 @@ import { activatePolygon } from '../../hub';
 import {
     WELCOME_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
-import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 
@@ -66,7 +66,7 @@ export default defineComponent({
         redirect: String,
     },
     setup(props, context) {
-        const { activeAccountId, activeAccountInfo, hasPolygonAddresses } = useAccountStore();
+        const { activeAccountId, hasPolygonAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);

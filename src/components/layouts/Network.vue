@@ -1,5 +1,5 @@
 <template>
-    <div class="network nq-blue-bg" :class="{'no-footer': !$config.enableBitcoin && !$config.usdc.enabled }">
+    <div class="network nq-blue-bg" :class="{'no-footer': !$config.enableBitcoin && !$config.polygon.enabled }">
         <div class="menu-bar full-width flex-row">
             <button class="reset menu-button"
                 @click="$router.push({ name: 'network', query: { sidebar: !router.currentRoute.query.sidebar } })">

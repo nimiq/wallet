@@ -147,28 +147,6 @@ export const useStakingStore = createStore({
                 active: false,
             };
         },
-        stakeByAccount: (state): Readonly<Record<string, number>> => {
-            const { accountInfos } = useAccountStore();
-
-            const stakeByAccount: Record<string, number> = {};
-            for (const accountInfo of Object.values(accountInfos.value)) {
-                let sum = 0;
-                for (const address of accountInfo.addresses) {
-                    const stake = state.stakeByAddress[address];
-                    if (stake) {
-                        sum += stake.balance;
-                    }
-                }
-                stakeByAccount[accountInfo.id] = sum;
-            }
-
-            return stakeByAccount;
-        },
-        accountStake: (state, { stakeByAccount }) => {
-            const { activeAccountId } = useAccountStore();
-            if (!activeAccountId.value) return 0;
-            return (stakeByAccount.value as Record<string, number>)[activeAccountId.value] ?? 0;
-        },
     },
     actions: {
         setStake(stake: Stake) {

@@ -1481,16 +1481,6 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core-web@1.6.3", "@nimiq/core-web@^1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.3.tgz#b4a8f8c5d289850b20cb4009766af5b1cafd6e20"
-  integrity sha512-D6RrJi2cRU81odNpmwczhUBvOQ47+/Db1svrTkH/G4xNd72lr9MS5nMdfpUz+rBRnSprljrzW2mdUtZ6W9bPaA==
-
-"@nimiq/core-web@^1.5.8", "@nimiq/core-web@^1.6.1":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@nimiq/core-web/-/core-web-1.6.2.tgz#3455021822b036578693cf112378b8fc69e5b856"
-  integrity sha512-b12CcwKgRy5YzSD1oDp3TU7JNm4vv3ua0OKFhxyFBW8JqbPGGqzU7GsRY9/nKtF77zMfE/dVayWweS0ecHPzVA==
-
 "@nimiq/core@next":
   version "2.0.0-next.rc.4"
   resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0-next.rc.4.tgz#a353f4507f2f10e3be741f920cff921c9474dea7"
@@ -1510,12 +1500,12 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.2.tgz#ae2cbe5b41359875bece9ce0957209ca1b486d21"
   integrity sha512-rPy3DhWlqTOj4k9/YMS2mizjR1rLsQzqWzMnJ+xDEGprgb6/jhDBZs/CW+jONccRQWrvuyBYTrrxdLgn3imKjQ==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?f99a7b4aec230ec02eb76f6dff711f00f99dc07d":
+"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?31929a586dc009fdca42089ab38571964d192fac":
   version "1.8.0-albatross.0"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?f99a7b4aec230ec02eb76f6dff711f00f99dc07d#a6d9f5af3d378fde0ed0836774d40645984ce480"
+  resolved "https://gitpkg.now.sh/nimiq/hub/client?31929a586dc009fdca42089ab38571964d192fac#496b03831a2c4de26020107e03281e02540a4bcc"
   dependencies:
-    "@nimiq/core-web" "^1.6.1"
-    "@nimiq/fastspot-api" "^1.8.0"
+    "@nimiq/core" next
+    "@nimiq/fastspot-api" "^1.10.2"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
     "@opengsn/common" "^2.2.5"
@@ -1528,10 +1518,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@1.4.0-albatross.1":
-  version "1.4.0-albatross.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.4.0-albatross.1.tgz#028238e8c33e0e2ff084a0d32dacd581cc9d74fc"
-  integrity sha512-HW/b9BKU+QueARQP4sEu1tG39T4s73kqMNmIpLVGDcoB7EfEyOriClDiXacb+WHYQjhnw1LPuvNIo1LW/vtJQA==
+"@nimiq/libswap@1.4.2-next.0":
+  version "1.4.2-next.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.4.2-next.0.tgz#63cd64232c0ae3aca2d5fd64679f204bc40ba513"
+  integrity sha512-gHghNNCx8Trgi9onDWFYyvZ4xdNdy30qOFVfNspEbvmzDcSfz5iTglW6bekYEdmiOe5icVrKUVsSIVXi/DV3tg==
   dependencies:
     "@nimiq/core" next
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
@@ -4139,10 +4129,10 @@ cookie-signature@1.0.6:
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
   integrity sha1-4wOogrNCzD7oylE6eZmXNNqzriw=
 
-cookie@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.5.0.tgz#d1f5d71adec6558c58f389987c366aa47e994f8b"
-  integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
+cookie@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.6.0.tgz#2798b04b071b0ecbff0dbb62a505a8efa4e19051"
+  integrity sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==
 
 cookiejar@^2.1.1:
   version "2.1.4"
@@ -5727,7 +5717,7 @@ express@^4.14.0, express@^4.17.3:
     body-parser "1.20.3"
     content-disposition "0.5.4"
     content-type "~1.0.4"
-    cookie "0.5.0"
+    cookie "0.6.0"
     cookie-signature "1.0.6"
     debug "2.6.9"
     depd "2.0.0"

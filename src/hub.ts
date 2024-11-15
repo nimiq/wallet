@@ -242,11 +242,11 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             account.contracts.push({
                 address: 'NQ17 9A8N TXK7 S4KC CRJP Q46Q VPY7 32KL QPYD',
                 label: 'Vesting Contract',
-                type: AddressType.VESTING,
+                type: AddressType.VESTING as number,
                 owner: 'NQ26 8MMT 8317 VD0D NNKE 3NVA GBVE UY1E 9YDF',
-                start: 1,
+                startTime: 1e3,
                 stepAmount: 50000e5,
-                stepBlocks: 800000,
+                timeStep: 800000e3,
                 totalAmount: 100000e5,
             });
         }
@@ -257,6 +257,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             addressInfos.push({
                 ...contract,
                 balance: addressStore.state.addressInfos[contract.address]?.balance ?? null,
+                type: contract.type as number,
             });
         }
 

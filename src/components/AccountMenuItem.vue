@@ -38,7 +38,6 @@ import { useStakingStore } from '../stores/Staking';
 import { Transaction, useTransactionsStore } from '../stores/Transactions';
 import LedgerIcon from './icons/LedgerIcon.vue';
 import LoginFileIcon from './icons/LoginFileIcon.vue';
-import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
     props: {
@@ -54,7 +53,6 @@ export default defineComponent({
     setup(props) {
         const { config } = useConfig();
         const { accountInfos } = useAccountStore();
-        const { stakeByAccount } = useStakingStore();
         const { state: addressState } = useAddressStore();
         const { totalStakesByAccount } = useStakingStore();
         const { pendingTransactionsBySender } = useTransactionsStore();
@@ -130,7 +128,7 @@ export default defineComponent({
 
             const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
             const nimFiatAmount = nimExchangeRate !== undefined
-                ? ((nimAccountBalance.value + (stakeByAccount.value[props.id] ?? 0)) / 1e5) * nimExchangeRate
+                ? (nimAccountBalance.value / 1e5) * nimExchangeRate
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;

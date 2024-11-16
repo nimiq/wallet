@@ -413,7 +413,7 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/AddressList.vue:181
+#: src/components/AddressList.vue:179
 #: src/components/layouts/AccountOverview.vue:133
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
@@ -1686,7 +1686,7 @@ msgid "Overwrite how the Keyguard is opened."
 msgstr ""
 
 #: src/components/staking/StakingPreview.vue:21
-#: src/components/staking/tooltips/ValidatorRewardBubble.vue:8
+#: src/components/staking/tooltips/ValidatorReward.vue:8
 msgid "p.a."
 msgstr ""
 
@@ -2496,7 +2496,7 @@ msgstr ""
 msgid "TEN31 Verification"
 msgstr ""
 
-#: src/components/AddressList.vue:200
+#: src/components/AddressList.vue:198
 #: src/components/layouts/AccountOverview.vue:214
 #: src/components/layouts/AddressOverview.vue:121
 #: src/components/swap/SwapBalanceBar.vue:29
@@ -2807,7 +2807,7 @@ msgstr ""
 msgid "Update validator"
 msgstr ""
 
-#: src/components/AddressList.vue:190
+#: src/components/AddressList.vue:188
 #: src/components/layouts/AccountOverview.vue:211
 #: src/components/layouts/AddressOverview.vue:119
 #: src/components/swap/SwapBalanceBar.vue:24
@@ -2954,7 +2954,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:484
+#: src/components/layouts/AddressOverview.vue:479
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 

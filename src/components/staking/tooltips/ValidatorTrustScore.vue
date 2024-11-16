@@ -1,5 +1,5 @@
 <template>
-    <div class="validator-trust-score flex-row"
+    <div class="validator-trust-bubble"
         :class="{
             'high-score': !dry && score >= 5.0,
             'low-score': !dry && score < 2.5,
@@ -30,31 +30,36 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import '../../../scss/functions.scss';
+@import '../../../scss/functions.scss';
 
-    .validator-trust-score {
-        white-space: nowrap;
-        align-items: center;
-        color: var(--text-50);
+.validator-trust-bubble {
+    height: 3.125rem;
+    line-height: 3.125rem;
+    padding: 0 .875rem;
+    border-radius: 5rem;
+    white-space: nowrap;
+    font-size: var(--body-size);
+    font-weight: bold;
 
-        &.dry {
-            box-shadow: inset 0 0 0 .1875rem nimiq-blue(0.15);
-            padding: 0 1.375rem;
-            border-radius: 5rem;
-            height: 3.25rem;
+    --color: var(--text-50);
+    --border-color: var(--color);
 
-            font-size: var(--small-size);
-            font-weight: 600;
-            color: var(--text-60);
-        }
+    color: var(--color);
+    box-shadow: 0 0 0 1.5px var(--border-color);
 
-        &.high-score {
-            color: var(--nimiq-gold);
-        }
+    &.high-score { --color: var(--nimiq-gold)}
+    &.low-score { --color: var(--nimiq-red) }
 
-        &.low-score {
-            color: var(--nimiq-red);
-        }
+    &.dry {
+        --border-color: #{nimiq-blue(0.15)};
+        --color: var(--text-60);
+
+        padding: 0 1.375rem;
+        height: 3.25rem;
+        line-height: 3.25rem;
+
+        font-size: var(--small-size);
+        font-weight: 600;
     }
 
     svg {
@@ -63,4 +68,5 @@ export default defineComponent({
         margin-right: 0.25rem;
         margin-top: -0.125rem;
     }
+}
 </style>

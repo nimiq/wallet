@@ -129,7 +129,7 @@
                             <Identicon v-else class="validator-icon" :address="validator.address"/>
                             <span v-if="'label' in validator" class="validator-label">{{ validator.label }}</span>
                             <ShortAddress v-else :address="validator.address"/>
-                            <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
+                            <ValidatorReward v-if="'reward' in validator" :reward="validator.reward" />
                         </div>
                         <div class="validator-bottom flex-row">
                             <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
@@ -175,7 +175,7 @@ import { MIN_STAKE } from '../../lib/Constants';
 // import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
@@ -340,7 +340,7 @@ export default defineComponent({
         Tooltip,
         InfoCircleSmallIcon,
         ValidatorTrustScore,
-        ValidatorRewardBubble,
+        ValidatorReward,
         Identicon,
         ShortAddress,
         ArrowDownIcon,

@@ -11,7 +11,7 @@
                 <div v-if="validator" class="tooltip-bar flex-row">
                     <LabelTooltip :validator="validator" />
                     <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" dry />
-                    <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" dry />
+                    <ValidatorReward v-if="'reward' in validator" :reward="validator.reward" dry />
                 </div>
             </template>
         </PageHeader>
@@ -102,7 +102,7 @@ import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 
 import LabelTooltip from './tooltips/LabelTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+import ValidatorReward from './tooltips/ValidatorReward.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
 import { getNetworkClient } from '../../network';
@@ -300,7 +300,7 @@ export default defineComponent({
         PageBody,
         LabelTooltip,
         ValidatorTrustScore,
-        ValidatorRewardBubble,
+        ValidatorReward,
         // StakingGraph,
         AmountSlider,
         Amount,

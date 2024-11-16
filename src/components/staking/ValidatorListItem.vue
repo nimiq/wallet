@@ -18,12 +18,12 @@
                     <ShortAddress v-else :address="validator.address"/>
                 </div>
                 <div class="validator-item-inner-row flex-row validator-trust">
-                    <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
-                    <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
+                    <ValidatorReward v-if="'reward' in validator" :reward="validator.reward" />
+                    <strong v-if="'reward' in validator && payoutText" class="dot">&middot;</strong>
                     <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
                 </div>
             </div>
-            <ValidatorRewardBubble v-if="'reward' in validator" :reward="validator.reward" />
+            <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
         </div>
     </button>
 </template>
@@ -34,10 +34,10 @@ import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { Validator } from '../../stores/Staking';
 import { getPayoutText } from '../../lib/StakingUtils';
 
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import ValidatorRewardBubble from './tooltips/ValidatorRewardBubble.vue';
+import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorDescriptionTooltip from './tooltips/ValidatorDescriptionTooltip.vue';
+import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 
 export default defineComponent({
     props: {
@@ -59,7 +59,7 @@ export default defineComponent({
     components: {
         Identicon,
         ValidatorTrustScore,
-        ValidatorRewardBubble,
+        ValidatorReward,
         ShortAddress,
         ValidatorDescriptionTooltip,
         InfoCircleSmallIcon,

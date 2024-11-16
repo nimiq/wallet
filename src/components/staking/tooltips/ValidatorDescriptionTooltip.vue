@@ -9,9 +9,9 @@
         </blockquote>
 
         <p>{{ $t('The validator is solely responsible for information provided above.') }}</p>
-        <BlueLink v-if="'link' in validator && 'label' in validator"
+        <BlueLink v-if="'link' in validator && 'name' in validator"
             :href="validator.link" target="_blank" rel="noopener">
-            {{ $t('{poolName} Website', { poolName: validator.label }) }}
+            {{ $t('{poolName} Website', { poolName: validator.name }) }}
         </BlueLink>
 
     </Tooltip>

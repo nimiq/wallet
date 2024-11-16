@@ -2,37 +2,35 @@
     <button class="validator-list-item reset flex-row">
         <div class="validator-item-wrapper flex-row">
             <div class="validator-left validator-icon">
-                <img v-if="'icon' in validator"
-                    :src="`/img/staking/providers/${validator.icon}`" :alt="validator.label"
-                />
+                <img v-if="'icon' in validator" :src="validator.icon" :alt="validator.name" />
                 <Identicon v-else :address="validator.address"/>
             </div>
             <div class="validator-item-mid flex-column">
                 <div class="validator-item-inner-row flex-row">
-                    <template v-if="'label' in validator">
-                        <span class="validator-label">{{ validator.label }}</span>
-                        <ValidatorDescriptionTooltip :container="container" :validator="validator">
+                    <template v-if="'name' in validator">
+                        <span class="validator-label">{{ validator.name }}</span>
+                        <ValidatorDescriptionTooltip v-if="validator.description || validator.website"
+                            :container="container" :validator="validator"
+                        >
                             <InfoCircleSmallIcon class="trigger"/>
                         </ValidatorDescriptionTooltip>
                     </template>
                     <ShortAddress v-else :address="validator.address"/>
                 </div>
-                <div class="validator-item-inner-row flex-row validator-trust">
-                    <ValidatorReward v-if="'reward' in validator" :reward="validator.reward" />
-                    <strong v-if="'reward' in validator && payoutText" class="dot">&middot;</strong>
-                    <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
+                <div class="validator-item-inner-row flex-row validator-subline">
+                    <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward" />
+                    <!-- <strong class="dot">&middot;</strong>-->
                 </div>
             </div>
-            <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
+            <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" />
         </div>
     </button>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { Validator } from '../../stores/Staking';
-import { getPayoutText } from '../../lib/StakingUtils';
 
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -46,15 +44,6 @@ export default defineComponent({
             type: Object as () => Validator,
             required: true,
         },
-    },
-    setup(props, context) {
-        const payoutText = computed(() => 'label' in props.validator
-            ? getPayoutText(props.validator.payoutType)
-            : context.root.$t('Unregistered validator'));
-
-        return {
-            payoutText,
-        };
     },
     components: {
         Identicon,
@@ -132,12 +121,11 @@ export default defineComponent({
         }
     }
 
-    .validator-trust {
+    .validator-subline {
         color: var(--text-50);
         font-size: var(--small-size);
     }
 
     .dot { margin: 0 0.675rem }
-    .validator-payout { white-space: nowrap }
 }
 </style>

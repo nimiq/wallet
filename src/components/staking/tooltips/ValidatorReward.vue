@@ -2,10 +2,10 @@
     <div class="validator-reward flex-row"
         :class="{
             'dry': dry,
-            'low-reward': !dry && reward < 2.5,
+            'low-reward': !dry && (reward * 100) < 2.5,
         }"
     >
-        {{ reward.toFixed(2) }}% {{ $t("p.a.") }}
+        {{ (reward * 100).toFixed(2) }}% {{ $t("p.a.") }}
     </div>
 </template>
 

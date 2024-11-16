@@ -17,10 +17,8 @@
             <div class="staking-rounded-background flex-column">
                 <div class="staking-icons-lace">
                     <template v-for="(validator, index) in validators">
-                        <img v-if="validator && 'icon' in validator"
-                            :key="index"
-                            :src="`/img/staking/providers/${validator.icon}`"
-                            alt="validator-logo"
+                        <img v-if="validator && 'icon' in validator" :key="index"
+                            :src="validator.icon" :alt="validator.name"
                             :style="{ top: getTopPosition(index) }"
                         />
                         <Identicon v-else-if="validator && 'address' in validator" :key="index"

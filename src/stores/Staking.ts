@@ -18,26 +18,34 @@ export type Stake = {
 
 export type RawValidator = {
     address: string,
-    dominance: number, // Percentage
     active: boolean,
-}
-
-export type RegisteredValidator = {
-    address: string,
-    active: boolean,
-    label: string,
-    icon?: string,
-    payoutType: 'direct' | 'restake',
-    fee: number,
-    description?: string,
-    // link?: string,
-    // uptime: number, // Percentage
-    // monthsOld: number,
 
     // Calculated fields
-    trust: number,
-    reward: number,
     dominance: number, // Percentage
+}
+
+export type RegisteredValidator = RawValidator & {
+    // Validator API fields
+    name: string,
+    description: string | null,
+    fee: number,
+    payoutType: 'none' | 'direct' | 'restake',
+    payoutSchedule: string,
+    isMaintainedByNimiq: boolean,
+    icon?: string,
+    hasDefaultIcon: boolean,
+    accentColor: string,
+    website: string | null,
+    contact: Record<string, string> | null,
+    score: {
+        liveness: number,
+        total: number,
+        size: number,
+        reliability: number,
+    },
+
+    // Calculated fields
+    annualReward: number, // Percentage
 }
 
 export type Validator = RawValidator | RegisteredValidator;

@@ -13,8 +13,9 @@ export enum FilterState {
 // export const NOW = DateTime.now();
 // export const MONTH = DateTime.fromObject({ months: 1 });
 
-export function getPayoutText(payoutType: 'direct' | 'restake') {
+export function getPayoutText(payoutType: 'none' | 'direct' | 'restake') {
     switch (payoutType) {
+        case 'none': return i18n.t('No Payout');
         case 'direct': return i18n.t('Wallet Payout');
         case 'restake': return i18n.t('Restake Rewards');
         default: throw new Error('Invalid payout type');

@@ -1,18 +1,18 @@
 <template>
-    <div class="validator-trust-bubble"
+    <div class="validator-trust-score"
         :class="{
-            'high-score': !dry && score >= 5.0,
-            'low-score': !dry && score < 2.5,
+            'high-score': !dry && stars >= 4.5,
+            'low-score': !dry && stars < 2.5,
             'dry': dry,
         }"
     >
         <StarIcon />
-        {{ score.toFixed(2) }}
+        {{ stars.toFixed(2) }}
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import StarIcon from '../../icons/Staking/StarIcon.vue';
 
 export default defineComponent({
@@ -23,6 +23,13 @@ export default defineComponent({
         },
         dry: Boolean,
     },
+    setup(props) {
+        const stars = computed(() => props.score * 5);
+
+        return {
+            stars,
+        };
+    },
     components: {
         StarIcon,
     },
@@ -32,7 +39,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../../scss/functions.scss';
 
-.validator-trust-bubble {
+.validator-trust-score {
     height: 3.125rem;
     line-height: 3.125rem;
     padding: 0 .875rem;

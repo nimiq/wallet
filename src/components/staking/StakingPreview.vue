@@ -17,8 +17,8 @@
             <template v-if="gain">
                 +<Amount :amount="gain" value-mask />
             </template>
-            <template v-else-if="validator && 'reward' in validator">
-                {{ (validator.reward * 100).toFixed(1) }}% {{ $t("p.a.") }}
+            <template v-else-if="validator && 'annualReward' in validator">
+                {{ (validator.annualReward * 100).toFixed(1) }}% {{ $t("p.a.") }}
             </template>
         </div>
     </button>

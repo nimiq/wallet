@@ -21,6 +21,12 @@ export default {
     staking: {
         prestakingStartBlock: Infinity,
         prestakingEndBlock: Infinity,
+        validatorsEndpoint: 'https://validators-api-testnet.nuxt.dev/api/v1/validators?with-scores=true',
+        genesis: {
+            height: 3032010,
+            date: new Date('2024-11-13T20:00:00Z'),
+            supply: 1203075533952899,
+        },
     },
 
     polygon: {

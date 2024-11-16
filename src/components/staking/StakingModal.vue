@@ -40,7 +40,7 @@
             <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
                 @selected="switchValidator"
             />
-            <StatusScreen v-else-if="statusType !== 'none'"
+            <StatusScreen v-else-if="statusType !== StatusChangeType.NONE"
                 :state="statusState"
                 :title="statusTitle"
                 :message="statusMessage"

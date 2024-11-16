@@ -33,6 +33,12 @@ export default {
         // for pre-staking.
         prestakingStartBlock: 3_392_200, // 2024-10-06T02:53:18Z
         prestakingEndBlock: 3_456_000, // ~2024-11-19T07:00:00Z
+        validatorsEndpoint: 'https://validators-api-mainnet.nuxt.dev/api/v1/validators?with-scores=true',
+        genesis: {
+            height: 3456000,
+            date: new Date('2024-11-19T16:00:00Z'),
+            supply: 0,
+        },
     },
 
     polygon: {

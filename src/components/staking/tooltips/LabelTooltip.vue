@@ -1,11 +1,10 @@
 <template>
     <ValidatorDescriptionTooltip :validator="validator" preferredPosition="bottom">
         <div class="validator-label-trigger flex-row" @click="$emit('click')">
-            <img v-if="'icon' in validator" :src="`/img/staking/providers/${validator.icon}`"
-                :alt="validator.label"/>
+            <img v-if="'icon' in validator" :src="validator.icon" :alt="validator.name"/>
             <Identicon v-else :address="validator.address"/>
 
-            <span v-if="'label' in validator" class="validator-label">{{ validator.label }}</span>
+            <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
             <ShortAddress v-else :address="validator.address"/>
         </div>
     </ValidatorDescriptionTooltip>

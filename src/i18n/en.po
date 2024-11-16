@@ -604,7 +604,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/staking/StakingValidatorPage.vue:102
+#: src/components/staking/StakingValidatorPage.vue:104
 msgid "Changing validator"
 msgstr ""
 
@@ -2278,7 +2278,7 @@ msgstr ""
 #: src/components/modals/StablecoinSendModal.vue:680
 #: src/components/staking/StakingGraphPage.vue:276
 #: src/components/staking/StakingInfoPage.vue:311
-#: src/components/staking/StakingValidatorPage.vue:154
+#: src/components/staking/StakingValidatorPage.vue:156
 msgid "Something went wrong"
 msgstr ""
 
@@ -2356,7 +2356,7 @@ msgstr ""
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingValidatorPage.vue:136
+#: src/components/staking/StakingValidatorPage.vue:138
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 

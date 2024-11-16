@@ -4,7 +4,7 @@
             <template v-if="validator">
                 {{ $t(
                     'Staking with {validator}',
-                    { validator: 'label' in validator ? validator.label : validator.address.substr(0, 9) },
+                    { validator: 'name' in validator ? validator.name : validator.address.substr(0, 9) },
                 ) }}
             </template>
             <template v-else>
@@ -38,7 +38,7 @@
                 >📈 Graph will come here</h2> -->
             </div>
             <!-- <StakingGraph :stakedAmount="stake ? stake.balance : 0"
-                :apy="validator && 'reward' in validator ? validator.reward : 0" :readonly="true"
+                :apy="validator && 'annualReward' in validator ? validator.annualReward : 0" :readonly="true"
                 :period="{
                     s: NOW,
                     p: 12,
@@ -121,18 +121,16 @@
                 <div class="row flex-row">
                     <div class="validator flex-grow">
                         <div class="validator-top flex-row">
-                            <img v-if="'icon' in validator"
-                                class="validator-icon"
-                                :src="`/img/staking/providers/${validator.icon}`"
-                                :alt="validator.label"
+                            <img v-if="'icon' in validator" class="validator-icon"
+                                :src="validator.icon" :alt="validator.name"
                             />
                             <Identicon v-else class="validator-icon" :address="validator.address"/>
-                            <span v-if="'label' in validator" class="validator-label">{{ validator.label }}</span>
+                            <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
                             <ShortAddress v-else :address="validator.address"/>
-                            <ValidatorReward v-if="'reward' in validator" :reward="validator.reward" />
+                            <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
                         </div>
                         <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" />
+                            <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" />
                             <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
                             <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
                         </div>
@@ -201,7 +199,7 @@ export default defineComponent({
             stakedBalance.value / (availableBalance.value + stakedBalance.value + (stake.value?.inactiveBalance || 0))
         ) * 100);
 
-        const payoutText = computed(() => validator.value && 'label' in validator.value
+        const payoutText = computed(() => validator.value && 'name' in validator.value
             ? getPayoutText(validator.value.payoutType)
             : validator.value?.active
                 ? context.root.$t('Unregistered validator')

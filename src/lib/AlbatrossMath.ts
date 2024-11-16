@@ -1,9 +1,15 @@
-export const GENESIS_BLOCK_HEIGHT = 15581984;
-export const GENESIS_DATE = new Date('2024-02-07T20:04:15.464756+00:00');
+import config from 'config';
+// import { EPOCH_LENGTH } from './Constants';
 
-// Not actually necessary, as it cancels out when subtracting the current supply from the future supply
-// const GENESIS_SUPPLY = 1103202591538253; // Luna, as encoded in the genesis block
-const GENESIS_SUPPLY = 0;
+/** Total supply in Luna */
+const TOTAL_SUPPLY = 21e14;
+/** Supply decay per millisecond */
+const SUPPLY_DECAY = 0.9999999999960264;
+
+// export function nextElectionBlock(height: number): number {
+//     const { genesis } = config.staking;
+//     return Math.floor((height - genesis.height) / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
+// }
 
 export async function calculateStakingReward(fee: number, currentlyStaked: number): Promise<number> {
     const now = new Date();
@@ -13,12 +19,38 @@ export async function calculateStakingReward(fee: number, currentlyStaked: numbe
     return ((supplyIn1Year - currentSupply) / currentlyStaked) * (1 - fee);
 }
 
-const INITIAL_SUPPLY_VELOCITY = 875; // Luna per millisecond
-const SUPPLY_DECAY = 4.692821935e-13; // Decay per millisecond, 1.47% per year
-
 function supplyAtTime(currentTime: number): number {
-    const t = (currentTime - GENESIS_DATE.getTime());
-    const exponent = -SUPPLY_DECAY * t;
+    const { genesis } = config.staking;
 
-    return GENESIS_SUPPLY + ((INITIAL_SUPPLY_VELOCITY / SUPPLY_DECAY) * (1 - Math.E ** exponent));
+    const t = currentTime - genesis.date.getTime();
+    if (t < 0) {
+        throw new Error('currentTime must be greater or equal to genesisTime');
+    }
+
+    return (TOTAL_SUPPLY - ((TOTAL_SUPPLY - genesis.supply) * powi(SUPPLY_DECAY, t)));
+}
+
+/* eslint-disable max-len */
+/**
+ * Adapted `exp_by_squaring_iterative` from
+ * https://en.wikipedia.org/w/index.php?title=Exponentiation_by_squaring&amp%3Boldid=1229001691&useskin=vector#With_constant_auxiliary_memory
+ *
+ * The Rust implementation is also using this algorithm to guarantee the same result on different platforms.
+ */
+function powi(x: number, n: number): number {
+    if (n < 0) {
+        x = 1 / x;
+        n *= -1;
+    }
+    if (!n) return 1;
+    let y = 1;
+    while (n > 1) {
+        if (n % 2) {
+            y *= x;
+            n -= 1;
+        }
+        x *= x;
+        n /= 2;
+    }
+    return x * y;
 }

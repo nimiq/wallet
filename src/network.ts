@@ -10,7 +10,6 @@ import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { useStakingStore, Validator } from './stores/Staking';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
-import { validatorData } from './lib/Validators';
 import { calculateStakingReward } from './lib/AlbatrossMath';
 
 let isLaunched = false;
@@ -195,36 +194,55 @@ export async function launchNetwork() {
             address,
             balance,
         }));
-        const totalStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
+        const activeStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
+
+        type ApiValidator = {
+            id: number,
+            name: string,
+            address: string,
+            description: string | null,
+            fee: number,
+            payoutType: 'direct' | 'restake',
+            payoutSchedule: string,
+            isMaintainedByNimiq: boolean,
+            icon?: string,
+            hasDefaultIcon: boolean,
+            accentColor: string,
+            website: string | null,
+            contact: Record<string, string> | null,
+            score: {
+                total: number,
+                liveness: number,
+                size: number,
+                reliability: number,
+            },
+        };
+
+        const { config } = useConfig();
+        const apiValidators = await fetch(config.staking.validatorsEndpoint)
+            .then((res) => res.json()).catch(() => []) as ApiValidator[];
+        const validatorData: Record<string, ApiValidator> = {};
+        for (const apiValidator of apiValidators) {
+            validatorData[apiValidator.address] = apiValidator;
+        }
 
         const validators: Validator[] = await Promise.all(activeValidators.map(async ({ address, balance }) => {
-            const dominance = balance / totalStake;
-            if (dominance > 0.3) {
-                console.warn('High-stake validator:', { dominance: Math.round(dominance * 1e3) / 10, address });
-            }
+            const apiData = validatorData[address] as ApiValidator | undefined;
+            const dominance = balance / activeStake;
 
             let validator: Validator = {
                 address,
-                dominance,
                 active: true,
+                dominance,
             };
 
-            type ValueOf<T> = T[keyof T];
-            const data = validatorData[address] as ValueOf<typeof validatorData> | undefined;
-
-            if (data) {
-                // This is just an approximation of a trust score
-                // TODO: Formalize trust score calculation
-                const trustPenalty = Math.min((dominance * 10) ** 2 / 10, 1);
-                const trust = (1 - trustPenalty) * 5;
-
-                const reward = await calculateStakingReward(data.fee, totalStake);
+            if (apiData && apiData.name !== 'Unknown validator') {
+                const annualReward = await calculateStakingReward(apiData.fee, activeStake);
 
                 validator = {
                     ...validator,
-                    ...data,
-                    trust,
-                    reward,
+                    ...apiData,
+                    annualReward,
                 };
             }
 

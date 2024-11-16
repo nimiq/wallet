@@ -59,22 +59,28 @@ export default defineComponent({
         const sortedList = computed(() => {
             switch (filter.value) {
                 case FilterState.SEARCH:
-                    return validatorsList.value.filter((validator) =>
-                        'label' in validator
-                            ? validator.label.toLowerCase().includes(searchValue.value.toLowerCase())
-                            : validator.address.toLowerCase().includes(searchValue.value.toLowerCase()),
-                    );
+                    return validatorsList.value.filter((validator) => {
+                        if ('name' in validator) {
+                            // Include name in the search
+                            if (validator.name.toLowerCase().includes(searchValue.value.toLowerCase())) return true;
+                        }
+                        return validator.address.toLowerCase().includes(searchValue.value.toLowerCase());
+                    });
                 case FilterState.REWARD:
                     return validatorsList.value.slice()
+                        .filter((validator) => 'name' in validator)
                         .sort((a, b) => {
-                            const cmp = ('reward' in b ? b.reward : 0) - ('reward' in a ? a.reward : 0);
+                            const rewardA = 'annualReward' in a ? a.annualReward : 0;
+                            const rewardB = 'annualReward' in b ? b.annualReward : 0;
+                            const cmp = rewardB - rewardA;
                             if (cmp) return cmp;
                             return a.address < b.address ? -1 : 1;
                         });
                 default:
                     return validatorsList.value.slice()
+                        .filter((validator) => 'name' in validator)
                         .sort((a, b) => {
-                            const cmp = ('trust' in b ? b.trust : 0) - ('trust' in a ? a.trust : 0);
+                            const cmp = ('score' in b ? b.score.total : 0) - ('score' in a ? a.score.total : 0);
                             if (cmp) return cmp;
                             return a.address < b.address ? -1 : 1;
                         });
@@ -82,7 +88,7 @@ export default defineComponent({
         });
 
         async function selectValidator(validator: Validator) {
-            const validatorLabelOrAddress = 'label' in validator ? validator.label : validator.address;
+            const validatorLabelOrAddress = 'name' in validator ? validator.name : validator.address;
 
             try {
                 if (!activeStake.value || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {

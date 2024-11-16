@@ -10,8 +10,8 @@
                 </p>
                 <div v-if="validator" class="tooltip-bar flex-row">
                     <LabelTooltip :validator="validator" />
-                    <ValidatorTrustScore v-if="'trust' in validator" :score="validator.trust" dry />
-                    <ValidatorReward v-if="'reward' in validator" :reward="validator.reward" dry />
+                    <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" dry />
+                    <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward" dry />
                 </div>
             </template>
         </PageHeader>
@@ -42,7 +42,7 @@
                 >📈 Graph will come here</h2> -->
             </div>
             <!-- <StakingGraph
-                :stakedAmount="newStake" :apy="validator && 'reward' in validator ? validator.reward : 0"
+                :stakedAmount="newStake" :apy="validator && 'annualReward' in validator ? validator.annualReward : 0"
                 :period="{
                     s: NOW,
                     p: 12,
@@ -124,8 +124,8 @@ export default defineComponent({
         async function performStaking() {
             if (isStakeBelowMinimum.value) return;
 
-            const validatorLabelOrAddress = 'label' in activeValidator.value!
-                ? activeValidator.value.label
+            const validatorLabelOrAddress = 'name' in activeValidator.value!
+                ? activeValidator.value.name
                 : activeValidator.value!.address;
 
             const { Address, TransactionBuilder } = await import('@nimiq/core');

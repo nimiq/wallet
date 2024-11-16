@@ -210,6 +210,8 @@ export default defineComponent({
             overflow-y: auto;
             width: 100%;
             height: 46.5rem;
+
+            @extend %custom-scrollbar;
         }
     }
     .nq-text {

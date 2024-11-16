@@ -28,7 +28,7 @@ export async function getNetworkClient() {
         // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
         const { ClientConfiguration, Client } = await import('@nimiq/core');
         const clientConfig = new ClientConfiguration();
-        clientConfig.network(config.environment === ENV_MAIN ? 'albatross' : 'testalbatross');
+        clientConfig.network(config.environment === ENV_MAIN ? 'mainalbatross' : 'testalbatross');
         clientConfig.seedNodes(config.nimiqSeeds);
         clientConfig.logLevel('debug');
         return Client.create(clientConfig.build());

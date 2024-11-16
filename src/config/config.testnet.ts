@@ -8,12 +8,14 @@ export default {
     hubEndpoint: process.env.VUE_APP_HUB_URL,
     environment: ENV_TEST,
     nimiqSeeds: [
-        process.env.VUE_APP_SEED_NODE_MULTIADDR,
-        '/dns4/faucet.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed1.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed2.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed3.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed4.pos.nimiq-testnet.com/tcp/8443/wss',
     ],
     faucetEndpoint: process.env.VUE_APP_FAUCET_URL,
     reportToSentry: false,
-    enableBitcoin: false,
+    enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     staking: {

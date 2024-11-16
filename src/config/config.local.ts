@@ -8,8 +8,10 @@ export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
     nimiqSeeds: [
-        '/dns4/faucet.pos.nimiq-testnet.com/tcp/8443/wss',
         '/dns4/seed1.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed2.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed3.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed4.pos.nimiq-testnet.com/tcp/8443/wss',
     ],
     faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
     reportToSentry: false,

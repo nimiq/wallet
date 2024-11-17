@@ -223,6 +223,10 @@ export default defineComponent({
             height: 46.5rem;
 
             @extend %custom-scrollbar;
+
+            .validator-list-item {
+                margin: 0 auto;
+            }
         }
     }
     .nq-text {

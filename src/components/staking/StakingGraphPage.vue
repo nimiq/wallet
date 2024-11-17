@@ -369,7 +369,10 @@ export default defineComponent({
             z-index: 0;
         }
 
-        .amount-slider { margin: 4rem 3rem 0 }
+        .amount-slider {
+            margin: 4rem 3rem 0;
+            z-index: 0;
+        }
 
         .stake-button { width: 40.5rem }
 

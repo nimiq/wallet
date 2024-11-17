@@ -74,6 +74,11 @@ export default defineComponent({
     &.borderless {
         box-shadow: none;
         padding: 0;
+        font-weight: 600;
+
+        svg {
+            margin-right: 0;
+        }
     }
 
     svg {

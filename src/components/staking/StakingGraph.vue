@@ -2,9 +2,9 @@
     <div class="staking-graph">
         <img class="graph-image" src="../../assets/staking/staking-graph.svg" alt="staking graph">
         <div class="bubbles">
-            <div class="bubble">~ {{ formatReward(estimatedRewards['4M']) }} {{ $t('NIM') }}</div>
-            <div class="bubble">~ {{ formatReward(estimatedRewards['8M']) }} {{ $t('NIM') }}</div>
-            <div class="bubble">~ {{ formatReward(estimatedRewards['12M']) }} {{ $t('NIM') }}</div>
+            <div class="bubble">~&nbsp;{{ formatReward(estimatedRewards['4M']) }}&nbsp;{{ $t('NIM') }}</div>
+            <div class="bubble">~&nbsp;{{ formatReward(estimatedRewards['8M']) }}&nbsp;{{ $t('NIM') }}</div>
+            <div class="bubble">~&nbsp;{{ formatReward(estimatedRewards['12M']) }}&nbsp;{{ $t('NIM') }}</div>
         </div>
         <div class="scale">
             <div class="scale-item">{{ $t('4M') }}</div>
@@ -40,7 +40,7 @@ export default defineComponent({
             '12M': calculateReward(12),
         }));
 
-        const formatReward = (reward: number) => reward.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        const formatReward = (reward: number) => reward.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
 
         return {
             estimatedRewards,
@@ -66,20 +66,9 @@ export default defineComponent({
 }
 
 .bubbles {
-    display: grid;
-    grid-row: 2 / 5;  // Spans rows 2-4
-    grid-column: 1 / -1;  // Spans all columns
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-
     z-index: 1;
 
     .bubble {
-        --position: 1;
-
-        grid-row: var(--position);
-        grid-column: calc(4 - var(--position));
-
         color: var(--nimiq-green);
         background-color: white;
 
@@ -87,7 +76,7 @@ export default defineComponent({
         border-radius: 1.75rem;
 
         margin: .5rem auto;
-        padding: 0 1rem;
+        padding: .4rem 1rem;
         min-width: 10rem;
 
         font-size: 1.75rem;
@@ -96,9 +85,21 @@ export default defineComponent({
         justify-content: center;
         align-content: center;
 
-        &:nth-child(1) { --position: 3 }
-        &:nth-child(2) { --position: 2 }
-        &:nth-child(3) { --position: 1 }
+        position: absolute;
+        transform: translate(-50%, -50%);
+
+        &:nth-child(1) {
+            top: 72%;
+            left: 15%;
+        }
+        &:nth-child(2) {
+            top: 55.5%;
+            left: 50%;
+        }
+        &:nth-child(3) {
+            top: 39%;
+            left: 85%;
+        }
     }
 }
 

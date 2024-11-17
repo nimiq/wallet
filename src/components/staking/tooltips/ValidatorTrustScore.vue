@@ -56,7 +56,7 @@ export default defineComponent({
     color: var(--color);
     box-shadow: 0 0 0 1.5px var(--border-color);
 
-    &.high-score { --color: var(--nimiq-gold)}
+    &.high-score { --color: var(--nimiq-gold) }
     &.low-score { --color: var(--nimiq-red) }
 
     &.dry {

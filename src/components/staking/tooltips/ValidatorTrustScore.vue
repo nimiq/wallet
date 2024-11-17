@@ -3,7 +3,8 @@
         :class="{
             'high-score': !dry && stars >= 4.5,
             'low-score': !dry && stars < 2.5,
-            'dry': dry,
+            dry,
+            borderless,
         }"
     >
         <StarIcon />
@@ -22,6 +23,7 @@ export default defineComponent({
             required: true,
         },
         dry: Boolean,
+        borderless: Boolean,
     },
     setup(props) {
         const stars = computed(() => props.score * 5);
@@ -67,6 +69,11 @@ export default defineComponent({
 
         font-size: var(--small-size);
         font-weight: 600;
+    }
+
+    &.borderless {
+        box-shadow: none;
+        padding: 0;
     }
 
     svg {

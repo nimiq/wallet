@@ -202,7 +202,7 @@ export async function launchNetwork() {
             address: string,
             description: string | null,
             fee: number,
-            payoutType: 'direct' | 'restake',
+            payoutType: 'none' | 'direct' | 'restake',
             payoutSchedule: string,
             isMaintainedByNimiq: boolean,
             icon?: string,

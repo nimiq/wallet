@@ -127,12 +127,11 @@
                             <Identicon v-else class="validator-icon" :address="validator.address"/>
                             <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
                             <ShortAddress v-else :address="validator.address"/>
-                            <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
                         </div>
                         <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" />
-                            <strong v-if="'trust' in validator && payoutText" class="dot">&middot;</strong>
-                            <div v-if="payoutText" class="validator-payout">{{ payoutText }}</div>
+                            <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" borderless/>
+                            <strong v-if="'annualReward' in validator" class="dot">&middot;</strong>
+                            <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
                         </div>
                     </div>
                     <button
@@ -167,7 +166,6 @@ import { captureException } from '@sentry/vue';
 
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
-import { getPayoutText } from '../../lib/StakingUtils';
 import { MIN_STAKE } from '../../lib/Constants';
 
 // import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
@@ -198,12 +196,6 @@ export default defineComponent({
         const percentage = computed(() => (
             stakedBalance.value / (availableBalance.value + stakedBalance.value + (stake.value?.inactiveBalance || 0))
         ) * 100);
-
-        const payoutText = computed(() => validator.value && 'name' in validator.value
-            ? getPayoutText(validator.value.payoutType)
-            : validator.value?.active
-                ? context.root.$t('Unregistered validator')
-                : context.root.$t('Inactive validator'));
 
         const inactiveReleaseTime = computed(() => {
             if (stake.value?.inactiveRelease) {
@@ -319,7 +311,6 @@ export default defineComponent({
             stake,
             validator,
             percentage,
-            payoutText,
             inactiveReleaseTime,
             hasUnstakableStake,
             isStakeDeactivating,

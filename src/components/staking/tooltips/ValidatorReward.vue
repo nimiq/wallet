@@ -5,12 +5,12 @@
             'low-reward': !dry && (reward * 100) < 2.5,
         }"
     >
-        {{ (reward * 100).toFixed(2) }}% {{ $t("p.a.") }}
+        {{ formatted }}% {{ $t("p.a.") }}
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
     props: {
@@ -19,6 +19,26 @@ export default defineComponent({
             required: true,
         },
         dry: Boolean,
+    },
+    setup(props) {
+        // Ensure we show at most 3 significant digits (except if the integer part is longer than that)
+        const formatted = computed(() => {
+            const percentage = (props.reward * 100).toString();
+            let [integers, decimals] = percentage.split('.');
+            if (integers === '0') integers = '';
+            const numberOfIntegers = integers.length;
+            const numberOfDecimals = 3 - numberOfIntegers;
+            decimals = (decimals || '').substring(0, numberOfDecimals);
+            return [
+                integers || '0',
+                decimals ? '.' : '',
+                decimals,
+            ].join('');
+        });
+
+        return {
+            formatted,
+        };
     },
 });
 </script>

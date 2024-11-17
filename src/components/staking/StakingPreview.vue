@@ -13,7 +13,7 @@
 
         <div class="flex-grow"></div>
 
-        <div class="gain flex-row">
+        <div v-if="showGains" class="gain flex-row">
             <template v-if="gain">
                 +<Amount :amount="gain" value-mask />
             </template>
@@ -34,6 +34,12 @@ import ThreeLeafStakingIcon from '../icons/Staking/ThreeLeafStakingIcon.vue';
 import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
+    props: {
+        showGains: {
+            type: Boolean,
+            default: true,
+        },
+    },
     setup() {
         const { activeStake: stake, activeValidator: validator } = useStakingStore();
         const { activeAddressInfo } = useAddressStore();
@@ -74,6 +80,8 @@ export default defineComponent({
     line-height: 1;
     height: 4.25rem;
     border-radius: 5rem;
+
+    & > .amount { margin-right: 1.5rem }
 }
 
 .nq-icon {
@@ -103,7 +111,6 @@ export default defineComponent({
     height: 2.75rem;
     border-radius: 5rem;
     padding: 0 1.25rem;
-    margin-left: 1.5rem;
 
     .amount {
         margin-left: 0.25rem;

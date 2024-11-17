@@ -176,7 +176,7 @@
                     />
 
                     <template v-if="activeCurrency === 'nim'">
-                        <StakingPreview v-if="activeStake && windowWidth > 860" />
+                        <StakingPreview v-if="activeStake && windowWidth > 860" :show-gains="false" />
                         <StakingButton v-else-if="showStakingButton" />
                     </template>
 

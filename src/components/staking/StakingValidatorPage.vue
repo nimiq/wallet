@@ -60,15 +60,20 @@ export default defineComponent({
             switch (filter.value) {
                 case FilterState.SEARCH:
                     return validatorsList.value.filter((validator) => {
-                        if ('name' in validator) {
-                            // Include name in the search
-                            if (validator.name.toLowerCase().includes(searchValue.value.toLowerCase())) return true;
+                        if (searchValue.value.length < 3) {
+                            // Only show pools by default when search string is less than 3 characters
+                            return 'name' in validator;
                         }
-                        return validator.address.toLowerCase().includes(searchValue.value.toLowerCase());
+
+                        const searchTerm = searchValue.value.toLowerCase().replace(/\s+/g, '');
+                        const validatorLabel = ('name' in validator ? validator.name : '')
+                            .toLowerCase().replace(/\s+/g, '');
+                        const validatorAddress = validator.address.toLowerCase().replace(/\s+/g, '');
+                        return validatorLabel.includes(searchTerm) || validatorAddress.includes(searchTerm);
                     });
                 case FilterState.REWARD:
                     return validatorsList.value.slice()
-                        .filter((validator) => 'name' in validator)
+                        .filter((validator) => 'name' in validator) // Only show pools
                         .sort((a, b) => {
                             const rewardA = 'annualReward' in a ? a.annualReward : 0;
                             const rewardB = 'annualReward' in b ? b.annualReward : 0;
@@ -78,7 +83,7 @@ export default defineComponent({
                         });
                 default:
                     return validatorsList.value.slice()
-                        .filter((validator) => 'name' in validator)
+                        .filter((validator) => 'name' in validator) // Only show pools
                         .sort((a, b) => {
                             const cmp = ('score' in b ? b.score.total : 0) - ('score' in a ? a.score.total : 0);
                             if (cmp) return cmp;

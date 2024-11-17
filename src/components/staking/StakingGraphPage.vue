@@ -20,7 +20,7 @@
                 <Tooltip
                     preferredPosition="bottom right"
                     :styles="{'width': '32rem', 'margin-left': '-6rem'}"
-                    :container="this"
+                    :container="tooltipContainer"
                 >
                     <div slot="trigger" class="flex-row">
                         Estimated rewards <InfoCircleSmallIcon />
@@ -36,11 +36,11 @@
                     </p>
                 </Tooltip>
             </span>
-            <div style="height: 150px; background: gainsboro;">
+            <!-- <div style="height: 150px; background: gainsboro;"> -->
                 <!-- <h2
                     style="font-size: 32px; font-weigth: bold; color: darkgrey; text-align: center; margin-top: 56px;"
                 >📈 Graph will come here</h2> -->
-            </div>
+            <!-- </div> -->
             <!-- <StakingGraph
                 :stakedAmount="newStake" :apy="validator && 'annualReward' in validator ? validator.annualReward : 0"
                 :period="{
@@ -49,6 +49,11 @@
                     m: MONTH,
                 }"
             /> -->
+
+            <StakingGraph
+                :stakedAmount="newStake"
+                :apy="validator && 'annualReward' in validator ? validator.annualReward : 0"
+            />
 
             <AmountSlider
                 :stakedAmount="activeStake ? activeStake.activeBalance : 0"
@@ -88,6 +93,7 @@ import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nim
 
 import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
+import { getNetworkClient } from '../../network';
 import { sendStaking } from '../../hub';
 
 import { useConfig } from '../../composables/useConfig';
@@ -96,16 +102,15 @@ import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
 import { useNetworkStore } from '../../stores/Network';
 
-// import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
-import AmountSlider from './AmountSlider.vue';
-import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-
 import LabelTooltip from './tooltips/LabelTooltip.vue';
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
+import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+
+import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
+import AmountSlider from './AmountSlider.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
-import { getNetworkClient } from '../../network';
+import StakingGraph from './StakingGraph.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -115,10 +120,13 @@ export default defineComponent({
 
         const newStake = ref(activeStake.value ? activeStake.value.activeBalance : 0);
         const stakeDelta = ref(0);
+        const tooltipContainer = ref<HTMLElement | null>(null);
 
-        function updateStaked(amount: number) {
-            newStake.value = amount;
-            stakeDelta.value = amount - (activeStake.value?.activeBalance || 0);
+        function updateStaked(amount: unknown) {
+            if (typeof amount === 'number') {
+                newStake.value = amount;
+                stakeDelta.value = amount - (activeStake.value?.activeBalance || 0);
+            }
         }
 
         async function performStaking() {
@@ -293,6 +301,7 @@ export default defineComponent({
             performStaking,
             isStakeBelowMinimum,
             MIN_STAKE,
+            tooltipContainer,
         };
     },
     components: {
@@ -301,7 +310,7 @@ export default defineComponent({
         LabelTooltip,
         ValidatorTrustScore,
         ValidatorReward,
-        // StakingGraph,
+        StakingGraph,
         AmountSlider,
         Amount,
         Tooltip,
@@ -312,9 +321,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .stake-graph-page {
-        flex-grow: 1;
-    }
+    .stake-graph-page { flex-grow: 1 }
 
     .page-header {
         padding-bottom: 3rem;
@@ -327,6 +334,7 @@ export default defineComponent({
             }
         }
     }
+
     .page-body {
         padding: 0 0 2rem 0;
         position: relative;
@@ -335,34 +343,35 @@ export default defineComponent({
 
         .estimated-rewards-overlay {
             position: absolute;
-            top: 2.675rem;
-            left: 1.5rem;
+            z-index: 1;
+            top: 2.4rem;
+            left: 2.4rem;
 
             ::v-deep .trigger {
                 line-height: 1.2;
                 font-size: var(--small-size);
                 font-weight: 600;
-                color: var(--text-40);
+                color: var(--text-30);
                 background: white;
-                padding: 0.25rem 0.5rem;
+                padding: 0 .25rem;
+                cursor: pointer;
 
                 div {
                     align-items: center;
 
-                    svg {
-                        margin-left: 0.5rem;
-                    }
+                    svg { margin-left: 0.5rem }
                 }
             }
         }
 
-        .amount-slider {
-            margin: 4rem 3rem 0;
+        .staking-graph {
+            margin-top: -2.8rem;
+            z-index: 0;
         }
 
-        .stake-button {
-            width: 40.5rem;
-        }
+        .amount-slider { margin: 4rem 3rem 0 }
+
+        .stake-button { width: 40.5rem }
 
         .disclaimer {
             margin-top: 1.5rem;
@@ -371,17 +380,9 @@ export default defineComponent({
             text-align: center;
         }
 
-        .minimum-stake-disclaimer {
-            color: var(--nimiq-orange);
-        }
-
-        .stake-disclaimer {
-            color: var(--text-50);
-        }
-
-        .unstake-disclaimer {
-            color: var(--nimiq-light-blue);
-        }
+        .minimum-stake-disclaimer { color: var(--nimiq-orange) }
+        .stake-disclaimer { color: var(--text-50) }
+        .unstake-disclaimer { color: var(--nimiq-light-blue) }
     }
 
     .nq-text {

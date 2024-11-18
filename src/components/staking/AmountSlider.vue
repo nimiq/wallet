@@ -288,7 +288,7 @@ export default defineComponent({
             amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
             $knob.value!.style.left = `${offsetX}px`;
             if (currentPercentage.value <= 0) {
-                $progressBar.value!.style.width = '0';
+                $progressBar.value!.style.width = '40px';
             } else {
                 $progressBar.value!.style.width = `${offsetX + knobBox.width + 2}px`;
             }

@@ -11,12 +11,18 @@ const SUPPLY_DECAY = 0.9999999999960264;
 //     return Math.floor((height - genesis.height) / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
 // }
 
-export async function calculateStakingReward(fee: number, currentlyStaked: number): Promise<number> {
+export function calculateStakingReward(
+    fee: number,
+    currentlyStaked: number,
+    days = 365, // Default to 1 year if not specified
+): number {
     const now = new Date();
     const currentSupply = supplyAtTime(now.getTime());
-    const supplyIn1Year = supplyAtTime(now.setFullYear(now.getFullYear() + 1));
+    // Calculate future date based on number of days
+    const futureDate = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const futureSupply = supplyAtTime(futureDate.getTime());
 
-    return ((supplyIn1Year - currentSupply) / currentlyStaked) * (1 - fee);
+    return ((futureSupply - currentSupply) / currentlyStaked) * (1 - fee);
 }
 
 function supplyAtTime(currentTime: number): number {

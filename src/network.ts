@@ -237,7 +237,7 @@ export async function launchNetwork() {
             };
 
             if (apiData && apiData.name !== 'Unknown validator') {
-                const annualReward = await calculateStakingReward(apiData.fee, activeStake);
+                const annualReward = calculateStakingReward(apiData.fee, activeStake);
 
                 validator = {
                     ...validator,

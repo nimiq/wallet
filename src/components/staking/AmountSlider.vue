@@ -331,10 +331,10 @@ export default defineComponent({
             let start = NaN;
             let end = NaN;
             for (let i = 0; i < map.length; i++) {
-                if (Number.isNaN(start) && lo >= map[i][0]) {
+                if (Number.isNaN(start) && lo >= (map[i][0] as number)) {
                     start = i;
                 }
-                if (hi <= map[i][1]) {
+                if (hi <= (map[i][1] as number)) {
                     end = i;
                     break;
                 }

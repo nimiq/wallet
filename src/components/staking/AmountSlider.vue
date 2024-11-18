@@ -19,11 +19,13 @@
                     @click="$stakedNIMAmount.focus()"
                 >
                     <input class="nq-input"
-                        type="number"
+                        type="text"
                         ref="$stakedNIMAmount"
                         @input="onInput"
                         @blur="updateAmount"
-                        @keypress.enter="$event.target.blur()"
+                        @keydown.enter="$event.target.blur()"
+                        @keydown.up="handleArrowKeys('up', $event)"
+                        @keydown.down="handleArrowKeys('down', $event)"
                         :style="`width: ${inputAmountWidth}px;`"
                     />
                     <div class="right-suffix">
@@ -67,6 +69,7 @@ import { useAddressStore } from '../../stores/Address';
 import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
 import AnimatedLeafIcon from '../icons/Staking/AnimatedLeafIcon.vue';
 import Amount from '../Amount.vue';
+import { formatNumber } from '../../lib/NumberFormatting';
 
 const getSVGNode = (n:string, attrs:Record<string, string> = {}) => {
     const e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -174,9 +177,32 @@ export default defineComponent({
             }
         }
 
-        function onInput() {
-            enforceMaxValue();
-            updateInputWidth();
+        function onInput(event: Event) {
+            const input = event.target as HTMLInputElement;
+            const rawValue = input.value.replace(/[^\d.]/g, ''); // Remove all non-digit and non-decimal characters
+            const parsedValue = parseFloat(rawValue) || 0;
+
+            // Enforce max value
+            const maxValue = availableAmount.value / 1e5;
+            const newValue = Math.min(maxValue, parsedValue);
+
+            // Format the value but preserve cursor position
+            const cursorPosition = input.selectionStart;
+            const oldLength = input.value.length;
+
+            // Only format if there's a valid number
+            if (!Number.isNaN(newValue)) {
+                input.value = formatNumber(newValue);
+
+                // Adjust cursor position based on added formatting characters
+                const newLength = input.value.length;
+                const lengthDiff = newLength - oldLength;
+                if (cursorPosition !== null) {
+                    input.setSelectionRange(cursorPosition + lengthDiff, cursorPosition + lengthDiff);
+                }
+            }
+
+            updateInputWidth(input.value);
         }
 
         let containerBox:DOMRect;
@@ -219,8 +245,8 @@ export default defineComponent({
 
         const updateAmount = async (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
             const target = e.target as HTMLInputElement;
-
-            const valueNim = (parseFloat(target.value.replace(/[^\d.]/g, '')) || 0) * 1e5;
+            const rawValue = target.value.replace(/[^\d.]/g, ''); // Remove formatting for calculation
+            const valueNim = (parseFloat(rawValue) || 0) * 1e5;
 
             if (!firstRender && valueNim > currentAmount.value) {
                 window.clearTimeout(timeoutID);
@@ -228,16 +254,13 @@ export default defineComponent({
                 await context.root.$nextTick();
             }
 
-            const amount = Math.max(
-                0,
-                Math.min(availableAmount.value, valueNim),
-            );
+            const amount = Math.max(0, Math.min(availableAmount.value, valueNim));
             const percent = (100 * amount) / availableAmount.value;
             currentAmount.value = amount;
 
             const offsetX = getPointAtPercent(percent);
             updatePosition(offsetX);
-            updateInputWidth((amount / 1e5).toString());
+            updateInputWidth(formatNumber(amount / 1e5));
             context.emit('amount-staked', currentAmount.value);
 
             if (!firstRender) {
@@ -279,7 +302,7 @@ export default defineComponent({
             } else {
                 $stakedNIMText.value!.style.right = '0px';
             }
-            $stakedNIMAmount.value!.value = currentFormattedAmount.value;
+            $stakedNIMAmount.value!.value = formatNumber(parseFloat(currentFormattedAmount.value));
             updateInputWidth();
             context.emit('amount-chosen', 0);
         };
@@ -397,6 +420,29 @@ export default defineComponent({
             window.removeEventListener('resize', updateBoundingBoxes);
         });
 
+        function handleArrowKeys(direction: 'up' | 'down', event: KeyboardEvent) {
+            event.preventDefault();
+            const input = event.target as HTMLInputElement;
+            const rawValue = input.value.replace(/[^\d.]/g, '');
+            const currentValue = parseFloat(rawValue) || 0;
+
+            // Increment/decrement by:
+            // 1000 if ctrl/cmd is held
+            // 10 if shift is held
+            // 1 otherwise
+            const step = (event.ctrlKey || event.metaKey) ? 1000
+                : (event.shiftKey) ? 10
+                    : 1;
+            const newValue = direction === 'up' ? currentValue + step : currentValue - step;
+
+            // Enforce bounds
+            const maxValue = availableAmount.value / 1e5;
+            const boundedValue = Math.min(Math.max(0, newValue), maxValue);
+
+            input.value = formatNumber(boundedValue);
+            updateAmount({ target: input });
+        }
+
         return {
             CryptoCurrency,
 
@@ -424,6 +470,7 @@ export default defineComponent({
             buildSVG,
             animate,
             onInput,
+            handleArrowKeys,
         };
     },
     components: {

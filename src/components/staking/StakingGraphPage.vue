@@ -36,19 +36,6 @@
                     </p>
                 </Tooltip>
             </span>
-            <!-- <div style="height: 150px; background: gainsboro;"> -->
-                <!-- <h2
-                    style="font-size: 32px; font-weigth: bold; color: darkgrey; text-align: center; margin-top: 56px;"
-                >📈 Graph will come here</h2> -->
-            <!-- </div> -->
-            <!-- <StakingGraph
-                :stakedAmount="newStake" :apy="validator && 'annualReward' in validator ? validator.annualReward : 0"
-                :period="{
-                    s: NOW,
-                    p: 12,
-                    m: MONTH,
-                }"
-            /> -->
 
             <StakingGraph
                 :stakedAmount="newStake"

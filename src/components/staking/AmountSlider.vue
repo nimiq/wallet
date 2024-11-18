@@ -413,12 +413,16 @@ export default defineComponent({
             const currentValue = parseFloat(rawValue) || 0;
 
             // Increment/decrement by:
+            // 10000 if ctrl/cmd + shift is held
             // 1000 if ctrl/cmd is held
+            // 100 if alt/option is held
             // 10 if shift is held
             // 1 otherwise
-            const step = (event.ctrlKey || event.metaKey) ? 1000
-                : (event.shiftKey) ? 10
-                    : 1;
+            const step = (event.ctrlKey || event.metaKey) && event.shiftKey ? 10000
+                : (event.ctrlKey || event.metaKey) ? 1000
+                    : event.altKey ? 100
+                        : event.shiftKey ? 10
+                            : 1;
             const newValue = direction === 'up' ? currentValue + step : currentValue - step;
 
             // Enforce bounds

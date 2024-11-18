@@ -234,7 +234,7 @@ export default defineComponent({
             const rawValue = target.value.replace(/[^\d.]/g, ''); // Remove formatting for calculation
             const valueNim = (parseFloat(rawValue) || 0) * 1e5;
 
-            if (!firstRender && valueNim > currentAmount.value) {
+            if (!firstRender) {
                 window.clearTimeout(timeoutID);
                 animate.value = true;
                 await context.root.$nextTick();

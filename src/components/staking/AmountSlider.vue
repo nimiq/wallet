@@ -11,14 +11,13 @@
                 </div>
 
                 <div class="scalar-amount right">
-                    {{ availableFormattedAmount }} NIM
+                    <Amount :amount="availableAmount" :currency="CryptoCurrency.NIM"/>
                 </div>
             </div>
             <div class="slider-gradation">
-                <div
-                    class="scalar-amount-text"
-                    ref="$stakedNIMText"
-                    @click="$stakedNIMAmount.focus()">
+                <div class="scalar-amount-text" ref="$stakedNIMText"
+                    @click="$stakedNIMAmount.focus()"
+                >
                     <input class="nq-input"
                         type="number"
                         ref="$stakedNIMAmount"
@@ -26,7 +25,7 @@
                         @blur="updateAmount"
                         @keypress.enter="$event.target.blur()"
                         :style="`width: ${inputAmountWidth}px;`"
-                        />
+                    />
                     <div class="right-suffix">
                         NIM
                     </div>
@@ -61,10 +60,13 @@
 
 <script lang="ts">
 import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { CryptoCurrency } from '@nimiq/utils';
+
 import { useAddressStore } from '../../stores/Address';
 
 import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
 import AnimatedLeafIcon from '../icons/Staking/AnimatedLeafIcon.vue';
+import Amount from '../Amount.vue';
 
 const getSVGNode = (n:string, attrs:Record<string, string> = {}) => {
     const e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -132,7 +134,6 @@ export default defineComponent({
             }
             return (currentAmount.value / 1e5).toFixed(0); // Display without decimals
         });
-        const availableFormattedAmount = computed(() => Math.floor(availableAmount.value / 1e5).toString());
 
         const getPointAtPercent = (percent: number): number =>
             Math.max(2, (percent / 100.0) * (sliderBox.width - knobBox.width));
@@ -397,13 +398,15 @@ export default defineComponent({
         });
 
         return {
+            CryptoCurrency,
+
             atClick,
             onMove,
             currentPercentage,
             currentAmount,
             alreadyStaked,
             updateAmount,
-            availableFormattedAmount,
+            availableAmount,
             currentFormattedAmount,
             inputAmountWidth,
             $container,
@@ -426,6 +429,7 @@ export default defineComponent({
     components: {
         VerticalLineIcon,
         AnimatedLeafIcon,
+        Amount,
     },
 });
 </script>

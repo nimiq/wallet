@@ -1482,9 +1482,9 @@
     nanoid "^3.1.20"
 
 "@nimiq/core@next":
-  version "2.0.0-next.rc.4"
-  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0-next.rc.4.tgz#a353f4507f2f10e3be741f920cff921c9474dea7"
-  integrity sha512-qSBy/Mg0rbqAstEnrgzGhqeQpmQdOjCZPWmBV5uFxAMAAYl9nrABaXWQXo3Jvemvx5VQE9pz5/ma3I8Z0ROy1g==
+  version "2.0.0-next.rc.5"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0-next.rc.5.tgz#eed8a533e609f387cd6fa9d8759b3068f5192b84"
+  integrity sha512-vXqsBv8Yacbnu+O9/3KPk9JcM1w0xq3LrHpwb6uXop1rIpe2+p55B1MT/1EvwNcHce8hQk/ghtC1Vau4fyhELQ==
   dependencies:
     comlink "^4.4.1"
     websocket "^1.0.34"

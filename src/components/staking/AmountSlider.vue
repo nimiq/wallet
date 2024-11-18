@@ -163,20 +163,6 @@ export default defineComponent({
             ) + 69;
         }
 
-        function enforceMaxValue() {
-            /* Enforce max value */
-            const maxValue = availableAmount.value / 1e5;
-            const newValue = $stakedNIMAmount.value?.value
-                ? Math.min(
-                    maxValue,
-                    parseFloat($stakedNIMAmount.value?.value),
-                ) : false;
-
-            if (newValue !== false) {
-                $stakedNIMAmount.value!.value = newValue.toString();
-            }
-        }
-
         function onInput(event: Event) {
             const input = event.target as HTMLInputElement;
             const rawValue = input.value.replace(/[^\d.]/g, ''); // Remove all non-digit and non-decimal characters
@@ -480,7 +466,6 @@ export default defineComponent({
     },
 });
 </script>
-
 <style lang="scss" scoped>
 @import '../../scss/variables.scss';
 

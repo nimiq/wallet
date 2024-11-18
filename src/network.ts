@@ -221,6 +221,7 @@ export async function launchNetwork() {
         const { config } = useConfig();
         const apiValidators = await fetch(config.staking.validatorsEndpoint)
             .then((res) => res.json()).catch(() => []) as ApiValidator[];
+        // TODO: Make it work even in the case this request fails
         const validatorData: Record<string, ApiValidator> = {};
         for (const apiValidator of apiValidators) {
             validatorData[apiValidator.address] = apiValidator;
@@ -234,14 +235,15 @@ export async function launchNetwork() {
                 address,
                 active: true,
                 dominance,
+                balance,
             };
 
             if (apiData && apiData.name !== 'Unknown validator') {
                 const annualReward = calculateStakingReward(apiData.fee, activeStake);
 
                 validator = {
-                    ...validator,
                     ...apiData,
+                    ...validator,
                     annualReward,
                 };
             }

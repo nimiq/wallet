@@ -67,10 +67,6 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/components/staking/graph/StakingGraph.vue:87
-msgid "{number}M"
-msgstr ""
-
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:63
 msgid "{perc}% of swap value."
@@ -142,6 +138,10 @@ msgstr ""
 msgid "10 min"
 msgstr ""
 
+#: src/components/staking/StakingGraph.vue:12
+msgid "12M"
+msgstr ""
+
 #: src/components/FeeSelector.vue:8
 msgid "15m"
 msgstr ""
@@ -174,12 +174,20 @@ msgstr ""
 msgid "30-day Limit"
 msgstr ""
 
+#: src/components/staking/StakingGraph.vue:10
+msgid "4M"
+msgstr ""
+
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:96
 msgid "72 hours after your first buy, your limit will be increased automatically."
+msgstr ""
+
+#: src/components/staking/StakingGraph.vue:11
+msgid "8M"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:365
@@ -692,7 +700,7 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:64
+#: src/components/staking/StakingGraphPage.vue:56
 msgid "Confirm stake"
 msgstr ""
 
@@ -1564,6 +1572,12 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
+#: src/components/staking/StakingGraph.vue:5
+#: src/components/staking/StakingGraph.vue:6
+#: src/components/staking/StakingGraph.vue:7
+msgid "NIM"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
 msgstr ""
@@ -2118,8 +2132,8 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:139
-#: src/components/staking/StakingGraphPage.vue:221
+#: src/components/staking/StakingGraphPage.vue:134
+#: src/components/staking/StakingGraphPage.vue:216
 msgid "Sending Staking Transaction"
 msgstr ""
 
@@ -2276,7 +2290,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/StablecoinSendModal.vue:680
-#: src/components/staking/StakingGraphPage.vue:276
+#: src/components/staking/StakingGraphPage.vue:271
 #: src/components/staking/StakingInfoPage.vue:301
 #: src/components/staking/StakingValidatorPage.vue:165
 msgid "Something went wrong"
@@ -2302,7 +2316,7 @@ msgstr ""
 msgid "Stable like USD, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:69
+#: src/components/staking/StakingGraphPage.vue:61
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
@@ -2352,7 +2366,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:208
+#: src/components/staking/StakingGraphPage.vue:203
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
@@ -2360,11 +2374,11 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:250
+#: src/components/staking/StakingGraphPage.vue:245
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:171
+#: src/components/staking/StakingGraphPage.vue:166
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2772,7 +2786,7 @@ msgstr ""
 msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:72
+#: src/components/staking/StakingGraphPage.vue:64
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
@@ -2887,7 +2901,7 @@ msgstr ""
 msgid "When ready"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:76
+#: src/components/staking/StakingGraphPage.vue:68
 msgid "will be available within hours."
 msgstr ""
 

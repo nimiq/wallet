@@ -18,6 +18,8 @@
 import { computed, defineComponent } from '@vue/composition-api';
 
 import { formatNumber } from '../../lib/NumberFormatting';
+import { calculateStakingReward } from '../../lib/AlbatrossMath';
+import { useStakingStore } from '../../stores/Staking';
 
 export default defineComponent({
     props: {
@@ -25,15 +27,23 @@ export default defineComponent({
             type: Number,
             required: true,
         },
-        apy: {
+        fee: {
             type: Number,
             required: true,
         },
     },
     setup(props) {
-        const calculateReward = (months: number) => {
-            const yearFraction = months / 12;
-            return Math.trunc((props.stakedAmount / 1e5) * (props.apy / 100) * yearFraction);
+        const { validatorsList, activeValidator } = useStakingStore();
+
+        const calculateReward = (months: number): number => {
+            const totalStake = validatorsList.value.reduce((sum, validator) => sum + validator.balance, 0);
+
+            const days = months * (365 / 12); // Convert months to approximate days
+            const fee = (activeValidator.value && 'fee' in activeValidator.value) ? activeValidator.value.fee : 0;
+            const rewardsPercentage = calculateStakingReward(fee, totalStake, days);
+            const rewards = rewardsPercentage * props.stakedAmount;
+
+            return Math.trunc(rewards / 1e5);
         };
 
         const estimatedRewards = computed(() => ({

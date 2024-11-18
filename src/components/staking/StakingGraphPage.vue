@@ -39,7 +39,7 @@
 
             <StakingGraph
                 :stakedAmount="newStake"
-                :apy="validator && 'annualReward' in validator ? validator.annualReward : 0"
+                :fee="validator && 'fee' in validator ? validator.fee : 0"
             />
 
             <AmountSlider

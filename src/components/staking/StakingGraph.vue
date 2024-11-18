@@ -16,6 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
+import { formatNumber } from '../../lib/NumberFormatting';
 
 export default defineComponent({
     props: {
@@ -40,11 +41,9 @@ export default defineComponent({
             '12M': calculateReward(12),
         }));
 
-        const formatReward = (reward: number) => reward.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
-
         return {
             estimatedRewards,
-            formatReward,
+            formatReward: formatNumber,
         };
     },
 });

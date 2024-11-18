@@ -2,9 +2,9 @@
     <div class="staking-graph">
         <img class="graph-image" src="../../assets/staking/staking-graph.svg" alt="staking graph">
         <div class="bubbles">
-            <div class="bubble">~&nbsp;{{ formatReward(estimatedRewards['4M']) }}&nbsp;{{ $t('NIM') }}</div>
-            <div class="bubble">~&nbsp;{{ formatReward(estimatedRewards['8M']) }}&nbsp;{{ $t('NIM') }}</div>
-            <div class="bubble">~&nbsp;{{ formatReward(estimatedRewards['12M']) }}&nbsp;{{ $t('NIM') }}</div>
+            <div class="bubble">~&nbsp;{{ estimatedRewards['4M'] }}&nbsp;{{ $t('NIM') }}</div>
+            <div class="bubble">~&nbsp;{{ estimatedRewards['8M'] }}&nbsp;{{ $t('NIM') }}</div>
+            <div class="bubble">~&nbsp;{{ estimatedRewards['12M'] }}&nbsp;{{ $t('NIM') }}</div>
         </div>
         <div class="scale">
             <div class="scale-item">{{ $t('4M') }}</div>
@@ -16,6 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
+
 import { formatNumber } from '../../lib/NumberFormatting';
 
 export default defineComponent({
@@ -36,14 +37,13 @@ export default defineComponent({
         };
 
         const estimatedRewards = computed(() => ({
-            '4M': calculateReward(4),
-            '8M': calculateReward(8),
-            '12M': calculateReward(12),
+            '4M': formatNumber(calculateReward(4)),
+            '8M': formatNumber(calculateReward(8)),
+            '12M': formatNumber(calculateReward(12)),
         }));
 
         return {
             estimatedRewards,
-            formatReward: formatNumber,
         };
     },
 });

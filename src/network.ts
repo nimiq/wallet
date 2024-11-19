@@ -308,7 +308,11 @@ export async function launchNetwork() {
 
         transactionsStore.addTransactions([plain]);
 
-        if (plain.state === TransactionState.INCLUDED) {
+        if (
+            plain.state === TransactionState.INCLUDED
+            // @ts-expect-error MINED is not included in the types for PoS transactions
+            || plain.state === TransactionState.MINED
+        ) {
             const addresses: string[] = [];
             if (balances.has(plain.sender)) {
                 addresses.push(plain.sender);

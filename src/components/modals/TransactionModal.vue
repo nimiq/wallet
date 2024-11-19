@@ -186,8 +186,11 @@
                 <Amount :amount="transaction.value" class="transaction-value" :class="{
                     isIncoming,
                     'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
-                    'nq-green': (state === TransactionState.INCLUDED || state === TransactionState.CONFIRMED)
-                        && isIncoming,
+                    'nq-green': (
+                        state === TransactionState.INCLUDED
+                        || state === TransactionState.CONFIRMED
+                        || state === TransactionState.MINED
+                    ) && isIncoming,
                 }" value-mask/>
 
                 <div class="flex-row">

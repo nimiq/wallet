@@ -151,6 +151,12 @@ export default defineComponent({
                         );
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
+                            recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                            // @ts-expect-error Not typed yet in Hub
+                            validatorImageUrl: 'logo' in activeValidator.value!
+                                && !activeValidator.value.hasDefaultIcon
+                                ? activeValidator.value.logo
+                                : undefined,
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -188,6 +194,13 @@ export default defineComponent({
                         );
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
+                            recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                            // @ts-expect-error Not typed yet in Hub
+                            validatorAddress: activeValidator.value!.address,
+                            validatorImageUrl: ('logo' in activeValidator.value!
+                                && !activeValidator.value.hasDefaultIcon)
+                                ? activeValidator.value.logo
+                                : undefined,
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -230,6 +243,13 @@ export default defineComponent({
                     );
                     const txs = await sendStaking({
                         transaction: transaction.serialize(),
+                        recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                        // @ts-expect-error Not typed yet in Hub
+                        validatorAddress: activeValidator.value!.address,
+                        validatorImageUrl: 'logo' in activeValidator.value! && !activeValidator.value.hasDefaultIcon
+                            ? activeValidator.value.logo
+                            : undefined,
+                        amount: Math.abs(stakeDelta.value),
                     }).catch((error) => {
                         throw new Error(error.data);
                     });

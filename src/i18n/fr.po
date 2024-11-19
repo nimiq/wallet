@@ -296,7 +296,7 @@ msgstr "Ajouter un contact"
 
 #: src/lib/StakingUtils.ts:97
 msgid "Add stake"
-msgstr ""
+msgstr "Ajouter staking"
 
 #: src/components/modals/SendModal.vue:50
 msgid "Address unavailable?"
@@ -308,7 +308,7 @@ msgstr "Adresses"
 
 #: src/components/staking/StakingInfoPage.vue:68
 msgid "Adjust Stake"
-msgstr ""
+msgstr "Ajuster le staking"
 
 #: src/components/layouts/Settings.vue:183
 msgid "Advanced"
@@ -354,7 +354,7 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:29
 msgid "Almost instant transactions"
-msgstr ""
+msgstr "Des transactions presque instantanées"
 
 #: src/components/modals/DisclaimerModal.vue:6
 msgid "Always backup your Recovery Words, Password and Login Files."
@@ -953,9 +953,9 @@ msgstr "Les swaps de crypto sont actuellement en maintenance."
 msgid "Deactivate validator"
 msgstr "Désactiver le validateur"
 
-#: src/components/staking/StakingInfoPage.vue:259
+#: src/components/staking/StakingInfoPage.vue:260
 msgid "Deactivating Stake"
-msgstr ""
+msgstr "Désactivation du staking"
 
 #: src/lib/StakingUtils.ts:29
 msgid "Delete validator"
@@ -995,6 +995,8 @@ msgid ""
 "Do not stake with this pool!\n"
 "It controls a critical share of the total stake, making it a potential threat to the network."
 msgstr ""
+"Ne stakez pas avec ce pool !\n"
+"Il contrôle une part critique de l'enjeu total, ce qui en fait une menace potentielle pour le réseau."
 
 #: src/components/BtcAddressInput.vue:100
 #: src/components/modals/SendModal.vue:380
@@ -1004,7 +1006,7 @@ msgstr "Le domaine ne correspond pas à une adresse valide"
 
 #: src/components/staking/ValidatorScoreDetails.vue:47
 msgid "Dominance"
-msgstr ""
+msgstr "La dominance"
 
 #: src/components/swap/SwapAnimation.vue:321
 #: src/components/swap/SwapAnimation.vue:329
@@ -1505,7 +1507,7 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:101
 msgid "Important note for Ledger users:"
-msgstr ""
+msgstr "Information importante pour les utilisateurs de Ledger :"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 msgid ""
@@ -1530,7 +1532,7 @@ msgstr ""
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:22
 msgid "incl. pool fee"
-msgstr ""
+msgstr "frais de pool inclus"
 
 #: src/components/modals/BtcSendModal.vue:98
 msgid ""
@@ -1666,6 +1668,8 @@ msgstr "Chargement..."
 #: src/components/staking/StakingWelcomePage.vue:12
 msgid "Lock up NIM to support the network and earn new NIM as a reward."
 msgstr ""
+"Verrouillez du NIM pour soutenir le réseau et gagnez de nouveaux NIM en "
+"récompense."
 
 #: src/components/swap/SwapAnimation.vue:288
 #: src/components/swap/SwapAnimation.vue:291
@@ -1796,6 +1800,8 @@ msgid ""
 "Nimiq now runs on ‘Proof-of-Stake’. Enjoy the massive performance boost, "
 "energy-efficiency and staking."
 msgstr ""
+"Nimiq fonctionne maintenant en 'Proof-of-Stake'. Profitez de l'augmentation "
+"massive des performances, de l'efficacité énergétique et du staking."
 
 #: src/components/modals/BtcSendModal.vue:111
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
@@ -1841,7 +1847,7 @@ msgstr "Pas d'enregistrement"
 
 #: src/components/staking/ValidatorScoreDetails.vue:135
 msgid "No reliability data available yet."
-msgstr ""
+msgstr "Aucune donnée de fiabilité n'est encore disponible."
 
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
@@ -1947,7 +1953,7 @@ msgstr "Partiellement annulé"
 
 #: src/components/layouts/Network.vue:119
 msgid "paused"
-msgstr ""
+msgstr " en pause"
 
 #: src/components/modals/SendModal.vue:173
 msgid "Pay within {countdown}"
@@ -2067,7 +2073,7 @@ msgstr "Pop-ups"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "PoS Testnet"
-msgstr ""
+msgstr "Testnet PoS"
 
 #: src/composables/useTransactionInfo.ts:113
 msgid "Pre-staking Migration Address"
@@ -2094,16 +2100,21 @@ msgid ""
 "Rates the pool's ability to correctly produce blocks and earn rewards when "
 "selected."
 msgstr ""
+"Évalue la capacité du pool à produire correctement des blocs et à obtenir "
+"des récompenses lorsqu'il est choisi."
 
 #: src/components/staking/ValidatorScoreDetails.vue:14
 msgid ""
 "Rates the pool's availability to be selected for block production, which "
 "earns rewards."
 msgstr ""
+"Évalue la capacité du pool à être sélectionné pour la production de blocs, "
+"ce qui permet d'obtenir des récompenses."
 
 #: src/components/staking/ValidatorScoreDetails.vue:52
 msgid "Rates the pool's potential to harm the network, based on its size. "
 msgstr ""
+"Évalue la capacité du pool à nuire au réseau en fonction de sa taille. "
 
 #: src/lib/StakingUtils.ts:61
 msgid "Reactivate validator"
@@ -2440,9 +2451,9 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envoyez, recevez et stockez du BTC avec votre wallet."
 
 #: src/components/staking/StakingGraphPage.vue:139
-#: src/components/staking/StakingGraphPage.vue:221
+#: src/components/staking/StakingGraphPage.vue:234
 msgid "Sending Staking Transaction"
-msgstr ""
+msgstr "Envoi de la transaction du staking"
 
 #: src/components/modals/BtcSendModal.vue:461
 #: src/components/modals/SendModal.vue:771
@@ -2450,9 +2461,9 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "Envoi de la transaction en cours"
 
-#: src/components/staking/StakingInfoPage.vue:323
+#: src/components/staking/StakingInfoPage.vue:331
 msgid "Sending Unstaking Transaction"
-msgstr ""
+msgstr "Envoi de la transaction du dé-stake"
 
 #: src/components/modals/BtcSendModal.vue:511
 msgid "Sent {btc} BTC"
@@ -2502,7 +2513,7 @@ msgstr "virement SEPA instantané"
 
 #: src/lib/StakingUtils.ts:105
 msgid "Set active stake"
-msgstr ""
+msgstr "Définir le staking actif"
 
 #: src/components/modals/SendModal.vue:87
 #: src/components/modals/SendModal.vue:99
@@ -2594,10 +2605,10 @@ msgstr "Passer"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/StablecoinSendModal.vue:680
-#: src/components/staking/StakingGraphPage.vue:276
-#: src/components/staking/StakingInfoPage.vue:310
-#: src/components/staking/StakingInfoPage.vue:388
-#: src/components/staking/ValidatorDetailsOverlay.vue:164
+#: src/components/staking/StakingGraphPage.vue:296
+#: src/components/staking/StakingInfoPage.vue:318
+#: src/components/staking/StakingInfoPage.vue:402
+#: src/components/staking/ValidatorDetailsOverlay.vue:176
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
@@ -2631,7 +2642,7 @@ msgstr "Staker du NIM"
 
 #: src/components/staking/StakingWelcomePage.vue:8
 msgid "Stake NIM to earn NIM"
-msgstr ""
+msgstr "Staker du NIM pour en gagner"
 
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
@@ -2657,10 +2668,12 @@ msgid ""
 "Staking and un-staking are not currently supported by the Nimiq Ledger app. "
 "Stay tuned — the update will be available soon!"
 msgstr ""
+"Le staking et le dé-staking ne sont pas encore supportés par l'application "
+"Nimiq Ledger. Restez à l'écoute - une mise à jour sera bientôt disponible !"
 
 #: src/components/staking/StakingInfoPage.vue:5
 msgid "Staking with {validator}"
-msgstr ""
+msgstr "Staking avec {validator}"
 
 #: src/components/modals/SendModal.vue:475
 msgid "standard"
@@ -2674,29 +2687,32 @@ msgstr "Commencer à staker"
 msgid "Store of value, got it"
 msgstr "Réserve de valeur, c'est noté"
 
-#: src/components/staking/StakingGraphPage.vue:208
+#: src/components/staking/StakingGraphPage.vue:221
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
+"Un montant de {amount}NIM a été ajouté avec succès à votre staking avec "
+"{validator}"
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:147
+#: src/components/staking/ValidatorDetailsOverlay.vue:159
 msgid "Successfully changed validator to {validator}"
 msgstr "Le validateur a été remplacé avec succès par {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:293
+#: src/components/staking/StakingInfoPage.vue:301
 msgid "Successfully deactivated {amount} NIM"
-msgstr ""
+msgstr "Désactivation réussie de {amount} NIM"
 
-#: src/components/staking/StakingGraphPage.vue:250
+#: src/components/staking/StakingGraphPage.vue:270
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
+"Désactivation réussie de {amount}NIM depuis votre staking avec {validator}"
 
-#: src/components/staking/StakingGraphPage.vue:171
+#: src/components/staking/StakingGraphPage.vue:177
 msgid "Successfully staked {amount} NIM with {validator}"
-msgstr ""
+msgstr "Staking de {amount}NIM réussi avec {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:373
+#: src/components/staking/StakingInfoPage.vue:387
 msgid "Successfully unstaked {amount} NIM"
-msgstr ""
+msgstr "Dé-staking de {amount} NIM réussi "
 
 #: src/components/staking/WelcomeStakingModal.vue:64
 msgid "Super eco-friendly"
@@ -2934,6 +2950,9 @@ msgid ""
 "The validator is solely responsible for the information provided above. It "
 "is not to be viewed as an endorsement or recommendation by Nimiq."
 msgstr ""
+"Le validateur est le seul responsable des informations fournies ci-dessus. "
+"Elles ne doivent pas être considérées comme une approbation ou une "
+"recommandation de la part de Nimiq."
 
 #: src/components/TestnetFaucet.vue:128
 msgid "There are currently no free NIM available."
@@ -3014,16 +3033,20 @@ msgid ""
 "This pool controls a large share of the total stake.\n"
 "Support the network by staking with a smaller pool."
 msgstr ""
+"Ce pool contrôle une grande partie du staking total.\n"
+"Soutenez le réseau en misant avec un pool plus petit."
 
 #: src/components/staking/ValidatorScoreDetails.vue:164
 msgid ""
 "This pool controls an almost critical share of the total stake.\n"
 "Choose a smaller pool to improve the network’s security."
 msgstr ""
+"Ce pool contrôle une part quasi-critique de l'enjeu total.\n"
+"Choisissez un pool plus petit afin d'améliorer la sécurité du réseau."
 
 #: src/components/staking/ValidatorScoreDetails.vue:121
 msgid "This pool is reliably available for block production."
-msgstr ""
+msgstr "Ce pool est disponible de manière fiable pour la production de blocs."
 
 #: src/components/staking/ValidatorScoreDetails.vue:155
 msgid "This pool is safe to stake with."
@@ -3044,15 +3067,15 @@ msgstr "Ce pool ne produit régulièrement pas de blocs."
 
 #: src/components/staking/ValidatorScoreDetails.vue:138
 msgid "This pool reliably produces blocks."
-msgstr ""
+msgstr "Ce pool produit des blocs de façon fiable."
 
 #: src/components/staking/ValidatorScoreDetails.vue:144
 msgid "This pool sometimes fails to produce blocks."
-msgstr ""
+msgstr "Il arrive que ce pool ne produise pas de blocs."
 
 #: src/components/staking/ValidatorScoreDetails.vue:141
 msgid "This pool usually produces blocks."
-msgstr ""
+msgstr "Ce pool produit habituellement des blocs."
 
 #: src/components/TestnetFaucet.vue:123
 msgid "This service is currently not available in your region."
@@ -3111,7 +3134,7 @@ msgstr "Pour échanger avec de l'USDC/USDT, choisissez un Stablecoin."
 
 #: src/components/staking/StakingInfoPage.vue:147
 msgid "To switch validator, first {unstakeEverythingLink}."
-msgstr ""
+msgstr "Pour changer de validateur, commencez par {unstakeEverythingLink}."
 
 #: src/components/AccountBalance.vue:5
 msgid "Total Balance"
@@ -3214,14 +3237,16 @@ msgstr ""
 #: src/components/staking/StakingGraphPage.vue:69
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
+"Déverrouillez-le à tout moment. Votre NIM sera disponible dans les heures "
+"qui suivent."
 
 #: src/lib/StakingUtils.ts:34
 msgid "Unstake"
-msgstr ""
+msgstr "Dé-stake"
 
 #: src/components/staking/StakingInfoPage.vue:151
 msgid "unstake everything"
-msgstr ""
+msgstr "dé-stake l'intégralité"
 
 #: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
@@ -3281,6 +3306,7 @@ msgstr ""
 #: src/components/staking/StakingGraphPage.vue:9
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
+" Utilisez le curseur pour verrouiller votre NIM et gagner des récompenses."
 
 #: src/components/staking/StakingInfoPage.vue:119
 msgid "Validator"
@@ -3383,7 +3409,7 @@ msgstr "Sans IBAN individuel, les remboursements sont impossibles !"
 
 #: src/components/layouts/Sidebar.vue:17
 msgid "You are connecting to the Nimiq PoS and Bitcoin Testnets."
-msgstr ""
+msgstr "Vous vous connectez aux Testnets PoS de Nimiq et Bitcoin."
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
@@ -3415,7 +3441,7 @@ msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:70
 msgid "You can't adjust your stake while you're unstaking"
-msgstr ""
+msgstr "Vous ne pouvez pas ajuster votre staking pendant que vous dé-stakez"
 
 #: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."

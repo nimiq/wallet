@@ -104,7 +104,7 @@
                     {{ $t('Learn more about the update') }}
                 </a>
             </div>
-            <button class="nq-button-s" @click="$modal && $modal.forceClose()" @mousedown.prevent>
+            <button class="nq-button-s" @click="close" @mousedown.prevent>
                 {{ $t('Continue to Wallet') }}
             </button>
         </PageFooter>
@@ -115,12 +115,19 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import Modal from '../modals/Modal.vue';
+import { WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 
 export default defineComponent({
     name: 'WelcomeStakingModal',
     setup() {
         const $modal = ref<Modal | null>(null);
-        return { $modal };
+
+        async function close() {
+            window.localStorage.setItem(WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY, '1');
+            await $modal.value?.forceClose();
+        }
+
+        return { $modal, close };
     },
     components: {
         Modal,

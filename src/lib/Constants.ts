@@ -38,6 +38,7 @@ export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 // LocalStorage flag used to determine whether the new welcome screen should be shown, ignoring whether the
 // original welcome screen was already shown.
 export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
+export const WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY = 'welcome-staking-modal-shown';
 
 // Albatross
 // export const BATCH_LENGTH = 60;

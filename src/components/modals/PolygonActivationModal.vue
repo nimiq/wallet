@@ -56,6 +56,7 @@ import Modal from './Modal.vue';
 import { activatePolygon } from '../../hub';
 import {
     WELCOME_MODAL_LOCALSTORAGE_KEY,
+    WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
 import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
@@ -74,6 +75,7 @@ export default defineComponent({
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
         //  Welcome modal for new accounts/users anymore which hold no balance.
+        const welcomeStakingModalAlreadyShown = window.localStorage.getItem(WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY);
 
         const shouldOpenWelcomeModal = computed(() =>
             !welcomeModalAlreadyShown
@@ -81,7 +83,13 @@ export default defineComponent({
             && config.enableBitcoin, // Welcome modal talks about BTC.
         );
 
+        const shouldOpenWelcomeStakingModal = computed(() =>
+            !welcomeStakingModalAlreadyShown
+            && !props.redirect, // if a redirect is set, don't redirect to Welcome staking modal
+        );
+
         const buttonText = computed(() => {
+            if (shouldOpenWelcomeStakingModal.value) return context.root.$t('Learn about the new Nimiq');
             if (shouldOpenWelcomeModal.value) return context.root.$t('Check the new intro');
             return context.root.$t('Got it');
         });
@@ -110,8 +118,11 @@ export default defineComponent({
                     await context.root.$router.push('/transactions');
                 }
 
-                if (shouldOpenWelcomeModal.value) {
-                    // Open welcome modal with additional BTC and USDC info if not shown yet.
+                if (shouldOpenWelcomeStakingModal.value) {
+                    // Open welcome staking modal if not shown yet
+                    await context.root.$router.push('/welcome-staking');
+                } else if (shouldOpenWelcomeModal.value) {
+                    // Open welcome modal with additional BTC and USDC info if not shown yet
                     await context.root.$router.push('/welcome');
                 }
             }
@@ -120,6 +131,7 @@ export default defineComponent({
         return {
             hasPolygonAddresses,
             shouldOpenWelcomeModal,
+            shouldOpenWelcomeStakingModal,
             buttonText,
             modal$,
             enablePolygon,

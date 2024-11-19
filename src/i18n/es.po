@@ -954,7 +954,7 @@ msgstr "Intercambios de cripto estan actualmente en mantenimiento."
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:257
+#: src/components/staking/StakingInfoPage.vue:258
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -2425,7 +2425,7 @@ msgid "Send, receive and hold BTC in your wallet."
 msgstr "Envíe, reciba y almacene BTC en su billetera."
 
 #: src/components/staking/StakingGraphPage.vue:136
-#: src/components/staking/StakingGraphPage.vue:218
+#: src/components/staking/StakingGraphPage.vue:231
 msgid "Sending Staking Transaction"
 msgstr ""
 
@@ -2435,7 +2435,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "Enviando Transacción"
 
-#: src/components/staking/StakingInfoPage.vue:320
+#: src/components/staking/StakingInfoPage.vue:328
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2579,10 +2579,10 @@ msgstr "Omitir"
 #: src/components/modals/SendModal.vue:636
 #: src/components/modals/SendModal.vue:821
 #: src/components/modals/StablecoinSendModal.vue:677
-#: src/components/staking/StakingGraphPage.vue:272
-#: src/components/staking/StakingInfoPage.vue:307
-#: src/components/staking/StakingInfoPage.vue:384
-#: src/components/staking/ValidatorDetailsOverlay.vue:161
+#: src/components/staking/StakingGraphPage.vue:292
+#: src/components/staking/StakingInfoPage.vue:315
+#: src/components/staking/StakingInfoPage.vue:398
+#: src/components/staking/ValidatorDetailsOverlay.vue:173
 msgid "Something went wrong"
 msgstr "Algo ha salido mal"
 
@@ -2654,27 +2654,27 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr "Reserva de valor, entendido"
 
-#: src/components/staking/StakingGraphPage.vue:205
+#: src/components/staking/StakingGraphPage.vue:218
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:145
+#: src/components/staking/ValidatorDetailsOverlay.vue:157
 msgid "Successfully changed validator to {validator}"
 msgstr "Cambio el validador exitosamente a {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:291
+#: src/components/staking/StakingInfoPage.vue:299
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:247
+#: src/components/staking/StakingGraphPage.vue:267
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:168
+#: src/components/staking/StakingGraphPage.vue:174
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:370
+#: src/components/staking/StakingInfoPage.vue:384
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 

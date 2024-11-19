@@ -86,7 +86,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const { activeAddress } = useAddressStore();
-        const { activeStake, setStake } = useStakingStore();
+        const { activeStake, setStake, activeValidator } = useStakingStore();
 
         async function selectValidator() {
             const validatorLabelOrAddress = 'name' in props.validator
@@ -125,6 +125,18 @@ export default defineComponent({
 
                     const txs = await sendStaking({
                         transaction: transaction.serialize(),
+                        senderLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                        recipientLabel: 'name' in props.validator ? props.validator.name : 'Validator',
+                        // @ts-expect-error Not typed yet in Hub
+                        validatorAddress: props.validator.address,
+                        validatorImageUrl: 'logo' in props.validator && !props.validator.hasDefaultIcon
+                            ? props.validator.logo
+                            : undefined,
+                        fromValidatorAddress: activeValidator.value!.address,
+                        fromValidatorImageUrl: 'logo' in activeValidator.value! && !activeValidator.value.hasDefaultIcon
+                            ? activeValidator.value.logo
+                            : undefined,
+                        amount: activeStake.value.inactiveBalance,
                     }).catch((error) => {
                         throw new Error(error.data);
                     });

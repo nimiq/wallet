@@ -4,14 +4,20 @@
             <template #default>
                 {{ $t('Choose a Validator') }}
             </template>
-            <template #more>
+            <!-- <template #more>
                 <p class="nq-text nq-blue">
                     {{ $t('Earn rewards by locking NIM with a validator. Locked NIM stay under your control.') }}
                 </p>
-            </template>
+            </template> -->
         </PageHeader>
         <PageBody>
-            <ValidatorFilter @changed="changeFilter" @search="onSearch"/>
+            <!-- <ValidatorFilter @changed="changeFilter" @search="onSearch"/> -->
+            <div class="search flex-row">
+                <input type="text" class="search-field nq-input flex-grow"
+                    v-model="searchValue" :placeholder="$t('Search for validators...')"
+                />
+                <FatSearchIcon />
+            </div>
             <div class="validator-list" ref="validatorList$">
                 <div class="scroll-mask top"></div>
                 <LoadingList v-if="validatorsList.length === 0" :length="5" :type="LoadingListType.VALIDATOR" />
@@ -32,10 +38,11 @@ import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 
-import ValidatorFilter from './ValidatorFilter.vue';
+// import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
 import { FilterState } from '../../lib/StakingUtils';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
+import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 
 export default defineComponent({
     setup() {
@@ -48,37 +55,53 @@ export default defineComponent({
 
         const sortedList = computed(() => {
             switch (filter.value) {
-                case FilterState.SEARCH:
-                    return validatorsList.value.filter((validator) => {
-                        if (searchValue.value.length < 3) {
-                            // Only show pools by default when search string is less than 3 characters
-                            return 'name' in validator;
-                        }
+                // case FilterState.SEARCH:
+                //     return validatorsList.value.filter((validator) => {
+                //         if (searchValue.value.length < 3) {
+                //             // Only show pools by default when search string is less than 3 characters
+                //             return 'name' in validator;
+                //         }
 
-                        const searchTerm = searchValue.value.toLowerCase().replace(/\s+/g, '');
-                        const validatorLabel = ('name' in validator ? validator.name : '')
-                            .toLowerCase().replace(/\s+/g, '');
-                        const validatorAddress = validator.address.toLowerCase().replace(/\s+/g, '');
-                        return validatorLabel.includes(searchTerm) || validatorAddress.includes(searchTerm);
-                    });
-                case FilterState.REWARD:
+                //         const searchTerm = searchValue.value.toLowerCase().replace(/\s+/g, '');
+                //         const validatorLabel = ('name' in validator ? validator.name : '')
+                //             .toLowerCase().replace(/\s+/g, '');
+                //         const validatorAddress = validator.address.toLowerCase().replace(/\s+/g, '');
+                //         return validatorLabel.includes(searchTerm) || validatorAddress.includes(searchTerm);
+                //     });
+                // case FilterState.REWARD:
+                //     return validatorsList.value.slice()
+                //         .filter((validator) => 'name' in validator) // Only show pools
+                //         .sort((a, b) => {
+                //             const rewardA = 'annualReward' in a ? a.annualReward : 0;
+                //             const rewardB = 'annualReward' in b ? b.annualReward : 0;
+                //             const cmp = rewardB - rewardA;
+                //             if (cmp) return cmp;
+                //             return a.address < b.address ? -1 : 1;
+                //         });
+                default: {
+                    // Only show pools by default when search string is less than 3 characters
+                    const showDefaultList = searchValue.value.length < 3;
+
                     return validatorsList.value.slice()
-                        .filter((validator) => 'name' in validator) // Only show pools
-                        .sort((a, b) => {
-                            const rewardA = 'annualReward' in a ? a.annualReward : 0;
-                            const rewardB = 'annualReward' in b ? b.annualReward : 0;
-                            const cmp = rewardB - rewardA;
-                            if (cmp) return cmp;
-                            return a.address < b.address ? -1 : 1;
-                        });
-                default:
-                    return validatorsList.value.slice()
-                        .filter((validator) => 'name' in validator) // Only show pools
+                        .filter((validator) => {
+                            if (showDefaultList) {
+                                // Filter to show only pools
+                                return 'name' in validator;
+                            }
+
+                            const searchTerm = searchValue.value.toLowerCase().replace(/\s+/g, '');
+                            const validatorLabel = ('name' in validator ? validator.name : '')
+                                .toLowerCase().replace(/\s+/g, '');
+                            const validatorAddress = validator.address.toLowerCase().replace(/\s+/g, '');
+
+                            return validatorLabel.includes(searchTerm) || validatorAddress.includes(searchTerm);
+                        })
                         .sort((a, b) => {
                             const cmp = ('score' in b ? b.score.total : 0) - ('score' in a ? a.score.total : 0);
                             if (cmp) return cmp;
                             return a.address < b.address ? -1 : 1;
                         });
+                }
             }
         });
 
@@ -95,14 +118,16 @@ export default defineComponent({
             validatorsList,
             sortedList,
             onSearch,
+            searchValue,
         };
     },
     components: {
         PageHeader,
         PageBody,
         ValidatorListItem,
-        ValidatorFilter,
+        // ValidatorFilter,
         LoadingList,
+        FatSearchIcon,
     },
 });
 </script>
@@ -122,6 +147,35 @@ export default defineComponent({
 
     .page-body {
         padding: 1rem 0;
+
+        .search {
+            flex-direction: row-reverse;
+            margin: 0 4rem;
+            margin-bottom: 1rem;
+            position: relative;
+
+            input {
+                padding-left: 5rem;
+                border-radius: 4rem;
+            }
+
+            svg {
+                width: 2.5rem;
+                margin-right: -2.5rem;
+                position: relative;
+                left: 1.5rem;
+                transition: color 200ms ease;
+
+                line, circle {
+                    stroke-width: 2.0;
+                }
+            }
+
+            input:focus + svg,
+            input:hover + svg {
+                color: var(--nimiq-light-blue);
+            }
+        }
 
         .loading-list {
             margin: 0 3.25rem;

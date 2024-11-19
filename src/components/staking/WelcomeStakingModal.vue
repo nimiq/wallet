@@ -106,8 +106,7 @@
             </div>
             <div class="nq-text-s">
                 {{ $t('No action required.') }}
-                <!-- TODO: add correct link -->
-                <a class="nq-link" href="#" target="_blank">
+                <a class="nq-link" href="https://www.nimiq.com/blog/nimiq-proof-of-stake-is-now-live" target="_blank">
                     {{ $t('Learn more about the update') }}
                 </a>
             </div>

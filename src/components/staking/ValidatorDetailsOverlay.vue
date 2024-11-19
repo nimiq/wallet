@@ -3,7 +3,7 @@
         <div class="scroll-container">
             <PageHeader>
                 <ValidatorIcon :validator="validator" />
-                <span v-if="'name' in validator" class="validator-name">
+                <span v-if="'name' in validator">
                     {{ validator.name }}
                 </span>
                 <ShortAddress v-else :address="validator.address" />
@@ -205,6 +205,7 @@ export default defineComponent({
     padding-bottom: 4rem;
 
     &::v-deep h1 { font-size: 3rem }
+    .short-address { justify-content: center }
 
     .validator-icon {
         --size: 14rem;

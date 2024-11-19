@@ -196,7 +196,7 @@
                     </button>
                 </div>
             </div>
-            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" />
+            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" :show-gains="false" />
             <div
                 v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"

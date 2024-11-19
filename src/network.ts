@@ -125,6 +125,8 @@ async function subscribeToPeerCount() {
 }
 
 export async function launchNetwork() {
+    // Do not connect to the network during the migration.
+    return;
     if (isLaunched) return;
     isLaunched = true;
 

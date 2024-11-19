@@ -6,11 +6,6 @@
                 <div class="validator-item-inner-row flex-row">
                     <template v-if="'name' in validator">
                         <span class="validator-label">{{ validator.name }}</span>
-                        <ValidatorDescriptionTooltip v-if="validator.description || validator.website"
-                            :container="container" :validator="validator"
-                        >
-                            <InfoCircleSmallIcon class="trigger"/>
-                        </ValidatorDescriptionTooltip>
                     </template>
                     <ShortAddress v-else :address="validator.address"/>
                 </div>
@@ -26,12 +21,10 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { Validator } from '../../stores/Staking';
 
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
-import ValidatorDescriptionTooltip from './tooltips/ValidatorDescriptionTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 
@@ -48,8 +41,6 @@ export default defineComponent({
         ValidatorTrustScore,
         ValidatorReward,
         ShortAddress,
-        ValidatorDescriptionTooltip,
-        InfoCircleSmallIcon,
     },
 });
 </script>

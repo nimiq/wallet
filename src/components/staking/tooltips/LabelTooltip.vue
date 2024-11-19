@@ -1,5 +1,5 @@
 <template>
-    <ValidatorDescriptionTooltip :validator="validator" preferredPosition="bottom">
+    <ValidatorDescriptionTooltip :validator="validator" preferredPosition="bottom" :disabled="disabled">
         <div class="validator-label-trigger flex-row" @click="$emit('click')">
             <img v-if="'icon' in validator" :src="validator.icon" :alt="validator.name"/>
             <Identicon v-else :address="validator.address"/>
@@ -23,6 +23,10 @@ export default defineComponent({
         validator: {
             type: Object as () => Validator,
             required: true,
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
     },
     components: {

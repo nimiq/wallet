@@ -44,21 +44,22 @@
                     <!-- eslint-disable-next-line max-len -->
                     {{ $t('The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq.') }}
                 </p>
-
-                <div class="confirm-button" v-if="!noButton">
-                    <button class="nq-button light-blue" @click="selectValidator">
-                        {{ $t('Select validator') }}
-                    </button>
-                </div>
             </PageBody>
         </div>
+        <PageFooter>
+            <div class="confirm-button" v-if="!noButton">
+                <button class="nq-button light-blue" @click="selectValidator">
+                    {{ $t('Select validator') }}
+                </button>
+            </div>
+        </PageFooter>
     </div>
 </template>
 
 <script lang="ts">
 import { captureException } from '@sentry/vue';
 import { defineComponent } from '@vue/composition-api';
-import { PageHeader, PageBody } from '@nimiq/vue-components';
+import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { Validator, useStakingStore } from '../../stores/Staking';
 import ValidatorIcon from './ValidatorIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -173,6 +174,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
+        PageFooter,
         ValidatorIcon,
         ShortAddress,
         ValidatorScoreDetails,
@@ -186,7 +188,7 @@ export default defineComponent({
 @import '../../scss/mixins.scss';
 
 .validator-details-overlay {
-    max-height: calc(100% - 11rem);
+    max-height: calc(100% - 12rem);
 
     &.no-button {
         max-height: 100%;
@@ -287,8 +289,6 @@ hr {
     bottom: 0rem;
     left: 50%;
     transform: translateX(-50%);
-
-    padding-bottom: 4rem;
 
     --border-radius: 1.25rem;
     border-bottom-right-radius: var(--border-radius);

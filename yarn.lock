@@ -1481,20 +1481,20 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core@https://gitpkg.now.sh/nimiq/core-rs-albatross/web-client/dist?8637af3e4cf2f56cacaaaa6e33bb1e6f1b7aab5e":
-  version "2.0.0-next.rc.5"
-  resolved "https://gitpkg.now.sh/nimiq/core-rs-albatross/web-client/dist?8637af3e4cf2f56cacaaaa6e33bb1e6f1b7aab5e#cdd33dd8e44cb60095bd770fe2c3fbf76f8bac50"
+"@nimiq/core@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0.tgz#ed1509f7914b52ee4ba42eddb0eb596f867dd76f"
+  integrity sha512-cr388Q3NiSBpIDA7zAlLwlyMf/+qp+p6ytCNah3fzXluC2l8JGrpDqNT1ezzchjZTbj1hjJE7gcyUSzzpPDvnQ==
   dependencies:
     comlink "^4.4.1"
     websocket "^1.0.34"
 
-"@nimiq/core@next":
-  version "2.0.0-next.rc.5"
-  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.0-next.rc.5.tgz#eed8a533e609f387cd6fa9d8759b3068f5192b84"
-  integrity sha512-vXqsBv8Yacbnu+O9/3KPk9JcM1w0xq3LrHpwb6uXop1rIpe2+p55B1MT/1EvwNcHce8hQk/ghtC1Vau4fyhELQ==
+"@nimiq/electrum-client@git+https://github.com/nimiq/electrum-client.git#build":
+  version "0.2.2"
+  uid "4f706a0acb13b8e8abdf5be68cfc036eb102e3fc"
+  resolved "git+https://github.com/nimiq/electrum-client.git#4f706a0acb13b8e8abdf5be68cfc036eb102e3fc"
   dependencies:
-    comlink "^4.4.1"
-    websocket "^1.0.34"
+    bitcoinjs-lib "^5.1.10"
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
@@ -1507,11 +1507,12 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.2.tgz#ae2cbe5b41359875bece9ce0957209ca1b486d21"
   integrity sha512-rPy3DhWlqTOj4k9/YMS2mizjR1rLsQzqWzMnJ+xDEGprgb6/jhDBZs/CW+jONccRQWrvuyBYTrrxdLgn3imKjQ==
 
-"@nimiq/hub-api@https://gitpkg.now.sh/nimiq/hub/client?31929a586dc009fdca42089ab38571964d192fac":
-  version "1.8.0-albatross.0"
-  resolved "https://gitpkg.now.sh/nimiq/hub/client?31929a586dc009fdca42089ab38571964d192fac#496b03831a2c4de26020107e03281e02540a4bcc"
+"@nimiq/hub-api@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.10.0.tgz#fa7c33d402f10dc5816fb2537d737a79f903fe15"
+  integrity sha512-cic8Omk2MEmnGiodCNUYBqHtY3ypD9ARn+0GC5RTPExpzDJRmXfVLOakq88UxIWPc56DhL3qxdfkU2feZt/74w==
   dependencies:
-    "@nimiq/core" next
+    "@nimiq/core" "^2.0.0"
     "@nimiq/fastspot-api" "^1.10.2"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"
@@ -1525,12 +1526,12 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@1.4.2-next.0":
-  version "1.4.2-next.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.4.2-next.0.tgz#63cd64232c0ae3aca2d5fd64679f204bc40ba513"
-  integrity sha512-gHghNNCx8Trgi9onDWFYyvZ4xdNdy30qOFVfNspEbvmzDcSfz5iTglW6bekYEdmiOe5icVrKUVsSIVXi/DV3tg==
+"@nimiq/libswap@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.5.0.tgz#2df4b323ea3a17f553b6be2de37d5255208f25ab"
+  integrity sha512-hBKgr8XrJRz9ihICRyZsqKP2tsKjwRvuvSTjdNaR/ACon1FtS+0gAQsxHvfE78fN/L68/92TR9s340s9nBb0Fw==
   dependencies:
-    "@nimiq/core" next
+    "@nimiq/core" "^2.0.0"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
     "@nimiq/oasis-api" "^1.0.1"
     ethers "^5.7.2"

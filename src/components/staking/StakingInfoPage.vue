@@ -57,7 +57,7 @@
                             <Amount :amount="stake.activeBalance"/>
                         </div>
                         <div class="amount-staked-proportional">
-                            {{ $t('{percentage}% of address\'s balance', { percentage: percentage.toFixed(2) }) }}
+                            <FiatConvertedAmount :amount="stake.activeBalance" />
                         </div>
                     </div>
                     <div class="flex-row">
@@ -181,6 +181,7 @@ import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
@@ -421,6 +422,7 @@ export default defineComponent({
         ArrowDownIcon,
         ArrowRightSmallIcon,
         ValidatorIcon,
+        FiatConvertedAmount,
     },
 });
 </script>

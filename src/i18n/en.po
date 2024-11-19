@@ -2228,7 +2228,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:233
+#: src/components/staking/StakingInfoPage.vue:237
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2372,7 +2372,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/StablecoinSendModal.vue:680
 #: src/components/staking/StakingGraphPage.vue:274
-#: src/components/staking/StakingInfoPage.vue:298
+#: src/components/staking/StakingInfoPage.vue:302
 #: src/components/staking/ValidatorDetailsOverlay.vue:164
 msgid "Something went wrong"
 msgstr ""
@@ -2459,7 +2459,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:283
+#: src/components/staking/StakingInfoPage.vue:287
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2564,10 +2564,6 @@ msgstr ""
 
 #: src/lib/StakingUtils.ts:84
 msgid "Switch validator"
-msgstr ""
-
-#: src/components/staking/StakingInfoPage.vue:139
-msgid "Switch Validator"
 msgstr ""
 
 #: src/components/layouts/Network.vue:120
@@ -2837,6 +2833,10 @@ msgstr ""
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:144
+msgid "To switch validator, first {unstakeEverythingLink}."
+msgstr ""
+
 #: src/components/AccountBalance.vue:5
 msgid "Total Balance"
 msgstr ""
@@ -2929,6 +2929,10 @@ msgstr ""
 
 #: src/lib/StakingUtils.ts:34
 msgid "Unstake"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:145
+msgid "unstake everything"
 msgstr ""
 
 #: src/swap-kyc-handler.ts:148

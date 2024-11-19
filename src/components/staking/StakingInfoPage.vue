@@ -138,15 +138,18 @@
                             <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
                         </div>
                     </div>
-                    <button
-                        class="nq-button-s switch-validator"
-                        :disabled="!canSwitchValidator"
-                        @click="$emit('switch-validator')"
-                    >
-                        {{ $t('Switch Validator') }}
-                    </button>
                 </div>
             </div>
+
+            <i18n v-if="showDeactivateAll"
+                tag="span"
+                path="To switch validator, first {unstakeEverythingLink}."
+                class="switch-validator"
+            >
+                <a href="#" slot="unstakeEverythingLink" @click="deactivateAll">
+                    {{ $t('unstake everything') }}
+                </a>
+            </i18n>
 
             <!-- <button class="nq-button-s rewards-history" @click="$emit('next')">
                 {{ $t('Rewards history') }} &gt;
@@ -233,6 +236,84 @@ export default defineComponent({
             && (stake.value.inactiveRelease && stake.value.inactiveRelease < height.value),
         );
 
+        const showDeactivateAll = computed(() => {
+            if (!stake.value) return false;
+            if (stake.value?.activeBalance) return true;
+
+            if (
+                stake.value?.inactiveBalance
+                && stake.value.inactiveRelease
+                && stake.value.inactiveRelease > height.value
+            ) return false;
+
+            return true;
+        });
+
+        async function deactivateAll() {
+            if (stake.value?.activeBalance) {
+                context.emit('statusChange', {
+                    type: StatusChangeType.VALIDATOR,
+                    state: State.LOADING,
+                    title: context.root.$t('Deactivating Stake') as string,
+                });
+
+                try {
+                    const { Address, TransactionBuilder } = await import('@nimiq/core');
+                    const client = await getNetworkClient();
+
+                    const transaction = TransactionBuilder.newSetActiveStake(
+                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        BigInt(0),
+                        BigInt(0),
+                        useNetworkStore().state.height,
+                        await client.getNetworkId(),
+                    );
+
+                    const deactivatedAmount = stake.value!.activeBalance;
+
+                    const txs = await sendStaking({
+                        transaction: transaction.serialize(),
+                    });
+
+                    if (!txs) {
+                        context.emit('statusChange', {
+                            type: StatusChangeType.NONE,
+                        });
+                        return;
+                    }
+
+                    if (txs.some((tx) => tx.executionResult === false)) {
+                        throw new Error('The transaction did not succeed');
+                    }
+
+                    context.emit('statusChange', {
+                        state: State.SUCCESS,
+                        title: context.root.$t('Successfully deactivated {amount} NIM', {
+                            amount: deactivatedAmount / 1e5,
+                        }),
+                    });
+
+                    // // Close staking modal
+                    // context.root.$router.back();
+                    context.emit('statusChange', {
+                        type: StatusChangeType.NONE,
+                        timeout: SUCCESS_REDIRECT_DELAY,
+                    });
+                } catch (error: any) {
+                    if (config.reportToSentry) captureException(error);
+                    else console.error(error); // eslint-disable-line no-console
+
+                    context.emit('statusChange', {
+                        state: State.WARNING,
+                        title: context.root.$t('Something went wrong') as string,
+                        message: `${error.message} - ${error.data}`,
+                    });
+                }
+            } else {
+                unstakeAll(!stake.value?.inactiveBalance);
+            }
+        }
+
         async function unstakeAll(removeOnly = false) {
             context.emit('statusChange', {
                 type: StatusChangeType.UNSTAKING,
@@ -318,6 +399,8 @@ export default defineComponent({
             inactiveReleaseTime,
             hasUnstakableStake,
             isStakeDeactivating,
+            showDeactivateAll,
+            deactivateAll,
             unstakeAll,
             canSwitchValidator,
             consensus,
@@ -354,7 +437,7 @@ export default defineComponent({
     }
 
     .page-body {
-        padding: 0 2rem 8rem;
+        padding: 0 2rem 2rem;
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
@@ -554,6 +637,23 @@ export default defineComponent({
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 1.75rem;
+            }
+        }
+    }
+
+    .switch-validator {
+        font-size: var(--small-size);
+        font-weight: 600;
+        color: var(--text-40);
+        align-self: center;
+
+        a {
+            color: inherit;
+            text-decoration: underline;
+            transition: color 200ms var(--nimiq-ease);
+
+            &:hover {
+                color: var(--text-60);
             }
         }
     }

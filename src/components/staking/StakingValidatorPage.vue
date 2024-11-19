@@ -38,7 +38,7 @@ import { FilterState } from '../../lib/StakingUtils';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { validatorsList } = useStakingStore();
 
         const validatorList$ = ref<HTMLElement | null>(null);

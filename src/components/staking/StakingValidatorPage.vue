@@ -19,7 +19,7 @@
                     v-for="validator in sortedList" :key="validator.address"
                     :validator="validator"
                     :container="validatorList$"
-                    @click.native="selectValidator(validator)"
+                    @click.native="$emit('selectValidator', validator)"
                 />
                 <div class="scroll-mask bottom"></div>
             </div>
@@ -28,28 +28,18 @@
 </template>
 
 <script lang="ts">
-import { captureException } from '@sentry/vue';
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
-import { Validator, useStakingStore } from '../../stores/Staking';
-import { useConfig } from '../../composables/useConfig';
+import { useStakingStore } from '../../stores/Staking';
 
 import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
-import { useAddressStore } from '../../stores/Address';
-import { sendStaking } from '../../hub';
-import { useNetworkStore } from '../../stores/Network';
 import { FilterState } from '../../lib/StakingUtils';
-import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-import { StatusChangeType } from './StakingModal.vue';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
-import { getNetworkClient } from '../../network';
 
 export default defineComponent({
     setup(props, context) {
-        const { config } = useConfig();
-        const { activeAddress } = useAddressStore();
-        const { validatorsList, activeStake, setStake } = useStakingStore();
+        const { validatorsList } = useStakingStore();
 
         const validatorList$ = ref<HTMLElement | null>(null);
 
@@ -92,82 +82,6 @@ export default defineComponent({
             }
         });
 
-        async function selectValidator(validator: Validator) {
-            const validatorLabelOrAddress = 'name' in validator ? validator.name : validator.address;
-
-            try {
-                if (!activeStake.value || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
-                    setStake({
-                        address: activeAddress.value!,
-                        activeBalance: 0,
-                        inactiveBalance: 0,
-                        validator: validator.address,
-                        retiredBalance: 0,
-                    });
-
-                    context.emit('next');
-                } else {
-                    context.emit('statusChange', {
-                        type: StatusChangeType.VALIDATOR,
-                        state: State.LOADING,
-                        title: context.root.$t('Changing validator') as string,
-                    });
-
-                    const { Address, TransactionBuilder } = await import('@nimiq/core');
-                    const client = await getNetworkClient();
-
-                    const transaction = TransactionBuilder.newUpdateStaker(
-                        Address.fromUserFriendlyAddress(activeAddress.value!),
-                        Address.fromUserFriendlyAddress(validator.address),
-                        true,
-                        BigInt(0),
-                        useNetworkStore().state.height,
-                        await client.getNetworkId(),
-                    );
-
-                    const txs = await sendStaking({
-                        transaction: transaction.serialize(),
-                    }).catch((error) => {
-                        throw new Error(error.data);
-                    });
-
-                    if (!txs) {
-                        context.emit('statusChange', {
-                            type: StatusChangeType.NONE,
-                        });
-                        return;
-                    }
-
-                    if (txs.some((tx) => tx.executionResult === false)) {
-                        throw new Error('The transaction did not succeed');
-                    }
-
-                    context.emit('statusChange', {
-                        state: State.SUCCESS,
-                        title: context.root.$t(
-                            'Successfully changed validator to {validator}',
-                            { validator: validatorLabelOrAddress },
-                        ),
-                    });
-
-                    window.setTimeout(() => {
-                        context.emit('statusChange', { type: StatusChangeType.NONE });
-                        context.emit('next');
-                    }, SUCCESS_REDIRECT_DELAY);
-                }
-            } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
-
-                // Show error screen
-                context.emit('statusChange', {
-                    state: State.WARNING,
-                    title: context.root.$t('Something went wrong') as string,
-                    message: `${error.message} - ${error.data}`,
-                });
-            }
-        }
-
         const searchValue = ref('');
         function onSearch(search: string) {
             filter.value = search ? FilterState.SEARCH : FilterState.TRUST;
@@ -180,7 +94,6 @@ export default defineComponent({
             changeFilter,
             validatorsList,
             sortedList,
-            selectValidator,
             onSearch,
         };
     },

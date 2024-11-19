@@ -19,6 +19,7 @@
 ^\/scan[\/#\?]?$
 ^(?:\/(nimiq:.+))[\/#\?]?$
 ^\/welcome[\/#\?]?$
+^\/welcome-staking[\/#\?]?$
 ^\/migration-welcome[\/#\?]?$
 ^\/btc-activation[\/#\?]?$
 ^\/btc-transaction(?:\/([^\/#\?]+?))[\/#\?]?$

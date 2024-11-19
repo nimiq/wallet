@@ -14,7 +14,9 @@
                     <!-- <strong class="dot">&middot;</strong>-->
                 </div>
             </div>
-            <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" />
+            <ValidatorTrustScore v-if="'score' in validator && validator.score.total"
+                :score="validator.score.total"
+            />
         </div>
     </button>
 </template>

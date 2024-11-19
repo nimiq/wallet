@@ -267,10 +267,7 @@ hr {
     font-weight: 500;
     color: var(--nimiq-blue);
 
-    p {
-        margin: 0;
-        color: var(--text-70);
-    }
+    p { margin: 0 }
 }
 
 .blue-link {

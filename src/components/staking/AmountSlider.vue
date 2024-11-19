@@ -39,7 +39,7 @@
                     :style="`left: calc(2rem + 2px + (100% - 4rem - 4px) * (${index} / 10) - 1px)`" />
                 <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
             </div>
-            <div class="slider-controls" ref="$slide" @click="onMove($event, true);">
+            <div class="slider-controls" ref="$slide" @click="onMove($event);">
                 <div class="slider-controls-wrapper">
                     <div class="slider-progress-bar" ref="$progressBar" />
                     <div class="slider-knob"
@@ -293,7 +293,7 @@ export default defineComponent({
             context.emit('amount-chosen', 0);
         };
 
-        const onMove = (e: MouseEvent | TouchEvent, execute = false, skipSignals = false) => {
+        const onMove = (e: MouseEvent | TouchEvent, skipSignals = false) => {
             const position = extractEventPosition(e);
             if (!position || !pivotPoint) return;
 

@@ -93,6 +93,9 @@ module.exports = {
             // after e.g. i18n optimization.
             realContentHash: true,
         },
+        experiments: {
+            asyncWebAssembly: true,
+        },
     },
     chainWebpack(config) {
         config
@@ -158,8 +161,8 @@ module.exports = {
     pwa: {
         name: {
             mainnet: 'Nimiq Wallet',
-            testnet: 'Nimiq Testnet',
-            local: 'Nimiq Local',
+            testnet: 'Nimiq Testnet Wallet',
+            local: 'Nimiq Local Wallet',
         }[buildName],
         msTileColor: '#1F2348',
         manifestOptions: {

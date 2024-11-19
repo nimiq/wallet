@@ -39,6 +39,8 @@ export const useAccountStore = createStore({
         activeAccountInfo: (state) => state.activeAccountId
             ? state.accountInfos[state.activeAccountId]
             : null,
+        accountNimAddresses: (state, { activeAccountInfo }) =>
+            (activeAccountInfo.value as AccountInfo | null)?.addresses || [],
         activeCurrency: (state) => state.activeCurrency,
         hasBitcoinAddresses: (state, { activeAccountInfo }) =>
             Boolean((activeAccountInfo.value as AccountInfo | null)?.btcAddresses?.external.length),

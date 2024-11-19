@@ -2625,6 +2625,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/variables.scss';
+@import '../../scss/functions.scss';
 
 .modal ::v-deep .small-page {
     width: 63.5rem;
@@ -2682,8 +2683,8 @@ export default defineComponent({
             right: 3.5rem;
         }
 
-        background-color: rgba(31, 35, 72, 0.06);
-        background-image: url('../../assets/arrow-down.svg');
+        background-color: nimiq-blue(0.06);
+        background-image: url('../../assets/mini-arrow-down.svg');
         background-size: 1.25rem;
         background-repeat: no-repeat;
         background-position-x: calc(100% - 1.75rem);
@@ -3043,6 +3044,8 @@ export default defineComponent({
 }
 
 .address-list-overlay {
+    max-height: 100%;
+
     .page-header {
         padding-bottom: 1rem;
     }
@@ -3052,9 +3055,6 @@ export default defineComponent({
         padding: 1rem 0 2rem;
 
         .address-list {
-            height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
             padding: 0 2rem;
         }
     }

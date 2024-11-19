@@ -4,7 +4,7 @@ import { getNetworkClient } from '../../network';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
-import { Transaction, useTransactionsStore } from '../../stores/Transactions';
+import { toSecs, Transaction, useTransactionsStore } from '../../stores/Transactions';
 import { useConfig } from '../../composables/useConfig';
 import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, ENV_MAIN } from '../Constants';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
@@ -44,7 +44,8 @@ export async function exportTransactions(
             (tx) => nimAddresses.includes(tx.sender) || nimAddresses.includes(tx.recipient),
         )
         .filter((tx) => tx.timestamp) // Only confirmed transactions
-        .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
+        .filter((tx) => toSecs(tx.timestamp!) >= startTimestamp
+            && toSecs(tx.timestamp!) < endTimestamp); // Only requested timeframe
 
     /* eslint-disable no-await-in-loop */
     // Get receipts from block explorer and compare if we have all transactions
@@ -55,8 +56,8 @@ export async function exportTransactions(
             // Wait 1 second more for each retry, starting at 0 seconds, up to 4 seconds
             await new Promise((res) => { window.setTimeout(res, 1000 * i); });
             // nimiq.watch is on adblocker lists, so use nimiqwatch.com to avoid getting blocked
-            const apiUrl = `https://${useConfig().config.environment === ENV_MAIN ? '' : 'test-'}api.nimiqwatch.com`;
-            const receipts = await fetch(`${apiUrl}/account-receipts/${address}/${year}`)
+            const apiUrl = `https://v2.${useConfig().config.environment === ENV_MAIN ? '' : 'test.'}nimiqwatch.com`;
+            const receipts = await fetch(`${apiUrl}/api/v1/account-receipts/${address}/${year}`)
                 .then((res) => res.json() as Promise<Receipt[]>)
                 .catch(() => undefined);
             if (!receipts) continue;
@@ -78,7 +79,7 @@ export async function exportTransactions(
         shimAllSettled();
         const newTxs: Transaction[] = [];
         await Promise.allSettled([...missingTxHashes.values()].map(async (hash) => {
-            newTxs.push((await client.getTransaction(hash)).toPlain());
+            newTxs.push(await client.getTransaction(hash));
         }));
         addTransactions(newTxs);
 

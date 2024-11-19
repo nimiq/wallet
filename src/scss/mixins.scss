@@ -1,4 +1,5 @@
-@import './variables.scss';
+@import 'functions.scss';
+@import 'variables.scss';
 
 @mixin flex-full-height {
     display: flex;

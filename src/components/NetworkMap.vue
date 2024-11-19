@@ -1,4 +1,4 @@
-<template>
+j<template>
     <div class="network-map" ref="container$">
         <canvas class="map" ref="network$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
         <canvas class="overlay" ref="overlay$" :style="`width: ${width}px; height: ${height}px;`"></canvas>
@@ -27,7 +27,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-import { getNetworkClient, onPeersUpdated, offPeersUpdated } from '../network';
+import { getNetworkClient } from '../network';
+import { Peer, useNetworkStore } from '../stores/Network';
 import NetworkMap, {
     NodeHexagon,
     NETWORK_MAP_WIDTH,
@@ -68,38 +69,48 @@ export default defineComponent({
             }
         };
 
-        let updateKnownAddresses: () => Promise<void>;
+        let knownAddressesUpdateInterval: number | null = null;
 
         onMounted(async () => {
-            const client = await getNetworkClient();
-
             const networkMap = new NetworkMap(network$.value!, overlay$.value!, (n) => nodes.value = n);
 
-            let askForAddressesTimeout = 0;
+            const networkStore = useNetworkStore();
 
-            updateKnownAddresses = async () => {
-                if (!askForAddressesTimeout) {
-                    askForAddressesTimeout = window.setTimeout(async () => {
-                        const peerAddressInfos = await client.network.getAddresses();
-                        const newKnownAddresses = peerAddressInfos.map((addressInfo) => addressInfo.toPlain());
-                        if (networkMap.updateNodes(newKnownAddresses)) {
-                            networkMap.draw();
-                        }
-                        askForAddressesTimeout = 0;
-                    }, 500);
+            let updateDebounce: number | null = null;
+            function updateKnownAddresses() {
+                if (updateDebounce) {
+                    window.clearTimeout(updateDebounce);
                 }
-            };
+                updateDebounce = window.setTimeout(async () => {
+                    const client = await getNetworkClient();
+                    const knownAddresses = await client.getAddressBook();
+                    const peers = knownAddresses.map(({ peerId, address, type }) => ({
+                        peerId,
+                        multiAddress: address,
+                        nodeType: type,
+                        connected: false,
+                        ...(networkStore.state.peers[peerId] as Peer | undefined),
+                    }));
+                    if (networkMap.updateNodes(peers)) {
+                        networkMap.draw();
+                    }
+                }, 500);
+            }
 
-            onPeersUpdated(updateKnownAddresses);
-
+            watch(() => networkStore.state.peers, () => {
+                updateKnownAddresses();
+            });
             updateKnownAddresses();
+            knownAddressesUpdateInterval = window.setInterval(updateKnownAddresses, 30e3);
 
             window.addEventListener('resize', setDimensions);
             requestAnimationFrame(() => setDimensions()); // use requestAnimationFrame to not cause forced layouting
         });
 
         onUnmounted(() => {
-            offPeersUpdated(updateKnownAddresses);
+            if (knownAddressesUpdateInterval) {
+                window.clearInterval(knownAddressesUpdateInterval);
+            }
             window.removeEventListener('resize', setDimensions);
         });
 

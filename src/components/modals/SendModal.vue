@@ -329,7 +329,7 @@ export default defineComponent({
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
-        const { state: network$ } = useNetworkStore();
+        const { consensus, height } = useNetworkStore();
         const { config } = useConfig();
 
         const recipientDetailsOpened = ref(false);
@@ -535,10 +535,10 @@ export default defineComponent({
             if (isSendingMax) sendMax();
         }
 
-        const hasHeight = computed(() => !!network$.height);
+        const hasHeight = computed(() => !!height.value);
 
         const canSend = computed(() =>
-            network$.consensus === 'established'
+            consensus.value === 'established'
             && hasHeight.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value
@@ -785,7 +785,7 @@ export default defineComponent({
                     value: amount.value,
                     fee: fee.value,
                     extraData: message.value || undefined,
-                    validityStartHeight: network$.height,
+                    validityStartHeight: height.value,
                 }, abortController.signal);
                 unwatchGoCryptoExpiry();
 
@@ -824,7 +824,7 @@ export default defineComponent({
                 statusType.value = 'signing';
                 statusState.value = State.WARNING;
                 statusTitle.value = context.root.$t('Something went wrong') as string;
-                statusMessage.value = error.message;
+                statusMessage.value = `${error.message} - ${error.data}`;
             }
         }
 

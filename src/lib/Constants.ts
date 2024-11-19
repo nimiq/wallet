@@ -10,11 +10,6 @@ export const ENV_MAIN = 'main';
 export const ENV_TEST = 'test';
 export const ENV_DEV = 'dev';
 
-export const MAINNET_ORIGIN = 'https://wallet.nimiq.com';
-export const TESTNET_ORIGIN = window.location.hostname === 'localhost' || window.location.hostname === 'bs-local.com'
-    ? `${window.location.protocol}//${window.location.hostname}:8081`
-    : 'https://wallet.nimiq-testnet.com';
-
 // Manually curated list of fiat currencies to offer in the Wallet. Arguably somewhat arbitrary.
 export const FIAT_CURRENCIES_OFFERED = ([
     'AED', 'ARS', 'AUD', 'BRL', 'CAD', 'CHF', 'CLP', 'CNY', 'CRC', 'CZK', 'DKK', 'EUR', 'GBP', 'GMD', 'GTQ', 'HKD',
@@ -43,10 +38,15 @@ export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 // LocalStorage flag used to determine whether the new welcome screen should be shown, ignoring whether the
 // original welcome screen was already shown.
 export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
+export const WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY = 'welcome-staking-modal-shown';
+
+// Albatross
+// export const BATCH_LENGTH = 60;
+// export const BATCHES_PER_EPOCH = 720;
+// export const EPOCH_LENGTH = BATCH_LENGTH * BATCHES_PER_EPOCH;
+export const MIN_STAKE = 100e5;
+
+export const STAKING_CONTRACT_ADDRESS = 'NQ77 0000 0000 0000 0000 0000 0000 0000 0001';
 
 // Pre-Staking
-export const MIN_PRESTAKE = 100e5;
 export const BURNER_ADDRESS = 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000';
-
-// Add the WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY
-export const WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY = 'nimiq-welcome-pre-staking-modal-shown';

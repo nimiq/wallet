@@ -37,7 +37,7 @@ export abstract class Format {
     }
 
     protected getTxDate(timestamp: number, utc = false) {
-        const dateObj = new Date(timestamp * 1e3);
+        const dateObj = new Date(timestamp);
 
         return {
             dateObj,

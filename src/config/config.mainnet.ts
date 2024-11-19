@@ -7,23 +7,39 @@ import { ENV_MAIN } from '../lib/Constants';
 export default {
     hubEndpoint: 'https://hub.nimiq.com',
     environment: ENV_MAIN,
-    nimiqScript: 'https://cdn.nimiq.com/v1.5.8/web.js',
+    nimiqSeeds: [
+        '/dns4/aurora.seed.nimiq.com/tcp/443/wss',
+        '/dns4/catalyst.seed.nimiq.network/tcp/443/wss',
+        '/dns4/cipher.seed.nimiq-network.com/tcp/443/wss',
+        '/dns4/eclipse.seed.nimiq.cloud/tcp/443/wss',
+        '/dns4/lumina.seed.nimiq.systems/tcp/443/wss',
+        '/dns4/nebula.seed.nimiq.com/tcp/443/wss',
+        '/dns4/nexus.seed.nimiq.network/tcp/443/wss',
+        '/dns4/polaris.seed.nimiq-network.com/tcp/443/wss',
+        '/dns4/photon.seed.nimiq.cloud/tcp/443/wss',
+        '/dns4/pulsar.seed.nimiq.systems/tcp/443/wss',
+        '/dns4/quasar.seed.nimiq.com/tcp/443/wss',
+        '/dns4/solstice.seed.nimiq.network/tcp/443/wss',
+        '/dns4/vortex.seed.nimiq.cloud/tcp/443/wss',
+        '/dns4/zenith.seed.nimiq.systems/tcp/443/wss',
+    ],
+    faucetEndpoint: '',
     reportToSentry: false,
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes
 
-    prestaking: {
+    staking: {
         // The block heights determining the on-chain pre-staking window. All transactions inside this window count
         // for pre-staking.
-        startBlock: 3_392_200, // 2024-10-06T02:53:18Z
-        endBlock: 3_456_000, // ~2024-11-19T07:00:00Z
-        // The dates determining the display of the pre-staking UI in the Wallet. This window is deliberately smaller
-        // than the on-chain window to allow for grace periods for the UI to be updated.
-        // The UI is still shown for address who have pre-staked even after the `endDate`.
-        startDate: new Date('2024-10-07T00:00:00Z'),
-        endDate: new Date('2024-11-11T00:00:00Z'),
-        totalPrestakeEndpoint: 'https://v2.nimiqwatch.com/api/v2/total-prestake',
-        validatorsEndpoint: 'https://v2.nimiqwatch.com/api/v2/validators',
+        prestakingStartBlock: 3_392_200, // 2024-10-06T02:53:18Z
+        prestakingEndBlock: 3_456_000, // ~2024-11-19T16:00:00Z
+        transitionBlock: 3_456_000,
+        validatorsEndpoint: 'https://validators-api-mainnet.nuxt.dev/api/v1/validators?only-known=false',
+        genesis: {
+            height: 3456000,
+            date: new Date('2024-11-19T16:00:00Z'),
+            supply: 0,
+        },
     },
 
     polygon: {

@@ -108,10 +108,7 @@
                         <div class="features-description">
                             <p class="first">{{ $t('Super low fees, super fast payments') }}</p>
                             <p class="second">{{ $t('Censorship-resistant network connection') }}</p>
-                            <p class="third">
-                                {{ $t('Creates prestaking rewards') }}
-                                <span class="coming-soon">{{ $t('COMING SOON') }}</span>
-                            </p>
+                            <p class="third">{{ $t('Creates staking rewards') }}</p>
                         </div>
                     </div>
                 </div>
@@ -386,13 +383,10 @@ import {
     CryptoCurrency,
     WELCOME_MODAL_LOCALSTORAGE_KEY,
     FIAT_CURRENCIES_OFFERED,
-    WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
-import { useConfig } from '../../composables/useConfig';
-import router from '../../router';
 
 export default defineComponent({
     setup(props, context) {
@@ -400,13 +394,6 @@ export default defineComponent({
         const { activeAddress } = useAddressStore();
         const { isMobile } = useWindowSize();
         const { currency, setCurrency, state: fiat$ } = useFiatStore();
-        const { config } = useConfig();
-
-        const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
-            WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
-        );
-
-        const isPreStakingPeriod = new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate;
 
         const currencies = [
             CryptoCurrency.NIM,
@@ -551,11 +538,6 @@ export default defineComponent({
             } else {
                 window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
                 await modal$.value!.forceClose();
-                // open welcome pre staking modal
-                if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
-                    // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
-                    router.push('/welcome-prestaking');
-                }
             }
         }
 
@@ -631,6 +613,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     @import "../../scss/variables.scss";
+    @import '../../scss/functions.scss';
 
     .modal {
         font-size: var(--body-size);
@@ -860,7 +843,7 @@ export default defineComponent({
                 .peer\/first:checked ~ label.peer-checked\/first,
                 .peer\/second:checked ~ label.peer-checked\/second,
                 .peer\/third:checked ~ label.peer-checked\/third {
-                    box-shadow: 0px 0px 0px 3px white, 0px 0px 0px 4px rgba(31, 35, 72, 0.4);
+                    box-shadow: 0px 0px 0px 3px white, 0px 0px 0px 4px nimiq-blue(0.4);
                 }
 
                 .peer\/first:not(:checked) ~ label.peer-checked\/first,

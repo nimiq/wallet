@@ -43,6 +43,7 @@ import { useFiatStore } from '../stores/Fiat';
 import { useConfig } from '../composables/useConfig';
 import { CryptoCurrency } from '../lib/Constants';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { useStakingStore } from '../stores/Staking';
 
 type SupportedCurrency = CryptoCurrency.NIM | CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT;
 
@@ -60,7 +61,10 @@ export default defineComponent({
         const { currency: fiatCurrency, exchangeRates } = useFiatStore();
         const { stablecoin } = useAccountSettingsStore();
         const cryptoBalances = computed(() => ({
-            [CryptoCurrency.NIM]: useAddressStore().accountBalance.value / 1e5,
+            [CryptoCurrency.NIM]: (
+                useAddressStore().accountBalance.value
+                + useStakingStore().totalAccountStake.value
+            ) / 1e5,
             [CryptoCurrency.BTC]: useBtcAddressStore().accountBalance.value / 1e8,
             ...(stablecoin.value === CryptoCurrency.USDC ? {
                 [CryptoCurrency.USDC]: (

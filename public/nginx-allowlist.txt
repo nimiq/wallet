@@ -19,6 +19,7 @@
 ^\/scan[\/#\?]?$
 ^(?:\/(nimiq:.+))[\/#\?]?$
 ^\/welcome[\/#\?]?$
+^\/welcome-staking[\/#\?]?$
 ^\/migration-welcome[\/#\?]?$
 ^\/btc-activation[\/#\?]?$
 ^\/btc-transaction(?:\/([^\/#\?]+?))[\/#\?]?$
@@ -36,8 +37,7 @@
 ^\/simplex[\/#\?]?$
 ^\/release-notes[\/#\?]?$
 ^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
-^\/prestaking[\/#\?]?$
-^\/welcome-prestaking[\/#\?]?$
+^\/staking[\/#\?]?$
 ^\/settings[\/#\?]?$
 ^\/accounts[\/#\?]?$
 ^\/disclaimer[\/#\?]?$

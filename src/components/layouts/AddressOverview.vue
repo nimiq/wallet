@@ -8,7 +8,7 @@
                 || activeCurrency === CryptoCurrency.USDC
                 || activeCurrency === CryptoCurrency.USDT"
         >
-            <div class="actions-mobile flex-row">
+            <div class="actions-mobile flex-row" v-if="isMobile">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
                 <div class="flex-row justify-between w-full">
                     <SearchBar v-model="searchString"/>
@@ -20,7 +20,7 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <PrestakingButton v-if="showPrestakingButton" />
+                    <StakingButton v-if="showStakingButton" />
                     <button
                         class="reset icon-button"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
@@ -32,6 +32,12 @@
                                 @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
+                            </button>
+                            <button v-if="activeCurrency === 'nim'"
+                                class="reset flex-row"
+                                @mousedown="$router.push('/staking')"
+                            >
+                                <TwoLeafStakingIcon/>{{ $t('Staking') }}
                             </button>
                             <button v-if="activeCurrency === 'btc'"
                                 class="reset flex-row"
@@ -61,6 +67,7 @@
                     </button>
                 </div>
             </div>
+
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
                     <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
@@ -156,7 +163,8 @@
                     </div>
                 </div>
             </div>
-            <div class="actions flex-row">
+
+            <div class="actions flex-row" v-if="!isMobile">
                 <SearchBar v-model="searchString"/>
 
                 <div class="flex-row ml-auto">
@@ -167,9 +175,9 @@
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim'"> <!-- TODO: show preview if prestaking-->
-                        <PrestakingPreview v-if="activePrestake && windowWidth > 860" />
-                        <PrestakingButton v-else-if="showPrestakingButton" />
+                    <template v-if="activeCurrency === 'nim'">
+                        <StakingPreview v-if="activeStake && windowWidth > 860" :show-gains="false" />
+                        <StakingButton v-else-if="showStakingButton" />
                     </template>
 
                     <button class="send nq-button-pill light-blue flex-row"
@@ -188,7 +196,7 @@
                     </button>
                 </div>
             </div>
-            <!-- <PrestakingPreview v-if="prestake" class="prestaking-preview-mobile" /> -->
+            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" :show-gains="false" />
             <div
                 v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -305,8 +313,10 @@ import UsdtTransactionList from '../UsdtTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
+import StakingPreview from '../staking/StakingPreview.vue';
+import StakingButton from '../staking/StakingButton.vue';
+import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
-import PrestakingButton from '../prestaking/PrestakingButton.vue';
 
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
@@ -331,9 +341,8 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import HeroIcon from '../icons/Prestaking/HeroIcon.vue';
-import PrestakingPreview from '../prestaking/PrestakingPreview.vue';
-import { usePrestakingStore } from '../../stores/Prestaking';
+import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
@@ -349,8 +358,7 @@ export default defineComponent({
             addressInfo: usdcAddressInfo,
         } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
-
-        const { activePrestake, accountPrestake } = usePrestakingStore();
+        const { activeStake, totalAccountStake } = useStakingStore();
 
         const searchString = ref('');
 
@@ -575,12 +583,12 @@ export default defineComponent({
             useAccountStore().setActiveCurrency(stablecoin);
         }
 
-        const showPrestakingButton = computed(() => {
-            // Hide button for legacy accounts except if they're already prestaking
+        const showStakingButton = computed(() => {
+            // Hide button for legacy accounts except if they're already staking
             if (activeCurrency.value !== CryptoCurrency.NIM) return false;
             if (!activeAccountInfo.value) return false;
             if (activeAccountInfo.value.type !== AccountType.LEGACY) return true;
-            return accountPrestake.value > 0;
+            return totalAccountStake.value > 0;
         });
 
         return {
@@ -610,9 +618,10 @@ export default defineComponent({
             config,
             convertBridgedUsdcToNative,
             switchStablecoin,
-            activePrestake,
+            activeStake,
             windowWidth,
-            showPrestakingButton,
+            showStakingButton,
+            isMobile,
         };
     },
     components: {
@@ -640,9 +649,10 @@ export default defineComponent({
         UsdcIcon,
         UsdtIcon,
         CashlinkButton,
-        PrestakingButton,
+        StakingButton,
+        StakingPreview,
         HeroIcon,
-        PrestakingPreview,
+        TwoLeafStakingIcon,
     },
 });
 </script>
@@ -738,9 +748,9 @@ export default defineComponent({
             border-radius: 50%;
             background: var(--bg-primary);
             box-shadow:
-                0px 0.337011px 2px rgba(31, 35, 72, 0.08),
-                0px 1.5px 3px rgba(31, 35, 72, 0.08),
-                0px 4px 16px rgba(31, 35, 72, 0.11);
+                0px 0.337011px 2px nimiq-blue(0.08),
+                0px 1.5px 3px nimiq-blue(0.08),
+                0px 4px 16px nimiq-blue(0.11);
 
             opacity: 0;
             transition: opacity 0.3s var(--nimiq-ease);
@@ -1024,7 +1034,7 @@ export default defineComponent({
     }
 }
 
-.prestaking-button {
+.staking-button {
     margin-left: 1rem;
 }
 
@@ -1051,8 +1061,12 @@ export default defineComponent({
     }
 }
 
+.staking-preview {
+    margin-left: 1.5rem;
+}
+
 .send {
-    margin-left: 1rem;
+    margin-left: 1.5rem;
 
     .nq-icon {
         transform: rotateZ(-90deg);
@@ -1094,10 +1108,6 @@ export default defineComponent({
         box-shadow: none;
         background:rgba(252, 135, 2, 0.13) !important;
     }
-}
-
-.actions-mobile {
-    display: none;
 }
 
 .transaction-list {
@@ -1235,8 +1245,11 @@ export default defineComponent({
         position: relative;
     }
 
-    .actions {
-        display: none;
+    .staking-preview-mobile {
+        display: flex;
+        margin: 1rem 2rem -0.5rem 2rem;
+        position: relative;
+        z-index: 1000;
     }
 
     .actions-mobile {
@@ -1321,10 +1334,10 @@ export default defineComponent({
     .mobile-action-bar {
         margin: 0;
         box-shadow:
-            0px 0px 4.12454px rgba(31, 35, 72, 0.031357),
-            0px 0px 12.5187px rgba(31, 35, 72, 0.045),
-            0px 0px 32.0004px rgba(31, 35, 72, 0.058643),
-            0px 0px 80px rgba(31, 35, 72, 0.07);
+            0px 0px 4.12454px nimiq-blue(0.031357),
+            0px 0px 12.5187px nimiq-blue(0.045),
+            0px 0px 32.0004px nimiq-blue(0.058643),
+            0px 0px 80px nimiq-blue(0.07);
     }
 
     .promo-box {

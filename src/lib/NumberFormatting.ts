@@ -57,3 +57,22 @@ export function calculateDisplayedDecimals(amount: number | null, currency: Cryp
     if (amount < 10 * 1e5) return Math.max(decimals.value, 1);
     return decimals.value;
 }
+
+/**
+ * Formats a number by adding thousands separators while preserving original decimal places.
+ * @param {number} value - The number to format
+ * @param {string} [separator='\u00A0'] - The thousands separator character (defaults to non-breaking space)
+ * @returns {string} The formatted number as a string
+ * @example
+ * formatNumber(1234.56) // Returns "1 234.56"
+ * formatNumber(1000000) // Returns "1 000 000"
+ * formatNumber(1234.56, ',') // Returns "1,234.56"
+ */
+export function formatNumber(value: number, separator = '\u00A0'): string {
+    const parts = value.toString().split('.');
+    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+
+    return parts.length > 1
+        ? `${integerPart}.${parts[1]}`
+        : integerPart;
+}

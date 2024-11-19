@@ -1,11 +1,15 @@
 <template>
     <button
         class="reset transaction"
-        :class="state"
+        :class="[state, {'not-executed': transaction.executionResult === false}]"
         @click="$router.push({name: 'transaction', params: {hash: transaction.transactionHash}})"
         :key="`tx-${transaction.transactionHash}`"
     >
-        <div v-if="state === TransactionState.MINED || state === TransactionState.CONFIRMED" class="date">
+        <div v-if="
+            state === TransactionState.INCLUDED
+            || state === TransactionState.CONFIRMED
+            || state === TransactionState.MINED
+        " class="date">
             <span class="day">{{ dateDay }}</span><br>
             <span class="month">{{ dateMonth }}</span>
         </div>
@@ -50,7 +54,7 @@
                 </span>
             </div>
         </div>
-        <div class="amounts" :class="{isIncoming}">
+        <div class="amounts" :class="{isIncoming, 'signalling': transaction.flags === 2}">
             <Amount :amount="transaction.value" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
@@ -83,7 +87,7 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { Transaction, TransactionState } from '../stores/Transactions';
+import { toMs, Transaction, TransactionState } from '../stores/Transactions';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
@@ -124,7 +128,7 @@ export default defineComponent({
             fiat,
         } = useTransactionInfo(transaction);
 
-        const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp * 1000);
+        const timestamp = computed(() => transaction.value.timestamp && toMs(transaction.value.timestamp));
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
 
         return {
@@ -364,7 +368,7 @@ svg {
             text-align: right;
         }
 
-        &:not(.isIncoming) {
+        &:not(.isIncoming):not(.signalling) {
             .amount {
                 opacity: 0.6;
             }
@@ -389,6 +393,16 @@ svg {
                 margin-right: -0.1em;
             }
         }
+
+        &.signalling {
+            .amount {
+                opacity: 0.4;
+            }
+
+            .fiat-amount {
+                display: none;
+            }
+        }
     }
 
     &.expired,
@@ -406,6 +420,11 @@ svg {
         .amounts {
             text-decoration: line-through;
         }
+    }
+
+    &.not-executed {
+        text-decoration: line-through;
+        opacity: 0.4;
     }
 }
 

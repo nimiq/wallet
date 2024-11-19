@@ -39,9 +39,9 @@
             </button>
 
             <a
-                v-if="!hasPolygonAddresses || shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal"
+                v-if="!hasPolygonAddresses || shouldOpenWelcomeModal"
                 class="nq-link"
-                @click="close(hasPolygonAddresses && (shouldOpenWelcomeModal || shouldOpenWelcomePreStakingModal))"
+                @click="close(hasPolygonAddresses && (shouldOpenWelcomeModal))"
             >
                 {{ $t('Skip') }}
             </a>
@@ -56,9 +56,9 @@ import Modal from './Modal.vue';
 import { activatePolygon } from '../../hub';
 import {
     WELCOME_MODAL_LOCALSTORAGE_KEY,
-    WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
+    WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
 } from '../../lib/Constants';
-import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountStore } from '../../stores/Account';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 
@@ -67,7 +67,7 @@ export default defineComponent({
         redirect: String,
     },
     setup(props, context) {
-        const { activeAccountId, activeAccountInfo, hasPolygonAddresses } = useAccountStore();
+        const { activeAccountId, hasPolygonAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);
@@ -75,12 +75,7 @@ export default defineComponent({
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
         //  Welcome modal for new accounts/users anymore which hold no balance.
-        const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
-            WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
-        );
-        const isPreStakingPeriod = computed(() =>
-            new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate,
-        );
+        const welcomeStakingModalAlreadyShown = window.localStorage.getItem(WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY);
 
         const shouldOpenWelcomeModal = computed(() =>
             !welcomeModalAlreadyShown
@@ -88,16 +83,14 @@ export default defineComponent({
             && config.enableBitcoin, // Welcome modal talks about BTC.
         );
 
-        const shouldOpenWelcomePreStakingModal = computed(() =>
-            !welcomePreStakingModalAlreadyShown
-            && !props.redirect
-            && isPreStakingPeriod.value
-            && activeAccountInfo.value?.type !== AccountType.LEGACY, // Prevent opening for legacy accounts
+        const shouldOpenWelcomeStakingModal = computed(() =>
+            !welcomeStakingModalAlreadyShown
+            && !props.redirect, // if a redirect is set, don't redirect to Welcome staking modal
         );
 
         const buttonText = computed(() => {
+            if (shouldOpenWelcomeStakingModal.value) return context.root.$t('Learn about the new Nimiq');
             if (shouldOpenWelcomeModal.value) return context.root.$t('Check the new intro');
-            if (shouldOpenWelcomePreStakingModal.value) return context.root.$t('Learn about pre-staking');
             return context.root.$t('Got it');
         });
 
@@ -125,11 +118,12 @@ export default defineComponent({
                     await context.root.$router.push('/transactions');
                 }
 
-                if (shouldOpenWelcomeModal.value) {
-                    // Open welcome modal with additional BTC and USDC info if not shown yet.
+                if (shouldOpenWelcomeStakingModal.value) {
+                    // Open welcome staking modal if not shown yet
+                    await context.root.$router.push('/welcome-staking');
+                } else if (shouldOpenWelcomeModal.value) {
+                    // Open welcome modal with additional BTC and USDC info if not shown yet
                     await context.root.$router.push('/welcome');
-                } else if (shouldOpenWelcomePreStakingModal.value) {
-                    await context.root.$router.push('/welcome-prestaking');
                 }
             }
         }
@@ -137,7 +131,7 @@ export default defineComponent({
         return {
             hasPolygonAddresses,
             shouldOpenWelcomeModal,
-            shouldOpenWelcomePreStakingModal,
+            shouldOpenWelcomeStakingModal,
             buttonText,
             modal$,
             enablePolygon,

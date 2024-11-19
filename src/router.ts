@@ -33,6 +33,8 @@ const BuyOptionsModal = () =>
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
 const WelcomeModal = () =>
     import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
+const WelcomeStakingModal = () =>
+    import(/* webpackChunkName: "welcome-staking-modal" */ './components/staking/WelcomeStakingModal.vue');
 const MigrationWelcomeModal = () =>
     import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
 const DisclaimerModal = () =>
@@ -81,11 +83,9 @@ const MoonpaySellInfoModal = () =>
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
-// Prestaking Modals
-const PrestakingModal = () =>
-    import(/* webpackChunkName: "prestaking-modal" */ './components/prestaking/PrestakingModal.vue');
-const WelcomePreStakingModal = () =>
-    import(/* webpackChunkName: "welcome-prestaking-modal" */ './components/modals/WelcomePreStakingModal.vue');
+// Staking Modals
+const StakingModal = () =>
+    import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
 
 Vue.use(VueRouter);
 
@@ -237,6 +237,13 @@ const routes: RouteConfig[] = [{
             name: 'welcome',
             meta: { column: Columns.ACCOUNT },
         }, {
+            path: '/welcome-staking',
+            components: {
+                modal: WelcomeStakingModal,
+            },
+            name: 'welcome-staking',
+            meta: { column: Columns.ACCOUNT },
+        }, {
             path: '/migration-welcome',
             components: {
                 modal: MigrationWelcomeModal,
@@ -372,19 +379,12 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            path: '/prestaking',
+            path: '/staking',
             components: {
-                modal: PrestakingModal,
+                modal: StakingModal,
             },
-            name: 'prestaking',
+            name: 'staking',
             props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/welcome-prestaking',
-            name: 'welcome-prestaking',
-            components: {
-                modal: WelcomePreStakingModal,
-            },
             meta: { column: Columns.DYNAMIC },
         }],
         beforeEnter: (to, from, next) => {

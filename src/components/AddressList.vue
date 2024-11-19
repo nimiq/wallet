@@ -55,6 +55,7 @@ import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
 import { useSettingsStore } from '../stores/Settings';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
     props: {
@@ -90,23 +91,30 @@ export default defineComponent({
         } = usePolygonAddressStore();
         const { stablecoin } = useAccountSettingsStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
-        const { state: network$ } = useNetworkStore();
+        const { height } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
+        const { totalAccountStake } = useStakingStore();
 
-        function hasLockedBalance(addressInfo: AddressInfo, height: number): boolean {
+        function hasLockedBalance(addressInfo: AddressInfo): boolean {
             if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
 
             const numberVestingSteps = Math.ceil(addressInfo.totalAmount / addressInfo.stepAmount);
 
-            const passedBlocks = Math.max(0, height - addressInfo.start);
-            const passedSteps = Math.floor(passedBlocks / addressInfo.stepBlocks);
+            let passedSteps: number;
+            if ('startTime' in addressInfo) {
+                const passedTime = Math.max(0, Date.now() - addressInfo.startTime);
+                passedSteps = Math.floor(passedTime / addressInfo.timeStep);
+            } else {
+                const passedBlocks = Math.max(0, height.value - addressInfo.start);
+                passedSteps = Math.floor(passedBlocks / addressInfo.stepBlocks);
+            }
 
             return passedSteps < numberVestingSteps;
         }
 
         const processedAddressInfos = computed(() => addressInfos.value.map((addressInfo) => ({
             ...addressInfo,
-            hasLockedBalance: hasLockedBalance(addressInfo, network$.height),
+            hasLockedBalance: hasLockedBalance(addressInfo),
         })));
 
         const backgroundYOffset = ref(4 + 20); // px - Top margin of the address-buttons (0.5rem) + 2.5rem padding-top
@@ -221,6 +229,12 @@ export default defineComponent({
             }, 0);
         }
 
+        watch(totalAccountStake, (newStake, oldStake) => {
+            if (Boolean(newStake) !== Boolean(oldStake) && activeAddress.value) {
+                adjustBackgroundOffsetAndScale(activeAddress.value);
+            }
+        }, { lazy: true });
+
         return {
             root$,
             scrollbarVisible,
@@ -235,6 +249,7 @@ export default defineComponent({
             stablecoinInfo,
             selectBtcAddress,
             selectStablecoinAddress,
+            totalAccountStake,
         };
     },
     components: {
@@ -397,7 +412,7 @@ export default defineComponent({
     .add-address-button:hover,
     .add-address-button:focus {
         .add-address-icon {
-            background: rgba(31, 35, 72, 0.1);
+            background: nimiq-blue(0.1);
             color: var(--text-80);
         }
     }
@@ -407,6 +422,10 @@ export default defineComponent({
     }
 
     @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+        .account-stake {
+            margin-right: 1.75rem;
+        }
+
         .active-box {
             display: none;
         }

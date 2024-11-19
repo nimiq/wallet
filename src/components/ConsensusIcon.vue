@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 
 import { useNetworkStore } from '../stores/Network';
 import WorldIcon from './icons/WorldIcon.vue';
@@ -16,9 +16,7 @@ import WorldAlertIcon from './icons/WorldAlertIcon.vue';
 
 export default defineComponent({
     setup() {
-        const { state: $network } = useNetworkStore();
-
-        const consensus = computed(() => $network.consensus);
+        const { consensus } = useNetworkStore();
 
         return {
             consensus,
@@ -46,7 +44,7 @@ export default defineComponent({
     opacity: 1 !important;
 }
 
-.connecting {
+.connecting, .stalled {
     color: var(--nimiq-orange) !important;
     opacity: 1 !important;
 }

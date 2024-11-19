@@ -22,15 +22,14 @@ import {
 import { isProxyData, ProxyType } from '@/lib/ProxyDetection';
 import { parseData } from '@/lib/DataFormatting';
 import { assetToCurrency } from '@/lib/swap/utils/Assets';
+import { getStakingTransactionMeaning } from '@/lib/StakingUtils';
 
 import { i18n } from '@/i18n/i18n-setup';
 import { useOasisPayoutStatusUpdater } from './useOasisPayoutStatusUpdater';
-import { useNetworkStore } from '../stores/Network';
 
 export function useTransactionInfo(transaction: Ref<Transaction>) {
     const { activeAddress, state: addresses$ } = useAddressStore();
     const { getLabel } = useContactsStore();
-    const { height } = useNetworkStore();
 
     const isIncoming = computed(() => { // eslint-disable-line arrow-body-style
         // const haveSender = !!addresses$.addressInfos[props.transaction.sender];
@@ -94,7 +93,6 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
             && 'signer' in transaction.value.proof
             && Config.nimiqPay.cosignerPublicKeys.includes(transaction.value.proof.publicKey!)
         ) {
-            // @ts-expect-error Missing types for HTLC early-resolve
             return transaction.value.proof.creator as string;
         }
 
@@ -104,15 +102,11 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
         if (transaction.value.recipient === BURNER_ADDRESS) {
             // Only consider txs within the pre-staking window
             if (
-                ((
+                (
                     transaction.value.blockHeight
-                    && transaction.value.blockHeight >= Config.prestaking.startBlock
-                    && transaction.value.blockHeight < Config.prestaking.endBlock
-                ) || (
-                    transaction.value.state === 'pending'
-                    && height.value >= Config.prestaking.startBlock
-                    && height.value < Config.prestaking.endBlock - 1
-                ))
+                    && transaction.value.blockHeight >= Config.staking.prestakingStartBlock
+                    && transaction.value.blockHeight < Config.staking.prestakingEndBlock
+                )
                 && transaction.value.data.raw
                 && ValidationUtils.isValidAddress(parseData(transaction.value.data.raw))
             ) {
@@ -219,6 +213,9 @@ export function useTransactionInfo(transaction: Ref<Transaction>) {
             || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
             return i18n.t('HTLC Refund') as string;
         }
+
+        const stakingData = getStakingTransactionMeaning(transaction.value, false);
+        if (stakingData) return stakingData;
 
         return parseData(transaction.value.data.raw);
     });

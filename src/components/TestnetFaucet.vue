@@ -20,7 +20,7 @@
 import { defineComponent, ref, Ref } from '@vue/composition-api';
 import { CircleSpinner, CrossIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
-import { MAINNET_ORIGIN, TESTNET_ORIGIN } from '../lib/Constants';
+import Config from 'config';
 
 type FaucetInfoResponse = {
     network: 'test' | 'main',
@@ -64,18 +64,10 @@ export default defineComponent({
         const errorMsg: Ref<LocaleMessage> = ref('');
         const loading = ref(false);
 
-        // Only the testnet faucet is supported, because this component does not implement RECAPTCHA/VAPTCHA
-        const FAUCET_URL = 'https://faucet.nimiq-testnet.com';
-
-        const faucetInfoPromise = fetch(`${FAUCET_URL}/info`)
+        const faucetInfoPromise = fetch(`${Config.faucetEndpoint}/info`)
             .then((res) => res.json() as Promise<FaucetInfoResponse>)
             .then((faucet) => {
-                const expectedNetwork = {
-                    [MAINNET_ORIGIN]: 'main',
-                    [TESTNET_ORIGIN]: 'test',
-                }[window.location.origin];
-
-                if (faucet.network !== expectedNetwork) {
+                if (faucet.network !== Config.environment) {
                     unavailableMsg.value = context.root.$t('Faucet unavailable (wrong network)');
                     canTap.value = false;
                 }
@@ -102,7 +94,7 @@ export default defineComponent({
             await faucetInfoPromise;
             if (!canTap.value) return false;
 
-            return fetch(`${FAUCET_URL}/tapit`, {
+            return fetch(`${Config.faucetEndpoint}/tapit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

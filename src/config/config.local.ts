@@ -7,27 +7,33 @@ import { ENV_DEV } from '../lib/Constants';
 export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
-    nimiqScript: 'https://cdn.nimiq-testnet.com/v1.5.8/web.js',
+    nimiqSeeds: [
+        '/dns4/seed1.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed2.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed3.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/seed4.pos.nimiq-testnet.com/tcp/8443/wss',
+    ],
+    faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
     reportToSentry: false,
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
-    prestaking: {
+    staking: {
         // The block heights determining the on-chain pre-staking window. All transactions inside this window count
         // for pre-staking.
-        startBlock: 3_392_200, // 2024-10-06T02:53:18Z
-        endBlock: 3_456_000, // ~2024-11-19T07:00:00Z
-        // The dates determining the display of the pre-staking UI in the Wallet. This window is deliberately smaller
-        // than the on-chain window to allow for grace periods for the UI to be updated.
-        // The UI is still shown for address who have pre-staked even after the `endDate`.
-        startDate: new Date('2024-10-07T00:00:00Z'),
-        endDate: new Date('2024-11-11T00:00:00Z'),
-        totalPrestakeEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/total-prestake',
-        validatorsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/validators',
+        prestakingStartBlock: 3_023_730,
+        prestakingEndBlock: 3_028_050,
+        transitionBlock: 3_032_010,
+        validatorsEndpoint: 'https://validators-api-testnet.nuxt.dev/api/v1/validators?only-known=false',
+        genesis: {
+            height: 3032010,
+            date: new Date('2024-11-13T20:00:00Z'),
+            supply: 1203075533952899,
+        },
     },
 
     polygon: {
-        enabled: true,
+        enabled: false,
         networkId: 80002,
         rpcEndpoint: 'wss://polygon-amoy.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
@@ -80,7 +86,7 @@ export default {
 
     fastspot: {
         enabled: true, // Set to false to hide the swap feature.
-        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC],
+        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC],
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',
@@ -100,7 +106,7 @@ export default {
     },
 
     ten31Pass: {
-        enabled: true,
+        enabled: false,
         apiEndpoint: window.sessionStorage['use-local-kyc-server'] // switch that can be set to use local kyc server
             // Note that locally signed grants are not actually eligible for higher limits on the deployed Fastspot and
             // OASIS test instances because they don't exist in the deployed TEN31 Pass's database.
@@ -129,14 +135,14 @@ export default {
     },
 
     moonpay: {
-        enabled: true,
+        enabled: false,
         // This is a publishable key
         clientApiKey: 'pk_test_N3px5sgYEnrWtGxAkXHNoVno3At9ZYO',
         signatureEndpoint: 'https://moosign.nimiq.network',
     },
 
     simplex: {
-        enabled: true,
+        enabled: false,
         formScriptUrl: 'https://iframe.sandbox.test-simplexcc.com/form-sdk.js',
         sdkScriptUrl: 'https://cdn.test-simplexcc.com/sdk/v1/js/sdk.js',
         splxScriptUrl: null as string | null,

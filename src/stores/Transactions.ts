@@ -1,3 +1,4 @@
+import type { PlainHtlcData, PlainTransactionDetails } from '@nimiq/core';
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
@@ -10,19 +11,27 @@ import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
 import { AddressInfo, useAddressStore } from './Address';
 
-export type Transaction = ReturnType<Nimiq.Client.TransactionDetails['toPlain']> & {
+export type Transaction = PlainTransactionDetails & {
     fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>,
     relatedTransactionHash?: string,
 };
 
-// Copied from Nimiq.Client.TransactionState so we don't have to import the Core library to use the enum as values.
 export enum TransactionState {
     NEW = 'new',
     PENDING = 'pending',
     MINED = 'mined',
+    INCLUDED = 'included',
     INVALIDATED = 'invalidated',
     EXPIRED = 'expired',
     CONFIRMED = 'confirmed',
+}
+
+export function toMs(secondsOrMillis: number) {
+    return secondsOrMillis < 1e12 ? secondsOrMillis * 1000 : secondsOrMillis;
+}
+
+export function toSecs(secondsOrMillis: number) {
+    return secondsOrMillis > 1e12 ? Math.floor(secondsOrMillis / 1000) : secondsOrMillis;
 }
 
 const scheduledHistoricFiatAmountUpdates: Partial<Record<FiatCurrency, Set<string>>> = {};
@@ -57,7 +66,7 @@ export const useTransactionsStore = createStore({
                 if (!knownTx) continue;
                 if (knownTx.timestamp) {
                     // Keep original timestamp and blockHeight instead of values at confirmation after 10 blocks.
-                    tx.timestamp = knownTx.timestamp;
+                    tx.timestamp = toMs(knownTx.timestamp);
                     tx.blockHeight = knownTx.blockHeight;
                 }
                 if (!tx.relatedTransactionHash && knownTx.relatedTransactionHash) {
@@ -149,7 +158,7 @@ export const useTransactionsStore = createStore({
                     && !scheduledHistoricFiatAmountUpdates[historyFiatCurrency]?.has(tx.transactionHash)
                     // NIM price is only available starting 2018-07-28T00:00:00Z, and this timestamp
                     // check prevents us from re-querying older transactions again and again.
-                    && tx.timestamp && tx.timestamp >= 1532736000,
+                    && tx.timestamp && toMs(tx.timestamp) >= toMs(1532736000),
             ) as Array<Transaction & { timestamp: number }>;
 
             if (!transactionsToUpdate.length) return;
@@ -165,7 +174,7 @@ export const useTransactionsStore = createStore({
                 // which also don't get updated minutely and might not include the newest rates yet. If the user time is
                 // not set correctly, this will gracefully fall back to fetching rates for new transactions as historic
                 // exchange rates; old transactions at the user's system's time might be interpreted as current though.
-                const isNewTransaction = Math.abs(tx.timestamp * 1000 - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
+                const isNewTransaction = Math.abs(toMs(tx.timestamp) - lastExchangeRateUpdateTime) < 2.5 * 60 * 1000;
                 if (isNewTransaction && currentRate) {
                     // Set via Vue.set to let vue handle reactivity.
                     // TODO this might be not necessary anymore with Vue3, also for the other Vue.sets in this file.
@@ -185,12 +194,12 @@ export const useTransactionsStore = createStore({
                 const historicExchangeRates = await getHistoricExchangeRates(
                     CryptoCurrency.NIM,
                     historyFiatCurrency,
-                    historicTransactions.map((tx) => tx.timestamp * 1000),
+                    historicTransactions.map((tx) => toMs(tx.timestamp)),
                     FIAT_API_PROVIDER_TX_HISTORY,
                 );
 
                 for (let tx of historicTransactions) {
-                    const exchangeRate = historicExchangeRates.get(tx.timestamp * 1000);
+                    const exchangeRate = historicExchangeRates.get(toMs(tx.timestamp));
                     // Get the newest transaction from the store in case it was updated via setRelatedTransaction.
                     tx = this.state.transactions[tx.transactionHash] as typeof tx || tx;
                     Vue.set(tx.fiatValue!, historyFiatCurrency, exchangeRate !== undefined
@@ -227,15 +236,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
 
     // HTLC Creation
     if ('hashRoot' in transaction.data) {
-        const fundingData = transaction.data as {
-            sender: string,
-            recipient: string,
-            hashAlgorithm: string,
-            hashRoot: string,
-            hashCount: number,
-            timeout: number,
-            raw: string,
-        };
+        const fundingData = transaction.data;
         addFundingData(fundingData.hashRoot, {
             asset: SwapAsset.NIM,
             transactionHash: transaction.transactionHash,
@@ -267,18 +268,11 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
         if (!fundingTx) {
             const client = await getNetworkClient();
             const chainTxs = await client.getTransactionsByAddress(transaction.sender);
-            fundingTx = chainTxs.map((tx) => tx.toPlain()).find(selector);
+            fundingTx = chainTxs.find(selector);
         }
 
         if (fundingTx) {
-            const fundingData = fundingTx.data as any as {
-                sender: string,
-                recipient: string,
-                hashAlgorithm: string,
-                hashRoot: string,
-                hashCount: number,
-                timeout: number,
-            };
+            const fundingData = fundingTx.data as PlainHtlcData;
             addSettlementData(fundingData.hashRoot, {
                 asset: SwapAsset.NIM,
                 transactionHash: transaction.transactionHash,
@@ -288,18 +282,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
 
     // HTLC Settlement
     if ('hashRoot' in transaction.proof) {
-        const settlementData = transaction.proof as {
-            type: 'regular-transfer',
-            hashAlgorithm: string,
-            hashDepth: number,
-            hashRoot: string,
-            preImage: string,
-            signer: string,
-            signature: string,
-            publicKey: string,
-            pathLength: number,
-            raw: string,
-        };
+        const settlementData = transaction.proof;
         addSettlementData(settlementData.hashRoot, {
             asset: SwapAsset.NIM,
             transactionHash: transaction.transactionHash,

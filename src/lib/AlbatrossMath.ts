@@ -1,0 +1,62 @@
+import config from 'config';
+// import { EPOCH_LENGTH } from './Constants';
+
+/** Total supply in Luna */
+const TOTAL_SUPPLY = 21e14;
+/** Supply decay per millisecond */
+const SUPPLY_DECAY = 0.9999999999960264;
+
+// export function nextElectionBlock(height: number): number {
+//     const { genesis } = config.staking;
+//     return Math.floor((height - genesis.height) / EPOCH_LENGTH + 1) * EPOCH_LENGTH;
+// }
+
+export function calculateStakingReward(
+    fee: number,
+    currentlyStaked: number,
+    days = 365, // Default to 1 year if not specified
+): number {
+    const now = new Date();
+    const currentSupply = supplyAtTime(now.getTime());
+    // Calculate future date based on number of days
+    const futureDate = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const futureSupply = supplyAtTime(futureDate.getTime());
+
+    return ((futureSupply - currentSupply) / currentlyStaked) * (1 - fee);
+}
+
+function supplyAtTime(currentTime: number): number {
+    const { genesis } = config.staking;
+
+    const t = currentTime - genesis.date.getTime();
+    if (t < 0) {
+        throw new Error('currentTime must be greater or equal to genesisTime');
+    }
+
+    return (TOTAL_SUPPLY - ((TOTAL_SUPPLY - genesis.supply) * powi(SUPPLY_DECAY, t)));
+}
+
+/* eslint-disable max-len */
+/**
+ * Adapted `exp_by_squaring_iterative` from
+ * https://en.wikipedia.org/w/index.php?title=Exponentiation_by_squaring&amp%3Boldid=1229001691&useskin=vector#With_constant_auxiliary_memory
+ *
+ * The Rust implementation is also using this algorithm to guarantee the same result on different platforms.
+ */
+function powi(x: number, n: number): number {
+    if (n < 0) {
+        x = 1 / x;
+        n *= -1;
+    }
+    if (!n) return 1;
+    let y = 1;
+    while (n > 1) {
+        if (n % 2) {
+            y *= x;
+            n -= 1;
+        }
+        x *= x;
+        n /= 2;
+    }
+    return x * y;
+}

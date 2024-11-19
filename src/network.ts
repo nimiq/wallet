@@ -1,127 +1,49 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
-import { ValidationUtils } from '@nimiq/utils';
+import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
-import { loadNimiqJS } from './lib/NimiqJSLoader';
-import { BURNER_ADDRESS, ENV_MAIN, MIN_PRESTAKE } from './lib/Constants';
-import { usePrestakingStore } from './stores/Prestaking';
-import { parseData } from './lib/DataFormatting';
+import { useStakingStore, Validator } from './stores/Staking';
+import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
+import { calculateStakingReward } from './lib/AlbatrossMath';
 
 let isLaunched = false;
-let clientPromise: Promise<Nimiq.Client>;
+let clientPromise: Promise<Client>;
 
 type Balances = Map<string, number>;
 const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
 
 export async function getNetworkClient() {
     const { config } = useConfig();
+
+    // eslint-disable-next-line no-async-promise-executor
     clientPromise = clientPromise || (async () => {
         // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
-        // which never changes at runtime. Changing config.nimiqScript at runtime is not supported.
-        await loadNimiqJS();
-        Nimiq.GenesisConfig[config.environment === ENV_MAIN ? 'main' : 'test']();
-        await Nimiq.WasmHelper.doImport();
-        return Nimiq.Client.Configuration.builder().instantiateClient();
+        // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
+        const { ClientConfiguration, Client } = await import('@nimiq/core');
+        const clientConfig = new ClientConfiguration();
+        clientConfig.network(config.environment === ENV_MAIN ? 'mainalbatross' : 'testalbatross');
+        clientConfig.seedNodes(config.nimiqSeeds);
+        clientConfig.logLevel('debug');
+        return Client.create(clientConfig.build());
     })();
 
     return clientPromise;
 }
 
-async function reconnectNetwork(peerSuggestions?: Nimiq.Client.PeerInfo[]) {
+async function reconnectNetwork() {
     const client = await getNetworkClient();
-
-    await client.resetConsensus();
-
-    // Re-add deep listeners to new consensus
-    subscribeToPeerCount();
-    for (const [callback] of onPeersUpdatedCallbacks) {
-        const [peersChangedId, addressAddedId] = await Promise.all([ // eslint-disable-line no-await-in-loop
-            onNetworkPeersChanged(callback),
-            onNetworkAddressAdded(callback),
-        ]);
-        onPeersUpdatedCallbacks.set(callback, {
-            peersChangedId,
-            addressAddedId,
-        });
-    }
-
-    if (peerSuggestions && peerSuggestions.length > 0) {
-        const interval = window.setInterval(() => {
-            peerSuggestions.forEach((peer) => client.network.connect(peer.peerAddress));
-        }, 1000);
-        await client.waitForConsensusEstablished();
-        window.clearInterval(interval);
-    }
+    await client.connectNetwork();
 }
 
 async function disconnectNetwork() {
     const client = await getNetworkClient();
-
-    const peers = await client.network.getPeers();
-    await Promise.all(peers.map(
-        ({ peerAddress }) => client.network.disconnect(peerAddress),
-    ));
-    return peers;
-}
-
-const onPeersUpdatedCallbacks = new Map<() => any, {
-    peersChangedId: number,
-    addressAddedId: number,
-}>();
-
-export async function onPeersUpdated(callback: () => any) {
-    const [peersChangedId, addressAddedId] = await Promise.all([
-        onNetworkPeersChanged(callback),
-        onNetworkAddressAdded(callback),
-    ]);
-    onPeersUpdatedCallbacks.set(callback, {
-        peersChangedId,
-        addressAddedId,
-    });
-}
-
-export async function offPeersUpdated(callback: () => any) {
-    const ids = onPeersUpdatedCallbacks.get(callback);
-    if (!ids) return;
-
-    const client = await getNetworkClient();
-
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    consensus.network.off('peers-changed', ids.peersChangedId);
-    consensus.network.addresses.off('added', ids.addressAddedId);
-    onPeersUpdatedCallbacks.delete(callback);
-}
-
-async function onNetworkPeersChanged(callback: () => any) {
-    const client = await getNetworkClient();
-
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.on('peers-changed', callback);
-}
-
-async function onNetworkAddressAdded(callback: () => any) {
-    const client = await getNetworkClient();
-
-    // @ts-expect-error Private property access
-    const consensus = await client._consensus as Nimiq.BaseMiniConsensus;
-    return consensus.network.addresses.on('added', callback);
-}
-
-async function subscribeToPeerCount() {
-    return onNetworkPeersChanged(async () => {
-        const client = await getNetworkClient();
-        const statistics = await client.network.getStatistics();
-        const peerCount = statistics.totalPeerCount;
-        useNetworkStore().state.peerCount = peerCount;
-    });
+    await client.disconnectNetwork();
 }
 
 export async function launchNetwork() {
@@ -130,10 +52,10 @@ export async function launchNetwork() {
 
     const client = await getNetworkClient();
 
-    const { state: network$ } = useNetworkStore();
+    const { state: network$, addPeer, removePeer, patch: patchNetworkStore } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
-    const prestakingStore = usePrestakingStore();
+    const stakingStore = useStakingStore();
 
     const subscribedAddresses = new Set<string>();
     const fetchedAddresses = new Set<string>();
@@ -167,61 +89,25 @@ export async function launchNetwork() {
         }
     }
 
-    async function updatePrestakes(addresses: string[] = [...balances.keys()]) {
+    async function updateStakes(addresses: string[] = [...balances.keys()]) {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
-        const { state: transactions$ } = useTransactionsStore();
-
-        const height = await client.getHeadHeight();
-
-        const { config } = useConfig();
-
-        addresses.forEach((address) => {
-            let prestakingTxs = Object.values(transactions$.transactions)
-                .filter((tx) =>
-                    tx.sender === address
-                    && tx.recipient === BURNER_ADDRESS
-                    // Only consider txs within the pre-staking window
-                    && ((
-                        tx.blockHeight
-                        && tx.blockHeight >= config.prestaking.startBlock
-                        && tx.blockHeight < config.prestaking.endBlock
-                    ) || (
-                        tx.state === 'pending'
-                        && height >= config.prestaking.startBlock
-                        && height < config.prestaking.endBlock - 1
-                    ))
-                    && tx.data.raw
-                    && ValidationUtils.isValidAddress(parseData(tx.data.raw)),
-                );
-
-            // Sort transactions by timestamp in ascending order
-            prestakingTxs.sort((a, b) => (a.blockHeight || Infinity) - (b.blockHeight || Infinity));
-
-            // Prestaking transactions only count once a transaction had a value of at least MIN_PRESTAKE luna
-            let stakedMinimum = false;
-            prestakingTxs = prestakingTxs.filter((tx) => {
-                if (tx.value >= MIN_PRESTAKE) {
-                    stakedMinimum = true;
-                }
-                return stakedMinimum;
-            });
-
-            if (prestakingTxs.length === 0) {
-                prestakingStore.removePrestake(address);
-                return;
+        const stakers = await client.getStakers(addresses);
+        stakers.forEach((staker, i) => {
+            const address = addresses[i];
+            if (staker) {
+                stakingStore.setStake({
+                    address,
+                    activeBalance: staker.balance,
+                    inactiveBalance: staker.inactiveBalance,
+                    inactiveRelease: staker.inactiveRelease,
+                    validator: staker.delegation,
+                    retiredBalance: staker.retiredBalance,
+                });
+            } else {
+                // Staker does not exist (anymore)
+                stakingStore.removeStake(address);
             }
-
-            // Sort transactions by timestamp in descending order
-            prestakingTxs.reverse();
-
-            // The current delegation is determined by the latest transaction
-            const delegation = ValidationUtils.normalizeAddress(parseData(prestakingTxs[0].data.raw));
-
-            // Calculate the prestake from all pre-prestaking transactions
-            const balance = prestakingTxs.reduce((acc, tx) => acc + tx.value, 0);
-
-            prestakingStore.setPrestake({ address, balance, validator: delegation });
         });
     }
 
@@ -262,7 +148,7 @@ export async function launchNetwork() {
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
             updateBalances();
-            updatePrestakes();
+            updateStakes();
             txHistoryWasInvalidatedSinceLastConsensus = true;
         }
     });
@@ -299,29 +185,134 @@ export async function launchNetwork() {
         }, 1000);
     });
 
+    let currentEpoch = 0;
+
     client.addHeadChangedListener(async (hash) => {
-        const { height } = await client.getBlock(hash, false);
-        console.debug('Head is now at', height);
-        network$.height = height;
+        const { height, epoch, timestamp } = await client.getBlock(hash);
+        console.log('Head is now at', height);
+        patchNetworkStore({ height, timestamp });
 
         // The NanoApi did recheck all balances on every block
         // I don't think we need to do this here, as wallet addresses are only expected to
         // change in balance when sending or receiving a transaction, as they should not be mining
         // directly.
+
+        if (epoch > currentEpoch) {
+            currentEpoch = epoch;
+            updateValidators();
+        }
     });
 
-    subscribeToPeerCount();
+    client.addPeerChangedListener((peerId, reason, peerCount, peerInfo) => {
+        if (reason === 'joined' && peerInfo) {
+            addPeer({
+                peerId,
+                multiAddress: peerInfo.address,
+                nodeType: peerInfo.type,
+                connected: true,
+            });
+        } else if (reason === 'left') {
+            removePeer(peerId);
+        }
+        network$.peerCount = peerCount;
+    });
 
-    function transactionListener(tx: Nimiq.Client.TransactionDetails) {
-        const plain = tx.toPlain();
+    async function updateValidators() {
+        await client.waitForConsensusEstablished();
+        const contract = (await retry(
+            () => client.getAccount(STAKING_CONTRACT_ADDRESS) as Promise<PlainStakingContract>,
+        ));
+        const activeValidators = contract.activeValidators.map(([address, balance]) => ({
+            address,
+            balance,
+        }));
+        const activeStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
 
-        if (plain.recipient === BURNER_ADDRESS) {
-            updatePrestakes([plain.sender]);
+        type ApiValidator = {
+            id: number,
+            name: string,
+            address: string,
+            description: string | null,
+            fee: number,
+            payoutType: 'none' | 'direct' | 'restake',
+            payoutSchedule: string,
+            isMaintainedByNimiq: boolean,
+            icon?: string,
+            hasDefaultIcon: boolean,
+            accentColor: string,
+            website: string | null,
+            contact: Record<string, string> | null,
+            score: {
+                total: number,
+                liveness: number,
+                size: number,
+                reliability: number,
+            },
+        };
+
+        const { config } = useConfig();
+        const apiValidators = await fetch(config.staking.validatorsEndpoint)
+            .then((res) => res.json()).catch(() => []) as ApiValidator[];
+        // TODO: Make it work even in the case this request fails
+        const validatorData: Record<string, ApiValidator> = {};
+        for (const apiValidator of apiValidators) {
+            validatorData[apiValidator.address] = apiValidator;
+        }
+
+        const validators: Validator[] = await Promise.all(activeValidators.map(async ({ address, balance }) => {
+            const apiData = validatorData[address] as ApiValidator | undefined;
+            const dominance = balance / activeStake;
+
+            let validator: Validator = {
+                address,
+                active: true,
+                dominance,
+                balance,
+            };
+
+            if (apiData && apiData.name !== 'Unknown validator') {
+                const annualReward = calculateStakingReward(apiData.fee, activeStake);
+
+                validator = {
+                    ...apiData,
+                    ...validator,
+                    annualReward,
+                };
+            }
+
+            return validator;
+        }));
+
+        stakingStore.setValidators(validators);
+    }
+    updateValidators();
+
+    function transactionListener(plain: PlainTransactionDetails) {
+        if (plain.recipient === STAKING_CONTRACT_ADDRESS) {
+            if (plain.data.type === 'add-stake') {
+                if (!balances.has(plain.sender) && 'staker' in plain.data) {
+                    // This is a staking transaction from a validator to one of our stakers
+                    updateStakes([plain.data.staker]);
+                    // Then ignore this transaction
+                    // TODO: Store for tracking of staking rewards?
+                    return;
+                }
+            }
+
+            // Otherwise the sender is the staker
+            updateStakes([plain.sender]);
+        } else if (plain.sender === STAKING_CONTRACT_ADDRESS) {
+            // This is an unstaking transaction
+            updateStakes([plain.recipient]);
         }
 
         transactionsStore.addTransactions([plain]);
 
-        if (plain.state === TransactionState.MINED) {
+        if (
+            plain.state === TransactionState.INCLUDED
+            // @ts-expect-error MINED is not included in the types for PoS transactions
+            || plain.state === TransactionState.MINED
+        ) {
             const addresses: string[] = [];
             if (balances.has(plain.sender)) {
                 addresses.push(plain.sender);
@@ -336,7 +327,7 @@ export async function launchNetwork() {
     function subscribe(addresses: string[]) {
         client.addTransactionListener(transactionListener, addresses);
         updateBalances(addresses);
-        updatePrestakes(addresses);
+        updateStakes(addresses);
         return true;
     }
 
@@ -394,11 +385,12 @@ export async function launchNetwork() {
         //        (even when cross-account transactions are already present)
         client.waitForConsensusEstablished()
             .then(() => {
-                console.debug('Fetching transaction history for', address, knownTxDetails);
+                console.info('Fetching transaction history for', address, knownTxDetails);
                 return client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails);
             })
             .then((txDetails) => {
-                transactionsStore.addTransactions(txDetails.map((tx) => tx.toPlain()));
+                console.info('Got transaction history for', address, txDetails);
+                transactionsStore.addTransactions(txDetails);
             })
             .catch(() => fetchedAddresses.delete(address))
             .then(() => network$.fetchingTxHistory--);
@@ -447,7 +439,7 @@ export async function launchNetwork() {
                     if (
                         proxyStore.state.funded.includes(proxyAddress)
                         && !subscribedProxies.has(proxyAddress)
-                        && !txDetails.find((tx) => tx.sender.toUserFriendlyAddress() === proxyAddress
+                        && !txDetails.find((tx) => tx.sender === proxyAddress
                             && tx.state === TransactionState.CONFIRMED)
                     ) {
                         // No claiming transactions found, or the claiming tx is not yet confirmed, so we might need to
@@ -464,7 +456,7 @@ export async function launchNetwork() {
                         subscribedProxies.add(proxyAddress);
                         subscribe([proxyAddress]);
                     }
-                    transactionsStore.addTransactions(txDetails.map((tx) => tx.toPlain()));
+                    transactionsStore.addTransactions(txDetails);
                 })
                 .catch(() => seenProxies.delete(proxyAddress))
                 .then(() => network$.fetchingTxHistory--);
@@ -474,8 +466,7 @@ export async function launchNetwork() {
 
 export async function sendTransaction(tx: SignedTransaction | string) {
     const client = await getNetworkClient();
-    const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx)
-        .then((details) => details.toPlain());
+    const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
 
     if (plain.state !== TransactionState.PENDING) {
         // Overwrite transaction status in the transactionStore,
@@ -484,6 +475,26 @@ export async function sendTransaction(tx: SignedTransaction | string) {
     }
 
     return plain;
+}
+
+async function retry<T>(func: (...args: any[]) => T | Promise<T>, baseDelay = 500, maxRetries = Infinity): Promise<T> {
+    let i = 0;
+    while (true) { // eslint-disable-line no-constant-condition
+        try {
+            // Run the function (async or not) and return the result if sucessful
+            return await func(); // eslint-disable-line no-await-in-loop
+        } catch (e) {
+            // Stop retrying and instead throw the error if we reached the max number of retries
+            if (i >= maxRetries) throw e;
+
+            // If the function fails, increase the tries counter
+            i += 1;
+
+            // Wait an increasing amount of time before trying again
+            const delay = baseDelay * i;
+            await new Promise((resolve) => { setTimeout(resolve, delay); }); // eslint-disable-line no-await-in-loop
+        }
+    }
 }
 
 // @ts-expect-error debugging

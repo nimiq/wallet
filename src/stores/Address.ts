@@ -12,6 +12,7 @@ export enum AddressType {
     BASIC = 0,
     VESTING = 1,
     HTLC = 2,
+    STAKING = 3,
 }
 
 export type AddressInfo = {
@@ -27,11 +28,17 @@ export type BasicAddressInfo = {
 export type ContractAddressInfo = {
     type: AddressType.VESTING,
     owner: string,
-    start: number,
     stepAmount: number,
-    stepBlocks: number,
     totalAmount: number,
-}
+} & ({
+    // PoS
+    startTime: number,
+    timeStep: number,
+} | {
+    // PoW
+    start: number,
+    stepBlocks: number,
+})
 
 export const useAddressStore = createStore({
     id: 'addresses',
@@ -68,8 +75,6 @@ export const useAddressStore = createStore({
             : null,
         accountBalance: (state, { addressInfos }) =>
             (addressInfos.value as AddressInfo[]).reduce((sum, acc) => sum + ((!!acc && acc.balance) || 0), 0),
-        accountAddresses: (state, { addressInfos }) =>
-            (addressInfos.value as AddressInfo[]).map((ai) => ai.address),
         transactionsForActiveAddress: (state, { activeAddress }) => {
             if (!activeAddress.value) return [];
             const { state: transactionsState } = useTransactionsStore();

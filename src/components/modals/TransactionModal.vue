@@ -1,5 +1,8 @@
 <template>
-    <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
+    <Modal class="transaction-modal" :class="{
+        'value-masked': amountsHidden,
+        'not-executed': transaction.executionResult === false,
+    }">
         <PageHeader :class="{'inline-header': !peerLabel && !(isSwapProxy && !swapData)}">
 
             <template v-if="isCancelledSwap">{{ $t('Cancelled Swap') }}</template>
@@ -183,8 +186,11 @@
                 <Amount :amount="transaction.value" class="transaction-value" :class="{
                     isIncoming,
                     'nq-light-blue': state === TransactionState.NEW || state === TransactionState.PENDING,
-                    'nq-green': (state === TransactionState.MINED || state === TransactionState.CONFIRMED)
-                        && isIncoming,
+                    'nq-green': (
+                        state === TransactionState.INCLUDED
+                        || state === TransactionState.CONFIRMED
+                        || state === TransactionState.MINED
+                    ) && isIncoming,
                 }" value-mask/>
 
                 <div class="flex-row">
@@ -364,7 +370,7 @@ import BankIcon from '../icons/BankIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
-import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
+import { useTransactionsStore, TransactionState, toMs } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
 import { useSettingsStore } from '../../stores/Settings';
@@ -384,6 +390,7 @@ import { explorerTxLink } from '../../lib/ExplorerUtils';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
+import { getStakingTransactionMeaning } from '../../lib/StakingUtils';
 import { useTransactionInfo } from '../../composables/useTransactionInfo';
 
 export default defineComponent({
@@ -531,6 +538,9 @@ export default defineComponent({
                 return context.root.$t('HTLC Refund');
             }
 
+            const stakingData = getStakingTransactionMeaning(transaction.value, false);
+            if (stakingData) return stakingData;
+
             return parseData(transaction.value.data.raw);
         });
 
@@ -581,7 +591,6 @@ export default defineComponent({
                 && 'signer' in transaction.value.proof
                 && Config.nimiqPay.cosignerPublicKeys.includes(transaction.value.proof.publicKey!)
             ) {
-                // @ts-expect-error Missing types for HTLC early-resolve
                 return transaction.value.proof.creator as string;
             }
 
@@ -591,7 +600,7 @@ export default defineComponent({
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
         // Date
-        const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp * 1000));
+        const date = computed(() => transaction.value.timestamp && new Date(toMs(transaction.value.timestamp)));
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);
@@ -723,6 +732,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../scss/variables.scss";
+@import '../../scss/functions.scss';
+
+.not-executed {
+    text-decoration: line-through;
+}
 
 .page-header {
     ::v-deep .nq-h1 {
@@ -1051,7 +1065,7 @@ export default defineComponent({
     z-index: 3; // To be above .swipe-handle
 
     ::v-deep .trigger {
-        color: rgba(31, 35, 72, 0.25);
+        color: nimiq-blue(0.25);
         font-size: 2.25rem;
 
         transition: color 0.3s var(--nimiq-ease);
@@ -1069,7 +1083,7 @@ export default defineComponent({
 
         &:hover,
         &:focus {
-            color: rgba(31, 35, 72, 0.6);
+            color: nimiq-blue(0.6);
         }
     }
 

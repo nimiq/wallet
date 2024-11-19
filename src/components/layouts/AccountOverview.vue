@@ -45,12 +45,15 @@
         <template v-else>
             <AccountBalance />
 
+            <!-- <StakingSummaryMobile v-if="isMobile && !totalAccountStake && nimAccountBalance" /> -->
+
             <div class=account-grid>
                 <div class="nimiq-account" ref="nimiqAccount$"
                     :class="{ scrolling: nimiqAccount$ && nimiqAccount$.scrollHeight > nimiqAccount$.clientHeight }">
                     <header class="flex-row">
                         <span class="nq-icon nimiq-logo"></span>
                         <span>NIM</span>
+                        <AccountStake v-if="totalAccountStake" />
                         <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
                             <MiniAddIcon/>
                         </button>
@@ -82,7 +85,7 @@
 
                 <Tooltip
                     v-if="$config.fastspot.enabled
-                        && activeAccountInfo.type !== AccountType.LEDGER
+                        && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
                         && (
                             nimAccountBalance > 0
@@ -152,7 +155,7 @@
 
                 <Tooltip
                     v-if="$config.fastspot.enabled
-                        && activeAccountInfo.type !== AccountType.LEDGER
+                        && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled
                         && (
@@ -190,7 +193,7 @@
                     </template>
                 </Tooltip>
 
-                <button v-if="activeAccountInfo.type !== AccountType.LEDGER
+                <button v-if="activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && canHaveMultipleAddresses
                         && $config.polygon.enabled" ref="usdcAccount$"
                     class="reset usdc-account flex-column"
@@ -345,6 +348,7 @@ import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
 // import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
 import AttentionDot from '../AttentionDot.vue';
+// import StakingSummaryMobile from '../staking/StakingSummaryMobile.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
@@ -362,6 +366,8 @@ import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
 import router from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { useStakingStore } from '../../stores/Staking';
+import AccountStake from '../staking/AccountStake.vue';
 
 export default defineComponent({
     name: 'account-overview',
@@ -559,6 +565,8 @@ export default defineComponent({
             }, 100);
         }
 
+        const { totalAccountStake } = useStakingStore();
+
         return {
             stablecoin,
             activeAccountInfo,
@@ -595,6 +603,8 @@ export default defineComponent({
             accountBgPosition,
             nimAccountBgCutouts,
             onSwapButtonPointerDown,
+            isMobile,
+            totalAccountStake,
         };
     },
     components: {
@@ -623,6 +633,8 @@ export default defineComponent({
         Tooltip,
         LinkedDoubleArrowIcon,
         AddressListBackgroundSvg,
+        // StakingSummaryMobile,
+        AccountStake,
     },
 });
 </script>
@@ -733,6 +745,11 @@ export default defineComponent({
     display: none;
 }
 
+.staking-summary-mobile {
+    margin-top: calc(var(--item-margin) * 5);
+    margin-bottom: calc(var(--item-margin) * -1);
+}
+
 .address-list {
     height: auto;
     padding-bottom: .5rem;
@@ -819,28 +836,15 @@ export default defineComponent({
 .bitcoin-account,
 .usdc-account {
     z-index: 3;
-
-    header {
-        font-size: 2rem;
-        font-weight: 600;
-        align-items: center;
-        padding: 3rem 2rem;
-
-        .nq-icon {
-            margin-right: 1rem;
-            font-size: 2.75rem;
-        }
-
-        .nq-icon + span {
-            opacity: .7;
-        }
-    }
 }
 
 .nimiq-account {
     @extend %custom-scrollbar;
 
-    padding: 0.5rem 1rem;
+    --nimAccountPaddingX: 1rem;
+    --nimAccountPaddingY: 0.5rem;
+
+    padding: var(--nimAccountPaddingY) var(--nimAccountPaddingX);
     padding-bottom: 0;
     flex-shrink: 1;
 
@@ -863,11 +867,33 @@ export default defineComponent({
         ) right / 100% 100%;
     }
 
+    header {
+        --padding: 3rem;
+
+        font-size: 2rem;
+        font-weight: 600;
+        align-items: center;
+        padding: calc(var(--padding) - var(--nimAccountPaddingY)) calc(var(--padding) - var(--nimAccountPaddingX));
+
+        .nq-icon {
+            margin-right: 1rem;
+            font-size: 2.75rem;
+        }
+
+        .nq-icon + span {
+            opacity: .7;
+        }
+    }
+
+    .account-stake {
+        margin-left: auto;
+    }
+
     .add-address {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-left: auto;
+        margin-left: 3rem;
         height: 3rem;
         width: 3rem;
         border-radius: 2.5rem;
@@ -1250,8 +1276,7 @@ export default defineComponent({
 
 @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
     .address-list {
-        margin-top: 0;
-        padding-bottom: 0;
+        margin-top: var(--item-margin);
     }
 
     .account-grid {
@@ -1297,7 +1322,7 @@ export default defineComponent({
 
     .mobile-action-bar {
         margin: 0 calc(-1 * var(--padding-sides));
-        box-shadow: 0 0 60px rgba(31, 35, 72, 0.07);
+        box-shadow: 0 0 60px nimiq-blue(0.07);
     }
 }
 

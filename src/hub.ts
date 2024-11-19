@@ -2,6 +2,7 @@ import { Route } from 'vue-router';
 import HubApi, {
     type Account,
     type SignTransactionRequest,
+    type SignStakingRequest,
     type SignBtcTransactionRequest,
     type SetupSwapRequest,
     type SetupSwapResult,
@@ -11,7 +12,9 @@ import HubApi, {
     type ResultByRequestType,
     type PopupRequestBehavior,
     type SignedPolygonTransaction,
+    type SignedTransaction,
 } from '@nimiq/hub-api';
+import type { PlainTransactionDetails } from '@nimiq/core';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
@@ -31,7 +34,7 @@ import router from './router';
 import { useSettingsStore } from './stores/Settings';
 import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
-import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
@@ -125,11 +128,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     await new Promise((resolve) => { router.onReady(resolve); });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
-    const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
-        WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
-    );
     const { requestType } = accounts[0];
-    const isPreStakingPeriod = new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate;
 
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
@@ -137,9 +136,6 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
             if (!welcomeModalAlreadyShown && config.enableBitcoin && config.polygon.enabled) {
                 // Show regular first-time welcome flow which talks about Bitcoin and USDC.
                 router.push('/welcome');
-            } else if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
-                // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
-                router.push('/welcome-prestaking');
             }
             break;
         case HubApi.RequestType.LOGIN:
@@ -155,11 +151,6 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
             // We currently don't need to handle the case that USDC is not activated yet after logins, because for
             // Legacy and Ledger accounts it's currently not supported yet, and for Keyguard accounts it's automatically
             // activated on login.
-
-            if (!welcomePreStakingModalAlreadyShown && isPreStakingPeriod) {
-                // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
-                router.push('/welcome-prestaking');
-            }
             break;
         // We don't need to do Bitcoin/USDC activation checks for RequestType.Onboard, which happens when in Safari the
         // Hub reported no accounts from the cookie, but still had accounts in the database, which could be accessed and
@@ -251,11 +242,11 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             account.contracts.push({
                 address: 'NQ17 9A8N TXK7 S4KC CRJP Q46Q VPY7 32KL QPYD',
                 label: 'Vesting Contract',
-                type: AddressType.VESTING,
+                type: AddressType.VESTING as number,
                 owner: 'NQ26 8MMT 8317 VD0D NNKE 3NVA GBVE UY1E 9YDF',
-                start: 1,
+                startTime: 1e3,
                 stepAmount: 50000e5,
-                stepBlocks: 800000,
+                timeStep: 800000e3,
                 totalAmount: 100000e5,
             });
         }
@@ -266,6 +257,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             addressInfos.push({
                 ...contract,
                 balance: addressStore.state.addressInfos[contract.address]?.balance ?? null,
+                type: contract.type as number,
             });
         }
 
@@ -408,19 +400,14 @@ export async function syncFromHub() {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.push('/usdc-activation');
     } else {
-        // Check if the WelcomePreStakingModal should be shown
-        const welcomePreStakingModalAlreadyShown = window.localStorage.getItem(
-            WELCOME_PRE_STAKING_MODAL_LOCALSTORAGE_KEY,
+        // Check if the WelcomeStakingModal should be shown
+        const welcomeStakingModalAlreadyShown = window.localStorage.getItem(
+            WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
         );
-        const isPreStakingPeriod = new Date() >= config.prestaking.startDate && new Date() <= config.prestaking.endDate;
 
-        if (areOptionalRedirectsAllowed(router.currentRoute)
-            && !welcomePreStakingModalAlreadyShown
-            && isPreStakingPeriod
-            && activeAccountInfo.value?.type !== AccountType.LEGACY // Prevent opening for legacy accounts
-        ) {
-            // Show WelcomePreStakingModal if we're in the pre-staking period and not shown before
-            router.push('/welcome-prestaking');
+        if (!welcomeStakingModalAlreadyShown) {
+            // Show WelcomeStakingModal if not shown before
+            router.push('/welcome-staking');
         }
     }
 }
@@ -498,14 +485,37 @@ export async function backup(accountId: string, options: { wordsOnly?: boolean, 
     return true;
 }
 
-export async function sendTransaction(tx: Omit<SignTransactionRequest, 'appName'>, abortSignal?: AbortSignal) {
+export async function sendTransaction(request: Omit<SignTransactionRequest, 'appName'>, abortSignal?: AbortSignal) {
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
-        ...tx,
+        ...request,
     }, getBehavior({ abortSignal })).catch(onError);
     if (!signedTransaction) return null;
 
     return sendTx(signedTransaction);
+}
+
+export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) {
+    const signedTransactions = await hubApi.signStaking({
+        appName: APP_NAME,
+        ...request,
+    }).catch(onError);
+    if (!signedTransactions) return null;
+
+    const txDetails: PlainTransactionDetails[] = [];
+
+    if (Array.isArray(signedTransactions)) {
+        for (const signedTx of signedTransactions) {
+            // Need to await here, to be sure the transactions are sent after each other
+            const details = await sendTx(signedTx); // eslint-disable-line no-await-in-loop
+            txDetails.push(details);
+            if (details.executionResult === false) break;
+        }
+    } else { // Backward-compatibility
+        txDetails.push(await sendTx(signedTransactions as SignedTransaction));
+    }
+
+    return txDetails;
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {

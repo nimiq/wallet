@@ -1,6 +1,6 @@
 import { ref, watch } from '@vue/composition-api';
 import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
-import { useTransactionsStore, Transaction as NimTransaction } from '../stores/Transactions';
+import { useTransactionsStore, Transaction as NimTransaction, toSecs } from '../stores/Transactions';
 import { SwapEurData, useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../stores/BtcTransactions';
 import { useFiatStore } from '../stores/Fiat';
@@ -74,7 +74,7 @@ watch(async () => {
         kycUser.value?.id,
     );
 
-    const { accountAddresses } = useAddressStore();
+    const { accountNimAddresses } = useAccountStore();
     const { activeAddresses } = useBtcAddressStore();
     const { addressInfo: polygonAddressInfo } = usePolygonAddressStore();
 
@@ -93,7 +93,7 @@ watch(async () => {
         const nimSwaps = Object.values(useTransactionsStore().state.transactions)
             .map((tx) => {
                 // Ignore all transactions that are not on the current account
-                if (!accountAddresses.value.includes(tx.recipient)) return false;
+                if (!accountNimAddresses.value.includes(tx.recipient)) return false;
 
                 const swap = getSwapByTransactionHash.value(tx.transactionHash);
                 // Ignore all swaps that are not from EUR
@@ -101,7 +101,7 @@ watch(async () => {
 
                 return {
                     ...swap.in,
-                    timestamp: tx.timestamp,
+                    timestamp: tx.timestamp ? toSecs(tx.timestamp) : undefined,
                 } as TimedSwap;
             })
             .filter(Boolean) as TimedSwap[];
@@ -174,10 +174,10 @@ watch(async () => {
     // Find NIM tx that were involved in a swap
     const swapNimTxs = Object.values(useTransactionsStore().state.transactions).map((tx) => {
         // Ignore all transactions before the cut-off
-        if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+        if ((tx.timestamp ? toSecs(tx.timestamp) : Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
-        if (![tx.sender, tx.recipient].some((address) => accountAddresses.value.includes(address))) return null;
+        if (![tx.sender, tx.recipient].some((address) => accountNimAddresses.value.includes(address))) return null;
 
         const swapHash = useSwapsStore().state.swapByTransaction[tx.transactionHash];
         // Ignore all transactions that are not part of a swap

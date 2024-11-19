@@ -34,7 +34,7 @@ import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { useFiatStore } from '../stores/Fiat';
-import { usePrestakingStore } from '../stores/Prestaking';
+import { useStakingStore } from '../stores/Staking';
 import { Transaction, useTransactionsStore } from '../stores/Transactions';
 import LedgerIcon from './icons/LedgerIcon.vue';
 import LoginFileIcon from './icons/LoginFileIcon.vue';
@@ -53,7 +53,7 @@ export default defineComponent({
     setup(props) {
         const { config } = useConfig();
         const { accountInfos } = useAccountStore();
-        const { prestakesByAccount } = usePrestakingStore();
+        const { totalStakesByAccount } = useStakingStore();
         const { state: addressState } = useAddressStore();
         const { pendingTransactionsBySender } = useTransactionsStore();
 
@@ -74,8 +74,9 @@ export default defineComponent({
                 .filter((tx) => !addresses.includes(tx.recipient))
                 .reduce((sum, tx) => sum + tx.value + tx.fee, 0);
         });
-        const nimAccountBalance = computed(() => addressInfos.value.reduce((sum, ai) =>
-            sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0));
+        const nimAccountBalance = computed(() => addressInfos.value.reduce(
+            (sum, ai) => sum + Math.max(0, (ai.balance || 0) - outgoingPendingAmount.value), 0,
+        ) + totalStakesByAccount.value[props.id]);
 
         const btcAddressSet = computed(() => {
             if (accountInfo.value.type === AccountType.LEGACY) return null;
@@ -127,7 +128,7 @@ export default defineComponent({
 
             const nimExchangeRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
             const nimFiatAmount = nimExchangeRate !== undefined
-                ? ((nimAccountBalance.value + (prestakesByAccount.value[props.id] ?? 0)) / 1e5) * nimExchangeRate
+                ? (nimAccountBalance.value / 1e5) * nimExchangeRate
                 : undefined;
             if (nimFiatAmount === undefined) return undefined;
             amount += nimFiatAmount;

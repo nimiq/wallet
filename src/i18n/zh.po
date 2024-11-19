@@ -2,19 +2,19 @@
 # Translators:
 # Miao Yu <miaoyu319@gmail.com>, 2021
 # Daniel, 2022
-# Sam, 2023
 # Sven <sven@nimiq.com>, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
+# Sam, 2024
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sören Schwert <hello@soerenschwert.de>, 2024\n"
+"Last-Translator: Sam, 2024\n"
 "Language-Team: Chinese (https://app.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/components/modals/WelcomeModal.vue:177
+#: src/components/modals/WelcomeModal.vue:174
 msgid "‘Digital gold’, the original crypto"
 msgstr "\"数字黄金\"，独创的虚拟货币"
 
@@ -42,7 +42,7 @@ msgid "{bankName} offers generic and individual IBANs."
 msgstr "{bankName} 提供通用和个人 IBAN"
 
 #: src/components/modals/BtcTransactionModal.vue:312
-#: src/components/modals/TransactionModal.vue:317
+#: src/components/modals/TransactionModal.vue:323
 #: src/components/modals/UsdcTransactionModal.vue:260
 #: src/components/modals/UsdtTransactionModal.vue:241
 msgid "{count} Confirmation | {count} Confirmations"
@@ -73,7 +73,7 @@ msgstr "{currency} 付款待处理"
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:326
 msgid "{fee} fee"
 msgstr "{fee} 费用"
 
@@ -86,8 +86,13 @@ msgstr "交换价值的{perc}％"
 msgid "{percentage} fees"
 msgstr ""
 
-#: src/components/prestaking/PrestakingInfoPage.vue:32
+#: src/components/staking/StakingInfoPage.vue:60
 msgid "{percentage}% of address's balance"
+msgstr ""
+
+#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:18
+#: src/components/staking/ValidatorDetailsOverlay.vue:41
+msgid "{poolName} Website"
 msgstr ""
 
 #: src/components/kyc/KycOverlay.vue:38
@@ -137,15 +142,15 @@ msgid "1"
 msgstr "1"
 
 #: src/components/layouts/Network.vue:36
-msgid "1 min"
-msgstr "1 分钟"
+msgid "1-2 sec"
+msgstr ""
 
 #: src/components/layouts/Network.vue:54
 msgid "10 min"
 msgstr "10 分钟"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:57
-msgid "1000 NIM = 1 Giveaway point"
+#: src/components/staking/StakingGraph.vue:12
+msgid "12M"
 msgstr ""
 
 #: src/components/FeeSelector.vue:8
@@ -165,17 +170,9 @@ msgstr "2-4小时"
 msgid "20 sec"
 msgstr "20 秒"
 
-#: src/components/modals/WelcomePreStakingModal.vue:34
-msgid "200 Mil NIM in giveaways!"
-msgstr ""
-
 #: src/components/modals/TradeModal.vue:29
 msgid "24/7 Support"
 msgstr "24/7支持"
-
-#: src/components/prestaking/PrestakingWelcomePage.vue:103
-msgid "2x"
-msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:22
 #: src/components/modals/SellCryptoModal.vue:21
@@ -188,16 +185,8 @@ msgstr "3"
 msgid "30-day Limit"
 msgstr "30天限额"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:99
-msgid "3x"
-msgstr ""
-
-#: src/components/prestaking/PrestakingWelcomePage.vue:132
-msgid "5x"
-msgstr ""
-
-#: src/components/prestaking/ValidatorListItem.vue:44
-msgid "5x points"
+#: src/components/staking/StakingGraph.vue:10
+msgid "4M"
 msgstr ""
 
 #: src/components/FeeSelector.vue:6
@@ -208,6 +197,10 @@ msgstr "6小时以上"
 msgid ""
 "72 hours after your first buy, your limit will be increased automatically."
 msgstr "首次购买后的72 小时，你的限额将自动更新。"
+
+#: src/components/staking/StakingGraph.vue:11
+msgid "8M"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:365
 msgid ""
@@ -239,8 +232,8 @@ msgstr "账户限额"
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:149
-#: src/components/layouts/AccountOverview.vue:263
+#: src/components/layouts/AccountOverview.vue:152
+#: src/components/layouts/AccountOverview.vue:266
 msgid "Activate"
 msgstr "激活"
 
@@ -290,11 +283,15 @@ msgstr ""
 "添加比特币\n"
 "到你的帐户"
 
-#: src/components/modals/TransactionModal.vue:119
-#: src/components/modals/TransactionModal.vue:162
+#: src/components/modals/TransactionModal.vue:122
+#: src/components/modals/TransactionModal.vue:165
 #: src/components/UsdcAddressInfo.vue:10
 msgid "Add contact"
 msgstr "添加联络人"
+
+#: src/lib/StakingUtils.ts:97
+msgid "Add stake"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:50
 msgid "Address unavailable?"
@@ -303,6 +300,10 @@ msgstr "地址无法使用？"
 #: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
 msgstr "地址"
+
+#: src/components/staking/StakingInfoPage.vue:68
+msgid "Adjust Stake"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:183
 msgid "Advanced"
@@ -321,14 +322,14 @@ msgstr "全部"
 msgid "All countries"
 msgstr "所有国家"
 
-#: src/components/layouts/AccountOverview.vue:301
+#: src/components/layouts/AccountOverview.vue:304
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟"
 
-#: src/components/layouts/AddressOverview.vue:252
+#: src/components/layouts/AddressOverview.vue:260
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -339,6 +340,10 @@ msgid ""
 "All translations are for information purposes only. The English text is the "
 "controlling version."
 msgstr "所有翻译仅供参考，英文原文为主要版本"
+
+#: src/components/staking/WelcomeStakingModal.vue:29
+msgid "Almost instant transactions"
+msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:6
 msgid "Always backup your Recovery Words, Password and Login Files."
@@ -416,6 +421,10 @@ msgstr "自动"
 msgid "Automatic mode uses {behavior}."
 msgstr "自动模式使用了 {behavior}"
 
+#: src/components/staking/ValidatorScoreDetails.vue:9
+msgid "Availability"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:294
 msgid "Awaiting swap secret"
 msgstr "等待交换密语"
@@ -429,7 +438,7 @@ msgid "Back to Bank Details"
 msgstr "返回银行详情"
 
 #: src/composables/useBtcTransactionInfo.ts:132
-#: src/composables/useTransactionInfo.ts:145
+#: src/composables/useTransactionInfo.ts:139
 #: src/composables/useUsdcTransactionInfo.ts:105
 #: src/composables/useUsdtTransactionInfo.ts:105
 msgid "Bank Account"
@@ -449,16 +458,16 @@ msgstr "在您使用前"
 msgid "BIC works, too."
 msgstr "BIC适用"
 
-#: src/components/AddressList.vue:179
-#: src/components/layouts/AccountOverview.vue:130
-#: src/components/layouts/AddressOverview.vue:111
+#: src/components/AddressList.vue:187
+#: src/components/layouts/AccountOverview.vue:133
+#: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:124
 #: src/components/modals/BtcTransactionModal.vue:136
 #: src/components/swap/SwapBalanceBar.vue:19
 #: src/components/swap/SwapBalanceBar.vue:45
-#: src/composables/useTransactionInfo.ts:133
+#: src/composables/useTransactionInfo.ts:127
 #: src/composables/useUsdcTransactionInfo.ts:101
 #: src/composables/useUsdtTransactionInfo.ts:101
 msgid "Bitcoin"
@@ -475,14 +484,14 @@ msgid "Bitcoin Unit"
 msgstr "比特币单位"
 
 #: src/components/modals/BtcTransactionModal.vue:309
-#: src/components/modals/TransactionModal.vue:314
+#: src/components/modals/TransactionModal.vue:320
 #: src/components/modals/UsdcTransactionModal.vue:257
 #: src/components/modals/UsdtTransactionModal.vue:238
 msgid "Block #{height}"
 msgstr "区块＃{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:320
-#: src/components/modals/TransactionModal.vue:327
+#: src/components/modals/TransactionModal.vue:333
 #: src/components/modals/UsdcTransactionModal.vue:270
 #: src/components/modals/UsdtTransactionModal.vue:251
 #: src/components/swap/SwapAnimation.vue:196
@@ -536,7 +545,7 @@ msgstr "全数购买"
 msgid "Buy more here in the wallet."
 msgstr "在钱包内购买更多"
 
-#: src/components/TransactionList.vue:68 src/components/TransactionList.vue:78
+#: src/components/TransactionList.vue:50 src/components/TransactionList.vue:60
 msgid "Buy NIM"
 msgstr "购买NIM"
 
@@ -589,10 +598,6 @@ msgstr "点击“ {text}”，即表示你同意{Fastspot}和{FastspotGO}的服�
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "点击“ {text}”，即表示你同意{Fastspot}的服务条款"
 
-#: src/components/modals/WelcomePreStakingModal.vue:40
-msgid "Campaign Page"
-msgstr ""
-
 #: src/components/modals/SendModal.vue:243
 #: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
@@ -603,11 +608,11 @@ msgid "Cancel Swap"
 msgstr "取消交换"
 
 #: src/components/modals/BtcTransactionModal.vue:6
-#: src/components/modals/TransactionModal.vue:5
+#: src/components/modals/TransactionModal.vue:8
 #: src/components/modals/UsdcTransactionModal.vue:6
 #: src/components/modals/UsdtTransactionModal.vue:6
 #: src/composables/useBtcTransactionInfo.ts:113
-#: src/composables/useTransactionInfo.ts:128
+#: src/composables/useTransactionInfo.ts:122
 #: src/composables/useUsdcTransactionInfo.ts:90
 #: src/composables/useUsdtTransactionInfo.ts:90
 msgid "Cancelled Swap"
@@ -617,8 +622,8 @@ msgstr "取消交换"
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人"
 
-#: src/components/TransactionList.vue:65
-#: src/composables/useTransactionInfo.ts:154
+#: src/components/TransactionList.vue:47
+#: src/composables/useTransactionInfo.ts:148
 msgid "Cashlink"
 msgstr "现金链接"
 
@@ -626,7 +631,7 @@ msgstr "现金链接"
 msgid "Cashlink Claiming"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:43
+#: src/components/modals/TransactionModal.vue:46
 msgid "Cashlink from {address}"
 msgstr "来自{address}的现金链接"
 
@@ -634,7 +639,7 @@ msgstr "来自{address}的现金链接"
 msgid "Cashlink Funding"
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:49
+#: src/components/modals/TransactionModal.vue:52
 msgid "Cashlink to {address}"
 msgstr "发送至{address}的现金链接"
 
@@ -650,12 +655,12 @@ msgstr "更改密码"
 msgid "Change your language setting."
 msgstr "更改你的语言设置"
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:162
+#: src/components/staking/ValidatorDetailsOverlay.vue:113
 msgid "Changing validator"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/PolygonActivationModal.vue:99
+#: src/components/modals/PolygonActivationModal.vue:85
 msgid "Check the new intro"
 msgstr "请看新介绍"
 
@@ -673,7 +678,7 @@ msgstr "选择接收者"
 msgid "Choose a Sender"
 msgstr "请选择一个发送者"
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:5
+#: src/components/staking/StakingValidatorPage.vue:5
 msgid "Choose a Validator"
 msgstr ""
 
@@ -681,30 +686,17 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:212
+#: src/components/staking/SelectAccountOverlay.vue:4
 #: src/components/swap/SwapModal.vue:251
 msgid "Choose an Address"
 msgstr "选择地址"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:9
-msgid ""
-"Choose an amount you want to pre-stake. Pre-staked NIM remain locked until "
-"the migration is complete."
-msgstr ""
-
-#: src/components/layouts/AccountOverview.vue:219
+#: src/components/layouts/AccountOverview.vue:222
 msgid "Choose Stablecoin"
 msgstr ""
 
 #: src/components/modals/StablecoinSelectionModal.vue:4
 msgid "Choose your stablecoin"
-msgstr ""
-
-#: src/components/prestaking/PrestakingClaimPage.vue:45
-msgid "Claim your Points"
-msgstr ""
-
-#: src/components/prestaking/PrestakingClaimPage.vue:5
-msgid "Claim your points to join the big giveaway!"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:241
@@ -723,30 +715,20 @@ msgstr "点击了解更多信息"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
-#: src/components/layouts/AddressOverview.vue:254
+#: src/components/layouts/AddressOverview.vue:262
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"
-
-#: src/components/prestaking/PrestakingWelcomePage.vue:61
-msgid ""
-"Collect points for the big giveaway and get a shiny Identicon upgrade –"
-"                                     the more the better."
-msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
 msgid "Coming soon"
 msgstr "即将推出"
 
-#: src/components/modals/WelcomeModal.vue:113
-msgid "COMING SOON"
-msgstr "即将推出"
-
-#: src/components/modals/WelcomeModal.vue:245
+#: src/components/modals/WelcomeModal.vue:242
 msgid "Comparably centralized"
 msgstr "相对集中的"
 
-#: src/components/modals/WelcomeModal.vue:179
+#: src/components/modals/WelcomeModal.vue:176
 msgid "Comparably high transaction fees/time"
 msgstr "相对较高的交易时长和费用"
 
@@ -759,12 +741,12 @@ msgstr "确认"
 msgid "Confirm account"
 msgstr "确认账户"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:39
-msgid "Confirm prestake"
+#: src/components/staking/StakingGraphPage.vue:59
+msgid "Confirm stake"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:60
+#: src/components/TransactionList.vue:42
 #: src/components/UsdcTransactionList.vue:45
 #: src/components/UsdtTransactionList.vue:45
 msgid "Congrats"
@@ -786,7 +768,7 @@ msgstr "连接到更高兑换限额的 TEN31 通行证"
 msgid "Connected to"
 msgstr "已连接至"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:121
 msgid "connecting"
 msgstr "連接中"
 
@@ -827,8 +809,8 @@ msgstr "继续"
 msgid "Continue Swap"
 msgstr "继续交换"
 
-#: src/components/modals/WelcomePreStakingModal.vue:28
-msgid "Continue to wallet"
+#: src/components/staking/WelcomeStakingModal.vue:108
+msgid "Continue to Wallet"
 msgstr ""
 
 #: src/components/modals/MoonpaySellInfoModal.vue:45
@@ -843,11 +825,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:221
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:205
+#: src/components/layouts/AddressOverview.vue:213
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -897,6 +879,10 @@ msgstr "创建一个新的一次性地址"
 msgid "Create request link"
 msgstr "创建请求链接"
 
+#: src/lib/StakingUtils.ts:46
+msgid "Create validator"
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:194
 msgid "Created {count} day ago | Created {count} days ago"
 msgstr "在{count}天前创建 | 在{count}天前创建"
@@ -917,9 +903,9 @@ msgstr "刚创建"
 msgid "Created yesterday"
 msgstr "昨天创建"
 
-#: src/components/modals/WelcomeModal.vue:112
-msgid "Creates prestaking rewards"
-msgstr ""
+#: src/components/modals/WelcomeModal.vue:111
+msgid "Creates staking rewards"
+msgstr "创建质押收益"
 
 #: src/components/modals/BuyOptionsModal.vue:115
 #: src/components/modals/BuyOptionsModal.vue:45
@@ -929,6 +915,14 @@ msgstr "信用卡"
 #: src/components/layouts/Sidebar.vue:144
 #: src/components/swap/SwapModal.vue:411
 msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
+#: src/lib/StakingUtils.ts:56
+msgid "Deactivate validator"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:29
+msgid "Delete validator"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:10
@@ -958,11 +952,21 @@ msgstr "免责声明"
 msgid "Disconnect"
 msgstr "断开连接"
 
+#: src/components/staking/ValidatorScoreDetails.vue:169
+msgid ""
+"Do not stake with this pool!\n"
+"It controls a critical share of the total stake, making it a potential threat to the network."
+msgstr ""
+
 #: src/components/BtcAddressInput.vue:100
 #: src/components/modals/SendModal.vue:380
 #: src/components/modals/StablecoinSendModal.vue:372
 msgid "Domain does not resolve to a valid address"
 msgstr "域名不能解析为有效地址"
+
+#: src/components/staking/ValidatorScoreDetails.vue:47
+msgid "Dominance"
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:321
 #: src/components/swap/SwapAnimation.vue:329
@@ -1002,18 +1006,13 @@ msgstr "因税务或其他原因，请将该地址的所有交易下载为文件
 msgid "Duration and fees are estimates."
 msgstr "工作时间和费用均为估计值"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:95
-msgid "EARLY BIRD MULTIPLIERS"
-msgstr ""
-
-#: src/components/modals/WelcomePreStakingModal.vue:21
+#: src/components/staking/WelcomeStakingModal.vue:94
 msgid "Earn new NIM by staking"
 msgstr ""
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:9
-msgid ""
-"Earn rewards by locking NIM with a validator. Locked NIM stay under your "
-"control."
+#: src/components/staking/StakingButton.vue:10
+#: src/components/staking/StakingSummaryMobile.vue:5
+msgid "Earn NIM every month by staking your NIM"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:10
@@ -1072,7 +1071,7 @@ msgstr "输入收件人地址..."
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr "输入你要启用的试用版的密码后，按下快车键"
 
-#: src/components/modals/WelcomeModal.vue:356
+#: src/components/modals/WelcomeModal.vue:353
 msgid "Enter the wallet"
 msgstr "进入钱包"
 
@@ -1092,14 +1091,18 @@ msgstr ""
 msgid "Error:"
 msgstr "错误:"
 
-#: src/components/layouts/Network.vue:120
+#: src/components/layouts/Network.vue:122
 msgid "established"
 msgstr "已建立"
 
+#: src/components/staking/ValidatorDetailsOverlay.vue:18
+msgid "Estimated yearly reward"
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:21
 #: src/components/modals/BtcTransactionModal.vue:36
-#: src/components/modals/TransactionModal.vue:18
-#: src/components/modals/TransactionModal.vue:33
+#: src/components/modals/TransactionModal.vue:21
+#: src/components/modals/TransactionModal.vue:36
 #: src/components/modals/UsdcTransactionModal.vue:18
 #: src/components/modals/UsdcTransactionModal.vue:30
 #: src/components/modals/UsdtTransactionModal.vue:18
@@ -1111,14 +1114,14 @@ msgstr "欧元"
 msgid "Exchange rate"
 msgstr "费率"
 
-#: src/components/TransactionListItem.vue:41
+#: src/components/TransactionListItem.vue:45
 #: src/components/UsdcTransactionListItem.vue:39
 #: src/components/UsdtTransactionListItem.vue:39
 msgid "expired"
 msgstr "已过期"
 
 #: src/components/modals/BtcTransactionModal.vue:73
-#: src/components/modals/TransactionModal.vue:89
+#: src/components/modals/TransactionModal.vue:92
 msgid "Expired"
 msgstr "已过期"
 
@@ -1127,8 +1130,8 @@ msgstr "已过期"
 msgid "Expired HTLC"
 msgstr "过期的 HTLC"
 
-#: src/components/layouts/AddressOverview.vue:46
-#: src/components/layouts/AddressOverview.vue:91
+#: src/components/layouts/AddressOverview.vue:52
+#: src/components/layouts/AddressOverview.vue:98
 #: src/components/modals/AccountMenuModal.vue:30
 msgid "Export History"
 msgstr "导出历史记录"
@@ -1142,7 +1145,7 @@ msgid "express"
 msgstr "快速"
 
 #: src/components/modals/BtcTransactionModal.vue:73
-#: src/components/modals/TransactionModal.vue:89
+#: src/components/modals/TransactionModal.vue:92
 msgid "Failed"
 msgstr "失败"
 
@@ -1154,23 +1157,23 @@ msgstr ""
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:140
+#: src/components/TestnetFaucet.vue:132
 msgid "Faucet error - please try again."
 msgstr "水龙头错误－请重试"
 
-#: src/components/TestnetFaucet.vue:83
+#: src/components/TestnetFaucet.vue:75
 msgid "Faucet is empty"
 msgstr "水龙头是空的"
 
-#: src/components/TestnetFaucet.vue:87
+#: src/components/TestnetFaucet.vue:79
 msgid "Faucet is not available from your location"
 msgstr "你所在的位置无法使用水龙头"
 
-#: src/components/TestnetFaucet.vue:94
+#: src/components/TestnetFaucet.vue:86
 msgid "Faucet unavailable"
 msgstr "水龙头无法使用"
 
-#: src/components/TestnetFaucet.vue:79
+#: src/components/TestnetFaucet.vue:71
 msgid "Faucet unavailable (wrong network)"
 msgstr "水龙头无法使用（网络错误）"
 
@@ -1188,15 +1191,15 @@ msgid "fees"
 msgstr "费用"
 
 #: src/components/BtcTransactionList.vue:38
-#: src/components/TransactionList.vue:51
+#: src/components/TransactionList.vue:33
 #: src/components/UsdcTransactionList.vue:36
 #: src/components/UsdtTransactionList.vue:36
 msgid "Fetching"
 msgstr "正在取得更新"
 
 #: src/components/BtcTransactionListItem.vue:68
-#: src/components/modals/TransactionModal.vue:216
-#: src/components/TransactionListItem.vue:59
+#: src/components/modals/TransactionModal.vue:222
+#: src/components/TransactionListItem.vue:63
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
 msgid "Fiat value unavailable"
@@ -1214,11 +1217,7 @@ msgstr "通过银行转帐完成最终交换"
 msgid "Finalizing swap"
 msgstr "最后确认互换"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:100
-msgid "First week"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:124
+#: src/components/modals/WelcomeModal.vue:121
 msgid ""
 "For a decentralized\n"
 "store of value"
@@ -1226,7 +1225,11 @@ msgstr ""
 "为了一个去中心化的\n"
 "储藏价值"
 
-#: src/components/modals/WelcomeModal.vue:189
+#: src/components/staking/StakingWelcomePage.vue:32
+msgid "For a small fee, validator pools do the staking for you."
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:186
 msgid ""
 "For a USD-pegged\n"
 "store of value"
@@ -1288,12 +1291,6 @@ msgstr "动态的"
 msgid "Get NIM"
 msgstr "获取 NIM"
 
-#: src/components/modals/WelcomePreStakingModal.vue:8
-msgid ""
-"Get ready for a massive performance boost and earning NIM by staking your "
-"NIM."
-msgstr ""
-
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
 msgstr "开始"
@@ -1308,14 +1305,10 @@ msgid ""
 "the requirements:"
 msgstr "通过使用{provider}进行身份验证以获取更高的限额。要求如下："
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:115
-msgid "Go for small validator pools to earn even more points!"
-msgstr ""
-
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/PolygonActivationModal.vue:101
-#: src/components/modals/WelcomeModal.vue:352
+#: src/components/modals/PolygonActivationModal.vue:86
+#: src/components/modals/WelcomeModal.vue:349
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1331,10 +1324,6 @@ msgid ""
 "and shared login information."
 msgstr "使用一个密码和共享的登录信息，即可轻松便捷地处理多个地址"
 
-#: src/components/prestaking/ValidatorListItem.vue:36
-msgid "High stake!"
-msgstr ""
-
 #: src/components/modals/StablecoinSelectionModal.vue:15
 msgid "Higher liquidity and global market adoption."
 msgstr ""
@@ -1343,14 +1332,14 @@ msgstr ""
 msgid "Higher transparency and regulatory compliance."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:178
+#: src/components/modals/WelcomeModal.vue:175
 msgid "Highest degree of decentralization"
 msgstr "更高层面的去中心化"
 
 #: src/components/modals/BtcTransactionModal.vue:196
 #: src/components/modals/BtcTransactionModal.vue:222
-#: src/components/modals/TransactionModal.vue:202
-#: src/components/modals/TransactionModal.vue:227
+#: src/components/modals/TransactionModal.vue:208
+#: src/components/modals/TransactionModal.vue:233
 #: src/components/modals/UsdcTransactionModal.vue:160
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
@@ -1359,31 +1348,31 @@ msgid "Historic value"
 msgstr "历史价值"
 
 #: src/components/modals/BtcTransactionModal.vue:461
-#: src/components/modals/TransactionModal.vue:510
+#: src/components/modals/TransactionModal.vue:517
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/components/modals/UsdtTransactionModal.vue:380
 #: src/composables/useBtcTransactionInfo.ts:193
-#: src/composables/useTransactionInfo.ts:199
+#: src/composables/useTransactionInfo.ts:193
 #: src/composables/useUsdcTransactionInfo.ts:148
 #: src/composables/useUsdtTransactionInfo.ts:148 src/lib/DataFormatting.ts:21
 msgid "HTLC Creation"
 msgstr "HTLC创建"
 
 #: src/components/modals/BtcTransactionModal.vue:461
-#: src/components/modals/TransactionModal.vue:525
-#: src/components/modals/TransactionModal.vue:531
+#: src/components/modals/TransactionModal.vue:532
+#: src/components/modals/TransactionModal.vue:538
 #: src/components/modals/UsdcTransactionModal.vue:400
 #: src/components/modals/UsdtTransactionModal.vue:380
 #: src/composables/useBtcTransactionInfo.ts:193
+#: src/composables/useTransactionInfo.ts:208
 #: src/composables/useTransactionInfo.ts:214
-#: src/composables/useTransactionInfo.ts:220
 #: src/composables/useUsdcTransactionInfo.ts:154
 #: src/composables/useUsdtTransactionInfo.ts:154
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
-#: src/components/modals/TransactionModal.vue:514
-#: src/composables/useTransactionInfo.ts:203
+#: src/components/modals/TransactionModal.vue:521
+#: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
 msgid "HTLC Settlement"
@@ -1458,8 +1447,8 @@ msgid ""
 "automatic refunds will only work for individual IBAN addresses."
 msgstr "如果出现任何问题，例如超出金额限制或资金不足，自动退款仅适用于个人IBAN地址"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:38
-msgid "Increase Prestake"
+#: src/components/staking/ValidatorDetailsOverlay.vue:22
+msgid "incl. pool fee"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:98
@@ -1488,7 +1477,7 @@ msgid "Insufficient balance."
 msgstr "余额不足"
 
 #: src/components/BtcTransactionListItem.vue:48
-#: src/components/TransactionListItem.vue:42
+#: src/components/TransactionListItem.vue:46
 msgid "invalid"
 msgstr "无效"
 
@@ -1496,7 +1485,7 @@ msgstr "无效"
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
-#: src/components/TransactionList.vue:62
+#: src/components/TransactionList.vue:44
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr "通过{cashlink}邀请朋友或在钱包里购买更多"
 
@@ -1507,10 +1496,6 @@ msgstr "你的银行是否符合条件？"
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr "你现在可以安全关闭电子钱包"
-
-#: src/components/modals/WelcomePreStakingModal.vue:35
-msgid "Join the giveaway campaign and pre-stake to win big NIM rewards."
-msgstr ""
 
 #: src/components/layouts/Settings.vue:202
 msgid "Keyguard Mode"
@@ -1524,38 +1509,34 @@ msgstr "标注发件人"
 msgid "Language"
 msgstr "语言"
 
-#: src/components/modals/PolygonActivationModal.vue:100
-msgid "Learn about pre-staking"
-msgstr ""
-
-#: src/components/layouts/AddressOverview.vue:208
+#: src/components/layouts/AddressOverview.vue:216
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
-#: src/components/prestaking/PrestakingNotice.vue:11
 msgid "Learn more"
 msgstr "了解更多"
+
+#: src/components/staking/WelcomeStakingModal.vue:104
+msgid "Learn more about the update"
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:61
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/AddressOverview.vue:198
+#: src/components/layouts/AddressOverview.vue:206
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:239
+#: src/components/layouts/AddressOverview.vue:247
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
+#: src/components/staking/StakingWelcomePage.vue:35
 msgid "Let's go"
 msgstr "开始吧"
-
-#: src/components/prestaking/PrestakingWelcomePage.vue:147
-msgid "Let's go!"
-msgstr "开始吧！"
 
 #: src/components/NetworkMapPeerList.vue:14
 msgid "Light Node"
@@ -1565,7 +1546,7 @@ msgstr "轻节点"
 msgid "Limit of copied addresses reached."
 msgstr "已达到复制地址的限制"
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:180
 msgid "Link not available in this browser"
 msgstr "链接在此浏览器中不可用"
 
@@ -1593,6 +1574,10 @@ msgstr "载入中..."
 msgid "Loading..."
 msgstr "载入中..."
 
+#: src/components/staking/StakingWelcomePage.vue:12
+msgid "Lock up NIM to support the network and earn new NIM as a reward."
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:288
 #: src/components/swap/SwapAnimation.vue:291
 msgid "Locking up {asset}"
@@ -1618,10 +1603,6 @@ msgstr "登出"
 msgid "Long press to confirm"
 msgstr "请长按确认"
 
-#: src/components/layouts/Network.vue:117
-msgid "lost"
-msgstr "遗失"
-
 #: src/components/modals/StablecoinReceiveModal.vue:17
 msgid "Make sure they are sending Polygon {ticker}."
 msgstr "请确保他们是从 Polygon 发送 {ticker}"
@@ -1636,10 +1617,6 @@ msgstr "许多更新，例如更易记的地址名称，更易访问的交换和
 #: src/components/modals/SellCryptoModal.vue:156
 msgid "Max swappable amount is {amount}"
 msgstr "最大可交换金额为 {amount}"
-
-#: src/components/prestaking/PrestakingClaimPage.vue:48
-msgid "Maybe later"
-msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:104
 #: src/components/modals/BuyOptionsModal.vue:121
@@ -1700,17 +1677,15 @@ msgstr "网络"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
+#: src/components/staking/StakingGraph.vue:5
+#: src/components/staking/StakingGraph.vue:6
+#: src/components/staking/StakingGraph.vue:7
+msgid "NIM"
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
 msgstr "NIM网络费用"
-
-#: src/components/prestaking/PrestakingClaimPage.vue:37
-msgid "NIM pre-staked"
-msgstr ""
-
-#: src/components/modals/WelcomePreStakingModal.vue:17
-msgid "Nimiq becomes super eco-friendly"
-msgstr ""
 
 #: src/components/modals/DisclaimerModal.vue:16
 msgid ""
@@ -1721,24 +1696,35 @@ msgstr ""
 "Nimiq对任何损失概不负责。Nimiq, wallet.nimiq.com, hub.nimiq.com "
 "&keyguard.nimiq.com，以及一些正在积极开发中的基础代码库。"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:5
-msgid "Nimiq PoS Prestaking"
-msgstr ""
-
-#: src/components/modals/WelcomePreStakingModal.vue:6
-msgid "Nimiq Proof-of-Stake is coming!"
+#: src/components/staking/WelcomeStakingModal.vue:6
+msgid ""
+"Nimiq now runs on ‘Proof-of-Stake’. Enjoy the massive performance boost, "
+"energy-efficiency and staking."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:111
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Nimiq钱包不支持比特币交易信息"
 
+#: src/components/staking/WelcomeStakingModal.vue:101
+msgid "No action required."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:118
+msgid "No availability data available yet."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:220
 msgid "No connection to {chain} network."
 msgstr "没有连接到 {chain} 网络"
 
-#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:8
+#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:12
+#: src/components/staking/ValidatorDetailsOverlay.vue:35
 msgid "No description available"
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:152
+msgid "No dominance data available yet."
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:21
@@ -1749,16 +1735,24 @@ msgstr "交换因为没有收到任何资金而过期了"
 msgid "No payment request found"
 msgstr ""
 
+#: src/lib/StakingUtils.ts:18
+msgid "No Payout"
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
 msgstr "无需注册"
+
+#: src/components/staking/ValidatorScoreDetails.vue:135
+msgid "No reliability data available yet."
+msgstr ""
 
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr "未收到请求。"
 
 #: src/components/BtcTransactionList.vue:77
-#: src/components/TransactionList.vue:83
+#: src/components/TransactionList.vue:65
 #: src/components/UsdcTransactionList.vue:62
 #: src/components/UsdtTransactionList.vue:62
 msgid "No transactions found"
@@ -1787,7 +1781,7 @@ msgid "Not available in your country"
 msgstr "在你的国家不可用"
 
 #: src/components/BtcTransactionListItem.vue:46
-#: src/components/TransactionListItem.vue:39
+#: src/components/TransactionListItem.vue:43
 #: src/components/UsdcTransactionListItem.vue:37
 #: src/components/UsdtTransactionListItem.vue:37
 msgid "not sent"
@@ -1838,7 +1832,8 @@ msgstr "或直接在钱包中购买BTC"
 msgid "Overwrite how the Keyguard is opened."
 msgstr "覆盖Keyguard的打开方式"
 
-#: src/components/prestaking/tooltips/ValidatorRewardBubble.vue:8
+#: src/components/staking/StakingPreview.vue:21
+#: src/components/staking/tooltips/ValidatorReward.vue:8
 msgid "p.a."
 msgstr ""
 
@@ -1852,6 +1847,10 @@ msgstr ""
 msgid "Partially reverted"
 msgstr ""
 
+#: src/components/layouts/Network.vue:119
+msgid "paused"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:173
 msgid "Pay within {countdown}"
 msgstr ""
@@ -1860,16 +1859,16 @@ msgstr ""
 msgid "Payment request has already been paid"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:353
+#: src/components/modals/WelcomeModal.vue:350
 msgid "Payments, got it"
 msgstr "付款，收到"
 
-#: src/components/modals/WelcomeModal.vue:244
+#: src/components/modals/WelcomeModal.vue:241
 msgid "Pegged 1:1 to the U.S. Dollar"
 msgstr "与美元1:1挂钩"
 
 #: src/components/BtcTransactionListItem.vue:47
-#: src/components/TransactionListItem.vue:40
+#: src/components/TransactionListItem.vue:44
 #: src/components/UsdcTransactionListItem.vue:38
 #: src/components/UsdtTransactionListItem.vue:38
 msgid "pending"
@@ -1880,7 +1879,7 @@ msgid "Pending Cashlinks"
 msgstr "待处理的现金链接"
 
 #: src/components/modals/BtcTransactionModal.vue:65
-#: src/components/modals/TransactionModal.vue:81
+#: src/components/modals/TransactionModal.vue:84
 msgid "Pending..."
 msgstr "待处理..."
 
@@ -1958,48 +1957,12 @@ msgstr "弹出窗口"
 msgid "Popups"
 msgstr "弹出窗口"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:87
-msgid "Pre-stake as early as possible to earn more points."
+#: src/components/layouts/Sidebar.vue:5
+msgid "PoS Testnet"
 msgstr ""
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:56
-msgid "Pre-stake your NIM!"
-msgstr ""
-
-#: src/components/prestaking/PrestakingNotice.vue:4
-msgid "Pre-staked funds are locked until the migration is complete"
-msgstr ""
-
-#: src/components/prestaking/PrestakingGraphPage.vue:139
-#: src/composables/useTransactionInfo.ts:119
+#: src/composables/useTransactionInfo.ts:113
 msgid "Pre-staking Migration Address"
-msgstr ""
-
-#: src/components/prestaking/PrestakingInfoPage.vue:9
-msgid ""
-"Prestake as much NIM as you can and help reach the next milestone of "
-"securing the network."
-msgstr ""
-
-#: src/components/prestaking/PrestakingGraphPage.vue:46
-msgid "Prestake must be at least {minPrestake}."
-msgstr ""
-
-#: src/components/prestaking/PrestakingInfoPage.vue:24
-msgid "Prestaked"
-msgstr ""
-
-#: src/components/prestaking/PrestakingNotice.vue:8
-msgid ""
-"Prestaked funds remain locked until the Proof of Stake network goes live."
-msgstr ""
-
-#: src/components/prestaking/PrestakingButton.vue:22
-msgid "Prestaking"
-msgstr ""
-
-#: src/components/prestaking/PrestakingButton.vue:21
-msgid "Prestaking is now available!"
 msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
@@ -2018,13 +1981,33 @@ msgstr "目的"
 msgid "Raise your limits"
 msgstr "提升您的额度"
 
+#: src/components/staking/ValidatorScoreDetails.vue:33
+msgid ""
+"Rates the pool's ability to correctly produce blocks and earn rewards when "
+"selected."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:14
+msgid ""
+"Rates the pool's availability to be selected for block production, which "
+"earns rewards."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:52
+msgid "Rates the pool's potential to harm the network, based on its size. "
+msgstr ""
+
+#: src/lib/StakingUtils.ts:61
+msgid "Reactivate validator"
+msgstr ""
+
 #: src/components/modals/PolygonActivationModal.vue:22
 msgid ""
 "Read all about it in this {blog_post} or click below for the new wallet "
 "intro."
 msgstr "在这个{blog_post}中阅读更多信息，或点击下方查看新的钱包介绍。"
 
-#: src/components/layouts/AddressOverview.vue:187
+#: src/components/layouts/AddressOverview.vue:195
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "接收"
@@ -2054,7 +2037,7 @@ msgid "Receive NIM"
 msgstr "接收NIM"
 
 #: src/components/modals/BtcTransactionModal.vue:76
-#: src/components/modals/TransactionModal.vue:92
+#: src/components/modals/TransactionModal.vue:95
 #: src/components/modals/UsdcTransactionModal.vue:68
 #: src/components/modals/UsdtTransactionModal.vue:64
 msgid "Received at {dateAndTime}"
@@ -2098,7 +2081,7 @@ msgid "Refresh the page to continue."
 msgstr "刷新页面以继续"
 
 #: src/components/modals/BtcTransactionModal.vue:302
-#: src/components/modals/TransactionModal.vue:307
+#: src/components/modals/TransactionModal.vue:313
 #: src/components/modals/UsdcTransactionModal.vue:250
 #: src/components/modals/UsdtTransactionModal.vue:231
 msgid "Refund"
@@ -2120,13 +2103,17 @@ msgstr "常规交易太慢将无法处理。你的银行可能会以其他方式
 msgid "Release Notes"
 msgstr "发行说明"
 
+#: src/components/staking/ValidatorScoreDetails.vue:28
+msgid "Reliability"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:34
-#: src/components/layouts/AddressOverview.vue:79
+#: src/components/layouts/AddressOverview.vue:86
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "重新命名"
 
-#: src/components/TestnetFaucet.vue:145 src/components/TestnetFaucet.vue:151
+#: src/components/TestnetFaucet.vue:137 src/components/TestnetFaucet.vue:143
 msgid "Request failed"
 msgstr "请求失败"
 
@@ -2134,8 +2121,8 @@ msgstr "请求失败"
 msgid "Required"
 msgstr "必要的"
 
-#: src/components/layouts/AddressOverview.vue:40
-#: src/components/layouts/AddressOverview.vue:85
+#: src/components/layouts/AddressOverview.vue:46
+#: src/components/layouts/AddressOverview.vue:92
 msgid "Rescan"
 msgstr "重新扫描"
 
@@ -2149,7 +2136,7 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
 
-#: src/lib/PrestakingUtils.ts:19
+#: src/lib/StakingUtils.ts:20
 msgid "Restake Rewards"
 msgstr ""
 
@@ -2159,6 +2146,14 @@ msgstr ""
 
 #: src/components/swap/SwapModal.vue:1094
 msgid "Resulting BTC amount is too small."
+msgstr ""
+
+#: src/lib/StakingUtils.ts:113
+msgid "Retire stake"
+msgstr ""
+
+#: src/lib/StakingUtils.ts:66
+msgid "Retire validator"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:127
@@ -2171,7 +2166,7 @@ msgstr "重试"
 msgid "Retrying..."
 msgstr "重试..."
 
-#: src/components/prestaking/ValidatorFilter.vue:17
+#: src/components/staking/ValidatorFilter.vue:12
 msgid "Reward"
 msgstr ""
 
@@ -2195,7 +2190,7 @@ msgstr ""
 msgid "Search"
 msgstr "搜索"
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:17
+#: src/components/staking/StakingValidatorPage.vue:17
 msgid "Search for validators..."
 msgstr ""
 
@@ -2207,10 +2202,6 @@ msgstr "搜索交易"
 msgid "Search transactions by contact, address, etc."
 msgstr "通过联系人，地址等搜索交易"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:104
-msgid "Second week"
-msgstr ""
-
 #: src/components/modals/WelcomeModal.vue:43
 msgid "Security"
 msgstr "安全性"
@@ -2219,6 +2210,10 @@ msgstr "安全性"
 #: src/components/modals/SellCryptoModal.vue:19
 msgid "Select a currency and an amount."
 msgstr "请选择货币和金额"
+
+#: src/components/staking/ValidatorDetailsOverlay.vue:52
+msgid "Select validator"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:140
 msgid "Select which unit to show Bitcoin amounts in."
@@ -2273,7 +2268,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "出售功能现在可用了"
 
-#: src/components/layouts/AddressOverview.vue:182
+#: src/components/layouts/AddressOverview.vue:190
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "发送"
@@ -2322,8 +2317,9 @@ msgstr "发送 USDT"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:130
-msgid "Sending Pre-Prestaking Transaction"
+#: src/components/staking/StakingGraphPage.vue:137
+#: src/components/staking/StakingGraphPage.vue:219
+msgid "Sending Staking Transaction"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:461
@@ -2331,6 +2327,10 @@ msgstr ""
 #: src/components/modals/StablecoinSendModal.vue:629
 msgid "Sending Transaction"
 msgstr "正在发送交易"
+
+#: src/components/staking/StakingInfoPage.vue:233
+msgid "Sending Unstaking Transaction"
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:511
 msgid "Sent {btc} BTC"
@@ -2349,7 +2349,7 @@ msgid "Sent {coin} {ticker} to {name}"
 msgstr "发送 {coin} {ticker} 到 {name}"
 
 #: src/composables/useBtcTransactionInfo.ts:178
-#: src/composables/useTransactionInfo.ts:182
+#: src/composables/useTransactionInfo.ts:176
 #: src/composables/useUsdcTransactionInfo.ts:132
 #: src/composables/useUsdtTransactionInfo.ts:128
 msgid "Sent {fromAsset} – Received {toAsset}"
@@ -2364,7 +2364,7 @@ msgid "Sent {nim} NIM to {name}"
 msgstr "发送{nim}NIM至{name}"
 
 #: src/components/modals/BtcTransactionModal.vue:81
-#: src/components/modals/TransactionModal.vue:97
+#: src/components/modals/TransactionModal.vue:100
 #: src/components/modals/UsdcTransactionModal.vue:73
 #: src/components/modals/UsdtTransactionModal.vue:69
 msgid "Sent at {dateAndTime}"
@@ -2378,14 +2378,18 @@ msgstr "SEPA即时网络费用"
 msgid "SEPA Instant transaction"
 msgstr "SEPA即时交易"
 
+#: src/lib/StakingUtils.ts:105
+msgid "Set active stake"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:87
 #: src/components/modals/SendModal.vue:99
 #: src/components/modals/StablecoinSendModal.vue:96
 msgid "Set Amount"
 msgstr "设置金额"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:5
-msgid "Set an amount to lock"
+#: src/components/staking/StakingGraphPage.vue:5
+msgid "Set an Amount"
 msgstr ""
 
 #: src/components/AmountMenu.vue:15
@@ -2439,7 +2443,7 @@ msgstr "显示我所有的地址"
 msgid "Show Decimals"
 msgstr "显示小数"
 
-#: src/components/modals/TransactionModal.vue:175
+#: src/components/modals/TransactionModal.vue:178
 msgid "Show Link"
 msgstr "显示链接"
 
@@ -2447,11 +2451,11 @@ msgstr "显示链接"
 msgid "Show Recovery Words"
 msgstr "显示恢复字"
 
-#: src/components/modals/WelcomeModal.vue:322
+#: src/components/modals/WelcomeModal.vue:319
 msgid "Show values as {currency}"
 msgstr "显示价值为 {currency}"
 
-#: src/components/layouts/AddressOverview.vue:240
+#: src/components/layouts/AddressOverview.vue:248
 msgid "Signup"
 msgstr "注册"
 
@@ -2464,16 +2468,13 @@ msgstr "模拟欧元付款"
 msgid "Skip"
 msgstr "跳过"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:133
-msgid "Small validators"
-msgstr ""
-
 #: src/components/modals/BtcSendModal.vue:525
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/StablecoinSendModal.vue:680
-#: src/components/prestaking/PrestakingGraphPage.vue:178
-#: src/components/prestaking/PrestakingValidatorPage.vue:192
+#: src/components/staking/StakingGraphPage.vue:274
+#: src/components/staking/StakingInfoPage.vue:298
+#: src/components/staking/ValidatorDetailsOverlay.vue:164
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -2485,54 +2486,86 @@ msgstr "你的交易出错了"
 msgid "Speed up your Transaction"
 msgstr "加快交易"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:119
-msgid ""
-"Spreading the pre-staked NIM across validators helps decentralization."
-"                                    Choose an underdog for another bonus."
-msgstr ""
-
 #: src/components/modals/WelcomeModal.vue:44
 msgid "Stability"
 msgstr "稳定性"
 
-#: src/components/modals/WelcomeModal.vue:243
+#: src/components/modals/WelcomeModal.vue:240
 msgid "Stability mixed with self-custody"
 msgstr "稳定性与自我托管相结合"
 
-#: src/components/modals/WelcomeModal.vue:355
+#: src/components/modals/WelcomeModal.vue:352
 msgid "Stable like USD, got it"
 msgstr "稳定如 USD，收到"
 
-#: src/components/prestaking/PrestakingWelcomePage.vue:83
-msgid "Stake early to get more points!"
+#: src/components/staking/StakingGraphPage.vue:64
+msgid "Stake must be at least {minStake}."
+msgstr ""
+
+#: src/components/staking/StakingButton.vue:29
+msgid "Stake NIM"
+msgstr ""
+
+#: src/components/staking/StakingWelcomePage.vue:8
+msgid "Stake NIM to earn NIM"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr "质押NIM取得奖励，并确保网络安全"
 
-#: src/components/prestaking/ValidatorListItem.vue:25
-msgid "Stake: {validatorStake}%"
+#: src/components/staking/StakingSummaryMobile.vue:8
+msgid "Stake now"
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:52
+msgid "Staked"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:40
 #: src/components/LegacyAccountNotice.vue:28
+#: src/components/staking/StakingInfoPage.vue:11
 msgid "Staking"
 msgstr "质押"
+
+#: src/components/staking/StakingInfoPage.vue:5
+msgid "Staking with {validator}"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:475
 msgid "standard"
 msgstr "标准"
 
-#: src/components/modals/WelcomeModal.vue:354
+#: src/lib/StakingUtils.ts:71
+msgid "Start staking"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:351
 msgid "Store of value, got it"
 msgstr "储藏价值，收到"
 
-#: src/components/prestaking/PrestakingValidatorPage.vue:174
+#: src/components/staking/StakingGraphPage.vue:206
+msgid "Successfully added {amount} NIM to your stake with {validator}"
+msgstr ""
+
+#: src/components/staking/ValidatorDetailsOverlay.vue:147
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/prestaking/PrestakingGraphPage.vue:156
-msgid "Successfully prestaked {amount} NIM with {validator}"
+#: src/components/staking/StakingGraphPage.vue:248
+msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
+msgstr ""
+
+#: src/components/staking/StakingGraphPage.vue:169
+msgid "Successfully staked {amount} NIM with {validator}"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:283
+msgid "Successfully unstaked {amount} NIM"
+msgstr ""
+
+#: src/components/staking/WelcomeStakingModal.vue:64
+msgid "Super eco-friendly"
 msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:109
@@ -2542,17 +2575,17 @@ msgstr "超低手续费，超快支付"
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/layouts/Sidebar.vue:141
 #: src/components/modals/BtcTransactionModal.vue:9
-#: src/components/modals/TransactionModal.vue:7
+#: src/components/modals/TransactionModal.vue:10
 #: src/components/modals/UsdcTransactionModal.vue:9
 #: src/components/modals/UsdtTransactionModal.vue:9
 #: src/composables/useBtcTransactionInfo.ts:120
-#: src/composables/useTransactionInfo.ts:124
+#: src/composables/useTransactionInfo.ts:118
 #: src/composables/useUsdcTransactionInfo.ts:97
 #: src/composables/useUsdtTransactionInfo.ts:97
 msgid "Swap"
 msgstr "交换"
 
-#: src/components/layouts/AccountOverview.vue:184
+#: src/components/layouts/AccountOverview.vue:187
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "兑换 BTC {arrowIcon} {ticker}"
 
@@ -2573,7 +2606,7 @@ msgid "Swap fee"
 msgstr "交换费用"
 
 #: src/components/modals/BtcTransactionModal.vue:12
-#: src/components/modals/TransactionModal.vue:9
+#: src/components/modals/TransactionModal.vue:12
 #: src/components/modals/UsdcTransactionModal.vue:12
 #: src/components/modals/UsdtTransactionModal.vue:12
 msgid "Swap from {address}"
@@ -2587,11 +2620,11 @@ msgstr "交换已过期"
 msgid "Swap more per 30 days."
 msgstr "每30天进行更多的兑换。"
 
-#: src/components/layouts/AccountOverview.vue:113
+#: src/components/layouts/AccountOverview.vue:116
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "兑换 NIM {arrowIcon} {ticker}"
 
-#: src/components/layouts/AccountOverview.vue:78
+#: src/components/layouts/AccountOverview.vue:81
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "兑换 NIM {arrowIcon} BTC"
 
@@ -2608,7 +2641,7 @@ msgid "Swap successful!"
 msgstr "交换成功！"
 
 #: src/components/modals/BtcTransactionModal.vue:27
-#: src/components/modals/TransactionModal.vue:24
+#: src/components/modals/TransactionModal.vue:27
 #: src/components/modals/UsdcTransactionModal.vue:24
 #: src/components/modals/UsdtTransactionModal.vue:24
 msgid "Swap to {address}"
@@ -2622,17 +2655,25 @@ msgstr "每30天最多兑换{limit}。"
 msgid "Swiping Gestures"
 msgstr "滑动手势"
 
-#: src/components/layouts/AddressOverview.vue:103
-#: src/components/layouts/AddressOverview.vue:58
+#: src/components/layouts/AddressOverview.vue:110
+#: src/components/layouts/AddressOverview.vue:64
 msgid "Switch to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:52
-#: src/components/layouts/AddressOverview.vue:97
+#: src/components/layouts/AddressOverview.vue:104
+#: src/components/layouts/AddressOverview.vue:58
 msgid "Switch to USDT"
 msgstr ""
 
-#: src/components/layouts/Network.vue:118
+#: src/lib/StakingUtils.ts:84
+msgid "Switch validator"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:139
+msgid "Switch Validator"
+msgstr ""
+
+#: src/components/layouts/Network.vue:120
 msgid "syncing"
 msgstr "正在同步"
 
@@ -2652,18 +2693,14 @@ msgstr "TEN31 通行证未返回预期的授权。"
 msgid "TEN31 Verification"
 msgstr "TEN31 验证"
 
-#: src/components/layouts/Sidebar.vue:5
-msgid "Testnet"
-msgstr "测试网"
-
-#: src/components/AddressList.vue:198
-#: src/components/layouts/AccountOverview.vue:211
-#: src/components/layouts/AddressOverview.vue:114
+#: src/components/AddressList.vue:206
+#: src/components/layouts/AccountOverview.vue:214
+#: src/components/layouts/AddressOverview.vue:121
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
 #: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:128
-#: src/composables/useTransactionInfo.ts:141
+#: src/composables/useTransactionInfo.ts:135
 msgid "Tether USD"
 msgstr ""
 
@@ -2696,12 +2733,6 @@ msgstr ""
 msgid "The limit on your IBAN has been reached"
 msgstr "已达到你的 IBAN 限制"
 
-#: src/components/modals/WelcomePreStakingModal.vue:25
-msgid ""
-"The migration will happen automatically around November 19, no action "
-"required."
-msgstr ""
-
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
 "The new and improved accounts\n"
@@ -2732,6 +2763,10 @@ msgstr ""
 msgid "The payment request might have been paid, expired, or cancelled."
 msgstr ""
 
+#: src/components/staking/ValidatorScoreDetails.vue:127
+msgid "The pool sometimes fails to be available for block production."
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
 msgid "The rate might change depending on the swap volume."
@@ -2746,11 +2781,17 @@ msgstr "发件人和收件人不能相同"
 msgid "The swap expired"
 msgstr "交换已过期"
 
-#: src/components/prestaking/tooltips/ValidatorDescriptionTooltip.vue:15
+#: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:15
 msgid "The validator is solely responsible for information provided above."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:136
+#: src/components/staking/ValidatorDetailsOverlay.vue:45
+msgid ""
+"The validator is solely responsible for the information provided above. It "
+"is not to be viewed as an endorsement or recommendation by Nimiq."
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:128
 msgid "There are currently no free NIM available."
 msgstr "目前没有免费的NIM"
 
@@ -2774,8 +2815,8 @@ msgstr "关注功能，而非货币"
 
 #: src/components/modals/BtcTransactionModal.vue:198
 #: src/components/modals/BtcTransactionModal.vue:224
-#: src/components/modals/TransactionModal.vue:204
-#: src/components/modals/TransactionModal.vue:229
+#: src/components/modals/TransactionModal.vue:210
+#: src/components/modals/TransactionModal.vue:235
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."
@@ -2810,8 +2851,8 @@ msgstr "这可能会花费{min}分钟"
 
 #: src/components/BtcTransactionList.vue:241
 #: src/components/BtcTransactionList.vue:263
-#: src/components/TransactionList.vue:237
-#: src/components/TransactionList.vue:259
+#: src/components/TransactionList.vue:220
+#: src/components/TransactionList.vue:242
 #: src/components/UsdcTransactionList.vue:203
 #: src/components/UsdcTransactionList.vue:225
 #: src/components/UsdtTransactionList.vue:203
@@ -2819,7 +2860,51 @@ msgstr "这可能会花费{min}分钟"
 msgid "This month"
 msgstr "本月份"
 
-#: src/components/TestnetFaucet.vue:131
+#: src/components/staking/ValidatorScoreDetails.vue:158
+msgid ""
+"This pool controls a large share of the total stake.\n"
+"Support the network by staking with a smaller pool."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:164
+msgid ""
+"This pool controls an almost critical share of the total stake.\n"
+"Choose a smaller pool to improve the network’s security."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:121
+msgid "This pool is reliably available for block production."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:155
+msgid "This pool is safe to stake with."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:124
+msgid "This pool is usually available for block production."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:129
+msgid "This pool regularly fails to be available for block production."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:146
+msgid "This pool regularly fails to produce blocks."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:138
+msgid "This pool reliably produces blocks."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:144
+msgid "This pool sometimes fails to produce blocks."
+msgstr ""
+
+#: src/components/staking/ValidatorScoreDetails.vue:141
+msgid "This pool usually produces blocks."
+msgstr ""
+
+#: src/components/TestnetFaucet.vue:123
 msgid "This service is currently not available in your region."
 msgstr "你所在的地区目前尚未提供这项服务"
 
@@ -2864,8 +2949,8 @@ msgstr "时间范围"
 msgid "To {exchange}"
 msgstr "返回{exchange}"
 
-#: src/components/layouts/AccountOverview.vue:118
-#: src/components/layouts/AccountOverview.vue:189
+#: src/components/layouts/AccountOverview.vue:121
+#: src/components/layouts/AccountOverview.vue:192
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -2883,22 +2968,18 @@ msgid "Trade NIM and BTC"
 msgstr "交易NIM和BTC"
 
 #: src/components/modals/BtcTransactionModal.vue:42
-#: src/components/modals/TransactionModal.vue:55
+#: src/components/modals/TransactionModal.vue:58
 #: src/components/modals/UsdcTransactionModal.vue:40
 #: src/components/modals/UsdtTransactionModal.vue:36
 msgid "Transaction from {address}"
 msgstr "来自{address}的交易"
 
 #: src/components/modals/BtcTransactionModal.vue:48
-#: src/components/modals/TransactionModal.vue:61
+#: src/components/modals/TransactionModal.vue:64
 #: src/components/modals/UsdcTransactionModal.vue:46
 #: src/components/modals/UsdtTransactionModal.vue:42
 msgid "Transaction to {address}"
 msgstr "发送到{address}的交易"
-
-#: src/components/modals/WelcomePreStakingModal.vue:13
-msgid "Transactions are almost instant"
-msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:112
 msgid "Transactions take >10 min. due to Bitcoin’s block time."
@@ -2917,7 +2998,7 @@ msgstr "试用版"
 msgid "Troubleshooting"
 msgstr "疑难解答"
 
-#: src/components/prestaking/ValidatorFilter.vue:7
+#: src/components/staking/ValidatorFilter.vue:7
 msgid "TrustScore"
 msgstr ""
 
@@ -2929,21 +3010,13 @@ msgstr "现在就试试"
 msgid "Tx time"
 msgstr "交易时长"
 
-#: src/components/prestaking/ValidatorFilter.vue:31
+#: src/components/staking/ValidatorFilter.vue:26
 msgid "Type to search..."
 msgstr ""
 
-#: src/composables/useTransactionInfo.ts:155
+#: src/composables/useTransactionInfo.ts:149
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
-
-#: src/components/prestaking/ValidatorListItem.vue:30
-msgid "Underdog"
-msgstr ""
-
-#: src/components/prestaking/PrestakingWelcomePage.vue:128
-msgid "UNDERDOG MULTIPLIERS"
-msgstr ""
 
 #: src/lib/GoCrypto.ts:225
 msgid "Unexpected GoCrypto error"
@@ -2973,6 +3046,14 @@ msgid ""
 "blockchain."
 msgstr "不像其他加密货币一样，Nimiq将您的钱包直接连接到来自世界各地的节点。这使您成为区块链上的一等公民。"
 
+#: src/components/staking/StakingGraphPage.vue:67
+msgid "Unlock at any time. Your NIM will be available within hours."
+msgstr ""
+
+#: src/lib/StakingUtils.ts:34
+msgid "Unstake"
+msgstr ""
+
 #: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
 msgstr "尚未支持的货币"
@@ -2990,14 +3071,18 @@ msgstr "有可用更新"
 msgid "Update now"
 msgstr "现在更新"
 
-#: src/components/AddressList.vue:188
-#: src/components/layouts/AccountOverview.vue:208
-#: src/components/layouts/AddressOverview.vue:112
+#: src/lib/StakingUtils.ts:51
+msgid "Update validator"
+msgstr ""
+
+#: src/components/AddressList.vue:196
+#: src/components/layouts/AccountOverview.vue:211
+#: src/components/layouts/AddressOverview.vue:119
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
-#: src/composables/useTransactionInfo.ts:137
+#: src/composables/useTransactionInfo.ts:131
 msgid "USD Coin"
 msgstr "USD币"
 
@@ -3021,7 +3106,11 @@ msgstr "使用标签轻松识别交易。"
 msgid "Use the Nimiq Wallet as a web app outside the browser."
 msgstr "将Nimiq 钱包作为网络应用程序，于浏览器之外使用。"
 
-#: src/components/prestaking/PrestakingInfoPage.vue:49
+#: src/components/staking/StakingGraphPage.vue:9
+msgid "Use the slider to lock your NIM and earn rewards."
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:119
 msgid "Validator"
 msgstr ""
 
@@ -3041,7 +3130,7 @@ msgstr "等待 {currency}"
 msgid "Waiting for Nimiq network information"
 msgstr ""
 
-#: src/lib/PrestakingUtils.ts:18
+#: src/lib/StakingUtils.ts:19
 msgid "Wallet Payout"
 msgstr ""
 
@@ -3054,6 +3143,10 @@ msgid ""
 "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and "
 "decentralized."
 msgstr "欢迎来到第一个法币与加密的原子交换。 它简单、快速且去中心化"
+
+#: src/components/staking/WelcomeStakingModal.vue:4
+msgid "Welcome to the new Nimiq"
+msgstr ""
 
 #: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
@@ -3075,7 +3168,7 @@ msgstr "你使用哪间银行？"
 msgid "When ready"
 msgstr "准备好时"
 
-#: src/components/prestaking/PrestakingGraphPage.vue:54
+#: src/components/staking/StakingGraphPage.vue:71
 msgid "will be available within hours."
 msgstr ""
 
@@ -3107,8 +3200,8 @@ msgid "Without an individual IBAN, refunds are impossible!"
 msgstr "如果没有个人 IBAN，退款将无法执行！"
 
 #: src/components/layouts/Sidebar.vue:17
-msgid "You are connecting to the Nimiq, Bitcoin and Polygon (USDC) Testnets."
-msgstr "您正在连接到 Nimiq、Bitcoin 和 Polygon（USDC）的测试网络。"
+msgid "You are connecting to the Nimiq PoS and Bitcoin Testnets."
+msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
@@ -3122,7 +3215,7 @@ msgstr ""
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr "您仅可以接受来自于 Polygon {ticker}的地址！"
 
-#: src/components/TestnetFaucet.vue:125
+#: src/components/TestnetFaucet.vue:117
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "你可以在{waitTime}小时内收到更多的免费NIM"
 
@@ -3133,11 +3226,15 @@ msgid ""
 "- on supported exchanges."
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:70
+msgid "You can't adjust your stake while you're unstaking"
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr "您当前没有余额可以进行兑换。"
 
-#: src/components/layouts/AddressOverview.vue:471
+#: src/components/layouts/AddressOverview.vue:479
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3156,7 +3253,7 @@ msgid "You need a SEPA account that supports instant transactions."
 msgstr "你需要一个支持即时交易的SEPA帐户"
 
 #: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:61
+#: src/components/TransactionList.vue:43
 #: src/components/UsdcTransactionList.vue:46
 #: src/components/UsdtTransactionList.vue:46
 msgid "You now own crypto!"
@@ -3259,7 +3356,13 @@ msgstr ""
 msgid "Your payout is on its way"
 msgstr "你的付款正在处理中"
 
-#: src/components/layouts/AddressOverview.vue:248
+#: src/components/staking/ValidatorDetailsOverlay.vue:27
+msgid ""
+"Your rewards are influenced by how many NIM are staked globally and your "
+"validator pool’s fee."
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:256
 msgid "Your swap was successful!"
 msgstr "你的交换成功了！"
 
@@ -3268,7 +3371,7 @@ msgid "Your transaction must be SEPA Instant"
 msgstr "你的交易必须是SEPA即时交易"
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:75
+#: src/components/TransactionList.vue:57
 #: src/components/UsdcTransactionList.vue:55
 #: src/components/UsdtTransactionList.vue:55
 msgid "Your transactions will appear here"

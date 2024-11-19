@@ -30,8 +30,8 @@
                 {{ $t('Stake NIM') }}
             </span>
             <p v-else class="nq-text-s">
-                {{ $t('Staking and un-staking require an update of the Nimiq Ledger app, which is still pending '
-                + 'Ledger’s approval. Please stay tuned until the update is available.') }}
+                {{ $t('Staking and un-staking are not currently supported by the Nimiq Ledger app. Stay tuned — the '
+                + 'update will be available soon!') }}
             </p>
         </Tooltip>
     </div>

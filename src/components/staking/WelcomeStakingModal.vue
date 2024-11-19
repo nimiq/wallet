@@ -100,8 +100,8 @@
             <div v-if="hasLedgerAccount" class="nq-notice warning">
                 <b>{{ $t('Important note for Ledger users:') }}</b>
                 <p class="nq-text-s nq-orange">
-                    {{ $t('Sending, staking and un-staking require an update of the Nimiq Ledger app, which is still '
-                    + 'pending Ledger’s approval. Please stay tuned until the update is available.') }}
+                    {{ $t('Staking and un-staking are not currently supported by the Nimiq Ledger app. Stay tuned — '
+                    + 'the update will be available soon!') }}
                 </p>
             </div>
             <div class="nq-text-s">

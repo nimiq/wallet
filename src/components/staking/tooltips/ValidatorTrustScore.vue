@@ -1,14 +1,16 @@
 <template>
     <div class="validator-trust-score"
         :class="{
-            'high-score': !dry && stars >= 4.5,
-            'low-score': !dry && stars < 2.5,
+            'high-score': !dry && !disabled && stars >= 4.5,
+            'low-score': !dry && !disabled && stars >= 2.5 && stars < 4.5,
+            'very-low-score': !dry && !disabled && stars < 2.5,
+            'disabled': disabled,
             dry,
             borderless,
         }"
     >
         <StarIcon />
-        {{ stars.toFixed(2) }}
+        {{ displayValue }}
     </div>
 </template>
 
@@ -20,16 +22,20 @@ export default defineComponent({
     props: {
         score: {
             type: Number,
-            required: true,
+            default: null,
         },
         dry: Boolean,
         borderless: Boolean,
     },
     setup(props) {
-        const stars = computed(() => props.score * 5);
+        const disabled = computed(() => props.score === null);
+        const stars = computed(() => props.score !== null ? props.score * 5 : 0);
+        const displayValue = computed(() => disabled.value ? '-' : stars.value.toFixed(2));
 
         return {
             stars,
+            disabled,
+            displayValue,
         };
     },
     components: {
@@ -43,7 +49,7 @@ export default defineComponent({
 
 .validator-trust-score {
     height: 3.125rem;
-    line-height: 3.125rem;
+    line-height: 2.8rem;
     padding: 0 .875rem;
     border-radius: 5rem;
     white-space: nowrap;
@@ -54,10 +60,15 @@ export default defineComponent({
     --border-color: var(--color);
 
     color: var(--color);
-    box-shadow: 0 0 0 1.5px var(--border-color);
+    border: 1.5px solid var(--border-color);
 
-    &.high-score { --color: var(--nimiq-gold) }
-    &.low-score { --color: var(--nimiq-red) }
+    &.high-score { --color: var(--nimiq-green) }
+    &.low-score { --color: var(--nimiq-orange) }
+    &.very-low-score { --color: var(--nimiq-red) }
+    &.disabled {
+        --color: var(--text-40);
+        font-style: italic;
+    }
 
     &.dry {
         --border-color: #{nimiq-blue(0.15)};
@@ -65,14 +76,15 @@ export default defineComponent({
 
         padding: 0 1.375rem;
         height: 3.25rem;
-        line-height: 3.25rem;
+        line-height: 3.125rem;
 
         font-size: var(--small-size);
         font-weight: 600;
     }
 
     &.borderless {
-        box-shadow: none;
+        border: none;
+
         padding: 0;
         font-weight: 600;
 
@@ -86,6 +98,11 @@ export default defineComponent({
         height: 1.5rem;
         margin-right: 0.25rem;
         margin-top: -0.125rem;
+        opacity: var(--disabled, 1);
+
+        .disabled & {
+            --disabled: 0.5;
+        }
     }
 }
 </style>

@@ -773,7 +773,7 @@ msgstr ""
 msgid "Continue Swap"
 msgstr ""
 
-#: src/components/staking/WelcomeStakingModal.vue:108
+#: src/components/staking/WelcomeStakingModal.vue:115
 msgid "Continue to Wallet"
 msgstr ""
 
@@ -1372,6 +1372,10 @@ msgstr ""
 msgid "Import it to any browser and enter your password to use the same addresses."
 msgstr ""
 
+#: src/components/staking/WelcomeStakingModal.vue:101
+msgid "Important note for Ledger users:"
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:55
 msgid "Improve your privacy by creating a new address for every transaction. Old addresses still work."
 msgstr ""
@@ -1455,7 +1459,7 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-#: src/components/staking/WelcomeStakingModal.vue:104
+#: src/components/staking/WelcomeStakingModal.vue:111
 msgid "Learn more about the update"
 msgstr ""
 
@@ -1633,7 +1637,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/staking/WelcomeStakingModal.vue:101
+#: src/components/staking/WelcomeStakingModal.vue:108
 msgid "No action required."
 msgstr ""
 
@@ -2234,6 +2238,10 @@ msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:323
 msgid "Sending Unstaking Transaction"
+msgstr ""
+
+#: src/components/staking/WelcomeStakingModal.vue:103
+msgid "Sending, staking and un-staking require an update of the Nimiq Ledger app, which is still pending Ledger’s approval. Please stay tuned until the update is available."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:511

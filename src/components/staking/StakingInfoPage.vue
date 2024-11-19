@@ -126,8 +126,13 @@
                             <ShortAddress v-else :address="validator.address"/>
                         </div>
                         <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" borderless/>
-                            <strong v-if="'annualReward' in validator" class="dot">&middot;</strong>
+                            <ValidatorTrustScore v-if="'score' in validator && validator.score.total"
+                                :score="validator.score.total"
+                                borderless
+                            />
+                            <strong v-if="'annualReward' in validator && 'score' in validator && validator.score.total"
+                                class="dot"
+                            >&middot;</strong>
                             <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
                         </div>
                     </div>

@@ -18,7 +18,7 @@ import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
 import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
-import { CryptoCurrency } from './lib/Constants';
+import { CryptoCurrency, ENV_MAIN } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
 import { useConfig } from './composables/useConfig';
 import { initPwa } from './composables/usePwaInstallPrompt';
@@ -94,6 +94,10 @@ async function start() {
     startSentry();
 
     const { config } = useConfig();
+
+    if (config.environment !== ENV_MAIN) {
+        document.title = 'Nimiq Testnet Wallet';
+    }
 
     watch(() => {
         if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;

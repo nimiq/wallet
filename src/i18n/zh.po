@@ -86,10 +86,6 @@ msgstr "交换价值的{perc}％"
 msgid "{percentage} fees"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:60
-msgid "{percentage}% of address's balance"
-msgstr ""
-
 #: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:18
 #: src/components/staking/ValidatorDetailsOverlay.vue:41
 msgid "{poolName} Website"
@@ -660,7 +656,7 @@ msgid "Changing validator"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/PolygonActivationModal.vue:85
+#: src/components/modals/PolygonActivationModal.vue:93
 msgid "Check the new intro"
 msgstr "请看新介绍"
 
@@ -741,7 +737,7 @@ msgstr "确认"
 msgid "Confirm account"
 msgstr "确认账户"
 
-#: src/components/staking/StakingGraphPage.vue:59
+#: src/components/staking/StakingGraphPage.vue:61
 msgid "Confirm stake"
 msgstr ""
 
@@ -809,7 +805,7 @@ msgstr "继续"
 msgid "Continue Swap"
 msgstr "继续交换"
 
-#: src/components/staking/WelcomeStakingModal.vue:108
+#: src/components/staking/WelcomeStakingModal.vue:114
 msgid "Continue to Wallet"
 msgstr ""
 
@@ -919,6 +915,10 @@ msgstr ""
 
 #: src/lib/StakingUtils.ts:56
 msgid "Deactivate validator"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:259
+msgid "Deactivating Stake"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:29
@@ -1307,7 +1307,7 @@ msgstr "通过使用{provider}进行身份验证以获取更高的限额。要�
 
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
-#: src/components/modals/PolygonActivationModal.vue:86
+#: src/components/modals/PolygonActivationModal.vue:94
 #: src/components/modals/WelcomeModal.vue:349
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
@@ -1431,6 +1431,10 @@ msgid ""
 "Import it to any browser and enter your password to use the same addresses."
 msgstr "导入到任意浏览器中，输入密码即可使用相同的地址"
 
+#: src/components/staking/WelcomeStakingModal.vue:101
+msgid "Important note for Ledger users:"
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:55
 msgid ""
 "Improve your privacy by creating a new address for every transaction. Old "
@@ -1509,6 +1513,10 @@ msgstr "标注发件人"
 msgid "Language"
 msgstr "语言"
 
+#: src/components/modals/PolygonActivationModal.vue:92
+msgid "Learn about the new Nimiq"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:216
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
@@ -1516,7 +1524,7 @@ msgstr "语言"
 msgid "Learn more"
 msgstr "了解更多"
 
-#: src/components/staking/WelcomeStakingModal.vue:104
+#: src/components/staking/WelcomeStakingModal.vue:110
 msgid "Learn more about the update"
 msgstr ""
 
@@ -1706,7 +1714,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr "Nimiq钱包不支持比特币交易信息"
 
-#: src/components/staking/WelcomeStakingModal.vue:101
+#: src/components/staking/WelcomeStakingModal.vue:108
 msgid "No action required."
 msgstr ""
 
@@ -2317,8 +2325,8 @@ msgstr "发送 USDT"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
 
-#: src/components/staking/StakingGraphPage.vue:137
-#: src/components/staking/StakingGraphPage.vue:219
+#: src/components/staking/StakingGraphPage.vue:139
+#: src/components/staking/StakingGraphPage.vue:221
 msgid "Sending Staking Transaction"
 msgstr ""
 
@@ -2328,7 +2336,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/staking/StakingInfoPage.vue:233
+#: src/components/staking/StakingInfoPage.vue:323
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2472,8 +2480,9 @@ msgstr "跳过"
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
 #: src/components/modals/StablecoinSendModal.vue:680
-#: src/components/staking/StakingGraphPage.vue:274
-#: src/components/staking/StakingInfoPage.vue:298
+#: src/components/staking/StakingGraphPage.vue:276
+#: src/components/staking/StakingInfoPage.vue:310
+#: src/components/staking/StakingInfoPage.vue:388
 #: src/components/staking/ValidatorDetailsOverlay.vue:164
 msgid "Something went wrong"
 msgstr "出了些问题"
@@ -2498,11 +2507,11 @@ msgstr "稳定性与自我托管相结合"
 msgid "Stable like USD, got it"
 msgstr "稳定如 USD，收到"
 
-#: src/components/staking/StakingGraphPage.vue:64
+#: src/components/staking/StakingGraphPage.vue:66
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:29
+#: src/components/staking/StakingButton.vue:30
 msgid "Stake NIM"
 msgstr ""
 
@@ -2528,6 +2537,13 @@ msgstr ""
 msgid "Staking"
 msgstr "质押"
 
+#: src/components/staking/StakingButton.vue:33
+#: src/components/staking/WelcomeStakingModal.vue:103
+msgid ""
+"Staking and un-staking are not currently supported by the Nimiq Ledger app. "
+"Stay tuned — the update will be available soon!"
+msgstr ""
+
 #: src/components/staking/StakingInfoPage.vue:5
 msgid "Staking with {validator}"
 msgstr ""
@@ -2544,7 +2560,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr "储藏价值，收到"
 
-#: src/components/staking/StakingGraphPage.vue:206
+#: src/components/staking/StakingGraphPage.vue:208
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
@@ -2552,15 +2568,19 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:248
+#: src/components/staking/StakingInfoPage.vue:293
+msgid "Successfully deactivated {amount} NIM"
+msgstr ""
+
+#: src/components/staking/StakingGraphPage.vue:250
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:169
+#: src/components/staking/StakingGraphPage.vue:171
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:283
+#: src/components/staking/StakingInfoPage.vue:373
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2667,10 +2687,6 @@ msgstr ""
 
 #: src/lib/StakingUtils.ts:84
 msgid "Switch validator"
-msgstr ""
-
-#: src/components/staking/StakingInfoPage.vue:139
-msgid "Switch Validator"
 msgstr ""
 
 #: src/components/layouts/Network.vue:120
@@ -2955,6 +2971,10 @@ msgstr "返回{exchange}"
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:147
+msgid "To switch validator, first {unstakeEverythingLink}."
+msgstr ""
+
 #: src/components/AccountBalance.vue:5
 msgid "Total Balance"
 msgstr "总余额"
@@ -3046,12 +3066,16 @@ msgid ""
 "blockchain."
 msgstr "不像其他加密货币一样，Nimiq将您的钱包直接连接到来自世界各地的节点。这使您成为区块链上的一等公民。"
 
-#: src/components/staking/StakingGraphPage.vue:67
+#: src/components/staking/StakingGraphPage.vue:69
 msgid "Unlock at any time. Your NIM will be available within hours."
 msgstr ""
 
 #: src/lib/StakingUtils.ts:34
 msgid "Unstake"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:151
+msgid "unstake everything"
 msgstr ""
 
 #: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
@@ -3168,7 +3192,7 @@ msgstr "你使用哪间银行？"
 msgid "When ready"
 msgstr "准备好时"
 
-#: src/components/staking/StakingGraphPage.vue:71
+#: src/components/staking/StakingGraphPage.vue:73
 msgid "will be available within hours."
 msgstr ""
 

@@ -187,7 +187,8 @@ export default defineComponent({
             position: relative;
             overflow-y: auto;
             width: 100%;
-            height: 46.5rem;
+            // height: 46.5rem;
+            height: 54rem;
 
             @extend %custom-scrollbar;
 

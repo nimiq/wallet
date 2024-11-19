@@ -121,10 +121,7 @@
                 <div class="row flex-row">
                     <div class="validator flex-grow">
                         <div class="validator-top flex-row">
-                            <img v-if="'icon' in validator" class="validator-icon"
-                                :src="validator.icon" :alt="validator.name"
-                            />
-                            <Identicon v-else class="validator-icon" :address="validator.address"/>
+                            <ValidatorIcon :validator="validator" />
                             <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
                             <ShortAddress v-else :address="validator.address"/>
                         </div>
@@ -159,7 +156,6 @@ import {
     PageHeader,
     PageBody,
     Tooltip,
-    Identicon,
     ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 import { captureException } from '@sentry/vue';
@@ -181,6 +177,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { useConfig } from '../../composables/useConfig';
 import { getNetworkClient } from '../../network';
 import ArrowDownIcon from '../icons/ArrowDownIcon.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -330,10 +327,10 @@ export default defineComponent({
         InfoCircleSmallIcon,
         ValidatorTrustScore,
         ValidatorReward,
-        Identicon,
         ShortAddress,
         ArrowDownIcon,
         ArrowRightSmallIcon,
+        ValidatorIcon,
     },
 });
 </script>
@@ -500,9 +497,8 @@ export default defineComponent({
             font-size: var(--h2-size);
 
             .validator-icon {
-                width: 3rem;
-                height: 3rem;
                 margin-right: 0.75rem;
+                --size: 3rem;
             }
 
             .validator-label {

@@ -1,10 +1,7 @@
 <template>
     <button class="validator-list-item reset flex-row">
         <div class="validator-item-wrapper flex-row">
-            <div class="validator-left validator-icon">
-                <img v-if="'icon' in validator" :src="validator.icon" :alt="validator.name" />
-                <Identicon v-else :address="validator.address"/>
-            </div>
+            <ValidatorIcon :validator="validator" />
             <div class="validator-item-mid flex-column">
                 <div class="validator-item-inner-row flex-row">
                     <template v-if="'name' in validator">
@@ -29,13 +26,14 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { Identicon, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { Validator } from '../../stores/Staking';
 
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorDescriptionTooltip from './tooltips/ValidatorDescriptionTooltip.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
 
 export default defineComponent({
     props: {
@@ -46,7 +44,7 @@ export default defineComponent({
         },
     },
     components: {
-        Identicon,
+        ValidatorIcon,
         ValidatorTrustScore,
         ValidatorReward,
         ShortAddress,
@@ -77,16 +75,6 @@ export default defineComponent({
     transition: background-color 400ms var(--nimiq-ease);
 
     &:hover, &:focus { background-color: #f2f2f4 }
-
-    .validator-icon {
-        img, .identicon {
-            --size: 5.5rem;
-
-            width: var(--size);
-            height: var(--size);
-            display: block;
-        }
-    }
 }
 
 .validator-item-wrapper {

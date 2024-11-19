@@ -140,7 +140,7 @@ msgstr "1"
 
 #: src/components/layouts/Network.vue:36
 msgid "1-2 sec"
-msgstr ""
+msgstr "1-2 secondes"
 
 #: src/components/layouts/Network.vue:54
 msgid "10 min"
@@ -148,7 +148,7 @@ msgstr "10 min"
 
 #: src/components/staking/StakingGraph.vue:12
 msgid "12M"
-msgstr ""
+msgstr "12 mois"
 
 #: src/components/FeeSelector.vue:8
 msgid "15m"
@@ -184,7 +184,7 @@ msgstr "Limite de 30 jours"
 
 #: src/components/staking/StakingGraph.vue:10
 msgid "4M"
-msgstr ""
+msgstr "4 mois"
 
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
@@ -199,7 +199,7 @@ msgstr ""
 
 #: src/components/staking/StakingGraph.vue:11
 msgid "8M"
-msgstr ""
+msgstr "8 mois"
 
 #: src/components/layouts/Settings.vue:365
 msgid ""
@@ -443,7 +443,7 @@ msgstr "Le mode automatique utilise {behavior}."
 
 #: src/components/staking/ValidatorScoreDetails.vue:9
 msgid "Availability"
-msgstr ""
+msgstr "Disponibilité"
 
 #: src/components/swap/SwapAnimation.vue:294
 msgid "Awaiting swap secret"
@@ -839,7 +839,7 @@ msgstr "Continuer le Swap"
 
 #: src/components/staking/WelcomeStakingModal.vue:114
 msgid "Continue to Wallet"
-msgstr ""
+msgstr "Continuer vers le Wallet"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:45
 msgid "Continue with Moonpay"
@@ -913,7 +913,7 @@ msgstr "Créer un lien de requête"
 
 #: src/lib/StakingUtils.ts:46
 msgid "Create validator"
-msgstr ""
+msgstr "Créer un validateur"
 
 #: src/components/modals/BtcReceiveModal.vue:194
 msgid "Created {count} day ago | Created {count} days ago"
@@ -951,7 +951,7 @@ msgstr "Les swaps de crypto sont actuellement en maintenance."
 
 #: src/lib/StakingUtils.ts:56
 msgid "Deactivate validator"
-msgstr ""
+msgstr "Désactiver le validateur"
 
 #: src/components/staking/StakingInfoPage.vue:259
 msgid "Deactivating Stake"
@@ -959,7 +959,7 @@ msgstr ""
 
 #: src/lib/StakingUtils.ts:29
 msgid "Delete validator"
-msgstr ""
+msgstr "Supprimer le validateur"
 
 #: src/components/modals/BuyOptionsModal.vue:10
 msgid ""
@@ -1055,7 +1055,7 @@ msgstr "Gagner de nouveaux NIM en stackant"
 #: src/components/staking/StakingButton.vue:10
 #: src/components/staking/StakingSummaryMobile.vue:5
 msgid "Earn NIM every month by staking your NIM"
-msgstr ""
+msgstr "Stakez vos NIM et gagnez-en tous les mois"
 
 #: src/components/modals/BtcActivationModal.vue:10
 msgid ""
@@ -1145,7 +1145,7 @@ msgstr "établi"
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:18
 msgid "Estimated yearly reward"
-msgstr ""
+msgstr "Récompense annuelle estimée"
 
 #: src/components/modals/BtcTransactionModal.vue:21
 #: src/components/modals/BtcTransactionModal.vue:36
@@ -1280,6 +1280,8 @@ msgstr ""
 #: src/components/staking/StakingWelcomePage.vue:32
 msgid "For a small fee, validator pools do the staking for you."
 msgstr ""
+"Pour des frais infimes, les pools de validation se chargent du staking à "
+"votre place."
 
 #: src/components/modals/WelcomeModal.vue:186
 msgid ""
@@ -1594,7 +1596,7 @@ msgstr "Langue"
 
 #: src/components/modals/PolygonActivationModal.vue:92
 msgid "Learn about the new Nimiq"
-msgstr ""
+msgstr "En savoir plus sur le nouveau Nimiq"
 
 #: src/components/layouts/AddressOverview.vue:216
 #: src/components/modals/NetworkInfoModal.vue:20
@@ -1605,7 +1607,7 @@ msgstr "En apprendre plus"
 
 #: src/components/staking/WelcomeStakingModal.vue:110
 msgid "Learn more about the update"
-msgstr ""
+msgstr "En savoir plus sur la mise à jour"
 
 #: src/components/modals/MigrationWelcomeModal.vue:61
 msgid "Learn more here"
@@ -1773,7 +1775,7 @@ msgstr "Frais de réseau: {sats} sat/vByte"
 #: src/components/staking/StakingGraph.vue:6
 #: src/components/staking/StakingGraph.vue:7
 msgid "NIM"
-msgstr ""
+msgstr "NIM"
 
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
@@ -1802,11 +1804,11 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:108
 msgid "No action required."
-msgstr ""
+msgstr "Aucune action n'est requise."
 
 #: src/components/staking/ValidatorScoreDetails.vue:118
 msgid "No availability data available yet."
-msgstr ""
+msgstr "Il n'y a pas encore de données de disponibilité actives."
 
 #: src/components/swap/SwapNotification.vue:220
 msgid "No connection to {chain} network."
@@ -1819,7 +1821,7 @@ msgstr "Aucune description disponible"
 
 #: src/components/staking/ValidatorScoreDetails.vue:152
 msgid "No dominance data available yet."
-msgstr ""
+msgstr "Aucune donnée de dominance n'est encore disponible."
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "No funds were received so the swap expired."
@@ -1831,7 +1833,7 @@ msgstr "Aucune demande de paiement n'a été trouvée"
 
 #: src/lib/StakingUtils.ts:18
 msgid "No Payout"
-msgstr ""
+msgstr "Aucun paiement"
 
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
@@ -2105,7 +2107,7 @@ msgstr ""
 
 #: src/lib/StakingUtils.ts:61
 msgid "Reactivate validator"
-msgstr ""
+msgstr "Réactiver le validateur"
 
 #: src/components/modals/PolygonActivationModal.vue:22
 msgid ""
@@ -2218,7 +2220,7 @@ msgstr "Notes de mise à jour"
 
 #: src/components/staking/ValidatorScoreDetails.vue:28
 msgid "Reliability"
-msgstr ""
+msgstr "Fiabilité"
 
 #: src/components/layouts/AddressOverview.vue:34
 #: src/components/layouts/AddressOverview.vue:86
@@ -2265,11 +2267,11 @@ msgstr "Le montant de BTC obtenu est trop faible."
 
 #: src/lib/StakingUtils.ts:113
 msgid "Retire stake"
-msgstr ""
+msgstr "Retirer le staking"
 
 #: src/lib/StakingUtils.ts:66
 msgid "Retire validator"
-msgstr ""
+msgstr "Retirer le validateur"
 
 #: src/components/modals/BtcSendModal.vue:127
 #: src/components/modals/SendModal.vue:243
@@ -2328,7 +2330,7 @@ msgstr "Sélectionnez une devise et un montant."
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:52
 msgid "Select validator"
-msgstr ""
+msgstr "Sélectionner le validateur"
 
 #: src/components/layouts/Settings.vue:140
 msgid "Select which unit to show Bitcoin amounts in."
@@ -2510,7 +2512,7 @@ msgstr "Définir le montant"
 
 #: src/components/staking/StakingGraphPage.vue:5
 msgid "Set an Amount"
-msgstr ""
+msgstr "Définir un montant"
 
 #: src/components/AmountMenu.vue:15
 msgid "Set fee"
@@ -2625,7 +2627,7 @@ msgstr "Le staking doit être au moins de {minStake} ."
 
 #: src/components/staking/StakingButton.vue:30
 msgid "Stake NIM"
-msgstr ""
+msgstr "Staker du NIM"
 
 #: src/components/staking/StakingWelcomePage.vue:8
 msgid "Stake NIM to earn NIM"
@@ -2637,7 +2639,7 @@ msgstr "Utilisez vos fonds pour sécuriser le réseau et gagner du NIM."
 
 #: src/components/staking/StakingSummaryMobile.vue:8
 msgid "Stake now"
-msgstr ""
+msgstr "Staker maintenant"
 
 #: src/components/staking/StakingInfoPage.vue:52
 msgid "Staked"
@@ -2666,7 +2668,7 @@ msgstr "standard"
 
 #: src/lib/StakingUtils.ts:71
 msgid "Start staking"
-msgstr ""
+msgstr "Commencer à staker"
 
 #: src/components/modals/WelcomeModal.vue:351
 msgid "Store of value, got it"
@@ -2698,7 +2700,7 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:64
 msgid "Super eco-friendly"
-msgstr ""
+msgstr " Très respectueux de l'environnement"
 
 #: src/components/modals/WelcomeModal.vue:109
 msgid "Super low fees, super fast payments"
@@ -2799,7 +2801,7 @@ msgstr "Passer à l'USDT"
 
 #: src/lib/StakingUtils.ts:84
 msgid "Switch validator"
-msgstr ""
+msgstr "Changer de validateur"
 
 #: src/components/layouts/Network.vue:120
 msgid "syncing"
@@ -2905,6 +2907,8 @@ msgstr ""
 #: src/components/staking/ValidatorScoreDetails.vue:127
 msgid "The pool sometimes fails to be available for block production."
 msgstr ""
+" Il arrive que la pool n'arrive pas à être disponible pour produire des "
+"blocs."
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
@@ -3023,19 +3027,20 @@ msgstr ""
 
 #: src/components/staking/ValidatorScoreDetails.vue:155
 msgid "This pool is safe to stake with."
-msgstr ""
+msgstr "Le staking est sécurisé via ce pool."
 
 #: src/components/staking/ValidatorScoreDetails.vue:124
 msgid "This pool is usually available for block production."
-msgstr ""
+msgstr " Ce pool est généralement disponible pour la production de blocs."
 
 #: src/components/staking/ValidatorScoreDetails.vue:129
 msgid "This pool regularly fails to be available for block production."
 msgstr ""
+"Ce pool n'est régulièrement pas disponible pour la production de blocs."
 
 #: src/components/staking/ValidatorScoreDetails.vue:146
 msgid "This pool regularly fails to produce blocks."
-msgstr ""
+msgstr "Ce pool ne produit régulièrement pas de blocs."
 
 #: src/components/staking/ValidatorScoreDetails.vue:138
 msgid "This pool reliably produces blocks."
@@ -3237,7 +3242,7 @@ msgstr "Mettre à jour"
 
 #: src/lib/StakingUtils.ts:51
 msgid "Update validator"
-msgstr ""
+msgstr "Mettre à jour le validateur"
 
 #: src/components/AddressList.vue:196
 #: src/components/layouts/AccountOverview.vue:211
@@ -3317,7 +3322,7 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:4
 msgid "Welcome to the new Nimiq"
-msgstr ""
+msgstr "Bienvenue dans le nouveau Nimiq !"
 
 #: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
@@ -3557,6 +3562,8 @@ msgid ""
 "Your rewards are influenced by how many NIM are staked globally and your "
 "validator pool’s fee."
 msgstr ""
+"Vos récompenses dépendent du nombre de NIM stakés et des frais appliqués par"
+" votre pool de validateurs."
 
 #: src/components/layouts/AddressOverview.vue:256
 msgid "Your swap was successful!"

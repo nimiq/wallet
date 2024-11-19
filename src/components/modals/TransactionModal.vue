@@ -367,7 +367,7 @@ import BankIcon from '../icons/BankIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
-import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
+import { useTransactionsStore, TransactionState, toMs } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
 import { useSettingsStore } from '../../stores/Settings';
@@ -597,7 +597,7 @@ export default defineComponent({
         const peerIsContact = computed(() => !!peerAddress.value && !!getLabel.value(peerAddress.value));
 
         // Date
-        const date = computed(() => transaction.value.timestamp && new Date(transaction.value.timestamp));
+        const date = computed(() => transaction.value.timestamp && new Date(toMs(transaction.value.timestamp)));
         const datum = computed(() => date.value && date.value.toLocaleDateString());
         const time = computed(() => date.value
             && `${twoDigit(date.value.getHours())}:${twoDigit(date.value.getMinutes())}`);

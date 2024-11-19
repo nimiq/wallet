@@ -83,7 +83,7 @@ import {
     CrossIcon,
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
-import { Transaction, TransactionState } from '../stores/Transactions';
+import { toMs, Transaction, TransactionState } from '../stores/Transactions';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import UnclaimedCashlinkIcon from './icons/UnclaimedCashlinkIcon.vue';
@@ -124,7 +124,7 @@ export default defineComponent({
             fiat,
         } = useTransactionInfo(transaction);
 
-        const timestamp = computed(() => transaction.value.timestamp && transaction.value.timestamp);
+        const timestamp = computed(() => transaction.value.timestamp && toMs(transaction.value.timestamp));
         const { dateDay, dateMonth, dateTime } = useFormattedDate(timestamp);
 
         return {

@@ -1,6 +1,6 @@
 import { ref, watch } from '@vue/composition-api';
 import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
-import { useTransactionsStore, Transaction as NimTransaction } from '../stores/Transactions';
+import { useTransactionsStore, Transaction as NimTransaction, toSecs } from '../stores/Transactions';
 import { SwapEurData, useSwapsStore } from '../stores/Swaps';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../stores/BtcTransactions';
 import { useFiatStore } from '../stores/Fiat';
@@ -101,7 +101,7 @@ watch(async () => {
 
                 return {
                     ...swap.in,
-                    timestamp: tx.timestamp,
+                    timestamp: tx.timestamp ? toSecs(tx.timestamp) : undefined,
                 } as TimedSwap;
             })
             .filter(Boolean) as TimedSwap[];
@@ -174,7 +174,7 @@ watch(async () => {
     // Find NIM tx that were involved in a swap
     const swapNimTxs = Object.values(useTransactionsStore().state.transactions).map((tx) => {
         // Ignore all transactions before the cut-off
-        if ((tx.timestamp || Infinity) < cutOffTimestamp) return null;
+        if ((tx.timestamp ? toSecs(tx.timestamp) : Infinity) < cutOffTimestamp) return null;
 
         // Ignore all transactions that are not on the current account
         if (![tx.sender, tx.recipient].some((address) => accountNimAddresses.value.includes(address))) return null;

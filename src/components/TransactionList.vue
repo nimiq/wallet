@@ -75,7 +75,7 @@ import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
-import { Transaction, TransactionState } from '../stores/Transactions';
+import { toMs, Transaction, TransactionState } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
@@ -235,7 +235,7 @@ export default defineComponent({
             if (!txs[n]) return transactionsWithMonths; // Address has no more txs
 
             // Inject month + year labels
-            let { month: txMonth, year: txYear } = processTimestamp(txs[n].timestamp!);
+            let { month: txMonth, year: txYear } = processTimestamp(toMs(txs[n].timestamp!));
             let txDate: Date;
 
             if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
@@ -253,7 +253,7 @@ export default defineComponent({
                     continue;
                 }
 
-                ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(txs[n].timestamp!));
+                ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(toMs(txs[n].timestamp!)));
                 const txMonthYear = `${txMonth}.${txYear}`;
 
                 if (txMonthYear !== displayedMonthYear) {

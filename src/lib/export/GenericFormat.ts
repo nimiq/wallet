@@ -1,7 +1,7 @@
 import { CurrencyInfo } from '@nimiq/utils';
 import { type FiatCurrency } from '../Constants';
 import { useFiatStore } from '../../stores/Fiat';
-import { Transaction as NimTx } from '../../stores/Transactions';
+import { toMs, Transaction as NimTx } from '../../stores/Transactions';
 import { Transaction as BtcTx } from '../../stores/BtcTransactions';
 import { Transaction as UsdcTx } from '../../stores/UsdcTransactions';
 import { Transaction as UsdtTx } from '../../stores/UsdtTransactions';
@@ -62,7 +62,10 @@ export class GenericFormat extends Format {
     ) {
         if (!txIn && !txOut) return;
 
-        const timestamp = Math.min(txIn?.timestamp || Infinity, txOut?.timestamp || Infinity);
+        const timestamp = Math.min(
+            txIn?.timestamp ? toMs(txIn.timestamp) : Infinity,
+            txOut?.timestamp ? toMs(txOut.timestamp) : Infinity,
+        );
 
         let valueIn: number | undefined;
         let valueOut: number | undefined;

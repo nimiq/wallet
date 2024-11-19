@@ -1,4 +1,4 @@
-import { useTransactionsStore, Transaction, TransactionState } from '@/stores/Transactions';
+import { useTransactionsStore, Transaction, TransactionState, toMs } from '@/stores/Transactions';
 import { useProxyStore } from '@/stores/Proxy';
 import { useAddressStore } from '@/stores/Address';
 
@@ -195,7 +195,7 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         if (!isTx1HtlcTransaction && isTx2HtlcTransaction) return 1;
         // then sort by date
         return tx1.timestamp && tx2.timestamp
-            ? tx2.timestamp - tx1.timestamp
+            ? toMs(tx2.timestamp) - toMs(tx1.timestamp)
             : tx1.blockHeight && tx2.blockHeight
                 ? tx2.blockHeight - tx1.blockHeight
                 : tx2.validityStartHeight - tx1.validityStartHeight;
@@ -227,7 +227,7 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
                 ? (proxyTx.sender === proxyAddress
                     // is the redeeming tx later?
                     && (tx.timestamp && proxyTx.timestamp
-                        ? tx.timestamp < proxyTx.timestamp
+                        ? toMs(tx.timestamp) < toMs(proxyTx.timestamp)
                         : tx.blockHeight && proxyTx.blockHeight
                             ? tx.blockHeight < proxyTx.blockHeight
                             // a tx's validity start height can also be earlier than the height at which it gets
@@ -244,7 +244,7 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
                 : (proxyTx.recipient === proxyAddress
                     // is the redeeming tx earlier?
                     && (tx.timestamp && proxyTx.timestamp
-                        ? tx.timestamp > proxyTx.timestamp
+                        ? toMs(tx.timestamp) > toMs(proxyTx.timestamp)
                         : tx.blockHeight && proxyTx.blockHeight
                             ? tx.blockHeight > proxyTx.blockHeight
                             // a tx's validity start height can also be earlier than the height at which it gets
@@ -273,7 +273,7 @@ function assignRelatedProxyTransactions(proxyAddress: string, proxyTransactions:
         for (const potentialRelatedTx of potentialRelatedTxs) {
             if (!relatedTx
                 || (!!relatedTx.timestamp && !!potentialRelatedTx.timestamp
-                    ? isCloser(potentialRelatedTx.timestamp, relatedTx.timestamp)
+                    ? isCloser(toMs(potentialRelatedTx.timestamp), toMs(relatedTx.timestamp))
                     : !!relatedTx.blockHeight && !!potentialRelatedTx.blockHeight
                         ? isCloser(potentialRelatedTx.blockHeight, relatedTx.blockHeight)
                         : isCloser(potentialRelatedTx.validityStartHeight, relatedTx.validityStartHeight, true))) {

@@ -4,7 +4,7 @@ import { getNetworkClient } from '../../network';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useFiatStore } from '../../stores/Fiat';
-import { Transaction, useTransactionsStore } from '../../stores/Transactions';
+import { toSecs, Transaction, useTransactionsStore } from '../../stores/Transactions';
 // import { useConfig } from '../../composables/useConfig';
 import { FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY/* , ENV_MAIN */ } from '../Constants';
 import { BlockpitAppFormat } from './BlockpitAppFormat';
@@ -44,7 +44,8 @@ export async function exportTransactions(
             (tx) => nimAddresses.includes(tx.sender) || nimAddresses.includes(tx.recipient),
         )
         .filter((tx) => tx.timestamp) // Only confirmed transactions
-        .filter((tx) => tx.timestamp! >= startTimestamp && tx.timestamp! < endTimestamp); // Only requested timeframe
+        .filter((tx) => toSecs(tx.timestamp!) >= startTimestamp
+            && toSecs(tx.timestamp!) < endTimestamp); // Only requested timeframe
 
     /* eslint-disable no-await-in-loop */
     // Get receipts from block explorer and compare if we have all transactions

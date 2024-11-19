@@ -130,8 +130,10 @@
                                 :score="validator.score.total"
                                 borderless
                             />
-                            <strong v-if="'annualReward' in validator && 'score' in validator && validator.score.total"
-                                class="dot"
+                            <strong class="dot"
+                                v-if="'annualReward' in validator
+                                    && 'score' in validator
+                                    && typeof validator.score.total === 'number'"
                             >&middot;</strong>
                             <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
                         </div>

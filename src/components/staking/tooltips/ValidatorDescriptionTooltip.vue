@@ -1,6 +1,10 @@
 <template>
-    <Tooltip class="validator-description-tooltip" :preferredPosition="preferredPosition"
-        :container="container && { $el: container }" @click.native.stop>
+    <Tooltip class="validator-description-tooltip"
+        :preferredPosition="preferredPosition"
+        :disabled="disabled"
+        :container="container && { $el: container }"
+        @click.native.stop
+    >
         <slot slot="trigger" />
 
         <blockquote>
@@ -33,6 +37,10 @@ export default defineComponent({
         preferredPosition: {
             type: String,
             default: 'top',
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
     },
     components: {

@@ -25,7 +25,7 @@
     "@adapttive/vue-markdown": "^4.0.1",
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
-    "@nimiq/core": "next",
+    "@nimiq/core": "https://gitpkg.now.sh/nimiq/core-rs-albatross/web-client/dist?8637af3e4cf2f56cacaaaa6e33bb1e6f1b7aab5e",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "^1.10.2",
     "@nimiq/hub-api": "https://gitpkg.now.sh/nimiq/hub/client?31929a586dc009fdca42089ab38571964d192fac",

@@ -906,7 +906,7 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:154
+#: src/components/staking/ValidatorScoreDetails.vue:169
 msgid ""
 "Do not stake with this pool!\n"
 "It controls a critical share of the total stake, making it a potential threat to the network."
@@ -1173,6 +1173,10 @@ msgid ""
 "store of value"
 msgstr ""
 
+#: src/components/staking/StakingWelcomePage.vue:32
+msgid "For a small fee, validator pools do the staking for you."
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:186
 msgid ""
 "For a USD-pegged\n"
@@ -1255,10 +1259,6 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:29
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
-msgstr ""
-
-#: src/components/staking/StakingWelcomePage.vue:12
-msgid "Help secure the network by locking up NIM and get a percentage as a reward."
 msgstr ""
 
 #: src/components/AnnouncementBox.vue:27
@@ -1461,7 +1461,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:26
 #: src/components/modals/SellCryptoModal.vue:25
-#: src/components/staking/StakingWelcomePage.vue:36
+#: src/components/staking/StakingWelcomePage.vue:35
 msgid "Let's go"
 msgstr ""
 
@@ -1499,6 +1499,10 @@ msgstr ""
 #: src/components/modals/BuyOptionsModal.vue:17
 #: src/components/modals/ReleaseNotesModal.vue:5
 msgid "Loading..."
+msgstr ""
+
+#: src/components/staking/StakingWelcomePage.vue:12
+msgid "Lock up NIM to support the network and earn new NIM as a reward."
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:288
@@ -1613,7 +1617,7 @@ msgstr ""
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:105
+#: src/components/staking/ValidatorScoreDetails.vue:118
 msgid "No availability data available yet."
 msgstr ""
 
@@ -1626,7 +1630,7 @@ msgstr ""
 msgid "No description available"
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:137
+#: src/components/staking/ValidatorScoreDetails.vue:152
 msgid "No dominance data available yet."
 msgstr ""
 
@@ -1646,7 +1650,7 @@ msgstr ""
 msgid "No registration"
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:121
+#: src/components/staking/ValidatorScoreDetails.vue:135
 msgid "No reliability data available yet."
 msgstr ""
 
@@ -2338,10 +2342,6 @@ msgstr ""
 msgid "Skip"
 msgstr ""
 
-#: src/components/staking/StakingWelcomePage.vue:32
-msgid "So called validators facilitate this process. Choose one to stake on your behalf, set an amount and go."
-msgstr ""
-
 #: src/components/modals/BtcSendModal.vue:525
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:826
@@ -2630,7 +2630,7 @@ msgstr ""
 msgid "The payment request might have been paid, expired, or cancelled."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:114
+#: src/components/staking/ValidatorScoreDetails.vue:127
 msgid "The pool sometimes fails to be available for block production."
 msgstr ""
 
@@ -2721,47 +2721,47 @@ msgstr ""
 msgid "This month"
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:143
+#: src/components/staking/ValidatorScoreDetails.vue:158
 msgid ""
 "This pool controls a large share of the total stake.\n"
 "Support the network by staking with a smaller pool."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:149
+#: src/components/staking/ValidatorScoreDetails.vue:164
 msgid ""
 "This pool controls an almost critical share of the total stake.\n"
 "Choose a smaller pool to improve the network’s security."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:108
+#: src/components/staking/ValidatorScoreDetails.vue:121
 msgid "This pool is reliably available for block production."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:140
+#: src/components/staking/ValidatorScoreDetails.vue:155
 msgid "This pool is safe to stake with."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:111
+#: src/components/staking/ValidatorScoreDetails.vue:124
 msgid "This pool is usually available for block production."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:116
+#: src/components/staking/ValidatorScoreDetails.vue:129
 msgid "This pool regularly fails to be available for block production."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:132
+#: src/components/staking/ValidatorScoreDetails.vue:146
 msgid "This pool regularly fails to produce blocks."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:124
+#: src/components/staking/ValidatorScoreDetails.vue:138
 msgid "This pool reliably produces blocks."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:130
+#: src/components/staking/ValidatorScoreDetails.vue:144
 msgid "This pool sometimes fails to produce blocks."
 msgstr ""
 
-#: src/components/staking/ValidatorScoreDetails.vue:127
+#: src/components/staking/ValidatorScoreDetails.vue:141
 msgid "This pool usually produces blocks."
 msgstr ""
 

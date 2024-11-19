@@ -28,7 +28,7 @@ export default {
         genesis: {
             height: 3032010,
             date: new Date('2024-11-13T20:00:00Z'),
-            supply: 1203075533952899,
+            supply: 12_030_755_339_52899,
         },
     },
 

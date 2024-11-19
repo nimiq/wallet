@@ -13,8 +13,10 @@
                         @click="$emit('selectValidator', validator)"
                         disabled
                     />
-                    <ValidatorTrustScore v-if="'score' in validator" :score="validator.score.total" dry />
-                    <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward" dry />
+                    <ValidatorTrustScore v-if="'score' in validator && typeof validator.score.total === 'number'"
+                        :score="validator.score.total" dry />
+                    <ValidatorReward v-if="'annualReward' in validator "
+                        :reward="validator.annualReward" dry />
                 </div>
             </template>
         </PageHeader>

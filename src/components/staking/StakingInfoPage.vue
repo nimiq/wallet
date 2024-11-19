@@ -126,7 +126,8 @@
                             <ShortAddress v-else :address="validator.address"/>
                         </div>
                         <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore v-if="'score' in validator && validator.score.total"
+                            <ValidatorTrustScore
+                                v-if="'score' in validator && typeof validator.score.total === 'number'"
                                 :score="validator.score.total"
                                 borderless
                             />

@@ -304,7 +304,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:260
+#: src/components/layouts/AddressOverview.vue:287
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -677,7 +677,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:262
+#: src/components/layouts/AddressOverview.vue:289
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr ""
@@ -789,11 +789,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:221
+#: src/components/layouts/AddressOverview.vue:248
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:240
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -1452,7 +1452,7 @@ msgstr ""
 msgid "Learn about the new Nimiq"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:216
+#: src/components/layouts/AddressOverview.vue:243
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
@@ -1467,11 +1467,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:233
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:247
+#: src/components/layouts/AddressOverview.vue:274
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1921,7 +1921,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:195
+#: src/components/layouts/AddressOverview.vue:222
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
@@ -2177,7 +2177,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:190
+#: src/components/layouts/AddressOverview.vue:209
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
@@ -2223,6 +2223,10 @@ msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:214
+msgid "Sending requires an update of the Nimiq Ledger app, which is still pending Ledger’s approval. Please stay tuned until the update is available."
 msgstr ""
 
 #: src/components/staking/StakingGraphPage.vue:139
@@ -2366,7 +2370,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:248
+#: src/components/layouts/AddressOverview.vue:275
 msgid "Signup"
 msgstr ""
 
@@ -2414,7 +2418,7 @@ msgstr ""
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:29
+#: src/components/staking/StakingButton.vue:30
 msgid "Stake NIM"
 msgstr ""
 
@@ -2438,6 +2442,10 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:28
 #: src/components/staking/StakingInfoPage.vue:11
 msgid "Staking"
+msgstr ""
+
+#: src/components/staking/StakingButton.vue:33
+msgid "Staking and un-staking require an update of the Nimiq Ledger app, which is still pending Ledger’s approval. Please stay tuned until the update is available."
 msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:5
@@ -3125,7 +3133,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:479
+#: src/components/layouts/AddressOverview.vue:507
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3237,7 +3245,7 @@ msgstr ""
 msgid "Your rewards are influenced by how many NIM are staked globally and your validator pool’s fee."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:256
+#: src/components/layouts/AddressOverview.vue:283
 msgid "Your swap was successful!"
 msgstr ""
 

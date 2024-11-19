@@ -180,15 +180,42 @@
                         <StakingButton v-else-if="showStakingButton" />
                     </template>
 
-                    <button class="send nq-button-pill light-blue flex-row"
-                        @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
-                        :disabled="(activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
-                            || (activeCurrency === 'btc' && !btcAccountBalance)
-                            || (activeCurrency === 'usdc' && !accountUsdcBalance /* can only send native usdc */)
-                            || (activeCurrency === CryptoCurrency.USDT && !accountUsdtBridgedBalance)"
+                    <Tooltip
+                        preferredPosition="bottom left"
+                        :container="$parent"
+                        :styles="{ width: '40rem' }"
+                        :disabled="!isLedgerAccount"
                     >
-                        <ArrowRightSmallIcon />{{ $t('Send') }}
-                    </button>
+                        <template #trigger>
+                            <button class="send nq-button-pill light-blue flex-row"
+                                @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
+                                :disabled="
+                                    (
+                                        activeCurrency === 'nim'
+                                        && (!activeAddressInfo || !activeAddressInfo.balance)
+                                    ) || (
+                                        activeCurrency === 'btc'
+                                        && !btcAccountBalance
+                                    ) || (
+                                        activeCurrency === 'usdc'
+                                        && !accountUsdcBalance /* can only send native usdc */
+                                    ) || (
+                                        activeCurrency === CryptoCurrency.USDT
+                                        && !accountUsdtBridgedBalance
+                                    )
+                                    || isLedgerAccount
+                                "
+                            >
+                                <ArrowRightSmallIcon />{{ $t('Send') }}
+                            </button>
+                        </template>
+                        <template #default>
+                            <p class="nq-text-s">
+                                {{ $t('Sending requires an update of the Nimiq Ledger app, which is still pending '
+                                + 'Ledger’s approval. Please stay tuned until the update is available.') }}
+                            </p>
+                        </template>
+                    </Tooltip>
                     <button class="receive nq-button-s flex-row"
                         @click="$router.push(`/receive/${activeCurrency}`)" @mousedown.prevent
                     >
@@ -292,6 +319,7 @@ import {
     ArrowLeftIcon,
     MenuDotsIcon,
     InfoCircleSmallIcon,
+    Tooltip,
 } from '@nimiq/vue-components';
 // @ts-expect-error missing types for this package
 import { Portal } from '@linusborg/vue-simple-portal';
@@ -591,6 +619,8 @@ export default defineComponent({
             return totalAccountStake.value > 0;
         });
 
+        const isLedgerAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER);
+
         return {
             activeCurrency,
             searchString,
@@ -621,6 +651,7 @@ export default defineComponent({
             activeStake,
             windowWidth,
             showStakingButton,
+            isLedgerAccount,
             isMobile,
         };
     },
@@ -633,6 +664,7 @@ export default defineComponent({
         RenameIcon,
         RefreshIcon,
         Copyable,
+        Tooltip,
         Amount,
         FiatConvertedAmount,
         SearchBar,

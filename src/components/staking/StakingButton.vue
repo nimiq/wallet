@@ -1,7 +1,7 @@
 <template>
     <div class="staking-button" @click.capture="!totalAccountStake && customClickHandler($event)">
         <Tooltip class="staking-feature-tip" ref="$CTATooltip"
-            v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
+            v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance && !isLedgerAccount"
             preferredPosition="bottom"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
             :disabled="isCTATooltipDisabled"
@@ -11,10 +11,11 @@
             </span>
             <div slot="trigger"></div>
         </Tooltip>
-        <Tooltip class="staking-button-tooltip" ref="$tooltip"
-            preferredPosition="top"
+        <Tooltip :class="{ 'staking-button-tooltip': !isLedgerAccount }" ref="$tooltip"
+            :preferredPosition="isLedgerAccount ? 'bottom' : 'top'"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
-            :disabled="!isCTATooltipDisabled"
+            :disabled="!isCTATooltipDisabled && !isLedgerAccount"
+            :styles="isLedgerAccount ? { width: '40rem' } : {}"
         >
             <div  slot="trigger">
                 <button class="stake"
@@ -25,9 +26,13 @@
                     <HeroIcon :pulsing="!totalAccountStake && canStake" />
                 </button>
             </div>
-            <span>
+            <span v-if="!isLedgerAccount">
                 {{ $t('Stake NIM') }}
             </span>
+            <p v-else class="nq-text-s">
+                {{ $t('Staking and un-staking require an update of the Nimiq Ledger app, which is still pending '
+                + 'Ledger’s approval. Please stay tuned until the update is available.') }}
+            </p>
         </Tooltip>
     </div>
 </template>
@@ -35,6 +40,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -43,6 +49,7 @@ import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
+        const { activeAccountInfo } = useAccountStore();
         const { activeAddressInfo } = useAddressStore();
         const { totalAccountStake, totalActiveStake } = useStakingStore();
         const { isMobile } = useWindowSize();
@@ -53,11 +60,12 @@ export default defineComponent({
         /**
          * The user can stake if they have a balance of at least MIN_STAKE.
          */
-        const canStake = computed(() =>
-            !!(activeAddressInfo.value
+        const canStake = computed(() => !!(
+            activeAddressInfo.value
             && activeAddressInfo.value.balance
-            && activeAddressInfo.value.balance >= MIN_STAKE),
-        );
+            && activeAddressInfo.value.balance >= MIN_STAKE
+            && !isLedgerAccount.value
+        ));
 
         /**
          * This function is implemented to prevent any user interaction on the button from closing the tooltip.
@@ -104,6 +112,8 @@ export default defineComponent({
          *   ("At least MIN_STAKE is required in order to stake" nq-orange)
          */
 
+        const isLedgerAccount = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER);
+
         return {
             // Store / Composable
             activeAddressInfo,
@@ -119,6 +129,7 @@ export default defineComponent({
             canStake,
             customClickHandler,
             isCTATooltipDisabled,
+            isLedgerAccount,
         };
     },
     components: {

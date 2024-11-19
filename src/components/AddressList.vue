@@ -47,6 +47,7 @@ import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmoun
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
+import { useNetworkStore } from '../stores/Network';
 import { useAccountStore } from '../stores/Account';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
@@ -90,6 +91,7 @@ export default defineComponent({
         } = usePolygonAddressStore();
         const { stablecoin } = useAccountSettingsStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
+        const { height } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
         const { totalAccountStake } = useStakingStore();
 
@@ -98,8 +100,14 @@ export default defineComponent({
 
             const numberVestingSteps = Math.ceil(addressInfo.totalAmount / addressInfo.stepAmount);
 
-            const passedTime = Math.max(0, Date.now() - addressInfo.startTime);
-            const passedSteps = Math.floor(passedTime / addressInfo.timeStep);
+            let passedSteps: number;
+            if ('startTime' in addressInfo) {
+                const passedTime = Math.max(0, Date.now() - addressInfo.startTime);
+                passedSteps = Math.floor(passedTime / addressInfo.timeStep);
+            } else {
+                const passedBlocks = Math.max(0, height.value - addressInfo.start);
+                passedSteps = Math.floor(passedBlocks / addressInfo.stepBlocks);
+            }
 
             return passedSteps < numberVestingSteps;
         }

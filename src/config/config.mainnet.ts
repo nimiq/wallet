@@ -32,7 +32,8 @@ export default {
         // The block heights determining the on-chain pre-staking window. All transactions inside this window count
         // for pre-staking.
         prestakingStartBlock: 3_392_200, // 2024-10-06T02:53:18Z
-        prestakingEndBlock: 3_456_000, // ~2024-11-19T07:00:00Z
+        prestakingEndBlock: 3_456_000, // ~2024-11-19T16:00:00Z
+        transitionBlock: 3_456_000,
         validatorsEndpoint: 'https://validators-api-mainnet.nuxt.dev/api/v1/validators?only-known=false',
         genesis: {
             height: 3456000,

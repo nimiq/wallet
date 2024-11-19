@@ -53,8 +53,8 @@ export default defineComponent({
     setup(props) {
         const { config } = useConfig();
         const { accountInfos } = useAccountStore();
-        const { state: addressState } = useAddressStore();
         const { totalStakesByAccount } = useStakingStore();
+        const { state: addressState } = useAddressStore();
         const { pendingTransactionsBySender } = useTransactionsStore();
 
         const accountInfo = computed(() => accountInfos.value[props.id]);

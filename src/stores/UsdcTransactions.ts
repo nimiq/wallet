@@ -93,7 +93,7 @@ export const useUsdcTransactionsStore = createStore({
     actions: {
         // Note: this method should not be async to avoid race conditions between parallel calls. Otherwise an older
         // transaction can overwrite its updated version.
-        async addTransactions(txs: Transaction[]) {
+        addTransactions(txs: Transaction[]) {
             if (!txs.length) return;
 
             // re-apply original timestamp and known fiatValue

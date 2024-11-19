@@ -1,4 +1,4 @@
-import type { PlainTransactionDetails } from '@nimiq/core';
+import type { PlainHtlcData, PlainTransactionDetails } from '@nimiq/core';
 import Vue from 'vue';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { SwapAsset } from '@nimiq/fastspot-api';
@@ -19,6 +19,7 @@ export type Transaction = PlainTransactionDetails & {
 export enum TransactionState {
     NEW = 'new',
     PENDING = 'pending',
+    MINED = 'mined',
     INCLUDED = 'included',
     INVALIDATED = 'invalidated',
     EXPIRED = 'expired',
@@ -235,15 +236,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
 
     // HTLC Creation
     if ('hashRoot' in transaction.data) {
-        const fundingData = transaction.data as {
-            sender: string,
-            recipient: string,
-            hashAlgorithm: string,
-            hashRoot: string,
-            hashCount: number,
-            timeout: number,
-            raw: string,
-        };
+        const fundingData = transaction.data;
         addFundingData(fundingData.hashRoot, {
             asset: SwapAsset.NIM,
             transactionHash: transaction.transactionHash,
@@ -279,14 +272,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
         }
 
         if (fundingTx) {
-            const fundingData = fundingTx.data as any as {
-                sender: string,
-                recipient: string,
-                hashAlgorithm: string,
-                hashRoot: string,
-                hashCount: number,
-                timeout: number,
-            };
+            const fundingData = fundingTx.data as PlainHtlcData;
             addSettlementData(fundingData.hashRoot, {
                 asset: SwapAsset.NIM,
                 transactionHash: transaction.transactionHash,
@@ -296,18 +282,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
 
     // HTLC Settlement
     if ('hashRoot' in transaction.proof) {
-        const settlementData = transaction.proof as {
-            type: 'regular-transfer',
-            hashAlgorithm: string,
-            hashDepth: number,
-            hashRoot: string,
-            preImage: string,
-            signer: string,
-            signature: string,
-            publicKey: string,
-            pathLength: number,
-            raw: string,
-        };
+        const settlementData = transaction.proof;
         addSettlementData(settlementData.hashRoot, {
             asset: SwapAsset.NIM,
             transactionHash: transaction.transactionHash,

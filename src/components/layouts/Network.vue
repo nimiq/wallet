@@ -120,7 +120,7 @@ export default defineComponent({
             syncing: context.root.$t('syncing'),
             connecting: context.root.$t('connecting'),
             established: context.root.$t('established'),
-        }[consensus.value as 'syncing' | 'connecting' | 'established']));
+        }[consensus.value as 'stalled' | 'syncing' | 'connecting' | 'established']));
 
         const showNetworkInfo = ref(!window.localStorage.getItem(LOCALSTORAGE_KEY));
 

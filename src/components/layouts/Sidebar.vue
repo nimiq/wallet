@@ -14,7 +14,7 @@
                     <InfoCircleIcon/>
                 </template>
                 <template #default>
-                    <p>{{ $t('You are connecting to the Nimiq Proof-of-Stake Testnet.') }}</p>
+                    <p>{{ $t('You are connecting to the Nimiq PoS and Bitcoin Testnets.') }}</p>
                     <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
                 </template>
             </Tooltip>

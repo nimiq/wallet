@@ -36,6 +36,16 @@ export async function getNetworkClient() {
     return clientPromise;
 }
 
+async function reconnectNetwork() {
+    const client = await getNetworkClient();
+    await client.connectNetwork();
+}
+
+async function disconnectNetwork() {
+    const client = await getNetworkClient();
+    await client.disconnectNetwork();
+}
+
 export async function launchNetwork() {
     if (isLaunched) return;
     isLaunched = true;
@@ -123,6 +133,7 @@ export async function launchNetwork() {
 
     // Start as true, since at app start everything is already invalidated and unconnected
     let txHistoryWasInvalidatedSinceLastConsensus = true;
+    let networkWasReconnectedSinceLastConsensus = true;
     client.addConsensusChangedListener(async (consensus) => {
         network$.consensus = consensus;
 
@@ -133,6 +144,7 @@ export async function launchNetwork() {
                     stop();
                 }
             }, { lazy: true });
+            networkWasReconnectedSinceLastConsensus = false;
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
             updateBalances();
@@ -151,6 +163,26 @@ export async function launchNetwork() {
                 lastVisibilityFetch = Date.now();
             }
         }
+
+        // If network is disconnected when going back to app, trigger reconnect
+        if (useNetworkStore().state.consensus === 'connecting' && !networkWasReconnectedSinceLastConsensus) {
+            disconnectNetwork().then(reconnectNetwork);
+            networkWasReconnectedSinceLastConsensus = true;
+        }
+    });
+
+    let reconnectTimeout: number | undefined;
+    window.addEventListener('offline', async () => {
+        console.warn('Browser is OFFLINE');
+        if (reconnectTimeout) window.clearTimeout(reconnectTimeout);
+        disconnectNetwork();
+    });
+    window.addEventListener('online', () => {
+        console.info('Browser is ONLINE');
+        reconnectTimeout = window.setTimeout(() => {
+            reconnectNetwork();
+            reconnectTimeout = undefined;
+        }, 1000);
     });
 
     let currentEpoch = 0;

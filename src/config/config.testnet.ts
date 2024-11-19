@@ -19,8 +19,9 @@ export default {
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
     staking: {
-        prestakingStartBlock: Infinity,
-        prestakingEndBlock: Infinity,
+        prestakingStartBlock: 3_023_730,
+        prestakingEndBlock: 3_028_050,
+        transitionBlock: 3_032_010,
         validatorsEndpoint: 'https://validators-api-testnet.nuxt.dev/api/v1/validators?with-scores=true',
         genesis: {
             height: 3032010,
@@ -62,8 +63,8 @@ export default {
     },
 
     fastspot: {
-        enabled: false, // Set to false to hide the swap feature.
-        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC],
+        enabled: true, // Set to false to hide the swap feature.
+        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC],
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',

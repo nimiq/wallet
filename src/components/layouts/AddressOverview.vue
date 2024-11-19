@@ -283,7 +283,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import {
     Identicon,
     GearIcon,
@@ -614,11 +614,11 @@ export default defineComponent({
             onTransactionListScroll,
             address$,
             addressMasked,
-            activeStake,
             toggleUnclaimedCashlinkList,
             config,
             convertBridgedUsdcToNative,
             switchStablecoin,
+            activeStake,
             windowWidth,
             showStakingButton,
             isMobile,
@@ -648,11 +648,11 @@ export default defineComponent({
         BoxedArrowUpIcon,
         UsdcIcon,
         UsdtIcon,
-        StakingPreview,
-        StakingButton,
-        TwoLeafStakingIcon,
         CashlinkButton,
+        StakingButton,
+        StakingPreview,
         HeroIcon,
+        TwoLeafStakingIcon,
     },
 });
 </script>

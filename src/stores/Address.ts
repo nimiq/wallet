@@ -28,11 +28,17 @@ export type BasicAddressInfo = {
 export type ContractAddressInfo = {
     type: AddressType.VESTING,
     owner: string,
-    startTime: number,
     stepAmount: number,
-    timeStep: number,
     totalAmount: number,
-}
+} & ({
+    // PoS
+    startTime: number,
+    timeStep: number,
+} | {
+    // PoW
+    start: number,
+    stepBlocks: number,
+})
 
 export const useAddressStore = createStore({
     id: 'addresses',

@@ -23,7 +23,7 @@ export const useNetworkStore = createStore({
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
         height: (state): Readonly<number> => state.height,
         consensus: (state): Readonly<string> => {
-            // If no new block is received within 30 seconds since the last block, the network is considered stalled.
+            // If no new block is received within the timeout, the network is considered stalled.
             if (state.consensus === 'established' && state.timestamp < Date.now() - NETWORK_STALLED_BLOCK_GAP) {
                 return 'stalled';
             }

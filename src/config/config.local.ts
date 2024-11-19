@@ -15,14 +15,15 @@ export default {
     ],
     faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
     reportToSentry: false,
-    enableBitcoin: false,
+    enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
     staking: {
         // The block heights determining the on-chain pre-staking window. All transactions inside this window count
         // for pre-staking.
-        prestakingStartBlock: 3_392_200, // 2024-10-06T02:53:18Z
-        prestakingEndBlock: 3_456_000, // ~2024-11-19T07:00:00Z
+        prestakingStartBlock: 3_023_730,
+        prestakingEndBlock: 3_028_050,
+        transitionBlock: 3_032_010,
         validatorsEndpoint: 'https://validators-api-testnet.nuxt.dev/api/v1/validators?only-known=false',
         genesis: {
             height: 3032010,
@@ -84,8 +85,8 @@ export default {
     },
 
     fastspot: {
-        enabled: false, // Set to false to hide the swap feature.
-        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC],
+        enabled: true, // Set to false to hide the swap feature.
+        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC],
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',

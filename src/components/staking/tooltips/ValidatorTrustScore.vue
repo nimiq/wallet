@@ -1,8 +1,8 @@
-<template>
+ <template>
     <div class="validator-trust-score"
         :class="{
             'high-score': !dry && !disabled && stars >= 4.5,
-            'low-score': !dry && !disabled && stars >= 2.5 && stars < 4.5,
+            'low-score': !dry && !disabled && stars >= 2.5 && stars < 3.5,
             'very-low-score': !dry && !disabled && stars < 2.5,
             'disabled': disabled,
             dry,

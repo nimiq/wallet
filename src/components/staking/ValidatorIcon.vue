@@ -1,5 +1,5 @@
 <template>
-    <img class="validator-icon" v-if="'icon' in validator" :src="validator.icon" :alt="validator.name" />
+    <img class="validator-icon" v-if="'logo' in validator" :src="validator.logo" :alt="validator.name" />
     <Identicon class="validator-icon" v-else :address="validator.address"/>
 </template>
 

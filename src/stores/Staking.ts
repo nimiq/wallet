@@ -33,15 +33,15 @@ export type RegisteredValidator = RawValidator & {
     payoutType: 'none' | 'direct' | 'restake',
     payoutSchedule: string,
     isMaintainedByNimiq: boolean,
-    icon?: string,
+    logo?: string,
     hasDefaultIcon: boolean,
     accentColor: string,
     website: string | null,
     contact: Record<string, string> | null,
     score: {
-        liveness: number,
+        availability: number,
         total: number,
-        size: number,
+        dominance: number,
         reliability: number,
     },
 

@@ -23,7 +23,7 @@ export default {
         // for pre-staking.
         prestakingStartBlock: 3_392_200, // 2024-10-06T02:53:18Z
         prestakingEndBlock: 3_456_000, // ~2024-11-19T07:00:00Z
-        validatorsEndpoint: 'https://validators-api-testnet.nuxt.dev/api/v1/validators?with-scores=true',
+        validatorsEndpoint: 'https://validators-api-testnet.nuxt.dev/api/v1/validators?only-known=false',
         genesis: {
             height: 3032010,
             date: new Date('2024-11-13T20:00:00Z'),

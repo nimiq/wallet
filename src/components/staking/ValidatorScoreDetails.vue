@@ -7,7 +7,7 @@
             <div class="score-header">
                 <CaretRightIcon />
                 <h2>{{ $t('Availability') }}</h2>
-                <ValidatorTrustScore :score="score.liveness" borderless/>
+                <ValidatorTrustScore :score="score.availability" borderless/>
             </div>
             <div class="score-content">
                 <p class="description">
@@ -45,7 +45,7 @@
             <div class="score-header">
                 <CaretRightIcon />
                 <h2>{{ $t('Dominance') }}</h2>
-                <ValidatorTrustScore :score="score.size" borderless/>
+                <ValidatorTrustScore :score="score.dominance" borderless/>
             </div>
             <div class="score-content">
                 <p class="description">
@@ -86,9 +86,21 @@ export default defineComponent({
         const isDominanceExpanded = ref(false);
 
         // Computed properties for each score type
-        const availabilityScore = computed(() => props.score.liveness !== null ? props.score.liveness * 5 : null);
-        const reliabilityScore = computed(() => props.score.reliability !== null ? props.score.reliability * 5 : null);
-        const dominanceScore = computed(() => props.score.size !== null ? props.score.size * 5 : null);
+        const availabilityScore = computed(() =>
+            props.score.availability
+                ? props.score.availability * 5
+                : null,
+        );
+        const reliabilityScore = computed(() =>
+            props.score.reliability
+                ? props.score.reliability * 5
+                : null,
+        );
+        const dominanceScore = computed(() =>
+            props.score.dominance
+                ? props.score.dominance * 5
+                : null,
+        );
 
         // Function for status classes
         const getStatusClass = (score: number | null) => {
@@ -102,7 +114,8 @@ export default defineComponent({
         // Computed properties for status messages
         const availabilityStatus = computed(() => {
             const score = availabilityScore.value;
-            if (score === null) return i18n.t('No availability data available yet.');
+
+            if (!score) return i18n.t('No availability data available yet.');
 
             if (score > SCORE_THRESHOLDS.EXCELLENT) {
                 return i18n.t('This pool is reliably available for block production.');
@@ -118,7 +131,8 @@ export default defineComponent({
 
         const reliabilityStatus = computed(() => {
             const score = reliabilityScore.value;
-            if (score === null) return i18n.t('No reliability data available yet.');
+
+            if (!score) return i18n.t('No reliability data available yet.');
 
             if (score > SCORE_THRESHOLDS.EXCELLENT) {
                 return i18n.t('This pool reliably produces blocks.');
@@ -134,7 +148,8 @@ export default defineComponent({
 
         const dominanceStatus = computed(() => {
             const score = dominanceScore.value;
-            if (score === null) return i18n.t('No dominance data available yet.');
+
+            if (!score) return i18n.t('No dominance data available yet.');
 
             if (score > SCORE_THRESHOLDS.EXCELLENT) {
                 return i18n.t('This pool is safe to stake with.');

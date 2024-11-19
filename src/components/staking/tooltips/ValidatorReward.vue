@@ -5,7 +5,7 @@
             'low-reward': !dry && (reward * 100) < 2.5,
         }"
     >
-        {{ formatted }}% {{ $t("p.a.") }}
+        {{ formatted }}% {{ percentOnly ? '' : $t('p.a.') }}
     </div>
 </template>
 
@@ -19,6 +19,7 @@ export default defineComponent({
             required: true,
         },
         dry: Boolean,
+        percentOnly: Boolean,
     },
     setup(props) {
         // Ensure we show at most 3 significant digits (except if the integer part is longer than that)

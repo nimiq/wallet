@@ -155,6 +155,7 @@
             >
                 <a href="#" slot="unstakeEverythingLink" @click="deactivateAll">{{ $t('unstake everything') }}</a>
             </i18n>
+            <div v-else class="switch-validator"></div>
 
             <!-- <button class="nq-button-s rewards-history" @click="$emit('next')">
                 {{ $t('Rewards history') }} &gt;
@@ -277,6 +278,13 @@ export default defineComponent({
 
                     const txs = await sendStaking({
                         transaction: transaction.serialize(),
+                        recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
+                        // @ts-expect-error Not typed yet in Hub
+                        validatorAddress: validator.value!.address,
+                        validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultIcon
+                            ? validator.value.logo
+                            : undefined,
+                        amount: Math.abs(stake.value.activeBalance),
                     });
 
                     if (!txs) {
@@ -356,6 +364,12 @@ export default defineComponent({
 
                 const txs = await sendStaking({
                     transaction: transactions.map((tx) => tx.serialize()),
+                    recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
+                    // @ts-expect-error Not typed yet in Hub
+                    validatorAddress: validator.value!.address,
+                    validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultIcon
+                        ? validator.value.logo
+                        : undefined,
                 });
 
                 if (!txs) {

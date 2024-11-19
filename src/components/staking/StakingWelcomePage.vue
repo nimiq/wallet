@@ -9,7 +9,7 @@
             </template>
             <template #more>
                 <p class="nq-text nq-blue">
-                    {{ $t('Help secure the network by locking up NIM and get a percentage as a reward.') }}
+                    {{ $t('Lock up NIM to support the network and earn new NIM as a reward.') }}
                 </p>
             </template>
         </PageHeader>
@@ -29,8 +29,7 @@
                     </template>
                 </div>
                 <div class="staking-under-icons-text">
-                    {{ $t('So called validators facilitate this process.'
-                        + ' Choose one to stake on your behalf, set an amount and go.') }}
+                    {{ $t('For a small fee, validator pools do the staking for you.') }}
                 </div>
                 <button class="nq-button light-blue stake-button" @click="$emit('next')">
                     {{ $t('Let\'s go') }}
@@ -166,13 +165,17 @@ export default defineComponent({
             }
 
             .staking-under-icons-text {
-                font-size: var(--small-size);
+                font-size: 1.75rem;
                 font-weight: 600;
+                line-height: 2.45rem;
+                color: var(--text-60);
+
+                text-align: center;
+                max-width: 37.5rem;
+                margin: 0 auto;
+
                 padding: 0 4rem;
                 padding-bottom: 1.25rem;
-                line-height: 2.45rem;
-                text-align: center;
-                color: var(--text-60);
             }
 
             .stake-button {

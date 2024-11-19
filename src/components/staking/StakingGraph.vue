@@ -1,7 +1,7 @@
 <template>
     <div class="staking-graph">
         <img class="graph-image" src="../../assets/staking/staking-graph.svg" alt="staking graph">
-        <div class="bubbles">
+        <div class="bubbles" v-if="!loading">
             <div class="bubble">~&nbsp;{{ estimatedRewards['4M'] }}&nbsp;{{ $t('NIM') }}</div>
             <div class="bubble">~&nbsp;{{ estimatedRewards['8M'] }}&nbsp;{{ $t('NIM') }}</div>
             <div class="bubble">~&nbsp;{{ estimatedRewards['12M'] }}&nbsp;{{ $t('NIM') }}</div>
@@ -35,12 +35,14 @@ export default defineComponent({
     setup(props) {
         const { validatorsList, activeValidator } = useStakingStore();
 
-        const calculateReward = (months: number): number => {
-            const totalStake = validatorsList.value.reduce((sum, validator) => sum + validator.balance, 0);
+        const totalStake = computed(() => validatorsList.value.reduce((sum, validator) => sum + validator.balance, 0));
+        // assume loading if no validators or total stake is 0
+        const loading = computed(() => validatorsList.value.length === 0 || totalStake.value === 0);
 
+        const calculateReward = (months: number): number => {
             const days = months * (365 / 12); // Convert months to approximate days
             const fee = (activeValidator.value && 'fee' in activeValidator.value) ? activeValidator.value.fee : 0;
-            const rewardsPercentage = calculateStakingReward(fee, totalStake, days);
+            const rewardsPercentage = calculateStakingReward(fee, totalStake.value, days);
             const rewards = rewardsPercentage * props.stakedAmount;
 
             return Math.trunc(rewards / 1e5);
@@ -54,6 +56,7 @@ export default defineComponent({
 
         return {
             estimatedRewards,
+            loading,
         };
     },
 });

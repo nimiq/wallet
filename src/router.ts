@@ -33,6 +33,8 @@ const BuyOptionsModal = () =>
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
 const WelcomeModal = () =>
     import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
+const WelcomeStakingModal = () =>
+    import(/* webpackChunkName: "welcome-staking-modal" */ './components/staking/WelcomeStakingModal.vue');
 const MigrationWelcomeModal = () =>
     import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
 const DisclaimerModal = () =>
@@ -233,6 +235,13 @@ const routes: RouteConfig[] = [{
                 modal: WelcomeModal,
             },
             name: 'welcome',
+            meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/welcome-staking',
+            components: {
+                modal: WelcomeStakingModal,
+            },
+            name: 'welcome-staking',
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/migration-welcome',

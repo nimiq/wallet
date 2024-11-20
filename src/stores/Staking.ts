@@ -34,6 +34,7 @@ export type RegisteredValidator = RawValidator & {
     payoutSchedule: string,
     isMaintainedByNimiq: boolean,
     logo?: string,
+    logoPath?: string,
     hasDefaultIcon: boolean,
     accentColor: string,
     website: string | null,
@@ -167,7 +168,7 @@ export const useStakingStore = createStore({
             };
         },
         setStakes(stakes: Stake[]) {
-            const newStakes: {[address: string]: Stake} = {};
+            const newStakes: { [address: string]: Stake } = {};
 
             for (const stake of stakes) {
                 newStakes[stake.address] = stake;
@@ -197,7 +198,7 @@ export const useStakingStore = createStore({
             };
         },
         setValidators(validators: Validator[]) {
-            const newValidators: {[address: string]: Validator} = {};
+            const newValidators: { [address: string]: Validator } = {};
 
             for (const validator of validators) {
                 newValidators[validator.address] = validator;

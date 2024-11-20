@@ -242,7 +242,8 @@ export async function launchNetwork() {
             payoutType: 'none' | 'direct' | 'restake',
             payoutSchedule: string,
             isMaintainedByNimiq: boolean,
-            icon?: string,
+            logo?: string,
+            logoPath?: string,
             hasDefaultIcon: boolean,
             accentColor: string,
             website: string | null,
@@ -256,8 +257,9 @@ export async function launchNetwork() {
         };
 
         const { config } = useConfig();
+        const url = `${config.staking.validatorsEndpoint}/api/v1/validators?only-known=false`;
         const apiValidators = await retry<ApiValidator[]>(
-            () => fetch(config.staking.validatorsEndpoint).then((res) => res.json()).catch(() => []), 1000, 3,
+            () => fetch(url).then((res) => res.json()).catch(() => []), 1000, 3,
         );
         // TODO: Make it work even in the case this request fails
         const validatorData: Record<string, ApiValidator> = {};

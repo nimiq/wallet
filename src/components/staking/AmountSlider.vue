@@ -70,6 +70,7 @@ import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
 import AnimatedLeafIcon from '../icons/Staking/AnimatedLeafIcon.vue';
 import Amount from '../Amount.vue';
 import { formatNumber } from '../../lib/NumberFormatting';
+import { MIN_STAKE } from '../../lib/Constants';
 
 const getSVGNode = (n:string, attrs:Record<string, string> = {}) => {
     const e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -115,6 +116,15 @@ const extractEventPosition = (e: MouseEvent | TouchEvent):Point | null => {
     };
 };
 
+const snapToValidPercentage = (percent: number, availableAmount: number): number => {
+    const amount = (percent / 100) * availableAmount;
+    if (amount > 0 && amount < MIN_STAKE) {
+        // Snap to MIN_STAKE percentage
+        return (MIN_STAKE / availableAmount) * 100;
+    }
+    return amount <= MIN_STAKE / 2 ? 0 : percent;
+};
+
 export default defineComponent({
     props: {
         stakedAmount: {
@@ -138,8 +148,11 @@ export default defineComponent({
             return (currentAmount.value / 1e5).toFixed(0); // Display without decimals
         });
 
-        const getPointAtPercent = (percent: number): number =>
-            Math.max(2, (percent / 100.0) * (sliderBox.width - knobBox.width));
+        const getPointAtPercent = (percent: number): number => {
+            // Snap the percentage to valid values
+            const snappedPercent = snapToValidPercentage(percent, availableAmount.value);
+            return Math.max(2, (snappedPercent / 100.0) * (sliderBox.width - knobBox.width));
+        };
 
         const estimateTextWidth = (text: string, defaultSize: number, options:Record<string, number> = { ' ': 3 }) => {
             let result = 0;
@@ -232,7 +245,12 @@ export default defineComponent({
         const updateAmount = async (e: MouseEvent | TouchEvent | { target: HTMLInputElement }) => {
             const target = e.target as HTMLInputElement;
             const rawValue = target.value.replace(/[^\d.]/g, ''); // Remove formatting for calculation
-            const valueNim = (parseFloat(rawValue) || 0) * 1e5;
+            let valueNim = (parseFloat(rawValue) || 0) * 1e5;
+
+            // Enforce MIN_STAKE threshold
+            if (valueNim > 0 && valueNim < MIN_STAKE) {
+                valueNim = MIN_STAKE;
+            }
 
             if (!firstRender) {
                 window.clearTimeout(timeoutID);
@@ -303,13 +321,19 @@ export default defineComponent({
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
             ));
 
-            const offsetX = getPointAtPercent(percent);
+            // Use the snapped percentage for visual position
+            const snappedPercent = snapToValidPercentage(percent, availableAmount.value);
+            const offsetX = getPointAtPercent(snappedPercent);
             let newAmount;
 
             if (percent === 100) {
                 newAmount = availableAmount.value;
             } else {
                 newAmount = Math.floor(((percent / 100) * availableAmount.value) / 1e5) * 1e5;
+                // Enforce MIN_STAKE threshold
+                if (newAmount > 0 && newAmount < MIN_STAKE) {
+                    newAmount = MIN_STAKE;
+                }
                 newAmount = Math.max(newAmount, 0);
             }
 
@@ -411,6 +435,7 @@ export default defineComponent({
             const input = event.target as HTMLInputElement;
             const rawValue = input.value.replace(/[^\d.]/g, '');
             const currentValue = parseFloat(rawValue) || 0;
+            const currentValueLuna = currentValue * 1e5;
 
             // Increment/decrement by:
             // 10000 if ctrl/cmd + shift is held
@@ -423,13 +448,32 @@ export default defineComponent({
                     : event.altKey ? 100
                         : event.shiftKey ? 10
                             : 1;
-            const newValue = direction === 'up' ? currentValue + step : currentValue - step;
 
-            // Enforce bounds
-            const maxValue = availableAmount.value / 1e5;
-            const boundedValue = Math.min(Math.max(0, newValue), maxValue);
+            let newValue: number;
 
-            input.value = formatNumber(boundedValue);
+            // Handle special cases for MIN_STAKE snapping
+            if (direction === 'up' && currentValueLuna < MIN_STAKE) {
+                // When going up from below MIN_STAKE, jump directly to MIN_STAKE
+                newValue = MIN_STAKE / 1e5;
+            } else if (direction === 'down' && currentValueLuna <= MIN_STAKE && currentValueLuna > 0) {
+                // When going down from MIN_STAKE or below, jump directly to 0
+                newValue = 0;
+            } else {
+                // Normal increment/decrement
+                newValue = direction === 'up' ? currentValue + step : currentValue - step;
+
+                // Enforce bounds
+                const maxValue = availableAmount.value / 1e5;
+                newValue = Math.min(Math.max(0, newValue), maxValue);
+
+                // Snap to MIN_STAKE if we're close to it
+                const newValueLuna = newValue * 1e5;
+                if (newValueLuna > 0 && newValueLuna < MIN_STAKE) {
+                    newValue = direction === 'up' ? MIN_STAKE / 1e5 : 0;
+                }
+            }
+
+            input.value = formatNumber(newValue);
             updateAmount({ target: input });
         }
 

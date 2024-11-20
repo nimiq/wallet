@@ -291,7 +291,6 @@ import {
     SetupSwapRequest,
     SetupSwapResult,
 } from '@nimiq/hub-api';
-import { captureException } from '@sentry/vue';
 import { Bank } from '@nimiq/oasis-bank-list';
 import { getNetworkClient } from '../../network';
 import { SwapState, useSwapsStore } from '../../stores/Swaps';
@@ -344,6 +343,7 @@ import {
 import { useKycStore } from '../../stores/Kyc';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
+import { reportToSentry } from '../../lib/Sentry';
 
 type KycResult = import('../../swap-kyc-handler').SetupSwapWithKycResult['kyc'];
 
@@ -691,8 +691,7 @@ export default defineComponent({
                     signedTransactions = setupSwapResult; // can be null if the hub popup was cancelled
                 }
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -712,8 +711,7 @@ export default defineComponent({
 
             if (typeof signedTransactions.eur !== 'string' || (!signedTransactions.nim && !signedTransactions.btc)) {
                 const error = new Error('Internal error: Hub result did not contain EUR or (NIM|BTC) data');
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -753,8 +751,7 @@ export default defineComponent({
                         : 0;
                 confirmedSwap.to.fee = (request.redeem as EuroHtlcSettlementInstructions).fee;
             } catch (error) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -794,8 +791,7 @@ export default defineComponent({
             const oasisHtlc = await getHtlc(contract.htlc.address);
             if (oasisHtlc.status !== HtlcStatus.PENDING && oasisHtlc.status !== HtlcStatus.CLEARED) {
                 const error = new Error(`UNEXPECTED: OASIS HTLC is not 'pending'/'cleared' but '${oasisHtlc.status}'`);
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = 'Invalid OASIS contract state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -819,8 +815,7 @@ export default defineComponent({
                 // we are taking the fee that OASIS reports, so we don't run into an HTLC validation error.
                 swap.value!.to.serviceEscrowFee = oasisHtlc.fee;
             } catch (error) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = 'Invalid OASIS contract, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -882,8 +877,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (config.reportToSentry) captureException(error);
-                    else console.error(error); // eslint-disable-line no-console
+                    reportToSentry(error);
                 });
             }
 

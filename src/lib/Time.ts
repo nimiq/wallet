@@ -1,5 +1,4 @@
-import { captureException } from '@sentry/vue';
-import { useConfig } from '../composables/useConfig';
+import { reportToSentry } from './Sentry';
 
 let serverTimeOffset = 0;
 
@@ -22,8 +21,7 @@ async function updateServerTimeOffset() {
         if (Number.isNaN(responseTime)) throw new Error('Failed to read server time');
         serverTimeOffset = responseTime - Date.now();
     } catch (error) {
-        console.error(error); // eslint-disable-line no-console
-        if (useConfig().config.reportToSentry) captureException(error);
+        reportToSentry(error);
     }
 }
 

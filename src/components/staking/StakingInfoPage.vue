@@ -169,7 +169,6 @@ import {
     Tooltip,
     ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
-import { captureException } from '@sentry/vue';
 
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
@@ -186,17 +185,16 @@ import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
-import { useConfig } from '../../composables/useConfig';
 import { getNetworkClient } from '../../network';
 import ArrowDownIcon from '../icons/ArrowDownIcon.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
+import { reportToSentry } from '../../lib/Sentry';
 
 export default defineComponent({
     setup(props, context) {
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator } = useStakingStore();
         const { height, consensus } = useNetworkStore();
-        const { config } = useConfig();
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
@@ -302,8 +300,7 @@ export default defineComponent({
                         timeout: SUCCESS_REDIRECT_DELAY,
                     });
                 } catch (error: any) {
-                    if (config.reportToSentry) captureException(error);
-                    else console.error(error); // eslint-disable-line no-console
+                    reportToSentry(error);
 
                     context.emit('statusChange', {
                         state: State.WARNING,
@@ -380,8 +377,7 @@ export default defineComponent({
                     timeout: SUCCESS_REDIRECT_DELAY,
                 });
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
 
                 context.emit('statusChange', {
                     state: State.WARNING,

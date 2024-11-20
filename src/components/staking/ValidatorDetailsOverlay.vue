@@ -57,7 +57,6 @@
 </template>
 
 <script lang="ts">
-import { captureException } from '@sentry/vue';
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { Validator, useStakingStore } from '../../stores/Staking';
@@ -70,9 +69,9 @@ import { useNetworkStore } from '../../stores/Network';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import { getNetworkClient } from '../../network';
-import { useConfig } from '../../composables/useConfig';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import BlueLink from '../BlueLink.vue';
+import { reportToSentry } from '../../lib/Sentry';
 
 export default defineComponent({
     props: {
@@ -86,7 +85,6 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { config } = useConfig();
         const { activeAddress } = useAddressStore();
         const { activeStake, setStake } = useStakingStore();
 
@@ -156,8 +154,7 @@ export default defineComponent({
                     }, SUCCESS_REDIRECT_DELAY);
                 }
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
 
                 context.emit('statusChange', {
                     state: State.WARNING,

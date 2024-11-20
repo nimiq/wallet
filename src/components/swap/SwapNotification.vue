@@ -66,7 +66,6 @@ import {
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
-import { captureException } from '@sentry/vue';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -88,6 +87,7 @@ import {
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../../stores/UsdtTransactions';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { reportToSentry } from '../../lib/Sentry';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -634,8 +634,7 @@ export default defineComponent({
                                         resolve(swap.secret);
                                     }
                                 } catch (error) {
-                                    if (config.reportToSentry) captureException(error);
-                                    else console.error(error); // eslint-disable-line no-console
+                                    reportToSentry(error);
                                 }
                             }, 5 * 1000); // Every 5 seconds
                         }),

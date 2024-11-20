@@ -250,7 +250,6 @@ import {
     FiatAmount,
     CircleSpinner,
 } from '@nimiq/vue-components';
-import { captureException } from '@sentry/vue';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
@@ -284,6 +283,7 @@ import UsdcContactShortcuts from '../UsdcContactShortcuts.vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useUsdtContactsStore } from '../../stores/UsdtContacts';
+import { reportToSentry } from '../../lib/Sentry';
 
 export enum RecipientType {
     CONTACT,
@@ -672,8 +672,7 @@ export default defineComponent({
                     modal$.value!.forceClose();
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
 
                 // Show error screen
                 statusState.value = State.WARNING;

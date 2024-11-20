@@ -1,10 +1,10 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
-import { captureException } from '@sentry/vue';
 import { getElectrumClient } from '../electrum';
 import { loadBitcoinJS } from './BitcoinJSLoader';
 import { ENV_MAIN } from './Constants';
 import { useConfig } from '../composables/useConfig';
+import { reportToSentry } from './Sentry';
 
 export type BtcHtlcDetails = {
     script: string,
@@ -161,8 +161,6 @@ export async function isHtlcFunding(
     // input is from the same supposed HTLC address, which should never be the case for an HTLC funding.
     if (tx.inputs.some((input) => input.address === htlcOutput.address!)) return false;
 
-    const { config } = useConfig();
-
     // Find HTLC details (in Bitcoin, the HTLC details are not part of the HTLC funding transaction)
 
     // Try Fastspot API
@@ -179,8 +177,7 @@ export async function isHtlcFunding(
         if ((error as Error).message.includes(htlcOutput.address!)) {
             // Ignore 404 Not Found
         } else {
-            console.error(error); // eslint-disable-line no-console
-            if (config.reportToSentry) captureException(error);
+            reportToSentry(error);
         }
     }
 
@@ -198,8 +195,7 @@ export async function isHtlcFunding(
             }
         }
     } catch (error) {
-        console.error(error); // eslint-disable-line no-console
-        if (config.reportToSentry) captureException(error);
+        reportToSentry(error);
     }
 
     return false;

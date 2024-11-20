@@ -38,6 +38,9 @@
             <div class="map flex-column" ref="map$">
                 <NetworkMap @own-x-coordinate="scrollMap"/>
             </div>
+            <div class="unconnected-nodes-notice">
+                <p>Other browser nodes are not shown.</p>
+            </div>
         </section>
 
         <section v-if="$config.enableBitcoin" :class="{'full-width': !$config.polygon.enabled || !stablecoin}">
@@ -69,10 +72,6 @@
                 <template #txTime>{{ $t('20 sec') }}</template>
             </NetworkStats>
         </section>
-
-        <div class="unconnected-nodes-notice">
-            <p>Other browser nodes are not shown.</p>
-        </div>
 
         <transition name="modal">
             <NetworkInfoModal v-if="showNetworkInfo" emitClose @close="onNetworkInfoClosed"/>

@@ -79,7 +79,6 @@
 </template>
 
 <script lang="ts">
-import { captureException } from '@sentry/vue';
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 
@@ -87,8 +86,6 @@ import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { getNetworkClient } from '../../network';
 import { sendStaking } from '../../hub';
-
-import { useConfig } from '../../composables/useConfig';
 
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
@@ -103,10 +100,10 @@ import AmountSlider from './AmountSlider.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import MessageTransition from '../MessageTransition.vue';
 import StakingGraph from './StakingGraph.vue';
+import { reportToSentry } from '../../lib/Sentry';
 
 export default defineComponent({
     setup(props, context) {
-        const { config } = useConfig();
         const { activeAddress } = useAddressStore();
         const { activeStake, activeValidator } = useStakingStore();
 
@@ -267,8 +264,7 @@ export default defineComponent({
                     context.emit('next');
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
 
                 // Show error screen
                 context.emit('statusChange', {

@@ -11,6 +11,8 @@ import { useConfig } from './composables/useConfig';
 import { useStakingStore, Validator } from './stores/Staking';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { calculateStakingReward } from './lib/AlbatrossMath';
+import { reportToSentry } from './lib/Sentry';
+import { useAccountStore } from './stores/Account';
 
 let isLaunched = false;
 let clientPromise: Promise<Client>;
@@ -46,6 +48,13 @@ async function disconnectNetwork() {
     await client.disconnectNetwork();
 }
 
+function reportFor(method: string) {
+    return (error: Error) => {
+        const accountId = useAccountStore().state.activeAccountId ?? undefined;
+        reportToSentry(error, { extra: { method }, accountId });
+    };
+}
+
 export async function launchNetwork() {
     if (isLaunched) return;
     isLaunched = true;
@@ -66,7 +75,8 @@ export async function launchNetwork() {
     async function updateBalances(addresses: string[] = [...balances.keys()]) {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
-        const accounts = await client.getAccounts(addresses);
+        const accounts = await retry(() => client.getAccounts(addresses)).catch(reportFor('getAccounts'));
+        if (!accounts) return;
         const newBalances: Balances = new Map(
             accounts.map((account, i) => [addresses[i], account.balance]),
         );
@@ -92,7 +102,8 @@ export async function launchNetwork() {
     async function updateStakes(addresses: string[] = [...balances.keys()]) {
         if (!addresses.length) return;
         await client.waitForConsensusEstablished();
-        const stakers = await client.getStakers(addresses);
+        const stakers = await retry(() => client.getStakers(addresses)).catch(reportFor('getStakers'));
+        if (!stakers) return;
         stakers.forEach((staker, i) => {
             const address = addresses[i];
             if (staker) {
@@ -188,7 +199,9 @@ export async function launchNetwork() {
     let currentEpoch = 0;
 
     client.addHeadChangedListener(async (hash) => {
-        const { height, epoch, timestamp } = await client.getBlock(hash);
+        const block = await retry(() => client.getBlock(hash)).catch(reportFor('getBlock'));
+        if (!block) return;
+        const { height, timestamp, epoch } = block;
         console.log('Head is now at', height);
         patchNetworkStore({ height, timestamp });
 
@@ -219,9 +232,10 @@ export async function launchNetwork() {
 
     async function updateValidators() {
         await client.waitForConsensusEstablished();
-        const contract = (await retry(
+        const contract = await retry(
             () => client.getAccount(STAKING_CONTRACT_ADDRESS) as Promise<PlainStakingContract>,
-        ));
+        ).catch(reportFor('getAccount(staking contract)'));
+        if (!contract) return;
         const activeValidators = contract.activeValidators.map(([address, balance]) => ({
             address,
             balance,
@@ -386,14 +400,19 @@ export async function launchNetwork() {
         client.waitForConsensusEstablished()
             .then(() => {
                 console.info('Fetching transaction history for', address, knownTxDetails);
-                return client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails);
+                return retry(
+                    () => client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails),
+                );
             })
             .then((txDetails) => {
                 console.info('Got transaction history for', address, txDetails);
                 transactionsStore.addTransactions(txDetails);
             })
-            .catch(() => fetchedAddresses.delete(address))
-            .then(() => network$.fetchingTxHistory--);
+            .catch((error) => {
+                reportFor('getTransactionsByAddress')(error);
+                fetchedAddresses.delete(address);
+            })
+            .finally(() => network$.fetchingTxHistory--);
     });
 
     // Fetch transactions for proxies
@@ -433,7 +452,7 @@ export async function launchNetwork() {
             client.waitForConsensusEstablished()
                 .then(() => {
                     console.debug('Fetching transaction history for proxy', proxyAddress, knownTxDetails);
-                    return client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails);
+                    return retry(() => client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails));
                 })
                 .then((txDetails) => {
                     if (
@@ -458,7 +477,10 @@ export async function launchNetwork() {
                     }
                     transactionsStore.addTransactions(txDetails);
                 })
-                .catch(() => seenProxies.delete(proxyAddress))
+                .catch((error) => {
+                    reportFor('getTransactionsByAddress')(error);
+                    seenProxies.delete(proxyAddress);
+                })
                 .then(() => network$.fetchingTxHistory--);
         }
     });
@@ -477,7 +499,17 @@ export async function sendTransaction(tx: SignedTransaction | string) {
     return plain;
 }
 
-async function retry<T>(func: (...args: any[]) => T | Promise<T>, baseDelay = 500, maxRetries = Infinity): Promise<T> {
+async function retry<T>(func: (...args: any[]) => T | Promise<T>, options?: Partial<{
+    baseDelay: number,
+    maxRetries: number,
+}>): Promise<T> {
+    const defaults = {
+        baseDelay: 500,
+        maxRetries: 10,
+    };
+
+    const { baseDelay, maxRetries } = { ...defaults, ...options };
+
     let i = 0;
     while (true) { // eslint-disable-line no-constant-condition
         try {

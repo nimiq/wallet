@@ -266,7 +266,6 @@ import {
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
-import { captureException } from '@sentry/vue';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -293,13 +292,13 @@ import {
     GoCryptoPaymentDetails,
     GoCryptoPaymentApiError,
 } from '../../lib/GoCrypto';
-import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { i18n } from '../../i18n/i18n-setup';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
 } from '../../lib/UnstoppableDomains';
+import { reportToSentry } from '../../lib/Sentry';
 
 export enum RecipientType {
     CONTACT,
@@ -330,7 +329,6 @@ export default defineComponent({
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
         const { consensus, height } = useNetworkStore();
-        const { config } = useConfig();
 
         const recipientDetailsOpened = ref(false);
         const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
@@ -817,8 +815,7 @@ export default defineComponent({
                     modal$.value!.forceClose();
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
 
                 // Show error screen
                 statusType.value = 'signing';

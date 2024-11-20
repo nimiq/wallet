@@ -1,7 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
 import { get as idbGet, set as idbSet, del as idbDel } from 'idb-keyval';
-import { captureException } from '@sentry/vue';
 import idbReady from 'safari-14-idb-fix';
 import type { Store, StateTree } from 'pinia';
 import { useTransactionsStore } from './stores/Transactions';
@@ -24,8 +23,8 @@ import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
 import { useStakingStore } from './stores/Staking';
-import { useConfig } from './composables/useConfig';
 import { useGeoIp } from './composables/useGeoIp';
+import { reportToSentry } from './lib/Sentry';
 
 const StorageKeys = {
     TRANSACTIONS: 'wallet_transactions_v01',
@@ -126,8 +125,7 @@ export async function initStorage() {
         await migrateToIdb();
         Storage = IndexedDBStorage;
     } catch (error) {
-        if (useConfig().config.reportToSentry) captureException(error);
-        else console.error(error); // eslint-disable-line no-console
+        reportToSentry(error);
         Storage = LocalStorageStorage;
     }
 

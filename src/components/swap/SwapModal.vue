@@ -292,7 +292,6 @@ import {
     Swap,
     Contract,
 } from '@nimiq/fastspot-api';
-import { captureException } from '@sentry/vue';
 import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
@@ -343,6 +342,7 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import ButtonGroup from '../ButtonGroup.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
+import { reportToSentry } from '../../lib/Sentry';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1954,8 +1954,7 @@ export default defineComponent({
                 signedTransactions = await setupSwap(hubRequest);
                 if (signedTransactions === undefined) return; // Using Hub redirects
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 currentlySigning.value = false;
@@ -1984,8 +1983,7 @@ export default defineComponent({
                 const error = new Error(
                     `Internal error: Hub result did not contain ${fund.type} or ${redeem.type} data`,
                 );
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 currentlySigning.value = false;
@@ -2023,8 +2021,7 @@ export default defineComponent({
                             ? polygonFeeStuff.value!.fee
                             : 0;
             } catch (error) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = context.root.$t('Invalid swap state, swap aborted!') as string;
                 cancelSwap({ id: swapId } as PreSwap);
                 currentlySigning.value = false;
@@ -2117,8 +2114,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (config.reportToSentry) captureException(error);
-                    else console.error(error); // eslint-disable-line no-console
+                    reportToSentry(error);
                 });
             }
 
@@ -2370,8 +2366,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (config.reportToSentry) captureException(error);
-                    else console.error(error); // eslint-disable-line no-console
+                    reportToSentry(error);
                 });
             }
         }
@@ -2515,8 +2510,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (config.reportToSentry) captureException(error);
-                    else console.error(error); // eslint-disable-line no-console
+                    reportToSentry(error);
                 });
             }
         }

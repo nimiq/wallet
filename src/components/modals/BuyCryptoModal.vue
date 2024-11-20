@@ -330,7 +330,6 @@ import {
     SetupSwapRequest,
     SetupSwapResult,
 } from '@nimiq/hub-api';
-import { captureException } from '@sentry/vue';
 import { Bank } from '@nimiq/oasis-bank-list';
 import { getNetworkClient } from '@/network';
 import { SwapState, useSwapsStore } from '@/stores/Swaps';
@@ -379,6 +378,7 @@ import { useBankStore } from '../../stores/Bank';
 import { useKycStore } from '../../stores/Kyc';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
+import { reportToSentry } from '../../lib/Sentry';
 
 enum Pages {
     WELCOME,
@@ -664,8 +664,7 @@ export default defineComponent({
                 signedTransactions = await setupSwap(hubRequest);
                 if (signedTransactions === undefined) return; // Using Hub redirects
             } catch (error: any) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -685,8 +684,7 @@ export default defineComponent({
 
             if (typeof signedTransactions.eur !== 'string' || (!signedTransactions.nim && !signedTransactions.btc)) {
                 const error = new Error('Internal error: Hub result did not contain EUR or (NIM|BTC) data');
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = error.message;
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -716,8 +714,7 @@ export default defineComponent({
                         ? request.redeem.input.value - request.redeem.output.value
                         : 0;
             } catch (error) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = 'Invalid swap state, swap aborted!';
                 cancelSwap({ id: swapId } as PreSwap);
                 // currentlySigning.value = false;
@@ -748,8 +745,7 @@ export default defineComponent({
                     throw new Error(`UNEXPECTED: OASIS HTLC is not 'pending' but '${oasisHtlc.status}'`);
                 }
             } catch (error) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = 'Invalid OASIS contract state, swap aborted!';
                 setActiveSwap(null);
                 cancelSwap({ id: swapId } as PreSwap);
@@ -769,8 +765,7 @@ export default defineComponent({
                     throw new Error('OASIS HTLC amount + fee does not match swap amount');
                 }
             } catch (error) {
-                if (config.reportToSentry) captureException(error);
-                else console.error(error); // eslint-disable-line no-console
+                reportToSentry(error);
                 swapError.value = 'Invalid OASIS contract, swap aborted!';
                 setActiveSwap(null);
                 cancelSwap({ id: swapId } as PreSwap);
@@ -831,8 +826,7 @@ export default defineComponent({
                     });
                     console.debug('Swap watchtower notified'); // eslint-disable-line no-console
                 }).catch((error) => {
-                    if (config.reportToSentry) captureException(error);
-                    else console.error(error); // eslint-disable-line no-console
+                    reportToSentry(error);
                 });
             }
 

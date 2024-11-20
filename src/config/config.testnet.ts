@@ -14,7 +14,7 @@ export default {
         '/dns4/seed4.pos.nimiq-testnet.com/tcp/8443/wss',
     ],
     faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
-    reportToSentry: false,
+    reportToSentry: true,
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 

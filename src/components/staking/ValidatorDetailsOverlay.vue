@@ -113,7 +113,7 @@ export default defineComponent({
                         title: context.root.$t('Changing validator') as string,
                     });
 
-                    const { Address, TransactionBuilder } = await import('@nimiq/core');
+                    const { Address, TransactionBuilder } = await window.loadAlbatross();
                     const client = await getNetworkClient();
 
                     const transaction = TransactionBuilder.newUpdateStaker(

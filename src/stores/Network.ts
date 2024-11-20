@@ -18,6 +18,7 @@ export const useNetworkStore = createStore({
         height: 0,
         timestamp: 0, // timestamp of the lastest block
         fetchingTxHistory: 0,
+        fetchedAddresses: [] as string[],
     }),
     getters: {
         isFetchingTxHistory: (state) => state.fetchingTxHistory > 0,
@@ -30,6 +31,7 @@ export const useNetworkStore = createStore({
             return state.consensus;
         },
         peerCount: (state): Readonly<number> => state.peerCount,
+        fetchedAddresses: (state): Readonly<string[]> => state.fetchedAddresses,
     },
     actions: {
         addPeer(peer: Peer) {
@@ -44,6 +46,20 @@ export const useNetworkStore = createStore({
             const peers = { ...this.state.peers };
             delete peers[peerId];
             this.state.peers = peers;
+        },
+
+        addFetchedAddress(address: string) {
+            const set = new Set(this.state.fetchedAddresses);
+            set.add(address);
+            this.state.fetchedAddresses = Array.from(set);
+        },
+        removeFetchedAddress(address: string) {
+            const set = new Set(this.state.fetchedAddresses);
+            set.delete(address);
+            this.state.fetchedAddresses = Array.from(set);
+        },
+        clearFetchedAddresses() {
+            this.state.fetchedAddresses = [];
         },
     },
 });

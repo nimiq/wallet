@@ -59,18 +59,33 @@ export async function launchNetwork() {
     if (isLaunched) return;
     isLaunched = true;
 
-    const client = await getNetworkClient();
-
-    const { state: network$, addPeer, removePeer, patch: patchNetworkStore } = useNetworkStore();
+    const {
+        state: network$,
+        addPeer,
+        removePeer,
+        patch: patchNetworkStore,
+        fetchedAddresses,
+        addFetchedAddress,
+        removeFetchedAddress,
+        clearFetchedAddresses,
+    } = useNetworkStore();
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
     const stakingStore = useStakingStore();
 
     const subscribedAddresses = new Set<string>();
-    const fetchedAddresses = new Set<string>();
 
     const subscribedProxies = new Set<string>();
     const seenProxies = new Set<string>();
+
+    // Avoid "Failed to fetch transactions" warning showing while initializing the Nimiq SDK,
+    // already shows "Fetching" instead.
+    network$.fetchingTxHistory++;
+
+    const client = await getNetworkClient();
+
+    // Reset, to not show "Fetching" forever ;-)
+    network$.fetchingTxHistory--;
 
     async function updateBalances(addresses: string[] = [...balances.keys()]) {
         if (!addresses.length) return;
@@ -131,7 +146,7 @@ export async function launchNetwork() {
     const txFetchTrigger = ref(0);
     function invalidateTransactionHistory(includeProxies = false) {
         // Invalidate fetched addresses
-        fetchedAddresses.clear();
+        clearFetchedAddresses();
         // Trigger watcher
         txFetchTrigger.value += 1;
 
@@ -364,7 +379,7 @@ export async function launchNetwork() {
         if (removedAddresses.size) {
             for (const removedAddress of removedAddresses) {
                 subscribedAddresses.delete(removedAddress);
-                fetchedAddresses.delete(removedAddress);
+                removeFetchedAddress(removedAddress);
             }
             // Let the network forget the balances of the removed addresses,
             // so that they are reported as new again at re-login.
@@ -380,8 +395,8 @@ export async function launchNetwork() {
     // Fetch transactions for active address
     watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress, trigger]) => {
         const address = activeAddress as string | null;
-        if (!address || fetchedAddresses.has(address)) return;
-        fetchedAddresses.add(address);
+        if (!address || fetchedAddresses.value.includes(address)) return;
+        addFetchedAddress(address);
 
         console.debug('Scheduling transaction fetch for', address);
 
@@ -410,7 +425,7 @@ export async function launchNetwork() {
             })
             .catch((error) => {
                 reportFor('getTransactionsByAddress')(error);
-                fetchedAddresses.delete(address);
+                removeFetchedAddress(address);
             })
             .finally(() => network$.fetchingTxHistory--);
     });

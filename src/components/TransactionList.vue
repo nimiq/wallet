@@ -32,6 +32,12 @@
                             <CircleSpinner/>
                             <span>{{ $t('Fetching') }}</span>
                         </div>
+                        <div v-else-if="item.isLatestMonth && !hasFetchedAddress"
+                            class="failed-to-fetch flex-row nq-orange"
+                        >
+                            <AlertTriangleIcon/>
+                            <span>{{ $t('Failed to fetch transactions') }}</span>
+                        </div>
                     </div>
                     <TransactionListItem v-else :transaction="item"/>
                 </div>
@@ -69,7 +75,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
-import { CircleSpinner } from '@nimiq/vue-components';
+import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -139,7 +145,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const { activeAddress, state: addresses$, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
-        const { isFetchingTxHistory } = useNetworkStore();
+        const { isFetchingTxHistory, fetchedAddresses } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
         const { config } = useConfig();
 
@@ -373,6 +379,10 @@ export default defineComponent({
             scroller.value.$el.removeEventListener('scroll', onScroll);
         });
 
+        const hasFetchedAddress = computed(
+            () => !!activeAddress.value && fetchedAddresses.value.includes(activeAddress.value),
+        );
+
         return {
             LoadingListType,
             activeAddress,
@@ -382,6 +392,7 @@ export default defineComponent({
             transactions,
             root,
             isFetchingTxHistory,
+            hasFetchedAddress,
             isMainnet,
             unclaimedCashlinkTxs,
             onCreateCashlink,
@@ -393,6 +404,7 @@ export default defineComponent({
         TestnetFaucet,
         CrossCloseButton,
         CircleSpinner,
+        AlertTriangleIcon,
         LoadingList,
     },
 });
@@ -609,13 +621,17 @@ export default defineComponent({
     }
 }
 
-.fetching {
-    span {
-        font-size: var(--small-size);
-        opacity: 0.5;
-        margin-left: 1rem;
-        font-weight: 600;
-    }
+.fetching span {
+    font-size: var(--small-size);
+    opacity: 0.5;
+    margin-left: 1rem;
+    font-weight: 600;
+}
+
+.failed-to-fetch span {
+    font-size: var(--small-size);
+    margin-left: 1rem;
+    font-weight: 600;
 }
 
 @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint

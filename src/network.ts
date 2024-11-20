@@ -217,11 +217,26 @@ export async function launchNetwork() {
         network$.peerCount = peerCount;
     });
 
-    let lastValidatorRequest = { epoch: Infinity, ts: 0 };
+    let currentValidatorRequest: { epoch: number, ts: Date, controller: AbortController } | undefined;
+    const maxValidatorRequestAge = 60000;
+
     async function updateValidators() {
-        const now = Date.now();
-        if (currentEpoch === lastValidatorRequest.epoch || now - lastValidatorRequest.ts < 60000) return;
-        lastValidatorRequest = { epoch: currentEpoch, ts: now };
+        const now = new Date();
+
+        // Abort previous request if it exists
+        if (currentValidatorRequest?.controller) {
+            currentValidatorRequest.controller.abort();
+        }
+
+        // Check if we should skip the update
+        if (currentValidatorRequest?.epoch === currentEpoch
+            || (currentValidatorRequest?.ts
+                && now.getTime() - currentValidatorRequest.ts.getTime() < maxValidatorRequestAge)) {
+            return;
+        }
+
+        const controller = new AbortController();
+        currentValidatorRequest = { epoch: currentEpoch, ts: now, controller };
 
         await client.waitForConsensusEstablished();
         const contract = (await retry(
@@ -244,7 +259,7 @@ export async function launchNetwork() {
             isMaintainedByNimiq: boolean,
             logo?: string,
             logoPath?: string,
-            hasDefaultIcon: boolean,
+            hasDefaultLogo: boolean,
             accentColor: string,
             website: string | null,
             contact: Record<string, string> | null,
@@ -259,7 +274,9 @@ export async function launchNetwork() {
         const { config } = useConfig();
         const url = `${config.staking.validatorsEndpoint}/api/v1/validators?only-known=false`;
         const apiValidators = await retry<ApiValidator[]>(
-            () => fetch(url).then((res) => res.json()).catch(() => []), 1000, 3,
+            () => fetch(url, { signal: controller.signal }).then((res) => res.json()).catch(() => []),
+            1000,
+            3,
         );
         // TODO: Make it work even in the case this request fails
         const validatorData: Record<string, ApiValidator> = {};

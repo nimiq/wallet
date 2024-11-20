@@ -217,7 +217,12 @@ export async function launchNetwork() {
         network$.peerCount = peerCount;
     });
 
+    let lastValidatorRequest = { epoch: Infinity, ts: 0 };
     async function updateValidators() {
+        const now = Date.now();
+        if (currentEpoch === lastValidatorRequest.epoch || now - lastValidatorRequest.ts < 60000) return;
+        lastValidatorRequest = { epoch: currentEpoch, ts: now };
+
         await client.waitForConsensusEstablished();
         const contract = (await retry(
             () => client.getAccount(STAKING_CONTRACT_ADDRESS) as Promise<PlainStakingContract>,
@@ -251,8 +256,9 @@ export async function launchNetwork() {
         };
 
         const { config } = useConfig();
-        const apiValidators = await fetch(config.staking.validatorsEndpoint)
-            .then((res) => res.json()).catch(() => []) as ApiValidator[];
+        const apiValidators = await retry<ApiValidator[]>(
+            () => fetch(config.staking.validatorsEndpoint).then((res) => res.json()).catch(() => []), 1000, 3,
+        );
         // TODO: Make it work even in the case this request fails
         const validatorData: Record<string, ApiValidator> = {};
         for (const apiValidator of apiValidators) {

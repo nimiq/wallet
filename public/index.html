@@ -17,20 +17,6 @@
     <meta property="og:description" content="The easy, free and 100% self-custodial crypto-wallet." />
     <meta property="og:image" content="https://wallet.nimiq.com/img/sharing-banner.jpg" />
     <meta name="twitter:card" content="summary_large_image">
-
-    <script type="module">
-      import init, * as Nimiq from '/albatross/web/index.js';
-
-      /** @type {Promise<Nimiq> | undefined} */
-      let initPromise;
-
-      window.loadAlbatross = async function() {
-          return initPromise || (initPromise = new Promise(async resolve => {
-              await init();
-              resolve(Nimiq);
-          }));
-      }
-  </script>
 </head>
 
 <body>

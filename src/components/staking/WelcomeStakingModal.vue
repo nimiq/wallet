@@ -97,13 +97,6 @@
         </PageBody>
 
         <PageFooter>
-            <div v-if="hasLedgerAccount" class="nq-notice warning">
-                <b>{{ $t('Important note for Ledger users:') }}</b>
-                <p class="nq-text-s nq-orange">
-                    {{ $t('Staking and un-staking are not currently supported by the Nimiq Ledger app. Stay tuned — '
-                    + 'the update will be available soon!') }}
-                </p>
-            </div>
             <div class="nq-text-s">
                 {{ $t('No action required.') }}
                 <a class="nq-link" href="https://www.nimiq.com/blog/nimiq-proof-of-stake-is-now-live" target="_blank">
@@ -118,28 +111,22 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import Modal from '../modals/Modal.vue';
 import { WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
-import { useAccountStore, AccountType } from '../../stores/Account';
 
 export default defineComponent({
     name: 'WelcomeStakingModal',
     setup() {
         const $modal = ref<Modal | null>(null);
 
-        const accountStore = useAccountStore();
-        const hasLedgerAccount = computed(
-            () => Object.values(accountStore.accountInfos.value).some(({ type }) => type === AccountType.LEDGER),
-        );
-
         async function close() {
             window.localStorage.setItem(WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY, '1');
             await $modal.value?.forceClose();
         }
 
-        return { $modal, hasLedgerAccount, close };
+        return { $modal, close };
     },
     components: {
         Modal,
@@ -259,16 +246,6 @@ export default defineComponent({
     .nq-link {
         color: var(--nimiq-blue);
         text-decoration: underline;
-    }
-}
-
-.nq-notice {
-    text-align: center;
-    padding: 1rem 2rem;
-
-    .nq-text-s {
-        font-weight: 600;
-        opacity: 1;
     }
 }
 

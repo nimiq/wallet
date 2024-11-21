@@ -2,14 +2,30 @@
 
 # Make sure a tag name was provided
 tag=$1
+shift
 
 if [ -z "$tag" ]; then
     echo "ERROR: Must provide a tag name."
     exit 1
 fi
 
-# Sync language file
-yarn i18n:sync
+# Flags
+SYNC_TRANSLATIONS=true
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --no-translations) SYNC_TRANSLATIONS=false ;;
+        *) echo "Unknown argument: $1"; exit 1 ;;
+    esac
+    shift
+done
+
+# Start release
+
+if [ "$SYNC_TRANSLATIONS" = "true" ]; then
+    # Sync languages
+    yarn i18n:sync
+fi
 
 # Get up-to-date EBA RT1 bank list (disabled while OASIS is not available)
 # yarn utils:getBankList
@@ -27,7 +43,7 @@ if [[ `git status --porcelain` ]]; then
 fi
 
 # Tag current commit
-git tag $1 &&
+git tag $tag &&
 
 # Build Vue app
 yarn build &&

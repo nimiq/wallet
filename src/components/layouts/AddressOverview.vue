@@ -176,7 +176,7 @@
                     />
 
                     <template v-if="activeCurrency === 'nim'">
-                        <StakingPreview v-if="activeStake && windowWidth > 860" :show-gains="false" />
+                        <StakingPreview v-if="activeStake && windowWidth > 860" />
                         <StakingButton v-else-if="showStakingButton" />
                     </template>
 
@@ -196,7 +196,7 @@
                     </button>
                 </div>
             </div>
-            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" :show-gains="false" />
+            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" />
             <div
                 v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"

@@ -8,7 +8,7 @@ import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
-import { useStakingStore, Validator } from './stores/Staking';
+import { AddStakeEvent, useStakingStore, Validator } from './stores/Staking';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { calculateStakingReward } from './lib/AlbatrossMath';
 import { reportToSentry } from './lib/Sentry';
@@ -136,6 +136,22 @@ export async function launchNetwork() {
             }
         });
     }
+
+    watch([addressStore.activeAddress], ([activeAddress]) => {
+        if (!activeAddress) return;
+        const { config } = useConfig();
+        const endpoint = config.staking.stakeEventsEndpoint;
+        const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'));
+        retry(
+            () => fetch(url)
+                .then((res) => res.json())
+                .then((events: AddStakeEvent[]) => {
+                    useStakingStore().setStakingEvents(activeAddress, events);
+                    console.log('Got add-stake events for', activeAddress, events);
+                }),
+            { maxRetries: 3 },
+        ).catch(reportFor('fetch(add-stake events)'));
+    });
 
     function forgetBalances(addresses: string[]) {
         for (const address of addresses) {

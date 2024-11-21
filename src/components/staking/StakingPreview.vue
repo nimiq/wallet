@@ -13,19 +13,14 @@
 
         <div class="flex-grow"></div>
 
-        <div v-if="showGains" class="gain flex-row">
-            <template v-if="gain">
-                +<Amount :amount="gain" value-mask />
-            </template>
-            <template v-else-if="validator && 'annualReward' in validator">
-                {{ (validator.annualReward * 100).toFixed(1) }}% {{ $t("p.a.") }}
-            </template>
+        <div v-if="restakingRewards !== null" class="gain flex-row">
+            +<Amount :amount="restakingRewards" value-mask />
         </div>
     </button>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent } from '@vue/composition-api';
 import Amount from '../Amount.vue';
 import { useStakingStore } from '../../stores/Staking';
 import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
@@ -34,22 +29,17 @@ import ThreeLeafStakingIcon from '../icons/Staking/ThreeLeafStakingIcon.vue';
 import { useAddressStore } from '../../stores/Address';
 
 export default defineComponent({
-    props: {
-        showGains: {
-            type: Boolean,
-            default: true,
-        },
-    },
     setup() {
-        const { activeStake: stake, activeValidator: validator } = useStakingStore();
+        const { activeStake: stake, restakingRewards } = useStakingStore();
         const { activeAddressInfo } = useAddressStore();
-
-        // TODO: Calculate gain
-        const gain = ref(0);
 
         const currentPercentage = computed(() => {
             const alreadyStakedAmount = stake.value?.activeBalance || 0;
-            const availableAmount = (activeAddressInfo.value?.balance || 0) + alreadyStakedAmount;
+            const deactivatedAmount = stake.value?.inactiveBalance || 0;
+            const retiredAmount = stake.value?.retiredBalance || 0;
+            const totalStakedAmount = alreadyStakedAmount + deactivatedAmount + retiredAmount;
+
+            const availableAmount = (activeAddressInfo.value?.balance || 0) + totalStakedAmount;
             const percent = (100 * alreadyStakedAmount) / availableAmount;
 
             return percent;
@@ -57,9 +47,8 @@ export default defineComponent({
 
         return {
             stake,
-            validator,
-            gain,
             currentPercentage,
+            restakingRewards,
         };
     },
     components: {

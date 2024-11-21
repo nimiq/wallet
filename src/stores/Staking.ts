@@ -5,7 +5,17 @@ import { useAddressStore } from './Address';
 export type StakingState = {
     validators: Record<string, Validator>,
     stakeByAddress: Record<string, Stake>,
+    stakingEventsByAddress: Record<string, StakingEvent[]>,
 }
+
+export type AddStakeEvent = {
+    sender_address:string, // eslint-disable-line camelcase
+    date: string,
+    value: number,
+    type: number,
+}
+
+export type StakingEvent = AddStakeEvent;
 
 export type Stake = {
     address: string,
@@ -58,6 +68,7 @@ export const useStakingStore = createStore({
     state: () => ({
         validators: {},
         stakeByAddress: {},
+        stakingEventsByAddress: {},
     } as StakingState),
     getters: {
         validatorsList: (state): Readonly<Validator[]> => Object.values(state.validators),
@@ -156,6 +167,21 @@ export const useStakingStore = createStore({
                 active: false,
             };
         },
+
+        stakingEventsByAddress: (state): Readonly<Record<string, StakingEvent[]>> => state.stakingEventsByAddress,
+        stakingEvents: (state): Readonly<StakingEvent[] | null> => {
+            const { activeAddress } = useAddressStore();
+            if (!activeAddress.value) return null;
+
+            return state.stakingEventsByAddress[activeAddress.value] || null;
+        },
+        restakingRewards: (state, { stakingEvents }): Readonly<number | null> => {
+            const events = stakingEvents.value as StakingEvent[] | null;
+            if (!events) return null;
+
+            const addStakeEvents: AddStakeEvent[] = events.filter((event) => event.type === 6);
+            return addStakeEvents.reduce((sum, event) => sum + event.value, 0);
+        },
     },
     actions: {
         setStake(stake: Stake) {
@@ -204,6 +230,14 @@ export const useStakingStore = createStore({
             }
 
             this.state.validators = newValidators;
+        },
+        setStakingEvents(address: string, events: StakingEvent[]) {
+            // Need to assign whole object for change detection of new addresses.
+            // TODO: Simply set new stake in Vue 3.
+            this.state.stakingEventsByAddress = {
+                ...this.state.stakingEventsByAddress,
+                [address]: events,
+            };
         },
     },
 });

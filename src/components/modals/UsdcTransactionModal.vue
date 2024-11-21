@@ -1,5 +1,5 @@
 <template>
-    <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
+    <Modal class="transaction-modal">
         <PageHeader
             :class="{'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash)}"
         >
@@ -340,8 +340,6 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { amountsHidden } = useSettingsStore();
-
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         const transaction = computed(() => useUsdcTransactionsStore().state.transactions[props.hash]);
@@ -579,7 +577,6 @@ export default defineComponent({
         });
 
         return {
-            amountsHidden,
             isIncoming,
             blockExplorerLink,
             confirmations,

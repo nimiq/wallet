@@ -1,5 +1,5 @@
 <template>
-    <div id="app" :class="{'value-masked': amountsHidden, 'consensus-stalled': consensus === 'stalled'}">
+    <div id="app" :class="{'consensus-stalled': consensus === 'stalled'}">
         <div v-if="consensus === 'stalled'" class="red-notice">
             The PoS testnet is temporarily not processing transactions or staking rewards, thank you for your patience.
         </div>
@@ -53,6 +53,11 @@ export default defineComponent({
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
 
         const { amountsHidden, swipingEnabled } = useSettingsStore();
+
+        watch(amountsHidden, (hidden) => {
+            if (hidden) document.body.classList.add('value-masked');
+            else document.body.classList.remove('value-masked');
+        });
 
         // Swiping
         const main$ = ref<HTMLDivElement>(null);
@@ -145,7 +150,6 @@ export default defineComponent({
         return {
             activeMobileColumn,
             hasAccounts,
-            amountsHidden,
             main$,
             consensus,
         };

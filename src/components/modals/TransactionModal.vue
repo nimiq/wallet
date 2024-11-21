@@ -1,8 +1,5 @@
 <template>
-    <Modal class="transaction-modal" :class="{
-        'value-masked': amountsHidden,
-        'not-executed': transaction.executionResult === false,
-    }">
+    <Modal class="transaction-modal" :class="{'not-executed': transaction.executionResult === false}">
         <PageHeader :class="{'inline-header': !peerLabel && !(isSwapProxy && !swapData)}">
 
             <template v-if="isCancelledSwap">{{ $t('Cancelled Swap') }}</template>
@@ -373,7 +370,6 @@ import SwapMediumIcon from '../icons/SwapMediumIcon.vue';
 import { useTransactionsStore, TransactionState, toMs } from '../../stores/Transactions';
 import { useAddressStore } from '../../stores/Address';
 import { useContactsStore } from '../../stores/Contacts';
-import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
@@ -609,8 +605,6 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
 
-        const { amountsHidden } = useSettingsStore();
-
         const showRefundButton = computed(() => !isIncoming.value
             && (
                 // funded but not redeemed htlc which is now expired
@@ -687,7 +681,6 @@ export default defineComponent({
             setContact,
             hubCashlink,
             manageCashlink,
-            amountsHidden,
             swapInfo,
             swapData,
             swapTransaction,

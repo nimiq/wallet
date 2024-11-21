@@ -1,5 +1,5 @@
 <template>
-    <Modal class="swap-modal" :class="{'value-masked': amountsHidden}"
+    <Modal class="swap-modal"
         :showOverlay="!!swap || addressListOverlayOpened || kycOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
@@ -2141,7 +2141,7 @@ export default defineComponent({
             onInput(asset, cappedAmount || amount, amount);
         }
 
-        const { amountsHidden, btcUnit } = useSettingsStore();
+        const { btcUnit } = useSettingsStore();
 
         const addressListOverlayOpened = ref(false);
 
@@ -2570,7 +2570,6 @@ export default defineComponent({
             isLimitReached,
             currentLimitFiat,
             currentlySigning,
-            amountsHidden,
             effectiveDecimals,
             capDecimals,
             SwapAsset,

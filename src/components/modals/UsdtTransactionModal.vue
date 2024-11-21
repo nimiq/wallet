@@ -1,5 +1,5 @@
 <template>
-    <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
+    <Modal class="transaction-modal">
         <PageHeader
             :class="{'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash)}"
         >
@@ -276,7 +276,6 @@ import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
-import { useSettingsStore } from '@/stores/Settings';
 import { useUsdtTransactionsStore, TransactionState } from '@/stores/UsdtTransactions';
 import { useUsdtContactsStore } from '@/stores/UsdtContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
@@ -320,8 +319,6 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { amountsHidden } = useSettingsStore();
-
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         const transaction = computed(() => useUsdtTransactionsStore().state.transactions[props.hash]);
@@ -539,7 +536,6 @@ export default defineComponent({
         const ticker = CryptoCurrency.USDT;
 
         return {
-            amountsHidden,
             isIncoming,
             blockExplorerLink,
             confirmations,

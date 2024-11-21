@@ -4,7 +4,6 @@
         || statusScreenOpened"
         @close-overlay="onCloseOverlay"
         class="send-modal"
-        :class="{'value-masked': amountsHidden}"
         ref="modal$"
     >
         <PolygonWarningPage v-if="page === Pages.WARNING"
@@ -263,7 +262,6 @@ import {
 } from '../../lib/UnstoppableDomains';
 import { useAccountStore } from '../../stores/Account';
 import { useFiatStore } from '../../stores/Fiat';
-import { useSettingsStore } from '../../stores/Settings';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcContactsStore } from '../../stores/UsdcContacts';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
@@ -713,8 +711,6 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
-        const { amountsHidden } = useSettingsStore();
-
         function back() {
             if (page.value === initialPage) {
                 disableNextModalTransition();
@@ -828,7 +824,6 @@ export default defineComponent({
             gotRequestUriRecipient,
             gotRequestUriAmount,
             parseRequestUri,
-            amountsHidden,
             isResolvingUnstoppableDomain,
             resolverError,
             setContact,

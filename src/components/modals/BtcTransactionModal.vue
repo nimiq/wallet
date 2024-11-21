@@ -1,5 +1,5 @@
 <template>
-    <Modal class="transaction-modal" :class="{'value-masked': amountsHidden}">
+    <Modal class="transaction-modal">
         <PageHeader
             :class="{'inline-header': !peerLabel && !(usesNimSwapProxy && !swapTransaction.relatedTransactionHash)}">
 
@@ -516,8 +516,6 @@ export default defineComponent({
         const confirmations = computed(() =>
             transaction.value.blockHeight ? blockHeight.value - transaction.value.blockHeight + 1 : 0);
 
-        const { amountsHidden } = useSettingsStore();
-
         const showRefundButton = computed(() => !isIncoming.value
             && swapInfo.value?.in?.asset === SwapAsset.BTC
             && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= blockTimestamp.value
@@ -590,7 +588,6 @@ export default defineComponent({
             confirmations,
             // peerIsContact,
             // setContact,
-            amountsHidden,
             blockExplorerLink,
             senderLabelAddress,
             recipientLabelAddress,

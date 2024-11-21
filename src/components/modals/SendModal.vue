@@ -6,7 +6,6 @@
         || statusType !== 'none'"
         @close-overlay="onCloseOverlay"
         class="send-modal"
-        :class="{'value-masked': amountsHidden}"
         ref="modal$"
     >
         <div v-if="page === Pages.RECIPIENT_INPUT" class="page flex-column" :key="Pages.RECIPIENT_INPUT">
@@ -281,7 +280,6 @@ import { useContactsStore } from '../../stores/Contacts';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
-import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
 import { formatDuration } from '../../lib/Time';
@@ -859,8 +857,6 @@ export default defineComponent({
             }
         }
 
-        const { amountsHidden } = useSettingsStore();
-
         function back() {
             disableNextModalTransition();
             context.root.$router.back();
@@ -897,7 +893,6 @@ export default defineComponent({
             gotRequestUriAmount,
             gotRequestUriMessage,
             parseRequestUri,
-            amountsHidden,
             isResolvingUnstoppableDomain,
             resolverError,
 

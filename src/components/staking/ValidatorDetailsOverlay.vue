@@ -20,7 +20,9 @@
                     </div>
                     <div class="info-row sub-info">
                         <span class="label">{{ $t('incl. pool fee') }}</span>
-                        <span class="fee">{{ validator.fee * 100 }}%</span>
+                        <span class="fee">
+                            {{ Math.trunc((validator.fee * 100) * 100) / 100 }}%
+                        </span>
                     </div>
                     <p class="description">
                         <!-- eslint-disable-next-line max-len -->

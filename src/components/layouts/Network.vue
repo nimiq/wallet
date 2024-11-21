@@ -91,8 +91,6 @@ import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculatePolygonFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '@/electrum';
-// @ts-expect-error missing types for this package
-import { Portal } from '@linusborg/vue-simple-portal';
 import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
@@ -207,7 +205,6 @@ export default defineComponent({
         InfoCircleIcon,
         NetworkInfoModal,
         AttentionDot,
-        Portal,
         CircleSpinner,
         FiatConvertedAmount,
     },

@@ -5,6 +5,8 @@ import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
 import { init as initFastspotApi } from '@nimiq/fastspot-api';
 import { init as initOasisApi } from '@nimiq/oasis-api';
+// @ts-expect-error missing types for this package
+import VuePortal from '@linusborg/vue-simple-portal';
 
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
@@ -42,6 +44,7 @@ Vue.config.productionTip = false;
 
 Vue.use(VueCompositionApi);
 Vue.use(VueVirtualScroller);
+Vue.use(VuePortal, { name: 'Portal' });
 
 async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA

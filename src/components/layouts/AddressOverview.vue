@@ -293,8 +293,6 @@ import {
     MenuDotsIcon,
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
-// @ts-expect-error missing types for this package
-import { Portal } from '@linusborg/vue-simple-portal';
 import { BigNumber } from 'ethers';
 import { SignPolygonTransactionRequest } from '@nimiq/hub-api';
 import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
@@ -643,7 +641,6 @@ export default defineComponent({
         ArrowLeftIcon,
         MenuDotsIcon,
         MobileActionBar,
-        Portal,
         HighFiveIcon,
         BoxedArrowUpIcon,
         UsdcIcon,

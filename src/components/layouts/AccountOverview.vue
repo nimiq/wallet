@@ -330,8 +330,6 @@
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted, onActivated } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
-// @ts-expect-error missing types for this package
-import { Portal } from '@linusborg/vue-simple-portal';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -623,7 +621,6 @@ export default defineComponent({
         LegacyAccountUpgradeButton,
         LegacyAccountNoticeModal,
         // OasisLaunchModal,
-        Portal,
         Amount,
         FiatConvertedAmount,
         AttentionDot,

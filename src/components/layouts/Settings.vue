@@ -293,8 +293,6 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import { CircleSpinner } from '@nimiq/vue-components';
 import { ValidationUtils } from '@nimiq/utils';
-// @ts-expect-error missing types for this package
-import { Portal } from '@linusborg/vue-simple-portal';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
@@ -459,7 +457,6 @@ export default defineComponent({
     },
     components: {
         MenuIcon,
-        Portal,
         CrossCloseButton,
         CircleSpinner,
         CountryFlag,

@@ -295,7 +295,6 @@ import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { useAccountStore } from '@/stores/Account';
-import { useSettingsStore } from '@/stores/Settings';
 import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';

@@ -31,14 +31,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 .account-stake {
     align-items: center;
-    padding: 0 1.25rem;
+    padding: 0.5rem 1.25rem;
     border-radius: 5rem;
     color: var(--nimiq-green);
     box-shadow: 0 0 0 1.5px rgba(19, 181, 157, 0.4);
+    gap: 0.5rem;
 }
 .staking-icon {
     font-size: 2.75rem;
-    margin-right: 0.5rem;
 
     ::v-deep path {
         stroke-width: 1;

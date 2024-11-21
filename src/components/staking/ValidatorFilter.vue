@@ -112,6 +112,7 @@ export default defineComponent({
             border: 0;
             background: transparent;
             box-shadow: none;
+            color: rgb(31, 35, 72);
 
             svg {
                 width: 2.375rem;
@@ -122,7 +123,6 @@ export default defineComponent({
                 }
 
                 line, circle {
-                    stroke: rgb(31, 35, 72);
                     stroke-width: 2.0;
                 }
             }

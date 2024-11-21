@@ -54,10 +54,10 @@
                 <div class="row flex-row">
                     <div class="col flex-grow">
                         <div class="amount-staked">
-                            <Amount :amount="stake.activeBalance"/>
+                            <Amount :amount="stake.activeBalance" value-mask/>
                         </div>
-                        <div class="amount-staked-proportional">
-                            <FiatConvertedAmount :amount="stake.activeBalance" />
+                        <div class="amount-staked-fiat">
+                            <FiatConvertedAmount :amount="stake.activeBalance" value-mask/>
                         </div>
                     </div>
                     <div class="flex-row">
@@ -75,7 +75,7 @@
                     class="unstaking row flex-row nq-light-blue"
                 >
                     <span class="nq-button-pill">
-                        <Amount :amount="stake.inactiveBalance"/>
+                        <Amount :amount="stake.inactiveBalance" value-mask/>
                     </span>
                     <button class="nq-button-pill light-blue" @click="() => unstakeAll()">
                         Pay out <ArrowRightSmallIcon />
@@ -83,10 +83,12 @@
                     <div class="flex-grow"></div>
                     <!-- <p>{{ $t('Auto-payout failed, please pay out manually.') }}</p> -->
                 </div>
-                <div v-else-if="stake && stake.inactiveBalance" class="unstaking row flex-row nq-light-blue">
+                <div v-else-if="stake && stake.inactiveBalance"
+                    class="unstaking row flex-row nq-light-blue"
+                >
                     <span class="nq-button-s unstaking-amount">
                         <ArrowDownIcon />
-                        <Amount :amount="stake.inactiveBalance"/>
+                        <Amount :amount="stake.inactiveBalance" value-mask/>
                     </span>
                     <button class="nq-button-s unstaking-progress">
                         {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
@@ -98,7 +100,7 @@
                     class="unstaking row flex-row nq-light-blue"
                 >
                     <span class="nq-button-pill">
-                        <Amount :amount="stake.retiredBalance"/>
+                        <Amount :amount="stake.retiredBalance" value-mask/>
                     </span>
                     <button class="nq-button-pill light-blue"
                         @click="() => unstakeAll(true)"
@@ -147,9 +149,7 @@
                 path="To switch validator, first {unstakeEverythingLink}."
                 class="switch-validator"
             >
-                <a href="#" slot="unstakeEverythingLink" @click="deactivateAll">
-                    {{ $t('unstake everything') }}
-                </a>
+                <a href="#" slot="unstakeEverythingLink" @click="deactivateAll">{{ $t('unstake everything') }}</a>
             </i18n>
 
             <!-- <button class="nq-button-s rewards-history" @click="$emit('next')">
@@ -163,7 +163,6 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import {
     InfoCircleSmallIcon,
-    Amount,
     PageHeader,
     PageBody,
     Tooltip,
@@ -174,6 +173,7 @@ import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { MIN_STAKE } from '../../lib/Constants';
 
+import Amount from '../Amount.vue';
 // import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
 import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
@@ -481,7 +481,8 @@ export default defineComponent({
     }
 
     .amount-staked {
-        font-size: var(--h2-size);
+        --size: var(--h2-size);
+        font-size: var(--size);
         font-weight: bold;
         line-height: 1;
         margin-bottom: 1rem;
@@ -500,8 +501,9 @@ export default defineComponent({
         // pointer-events: none;
     }
 
-    .amount-staked-proportional {
-        font-size: var(--small-size);
+    .amount-staked-fiat {
+        --size: var(--small-size);
+        font-size: var(--size);
         font-weight: 600;
         color: var(--text-50);
         line-height: 1;
@@ -510,7 +512,8 @@ export default defineComponent({
     .unstaking {
         flex-wrap: wrap;
         align-items: center;
-        font-size: var(--body-size);
+        --size: var(--body-size);
+        font-size: var(--size);
         font-weight: 600;
         margin-top: 2rem;
 

@@ -1,7 +1,7 @@
 <template>
-    <div class="account-stake flex-row">
+    <div class="account-stake flex-row" title="Account stake">
         <TwoLeafStakingIcon />
-        <Amount :amount="totalAccountStake" :currency="CryptoCurrency.NIM" />
+        <Amount :amount="totalAccountStake" :currency="CryptoCurrency.NIM" value-mask/>
     </div>
 </template>
 
@@ -46,7 +46,8 @@ export default defineComponent({
 }
 
 .amount {
-    font-size: var(--small-size);
+    --size: var(--small-size);
+    font-size: var(--size);
     line-height: 1;
     font-weight: bold;
 }

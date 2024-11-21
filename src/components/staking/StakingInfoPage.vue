@@ -2,10 +2,14 @@
     <div class="staking-info-page flex-column">
         <PageHeader :backArrow="false">
             <template v-if="validator">
-                {{ $t(
-                    'Staking with {validator}',
-                    { validator: 'name' in validator ? validator.name : validator.address.substr(0, 9) },
-                ) }}
+                <i18n path="Staking with {validator}" :tag="false">
+                    <template v-if="'name' in validator" slot="validator">
+                        {{ validator.name }}
+                    </template>
+                    <template v-else slot="validator">
+                        <ShortAddress :address="validator.address" />
+                    </template>
+                </i18n>
             </template>
             <template v-else>
                 {{ $t('Staking') }}
@@ -433,6 +437,23 @@ export default defineComponent({
 
     .page-header {
         padding-bottom: 3rem;
+
+        ::v-deep h1 {
+            display: flex;
+            justify-content: center;
+            gap: 0.25em;
+            flex-wrap: wrap;
+        }
+
+        .short-address {
+            display: inline-flex;
+
+            ::v-deep .address {
+                line-height: inherit;
+                font-family: inherit;
+                font-weight: inherit;
+            }
+        }
     }
 
     .page-body {

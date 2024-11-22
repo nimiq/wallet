@@ -86,7 +86,7 @@ export default defineComponent({
                         .filter((validator) => {
                             if (showDefaultList) {
                                 // Filter to show only pools
-                                return 'name' in validator;
+                                return 'payoutType' in validator && validator.payoutType !== 'none';
                             }
 
                             const searchTerm = searchValue.value.toLowerCase().replace(/\s+/g, '');

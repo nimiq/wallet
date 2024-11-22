@@ -33,7 +33,7 @@
                 <hr />
 
                 <div class="validator-description">
-                    <p v-if="'description' in validator">{{ validator.description }}</p>
+                    <q v-if="'description' in validator">{{ validator.description }}</q>
                     <p v-else>{{ $t('No description available') }}</p>
                 </div>
 
@@ -270,6 +270,11 @@ hr {
     color: var(--nimiq-blue);
 
     p { margin: 0 }
+
+    q {
+        display: block;
+        text-indent: -0.725rem;
+    }
 }
 
 .blue-link {

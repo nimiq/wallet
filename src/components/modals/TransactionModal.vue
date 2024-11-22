@@ -607,15 +607,24 @@ export default defineComponent({
 
         const showRefundButton = computed(() => !isIncoming.value
             && (
-                // funded but not redeemed htlc which is now expired
-                (swapInfo.value?.in?.asset === SwapAsset.NIM
-                && (swapInfo.value.in.htlc?.timeoutBlockHeight || Number.POSITIVE_INFINITY) <= blockHeight.value
-                && !swapInfo.value.out)
-                // funded but not redeemed htlc proxy (no actual htlc had been created)
-                || (isSwapProxy.value
-                && !relatedTx.value
-                && transaction.value.state === TransactionState.CONFIRMED
-                && transaction.value.blockHeight! <= blockHeight.value - 15) // consider proxy "expired" after 15 blocks
+                ( // funded but not redeemed htlc which is now expired
+                    swapInfo.value?.in?.asset === SwapAsset.NIM
+                    && swapInfo.value.in.htlc && (
+                        ('timeoutMs' in swapInfo.value.in.htlc && swapInfo.value.in.htlc.timeoutMs <= Date.now())
+                        || (
+                            'timeoutBlockHeight' in swapInfo.value.in.htlc
+                            // @ts-expect-error PoW field
+                            && swapInfo.value.in.htlc.timeoutBlockHeight <= blockHeight.value
+                        )
+                    )
+                    && !swapInfo.value.out
+                ) || ( // funded but not redeemed htlc proxy (no actual htlc had been created)
+                    isSwapProxy.value
+                    && !relatedTx.value
+                    && transaction.value.state === TransactionState.CONFIRMED
+                    // consider proxy "expired" after 15 blocks
+                    && transaction.value.blockHeight! <= blockHeight.value - 15
+                )
             )
             // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
             // Note that we only check the active account here to save us scanning through all our accounts as typically

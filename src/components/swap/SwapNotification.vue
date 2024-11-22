@@ -134,6 +134,9 @@ export default defineComponent({
             const timestamp = await getServerTime(true);
             const swap = activeSwap.value!;
 
+            /**
+             * Timestamps in seconds
+             */
             const remainingTimes: number[] = [];
 
             // When we haven't funded our HTLC yet, we need to abort when the quote expires.
@@ -144,27 +147,27 @@ export default defineComponent({
 
             // Otherwise, the swap expires when the first HTLC expires
             for (const contract of Object.values(swap.contracts)) {
+                let timeout: number;
                 switch (contract!.asset) {
                     case SwapAsset.NIM: {
-                        const height = useNetworkStore().height.value;
-                        const { timeoutBlock } = (contract as Contract<SwapAsset.NIM>).htlc;
-                        if (timeoutBlock <= height) return true;
-                        remainingTimes.push((timeoutBlock - height) * 60);
+                        const { timeoutTime } = (contract as Contract<SwapAsset.NIM>).htlc;
+                        timeout = Math.floor(timeoutTime / 1e3);
                         break;
                     }
                     case SwapAsset.BTC:
                     case SwapAsset.USDC_MATIC:
                     case SwapAsset.USDT_MATIC:
                     case SwapAsset.EUR: {
-                        const { timeout } = contract as Contract<
+                        ({ timeout } = contract as Contract<
                             SwapAsset.BTC | SwapAsset.USDC_MATIC | SwapAsset.USDT_MATIC | SwapAsset.EUR
-                        >;
-                        if (timeout <= timestamp) return true;
-                        remainingTimes.push(timeout - timestamp);
+                        >);
                         break;
                     }
                     default: throw new Error('Invalid swap asset');
                 }
+
+                if (timeout <= timestamp) return true;
+                remainingTimes.push(timeout - timestamp);
             }
 
             // eslint-disable-next-line no-console

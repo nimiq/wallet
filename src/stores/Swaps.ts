@@ -31,7 +31,7 @@ export type SwapNimData = {
         address?: string,
         refundAddress: string,
         redeemAddress: string,
-        timeoutBlockHeight: number,
+        timeoutMs: number,
     },
 };
 

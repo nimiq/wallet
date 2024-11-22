@@ -244,7 +244,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
                 address: transaction.recipient,
                 refundAddress: fundingData.sender,
                 redeemAddress: fundingData.recipient,
-                timeoutBlockHeight: fundingData.timeout,
+                timeoutMs: fundingData.timeout,
             },
         });
 

@@ -1492,6 +1492,11 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.2.tgz#ae2cbe5b41359875bece9ce0957209ca1b486d21"
   integrity sha512-rPy3DhWlqTOj4k9/YMS2mizjR1rLsQzqWzMnJ+xDEGprgb6/jhDBZs/CW+jONccRQWrvuyBYTrrxdLgn3imKjQ==
 
+"@nimiq/fastspot-api@^1.10.3":
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.3.tgz#9a4b6c5594708f3dd76f8bf1b0fd189ca886dbce"
+  integrity sha512-CUkIAcF7R3OlN45idB+yC9Wnuz2YXTPx25xYswCdmbMGu/EGZFNnGHLIe6HkbHd8Eh+uBrwqBmLZGm8jyQ9+6A==
+
 "@nimiq/hub-api@^1.10.0":
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.10.0.tgz#fa7c33d402f10dc5816fb2537d737a79f903fe15"

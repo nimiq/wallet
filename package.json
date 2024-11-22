@@ -27,7 +27,7 @@
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/core": "^2.0.1",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
-    "@nimiq/fastspot-api": "^1.10.2",
+    "@nimiq/fastspot-api": "^1.10.3",
     "@nimiq/hub-api": "^1.10.0",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "^1.5.1",

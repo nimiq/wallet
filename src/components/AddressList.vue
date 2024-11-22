@@ -3,6 +3,7 @@
         <div class="scroll-mask top" v-if="embedded"></div>
         <AddressListItem
             v-for="addressInfo in addressInfos" :key="addressInfo.address"
+            :embedded="embedded"
             :addressInfo="addressInfo"
             :class="{ 'active': activeAddress === addressInfo.address && activeCurrency === CryptoCurrency.NIM }"
             @click="selectAddress(addressInfo.address);"
@@ -367,10 +368,6 @@ export default defineComponent({
         font-weight: 600;
         margin: 0 2rem;
         flex-grow: 1;
-    }
-
-    .address-button.active {
-        cursor: auto;
     }
 
     .address-button:hover,

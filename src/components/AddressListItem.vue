@@ -6,7 +6,7 @@
             <UsdtIcon v-else-if="addressInfo.type === CryptoCurrency.USDT"/>
             <Identicon v-else :address="addressInfo.address"/>
 
-            <TwoLeafStakingIcon v-if="stakesByAddress[addressInfo.address]" />
+            <TwoLeafStakingIcon v-if="!embedded && stakesByAddress[addressInfo.address]" />
             <VestingIcon v-else-if="addressInfo.type === AddressType.VESTING"/>
         </div>
         <span class="label">{{ addressInfo.label }}</span>
@@ -47,6 +47,10 @@ import TwoLeafStakingIcon from './icons/Staking/TwoLeafStakingIcon.vue';
 
 export default defineComponent({
     props: {
+        embedded: {
+            type: Boolean,
+            default: false,
+        },
         addressInfo: {
             type: Object as () => AddressInfo |
                 Pick<AddressInfo, 'address' | 'label' | 'balance'> & {
@@ -135,21 +139,39 @@ export default defineComponent({
         right: 0;
         bottom: -0.75rem;
         padding: 0.25rem;
-        background: white;
         border-radius: 50%;
         box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.15);
+    }
+
+    > svg.vesting-icon {
+        background: white;
         color: nimiq-blue(0.7);
     }
 
-    > svg.staking-icon {
+    > svg.two-leaf-staking-icon {
         font-size: 2.25rem;
-        padding: 0;
+        padding: 0.125rem !important;
         background: var(--nimiq-green-bg);
         color: var(--nimiq-white);
+        outline: 2px solid #E7E8EA;
+        transition: outline 350ms var(--nimiq-ease);
 
         ::v-deep path {
             stroke-width: 1.25px;
         }
+    }
+}
+
+.address-button:not(.active):hover,
+.address-button:not(.active):focus {
+    .identicon-wrapper > svg.two-leaf-staking-icon {
+        outline-color: #DBDCE0;
+    }
+}
+
+.address-button.active {
+    .identicon-wrapper > svg.two-leaf-staking-icon {
+        outline-color: white;
     }
 }
 

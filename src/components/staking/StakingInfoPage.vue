@@ -150,10 +150,10 @@
 
             <i18n v-if="showDeactivateAll"
                 tag="span"
-                path="To switch validator, first {unstakeEverythingLink}."
+                path="To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
                 class="switch-validator"
             >
-                <a href="#" slot="unstakeEverythingLink" @click="deactivateAll">{{ $t('unstake everything') }}</a>
+                <a href="#" slot="unstakeLink" @click="deactivateAll">{{ $t('un-stake all') }}</a>
             </i18n>
 
             <!-- <button class="nq-button-s rewards-history" @click="$emit('next')">
@@ -457,7 +457,7 @@ export default defineComponent({
     }
 
     .page-body {
-        padding: 0 2rem 2rem;
+        padding: 0 2rem 4rem;
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
@@ -640,10 +640,6 @@ export default defineComponent({
         }
     }
 
-    .switch-validator {
-        flex-shrink: 0;
-    }
-
     .rewards-history {
         align-self: center;
     }
@@ -669,6 +665,7 @@ export default defineComponent({
         font-weight: 600;
         color: var(--text-40);
         align-self: center;
+        padding: 0 2rem;
 
         a {
             color: inherit;

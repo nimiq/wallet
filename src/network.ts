@@ -8,9 +8,8 @@ import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
-import { AddStakeEvent, useStakingStore, Validator } from './stores/Staking';
+import { AddStakeEvent, ApiValidator, RawValidator, useStakingStore } from './stores/Staking';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
-import { calculateStakingReward } from './lib/AlbatrossMath';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
 
@@ -273,64 +272,24 @@ export async function launchNetwork() {
         }));
         const activeStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
 
-        type ApiValidator = {
-            id: number,
-            name: string,
-            address: string,
-            description: string | null,
-            fee: number,
-            payoutType: 'none' | 'direct' | 'restake',
-            payoutSchedule: string,
-            isMaintainedByNimiq: boolean,
-            icon?: string,
-            hasDefaultIcon: boolean,
-            accentColor: string,
-            website: string | null,
-            contact: Record<string, string> | null,
-            score: {
-                total: number,
-                liveness: number,
-                size: number,
-                reliability: number,
-            },
-        };
-
-        const { config } = useConfig();
-        const apiValidators = await fetch(config.staking.validatorsEndpoint)
-            .then((res) => res.json()).catch(() => []) as ApiValidator[];
-        // TODO: Make it work even in the case this request fails
-        const validatorData: Record<string, ApiValidator> = {};
-        for (const apiValidator of apiValidators) {
-            validatorData[apiValidator.address] = apiValidator;
-        }
-
-        const validators: Validator[] = await Promise.all(activeValidators.map(async ({ address, balance }) => {
-            const apiData = validatorData[address] as ApiValidator | undefined;
-            const dominance = balance / activeStake;
-
-            let validator: Validator = {
-                address,
-                active: true,
-                dominance,
-                balance,
-            };
-
-            if (apiData && apiData.name !== 'Unknown validator') {
-                const annualReward = calculateStakingReward(apiData.fee, activeStake);
-
-                validator = {
-                    ...apiData,
-                    ...validator,
-                    annualReward,
-                };
-            }
-
-            return validator;
+        const validators: RawValidator[] = activeValidators.map(({ address, balance }) => ({
+            address,
+            active: true,
+            balance,
+            dominance: balance / activeStake,
         }));
 
         stakingStore.setValidators(validators);
     }
     updateValidators();
+
+    // Update validator API data on launch
+    (async () => {
+        const { config } = useConfig();
+        const apiValidators = await retry(() => fetch(config.staking.validatorsEndpoint))
+            .then((res) => res.json()).catch(() => []) as ApiValidator[];
+        stakingStore.setApiValidators(apiValidators);
+    })();
 
     function transactionListener(plain: PlainTransactionDetails) {
         if (plain.recipient === STAKING_CONTRACT_ADDRESS) {

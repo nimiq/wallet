@@ -97,9 +97,9 @@ export default defineComponent({
                             return validatorLabel.includes(searchTerm) || validatorAddress.includes(searchTerm);
                         })
                         .sort((a, b) => {
-                            const cmp = ('score' in b ? b.score.total : 0) - ('score' in a ? a.score.total : 0);
-                            if (cmp) return cmp;
-                            return a.address < b.address ? -1 : 1;
+                            const scoreA = 'score' in a ? a.score.total || 0 : 0;
+                            const scoreB = 'score' in b ? b.score.total || 0 : 0;
+                            return (scoreB - scoreA) || (a.address < b.address ? -1 : 1);
                         });
                 }
             }

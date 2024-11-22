@@ -1,9 +1,11 @@
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
+import { calculateStakingReward } from '../lib/AlbatrossMath';
 
 export type StakingState = {
-    validators: Record<string, Validator>,
+    chainValidators: Record<string, RawValidator>,
+    apiValidators: Record<string, ApiValidator>,
     stakeByAddress: Record<string, Stake>,
     stakingEventsByAddress: Record<string, StakingEvent[]>,
 }
@@ -26,6 +28,31 @@ export type Stake = {
     retiredBalance: number,
 }
 
+export type ApiValidator = {
+    id: number,
+    name: string,
+    address: string,
+    description: string | null,
+    fee: number,
+    payoutType: 'none' | 'direct' | 'restake',
+    payoutSchedule: string,
+    isMaintainedByNimiq: boolean,
+    website: string | null,
+    logo?: string,
+    hasDefaultLogo: boolean,
+    accentColor: string,
+    unstableScore: number | null,
+    dominanceRatioViaBalance: number,
+    dominanceRatioViaSlots: number,
+    // contact?: Record<string, string> | null,
+    score: {
+        total: number | null,
+        dominance: 0,
+        availability: number | null,
+        reliability: number | null,
+    },
+}
+
 export type RawValidator = {
     address: string,
     active: boolean,
@@ -35,26 +62,7 @@ export type RawValidator = {
     dominance: number, // Percentage
 }
 
-export type RegisteredValidator = RawValidator & {
-    // Validator API fields
-    name: string,
-    description: string | null,
-    fee: number,
-    payoutType: 'none' | 'direct' | 'restake',
-    payoutSchedule: string,
-    isMaintainedByNimiq: boolean,
-    logo?: string,
-    hasDefaultIcon: boolean,
-    accentColor: string,
-    website: string | null,
-    contact: Record<string, string> | null,
-    score: {
-        availability: number,
-        total: number,
-        dominance: number,
-        reliability: number,
-    },
-
+export type RegisteredValidator = RawValidator & ApiValidator & {
     // Calculated fields
     annualReward: number, // Percentage
 }
@@ -66,12 +74,32 @@ export type StakingScoringRules = any
 export const useStakingStore = createStore({
     id: 'staking',
     state: () => ({
-        validators: {},
+        chainValidators: {},
+        apiValidators: {},
         stakeByAddress: {},
         stakingEventsByAddress: {},
     } as StakingState),
     getters: {
-        validatorsList: (state): Readonly<Validator[]> => Object.values(state.validators),
+        validators: (state): Readonly<Record<string, Validator>> => {
+            const validators: Record<string, Validator> = {};
+
+            const validatorEntries = Object.entries(state.chainValidators);
+            const activeStake = validatorEntries.reduce((sum, entry) => sum + entry[1].balance, 0);
+
+            for (const [address, validator] of validatorEntries) {
+                const apiValidator = state.apiValidators[address];
+                validators[address] = {
+                    ...validator,
+                    ...apiValidator,
+                    ...(apiValidator ? {
+                        annualReward: calculateStakingReward(apiValidator.fee, activeStake),
+                    } : {}),
+                };
+            }
+
+            return validators;
+        },
+        validatorsList: (state, { validators }): Readonly<Validator[]> => Object.values(validators.value),
 
         // stake object for each addresses
         stakesByAddress: (state): Readonly<Record<string, Stake>> => state.stakeByAddress,
@@ -157,11 +185,11 @@ export const useStakingStore = createStore({
         },
 
         // validator object for the active address, if staking
-        activeValidator: (state, { activeStake }): Validator | null => {
+        activeValidator: (state, { activeStake, validators }): Validator | null => {
             const stake = activeStake.value as Stake | null;
             if (!stake || !stake.validator) return null;
 
-            return state.validators[stake.validator] || {
+            return validators.value[stake.validator] || {
                 address: stake.validator,
                 dominance: 0,
                 active: false,
@@ -214,22 +242,31 @@ export const useStakingStore = createStore({
             delete stakes[address];
             this.state.stakeByAddress = stakes;
         },
-        setValidator(validator: Validator) {
+        setValidator(validator: RawValidator) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new validator in Vue 3.
-            this.state.validators = {
-                ...this.state.validators,
+            this.state.chainValidators = {
+                ...this.state.chainValidators,
                 [validator.address]: validator,
             };
         },
-        setValidators(validators: Validator[]) {
-            const newValidators: {[address: string]: Validator} = {};
+        setValidators(validators: RawValidator[]) {
+            const newValidators: {[address: string]: RawValidator} = {};
 
             for (const validator of validators) {
                 newValidators[validator.address] = validator;
             }
 
-            this.state.validators = newValidators;
+            this.state.chainValidators = newValidators;
+        },
+        setApiValidators(apiValidators: ApiValidator[]) {
+            const newApiValidators: {[address: string]: ApiValidator} = {};
+
+            for (const validator of apiValidators) {
+                newApiValidators[validator.address] = validator;
+            }
+
+            this.state.apiValidators = newApiValidators;
         },
         setStakingEvents(address: string, events: StakingEvent[]) {
             // Need to assign whole object for change detection of new addresses.

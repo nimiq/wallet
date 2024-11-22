@@ -66,11 +66,11 @@
                         {{ $t('Stake must be at least {minStake}.', { minStake: `${MIN_STAKE / 1e5} NIM` }) }}
                     </div>
                     <div class="disclaimer stake-disclaimer" v-else-if="stakeDelta >= 0">
-                        {{ $t('Unlock at any time. Your NIM will be available within hours.') }}
+                        {{ $t('Unlock at any time. Your NIM will be available within ~24 hours.') }}
                     </div>
                     <div class="disclaimer unstake-disclaimer" v-else>
                         <Amount :amount="Math.abs(stakeDelta)" :decimals="DISPLAYED_DECIMALS" />
-                        {{ $t('will be available within hours.') }}
+                        {{ $t('will be available within ~24 hours.') }}
                     </div>
                 </MessageTransition>
             </div>

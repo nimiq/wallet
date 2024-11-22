@@ -37,9 +37,9 @@
                     <p v-else>{{ $t('No description available') }}</p>
                 </div>
 
-                <BlueLink v-if="'website' in validator && 'name' in validator"
+                <BlueLink v-if="'website' in validator && validator.website && 'name' in validator"
                     :href="validator.website" target="_blank" rel="noopener"
-                    >
+                >
                     {{ $t('{poolName} Website', { poolName: validator.name }) }}
                 </BlueLink>
                 <p class="disclaimer">

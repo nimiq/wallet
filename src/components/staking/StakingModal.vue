@@ -101,8 +101,12 @@ type StatusChangeParams = {
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeValidator, activeStake } = useStakingStore();
-        const page = ref(activeValidator.value ? Page.Info : Page.Welcome);
+        const { activeValidator, activeStake, totalAccountStake } = useStakingStore();
+        const page = ref(activeValidator.value
+            ? Page.Info
+            : totalAccountStake.value
+                ? Page.ValidatorList
+                : Page.Welcome);
         const overlay = ref<Overlay | null>(null);
 
         const isStaking = computed(() => !!(activeStake.value?.activeBalance || activeStake.value?.inactiveBalance));
@@ -171,7 +175,7 @@ export default defineComponent({
 
         /* Watchers */
         watch(activeStake, (stake) => {
-            if (!stake) page.value = Page.Welcome;
+            if (!stake) page.value = totalAccountStake.value ? Page.ValidatorList : Page.Welcome;
         }, { lazy: true });
 
         watch(page, (newPage) => showOverlayIfInvalidAccount(newPage as Page));

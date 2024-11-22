@@ -81,7 +81,7 @@
                 <div v-if="stake && stake.inactiveBalance && hasUnstakableStake"
                     class="unstaking row flex-row nq-light-blue"
                 >
-                    <span class="nq-button-pill">
+                    <span class="nq-button-pill payout-amount">
                         <Amount :amount="stake.inactiveBalance" value-mask/>
                     </span>
                     <button class="nq-button-pill light-blue" @click="() => unstakeAll()">
@@ -106,7 +106,7 @@
                 <div v-if="stake && stake.retiredBalance"
                     class="unstaking row flex-row nq-light-blue"
                 >
-                    <span class="nq-button-pill">
+                    <span class="nq-button-pill payout-amount">
                         <Amount :amount="stake.retiredBalance" value-mask/>
                     </span>
                     <button class="nq-button-pill light-blue"
@@ -575,6 +575,10 @@ export default defineComponent({
             }
 
             &.unstaking-amount { background-color: #797B91 }
+
+            &.payout-amount .amount::after {
+                top: 0.09em;
+             }
 
             &.unstaking-progress {
                 color: nimiq-blue(0.6);

@@ -60,8 +60,11 @@
                         <div class="amount-staked">
                             <Amount :amount="stake.activeBalance" value-mask/>
                         </div>
-                        <div class="amount-staked-fiat">
+                        <div class="amount-staked-fiat flex-row">
                             <FiatConvertedAmount :amount="stake.activeBalance" value-mask/>
+                            <span v-if="restakingRewards" class="nq-green flex-row">
+                                +<FiatConvertedAmount :amount="restakingRewards" value-mask/>
+                            </span>
                         </div>
                     </div>
                     <div class="flex-row">
@@ -197,7 +200,7 @@ import { reportToSentry } from '../../lib/Sentry';
 export default defineComponent({
     setup(props, context) {
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator } = useStakingStore();
+        const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
         const { height, consensus } = useNetworkStore();
 
         const graphUpdate = ref(0);
@@ -397,6 +400,7 @@ export default defineComponent({
             graphUpdate,
             stake,
             validator,
+            restakingRewards,
             percentage,
             inactiveReleaseTime,
             hasUnstakableStake,
@@ -528,6 +532,8 @@ export default defineComponent({
         font-weight: 600;
         color: var(--text-50);
         line-height: 1;
+        gap: 0.5rem;
+        flex-wrap: wrap;
     }
 
     .unstaking {

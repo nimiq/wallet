@@ -296,7 +296,8 @@ export async function launchNetwork() {
     // Update validator API data on launch
     (async () => {
         const { config } = useConfig();
-        const apiValidators = await retry(() => fetch(config.staking.validatorsEndpoint))
+        const url = `${config.staking.validatorsApiBase}${config.staking.validatorsPath}?only-known=true`;
+        const apiValidators = await retry(() => fetch(url))
             .then((res) => res.json()).catch(() => []) as ApiValidator[];
         stakingStore.setApiValidators(apiValidators);
     })();

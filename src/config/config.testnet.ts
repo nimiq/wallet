@@ -22,7 +22,8 @@ export default {
         prestakingStartBlock: 3_023_730,
         prestakingEndBlock: 3_028_050,
         transitionBlock: 3_032_010,
-        validatorsEndpoint: 'https://validators-api-testnet.nuxt.dev/api/v1/validators?with-scores=true',
+        validatorsApiBase: 'https://validators-api-testnet.nuxt.dev',
+        validatorsPath: '/api/v1/validators',
         stakeEventsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/staker/ADDRESS/events?filter=add-stake',
         genesis: {
             height: 3032010,

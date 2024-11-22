@@ -1,6 +1,11 @@
 <template>
-    <img class="validator-icon" v-if="'logo' in validator" :src="validator.logo" :alt="validator.name" />
-    <Identicon class="validator-icon" v-else :address="validator.address"/>
+    <img v-if="'name' in validator && validator.logo"
+        class="validator-icon"
+        :src="validator.logo.startsWith('/') ? `${$config.staking.validatorsApiBase}${validator.logo}` : validator.logo"
+        :alt="validator.name" />
+    <Identicon v-else
+        class="validator-icon"
+        :address="validator.address" />
 </template>
 
 <script lang="ts">

@@ -1,8 +1,11 @@
 <template>
     <div class="stake-graph-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
-            <template #default>
+            <template v-if="!activeStake || !activeStake.activeBalance" #default>
                 {{ $t('Set an Amount') }}
+            </template>
+            <template v-else #default>
+                {{ $t('Adjust your stake') }}
             </template>
             <template #more>
                 <p class="nq-text nq-blue">

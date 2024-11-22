@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="percent-amount-text" ref="$percentText">
-                    {{ Math.round(currentPercentage) }}%
+                    {{ Math.floor(currentPercentage) }}%
                 </div>
                 <VerticalLineIcon v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
                     :style="`left: calc(2rem + 2px + (100% - 4rem - 4px) * (${index} / 10) - 1px)`" />

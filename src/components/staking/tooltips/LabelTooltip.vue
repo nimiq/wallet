@@ -52,8 +52,8 @@ export default defineComponent({
     color: var(--text-60);
 
     .validator-icon {
-        --size: 2.75rem;
-        margin-right: 0.75rem;
+        --size: 2.25rem;
+        margin: 0 0.75rem 0 0.375rem;
     }
 
     .validator-label {

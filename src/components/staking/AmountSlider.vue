@@ -296,7 +296,7 @@ export default defineComponent({
             } else {
                 $progressBar.value!.style.width = `${offsetX + knobBox.width + 2}px`;
             }
-            $percentText.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 8}px`;
+            $percentText.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 20}px`;
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
             const maxXPos = containerBox.width - amountBox.width;
             if (offsetX <= 0) {
@@ -631,13 +631,14 @@ export default defineComponent({
                 position: absolute;
                 display: flex;
                 justify-content: center;
-                width: 7rem;
+                width: 5rem;
                 bottom: -0.5rem;
                 color: var(--nimiq-green);
                 font-size: 1.625rem;
                 font-weight: 700;
                 letter-spacing: .0625rem;
                 z-index: 1;
+                background: white;
             }
 
             .bottom-indicator {
@@ -654,6 +655,7 @@ export default defineComponent({
                 width: .5rem;
                 height: .5rem;
                 border-radius: 50%;
+                box-shadow: 0 0 1rem 1rem white;
             }
         }
 

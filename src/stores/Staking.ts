@@ -57,6 +57,7 @@ export type RawValidator = {
     address: string,
     active: boolean,
     balance: number,
+    rewardAddress?: string,
 
     // Calculated fields
     dominance: number, // Percentage
@@ -203,11 +204,24 @@ export const useStakingStore = createStore({
 
             return state.stakingEventsByAddress[activeAddress.value] || null;
         },
-        restakingRewards: (state, { stakingEvents }): Readonly<number | null> => {
+        restakingRewards: (state, { stakingEvents, activeValidator }): Readonly<number | null> => {
+            // Only show rewards for restaking validators
+            if (
+                !activeValidator.value
+                || (activeValidator.value as RegisteredValidator).payoutType !== 'restake'
+            ) return null;
+
             const events = stakingEvents.value as StakingEvent[] | null;
             if (!events) return null;
 
-            const addStakeEvents: AddStakeEvent[] = events.filter((event) => event.type === 6);
+            const addStakeEvents: AddStakeEvent[] = events.filter((event) => {
+                if (event.type !== 6) return false;
+                if (!activeValidator.value) return true;
+                if (event.sender_address === activeValidator.value.address) return true;
+                if (!activeValidator.value.rewardAddress) return true; // TODO: Get reward address
+                if (event.sender_address === activeValidator.value.rewardAddress) return true;
+                return false;
+            });
             return addStakeEvents.reduce((sum, event) => sum + event.value, 0);
         },
     },

@@ -13,7 +13,7 @@
 
         <div class="flex-grow"></div>
 
-        <div v-if="restakingRewards !== null" class="gain flex-row">
+        <div v-if="restakingRewards" class="gain flex-row">
             +<Amount :amount="restakingRewards" value-mask />
         </div>
     </button>

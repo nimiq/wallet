@@ -66,7 +66,7 @@ import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import { i18n } from '../../i18n/i18n-setup';
 
-const SCORE_THRESHOLDS = {
+const ScoreThresholds = {
     EXCELLENT: 4.5,
     GOOD: 3.5,
     FAIR: 2.5,
@@ -105,9 +105,9 @@ export default defineComponent({
         // Function for status classes
         const getStatusClass = (score: number | null) => {
             if (score === null) return 'disabled';
-            if (score > SCORE_THRESHOLDS.EXCELLENT) return 'high-score';
-            if (score > SCORE_THRESHOLDS.GOOD) return '';
-            if (score > SCORE_THRESHOLDS.FAIR) return 'low-score';
+            if (score > ScoreThresholds.EXCELLENT) return 'high-score';
+            if (score > ScoreThresholds.GOOD) return '';
+            if (score > ScoreThresholds.FAIR) return 'low-score';
             return 'very-low-score';
         };
 
@@ -117,13 +117,13 @@ export default defineComponent({
 
             if (!score) return i18n.t('No availability data available yet.');
 
-            if (score > SCORE_THRESHOLDS.EXCELLENT) {
+            if (score > ScoreThresholds.EXCELLENT) {
                 return i18n.t('This pool is reliably available for block production.');
             }
-            if (score > SCORE_THRESHOLDS.GOOD) {
+            if (score > ScoreThresholds.GOOD) {
                 return i18n.t('This pool is usually available for block production.');
             }
-            if (score > SCORE_THRESHOLDS.FAIR) {
+            if (score > ScoreThresholds.FAIR) {
                 return i18n.t('The pool sometimes fails to be available for block production.');
             }
             return i18n.t('This pool regularly fails to be available for block production.');
@@ -134,13 +134,13 @@ export default defineComponent({
 
             if (!score) return i18n.t('No reliability data available yet.');
 
-            if (score > SCORE_THRESHOLDS.EXCELLENT) {
+            if (score > ScoreThresholds.EXCELLENT) {
                 return i18n.t('This pool reliably produces blocks.');
             }
-            if (score > SCORE_THRESHOLDS.GOOD) {
+            if (score > ScoreThresholds.GOOD) {
                 return i18n.t('This pool usually produces blocks.');
             }
-            if (score > SCORE_THRESHOLDS.FAIR) {
+            if (score > ScoreThresholds.FAIR) {
                 return i18n.t('This pool sometimes fails to produce blocks.');
             }
             return i18n.t('This pool regularly fails to produce blocks.');
@@ -151,16 +151,16 @@ export default defineComponent({
 
             if (!score) return i18n.t('No dominance data available yet.');
 
-            if (score > SCORE_THRESHOLDS.EXCELLENT) {
+            if (score > ScoreThresholds.EXCELLENT) {
                 return i18n.t('This pool is safe to stake with.');
             }
-            if (score > SCORE_THRESHOLDS.GOOD) {
+            if (score > ScoreThresholds.GOOD) {
                 return i18n.t(
                     // eslint-disable-next-line max-len
                     'This pool controls a large share of the total stake.\nSupport the network by staking with a smaller pool.',
                 );
             }
-            if (score > SCORE_THRESHOLDS.FAIR) {
+            if (score > ScoreThresholds.FAIR) {
                 return i18n.t(
                     // eslint-disable-next-line max-len
                     'This pool controls an almost critical share of the total stake.\nChoose a smaller pool to improve the network’s security.',
@@ -271,7 +271,7 @@ export default defineComponent({
 }
 
 .description {
-    color: nimiq-blue(.5);
+    color: var(--text-60);
     font-size: 1.75rem;
 
     margin: 0;
@@ -282,7 +282,7 @@ export default defineComponent({
     font-size: 1.75rem;
     padding-bottom: 2rem;
     margin: 0;
-    color: var(--text-60);
+    color: var(--text-50);
 
     &.high-score { color: var(--nimiq-green); }
     &.low-score { color: var(--nimiq-orange); }

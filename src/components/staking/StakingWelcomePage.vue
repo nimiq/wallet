@@ -17,13 +17,10 @@
             <div class="staking-rounded-background flex-column">
                 <div class="staking-icons-lace">
                     <template v-for="(validator, index) in validators">
-                        <img v-if="validator && 'logo' in validator" :key="index"
-                            :src="validator.logo" :alt="validator.name"
+                        <ValidatorIcon v-if="validator"
+                            :validator="validator" :key="index"
                             :style="{ top: getTopPosition(index) }"
                         />
-                        <Identicon v-else-if="validator && 'address' in validator" :key="index"
-                            :address="validator.address"
-                            :style="{ top: getTopPosition(index) }"/>
                         <HexagonIcon v-else :key="index"
                             :style="{ top: getTopPosition(index), '--delay': `${index * 100}ms` }"/>
                     </template>
@@ -41,9 +38,10 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted } from '@vue/composition-api';
-import { PageHeader, PageBody, Identicon, HexagonIcon } from '@nimiq/vue-components';
+import { PageHeader, PageBody, HexagonIcon } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
 import { getNetworkClient, updateValidators } from '../../network';
 
 // const progression = (i:number, n:number) => {
@@ -91,8 +89,8 @@ export default defineComponent({
         PageHeader,
         PageBody,
         HeroIcon,
-        Identicon,
         HexagonIcon,
+        ValidatorIcon,
     },
 });
 </script>

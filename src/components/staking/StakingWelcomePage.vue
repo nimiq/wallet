@@ -40,10 +40,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent, onMounted } from '@vue/composition-api';
 import { PageHeader, PageBody, Identicon, HexagonIcon } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import { getNetworkClient, updateValidators } from '../../network';
 
 // const progression = (i:number, n:number) => {
 //     if (n % 2 === 0) {
@@ -71,6 +72,13 @@ export default defineComponent({
         function getTopPosition(index: number) {
             return `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)}px`;
         }
+
+        onMounted(async () => {
+            if (!validatorsList.value.some((validator) => 'name' in validator)) {
+                const client = await getNetworkClient();
+                await updateValidators(client);
+            }
+        });
 
         return {
             // progression,

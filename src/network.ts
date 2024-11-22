@@ -47,6 +47,37 @@ async function disconnectNetwork() {
     await client.disconnectNetwork();
 }
 
+let updatingValidators = false;
+export async function updateValidators(client: Client) {
+    if (updatingValidators) return;
+    updatingValidators = true;
+
+    await client.waitForConsensusEstablished();
+    const contract = await retry(
+        () => client.getAccount(STAKING_CONTRACT_ADDRESS) as Promise<PlainStakingContract>,
+    ).catch(reportFor('getAccount(staking contract)'));
+    if (!contract) {
+        updatingValidators = false;
+        return;
+    }
+
+    const activeValidators = contract.activeValidators.map(([address, balance]) => ({
+        address,
+        balance,
+    }));
+    const activeStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
+
+    const validators: RawValidator[] = activeValidators.map(({ address, balance }) => ({
+        address,
+        active: true,
+        balance,
+        dominance: balance / activeStake,
+    }));
+
+    useStakingStore().setValidators(validators);
+    updatingValidators = false;
+}
+
 function reportFor(method: string) {
     return (error: Error) => {
         const accountId = useAccountStore().state.activeAccountId ?? undefined;
@@ -242,7 +273,7 @@ export async function launchNetwork() {
 
         if (epoch > currentEpoch) {
             currentEpoch = epoch;
-            updateValidators();
+            updateValidators(client);
         }
     });
 
@@ -260,28 +291,7 @@ export async function launchNetwork() {
         network$.peerCount = peerCount;
     });
 
-    async function updateValidators() {
-        await client.waitForConsensusEstablished();
-        const contract = await retry(
-            () => client.getAccount(STAKING_CONTRACT_ADDRESS) as Promise<PlainStakingContract>,
-        ).catch(reportFor('getAccount(staking contract)'));
-        if (!contract) return;
-        const activeValidators = contract.activeValidators.map(([address, balance]) => ({
-            address,
-            balance,
-        }));
-        const activeStake = activeValidators.reduce((sum, validator) => sum + validator.balance, 0);
-
-        const validators: RawValidator[] = activeValidators.map(({ address, balance }) => ({
-            address,
-            active: true,
-            balance,
-            dominance: balance / activeStake,
-        }));
-
-        stakingStore.setValidators(validators);
-    }
-    updateValidators();
+    updateValidators(client);
 
     // Update validator API data on launch
     (async () => {

@@ -53,7 +53,7 @@
                     <header class="flex-row">
                         <span class="nq-icon nimiq-logo"></span>
                         <span>NIM</span>
-                        <AccountStake v-if="totalAccountStake" />
+                        <!-- <AccountStake v-if="totalAccountStake" /> -->
                         <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
                             <MiniAddIcon/>
                         </button>
@@ -364,8 +364,8 @@ import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
 import router from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
-import { useStakingStore } from '../../stores/Staking';
-import AccountStake from '../staking/AccountStake.vue';
+// import { useStakingStore } from '../../stores/Staking';
+// import AccountStake from '../staking/AccountStake.vue';
 
 export default defineComponent({
     name: 'account-overview',
@@ -563,7 +563,7 @@ export default defineComponent({
             }, 100);
         }
 
-        const { totalAccountStake } = useStakingStore();
+        // const { totalAccountStake } = useStakingStore();
 
         return {
             stablecoin,
@@ -602,7 +602,7 @@ export default defineComponent({
             nimAccountBgCutouts,
             onSwapButtonPointerDown,
             isMobile,
-            totalAccountStake,
+            // totalAccountStake,
         };
     },
     components: {
@@ -631,7 +631,7 @@ export default defineComponent({
         LinkedDoubleArrowIcon,
         AddressListBackgroundSvg,
         // StakingSummaryMobile,
-        AccountStake,
+        // AccountStake,
     },
 });
 </script>
@@ -882,8 +882,8 @@ export default defineComponent({
         }
     }
 
-    .account-stake {
-        margin-left: auto;
+    .nimiq-logo ~ span {
+        margin-right: auto;
     }
 
     .add-address {

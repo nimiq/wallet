@@ -1511,10 +1511,10 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.5.0.tgz#2df4b323ea3a17f553b6be2de37d5255208f25ab"
-  integrity sha512-hBKgr8XrJRz9ihICRyZsqKP2tsKjwRvuvSTjdNaR/ACon1FtS+0gAQsxHvfE78fN/L68/92TR9s340s9nBb0Fw==
+"@nimiq/libswap@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.5.1.tgz#f0aa47b66029f9b9c07ed64103f7e1c2f65faba3"
+  integrity sha512-twVFY3S+7030P+BiePvMZ7ppBZzHPX+XrHtPJH9Gux0j0ttwebU+3wCRXK5jxBzDU5P/rWjXNscNdc9D1ez/ew==
   dependencies:
     "@nimiq/core" "^2.0.0"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"

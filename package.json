@@ -30,7 +30,7 @@
     "@nimiq/fastspot-api": "^1.10.2",
     "@nimiq/hub-api": "^1.10.0",
     "@nimiq/iqons": "^1.5.2",
-    "@nimiq/libswap": "^1.5.0",
+    "@nimiq/libswap": "^1.5.1",
     "@nimiq/oasis-api": "^1.1.1",
     "@nimiq/oasis-bank-list": "https://github.com/nimiq/oasis-bank-list#main",
     "@nimiq/rpc": "^0.4.1",

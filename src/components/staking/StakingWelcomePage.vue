@@ -64,7 +64,7 @@ export default defineComponent({
 
         const validators = computed(() => validatorsList.value.length === 0
             ? Array.from({ length: 10 }) as undefined[]
-            : validatorsList.value,
+            : validatorsList.value.filter((validator) => 'payoutType' in validator && validator.payoutType !== 'none'),
         );
 
         function getTopPosition(index: number) {

@@ -118,6 +118,6 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
 
             return text;
         }
-        default: throw new Error('Unknown staking data type');
+        default: throw new Error(`Unknown staking data type: ${JSON.stringify(transaction.data)}`);
     }
 }

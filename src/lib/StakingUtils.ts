@@ -24,6 +24,7 @@ export function getPayoutText(payoutType: 'none' | 'direct' | 'restake') {
 
 export function getStakingTransactionMeaning(transaction: Transaction, verbose: boolean): string | null {
     if (transaction.sender === STAKING_CONTRACT_ADDRESS) {
+        // @ts-expect-error Missmatch with Nimiq.PlainTransactionDetails from fastspot-api
         switch (transaction.senderData.type) {
             case 'delete-validator': {
                 const text = i18n.t('Delete validator') as string;

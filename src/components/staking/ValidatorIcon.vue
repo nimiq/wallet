@@ -32,5 +32,6 @@ img, .identicon {
     width: var(--size);
     height: var(--size);
     display: block;
+    object-fit: contain;
 }
 </style>

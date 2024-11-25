@@ -211,6 +211,10 @@ msgstr ""
 "\n"
 "Möchtest du den Kontakt ersetzen?"
 
+#: src/App.vue:4
+msgid "A network issue occurred, please stand by. Click {link} for updates."
+msgstr ""
+
 #: src/lib/KycConnection.ts:40
 msgid ""
 "A popup has been opened,\n"
@@ -235,8 +239,8 @@ msgstr "Konto-Limits"
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/layouts/AccountOverview.vue:152
-#: src/components/layouts/AccountOverview.vue:266
+#: src/components/layouts/AccountOverview.vue:154
+#: src/components/layouts/AccountOverview.vue:269
 msgid "Activate"
 msgstr "Aktivieren"
 
@@ -293,7 +297,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
-#: src/lib/StakingUtils.ts:97
+#: src/lib/StakingUtils.ts:98
 msgid "Add stake"
 msgstr ""
 
@@ -330,7 +334,7 @@ msgstr "alle"
 msgid "All countries"
 msgstr "Alle Länder"
 
-#: src/components/layouts/AccountOverview.vue:304
+#: src/components/layouts/AccountOverview.vue:307
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -339,7 +343,7 @@ msgstr ""
 "Jetzt aktualisieren um alle neuen Funktionen nutzen zu können. Es dauert "
 "auch wirklich nur ein paar Sekunden!"
 
-#: src/components/layouts/AddressOverview.vue:260
+#: src/components/layouts/AddressOverview.vue:261
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -482,7 +486,7 @@ msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
 #: src/components/AddressList.vue:188
-#: src/components/layouts/AccountOverview.vue:133
+#: src/components/layouts/AccountOverview.vue:135
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -725,7 +729,7 @@ msgstr "Wähle einen Validator"
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
-#: src/components/layouts/AccountOverview.vue:222
+#: src/components/layouts/AccountOverview.vue:225
 msgid "Choose Stablecoin"
 msgstr "Wähle Stablecoin"
 
@@ -749,7 +753,7 @@ msgstr "Klicke hier für mehr infos"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Klicke auf 'Fehlerbehebung' um mehr zu erfahren."
 
-#: src/components/layouts/AddressOverview.vue:262
+#: src/components/layouts/AddressOverview.vue:263
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Schließen"
@@ -860,11 +864,11 @@ msgstr "Konvertierung von USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Konvertierung von USDC.e zu USDC"
 
-#: src/components/layouts/AddressOverview.vue:221
+#: src/components/layouts/AddressOverview.vue:222
 msgid "Convert to USDC"
 msgstr "In USDC konvertieren"
 
-#: src/components/layouts/AddressOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:214
 msgid "Convert your USDC.e to the new standard."
 msgstr "Konvertiere deine USDC.e zum neuen Standard"
 
@@ -918,7 +922,7 @@ msgstr "Erstelle eine neue Einmaladdresse."
 msgid "Create request link"
 msgstr "Zahlungslink erstellen"
 
-#: src/lib/StakingUtils.ts:46
+#: src/lib/StakingUtils.ts:47
 msgid "Create validator"
 msgstr ""
 
@@ -951,12 +955,12 @@ msgstr "Erzeugt Einnahmen durch Staking"
 msgid "Credit Card"
 msgstr "Kreditkarte"
 
-#: src/components/layouts/Sidebar.vue:144
+#: src/components/layouts/Sidebar.vue:145
 #: src/components/swap/SwapModal.vue:411
 msgid "Crypto swaps are currently under maintenance."
 msgstr "Krypto-Swaps werden derzeit gewartet."
 
-#: src/lib/StakingUtils.ts:56
+#: src/lib/StakingUtils.ts:57
 msgid "Deactivate validator"
 msgstr ""
 
@@ -964,7 +968,7 @@ msgstr ""
 msgid "Deactivating Stake"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:29
+#: src/lib/StakingUtils.ts:30
 msgid "Delete validator"
 msgstr ""
 
@@ -1394,6 +1398,10 @@ msgstr ""
 "Mit nur einem Passwort und einem Login ist es ist jetzt ganz einfach und "
 "bequem mehrere Addressen zu haben."
 
+#: src/App.vue:7
+msgid "here"
+msgstr ""
+
 #: src/components/modals/StablecoinSelectionModal.vue:15
 msgid "Higher liquidity and global market adoption."
 msgstr "Höhere Liquidität und globale Marktakzeptanz."
@@ -1600,7 +1608,7 @@ msgstr "Sprache"
 msgid "Learn about the new Nimiq"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:216
+#: src/components/layouts/AddressOverview.vue:217
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
@@ -1615,11 +1623,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
-#: src/components/layouts/AddressOverview.vue:206
+#: src/components/layouts/AddressOverview.vue:207
 msgid "Legacy USDC (USDC.e)"
 msgstr "Legacy USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:247
+#: src/components/layouts/AddressOverview.vue:248
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
 
@@ -1763,7 +1771,7 @@ msgstr "Benenne den Empfänger..."
 msgid "Name your contact"
 msgstr "Benenne deinen Kontakt"
 
-#: src/components/layouts/Sidebar.vue:174
+#: src/components/layouts/Sidebar.vue:175
 msgid "Network"
 msgstr "Netzwerk"
 
@@ -1867,7 +1875,7 @@ msgstr "Keine ausstehende Zahlungsanforderung"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
 
-#: src/components/layouts/Sidebar.vue:154
+#: src/components/layouts/Sidebar.vue:155
 msgid "Not available in your browser"
 msgstr "Nicht verfügbar in deinem Browser"
 
@@ -2001,7 +2009,7 @@ msgstr ""
 "Wähle eine Stablecoin für deine Wallet. Du kannst jederzeit zwischen den "
 "beiden wechseln."
 
-#: src/components/layouts/Sidebar.vue:147
+#: src/components/layouts/Sidebar.vue:148
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -2047,7 +2055,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Bitte überweise"
 
-#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:159
 #: src/components/layouts/Sidebar.vue:61
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
@@ -2102,7 +2110,7 @@ msgstr ""
 msgid "Rates the pool's potential to harm the network, based on its size. "
 msgstr ""
 
-#: src/lib/StakingUtils.ts:61
+#: src/lib/StakingUtils.ts:62
 msgid "Reactivate validator"
 msgstr ""
 
@@ -2114,7 +2122,7 @@ msgstr ""
 "Lese mehr darüber ins unserem {blog_post} oder klicke unten für die neue "
 "Wallet Einführung."
 
-#: src/components/layouts/AddressOverview.vue:195
+#: src/components/layouts/AddressOverview.vue:196
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Empfangen"
@@ -2261,11 +2269,11 @@ msgstr "Auszahlungsprozess neu starten"
 msgid "Resulting BTC amount is too small."
 msgstr "Der resultierende BTC-Betrag ist zu klein."
 
-#: src/lib/StakingUtils.ts:113
+#: src/lib/StakingUtils.ts:114
 msgid "Retire stake"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:66
+#: src/lib/StakingUtils.ts:67
 msgid "Retire validator"
 msgstr ""
 
@@ -2384,7 +2392,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Verkaufen jetzt möglich"
 
-#: src/components/layouts/AddressOverview.vue:190
+#: src/components/layouts/AddressOverview.vue:191
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Senden"
@@ -2496,7 +2504,7 @@ msgstr "SEPA-Instant-Gebühr"
 msgid "SEPA Instant transaction"
 msgstr "SEPA-Echtzeitüberweisung"
 
-#: src/lib/StakingUtils.ts:105
+#: src/lib/StakingUtils.ts:106
 msgid "Set active stake"
 msgstr ""
 
@@ -2527,7 +2535,7 @@ msgstr "Sicherer Tausch wird vorbereitet"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Die {currency}-Seite des Tauschs wird vorbereitet."
 
-#: src/components/layouts/Sidebar.vue:182
+#: src/components/layouts/Sidebar.vue:183
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -2573,7 +2581,7 @@ msgstr "Wiederherstellungswörter anzeigen"
 msgid "Show values as {currency}"
 msgstr "Zeige Werte in {currency}"
 
-#: src/components/layouts/AddressOverview.vue:248
+#: src/components/layouts/AddressOverview.vue:249
 msgid "Signup"
 msgstr "Anmelden"
 
@@ -2655,7 +2663,7 @@ msgstr ""
 msgid "standard"
 msgstr "Standard"
 
-#: src/lib/StakingUtils.ts:71
+#: src/lib/StakingUtils.ts:72
 msgid "Start staking"
 msgstr ""
 
@@ -2696,7 +2704,7 @@ msgid "Super low fees, super fast payments"
 msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:141
+#: src/components/layouts/Sidebar.vue:142
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2708,7 +2716,7 @@ msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 msgid "Swap"
 msgstr "Tausch"
 
-#: src/components/layouts/AccountOverview.vue:187
+#: src/components/layouts/AccountOverview.vue:190
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "Tausche BTC {arrowIcon} {ticker}"
 
@@ -2743,11 +2751,11 @@ msgstr "Tausch ist abgelaufen"
 msgid "Swap more per 30 days."
 msgstr "Tausche mehr pro 30 Tage."
 
-#: src/components/layouts/AccountOverview.vue:116
+#: src/components/layouts/AccountOverview.vue:118
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "Tausche NIM {arrowIcon} {ticker}"
 
-#: src/components/layouts/AccountOverview.vue:81
+#: src/components/layouts/AccountOverview.vue:82
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Tausche NIM {arrowIcon} BTC"
 
@@ -2788,7 +2796,7 @@ msgstr "Wechsel zu USDC"
 msgid "Switch to USDT"
 msgstr "Wechsel zu USDT"
 
-#: src/lib/StakingUtils.ts:84
+#: src/lib/StakingUtils.ts:85
 msgid "Switch validator"
 msgstr ""
 
@@ -2815,7 +2823,7 @@ msgid "TEN31 Verification"
 msgstr "TEN31-Verifizierung"
 
 #: src/components/AddressList.vue:207
-#: src/components/layouts/AccountOverview.vue:214
+#: src/components/layouts/AccountOverview.vue:217
 #: src/components/layouts/AddressOverview.vue:121
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -2859,6 +2867,12 @@ msgstr ""
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
 msgstr "Die Obergrenze für deine IBAN wurde erreicht"
+
+#: src/App.vue:11
+msgid ""
+"The network is temporarily not processing transactions or staking rewards, "
+"thank you for your patience."
+msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -3099,8 +3113,8 @@ msgid ""
 "here to {unstakeLink}."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:121
-#: src/components/layouts/AccountOverview.vue:192
+#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:195
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr "Um mit USDC/USDT zu tauschen, wähle einen Stablecoin."
@@ -3211,7 +3225,7 @@ msgstr ""
 msgid "Unlock at any time. Your NIM will be available within ~24 hours."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:34
+#: src/lib/StakingUtils.ts:35
 msgid "Unstake"
 msgstr ""
 
@@ -3232,12 +3246,12 @@ msgstr "Update verfügbar"
 msgid "Update now"
 msgstr "Jetzt aktualisieren"
 
-#: src/lib/StakingUtils.ts:51
+#: src/lib/StakingUtils.ts:52
 msgid "Update validator"
 msgstr ""
 
 #: src/components/AddressList.vue:197
-#: src/components/layouts/AccountOverview.vue:211
+#: src/components/layouts/AccountOverview.vue:214
 #: src/components/layouts/AddressOverview.vue:119
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
@@ -3392,7 +3406,7 @@ msgstr "Du kannst nur von Polygon {ticker}-Adressen empfangen!"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "In {waitTime} Stunden kannst du erneut kostenlose NIM erhalten."
 
-#: src/components/layouts/Sidebar.vue:318
+#: src/components/layouts/Sidebar.vue:319
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3406,11 +3420,11 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:150
+#: src/components/layouts/Sidebar.vue:151
 msgid "You currently have no balance to swap."
 msgstr "Du hast aktuell kein Guthaben zum tauschen."
 
-#: src/components/layouts/AddressOverview.vue:477
+#: src/components/layouts/AddressOverview.vue:478
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "Du hast nicht genug USDC.e, um die Tauschgebühren zu bezahlen ({fee})"
 
@@ -3482,7 +3496,7 @@ msgstr "Deine Bank ist nicht geeignet?"
 msgid "Your browser"
 msgstr "Dein Browser"
 
-#: src/components/layouts/Sidebar.vue:155
+#: src/components/layouts/Sidebar.vue:156
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."
@@ -3550,7 +3564,7 @@ msgid ""
 "validator pool’s fee."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:256
+#: src/components/layouts/AddressOverview.vue:257
 msgid "Your swap was successful!"
 msgstr "Dein Tausch war erfolgreich!"
 

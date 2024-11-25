@@ -1,15 +1,16 @@
 <template>
     <div id="app" :class="{'consensus-stalled': consensus === 'stalled'}">
         <div v-if="consensus === 'stalled'" class="red-notice">
-            <template v-if="isMainnet">
-                A network issue occurred, please stand by. Click
-                <a href="https://x.com/nimiq/status/1860886491292913679" target="_blank">
-                here</a> for updates.
-            </template>
-            <template v-else>
-                The network is temporarily not processing transactions or staking rewards,
-                thank you for your patience.
-            </template>
+            <i18n v-if="isMainnet" path="A network issue occurred, please stand by. Click {link} for updates."
+                :tag="false">
+                <template #link>
+                    <a href="https://x.com/nimiq/status/1860886491292913679" target="_blank">{{ $t('here') }}</a>
+                </template>
+            </i18n>
+            <template v-else>{{
+                $t('The network is temporarily not processing transactions or staking rewards, thank you for your '
+                + 'patience.')
+            }}</template>
         </div>
         <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>

@@ -10,14 +10,14 @@ NC='\033[0m' # No Color
 
 # Check if version number is provided
 if [ "$#" -lt 1 ]; then
-    echo -e "${BLUE}Usage: $0 <version_number> [commit_message] [--deployer=NAME] [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
+    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
     echo
     echo -e "${CYAN}Examples:${NC}"
     echo "1. Simple message (testnet):"
-    echo -e "   ${GREEN}$0 3.0.10 'Fix network stall handling' --deployer=matheo${NC}"
+    echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
     echo
     echo "2. Multi-line message (mainnet):"
-    echo -e "   ${GREEN}$0 3.0.4 '- Move network browsers-not-shown warning to not overlap with bottom row"
+    echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
     echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
     echo "- Add a retry-mechanism to all Nimiq network requests"
     echo "- Also hide staked amounts when privacy mode is on"
@@ -39,7 +39,7 @@ else
 fi
 
 # Default values
-DEPLOYER="matheo"
+DEPLOYER=""
 EXCLUDE_RELEASE=""
 SYNC_TRANSLATIONS=true
 BUILD_ENV="testnet"
@@ -50,6 +50,10 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         --deployer=*)
             DEPLOYER="${1#*=}"
+            if [ $# -eq 0 ]; then
+                echo -e "${RED}Error: --deployer requires a deployer name${NC}"
+                exit 1
+            fi
             shift
             ;;
         --exclude-release)
@@ -68,12 +72,92 @@ while [[ $# -gt 0 ]]; do
             DEPLOY_ONLY=true
             shift
             ;;
-        *)
+        -m)
+            shift
+            if [ $# -eq 0 ]; then
+                echo -e "${RED}Error: -m requires a commit message${NC}"
+                exit 1
+            fi
             COMMIT_MSG="$1"
             shift
             ;;
+        *)
+            echo -e "${RED}Error: Unknown parameter $1${NC}"
+            exit 1
+            ;;
     esac
 done
+
+# Parameter validation
+if [ "$DEPLOY_ONLY" = false ]; then
+    if [ -z "$DEPLOYER" ]; then
+        echo -e "${RED}Error: --deployer parameter is required${NC}"
+        echo
+        echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
+        echo
+        echo -e "${CYAN}Examples:${NC}"
+        echo "1. Simple message (testnet):"
+        echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
+        echo
+        echo "2. Multi-line message (mainnet):"
+        echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
+        echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
+        echo "- Add a retry-mechanism to all Nimiq network requests"
+        echo "- Also hide staked amounts when privacy mode is on"
+        echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
+        echo
+        echo "3. Deploy only (after a cancelled deployment):"
+        echo -e "   ${GREEN}$0 --deploy-only${NC}"
+        exit 1
+    fi
+    if [ -z "$COMMIT_MSG" ]; then
+        echo -e "${RED}Error: commit message (-m) is required${NC}"
+        echo
+        echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
+        echo
+        echo -e "${CYAN}Examples:${NC}"
+        echo "1. Simple message (testnet):"
+        echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
+        echo
+        echo "2. Multi-line message (mainnet):"
+        echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
+        echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
+        echo "- Add a retry-mechanism to all Nimiq network requests"
+        echo "- Also hide staked amounts when privacy mode is on"
+        echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
+        echo
+        echo "3. Deploy only (after a cancelled deployment):"
+        echo -e "   ${GREEN}$0 --deploy-only${NC}"
+        exit 1
+    fi
+fi
+
+# Validate version number format
+if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && [ "$DEPLOY_ONLY" = false ]; then
+    echo -e "${RED}Error: Version number must be in format X.Y.Z${NC}"
+    echo
+    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
+    echo
+    echo -e "${CYAN}Examples:${NC}"
+    echo "1. Simple message (testnet):"
+    echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
+    echo
+    echo "2. Multi-line message (mainnet):"
+    echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
+    echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
+    echo "- Add a retry-mechanism to all Nimiq network requests"
+    echo "- Also hide staked amounts when privacy mode is on"
+    echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
+    echo
+    echo "3. Deploy only (after a cancelled deployment):"
+    echo -e "   ${GREEN}$0 --deploy-only${NC}"
+    exit 1
+fi
+
+# Function to compare version numbers
+version_gt() {
+    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
+}
 
 # Function to handle SSH deployment
 do_ssh_deployment() {
@@ -103,20 +187,6 @@ if [ "$DEPLOY_ONLY" = true ]; then
     do_ssh_deployment "Are you sure you want to proceed with the deployment? [y/N] "
     exit 0
 fi
-
-# Use default commit message if none provided
-COMMIT_MSG="${COMMIT_MSG:-Update to version $VERSION}"
-
-# Validate version number format
-if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo -e "${RED}Error: Version number must be in format X.Y.Z${NC}"
-    exit 1
-fi
-
-# Function to compare version numbers
-version_gt() {
-    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
-}
 
 # Check if new version is greater than all existing tags in current repo
 echo -e "${BLUE}Checking version against existing tags in wallet repo...${NC}"

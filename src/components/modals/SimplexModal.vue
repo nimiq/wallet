@@ -11,18 +11,26 @@
         </Tooltip>
         <!-- Using v-show here is on purpose: the Simplex widget breaks when removing this element with using v-if -->
         <PageBody v-show="showAddressCopyUi" class="copy-address">
-            <p class="nq-text nq-light-blue">
-                {{ $t('Copy and paste your address into\nthe Simplex interface below.') }}
-            </p>
-            <div class="identicon-container">
-                <ResizingCopyable :text="currentlyShownAddress">
-                    <div
-                        class="address flex-row"
-                        :class="{'show-identicon': cryptoCurrencyCode === CryptoCurrency.NIM}"
-                    >{{ currentlyShownAddress }}</div>
-                </ResizingCopyable>
-                <Identicon v-if="cryptoCurrencyCode === CryptoCurrency.NIM" :address="currentlyShownAddress"/>
-            </div>
+            <template v-if="$config.disableNetworkInteraction && cryptoCurrencyCode === CryptoCurrency.NIM">
+                <p class="nq-text nq-orange">
+                    {{ $t('The Simplex integration is currently disabled while the network is experiencing an '
+                    + 'outage.') }}
+                </p>
+            </template>
+            <template v-else>
+                <p class="nq-text nq-light-blue">
+                    {{ $t('Copy and paste your address into\nthe Simplex interface below.') }}
+                </p>
+                <div class="identicon-container">
+                    <ResizingCopyable :text="currentlyShownAddress">
+                        <div
+                            class="address flex-row"
+                            :class="{'show-identicon': cryptoCurrencyCode === CryptoCurrency.NIM}"
+                        >{{ currentlyShownAddress }}</div>
+                    </ResizingCopyable>
+                    <Identicon v-if="cryptoCurrencyCode === CryptoCurrency.NIM" :address="currentlyShownAddress"/>
+                </div>
+            </template>
         </PageBody>
         <div class="separator"></div>
         <form id="simplex-form" ref="simplex$">
@@ -31,7 +39,9 @@
         <div v-if="mustReload" class="reload-notice flex-column">
             {{ $t('Refresh the page to continue.') }}
         </div>
-        <div v-if="showAddressCopyUi" class="copy-over-arrow">
+        <div v-if="showAddressCopyUi
+            && !($config.disableNetworkInteraction && cryptoCurrencyCode === CryptoCurrency.NIM)"
+            class="copy-over-arrow">
             <svg width="162" height="285" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M55.4 24c64 35.8 68.3 151.1 13.3 191.8m12.6 4.2l-15.7-2 1.8-15.7"
                     stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>

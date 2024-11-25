@@ -2172,7 +2172,8 @@ export default defineComponent({
                         // but instead show a maintenance message in the footer.
                         disabled: (
                             // The asset is not activated in the active account.
-                            (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
+                            (asset === SwapAsset.NIM && config.disableNetworkInteraction)
+                            || (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
                             || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
                             || (asset === SwapAsset.USDT_MATIC && !hasPolygonAddresses.value)
                         ) || (

@@ -86,12 +86,21 @@ export default defineComponent({
         },
     },
     setup(props) {
+        const { config } = useConfig();
         const { language } = useSettingsStore().state;
         const baseCurrencyCode = useFiatStore().state.currency;
         type MoonpayCurrencyCode = CryptoCurrency | 'usdc_polygon' | 'usdt_polygon';
         let defaultCurrencyCode: MoonpayCurrencyCode = useAccountStore().state.activeCurrency;
+        if (defaultCurrencyCode === CryptoCurrency.NIM && config.disableNetworkInteraction) {
+            defaultCurrencyCode = CryptoCurrency.BTC;
+        }
         if (defaultCurrencyCode === CryptoCurrency.USDC) defaultCurrencyCode = 'usdc_polygon';
         if (defaultCurrencyCode === CryptoCurrency.USDT) defaultCurrencyCode = 'usdt_polygon';
+
+        const nimAddress = !config.disableNetworkInteraction
+            // Remove spaces in NIM address, as spaces are invalid URI components
+            ? useAddressStore().state.activeAddress?.replace(/\s/g, '')
+            : undefined;
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.
@@ -112,14 +121,11 @@ export default defineComponent({
             : undefined;
 
         const walletAddresses = {
-            // Remove spaces in NIM address, as spaces are invalid URI components
-            nim: useAddressStore().state.activeAddress?.replace(/\s/g, ''),
+            ...(nimAddress ? { nim: nimAddress } : {}),
             ...(btcAddress ? { btc: btcAddress } : {}),
             ...(usdcAddress ? { usdc_polygon: usdcAddress } : {}),
             ...(usdtAddress ? { usdt_polygon: usdtAddress } : {}),
         };
-
-        const { config } = useConfig();
 
         const widgetReady = ref(false);
 

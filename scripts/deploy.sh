@@ -1,22 +1,30 @@
 #!/bin/bash
 
+# Color definitions
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
 # Check if version number is provided
 if [ "$#" -lt 1 ]; then
-    echo "Usage: $0 <version_number> [commit_message] [--deployer=NAME] [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]"
+    echo -e "${BLUE}Usage: $0 <version_number> [commit_message] [--deployer=NAME] [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
     echo
-    echo "Examples:"
+    echo -e "${CYAN}Examples:${NC}"
     echo "1. Simple message (testnet):"
-    echo "   $0 3.0.10 'Fix network stall handling' --deployer=matheo"
+    echo -e "   ${GREEN}$0 3.0.10 'Fix network stall handling' --deployer=matheo${NC}"
     echo
     echo "2. Multi-line message (mainnet):"
-    echo "   $0 3.0.4 '- Move network browsers-not-shown warning to not overlap with bottom row"
+    echo -e "   ${GREEN}$0 3.0.4 '- Move network browsers-not-shown warning to not overlap with bottom row"
     echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
     echo "- Add a retry-mechanism to all Nimiq network requests"
     echo "- Also hide staked amounts when privacy mode is on"
-    echo "- Enforce minimum stake on the slider itself' --deployer=john --mainnet"
+    echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
     echo
     echo "3. Deploy only (after a cancelled deployment):"
-    echo "   $0 --deploy-only"
+    echo -e "   ${GREEN}$0 --deploy-only${NC}"
     exit 1
 fi
 
@@ -70,22 +78,23 @@ done
 # Function to handle SSH deployment
 do_ssh_deployment() {
     # Confirmation prompt before deployment
-    read -p "${1:-The new version is ready. Do you want to proceed with the deployment? [y/N] }" -n 1 -r
+    echo -e "${YELLOW}${1:-The new version is ready. Do you want to proceed with the deployment? [y/N] }${NC}"
+    read -n 1 -r
     echo    # Move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
-        echo "Deployment cancelled."
+        echo -e "${RED}Deployment cancelled.${NC}"
         exit 1
     fi
 
     # SSH into deployment servers
-    echo "Connecting to deployment servers..."
+    echo -e "${BLUE}Connecting to deployment servers...${NC}"
     for server in "${DEPLOY_SERVERS[@]}"; do
-        echo "Connecting to $server..."
+        echo -e "${CYAN}Connecting to $server...${NC}"
         ssh "$server"
     done
 
-    echo "Deployment complete!"
+    echo -e "${GREEN}Deployment complete!${NC}"
 }
 
 # If deploy-only flag is set, skip to deployment
@@ -100,7 +109,7 @@ COMMIT_MSG="${COMMIT_MSG:-Update to version $VERSION}"
 
 # Validate version number format
 if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo "Error: Version number must be in format X.Y.Z"
+    echo -e "${RED}Error: Version number must be in format X.Y.Z${NC}"
     exit 1
 fi
 
@@ -110,11 +119,11 @@ version_gt() {
 }
 
 # Check if new version is greater than all existing tags in current repo
-echo "Checking version against existing tags in wallet repo..."
+echo -e "${BLUE}Checking version against existing tags in wallet repo...${NC}"
 EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
 for tag in $EXISTING_TAGS; do
     if ! version_gt "$VERSION" "$tag"; then
-        echo "Error: Version $VERSION is not greater than existing version $tag"
+        echo -e "${RED}Error: Version $VERSION is not greater than existing version $tag${NC}"
         exit 1
     fi
 done
@@ -127,10 +136,10 @@ DEPLOY_SERVERS=("deploy_wallet@web-1" "deploy_wallet@web-2" "deploy_wallet@web-3
 ENV_TAG=$([ "$BUILD_ENV" = "mainnet" ] && echo "main" || echo "test")
 
 # Pre-deployment tasks
-echo "Running pre-deployment tasks..."
+echo -e "${BLUE}Running pre-deployment tasks...${NC}"
 
 if [ "$SYNC_TRANSLATIONS" = "true" ]; then
-    echo "Syncing translations..."
+    echo -e "${CYAN}Syncing translations...${NC}"
     yarn i18n:sync
 fi
 
@@ -148,7 +157,7 @@ yarn utils:makeNginxAllowlist
 
 # Check for uncommitted changes
 if [[ `git status --porcelain` ]]; then
-    echo "ERROR: The repository has uncommitted changes. Commit them first, then run again."
+    echo -e "${RED}ERROR: The repository has uncommitted changes. Commit them first, then run again.${NC}"
     exit 1
 fi
 
@@ -162,52 +171,52 @@ $EXCLUDE_RELEASE"
 }
 
 # Create and push source tag
-echo "Creating source tag v$VERSION..."
+echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
 git tag -a -s "v$VERSION" -m "$(create_message)"
 
 # Build the project
-echo "Building project with $BUILD_ENV configuration..."
+echo -e "${BLUE}Building project with $BUILD_ENV configuration...${NC}"
 env "build=$BUILD_ENV" yarn build
 
 # Push changes and tags
-echo "Pushing source changes and tags..."
+echo -e "${BLUE}Pushing source changes and tags...${NC}"
 git push && git push --tags
 
 # Deploy to deployment repository
-echo "Deploying to $DEPLOYMENT_REPO..."
+echo -e "${BLUE}Deploying to $DEPLOYMENT_REPO...${NC}"
 cd "$DEPLOYMENT_REPO" || exit 1
 
 # Checkout appropriate branch and pull latest changes
 DEPLOY_BRANCH=$([ "$BUILD_ENV" = "mainnet" ] && echo "mainnet" || echo "testnet")
-echo "Checking out $DEPLOY_BRANCH branch..."
+echo -e "${CYAN}Checking out $DEPLOY_BRANCH branch...${NC}"
 git checkout "$DEPLOY_BRANCH"
 git pull
 
 # Check if new version is greater than all existing tags in deployment repo for the current branch
-echo "Checking version against existing tags in deployment repo ($DEPLOY_BRANCH branch)..."
+echo -e "${BLUE}Checking version against existing tags in deployment repo ($DEPLOY_BRANCH branch)...${NC}"
 EXISTING_DEPLOY_TAGS=$(git tag | grep "^v[0-9].*-$ENV_TAG-" | sed 's/^v\([0-9][^-]*\).*/\1/')
 for tag in $EXISTING_DEPLOY_TAGS; do
     if ! version_gt "$VERSION" "$tag"; then
-        echo "Error: Version $VERSION is not greater than existing version $tag in deployment repo"
+        echo -e "${RED}Error: Version $VERSION is not greater than existing version $tag in deployment repo${NC}"
         exit 1
     fi
 done
 
 # Copy build files
-echo "Copying build files..."
+echo -e "${CYAN}Copying build files...${NC}"
 cp -r ../dist/. dist
 git add dist
 
 # Commit changes
-echo "Committing changes..."
+echo -e "${CYAN}Committing changes...${NC}"
 git commit -m "$(create_message)"
 
 # Create deployment tag
-echo "Creating deployment tag..."
+echo -e "${BLUE}Creating deployment tag...${NC}"
 git tag -a -s "v$VERSION-$ENV_TAG-$DEPLOYER" -m "$(create_message)"
 
 # Push deployment changes and tags
-echo "Pushing deployment changes and tags..."
+echo -e "${BLUE}Pushing deployment changes and tags...${NC}"
 git push && git push --tags
 
 # Run the deployment

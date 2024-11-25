@@ -17,11 +17,11 @@ show_usage() {
         echo
     fi
 
-    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
+    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet|--testnet] [--deploy-only]${NC}"
     echo
     echo -e "${CYAN}Examples:${NC}"
     echo "1. Simple message (testnet):"
-    echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
+    echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo --testnet${NC}"
     echo
     echo "2. Multi-line message (mainnet):"
     echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
@@ -54,7 +54,7 @@ fi
 DEPLOYER=""
 EXCLUDE_RELEASE=""
 SYNC_TRANSLATIONS=true
-BUILD_ENV="testnet"
+BUILD_ENV=""
 DEPLOY_ONLY=false
 
 # Parse remaining arguments
@@ -78,6 +78,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --mainnet)
             BUILD_ENV="mainnet"
+            shift
+            ;;
+        --testnet)
+            BUILD_ENV="testnet"
             shift
             ;;
         --deploy-only)
@@ -107,6 +111,9 @@ if [ "$DEPLOY_ONLY" = false ]; then
     fi
     if [ -z "$COMMIT_MSG" ]; then
         show_usage "commit message (-m) is required"
+    fi
+    if [ -z "$BUILD_ENV" ]; then
+        show_usage "Either --mainnet or --testnet must be specified"
     fi
 fi
 

@@ -401,12 +401,18 @@ export default defineComponent({
 @media (max-width: 751px) { /* When notice text breaks into two lines */
     #app.consensus-stalled {
         padding-top: 6.75rem;
+        .red-notice {
+            text-align: left;
+        }
     }
 }
 
 @media (max-width: 418px) { /* When notice text breaks into three lines */
     #app.consensus-stalled {
         padding-top: 9.125rem;
+        .red-notice {
+            text-align: left;
+        }
     }
 }
 </style>

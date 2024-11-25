@@ -82,7 +82,7 @@ export default defineComponent({
         const { config } = useConfig();
 
         const sendDisabled = computed(() => {
-            if (activeCurrency.value === 'nim' && config.disableNetworkInteraction) return true;
+            if (config.disableNetworkInteraction && activeCurrency.value === CryptoCurrency.NIM) return true;
             return context.root.$route.path !== '/' && nimOrBtcOrStable(
                 !activeAddressInfo.value || !activeAddressInfo.value.balance,
                 !btcBalance.value,

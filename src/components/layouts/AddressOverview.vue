@@ -14,7 +14,7 @@
                     <SearchBar v-model="searchString"/>
 
                     <CashlinkButton
-                        v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
+                        v-if="activeCurrency === CrypoCurrency.NIM && unclaimedCashlinkCount"
                         :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                         :unclaimedCashlinkCount="unclaimedCashlinkCount"
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
@@ -27,19 +27,19 @@
                     >
                         <MenuDotsIcon/>
                         <div class="popup-menu nq-blue-bg">
-                            <button v-if="activeCurrency === 'nim'"
+                            <button v-if="activeCurrency === CryptoCurrency.NIM"
                                 class="reset flex-row"
                                 @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
-                            <button v-if="activeCurrency === 'nim'"
+                            <button v-if="activeCurrency === CryptoCurrency.NIM"
                                 class="reset flex-row"
                                 @mousedown="$router.push('/staking')"
                             >
                                 <TwoLeafStakingIcon/>{{ $t('Staking') }}
                             </button>
-                            <button v-if="activeCurrency === 'btc'"
+                            <button v-if="activeCurrency === CryptoCurrency.BTC"
                                 class="reset flex-row"
                                 @pointerdown="rescan"
                             >
@@ -70,22 +70,22 @@
 
             <div class="active-address flex-row">
                 <div class="identicon-wrapper">
-                    <Identicon v-if="activeCurrency === 'nim'" :address="activeAddressInfo.address" />
-                    <BitcoinIcon v-if="activeCurrency === 'btc'"/>
-                    <UsdcIcon v-if="activeCurrency === 'usdc'"/>
+                    <Identicon v-if="activeCurrency === CryptoCurrency.NIM" :address="activeAddressInfo.address" />
+                    <BitcoinIcon v-if="activeCurrency === CryptoCurrency.BTC"/>
+                    <UsdcIcon v-if="activeCurrency === CryptoCurrency.USDC"/>
                     <UsdtIcon v-if="activeCurrency === CryptoCurrency.USDT"/>
                     <button class="reset identicon-menu flex-row"
                         @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
                     >
                         <GearIcon/>
                         <div class="popup-menu nq-blue-bg">
-                            <button v-if="activeCurrency === 'nim'"
+                            <button v-if="activeCurrency === CryptoCurrency.NIM"
                                 class="reset flex-row"
                                 @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
                             >
                                 <RenameIcon/>{{ $t('Rename') }}
                             </button>
-                            <button v-if="activeCurrency === 'btc'"
+                            <button v-if="activeCurrency === CryptoCurrency.BTC"
                                 class="reset flex-row"
                                 @pointerdown="rescan"
                             >
@@ -114,15 +114,23 @@
                 </div>
                 <div class="meta">
                     <div class="flex-row">
-                        <div v-if="activeCurrency === 'nim'" class="label">{{activeAddressInfo.label}}</div>
-                        <div v-if="activeCurrency === 'btc'" class="label bitcoin">{{ $t('Bitcoin') }}</div>
-                        <div v-if="activeCurrency === 'usdc'" class="label usdc">{{ $t('USD Coin') }}</div>
+                        <div v-if="activeCurrency === CryptoCurrency.NIM" class="label">
+                            {{ activeAddressInfo.label }}
+                        </div>
+                        <div v-if="activeCurrency === CryptoCurrency.BTC" class="label bitcoin">
+                            {{ $t('Bitcoin') }}
+                        </div>
+                        <div v-if="activeCurrency === CryptoCurrency.USDC" class="label usdc">
+                            {{ $t('USD Coin') }}
+                        </div>
                         <div v-if="activeCurrency === CryptoCurrency.USDT" class="label usdt">
                             {{ $t('Tether USD') }}
                         </div>
-                        <Amount v-if="activeCurrency === 'nim'" :amount="activeAddressInfo.balance" value-mask/>
-                        <Amount v-if="activeCurrency === 'btc'" :amount="btcAccountBalance" currency="btc" value-mask/>
-                        <Amount v-if="activeCurrency === 'usdc'"
+                        <Amount v-if="activeCurrency === CryptoCurrency.NIM" :amount="activeAddressInfo.balance"
+                            value-mask/>
+                        <Amount v-if="activeCurrency === CryptoCurrency.BTC" :amount="btcAccountBalance" currency="btc"
+                            value-mask/>
+                        <Amount v-if="activeCurrency === CryptoCurrency.USDC"
                             :amount="accountUsdcBridgedBalance + accountUsdcBalance" currency="usdc" value-mask/>
                         <Amount v-if="activeCurrency === CryptoCurrency.USDT"
                             :amount="accountUsdtBridgedBalance" :currency="CryptoCurrency.USDT" value-mask/>
@@ -130,7 +138,7 @@
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
                              switching addresses while the tooltip is showing -->
-                        <Copyable v-if="activeCurrency === 'nim'"
+                        <Copyable v-if="activeCurrency === CryptoCurrency.NIM"
                             :text="activeAddressInfo.address" :key="activeAddressInfo.address"
                         >
                             <div class="address" ref="address$" :class="{ 'masked': addressMasked  }">
@@ -140,7 +148,7 @@
                         <!--
                         Don't show Polygon address. User can see the polygon address in the send/receive flows, so
                         we can show also the warnings.
-                        <Copyable v-if="activeCurrency === 'usdc'"
+                        <Copyable v-if="activeCurrency === CryptoCurrency.USDC"
                             :text="usdcAddressInfo.address" :key="usdcAddressInfo.address"
                         >
                             <div class="address" ref="address$" :class="{ 'masked': addressMasked  }">
@@ -149,14 +157,15 @@
                         </Copyable>
                         -->
 
-                        <FiatConvertedAmount v-if="activeCurrency === 'nim' && activeAddressInfo.balance !== null"
+                        <FiatConvertedAmount
+                            v-if="activeCurrency === CryptoCurrency.NIM && activeAddressInfo.balance !== null"
                             :amount="activeAddressInfo.balance" currency="nim" value-mask/>
-                        <span v-else-if="activeCurrency === 'nim'" class="fiat-amount"></span>
+                        <span v-else-if="activeCurrency === CryptoCurrency.NIM" class="fiat-amount"></span>
 
-                        <FiatConvertedAmount v-if="activeCurrency === 'btc'"
+                        <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.BTC"
                             :amount="btcAccountBalance" currency="btc" value-mask/>
 
-                        <FiatConvertedAmount v-if="activeCurrency === 'usdc'"
+                        <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDC"
                             :amount="accountUsdcBridgedBalance + accountUsdcBalance  " currency="usdc" value-mask/>
                         <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDT"
                             :amount="accountUsdtBridgedBalance  " currency="usdt" value-mask/>
@@ -169,13 +178,13 @@
 
                 <div class="flex-row ml-auto">
                     <CashlinkButton
-                        v-if="activeCurrency === 'nim' && unclaimedCashlinkCount"
+                        v-if="activeCurrency === CryptoCurrency.NIM && unclaimedCashlinkCount"
                         :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                         :unclaimedCashlinkCount="unclaimedCashlinkCount"
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
                     />
 
-                    <template v-if="activeCurrency === 'nim'">
+                    <template v-if="activeCurrency === CryptoCurrency.NIM">
                         <StakingPreview v-if="activeStake && windowWidth > 860" />
                         <StakingButton v-else-if="showStakingButton" />
                     </template>
@@ -183,11 +192,12 @@
                     <button class="send nq-button-pill light-blue flex-row"
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
                         :disabled="
-                            (activeCurrency === 'nim'
-                                && (!activeAddressInfo || !activeAddressInfo.balance
-                                    || $config.disableNetworkInteraction))
-                            || (activeCurrency === 'btc' && !btcAccountBalance)
-                            || (activeCurrency === 'usdc' && !accountUsdcBalance /* can only send native usdc */)
+                            (activeCurrency === CryptoCurrency.NIM
+                                && ($config.disableNetworkInteraction
+                                    || !activeAddressInfo || !activeAddressInfo.balance))
+                            || (activeCurrency === CryptoCurrency.BTC && !btcAccountBalance)
+                            || (activeCurrency === CryptoCurrency.USDC
+                                && !accountUsdcBalance /* can only send native usdc */)
                             || (activeCurrency === CryptoCurrency.USDT && !accountUsdtBridgedBalance)"
                     >
                         <ArrowRightSmallIcon />{{ $t('Send') }}
@@ -201,7 +211,7 @@
             </div>
             <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" />
             <div
-                v-if="activeCurrency === 'usdc' && accountUsdcBridgedBalance >= 0.1e6"
+                v-if="activeCurrency === CryptoCurrency.USDC && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
             >
                 <div class="flex-row">

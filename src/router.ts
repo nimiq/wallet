@@ -45,6 +45,8 @@ const HistoryExportModal = () =>
     import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
 const StablecoinSelectionModal = () =>
     import(/* webpackChunkName: "history-export-modal" */ './components/modals/StablecoinSelectionModal.vue');
+const WalletStatusModal = () =>
+    import(/* webpackChunkName: "wallet-status-modal" */ './components/modals/WalletStatusModal.vue');
 
 // Bitcoin Modals
 const BtcActivationModal = () =>
@@ -385,6 +387,13 @@ const routes: RouteConfig[] = [{
             },
             name: 'staking',
             props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/wallet-status',
+            components: {
+                modal: WalletStatusModal,
+            },
+            name: 'wallet-status',
             meta: { column: Columns.DYNAMIC },
         }],
         beforeEnter: (to, from, next) => {

@@ -278,5 +278,11 @@ module.exports = {
             https: true,
             allowedHosts: 'all',
         },
-    } : null),
+    }: {
+        devServer: {
+            client: {
+                overlay: false,
+            },
+        },
+    }),
 };

@@ -235,7 +235,7 @@ msgid "Accounts"
 msgstr "Contas"
 
 #: src/components/layouts/AccountOverview.vue:154
-#: src/components/layouts/AccountOverview.vue:269
+#: src/components/layouts/AccountOverview.vue:268
 msgid "Activate"
 msgstr "Ativar"
 
@@ -332,7 +332,7 @@ msgstr "todos"
 msgid "All countries"
 msgstr "Todos os países"
 
-#: src/components/layouts/AccountOverview.vue:307
+#: src/components/layouts/AccountOverview.vue:306
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -341,7 +341,7 @@ msgstr ""
 "Todas as novas funcionalidades são exclusivas a novas contas. Atualiza "
 "agora, demora apenas uns segundos."
 
-#: src/components/layouts/AddressOverview.vue:261
+#: src/components/layouts/AddressOverview.vue:273
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -481,15 +481,6 @@ msgstr "Antes de começar"
 msgid "BIC works, too."
 msgstr "O BIC também funciona."
 
-#: src/components/AddressList.vue:188
-#: src/components/layouts/AccountOverview.vue:135
-#: src/components/layouts/AddressOverview.vue:118
-#: src/components/layouts/Settings.vue:119
-#: src/components/LegacyAccountNotice.vue:21
-#: src/components/modals/BtcTransactionModal.vue:124
-#: src/components/modals/BtcTransactionModal.vue:136
-#: src/components/swap/SwapBalanceBar.vue:19
-#: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:127
 #: src/composables/useUsdcTransactionInfo.ts:101
 #: src/composables/useUsdtTransactionInfo.ts:101
@@ -537,7 +528,7 @@ msgstr "Browser | {count} Browsers"
 msgid "BTC network fee"
 msgstr "taxa de rede BTC"
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:59
 msgid "Buy"
 msgstr "Comprar"
 
@@ -725,7 +716,7 @@ msgstr "Escolher um Validador"
 msgid "Choose an Address"
 msgstr "Escolher um Endereço"
 
-#: src/components/layouts/AccountOverview.vue:225
+#: src/components/layouts/AccountOverview.vue:224
 msgid "Choose Stablecoin"
 msgstr "Escolhe a moeda estável"
 
@@ -749,7 +740,7 @@ msgstr "Clicar para mais informações"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Clicar em 'Troubleshooting' para saber mais."
 
-#: src/components/layouts/AddressOverview.vue:263
+#: src/components/layouts/AddressOverview.vue:275
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fechar"
@@ -766,7 +757,7 @@ msgstr "Comparativamente centralizado"
 msgid "Comparably high transaction fees/time"
 msgstr "Taxas/tempo de transação comparativamente altas"
 
-#: src/components/SendModalFooter.vue:8 src/components/swap/SwapModal.vue:194
+#: src/components/SendModalFooter.vue:9 src/components/swap/SwapModal.vue:194
 #: src/components/swap/SwapModal.vue:199 src/components/swap/SwapModal.vue:211
 msgid "Confirm"
 msgstr "Confirmar"
@@ -806,15 +797,15 @@ msgstr "Conectado a"
 msgid "connecting"
 msgstr "a conectar"
 
-#: src/components/SendModalFooter.vue:62
+#: src/components/SendModalFooter.vue:63
 msgid "Connecting to Bitcoin network"
 msgstr "A conectar à rede Bitcoin"
 
-#: src/components/SendModalFooter.vue:73
+#: src/components/SendModalFooter.vue:74
 msgid "Connecting to Nimiq network"
 msgstr "A conectar com a rede Nimiq"
 
-#: src/components/SendModalFooter.vue:83
+#: src/components/SendModalFooter.vue:84
 msgid "Connecting to USDC on Polygon"
 msgstr "A conectar ao USDC no Polygon"
 
@@ -859,11 +850,11 @@ msgstr "Conversão de USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Conversão de USDC.e para USDC"
 
-#: src/components/layouts/AddressOverview.vue:222
+#: src/components/layouts/AddressOverview.vue:234
 msgid "Convert to USDC"
 msgstr "Converte para USDC"
 
-#: src/components/layouts/AddressOverview.vue:214
+#: src/components/layouts/AddressOverview.vue:226
 msgid "Convert your USDC.e to the new standard."
 msgstr "Converte o teu USDC.e para o novo standard."
 
@@ -872,13 +863,13 @@ msgstr "Converte o teu USDC.e para o novo standard."
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr "Convertido {amount1} USDC.e para {amount2} USDC"
 
-#: src/components/modals/SimplexModal.vue:39
+#: src/components/modals/SimplexModal.vue:49
 msgid ""
 "Copy\n"
 "over"
 msgstr "Copiar"
 
-#: src/components/modals/SimplexModal.vue:15
+#: src/components/modals/SimplexModal.vue:22
 msgid ""
 "Copy and paste your address into\n"
 "the Simplex interface below."
@@ -948,7 +939,7 @@ msgstr "Cria recompensas de staking"
 msgid "Credit Card"
 msgstr "Cartão de Crédito"
 
-#: src/components/layouts/Sidebar.vue:145
+#: src/components/layouts/Sidebar.vue:147
 #: src/components/swap/SwapModal.vue:411
 msgid "Crypto swaps are currently under maintenance."
 msgstr "Trocas de crypto estão de momento em manutenção."
@@ -1600,7 +1591,7 @@ msgstr "Idioma"
 msgid "Learn about the new Nimiq"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:217
+#: src/components/layouts/AddressOverview.vue:229
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
@@ -1615,11 +1606,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr "Sabe mais aqui"
 
-#: src/components/layouts/AddressOverview.vue:207
+#: src/components/layouts/AddressOverview.vue:219
 msgid "Legacy USDC (USDC.e)"
 msgstr "Legacy USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:248
+#: src/components/layouts/AddressOverview.vue:260
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Vamos começar! Cria a tua conta Nimiq:"
 
@@ -1762,19 +1753,13 @@ msgstr "Dar um nome a este destinatário..."
 msgid "Name your contact"
 msgstr "Dar um nome ao seu contacto"
 
-#: src/components/layouts/Sidebar.vue:175
+#: src/components/layouts/Sidebar.vue:177
 msgid "Network"
 msgstr "Rede"
 
 #: src/components/modals/BtcSendModal.vue:95
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Taxa de rede: {sats} sat/vByte"
-
-#: src/components/staking/StakingGraph.vue:5
-#: src/components/staking/StakingGraph.vue:6
-#: src/components/staking/StakingGraph.vue:7
-msgid "NIM"
-msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
@@ -1868,7 +1853,7 @@ msgstr ""
 "Nem todas as contas fornecidas por este banco suportam transações "
 "instantâneas."
 
-#: src/components/layouts/Sidebar.vue:155
+#: src/components/layouts/Sidebar.vue:157
 msgid "Not available in your browser"
 msgstr "Indisponível no teu browser"
 
@@ -2002,7 +1987,7 @@ msgstr ""
 "Escolhe uma moeda estável para a tua wallet. Podes sempre mudar entre as "
 "duas."
 
-#: src/components/layouts/Sidebar.vue:148
+#: src/components/layouts/Sidebar.vue:150
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -2047,8 +2032,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Por favor transfira"
 
-#: src/components/layouts/Sidebar.vue:159
-#: src/components/layouts/Sidebar.vue:61
+#: src/components/layouts/Sidebar.vue:161
+#: src/components/layouts/Sidebar.vue:62
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 "Por favor espera que a tua troca atual termine antes de começar uma nova."
@@ -2114,7 +2099,7 @@ msgstr ""
 "Lê tudo sobre isto aqui {blog_post} ou clica em baixo para a introdução da "
 "nova wallet."
 
-#: src/components/layouts/AddressOverview.vue:196
+#: src/components/layouts/AddressOverview.vue:208
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Receber"
@@ -2184,7 +2169,7 @@ msgstr "Redireciona"
 msgid "Reference currency"
 msgstr "Moeda de referência"
 
-#: src/components/modals/SimplexModal.vue:32
+#: src/components/modals/SimplexModal.vue:40
 msgid "Refresh the page to continue."
 msgstr "Recarregar a página para continuar."
 
@@ -2330,7 +2315,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Seleciona em qual unidade mostrar a quantia de Bitcoin."
 
-#: src/components/layouts/Sidebar.vue:80
+#: src/components/layouts/Sidebar.vue:82
 msgid "Sell"
 msgstr "Vender"
 
@@ -2371,7 +2356,7 @@ msgstr ""
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr "Vendas e reembolsos não funcionam com um IBAN genérico!"
 
-#: src/components/layouts/Sidebar.vue:83
+#: src/components/layouts/Sidebar.vue:85
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr "Vender NIM diretamente está indisponível da Wallet de momento."
 
@@ -2379,7 +2364,7 @@ msgstr "Vender NIM diretamente está indisponível da Wallet de momento."
 msgid "Selling now available"
 msgstr "Vender agora está disponível"
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:203
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Enviar"
@@ -2522,7 +2507,7 @@ msgstr "A configuar troca atómica"
 msgid "Setting up the {currency} side of the swap."
 msgstr "A configurar o lado da troca de {currency}."
 
-#: src/components/layouts/Sidebar.vue:183
+#: src/components/layouts/Sidebar.vue:185
 msgid "Settings"
 msgstr "Configurações"
 
@@ -2568,7 +2553,7 @@ msgstr "Mostrar Palavra de Recuperação"
 msgid "Show values as {currency}"
 msgstr "Mostrar valores em {currency}"
 
-#: src/components/layouts/AddressOverview.vue:249
+#: src/components/layouts/AddressOverview.vue:261
 msgid "Signup"
 msgstr "Inscreve-te"
 
@@ -2691,7 +2676,7 @@ msgid "Super low fees, super fast payments"
 msgstr "Taxas muito baixas, pagamentos muito rápidos"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:142
+#: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2703,7 +2688,7 @@ msgstr "Taxas muito baixas, pagamentos muito rápidos"
 msgid "Swap"
 msgstr "Troca"
 
-#: src/components/layouts/AccountOverview.vue:190
+#: src/components/layouts/AccountOverview.vue:189
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "Troca BTC {arrowIcon} {ticker}"
 
@@ -2791,7 +2776,7 @@ msgstr ""
 msgid "syncing"
 msgstr "sincronizando"
 
-#: src/components/SendModalFooter.vue:65
+#: src/components/SendModalFooter.vue:66
 msgid "Syncing with Bitcoin network"
 msgstr "A sincronizar com a rede Bitcoin"
 
@@ -2808,12 +2793,6 @@ msgstr "O TEN31 Pass não retornou concessões esperadas."
 msgid "TEN31 Verification"
 msgstr "Verificação TEN31"
 
-#: src/components/AddressList.vue:207
-#: src/components/layouts/AccountOverview.vue:217
-#: src/components/layouts/AddressOverview.vue:121
-#: src/components/swap/SwapBalanceBar.vue:29
-#: src/components/swap/SwapBalanceBar.vue:55
-#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:128
 #: src/composables/useTransactionInfo.ts:135
 msgid "Tether USD"
@@ -2905,6 +2884,12 @@ msgstr "A taxa pode mudar dependendo no volume de troca."
 #: src/components/modals/StablecoinSendModal.vue:114
 msgid "The sender and recipient cannot be identical."
 msgstr "O remetente e destinatário não podem ser os mesmos."
+
+#: src/components/modals/SimplexModal.vue:16
+msgid ""
+"The Simplex integration is currently disabled while the network is "
+"experiencing an outage."
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:19
 msgid "The swap expired"
@@ -3093,7 +3078,7 @@ msgid ""
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:123
-#: src/components/layouts/AccountOverview.vue:195
+#: src/components/layouts/AccountOverview.vue:194
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr "Para troca com USDC/USDT, escolhe a moeda estável."
@@ -3227,12 +3212,6 @@ msgstr "Atualizar agora"
 msgid "Update validator"
 msgstr ""
 
-#: src/components/AddressList.vue:197
-#: src/components/layouts/AccountOverview.vue:214
-#: src/components/layouts/AddressOverview.vue:119
-#: src/components/swap/SwapBalanceBar.vue:24
-#: src/components/swap/SwapBalanceBar.vue:50
-#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:131
 msgid "USD Coin"
@@ -3278,7 +3257,7 @@ msgstr "Espera que a troca seja configurada."
 msgid "Waiting for {currency}"
 msgstr "À espera da {currency}"
 
-#: src/components/SendModalFooter.vue:75
+#: src/components/SendModalFooter.vue:76
 msgid "Waiting for Nimiq network information"
 msgstr "À espera de informações da rede da Nimiq"
 
@@ -3380,7 +3359,7 @@ msgstr "Podes receber apenas de endereços Polygon {ticker}!"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Podes receber mais NIM gratuitamente em {waitTime} horas."
 
-#: src/components/layouts/Sidebar.vue:319
+#: src/components/layouts/Sidebar.vue:321
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3394,11 +3373,11 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:151
+#: src/components/layouts/Sidebar.vue:153
 msgid "You currently have no balance to swap."
 msgstr "Atualmente não tens saldo para troca."
 
-#: src/components/layouts/AddressOverview.vue:478
+#: src/components/layouts/AddressOverview.vue:490
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "Não tens USDC.e suficiente para pagar as taxas de conversão ({fee})"
 
@@ -3469,7 +3448,7 @@ msgstr "O teu banco não é elegível?"
 msgid "Your browser"
 msgstr "O teu browser"
 
-#: src/components/layouts/Sidebar.vue:156
+#: src/components/layouts/Sidebar.vue:158
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."
@@ -3536,7 +3515,7 @@ msgid ""
 "validator pool’s fee."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:257
+#: src/components/layouts/AddressOverview.vue:269
 msgid "Your swap was successful!"
 msgstr "A tua troca foi bem sucedida!"
 

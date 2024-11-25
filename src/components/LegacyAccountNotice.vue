@@ -18,7 +18,7 @@
             <div class="flex-row">
                 <BitcoinIcon/>
                 <div class="text">
-                    <h2 class="nq-h2">{{ $t('Bitcoin') }}</h2>
+                    <h2 class="nq-h2">Bitcoin</h2>
                     <p class="nq-text">{{ $t('Send, receive and hold BTC in your wallet.') }}</p>
                 </div>
             </div>

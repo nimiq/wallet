@@ -2,9 +2,9 @@
     <div class="staking-graph">
         <img class="graph-image" src="../../assets/staking/staking-graph.svg" alt="staking graph">
         <div class="bubbles" v-if="!loading">
-            <div class="bubble">~&nbsp;{{ estimatedRewards['4M'] }}&nbsp;{{ $t('NIM') }}</div>
-            <div class="bubble">~&nbsp;{{ estimatedRewards['8M'] }}&nbsp;{{ $t('NIM') }}</div>
-            <div class="bubble">~&nbsp;{{ estimatedRewards['12M'] }}&nbsp;{{ $t('NIM') }}</div>
+            <div class="bubble">~&nbsp;{{ estimatedRewards['4M'] }}&nbsp;NIM</div>
+            <div class="bubble">~&nbsp;{{ estimatedRewards['8M'] }}&nbsp;NIM</div>
+            <div class="bubble">~&nbsp;{{ estimatedRewards['12M'] }}&nbsp;NIM</div>
         </div>
         <div class="scale">
             <div class="scale-item">{{ $t('4M') }}</div>

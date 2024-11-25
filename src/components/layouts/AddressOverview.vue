@@ -118,13 +118,13 @@
                             {{ activeAddressInfo.label }}
                         </div>
                         <div v-if="activeCurrency === CryptoCurrency.BTC" class="label bitcoin">
-                            {{ $t('Bitcoin') }}
+                            Bitcoin
                         </div>
                         <div v-if="activeCurrency === CryptoCurrency.USDC" class="label usdc">
-                            {{ $t('USD Coin') }}
+                            USD Coin
                         </div>
                         <div v-if="activeCurrency === CryptoCurrency.USDT" class="label usdt">
-                            {{ $t('Tether USD') }}
+                            Tether USD
                         </div>
                         <Amount v-if="activeCurrency === CryptoCurrency.NIM" :amount="activeAddressInfo.balance"
                             value-mask/>

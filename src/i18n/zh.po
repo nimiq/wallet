@@ -233,7 +233,7 @@ msgid "Accounts"
 msgstr "账户"
 
 #: src/components/layouts/AccountOverview.vue:154
-#: src/components/layouts/AccountOverview.vue:269
+#: src/components/layouts/AccountOverview.vue:268
 msgid "Activate"
 msgstr "激活"
 
@@ -326,14 +326,14 @@ msgstr "全部"
 msgid "All countries"
 msgstr "所有国家"
 
-#: src/components/layouts/AccountOverview.vue:307
+#: src/components/layouts/AccountOverview.vue:306
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
 "seconds."
 msgstr "所有新功能均为新帐户独有。立即升级，仅需几秒钟"
 
-#: src/components/layouts/AddressOverview.vue:261
+#: src/components/layouts/AddressOverview.vue:273
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -462,15 +462,6 @@ msgstr "在您使用前"
 msgid "BIC works, too."
 msgstr "BIC适用"
 
-#: src/components/AddressList.vue:188
-#: src/components/layouts/AccountOverview.vue:135
-#: src/components/layouts/AddressOverview.vue:118
-#: src/components/layouts/Settings.vue:119
-#: src/components/LegacyAccountNotice.vue:21
-#: src/components/modals/BtcTransactionModal.vue:124
-#: src/components/modals/BtcTransactionModal.vue:136
-#: src/components/swap/SwapBalanceBar.vue:19
-#: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:127
 #: src/composables/useUsdcTransactionInfo.ts:101
 #: src/composables/useUsdtTransactionInfo.ts:101
@@ -515,7 +506,7 @@ msgstr "浏览器 | {count} 浏览器"
 msgid "BTC network fee"
 msgstr "BTC网络费"
 
-#: src/components/layouts/Sidebar.vue:58
+#: src/components/layouts/Sidebar.vue:59
 msgid "Buy"
 msgstr "买入"
 
@@ -695,7 +686,7 @@ msgstr ""
 msgid "Choose an Address"
 msgstr "选择地址"
 
-#: src/components/layouts/AccountOverview.vue:225
+#: src/components/layouts/AccountOverview.vue:224
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -719,7 +710,7 @@ msgstr "点击了解更多信息"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
-#: src/components/layouts/AddressOverview.vue:263
+#: src/components/layouts/AddressOverview.vue:275
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"
@@ -736,7 +727,7 @@ msgstr "相对集中的"
 msgid "Comparably high transaction fees/time"
 msgstr "相对较高的交易时长和费用"
 
-#: src/components/SendModalFooter.vue:8 src/components/swap/SwapModal.vue:194
+#: src/components/SendModalFooter.vue:9 src/components/swap/SwapModal.vue:194
 #: src/components/swap/SwapModal.vue:199 src/components/swap/SwapModal.vue:211
 msgid "Confirm"
 msgstr "确认"
@@ -776,15 +767,15 @@ msgstr "已连接至"
 msgid "connecting"
 msgstr "連接中"
 
-#: src/components/SendModalFooter.vue:62
+#: src/components/SendModalFooter.vue:63
 msgid "Connecting to Bitcoin network"
 msgstr "连接到比特币网络"
 
-#: src/components/SendModalFooter.vue:73
+#: src/components/SendModalFooter.vue:74
 msgid "Connecting to Nimiq network"
 msgstr "连接到 Nimiq网络"
 
-#: src/components/SendModalFooter.vue:83
+#: src/components/SendModalFooter.vue:84
 msgid "Connecting to USDC on Polygon"
 msgstr "正在连接 Polygon 网络下的 USDC"
 
@@ -829,11 +820,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:222
+#: src/components/layouts/AddressOverview.vue:234
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:214
+#: src/components/layouts/AddressOverview.vue:226
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -842,13 +833,13 @@ msgstr ""
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
 
-#: src/components/modals/SimplexModal.vue:39
+#: src/components/modals/SimplexModal.vue:49
 msgid ""
 "Copy\n"
 "over"
 msgstr "复制"
 
-#: src/components/modals/SimplexModal.vue:15
+#: src/components/modals/SimplexModal.vue:22
 msgid ""
 "Copy and paste your address into\n"
 "the Simplex interface below."
@@ -916,7 +907,7 @@ msgstr "创建质押收益"
 msgid "Credit Card"
 msgstr "信用卡"
 
-#: src/components/layouts/Sidebar.vue:145
+#: src/components/layouts/Sidebar.vue:147
 #: src/components/swap/SwapModal.vue:411
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
@@ -1529,7 +1520,7 @@ msgstr "语言"
 msgid "Learn about the new Nimiq"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:217
+#: src/components/layouts/AddressOverview.vue:229
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:17
@@ -1544,11 +1535,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr "在这里了解更多"
 
-#: src/components/layouts/AddressOverview.vue:207
+#: src/components/layouts/AddressOverview.vue:219
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:248
+#: src/components/layouts/AddressOverview.vue:260
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "让我们开始吧！创建你的Nimiq帐户："
 
@@ -1689,19 +1680,13 @@ msgstr "命名此收件人..."
 msgid "Name your contact"
 msgstr "为你的联系人命名"
 
-#: src/components/layouts/Sidebar.vue:175
+#: src/components/layouts/Sidebar.vue:177
 msgid "Network"
 msgstr "网络"
 
 #: src/components/modals/BtcSendModal.vue:95
 msgid "Network fee: {sats} sat/vByte"
 msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
-
-#: src/components/staking/StakingGraph.vue:5
-#: src/components/staking/StakingGraph.vue:6
-#: src/components/staking/StakingGraph.vue:7
-msgid "NIM"
-msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
@@ -1791,7 +1776,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "此银行提供的帐户并非全部都支持即时交易"
 
-#: src/components/layouts/Sidebar.vue:155
+#: src/components/layouts/Sidebar.vue:157
 msgid "Not available in your browser"
 msgstr "在你的浏览器中无法使用"
 
@@ -1923,7 +1908,7 @@ msgid ""
 "Pick a stable coin for your wallet. You can always switch between the two."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:148
+#: src/components/layouts/Sidebar.vue:150
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -1963,8 +1948,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "请转账"
 
-#: src/components/layouts/Sidebar.vue:159
-#: src/components/layouts/Sidebar.vue:61
+#: src/components/layouts/Sidebar.vue:161
+#: src/components/layouts/Sidebar.vue:62
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr "在开始新的交换前，请等待当前兑换完成。"
 
@@ -2026,7 +2011,7 @@ msgid ""
 "intro."
 msgstr "在这个{blog_post}中阅读更多信息，或点击下方查看新的钱包介绍。"
 
-#: src/components/layouts/AddressOverview.vue:196
+#: src/components/layouts/AddressOverview.vue:208
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "接收"
@@ -2095,7 +2080,7 @@ msgstr "重定向"
 msgid "Reference currency"
 msgstr "参考货币"
 
-#: src/components/modals/SimplexModal.vue:32
+#: src/components/modals/SimplexModal.vue:40
 msgid "Refresh the page to continue."
 msgstr "刷新页面以继续"
 
@@ -2238,7 +2223,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "选择显示比特币金额的单位"
 
-#: src/components/layouts/Sidebar.vue:80
+#: src/components/layouts/Sidebar.vue:82
 msgid "Sell"
 msgstr "卖出"
 
@@ -2279,7 +2264,7 @@ msgstr ""
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr "销售和退款不适用于通用 IBAN！"
 
-#: src/components/layouts/Sidebar.vue:83
+#: src/components/layouts/Sidebar.vue:85
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 
@@ -2287,7 +2272,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "出售功能现在可用了"
 
-#: src/components/layouts/AddressOverview.vue:191
+#: src/components/layouts/AddressOverview.vue:203
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "发送"
@@ -2428,7 +2413,7 @@ msgstr "设置原子交换"
 msgid "Setting up the {currency} side of the swap."
 msgstr "设置交换的 {currency} "
 
-#: src/components/layouts/Sidebar.vue:183
+#: src/components/layouts/Sidebar.vue:185
 msgid "Settings"
 msgstr "设置"
 
@@ -2474,7 +2459,7 @@ msgstr "显示恢复字"
 msgid "Show values as {currency}"
 msgstr "显示价值为 {currency}"
 
-#: src/components/layouts/AddressOverview.vue:249
+#: src/components/layouts/AddressOverview.vue:261
 msgid "Signup"
 msgstr "注册"
 
@@ -2597,7 +2582,7 @@ msgid "Super low fees, super fast payments"
 msgstr "超低手续费，超快支付"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:142
+#: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2609,7 +2594,7 @@ msgstr "超低手续费，超快支付"
 msgid "Swap"
 msgstr "交换"
 
-#: src/components/layouts/AccountOverview.vue:190
+#: src/components/layouts/AccountOverview.vue:189
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "兑换 BTC {arrowIcon} {ticker}"
 
@@ -2697,7 +2682,7 @@ msgstr ""
 msgid "syncing"
 msgstr "正在同步"
 
-#: src/components/SendModalFooter.vue:65
+#: src/components/SendModalFooter.vue:66
 msgid "Syncing with Bitcoin network"
 msgstr ""
 
@@ -2713,12 +2698,6 @@ msgstr "TEN31 通行证未返回预期的授权。"
 msgid "TEN31 Verification"
 msgstr "TEN31 验证"
 
-#: src/components/AddressList.vue:207
-#: src/components/layouts/AccountOverview.vue:217
-#: src/components/layouts/AddressOverview.vue:121
-#: src/components/swap/SwapBalanceBar.vue:29
-#: src/components/swap/SwapBalanceBar.vue:55
-#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:128
 #: src/composables/useTransactionInfo.ts:135
 msgid "Tether USD"
@@ -2802,6 +2781,12 @@ msgstr "汇率可能会依据交换数量改变"
 #: src/components/modals/StablecoinSendModal.vue:114
 msgid "The sender and recipient cannot be identical."
 msgstr "发件人和收件人不能相同"
+
+#: src/components/modals/SimplexModal.vue:16
+msgid ""
+"The Simplex integration is currently disabled while the network is "
+"experiencing an outage."
+msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:19
 msgid "The swap expired"
@@ -2982,7 +2967,7 @@ msgid ""
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:123
-#: src/components/layouts/AccountOverview.vue:195
+#: src/components/layouts/AccountOverview.vue:194
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -3111,12 +3096,6 @@ msgstr "现在更新"
 msgid "Update validator"
 msgstr ""
 
-#: src/components/AddressList.vue:197
-#: src/components/layouts/AccountOverview.vue:214
-#: src/components/layouts/AddressOverview.vue:119
-#: src/components/swap/SwapBalanceBar.vue:24
-#: src/components/swap/SwapBalanceBar.vue:50
-#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:131
 msgid "USD Coin"
@@ -3162,7 +3141,7 @@ msgstr "等待交换设置"
 msgid "Waiting for {currency}"
 msgstr "等待 {currency}"
 
-#: src/components/SendModalFooter.vue:75
+#: src/components/SendModalFooter.vue:76
 msgid "Waiting for Nimiq network information"
 msgstr ""
 
@@ -3255,7 +3234,7 @@ msgstr "您仅可以接受来自于 Polygon {ticker}的地址！"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "你可以在{waitTime}小时内收到更多的免费NIM"
 
-#: src/components/layouts/Sidebar.vue:319
+#: src/components/layouts/Sidebar.vue:321
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3266,11 +3245,11 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:151
+#: src/components/layouts/Sidebar.vue:153
 msgid "You currently have no balance to swap."
 msgstr "您当前没有余额可以进行兑换。"
 
-#: src/components/layouts/AddressOverview.vue:478
+#: src/components/layouts/AddressOverview.vue:490
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3337,7 +3316,7 @@ msgstr "你的银行不符合条件？"
 msgid "Your browser"
 msgstr "你的浏览器"
 
-#: src/components/layouts/Sidebar.vue:156
+#: src/components/layouts/Sidebar.vue:158
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."
@@ -3398,7 +3377,7 @@ msgid ""
 "validator pool’s fee."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:257
+#: src/components/layouts/AddressOverview.vue:269
 msgid "Your swap was successful!"
 msgstr "你的交换成功了！"
 

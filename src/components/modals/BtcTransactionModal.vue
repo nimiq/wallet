@@ -121,7 +121,7 @@
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
-                    <span class="label">{{ $t('Bitcoin') }}</span>
+                    <span class="label">Bitcoin</span>
                     <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
                         :address="address" copyable tooltipPosition="bottom left"/>
 
@@ -133,7 +133,7 @@
             <div v-else class="flex-row sender-recipient">
                 <div class="address-info flex-column">
                     <BitcoinIcon/>
-                    <span class="label">{{ $t('Bitcoin') }}</span>
+                    <span class="label">Bitcoin</span>
                     <InteractiveShortAddress v-for="address in ownAddresses.slice(0, 3)" :key="address"
                         :address="address" copyable tooltipPosition="bottom right"/>
                     <a v-if="ownAddresses.length > 3" :href="blockExplorerLink"

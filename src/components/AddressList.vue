@@ -185,7 +185,7 @@ export default defineComponent({
 
         const btcInfo = computed(() => ({
             address: availableExternalAddresses.value[0] || 'bitcoin',
-            label: context.root.$t('Bitcoin') as string,
+            label: 'Bitcoin',
             balance: btcAccountBalance.value,
             type: CryptoCurrency.BTC,
         }));
@@ -194,7 +194,7 @@ export default defineComponent({
             if (stablecoin.value === CryptoCurrency.USDC) {
                 return {
                     address: polygonAddressInfo.value?.address || 'usdc',
-                    label: context.root.$t('USD Coin') as string,
+                    label: 'USD Coin',
                     balance: accountUsdcBalance.value
                         + accountUsdcBridgedBalance.value,
                     type: CryptoCurrency.USDC,
@@ -204,7 +204,7 @@ export default defineComponent({
             if (stablecoin.value === CryptoCurrency.USDT) {
                 return {
                     address: polygonAddressInfo.value?.address || 'usdt',
-                    label: context.root.$t('Tether USD') as string,
+                    label: 'Tether USD',
                     balance: accountUsdtBridgedBalance.value,
                     type: CryptoCurrency.USDT,
                 };

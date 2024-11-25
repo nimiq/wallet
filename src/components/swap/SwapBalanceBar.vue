@@ -16,17 +16,17 @@
             </button>
             <div v-if="leftAsset === SwapAsset.BTC" class="currency left bitcoin">
                 <BitcoinIcon />
-                <label>{{ $t('Bitcoin') }}</label>
+                <label>Bitcoin</label>
                 <Amount :amount="newLeftBalance" currency="btc" :currency-decimals="8" />
             </div>
             <div v-if="leftAsset === SwapAsset.USDC_MATIC" class="currency left usdc">
                 <UsdcIcon />
-                <label>{{ $t('USD Coin') }}</label>
+                <label>USD Coin</label>
                 <Amount :amount="newLeftBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
             </div>
             <div v-if="leftAsset === SwapAsset.USDT_MATIC" class="currency left usdt">
                 <UsdtIcon />
-                <label>{{ $t('Tether USD') }}</label>
+                <label>Tether USD</label>
                 <Amount :amount="newLeftBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
             </div>
             <button v-if="rightAsset === SwapAsset.NIM" class="reset right nimiq currency"
@@ -42,17 +42,17 @@
                 </div>
             </button>
             <div v-if="rightAsset === SwapAsset.BTC" class="currency right bitcoin">
-                <label>{{ $t('Bitcoin') }}</label>
+                <label>Bitcoin</label>
                 <Amount :amount="newRightBalance" currency="btc" :currency-decimals="8" />
                 <BitcoinIcon />
             </div>
             <div v-if="rightAsset === SwapAsset.USDC_MATIC" class="currency right usdc">
-                <label>{{ $t('USD Coin') }}</label>
+                <label>USD Coin</label>
                 <Amount :amount="newRightBalance" currency="usdc" :decimals="2" :currency-decimals="6" />
                 <UsdcIcon />
             </div>
             <div v-if="rightAsset === SwapAsset.USDT_MATIC" class="currency right usdt">
-                <label>{{ $t('Tether USD') }}</label>
+                <label>Tether USD</label>
                 <Amount :amount="newRightBalance" currency="usdt" :decimals="2" :currency-decimals="6" />
                 <UsdtIcon />
             </div>

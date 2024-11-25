@@ -23,7 +23,7 @@ export default {
         '/dns4/vortex.seed.nimiq.cloud/tcp/443/wss',
         '/dns4/zenith.seed.nimiq.systems/tcp/443/wss',
     ],
-    disableNetworkInteraction: true,
+    disableNetworkInteraction: false,
     faucetEndpoint: '',
     reportToSentry: true,
     enableBitcoin: true,

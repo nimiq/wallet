@@ -1,7 +1,15 @@
 <template>
     <div id="app" :class="{'consensus-stalled': consensus === 'stalled'}">
         <div v-if="consensus === 'stalled'" class="red-notice">
-            The PoS testnet is temporarily not processing transactions or staking rewards, thank you for your patience.
+            <template v-if="isMainnet">
+                A network issue occurred, please stand by. Click
+                <a href="https://x.com/nimiq/status/1860886491292913679" target="_blank">
+                here</a> for updates.
+            </template>
+            <template v-else>
+                The network is temporarily not processing transactions or staking rewards,
+                thank you for your patience.
+            </template>
         </div>
         <main :class="activeMobileColumn" ref="$main">
             <Sidebar/>
@@ -40,11 +48,16 @@ import { useWindowSize } from './composables/useWindowSize';
 import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
 import { useSwipes } from './composables/useSwipes';
 import { useNetworkStore } from './stores/Network';
+import { useConfig } from './composables/useConfig';
+import { ENV_MAIN, ENV_TEST } from './lib/Constants';
 
 export default defineComponent({
     name: 'app',
     setup(props, context) {
         provideRouter(router);
+
+        const { config } = useConfig();
+        const isMainnet = config.environment === ENV_TEST;
 
         const { activeMobileColumn } = useActiveMobileColumn();
 
@@ -148,6 +161,7 @@ export default defineComponent({
         const { consensus } = useNetworkStore();
 
         return {
+            isMainnet,
             activeMobileColumn,
             hasAccounts,
             main$,
@@ -373,6 +387,11 @@ export default defineComponent({
     font-size: var(--body-size);
     text-align: center;
     padding: 1rem;
+
+    a {
+        font-weight: 600;
+        color: white;
+    }
 }
 
 #app.consensus-stalled {
@@ -382,12 +401,18 @@ export default defineComponent({
 @media (max-width: 751px) { /* When notice text breaks into two lines */
     #app.consensus-stalled {
         padding-top: 6.75rem;
+        .red-notice {
+            text-align: left;
+        }
     }
 }
 
 @media (max-width: 418px) { /* When notice text breaks into three lines */
     #app.consensus-stalled {
         padding-top: 9.125rem;
+        .red-notice {
+            text-align: left;
+        }
     }
 }
 </style>

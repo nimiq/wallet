@@ -49,7 +49,7 @@ import { useActiveMobileColumn } from './composables/useActiveMobileColumn';
 import { useSwipes } from './composables/useSwipes';
 import { useNetworkStore } from './stores/Network';
 import { useConfig } from './composables/useConfig';
-import { ENV_MAIN, ENV_TEST } from './lib/Constants';
+import { ENV_MAIN } from './lib/Constants';
 
 export default defineComponent({
     name: 'app',
@@ -57,7 +57,7 @@ export default defineComponent({
         provideRouter(router);
 
         const { config } = useConfig();
-        const isMainnet = config.environment === ENV_TEST;
+        const isMainnet = config.environment === ENV_MAIN;
 
         const { activeMobileColumn } = useActiveMobileColumn();
 

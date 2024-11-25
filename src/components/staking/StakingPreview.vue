@@ -1,5 +1,6 @@
 <template>
     <button class="staking-preview nq-button-pill green flex-row"
+        :disabled="$config.disableNetworkInteraction"
         @click="$router.push('/staking')" @mousedown.prevent>
         <!-- The percentages below should also match in AmountSlider.vue -->
         <OneLeafStakingIcon v-if="currentPercentage < 50"/>

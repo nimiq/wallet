@@ -8,8 +8,15 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Check if version number is provided
-if [ "$#" -lt 1 ]; then
+# Function to display usage message
+show_usage() {
+    local error_msg="$1"
+
+    if [ -n "$error_msg" ]; then
+        echo -e "${RED}Error: $error_msg${NC}"
+        echo
+    fi
+
     echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
     echo
     echo -e "${CYAN}Examples:${NC}"
@@ -26,6 +33,11 @@ if [ "$#" -lt 1 ]; then
     echo "3. Deploy only (after a cancelled deployment):"
     echo -e "   ${GREEN}$0 --deploy-only${NC}"
     exit 1
+}
+
+# Check if version number is provided
+if [ "$#" -lt 1 ]; then
+    show_usage
 fi
 
 # Don't require version number if --deploy-only is specified
@@ -91,67 +103,16 @@ done
 # Parameter validation
 if [ "$DEPLOY_ONLY" = false ]; then
     if [ -z "$DEPLOYER" ]; then
-        echo -e "${RED}Error: --deployer parameter is required${NC}"
-        echo
-        echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
-        echo
-        echo -e "${CYAN}Examples:${NC}"
-        echo "1. Simple message (testnet):"
-        echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
-        echo
-        echo "2. Multi-line message (mainnet):"
-        echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
-        echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
-        echo "- Add a retry-mechanism to all Nimiq network requests"
-        echo "- Also hide staked amounts when privacy mode is on"
-        echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
-        echo
-        echo "3. Deploy only (after a cancelled deployment):"
-        echo -e "   ${GREEN}$0 --deploy-only${NC}"
-        exit 1
+        show_usage "--deployer parameter is required"
     fi
     if [ -z "$COMMIT_MSG" ]; then
-        echo -e "${RED}Error: commit message (-m) is required${NC}"
-        echo
-        echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
-        echo
-        echo -e "${CYAN}Examples:${NC}"
-        echo "1. Simple message (testnet):"
-        echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
-        echo
-        echo "2. Multi-line message (mainnet):"
-        echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
-        echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
-        echo "- Add a retry-mechanism to all Nimiq network requests"
-        echo "- Also hide staked amounts when privacy mode is on"
-        echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
-        echo
-        echo "3. Deploy only (after a cancelled deployment):"
-        echo -e "   ${GREEN}$0 --deploy-only${NC}"
-        exit 1
+        show_usage "commit message (-m) is required"
     fi
 fi
 
 # Validate version number format
 if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && [ "$DEPLOY_ONLY" = false ]; then
-    echo -e "${RED}Error: Version number must be in format X.Y.Z${NC}"
-    echo
-    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet] [--deploy-only]${NC}"
-    echo
-    echo -e "${CYAN}Examples:${NC}"
-    echo "1. Simple message (testnet):"
-    echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo${NC}"
-    echo
-    echo "2. Multi-line message (mainnet):"
-    echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
-    echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
-    echo "- Add a retry-mechanism to all Nimiq network requests"
-    echo "- Also hide staked amounts when privacy mode is on"
-    echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
-    echo
-    echo "3. Deploy only (after a cancelled deployment):"
-    echo -e "   ${GREEN}$0 --deploy-only${NC}"
-    exit 1
+    show_usage "Version number must be in format X.Y.Z"
 fi
 
 # Function to compare version numbers

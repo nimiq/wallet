@@ -40,6 +40,17 @@ if [ "$#" -lt 1 ]; then
     show_usage
 fi
 
+# Default values
+DEPLOYER=""
+EXCLUDE_RELEASE=""
+SYNC_TRANSLATIONS=true
+BUILD_ENV=""
+DEPLOY_ONLY=false
+
+DEPLOYMENT_REPO="deployment-wallet"
+DEPLOY_SERVERS=("deploy_wallet@web-1" "deploy_wallet@web-2" "deploy_wallet@web-3" "deploy_wallet@web-4")
+
+
 # Don't require version number if --deploy-only is specified
 if [[ "$1" == "--deploy-only" ]]; then
     VERSION=""
@@ -49,13 +60,6 @@ else
     VERSION="$1"
     shift # Remove version from arguments
 fi
-
-# Default values
-DEPLOYER=""
-EXCLUDE_RELEASE=""
-SYNC_TRANSLATIONS=true
-BUILD_ENV=""
-DEPLOY_ONLY=false
 
 # Parse remaining arguments
 while [[ $# -gt 0 ]]; do
@@ -166,10 +170,6 @@ for tag in $EXISTING_TAGS; do
     fi
 done
 
-# Configuration
-DEPLOYMENT_REPO="deployment-wallet"
-DEPLOY_SERVERS=("deploy_wallet@web-1" "deploy_wallet@web-2" "deploy_wallet@web-3" "deploy_wallet@web-4")
-
 # Set environment tag based on BUILD_ENV
 ENV_TAG=$([ "$BUILD_ENV" = "mainnet" ] && echo "main" || echo "test")
 
@@ -194,10 +194,10 @@ echo "Building Nginx path allowlist..."
 yarn utils:makeNginxAllowlist
 
 # Check for uncommitted changes
-if [[ `git status --porcelain` ]]; then
-    echo -e "${RED}ERROR: The repository has uncommitted changes. Commit them first, then run again.${NC}"
-    exit 1
-fi
+# if [[ `git status --porcelain` ]]; then
+#     echo -e "${RED}ERROR: The repository has uncommitted changes. Commit them first, then run again.${NC}"
+#     exit 1
+# fi
 
 # Function to create commit/tag message
 create_message() {

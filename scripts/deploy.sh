@@ -147,6 +147,7 @@ do_ssh_deployment() {
     echo -e "${BLUE}Connecting to deployment servers...${NC}"
     for server in "${DEPLOY_SERVERS[@]}"; do
         echo -e "${CYAN}Connecting to $server...${NC}"
+        echo -e "${YELLOW}$ ssh $server${NC}"
         ssh "$server"
     done
 
@@ -155,7 +156,7 @@ do_ssh_deployment() {
 
 # If deploy-only flag is set, skip to deployment
 if [ "$DEPLOY_ONLY" = true ]; then
-    echo "Running deployment only..."
+    echo -e "${BLUE}Running deployment only...${NC}"
     do_ssh_deployment "Are you sure you want to proceed with the deployment? [y/N] "
     exit 0
 fi
@@ -178,6 +179,7 @@ echo -e "${BLUE}Running pre-deployment tasks...${NC}"
 
 if [ "$SYNC_TRANSLATIONS" = "true" ]; then
     echo -e "${CYAN}Syncing translations...${NC}"
+    echo -e "${YELLOW}$ yarn i18n:sync${NC}"
     yarn i18n:sync
 fi
 
@@ -186,18 +188,20 @@ fi
 
 # Get up-to-date browsers support list from caniuse.
 # The browserslist utility is meant to run via npx, even when usually using yarn, and is compatible with yarn.lock.
-echo "Updating browsers support list..."
+echo -e "${CYAN}Updating browsers support list...${NC}"
+echo -e "${YELLOW}$ npx browserslist@latest --update-db${NC}"
 npx browserslist@latest --update-db
 
 # Build Nginx path allowlist
-echo "Building Nginx path allowlist..."
+echo -e "${CYAN}Building Nginx path allowlist...${NC}"
+echo -e "${YELLOW}$ yarn utils:makeNginxAllowlist${NC}"
 yarn utils:makeNginxAllowlist
 
 # Check for uncommitted changes
-# if [[ `git status --porcelain` ]]; then
-#     echo -e "${RED}ERROR: The repository has uncommitted changes. Commit them first, then run again.${NC}"
-#     exit 1
-# fi
+if [[ `git status --porcelain` ]]; then
+    echo -e "${RED}ERROR: The repository has uncommitted changes. Commit them first, then run again.${NC}"
+    exit 1
+fi
 
 # Function to create commit/tag message
 create_message() {
@@ -210,24 +214,30 @@ $EXCLUDE_RELEASE"
 
 # Create and push source tag
 echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
+echo -e "${YELLOW}$ git tag -a -s \"v$VERSION\" -m \"$(create_message)\""
 git tag -a -s "v$VERSION" -m "$(create_message)"
 
 # Build the project
 echo -e "${BLUE}Building project with $BUILD_ENV configuration...${NC}"
+echo -e "${YELLOW}$ env \"build=$BUILD_ENV\" yarn build${NC}"
 env "build=$BUILD_ENV" yarn build
 
 # Push changes and tags
 echo -e "${BLUE}Pushing source changes and tags...${NC}"
+echo -e "${YELLOW}$ git push && git push --tags${NC}"
 git push && git push --tags
 
 # Deploy to deployment repository
 echo -e "${BLUE}Deploying to $DEPLOYMENT_REPO...${NC}"
+echo -e "${YELLOW}$ cd \"$DEPLOYMENT_REPO\" || exit 1${NC}"
 cd "$DEPLOYMENT_REPO" || exit 1
 
 # Checkout appropriate branch and pull latest changes
 DEPLOY_BRANCH=$([ "$BUILD_ENV" = "mainnet" ] && echo "mainnet" || echo "testnet")
 echo -e "${CYAN}Checking out $DEPLOY_BRANCH branch...${NC}"
+echo -e "${YELLOW}$ git checkout $DEPLOY_BRANCH${NC}"
 git checkout "$DEPLOY_BRANCH"
+echo -e "${YELLOW}$ git pull${NC}"
 git pull
 
 # Check if new version is greater than all existing tags in deployment repo for the current branch
@@ -242,7 +252,9 @@ done
 
 # Copy build files
 echo -e "${CYAN}Copying build files...${NC}"
+echo -e "${YELLOW}$ cp -r ../dist/. dist${NC}"
 cp -r ../dist/. dist
+echo -e "${YELLOW}$ git add dist${NC}"
 git add dist
 
 # Show git status and ask for confirmation
@@ -260,14 +272,17 @@ fi
 
 # Commit changes
 echo -e "${CYAN}Committing changes...${NC}"
+echo -e "${YELLOW}$ git commit -m \"$(create_message)\"${NC}"
 git commit -m "$(create_message)"
 
 # Create deployment tag
 echo -e "${BLUE}Creating deployment tag...${NC}"
+echo -e "${YELLOW}$ git tag -a -s \"v$VERSION-$ENV_TAG-$DEPLOYER\" -m \"$(create_message)\"${NC}"
 git tag -a -s "v$VERSION-$ENV_TAG-$DEPLOYER" -m "$(create_message)"
 
 # Push deployment changes and tags
 echo -e "${BLUE}Pushing deployment changes and tags...${NC}"
+echo -e "${YELLOW}$ git push && git push --tags${NC}"
 git push && git push --tags
 
 # Run the deployment

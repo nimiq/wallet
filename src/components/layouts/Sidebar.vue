@@ -52,7 +52,7 @@
                 <template #trigger>
                     <button
                         class="nq-button-s inverse"
-                        :disabled="hasActiveSwap"
+                        :disabled="$config.disableNetworkInteraction || hasActiveSwap"
                         @click="openModal('buy')"
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Buy') }}</button>
@@ -74,7 +74,7 @@
             >
                 <template #trigger>
                     <button class="nq-button-s inverse"
-                        :disabled="!canSellCryptoWithMoonpay"
+                        :disabled="$config.disableNetworkInteraction || !canSellCryptoWithMoonpay"
                         @click="openModal('moonpay-sell-info')"
                         @mousedown.prevent="hideTooltips"
                     >{{ $t('Sell') }}</button>
@@ -130,7 +130,8 @@
         >
             <template #trigger>
                 <button
-                    :disabled="fastspotEnabledCryptoSwapAssets.length <= 1
+                    :disabled="$config.disableNetworkInteraction
+                        || fastspotEnabledCryptoSwapAssets.length <= 1
                         || walletActivatedCurrencies.length <= 1
                         || !hasSwappableBalance
                         || !canUseSwaps

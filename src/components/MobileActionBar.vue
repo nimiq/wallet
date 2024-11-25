@@ -5,7 +5,7 @@
         </button>
         <button class="send nq-button-pill light-blue flex-row"
             @click="send" @mousedown.prevent
-            :disabled="sendDisabled"
+            :disabled="$config.disableNetworkInteraction || sendDisabled"
         >
             <ArrowRightSmallIcon />{{ $t('Send') }}
         </button>

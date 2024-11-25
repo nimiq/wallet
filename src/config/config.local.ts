@@ -13,6 +13,7 @@ export default {
         '/dns4/seed3.pos.nimiq-testnet.com/tcp/8443/wss',
         '/dns4/seed4.pos.nimiq-testnet.com/tcp/8443/wss',
     ],
+    disableNetworkInteraction: true,
     faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
     reportToSentry: false,
     enableBitcoin: true,

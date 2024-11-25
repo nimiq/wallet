@@ -202,7 +202,7 @@
             </PageBody>
             <SendModalFooter
                 :assets="[CryptoCurrency.NIM]"
-                :disabled="!canSend"
+                :disabled="$config.disableNetworkInteraction || !canSend"
                 @click="sign"
             ><template #cta>{{ $t('Send {currency}', { currency: 'NIM' }) }}</template></SendModalFooter>
         </div>

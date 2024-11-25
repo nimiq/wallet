@@ -62,7 +62,8 @@
                 </div>
 
                 <Tooltip
-                    v-if="$config.fastspot.enabled
+                    v-if="!$config.disableNetworkInteraction
+                        && $config.fastspot.enabled
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && (nimAccountBalance > 0 || btcAccountBalance > 0)"
                     class="nim-btc-swap-button"
@@ -84,7 +85,8 @@
                 </Tooltip>
 
                 <Tooltip
-                    v-if="$config.fastspot.enabled
+                    v-if="!$config.disableNetworkInteraction
+                        && $config.fastspot.enabled
                         && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
                         && (
@@ -154,7 +156,8 @@
                 </button>
 
                 <Tooltip
-                    v-if="$config.fastspot.enabled
+                    v-if="!$config.disableNetworkInteraction
+                        && $config.fastspot.enabled
                         && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled

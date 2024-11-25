@@ -4,7 +4,7 @@
             v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
             preferredPosition="bottom"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
-            :disabled="isCTATooltipDisabled"
+            :disabled="$config.disableNetworkInteraction || isCTATooltipDisabled"
         >
             <span>
                 {{ $t('Earn NIM every month by staking your NIM') }}
@@ -14,11 +14,11 @@
         <Tooltip class="staking-button-tooltip" ref="$tooltip"
             preferredPosition="top"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
-            :disabled="!isCTATooltipDisabled"
+            :disabled="$config.disableNetworkInteraction || !isCTATooltipDisabled"
         >
             <div  slot="trigger">
                 <button class="stake"
-                    :disabled="!canStake"
+                    :disabled="$config.disableNetworkInteraction || !canStake"
                     @click="$router.push('/staking')"
                     @mousedown.prevent
                 >

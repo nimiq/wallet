@@ -245,6 +245,19 @@ echo -e "${CYAN}Copying build files...${NC}"
 cp -r ../dist/. dist
 git add dist
 
+# Show git status and ask for confirmation
+echo -e "${YELLOW}Current git status:${NC}"
+git status
+
+echo -e "${YELLOW}Please review the changes above. Do you want to proceed with the commit? [y/N]${NC}"
+read -n 1 -r
+echo    # Move to a new line
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo -e "${RED}Deployment cancelled.${NC}"
+    exit 1
+fi
+
 # Commit changes
 echo -e "${CYAN}Committing changes...${NC}"
 git commit -m "$(create_message)"

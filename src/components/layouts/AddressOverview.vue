@@ -182,8 +182,10 @@
 
                     <button class="send nq-button-pill light-blue flex-row"
                         @click="$router.push(`/send/${activeCurrency}`)" @mousedown.prevent
-                        :disabled="$config.disableNetworkInteraction
-                            || (activeCurrency === 'nim' && (!activeAddressInfo || !activeAddressInfo.balance))
+                        :disabled="
+                            (activeCurrency === 'nim'
+                                && (!activeAddressInfo || !activeAddressInfo.balance
+                                    || $config.disableNetworkInteraction))
                             || (activeCurrency === 'btc' && !btcAccountBalance)
                             || (activeCurrency === 'usdc' && !accountUsdcBalance /* can only send native usdc */)
                             || (activeCurrency === CryptoCurrency.USDT && !accountUsdtBridgedBalance)"

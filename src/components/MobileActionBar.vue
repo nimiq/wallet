@@ -5,7 +5,7 @@
         </button>
         <button class="send nq-button-pill light-blue flex-row"
             @click="send" @mousedown.prevent
-            :disabled="$config.disableNetworkInteraction || sendDisabled"
+            :disabled="sendDisabled"
         >
             <ArrowRightSmallIcon />{{ $t('Send') }}
         </button>
@@ -18,6 +18,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
+import { useConfig } from '@/composables/useConfig';
 import { AddressType, useAddressStore } from '../stores/Address';
 import { useAccountStore } from '../stores/Account';
 import { CryptoCurrency } from '../lib/Constants';
@@ -78,8 +79,11 @@ export default defineComponent({
             }
         }
 
-        const sendDisabled = computed(() =>
-            context.root.$route.path !== '/' && nimOrBtcOrStable(
+        const { config } = useConfig();
+
+        const sendDisabled = computed(() => {
+            if (activeCurrency.value === 'nim' && config.disableNetworkInteraction) return true;
+            return context.root.$route.path !== '/' && nimOrBtcOrStable(
                 !activeAddressInfo.value || !activeAddressInfo.value.balance,
                 !btcBalance.value,
                 (stablecoin.value === CryptoCurrency.USDC
@@ -87,8 +91,8 @@ export default defineComponent({
                     : stablecoin.value === CryptoCurrency.USDT
                         ? !accountUsdtBridgedBalance.value
                         : true),
-            ),
-        );
+            );
+        });
 
         return {
             receive,

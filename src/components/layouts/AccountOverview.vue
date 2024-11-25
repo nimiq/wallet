@@ -62,7 +62,7 @@
                 </div>
 
                 <Tooltip
-                    v-if="(activeCurrency === 'nim' && !$config.disableNetworkInteraction)
+                    v-if="!$config.disableNetworkInteraction
                         && $config.fastspot.enabled
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && (nimAccountBalance > 0 || btcAccountBalance > 0)"
@@ -85,7 +85,7 @@
                 </Tooltip>
 
                 <Tooltip
-                    v-if="(activeCurrency === 'nim' && !$config.disableNetworkInteraction)
+                    v-if="!$config.disableNetworkInteraction
                         && $config.fastspot.enabled
                         && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled

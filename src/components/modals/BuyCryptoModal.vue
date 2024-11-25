@@ -191,7 +191,7 @@
                     v-if="!insufficientLimit || !$config.ten31Pass.enabled || kycUser"
                     :assets="[activeCurrency]"
                     :buttonColor="kycUser ? 'purple' : 'light-blue'"
-                    :disabled="(activeCurrency === 'nim' && $config.disableNetworkInteraction) || !canSign"
+                    :disabled="!canSign"
                     :error="estimateError || swapError"
                     :requireCompleteBtcHistory="false"
                     @click="sign"

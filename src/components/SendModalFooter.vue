@@ -2,7 +2,8 @@
     <PageFooter class="send-modal-footer">
         <button
             class="nq-button" :class="buttonColor"
-            :disabled="disabled || !networkState.isReady || error"
+            :disabled="disabled || !networkState.isReady || error
+                || ($config.disableNetworkInteraction && assets.includes(CryptoCurrency.NIM))"
             @click="$emit('click')"
             @mousedown.prevent
         ><slot name="cta">{{ $t('Confirm') }}</slot></button>
@@ -91,6 +92,7 @@ export default defineComponent({
         });
 
         return {
+            CryptoCurrency,
             networkState,
         };
     },

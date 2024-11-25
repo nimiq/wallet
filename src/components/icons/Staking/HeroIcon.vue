@@ -1,18 +1,16 @@
 <template functional>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" :class="{ pulsing: props.pulsing }" class="nq-icon hero-icon">
-        <path d="M70 22h0a48 48 0 0148 48v0a48 48 0 01-48 48h0a48 48 0 01-48-48v0a48 48 0 0148-48z" opacity=".6" fill="none" stroke="#21bca5" stroke-width="3.02"/>
-        <path d="M70 12h0a58 58 0 0158 58h0a58 58 0 01-58 58h0a58 58 0 01-58-58h0a58 58 0 0158-58z" opacity=".4" fill="none" stroke="#21bca5" stroke-width="3.02"/>
-        <radialGradient id="a" cx="70" cy="70" r="69.26" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#41a38e"/>
-            <stop offset="1" stop-color="#21bca5"/>
-        </radialGradient>
-        <path d="M70 2.25h0A67.75 67.75 0 01137.75 70v0A67.75 67.75 0 0170 137.75h0A67.75 67.75 0 012.25 70v0A67.75 67.75 0 0170 2.25z" opacity=".2" fill="none" stroke="url(#a)" stroke-width="3.02"/>
-        <radialGradient id="b" cx="-791.61" cy="458.74" r="1" gradientTransform="matrix(-83.5341 0 0 83.5341 -66014.57 -38208.91)" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#41a38e"/>
-            <stop offset="1" stop-color="#21bca5"/>
-        </radialGradient>
-        <path d="M70 28.23a41.76 41.76 0 110 83.52 41.76 41.76 0 110-83.52z" fill="url(#b)"/>
-        <path d="M70.71 69.1v21.56m18.71-26.11c0 12.4-6.31 18.89-18.71 18.89 0-17.56 5.28-18.89 18.71-18.89zM54.18 53.98c0 13.33 4.13 20.07 16.53 20.07 0-13.43-1.03-20.07-16.53-20.07z" fill="none" stroke="#fff" stroke-width="4.0316" stroke-linecap="round" stroke-linejoin="round"/>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 148 148" :class="{ pulsing: props.pulsing }" class="nq-icon hero-icon">
+        <defs>
+            <radialGradient id="a" cx="-791" cy="458" r="1" gradientTransform="matrix(-83 0 0 83.5341 -66014 -38208)" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#41a38e" />
+                <stop offset="1" stop-color="#21bca5" />
+            </radialGradient>
+        </defs>
+        <circle cx="73.76" cy="73.76" r="51.76" stroke-opacity=".8" stroke-width="3" style="--delay:200ms" stroke="#21bca5" class="ripple" />
+        <circle cx="73.76" cy="73.76" r="61.76" stroke-opacity=".6" stroke-width="3" style="--delay:400ms" stroke="#21bca5" class="ripple" />
+        <circle cx="73.76" cy="73.76" r="71.76" stroke-opacity=".4" stroke-width="3" style="--delay:600ms" stroke="#21bca5" class="ripple" />
+        <circle cx="73.76" cy="73.76" r="41.76" fill="url(#a)" />
+        <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M72.53 75.07v16.61m0-16.61C60.13 75.07 56 68.33 56 55c15.5 0 16.53 6.64 16.53 20.07Zm18.71-9.5c0 12.4-6.31 18.89-18.71 18.89 0-17.56 5.28-18.89 18.71-18.89Z" />
     </svg>
 </template>
 
@@ -32,28 +30,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 svg {
-    font-size: 0;
-
-    path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-        opacity: 0;
-    }
-
-    path:nth-child(1) { stroke-opacity: .8 }
-    path:nth-child(2) { stroke-opacity: .6 }
-    path:nth-child(4) { stroke-opacity: .4 }
-
-    &.pulsing {
-        path:nth-child(1), path:nth-child(2), path:nth-child(4) {
-            animation: fastwave 1s ease alternate infinite;
-        }
-
-        $delay: 200ms;
-        @for $i from 1 through 3 {
-            path:nth-child(#{if($i == 3, 4, $i)}) {
-                animation-delay: $delay * $i;
-            }
-        }
-    }
+  .ripple {
+    animation: fastwave 1s ease alternate infinite;
+    animation-delay: var(--delay);
+  }
 }
 
 @keyframes fastwave {

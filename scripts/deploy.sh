@@ -50,9 +50,12 @@ SYNC_TRANSLATIONS=true
 BUILD_ENV=""
 DEPLOY_ONLY=false
 
-DEPLOYMENT_REPO="deployment-wallet"
-DEPLOY_SERVERS=("deploy_wallet@web-1" "deploy_wallet@web-2" "deploy_wallet@web-3" "deploy_wallet@web-4")
+# Define deploy servers for different environments
+MAINNET_SERVERS=("deploy_wallet@web-1" "deploy_wallet@web-2" "deploy_wallet@web-3" "deploy_wallet@web-4")
+TESTNET_SERVERS=("deploy_wallet@testnet-web1")
+DEPLOY_SERVERS=()
 
+DEPLOYMENT_REPO="deployment-wallet"
 
 # Don't require version number if --deploy-only is specified
 if [[ "$1" == "--deploy-only" ]]; then
@@ -85,10 +88,12 @@ while [[ $# -gt 0 ]]; do
             ;;
         --mainnet)
             BUILD_ENV="mainnet"
+            DEPLOY_SERVERS=("${MAINNET_SERVERS[@]}")
             shift
             ;;
         --testnet)
             BUILD_ENV="testnet"
+            DEPLOY_SERVERS=("${TESTNET_SERVERS[@]}")
             shift
             ;;
         --deploy-only)
@@ -119,9 +124,11 @@ if [ "$DEPLOY_ONLY" = false ]; then
     if [ -z "$COMMIT_MSG" ]; then
         show_usage "commit message (-m) is required"
     fi
-    if [ -z "$BUILD_ENV" ]; then
-        show_usage "Either --mainnet or --testnet must be specified"
-    fi
+fi
+
+# Always require environment specification
+if [ -z "$BUILD_ENV" ]; then
+    show_usage "Either --mainnet or --testnet must be specified"
 fi
 
 # Validate version number format

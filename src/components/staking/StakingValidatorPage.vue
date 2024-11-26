@@ -1,6 +1,6 @@
 <template>
     <div class="staking-validator-page flex-column">
-        <PageHeader @back="$emit('back')" :backArrow="true">
+        <PageHeader @back="$emit('back')" :backArrow="backArrow">
             <template #default>
                 {{ $t('Choose a Validator') }}
             </template>
@@ -45,6 +45,12 @@ import LoadingList, { LoadingListType } from '../LoadingList.vue';
 import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 
 export default defineComponent({
+    props: {
+        backArrow: {
+            type: Boolean,
+            default: true,
+        },
+    },
     setup() {
         const { validatorsList } = useStakingStore();
 

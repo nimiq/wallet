@@ -29,6 +29,7 @@
             </template>
             <template v-else-if="page === Page.ValidatorList">
                 <StakingValidatorPage
+                    :backArrow="totalAccountStake === 0"
                     @back="page = isStaking ? Page.Info : Page.Welcome"
                     @selectValidator="onSelectValidator"
                     @statusChange="onStatusChange"
@@ -216,6 +217,7 @@ export default defineComponent({
 
             // Staking refs / computed
             activeValidator,
+            totalAccountStake,
             invalidAccount,
             isStaking,
             selectedValidator,

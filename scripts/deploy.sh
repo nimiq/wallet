@@ -87,10 +87,6 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         --deployer=*)
             DEPLOYER="${1#*=}"
-            if [ $# -eq 0 ]; then
-                echo -e "${RED}Error: --deployer requires a deployer name${NC}"
-                exit 1
-            fi
             shift
             ;;
         --exclude-release)

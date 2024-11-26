@@ -198,6 +198,37 @@ done
 # Set environment tag based on BUILD_ENV
 ENV_TAG=$([ "$BUILD_ENV" = "mainnet" ] && echo "main" || echo "test")
 
+# Function to show deployment recap
+show_deployment_recap() {
+    echo
+    echo -e "${BLUE}=== Deployment Recap ===${NC}"
+    echo -e "${CYAN}Version:${NC} $VERSION"
+    echo -e "${CYAN}Environment:${NC} $BUILD_ENV"
+    echo -e "${CYAN}Deployer:${NC} $DEPLOYER"
+    echo -e "${CYAN}Target Servers:${NC}"
+    for server in "${DEPLOY_SERVERS[@]}"; do
+        echo -e "  - $server"
+    done
+    echo -e "${CYAN}Exclude Release:${NC} $([ -n "$EXCLUDE_RELEASE" ] && echo "Yes" || echo "No")"
+    echo -e "${CYAN}Sync Translations:${NC} $SYNC_TRANSLATIONS"
+    echo -e "${CYAN}Commit Message:${NC}"
+    echo "$COMMIT_MSG" | sed 's/^/  /'
+    echo
+    echo -e "${YELLOW}Please review the deployment details above. Do you want to proceed? [y/N]${NC}"
+    read -n 1 -r
+    echo    # Move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+        echo -e "${RED}Deployment cancelled.${NC}"
+        exit 1
+    fi
+}
+
+# Add recap before starting deployment process
+if [ "$DEPLOY_ONLY" = false ]; then
+    show_deployment_recap
+fi
+
 # Pre-deployment tasks
 echo -e "${BLUE}Running pre-deployment tasks...${NC}"
 

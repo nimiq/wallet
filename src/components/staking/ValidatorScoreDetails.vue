@@ -49,7 +49,7 @@
             </div>
             <div class="score-content">
                 <p class="description">
-                    {{ $t("Rates the pool's potential to harm the network, based on its size. ") }}
+                    {{ $t("Rates the pool's potential to harm the network, based on its size.") }}
                 </p>
                 <p class="status" :class="getStatusClass(dominanceScore)">
                     {{ dominanceStatus }}
@@ -260,6 +260,7 @@ export default defineComponent({
 
     opacity: 0;
     max-height: 0;
+    font-weight: 600;
     transition:
         opacity var(--transition-duration) var(--nimiq-ease),
         max-height var(--transition-duration) var(--nimiq-ease);

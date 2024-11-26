@@ -30,6 +30,8 @@
 
         <UpdateNotification/>
 
+        <WalletStatusButton v-if="$config.showHelpButton"/>
+
         <div v-if="!hasAccounts" class="loader flex-row">
             <LoadingSpinner/>
         </div>
@@ -51,6 +53,7 @@ import { useSwipes } from './composables/useSwipes';
 import { useNetworkStore } from './stores/Network';
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
+import WalletStatusButton from './components/WalletStatusButton.vue';
 
 export default defineComponent({
     name: 'app',
@@ -174,6 +177,7 @@ export default defineComponent({
         SwapNotification,
         UpdateNotification,
         LoadingSpinner,
+        WalletStatusButton,
     },
 });
 </script>

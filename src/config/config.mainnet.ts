@@ -24,6 +24,7 @@ export default {
         '/dns4/zenith.seed.nimiq.systems/tcp/443/wss',
     ],
     disableNetworkInteraction: false,
+    showHelpButton: true,
     faucetEndpoint: '',
     reportToSentry: true,
     enableBitcoin: true,

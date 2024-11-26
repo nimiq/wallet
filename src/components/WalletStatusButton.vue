@@ -1,0 +1,40 @@
+<template>
+    <button @click="$router.push('/wallet-status')" class="wallet-status-button nq-button-pill">
+        <CircledQuestionMark />
+        <span>{{ $t('Help') }}</span>
+    </button>
+</template>
+
+<script lang="ts">
+import { defineComponent } from '@vue/composition-api';
+import CircledQuestionMark from './icons/CircledQuestionMark.vue';
+
+export default defineComponent({
+    props: {},
+    components: {
+        CircledQuestionMark,
+    },
+});
+</script>
+
+<style lang="scss" scoped>
+.wallet-status-button {
+    height: 4.25rem;
+    border-radius: 2.25rem;
+
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    font-size: 2rem;
+
+    svg {
+        margin-right: 1rem;
+    }
+}
+
+</style>

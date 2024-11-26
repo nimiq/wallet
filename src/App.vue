@@ -30,7 +30,7 @@
 
         <UpdateNotification/>
 
-        <WalletStatusButton/>
+        <WalletStatusButton v-if="$config.showHelpButton"/>
 
         <div v-if="!hasAccounts" class="loader flex-row">
             <LoadingSpinner/>

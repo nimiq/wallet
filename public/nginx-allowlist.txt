@@ -38,6 +38,7 @@
 ^\/release-notes[\/#\?]?$
 ^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/staking[\/#\?]?$
+^\/wallet-status[\/#\?]?$
 ^\/settings[\/#\?]?$
 ^\/accounts[\/#\?]?$
 ^\/disclaimer[\/#\?]?$

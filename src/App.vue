@@ -30,7 +30,11 @@
 
         <UpdateNotification/>
 
-        <WalletStatusButton v-if="$config.showHelpButton"/>
+        <transition name="fade">
+            <div v-if="$config.showHelpButton && $route.name !== 'network'">
+                <WalletStatusButton/>
+            </div>
+        </transition>
 
         <div v-if="!hasAccounts" class="loader flex-row">
             <LoadingSpinner/>

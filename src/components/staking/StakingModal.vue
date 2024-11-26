@@ -44,6 +44,8 @@
                 :state="statusState"
                 :title="statusTitle"
                 :message="statusMessage"
+                :main-action="statusMainAction"
+                @main-action="onStatusMainAction"
             />
             <ValidatorDetailsOverlay v-else-if="overlay === Overlay.ValidatorDetails"
                 :noButton="page !== Page.ValidatorList"
@@ -99,7 +101,7 @@ type StatusChangeParams = {
 };
 
 export default defineComponent({
-    setup() {
+    setup(props, context) {
         const { activeAddressInfo } = useAddressStore();
         const { activeValidator, activeStake, totalAccountStake } = useStakingStore();
         const page = ref(activeValidator.value
@@ -145,6 +147,19 @@ export default defineComponent({
             } else {
                 updateStatusScreen(statusChangeObj);
             }
+
+            if (statusChangeObj.state === State.ERROR || statusChangeObj.state === State.WARNING) {
+                statusMainAction.value = context.root.$t('Close') as string;
+            }
+        }
+
+        function onStatusMainAction() {
+            updateStatusScreen({
+                type: StatusChangeType.NONE,
+                state: State.LOADING,
+                title: '',
+                message: '',
+            });
         }
 
         /* Overlays */
@@ -210,6 +225,7 @@ export default defineComponent({
             switchValidator,
             onSelectValidator,
             onConfirmValidator,
+
             // StatusScreen
             statusType,
             statusState,
@@ -219,6 +235,7 @@ export default defineComponent({
             statusAlternativeAction,
             onStatusChange,
             StatusChangeType,
+            onStatusMainAction,
         };
     },
     components: {

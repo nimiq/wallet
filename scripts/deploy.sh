@@ -313,11 +313,17 @@ fi
 
 # Function to create commit/tag message
 create_message() {
-    echo "Nimiq Wallet v$VERSION
+    local message="Nimiq Wallet v$VERSION
 
-$COMMIT_MSG
+$COMMIT_MSG"
+
+    if [ -n "$EXCLUDE_RELEASE" ]; then
+        message+="
 
 $EXCLUDE_RELEASE"
+    fi
+
+    echo "$message"
 }
 
 # Create and push source tag (skip if using --same-as)

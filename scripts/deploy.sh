@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on error
+set -e
+
 # Color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -131,6 +134,18 @@ version_gt() {
     test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
 }
 
+# Function to run command with error handling
+run_command() {
+    local cmd=$1
+    local error_msg=${2:-"Command failed"}
+
+    echo -e "${YELLOW}$ $cmd${NC}"
+    if ! eval "$cmd"; then
+        echo -e "${RED}Error: $error_msg${NC}"
+        exit 1
+    fi
+}
+
 # Function to handle SSH deployment
 do_ssh_deployment() {
     # Confirmation prompt before deployment
@@ -147,8 +162,10 @@ do_ssh_deployment() {
     echo -e "${BLUE}Connecting to deployment servers...${NC}"
     for server in "${DEPLOY_SERVERS[@]}"; do
         echo -e "${CYAN}Connecting to $server...${NC}"
-        echo -e "${YELLOW}$ ssh $server${NC}"
-        ssh "$server"
+        if ! ssh "$server"; then
+            echo -e "${RED}Failed to connect to $server${NC}"
+            exit 1
+        fi
     done
 
     echo -e "${GREEN}Deployment complete!${NC}"
@@ -179,8 +196,7 @@ echo -e "${BLUE}Running pre-deployment tasks...${NC}"
 
 if [ "$SYNC_TRANSLATIONS" = "true" ]; then
     echo -e "${CYAN}Syncing translations...${NC}"
-    echo -e "${YELLOW}$ yarn i18n:sync${NC}"
-    yarn i18n:sync
+    run_command "yarn i18n:sync" "Failed to sync translations"
 fi
 
 # Get up-to-date EBA RT1 bank list (disabled while OASIS is not available)
@@ -189,13 +205,11 @@ fi
 # Get up-to-date browsers support list from caniuse.
 # The browserslist utility is meant to run via npx, even when usually using yarn, and is compatible with yarn.lock.
 echo -e "${CYAN}Updating browsers support list...${NC}"
-echo -e "${YELLOW}$ npx browserslist@latest --update-db${NC}"
-npx browserslist@latest --update-db
+run_command "npx browserslist@latest --update-db" "Failed to update browsers list"
 
 # Build Nginx path allowlist
 echo -e "${CYAN}Building Nginx path allowlist...${NC}"
-echo -e "${YELLOW}$ yarn utils:makeNginxAllowlist${NC}"
-yarn utils:makeNginxAllowlist
+run_command "yarn utils:makeNginxAllowlist" "Failed to build Nginx allowlist"
 
 # Check for uncommitted changes
 if [[ `git status --porcelain` ]]; then
@@ -214,31 +228,25 @@ $EXCLUDE_RELEASE"
 
 # Create and push source tag
 echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
-echo -e "${YELLOW}$ git tag -a -s \"v$VERSION\" -m \"$(create_message)\""
-git tag -a -s "v$VERSION" -m "$(create_message)"
+run_command "git tag -a -s \"v$VERSION\" -m \"$(create_message)\"" "Failed to create git tag"
 
 # Build the project
 echo -e "${BLUE}Building project with $BUILD_ENV configuration...${NC}"
-echo -e "${YELLOW}$ env \"build=$BUILD_ENV\" yarn build${NC}"
-env "build=$BUILD_ENV" yarn build
+run_command "env \"build=$BUILD_ENV\" yarn build" "Failed to build project"
 
 # Push changes and tags
 echo -e "${BLUE}Pushing source changes and tags...${NC}"
-echo -e "${YELLOW}$ git push && git push --tags${NC}"
-git push && git push --tags
+run_command "git push && git push --tags" "Failed to push changes"
 
 # Deploy to deployment repository
 echo -e "${BLUE}Deploying to $DEPLOYMENT_REPO...${NC}"
-echo -e "${YELLOW}$ cd \"$DEPLOYMENT_REPO\" || exit 1${NC}"
-cd "$DEPLOYMENT_REPO" || exit 1
+run_command "cd \"$DEPLOYMENT_REPO\" || exit 1" "Failed to change to deployment directory"
 
 # Checkout appropriate branch and pull latest changes
 DEPLOY_BRANCH=$([ "$BUILD_ENV" = "mainnet" ] && echo "mainnet" || echo "testnet")
 echo -e "${CYAN}Checking out $DEPLOY_BRANCH branch...${NC}"
-echo -e "${YELLOW}$ git checkout $DEPLOY_BRANCH${NC}"
-git checkout "$DEPLOY_BRANCH"
-echo -e "${YELLOW}$ git pull${NC}"
-git pull
+run_command "git checkout $DEPLOY_BRANCH" "Failed to checkout branch"
+run_command "git pull" "Failed to pull latest changes"
 
 # Check if new version is greater than all existing tags in deployment repo for the current branch
 echo -e "${BLUE}Checking version against existing tags in deployment repo ($DEPLOY_BRANCH branch)...${NC}"
@@ -252,10 +260,8 @@ done
 
 # Copy build files
 echo -e "${CYAN}Copying build files...${NC}"
-echo -e "${YELLOW}$ cp -r ../dist/. dist${NC}"
-cp -r ../dist/. dist
-echo -e "${YELLOW}$ git add dist${NC}"
-git add dist
+run_command "cp -r ../dist/. dist" "Failed to copy build files"
+run_command "git add dist" "Failed to stage changes"
 
 # Show git status and ask for confirmation
 echo -e "${YELLOW}Current git status:${NC}"
@@ -272,18 +278,15 @@ fi
 
 # Commit changes
 echo -e "${CYAN}Committing changes...${NC}"
-echo -e "${YELLOW}$ git commit -m \"$(create_message)\"${NC}"
-git commit -m "$(create_message)"
+run_command "git commit -m \"$(create_message)\"" "Failed to commit changes"
 
 # Create deployment tag
 echo -e "${BLUE}Creating deployment tag...${NC}"
-echo -e "${YELLOW}$ git tag -a -s \"v$VERSION-$ENV_TAG-$DEPLOYER\" -m \"$(create_message)\"${NC}"
-git tag -a -s "v$VERSION-$ENV_TAG-$DEPLOYER" -m "$(create_message)"
+run_command "git tag -a -s \"v$VERSION-$ENV_TAG-$DEPLOYER\" -m \"$(create_message)\"" "Failed to create deployment tag"
 
 # Push deployment changes and tags
 echo -e "${BLUE}Pushing deployment changes and tags...${NC}"
-echo -e "${YELLOW}$ git push && git push --tags${NC}"
-git push && git push --tags
+run_command "git push && git push --tags" "Failed to push deployment changes"
 
 # Run the deployment
 do_ssh_deployment

@@ -356,6 +356,10 @@ for tag in $EXISTING_DEPLOY_TAGS; do
     fi
 done
 
+# Clean deployment directory
+echo -e "${CYAN}Cleaning deployment directory...${NC}"
+run_command "./clean.sh" "Failed to clean deployment directory"
+
 # Copy build files
 echo -e "${CYAN}Copying build files...${NC}"
 run_command "cp -r ../dist/. dist" "Failed to copy build files"

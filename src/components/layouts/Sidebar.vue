@@ -213,6 +213,7 @@ import { i18n } from '../../i18n/i18n-setup';
 import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 
 export default defineComponent({
+    props: {},
     setup(props, context) {
         const { config } = useConfig();
         const { isMobile, height: windowHeight } = useWindowSize();

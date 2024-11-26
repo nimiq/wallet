@@ -358,6 +358,7 @@ import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSetting
 
 export default defineComponent({
     name: 'address-overview',
+    props: {},
     setup() {
         const { activeAccountId, activeCurrency, activeAccountInfo } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();

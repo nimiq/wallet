@@ -14,7 +14,7 @@
                     <SearchBar v-model="searchString"/>
 
                     <CashlinkButton
-                        v-if="activeCurrency === CrypoCurrency.NIM && unclaimedCashlinkCount"
+                        v-if="activeCurrency === CryptoCurrency.NIM && unclaimedCashlinkCount"
                         :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
                         :unclaimedCashlinkCount="unclaimedCashlinkCount"
                         @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"

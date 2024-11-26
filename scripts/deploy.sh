@@ -20,7 +20,7 @@ show_usage() {
         echo
     fi
 
-    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet|--testnet] [--deploy-only]${NC}"
+    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet|--testnet] [--deploy-only] [--same-as=ENV]${NC}"
     echo
     echo -e "${CYAN}Examples:${NC}"
     echo "1. Simple message (testnet):"
@@ -35,6 +35,8 @@ show_usage() {
     echo
     echo "3. Deploy only (after a cancelled deployment):"
     echo -e "   ${GREEN}$0 --deploy-only${NC}"
+    echo "4. Deploy same version from testnet to mainnet:"
+    echo -e "   ${GREEN}$0 --same-as=testnet -m 'Same fixes as testnet' --deployer=john --mainnet${NC}"
     exit 1
 }
 
@@ -49,6 +51,7 @@ EXCLUDE_RELEASE=""
 SYNC_TRANSLATIONS=true
 BUILD_ENV=""
 DEPLOY_ONLY=false
+SAME_AS=""
 
 # Define deploy servers for different environments
 MAINNET_SERVERS=("deploy_wallet@web-1" "deploy_wallet@web-2" "deploy_wallet@web-3" "deploy_wallet@web-4")
@@ -57,10 +60,22 @@ DEPLOY_SERVERS=()
 
 DEPLOYMENT_REPO="deployment-wallet"
 
-# Don't require version number if --deploy-only is specified
-if [[ "$1" == "--deploy-only" ]]; then
+# Initial argument handling
+if [[ "$1" =~ ^--same-as= ]]; then
+    SAME_AS="${1#*=}"
+    if [[ ! "$SAME_AS" =~ ^(testnet|mainnet)$ ]]; then
+        echo -e "${RED}Error: --same-as must be either 'testnet' or 'mainnet'${NC}"
+        exit 1
+    fi
+    VERSION=""
+    shift
+elif [[ "$1" == "--deploy-only" ]]; then
     VERSION=""
     DEPLOY_ONLY=true
+    shift
+elif [[ "$1" =~ ^--.*$ ]]; then
+    # If first argument is any other flag
+    VERSION=""
     shift
 else
     VERSION="$1"
@@ -100,6 +115,14 @@ while [[ $# -gt 0 ]]; do
             DEPLOY_ONLY=true
             shift
             ;;
+        --same-as=*)
+            SAME_AS="${1#*=}"
+            if [[ ! "$SAME_AS" =~ ^(testnet|mainnet)$ ]]; then
+                echo -e "${RED}Error: --same-as must be either 'testnet' or 'mainnet'${NC}"
+                exit 1
+            fi
+            shift
+            ;;
         -m)
             shift
             if [ $# -eq 0 ]; then
@@ -131,9 +154,38 @@ if [ -z "$BUILD_ENV" ]; then
     show_usage "Either --mainnet or --testnet must be specified"
 fi
 
-# Validate version number format
-if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && [ "$DEPLOY_ONLY" = false ]; then
-    show_usage "Version number must be in format X.Y.Z"
+# After parsing arguments and before validation, handle --same-as
+if [ -n "$SAME_AS" ]; then
+    echo -e "${BLUE}Looking up version from $SAME_AS deployment...${NC}"
+
+    # Determine the environment tag to look for
+    LOOKUP_TAG=$([ "$SAME_AS" = "mainnet" ] && echo "main" || echo "test")
+
+    # Get the latest version from the specified environment
+    cd "$DEPLOYMENT_REPO" || exit 1
+    LATEST_VERSION=$(git tag | grep "^v[0-9].*-$LOOKUP_TAG-" | sort -V | tail -n 1 | sed 's/^v\([0-9][^-]*\).*/\1/')
+    cd - > /dev/null || exit 1
+
+    if [ -z "$LATEST_VERSION" ]; then
+        echo -e "${RED}Error: No version found in $SAME_AS environment${NC}"
+        exit 1
+    fi
+
+    echo -e "${GREEN}Found version $LATEST_VERSION${NC}"
+    VERSION="$LATEST_VERSION"
+fi
+
+# Version validation
+if [ "$DEPLOY_ONLY" = false ]; then
+    if [ -n "$SAME_AS" ]; then
+        if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            show_usage "Version number should not be provided when using --same-as"
+        fi
+    elif [ -z "$VERSION" ]; then
+        show_usage "Version number is required when not using --deploy-only or --same-as"
+    elif ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        show_usage "Version number must be in format X.Y.Z"
+    fi
 fi
 
 # Function to compare version numbers
@@ -186,14 +238,18 @@ if [ "$DEPLOY_ONLY" = true ]; then
 fi
 
 # Check if new version is greater than all existing tags in current repo
-echo -e "${BLUE}Checking version against existing tags in wallet repo...${NC}"
-EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
-for tag in $EXISTING_TAGS; do
-    if ! version_gt "$VERSION" "$tag"; then
-        echo -e "${RED}Error: Version $VERSION is not greater than existing version $tag${NC}"
-        exit 1
-    fi
-done
+if [ -z "$SAME_AS" ]; then
+    echo -e "${BLUE}Checking version against existing tags in wallet repo...${NC}"
+    EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
+    for tag in $EXISTING_TAGS; do
+        if ! version_gt "$VERSION" "$tag"; then
+            echo -e "${RED}Error: Version $VERSION is not greater than existing version $tag${NC}"
+            exit 1
+        fi
+    done
+else
+    echo -e "${BLUE}Skipping version comparison check since --same-as is used${NC}"
+fi
 
 # Set environment tag based on BUILD_ENV
 ENV_TAG=$([ "$BUILD_ENV" = "mainnet" ] && echo "main" || echo "test")
@@ -264,17 +320,21 @@ $COMMIT_MSG
 $EXCLUDE_RELEASE"
 }
 
-# Create and push source tag
-echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
-run_command "git tag -a -s \"v$VERSION\" -m \"$(create_message)\"" "Failed to create git tag"
+# Create and push source tag (skip if using --same-as)
+if [ -z "$SAME_AS" ]; then
+    echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
+    run_command "git tag -a -s \"v$VERSION\" -m \"$(create_message)\"" "Failed to create git tag"
+
+    # Push changes and tags
+    echo -e "${BLUE}Pushing source changes and tags...${NC}"
+    run_command "git push && git push --tags" "Failed to push changes"
+else
+    echo -e "${BLUE}Skipping source tag creation since --same-as is used${NC}"
+fi
 
 # Build the project
 echo -e "${BLUE}Building project with $BUILD_ENV configuration...${NC}"
 run_command "env \"build=$BUILD_ENV\" yarn build" "Failed to build project"
-
-# Push changes and tags
-echo -e "${BLUE}Pushing source changes and tags...${NC}"
-run_command "git push && git push --tags" "Failed to push changes"
 
 # Deploy to deployment repository
 echo -e "${BLUE}Deploying to $DEPLOYMENT_REPO...${NC}"

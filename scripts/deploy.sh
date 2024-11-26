@@ -40,9 +40,14 @@ show_usage() {
     exit 1
 }
 
-# Check if version number is provided
-if [ "$#" -lt 1 ]; then
-    show_usage
+# Check if first argument is a flag
+if [[ "$1" =~ ^-- ]]; then
+    if [[ "$1" =~ ^--same-as= ]] || [[ "$1" == "--deploy-only" ]]; then
+        # These flags are allowed as first argument
+        :
+    else
+        show_usage "Version number must be the first argument when not using --same-as or --deploy-only"
+    fi
 fi
 
 # Default values
@@ -73,13 +78,14 @@ elif [[ "$1" == "--deploy-only" ]]; then
     VERSION=""
     DEPLOY_ONLY=true
     shift
-elif [[ "$1" =~ ^--.*$ ]]; then
-    # If first argument is any other flag
-    VERSION=""
-    shift
-else
+elif [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     VERSION="$1"
-    shift # Remove version from arguments
+    VERSION_PROVIDED_BY_USER=true
+    shift
+elif [[ "$1" =~ ^- ]]; then
+    show_usage "Version number must be the first argument when not using --same-as or --deploy-only"
+else
+    show_usage "First argument must be either a version number, --same-as=ENV, or --deploy-only"
 fi
 
 # Parse remaining arguments
@@ -172,16 +178,14 @@ if [ -n "$SAME_AS" ]; then
 fi
 
 # Version validation
-if [ "$DEPLOY_ONLY" = false ]; then
-    if [ -n "$SAME_AS" ]; then
-        if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            show_usage "Version number should not be provided when using --same-as"
-        fi
-    elif [ -z "$VERSION" ]; then
+if [ "$DEPLOY_ONLY" = false ] && [ -z "$SAME_AS" ]; then
+    if [ -z "$VERSION" ]; then
         show_usage "Version number is required when not using --deploy-only or --same-as"
     elif ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         show_usage "Version number must be in format X.Y.Z"
     fi
+elif [ "$VERSION_PROVIDED_BY_USER" = true ]; then
+    show_usage "Version number cannot be provided when using --deploy-only or --same-as"
 fi
 
 # Function to compare version numbers

@@ -228,6 +228,9 @@ do_ssh_deployment() {
     done
 
     echo -e "${GREEN}Deployment complete!${NC}"
+    echo -e "${YELLOW}> Please verify that the deployment went through successfully.${NC}"
+    echo -e "${YELLOW}> Please also verify that the website is working correctly on $BUILD_ENV and is correctly using the new version $VERSION.${NC}"
+    echo -e "${YELLOW}> https://$([ "$BUILD_ENV" = "mainnet" ] && echo "wallet.nimiq.com" || echo "wallet.nimiq-testnet.com")${NC}"
 }
 
 # If deploy-only flag is set, skip to deployment

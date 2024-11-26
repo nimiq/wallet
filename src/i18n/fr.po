@@ -1397,6 +1397,10 @@ msgstr ""
 "Gérer plusieurs adresses est maintenant pratique et facile - avec un mot de "
 "passe et des informations de connexion partagés."
 
+#: src/components/WalletStatusButton.vue:4
+msgid "Help"
+msgstr ""
+
 #: src/App.vue:7
 msgid "here"
 msgstr "ici"
@@ -1479,6 +1483,10 @@ msgstr "IBAN"
 msgid "ID document"
 msgstr "Pièce d'identité"
 
+#: src/components/modals/WalletStatusModal.vue:29
+msgid "If in doubt, you can always check your balance at {nimiqWatchLink}"
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:224
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1498,6 +1506,10 @@ msgstr ""
 #: src/lib/GoCrypto.ts:273
 msgid "If you already made a payment, wait for it to be confirmed instead."
 msgstr "Si vous avez déjà effectué un paiement, attendez qu'il soit confirmé."
+
+#: src/components/modals/WalletStatusModal.vue:37
+msgid "If you require further assistance, please reach out at {discordLink}"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1538,6 +1550,10 @@ msgstr ""
 #: src/components/staking/ValidatorDetailsOverlay.vue:22
 msgid "incl. pool fee"
 msgstr "frais de pool inclus"
+
+#: src/components/modals/WalletStatusModal.vue:23
+msgid "Incomplete balances being displayed."
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:98
 msgid ""
@@ -2029,6 +2045,10 @@ msgstr "Veuillez ne pas utiliser vos comptes Mainnet !"
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr "Veuillez vous assurer que vous envoyez une transaction instantanée !"
 
+#: src/components/modals/WalletStatusModal.vue:12
+msgid "Please have patience while we fix:"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:38
 #: src/components/swap/SwapAnimation.vue:54
 msgid "Please keep your Swap ID for reference."
@@ -2077,6 +2097,10 @@ msgstr "Testnet PoS"
 msgid "Pre-staking Migration Address"
 msgstr "Adresse de pré-stacking pour la migration"
 
+#: src/components/modals/WalletStatusModal.vue:19
+msgid "Problems with un-staking."
+msgstr ""
+
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
 msgstr "Consultez la page d'assistance pour savoir ce qu'il faut faire."
@@ -2092,6 +2116,11 @@ msgstr "Motif"
 #: src/components/kyc/KycOverlay.vue:5 src/components/kyc/KycPrompt.vue:5
 msgid "Raise your limits"
 msgstr "Augmentez vos limites"
+
+#: src/components/modals/WalletStatusModal.vue:18
+#: src/components/modals/WalletStatusModal.vue:22
+msgid "Rare"
+msgstr ""
 
 #: src/components/staking/ValidatorScoreDetails.vue:33
 msgid ""
@@ -2812,6 +2841,10 @@ msgstr "Changer de validateur"
 msgid "syncing"
 msgstr "synchronisation"
 
+#: src/components/modals/WalletStatusModal.vue:15
+msgid "Syncing takes long and fails in certain cases."
+msgstr ""
+
 #: src/components/SendModalFooter.vue:66
 msgid "Syncing with Bitcoin network"
 msgstr "Synchronisation avec le réseau Bitcoin"
@@ -2867,6 +2900,12 @@ msgstr ""
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
 msgstr "La limite de votre IBAN a été atteinte"
+
+#: src/components/modals/WalletStatusModal.vue:6
+msgid ""
+"The network and your NIM successfully migrated to Proof-of-Stake. The wallet"
+" is not fully up to speed yet but we’re getting there."
+msgstr ""
 
 #: src/App.vue:11
 msgid ""
@@ -2933,10 +2972,16 @@ msgid ""
 "The Simplex integration is currently disabled while the network is "
 "experiencing an outage."
 msgstr ""
+"L'intégration de Simplex est actuellement désactivée pendant la panne du "
+"réseau."
 
 #: src/components/swap/SwapAnimation.vue:19
 msgid "The swap expired"
 msgstr "Le Swap a expiré"
+
+#: src/components/modals/WalletStatusModal.vue:16
+msgid "The transaction history does not update correctly."
+msgstr ""
 
 #: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:15
 msgid "The validator is solely responsible for information provided above."
@@ -3334,6 +3379,10 @@ msgstr ""
 "Nous avons ajouté la prise en charge de l'USDT, que vous pouvez désormais "
 "utiliser à la place de l'USDC."
 
+#: src/components/modals/WalletStatusModal.vue:4
+msgid "We’re busy fixing the wallet but your NIM are safe"
+msgstr ""
+
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
 "Welcome to the first fiat-to-crypto atomic swap. It’s simple, fast and "
@@ -3425,7 +3474,7 @@ msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 "Vous pourrez recevoir plus de NIM gratuitement dans {waitTime} heures."
 
-#: src/components/layouts/Sidebar.vue:321
+#: src/components/layouts/Sidebar.vue:322
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3443,7 +3492,7 @@ msgstr "Vous ne pouvez pas ajuster votre staking pendant que vous dé-stakez"
 msgid "You currently have no balance to swap."
 msgstr "Vous n'avez actuellement aucun solde à swap."
 
-#: src/components/layouts/AddressOverview.vue:490
+#: src/components/layouts/AddressOverview.vue:491
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 "Vous n'avez pas assez d'USDC.e pour payer les frais de conversion ({fee})"

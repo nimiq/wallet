@@ -1272,6 +1272,10 @@ msgstr ""
 msgid "Handling multiple addresses is now convenient and easy – with one password and shared login information."
 msgstr ""
 
+#: src/components/WalletStatusButton.vue:4
+msgid "Help"
+msgstr ""
+
 #: src/App.vue:7
 msgid "here"
 msgstr ""

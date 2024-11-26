@@ -18,6 +18,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../scss/variables.scss';
+
 .wallet-status-button {
     height: 4.25rem;
     border-radius: 2.25rem;
@@ -34,6 +36,12 @@ export default defineComponent({
 
     svg {
         margin-right: 1rem;
+    }
+}
+
+@media (max-width: $mobileBreakpoint) {
+    .wallet-status-button {
+        bottom: 11rem;
     }
 }
 

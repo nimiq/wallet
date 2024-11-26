@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="$modal" @close="close">
+    <Modal v-bind="$attrs" v-on="$listeners" emitClose ref="$modal" @close="close">
         <PageHeader>
             {{ $t('We’re busy fixing the wallet but your NIM are safe') }}
             <p slot="more" class="nq-text nq-light-blue">

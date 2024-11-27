@@ -711,6 +711,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
 #: src/components/layouts/AddressOverview.vue:275
+#: src/components/staking/StakingModal.vue:153
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"

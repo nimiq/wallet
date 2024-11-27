@@ -736,6 +736,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Нажмите на «Решение проблем», чтобы узнать больше."
 
 #: src/components/layouts/AddressOverview.vue:275
+#: src/components/staking/StakingModal.vue:153
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Закрыть"

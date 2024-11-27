@@ -11,6 +11,10 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
+# App name
+APP_NAME="wallet"
+APP_NAME_CAPITALIZED="Wallet"
+
 # Function to display usage message
 show_usage() {
     local error_msg="$1"
@@ -59,11 +63,11 @@ DEPLOY_ONLY=false
 SAME_AS=""
 
 # Define deploy servers for different environments
-MAINNET_SERVERS=("deploy_wallet@web-1" "deploy_wallet@web-2" "deploy_wallet@web-3" "deploy_wallet@web-4")
-TESTNET_SERVERS=("deploy_wallet@testnet-web1")
+MAINNET_SERVERS=("deploy_${APP_NAME}@web-1" "deploy_${APP_NAME}@web-2" "deploy_${APP_NAME}@web-3" "deploy_${APP_NAME}@web-4")
+TESTNET_SERVERS=("deploy_${APP_NAME}@testnet-web1")
 DEPLOY_SERVERS=()
 
-DEPLOYMENT_REPO="deployment-wallet"
+DEPLOYMENT_REPO="deployment-${APP_NAME}"
 
 # Initial argument handling
 if [[ "$1" =~ ^--same-as= ]]; then
@@ -230,7 +234,7 @@ do_ssh_deployment() {
     echo -e "${GREEN}Deployment complete!${NC}"
     echo -e "${YELLOW}> Please verify that the deployment went through successfully.${NC}"
     echo -e "${YELLOW}> Please also verify that the website is working correctly on $BUILD_ENV and is correctly using the new version $VERSION.${NC}"
-    echo -e "${YELLOW}> https://$([ "$BUILD_ENV" = "mainnet" ] && echo "wallet.nimiq.com" || echo "wallet.nimiq-testnet.com")${NC}"
+    echo -e "${YELLOW}> https://$([ "$BUILD_ENV" = "mainnet" ] && echo "${APP_NAME}.nimiq.com" || echo "${APP_NAME}.nimiq-testnet.com")${NC}"
 }
 
 # If deploy-only flag is set, skip to deployment
@@ -242,7 +246,7 @@ fi
 
 # Check if new version is greater than all existing tags in current repo
 if [ -z "$SAME_AS" ]; then
-    echo -e "${BLUE}Checking version against existing tags in wallet repo...${NC}"
+    echo -e "${BLUE}Checking version against existing tags in ${APP_NAME} repo...${NC}"
     EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
     for tag in $EXISTING_TAGS; do
         if ! version_gt "$VERSION" "$tag"; then
@@ -316,7 +320,7 @@ fi
 
 # Function to create commit/tag message
 create_message() {
-    local message="Nimiq Wallet v$VERSION
+    local message="Nimiq ${APP_NAME_CAPITALIZED} v$VERSION
 
 $COMMIT_MSG"
 

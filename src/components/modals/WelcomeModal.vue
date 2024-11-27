@@ -902,18 +902,6 @@ export default defineComponent({
                         position: absolute;
                         pointer-events: none;
                         inset: 0;
-
-                        .coming-soon {
-                            margin: 0 0 0 0.75rem;
-                            padding: 0.75rem 1.25rem;
-                            font-size: var(--small-label-size);
-                            letter-spacing: 0.8px;
-                            color: var(--text-60);
-                            line-height: 1;
-                            border-radius: 9rem;
-                            font-weight: bold;
-                            box-shadow: inset 0 0 0 1.5px var(--text-14);
-                        }
                     }
                 }
             }

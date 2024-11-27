@@ -25,7 +25,7 @@
             <div class="flex-row staking">
                 <img src="../assets/staking-preview-icon.svg" alt="Staking Icon">
                 <div class="text">
-                    <h2 class="nq-h2">{{ $t('Staking') }} <label>{{ $t('Coming soon') }}</label></h2>
+                    <h2 class="nq-h2">{{ $t('Staking') }}</h2>
                     <p class="nq-text">{{ $t('Stake NIM to generate rewards for securing the network.') }}</p>
                 </div>
             </div>
@@ -118,18 +118,6 @@ section .nq-text {
     flex-grow: 0.25;
 }
 
-label {
-    text-transform: uppercase;
-    font-size: var(--small-label-size);
-    letter-spacing: 0.06em;
-    padding: 0.625rem 1.5rem;
-    border-radius: 500px;
-    color: var(--text-50);
-    box-shadow: 0 0 0 1.5px var(--text-16);
-    vertical-align: middle;
-    margin-left: 1rem;
-}
-
 .future-notice {
     font-size: var(--small-size);
     font-weight: 600;
@@ -162,10 +150,6 @@ label {
 
     .staking img {
         padding: 1rem;
-    }
-
-    label {
-        padding: 0.5rem 1.25rem;
     }
 }
 

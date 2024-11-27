@@ -1163,7 +1163,7 @@ msgstr "Euro"
 msgid "Exchange rate"
 msgstr "Taxa de câmbio"
 
-#: src/components/TransactionListItem.vue:45
+#: src/components/TransactionListItem.vue:48
 #: src/components/UsdcTransactionListItem.vue:39
 #: src/components/UsdtTransactionListItem.vue:39
 msgid "expired"
@@ -1254,7 +1254,7 @@ msgstr "À procura"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:219
-#: src/components/TransactionListItem.vue:63
+#: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
 msgid "Fiat value unavailable"
@@ -1577,7 +1577,7 @@ msgid "Insufficient balance."
 msgstr "Saldo insuficiente"
 
 #: src/components/BtcTransactionListItem.vue:48
-#: src/components/TransactionListItem.vue:46
+#: src/components/TransactionListItem.vue:49
 msgid "invalid"
 msgstr "Inválido"
 
@@ -1891,7 +1891,7 @@ msgid "Not available in your country"
 msgstr "Indisponível no teu país"
 
 #: src/components/BtcTransactionListItem.vue:46
-#: src/components/TransactionListItem.vue:43
+#: src/components/TransactionListItem.vue:46
 #: src/components/UsdcTransactionListItem.vue:37
 #: src/components/UsdtTransactionListItem.vue:37
 msgid "not sent"
@@ -1977,7 +1977,7 @@ msgid "Pegged 1:1 to the U.S. Dollar"
 msgstr "Ligado 1:1 ao Dólar U.S"
 
 #: src/components/BtcTransactionListItem.vue:47
-#: src/components/TransactionListItem.vue:44
+#: src/components/TransactionListItem.vue:47
 #: src/components/UsdcTransactionListItem.vue:38
 #: src/components/UsdtTransactionListItem.vue:38
 msgid "pending"
@@ -2125,7 +2125,7 @@ msgid ""
 msgstr ""
 
 #: src/components/staking/ValidatorScoreDetails.vue:52
-msgid "Rates the pool's potential to harm the network, based on its size. "
+msgid "Rates the pool's potential to harm the network, based on its size."
 msgstr ""
 
 #: src/lib/StakingUtils.ts:62

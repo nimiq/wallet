@@ -11,7 +11,7 @@
             v-model="localLabel"
         />
         <span v-else-if="isOwnAddress" class="label">
-            {{ localLabel || (stablecoin === CryptoCurrency.USDC ? 'USD Coin' : 'Tether USD') }}
+            {{ localLabel || (stablecoin === CryptoCurrency.USDC ? $t('USD Coin') : $t('Tether USD')) }}
         </span>
         <span v-else class="label" :class="{ unlabelled: !localLabel }">
             {{ localLabel || $t('unknown') }}

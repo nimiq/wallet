@@ -132,7 +132,7 @@
                         }"
                     >
                     <div class="bitcoin-account-item reset flex-column" @click="selectBitcoin">
-                        <div class="bitcoin-account-item-name flex-row"><BitcoinIcon/>Bitcoin</div>
+                        <div class="bitcoin-account-item-name flex-row"><BitcoinIcon/>{{ $t('Bitcoin') }}</div>
                         <div class="balances" v-if="hasBitcoinAddresses">
                             <div class="flex-row">
                                 <AlertTriangleIcon v-if="btcConsensus === 'connecting'" />
@@ -210,10 +210,10 @@
                                 <UsdcIcon/><UsdtIconPadded class="pull-left"/>USDC/USDT
                             </template>
                             <template v-if="stablecoin === CryptoCurrency.USDC">
-                                <UsdcIcon/>USD Coin
+                                <UsdcIcon/>{{ $t('USD Coin') }}
                             </template>
                             <template v-if="stablecoin === CryptoCurrency.USDT">
-                                <UsdtIcon/>Tether USD
+                                <UsdtIcon/>{{ $t('Tether USD') }}
                             </template>
                         </div>
                         <div class="balances" v-if="hasPolygonAddresses">

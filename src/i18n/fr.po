@@ -488,6 +488,15 @@ msgstr "Avant de commencer"
 msgid "BIC works, too."
 msgstr "Le BIC fonctionne également."
 
+#: src/components/AddressList.vue:188
+#: src/components/layouts/AccountOverview.vue:135
+#: src/components/layouts/AddressOverview.vue:121
+#: src/components/layouts/Settings.vue:119
+#: src/components/LegacyAccountNotice.vue:21
+#: src/components/modals/BtcTransactionModal.vue:124
+#: src/components/modals/BtcTransactionModal.vue:136
+#: src/components/swap/SwapBalanceBar.vue:19
+#: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:127
 #: src/composables/useUsdcTransactionInfo.ts:101
 #: src/composables/useUsdtTransactionInfo.ts:101
@@ -749,10 +758,6 @@ msgstr "Cliquez sur \"Résolution des problèmes\" pour en apprendre plus."
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fermer"
-
-#: src/components/LegacyAccountNotice.vue:28
-msgid "Coming soon"
-msgstr "Bientôt disponible"
 
 #: src/components/modals/WelcomeModal.vue:242
 msgid "Comparably centralized"
@@ -1056,7 +1061,7 @@ msgstr "La durée et les frais sont des estimations."
 msgid "Earn new NIM by staking"
 msgstr "Gagner de nouveaux NIM en stackant"
 
-#: src/components/staking/StakingButton.vue:10
+#: src/components/staking/StakingButton.vue:11
 #: src/components/staking/StakingSummaryMobile.vue:5
 msgid "Earn NIM every month by staking your NIM"
 msgstr "Stakez vos NIM et gagnez-en tous les mois"
@@ -1400,7 +1405,7 @@ msgstr ""
 
 #: src/components/WalletStatusButton.vue:4
 msgid "Help"
-msgstr ""
+msgstr "Aide"
 
 #: src/App.vue:7
 msgid "here"
@@ -1487,6 +1492,8 @@ msgstr "Pièce d'identité"
 #: src/components/modals/WalletStatusModal.vue:29
 msgid "If in doubt, you can always check your balance at {nimiqWatchLink}"
 msgstr ""
+"En cas de doute, vous pouvez toujours vérifier votre solde sur "
+"{nimiqWatchLink}"
 
 #: src/components/swap/SwapNotification.vue:224
 msgid ""
@@ -1511,6 +1518,8 @@ msgstr "Si vous avez déjà effectué un paiement, attendez qu'il soit confirmé
 #: src/components/modals/WalletStatusModal.vue:37
 msgid "If you require further assistance, please reach out at {discordLink}"
 msgstr ""
+"Si vous avez besoin d'une assistance plus poussée, veuillez nous contacter "
+"sur {discordLink}"
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1554,7 +1563,7 @@ msgstr "frais de pool inclus"
 
 #: src/components/modals/WalletStatusModal.vue:23
 msgid "Incomplete balances being displayed."
-msgstr ""
+msgstr "Affichage des soldes incomplet."
 
 #: src/components/modals/BtcSendModal.vue:98
 msgid ""
@@ -1796,6 +1805,12 @@ msgstr "Réseau"
 #: src/components/modals/BtcSendModal.vue:95
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Frais de réseau: {sats} sat/vByte"
+
+#: src/components/staking/StakingGraph.vue:5
+#: src/components/staking/StakingGraph.vue:6
+#: src/components/staking/StakingGraph.vue:7
+msgid "NIM"
+msgstr "NIM"
 
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
@@ -2048,7 +2063,7 @@ msgstr "Veuillez vous assurer que vous envoyez une transaction instantanée !"
 
 #: src/components/modals/WalletStatusModal.vue:12
 msgid "Please have patience while we fix:"
-msgstr ""
+msgstr "Merci de patienter pendant que nous procédons à la réparation de :"
 
 #: src/components/swap/SwapAnimation.vue:38
 #: src/components/swap/SwapAnimation.vue:54
@@ -2100,7 +2115,7 @@ msgstr "Adresse de pré-stacking pour la migration"
 
 #: src/components/modals/WalletStatusModal.vue:19
 msgid "Problems with un-staking."
-msgstr ""
+msgstr "Problèmes avec le dé-stake."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
@@ -2121,7 +2136,7 @@ msgstr "Augmentez vos limites"
 #: src/components/modals/WalletStatusModal.vue:18
 #: src/components/modals/WalletStatusModal.vue:22
 msgid "Rare"
-msgstr ""
+msgstr "Rare"
 
 #: src/components/staking/ValidatorScoreDetails.vue:33
 msgid ""
@@ -2844,7 +2859,7 @@ msgstr "synchronisation"
 
 #: src/components/modals/WalletStatusModal.vue:15
 msgid "Syncing takes long and fails in certain cases."
-msgstr ""
+msgstr "La synchronisation prend du temps et peut échoue dans certains cas."
 
 #: src/components/SendModalFooter.vue:66
 msgid "Syncing with Bitcoin network"
@@ -2863,6 +2878,12 @@ msgstr "ten31 pass ne retourne pas les droits attendus."
 msgid "TEN31 Verification"
 msgstr "Vérification TEN31"
 
+#: src/components/AddressList.vue:207
+#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AddressOverview.vue:127
+#: src/components/swap/SwapBalanceBar.vue:29
+#: src/components/swap/SwapBalanceBar.vue:55
+#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:128
 #: src/composables/useTransactionInfo.ts:135
 msgid "Tether USD"
@@ -2907,6 +2928,8 @@ msgid ""
 "The network and your NIM successfully migrated to Proof-of-Stake. The wallet"
 " is not fully up to speed yet but we’re getting there."
 msgstr ""
+"Le réseau et votre NIM ont migré avec succès vers le Proof of Stake. Le "
+"Wallet n'est pas encore tout à fait au point, mais il s'en rapproche !"
 
 #: src/App.vue:11
 msgid ""
@@ -2982,7 +3005,7 @@ msgstr "Le Swap a expiré"
 
 #: src/components/modals/WalletStatusModal.vue:16
 msgid "The transaction history does not update correctly."
-msgstr ""
+msgstr "L'historique des transactions ne se met pas à jour correctement."
 
 #: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:15
 msgid "The validator is solely responsible for information provided above."
@@ -3317,6 +3340,12 @@ msgstr "Mettre à jour"
 msgid "Update validator"
 msgstr "Mettre à jour le validateur"
 
+#: src/components/AddressList.vue:197
+#: src/components/layouts/AccountOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:124
+#: src/components/swap/SwapBalanceBar.vue:24
+#: src/components/swap/SwapBalanceBar.vue:50
+#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:131
 msgid "USD Coin"
@@ -3383,6 +3412,7 @@ msgstr ""
 #: src/components/modals/WalletStatusModal.vue:4
 msgid "We’re busy fixing the wallet but your NIM are safe"
 msgstr ""
+"Nous sommes occupés à réparer le Wallet, mais vos NIM sont en sécurité."
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""

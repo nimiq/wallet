@@ -482,6 +482,15 @@ msgstr "Прежде чем начнём"
 msgid "BIC works, too."
 msgstr "Можно указать BIC"
 
+#: src/components/AddressList.vue:188
+#: src/components/layouts/AccountOverview.vue:135
+#: src/components/layouts/AddressOverview.vue:121
+#: src/components/layouts/Settings.vue:119
+#: src/components/LegacyAccountNotice.vue:21
+#: src/components/modals/BtcTransactionModal.vue:124
+#: src/components/modals/BtcTransactionModal.vue:136
+#: src/components/swap/SwapBalanceBar.vue:19
+#: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:127
 #: src/composables/useUsdcTransactionInfo.ts:101
 #: src/composables/useUsdtTransactionInfo.ts:101
@@ -740,10 +749,6 @@ msgstr "Нажмите на «Решение проблем», чтобы узн
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Закрыть"
-
-#: src/components/LegacyAccountNotice.vue:28
-msgid "Coming soon"
-msgstr "В скором времени"
 
 #: src/components/modals/WelcomeModal.vue:242
 msgid "Comparably centralized"
@@ -1044,7 +1049,7 @@ msgstr "Скорость и комиссия могут меняться"
 msgid "Earn new NIM by staking"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:10
+#: src/components/staking/StakingButton.vue:11
 #: src/components/staking/StakingSummaryMobile.vue:5
 msgid "Earn NIM every month by staking your NIM"
 msgstr ""
@@ -1768,6 +1773,12 @@ msgstr "Сеть"
 #: src/components/modals/BtcSendModal.vue:95
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Комиссия сети: {sats} sat/vByte"
+
+#: src/components/staking/StakingGraph.vue:5
+#: src/components/staking/StakingGraph.vue:6
+#: src/components/staking/StakingGraph.vue:7
+msgid "NIM"
+msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
@@ -2805,6 +2816,12 @@ msgstr ""
 msgid "TEN31 Verification"
 msgstr "Верификация TEN31"
 
+#: src/components/AddressList.vue:207
+#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AddressOverview.vue:127
+#: src/components/swap/SwapBalanceBar.vue:29
+#: src/components/swap/SwapBalanceBar.vue:55
+#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:128
 #: src/composables/useTransactionInfo.ts:135
 msgid "Tether USD"
@@ -3236,6 +3253,12 @@ msgstr "Обновить"
 msgid "Update validator"
 msgstr ""
 
+#: src/components/AddressList.vue:197
+#: src/components/layouts/AccountOverview.vue:213
+#: src/components/layouts/AddressOverview.vue:124
+#: src/components/swap/SwapBalanceBar.vue:24
+#: src/components/swap/SwapBalanceBar.vue:50
+#: src/components/UsdcAddressInfo.vue:14
 #: src/composables/useBtcTransactionInfo.ts:124
 #: src/composables/useTransactionInfo.ts:131
 msgid "USD Coin"

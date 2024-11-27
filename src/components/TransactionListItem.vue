@@ -32,12 +32,15 @@
                 && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
             <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
+            <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS"/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
             <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
         </div>
         <div class="data">
-            <div v-if="peerLabel" class="label">{{ peerLabel }}</div>
+            <div v-if="peerLabel" class="label">{{
+                peerAddress === constants.STAKING_CONTRACT_ADDRESS ? data : peerLabel
+            }}</div>
             <div v-else class="address">{{ peerAddress }}</div>
             <div class="time-and-message">
                 <span v-if="state === TransactionState.NEW">{{ $t('not sent') }}</span>
@@ -46,7 +49,7 @@
                 <span v-else-if="state === TransactionState.INVALIDATED">{{ $t('invalid') }}</span>
                 <span v-else-if="dateTime">{{ dateTime }}</span>
 
-                <span v-if="data" class="message">
+                <span v-if="data && peerAddress !== constants.STAKING_CONTRACT_ADDRESS" class="message">
                     <strong class="dot">&middot;</strong>{{ data }}
                     <TransactionListOasisPayoutStatus
                         v-if="swapData && swapData.asset === SwapAsset.EUR"
@@ -97,10 +100,16 @@ import UsdcIcon from './icons/UsdcIcon.vue';
 import UsdtIcon from './icons/UsdtIcon.vue';
 import BankIcon from './icons/BankIcon.vue';
 import SwapSmallIcon from './icons/SwapSmallIcon.vue';
-import { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS } from '../lib/Constants';
+import {
+    FIAT_PRICE_UNAVAILABLE,
+    CASHLINK_ADDRESS,
+    BANK_ADDRESS,
+    STAKING_CONTRACT_ADDRESS,
+} from '../lib/Constants';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
+import HeroIcon from './icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     props: {
@@ -110,7 +119,12 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS, BANK_ADDRESS };
+        const constants = {
+            FIAT_PRICE_UNAVAILABLE,
+            CASHLINK_ADDRESS,
+            BANK_ADDRESS,
+            STAKING_CONTRACT_ADDRESS,
+        };
 
         const state = computed(() => props.transaction.state);
 
@@ -167,6 +181,7 @@ export default defineComponent({
         BankIcon,
         SwapSmallIcon,
         TransactionListOasisPayoutStatus,
+        HeroIcon,
     },
 });
 </script>
@@ -247,9 +262,7 @@ svg {
         height: 6rem;
         flex-shrink: 0;
 
-        img {
-            height: 100%
-        }
+        img { height: 100% }
 
         svg {
             height: 100%;
@@ -262,17 +275,9 @@ svg {
             padding: 0.375rem;
             overflow: initial;
 
-            &.bitcoin {
-                color: var(--bitcoin-orange);
-            }
-
-            &.usdc {
-                color: var(--usdc-blue);
-            }
-
-            &.usdt {
-                color: var(--usdt-green);
-            }
+            &.bitcoin { color: var(--bitcoin-orange) }
+            &.usdc { color: var(--usdc-blue) }
+            &.usdt { color: var(--usdt-green) }
         }
 
         .cashlink-or-swap {
@@ -290,6 +295,17 @@ svg {
             height: 2.75rem;
             width: 2.75rem;
         }
+
+        ::v-deep .hero-icon { // Staking Icon for Staking Contract Address
+            --size: 150%;
+
+            width: var(--size);
+            height: var(--size);
+
+            margin-top: calc((var(--size) - 100%) / -2);
+            margin-left: calc((var(--size) - 100%) / -2);
+        }
+
     }
 
     .data {

@@ -110,6 +110,7 @@
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
                         <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
+                        <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
                         <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
@@ -153,6 +154,7 @@
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
                         <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
+                        <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
                         <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
@@ -302,7 +304,9 @@
                     </template>
                 </div>
 
-                <div v-if="data" class="message">{{ data }}</div>
+                <div v-if="data && peerAddress !== constants.STAKING_CONTRACT_ADDRESS" class="message">
+                    {{ data }}
+                </div>
             </div>
 
             <!-- <button class="nq-button-s">Send more</button> -->
@@ -373,7 +377,12 @@ import { useContactsStore } from '../../stores/Contacts';
 import { useNetworkStore } from '../../stores/Network';
 import { twoDigit } from '../../lib/NumberFormatting';
 import { parseData } from '../../lib/DataFormatting';
-import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS } from '../../lib/Constants';
+import {
+    CryptoCurrency,
+    FIAT_PRICE_UNAVAILABLE,
+    CASHLINK_ADDRESS,
+    STAKING_CONTRACT_ADDRESS,
+} from '../../lib/Constants';
 import { useProxyStore } from '../../stores/Proxy';
 import { manageCashlink, refundSwap } from '../../hub';
 import { SwapNimData } from '../../stores/Swaps';
@@ -388,6 +397,7 @@ import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import { getStakingTransactionMeaning } from '../../lib/StakingUtils';
 import { useTransactionInfo } from '../../composables/useTransactionInfo';
+import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -398,7 +408,11 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const constants = { FIAT_PRICE_UNAVAILABLE, CASHLINK_ADDRESS };
+        const constants = {
+            FIAT_PRICE_UNAVAILABLE,
+            CASHLINK_ADDRESS,
+            STAKING_CONTRACT_ADDRESS,
+        };
         const transaction = computed(() => useTransactionsStore().state.transactions[props.hash]);
 
         const { activeAddressInfo, state: addresses$ } = useAddressStore();
@@ -728,6 +742,7 @@ export default defineComponent({
         SwapMediumIcon,
         InteractiveShortAddress,
         TransactionDetailOasisPayoutStatus,
+        HeroIcon,
     },
 });
 </script>
@@ -856,12 +871,12 @@ export default defineComponent({
         margin: 0;
     }
 
-    svg {
+    svg:not(.hero-icon) {
         width: 100%;
         height: 100%;
     }
 
-    > svg {
+    > svg:not(.hero-icon) {
         width: 8rem;
         height: 8rem;
         margin: 0.5rem;

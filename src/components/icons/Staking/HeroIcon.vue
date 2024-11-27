@@ -1,5 +1,11 @@
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" :class="{ pulsing: pulsing && !disabled }" class="nq-icon hero-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140"
+        :class="{
+            pulsing: pulsing && !disabled,
+            'hero-icon': true,
+            'full-size': fullSize,
+        }"
+        class="nq-icon">
         <path d="M70 22h0a48 48 0 0148 48v0a48 48 0 01-48 48h0a48 48 0 01-48-48v0a48 48 0 0148-48z" opacity=".6" fill="none" stroke="#21bca5" stroke-width="3.02"/>
         <path d="M70 12h0a58 58 0 0158 58h0a58 58 0 01-58 58h0a58 58 0 01-58-58h0a58 58 0 0158-58z" opacity=".4" fill="none" stroke="#21bca5" stroke-width="3.02"/>
         <radialGradient id="a" cx="70" cy="70" r="69.26" gradientUnits="userSpaceOnUse">
@@ -32,6 +38,11 @@ export default defineComponent({
             required: false,
             default: false,
         },
+        fullSize: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
     },
 });
 </script>
@@ -59,6 +70,14 @@ svg {
                 animation-delay: $delay * $i;
             }
         }
+    }
+
+    &.full-size {
+        --size: 150%;
+        width: var(--size);
+        height: var(--size);
+        margin-top: calc((var(--size) - 100%) / -2);
+        margin-left: calc((var(--size) - 100%) / -2);
     }
 }
 

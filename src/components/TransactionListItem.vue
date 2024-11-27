@@ -32,7 +32,7 @@
                 && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
             <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-            <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS"/>
+            <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
             <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
@@ -264,12 +264,12 @@ svg {
 
         img { height: 100% }
 
-        svg {
+        svg:not(.hero-icon) {
             height: 100%;
             width: 100%;
         }
 
-        > svg {
+        > svg:not(.hero-icon) {
             width: 6rem;
             height: 6rem;
             padding: 0.375rem;
@@ -295,17 +295,6 @@ svg {
             height: 2.75rem;
             width: 2.75rem;
         }
-
-        ::v-deep .hero-icon { // Staking Icon for Staking Contract Address
-            --size: 150%;
-
-            width: var(--size);
-            height: var(--size);
-
-            margin-top: calc((var(--size) - 100%) / -2);
-            margin-left: calc((var(--size) - 100%) / -2);
-        }
-
     }
 
     .data {

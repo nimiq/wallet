@@ -6,28 +6,28 @@
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
             :disabled="$config.disableNetworkInteraction || isCTATooltipDisabled"
         >
-            <span>
+            <template #trigger><div /></template>
+            <template #default>
                 {{ $t('Earn NIM every month by staking your NIM') }}
-            </span>
-            <div slot="trigger"></div>
+            </template>
         </Tooltip>
         <Tooltip class="staking-button-tooltip" ref="$tooltip"
             preferredPosition="top"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
             :disabled="$config.disableNetworkInteraction || !isCTATooltipDisabled"
         >
-            <div  slot="trigger">
+            <template #trigger>
                 <button class="stake"
-                    :disabled="$config.disableNetworkInteraction || !canStake"
+                    :disabled="!canStake"
                     @click="$router.push('/staking')"
                     @mousedown.prevent
                 >
-                    <HeroIcon :pulsing="!totalAccountStake && canStake" />
+                    <HeroIcon :pulsing="!totalAccountStake && canStake" :disabled="$config.disableNetworkInteraction" />
                 </button>
-            </div>
-            <span>
+            </template>
+            <template #default>
                 {{ $t('Stake NIM') }}
-            </span>
+            </template>
         </Tooltip>
     </div>
 </template>
@@ -37,12 +37,14 @@ import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
+import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { MIN_STAKE } from '../../lib/Constants';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
+        const { config } = useConfig();
         const { activeAddressInfo } = useAddressStore();
         const { totalAccountStake, totalActiveStake } = useStakingStore();
         const { isMobile } = useWindowSize();
@@ -54,7 +56,8 @@ export default defineComponent({
          * The user can stake if they have a balance of at least MIN_STAKE.
          */
         const canStake = computed(() => !!(
-            activeAddressInfo.value
+            !config.disableNetworkInteraction
+            && activeAddressInfo.value
             && activeAddressInfo.value.balance
             && activeAddressInfo.value.balance >= MIN_STAKE
         ));

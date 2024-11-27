@@ -71,6 +71,17 @@ export default defineComponent({
     height: 4.25rem;
     border-radius: 5rem;
 
+    &:disabled {
+        // Same style as for disabled send and receive buttons in AddressOverview
+        pointer-events: none;
+        background: rgba(131, 131, 131, 0.07);
+        color: #B5B6C1;
+
+        .gain {
+            color: #B5B6C1;
+        }
+    }
+
     & > .amount { margin-right: 1.5rem }
 }
 

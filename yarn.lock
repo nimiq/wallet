@@ -1481,10 +1481,10 @@
     comlink "^4.4.1"
     websocket "^1.0.34"
 
-"@nimiq/core@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.2.tgz#2ea39b8dda0965ff93f2eb0a544c69feed0c9ab3"
-  integrity sha512-xjJQxlf83wOVh8DTxGo+2Pi2szBEMw5eJJ9mrEcPFWE57Wov4PSsJ/KTQdbZBxztgK8QWJvhx7Hc5jEslWYzNw==
+"@nimiq/core@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.5.tgz#055407407eb5a3016183460b61c552936d3f989c"
+  integrity sha512-fqTXjPqU3+uCa0W/3X//grMzu96eyyFdJR+aaZ5jlZrEah/Pb/ERjHuTgsC3y0TBBuYT8ohTDHktvs+p8MKPPA==
   dependencies:
     comlink "^4.4.1"
     websocket "^1.0.34"

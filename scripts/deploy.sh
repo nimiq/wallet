@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Exit on error
-set -e
+set -eu
+set -o pipefail
 
 # Color definitions
 RED='\033[0;31m'
@@ -61,6 +62,7 @@ SYNC_TRANSLATIONS=true
 BUILD_ENV=""
 DEPLOY_ONLY=false
 SAME_AS=""
+VERSION_PROVIDED_BY_USER=false
 
 # Define deploy servers for different environments
 MAINNET_SERVERS=("deploy_${APP_NAME}@web-1" "deploy_${APP_NAME}@web-2" "deploy_${APP_NAME}@web-3" "deploy_${APP_NAME}@web-4")

@@ -31,7 +31,7 @@
         <UpdateNotification/>
 
         <transition name="fade">
-            <div v-if="$config.showHelpButton && $route.name !== 'network'">
+            <div v-if="$config.showHelpButton && $route.name !== 'network' && $route.name !== 'settings'">
                 <WalletStatusButton/>
             </div>
         </transition>

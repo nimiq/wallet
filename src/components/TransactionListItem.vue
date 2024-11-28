@@ -445,7 +445,7 @@ svg {
             width: 5.5rem;
             height: 5.5rem;
 
-            > svg {
+            > svg:not(.hero-icon) {
                 width: 5rem;
                 height: 5rem;
                 margin: 0.25rem;

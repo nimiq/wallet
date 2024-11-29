@@ -359,6 +359,8 @@ export async function syncFromHub() {
         listedCashlinks = await hubApi.cashlinks();
     } catch (error: any) {
         if (error.message === 'MIGRATION_REQUIRED') {
+            // Ensure router is ready before redirecting
+            await new Promise((resolve) => { router.onReady(resolve); });
             const behavior = new HubApi.RedirectRequestBehavior() as RequestBehavior<BehaviorType.REDIRECT>;
             hubApi.migrate(behavior);
             return;
@@ -372,6 +374,8 @@ export async function syncFromHub() {
     }
 
     if (!listedAccounts.length) {
+        // Ensure router is ready before redirecting
+        await new Promise((resolve) => { router.onReady(resolve); });
         onboard(true);
         return;
     }

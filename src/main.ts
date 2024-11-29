@@ -50,45 +50,9 @@ async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     initTrials(); // Must be called after storage was initialized, can affect Config
-    // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
-    // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
     await initHubApi();
-    syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
 
     serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
-
-    // Update exchange rates every 2 minutes or every 10 minutes, depending on whether the Wallet is currently actively
-    // used. If an update takes longer than that time due to a provider's rate limit, wait until the update succeeds
-    // before queueing the next update. If the last update before page load was less than 2 minutes ago, wait the
-    // remaining time first.
-    const { timestamp: lastSuccessfulExchangeRateUpdate, updateExchangeRates } = useFiatStore();
-    const { isUserInactive } = useInactivityDetection();
-    let lastTriedExchangeRateUpdate = lastSuccessfulExchangeRateUpdate.value;
-    const TWO_MINUTES = 2 * 60 * 1000;
-    const TEN_MINUTES = 5 * TWO_MINUTES;
-    let exchangeRateUpdateTimer = -1;
-    function queueExchangeRateUpdate() {
-        const interval = isUserInactive.value ? TEN_MINUTES : TWO_MINUTES;
-        // Update lastTriedExchangeRateUpdate as there might have been other exchange rate updates in the meantime, for
-        // example on currency change.
-        lastTriedExchangeRateUpdate = Math.max(lastTriedExchangeRateUpdate, lastSuccessfulExchangeRateUpdate.value);
-        // Also set interval as upper bound to be immune to the user's system clock being wrong.
-        const remainingTime = Math.max(0, Math.min(lastTriedExchangeRateUpdate + interval - Date.now(), interval));
-        clearTimeout(exchangeRateUpdateTimer);
-        exchangeRateUpdateTimer = window.setTimeout(async () => {
-            // Silently ignore errors. If successful, this updates fiatStore.timestamp, which then also triggers price
-            // chart updates in PriceChart.vue.
-            await updateExchangeRates(/* failGracefully */ true);
-            // In contrast to lastSuccessfulExchangeRateUpdate also update lastTriedExchangeRateUpdate on failed
-            // attempts, to avoid repeated rescheduling on failure. Instead, simply skip the failed attempt and try
-            // again at the regular interval. We update the time after the update attempt, instead of before it, because
-            // exchange rates are up-to-date at the time an update successfully finishes, and get old from that point,
-            // and not from the time the update was started.
-            lastTriedExchangeRateUpdate = Date.now();
-            queueExchangeRateUpdate();
-        }, remainingTime);
-    }
-    watch(isUserInactive, queueExchangeRateUpdate); // (Re)schedule exchange rate updates at the desired interval.
 
     // Fetch language file
     const { language } = useSettingsStore();
@@ -102,43 +66,42 @@ async function start() {
         document.title = 'Nimiq Testnet Wallet';
     }
 
-    watch(() => {
-        if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
+    // Initialize APIs based on config
+    if (config.fastspot.apiEndpoint && config.fastspot.apiKey) {
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
-    });
-
-    watch(() => {
-        if (!config.oasis.apiEndpoint) return;
+    }
+    if (config.oasis.apiEndpoint) {
         initOasisApi(config.oasis.apiEndpoint);
-    });
-
-    watch(() => {
-        if (!config.ten31Pass.enabled) return;
+    }
+    if (config.ten31Pass.enabled) {
         initKycConnection();
-    });
+    }
 
     // Make reactive config accessible in components
     Vue.prototype.$config = config;
 
-    new Vue({
+    // Initialize Vue
+    const app = new Vue({
         router,
         i18n,
         render: (h) => h(App),
     }).$mount('#app');
 
+    // Then sync from hub after Vue is mounted
+    await syncFromHub();
+
+    // Setup watchers and launch network services
     launchNetwork();
 
     const { state: { activeCurrency } } = useAccountStore();
 
-    watch(() => {
-        if (!config.enableBitcoin) return;
+    if (config.enableBitcoin) {
         launchElectrum();
-    });
+    }
 
-    watch(() => {
-        if (!config.polygon.enabled) return;
+    if (config.polygon.enabled) {
         launchPolygon();
-    });
+    }
 
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
@@ -147,6 +110,26 @@ async function start() {
     ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }
+
+    // Setup exchange rate updates
+    const { timestamp: lastSuccessfulExchangeRateUpdate, updateExchangeRates } = useFiatStore();
+    const { isUserInactive } = useInactivityDetection();
+    let lastTriedExchangeRateUpdate = lastSuccessfulExchangeRateUpdate.value;
+    const TWO_MINUTES = 2 * 60 * 1000;
+    const TEN_MINUTES = 5 * TWO_MINUTES;
+    let exchangeRateUpdateTimer = -1;
+    function queueExchangeRateUpdate() {
+        const interval = isUserInactive.value ? TEN_MINUTES : TWO_MINUTES;
+        lastTriedExchangeRateUpdate = Math.max(lastTriedExchangeRateUpdate, lastSuccessfulExchangeRateUpdate.value);
+        const remainingTime = Math.max(0, Math.min(lastTriedExchangeRateUpdate + interval - Date.now(), interval));
+        clearTimeout(exchangeRateUpdateTimer);
+        exchangeRateUpdateTimer = window.setTimeout(async () => {
+            await updateExchangeRates(/* failGracefully */ true);
+            lastTriedExchangeRateUpdate = Date.now();
+            queueExchangeRateUpdate();
+        }, remainingTime);
+    }
+    watch(isUserInactive, queueExchangeRateUpdate);
 }
 start();
 

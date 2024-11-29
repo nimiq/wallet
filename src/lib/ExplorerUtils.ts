@@ -24,7 +24,7 @@ export function explorerAddrLink(asset: SwapAsset, address: string) {
         case SwapAsset.NIM:
             return config.environment === ENV_MAIN
                 ? `https://nimiq.watch/#${address}`
-                : `https://test.nimiq.watch/${address}`;
+                : `https://test.nimiq.watch/#${address}`;
         case SwapAsset.BTC:
             return `https://blockstream.info${config.environment === ENV_MAIN ? '' : '/testnet'}/address/${address}`;
         case SwapAsset.USDC:

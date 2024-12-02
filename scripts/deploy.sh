@@ -245,94 +245,102 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
     show_usage
 fi
 
-# Check if first argument is a flag
-if [[ "$1" =~ ^-- ]]; then
-    if [[ "$1" =~ ^--same-as= ]] || [[ "$1" == "--deploy-only" ]]; then
-        # These flags are allowed as first argument
-        :
-    else
-        show_usage "Version number must be the first argument when not using --same-as or --deploy-only"
-    fi
-fi
+# Initialize variables for argument parsing
+ARGS=("$@")
+ARGS_LENGTH=${#ARGS[@]}
+VERSION=""
+i=0
 
-# Initial argument handling
-if [[ "$1" =~ ^--same-as= ]]; then
-    SAME_AS="${1#*=}"
-    if [[ ! "$SAME_AS" =~ ^(testnet|mainnet)$ ]]; then
-        echo -e "${RED}Error: --same-as must be either 'testnet' or 'mainnet'${NC}"
-        exit 1
+# First pass: look for --same-as and --deploy-only flags
+while [ $i -lt $ARGS_LENGTH ]; do
+    arg="${ARGS[$i]}"
+    if [[ "$arg" =~ ^--same-as= ]]; then
+        SAME_AS="${arg#*=}"
+        if [[ ! "$SAME_AS" =~ ^(testnet|mainnet)$ ]]; then
+            echo -e "${RED}Error: --same-as must be either 'testnet' or 'mainnet'${NC}"
+            exit 1
+        fi
+        unset 'ARGS[$i]'
+    elif [[ "$arg" == "--deploy-only" ]]; then
+        DEPLOY_ONLY=true
+        unset 'ARGS[$i]'
     fi
-    VERSION=""
-    shift
-elif [[ "$1" == "--deploy-only" ]]; then
-    VERSION=""
-    DEPLOY_ONLY=true
-    shift
-elif [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    VERSION="$1"
-    VERSION_PROVIDED_BY_USER=true
-    shift
-elif [[ "$1" =~ ^- ]]; then
-    show_usage "Version number must be the first argument when not using --same-as or --deploy-only"
-else
-    show_usage "First argument must be either a version number, --same-as=ENV, or --deploy-only"
+    ((i++))
+done
+
+# Reconstruct args array without the processed flags
+ARGS=("${ARGS[@]}")
+
+# If neither --same-as nor --deploy-only is used, look for version number
+if [ -z "$SAME_AS" ] && [ "$DEPLOY_ONLY" = false ]; then
+    VERSION_FOUND=false
+    for arg in "${ARGS[@]}"; do
+        if [[ "$arg" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            VERSION="$arg"
+            VERSION_PROVIDED_BY_USER=true
+            VERSION_FOUND=true
+            break
+        fi
+    done
+
+    if [ "$VERSION_FOUND" = false ]; then
+        show_usage "Version number is required when not using --same-as or --deploy-only"
+    fi
 fi
 
 # Parse remaining arguments
-while [[ $# -gt 0 ]]; do
-    case $1 in
+for arg in "${ARGS[@]}"; do
+    case $arg in
+        [0-9]*.[0-9]*.[0-9]*)
+            # Skip version number as it's already processed
+            continue
+            ;;
         --deployer=*)
-            DEPLOYER="${1#*=}"
-            shift
+            DEPLOYER="${arg#*=}"
             ;;
         --exclude-release)
             EXCLUDE_RELEASE="[exclude-release]"
-            shift
             ;;
         --no-translations)
             SYNC_TRANSLATIONS=false
-            shift
             ;;
         --mainnet)
             BUILD_ENV="mainnet"
             DEPLOY_SERVERS=("${MAINNET_SERVERS[@]}")
-            shift
             ;;
         --testnet)
             BUILD_ENV="testnet"
             DEPLOY_SERVERS=("${TESTNET_SERVERS[@]}")
-            shift
-            ;;
-        --deploy-only)
-            DEPLOY_ONLY=true
-            shift
-            ;;
-        --same-as=*)
-            SAME_AS="${1#*=}"
-            if [[ ! "$SAME_AS" =~ ^(testnet|mainnet)$ ]]; then
-                echo -e "${RED}Error: --same-as must be either 'testnet' or 'mainnet'${NC}"
-                exit 1
-            fi
-            shift
             ;;
         --dry-run)
             DRY_RUN=true
-            shift
             ;;
         -m)
-            shift
-            if [ $# -eq 0 ]; then
+            # Get the next argument as the commit message
+            shift_count=0
+            for ((j=0; j<${#ARGS[@]}; j++)); do
+                if [ "${ARGS[$j]}" = "$arg" ] && [ $((j+1)) -lt ${#ARGS[@]} ]; then
+                    COMMIT_MSG="${ARGS[$((j+1))]}"
+                    break
+                fi
+            done
+            if [ -z "$COMMIT_MSG" ]; then
                 echo -e "${RED}Error: -m requires a commit message${NC}"
                 exit 1
             fi
-            COMMIT_MSG="$1"
-            shift
             ;;
         *)
-            echo -e "${RED}Error: Unknown parameter $1${NC}"
-            exit 1
+            # Skip if it's the commit message (follows -m)
+            if [ "$prev_arg" != "-m" ]; then
+                # Ignore empty args (from unset array elements)
+                if [ -n "$arg" ]; then
+                    echo -e "${RED}Error: Unknown parameter $arg${NC}"
+                    exit 1
+                fi
+            fi
             ;;
     esac
+    prev_arg="$arg"
 done
 
 # Parameter validation
@@ -474,7 +482,7 @@ echo -e "${BLUE}Checking version against existing tags in deployment repo ($DEPL
 EXISTING_DEPLOY_TAGS=$(git tag | grep "^v[0-9].*-$ENV_TAG-" | sed 's/^v\([0-9][^-]*\).*/\1/')
 for tag in $EXISTING_DEPLOY_TAGS; do
     if ! version_gt "$VERSION" "$tag"; then
-        echo -e "${RED}Error: Version $VERSION is not greater than existing version $tag in deployment repo${NC}"
+        echo -e "${RED}Error: Version $VERSION is not greater than existing version $tag in deployment repo.\nDid you already deploy this version? 🧐${NC}"
         exit 1
     fi
 done

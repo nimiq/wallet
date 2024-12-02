@@ -18,7 +18,7 @@ APP_NAME_CAPITALIZED="Wallet"
 
 # Function to display usage message
 show_usage() {
-    local error_msg="$1"
+    local error_msg="${1:-}"
 
     if [ -n "$error_msg" ]; then
         echo -e "${RED}Error: $error_msg${NC}"
@@ -26,6 +26,17 @@ show_usage() {
     fi
 
     echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet|--testnet] [--deploy-only] [--same-as=ENV]${NC}"
+    echo
+    echo -e "${CYAN}Options:${NC}"
+    echo "  --help                 Show this help message"
+    echo "  --deployer=NAME        Specify the deployer's name"
+    echo "  --exclude-release      Exclude from release notes"
+    echo "  --no-translations      Skip translation synchronization"
+    echo "  --mainnet             Deploy to mainnet"
+    echo "  --testnet             Deploy to testnet"
+    echo "  --deploy-only         Only run deployment step (ssh)"
+    echo "  --same-as=ENV         Use same version as specified environment (testnet or mainnet)"
+    echo "  -m                    Specify commit message"
     echo
     echo -e "${CYAN}Examples:${NC}"
     echo "1. Simple message (testnet):"
@@ -42,8 +53,15 @@ show_usage() {
     echo -e "   ${GREEN}$0 --deploy-only${NC}"
     echo "4. Deploy same version from testnet to mainnet:"
     echo -e "   ${GREEN}$0 --same-as=testnet -m 'Same fixes as testnet' --deployer=john --mainnet${NC}"
-    exit 1
+
+    # Exit with status 0 if this is a help request, 1 if it's an error
+    [ -z "$error_msg" ] && exit 0 || exit 1
 }
+
+# Check for help flag first
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+    show_usage
+fi
 
 # Check if first argument is a flag
 if [[ "$1" =~ ^-- ]]; then

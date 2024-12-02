@@ -148,13 +148,19 @@ confirm_prompt() {
         return 0
     fi
 
-    echo -e "${YELLOW}${prompt_message}${NC}"
-    read -n 1 -r
-    echo    # Move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}Operation cancelled.${NC}"
-        exit 1
-    fi
+    while true; do
+        echo -e "${YELLOW}${prompt_message}${NC}"
+        read -n 1 -r
+        echo    # Move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            return 0
+        elif [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "${RED}Operation cancelled.${NC}"
+            exit 1
+        fi
+        # If neither Y/y nor N/n was pressed, continue the loop
+        echo -e "${YELLOW}Please answer 'y' or 'n'${NC}"
+    done
 }
 
 # Function to handle SSH deployment

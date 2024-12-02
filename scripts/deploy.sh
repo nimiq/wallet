@@ -147,19 +147,52 @@ do_ssh_deployment() {
 
     # SSH into deployment servers
     echo -e "${BLUE}Connecting to deployment servers...${NC}"
+    local deployment_success=true
     for server in "${DEPLOY_SERVERS[@]}"; do
         echo -e "${CYAN}Connecting to $server...${NC}"
         if ! ssh "$server"; then
             echo -e "${RED}Failed to connect to $server${NC}"
-            exit 1
+            deployment_success=false
+            break
         fi
     done
 
-    echo -e "${GREEN}Deployment complete!${NC}"
-    echo -e "${YELLOW}> Please verify that the deployment went through successfully.${NC}"
-    echo -e "${YELLOW}> Please also verify that the website is working correctly on $BUILD_ENV and is correctly using the new version $VERSION.${NC}"
-    echo -e "${YELLOW}> https://$([ "$BUILD_ENV" = "mainnet" ] && echo "${APP_NAME}.nimiq.com" || echo "${APP_NAME}.nimiq-testnet.com")${NC}"
+    if [ "$deployment_success" = true ]; then
+        echo -e "${GREEN}Deployment complete!${NC}"
+        echo -e "${YELLOW}> Please verify that the deployment went through successfully.${NC}"
+        echo -e "${YELLOW}> Please also verify that the website is working correctly on $BUILD_ENV and is correctly using the new version $VERSION.${NC}"
+        echo -e "${YELLOW}> https://$([ "$BUILD_ENV" = "mainnet" ] && echo "${APP_NAME}.nimiq.com" || echo "${APP_NAME}.nimiq-testnet.com")${NC}"
+        return 0
+    else
+        return 1
+    fi
 }
+
+# Function to cleanup local tags on failure
+cleanup_local_tags() {
+    if [ "$DRY_RUN" = true ] || [ -z "$VERSION" ]; then
+        return 0
+    fi
+
+    echo -e "${YELLOW}Cleaning up local tags...${NC}"
+
+    # Clean up source repo tag if it exists and we're not using --same-as
+    if [ -z "$SAME_AS" ]; then
+        if git tag | grep -q "^v$VERSION$"; then
+            echo -e "${CYAN}Removing source tag v$VERSION...${NC}"
+            run_command "cd .. && git tag -d \"v$VERSION\" && cd -" "Failed to remove source tag"
+        fi
+    fi
+
+    # Clean up deployment repo tag if it exists
+    if git tag | grep -q "^v$VERSION-$ENV_TAG-$DEPLOYER$"; then
+        echo -e "${CYAN}Removing deployment tag v$VERSION-$ENV_TAG-$DEPLOYER...${NC}"
+        run_command "git tag -d \"v$VERSION-$ENV_TAG-$DEPLOYER\"" "Failed to remove deployment tag"
+    fi
+}
+
+# Set up trap for cleanup on script exit
+trap 'cleanup_status=$?; if [ $cleanup_status -ne 0 ]; then cleanup_local_tags; fi; exit $cleanup_status' EXIT INT TERM
 
 # Function to create commit/tag message
 create_message() {
@@ -413,9 +446,11 @@ if [ -z "$SAME_AS" ]; then
         run_command "git tag -a -s \"v$VERSION\" -m \"$(create_message)\"" "Failed to create git tag"
     fi
 
-    # Push changes and tags
-    echo -e "${BLUE}Pushing source changes and tags...${NC}"
-    run_command "git push && git push --tags" "Failed to push changes"
+    # Push changes but not tags for source repo
+    if [ -z "$SAME_AS" ]; then
+        echo -e "${BLUE}Pushing source changes...${NC}"
+        run_command "git push" "Failed to push changes"
+    fi
 else
     echo -e "${BLUE}Skipping source tag creation since --same-as is used${NC}"
 fi
@@ -467,9 +502,23 @@ run_command "git commit -m \"$(create_message)\"" "Failed to commit changes"
 echo -e "${BLUE}Creating deployment tag...${NC}"
 run_command "git tag -a -s \"v$VERSION-$ENV_TAG-$DEPLOYER\" -m \"$(create_message)\"" "Failed to create deployment tag"
 
-# Push deployment changes and tags
-echo -e "${BLUE}Pushing deployment changes and tags...${NC}"
-run_command "git push && git push --tags" "Failed to push deployment changes"
+# Push deployment changes but not tags
+echo -e "${BLUE}Pushing deployment changes...${NC}"
+run_command "git push" "Failed to push deployment changes"
+
+# Push all tags right before deployment
+if [ "$DRY_RUN" = false ]; then
+    echo -e "${BLUE}Pushing all tags before deployment...${NC}"
+    if [ -z "$SAME_AS" ]; then
+        echo -e "${CYAN}Pushing source tags...${NC}"
+        run_command "cd .. && git push --tags && cd -" "Failed to push source tags"
+    fi
+    echo -e "${CYAN}Pushing deployment tags...${NC}"
+    run_command "git push --tags" "Failed to push deployment tags"
+fi
 
 # Run the deployment
-do_ssh_deployment
+if ! do_ssh_deployment; then
+    echo -e "${RED}Deployment failed. Local tags will be cleaned up.${NC}"
+    exit 1
+fi

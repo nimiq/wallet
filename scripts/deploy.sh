@@ -51,35 +51,59 @@ show_usage() {
         echo
     fi
 
-    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet|--testnet] [--deploy-only] [--same-as=ENV] [--dry-run]${NC}"
+    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [OPTIONS]${NC}"
     echo
-    echo -e "${CYAN}Options:${NC}"
-    echo "  --help                 Show this help message"
-    echo "  --deployer=NAME        Specify the deployer's name"
-    echo "  --exclude-release      Exclude from release notes"
-    echo "  --no-translations      Skip translation synchronization"
-    echo "  --mainnet             Deploy to mainnet"
-    echo "  --testnet             Deploy to testnet"
-    echo "  --deploy-only         Only run deployment step (ssh)"
-    echo "  --same-as=ENV         Use same version as specified environment (testnet or mainnet)"
+    echo -e "${CYAN}Required Arguments:${NC}"
+    echo "  <version_number>        Version to deploy in X.Y.Z format (e.g., 3.0.10)"
+    echo "                         Not required if using --deploy-only or --same-as"
+    echo "  -m <commit_message>     Commit message for the deployment"
+    echo "                         Required unless using --deploy-only"
+    echo "  --deployer=NAME        Your name/identifier for the deployment"
+    echo "                         Required unless using --deploy-only"
+    echo "  --mainnet|--testnet    Target environment for deployment (must specify one)"
+    echo
+    echo -e "${CYAN}Optional Arguments:${NC}"
+    echo "  --help                 Show this detailed help message"
+    echo "  --exclude-release      Add [exclude-release] tag to exclude this deployment"
+    echo "                         from release notes"
+    echo "  --no-translations      Skip translation synchronization step"
+    echo "  --deploy-only          Only run the deployment step (ssh)"
+    echo "                         Useful for retrying a failed deployment"
+    echo "  --same-as=ENV          Use same version as specified environment"
+    echo "                         ENV can be 'testnet' or 'mainnet'"
+    echo "                         Cannot be used with explicit version number"
     echo "  --dry-run             Show what would be done without making any changes"
-    echo "  -m                    Specify commit message"
+    echo "                         Useful for testing deployment configuration"
+    echo
+    echo -e "${CYAN}Environment Selection (Required):${NC}"
+    echo "  --mainnet             Deploy to production environment"
+    echo "                         Servers: ${MAINNET_SERVERS[*]}"
+    echo "  --testnet             Deploy to test environment"
+    echo "                         Servers: ${TESTNET_SERVERS[*]}"
     echo
     echo -e "${CYAN}Examples:${NC}"
-    echo "1. Simple message (testnet):"
-    echo -e "   ${GREEN}$0 3.0.10 -m 'Fix network stall handling' --deployer=matheo --testnet${NC}"
+    echo "1. Deploy to testnet (basic):"
+    echo -e "   ${GREEN}$0 3.0.10 -m '- Fix network stall handling' --deployer=matheo --testnet${NC}"
     echo
-    echo "2. Multi-line message (mainnet):"
-    echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers-not-shown warning to not overlap with bottom row"
-    echo "- Add a \"Failed to fetch transactions\" notice when transaction fetching fails"
-    echo "- Add a retry-mechanism to all Nimiq network requests"
-    echo "- Also hide staked amounts when privacy mode is on"
-    echo -e "- Enforce minimum stake on the slider itself' --deployer=john --mainnet${NC}"
+    echo "2. Deploy to mainnet with multi-line message:"
+    echo -e "   ${GREEN}$0 3.0.4 -m '- Move network browsers warning"
+    echo "- Add retry-mechanism to network requests"
+    echo "- Hide staked amounts in privacy mode' --deployer=john --mainnet${NC}"
     echo
-    echo "3. Deploy only (after a cancelled deployment):"
-    echo -e "   ${GREEN}$0 --deploy-only${NC}"
-    echo "4. Deploy same version from testnet to mainnet:"
+    echo "3. Retry a failed deployment:"
+    echo -e "   ${GREEN}$0 --deploy-only --testnet${NC}"
+    echo
+    echo "4. Deploy testnet version to mainnet:"
     echo -e "   ${GREEN}$0 --same-as=testnet -m 'Same fixes as testnet' --deployer=john --mainnet${NC}"
+    echo
+    echo "5. Dry run to test deployment:"
+    echo -e "   ${GREEN}$0 3.0.11 -m 'Test deployment' --deployer=jane --testnet --dry-run${NC}"
+    echo
+    echo -e "${CYAN}Notes:${NC}"
+    echo "- Version must be greater than the last deployed version"
+    echo "- Commit message (-m) supports multi-line text"
+    echo "- --deploy-only skips build and just runs deployment"
+    echo "- --same-as copies version from another environment"
 
     # Exit with status 0 if this is a help request, 1 if it's an error
     [ -z "$error_msg" ] && exit 0 || exit 1
@@ -241,7 +265,7 @@ show_deployment_recap() {
 #########################
 
 # Check for help flag first
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+if [ $# -eq 0 ] || [ "${1:-}" == "--help" ] || [ "${1:-}" == "-h" ]; then
     show_usage
 fi
 

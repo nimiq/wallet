@@ -25,7 +25,7 @@ show_usage() {
         echo
     fi
 
-    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet|--testnet] [--deploy-only] [--same-as=ENV]${NC}"
+    echo -e "${BLUE}Usage: $0 <version_number> -m <commit_message> --deployer=NAME [--exclude-release] [--no-translations] [--mainnet|--testnet] [--deploy-only] [--same-as=ENV] [--dry-run]${NC}"
     echo
     echo -e "${CYAN}Options:${NC}"
     echo "  --help                 Show this help message"
@@ -36,6 +36,7 @@ show_usage() {
     echo "  --testnet             Deploy to testnet"
     echo "  --deploy-only         Only run deployment step (ssh)"
     echo "  --same-as=ENV         Use same version as specified environment (testnet or mainnet)"
+    echo "  --dry-run             Show what would be done without making any changes"
     echo "  -m                    Specify commit message"
     echo
     echo -e "${CYAN}Examples:${NC}"
@@ -81,6 +82,7 @@ BUILD_ENV=""
 DEPLOY_ONLY=false
 SAME_AS=""
 VERSION_PROVIDED_BY_USER=false
+DRY_RUN=false
 
 # Define deploy servers for different environments
 MAINNET_SERVERS=("deploy_${APP_NAME}@web-1" "deploy_${APP_NAME}@web-2" "deploy_${APP_NAME}@web-3" "deploy_${APP_NAME}@web-4")
@@ -147,6 +149,10 @@ while [[ $# -gt 0 ]]; do
                 echo -e "${RED}Error: --same-as must be either 'testnet' or 'mainnet'${NC}"
                 exit 1
             fi
+            shift
+            ;;
+        --dry-run)
+            DRY_RUN=true
             shift
             ;;
         -m)
@@ -222,7 +228,20 @@ run_command() {
     local cmd=$1
     local error_msg=${2:-"Command failed"}
 
-    echo -e "${YELLOW}$ $cmd${NC}"
+    # For build command in dry run mode, set CI environment variables
+    if [ "$DRY_RUN" = true ] && [[ "$cmd" == *"yarn build"* ]]; then
+        cmd="CI=true CI_COMMIT_BRANCH=dry-run CI_PIPELINE_ID=0 CI_COMMIT_SHORT_SHA=dryrun $cmd"
+    fi
+
+    if [ "$DRY_RUN" = true ]; then
+        # Only skip git operations in dry-run mode
+        if [[ "$cmd" =~ ^git|^ssh ]]; then
+            echo -e "${CYAN}[DRY RUN] $cmd${NC}"
+            return 0
+        fi
+    else
+        echo -e "${YELLOW}$ $cmd${NC}"
+    fi
     if ! eval "$cmd"; then
         echo -e "${RED}Error: $error_msg${NC}"
         exit 1
@@ -231,6 +250,14 @@ run_command() {
 
 # Function to handle SSH deployment
 do_ssh_deployment() {
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${CYAN}[DRY RUN] Would deploy to the following servers:${NC}"
+        for server in "${DEPLOY_SERVERS[@]}"; do
+            echo -e "${CYAN}  - $server${NC}"
+        done
+        return 0
+    fi
+
     # Confirmation prompt before deployment
     echo -e "${YELLOW}${1:-The new version is ready. Do you want to proceed with the deployment? [y/N] }${NC}"
     read -n 1 -r
@@ -268,9 +295,10 @@ fi
 if [ -z "$SAME_AS" ]; then
     echo -e "${BLUE}Checking version against existing tags in ${APP_NAME} repo...${NC}"
     EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
+    LATEST_TAG=$(echo "$EXISTING_TAGS" | sort -V | tail -n 1)
     for tag in $EXISTING_TAGS; do
         if ! version_gt "$VERSION" "$tag"; then
-            echo -e "${RED}Error: Version $VERSION is not greater than existing version $tag${NC}"
+            echo -e "${RED}Error: Version $VERSION is not greater than latest version $LATEST_TAG${NC}"
             exit 1
         fi
     done
@@ -284,10 +312,17 @@ ENV_TAG=$([ "$BUILD_ENV" = "mainnet" ] && echo "main" || echo "test")
 # Function to show deployment recap
 show_deployment_recap() {
     echo
-    echo -e "${BLUE}=== Deployment Recap ===${NC}"
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${YELLOW}=== DRY RUN - Deployment Recap (No changes will be made) ===${NC}"
+    else
+        echo -e "${BLUE}=== Deployment Recap ===${NC}"
+    fi
     echo -e "${CYAN}Version:${NC} $VERSION"
     echo -e "${CYAN}Environment:${NC} $BUILD_ENV"
     echo -e "${CYAN}Deployer:${NC} $DEPLOYER"
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${CYAN}Mode:${NC} ${YELLOW}DRY RUN (No GIT or SSH operations will be performed)${NC}"
+    fi
     echo -e "${CYAN}Target Servers:${NC}"
     for server in "${DEPLOY_SERVERS[@]}"; do
         echo -e "  - $server"
@@ -297,9 +332,14 @@ show_deployment_recap() {
     echo -e "${CYAN}Commit Message:${NC}"
     echo "$COMMIT_MSG" | sed 's/^/  /'
     echo
-    echo -e "${YELLOW}Please review the deployment details above. Do you want to proceed? [y/N]${NC}"
-    read -n 1 -r
-    echo    # Move to a new line
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${YELLOW}This is a dry run - no changes will be made. Proceeding automatically...${NC}"
+        REPLY="y"
+    else
+        echo -e "${YELLOW}Please review the deployment details above. Do you want to proceed? [y/N]${NC}"
+        read -n 1 -r
+        echo    # Move to a new line
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
         echo -e "${RED}Deployment cancelled.${NC}"
@@ -355,8 +395,13 @@ $EXCLUDE_RELEASE"
 
 # Create and push source tag (skip if using --same-as)
 if [ -z "$SAME_AS" ]; then
-    echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
-    run_command "git tag -a -s \"v$VERSION\" -m \"$(create_message)\"" "Failed to create git tag"
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${CYAN}[DRY RUN] Would create source tag v$VERSION with message:${NC}"
+        create_message
+    else
+        echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
+        run_command "git tag -a -s \"v$VERSION\" -m \"$(create_message)\"" "Failed to create git tag"
+    fi
 
     # Push changes and tags
     echo -e "${BLUE}Pushing source changes and tags...${NC}"
@@ -402,13 +447,17 @@ run_command "git add dist" "Failed to stage changes"
 echo -e "${YELLOW}Current git status:${NC}"
 git status
 
-echo -e "${YELLOW}Please review the changes above. Do you want to proceed with the commit? [y/N]${NC}"
-read -n 1 -r
-echo    # Move to a new line
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-    echo -e "${RED}Deployment cancelled.${NC}"
-    exit 1
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${YELLOW}This is a dry run - no changes will be made. Proceeding automatically...${NC}"
+else
+    echo -e "${YELLOW}Please review the changes above. Do you want to proceed with the commit? [y/N]${NC}"
+    read -n 1 -r
+    echo    # Move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+        echo -e "${RED}Deployment cancelled.${NC}"
+        exit 1
+    fi
 fi
 
 # Commit changes

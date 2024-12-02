@@ -468,7 +468,7 @@ else
     echo -e "${BLUE}Skipping version comparison check since --same-as is used${NC}"
 fi
 
-# Create and push source tag (skip if using --same-as)
+# Create source tag (skip if using --same-as)
 if [ -z "$SAME_AS" ]; then
     if [ "$DRY_RUN" = true ]; then
         echo -e "${CYAN}[DRY RUN] Would create source tag v$VERSION with message:${NC}"
@@ -476,12 +476,6 @@ if [ -z "$SAME_AS" ]; then
     else
         echo -e "${BLUE}Creating source tag v$VERSION...${NC}"
         run_command "git tag -a -s \"v$VERSION\" -m \"$(create_message)\"" "Failed to create git tag"
-    fi
-
-    # Push changes but not tags for source repo
-    if [ -z "$SAME_AS" ]; then
-        echo -e "${BLUE}Pushing source changes...${NC}"
-        run_command "git push" "Failed to push changes"
     fi
 else
     echo -e "${BLUE}Skipping source tag creation since --same-as is used${NC}"
@@ -534,19 +528,15 @@ run_command "git commit -m \"$(create_message)\"" "Failed to commit changes"
 echo -e "${BLUE}Creating deployment tag...${NC}"
 run_command "git tag -a -s \"v$VERSION-$ENV_TAG-$DEPLOYER\" -m \"$(create_message)\"" "Failed to create deployment tag"
 
-# Push deployment changes but not tags
-echo -e "${BLUE}Pushing deployment changes...${NC}"
-run_command "git push" "Failed to push deployment changes"
-
-# Push all tags right before deployment
+# Push all changes and tags to both repositories right before deployment
 if [ "$DRY_RUN" = false ]; then
-    echo -e "${BLUE}Pushing all tags before deployment...${NC}"
+    echo -e "${BLUE}Pushing all changes and tags to remote repositories...${NC}"
     if [ -z "$SAME_AS" ]; then
-        echo -e "${CYAN}Pushing source tags...${NC}"
-        run_command "cd .. && git push --tags && cd -" "Failed to push source tags"
+        echo -e "${CYAN}Pushing source repository changes and tags...${NC}"
+        run_command "cd .. && git push && git push --tags && cd -" "Failed to push source changes and tags"
     fi
-    echo -e "${CYAN}Pushing deployment tags...${NC}"
-    run_command "git push --tags" "Failed to push deployment tags"
+    echo -e "${CYAN}Pushing deployment repository changes and tags...${NC}"
+    run_command "git push && git push --tags" "Failed to push deployment changes and tags"
 fi
 
 # Run the deployment

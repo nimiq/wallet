@@ -248,6 +248,24 @@ run_command() {
     fi
 }
 
+# Function to handle confirmation prompts
+confirm_prompt() {
+    local prompt_message="${1:-Are you sure you want to proceed? [y/N]}"
+
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${YELLOW}This is a dry run - no changes will be made. Proceeding automatically...${NC}"
+        return 0
+    fi
+
+    echo -e "${YELLOW}${prompt_message}${NC}"
+    read -n 1 -r
+    echo    # Move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${RED}Operation cancelled.${NC}"
+        exit 1
+    fi
+}
+
 # Function to handle SSH deployment
 do_ssh_deployment() {
     if [ "$DRY_RUN" = true ]; then
@@ -258,15 +276,7 @@ do_ssh_deployment() {
         return 0
     fi
 
-    # Confirmation prompt before deployment
-    echo -e "${YELLOW}${1:-The new version is ready. Do you want to proceed with the deployment? [y/N] }${NC}"
-    read -n 1 -r
-    echo    # Move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
-        echo -e "${RED}Deployment cancelled.${NC}"
-        exit 1
-    fi
+    confirm_prompt "${1:-The new version is ready. Do you want to proceed with the deployment? [y/N]}"
 
     # SSH into deployment servers
     echo -e "${BLUE}Connecting to deployment servers...${NC}"
@@ -332,19 +342,8 @@ show_deployment_recap() {
     echo -e "${CYAN}Commit Message:${NC}"
     echo "$COMMIT_MSG" | sed 's/^/  /'
     echo
-    if [ "$DRY_RUN" = true ]; then
-        echo -e "${YELLOW}This is a dry run - no changes will be made. Proceeding automatically...${NC}"
-        REPLY="y"
-    else
-        echo -e "${YELLOW}Please review the deployment details above. Do you want to proceed? [y/N]${NC}"
-        read -n 1 -r
-        echo    # Move to a new line
-    fi
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
-        echo -e "${RED}Deployment cancelled.${NC}"
-        exit 1
-    fi
+
+    confirm_prompt "Please review the deployment details above. Do you want to proceed? [y/N]"
 }
 
 # Add recap before starting deployment process
@@ -447,18 +446,7 @@ run_command "git add dist" "Failed to stage changes"
 echo -e "${YELLOW}Current git status:${NC}"
 git status
 
-if [ "$DRY_RUN" = true ]; then
-    echo -e "${YELLOW}This is a dry run - no changes will be made. Proceeding automatically...${NC}"
-else
-    echo -e "${YELLOW}Please review the changes above. Do you want to proceed with the commit? [y/N]${NC}"
-    read -n 1 -r
-    echo    # Move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
-    then
-        echo -e "${RED}Deployment cancelled.${NC}"
-        exit 1
-    fi
-fi
+confirm_prompt "Please review the changes above. Do you want to proceed with the commit? [y/N]"
 
 # Commit changes
 echo -e "${CYAN}Committing changes...${NC}"

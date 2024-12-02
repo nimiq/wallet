@@ -4,6 +4,10 @@
 set -eu
 set -o pipefail
 
+###################
+### VARIABLES #####
+###################
+
 # Color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -12,9 +16,31 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# App name
+# App configuration
 APP_NAME="wallet"
 APP_NAME_CAPITALIZED="Wallet"
+DEPLOYMENT_REPO="deployment-${APP_NAME}"
+
+# Server configurations
+MAINNET_SERVERS=("deploy_${APP_NAME}@web-1" "deploy_${APP_NAME}@web-2" "deploy_${APP_NAME}@web-3" "deploy_${APP_NAME}@web-4")
+TESTNET_SERVERS=("deploy_${APP_NAME}@testnet-web1")
+DEPLOY_SERVERS=()
+
+# Default values
+DEPLOYER=""
+EXCLUDE_RELEASE=""
+SYNC_TRANSLATIONS=true
+BUILD_ENV=""
+DEPLOY_ONLY=false
+SAME_AS=""
+VERSION_PROVIDED_BY_USER=false
+DRY_RUN=false
+VERSION=""
+COMMIT_MSG=""
+
+###################
+### FUNCTIONS #####
+###################
 
 # Function to display usage message
 show_usage() {
@@ -59,6 +85,128 @@ show_usage() {
     [ -z "$error_msg" ] && exit 0 || exit 1
 }
 
+# Function to compare version numbers
+version_gt() {
+    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
+}
+
+# Function to run command with error handling
+run_command() {
+    local cmd=$1
+    local error_msg=${2:-"Command failed"}
+
+    # For build command in dry run mode, set CI environment variables
+    if [ "$DRY_RUN" = true ] && [[ "$cmd" == *"yarn build"* ]]; then
+        cmd="CI=true CI_COMMIT_BRANCH=dry-run CI_PIPELINE_ID=0 CI_COMMIT_SHORT_SHA=dryrun $cmd"
+    fi
+
+    if [ "$DRY_RUN" = true ]; then
+        # Only skip git operations in dry-run mode
+        if [[ "$cmd" =~ ^git|^ssh ]]; then
+            echo -e "${CYAN}[DRY RUN] $cmd${NC}"
+            return 0
+        fi
+    else
+        echo -e "${YELLOW}$ $cmd${NC}"
+    fi
+    if ! eval "$cmd"; then
+        echo -e "${RED}Error: $error_msg${NC}"
+        exit 1
+    fi
+}
+
+# Function to handle confirmation prompts
+confirm_prompt() {
+    local prompt_message="${1:-Are you sure you want to proceed? [y/N]}"
+
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${YELLOW}This is a dry run - no changes will be made. Proceeding automatically...${NC}"
+        return 0
+    fi
+
+    echo -e "${YELLOW}${prompt_message}${NC}"
+    read -n 1 -r
+    echo    # Move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${RED}Operation cancelled.${NC}"
+        exit 1
+    fi
+}
+
+# Function to handle SSH deployment
+do_ssh_deployment() {
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${CYAN}[DRY RUN] Would deploy to the following servers:${NC}"
+        for server in "${DEPLOY_SERVERS[@]}"; do
+            echo -e "${CYAN}  - $server${NC}"
+        done
+        return 0
+    fi
+
+    confirm_prompt "${1:-The new version is ready. Do you want to proceed with the deployment? [y/N]}"
+
+    # SSH into deployment servers
+    echo -e "${BLUE}Connecting to deployment servers...${NC}"
+    for server in "${DEPLOY_SERVERS[@]}"; do
+        echo -e "${CYAN}Connecting to $server...${NC}"
+        if ! ssh "$server"; then
+            echo -e "${RED}Failed to connect to $server${NC}"
+            exit 1
+        fi
+    done
+
+    echo -e "${GREEN}Deployment complete!${NC}"
+    echo -e "${YELLOW}> Please verify that the deployment went through successfully.${NC}"
+    echo -e "${YELLOW}> Please also verify that the website is working correctly on $BUILD_ENV and is correctly using the new version $VERSION.${NC}"
+    echo -e "${YELLOW}> https://$([ "$BUILD_ENV" = "mainnet" ] && echo "${APP_NAME}.nimiq.com" || echo "${APP_NAME}.nimiq-testnet.com")${NC}"
+}
+
+# Function to create commit/tag message
+create_message() {
+    local message="Nimiq ${APP_NAME_CAPITALIZED} v$VERSION
+
+$COMMIT_MSG"
+
+    if [ -n "$EXCLUDE_RELEASE" ]; then
+        message+="
+
+$EXCLUDE_RELEASE"
+    fi
+
+    echo "$message"
+}
+
+# Function to show deployment recap
+show_deployment_recap() {
+    echo
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${YELLOW}=== DRY RUN - Deployment Recap (No changes will be made) ===${NC}"
+    else
+        echo -e "${BLUE}=== Deployment Recap ===${NC}"
+    fi
+    echo -e "${CYAN}Version:${NC} $VERSION"
+    echo -e "${CYAN}Environment:${NC} $BUILD_ENV"
+    echo -e "${CYAN}Deployer:${NC} $DEPLOYER"
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${CYAN}Mode:${NC} ${YELLOW}DRY RUN (No GIT or SSH operations will be performed)${NC}"
+    fi
+    echo -e "${CYAN}Target Servers:${NC}"
+    for server in "${DEPLOY_SERVERS[@]}"; do
+        echo -e "  - $server"
+    done
+    echo -e "${CYAN}Exclude Release:${NC} $([ -n "$EXCLUDE_RELEASE" ] && echo "Yes" || echo "No")"
+    echo -e "${CYAN}Sync Translations:${NC} $SYNC_TRANSLATIONS"
+    echo -e "${CYAN}Commit Message:${NC}"
+    echo "$COMMIT_MSG" | sed 's/^/  /'
+    echo
+
+    confirm_prompt "Please review the deployment details above. Do you want to proceed? [y/N]"
+}
+
+#########################
+### MAIN EXECUTION ######
+#########################
+
 # Check for help flag first
 if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
     show_usage
@@ -73,23 +221,6 @@ if [[ "$1" =~ ^-- ]]; then
         show_usage "Version number must be the first argument when not using --same-as or --deploy-only"
     fi
 fi
-
-# Default values
-DEPLOYER=""
-EXCLUDE_RELEASE=""
-SYNC_TRANSLATIONS=true
-BUILD_ENV=""
-DEPLOY_ONLY=false
-SAME_AS=""
-VERSION_PROVIDED_BY_USER=false
-DRY_RUN=false
-
-# Define deploy servers for different environments
-MAINNET_SERVERS=("deploy_${APP_NAME}@web-1" "deploy_${APP_NAME}@web-2" "deploy_${APP_NAME}@web-3" "deploy_${APP_NAME}@web-4")
-TESTNET_SERVERS=("deploy_${APP_NAME}@testnet-web1")
-DEPLOY_SERVERS=()
-
-DEPLOYMENT_REPO="deployment-${APP_NAME}"
 
 # Initial argument handling
 if [[ "$1" =~ ^--same-as= ]]; then
@@ -218,81 +349,8 @@ elif [ "$VERSION_PROVIDED_BY_USER" = true ]; then
     show_usage "Version number cannot be provided when using --deploy-only or --same-as"
 fi
 
-# Function to compare version numbers
-version_gt() {
-    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
-}
-
-# Function to run command with error handling
-run_command() {
-    local cmd=$1
-    local error_msg=${2:-"Command failed"}
-
-    # For build command in dry run mode, set CI environment variables
-    if [ "$DRY_RUN" = true ] && [[ "$cmd" == *"yarn build"* ]]; then
-        cmd="CI=true CI_COMMIT_BRANCH=dry-run CI_PIPELINE_ID=0 CI_COMMIT_SHORT_SHA=dryrun $cmd"
-    fi
-
-    if [ "$DRY_RUN" = true ]; then
-        # Only skip git operations in dry-run mode
-        if [[ "$cmd" =~ ^git|^ssh ]]; then
-            echo -e "${CYAN}[DRY RUN] $cmd${NC}"
-            return 0
-        fi
-    else
-        echo -e "${YELLOW}$ $cmd${NC}"
-    fi
-    if ! eval "$cmd"; then
-        echo -e "${RED}Error: $error_msg${NC}"
-        exit 1
-    fi
-}
-
-# Function to handle confirmation prompts
-confirm_prompt() {
-    local prompt_message="${1:-Are you sure you want to proceed? [y/N]}"
-
-    if [ "$DRY_RUN" = true ]; then
-        echo -e "${YELLOW}This is a dry run - no changes will be made. Proceeding automatically...${NC}"
-        return 0
-    fi
-
-    echo -e "${YELLOW}${prompt_message}${NC}"
-    read -n 1 -r
-    echo    # Move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}Operation cancelled.${NC}"
-        exit 1
-    fi
-}
-
-# Function to handle SSH deployment
-do_ssh_deployment() {
-    if [ "$DRY_RUN" = true ]; then
-        echo -e "${CYAN}[DRY RUN] Would deploy to the following servers:${NC}"
-        for server in "${DEPLOY_SERVERS[@]}"; do
-            echo -e "${CYAN}  - $server${NC}"
-        done
-        return 0
-    fi
-
-    confirm_prompt "${1:-The new version is ready. Do you want to proceed with the deployment? [y/N]}"
-
-    # SSH into deployment servers
-    echo -e "${BLUE}Connecting to deployment servers...${NC}"
-    for server in "${DEPLOY_SERVERS[@]}"; do
-        echo -e "${CYAN}Connecting to $server...${NC}"
-        if ! ssh "$server"; then
-            echo -e "${RED}Failed to connect to $server${NC}"
-            exit 1
-        fi
-    done
-
-    echo -e "${GREEN}Deployment complete!${NC}"
-    echo -e "${YELLOW}> Please verify that the deployment went through successfully.${NC}"
-    echo -e "${YELLOW}> Please also verify that the website is working correctly on $BUILD_ENV and is correctly using the new version $VERSION.${NC}"
-    echo -e "${YELLOW}> https://$([ "$BUILD_ENV" = "mainnet" ] && echo "${APP_NAME}.nimiq.com" || echo "${APP_NAME}.nimiq-testnet.com")${NC}"
-}
+# Set environment tag based on BUILD_ENV
+ENV_TAG=$([ "$BUILD_ENV" = "mainnet" ] && echo "main" || echo "test")
 
 # If deploy-only flag is set, skip to deployment
 if [ "$DEPLOY_ONLY" = true ]; then
@@ -301,55 +359,8 @@ if [ "$DEPLOY_ONLY" = true ]; then
     exit 0
 fi
 
-# Check if new version is greater than all existing tags in current repo
-if [ -z "$SAME_AS" ]; then
-    echo -e "${BLUE}Checking version against existing tags in ${APP_NAME} repo...${NC}"
-    EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
-    LATEST_TAG=$(echo "$EXISTING_TAGS" | sort -V | tail -n 1)
-    for tag in $EXISTING_TAGS; do
-        if ! version_gt "$VERSION" "$tag"; then
-            echo -e "${RED}Error: Version $VERSION is not greater than latest version $LATEST_TAG${NC}"
-            exit 1
-        fi
-    done
-else
-    echo -e "${BLUE}Skipping version comparison check since --same-as is used${NC}"
-fi
-
-# Set environment tag based on BUILD_ENV
-ENV_TAG=$([ "$BUILD_ENV" = "mainnet" ] && echo "main" || echo "test")
-
-# Function to show deployment recap
-show_deployment_recap() {
-    echo
-    if [ "$DRY_RUN" = true ]; then
-        echo -e "${YELLOW}=== DRY RUN - Deployment Recap (No changes will be made) ===${NC}"
-    else
-        echo -e "${BLUE}=== Deployment Recap ===${NC}"
-    fi
-    echo -e "${CYAN}Version:${NC} $VERSION"
-    echo -e "${CYAN}Environment:${NC} $BUILD_ENV"
-    echo -e "${CYAN}Deployer:${NC} $DEPLOYER"
-    if [ "$DRY_RUN" = true ]; then
-        echo -e "${CYAN}Mode:${NC} ${YELLOW}DRY RUN (No GIT or SSH operations will be performed)${NC}"
-    fi
-    echo -e "${CYAN}Target Servers:${NC}"
-    for server in "${DEPLOY_SERVERS[@]}"; do
-        echo -e "  - $server"
-    done
-    echo -e "${CYAN}Exclude Release:${NC} $([ -n "$EXCLUDE_RELEASE" ] && echo "Yes" || echo "No")"
-    echo -e "${CYAN}Sync Translations:${NC} $SYNC_TRANSLATIONS"
-    echo -e "${CYAN}Commit Message:${NC}"
-    echo "$COMMIT_MSG" | sed 's/^/  /'
-    echo
-
-    confirm_prompt "Please review the deployment details above. Do you want to proceed? [y/N]"
-}
-
 # Add recap before starting deployment process
-if [ "$DEPLOY_ONLY" = false ]; then
-    show_deployment_recap
-fi
+show_deployment_recap
 
 # Pre-deployment tasks
 echo -e "${BLUE}Running pre-deployment tasks...${NC}"
@@ -377,20 +388,20 @@ if [[ `git status --porcelain` ]]; then
     exit 1
 fi
 
-# Function to create commit/tag message
-create_message() {
-    local message="Nimiq ${APP_NAME_CAPITALIZED} v$VERSION
-
-$COMMIT_MSG"
-
-    if [ -n "$EXCLUDE_RELEASE" ]; then
-        message+="
-
-$EXCLUDE_RELEASE"
-    fi
-
-    echo "$message"
-}
+# Check for new version against existing tags
+if [ -z "$SAME_AS" ]; then
+    echo -e "${BLUE}Checking version against existing tags in ${APP_NAME} repo...${NC}"
+    EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
+    LATEST_TAG=$(echo "$EXISTING_TAGS" | sort -V | tail -n 1)
+    for tag in $EXISTING_TAGS; do
+        if ! version_gt "$VERSION" "$tag"; then
+            echo -e "${RED}Error: Version $VERSION is not greater than latest version $LATEST_TAG${NC}"
+            exit 1
+        fi
+    done
+else
+    echo -e "${BLUE}Skipping version comparison check since --same-as is used${NC}"
+fi
 
 # Create and push source tag (skip if using --same-as)
 if [ -z "$SAME_AS" ]; then
@@ -423,7 +434,7 @@ echo -e "${CYAN}Checking out $DEPLOY_BRANCH branch...${NC}"
 run_command "git checkout $DEPLOY_BRANCH" "Failed to checkout branch"
 run_command "git pull" "Failed to pull latest changes"
 
-# Check if new version is greater than all existing tags in deployment repo for the current branch
+# Check version against deployment repo tags
 echo -e "${BLUE}Checking version against existing tags in deployment repo ($DEPLOY_BRANCH branch)...${NC}"
 EXISTING_DEPLOY_TAGS=$(git tag | grep "^v[0-9].*-$ENV_TAG-" | sed 's/^v\([0-9][^-]*\).*/\1/')
 for tag in $EXISTING_DEPLOY_TAGS; do

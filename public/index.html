@@ -24,14 +24,12 @@
       /** @type {Promise<Nimiq> | undefined} */
       let initPromise;
 
-      if (sessionStorage.getItem('debug')) {
-        window.loadAlbatross = async function() {
-            return initPromise || (initPromise = new Promise(async resolve => {
-                await init();
-                resolve(Nimiq);
-            }));
-        }
-      }
+      window.loadAlbatross = async function() {
+          return initPromise || (initPromise = new Promise(async resolve => {
+              await init();
+              resolve(Nimiq);
+          }));
+      };
   </script>
 </head>
 

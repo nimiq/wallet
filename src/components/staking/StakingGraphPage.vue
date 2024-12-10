@@ -128,9 +128,7 @@ export default defineComponent({
                 ? activeValidator.value.name
                 : activeValidator.value!.address;
 
-            const { Address, TransactionBuilder } = sessionStorage.getItem('debug')
-                ? await window.loadAlbatross()
-                : await import('@nimiq/core');
+            const { Address, TransactionBuilder } = await window.loadAlbatross();
             const client = await getNetworkClient();
 
             try {

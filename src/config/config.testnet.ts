@@ -135,6 +135,7 @@ export default {
     nimiqPay: {
         cosignerPublicKeys: [
             'c1534c708122968212c6709526801d18218ce9303590f2bca473213d99b24aaf',
+            '1a0fc4eb1376b604c7df66d098b29bbb2fcfd68ef328ce98ae0f7d19f4f6d456',
         ],
     },
 };

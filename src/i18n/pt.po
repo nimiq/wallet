@@ -40,7 +40,7 @@ msgid "{bankName} offers generic and individual IBANs."
 msgstr "O {bankName} oferece IBANs genéricos e individuais."
 
 #: src/components/modals/BtcTransactionModal.vue:312
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:324
 #: src/components/modals/UsdcTransactionModal.vue:260
 #: src/components/modals/UsdtTransactionModal.vue:241
 msgid "{count} Confirmation | {count} Confirmations"
@@ -71,7 +71,7 @@ msgstr "{currency} pendente de pagamento"
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr "{disabledAsset}trocas estão de momento em manutenção"
 
-#: src/components/modals/TransactionModal.vue:323
+#: src/components/modals/TransactionModal.vue:327
 msgid "{fee} fee"
 msgstr "{fee} taxa"
 
@@ -289,8 +289,8 @@ msgstr ""
 "Adiciona Bitocin\n"
 "à tua conta"
 
-#: src/components/modals/TransactionModal.vue:119
-#: src/components/modals/TransactionModal.vue:162
+#: src/components/modals/TransactionModal.vue:120
+#: src/components/modals/TransactionModal.vue:164
 #: src/components/UsdcAddressInfo.vue:10
 msgid "Add contact"
 msgstr "Adicionar contacto"
@@ -510,14 +510,14 @@ msgid "Bitcoin Unit"
 msgstr "Unidade Bitcoin"
 
 #: src/components/modals/BtcTransactionModal.vue:309
-#: src/components/modals/TransactionModal.vue:317
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/modals/UsdcTransactionModal.vue:257
 #: src/components/modals/UsdtTransactionModal.vue:238
 msgid "Block #{height}"
 msgstr "Bloco #{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:320
-#: src/components/modals/TransactionModal.vue:330
+#: src/components/modals/TransactionModal.vue:334
 #: src/components/modals/UsdcTransactionModal.vue:270
 #: src/components/modals/UsdtTransactionModal.vue:251
 #: src/components/swap/SwapAnimation.vue:196
@@ -1253,7 +1253,7 @@ msgid "Fetching"
 msgstr "À procura"
 
 #: src/components/BtcTransactionListItem.vue:68
-#: src/components/modals/TransactionModal.vue:219
+#: src/components/modals/TransactionModal.vue:221
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1413,8 +1413,8 @@ msgstr "O maior grau de descentraliazação"
 
 #: src/components/modals/BtcTransactionModal.vue:196
 #: src/components/modals/BtcTransactionModal.vue:222
-#: src/components/modals/TransactionModal.vue:205
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/TransactionModal.vue:207
+#: src/components/modals/TransactionModal.vue:232
 #: src/components/modals/UsdcTransactionModal.vue:160
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
@@ -1423,7 +1423,7 @@ msgid "Historic value"
 msgstr "Valor histórico"
 
 #: src/components/modals/BtcTransactionModal.vue:460
-#: src/components/modals/TransactionModal.vue:513
+#: src/components/modals/TransactionModal.vue:527
 #: src/components/modals/UsdcTransactionModal.vue:397
 #: src/components/modals/UsdtTransactionModal.vue:377
 #: src/composables/useBtcTransactionInfo.ts:193
@@ -1434,8 +1434,8 @@ msgid "HTLC Creation"
 msgstr "Criação do HTLC"
 
 #: src/components/modals/BtcTransactionModal.vue:460
-#: src/components/modals/TransactionModal.vue:528
-#: src/components/modals/TransactionModal.vue:534
+#: src/components/modals/TransactionModal.vue:542
+#: src/components/modals/TransactionModal.vue:548
 #: src/components/modals/UsdcTransactionModal.vue:397
 #: src/components/modals/UsdtTransactionModal.vue:377
 #: src/composables/useBtcTransactionInfo.ts:193
@@ -1446,7 +1446,7 @@ msgstr "Criação do HTLC"
 msgid "HTLC Refund"
 msgstr "Reembolso do HTLC"
 
-#: src/components/modals/TransactionModal.vue:517
+#: src/components/modals/TransactionModal.vue:531
 #: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
@@ -1650,7 +1650,7 @@ msgstr "Light Node"
 msgid "Limit of copied addresses reached."
 msgstr "Limite do endereço copiado atingido."
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:179
 msgid "Link not available in this browser"
 msgstr "O link não está disponível neste browser"
 
@@ -2215,7 +2215,7 @@ msgid "Refresh the page to continue."
 msgstr "Recarregar a página para continuar."
 
 #: src/components/modals/BtcTransactionModal.vue:302
-#: src/components/modals/TransactionModal.vue:310
+#: src/components/modals/TransactionModal.vue:314
 #: src/components/modals/UsdcTransactionModal.vue:250
 #: src/components/modals/UsdtTransactionModal.vue:231
 msgid "Refund"
@@ -2582,7 +2582,7 @@ msgstr "Mostrar todos os meus endereços"
 msgid "Show Decimals"
 msgstr "Mostrar decimais"
 
-#: src/components/modals/TransactionModal.vue:175
+#: src/components/modals/TransactionModal.vue:177
 msgid "Show Link"
 msgstr "Mostrar Link"
 
@@ -2992,8 +2992,8 @@ msgstr "Pensa em recursos e não em moedas"
 
 #: src/components/modals/BtcTransactionModal.vue:198
 #: src/components/modals/BtcTransactionModal.vue:224
-#: src/components/modals/TransactionModal.vue:207
-#: src/components/modals/TransactionModal.vue:232
+#: src/components/modals/TransactionModal.vue:209
+#: src/components/modals/TransactionModal.vue:234
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."

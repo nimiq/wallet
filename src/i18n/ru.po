@@ -43,7 +43,7 @@ msgid "{bankName} offers generic and individual IBANs."
 msgstr "{bankName} предлагает как обычные, так и индивидуальные IBAN-номера."
 
 #: src/components/modals/BtcTransactionModal.vue:312
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:324
 #: src/components/modals/UsdcTransactionModal.vue:260
 #: src/components/modals/UsdtTransactionModal.vue:241
 msgid "{count} Confirmation | {count} Confirmations"
@@ -74,7 +74,7 @@ msgstr "Ожидается платеж в {currency}"
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:323
+#: src/components/modals/TransactionModal.vue:327
 msgid "{fee} fee"
 msgstr "{fee} комиссия "
 
@@ -290,8 +290,8 @@ msgstr ""
 "Добавить Биткоин\n"
 "на свой аккаунт"
 
-#: src/components/modals/TransactionModal.vue:119
-#: src/components/modals/TransactionModal.vue:162
+#: src/components/modals/TransactionModal.vue:120
+#: src/components/modals/TransactionModal.vue:164
 #: src/components/UsdcAddressInfo.vue:10
 msgid "Add contact"
 msgstr "Добавить контакт"
@@ -511,14 +511,14 @@ msgid "Bitcoin Unit"
 msgstr "в Биткойне"
 
 #: src/components/modals/BtcTransactionModal.vue:309
-#: src/components/modals/TransactionModal.vue:317
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/modals/UsdcTransactionModal.vue:257
 #: src/components/modals/UsdtTransactionModal.vue:238
 msgid "Block #{height}"
 msgstr "Блок #{height} "
 
 #: src/components/modals/BtcTransactionModal.vue:320
-#: src/components/modals/TransactionModal.vue:330
+#: src/components/modals/TransactionModal.vue:334
 #: src/components/modals/UsdcTransactionModal.vue:270
 #: src/components/modals/UsdtTransactionModal.vue:251
 #: src/components/swap/SwapAnimation.vue:196
@@ -1246,7 +1246,7 @@ msgid "Fetching"
 msgstr "Загрузка"
 
 #: src/components/BtcTransactionListItem.vue:68
-#: src/components/modals/TransactionModal.vue:219
+#: src/components/modals/TransactionModal.vue:221
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1404,8 +1404,8 @@ msgstr "Высшая степень децентрализации"
 
 #: src/components/modals/BtcTransactionModal.vue:196
 #: src/components/modals/BtcTransactionModal.vue:222
-#: src/components/modals/TransactionModal.vue:205
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/TransactionModal.vue:207
+#: src/components/modals/TransactionModal.vue:232
 #: src/components/modals/UsdcTransactionModal.vue:160
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
@@ -1414,7 +1414,7 @@ msgid "Historic value"
 msgstr "Историческая стоимость"
 
 #: src/components/modals/BtcTransactionModal.vue:460
-#: src/components/modals/TransactionModal.vue:513
+#: src/components/modals/TransactionModal.vue:527
 #: src/components/modals/UsdcTransactionModal.vue:397
 #: src/components/modals/UsdtTransactionModal.vue:377
 #: src/composables/useBtcTransactionInfo.ts:193
@@ -1425,8 +1425,8 @@ msgid "HTLC Creation"
 msgstr "Создание HTLC"
 
 #: src/components/modals/BtcTransactionModal.vue:460
-#: src/components/modals/TransactionModal.vue:528
-#: src/components/modals/TransactionModal.vue:534
+#: src/components/modals/TransactionModal.vue:542
+#: src/components/modals/TransactionModal.vue:548
 #: src/components/modals/UsdcTransactionModal.vue:397
 #: src/components/modals/UsdtTransactionModal.vue:377
 #: src/composables/useBtcTransactionInfo.ts:193
@@ -1437,7 +1437,7 @@ msgstr "Создание HTLC"
 msgid "HTLC Refund"
 msgstr "Возврат HTLC"
 
-#: src/components/modals/TransactionModal.vue:517
+#: src/components/modals/TransactionModal.vue:531
 #: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
@@ -1643,7 +1643,7 @@ msgstr "Light Node"
 msgid "Limit of copied addresses reached."
 msgstr "Лимит скопированных адресов достигнут."
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:179
 msgid "Link not available in this browser"
 msgstr "Ссылка недоступна в этом браузере"
 
@@ -2196,7 +2196,7 @@ msgid "Refresh the page to continue."
 msgstr "Для продолжения обновите страницу."
 
 #: src/components/modals/BtcTransactionModal.vue:302
-#: src/components/modals/TransactionModal.vue:310
+#: src/components/modals/TransactionModal.vue:314
 #: src/components/modals/UsdcTransactionModal.vue:250
 #: src/components/modals/UsdtTransactionModal.vue:231
 msgid "Refund"
@@ -2562,7 +2562,7 @@ msgstr "Показать все мои адреса"
 msgid "Show Decimals"
 msgstr "Показывать десятичные знаки"
 
-#: src/components/modals/TransactionModal.vue:175
+#: src/components/modals/TransactionModal.vue:177
 msgid "Show Link"
 msgstr "Показать ссылку"
 
@@ -2971,8 +2971,8 @@ msgstr "Думайте о возможностях, а не валюте"
 
 #: src/components/modals/BtcTransactionModal.vue:198
 #: src/components/modals/BtcTransactionModal.vue:224
-#: src/components/modals/TransactionModal.vue:207
-#: src/components/modals/TransactionModal.vue:232
+#: src/components/modals/TransactionModal.vue:209
+#: src/components/modals/TransactionModal.vue:234
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."

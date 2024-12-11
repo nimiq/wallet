@@ -42,7 +42,7 @@ msgid "{bankName} offers generic and individual IBANs."
 msgstr "{bankName} 提供通用和个人 IBAN"
 
 #: src/components/modals/BtcTransactionModal.vue:312
-#: src/components/modals/TransactionModal.vue:320
+#: src/components/modals/TransactionModal.vue:324
 #: src/components/modals/UsdcTransactionModal.vue:260
 #: src/components/modals/UsdtTransactionModal.vue:241
 msgid "{count} Confirmation | {count} Confirmations"
@@ -73,7 +73,7 @@ msgstr "{currency} 付款待处理"
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
-#: src/components/modals/TransactionModal.vue:323
+#: src/components/modals/TransactionModal.vue:327
 msgid "{fee} fee"
 msgstr "{fee} 费用"
 
@@ -283,8 +283,8 @@ msgstr ""
 "添加比特币\n"
 "到你的帐户"
 
-#: src/components/modals/TransactionModal.vue:119
-#: src/components/modals/TransactionModal.vue:162
+#: src/components/modals/TransactionModal.vue:120
+#: src/components/modals/TransactionModal.vue:164
 #: src/components/UsdcAddressInfo.vue:10
 msgid "Add contact"
 msgstr "添加联络人"
@@ -488,14 +488,14 @@ msgid "Bitcoin Unit"
 msgstr "比特币单位"
 
 #: src/components/modals/BtcTransactionModal.vue:309
-#: src/components/modals/TransactionModal.vue:317
+#: src/components/modals/TransactionModal.vue:321
 #: src/components/modals/UsdcTransactionModal.vue:257
 #: src/components/modals/UsdtTransactionModal.vue:238
 msgid "Block #{height}"
 msgstr "区块＃{height}"
 
 #: src/components/modals/BtcTransactionModal.vue:320
-#: src/components/modals/TransactionModal.vue:330
+#: src/components/modals/TransactionModal.vue:334
 #: src/components/modals/UsdcTransactionModal.vue:270
 #: src/components/modals/UsdtTransactionModal.vue:251
 #: src/components/swap/SwapAnimation.vue:196
@@ -1207,7 +1207,7 @@ msgid "Fetching"
 msgstr "正在取得更新"
 
 #: src/components/BtcTransactionListItem.vue:68
-#: src/components/modals/TransactionModal.vue:219
+#: src/components/modals/TransactionModal.vue:221
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1355,8 +1355,8 @@ msgstr "更高层面的去中心化"
 
 #: src/components/modals/BtcTransactionModal.vue:196
 #: src/components/modals/BtcTransactionModal.vue:222
-#: src/components/modals/TransactionModal.vue:205
-#: src/components/modals/TransactionModal.vue:230
+#: src/components/modals/TransactionModal.vue:207
+#: src/components/modals/TransactionModal.vue:232
 #: src/components/modals/UsdcTransactionModal.vue:160
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
@@ -1365,7 +1365,7 @@ msgid "Historic value"
 msgstr "历史价值"
 
 #: src/components/modals/BtcTransactionModal.vue:460
-#: src/components/modals/TransactionModal.vue:513
+#: src/components/modals/TransactionModal.vue:527
 #: src/components/modals/UsdcTransactionModal.vue:397
 #: src/components/modals/UsdtTransactionModal.vue:377
 #: src/composables/useBtcTransactionInfo.ts:193
@@ -1376,8 +1376,8 @@ msgid "HTLC Creation"
 msgstr "HTLC创建"
 
 #: src/components/modals/BtcTransactionModal.vue:460
-#: src/components/modals/TransactionModal.vue:528
-#: src/components/modals/TransactionModal.vue:534
+#: src/components/modals/TransactionModal.vue:542
+#: src/components/modals/TransactionModal.vue:548
 #: src/components/modals/UsdcTransactionModal.vue:397
 #: src/components/modals/UsdtTransactionModal.vue:377
 #: src/composables/useBtcTransactionInfo.ts:193
@@ -1388,7 +1388,7 @@ msgstr "HTLC创建"
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
-#: src/components/modals/TransactionModal.vue:517
+#: src/components/modals/TransactionModal.vue:531
 #: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
@@ -1579,7 +1579,7 @@ msgstr "轻节点"
 msgid "Limit of copied addresses reached."
 msgstr "已达到复制地址的限制"
 
-#: src/components/modals/TransactionModal.vue:177
+#: src/components/modals/TransactionModal.vue:179
 msgid "Link not available in this browser"
 msgstr "链接在此浏览器中不可用"
 
@@ -2126,7 +2126,7 @@ msgid "Refresh the page to continue."
 msgstr "刷新页面以继续"
 
 #: src/components/modals/BtcTransactionModal.vue:302
-#: src/components/modals/TransactionModal.vue:310
+#: src/components/modals/TransactionModal.vue:314
 #: src/components/modals/UsdcTransactionModal.vue:250
 #: src/components/modals/UsdtTransactionModal.vue:231
 msgid "Refund"
@@ -2488,7 +2488,7 @@ msgstr "显示我所有的地址"
 msgid "Show Decimals"
 msgstr "显示小数"
 
-#: src/components/modals/TransactionModal.vue:175
+#: src/components/modals/TransactionModal.vue:177
 msgid "Show Link"
 msgstr "显示链接"
 
@@ -2887,8 +2887,8 @@ msgstr "关注功能，而非货币"
 
 #: src/components/modals/BtcTransactionModal.vue:198
 #: src/components/modals/BtcTransactionModal.vue:224
-#: src/components/modals/TransactionModal.vue:207
-#: src/components/modals/TransactionModal.vue:232
+#: src/components/modals/TransactionModal.vue:209
+#: src/components/modals/TransactionModal.vue:234
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."

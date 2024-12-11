@@ -26,7 +26,7 @@ export async function getNetworkClient() {
     clientPromise = clientPromise || (async () => {
         // Note: we don't need to reset clientPromise on changes to the config because we only use config.environment
         // which never changes at runtime. Changing config.nimiqSeeds at runtime is not supported.
-        const { ClientConfiguration, Client } = await import('@nimiq/core');
+        const { ClientConfiguration, Client } = await window.loadAlbatross();
         const clientConfig = new ClientConfiguration();
         clientConfig.network(config.environment === ENV_MAIN ? 'mainalbatross' : 'testalbatross');
         clientConfig.seedNodes(config.nimiqSeeds);
@@ -401,8 +401,17 @@ export async function launchNetwork() {
         client.waitForConsensusEstablished()
             .then(() => {
                 console.info('Fetching transaction history for', address, knownTxDetails);
+                const { config } = useConfig();
                 return retry(
-                    () => client.getTransactionsByAddress(address, /* lastConfirmedHeight - 10 */ 0, knownTxDetails),
+                    () => client.getTransactionsByAddress(
+                        address,
+                        /* lastConfirmedHeight - 10 */ 0,
+                        knownTxDetails,
+                        /* startAt */ undefined,
+                        /* limit */ undefined,
+                        // Reduce number of required history peers in the testnet
+                        /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
+                    ),
                 );
             })
             .then((txDetails) => {
@@ -453,7 +462,16 @@ export async function launchNetwork() {
             client.waitForConsensusEstablished()
                 .then(() => {
                     console.debug('Fetching transaction history for proxy', proxyAddress, knownTxDetails);
-                    return retry(() => client.getTransactionsByAddress(proxyAddress, 0, knownTxDetails));
+                    const { config } = useConfig();
+                    return retry(() => client.getTransactionsByAddress(
+                        proxyAddress,
+                        /* sinceBlockHeight */ 0,
+                        knownTxDetails,
+                        /* startAt */ undefined,
+                        /* limit */ undefined,
+                        // Reduce number of required history peers in the testnet
+                        /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
+                    ));
                 })
                 .then((txDetails) => {
                     if (

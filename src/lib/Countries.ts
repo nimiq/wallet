@@ -336,6 +336,7 @@ const SIMPLEX_UNSUPPORTED_COUNTRY_CODES: string[] = [
     CC['Cuba'],
     CC['North Korea'],
     CC['Gibraltar'],
+    CC['United Kingdom of Great Britain and Northern Ireland'],
     CC['Haiti'],
     CC['Iran'],
     CC['Jamaica'],

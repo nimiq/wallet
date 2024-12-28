@@ -14,6 +14,7 @@ import {
     FiatCurrencyOffered,
     FIAT_CURRENCIES_OFFERED,
     FIAT_API_PROVIDER_CURRENT_PRICES,
+    FIAT_API_PROVIDER_TX_HISTORY,
 } from '../lib/Constants';
 import { useTransactionsStore } from './Transactions';
 import { useBtcTransactionsStore } from './BtcTransactions';
@@ -31,6 +32,17 @@ const CRYPTO_CURRENCIES = new Set([
     CryptoCurrency.USDC,
     CryptoCurrency.USDT,
 ]);
+
+const FIAT_API_PROVIDER_CURRENT_RATES_MAX_REQUEST_FIAT_CURRENCIES = {
+    // CryptoCompare allows up to 50 instruments per request. As our requested instruments are the possible crypto-fiat
+    // pairs for the requested crypto and fiat currencies, the number of fiat currencies we can request, is the number
+    // of allowed instruments divided by the number of requested cryptocurrencies.
+    [Provider.CryptoCompare]: Math.floor(50 / CRYPTO_CURRENCIES.size),
+    // CryptoCompareLegacy's tsyms parameter can be up to 100 chars long, which are 25 comma separated 3 char tickers.
+    [Provider.CryptoCompareLegacy]: 25,
+    // CoinGecko allows requesting all supported currencies at once.
+    [Provider.CoinGecko]: Number.POSITIVE_INFINITY,
+}[FIAT_API_PROVIDER_CURRENT_PRICES];
 
 function areSetsEqual(a: Set<unknown>, b: Set<unknown>): boolean {
     return a === b || (a.size === b.size && [...a].every((entry) => b.has(entry)));
@@ -154,21 +166,31 @@ export const useFiatStore = createStore({
             ) && !isHistorySupportedFiatCurrency(currency, FIAT_API_PROVIDER_CURRENT_PRICES);
             const isCurrentCurrencyCplBridged = isCplBridgedFiatCurrency(currentCurrency);
             const prioritizedFiatCurrenciesOffered: Array<FiatCurrencyOffered> = [...new Set<FiatCurrencyOffered>([
-                // As we limit the currencies we fetch for CryptoCompare to 25, prioritize a few currencies, we'd prefer
-                // to be included, roughly the highest market cap currencies according to fiatmarketcap.com, plus some
-                // smaller currencies for which Nimiq has strong communities.
+                // As we limit the number of currencies we fetch for CryptoCompare, prioritize a few currencies, we'd
+                // prefer to be included, roughly the highest market cap currencies according to fiatmarketcap.com, plus
+                // some smaller currencies for which Nimiq has strong communities.
                 currentCurrency,
-                ...(['USD', 'CNY', 'EUR', 'JPY', 'GBP', 'KRW', 'INR', 'CAD', 'HKD', 'BRL', 'AUD', 'CRC', 'GMD',
-                    'XOF'] as const).map((ticker) => FiatCurrency[ticker]),
-                // After that, prefer to include currencies CryptoCompare supports historic rates for, because it is for
-                // CryptoCompare that we limit the number of currencies to update. For CoinGecko, all currencies can be
-                // updated in a single request.
+                ...([
+                    // Currencies of smaller market cap, where Nimiq has strong communities, though. Placed first, that
+                    // they should be included even with FIAT_API_PROVIDER_CURRENT_RATES_MAX_REQUEST_FIAT_CURRENCIES for
+                    // the most restrictive provider.
+                    'CRC', 'GMD', 'XOF',
+                    // Currencies of high market cap
+                    'USD', 'CNY', 'EUR', 'JPY', 'GBP', 'KRW', 'INR', 'CAD', 'HKD', 'BRL', 'AUD',
+                ] as const).map((ticker) => FiatCurrency[ticker]),
+                // After that, prefer to include currencies which also support historic rates.
                 ...FIAT_CURRENCIES_OFFERED.filter((currency) => isProviderSupportedFiatCurrency(
                     currency,
-                    Provider.CryptoCompare,
+                    FIAT_API_PROVIDER_TX_HISTORY,
                     RateType.HISTORIC,
                 )),
-                // Finally, all the remaining currencies
+                // Then currencies, which potentially only support current rates.
+                ...FIAT_CURRENCIES_OFFERED.filter((currency) => isProviderSupportedFiatCurrency(
+                    currency,
+                    FIAT_API_PROVIDER_CURRENT_PRICES,
+                    RateType.CURRENT,
+                )),
+                // Finally, all the remaining currencies, including bridged currencies.
                 ...FIAT_CURRENCIES_OFFERED,
             ])];
             const currenciesToUpdate = new Set<FiatCurrencyOffered>();
@@ -179,22 +201,21 @@ export const useFiatStore = createStore({
                     FIAT_API_PROVIDER_CURRENT_PRICES,
                     RateType.CURRENT,
                 );
-                if (currency !== currentCurrency
-                    && (
-                        // Include all provider supported currencies, as at least one always has to be fetched via the
-                        // provider api, either because it's a directly supported currency, or because it's a currency
-                        // bridged via USD, also fetched from the provider, and fetching multiple currencies vs. only
-                        // one still counts as only one api request, as long as we're not above the limit of currencies
-                        // that can be fetched in a single request, see next condition.
-                        !isProviderCurrency
-                        // CryptoCompare only allows 25 currencies per request, and we don't want to send more than one.
-                        || (
-                            FIAT_API_PROVIDER_CURRENT_PRICES === Provider.CryptoCompareLegacy
-                            && providerCurrenciesToUpdateCount >= 25
-                        )
+                if (// Omit currency if:
+                    // - it's not the currency currently active in the Wallet
+                    currency !== currentCurrency
+                    // - and not a provider currency which still fits a single api request
+                    // (Always include provider supported currencies, as at least one has to be fetched via the provider
+                    // api, either because it's a directly supported currency, or because it's a currency bridged via
+                    // USD, also fetched from the provider)
+                    && !(
+                        isProviderCurrency
+                        && providerCurrenciesToUpdateCount < FIAT_API_PROVIDER_CURRENT_RATES_MAX_REQUEST_FIAT_CURRENCIES
                     )
-                    // If current currency is a CPL bridged currency, we can include other CPL bridged currencies
-                    // without additional API request.
+                    // - and not both, the currency and the currently active currency, are CPL bridged.
+                    // (If the current currency is not CPL bridged, we do not want to make requests to the CPL bridge,
+                    // for currencies which are not even active. On the other hand, if the current currency is a CPL
+                    // bridged currency, we can include other CPL bridged currencies without additional API requests.)
                     && !(isCurrentCurrencyCplBridged && isCplBridgedFiatCurrency(currency))
                 ) continue; // omit currency
                 currenciesToUpdate.add(currency);

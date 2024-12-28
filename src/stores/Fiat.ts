@@ -189,7 +189,7 @@ export const useFiatStore = createStore({
                         !isProviderCurrency
                         // CryptoCompare only allows 25 currencies per request, and we don't want to send more than one.
                         || (
-                            FIAT_API_PROVIDER_CURRENT_PRICES === Provider.CryptoCompare
+                            FIAT_API_PROVIDER_CURRENT_PRICES === Provider.CryptoCompareLegacy
                             && providerCurrenciesToUpdateCount >= 25
                         )
                     )

@@ -390,7 +390,7 @@ import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../st
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../../stores/UsdtTransactions';
 import { sendTransaction } from '../../network';
-import { useAccountStore, AccountType } from '../../stores/Account';
+import { useAccountStore } from '../../stores/Account';
 import { explorerTxLink } from '../../lib/ExplorerUtils';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
@@ -639,7 +639,7 @@ export default defineComponent({
                     // consider proxy "expired" after 15 blocks
                     && transaction.value.blockHeight! <= blockHeight.value - 15
                 )
-            )
+            ),
         );
 
         const blockExplorerLink = computed(() =>

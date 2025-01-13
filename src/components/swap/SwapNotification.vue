@@ -384,7 +384,6 @@ export default defineComponent({
                             // Unreachable, as Erc20AssetHandler does not fire onUpdate
                         } else {
                             updateSwap({
-                                // @ts-expect-error Missmatch with Nimiq.PlainTransactionDetails from fastspot-api
                                 remoteFundingTx: tx,
                             });
                         }
@@ -405,7 +404,6 @@ export default defineComponent({
                         updateSwap({
                             state: SwapState.CREATE_OUTGOING,
                             stateEnteredAt: Date.now(),
-                            // @ts-expect-error Missmatch with Nimiq.PlainTransactionDetails from fastspot-api
                             remoteFundingTx,
                         });
                     }
@@ -585,7 +583,6 @@ export default defineComponent({
                                 activeSwap.value!.fundingSerializedTx!,
                                 (tx) => {
                                     updateSwap({
-                                        // @ts-expect-error Missmatch with PlainTransactionDetails from fastspot-api
                                         fundingTx: tx as Transaction<SwapAsset.NIM | SwapAsset.BTC>,
                                     });
                                     currentError.value = null;
@@ -607,7 +604,6 @@ export default defineComponent({
                             updateSwap({
                                 state: SwapState.AWAIT_SECRET,
                                 stateEnteredAt: Date.now(),
-                                // @ts-expect-error Missmatch with Nimiq.PlainTransactionDetails from fastspot-api
                                 fundingTx: fundingTx as Transaction<SwapAsset.NIM | SwapAsset.BTC>,
                             });
                         } catch (error: any) {
@@ -898,7 +894,6 @@ export default defineComponent({
                             updateSwap({
                                 state: SwapState.COMPLETE,
                                 stateEnteredAt: Date.now(),
-                                // @ts-expect-error Missmatch with Nimiq.PlainTransactionDetails from fastspot-api
                                 settlementTx:
                                     settlementTx as Transaction<SwapAsset.NIM | SwapAsset.BTC | SwapAsset.EUR>,
                             });

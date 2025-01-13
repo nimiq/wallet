@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit on error
-set -eu
+set -u
 set -o pipefail
 
 ###################

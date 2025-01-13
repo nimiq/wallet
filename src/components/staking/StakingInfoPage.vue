@@ -266,7 +266,7 @@ export default defineComponent({
                 });
 
                 try {
-                    const { Address, TransactionBuilder } = await window.loadAlbatross();
+                    const { Address, TransactionBuilder } = await import('@nimiq/core');
                     const client = await getNetworkClient();
 
                     const transaction = TransactionBuilder.newSetActiveStake(
@@ -336,7 +336,7 @@ export default defineComponent({
             });
 
             try {
-                const { Address, TransactionBuilder } = await window.loadAlbatross();
+                const { Address, TransactionBuilder } = await import('@nimiq/core');
                 const client = await getNetworkClient();
 
                 const transactions = [

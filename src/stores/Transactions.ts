@@ -5,13 +5,7 @@ import { SwapAsset } from '@nimiq/fastspot-api';
 import { createStore } from 'pinia';
 import Config from 'config';
 import { useFiatStore } from './Fiat';
-import {
-    CryptoCurrency,
-    ENV_MAIN,
-    FiatCurrency,
-    FIAT_API_PROVIDER_TX_HISTORY,
-    FIAT_PRICE_UNAVAILABLE,
-} from '../lib/Constants';
+import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '../lib/Constants';
 import { detectProxyTransactions, cleanupKnownProxyTransactions } from '../lib/ProxyDetection';
 import { useSwapsStore } from './Swaps';
 import { getNetworkClient } from '../network';
@@ -273,15 +267,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
         // Then get funding tx from the blockchain
         if (!fundingTx) {
             const client = await getNetworkClient();
-            const chainTxs = await client.getTransactionsByAddress(
-                transaction.sender,
-                /* sinceBlockHeight */ undefined,
-                /* knownTransactionDetails */ undefined,
-                /* startAt */ undefined,
-                /* limit */ undefined,
-                // Reduce number of required history peers in the testnet
-                /* minPeers */ Config.environment === ENV_MAIN ? undefined : 1,
-            );
+            const chainTxs = await client.getTransactionsByAddress(transaction.sender);
             fundingTx = chainTxs.find(selector);
         }
 

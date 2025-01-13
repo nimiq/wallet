@@ -161,9 +161,3 @@ declare module '@vue/composition-api/dist/component/component' {
         readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }
 }
-
-declare global {
-    interface Window {
-        loadAlbatross: () => Promise<typeof import('../node_modules/@nimiq/core/types/web')>;
-    }
-}

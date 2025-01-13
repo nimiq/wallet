@@ -640,10 +640,6 @@ export default defineComponent({
                     && transaction.value.blockHeight! <= blockHeight.value - 15
                 )
             )
-            // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
-            // Note that we only check the active account here to save us scanning through all our accounts as typically
-            // the transaction modal is opened from our current account's transaction history.
-            && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
         const blockExplorerLink = computed(() =>

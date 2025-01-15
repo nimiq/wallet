@@ -1,7 +1,7 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }">
-        <HeroIcon class="svg-id-fix" />
+        <StakingIcon class="svg-id-fix" />
         <template
             v-if="activeAddressInfo
                 || activeCurrency === CryptoCurrency.BTC
@@ -357,7 +357,7 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
 
@@ -668,7 +668,7 @@ export default defineComponent({
         CashlinkButton,
         StakingButton,
         StakingPreview,
-        HeroIcon,
+        StakingIcon,
         TwoLeafStakingIcon,
     },
 });

@@ -22,7 +22,10 @@
                     @click="$router.push({ name: RouteName.Staking })"
                     @mousedown.prevent
                 >
-                    <HeroIcon :pulsing="!totalAccountStake && canStake" :disabled="$config.disableNetworkInteraction" />
+                    <StakingIcon
+                        :pulsing="!totalAccountStake && canStake"
+                        :disabled="$config.disableNetworkInteraction"
+                    />
                 </button>
             </template>
             <template #default>
@@ -41,7 +44,7 @@ import { useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { MIN_STAKE } from '../../lib/Constants';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
     setup() {
@@ -129,7 +132,7 @@ export default defineComponent({
     },
     components: {
         Tooltip,
-        HeroIcon,
+        StakingIcon,
     },
 });
 </script>

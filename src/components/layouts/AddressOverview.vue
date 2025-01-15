@@ -190,7 +190,8 @@
 
                     <template v-if="activeCurrency === CryptoCurrency.NIM">
                         <StakingPreview v-if="activeStake && windowWidth > 860" />
-                        <StakingButton v-else-if="showStakingButton" />
+                        <StakingButton v-else-if="showStakingButton" showText/>
+                        <div class="vertical-separator"></div>
                     </template>
 
                     <button class="send nq-button-pill light-blue flex-row"
@@ -919,8 +920,19 @@ export default defineComponent({
     margin: 0 var(--padding) 2rem;
     padding: 0 3rem 0 2rem;
 
-    button {
-        flex-shrink: 0;
+    button { flex-shrink: 0 }
+
+    .vertical-separator {
+        background: rgba(31, 35, 72, 0.15);
+        border-radius: 2rem;
+        width: 1.5px;
+
+        height: 3rem;
+        margin-top: 0.625rem;
+        margin-bottom: 0.625rem;
+
+        margin-left: 2rem;
+        margin-right: .5rem;
     }
 }
 

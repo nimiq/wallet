@@ -189,8 +189,7 @@
                     />
 
                     <template v-if="activeCurrency === CryptoCurrency.NIM">
-                        <StakingPreview v-if="activeStake && windowWidth > 860" />
-                        <StakingButton v-else-if="showStakingButton" showText/>
+                        <StakingButton v-if="!activeStake && showStakingButton" :showText="windowWidth > 860" />
                         <div class="vertical-separator"></div>
                     </template>
 
@@ -214,7 +213,7 @@
                     </button>
                 </div>
             </div>
-            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" />
+            <!-- <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" /> -->
             <div
                 v-if="activeCurrency === CryptoCurrency.USDC && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -330,7 +329,6 @@ import UsdtTransactionList from '../UsdtTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
-import StakingPreview from '../staking/StakingPreview.vue';
 import StakingButton from '../staking/StakingButton.vue';
 import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
@@ -668,7 +666,6 @@ export default defineComponent({
         UsdtIcon,
         CashlinkButton,
         StakingButton,
-        StakingPreview,
         StakingIcon,
         TwoLeafStakingIcon,
     },

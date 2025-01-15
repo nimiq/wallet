@@ -3,7 +3,7 @@
         <PageHeader>
             <template #default>
                 <div class="staking-icon">
-                    <HeroIcon pulsing />
+                    <StakingIcon pulsing />
                 </div>
                 {{ $t('Stake NIM to earn NIM') }}
             </template>
@@ -40,7 +40,7 @@
 import { computed, defineComponent, onMounted } from '@vue/composition-api';
 import { PageHeader, PageBody, HexagonIcon } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 import { getNetworkClient, updateValidators } from '../../network';
 
@@ -88,7 +88,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        HeroIcon,
+        StakingIcon,
         HexagonIcon,
         ValidatorIcon,
     },

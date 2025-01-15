@@ -110,7 +110,7 @@
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
                         <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-                        <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
+                        <StakingIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
                         <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
@@ -154,7 +154,7 @@
                             && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
                         <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
                         <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-                        <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
+                        <StakingIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
                         <Identicon v-else :address="peerAddress"/>
                         <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkSmallIcon/></div>
                         <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapMediumIcon/></div>
@@ -409,7 +409,7 @@ import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
 import { getStakingTransactionMeaning } from '../../lib/StakingUtils';
 import { useTransactionInfo } from '../../composables/useTransactionInfo';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
     name: 'transaction-modal',
@@ -757,7 +757,7 @@ export default defineComponent({
         SwapMediumIcon,
         InteractiveShortAddress,
         TransactionDetailOasisPayoutStatus,
-        HeroIcon,
+        StakingIcon,
     },
 });
 </script>
@@ -886,12 +886,12 @@ export default defineComponent({
         margin: 0;
     }
 
-    svg:not(.hero-icon) {
+    svg:not(.staking-icon) {
         width: 100%;
         height: 100%;
     }
 
-    > svg:not(.hero-icon) {
+    > svg:not(.staking-icon) {
         width: 8rem;
         height: 8rem;
         margin: 0.5rem;

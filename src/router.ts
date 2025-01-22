@@ -14,8 +14,8 @@ import { AccountType, useAccountStore } from './stores/Account';
 import { CryptoCurrency } from './lib/Constants';
 
 // Main views
-const Settings = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
-const Network = () =>
+const SettingsLayout = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
+const NetworkLayout = () =>
     import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
 
 // Modals
@@ -411,7 +411,7 @@ const routes: RouteConfig[] = [{
     }, {
         path: '/settings',
         components: {
-            settings: Settings,
+            settings: SettingsLayout,
         },
         name: 'settings',
         meta: { column: Columns.ACCOUNT },
@@ -441,7 +441,7 @@ const routes: RouteConfig[] = [{
 }, {
     path: '/network',
     components: {
-        basement: Network,
+        basement: NetworkLayout,
     },
     name: 'network',
     meta: { column: Columns.ACCOUNT },

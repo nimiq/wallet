@@ -97,6 +97,53 @@ export enum Columns {
     ADDRESS,
 }
 
+export enum RouteName {
+    Root = 'root',
+    RootAccounts = 'root-accounts',
+    Send = 'send',
+    SendNim = 'send-nim',
+    SendBtc = 'send-btc',
+    SendUsdc = 'send-usdc',
+    Receive = 'receive',
+    ReceiveNim = 'receive-nim',
+    ReceiveBtc = 'receive-btc',
+    ReceiveUsdc = 'receive-usdc',
+    Transaction = 'transaction',
+    Trade = 'trade',
+    Buy = 'buy',
+    BuyCrypto = 'buy-crypto',
+    SellCrypto = 'sell-crypto',
+    Scan = 'scan',
+    SendViaUri = 'send-via-uri',
+    Welcome = 'welcome',
+    WelcomeStaking = 'welcome-staking',
+    MigrationWelcome = 'migration-welcome',
+    BtcActivation = 'btc-activation',
+    BtcTransaction = 'btc-transaction',
+    SendViaBtcUri = 'send-via-btc-uri',
+    UsdcActivation = 'usdc-activation',
+    UsdcTransaction = 'usdc-transaction',
+    UsdtTransaction = 'usdt-transaction',
+    SendViaPolygonUri = 'send-via-polygon-uri',
+    UsdtAdded = 'usdt-added',
+    StablecoinSelection = 'stablecoin-selection',
+    Swap = 'swap',
+    MoonpaySellInfo = 'moonpay-sell-info',
+    Moonpay = 'moonpay',
+    Simplex = 'simplex',
+    RootReleaseNotes = 'root-release-notes',
+    ExportHistory = 'export-history',
+    Staking = 'staking',
+    WalletStatus = 'wallet-status',
+    Settings = 'settings',
+    SettingsAccounts = 'settings-accounts',
+    Disclaimer = 'disclaimer',
+    SettingsReleaseNotes = 'settings-release-notes',
+    Network = 'network',
+    NetworkAccounts = 'network-accounts',
+    NetworkReleaseNotes = 'network-release-notes',
+}
+
 const routes: RouteConfig[] = [{
     path: '/',
     components: {
@@ -108,7 +155,7 @@ const routes: RouteConfig[] = [{
             accountOverview: AccountOverview,
             addressOverview: AddressOverview,
         },
-        name: 'root',
+        name: RouteName.Root,
         alias: '/transactions',
         meta: { column: Columns.DYNAMIC },
         children: [{
@@ -116,28 +163,28 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: AccountMenuModal,
             },
-            name: 'root-accounts',
+            name: RouteName.RootAccounts,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send',
             components: {
                 modal: AddressSelectorModal,
             },
-            name: 'send',
+            name: RouteName.Send,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send/nim',
             components: {
                 modal: SendModal,
             },
-            name: 'send-nim',
+            name: RouteName.SendNim,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send/btc',
             components: {
                 modal: BtcSendModal,
             },
-            name: 'send-btc',
+            name: RouteName.SendBtc,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send/usdc',
@@ -145,7 +192,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: StablecoinSendModal,
             },
-            name: 'send-usdc',
+            name: RouteName.SendUsdc,
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
@@ -153,21 +200,21 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: AddressSelectorModal,
             },
-            name: 'receive',
+            name: RouteName.Receive,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive/nim',
             components: {
                 modal: ReceiveModal,
             },
-            name: 'receive-nim',
+            name: RouteName.ReceiveNim,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive/btc',
             components: {
                 modal: BtcReceiveModal,
             },
-            name: 'receive-btc',
+            name: RouteName.ReceiveBtc,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive/usdc',
@@ -175,14 +222,14 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: StablecoinReceiveModal,
             },
-            name: 'receive-usdc',
+            name: RouteName.ReceiveUsdc,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/transaction/:hash',
             components: {
                 modal: TransactionModal,
             },
-            name: 'transaction',
+            name: RouteName.Transaction,
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
@@ -190,42 +237,42 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: TradeModal,
             },
-            name: 'trade',
+            name: RouteName.Trade,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/buy',
             components: {
                 modal: BuyOptionsModal,
             },
-            name: 'buy',
+            name: RouteName.Buy,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/buy-crypto',
             components: {
                 modal: BuyCryptoModal,
             },
-            name: 'buy-crypto',
+            name: RouteName.BuyCrypto,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/sell-crypto',
             components: {
                 modal: SellCryptoModal,
             },
-            name: 'sell-crypto',
+            name: RouteName.SellCrypto,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/scan',
             components: {
                 modal: ScanQrModal,
             },
-            name: 'scan',
+            name: RouteName.Scan,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/:requestUri(nimiq:.+)',
             components: {
                 modal: SendModal,
             },
-            name: 'send-via-uri',
+            name: RouteName.SendViaUri,
             props: {
                 // Pass full path including query parameters.
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
@@ -236,28 +283,28 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: WelcomeModal,
             },
-            name: 'welcome',
+            name: RouteName.Welcome,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/welcome-staking',
             components: {
                 modal: WelcomeStakingModal,
             },
-            name: 'welcome-staking',
+            name: RouteName.WelcomeStaking,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/migration-welcome',
             components: {
                 modal: MigrationWelcomeModal,
             },
-            name: 'migration-welcome',
+            name: RouteName.MigrationWelcome,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/btc-activation',
             components: {
                 modal: BtcActivationModal,
             },
-            name: 'btc-activation',
+            name: RouteName.BtcActivation,
             props: {
                 modal: parseActivationRedirect,
             },
@@ -267,7 +314,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: BtcTransactionModal,
             },
-            name: 'btc-transaction',
+            name: RouteName.BtcTransaction,
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
@@ -275,7 +322,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: BtcSendModal,
             },
-            name: 'send-via-btc-uri',
+            name: RouteName.SendViaBtcUri,
             props: {
                 // Pass full path including query parameters.
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
@@ -287,7 +334,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: PolygonActivationModal,
             },
-            name: 'usdc-activation',
+            name: RouteName.UsdcActivation,
             props: {
                 modal: parseActivationRedirect,
             },
@@ -297,7 +344,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: UsdcTransactionModal,
             },
-            name: 'usdc-transaction',
+            name: RouteName.UsdcTransaction,
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
@@ -305,7 +352,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: UsdtTransactionModal,
             },
-            name: 'usdt-transaction',
+            name: RouteName.UsdtTransaction,
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
@@ -315,7 +362,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: StablecoinSendModal,
             },
-            name: 'send-via-polygon-uri',
+            name: RouteName.SendViaPolygonUri,
             props: {
                 // Pass full path including query parameters.
                 modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
@@ -326,21 +373,21 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: UsdtAddedModal,
             },
-            name: 'usdt-added',
+            name: RouteName.UsdtAdded,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/stablecoin-selection',
             components: {
                 modal: StablecoinSelectionModal,
             },
-            name: 'stablecoin-selection',
+            name: RouteName.StablecoinSelection,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/swap/:pair?',
             components: {
                 modal: SwapModal,
             },
-            name: 'swap',
+            name: RouteName.Swap,
             props: { modal: true },
             meta: { column: Columns.ACCOUNT },
         }, {
@@ -348,14 +395,14 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: MoonpaySellInfoModal,
             },
-            name: 'moonpay-sell-info',
+            name: RouteName.MoonpaySellInfo,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/moonpay',
             components: {
                 modal: MoonpayModal,
             },
-            name: 'moonpay',
+            name: RouteName.Moonpay,
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
@@ -363,21 +410,21 @@ const routes: RouteConfig[] = [{
             components: {
                 'persistent-modal': SimplexModal,
             },
-            name: 'simplex',
+            name: RouteName.Simplex,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/release-notes',
             components: {
                 modal: ReleaseNotesModal,
             },
-            name: 'root-release-notes',
+            name: RouteName.RootReleaseNotes,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/export-history/:type',
             components: {
                 modal: HistoryExportModal,
             },
-            name: 'export-history',
+            name: RouteName.ExportHistory,
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
@@ -385,7 +432,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: StakingModal,
             },
-            name: 'staking',
+            name: RouteName.Staking,
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
@@ -393,7 +440,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: WalletStatusModal,
             },
-            name: 'wallet-status',
+            name: RouteName.WalletStatus,
             meta: { column: Columns.DYNAMIC },
         }],
         beforeEnter: (to, from, next) => {
@@ -413,28 +460,28 @@ const routes: RouteConfig[] = [{
         components: {
             settings: SettingsLayout,
         },
-        name: 'settings',
+        name: RouteName.Settings,
         meta: { column: Columns.ACCOUNT },
         children: [{
             path: '/accounts',
             components: {
                 modal: AccountMenuModal,
             },
-            name: 'settings-accounts',
+            name: RouteName.SettingsAccounts,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/disclaimer',
             components: {
                 modal: DisclaimerModal,
             },
-            name: 'disclaimer',
+            name: RouteName.Disclaimer,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/release-notes',
             components: {
                 modal: ReleaseNotesModal,
             },
-            name: 'settings-release-notes',
+            name: RouteName.SettingsReleaseNotes,
             meta: { column: Columns.DYNAMIC },
         }],
     }],
@@ -443,21 +490,21 @@ const routes: RouteConfig[] = [{
     components: {
         basement: NetworkLayout,
     },
-    name: 'network',
+    name: RouteName.Network,
     meta: { column: Columns.ACCOUNT },
     children: [{
         path: '/accounts',
         components: {
             modal: AccountMenuModal,
         },
-        name: 'network-accounts',
+        name: RouteName.NetworkAccounts,
         meta: { column: Columns.DYNAMIC },
     }, {
         path: '/release-notes',
         components: {
             modal: ReleaseNotesModal,
         },
-        name: 'network-release-notes',
+        name: RouteName.NetworkReleaseNotes,
         meta: { column: Columns.DYNAMIC },
     }],
 }];

@@ -517,6 +517,8 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
+#: src/components/modals/demos/DemoModalBuy.vue:23
+#: src/components/modals/demos/DemoModalBuy.vue:4
 #: src/components/TransactionList.vue:56
 #: src/components/TransactionList.vue:66
 msgid "Buy NIM"
@@ -892,6 +894,10 @@ msgstr ""
 
 #: src/lib/StakingUtils.ts:30
 msgid "Delete validator"
+msgstr ""
+
+#: src/components/modals/demos/DemoModalBuy.vue:6
+msgid "DEMO"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:10
@@ -1650,6 +1656,10 @@ msgstr ""
 msgid "NIM network fee"
 msgstr ""
 
+#: src/components/modals/demos/DemoModalFallback.vue:4
+msgid "Nimiq Demo"
+msgstr ""
+
 #: src/components/modals/DisclaimerModal.vue:16
 msgid "Nimiq is not responsible for any loss. Nimiq, wallet.nimiq.com, hub.nimiq.com & keyguard.nimiq.com, and some of the underlying libraries are under active development."
 msgstr ""
@@ -1778,6 +1788,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:5
 msgid "One Account, many Addresses"
+msgstr ""
+
+#: src/components/modals/demos/DemoModalFallback.vue:16
+msgid "Open Nimiq Wallet"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:14
@@ -2786,6 +2800,10 @@ msgstr ""
 msgid "This is a single-use address"
 msgstr ""
 
+#: src/components/modals/demos/DemoModalFallback.vue:8
+msgid "This is not a real Nimiq Wallet. It is just a demo so it is limited in functionality."
+msgstr ""
+
 #: src/components/BtcAddressInput.vue:30
 msgid "This is not a valid address"
 msgstr ""
@@ -2871,6 +2889,10 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:60
 msgid "This swap is as decentralized as the blockchain itself."
+msgstr ""
+
+#: src/components/modals/demos/DemoModalBuy.vue:33
+msgid "This transaction is instant and secure."
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:312
@@ -3159,6 +3181,10 @@ msgstr ""
 msgid "You can now choose{linebreak}between USDC and USDT"
 msgstr ""
 
+#: src/components/modals/demos/DemoModalFallback.vue:11
+msgid "You can open a free NIM account in less than a minute."
+msgstr ""
+
 #: src/components/PolygonWarningFooter.vue:9
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr ""
@@ -3260,6 +3286,10 @@ msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:9
 msgid "Your NIM are stored in a legacy account. Transfer them to a regular account to profit from new features."
+msgstr ""
+
+#: src/components/modals/demos/DemoModalBuy.vue:30
+msgid "Your NIM is under its way!"
 msgstr ""
 
 #: src/lib/GoCrypto.ts:244

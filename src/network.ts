@@ -12,6 +12,7 @@ import { AddStakeEvent, ApiValidator, RawValidator, useStakingStore } from './st
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
+import { useDemoStore } from './stores/Demo';
 
 let isLaunched = false;
 let clientPromise: Promise<Client>;
@@ -102,6 +103,7 @@ export async function launchNetwork() {
     const transactionsStore = useTransactionsStore();
     const addressStore = useAddressStore();
     const stakingStore = useStakingStore();
+    const demoStore = useDemoStore();
 
     const subscribedAddresses = new Set<string>();
 
@@ -118,7 +120,7 @@ export async function launchNetwork() {
     network$.fetchingTxHistory--;
 
     async function updateBalances(addresses: string[] = [...balances.keys()]) {
-        if (!addresses.length) return;
+        if (!addresses.length || demoStore.isDemoEnabled) return;
         await client.waitForConsensusEstablished();
         const accounts = await retry(() => client.getAccounts(addresses)).catch(reportFor('getAccounts'));
         if (!accounts) return;
@@ -303,6 +305,7 @@ export async function launchNetwork() {
     })();
 
     function transactionListener(plain: PlainTransactionDetails) {
+        if (demoStore.isDemoEnabled) return;
         if (plain.recipient === STAKING_CONTRACT_ADDRESS) {
             if (plain.data.type === 'add-stake') {
                 if (!balances.has(plain.sender) && 'staker' in plain.data) {
@@ -340,6 +343,7 @@ export async function launchNetwork() {
     }
 
     function subscribe(addresses: string[]) {
+        if (demoStore.isDemoEnabled) return false;
         client.addTransactionListener(transactionListener, addresses);
         updateBalances(addresses);
         updateStakes(addresses);
@@ -349,6 +353,7 @@ export async function launchNetwork() {
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
     watch(addressStore.addressInfos, () => {
+        if (demoStore.isDemoEnabled) return;
         const newAddresses: string[] = [];
         const removedAddresses = new Set(subscribedAddresses);
 
@@ -380,6 +385,7 @@ export async function launchNetwork() {
 
     // Fetch transactions for active address
     watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress, trigger]) => {
+        if (demoStore.isDemoEnabled) return;
         const address = activeAddress as string | null;
         if (!address || fetchedAddresses.value.includes(address)) return;
         addFetchedAddress(address);
@@ -428,6 +434,7 @@ export async function launchNetwork() {
     // Fetch transactions for proxies
     const proxyStore = useProxyStore();
     watch(proxyStore.networkTrigger, () => {
+        if (demoStore.isDemoEnabled) return;
         const newProxies: string[] = [];
         const addressesToSubscribe: string[] = [];
         for (const proxyAddress of proxyStore.allProxies.value) {

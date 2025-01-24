@@ -296,6 +296,7 @@ import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
+import { RouteName } from '@/router';
 
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
@@ -2193,7 +2194,10 @@ export default defineComponent({
                 rightAsset.value = leftAsset.value;
             }
             leftAsset.value = asset;
-            context.root.$router.replace(`/swap/${leftAsset.value}-${rightAsset.value}`);
+            context.root.$router.replace({
+                name: RouteName.Swap,
+                params: { pair: `${leftAsset.value}-${rightAsset.value}` },
+            });
         }
 
         function setRightAsset(asset: SupportedSwapAsset) {
@@ -2201,7 +2205,10 @@ export default defineComponent({
                 leftAsset.value = rightAsset.value;
             }
             rightAsset.value = asset;
-            context.root.$router.replace(`/swap/${leftAsset.value}-${rightAsset.value}`);
+            context.root.$router.replace({
+                name: RouteName.Swap,
+                params: { pair: `${leftAsset.value}-${rightAsset.value}` },
+            });
         }
 
         const swapIsNotSupported = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER

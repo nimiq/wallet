@@ -35,7 +35,7 @@
                             </button>
                             <button v-if="activeCurrency === CryptoCurrency.NIM"
                                 class="reset flex-row"
-                                @mousedown="$router.push('/staking')"
+                                @mousedown="$router.push({ name: RouteName.Staking })"
                             >
                                 <TwoLeafStakingIcon/>{{ $t('Staking') }}
                             </button>
@@ -47,7 +47,9 @@
                             </button>
                             <button
                                 class="reset flex-row"
-                                @pointerdown="$router.push('/export-history/address')"
+                                @pointerdown="$router.push({
+                                    name: RouteName.ExportHistory, params: { type: address } }
+                                )"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
@@ -93,7 +95,9 @@
                             </button>
                             <button
                                 class="reset flex-row"
-                                @pointerdown="$router.push('/export-history/address')"
+                                @pointerdown="$router.push(
+                                    { name: RouteName.ExportHistory, params: { type: 'address'}}
+                                )"
                             >
                                 <BoxedArrowUpIcon />{{ $t('Export History') }}
                             </button>
@@ -310,6 +314,7 @@ import { BigNumber } from 'ethers';
 import { SignPolygonTransactionRequest } from '@nimiq/hub-api';
 import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
+import { RouteName } from '@/router';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
@@ -634,6 +639,7 @@ export default defineComponent({
             windowWidth,
             showStakingButton,
             isMobile,
+            RouteName,
         };
     },
     components: {

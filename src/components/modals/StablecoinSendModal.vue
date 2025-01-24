@@ -55,7 +55,7 @@
                 </section>
             </PageBody>
             <PolygonWarningFooter type="sending" level="info"/>
-            <button class="reset scan-qr-button" @click="$router.push('/scan')">
+            <button class="reset scan-qr-button" @click="$router.push({ name: RouteName.Scan })">
                 <ScanQrCodeIcon/>
             </button>
         </div>
@@ -250,6 +250,7 @@ import {
     CircleSpinner,
 } from '@nimiq/vue-components';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
+import { RouteName } from '@/router';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendPolygonTransaction } from '../../hub';
@@ -866,6 +867,7 @@ export default defineComponent({
 
             back,
             config,
+            RouteName,
         };
     },
     components: {

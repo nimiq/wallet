@@ -33,7 +33,7 @@
                 <MenuIcon/>
                 <AttentionDot v-if="updateAvailable"/>
             </button>
-            <button class="reset consensus" @click="$router.push('/network').catch(() => {})">
+            <button class="reset consensus" @click="$router.push({ name: RouteName.Network }).catch(() => {})">
                 <ConsensusIcon/>
             </button>
         </div>
@@ -150,7 +150,7 @@
                         </div>
                         <button v-else
                             class="nq-button-pill light-blue"
-                            @click.stop="$router.push('/btc-activation')" @mousedown.prevent
+                            @click.stop="$router.push({ name: RouteName.BtcActivation })" @mousedown.prevent
                         >{{ $t('Activate') }}</button>
                     </div>
                 </button>
@@ -264,7 +264,7 @@
                         </div>
                         <button v-else
                             class="nq-button-pill light-blue"
-                            @click.stop="$router.push('/usdc-activation')" @mousedown.prevent
+                            @click.stop="$router.push({ name: RouteName.UsdcActivation })" @mousedown.prevent
                         >{{ $t('Activate') }}</button>
                     </div>
                 </button>
@@ -332,6 +332,7 @@
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted, onActivated } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
+import router, { RouteName } from '@/router';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -364,7 +365,6 @@ import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
-import router from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 // import { useStakingStore } from '../../stores/Staking';
 // import AccountStake from '../staking/AccountStake.vue';
@@ -604,6 +604,7 @@ export default defineComponent({
             nimAccountBgCutouts,
             onSwapButtonPointerDown,
             isMobile,
+            RouteName,
             // totalAccountStake,
         };
     },

@@ -4,7 +4,7 @@
         <span class="staking-projection-text">
             {{ $t('Earn NIM every month by staking your NIM') }}
         </span>
-        <button @click="$router.push('/staking')" class="nq-button-s inverse staking-action">
+        <button @click="$router.push({ name: RouteName.Staking })" class="nq-button-s inverse staking-action">
             {{ $t('Stake now') }}
         </button>
     </div>
@@ -12,11 +12,14 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+import { RouteName } from '@/router';
 import StakingButton from './StakingButton.vue';
 
 export default defineComponent({
     setup() {
-        return {};
+        return {
+            RouteName,
+        };
     },
     components: {
         StakingButton,

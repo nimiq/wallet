@@ -9,7 +9,7 @@
         >
             <ArrowRightSmallIcon />{{ $t('Send') }}
         </button>
-        <button class="reset scan-qr" @click="$router.push('/scan')">
+        <button class="reset scan-qr" @click="$router.push({ name: RouteName.Scan })">
             <ScanQrCodeIcon/>
         </button>
     </div>
@@ -19,6 +19,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { useConfig } from '@/composables/useConfig';
+import { RouteName } from '@/router';
 import { AddressType, useAddressStore } from '../stores/Address';
 import { useAccountStore } from '../stores/Account';
 import { CryptoCurrency } from '../lib/Constants';
@@ -58,9 +59,11 @@ export default defineComponent({
                 && (hasMultipleReceivableAddresses.value || hasBitcoinAddresses.value)
             ) {
                 // redirect to the address selector
-                context.root.$router.push('/receive');
+                context.root.$router.push({ name: RouteName.Receive });
             } else {
-                context.root.$router.push(nimOrBtcOrStable('/receive/nim', '/receive/btc', '/receive/usdc'));
+                context.root.$router.push({
+                    name: nimOrBtcOrStable(RouteName.ReceiveNim, RouteName.ReceiveBtc, RouteName.ReceiveUsdc),
+                });
             }
         }
 
@@ -73,9 +76,11 @@ export default defineComponent({
                 && (hasMultipleSendableAddresses.value || hasBitcoinAddresses.value)
             ) {
                 // redirect to the address selector
-                context.root.$router.push('/send');
+                context.root.$router.push({ name: RouteName.Send });
             } else {
-                context.root.$router.push(nimOrBtcOrStable('/send/nim', '/send/btc', '/send/usdc'));
+                context.root.$router.push({
+                    name: nimOrBtcOrStable(RouteName.SendNim, RouteName.SendBtc, RouteName.SendUsdc),
+                });
             }
         }
 
@@ -98,6 +103,7 @@ export default defineComponent({
             receive,
             send,
             sendDisabled,
+            RouteName,
         };
     },
     components: {

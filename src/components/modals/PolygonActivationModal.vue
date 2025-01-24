@@ -52,6 +52,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
+import { RouteName } from '@/router';
 import Modal from './Modal.vue';
 import { activatePolygon } from '../../hub';
 import {
@@ -99,7 +100,7 @@ export default defineComponent({
             if (!hasPolygonAddresses.value) return;
             await close(true);
             if (!props.redirect) {
-                context.root.$router.push('/stablecoin-selection');
+                context.root.$router.push({ name: RouteName.StablecoinSelection });
             }
         }
 
@@ -120,10 +121,10 @@ export default defineComponent({
 
                 if (shouldOpenWelcomeStakingModal.value) {
                     // Open welcome staking modal if not shown yet
-                    await context.root.$router.push('/welcome-staking');
+                    await context.root.$router.push({ name: RouteName.WelcomeStaking });
                 } else if (shouldOpenWelcomeModal.value) {
                     // Open welcome modal with additional BTC and USDC info if not shown yet
-                    await context.root.$router.push('/welcome');
+                    await context.root.$router.push({ name: RouteName.Welcome });
                 }
             }
         }

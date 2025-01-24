@@ -30,7 +30,7 @@ import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
 import { createTransactionRequest, sendTransaction as sendPolygonTx } from './ethers';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
-import router from './router';
+import router, { RouteName } from './router';
 import { useSettingsStore } from './stores/Settings';
 import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
@@ -135,7 +135,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
             // Signup of a Keyguard account
             if (!welcomeModalAlreadyShown && config.enableBitcoin && config.polygon.enabled) {
                 // Show regular first-time welcome flow which talks about Bitcoin and USDC.
-                router.push('/welcome');
+                router.push({ name: RouteName.Welcome });
             }
             break;
         case HubApi.RequestType.LOGIN:
@@ -146,7 +146,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
                 // Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for
                 // Keyguard accounts it's automatically activated on login), offer to activate it. After activation, the
                 // Bitcoin activation modal leads into the Welcome modal if not shown yet.
-                router.push('/btc-activation');
+                router.push({ name: RouteName.BtcActivation });
             }
             // We currently don't need to handle the case that USDC is not activated yet after logins, because for
             // Legacy and Ledger accounts it's currently not supported yet, and for Keyguard accounts it's automatically
@@ -162,7 +162,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
 });
 
 hubApi.on(HubApi.RequestType.MIGRATE, () => {
-    router.onReady(() => router.push('/migration-welcome'));
+    router.onReady(() => router.push({ name: RouteName.MigrationWelcome }));
 });
 
 hubApi.on(HubApi.RequestType.SIGN_TRANSACTION, async (tx) => {
@@ -398,7 +398,7 @@ export async function syncFromHub() {
         && config.polygon.enabled
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
-        router.push('/usdc-activation');
+        router.push({ name: RouteName.UsdcActivation });
     } else {
         // Check if the WelcomeStakingModal should be shown
         const welcomeStakingModalAlreadyShown = window.localStorage.getItem(
@@ -407,7 +407,7 @@ export async function syncFromHub() {
 
         if (!welcomeStakingModalAlreadyShown) {
             // Show WelcomeStakingModal if not shown before
-            router.push('/welcome-staking');
+            router.push({ name: RouteName.WelcomeStaking });
         }
     }
 }
@@ -442,7 +442,7 @@ export async function onboard(asRedirect = false) {
         && !activeAccountInfo.value.btcAddresses?.external.length
         && config.enableBitcoin
     ) {
-        router.push('/btc-activation');
+        router.push({ name: RouteName.BtcActivation });
     }
     return true;
 }

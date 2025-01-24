@@ -25,7 +25,9 @@
 
             <button
                 class="item reset flex-row"
-                @mousedown="$router.push('/export-history/account')"
+                @mousedown="$router.push({
+                    name: RouteName.ExportHistory, params: { type: 'account' },
+                })"
             >
                 <BoxedArrowUpIcon />{{ $t('Export History') }}
             </button>
@@ -55,6 +57,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { AlertTriangleIcon } from '@nimiq/vue-components';
+import { RouteName } from '@/router';
 
 import AccountMenuItem from '../AccountMenuItem.vue';
 import Modal from './Modal.vue';
@@ -86,9 +89,9 @@ export default defineComponent({
             selectAccount(id);
 
             if (isMobile.value) {
-                context.root.$router.replace('/');
+                context.root.$router.replace({ name: RouteName.Root });
             } else {
-                context.root.$router.push('/').catch(() => { /* ignore */ });
+                context.root.$router.push({ name: RouteName.Root }).catch(() => { /* ignore */ });
             }
         }
 

@@ -99,6 +99,7 @@ export enum Columns {
 
 export enum RouteName {
     Root = 'root',
+    Transactions = 'transactions',
     RootAccounts = 'root-accounts',
     Send = 'send',
     SendNim = 'send-nim',
@@ -146,6 +147,7 @@ export enum RouteName {
 
 const routes: RouteConfig[] = [{
     path: '/',
+    name: RouteName.Root,
     components: {
         groundfloor: Groundfloor,
     },
@@ -155,7 +157,7 @@ const routes: RouteConfig[] = [{
             accountOverview: AccountOverview,
             addressOverview: AddressOverview,
         },
-        name: RouteName.Root,
+        name: RouteName.Transactions,
         alias: '/transactions',
         meta: { column: Columns.DYNAMIC },
         children: [{

@@ -21,7 +21,7 @@
         </PageBody>
         <PageFooter>
             <span>{{ $t('Your bank is not eligible?') }}</span>
-            <button class="nq-button-s" @click="$router.replace('/moonpay')" @mousedown.prevent>
+            <button class="nq-button-s" @click="$router.replace({ name: RouteName.Moonpay })" @mousedown.prevent>
                 {{ $t('Buy with Credit Card') }}
             </button>
         </PageFooter>
@@ -31,6 +31,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import { RouteName } from '@/router';
 import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({
@@ -49,6 +50,7 @@ export default defineComponent({
             bankCheckInput$,
             bankName,
             writing,
+            RouteName,
         };
     },
     components: {

@@ -23,7 +23,7 @@
                             @input="resetRecipient"
                             @address="onAddressEntered"
                             @domain-address="onDomainEntered"
-                            @scan="$router.push('/scan')"
+                            @scan="$router.push({ name: RouteName.Scan })"
                             ref="addressInput$"/>
                     </template>
                 </DoubleInput>
@@ -143,6 +143,7 @@ import {
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
+import { RouteName } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -601,6 +602,7 @@ export default defineComponent({
             onCloseOverlay,
 
             back,
+            RouteName,
         };
     },
     components: {

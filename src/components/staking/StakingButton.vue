@@ -19,7 +19,7 @@
             <template #trigger>
                 <button class="stake"
                     :disabled="!canStake"
-                    @click="$router.push('/staking')"
+                    @click="$router.push({ name: RouteName.Staking })"
                     @mousedown.prevent
                 >
                     <HeroIcon :pulsing="!totalAccountStake && canStake" :disabled="$config.disableNetworkInteraction" />
@@ -35,6 +35,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
+import { RouteName } from '@/router';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
@@ -70,7 +71,7 @@ export default defineComponent({
             if (canStake.value) {
                 e.stopPropagation();
                 e.preventDefault();
-                context.root.$router.push('/staking');
+                context.root.$router.push({ name: RouteName.Staking });
             }
         }
 
@@ -122,6 +123,7 @@ export default defineComponent({
             canStake,
             customClickHandler,
             isCTATooltipDisabled,
+            RouteName,
         };
     },
     components: {

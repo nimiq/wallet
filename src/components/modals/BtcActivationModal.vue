@@ -34,6 +34,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
+import { RouteName } from '@/router';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { activateBitcoin } from '../../hub';
@@ -84,7 +85,7 @@ export default defineComponent({
 
                 if (shouldOpenWelcomeModal) {
                     // Open welcome modal with additional BTC and USDC info if not shown yet.
-                    await context.root.$router.push('/welcome');
+                    await context.root.$router.push({ name: RouteName.Welcome });
                 }
             }
         }

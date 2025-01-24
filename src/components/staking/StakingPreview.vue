@@ -1,7 +1,7 @@
 <template>
     <button class="staking-preview nq-button-pill green flex-row"
         :disabled="$config.disableNetworkInteraction"
-        @click="$router.push('/staking')" @mousedown.prevent>
+        @click="$router.push({ name: RouteName.Staking })" @mousedown.prevent>
         <!-- The percentages below should also match in AmountSlider.vue -->
         <OneLeafStakingIcon v-if="currentPercentage < 50"/>
         <TwoLeafStakingIcon v-else-if="currentPercentage < 75"/>
@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
+import { RouteName } from '@/router';
 import Amount from '../Amount.vue';
 import { useStakingStore } from '../../stores/Staking';
 import OneLeafStakingIcon from '../icons/Staking/OneLeafStakingIcon.vue';
@@ -50,6 +51,7 @@ export default defineComponent({
             stake,
             currentPercentage,
             restakingRewards,
+            RouteName,
         };
     },
     components: {

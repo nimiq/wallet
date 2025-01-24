@@ -183,7 +183,10 @@
                         <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction
                             && (!usesNimSwapProxy || swapTransaction.relatedTransactionHash)"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace(`/transaction/${swapTransaction.transactionHash}`)"
+                            @click="$router.replace({
+                                name: RouteName.Transaction,
+                                params: { transactionHash: swapTransaction.transactionHash }
+                            })"
                         >
                             <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
@@ -197,7 +200,10 @@
                         </button>
                         <button v-if="swapData.asset === SwapAsset.BTC && swapTransaction"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace(`/btc-transaction/${swapTransaction.transactionHash}`)"
+                            @click="$router.replace({
+                                name: RouteName.BtcTransaction,
+                                params: { transactionHash: swapTransaction.transactionHash }
+                            })"
                         >
                             <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
@@ -279,6 +285,7 @@ import { useAccountStore } from '@/stores/Account';
 import { useUsdtTransactionsStore, TransactionState } from '@/stores/UsdtTransactions';
 import { useUsdtContactsStore } from '@/stores/UsdtContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
+import { RouteName } from '@/router';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -526,7 +533,10 @@ export default defineComponent({
                     relayUrl!,
                 );
                 await context.root.$nextTick();
-                context.root.$router.replace(`/transaction/${plainTx.transactionHash}`);
+                context.root.$router.replace({
+                    name: RouteName.UsdtTransaction,
+                    params: { transactionHash: plainTx.transactionHash },
+                });
             } catch (e) {
                 const errorMessage = e instanceof Error ? e.message : String(e);
                 alert(context.root.$t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
@@ -563,6 +573,7 @@ export default defineComponent({
             refundHtlc,
             ticker,
             assetToCurrency,
+            RouteName,
         };
     },
     components: {

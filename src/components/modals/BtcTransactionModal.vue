@@ -238,7 +238,9 @@
                         <button v-if="swapData.asset === SwapAsset.NIM && swapTransaction
                             && (!usesNimSwapProxy || swapTransaction.relatedTransactionHash)"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace(`/transaction/${swapTransaction.transactionHash}`)"
+                            @click="$router.replace(
+                                { name: RouteName.Transaction, params: { hash: swapTransaction.transactionHash } })
+                            "
                         >
                             <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
@@ -253,7 +255,9 @@
                         <button v-if="(swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)
                             && swapTransaction"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace(`/usdc-transaction/${swapTransaction.transactionHash}`)"
+                            @click="$router.replace(
+                                { name: RouteName.UsdcTransaction, params: { hash: swapTransaction.transactionHash } }
+                            )"
                         >
                             <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
@@ -267,7 +271,9 @@
                         </button>
                         <button v-if="swapData.asset === SwapAsset.USDT_MATIC && swapTransaction"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
-                            @click="$router.replace(`/usdt-transaction/${swapTransaction.transactionHash}`)"
+                            @click="$router.replace(
+                                { name: RouteName.UsdtTransaction, params: { hash: swapTransaction.transactionHash } }
+                            )"
                         >
                             <div class="icon">
                                 <GroundedArrowUpIcon v-if="isIncoming"/>
@@ -340,6 +346,7 @@ import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest, SignedBtcTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { RouteName } from '@/router';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -564,7 +571,10 @@ export default defineComponent({
             if (!tx) return;
             const plainTx = await sendTransaction(tx as SignedBtcTransaction);
             await context.root.$nextTick();
-            context.root.$router.replace(`/btc-transaction/${plainTx.transactionHash}`);
+            context.root.$router.replace({
+                name: RouteName.BtcTransaction,
+                params: { transactionHash: plainTx.transactionHash },
+            });
         }
 
         return {
@@ -602,6 +612,7 @@ export default defineComponent({
             refundHtlc,
             SettlementStatus,
             assetToCurrency,
+            RouteName,
         };
     },
     components: {

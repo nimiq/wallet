@@ -66,6 +66,7 @@ import {
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
+import { RouteName } from '@/router';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -946,11 +947,11 @@ export default defineComponent({
             const toAsset = activeSwap.value.to.asset as SwapAsset;
 
             if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
-                context.root.$router.push('/swap');
+                context.root.$router.push({ name: RouteName.Swap });
             } else if (fiatCurrencies.includes(fromAsset)) {
-                context.root.$router.push('/buy-crypto');
+                context.root.$router.push({ name: RouteName.BuyCrypto });
             } else if (fiatCurrencies.includes(toAsset)) {
-                context.root.$router.push('/sell-crypto');
+                context.root.$router.push({ name: RouteName.SellCrypto });
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');
             }

@@ -13,7 +13,8 @@
             <UsdtIconPadded />
         </PageBody>
         <PageFooter>
-            <button class="nq-button light-blue" @click="$router.push('/stablecoin-selection')" @mousedown.prevent>
+            <button class="nq-button light-blue" @click="$router.push({ name: RouteName.StablecoinSelection })"
+            @mousedown.prevent>
                 {{ $t('Learn more') }}
             </button>
             <a class="nq-link" @click="stickWithUsdc">
@@ -26,6 +27,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
+import { RouteName } from '@/router';
 import Modal from './Modal.vue';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
@@ -55,6 +57,7 @@ export default defineComponent({
         return {
             modal$,
             stickWithUsdc,
+            RouteName,
         };
     },
     components: {

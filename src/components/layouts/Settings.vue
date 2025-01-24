@@ -5,7 +5,7 @@
                 <MenuIcon/>
             </button>
 
-            <CrossCloseButton @click="$router.push('/').catch(() => {})"/>
+            <CrossCloseButton @click="$router.push({ name: RouteName.Root }).catch(() => {})"/>
         </div>
 
         <div class="column left-column flex-column">
@@ -293,6 +293,7 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import { CircleSpinner } from '@nimiq/vue-components';
 import { ValidationUtils } from '@nimiq/utils';
+import { RouteName } from '@/router';
 
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
@@ -453,6 +454,7 @@ export default defineComponent({
             disconnectKyc,
             copyrightYear,
             VERSION: process.env.VERSION,
+            RouteName,
         };
     },
     components: {

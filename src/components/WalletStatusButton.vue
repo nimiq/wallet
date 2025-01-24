@@ -1,5 +1,5 @@
 <template>
-    <button @click="$router.push('/wallet-status')" class="wallet-status-button nq-button-pill">
+    <button @click="$router.push({ name: RouteName.WalletStatus })" class="wallet-status-button nq-button-pill">
         <CircledQuestionMark />
         <span>{{ $t('Help') }}</span>
     </button>
@@ -7,10 +7,16 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
+import { RouteName } from '@/router';
 import CircledQuestionMark from './icons/CircledQuestionMark.vue';
 
 export default defineComponent({
     props: {},
+    setup() {
+        return {
+            RouteName,
+        };
+    },
     components: {
         CircledQuestionMark,
     },

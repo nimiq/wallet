@@ -51,7 +51,7 @@
                         {{ $t('Create a Cashlink') }}
                     </button>
                 </section>
-                <button class="reset scan-qr-button" @click="$router.push('/scan')">
+                <button class="reset scan-qr-button" @click="$router.push({ name: RouteName.Scan })">
                     <ScanQrCodeIcon/>
                 </button>
             </PageBody>
@@ -265,6 +265,7 @@ import {
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
+import { RouteName } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -938,6 +939,7 @@ export default defineComponent({
             onCloseOverlay,
 
             back,
+            RouteName,
         };
     },
     components: {

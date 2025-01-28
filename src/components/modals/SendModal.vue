@@ -266,6 +266,7 @@ import {
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { useRouter, RouteName } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -317,6 +318,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         enum Pages {
             RECIPIENT_INPUT,
             AMOUNT_INPUT,
@@ -374,7 +376,7 @@ export default defineComponent({
                         };
                         page.value = Pages.AMOUNT_INPUT;
                     } else {
-                        resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
+                        resolverError.value = $t('Domain does not resolve to a valid address') as string;
                     }
                 } catch (e) {
                     console.debug(e); // eslint-disable-line no-console
@@ -634,7 +636,7 @@ export default defineComponent({
             } catch (e) {
                 statusType.value = 'go-crypto';
                 statusState.value = State.WARNING;
-                statusTitle.value = context.root.$t('Something went wrong') as string;
+                statusTitle.value = $t('Something went wrong') as string;
                 statusMessage.value = e instanceof Error ? e.message : String(e);
             } finally {
                 clearTimeout(goCryptoMonitoringTimeout); // end if requested, or clear to avoid parallel monitoring
@@ -765,7 +767,7 @@ export default defineComponent({
             // Show loading screen
             statusType.value = 'signing';
             statusState.value = State.LOADING;
-            statusTitle.value = context.root.$t('Sending Transaction') as string;
+            statusTitle.value = $t('Sending Transaction') as string;
             statusMessage.value = '';
 
             try {
@@ -800,11 +802,11 @@ export default defineComponent({
                 statusType.value = 'signing';
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientWithLabel.value!.label
-                    ? context.root.$t('Sent {nim} NIM to {name}', {
+                    ? $t('Sent {nim} NIM to {name}', {
                         nim: amount.value / 1e5,
                         name: recipientWithLabel.value!.label,
                     }) as string
-                    : context.root.$t('Sent {nim} NIM', {
+                    : $t('Sent {nim} NIM', {
                         nim: amount.value / 1e5,
                     }) as string;
 
@@ -819,7 +821,7 @@ export default defineComponent({
                 // Show error screen
                 statusType.value = 'signing';
                 statusState.value = State.WARNING;
-                statusTitle.value = context.root.$t('Something went wrong') as string;
+                statusTitle.value = $t('Something went wrong') as string;
                 statusMessage.value = `${error.message} - ${error.data}`;
             }
         }

@@ -61,6 +61,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import { useI18n } from '@/lib/useI18n';
 import { Validator, useStakingStore } from '../../stores/Staking';
 import ValidatorIcon from './ValidatorIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -87,6 +88,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const { activeAddress } = useAddressStore();
         const { activeStake, setStake, activeValidator } = useStakingStore();
 
@@ -110,7 +112,7 @@ export default defineComponent({
                     context.emit('statusChange', {
                         type: StatusChangeType.VALIDATOR,
                         state: State.LOADING,
-                        title: context.root.$t('Changing validator') as string,
+                        title: $t('Changing validator') as string,
                     });
 
                     const { Address, TransactionBuilder } = await import('@nimiq/core');
@@ -156,7 +158,7 @@ export default defineComponent({
 
                     context.emit('statusChange', {
                         state: State.SUCCESS,
-                        title: context.root.$t(
+                        title: $t(
                             'Successfully changed validator to {validator}',
                             { validator: validatorLabelOrAddress },
                         ),
@@ -172,7 +174,7 @@ export default defineComponent({
 
                 context.emit('statusChange', {
                     state: State.WARNING,
-                    title: context.root.$t('Something went wrong') as string,
+                    title: $t('Something went wrong') as string,
                     message: `${error.message} - ${error.data}`,
                 });
             }

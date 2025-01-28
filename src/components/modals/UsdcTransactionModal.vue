@@ -305,6 +305,7 @@ import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransac
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
 import { useRouter, RouteName } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -347,6 +348,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const router = useRouter();
+        const { $t } = useI18n();
 
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
@@ -403,11 +405,11 @@ export default defineComponent({
         // Data
         const data = computed(() => {
             if (isCancelledSwap.value) {
-                return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
+                return isIncoming.value ? $t('HTLC Refund') : $t('HTLC Creation');
             }
 
             if (transaction.value.event?.name === 'Swap') {
-                return context.root.$t('Converted {amount1} USDC.e to {amount2} USDC', {
+                return $t('Converted {amount1} USDC.e to {amount2} USDC', {
                     amount1: (transaction.value.event.amountIn / 1e6).toFixed(2),
                     amount2: (transaction.value.event.amountOut / 1e6).toFixed(2),
                 }) as string;
@@ -572,7 +574,7 @@ export default defineComponent({
                 });
             } catch (e) {
                 const errorMessage = e instanceof Error ? e.message : String(e);
-                alert(context.root.$t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
+                alert($t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
             }
         }
 

@@ -251,6 +251,7 @@ import {
 } from '@nimiq/vue-components';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
 import { useRouter, RouteName } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendPolygonTransaction } from '../../hub';
@@ -299,6 +300,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         enum Pages {
             WARNING,
             RECIPIENT_INPUT,
@@ -368,7 +370,7 @@ export default defineComponent({
                         const normalizedAddress = ethers.utils.getAddress(resolvedAddress); // normalize with checksum
                         onAddressEntered(normalizedAddress, domain);
                     } else {
-                        resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
+                        resolverError.value = $t('Domain does not resolve to a valid address') as string;
                     }
                 } catch (error) {
                     console.debug(error); // eslint-disable-line no-console
@@ -625,7 +627,7 @@ export default defineComponent({
             // Show loading screen
             statusScreenOpened.value = true;
             statusState.value = State.LOADING;
-            statusTitle.value = context.root.$t('Sending Transaction') as string;
+            statusTitle.value = $t('Sending Transaction') as string;
             statusMessage.value = '';
 
             try {
@@ -655,12 +657,12 @@ export default defineComponent({
                 // Show success screen
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientWithLabel.value!.label
-                    ? context.root.$t('Sent {coin} {ticker} to {name}', {
+                    ? $t('Sent {coin} {ticker} to {name}', {
                         coin: amount.value / 1e6,
                         name: recipientWithLabel.value!.label,
                         ticker: stablecoin.value!.toUpperCase(),
                     }) as string
-                    : context.root.$t('Sent {coin} {ticker}', {
+                    : $t('Sent {coin} {ticker}', {
                         coin: amount.value / 1e6,
                         ticker: stablecoin.value!.toUpperCase(),
                     }) as string;
@@ -675,7 +677,7 @@ export default defineComponent({
 
                 // Show error screen
                 statusState.value = State.WARNING;
-                statusTitle.value = context.root.$t('Something went wrong') as string;
+                statusTitle.value = $t('Something went wrong') as string;
                 statusMessage.value = error.message.split(' req={')[0]; // eslint-disable-line prefer-destructuring
             }
         }
@@ -752,7 +754,7 @@ export default defineComponent({
                     feeUpdateTimeout = window.setTimeout(startFeeUpdates, 20e3);
                 }
             } catch (e: unknown) {
-                feeError.value = context.root.$t('Failed to fetch {ticker} fees. Retrying... (Error: {message})', {
+                feeError.value = $t('Failed to fetch {ticker} fees. Retrying... (Error: {message})', {
                     message: e instanceof Error ? e.message : String(e),
                     ticker: stablecoin.value!.toUpperCase(),
                 }) as string;

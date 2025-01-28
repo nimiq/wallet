@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from '@/lib/useI18n';
 import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from '@vue/composition-api';
 
 import CrossCloseButton from './CrossCloseButton.vue';
@@ -30,6 +31,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const containerDiv = ref<HTMLDivElement | null>(null);
         const searchBarInput = ref<HTMLInputElement | null>(null);
         const inputWidth = ref(1000);
@@ -41,10 +43,10 @@ export default defineComponent({
         const placeholderText = computed(() => {
             if (containerWidth.value < 100) return '';
             if (maxWidth.value === '100%' && (containerWidth.value > 400 || inputWidth.value > 350)) {
-                return context.root.$t('Search transactions by contact, address, etc.');
+                return $t('Search transactions by contact, address, etc.');
             }
-            if (containerWidth.value > 210 || inputWidth.value > 150) return context.root.$t('Search transactions');
-            return context.root.$t('Search');
+            if (containerWidth.value > 210 || inputWidth.value > 150) return $t('Search transactions');
+            return $t('Search');
         });
 
         const maxWidth = computed(() => {

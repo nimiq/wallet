@@ -358,6 +358,7 @@ import {
     CloseButton,
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { useI18n } from '@/lib/useI18n';
 import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import GroundedArrowUpIcon from '../icons/GroundedArrowUpIcon.vue';
 import OverflowingCup from '../icons/OverflowingCup.vue';
@@ -455,6 +456,8 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
+
         // NIM Identicon
         const identicon$ = ref<Identicon>(null);
         const identiconUrl = ref('');
@@ -644,7 +647,7 @@ export default defineComponent({
                     && props.toAsset === SwapAsset.USDT_MATIC
                 ))
             ) {
-                return context.root.$t('Restart payout process') as string;
+                return $t('Restart payout process') as string;
             }
 
             return false;

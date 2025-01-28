@@ -30,6 +30,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody, PageHeader, PageFooter, CircleSpinner } from '@nimiq/vue-components';
+import { useI18n } from '@/lib/useI18n';
 import { ExportFormat, exportTransactions } from '../../lib/export/TransactionExport';
 import { useAccountStore } from '../../stores/Account';
 import Modal from './Modal.vue';
@@ -45,9 +46,10 @@ export default defineComponent({
             default: 'account',
         },
     },
-    setup(props, context) {
+    setup(props) {
+        const { $t } = useI18n();
         const formats = {
-            [ExportFormat.GENERIC]: { label: context.root.$t('Generic') as string },
+            [ExportFormat.GENERIC]: { label: $t('Generic') as string },
             [ExportFormat.BLOCKPIT]: { label: 'Blockpit' },
         };
         const format = ref(ExportFormat.GENERIC);

@@ -37,6 +37,7 @@
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { parseRequestLink, Currency } from '@nimiq/utils';
+import { useI18n } from '@/lib/useI18n';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
 import { normalizeAddress, validateAddress } from '../lib/BitcoinTransactionUtils';
@@ -62,6 +63,7 @@ const BtcAddressInput = defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const { config } = useConfig();
 
         const input$ = ref<LabelInput>(null);
@@ -97,7 +99,7 @@ const BtcAddressInput = defineComponent({
                         context.emit('domain-address', domain, normalizedAddress);
                         invalid.value = false;
                     } else {
-                        resolverError.value = context.root.$t('Domain does not resolve to a valid address') as string;
+                        resolverError.value = $t('Domain does not resolve to a valid address') as string;
                         invalid.value = true;
                     }
                 } catch (e) {

@@ -53,6 +53,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Modal from './Modal.vue';
 import { activatePolygon } from '../../hub';
 import {
@@ -67,12 +68,13 @@ export default defineComponent({
     props: {
         redirect: String,
     },
-    setup(props, context) {
+    setup(props) {
         const { activeAccountId, hasPolygonAddresses } = useAccountStore();
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);
         const router = useRouter();
+        const { $t } = useI18n();
 
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
@@ -91,9 +93,9 @@ export default defineComponent({
         );
 
         const buttonText = computed(() => {
-            if (shouldOpenWelcomeStakingModal.value) return context.root.$t('Learn about the new Nimiq');
-            if (shouldOpenWelcomeModal.value) return context.root.$t('Check the new intro');
-            return context.root.$t('Got it');
+            if (shouldOpenWelcomeStakingModal.value) return $t('Learn about the new Nimiq');
+            if (shouldOpenWelcomeModal.value) return $t('Check the new intro');
+            return $t('Got it');
         });
 
         async function enablePolygon() {

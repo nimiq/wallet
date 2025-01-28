@@ -83,6 +83,7 @@
 import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
+import { useI18n } from '@/lib/useI18n';
 import { ENV_MAIN } from '../lib/Constants';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { Transaction, useBtcTransactionsStore } from '../stores/BtcTransactions';
@@ -137,6 +138,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const { state: btcAddresses$, activeAddresses } = useBtcAddressStore();
         const { state: btcTransactions$ } = useBtcTransactionsStore();
         const { isFetchingTxHistory, consensus } = useBtcNetworkStore();
@@ -238,7 +240,7 @@ export default defineComponent({
             let hasThisMonthLabel = false;
 
             if (!txs[n].timestamp) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
                 isLatestMonth = false;
                 hasThisMonthLabel = true;
                 while (txs[n] && !txs[n].timestamp) {
@@ -260,7 +262,7 @@ export default defineComponent({
             let txDate: Date;
 
             if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
                 isLatestMonth = false;
             }
 

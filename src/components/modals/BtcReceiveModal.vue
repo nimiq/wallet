@@ -131,6 +131,7 @@ import {
     QrCodeIcon,
 } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -143,6 +144,7 @@ import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     setup(props, context) {
+        const { $t, $tc } = useI18n();
         const {
             availableExternalAddresses,
             copiedExternalAddresses,
@@ -173,16 +175,16 @@ export default defineComponent({
             const difference = now.value - timestamp;
 
             if (difference < 1 * minute) {
-                return context.root.$tc('Created just now');
+                return $tc('Created just now');
             }
             if (difference < 1 * hour) {
-                return context.root.$tc(
+                return $tc(
                     'Created {count} minute ago | Created {count} minutes ago',
                     Math.trunc(difference / minute),
                 );
             }
             if (difference < 1 * day) {
-                return context.root.$tc(
+                return $tc(
                     'Created {count} hour ago | Created {count} hours ago',
                     Math.trunc(difference / hour),
                 );
@@ -190,9 +192,9 @@ export default defineComponent({
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
             if (timestamp > yesterday.setHours(0, 0, 0, 0)) {
-                return context.root.$t('Created yesterday') as string;
+                return $t('Created yesterday') as string;
             }
-            return context.root.$tc(
+            return $tc(
                 'Created {count} day ago | Created {count} days ago',
                 Math.trunc(difference / day),
             );

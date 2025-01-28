@@ -12,14 +12,16 @@ import { defineComponent, ref } from '@vue/composition-api';
 import { ArrowRightSmallIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
 import { RouteName, useRouter } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import BlueLink from './BlueLink.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 
 const STORAGE_KEY = 'announcement-box-dismissed';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const router = useRouter();
+        const { $t } = useI18n();
 
         // text and cta must be functions for translations to work!
         let text: () => LocaleMessage = () => '';
@@ -27,9 +29,9 @@ export default defineComponent({
         let action: string | (() => LocaleMessage) | (() => void) = '';
         let storageKey = ''; // Used to identify if the box has been dismissed yet
 
-        // text = () => context.root.$t('Buy NIM & BTC with OASIS!');
+        // text = () => $t('Buy NIM & BTC with OASIS!');
         text = () => ''; // Disables AnnouncementBox
-        cta = () => context.root.$t('Try it now');
+        cta = () => $t('Try it now');
         action = () => router.push({ name: RouteName.Buy });
         storageKey = 'buy-with-oasis-1';
 

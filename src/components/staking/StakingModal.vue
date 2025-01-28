@@ -60,6 +60,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
+import { useI18n } from '@/lib/useI18n';
 import { useStakingStore, Validator } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import Modal from '../modals/Modal.vue';
@@ -102,7 +103,8 @@ type StatusChangeParams = {
 };
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
+        const { $t } = useI18n();
         const { activeAddressInfo } = useAddressStore();
         const { activeValidator, activeStake, totalAccountStake } = useStakingStore();
         const page = ref(activeValidator.value
@@ -150,7 +152,7 @@ export default defineComponent({
             }
 
             if (statusChangeObj.state === State.ERROR || statusChangeObj.state === State.WARNING) {
-                statusMainAction.value = context.root.$t('Close') as string;
+                statusMainAction.value = $t('Close') as string;
             }
         }
 

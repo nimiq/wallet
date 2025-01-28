@@ -45,6 +45,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
+import { provideI18n } from '@/lib/useI18n';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
@@ -63,6 +64,7 @@ export default defineComponent({
     name: 'app',
     setup(props, context) {
         provideRouter(router);
+        provideI18n(context.root);
 
         const { config } = useConfig();
         const isMainnet = config.environment === ENV_MAIN;

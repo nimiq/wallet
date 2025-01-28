@@ -298,6 +298,7 @@ import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest'
 import { CurrencyInfo } from '@nimiq/utils';
 import { RouteName, useRouter } from '@/router';
 
+import { useI18n } from '@/lib/useI18n';
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
@@ -380,6 +381,8 @@ export default defineComponent({
     },
     setup(props, context) {
         const { config } = useConfig();
+
+        const { $t } = useI18n();
 
         const estimate = ref<Estimate>(null);
         const estimateError = ref<string>(null);
@@ -998,7 +1001,7 @@ export default defineComponent({
                     stopPolygonFeeUpdates();
                     return false;
                 }
-                polygonFeeError.value = context.root.$t(
+                polygonFeeError.value = $t(
                     'Failed to fetch Polygon fees. Retrying... (Error: {message})',
                     { message: e instanceof Error ? e.message : String(e) },
                 ) as string;
@@ -1085,13 +1088,13 @@ export default defineComponent({
                 // Check against minimums
                 if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
                     // If one of the two amounts is 0 or less, that means the fees are higher than the swap amount
-                    estimateError.value = context.root.$t('The fees determine the minimum amount.') as string;
+                    estimateError.value = $t('The fees determine the minimum amount.') as string;
                 } else if (
                     newEstimate.to.asset === SwapAsset.BTC
                     // Check that output is higher than the BTC dust limit
                     && newEstimate.to.amount - newEstimate.to.fee <= BTC_DUST_LIMIT
                 ) {
-                    estimateError.value = context.root.$t('Resulting BTC amount is too small.') as string;
+                    estimateError.value = $t('Resulting BTC amount is too small.') as string;
                 } else {
                     estimateError.value = null;
                 }
@@ -2024,7 +2027,7 @@ export default defineComponent({
                             : 0;
             } catch (error) {
                 reportToSentry(error);
-                swapError.value = context.root.$t('Invalid swap state, swap aborted!') as string;
+                swapError.value = $t('Invalid swap state, swap aborted!') as string;
                 cancelSwap({ id: swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();

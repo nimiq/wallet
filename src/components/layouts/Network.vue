@@ -91,6 +91,7 @@ import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculatePolygonFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '@/electrum';
+import { useI18n } from '@/lib/useI18n';
 import { useSettingsStore } from '../../stores/Settings';
 import { useNetworkStore } from '../../stores/Network';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
@@ -108,15 +109,16 @@ import router from '../../router';
 const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
+        const { $t } = useI18n();
         const { consensus, peerCount } = useNetworkStore();
         const { config } = useConfig();
 
         const consensusStateString = computed(() => ({
-            stalled: context.root.$t('paused'),
-            syncing: context.root.$t('syncing'),
-            connecting: context.root.$t('connecting'),
-            established: context.root.$t('established'),
+            stalled: $t('paused'),
+            syncing: $t('syncing'),
+            connecting: $t('connecting'),
+            established: $t('established'),
         }[consensus.value as 'stalled' | 'syncing' | 'connecting' | 'established']));
 
         const showNetworkInfo = ref(!window.localStorage.getItem(LOCALSTORAGE_KEY));

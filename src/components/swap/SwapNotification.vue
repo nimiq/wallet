@@ -67,6 +67,7 @@ import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
 import { useRouter, RouteName } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -113,6 +114,7 @@ export default defineComponent({
         const swapIsErrored = computed(() => !!activeSwap.value && activeSwap.value.error);
 
         const router = useRouter();
+        const { $t } = useI18n();
 
         function onUnload(event: BeforeUnloadEvent) {
             // Firefox respects the event cancellation to prompt the user
@@ -223,8 +225,8 @@ export default defineComponent({
             if (currentError.value) return currentError.value;
 
             const consensusErrorMsg = (chain: 'Nimiq' | 'Bitcoin' | 'Polygon') => `
-                ${context.root.$t('No connection to {chain} network.', { chain })}
-                ${context.root.$t('If this error persists, check your internet connection or '
+                ${$t('No connection to {chain} network.', { chain })}
+                ${$t('If this error persists, check your internet connection or '
                     + 'reload the page to reconnect.')}
             `;
 

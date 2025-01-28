@@ -177,6 +177,7 @@ import {
     ArrowRightSmallIcon,
 } from '@nimiq/vue-components';
 
+import { useI18n } from '@/lib/useI18n';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { MIN_STAKE } from '../../lib/Constants';
@@ -200,6 +201,7 @@ import { reportToSentry } from '../../lib/Sentry';
 
 export default defineComponent({
     setup(props, context) {
+        const { $t } = useI18n();
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
         const { height, consensus } = useNetworkStore();
@@ -262,7 +264,7 @@ export default defineComponent({
                 context.emit('statusChange', {
                     type: StatusChangeType.VALIDATOR,
                     state: State.LOADING,
-                    title: context.root.$t('Deactivating Stake') as string,
+                    title: $t('Deactivating Stake') as string,
                 });
 
                 try {
@@ -303,7 +305,7 @@ export default defineComponent({
 
                     context.emit('statusChange', {
                         state: State.SUCCESS,
-                        title: context.root.$t('Successfully deactivated {amount} NIM', {
+                        title: $t('Successfully deactivated {amount} NIM', {
                             amount: deactivatedAmount / 1e5,
                         }),
                     });
@@ -319,7 +321,7 @@ export default defineComponent({
 
                     context.emit('statusChange', {
                         state: State.WARNING,
-                        title: context.root.$t('Something went wrong') as string,
+                        title: $t('Something went wrong') as string,
                         message: `${error.message} - ${error.data}`,
                     });
                 }
@@ -332,7 +334,7 @@ export default defineComponent({
             context.emit('statusChange', {
                 type: StatusChangeType.UNSTAKING,
                 state: State.LOADING,
-                title: context.root.$t('Sending Unstaking Transaction') as string,
+                title: $t('Sending Unstaking Transaction') as string,
             });
 
             try {
@@ -388,7 +390,7 @@ export default defineComponent({
 
                 context.emit('statusChange', {
                     state: State.SUCCESS,
-                    title: context.root.$t('Successfully unstaked {amount} NIM', { amount: unstakedAmount / 1e5 }),
+                    title: $t('Successfully unstaked {amount} NIM', { amount: unstakedAmount / 1e5 }),
                 });
 
                 // // Close staking modal
@@ -402,7 +404,7 @@ export default defineComponent({
 
                 context.emit('statusChange', {
                     state: State.WARNING,
-                    title: context.root.$t('Something went wrong') as string,
+                    title: $t('Something went wrong') as string,
                     message: `${error.message} - ${error.data}`,
                 });
             }

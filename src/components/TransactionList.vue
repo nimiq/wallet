@@ -78,6 +78,7 @@ import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } fr
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
+import { useI18n } from '@/lib/useI18n';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
@@ -144,6 +145,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const { activeAddress, state: addresses$, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
         const { isFetchingTxHistory, fetchedAddresses } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
@@ -223,7 +225,7 @@ export default defineComponent({
             let hasThisMonthLabel = false;
 
             if (txs[n].state === TransactionState.PENDING) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
                 isLatestMonth = false;
                 hasThisMonthLabel = true;
                 while (txs[n] && txs[n].state === TransactionState.PENDING) {
@@ -245,7 +247,7 @@ export default defineComponent({
             let txDate: Date;
 
             if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
                 isLatestMonth = false;
             }
 

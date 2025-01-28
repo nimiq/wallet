@@ -368,6 +368,7 @@ import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import { useRouter, RouteName } from '@/router';
 import Config from 'config';
+import { useI18n } from '@/lib/useI18n';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -419,6 +420,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const router = useRouter();
+        const { $t } = useI18n();
 
         const constants = {
             FIAT_PRICE_UNAVAILABLE,
@@ -536,11 +538,11 @@ export default defineComponent({
 
             if ('hashRoot' in transaction.value.data
                 || (relatedTx.value && 'hashRoot' in relatedTx.value.data)) {
-                return context.root.$t('HTLC Creation');
+                return $t('HTLC Creation');
             }
             if ('hashRoot' in transaction.value.proof
                 || (relatedTx.value && 'hashRoot' in relatedTx.value.proof)) {
-                return context.root.$t('HTLC Settlement');
+                return $t('HTLC Settlement');
             }
             if ('creator' in transaction.value.proof) {
                 // Detect Nimiq Pay transactions
@@ -551,13 +553,13 @@ export default defineComponent({
                     return '';
                 }
 
-                return context.root.$t('HTLC Refund');
+                return $t('HTLC Refund');
             }
             if ((relatedTx.value && 'creator' in relatedTx.value.proof)
                 // if we have an incoming tx from a HTLC proxy but none of the above conditions met, the tx and related
                 // tx are regular transactions and we regard the tx from the proxy as refund
                 || (relatedTx.value && isSwapProxy.value && isIncoming.value)) {
-                return context.root.$t('HTLC Refund');
+                return $t('HTLC Refund');
             }
 
             const stakingData = getStakingTransactionMeaning(transaction.value, false);

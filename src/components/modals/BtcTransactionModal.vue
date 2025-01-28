@@ -347,6 +347,7 @@ import { RefundSwapRequest, SignedBtcTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import { RouteName, useRouter } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -392,6 +393,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const router = useRouter();
+        const { $t } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
@@ -465,7 +467,7 @@ export default defineComponent({
         // Data
         const data = computed(() => {
             if (isCancelledSwap.value) {
-                return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
+                return isIncoming.value ? $t('HTLC Refund') : $t('HTLC Creation');
             }
 
             return '';

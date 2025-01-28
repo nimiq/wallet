@@ -85,6 +85,7 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 
+import { useI18n } from '@/lib/useI18n';
 import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { getNetworkClient } from '../../network';
@@ -107,6 +108,7 @@ import { reportToSentry } from '../../lib/Sentry';
 
 export default defineComponent({
     setup(props, context) {
+        const { $t } = useI18n();
         const { activeAddress } = useAddressStore();
         const { activeStake, activeValidator } = useStakingStore();
 
@@ -136,7 +138,7 @@ export default defineComponent({
                     context.emit('statusChange', {
                         type: StatusChangeType.STAKING,
                         state: State.LOADING,
-                        title: context.root.$t('Sending Staking Transaction') as string,
+                        title: $t('Sending Staking Transaction') as string,
                     });
 
                     if (!activeStake.value
@@ -174,7 +176,7 @@ export default defineComponent({
 
                         context.emit('statusChange', {
                             state: State.SUCCESS,
-                            title: context.root.$t(
+                            title: $t(
                                 'Successfully staked {amount} NIM with {validator}',
                                 {
                                     amount: Math.abs(stakeDelta.value / 1e5),
@@ -218,7 +220,7 @@ export default defineComponent({
 
                         context.emit('statusChange', {
                             state: State.SUCCESS,
-                            title: context.root.$t(
+                            title: $t(
                                 'Successfully added {amount} NIM to your stake with {validator}',
                                 {
                                     amount: Math.abs(stakeDelta.value / 1e5),
@@ -231,7 +233,7 @@ export default defineComponent({
                     context.emit('statusChange', {
                         type: StatusChangeType.DEACTIVATING,
                         state: State.LOADING,
-                        title: context.root.$t('Sending Staking Transaction') as string,
+                        title: $t('Sending Staking Transaction') as string,
                     });
 
                     const transaction = TransactionBuilder.newSetActiveStake(
@@ -267,7 +269,7 @@ export default defineComponent({
 
                     context.emit('statusChange', {
                         state: State.SUCCESS,
-                        title: context.root.$t(
+                        title: $t(
                             'Successfully deactivated {amount} NIM from your stake with {validator}',
                             {
                                 amount: Math.abs((activeStake.value!.inactiveBalance - stakeDelta.value) / 1e5),
@@ -292,7 +294,7 @@ export default defineComponent({
                 // Show error screen
                 context.emit('statusChange', {
                     state: State.WARNING,
-                    title: context.root.$t('Something went wrong') as string,
+                    title: $t('Something went wrong') as string,
                     message: `${error.message} - ${error.data}`,
                 });
             }

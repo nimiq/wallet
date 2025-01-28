@@ -45,6 +45,7 @@
 import Vue from 'vue';
 import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted } from '@vue/composition-api';
 
+import { useI18n } from '@/lib/useI18n';
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
@@ -95,6 +96,7 @@ export default defineComponent({
         const { height } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
         const { totalAccountStake } = useStakingStore();
+        const { $t } = useI18n();
 
         function hasLockedBalance(addressInfo: AddressInfo): boolean {
             if (!addressInfo || addressInfo.type !== AddressType.VESTING) return false;
@@ -185,7 +187,7 @@ export default defineComponent({
 
         const btcInfo = computed(() => ({
             address: availableExternalAddresses.value[0] || 'bitcoin',
-            label: context.root.$t('Bitcoin') as string,
+            label: $t('Bitcoin') as string,
             balance: btcAccountBalance.value,
             type: CryptoCurrency.BTC,
         }));
@@ -194,7 +196,7 @@ export default defineComponent({
             if (stablecoin.value === CryptoCurrency.USDC) {
                 return {
                     address: polygonAddressInfo.value?.address || 'usdc',
-                    label: context.root.$t('USD Coin') as string,
+                    label: $t('USD Coin') as string,
                     balance: accountUsdcBalance.value
                         + accountUsdcBridgedBalance.value,
                     type: CryptoCurrency.USDC,
@@ -204,7 +206,7 @@ export default defineComponent({
             if (stablecoin.value === CryptoCurrency.USDT) {
                 return {
                     address: polygonAddressInfo.value?.address || 'usdt',
-                    label: context.root.$t('Tether USD') as string,
+                    label: $t('Tether USD') as string,
                     balance: accountUsdtBridgedBalance.value,
                     type: CryptoCurrency.USDT,
                 };

@@ -21,6 +21,7 @@ import { defineComponent, ref, Ref } from '@vue/composition-api';
 import { CircleSpinner, CrossIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
 import Config from 'config';
+import { useI18n } from '@/lib/useI18n';
 
 type FaucetInfoResponse = {
     network: 'test' | 'main',
@@ -58,7 +59,8 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
+        const { $t } = useI18n();
         const canTap = ref(true); // Expect the faucet to be available
         const unavailableMsg: Ref<LocaleMessage> = ref('');
         const errorMsg: Ref<LocaleMessage> = ref('');
@@ -68,22 +70,22 @@ export default defineComponent({
             .then((res) => res.json() as Promise<FaucetInfoResponse>)
             .then((faucet) => {
                 if (faucet.network !== Config.environment) {
-                    unavailableMsg.value = context.root.$t('Faucet unavailable (wrong network)');
+                    unavailableMsg.value = $t('Faucet unavailable (wrong network)');
                     canTap.value = false;
                 }
                 if (faucet.dispensesRemaining < 1) {
-                    unavailableMsg.value = context.root.$t('Faucet is empty');
+                    unavailableMsg.value = $t('Faucet is empty');
                     canTap.value = false;
                 }
                 if (!faucet.availableInRegion) {
-                    unavailableMsg.value = context.root.$t('Faucet is not available from your location');
+                    unavailableMsg.value = $t('Faucet is not available from your location');
                     canTap.value = false;
                 }
 
                 return faucet;
             }).catch((error: Error) => {
                 console.error(error); // eslint-disable-line no-console
-                unavailableMsg.value = `${context.root.$t('Faucet unavailable')} (${error.message})`;
+                unavailableMsg.value = `${$t('Faucet unavailable')} (${error.message})`;
                 canTap.value = false;
                 return null;
             });
@@ -114,33 +116,33 @@ export default defineComponent({
 
                 switch (result.error) {
                     case 'RATE_LIMIT':
-                        errorMsg.value = context.root.$t(
+                        errorMsg.value = $t(
                             'You can receive more free NIM in {waitTime} hours.',
                             { waitTime: Math.ceil(result.wait / 3600) },
                         );
                         break;
                     case 'GEOBLOCKED':
-                        errorMsg.value = context.root.$t(
+                        errorMsg.value = $t(
                             'This service is currently not available in your region.',
                         );
                         break;
                     case 'OUT_OF_FUNDS':
-                        errorMsg.value = context.root.$t('There are currently no free NIM available.');
+                        errorMsg.value = $t('There are currently no free NIM available.');
                         break;
                     case 'TRANSACTION_FAILED':
                         // Set unavailableMsg instead of errorMsg to keep button active for user to try again
-                        unavailableMsg.value = context.root.$t('Faucet error - please try again.');
+                        unavailableMsg.value = $t('Faucet error - please try again.');
                         break;
                     default:
                         // 'INVALID_CAPTCHA', 'VAPTCHA_UNAVAILABLE', 'INVALID_ADDRESS' or unspecified errors should
                         // not occur via this frontend, therefore no need to translate them.
-                        errorMsg.value = `${context.root.$t('Request failed')}: ${result.msg}`;
+                        errorMsg.value = `${$t('Request failed')}: ${result.msg}`;
                 }
 
                 return false;
             }).catch((error: Error) => {
                 console.error(error); // eslint-disable-line no-console
-                errorMsg.value = `${context.root.$t('Request failed')}: ${error.message}`;
+                errorMsg.value = `${$t('Request failed')}: ${error.message}`;
                 return false;
             });
         }

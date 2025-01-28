@@ -295,6 +295,7 @@ import { CircleSpinner } from '@nimiq/vue-components';
 import { ValidationUtils } from '@nimiq/utils';
 import { RouteName } from '@/router';
 
+import { useI18n } from '@/lib/useI18n';
 import MenuIcon from '../icons/MenuIcon.vue';
 import CrossCloseButton from '../CrossCloseButton.vue';
 import CountryFlag from '../CountryFlag.vue';
@@ -313,7 +314,8 @@ import { useKycStore } from '../../stores/Kyc';
 import KycIcon from '../icons/KycIcon.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
+        const { $t } = useI18n();
         const settings = useSettingsStore();
         const { connectedUser: kycUser } = useKycStore();
 
@@ -338,13 +340,13 @@ export default defineComponent({
             try {
                 importedContacts = JSON.parse(data);
             } catch (e) {
-                alert(context.root.$t('Cannot import contacts, wrong file format.')); // eslint-disable-line no-alert
+                alert($t('Cannot import contacts, wrong file format.')); // eslint-disable-line no-alert
                 return;
             }
 
             // Make sure the input is a non-empty array
             if (!Array.isArray(importedContacts) || !importedContacts.length) {
-                alert(context.root.$t('File contains no contacts.')); // eslint-disable-line no-alert
+                alert($t('File contains no contacts.')); // eslint-disable-line no-alert
                 return;
             }
 
@@ -361,7 +363,7 @@ export default defineComponent({
                     if (storedLabel === contact.label) continue;
                     else {
                         // eslint-disable-next-line no-alert, no-restricted-globals
-                        const shouldOverwrite = confirm(context.root.$t(
+                        const shouldOverwrite = confirm($t(
                             'A contact with the address "{address}", but a different name already exists.\n'
                                 + 'Do you want to replace it?',
                             { address },
@@ -372,7 +374,7 @@ export default defineComponent({
 
                 setContact(address, contact.label);
             }
-            alert(context.root.$t('OK! Contacts imported successfully.')); // eslint-disable-line no-alert
+            alert($t('OK! Contacts imported successfully.')); // eslint-disable-line no-alert
         }
 
         function loadFile(event: InputEvent) {

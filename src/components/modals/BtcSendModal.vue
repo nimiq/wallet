@@ -144,6 +144,7 @@ import {
 } from '@nimiq/vue-components';
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
 import { useRouter, RouteName } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -182,6 +183,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const {
             state: addresses$,
             accountUtxos,
@@ -459,7 +461,7 @@ export default defineComponent({
             // Show loading screen
             statusScreenOpened.value = true;
             statusState.value = State.LOADING;
-            statusTitle.value = context.root.$t('Sending Transaction') as string;
+            statusTitle.value = $t('Sending Transaction') as string;
             statusMessage.value = '';
 
             let changeAddress: string;
@@ -505,11 +507,11 @@ export default defineComponent({
                 // Show success screen
                 statusState.value = State.SUCCESS;
                 statusTitle.value = recipientWithLabel.value!.label
-                    ? context.root.$t('Sent {btc} BTC to {name}', {
+                    ? $t('Sent {btc} BTC to {name}', {
                         btc: amount.value / 1e8,
                         name: recipientWithLabel.value!.label,
                     }) as string
-                    : context.root.$t('Sent {btc} BTC', {
+                    : $t('Sent {btc} BTC', {
                         btc: amount.value / 1e8,
                     }) as string;
 
@@ -523,7 +525,7 @@ export default defineComponent({
 
                 // Show error screen
                 statusState.value = State.WARNING;
-                statusTitle.value = context.root.$t('Something went wrong') as string;
+                statusTitle.value = $t('Something went wrong') as string;
                 statusMessage.value = (error as Error).message;
             }
         }

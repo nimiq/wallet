@@ -44,6 +44,7 @@
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
+import { useI18n } from '@/lib/useI18n';
 import I18nDisplayNames from '../lib/I18nDisplayNames';
 import CountryFlag from './CountryFlag.vue';
 import { ALL_COUNTRY_CODES } from '../lib/Countries';
@@ -72,6 +73,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const isOpen = ref(false);
 
         const selectedIndex = ref(0);
@@ -114,7 +116,7 @@ export default defineComponent({
             if (props.includeAllOption) {
                 countries.unshift({
                     code: 'all',
-                    name: context.root.$t('All countries') as string,
+                    name: $t('All countries') as string,
                 });
             }
 

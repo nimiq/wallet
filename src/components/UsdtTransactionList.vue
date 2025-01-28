@@ -68,6 +68,7 @@
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, HexagonIcon } from '@nimiq/vue-components';
 import UsdtTransactionListItem from '@/components/UsdtTransactionListItem.vue';
+import { useI18n } from '@/lib/useI18n';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useUsdtTransactionsStore, Transaction, TransactionState } from '../stores/UsdtTransactions';
 import { useUsdtContactsStore } from '../stores/UsdtContacts';
@@ -124,6 +125,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const { $t } = useI18n();
         const { addressInfo } = usePolygonAddressStore();
         const { state: transactions$ } = useUsdtTransactionsStore();
         const { isFetchingUsdtTxHistory } = usePolygonNetworkStore();
@@ -200,7 +202,7 @@ export default defineComponent({
             let hasThisMonthLabel = false;
 
             if (txs[n].state === TransactionState.PENDING) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
                 isLatestMonth = false;
                 hasThisMonthLabel = true;
                 while (txs[n] && txs[n].state === TransactionState.PENDING) {
@@ -222,7 +224,7 @@ export default defineComponent({
             let txDate: Date;
 
             if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
-                transactionsWithMonths.push({ transactionHash: context.root.$t('This month'), isLatestMonth });
+                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
                 isLatestMonth = false;
             }
 

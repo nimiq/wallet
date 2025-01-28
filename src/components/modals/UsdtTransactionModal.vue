@@ -286,6 +286,7 @@ import { useUsdtTransactionsStore, TransactionState } from '@/stores/UsdtTransac
 import { useUsdtContactsStore } from '@/stores/UsdtContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
 import { useRouter, RouteName } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -328,6 +329,7 @@ export default defineComponent({
     setup(props, context) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const router = useRouter();
+        const { $t } = useI18n();
 
         const transaction = computed(() => useUsdtTransactionsStore().state.transactions[props.hash]);
 
@@ -382,7 +384,7 @@ export default defineComponent({
         // Data
         const data = computed(() => {
             if (isCancelledSwap.value) {
-                return isIncoming.value ? context.root.$t('HTLC Refund') : context.root.$t('HTLC Creation');
+                return isIncoming.value ? $t('HTLC Refund') : $t('HTLC Creation');
             }
 
             return '';
@@ -540,7 +542,7 @@ export default defineComponent({
                 });
             } catch (e) {
                 const errorMessage = e instanceof Error ? e.message : String(e);
-                alert(context.root.$t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
+                alert($t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
             }
         }
 

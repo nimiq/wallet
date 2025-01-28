@@ -373,6 +373,7 @@
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref, watch } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
+import { nextTick } from '@/lib/nextTick';
 import Modal from './Modal.vue';
 import AmountMenu from '../AmountMenu.vue';
 import { Languages } from '../../i18n/i18n-setup';
@@ -389,7 +390,7 @@ import UsdcIcon from '../icons/UsdcIcon.vue';
 import { useFiatStore } from '../../stores/Fiat';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { state: settings$, setLanguage } = useSettingsStore();
         const { activeAddress } = useAddressStore();
         const { isMobile } = useWindowSize();
@@ -523,7 +524,7 @@ export default defineComponent({
                 setTimeout(() => {
                     highlightedCurrencyIndex.value = 0; // Show NIM section highlighted first
                     page.value = 5;
-                    // context.root.$nextTick().then(() => {
+                    // nextTick().then(() => {
                     //     isPageBodyFadedOut.value = false;
                     // });
                     setTimeout(() => {
@@ -561,7 +562,7 @@ export default defineComponent({
                 setTimeout(() => {
                     highlightedCurrencyIndex.value = 0; // Show NIM highlighted first
                     page.value = 1;
-                    context.root.$nextTick().then(() => {
+                    nextTick().then(() => {
                         isPageBodyFadedOut.value = false;
                     });
                 }, 1000);

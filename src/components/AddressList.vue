@@ -46,6 +46,7 @@ import Vue from 'vue';
 import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted } from '@vue/composition-api';
 
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
@@ -142,7 +143,7 @@ export default defineComponent({
             /* Update the .active-box after the decimals setting is changed */
             router.afterEach((to, from) => {
                 if (from.name === 'settings' && from.query.sidebar && to.name === 'root' && activeAddress.value) {
-                    context.root.$nextTick(() =>
+                    nextTick(() =>
                         activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),
                     );
                 }
@@ -155,7 +156,7 @@ export default defineComponent({
             if (activeAddress.value) adjustBackgroundOffsetAndScale(activeAddress.value);
         });
         onMounted(() => {
-            /* context.root.$nextTick works here except for Opera browser. Using setTimeout instead fix it. */
+            /* nextTick works here except for Opera browser. Using setTimeout instead fix it. */
             /* TODO: find a better way to do it. */
             setTimeout(async () => {
                 if (activeAddress.value) adjustBackgroundOffsetAndScale(activeAddress.value);

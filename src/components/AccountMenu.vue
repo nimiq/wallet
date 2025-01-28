@@ -44,7 +44,7 @@ export default defineComponent({
 
         function openMenu() {
             router.push({
-                name: `${context.root.$route.name}-accounts`,
+                name: `${router.currentRoute.name}-accounts`,
                 query: { sidebar: 'true' },
             });
         }
@@ -56,7 +56,7 @@ export default defineComponent({
             && addressState.addressInfos[activeAccountInfo.value.addresses[0]]);
 
         function goToAccount(testForMenuOpening = true) {
-            if (testForMenuOpening && context.root.$route.name === 'root') {
+            if (testForMenuOpening && router.currentRoute.name === 'root') {
                 openMenu();
                 return;
             }

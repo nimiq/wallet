@@ -107,10 +107,10 @@ export default defineComponent({
 
             if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
                 // Go to sidebar
-                await router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
+                await router.push({ name: router.currentRoute.name!, query: { sidebar: 'true' } });
             } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
                 // Go to transactions
-                if (context.root.$route.name === 'root') {
+                if (router.currentRoute.name === 'root') {
                     await router.push('/transactions');
                 }
             } else if (
@@ -143,7 +143,7 @@ export default defineComponent({
             onSwipeEnded: updateSwipeRestPosition,
             // TODO: clamp movement to smaller area on settings and network view
             clampMovement: computed<[number, number]>(() => {
-                if (context.root.$route.path === '/transactions') {
+                if (router.currentRoute.path === '/transactions') {
                     // Allow swiping back from transactions to address list, but not all the way to sidebar
                     return [-width.value - 192, -192];
                 }

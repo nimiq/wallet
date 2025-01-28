@@ -195,7 +195,7 @@ export default defineComponent({
             // only change the _loadingTitle, if we're still in the loading state (and not changing the state right
             // after setting the title) to avoid it being changed on the loading screen when we actually want to set
             // it for the success/error/warning screen.
-            context.root.$nextTick(() => {
+            nextTick(() => {
                 if (props.state !== State.LOADING) return;
                 loadingTitle.value = newTitle;
             });

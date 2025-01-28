@@ -30,7 +30,7 @@ import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const router = useRouter();
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
@@ -89,7 +89,7 @@ export default defineComponent({
 
         const sendDisabled = computed(() => {
             if (config.disableNetworkInteraction && activeCurrency.value === CryptoCurrency.NIM) return true;
-            return context.root.$route.path !== '/' && nimOrBtcOrStable(
+            return router.currentRoute.path !== '/' && nimOrBtcOrStable(
                 !activeAddressInfo.value || !activeAddressInfo.value.balance,
                 !btcBalance.value,
                 (stablecoin.value === CryptoCurrency.USDC

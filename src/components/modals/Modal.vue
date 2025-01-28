@@ -89,7 +89,7 @@ const Modal = defineComponent({
             // For example: choose a sender via AddressSelectorModal -> open qr scanner from SendModal -> after scan in
             // ScanQrModal return to SendModal -> abort the action in SendModal
 
-            while (context.root.$route.matched.find((routeRecord) => 'modal' in routeRecord.components
+            while (router.currentRoute.matched.find((routeRecord) => 'modal' in routeRecord.components
                 || 'persistent-modal' in routeRecord.components
                 || Object.values(routeRecord.components).some((component) => /modal/i.test(component.name || '')))
             ) {
@@ -157,7 +157,7 @@ const Modal = defineComponent({
 
                 if (isMobileNow && !wasMobile && swipingEnabled.value === 1) {
                     showSwipeHandle.value = true;
-                    context.root.$nextTick(attachSwipe);
+                    nextTick(attachSwipe);
                 } else if (!isMobileNow && showSwipeHandle.value) {
                     detachSwipe();
                     showSwipeHandle.value = false;

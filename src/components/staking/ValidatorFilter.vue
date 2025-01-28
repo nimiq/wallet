@@ -34,6 +34,7 @@
 <script lang="ts">
 import { defineComponent, watch, ref } from '@vue/composition-api';
 import { SliderToggle } from '@nimiq/vue-components';
+import { nextTick } from '@/lib/nextTick';
 import { FilterState } from '../../lib/StakingUtils';
 import FatSearchIcon from '../icons/Staking/FatSearchIcon.vue';
 import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
@@ -48,7 +49,7 @@ export default defineComponent({
             context.emit('changed', state.value);
 
             if (state.value === FilterState.SEARCH) {
-                context.root.$nextTick(() => $search.value?.focus());
+                nextTick(() => $search.value?.focus());
             }
         });
 

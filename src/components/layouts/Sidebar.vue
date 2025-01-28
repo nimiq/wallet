@@ -234,7 +234,7 @@ export default defineComponent({
             // current route, but with the modal still open on top.
             const modalRoute = router.resolve({ name: routeName }).route;
             const expectedParentRoute = modalRoute.matched.find(({ name }) => !!name && name !== routeName);
-            if (expectedParentRoute && context.root.$route.name !== expectedParentRoute.name) {
+            if (expectedParentRoute && router.currentRoute.name !== expectedParentRoute.name) {
                 // Don't keep the sidebar open for this navigation on mobile because closing it would be a back
                 // navigation on the parent page, leading back to the route we're currently on, instead of closing the
                 // sidebar.

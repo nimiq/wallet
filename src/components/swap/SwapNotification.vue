@@ -97,7 +97,7 @@ enum SwapError {
 }
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const {
             activeSwap,
             setActiveSwap,
@@ -423,7 +423,7 @@ export default defineComponent({
                         });
 
                         // Open Swap modal to show payment instructions to user if not already open
-                        if (context.root.$route.name !== 'buy-crypto') router.push('buy-crypto');
+                        if (router.currentRoute.name !== 'buy-crypto') router.push('buy-crypto');
 
                         // Wait for OASIS HTLC to be funded out-of-band
                         const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
@@ -920,7 +920,7 @@ export default defineComponent({
                     }
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in a swap modal
-                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(context.root.$route.name!)) return;
+                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(router.currentRoute.name!)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }

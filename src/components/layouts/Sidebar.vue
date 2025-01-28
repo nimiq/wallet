@@ -192,6 +192,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -215,14 +216,15 @@ import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../.
 export default defineComponent({
     props: {},
     setup(props, context) {
+        const router = useRouter();
         const { config } = useConfig();
         const { isMobile, height: windowHeight } = useWindowSize();
 
         async function navigateTo(path: string) {
             if (isMobile.value) {
-                return context.root.$router.replace(path);
+                return router.replace(path);
             }
-            return context.root.$router.push(path).catch(() => { /* ignore */ });
+            return router.push(path).catch(() => { /* ignore */ });
         }
 
         async function openModal(routeName: string, params: Record<string, string> = {}) {
@@ -230,7 +232,7 @@ export default defineComponent({
             // currently on that route, navigate to it first, such that the modal can be closed later by a simple back
             // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
             // current route, but with the modal still open on top.
-            const modalRoute = context.root.$router.resolve({ name: routeName }).route;
+            const modalRoute = router.resolve({ name: routeName }).route;
             const expectedParentRoute = modalRoute.matched.find(({ name }) => !!name && name !== routeName);
             if (expectedParentRoute && context.root.$route.name !== expectedParentRoute.name) {
                 // Don't keep the sidebar open for this navigation on mobile because closing it would be a back
@@ -238,7 +240,7 @@ export default defineComponent({
                 // sidebar.
                 await navigateTo(expectedParentRoute.path);
             }
-            return context.root.$router.push({
+            return router.push({
                 name: routeName,
                 query: { sidebar: 'true' }, // on mobile keep sidebar open in background
                 params,

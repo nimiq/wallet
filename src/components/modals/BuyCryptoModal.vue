@@ -332,6 +332,7 @@ import {
 } from '@nimiq/hub-api';
 import { Bank } from '@nimiq/oasis-bank-list';
 import { getNetworkClient } from '@/network';
+import { useRouter } from '@/router';
 import { SwapState, useSwapsStore } from '@/stores/Swaps';
 import { useNetworkStore } from '@/stores/Network';
 import { useFiatStore } from '@/stores/Fiat';
@@ -390,7 +391,7 @@ enum Pages {
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { exchangeRates } = useFiatStore();
@@ -469,6 +470,8 @@ export default defineComponent({
             && !isBelowOasisMinimum.value,
         );
 
+        const router = useRouter();
+
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
@@ -486,7 +489,7 @@ export default defineComponent({
             } else if (page.value === Pages.BANK_CHECK) {
                 goBack();
             } else {
-                context.root.$router.back();
+                router.back();
             }
         }
 

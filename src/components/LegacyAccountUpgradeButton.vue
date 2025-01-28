@@ -13,12 +13,14 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { createRequestLink, GeneralRequestLinkOptions, NimiqRequestLinkType, Currency } from '@nimiq/utils';
+import { useRouter } from '@/router';
 import { useAccountStore, AccountType } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 import { onboard } from '../hub';
 
 export default defineComponent({
     setup(props, context) {
+        const router = useRouter();
         const { accountInfos } = useAccountStore();
         const { activeAddressInfo } = useAddressStore();
 
@@ -33,7 +35,7 @@ export default defineComponent({
             };
 
             const url = createRequestLink(multiAddressAccount.value!.addresses[0], options);
-            context.root.$router.push(`/${url}`);
+            router.push(`/${url}`);
             context.emit('click');
         }
 

@@ -34,7 +34,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import { activateBitcoin } from '../../hub';
@@ -47,7 +47,8 @@ export default defineComponent({
     props: {
         redirect: String,
     },
-    setup(props, context) {
+    setup(props) {
+        const router = useRouter();
         const { activeAccountId, setActiveCurrency, hasBitcoinAddresses } = useAccountStore();
 
         const { isMobile } = useWindowSize();
@@ -72,7 +73,7 @@ export default defineComponent({
             if (hasBitcoinAddresses.value && props.redirect) {
                 // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
                 // a malicious link.
-                await context.root.$router.push(props.redirect);
+                await router.push(props.redirect);
             } else {
                 await modal$.value!.forceClose();
                 if (skipDefaultRedirects) return;
@@ -80,12 +81,12 @@ export default defineComponent({
                 if (isMobile.value && hasBitcoinAddresses.value) {
                     // On mobile, forward to the Bitcoin transactions overview, after Bitcoin got activated and the
                     // redirects by forceClose finished.
-                    await context.root.$router.push('/transactions');
+                    await router.push('/transactions');
                 }
 
                 if (shouldOpenWelcomeModal) {
                     // Open welcome modal with additional BTC and USDC info if not shown yet.
-                    await context.root.$router.push({ name: RouteName.Welcome });
+                    await router.push({ name: RouteName.Welcome });
                 }
             }
         }

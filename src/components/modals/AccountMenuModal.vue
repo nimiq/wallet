@@ -57,7 +57,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { AlertTriangleIcon } from '@nimiq/vue-components';
-import { RouteName } from '@/router';
+import { RouteName, useRouter } from '@/router';
 
 import AccountMenuItem from '../AccountMenuItem.vue';
 import Modal from './Modal.vue';
@@ -72,7 +72,8 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
+        const router = useRouter();
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
         const { isMobile } = useWindowSize();
 
@@ -89,9 +90,9 @@ export default defineComponent({
             selectAccount(id);
 
             if (isMobile.value) {
-                context.root.$router.replace({ name: RouteName.Root });
+                router.replace({ name: RouteName.Root });
             } else {
-                context.root.$router.push({ name: RouteName.Root }).catch(() => { /* ignore */ });
+                router.push({ name: RouteName.Root }).catch(() => { /* ignore */ });
             }
         }
 

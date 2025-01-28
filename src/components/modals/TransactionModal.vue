@@ -366,7 +366,7 @@ import { BrowserDetection } from '@nimiq/utils';
 import { RefundSwapRequest, SignedTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import Config from 'config';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -418,6 +418,8 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const router = useRouter();
+
         const constants = {
             FIAT_PRICE_UNAVAILABLE,
             CASHLINK_ADDRESS,
@@ -686,7 +688,7 @@ export default defineComponent({
             if (!tx) return;
             const plainTx = await sendTransaction(tx as SignedTransaction);
             await context.root.$nextTick();
-            context.root.$router.replace({
+            router.replace({
                 name: RouteName.Transaction,
                 params: { transactionHash: plainTx.transactionHash },
             });

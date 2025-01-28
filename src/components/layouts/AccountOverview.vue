@@ -332,7 +332,7 @@
 import { defineComponent, computed, ref, watch, onMounted, onUnmounted, onActivated } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
-import router, { RouteName } from '@/router';
+import { RouteName, useRouter } from '@/router';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -372,6 +372,7 @@ import { useAccountSettingsStore } from '../../stores/AccountSettings';
 export default defineComponent({
     name: 'account-overview',
     setup(props, context) {
+        const router = useRouter();
         const {
             activeAccountInfo,
             activeAccountId,
@@ -402,7 +403,7 @@ export default defineComponent({
             setActiveCurrency(CryptoCurrency.NIM);
 
             if (isMobile.value) {
-                context.root.$router.push('/transactions');
+                router.push('/transactions');
             }
         }
 
@@ -412,7 +413,7 @@ export default defineComponent({
             setActiveCurrency(CryptoCurrency.BTC);
 
             if (isMobile.value) {
-                context.root.$router.push('/transactions');
+                router.push('/transactions');
             }
         }
 
@@ -420,14 +421,14 @@ export default defineComponent({
             if (!hasPolygonAddresses.value || !stablecoin.value) return;
 
             if (stablecoin.value === CryptoCurrency.USDC && !knowsAboutUsdt.value) {
-                context.root.$router.push({ name: 'usdt-added' });
+                router.push({ name: 'usdt-added' });
                 return;
             }
 
             setActiveCurrency(stablecoin.value);
 
             if (isMobile.value) {
-                context.root.$router.push('/transactions');
+                router.push('/transactions');
             }
         }
 

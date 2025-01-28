@@ -346,7 +346,7 @@ import { TransactionState } from '@nimiq/electrum-client';
 import { RefundSwapRequest, SignedBtcTransaction } from '@nimiq/hub-api';
 import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
-import { RouteName } from '@/router';
+import { RouteName, useRouter } from '@/router';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -391,6 +391,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
+        const router = useRouter();
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
 
@@ -571,7 +572,7 @@ export default defineComponent({
             if (!tx) return;
             const plainTx = await sendTransaction(tx as SignedBtcTransaction);
             await context.root.$nextTick();
-            context.root.$router.replace({
+            router.replace({
                 name: RouteName.BtcTransaction,
                 params: { transactionHash: plainTx.transactionHash },
             });

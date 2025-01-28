@@ -292,6 +292,7 @@ import {
     SetupSwapResult,
 } from '@nimiq/hub-api';
 import { Bank } from '@nimiq/oasis-bank-list';
+import { useRouter } from '@/router';
 import { getNetworkClient } from '../../network';
 import { SwapState, useSwapsStore } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -358,6 +359,7 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup(props, context) {
+        const router = useRouter();
         const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { exchangeRates } = useFiatStore();
@@ -468,7 +470,7 @@ export default defineComponent({
             } else if (page.value === Pages.BANK_CHECK) {
                 goBack();
             } else {
-                context.root.$router.back();
+                router.back();
             }
         }
 

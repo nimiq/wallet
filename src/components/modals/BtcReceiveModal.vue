@@ -130,6 +130,7 @@ import {
     InfoCircleSmallIcon,
     QrCodeIcon,
 } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -319,9 +320,10 @@ export default defineComponent({
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
 
+        const router = useRouter();
         function back() {
             disableNextModalTransition();
-            context.root.$router.back();
+            router.back();
         }
 
         return {

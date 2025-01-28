@@ -27,7 +27,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody, PageHeader, PageFooter } from '@nimiq/vue-components';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import Modal from './Modal.vue';
 import { CryptoCurrency } from '../../lib/Constants';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
@@ -38,7 +38,8 @@ import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'usdt-added-modal',
-    setup(props, context) {
+    setup() {
+        const router = useRouter();
         const modal$ = ref<Modal>(null);
 
         useAccountSettingsStore().setKnowsAboutUsdt(true);
@@ -50,7 +51,7 @@ export default defineComponent({
             useAccountStore().setActiveCurrency(CryptoCurrency.USDC);
             await modal$.value?.forceClose();
             if (isMobile.value) {
-                context.root.$router.push('/transactions');
+                router.push('/transactions');
             }
         }
 

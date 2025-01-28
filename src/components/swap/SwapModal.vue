@@ -296,7 +296,7 @@ import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
-import { RouteName } from '@/router';
+import { RouteName, useRouter } from '@/router';
 
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
@@ -378,7 +378,6 @@ export default defineComponent({
             },
         },
     },
-    // @ts-expect-error Cannot derive types of props and context
     setup(props, context) {
         const { config } = useConfig();
 
@@ -1388,13 +1387,15 @@ export default defineComponent({
 
         const feeSmallerThanSmUnit = computed(() => roundedUpFeeFiat.value <= fiatSmUnit.value);
 
+        const router = useRouter();
+
         function onClose() {
             if (addressListOverlayOpened.value === true) {
                 addressListOverlayOpened.value = false;
             } else if (kycOverlayOpened.value === true) {
                 kycOverlayOpened.value = false;
             } else {
-                context.root.$router.back();
+                router.back();
             }
         }
 
@@ -2194,7 +2195,7 @@ export default defineComponent({
                 rightAsset.value = leftAsset.value;
             }
             leftAsset.value = asset;
-            context.root.$router.replace({
+            router.replace({
                 name: RouteName.Swap,
                 params: { pair: `${leftAsset.value}-${rightAsset.value}` },
             });
@@ -2205,7 +2206,7 @@ export default defineComponent({
                 leftAsset.value = rightAsset.value;
             }
             rightAsset.value = asset;
-            context.root.$router.replace({
+            router.replace({
                 name: RouteName.Swap,
                 params: { pair: `${leftAsset.value}-${rightAsset.value}` },
             });

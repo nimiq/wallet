@@ -28,6 +28,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwipes } from '../../composables/useSwipes';
 import { useSettingsStore } from '../../stores/Settings';
@@ -66,6 +67,8 @@ const Modal = defineComponent({
         },
     },
     setup(props, context) {
+        const router = useRouter();
+
         function close() {
             if (props.showOverlay) {
                 context.emit('close-overlay');
@@ -89,7 +92,7 @@ const Modal = defineComponent({
                 || 'persistent-modal' in routeRecord.components
                 || Object.values(routeRecord.components).some((component) => /modal/i.test(component.name || '')))
             ) {
-                context.root.$router.back();
+                router.back();
 
                 // eslint-disable-next-line no-await-in-loop
                 await new Promise((resolve) => {

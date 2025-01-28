@@ -309,7 +309,7 @@ export default defineComponent({
                     });
 
                     // // Close staking modal
-                    // context.root.$router.back();
+                    // router.back();
                     context.emit('statusChange', {
                         type: StatusChangeType.NONE,
                         timeout: SUCCESS_REDIRECT_DELAY,
@@ -392,7 +392,7 @@ export default defineComponent({
                 });
 
                 // // Close staking modal
-                // context.root.$router.back();
+                // router.back();
                 context.emit('statusChange', {
                     type: StatusChangeType.NONE,
                     timeout: SUCCESS_REDIRECT_DELAY,

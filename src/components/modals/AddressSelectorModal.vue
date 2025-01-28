@@ -25,22 +25,24 @@
 <script lang="ts">
 import { PageBody, PageHeader } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
+import { useRouter } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import AddressList from '../AddressList.vue';
 import { useAccountStore } from '../../stores/Account';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
         const { stablecoin } = useAccountSettingsStore();
 
-        const { name } = context.root.$router.currentRoute;
+        const router = useRouter();
+        const { name } = router.currentRoute;
 
         function addressSelected() {
             disableNextModalTransition();
 
-            context.root.$router.push({
+            router.push({
                 name: `${name}-${activeCurrency.value}`,
                 params: {
                     // It has to be a string since it is a value encapsulated in Location.params

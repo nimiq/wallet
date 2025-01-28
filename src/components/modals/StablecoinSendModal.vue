@@ -250,7 +250,7 @@ import {
     CircleSpinner,
 } from '@nimiq/vue-components';
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendPolygonTransaction } from '../../hub';
@@ -712,10 +712,11 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
+        const router = useRouter();
         function back() {
             if (page.value === initialPage) {
                 disableNextModalTransition();
-                context.root.$router.back();
+                router.back();
             } else if (page.value === Pages.RECIPIENT_INPUT) {
                 page.value = Pages.WARNING;
             } else if (page.value === Pages.AMOUNT_INPUT) {

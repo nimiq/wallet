@@ -278,7 +278,7 @@ export default defineComponent({
 
                     // if (Math.abs(stakeDelta.value) === activeStake.value!.activeBalance) {
                     //     // Close staking modal
-                    //     context.root.$router.back();
+                    //     router.back();
                     // }
                 }
 

@@ -19,7 +19,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { useConfig } from '@/composables/useConfig';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import { AddressType, useAddressStore } from '../stores/Address';
 import { useAccountStore } from '../stores/Account';
 import { CryptoCurrency } from '../lib/Constants';
@@ -31,6 +31,7 @@ import { useAccountSettingsStore } from '../stores/AccountSettings';
 
 export default defineComponent({
     setup(props, context) {
+        const router = useRouter();
         const { activeAddressInfo, addressInfos } = useAddressStore();
         const { activeCurrency, activeAccountInfo, hasBitcoinAddresses } = useAccountStore();
         const { stablecoin } = useAccountSettingsStore();
@@ -59,9 +60,9 @@ export default defineComponent({
                 && (hasMultipleReceivableAddresses.value || hasBitcoinAddresses.value)
             ) {
                 // redirect to the address selector
-                context.root.$router.push({ name: RouteName.Receive });
+                router.push({ name: RouteName.Receive });
             } else {
-                context.root.$router.push({
+                router.push({
                     name: nimOrBtcOrStable(RouteName.ReceiveNim, RouteName.ReceiveBtc, RouteName.ReceiveUsdc),
                 });
             }
@@ -76,9 +77,9 @@ export default defineComponent({
                 && (hasMultipleSendableAddresses.value || hasBitcoinAddresses.value)
             ) {
                 // redirect to the address selector
-                context.root.$router.push({ name: RouteName.Send });
+                router.push({ name: RouteName.Send });
             } else {
-                context.root.$router.push({
+                router.push({
                     name: nimOrBtcOrStable(RouteName.SendNim, RouteName.SendBtc, RouteName.SendUsdc),
                 });
             }

@@ -143,7 +143,7 @@ import {
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -545,10 +545,11 @@ export default defineComponent({
         }
 
         const { btcUnit } = useSettingsStore();
+        const router = useRouter();
 
         function back() {
             disableNextModalTransition();
-            context.root.$router.back();
+            router.back();
         }
 
         return {

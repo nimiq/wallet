@@ -285,7 +285,7 @@ import { useAccountStore } from '@/stores/Account';
 import { useUsdtTransactionsStore, TransactionState } from '@/stores/UsdtTransactions';
 import { useUsdtContactsStore } from '@/stores/UsdtContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -327,6 +327,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
+        const router = useRouter();
 
         const transaction = computed(() => useUsdtTransactionsStore().state.transactions[props.hash]);
 
@@ -533,7 +534,7 @@ export default defineComponent({
                     relayUrl!,
                 );
                 await context.root.$nextTick();
-                context.root.$router.replace({
+                router.replace({
                     name: RouteName.UsdtTransaction,
                     params: { transactionHash: plainTx.transactionHash },
                 });

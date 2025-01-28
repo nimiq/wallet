@@ -49,6 +49,7 @@ import {
     AddressDisplay,
     QrCodeIcon,
 } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useAddressStore, AddressType } from '../../stores/Address';
 import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
@@ -56,7 +57,8 @@ import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
     name: 'receive-modal',
-    setup(props, context) {
+    setup() {
+        const router = useRouter();
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
 
@@ -69,7 +71,7 @@ export default defineComponent({
 
         function back() {
             disableNextModalTransition();
-            context.root.$router.back();
+            router.back();
         }
 
         return {

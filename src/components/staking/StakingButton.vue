@@ -35,7 +35,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { Tooltip } from '@nimiq/vue-components';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
@@ -44,7 +44,8 @@ import { MIN_STAKE } from '../../lib/Constants';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
+        const router = useRouter();
         const { config } = useConfig();
         const { activeAddressInfo } = useAddressStore();
         const { totalAccountStake, totalActiveStake } = useStakingStore();
@@ -71,7 +72,7 @@ export default defineComponent({
             if (canStake.value) {
                 e.stopPropagation();
                 e.preventDefault();
-                context.root.$router.push({ name: RouteName.Staking });
+                router.push({ name: RouteName.Staking });
             }
         }
 

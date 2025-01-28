@@ -28,6 +28,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { Identicon, MenuDotsIcon } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
@@ -37,11 +38,12 @@ import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
     setup(props, context) {
+        const router = useRouter();
         const { activeAccountInfo } = useAccountStore();
         const { state: addressState } = useAddressStore();
 
         function openMenu() {
-            context.root.$router.push({
+            router.push({
                 name: `${context.root.$route.name}-accounts`,
                 query: { sidebar: 'true' },
             });

@@ -265,7 +265,7 @@ import {
     InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -858,9 +858,10 @@ export default defineComponent({
             }
         }
 
+        const router = useRouter();
         function back() {
             disableNextModalTransition();
-            context.root.$router.back();
+            router.back();
         }
 
         let successCloseTimeout = 0;

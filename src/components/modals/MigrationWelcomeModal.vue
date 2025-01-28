@@ -95,13 +95,15 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 import BlueLink from '../BlueLink.vue';
 
 import Modal from './Modal.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const page = ref(1);
+        const router = useRouter();
 
         function reset() {
             page.value = 1;
@@ -109,7 +111,7 @@ export default defineComponent({
 
         function onButtonClick() {
             if (page.value === 3) {
-                context.root.$router.back();
+                router.back();
             } else {
                 page.value += 1;
             }

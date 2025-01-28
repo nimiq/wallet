@@ -54,6 +54,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 import Modal from './Modal.vue';
 import ResizingCopyable from '../ResizingCopyable.vue';
 import { useSettingsStore } from '../../stores/Settings';
@@ -145,6 +146,8 @@ export default defineComponent({
             });
         }
 
+        const router = useRouter();
+
         async function loadScripts(): Promise<any> {
             // Check if script already exists
             if (document.querySelector('script#simplex-form-script')) {
@@ -156,7 +159,7 @@ export default defineComponent({
 
                 window.Simplex.subscribe('onlineFlowFinished', () => {
                     // Close modal
-                    context.root.$router.push('/');
+                    router.push('/');
                 });
             };
 
@@ -271,7 +274,7 @@ export default defineComponent({
 
             try {
                 // Try setting the language in the URL (Simplex SDK takes it from there)
-                await context.root.$router.replace({ name: 'simplex', query: { lang: language } });
+                await router.replace({ name: 'simplex', query: { lang: language } });
             } catch (error) {
                 // ignore
             }

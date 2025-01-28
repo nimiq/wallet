@@ -45,6 +45,7 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
+import { useRouter } from '@/router';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
@@ -57,11 +58,13 @@ import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
     name: 'stablecoin-receive-modal',
-    setup(props, context) {
+    setup() {
         enum Pages {
             WARNING,
             RECEIVE,
         }
+
+        const router = useRouter();
 
         const { state: addresses$, addressInfo } = usePolygonAddressStore();
         const { stablecoin } = useAccountSettingsStore();
@@ -90,7 +93,7 @@ export default defineComponent({
         function back() {
             if (page.value === initialPage) {
                 disableNextModalTransition();
-                context.root.$router.back();
+                router.back();
             } else if (page.value === Pages.RECEIVE) {
                 page.value = Pages.WARNING;
                 hasSeenAddress.value = false;

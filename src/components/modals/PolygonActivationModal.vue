@@ -52,7 +52,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import Modal from './Modal.vue';
 import { activatePolygon } from '../../hub';
 import {
@@ -72,6 +72,7 @@ export default defineComponent({
         const { isMobile } = useWindowSize();
         const { config } = useConfig();
         const modal$ = ref<Modal>(null);
+        const router = useRouter();
 
         const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
         // TODO in future, once some time has passed since the USDC release with the new Welcome modal, only show the
@@ -100,7 +101,7 @@ export default defineComponent({
             if (!hasPolygonAddresses.value) return;
             await close(true);
             if (!props.redirect) {
-                context.root.$router.push({ name: RouteName.StablecoinSelection });
+                router.push({ name: RouteName.StablecoinSelection });
             }
         }
 
@@ -108,7 +109,7 @@ export default defineComponent({
             if (hasPolygonAddresses.value && props.redirect) {
                 // The redirect is interpreted as a path and there is no risk of getting redirected to another domain by
                 // a malicious link.
-                await context.root.$router.push(props.redirect);
+                await router.push(props.redirect);
             } else {
                 await modal$.value!.forceClose();
                 if (skipDefaultRedirects) return;
@@ -116,15 +117,15 @@ export default defineComponent({
                 if (isMobile.value && hasPolygonAddresses.value) {
                     // On mobile, forward to the USDC transactions overview, after USDC got activated and the
                     // redirects by forceClose finished.
-                    await context.root.$router.push('/transactions');
+                    await router.push('/transactions');
                 }
 
                 if (shouldOpenWelcomeStakingModal.value) {
                     // Open welcome staking modal if not shown yet
-                    await context.root.$router.push({ name: RouteName.WelcomeStaking });
+                    await router.push({ name: RouteName.WelcomeStaking });
                 } else if (shouldOpenWelcomeModal.value) {
                     // Open welcome modal with additional BTC and USDC info if not shown yet
-                    await context.root.$router.push({ name: RouteName.Welcome });
+                    await router.push({ name: RouteName.Welcome });
                 }
             }
         }

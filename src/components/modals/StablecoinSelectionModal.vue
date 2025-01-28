@@ -36,6 +36,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageBody, PageHeader, PageFooter, CaretRightSmallIcon } from '@nimiq/vue-components';
+import { useRouter } from '@/router';
 import Modal from './Modal.vue';
 import { CryptoCurrency } from '../../lib/Constants';
 import StablecoinSelector from '../StablecoinSelector.vue';
@@ -45,7 +46,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 
 export default defineComponent({
     name: 'stablecoin-selection-modal',
-    setup(props, context) {
+    setup() {
         const modal$ = ref<Modal>(null);
 
         const selection = ref<Stablecoin>(CryptoCurrency.USDC);
@@ -54,12 +55,14 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
+        const router = useRouter();
+
         async function choose() {
             useAccountSettingsStore().setStablecoin(selection.value);
             useAccountStore().setActiveCurrency(selection.value);
             await modal$.value?.forceClose();
             if (isMobile.value) {
-                context.root.$router.push('/transactions');
+                router.push('/transactions');
             }
         }
 

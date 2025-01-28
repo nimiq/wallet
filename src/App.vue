@@ -104,18 +104,18 @@ export default defineComponent({
 
             if (currentXPosition >= sidebarBarrier && (initialXPosition) < sidebarBarrier) {
                 // Go to sidebar
-                await context.root.$router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
+                await router.push({ name: context.root.$route.name!, query: { sidebar: 'true' } });
             } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
                 // Go to transactions
                 if (context.root.$route.name === 'root') {
-                    await context.root.$router.push('/transactions');
+                    await router.push('/transactions');
                 }
             } else if (
                 (currentXPosition <= sidebarBarrier && currentXPosition >= transactionsBarrier)
                 && (initialXPosition > sidebarBarrier || initialXPosition < transactionsBarrier)
             ) {
                 // Go back to root (addresses)
-                context.root.$router.back();
+                router.back();
                 await context.root.$nextTick();
             }
         }

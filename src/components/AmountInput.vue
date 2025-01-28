@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { nextTick } from '@/lib/nextTick';
 
 const AmountInput = defineComponent({
     props: {
@@ -83,7 +84,7 @@ const AmountInput = defineComponent({
         }
 
         async function updateWidth() {
-            await context.root.$nextTick(); // Await updated DOM
+            await nextTick(); // Await updated DOM
             if (!widthPlaceholder$.value) return;
 
             const placeholderWidth = widthPlaceholder$.value.offsetWidth;

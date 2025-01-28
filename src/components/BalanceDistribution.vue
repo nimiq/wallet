@@ -36,6 +36,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { nextTick } from '@/lib/nextTick';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
@@ -97,7 +98,7 @@ export default defineComponent({
             // Update measurements only after the svg has been rendered first, without any arcs, to transition the
             // entry of arcs. Try to measure the actual svg path length if possible because it does not exactly match
             // 2 * PI * r.
-            await Vue.nextTick();
+            await nextTick();
             fullCircleLength.value = svg$.value?.$el?.querySelector('circle')?.getTotalLength()
                 || 2 * Math.PI * RADIUS;
         });

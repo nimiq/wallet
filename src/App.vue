@@ -46,6 +46,7 @@
 import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
 import { LoadingSpinner } from '@nimiq/vue-components';
 import { provideI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
@@ -118,7 +119,7 @@ export default defineComponent({
             ) {
                 // Go back to root (addresses)
                 router.back();
-                await context.root.$nextTick();
+                await nextTick();
             }
         }
 

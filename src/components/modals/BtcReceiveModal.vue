@@ -132,6 +132,7 @@ import {
 } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -143,7 +144,7 @@ import PaymentLinkOverlay from './overlays/PaymentLinkOverlay.vue';
 import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { $t, $tc } = useI18n();
         const {
             availableExternalAddresses,
@@ -303,7 +304,7 @@ export default defineComponent({
             }
 
             addressFontSizeScaleFactor.value = 1;
-            await context.root.$nextTick();
+            await nextTick();
 
             const addressWidth = addressWidthFinder$.value.clientWidth;
             const maxWidth = availableAddressCopyable$.value.$el.clientWidth - (addressPadding * 2);

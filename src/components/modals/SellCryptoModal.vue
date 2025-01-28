@@ -293,6 +293,7 @@ import {
 } from '@nimiq/hub-api';
 import { Bank } from '@nimiq/oasis-bank-list';
 import { useRouter } from '@/router';
+import { nextTick } from '@/lib/nextTick';
 import { getNetworkClient } from '../../network';
 import { SwapState, useSwapsStore } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -358,7 +359,7 @@ enum Pages {
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const router = useRouter();
         const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
@@ -482,7 +483,7 @@ export default defineComponent({
         async function onBankDetailsEntered(newBankAccount: BankAccount) {
             setBankAccount(newBankAccount);
             page.value = Pages.SETUP_BUY;
-            await context.root.$nextTick();
+            await nextTick();
             if (cryptoAmountInput$.value) cryptoAmountInput$.value.focus();
         }
 

@@ -127,6 +127,7 @@
 import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
 import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
+import { nextTick } from '@/lib/nextTick';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { useAddressStore } from '../../stores/Address';
@@ -557,7 +558,7 @@ export default defineComponent({
         }
 
         watch(() => [props.leftAsset, props.rightAsset], async () => {
-            await context.root.$nextTick();
+            await nextTick();
             const { offsetLeft } = separator$.value!;
             equiPointPositionX.value = (offsetLeft / root.value!.offsetWidth) * 100;
         });

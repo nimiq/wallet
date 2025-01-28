@@ -252,6 +252,7 @@ import {
 import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendPolygonTransaction } from '../../hub';
@@ -299,7 +300,7 @@ export default defineComponent({
             required: false,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const { $t } = useI18n();
         enum Pages {
             WARNING,
@@ -502,7 +503,7 @@ export default defineComponent({
             }
             // Need to wait here for the next processing tick, as otherwise we would have a
             // race condition between the amount assignment and the fiatAmount watcher.
-            await context.root.$nextTick();
+            await nextTick();
             amount.value = maxSendableAmount.value;
         }
 
@@ -588,7 +589,7 @@ export default defineComponent({
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
-            await context.root.$nextTick();
+            await nextTick();
             if (!elementRef.value) return;
             elementRef.value.focus();
         }

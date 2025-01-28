@@ -38,6 +38,7 @@ import { defineComponent, ref, watch } from '@vue/composition-api';
 import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { parseRequestLink, Currency } from '@nimiq/utils';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
 import { normalizeAddress, validateAddress } from '../lib/BitcoinTransactionUtils';
@@ -132,7 +133,7 @@ const BtcAddressInput = defineComponent({
         }
 
         async function updateInputFontSize() {
-            await context.root.$nextTick();
+            await nextTick();
 
             if (!input$.value) return;
 
@@ -146,7 +147,7 @@ const BtcAddressInput = defineComponent({
             }
 
             inputFontSizeScaleFactor.value = 1;
-            await context.root.$nextTick();
+            await nextTick();
 
             const width = input$.value.$el.children[1].clientWidth;
             const maxWidth = input$.value.$el.children[2].clientWidth - (inputPadding / 2);

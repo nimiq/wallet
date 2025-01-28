@@ -108,6 +108,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } from '@nimiq/vue-components';
+import { nextTick } from '@/lib/nextTick';
 
 export const SUCCESS_REDIRECT_DELAY = 2000; // 1s of transition + 1s of display
 
@@ -228,7 +229,7 @@ export default defineComponent({
                 clearTimeout(statusUpdateTimeout);
                 // reset transitioning state for new change
                 isTransitioningStatus.value = false;
-                await context.root.$nextTick();
+                await nextTick();
                 await new Promise((resolve) => { requestAnimationFrame(resolve); }); // await style update
                 currentStatus.value = nextStatus.value;
             }

@@ -267,6 +267,7 @@ import {
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -317,7 +318,7 @@ export default defineComponent({
             required: false,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const { $t } = useI18n();
         enum Pages {
             RECIPIENT_INPUT,
@@ -524,7 +525,7 @@ export default defineComponent({
             }
             // Need to wait here for the next processing tick, as otherwise we would have a
             // race condition between the amount assignment and the fiatAmount watcher.
-            await context.root.$nextTick();
+            await nextTick();
             amount.value = maxSendableAmount.value;
         }
 
@@ -730,7 +731,7 @@ export default defineComponent({
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
-            await context.root.$nextTick();
+            await nextTick();
             if (!element$.value) return;
             element$.value.focus();
         }

@@ -79,6 +79,7 @@ import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-compone
 import { Bank } from '@nimiq/oasis-bank-list';
 import IBAN from 'iban';
 import { BankAccount, useBankStore } from '@/stores/Bank';
+import { nextTick } from '@/lib/nextTick';
 import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
 import DoubleInput from '../../DoubleInput.vue';
@@ -115,7 +116,7 @@ export default defineComponent({
         );
 
         watch(currentStep, async () => {
-            await context.root.$nextTick();
+            await nextTick();
             if (currentStep.value === Step.BANK_CHECK) {
                 if (bankCheckInput$.value) bankCheckInput$.value.focus();
             } else if (currentStep.value === Step.IBAN_CHECK) {

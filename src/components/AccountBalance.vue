@@ -26,6 +26,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
+import { nextTick } from '@/lib/nextTick';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
@@ -40,7 +41,7 @@ import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const { accountBalance } = useAddressStore();
         const { totalAccountStake } = useStakingStore();
         const { accountBalance: btcAccountBalance } = useBtcAddressStore();
@@ -99,7 +100,7 @@ export default defineComponent({
         const fiatAmountFontSize = ref(fiatAmountMaxSize.value);
 
         async function updateFontSize() {
-            await context.root.$nextTick();
+            await nextTick();
             if (!fiatAmount$.value) return;
 
             if (!fiatAmountContainer$.value || !fiatAmount$.value) return;

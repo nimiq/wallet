@@ -28,20 +28,21 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { nextTick } from '@/lib/nextTick';
 import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({
     props: {
         extended: Boolean,
     },
-    setup(props, context) {
+    setup(props) {
         const secondInput$ = ref<HTMLDivElement>(null);
 
         const labelInputHeight = ref(0);
 
         async function updateLabelInputHeight() {
             if (props.extended && secondInput$.value) {
-                await context.root.$nextTick();
+                await nextTick();
                 const input = secondInput$.value.querySelector('input');
                 if (input) labelInputHeight.value = input.clientHeight;
                 else labelInputHeight.value = 0;

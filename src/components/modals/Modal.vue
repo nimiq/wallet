@@ -29,6 +29,7 @@
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
+import { nextTick } from '@/lib/nextTick';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwipes } from '../../composables/useSwipes';
 import { useSettingsStore } from '../../stores/Settings';
@@ -136,7 +137,7 @@ const Modal = defineComponent({
             if (currentYPosition >= closeBarrier && initialYPosition < closeBarrier) {
                 // Close modal
                 close();
-                await context.root.$nextTick();
+                await nextTick();
             }
         }
 

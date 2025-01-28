@@ -333,6 +333,7 @@ import { defineComponent, computed, ref, watch, onMounted, onUnmounted, onActiva
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
+import { nextTick } from '@/lib/nextTick';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -371,7 +372,7 @@ import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 export default defineComponent({
     name: 'account-overview',
-    setup(props, context) {
+    setup() {
         const router = useRouter();
         const {
             activeAccountInfo,
@@ -491,7 +492,7 @@ export default defineComponent({
         onActivated(forceUpdate); // to update on view change (settings <-> main view)
 
         async function forceUpdate() {
-            await context.root.$nextTick();
+            await nextTick();
             // trick to force vue to update the position on component resize
             forceUpdateRef.value = !forceUpdateRef.value;
             /**
@@ -501,7 +502,7 @@ export default defineComponent({
              * This is workaround to force to re-render the background svg and position it correctly.
              * This does the same as doing a setTimeout(() => forceUpdateRef.value = !forceUpdateRef.value, 0);
              */
-            await context.root.$nextTick();
+            await nextTick();
             forceUpdateRef.value = !forceUpdateRef.value;
         }
 

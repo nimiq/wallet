@@ -17,6 +17,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from '@vue/composition-api';
 import { VNode } from 'vue';
+import { nextTick } from '@/lib/nextTick';
 
 export default defineComponent({
     props: {
@@ -25,7 +26,7 @@ export default defineComponent({
             default: false,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const isReverse = ref(false);
         const messageHeight = ref<number | null>(null);
         const isTransitioning = ref(false);
@@ -50,12 +51,12 @@ export default defineComponent({
         }
 
         async function onEnter(el: HTMLElement) {
-            await context.root.$nextTick();
+            await nextTick();
             messageHeight.value = el.offsetHeight;
         }
 
         async function onAfterLeave() {
-            await context.root.$nextTick();
+            await nextTick();
             messageHeight.value = null;
             isReverse.value = props.reverse;
             isTransitioning.value = false;

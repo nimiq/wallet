@@ -64,6 +64,7 @@
 import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { CryptoCurrency } from '@nimiq/utils';
 
+import { nextTick } from '@/lib/nextTick';
 import { useAddressStore } from '../../stores/Address';
 
 import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
@@ -255,7 +256,7 @@ export default defineComponent({
             if (!firstRender) {
                 window.clearTimeout(timeoutID);
                 animate.value = true;
-                await context.root.$nextTick();
+                await nextTick();
             }
 
             const amount = Math.max(0, Math.min(availableAmount.value, valueNim));

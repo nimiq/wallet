@@ -145,6 +145,7 @@ import {
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -182,7 +183,7 @@ export default defineComponent({
             required: false,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const { $t } = useI18n();
         const {
             state: addresses$,
@@ -344,7 +345,7 @@ export default defineComponent({
             }
             // Need to wait here for the next processing tick, as otherwise we would have a
             // race condition between the amount assignment and the fiatAmount watcher.
-            await context.root.$nextTick();
+            await nextTick();
             amount.value = maxSendableAmount.value;
         }
 
@@ -424,7 +425,7 @@ export default defineComponent({
             // TODO: Detect onscreen keyboards instead?
             if (isMobile.value) return;
 
-            await context.root.$nextTick();
+            await nextTick();
             if (!element$.value) return;
             element$.value.focus();
         }

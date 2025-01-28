@@ -32,17 +32,18 @@
 import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { RouteName } from '@/router';
+import { nextTick } from '@/lib/nextTick';
 import BankCheckInput from '../../BankCheckInput.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         const bankCheckInput$ = ref<BankCheckInput>(null);
         const bankName = ref('');
 
         const writing = computed(() => bankName.value.length !== 0);
 
         onMounted(async () => {
-            await context.root.$nextTick();
+            await nextTick();
             if (bankCheckInput$.value) bankCheckInput$.value.focus();
         });
 

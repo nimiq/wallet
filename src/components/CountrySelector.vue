@@ -45,6 +45,7 @@ import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import I18nDisplayNames from '../lib/I18nDisplayNames';
 import CountryFlag from './CountryFlag.vue';
 import { ALL_COUNTRY_CODES } from '../lib/Countries';
@@ -94,7 +95,7 @@ export default defineComponent({
                 selectedIndex.value = 0;
             }
 
-            await context.root.$nextTick();
+            await nextTick();
             if (open && input$.value) input$.value.focus();
         }
 

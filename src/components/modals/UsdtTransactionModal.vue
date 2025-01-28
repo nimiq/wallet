@@ -287,6 +287,7 @@ import { useUsdtContactsStore } from '@/stores/UsdtContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -326,7 +327,7 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const router = useRouter();
         const { $t } = useI18n();
@@ -535,7 +536,7 @@ export default defineComponent({
                     (tx as SignedPolygonTransaction).signature,
                     relayUrl!,
                 );
-                await context.root.$nextTick();
+                await nextTick();
                 router.replace({
                     name: RouteName.UsdtTransaction,
                     params: { transactionHash: plainTx.transactionHash },

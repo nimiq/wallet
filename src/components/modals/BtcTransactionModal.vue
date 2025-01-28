@@ -348,6 +348,7 @@ import { SwapAsset, getAssets } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import { RouteName, useRouter } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';
@@ -391,7 +392,7 @@ export default defineComponent({
             required: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
         const router = useRouter();
         const { $t } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
@@ -573,7 +574,7 @@ export default defineComponent({
             const tx = await refundSwap(requestPromise);
             if (!tx) return;
             const plainTx = await sendTransaction(tx as SignedBtcTransaction);
-            await context.root.$nextTick();
+            await nextTick();
             router.replace({
                 name: RouteName.BtcTransaction,
                 params: { transactionHash: plainTx.transactionHash },

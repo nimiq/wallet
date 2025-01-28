@@ -27,11 +27,12 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
 import { PageBody } from '@nimiq/vue-components';
+import { nextTick } from '@/lib/nextTick';
 import Modal from './Modal.vue';
 import BlueLink from '../BlueLink.vue';
 
 export default defineComponent({
-    setup(props, context) {
+    setup() {
         /**
          * This is needed to update the height of the .image element since we're using the `shape-outside` property
          * and that the img inside need to be vertically centered. This cannot be done with css only unfortunately.
@@ -42,7 +43,7 @@ export default defineComponent({
         const height = ref<number>(0);
 
         async function updateHeight() {
-            await context.root.$nextTick();
+            await nextTick();
             if (textDiv$.value && height.value !== textDiv$.value.clientHeight) {
                 height.value = textDiv$.value.clientHeight;
             }

@@ -125,7 +125,7 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { $t } = useI18n();
+        const { $t, locale } = useI18n();
         const { addressInfo } = usePolygonAddressStore();
         const { state: transactions$ } = useUsdtTransactionsStore();
         const { isFetchingUsdtTxHistory } = usePolygonNetworkStore();
@@ -246,7 +246,7 @@ export default defineComponent({
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
-                            context.root.$i18n.locale,
+                            locale,
                             {
                                 month: 'long',
                                 year: txYear !== currentYear ? 'numeric' : undefined,

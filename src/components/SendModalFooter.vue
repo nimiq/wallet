@@ -25,6 +25,7 @@
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
+import { useI18n } from '@/lib/useI18n';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';
 import { useNetworkStore } from '../stores/Network';
 import { usePolygonNetworkStore } from '../stores/PolygonNetwork';
@@ -48,7 +49,9 @@ export default defineComponent({
             default: true,
         },
     },
-    setup(props, context) {
+    setup(props) {
+        const { $t } = useI18n();
+
         const networkState = computed(() => {
             let message: string | null = null;
 
@@ -60,10 +63,10 @@ export default defineComponent({
                 } = useBtcNetworkStore();
 
                 if (btcConsensus.value !== 'established' || !btcHeight.value) {
-                    message = context.root.$i18n.t('Connecting to Bitcoin network') as string;
+                    message = $t('Connecting to Bitcoin network') as string;
                 } else if (props.requireCompleteBtcHistory && isFetchingBtcHistory.value) {
                     // Current Bitcoin UTXOs and balance are unknown without complete history.
-                    message = context.root.$i18n.t('Syncing with Bitcoin network') as string;
+                    message = $t('Syncing with Bitcoin network') as string;
                 }
             }
 
@@ -71,9 +74,9 @@ export default defineComponent({
                 const { consensus: nimiqConsensus, height: nimiqHeight } = useNetworkStore();
 
                 if (nimiqConsensus.value !== 'established') {
-                    message = context.root.$i18n.t('Connecting to Nimiq network') as string;
+                    message = $t('Connecting to Nimiq network') as string;
                 } else if (!nimiqHeight.value) {
-                    message = context.root.$i18n.t('Waiting for Nimiq network information') as string;
+                    message = $t('Waiting for Nimiq network information') as string;
                 }
             }
 
@@ -81,7 +84,7 @@ export default defineComponent({
                 const { consensus: polygonConsensus } = usePolygonNetworkStore();
 
                 if (polygonConsensus.value !== 'established') {
-                    message = context.root.$i18n.t('Connecting to USDC on Polygon') as string;
+                    message = $t('Connecting to USDC on Polygon') as string;
                 }
             }
 

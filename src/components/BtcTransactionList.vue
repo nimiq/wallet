@@ -137,8 +137,8 @@ export default defineComponent({
             default: '',
         },
     },
-    setup(props, context) {
-        const { $t } = useI18n();
+    setup(props) {
+        const { $t, locale } = useI18n();
         const { state: btcAddresses$, activeAddresses } = useBtcAddressStore();
         const { state: btcTransactions$ } = useBtcTransactionsStore();
         const { isFetchingTxHistory, consensus } = useBtcNetworkStore();
@@ -284,7 +284,7 @@ export default defineComponent({
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
-                            context.root.$i18n.locale,
+                            locale,
                             {
                                 month: 'long',
                                 year: txYear !== currentYear ? 'numeric' : undefined,

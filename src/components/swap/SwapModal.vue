@@ -379,6 +379,7 @@ export default defineComponent({
             },
         },
     },
+    // @ts-expect-error Parameters 'props', 'context' implicitly have an 'any' type.
     setup(props, context) {
         const { config } = useConfig();
 

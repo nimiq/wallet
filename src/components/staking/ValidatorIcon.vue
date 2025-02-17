@@ -27,7 +27,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-img, .identicon {
+.validator-icon {
     --size: 5.5rem;
     width: var(--size);
     height: var(--size);

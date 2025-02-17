@@ -177,6 +177,8 @@
                 </div>
             </div>
 
+            <StakingOverview v-if="activeCurrency === CryptoCurrency.NIM && activeStake" />
+
             <div class="actions flex-row" v-if="!isMobile">
                 <SearchBar v-model="searchString"/>
 
@@ -359,6 +361,7 @@ import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
+import StakingOverview from '../staking/StakingOverview.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -668,6 +671,7 @@ export default defineComponent({
         StakingButton,
         StakingIcon,
         TwoLeafStakingIcon,
+        StakingOverview,
     },
 });
 </script>

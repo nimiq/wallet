@@ -18,8 +18,16 @@ export default defineComponent({
             type: Number,
             required: true,
         },
-        dry: Boolean,
-        percentOnly: Boolean,
+        dry: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
+        percentOnly: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
     },
     setup(props) {
         // Ensure we show at most 3 significant digits (except if the integer part is longer than that)

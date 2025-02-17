@@ -24,8 +24,16 @@ export default defineComponent({
             type: Number,
             default: null,
         },
-        dry: Boolean,
-        borderless: Boolean,
+        dry: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+        borderless: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
     },
     setup(props) {
         const disabled = computed(() => props.score === null);

@@ -157,7 +157,7 @@ const routes: RouteConfig[] = [{
             accountOverview: AccountOverview,
             addressOverview: AddressOverview,
         },
-        name: RouteName.Transactions,
+        name: RouteName.Root,
         alias: '/transactions',
         meta: { column: Columns.DYNAMIC },
         children: [{

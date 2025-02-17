@@ -101,6 +101,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/functions.scss';
+@import '../../scss/variables.scss';
 
 .staking-overview {
     display: flex;
@@ -113,6 +114,14 @@ export default defineComponent({
 
     padding-top: -1rem; // 24px
     padding-bottom: 4.125rem;
+
+    @media (max-width: $tabletBreakpoint) {
+        flex-direction: column;
+
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-bottom: 2rem;
+    }
 }
 
 .staking-container {
@@ -130,6 +139,15 @@ export default defineComponent({
     &:hover, &:focus {
         transform: scale(1.01);
     }
+
+    @media (max-width: $tabletBreakpoint) {
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 2rem;
+    }
 }
 
 .staking-info {
@@ -144,6 +162,14 @@ export default defineComponent({
             stroke: white;
         }
     }
+
+    @media (max-width: $tabletBreakpoint) {
+        width: 100%;
+
+        .nq-icon {
+            font-size: 2.5rem;
+        }
+    }
 }
 
 .staking-amounts, .rewards-amounts {
@@ -153,6 +179,10 @@ export default defineComponent({
         line-height: 1.2;
         align-items: center;
         gap: 0.5rem;
+
+        @media (max-width: $tabletBreakpoint) {
+            font-size: var(--h3-size);
+        }
     }
 
     .details-row {
@@ -164,6 +194,25 @@ export default defineComponent({
     }
 }
 
+.rewards {
+    @media (max-width: $tabletBreakpoint) {
+        width: 100%;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 1rem;
+
+        .rewards-amounts {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+
+            .amount-row, .details-row {
+                margin: 0;
+            }
+        }
+    }
+}
+
 .validator-container {
     background: nimiq-blue(0.1);
     border-radius: 1rem;
@@ -172,6 +221,28 @@ export default defineComponent({
     align-items: center;
     gap: 1rem;
     height: 9rem;
+
+    @media (max-width: $tabletBreakpoint) {
+        width: 100%;
+        height: auto;
+        padding: 2rem;
+
+        .validator-details {
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            justify-content: space-between;
+
+            .validator-name {
+                margin: 0;
+            }
+
+            .validator-stats {
+                margin: 0;
+            }
+        }
+    }
 
     .validator-icon {
         --size: 2.5rem;

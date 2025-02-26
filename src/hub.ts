@@ -38,6 +38,7 @@ import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY 
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
+import { DemoHubApi, checkIfDemoIsActive } from './stores/Demo';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
@@ -114,7 +115,7 @@ function getBehavior({
 
 // We can't use the reactive config via useConfig() here because that one can only be used after the composition-api
 // plugin has been registered in Vue 2.
-const hubApi = new HubApi(Config.hubEndpoint);
+const hubApi = checkIfDemoIsActive() ? DemoHubApi.create() : new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     const { config } = useConfig();

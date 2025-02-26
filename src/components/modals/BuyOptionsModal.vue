@@ -202,6 +202,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
 import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
+import { useDemoStore } from '@/stores/Demo';
 import Modal from './Modal.vue';
 import CountrySelector from '../CountrySelector.vue';
 import CountryFlag from '../CountryFlag.vue';
@@ -232,13 +233,16 @@ export default defineComponent({
 
         const country = ref<Country>(null);
 
+        const { isDemoEnabled } = useDemoStore();
         const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
+            if (isDemoEnabled.value) return true;
             if (!config.moonpay.enabled) return false;
             if (!country.value) return true;
             return MOONPAY_COUNTRY_CODES.includes(country.value.code);
         });
 
         const isSimplexAvailable = computed(() => { // eslint-disable-line arrow-body-style
+            if (isDemoEnabled.value) return true;
             if (!config.simplex.enabled) return false;
             if (!country.value) return true;
             return SIMPLEX_COUNTRY_CODES.includes(country.value.code);

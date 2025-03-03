@@ -57,8 +57,9 @@ import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { CryptoCurrency } from '../lib/Constants';
 import router from '../router';
 import { useSettingsStore } from '../stores/Settings';
-import { useAccountSettingsStore } from '../stores/AccountSettings';
+import { NimAddressOrder, useAccountSettingsStore } from '../stores/AccountSettings';
 import { useStakingStore } from '../stores/Staking';
+import { TransactionState, useTransactionsStore } from '../stores/Transactions';
 
 export default defineComponent({
     props: {
@@ -92,7 +93,7 @@ export default defineComponent({
             accountUsdcBridgedBalance,
             accountUsdtBridgedBalance,
         } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { stablecoin, nimAddressOrder } = useAccountSettingsStore();
         const { activeCurrency, setActiveCurrency } = useAccountStore();
         const { height } = useNetworkStore();
         const { amountsHidden } = useSettingsStore();
@@ -116,10 +117,40 @@ export default defineComponent({
             return passedSteps < numberVestingSteps;
         }
 
-        const processedAddressInfos = computed(() => addressInfos.value.map((addressInfo) => ({
-            ...addressInfo,
-            hasLockedBalance: hasLockedBalance(addressInfo),
-        })));
+        // eslint-disable-next-line vue/return-in-computed-property,consistent-return
+        const processedAddressInfos = computed<(AddressInfo & { hasLockedBalance: boolean })[]>(() => {
+            const list = addressInfos.value.map((addressInfo) => ({
+                ...addressInfo,
+                hasLockedBalance: hasLockedBalance(addressInfo),
+            }));
+
+            // Consistent return is guaranteed by forcing a return type on the computed<> function signature and
+            // Typescript thus making sure we handle every possible case here.
+            switch (nimAddressOrder.value) { // eslint-disable-line default-case
+                case NimAddressOrder.OrderOfCreation: return list;
+                case NimAddressOrder.AlphabeticalAscending: return list.sort((a, b) => a.label.localeCompare(b.label));
+                case NimAddressOrder.AlphabeticalDescending: return list.sort((a, b) => b.label.localeCompare(a.label));
+                case NimAddressOrder.BalanceDescending: return list.sort((a, b) => (b.balance || 0) - (a.balance || 0));
+                case NimAddressOrder.MostRecentTransaction: {
+                    const transactions = Object.values(useTransactionsStore().state.transactions);
+                    return list.map((addressInfo) => {
+                        const latestTxBlock = transactions.filter(
+                            (tx) => tx.sender === addressInfo.address || tx.recipient === addressInfo.address,
+                        ).map(
+                            (tx) => tx.blockHeight
+                            || ((tx.state === TransactionState.EXPIRED || tx.state === TransactionState.INVALIDATED)
+                                && tx.validityStartHeight)
+                            || Number.MAX_SAFE_INTEGER,
+                        ).sort((a, b) => b - a)[0] || 0;
+
+                        return {
+                            ...addressInfo,
+                            latestTxBlock,
+                        };
+                    }).sort((a, b) => b.latestTxBlock - a.latestTxBlock);
+                }
+            }
+        });
 
         const backgroundYOffset = ref(4 + 20); // px - Top margin of the address-buttons (0.5rem) + 2.5rem padding-top
         const backgroundYScale = ref(1);

@@ -57,6 +57,7 @@
                         <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
                             <MiniAddIcon/>
                         </button>
+                        <NimAddressOrderSelector />
                     </header>
                     <AddressList @address-selected="onAddressSelected"/>
                 </div>
@@ -367,6 +368,7 @@ import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useConfig } from '../../composables/useConfig';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import NimAddressOrderSelector from '../NimAddressOrderSelector.vue';
 // import { useStakingStore } from '../../stores/Staking';
 // import AccountStake from '../staking/AccountStake.vue';
 
@@ -635,6 +637,7 @@ export default defineComponent({
         Tooltip,
         LinkedDoubleArrowIcon,
         AddressListBackgroundSvg,
+        NimAddressOrderSelector,
         // StakingSummaryMobile,
         // AccountStake,
     },
@@ -916,6 +919,10 @@ export default defineComponent({
         &:hover {
             background-color: var(--text-14);
         }
+    }
+
+    .nim-address-order-selector {
+        margin-left: 1rem;
     }
 }
 

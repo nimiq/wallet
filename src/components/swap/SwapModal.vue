@@ -1362,9 +1362,9 @@ export default defineComponent({
         );
 
         const feeIsLoading = computed(() => {
-            if (swapHasBtc.value && !btcFeeFiat.value) return true;
-            if (swapHasUsdc.value && !usdcFeeFiat.value) return true;
-            if (swapHasUsdt.value && !usdtFeeFiat.value) return true;
+            if (swapHasBtc.value && btcFeeFiat.value === undefined) return true;
+            if (swapHasUsdc.value && usdcFeeFiat.value === undefined) return true;
+            if (swapHasUsdt.value && usdtFeeFiat.value === undefined) return true;
             return false;
         });
 

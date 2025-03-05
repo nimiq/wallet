@@ -2,7 +2,6 @@
 import { createStore } from 'pinia';
 import VueRouter from 'vue-router';
 import { TransactionState as ElectrumTransactionState } from '@nimiq/electrum-client';
-import HubApi from '@nimiq/hub-api';
 import { CryptoCurrency, Utf8Tools } from '@nimiq/utils';
 import { KeyPair, PlainTransactionDetails, PrivateKey } from '@nimiq/core';
 import { STAKING_CONTRACT_ADDRESS } from '@/lib/Constants';
@@ -16,13 +15,14 @@ import { useStakingStore } from '@/stores/Staking';
 import { useAccountSettingsStore } from '@/stores/AccountSettings';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import Config from 'config';
-import { SwapAsset, SwapStatus } from '@nimiq/fastspot-api';
-import { SwapState, useSwapsStore } from '@/stores/Swaps';
+import { AssetList, FastspotAsset, FastspotEstimate, FastspotFee, FastspotLimits, FastspotUserLimits, ReferenceAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { useBtcAddressStore } from './BtcAddress';
 import { useContactsStore } from './Contacts';
 import { useBtcLabelsStore } from './BtcLabels';
 import { useUsdcContactsStore } from './UsdcContacts';
 import { useUsdtContactsStore } from './UsdtContacts';
+import { useFiatStore } from './Fiat';
+import HubApi from '@nimiq/hub-api';
 
 export type DemoState = {
     active: boolean,
@@ -101,6 +101,7 @@ export const useDemoStore = createStore({
             attachIframeListeners();
             replaceStakingFlow();
             replaceBuyNimFlow();
+            enableSendModalInDemoMode();
         },
 
         /**
@@ -591,7 +592,7 @@ function generateFakePolygonTransactions() {
 /**
  * Shared function to generate token transactions for Polygon tokens
  */
-function generateTokenTransactions(txDefinitions: any, initialBalance:number, tokenContract:string, confirmState:any, contactsStore:any) {
+function generateTokenTransactions(txDefinitions: any, initialBalance: number, tokenContract: string, confirmState: any, contactsStore: any) {
     const transactions = [];
     const { setContact } = contactsStore();
 
@@ -882,6 +883,10 @@ const demoCSS = `
     background: rgba(255, 255, 255);
     border-radius: 50%;
 }
+
+.send-modal-footer .footer-notice {
+    display: none;
+}
 `;
 
 /**
@@ -897,7 +902,7 @@ function interceptFetchRequest() {
         if (args[0].startsWith('/')) return originalFetch(...args);
 
         const url = new URL(args[0] as string);
-        const isFastspotRequest = url.host === Config.fastspot.apiEndpoint;
+        const isFastspotRequest = url.host === (new URL(Config.fastspot.apiEndpoint).host);
         const isLimitsRequest = url.pathname.includes('/limits');
         const isEstimateRequest = url.pathname.includes('/estimate');
         const isAssetsRequest = url.pathname.includes('/assets');
@@ -906,60 +911,92 @@ function interceptFetchRequest() {
             return originalFetch(...args);
         }
 
-        if (isLimitsRequest) {
-            // Return mock limits with higher values and proper structure
-            const json = {
-                asset: 'USD',
+        if (isLimitsRequest) { 
+            const constants = {
+                current: '9800',
                 daily: '50000',
                 dailyRemaining: '49000',
                 monthly: '100000',
                 monthlyRemaining: '98000',
-                swap: '10000',
-                current: '9800',
+            } as const;
+            
+            const [assetOrLimit,_] = url.pathname.split('/').slice(-2) as [SwapAsset | 'limits', string];
+
+            if (assetOrLimit === 'limits') {
+                const limits: FastspotUserLimits = {
+                    asset: ReferenceAsset.USD,
+                    swap: `${1000}`,
+                    ...constants,
+                };
+                return new Response(JSON.stringify(limits));
+            }
+            
+            const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+            await sleep(1000 + Math.random() * 500);
+
+            const asset = assetOrLimit as SwapAsset;
+            // const { exchangeRates } = useFiatStore();
+            // const rate: number = exchangeRates.value[asset.toLocaleLowerCase().split('_')[0]].usd!;
+            const json: FastspotLimits<SwapAsset> = {
+                asset,
+                swap: `${1000}`,
+                referenceAsset: ReferenceAsset.USD,
+                referenceCurrent: constants.current,
+                referenceDaily: constants.daily,
+                referenceDailyRemaining: constants.dailyRemaining,
+                referenceMonthly: constants.monthly,
+                referenceMonthlyRemaining: constants.monthlyRemaining,
+                referenceSwap: `${1000}`,
+                ...constants,
             };
+           
             return new Response(JSON.stringify(json));
         }
 
         if (isAssetsRequest) {
-            // Return mock assets data with fees
-            const json = {
-                BTC: {
-                    enabled: true,
-                    fee: 0.0001, // BTC network fee
-                    minAmount: 0.001,
-                    maxAmount: 1,
+            // Return mock assets data with fees for all supported assets
+            const json: FastspotAsset[] = [
+                {
+                    symbol: SwapAsset.BTC,
+                    name: 'Bitcoin',
+                    feePerUnit: `${getNetworkFeePerUnit(SwapAsset.BTC)}`,
+                    limits: { minimum: '0.0001', maximum: '1' },
                 },
-                NIM: {
-                    enabled: true,
-                    fee: 0.01, // NIM network fee
-                    minAmount: 1,
-                    maxAmount: 1000000,
+                {
+                    symbol: SwapAsset.NIM,
+                    name: 'Nimiq',
+                    feePerUnit: `${getNetworkFeePerUnit(SwapAsset.NIM)}`,
+                    limits: { minimum: '1', maximum: '100000' },
                 },
-                USDC_MATIC: {
-                    enabled: true,
-                    fee: 0.1, // USDC fee
-                    minAmount: 1,
-                    maxAmount: 50000,
+                {
+                    symbol: SwapAsset.USDC_MATIC,
+                    name: 'USDC (Polygon)',
+                    feePerUnit: `${getNetworkFeePerUnit(SwapAsset.USDC_MATIC)}`,
+                    limits: { minimum: '1', maximum: '100000' },
                 },
-                USDT_MATIC: {
-                    enabled: true,
-                    fee: 0.1, // USDT fee
-                    minAmount: 1,
-                    maxAmount: 50000,
-                },
-            };
+                {
+                    symbol: SwapAsset.USDT_MATIC,
+                    name: 'USDT (Polygon)',
+                    feePerUnit: `${getNetworkFeePerUnit(SwapAsset.USDT_MATIC)}`,
+                    limits: { minimum: '1', maximum: '100000' },
+                }
+            ]
             return new Response(JSON.stringify(json));
         }
 
         if (isEstimateRequest) {
-            // Parse the estimate request parameters
-            const searchParams = new URLSearchParams(url.search);
-            const from = searchParams.get('from');
-            const to = searchParams.get('to');
-            const value = Number(searchParams.get('value'));
+            const body = args[1]?.body
+            if (!body) throw new Error('[Demo] No body found in request')
+            type EstimateRequest = {
+                from: Record<SwapAsset, number>,
+                to: SwapAsset,
+                includedFees: 'required'
+            };
+            const { from: fromObj, to, includedFees: _includedFees } = JSON.parse(body.toString()) as EstimateRequest
+            const from = Object.keys(fromObj)[0] as SwapAsset
 
             // Validate the request
-            if (!from || !to || !value || Number.isNaN(value)) {
+            if (!from || !to) {
                 return new Response(JSON.stringify({
                     error: 'Invalid request parameters',
                     status: 400,
@@ -967,42 +1004,101 @@ function interceptFetchRequest() {
             }
 
             // Calculate fees based on the value
+
+            const value = fromObj[from];
             const networkFee = Math.floor(value * 0.0005); // 0.05% network fee
             const escrowFee = Math.floor(value * 0.001); // 0.1% escrow fee
 
             // Calculate the destination amount using our mock rates
             const estimatedAmount = calculateEstimatedAmount(from, to, value);
 
-            // Note: These fee calculations are simplified for demo purposes
-            const toNetworkFee = Math.floor(estimatedAmount * 0.0005);
-            const toEscrowFee = Math.floor(estimatedAmount * 0.001);
-
             // Create mock estimate response with a valid structure
-            const estimate = {
-                from: {
-                    asset: from,
-                    amount: value,
-                    fee: 0, // Network-specific fee (e.g., BTC mining fee)
-                    serviceNetworkFee: networkFee,
-                    serviceEscrowFee: escrowFee,
-                },
-                to: {
-                    asset: to,
-                    amount: estimatedAmount,
-                    fee: 0, // Network-specific fee
-                    serviceNetworkFee: toNetworkFee,
-                    serviceEscrowFee: toEscrowFee,
-                },
-                serviceFeePercentage: 0.025, // 2.5% service fee
-                expires: Date.now() + 30000, // 30 seconds expiry
-                swapProfit: 0,
-            };
+            const estimate: FastspotEstimate[] = [{
+                from: [{
+                    amount: `${value}`,
+                    name: from,
+                    symbol: from,
+                    finalizeNetworkFee: {
+                        total: `${networkFee}`,
+                        totalIsIncluded: false,
+                        perUnit: `${getNetworkFeePerUnit(from)}`,
+                    },
+                    fundingNetworkFee: {
+                        total: `${networkFee}`,
+                        totalIsIncluded: false,
+                        perUnit: `${getNetworkFeePerUnit(from)}`,
+                    },
+                    operatingNetworkFee: {
+                        total: `${networkFee}`,
+                        totalIsIncluded: false,
+                        perUnit: `${getNetworkFeePerUnit(from)}`,
+                    }
+                }],
+                to: [{
+                    amount: `${estimatedAmount}`,
+                    name: to,
+                    symbol: to,
+                    finalizeNetworkFee: {
+                        total: `${networkFee}`,
+                        totalIsIncluded: false,
+                        perUnit: `${getNetworkFeePerUnit(to)}`,
+                    },
+                    fundingNetworkFee: {
+                        total: `${networkFee}`,
+                        totalIsIncluded: false,
+                        perUnit: `${getNetworkFeePerUnit(to)}`,
+                    },
+                    operatingNetworkFee: {  
+                        total: `${networkFee}`,
+                        totalIsIncluded: false,
+                        perUnit: `${getNetworkFeePerUnit(to)}`,
+                    }
+                }],
+                direction: 'forward',
+                serviceFeePercentage: 0.01,
+            }];
+
+            console.log('[Demo] Mock estimate:', estimate); // eslint-disable no-console
 
             return new Response(JSON.stringify(estimate));
         }
 
         return originalFetch(...args);
     };
+}
+
+/**
+ * Network fee helper function
+ */
+function getNetworkFee(asset: string): number {
+    switch (asset) {
+        case SwapAsset.BTC:
+            return 10000; // 10k sats
+        case SwapAsset.NIM:
+            return 1000; // 1000 luna
+        case SwapAsset.USDC_MATIC:
+        case SwapAsset.USDT_MATIC:
+            return 2000000000000000; // 0.002 MATIC in wei
+        default:
+            return 0;
+    }
+}
+
+/**
+ * Fee per unit helper function
+ */
+function getNetworkFeePerUnit(asset: string): number {
+    switch (asset) {
+        case SwapAsset.BTC:
+            return 10; // 10 sats/vbyte
+        case SwapAsset.NIM:
+            return 0; // luna per byte
+        case SwapAsset.USDC_MATIC:
+        case SwapAsset.USDT_MATIC:
+            return 1000000000; // 1 Gwei
+        default:
+            return 0;
+    }
 }
 
 /**
@@ -1022,7 +1118,7 @@ function calculateEstimatedAmount(fromAsset: string, toAsset: string, value: num
         [`${SwapAsset.USDC_MATIC}-${SwapAsset.USDT_MATIC}`]: 1, // 1 USDC = 1 USDT
         [`${SwapAsset.USDT_MATIC}-${SwapAsset.NIM}`]: 833.33, // 1 USDT = 833.33 NIM
         [`${SwapAsset.USDT_MATIC}-${SwapAsset.BTC}`]: 0.000033, // 1 USDT = 0.000033 BTC
-        [`${SwapAsset.USDT_MATIC}-${SwapAsset.USDC_MATIC}`]: 1, // 1 USDT = 1 USDC
+        [`${SwapAsset.USDT_MATIC}-${SwapAsset.USDC_MATIC}`]: 1, // 1 USDT = 1 USDT
     };
 
     const rate = rates[`${fromAsset}-${toAsset}`];
@@ -1038,7 +1134,44 @@ function calculateEstimatedAmount(fromAsset: string, toAsset: string, value: num
     return Math.floor(value * rate);
 }
 
-let swapCounter = 0;
+/**
+ * Ensures the Send button in modals is always enabled in demo mode, regardless of network state.
+ * This allows users to interact with the send functionality without waiting for network sync.
+ */
+function enableSendModalInDemoMode() {
+    let observing = false;
+    const observer = new MutationObserver(() => {
+        // Target the send modal footer button
+        const sendButton = document.querySelector('.send-modal-footer .nq-button');
+        if (!sendButton) return;
+
+        if (sendButton.hasAttribute('disabled')) {
+            sendButton.removeAttribute('disabled');
+
+            // Also remove any visual indications of being disabled
+            sendButton.classList.remove('disabled');
+
+            // Also find and hide any sync message if shown
+            const footer = document.querySelector('.send-modal-footer');
+            if (footer) {
+                const footerNotice = footer.querySelector('.footer-notice') as HTMLDivElement;
+                if (footerNotice && footerNotice.textContent &&
+                    (footerNotice.textContent.includes('Connecting to Bitcoin') ||
+                        footerNotice.textContent.includes('Syncing with Bitcoin'))) {
+                    footerNotice.style.display = 'none';
+                }
+            }
+        }
+    });
+
+    // Observe document for changes - particularly when modals open
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled'] });
+}
+
+const ignoreHubRequests = [
+    'addBtcAddresses',
+    'on'
+]
 
 /**
  * Replacement of the Hub API class to capture and redirect calls to our demo modals instead.
@@ -1050,190 +1183,557 @@ export class DemoHubApi extends HubApi {
             get(target, prop: keyof HubApi) {
                 if (typeof target[prop] === 'function') {
                     return async (...args: Parameters<HubApi[typeof prop]>) => {
-                        const requestName = String(prop);
-                        const [firstArg] = args;
-                        // eslint-disable-next-line no-console
-                        console.warn(`[Demo] Mocking Hub call: ${requestName}("${firstArg}")`);
+                        return new Promise(async (resolve, reject) => {
+                            const requestName = String(prop);
+                            const [firstArg] = args;
+                            // eslint-disable-next-line no-console
+                            console.warn(`[Demo] Mocking Hub call: ${requestName}("${firstArg}")`);
 
-                        if (requestName === 'on') {
-                            return;
-                        }
-                        if (requestName === 'setupSwap') {
-                            const leftColumn = document.querySelector('.swap-amounts .left-column');
-                            const leftAmountElement = leftColumn!.querySelector('.width-value');
-                            const leftValue = Number((leftAmountElement as HTMLDivElement).innerText);
-                            const leftAsset = leftColumn!.querySelector('.ticker')!.innerHTML.toUpperCase() as SwapAsset;
+                            if (ignoreHubRequests.includes(requestName)) {
+                                return;
+                            }
+                            // Find the setupSwap handler in the DemoHubApi class and replace it with this:
 
-                            const rightColumn = document.querySelector('.swap-amounts .right-column');
-                            const rightAmountElement = rightColumn!.querySelector('.width-value');
-                            const rightValue = Number((rightAmountElement as HTMLDivElement).innerText);
-                            const rightAsset = rightColumn!.querySelector('.ticker')!.innerHTML.toUpperCase() as SwapAsset;
+                            if (requestName === 'setupSwap') {
+                                console.log({
+                                    firstArg,
+                                    args,
+                                })
+                                return
+                            }
+                            //     if (requestName === 'setupSwap') {
+                            //         (firstArg as Function)();
+                            //         // Get swap amount and asset details from the DOM
+                            //         const leftColumn = document.querySelector('.swap-amounts .left-column');
+                            //         const leftAmountElement = leftColumn?.querySelector('.width-value');
+                            //         const rightColumn = document.querySelector('.swap-amounts .right-column');
+                            //         const rightAmountElement = rightColumn?.querySelector('.width-value');
 
-                            const swapHash = `0x${(++swapCounter).toString(16)}`;
-                            const { setActiveSwap, setSwap } = useSwapsStore();
+                            //         if (!leftAmountElement || !rightAmountElement || !leftColumn || !rightColumn) {
+                            //             console.warn('[Demo] Could not find swap amount elements');
+                            //             return {};
+                            //         }
 
-                            // Create initial swap state
-                            const swap = {
-                                id: `${swapCounter}`,
-                                contracts: {},
-                                from: {
-                                    asset: leftAsset,
-                                    amount: leftValue,
-                                    fee: 0,
-                                    serviceEscrowFee: Math.floor(leftValue * 0.001), // 0.1% fee
-                                    serviceNetworkFee: Math.floor(leftValue * 0.0005), // 0.05% network fee
-                                },
-                                to: {
-                                    asset: rightAsset,
-                                    amount: rightValue,
-                                    fee: 0,
-                                    serviceNetworkFee: Math.floor(rightValue * 0.0005),
-                                    serviceEscrowFee: Math.floor(rightValue * 0.001),
-                                },
-                                serviceFeePercentage: 0.025,
-                                direction: 'forward',
-                                state: SwapState.AWAIT_INCOMING,
-                                stateEnteredAt: Date.now(),
-                                expires: Date.now() + 1000 * 60 * 60 * 24, // 24h expiry
-                                status: SwapStatus.WAITING_FOR_TRANSACTIONS,
-                                hash: swapHash,
-                                watchtowerNotified: true,
-                            };
+                            //         const leftValue = Number((leftAmountElement as HTMLDivElement).innerText.replace(/,/g, ''));
+                            //         const leftAsset = leftColumn.querySelector('.ticker')?.innerHTML.toUpperCase().trim() as SwapAsset;
 
-                            setSwap(swapHash, {
-                                id: swap.id,
-                                fees: {
-                                    totalFee: swap.from.serviceEscrowFee + swap.from.serviceNetworkFee,
-                                    asset: leftAsset,
-                                },
+                            //         const rightValue = Number((rightAmountElement as HTMLDivElement).innerText.replace(/,/g, ''));
+                            //         const rightAsset = rightColumn.querySelector('.ticker')?.innerHTML.toUpperCase().trim() as SwapAsset;
+
+                            //         console.log(`[Demo] Setting up swap: ${leftValue} ${leftAsset} -> ${rightValue} ${rightAsset}`);
+
+                            //         // Check if we have valid values
+                            //         if (!leftValue || !rightValue || !leftAsset || !rightAsset) {
+                            //             console.warn('[Demo] Missing swap values');
+                            //             return {};
+                            //         }
+
+                            //         const direction = leftValue < rightValue ? 'forward' : 'reverse';
+                            //         const fromAsset = direction === 'forward' ? leftAsset : rightAsset;
+                            //         // @ts-expect-error Object key not specific enough?
+                            //         const toAsset: RequestAsset<SwapAsset> = direction === 'forward'
+                            //             ? { [rightAsset]: rightValue }
+                            //             : { [leftAsset]: leftValue };
+
+                            //         const swapSuggestion = await createSwap(fromAsset, toAsset);
+
+                            //         const { config } = useConfig();
+
+                            //         let fund: HtlcCreationInstructions | null = null;
+                            //         let redeem: HtlcSettlementInstructions | null = null;
+
+                            //         const { activeAddressInfo } = useAddressStore();
+
+                            //         const { availableExternalAddresses } = useBtcAddressStore();
+                            //         const nimAddress = activeAddressInfo.value!.address;
+                            //         const btcAddress = availableExternalAddresses.value[0];
+
+                            //         if (swapSuggestion.from.asset === SwapAsset.NIM) {
+                            //             const nimiqClient = await getNetworkClient();
+                            //             await nimiqClient.waitForConsensusEstablished();
+                            //             const headHeight = await nimiqClient.getHeadHeight();
+                            //             if (headHeight > 100) {
+                            //                 useNetworkStore().state.height = headHeight;
+                            //             } else {
+                            //                 throw new Error('Invalid network state, try please reloading the app');
+                            //             }
+
+                            //             fund = {
+                            //                 type: SwapAsset.NIM,
+                            //                 sender: nimAddress,
+                            //                 value: swapSuggestion.from.amount,
+                            //                 fee: swapSuggestion.from.fee,
+                            //                 validityStartHeight: useNetworkStore().state.height,
+                            //             };
+                            //         }
+
+                            //         const { accountUtxos, accountBalance: accountBtcBalance, } = useBtcAddressStore();
+                            //         if (swapSuggestion.from.asset === SwapAsset.BTC) {
+                            //             const electrumClient = await getElectrumClient();
+                            //             await electrumClient.waitForConsensusEstablished();
+
+
+                            //             // Assemble BTC inputs
+                            //             // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
+                            //             const requiredInputs = selectOutputs(
+                            //                 accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
+                            //             let changeAddress: string;
+                            //             if (requiredInputs.changeAmount > 0) {
+                            //                 const { nextChangeAddress } = useBtcAddressStore();
+                            //                 if (!nextChangeAddress.value) {
+                            //                     // FIXME: If no unused change address is found, need to request new ones from Hub!
+                            //                     throw new Error('No more unused change addresses (not yet implemented)');
+                            //                 }
+                            //                 changeAddress = nextChangeAddress.value;
+                            //             }
+
+                            //             fund = {
+                            //                 type: SwapAsset.BTC,
+                            //                 inputs: requiredInputs.utxos.map((utxo) => ({
+                            //                     address: utxo.address,
+                            //                     transactionHash: utxo.transactionHash,
+                            //                     outputIndex: utxo.index,
+                            //                     outputScript: utxo.witness.script,
+                            //                     value: utxo.witness.value,
+                            //                 })),
+                            //                 output: {
+                            //                     value: swapSuggestion.from.amount,
+                            //                 },
+                            //                 ...(requiredInputs.changeAmount > 0 ? {
+                            //                     changeOutput: {
+                            //                         address: changeAddress!,
+                            //                         value: requiredInputs.changeAmount,
+                            //                     },
+                            //                 } : {}),
+                            //                 refundAddress: btcAddress,
+                            //             };
+                            //         }
+
+                            //         const {
+                            //             activeAddress: activePolygonAddress,
+                            //             accountUsdcBalance,
+                            //             accountUsdtBridgedBalance,
+                            //         } = usePolygonAddressStore();
+
+
+                            //         if (swapSuggestion.from.asset === SwapAsset.USDC_MATIC) {
+                            //             const [client, htlcContract] = await Promise.all([
+                            //                 getPolygonClient(),
+                            //                 getUsdcHtlcContract(),
+                            //             ]);
+                            //             const fromAddress = activePolygonAddress.value!;
+
+                            //             const [
+                            //                 usdcNonce,
+                            //                 forwarderNonce,
+                            //                 blockHeight,
+                            //             ] = await Promise.all([
+                            //                 client.usdcToken.nonces(fromAddress) as Promise<BigNumber>,
+                            //                 htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
+                            //                 getPolygonBlockNumber(),
+                            //             ]);
+
+                            //             const { fee, gasLimit, gasPrice, relay, method } = {
+                            //                 fee: 1,
+                            //                 gasLimit: 1,
+                            //                 gasPrice: 1,
+                            //                 relay: {
+                            //                     pctRelayFee: 1,
+                            //                     baseRelayFee: 1,
+                            //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
+                            //                 },
+                            //                 method: 'open'
+                            //             };
+                            //             if (method !== 'open' && method !== 'openWithPermit') {
+                            //                 throw new Error('Wrong USDC contract method');
+                            //             }
+
+                            //             // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
+                            //             // Keyguard's SwapIFrameApi.
+                            //             const data = htlcContract.interface.encodeFunctionData(method, [
+                            // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            // /* address token */ config.polygon.usdc.tokenContract,
+                            // /* uint256 amount */ swapSuggestion.from.amount,
+                            // /* address refundAddress */ fromAddress,
+                            // /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
+                            // /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            // /* uint256 timeout */ 0,
+                            // /* uint256 fee */ fee,
+                            //                 ...(method === 'openWithPermit' ? [
+                            //     // // Approve the maximum possible amount so afterwards we can use the `open` method for
+                            //     // // lower fees
+                            //     // /* uint256 value */ client.ethers
+                            //     //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+                            //     /* uint256 value */ swapSuggestion.from.amount + fee,
+
+                            //     /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            //     /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            //     /* uint8 sigV */ 0,
+                            //                 ] : []),
+                            //             ]);
+
+                            //             const relayRequest: RelayRequest = {
+                            //                 request: {
+                            //                     from: fromAddress,
+                            //                     to: config.polygon.usdc.htlcContract,
+                            //                     data,
+                            //                     value: '0',
+                            //                     nonce: forwarderNonce.toString(),
+                            //                     gas: gasLimit.toString(),
+                            //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                            //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                            //                 },
+                            //                 relayData: {
+                            //                     gasPrice: gasPrice.toString(),
+                            //                     pctRelayFee: relay.pctRelayFee.toString(),
+                            //                     baseRelayFee: relay.baseRelayFee.toString(),
+                            //                     relayWorker: relay.relayWorkerAddress,
+                            //                     paymaster: config.polygon.usdc.htlcContract,
+                            //                     paymasterData: '0x',
+                            //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            //                     forwarder: config.polygon.usdc.htlcContract,
+                            //                 },
+                            //             };
+
+                            //             fund = {
+                            //                 type: SwapAsset.USDC_MATIC,
+                            //                 ...relayRequest,
+                            //                 ...(method === 'openWithPermit' ? {
+                            //                     permit: {
+                            //                         tokenNonce: usdcNonce.toNumber(),
+                            //                     },
+                            //                 } : null),
+                            //             };
+                            //         }
+
+                            //         if (swapSuggestion.from.asset === SwapAsset.USDT_MATIC) {
+                            //             const [client, htlcContract] = await Promise.all([
+                            //                 getPolygonClient(),
+                            //                 getUsdtBridgedHtlcContract(),
+                            //             ]);
+                            //             const fromAddress = activePolygonAddress.value!;
+
+                            //             const [
+                            //                 usdtNonce,
+                            //                 forwarderNonce,
+                            //                 blockHeight,
+                            //             ] = await Promise.all([
+                            //                 client.usdtBridgedToken.getNonce(fromAddress) as Promise<BigNumber>,
+                            //                 htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
+                            //                 getPolygonBlockNumber(),
+                            //             ]);
+
+                            //             const { fee, gasLimit, gasPrice, relay, method } = {
+                            //                 fee: 1,
+                            //                 gasLimit: 1,
+                            //                 gasPrice: 1,
+                            //                 relay: {
+                            //                     pctRelayFee: 1,
+                            //                     baseRelayFee: 1,
+                            //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
+                            //                 },
+                            //                 method: 'open'
+                            //             };
+                            //             if (method !== 'open' && method !== 'openWithApproval') {
+                            //                 throw new Error('Wrong USDT contract method');
+                            //             }
+
+                            //             // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
+                            //             // Keyguard's SwapIFrameApi.
+                            //             const data = htlcContract.interface.encodeFunctionData(method, [
+                            // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            // /* address token */ config.polygon.usdt_bridged.tokenContract,
+                            // /* uint256 amount */ swapSuggestion.from.amount,
+                            // /* address refundAddress */ fromAddress,
+                            // /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
+                            // /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            // /* uint256 timeout */ 0,
+                            // /* uint256 fee */ fee,
+                            //                 ...(method === 'openWithApproval' ? [
+                            //     // // Approve the maximum possible amount so afterwards we can use the `open` method for
+                            //     // // lower fees
+                            //     // /* uint256 approval */ client.ethers
+                            //     //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
+                            //     /* uint256 approval */ swapSuggestion.from.amount + fee,
+
+                            //     /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            //     /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            //     /* uint8 sigV */ 0,
+                            //                 ] : []),
+                            //             ]);
+
+                            //             const relayRequest: RelayRequest = {
+                            //                 request: {
+                            //                     from: fromAddress,
+                            //                     to: config.polygon.usdt_bridged.htlcContract,
+                            //                     data,
+                            //                     value: '0',
+                            //                     nonce: forwarderNonce.toString(),
+                            //                     gas: gasLimit.toString(),
+                            //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                            //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                            //                 },
+                            //                 relayData: {
+                            //                     gasPrice: gasPrice.toString(),
+                            //                     pctRelayFee: relay.pctRelayFee.toString(),
+                            //                     baseRelayFee: relay.baseRelayFee.toString(),
+                            //                     relayWorker: relay.relayWorkerAddress,
+                            //                     paymaster: config.polygon.usdt_bridged.htlcContract,
+                            //                     paymasterData: '0x',
+                            //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            //                     forwarder: config.polygon.usdt_bridged.htlcContract,
+                            //                 },
+                            //             };
+
+                            //             fund = {
+                            //                 type: SwapAsset.USDT_MATIC,
+                            //                 ...relayRequest,
+                            //                 ...(method === 'openWithApproval' ? {
+                            //                     approval: {
+                            //                         tokenNonce: usdtNonce.toNumber(),
+                            //                     },
+                            //                 } : null),
+                            //             };
+                            //         }
+
+                            //         if (swapSuggestion.to.asset === SwapAsset.NIM) {
+                            //             const nimiqClient = await getNetworkClient();
+                            //             await nimiqClient.waitForConsensusEstablished();
+                            //             const headHeight = await nimiqClient.getHeadHeight();
+                            //             if (headHeight > 100) {
+                            //                 useNetworkStore().state.height = headHeight;
+                            //             } else {
+                            //                 throw new Error('Invalid network state, try please reloading the app');
+                            //             }
+
+                            //             redeem = {
+                            //                 type: SwapAsset.NIM,
+                            //                 recipient: nimAddress, // My address, must be redeem address of HTLC
+                            //                 value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
+                            //                 fee: swapSuggestion.to.fee, // Luna
+                            //                 validityStartHeight: useNetworkStore().state.height,
+                            //             };
+                            //         }
+
+                            //         if (swapSuggestion.to.asset === SwapAsset.BTC) {
+                            //             const electrumClient = await getElectrumClient();
+                            //             await electrumClient.waitForConsensusEstablished();
+
+                            //             redeem = {
+                            //                 type: SwapAsset.BTC,
+                            //                 input: {
+                            //                     // transactionHash: transaction.transactionHash,
+                            //                     // outputIndex: output.index,
+                            //                     // outputScript: output.script,
+                            //                     value: swapSuggestion.to.amount, // Sats
+                            //                 },
+                            //                 output: {
+                            //                     address: btcAddress, // My address, must be redeem address of HTLC
+                            //                     value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
+                            //                 },
+                            //             };
+                            //         }
+
+                            //         if (swapSuggestion.to.asset === SwapAsset.USDC_MATIC) {
+                            //             const htlcContract = await getUsdcHtlcContract();
+                            //             const toAddress = activePolygonAddress.value!;
+
+                            //             const [
+                            //                 forwarderNonce,
+                            //                 blockHeight,
+                            //             ] = await Promise.all([
+                            //                 htlcContract.getNonce(toAddress) as Promise<BigNumber>,
+                            //                 getPolygonBlockNumber(),
+                            //             ]);
+
+                            //             const { fee, gasLimit, gasPrice, relay, method } = {
+                            //                 fee: 1,
+                            //                 gasLimit: 1,
+                            //                 gasPrice: 1,
+                            //                 relay: {
+                            //                     pctRelayFee: 1,
+                            //                     baseRelayFee: 1,
+                            //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
+                            //                 },
+                            //                 method: 'open'
+                            //             };
+                            //             if (method !== 'redeemWithSecretInData') {
+                            //                 throw new Error('Wrong USDC contract method');
+                            //             }
+
+                            //             const data = htlcContract.interface.encodeFunctionData(method, [
+                            // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            // /* address target */ toAddress,
+                            // /* uint256 fee */ fee,
+                            //             ]);
+
+                            //             const relayRequest: RelayRequest = {
+                            //                 request: {
+                            //                     from: toAddress,
+                            //                     to: config.polygon.usdc.htlcContract,
+                            //                     data,
+                            //                     value: '0',
+                            //                     nonce: forwarderNonce.toString(),
+                            //                     gas: gasLimit.toString(),
+                            //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                            //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                            //                 },
+                            //                 relayData: {
+                            //                     gasPrice: gasPrice.toString(),
+                            //                     pctRelayFee: relay.pctRelayFee.toString(),
+                            //                     baseRelayFee: relay.baseRelayFee.toString(),
+                            //                     relayWorker: relay.relayWorkerAddress,
+                            //                     paymaster: config.polygon.usdc.htlcContract,
+                            //                     paymasterData: '0x',
+                            //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            //                     forwarder: config.polygon.usdc.htlcContract,
+                            //                 },
+                            //             };
+
+                            //             redeem = {
+                            //                 type: SwapAsset.USDC_MATIC,
+                            //                 ...relayRequest,
+                            //                 amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
+                            //             };
+                            //         }
+
+                            //         if (swapSuggestion.to.asset === SwapAsset.USDT_MATIC) {
+                            //             const htlcContract = await getUsdtBridgedHtlcContract();
+                            //             const toAddress = activePolygonAddress.value!;
+
+                            //             const [
+                            //                 forwarderNonce,
+                            //                 blockHeight,
+                            //             ] = await Promise.all([
+                            //                 htlcContract.getNonce(toAddress) as Promise<BigNumber>,
+                            //                 getPolygonBlockNumber(),
+                            //             ]);
+
+                            //             const { fee, gasLimit, gasPrice, relay, method } = {
+                            //                 fee: 1,
+                            //                 gasLimit: 1,
+                            //                 gasPrice: 1,
+                            //                 relay: {
+                            //                     pctRelayFee: 1,
+                            //                     baseRelayFee: 1,
+                            //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
+                            //                 },
+                            //                 method: 'open'
+                            //             };
+                            //             if (method !== 'redeemWithSecretInData') {
+                            //                 throw new Error('Wrong USDT contract method');
+                            //             }
+
+                            //             const data = htlcContract.interface.encodeFunctionData(method, [
+                            // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
+                            // /* address target */ toAddress,
+                            // /* uint256 fee */ fee,
+                            //             ]);
+
+                            //             const relayRequest: RelayRequest = {
+                            //                 request: {
+                            //                     from: toAddress,
+                            //                     to: config.polygon.usdt_bridged.htlcContract,
+                            //                     data,
+                            //                     value: '0',
+                            //                     nonce: forwarderNonce.toString(),
+                            //                     gas: gasLimit.toString(),
+                            //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
+                            //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                            //                 },
+                            //                 relayData: {
+                            //                     gasPrice: gasPrice.toString(),
+                            //                     pctRelayFee: relay.pctRelayFee.toString(),
+                            //                     baseRelayFee: relay.baseRelayFee.toString(),
+                            //                     relayWorker: relay.relayWorkerAddress,
+                            //                     paymaster: config.polygon.usdt_bridged.htlcContract,
+                            //                     paymasterData: '0x',
+                            //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
+                            //                     forwarder: config.polygon.usdt_bridged.htlcContract,
+                            //                 },
+                            //             };
+
+                            //             redeem = {
+                            //                 type: SwapAsset.USDT_MATIC,
+                            //                 ...relayRequest,
+                            //                 amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
+                            //             };
+                            //         }
+
+                            //         if (!fund || !redeem) {
+                            //             reject(new Error('UNEXPECTED: No funding or redeeming data objects'));
+                            //             return;
+                            //         }
+
+                            //         const serviceSwapFee = Math.round(
+                            //             (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
+                            //             * swapSuggestion.serviceFeePercentage,
+                            //         );
+
+                            //         const { addressInfos } = useAddressStore();
+
+                            //         const { activeAccountInfo } = useAccountStore();
+
+                            //         const { currency, exchangeRates } = useFiatStore();
+
+                            //         const {
+                            //             activeAddress
+
+                            //         } = usePolygonAddressStore();
+
+                            //         const request: Omit<SetupSwapRequest, 'appName'> = {
+                            //             accountId: activeAccountInfo.value!.id,
+                            //             swapId: swapSuggestion.id,
+                            //             fund,
+                            //             redeem,
+
+                            //             layout: 'slider',
+                            //             direction: direction === 'forward' ? 'left-to-right' : 'right-to-left',
+                            //             fiatCurrency: currency.value,
+                            //             fundingFiatRate: exchangeRates.value[assetToCurrency(
+                            //                 fund.type as SupportedSwapAsset,
+                            //             )][currency.value]!,
+                            //             redeemingFiatRate: exchangeRates.value[assetToCurrency(
+                            //                 redeem.type as SupportedSwapAsset,
+                            //             )][currency.value]!,
+                            //             fundFees: {
+                            //                 processing: 0,
+                            //                 redeeming: swapSuggestion.from.serviceNetworkFee,
+                            //             },
+                            //             redeemFees: {
+                            //                 funding: swapSuggestion.to.serviceNetworkFee,
+                            //                 processing: 0,
+                            //             },
+                            //             serviceSwapFee,
+                            //             nimiqAddresses: addressInfos.value.map((addressInfo) => ({
+                            //                 address: addressInfo.address,
+                            //                 balance: addressInfo.balance || 0,
+                            //             })),
+                            //             bitcoinAccount: {
+                            //                 balance: accountBtcBalance.value,
+                            //             },
+                            //             polygonAddresses: activePolygonAddress.value ? [{
+                            //                 address: activePolygonAddress.value,
+                            //                 usdcBalance: accountUsdcBalance.value,
+                            //                 usdtBalance: accountUsdtBridgedBalance.value,
+                            //             }] : [],
+                            //         };
+
+                            //         console.log('[Demo] Faking swap setup with request:', request);
+                            //         resolve(request)
+                            //         return;
+                            //     }
+
+                            // Wait for router readiness
+                            await new Promise<void>((resolve) => {
+                                demoRouter.onReady(resolve);
                             });
-                            setActiveSwap(swap);
 
-                            // Simulate swap progression
-                            setTimeout(() => {
-                                // Update to processing state after 2s
-                                swap.state = SwapState.SETTLE_SWAP;
-                                swap.stateEnteredAt = Date.now();
-                                setActiveSwap(swap);
-
-                                // Create transactions for both sides
-                                setTimeout(() => {
-                                    const { addTransactions: addNimTx } = useTransactionsStore();
-                                    const { addTransactions: addBtcTx } = useBtcTransactionsStore();
-                                    const { addTransactions: addUsdcTx } = useUsdcTransactionsStore();
-                                    const { addTransactions: addUsdtTx } = useUsdtTransactionsStore();
-
-                                    // Create appropriate transactions based on assets
-                                    if (leftAsset === SwapAsset.NIM) {
-                                        addNimTx([createFakeTransaction({
-                                            value: leftValue,
-                                            sender: demoNimAddress,
-                                            recipient: `0x${Math.random().toString(16).slice(2)}`,
-                                            data: {
-                                                type: 'raw',
-                                                raw: encodeTextToHex(`Swap: NIM to ${rightAsset}`),
-                                            },
-                                        })]);
-                                    }
-                                    if (rightAsset === SwapAsset.NIM) {
-                                        addNimTx([createFakeTransaction({
-                                            value: rightValue,
-                                            recipient: demoNimAddress,
-                                            sender: `0x${Math.random().toString(16).slice(2)}`,
-                                            data: {
-                                                type: 'raw',
-                                                raw: encodeTextToHex(`Swap: ${leftAsset} to NIM`),
-                                            },
-                                        })]);
-                                    }
-
-                                    // Handle BTC transactions
-                                    if (leftAsset === SwapAsset.BTC || rightAsset === SwapAsset.BTC) {
-                                        const isSending = leftAsset === SwapAsset.BTC;
-                                        const btcValue = isSending ? leftValue : rightValue;
-                                        addBtcTx([{
-                                            isCoinbase: false,
-                                            transactionHash: `btc-swap-${swapCounter}`,
-                                            inputs: [{
-                                                address: isSending ? demoBtcAddress : `1${Math.random().toString(36).slice(2)}`,
-                                                outputIndex: 0,
-                                                index: 0,
-                                                script: 'swap',
-                                                sequence: 4294967295,
-                                                transactionHash: `prev-${swapCounter}`,
-                                                witness: ['swap'],
-                                            }],
-                                            outputs: [{
-                                                value: btcValue,
-                                                address: isSending ? `1${Math.random().toString(36).slice(2)}` : demoBtcAddress,
-                                                script: 'swap',
-                                                index: 0,
-                                            }],
-                                            version: 1,
-                                            vsize: 200,
-                                            weight: 800,
-                                            locktime: 0,
-                                            confirmations: 1,
-                                            replaceByFee: false,
-                                            timestamp: Math.floor(Date.now() / 1000),
-                                            state: ElectrumTransactionState.CONFIRMED,
-                                        }]);
-                                    }
-
-                                    // Handle USDC transactions
-                                    if (leftAsset === SwapAsset.USDC_MATIC || rightAsset === SwapAsset.USDC_MATIC) {
-                                        const isSending = leftAsset === SwapAsset.USDC_MATIC;
-                                        const value = isSending ? leftValue : rightValue;
-                                        addUsdcTx([{
-                                            token: Config.polygon.usdc.tokenContract,
-                                            transactionHash: `usdc-swap-${swapCounter}`,
-                                            logIndex: 0,
-                                            sender: isSending ? demoPolygonAddress : `0x${Math.random().toString(16).slice(2)}`,
-                                            recipient: isSending ? `0x${Math.random().toString(16).slice(2)}` : demoPolygonAddress,
-                                            value,
-                                            state: UsdcTransactionState.CONFIRMED,
-                                            blockHeight: currentHead++,
-                                            timestamp: Math.floor(Date.now() / 1000),
-                                        }]);
-                                    }
-
-                                    // Handle USDT transactions
-                                    if (leftAsset === SwapAsset.USDT_MATIC || rightAsset === SwapAsset.USDT_MATIC) {
-                                        const isSending = leftAsset === SwapAsset.USDT_MATIC;
-                                        const value = isSending ? leftValue : rightValue;
-                                        addUsdtTx([{
-                                            token: Config.polygon.usdt_bridged.tokenContract,
-                                            transactionHash: `usdt-swap-${swapCounter}`,
-                                            logIndex: 0,
-                                            sender: isSending ? demoPolygonAddress : `0x${Math.random().toString(16).slice(2)}`,
-                                            recipient: isSending ? `0x${Math.random().toString(16).slice(2)}` : demoPolygonAddress,
-                                            value,
-                                            state: UsdtTransactionState.CONFIRMED,
-                                            blockHeight: currentHead++,
-                                            timestamp: Math.floor(Date.now() / 1000),
-                                        }]);
-                                    }
-
-                                    // Complete the swap
-                                    swap.state = SwapState.COMPLETED;
-                                    swap.stateEnteredAt = Date.now();
-                                    swap.status = SwapStatus.SUCCESS;
-                                    setActiveSwap(swap);
-                                }, 3000); // Complete after 3 more seconds
-                            }, 2000); // Start processing after 2s
-
-                            return;
-                        }
-
-                        // Wait for router readiness
-                        await new Promise<void>((resolve) => {
-                            demoRouter.onReady(resolve);
+                            // eslint-disable-next-line no-console
+                            console.log('[Demo] Redirecting to fallback modal');
+                            demoRouter.push(`/${DemoModal.Fallback}`);
                         });
-
-                        // eslint-disable-next-line no-console
-                        console.log('[Demo] Redirecting to fallback modal');
-                        demoRouter.push(`/${DemoModal.Fallback}`);
-                    };
+                    }
                 }
                 return target[prop];
             },

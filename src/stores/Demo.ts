@@ -3,14 +3,13 @@ import { createStore } from 'pinia';
 import VueRouter from 'vue-router';
 import { TransactionState as ElectrumTransactionState } from '@nimiq/electrum-client';
 import { CryptoCurrency, Utf8Tools } from '@nimiq/utils';
-import { KeyPair, PlainTransactionDetails, PrivateKey } from '@nimiq/core';
-import { STAKING_CONTRACT_ADDRESS } from '@/lib/Constants';
+import { Address, KeyPair, PlainTransactionDetails, PlainTransactionRecipientData, PrivateKey, TransactionFormat } from '@nimiq/core';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { AddressType, useAddressStore } from '@/stores/Address';
-import { toSecs, useTransactionsStore } from '@/stores/Transactions';
-import { useBtcTransactionsStore } from '@/stores/BtcTransactions';
-import { useUsdtTransactionsStore, TransactionState as UsdtTransactionState } from '@/stores/UsdtTransactions';
-import { useUsdcTransactionsStore, TransactionState as UsdcTransactionState } from '@/stores/UsdcTransactions';
+import { toSecs, type Transaction as NimTransaction, useTransactionsStore } from '@/stores/Transactions';
+import { useBtcTransactionsStore, type Transaction as BtcTransaction } from '@/stores/BtcTransactions';
+import { useUsdtTransactionsStore, TransactionState as UsdtTransactionState, type Transaction as UsdtTransaction } from '@/stores/UsdtTransactions';
+import { useUsdcTransactionsStore, TransactionState as UsdcTransactionState, type Transaction as UsdcTransaction } from '@/stores/UsdcTransactions';
 import { useStakingStore } from '@/stores/Staking';
 import { useAccountSettingsStore } from '@/stores/AccountSettings';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
@@ -24,6 +23,8 @@ import { useUsdcContactsStore } from './UsdcContacts';
 import { useUsdtContactsStore } from './UsdtContacts';
 import { useFiatStore } from './Fiat';
 import { SwapState, useSwapsStore } from './Swaps';
+import { getUsdcHtlcContract } from '@/ethers';
+import { useConfig } from '@/composables/useConfig';
 
 export type DemoState = {
     active: boolean,
@@ -57,67 +58,18 @@ const demoPolygonAddress = '0xabc123DemoPolygonAddress';
 const buyFromAddress = 'NQ04 JG63 HYXL H3QF PPNA 7ED7 426M 3FQE FHE5';
 
 // We keep this as our global/final balance, which should result from the transactions
-const nimInitialBalance = 14041800000; // 14,041,800,000 - 14 april, 2018
-const usdtInitialBalance = 5000000000; // 5000 USDT (6 decimals)
-const usdcInitialBalance = 3000000000; // 3000 USDC (6 decimals)
+const nimInitialBalance = 140_418_00000; // 14,041,800,000 - 14 april, 2018. 5 decimals.
+const btcInitialBalance = 1_0000000; // 1 BTC (8 decimals)
+const usdtInitialBalance = 5_000_000000; // 5000 USDT (6 decimals)
+const usdcInitialBalance = 3_000_000000; // 3000 USDC (6 decimals)
 
 // Swaps
 const onGoingSwaps = new Map<string, SetupSwapArgs>();
 
-let swapInterval: NodeJS.Timeout | null = null;
-function listenForSwapChanges() {
-    if (swapInterval) return;
-    swapInterval = setInterval(() => {
-        const swap = useSwapsStore().activeSwap.value;
-        if (!swap) return;
-        console.log('[Demo] Active swap:', { swap, state: swap.state });
-        switch (swap.state) {
-            case SwapState.AWAIT_INCOMING:
-                console.log('[Demo] Swap is in AWAIT_INCOMING state');
-                useSwapsStore().setActiveSwap({
-                    ...swap,
-                    state: SwapState.CREATE_OUTGOING,
-                });
-                break;
-            case SwapState.CREATE_OUTGOING:
-                console.log('[Demo] Swap is in CREATE_OUTGOING state');
-                useSwapsStore().setActiveSwap({
-                    ...swap,
-                    state: SwapState.AWAIT_SECRET,
-                });
-                break;
-            case SwapState.AWAIT_SECRET:
-                console.log('[Demo] Swap is in AWAIT_SECRET state');
-                useSwapsStore().setActiveSwap({
-                    ...swap,
-                    state: SwapState.SETTLE_INCOMING,
-                });
-                break;
-            case SwapState.SETTLE_INCOMING:
-                console.log('[Demo] Swap is in SETTLE_INCOMING state');
-                useSwapsStore().setActiveSwap({
-                    ...swap,
-                    state: SwapState.COMPLETE,
-                });
-                break;
-            case SwapState.COMPLETE:
-                console.log('[Demo] Swap is in COMPLETE state');
-                if (swapInterval)clearInterval(swapInterval);
-                swapInterval = null;
-                break;
-            default:
-                console.log('[Demo] Swap is in unknown state');
-                useSwapsStore().setActiveSwap({
-                    ...swap,
-                    state: SwapState.AWAIT_INCOMING,
-                });
-                break;
-        }
-    }, 15000);
-}
-
 // We keep a reference to the router here.
 let demoRouter: VueRouter;
+
+// #region Store definition
 
 /**
  * Main store for the demo environment.
@@ -149,36 +101,43 @@ export const useDemoStore = createStore({
             setupDemoAddresses();
             setupDemoAccount();
 
-            generateFakeNimTransactions();
+            insertFakeNimTransactions();
+            insertFakeBtcTransactions();
 
-            const { addTransactions: addBtcTransactions } = useBtcTransactionsStore();
-            addBtcTransactions(generateFakeBtcTransactions());
+            if (useConfig().config.polygon.enabled) {
+                insertFakeUsdcTransactions();
+                insertFakeUsdtTransactions();
+            }
 
             attachIframeListeners();
             replaceStakingFlow();
             replaceBuyNimFlow();
             enableSendModalInDemoMode();
+
+            listenForSwapChanges();
         },
 
         /**
          * Adds a pretend buy transaction to show a deposit coming in.
         */
         async buyDemoNim(amount: number) {
-            const { addTransactions } = useTransactionsStore();
-            addTransactions([
-                createFakeTransaction({
-                    value: amount,
-                    recipient: demoNimAddress,
-                    sender: buyFromAddress,
-                    data: {
-                        type: 'raw',
-                        raw: encodeTextToHex('Online Purchase'),
-                    },
-                }),
-            ]);
+            const tx: Partial<NimTransaction> = {
+                value: amount,
+                recipient: demoNimAddress,
+                sender: buyFromAddress,
+                data: {
+                    type: 'raw',
+                    raw: encodeTextToHex('Online Purchase'),
+                },
+            };
+            insertFakeNimTransactions(transformNimTransaction([tx]));
         },
     },
 });
+
+// #endregion
+
+// #region App setup
 
 /**
  * Checks if the 'demo' query param is present in the URL.
@@ -287,9 +246,6 @@ function setupDemoAddresses() {
         balanceUsdtBridged: usdtInitialBalance,
         pol: 1,
     }]);
-
-    // Setup polygon token transactions
-    generateFakePolygonTransactions();
 }
 
 /**
@@ -319,367 +275,6 @@ function setupDemoAccount() {
     setActiveCurrency(CryptoCurrency.NIM);
 }
 
-/**
- * Generates fake NIM transactions spanning the last ~4 years.
- * They net to the global nimInitialBalance.
- * We use a helper function to calculate each transaction value so it doesn't end in 0.
- */
-function generateFakeNimTransactions() {
-    // We'll define total fractions so the net sum is 1.
-    const txDefinitions = [
-        { fraction: -0.14, daysAgo: 1442, description: 'New Designer Backpack for Hiking Trip' },
-        { fraction: -0.05, daysAgo: 1390, description: 'Streaming Subscription - Watch Anything Anytime', recipientLabel: 'Stream & Chill Co.' },
-        { fraction: 0.1, daysAgo: 1370, description: 'Sold Vintage Camera to Photography Enthusiast', recipientLabel: 'Retro Photo Guy' },
-        { fraction: -0.2, daysAgo: 1240, description: 'Groceries at Farmers Market' },
-        { fraction: 0.2, daysAgo: 1185, description: 'Birthday Gift from Uncle Bob', recipientLabel: 'Uncle Bob 🎁' },
-        { fraction: 0.3, daysAgo: 1120, description: 'Website Design Freelance Project', recipientLabel: 'Digital Nomad Inc.' },
-        { fraction: 0.02, daysAgo: 980, description: 'Lunch Money Payback from Alex' },
-        { fraction: 0.07, daysAgo: 940, description: 'Community Raffle Prize' },
-        { fraction: -0.15, daysAgo: 875, description: 'Car Repair at Thunder Road Garage', recipientLabel: 'FixMyCar Workshop' },
-        { fraction: -0.3, daysAgo: 780, description: 'Quarterly Apartment Rent', recipientLabel: 'Skyview Properties' },
-        { fraction: -0.1, daysAgo: 720, description: 'Anniversary Dinner at Skyline Restaurant' },
-        { fraction: -0.02, daysAgo: 650, description: 'Digital Book: "Blockchain for Beginners"' },
-        { fraction: -0.03, daysAgo: 580, description: 'Music Festival Weekend Pass' },
-        { fraction: 0.05, daysAgo: 540, description: 'Refund for Cancelled Flight' },
-        { fraction: 0.5, daysAgo: 470, description: 'Software Development Project Payment', recipientLabel: 'Tech Solutions Ltd' },
-        { fraction: 0.02, daysAgo: 390, description: 'Coffee Shop Reward Program Refund' },
-        { fraction: -0.11, daysAgo: 320, description: 'Custom Tailored Suit Purchase' },
-        { fraction: 0.06, daysAgo: 270, description: 'Website Testing Gig Payment' },
-        { fraction: -0.08, daysAgo: 210, description: 'Electric Scooter Rental for Month' },
-        { fraction: -0.12, daysAgo: 180, description: 'Online Course: "Advanced Crypto Trading"' },
-        { fraction: 0.05, daysAgo: 120, description: 'Sold Digital Artwork', recipientLabel: 'NFT Collector' },
-        { fraction: -0.1, daysAgo: 90, description: 'Quarterly Utility Bills', recipientLabel: 'City Power & Water' },
-        { fraction: -0.1, daysAgo: 45, description: 'Winter Wardrobe Shopping' },
-    ];
-
-    // Calculate sum of existing transactions to ensure they add up to exactly 1
-    const existingSum = txDefinitions.reduce((sum, def) => sum + def.fraction, 0);
-    const remainingFraction = 1 - existingSum;
-
-    // Add the final balancing transaction with appropriate description
-    if (Math.abs(remainingFraction) > 0.001) { // Only add if there's a meaningful amount to balance
-        txDefinitions.push({
-            fraction: remainingFraction,
-            daysAgo: 14,
-            description: remainingFraction > 0
-                ? 'Blockchain Hackathon Prize!'
-                : 'Annual Software Subscription Renewal',
-            recipientLabel: remainingFraction > 0 ? 'Crypto Innovation Fund' : undefined,
-        });
-    }
-
-    const { addTransactions } = useTransactionsStore();
-    const { setContact } = useContactsStore();
-
-    for (const def of txDefinitions) {
-        let txValue = Math.floor(nimInitialBalance * def.fraction);
-        // Adjust so it doesn't end in a 0 digit
-        while (txValue > 0 && txValue % 10 === 0) {
-            txValue -= 1;
-        }
-
-        const hex = encodeTextToHex(def.description);
-        const to32Bytes = (h: string) => h.padStart(64, '0').slice(-64);
-        const address = KeyPair.derive(PrivateKey.fromHex(to32Bytes(hex))).toAddress().toUserFriendlyAddress();
-        const recipient = def.fraction > 0 ? demoNimAddress : address;
-        const sender = def.fraction > 0 ? address : demoNimAddress;
-        const data = { type: 'raw', raw: hex } as const;
-        const value = Math.abs(txValue);
-        const timestamp = calculateDaysAgo(def.daysAgo);
-        const tx: Partial<PlainTransactionDetails> = { value, recipient, sender, timestamp, data };
-        addTransactions([createFakeTransaction(tx)]);
-
-        // Add contact if a recipientLabel is provided
-        if (def.recipientLabel && def.fraction < 0) {
-            setContact(address, def.recipientLabel);
-        }
-    }
-}
-
-/**
- * Generates fake Bitcoin transactions spanning 5.5 years
- */
-function generateFakeBtcTransactions() {
-    // Define transaction history with a similar structure to other currencies
-    const txDefinitions = [
-        {
-            daysAgo: 2000,
-            value: 20000000, // 0.2 BTC
-            incoming: true,
-            description: 'Initial BTC purchase from exchange',
-            address: '1Kj4SNWFCxqvtP8nkJxeBwkXxgY9LW9rGg',
-            label: 'Satoshi Exchange',
-        },
-        {
-            daysAgo: 1600,
-            value: 15000000, // 0.15 BTC
-            incoming: true,
-            description: 'Mining pool payout',
-            address: '1Hz7vQrRjnu3z9k7gxDYhKjEmABqChDvJr',
-            label: 'Genesis Mining Pool',
-        },
-        {
-            daysAgo: 1200,
-            value: 19000000, // 0.19 BTC
-            incoming: false,
-            description: 'Purchase from online marketplace',
-            address: '1LxKe5kKdgGVwXukEgqFxh6DrCXF2Pturc',
-            label: 'Digital Bazaar Shop',
-        },
-        {
-            daysAgo: 800,
-            value: 30000000, // 0.3 BTC
-            incoming: true,
-            description: 'Company payment for consulting',
-            address: '1N7aecJuKGDXzYK8CgpnNRYxdhZvXPxp3B',
-            label: 'Corporate Treasury',
-        },
-        {
-            daysAgo: 365,
-            value: 15000000, // 0.15 BTC
-            incoming: false,
-            description: 'Auto-DCA investment program',
-            address: '12vxjmKJkfL9s5JwqUzEVVJGvKYJgALbsz',
-        },
-        {
-            daysAgo: 180,
-            value: 7500000, // 0.075 BTC
-            incoming: true,
-            description: 'P2P sale of digital goods',
-            address: '1MZYS9nvVmFvSK7em5zzAsnvRq82RUcypS',
-        },
-        {
-            daysAgo: 60,
-            value: 5000000, // 0.05 BTC
-            incoming: true,
-            description: 'Recent purchase from exchange',
-            address: '1Kj4SNWFCxqvtP8nkJxeBwkXxgY9LW9rGg',
-        },
-    ];
-
-    const { setSenderLabel } = useBtcLabelsStore();
-
-    // Convert to BTC transaction format with inputs/outputs
-    const transactions = [];
-    const knownUtxos = new Map();
-    let txCounter = 1;
-
-    for (const def of txDefinitions) {
-        // Create a transaction hash for this transaction
-        const txHash = `btc-tx-${txCounter++}`;
-
-        // Only add labels to select transactions to make the history look realistic
-        if (def.label) {
-            setSenderLabel(def.address, def.label);
-        }
-
-        const tx = {
-            isCoinbase: false,
-            inputs: [
-                {
-                    address: def.incoming ? def.address : demoBtcAddress,
-                    outputIndex: 0,
-                    index: 0,
-                    script: 'abcd',
-                    sequence: 4294967295,
-                    transactionHash: def.incoming ? txHash : getUTXOToSpend(knownUtxos)?.txHash || txHash,
-                    witness: ['abcd'],
-                },
-            ],
-            outputs: def.incoming
-                ? [
-                    {
-                        value: def.value,
-                        address: demoBtcAddress,
-                        script: 'abcd',
-                        index: 0,
-                    },
-                ]
-                : [
-                    {
-                        value: def.value,
-                        address: def.address,
-                        script: 'abcd',
-                        index: 0,
-                    },
-                    { // Change output
-                        value: 900000,
-                        address: demoBtcAddress,
-                        script: 'abcd',
-                        index: 1,
-                    },
-                ],
-            transactionHash: txHash,
-            version: 1,
-            vsize: 200,
-            weight: 800,
-            locktime: 0,
-            confirmations: Math.max(1, Math.floor(10 - def.daysAgo / 200)),
-            replaceByFee: false,
-            timestamp: toSecs(calculateDaysAgo(def.daysAgo)),
-            state: ElectrumTransactionState.CONFIRMED,
-        };
-
-        // Update UTXOs for this transaction
-        updateUTXOs(knownUtxos, tx);
-
-        transactions.push(tx);
-    }
-
-    // Set up the address with current UTXOs
-    const { addAddressInfos } = useBtcAddressStore();
-    addAddressInfos([{
-        address: demoBtcAddress,
-        txoCount: transactions.length + 2, // Total number of outputs received
-        utxos: Array.from(knownUtxos.values()),
-    }]);
-
-    return transactions;
-}
-
-/**
- * Tracks UTXO changes for BTC transactions
- */
-function updateUTXOs(knownUtxos: Map<string, any>, tx: any) {
-    // Remove spent inputs
-    for (const input of tx.inputs) {
-        if (input.address === demoBtcAddress) {
-            const utxoKey = `${input.transactionHash}:${input.outputIndex}`;
-            knownUtxos.delete(utxoKey);
-        }
-    }
-
-    // Add new outputs for our address
-    for (const output of tx.outputs) {
-        if (output.address === demoBtcAddress) {
-            const utxoKey = `${tx.transactionHash}:${output.index}`;
-            knownUtxos.set(utxoKey, {
-                transactionHash: tx.transactionHash,
-                index: output.index,
-                witness: {
-                    script: output.script,
-                    value: output.value,
-                },
-            });
-        }
-    }
-}
-
-/**
- * Helper to get a UTXO to spend
- */
-function getUTXOToSpend(knownUtxos: Map<string, any>) {
-    if (knownUtxos.size === 0) return null;
-    const utxo = knownUtxos.values().next().value;
-    return {
-        txHash: utxo.transactionHash,
-        index: utxo.index,
-        value: utxo.witness.value,
-    };
-}
-
-/**
- * Generates fake transactions for both USDC and USDT on Polygon
- */
-function generateFakePolygonTransactions() {
-    // Generate USDC transactions
-    const usdcTxDefinitions = [
-        { fraction: 0.3, daysAgo: 910, incoming: true, label: 'Yield Farming Protocol' },
-        { fraction: -0.05, daysAgo: 840 },
-        { fraction: 0.2, daysAgo: 730, incoming: true, label: 'Virtual Worlds Inc.' },
-        { fraction: -0.1, daysAgo: 650 },
-        { fraction: 0.4, daysAgo: 480, incoming: true, label: 'Innovation DAO' },
-        { fraction: -0.15, daysAgo: 360, label: 'MetaGames Marketplace' },
-        { fraction: 0.15, daysAgo: 180, incoming: true },
-        { fraction: -0.08, daysAgo: 90 },
-    ];
-
-    // Calculate sum of existing transactions and add balancing transaction
-    const usdcExistingSum = usdcTxDefinitions.reduce((sum, def) =>
-        sum + (def.incoming ? Math.abs(def.fraction) : -Math.abs(def.fraction)), 0);
-    const usdcRemainingFraction = 1 - usdcExistingSum;
-
-    // Add balancing transaction
-    if (Math.abs(usdcRemainingFraction) > 0.001) {
-        usdcTxDefinitions.push({
-            fraction: usdcRemainingFraction,
-            daysAgo: 30,
-            incoming: usdcRemainingFraction > 0,
-            label: usdcRemainingFraction > 0 ? 'CryptoCreators Guild' : 'Annual Platform Subscription',
-        });
-    }
-
-    // Generate USDT transactions
-    const usdtTxDefinitions = [
-        { fraction: 0.4, daysAgo: 360, incoming: true, label: 'LaunchPad Exchange' },
-        { fraction: -0.1, daysAgo: 320 },
-        { fraction: 0.2, daysAgo: 280, incoming: true, label: 'Crypto Consultants LLC' },
-        { fraction: -0.15, daysAgo: 210 },
-        { fraction: 0.3, daysAgo: 150, incoming: true },
-        { fraction: -0.05, daysAgo: 90 },
-        { fraction: 0.1, daysAgo: 45, incoming: true, label: 'Chain Testers' },
-        { fraction: -0.12, daysAgo: 20 },
-    ];
-
-    // Calculate sum of existing transactions and add balancing transaction
-    const usdtExistingSum = usdtTxDefinitions.reduce((sum, def) =>
-        sum + (def.incoming ? Math.abs(def.fraction) : -Math.abs(def.fraction)), 0);
-    const usdtRemainingFraction = 1 - usdtExistingSum;
-
-    // Add balancing transaction
-    if (Math.abs(usdtRemainingFraction) > 0.001) {
-        usdtTxDefinitions.push({
-            fraction: usdtRemainingFraction,
-            daysAgo: 7,
-            incoming: usdtRemainingFraction > 0,
-            label: usdtRemainingFraction > 0 ? 'Protocol Testing Reward' : 'Annual Service Renewal',
-        });
-    }
-
-    // Generate and add USDC transactions
-    const { addTransactions: addUsdcTxs } = useUsdcTransactionsStore();
-    addUsdcTxs(generateTokenTransactions(usdcTxDefinitions, usdcInitialBalance, Config.polygon.usdc.tokenContract, UsdcTransactionState.CONFIRMED, useUsdcContactsStore));
-
-    // Generate and add USDT transactions
-    const { addTransactions: addUsdtTxs } = useUsdtTransactionsStore();
-    addUsdtTxs(generateTokenTransactions(usdtTxDefinitions, usdtInitialBalance, Config.polygon.usdt_bridged.tokenContract, UsdtTransactionState.CONFIRMED, useUsdtContactsStore));
-}
-
-/**
- * Shared function to generate token transactions for Polygon tokens
- */
-function generateTokenTransactions(txDefinitions: any, initialBalance: number, tokenContract: string, confirmState: any, contactsStore: any) {
-    const transactions = [];
-    const { setContact } = contactsStore();
-
-    for (const def of txDefinitions) {
-        const value = Math.floor(initialBalance * Math.abs(def.fraction));
-        const randomAddress = `0x${Math.random().toString(16).slice(2, 42)}`;
-        const sender = def.incoming ? randomAddress : demoPolygonAddress;
-        const recipient = def.incoming ? demoPolygonAddress : randomAddress;
-
-        // Add contacts for select transactions (only if label is provided)
-        if (def.label) {
-            const addressToLabel = def.incoming ? randomAddress : randomAddress;
-            setContact(addressToLabel, def.label);
-        }
-
-        transactions.push({
-            token: tokenContract,
-            transactionHash: `token-tx-${Math.random().toString(36).substr(2, 9)}`,
-            logIndex: transactions.length,
-            sender,
-            recipient,
-            value,
-            state: confirmState,
-            blockHeight: 1000000 + transactions.length,
-            timestamp: toSecs(calculateDaysAgo(def.daysAgo)),
-        });
-    }
-
-    return transactions;
-}
-
 enum MessageEventName {
     FlowChange = 'FlowChange'
 }
@@ -703,6 +298,560 @@ function attachIframeListeners() {
         window.parent.postMessage({ kind: MessageEventName.FlowChange, data: match[0] as DemoFlowType }, '*');
     });
 }
+
+// #endregion
+
+// #region NIM txs
+
+interface NimTransactionDefinition {
+    fraction: number;
+    daysAgo: number;
+    description: string;
+    recipientLabel?: string;
+}
+
+/**
+ * Defines transaction definitions for demo NIM transactions
+ */
+function defineNimFakeTransactions(): Partial<NimTransaction>[] {
+    const txDefinitions: NimTransactionDefinition[] = [
+        { fraction: -0.05, daysAgo: 0.4, description: 'Local cafe coffee' },
+        { fraction: 0.1, daysAgo: 0.6, description: 'Red envelope from neighbor', recipientLabel: 'Neighbor' },
+        { fraction: -0.03, daysAgo: 1, description: 'Food truck snack' },
+        { fraction: -0.06, daysAgo: 2, description: 'Local store book' },
+        { fraction: -0.01, daysAgo: 2, description: 'Chicken waffle', recipientLabel: 'Roberto\'s Waffle' },
+        { fraction: -0.04, daysAgo: 3, description: 'Corner shop chai & snack' },
+        { fraction: -0.12, daysAgo: 3, description: 'Thai massage session' },
+        { fraction: -0.15, daysAgo: 6, description: 'Swedish flat-pack chair', recipientLabel: 'Furniture Mart' },
+        { fraction: 0.1, daysAgo: 6, description: 'Red envelope from family', recipientLabel: 'Family' },
+        { fraction: -0.08, daysAgo: 7, description: 'Cozy diner dinner', recipientLabel: 'Melissa' },
+        { fraction: -0.02, daysAgo: 7, description: 'Coworker snack', recipientLabel: 'Coworker' },
+        { fraction: -0.03, daysAgo: 8, description: 'Morning bus fare' },
+        { fraction: -0.05, daysAgo: 8, description: 'Local fruit pack' },
+        { fraction: 0.02, daysAgo: 10, description: 'Neighbor bill', recipientLabel: 'Neighbor' },
+        { fraction: -0.07, daysAgo: 12, description: 'Movie ticket night' },
+        { fraction: -0.04, daysAgo: 14, description: 'Trendy cafe coffee', recipientLabel: 'Cafe' },
+        { fraction: -0.03, daysAgo: 15, description: 'Market street food snack' },
+        { fraction: -0.1, daysAgo: 18, description: '' },
+        { fraction: -0.05, daysAgo: 20, description: 'Street vendor souvenir' },
+        { fraction: -0.08, daysAgo: 22, description: 'Quick haircut', recipientLabel: 'Barber' },
+        { fraction: -0.04, daysAgo: 25, description: 'Local dessert', recipientLabel: 'Jose' },
+        { fraction: -0.02, daysAgo: 27, description: 'Mall parking' },
+        { fraction: -0.1, daysAgo: 30, description: 'Streaming subscription', recipientLabel: 'StreamCo' },
+        { fraction: 0.03, daysAgo: 32, description: 'Mistaken charge refund', recipientLabel: 'Store' },
+        { fraction: -0.06, daysAgo: 35, description: 'Taxi fare', recipientLabel: 'Crazy Taxi' },
+        { fraction: -0.04, daysAgo: 38, description: 'Local shop mug' },
+        { fraction: -0.01, daysAgo: 40, description: 'Local newspaper' },
+        { fraction: -0.05, daysAgo: 42, description: 'Coworker ride', recipientLabel: 'Coworker' },
+        { fraction: -0.07, daysAgo: 45, description: 'Bistro lunch' },
+        { fraction: -0.12, daysAgo: 45, description: 'Weekly market shopping', recipientLabel: 'Market' },
+        { fraction: -0.1, daysAgo: 50, description: 'Utility bill', recipientLabel: 'Utility Co.' },
+        { fraction: -0.03, daysAgo: 55, description: 'Corner snack pack' },
+        { fraction: -0.1, daysAgo: 60, description: 'Streaming subscription', recipientLabel: 'StreamCo' },
+        { fraction: 0.05, daysAgo: 62, description: 'Client tip', recipientLabel: 'Client' },
+        { fraction: -0.06, daysAgo: 65, description: 'Hair trim', recipientLabel: 'Barber' },
+        { fraction: -0.09, daysAgo: 68, description: 'Takeaway meal' },
+        { fraction: -0.04, daysAgo: 70, description: 'Stall fresh juice' },
+        { fraction: -0.05, daysAgo: 72, description: 'Park picnic' },
+        { fraction: -0.03, daysAgo: 75, description: 'Local event fee', recipientLabel: 'Event Org' },
+        { fraction: -0.1, daysAgo: 78, description: 'Neighbors dinner', recipientLabel: 'Neighbors' },
+        { fraction: -0.12, daysAgo: 80, description: 'New shoes sale' },
+        { fraction: 0.1, daysAgo: 85, description: 'Festive cash gift', recipientLabel: 'Family' },
+        { fraction: -0.1, daysAgo: 90, description: 'Streaming subscription', recipientLabel: 'StreamCo' },
+        { fraction: -0.05, daysAgo: 95, description: 'Bakery fresh bread', recipientLabel: 'Bakery' },
+        { fraction: -0.04, daysAgo: 100, description: 'Ice cream treat', recipientLabel: 'Ice Cream' },
+        { fraction: -0.08, daysAgo: 110, description: 'Fitness class fee', recipientLabel: 'Gym' },
+        { fraction: -0.03, daysAgo: 115, description: 'Meal discount' },
+        { fraction: 0.04, daysAgo: 120, description: 'Double charge refund', recipientLabel: 'Store' },
+        { fraction: -0.07, daysAgo: 125, description: 'Boutique trendy hat' },
+        { fraction: -0.02, daysAgo: 130, description: 'Local cause donation', recipientLabel: 'Charity' },
+        { fraction: -0.09, daysAgo: 140, description: 'Neighborhood dinner', recipientLabel: 'Food Joint' },
+        { fraction: -0.05, daysAgo: 150, description: 'Gadget repair fee', recipientLabel: 'Repair Shop' },
+        { fraction: -0.08, daysAgo: 200, description: 'Local play ticket', recipientLabel: 'Theater' },
+        { fraction: -0.1, daysAgo: 250, description: 'Community event bill', recipientLabel: 'Community' },
+        { fraction: 0.07, daysAgo: 300, description: 'Work bonus', recipientLabel: 'Employer' },
+        { fraction: -0.04, daysAgo: 400, description: 'Local art fair entry' },
+        { fraction: -0.06, daysAgo: 500, description: 'Online shop gadget', recipientLabel: 'Online Shop' },
+        { fraction: -0.1, daysAgo: 600, description: 'Popular local dinner', recipientLabel: 'Diner' },
+        { fraction: -0.12, daysAgo: 800, description: 'Home repair bill', recipientLabel: 'Repair Co.' },
+        { fraction: 0.15, daysAgo: 1000, description: 'Freelance project check', recipientLabel: 'Client' },
+        { fraction: -0.09, daysAgo: 1200, description: 'Local kitchen gear', recipientLabel: 'Kitchen Shop' },
+        { fraction: -0.1, daysAgo: 1442, description: 'Family reunion dinner', recipientLabel: 'Family' },
+
+    ];
+
+    // Calculate sum of existing transactions to ensure they add up to exactly 1
+    const existingSum = txDefinitions.reduce((sum, def) => sum + def.fraction, 0);
+    const remainingFraction = 1 - existingSum;
+
+    // Add the final balancing transaction with appropriate description
+    if (Math.abs(remainingFraction) > 0.001) { // Only add if there's a meaningful amount to balance
+        txDefinitions.push({
+            fraction: remainingFraction,
+            daysAgo: 1450,
+            description: remainingFraction > 0
+                ? 'Blockchain Hackathon Prize!'
+                : 'Annual Software Subscription Renewal',
+            recipientLabel: remainingFraction > 0 ? 'Crypto Innovation Fund' : undefined,
+        });
+    }
+
+    const { setContact } = useContactsStore();
+    const txs: Partial<NimTransaction>[] = [];
+
+    for (const def of txDefinitions) {
+        let txValue = Math.floor(nimInitialBalance * def.fraction);
+        // Adjust so it doesn't end in a 0 digit
+        while (txValue > 0 && txValue % 10 === 0) {
+            txValue -= 1;
+        }
+
+        const hex = encodeTextToHex(def.description);
+        const to32Bytes = (h: string) => h.padStart(64, '0').slice(-64);
+        const address = KeyPair.derive(PrivateKey.fromHex(to32Bytes(hex))).toAddress().toUserFriendlyAddress();
+        const recipient = def.fraction > 0 ? demoNimAddress : address;
+        const sender = def.fraction > 0 ? address : demoNimAddress;
+        const data = { type: 'raw', raw: hex } as const;
+        const value = Math.abs(txValue);
+        const timestamp = calculateDaysAgo(def.daysAgo);
+        const tx: Partial<PlainTransactionDetails> = { value, recipient, sender, timestamp, data };
+        txs.push(tx);
+        // Add contact if a recipientLabel is provided
+        if (def.recipientLabel && def.fraction < 0) {
+            setContact(address, def.recipientLabel);
+        }
+    }
+
+    return txs.sort((a, b) => a.timestamp! - b.timestamp!);
+}
+
+let head = 0;
+let nonce = 0;
+
+function transformNimTransaction(txs: Partial<NimTransaction>[]): NimTransaction[] {
+    return txs.map((tx) => {
+        head++;
+        nonce++;
+
+        return {
+            network: 'mainnet',
+            state: 'confirmed',
+            transactionHash: `0x${nonce.toString(16)}`,
+            sender: '',
+            senderType: 'basic',
+            recipient: '',
+            recipientType: 'basic',
+            value: 50000000,
+            fee: 0,
+            feePerByte: 0,
+            format: 'basic',
+            validityStartHeight: head,
+            blockHeight: head,
+            flags: 0,
+            timestamp: Date.now(),
+            size: 0,
+            valid: true,
+            proof: { raw: '', type: 'raw' },
+            data: tx.data || { type: 'raw', raw: '' },
+            ...tx,
+        }
+    });
+}
+
+/**
+ * Inserts NIM transactions into the store. If no definitions provided, uses default demo transactions.
+ */
+function insertFakeNimTransactions(txs = defineNimFakeTransactions()) {
+    const { addTransactions } = useTransactionsStore();
+    addTransactions(transformNimTransaction(txs));
+}
+
+// #region BTC txs
+
+interface BtcTransactionDefinition {
+    fraction: number;
+    daysAgo: number;
+    description: string;
+    recipientLabel?: string;
+    incoming: boolean;
+    address: string
+}
+
+/**
+ * Defines transaction definitions for demo BTC transactions.
+ * Note: We add the "address" field so that incoming transactions use the correct sender address.
+ */
+function defineBtcFakeTransactions(): BtcTransaction[] {
+    const txDefinitions: BtcTransactionDefinition[] = [
+        {
+            fraction: 0.2,
+            daysAgo: 2000,
+            description: 'Initial BTC purchase from exchange',
+            incoming: true,
+            address: '1Kj4SNWFCxqvtP8nkJxeBwkXxgY9LW9rGg',
+            recipientLabel: 'Satoshi Exchange'
+        },
+        {
+            fraction: 0.15,
+            daysAgo: 1600,
+            description: 'Mining pool payout',
+            incoming: true,
+            address: '1Hz7vQrRjnu3z9k7gxDYhKjEmABqChDvJr',
+            recipientLabel: 'Genesis Mining Pool'
+        },
+        {
+            fraction: -0.19,
+            daysAgo: 1200,
+            description: 'Purchase from online marketplace',
+            incoming: false,
+            address: '1LxKe5kKdgGVwXukEgqFxh6DrCXF2Pturc',
+            recipientLabel: 'Digital Bazaar Shop'
+        },
+        {
+            fraction: 0.3,
+            daysAgo: 800,
+            description: 'Company payment for consulting',
+            incoming: true,
+            address: '1N7aecJuKGDXzYK8CgpnNRYxdhZvXPxp3B',
+            recipientLabel: 'Corporate Treasury'
+        },
+        {
+            fraction: -0.15,
+            daysAgo: 365,
+            description: 'Auto-DCA investment program',
+            incoming: false,
+            address: '12vxjmKJkfL9s5JwqUzEVVJGvKYJgALbsz'
+        },
+        {
+            fraction: 0.075,
+            daysAgo: 180,
+            description: 'P2P sale of digital goods',
+            incoming: true,
+            address: '1MZYS9nvVmFvSK7em5zzAsnvRq82RUcypS'
+        },
+        {
+            fraction: 0.05,
+            daysAgo: 60,
+            description: 'Recent purchase from exchange',
+            incoming: true,
+            address: '1Kj4SNWFCxqvtP8nkJxeBwkXxgY9LW9rGg'
+        },
+    ].sort((a, b) => b.daysAgo - a.daysAgo);
+
+    // If the sum of fractions does not add up to 1, add a balancing transaction.
+    const existingSum = txDefinitions.reduce((sum, def) =>
+        sum + (def.incoming ? Math.abs(def.fraction) : -Math.abs(def.fraction)), 0);
+    const remainingFraction = 1 - existingSum;
+    if (Math.abs(remainingFraction) > 0.001) {
+        txDefinitions.push({
+            fraction: remainingFraction,
+            daysAgo: 0,
+            description: remainingFraction > 0 ? 'Initial purchase' : 'Investment allocation',
+            incoming: remainingFraction > 0,
+            address: remainingFraction > 0 ? '1ExampleAddressForInitialPurchase' : '1ExampleAddressForInvestment',
+            recipientLabel: remainingFraction > 0 ? 'Prime Exchange' : 'Investment Fund',
+        });
+    }
+
+    return transformBtcTransaction(txDefinitions);
+}
+
+/**
+ * Transforms BTC transaction definitions into actual transactions.
+ */
+function transformBtcTransaction(txDefinitions: BtcTransactionDefinition[]): BtcTransaction[] {
+    const transactions = [];
+    const knownUtxos = new Map();
+    let txCounter = 1;
+
+    for (const def of txDefinitions) {
+        const txHash = `btc-tx-${txCounter++}`;
+        // Compute the value using the initial BTC balance and the fraction.
+        const value = Math.floor(btcInitialBalance * Math.abs(def.fraction));
+
+        const tx: BtcTransaction = {
+            addresses: [demoBtcAddress],
+            isCoinbase: false,
+            inputs: [
+                {
+                    // For incoming tx, use the external address; for outgoing, use our demo address.
+                    address: def.incoming ? def.address : demoBtcAddress,
+                    outputIndex: 0,
+                    index: 0,
+                    script: 'script',
+                    sequence: 4294967295,
+                    transactionHash: def.incoming ? txHash : (getUTXOToSpend(knownUtxos)?.txHash || txHash),
+                    witness: ['witness'],
+                },
+            ],
+            outputs: def.incoming
+                ? [
+                    {
+                        value,
+                        address: demoBtcAddress,
+                        script: 'script',
+                        index: 0,
+                    },
+                ]
+                : [
+                    {
+                        value,
+                        address: def.address,
+                        script: 'script',
+                        index: 0,
+                    },
+                    {
+                        // Change output.
+                        value: 1000000,
+                        address: demoBtcAddress,
+                        script: 'script',
+                        index: 1,
+                    },
+                ],
+            transactionHash: txHash,
+            version: 1,
+            vsize: 200,
+            weight: 800,
+            locktime: 0,
+            confirmations: Math.max(1, Math.floor(10 - def.daysAgo / 200)),
+            replaceByFee: false,
+            timestamp: toSecs(calculateDaysAgo(def.daysAgo)),
+            state: ElectrumTransactionState.CONFIRMED,
+        };
+
+        updateUTXOs(knownUtxos, tx);
+        transactions.push(tx);
+
+        // Set labels if a recipient label is provided.
+        if (def.recipientLabel) {
+            const { setSenderLabel } = useBtcLabelsStore();
+            setSenderLabel(def.incoming ? def.address : demoBtcAddress, def.recipientLabel);
+        }
+    }
+
+    // Update the address store with the current UTXOs.
+    const { addAddressInfos } = useBtcAddressStore();
+    addAddressInfos([{
+        address: demoBtcAddress,
+        txoCount: transactions.length + 2, // Total number of outputs received.
+        utxos: Array.from(knownUtxos.values()),
+    }]);
+
+    return transactions;
+}
+
+/**
+ * Tracks UTXO changes for BTC transactions.
+ */
+function updateUTXOs(knownUtxos: Map<string, any>, tx: any) {
+    // Remove spent inputs.
+    for (const input of tx.inputs) {
+        if (input.address === demoBtcAddress) {
+            const utxoKey = `${input.transactionHash}:${input.outputIndex}`;
+            knownUtxos.delete(utxoKey);
+        }
+    }
+
+    // Add new outputs for our address.
+    for (const output of tx.outputs) {
+        if (output.address === demoBtcAddress) {
+            const utxoKey = `${tx.transactionHash}:${output.index}`;
+            knownUtxos.set(utxoKey, {
+                transactionHash: tx.transactionHash,
+                index: output.index,
+                witness: {
+                    script: output.script,
+                    value: output.value,
+                },
+            });
+        }
+    }
+}
+
+/**
+ * Helper to get a UTXO to spend.
+ */
+function getUTXOToSpend(knownUtxos: Map<string, any>) {
+    if (knownUtxos.size === 0) return null;
+    const utxo = knownUtxos.values().next().value;
+    return {
+        txHash: utxo.transactionHash,
+        index: utxo.index,
+        value: utxo.witness.value,
+    };
+}
+
+/**
+ * Insert fake BTC transactions into the store.
+ */
+function insertFakeBtcTransactions(txs = defineBtcFakeTransactions()) {
+    const { addTransactions } = useBtcTransactionsStore();
+    addTransactions(txs);
+}
+
+
+// #endregion
+
+// #region Polygon txs
+
+const getRandomPolygonHash = () => `0x${Math.random().toString(16).slice(2, 66)}`;
+const getRandomPolygonAddress = () => `0x${Math.random().toString(16).slice(2, 42)}`;
+
+interface UsdcTransactionDefinition {
+    fraction: number;
+    daysAgo: number;
+    description: string;
+    recipientLabel?: string;
+    incoming: boolean;
+}
+
+/**
+ * Defines transaction definitions for demo USDC transactions
+ */
+function defineUsdcFakeTransactions(): UsdcTransaction[] {
+    const txDefinitions: UsdcTransactionDefinition[] = [
+        { fraction: 0.3, daysAgo: 0, description: 'DeFi yield harvest', incoming: true, recipientLabel: 'Yield Protocol' },
+        { fraction: -0.1, daysAgo: 2, description: 'NFT marketplace purchase', incoming: false, recipientLabel: 'NFT Market' },
+        { fraction: 0.2, daysAgo: 5, description: 'Bridge transfer', incoming: true, recipientLabel: 'Polygon Bridge' },
+        { fraction: -0.15, daysAgo: 10, description: 'DEX liquidity provision', incoming: false },
+        { fraction: 0.25, daysAgo: 20, description: 'Staking rewards', incoming: true, recipientLabel: 'Staking Pool' },
+        { fraction: -0.12, daysAgo: 30, description: 'GameFi item purchase', incoming: false },
+        { fraction: 0.3, daysAgo: 45, description: 'DAO compensation', incoming: true, recipientLabel: 'Treasury DAO' },
+        { fraction: -0.2, daysAgo: 60, description: 'Lending deposit', incoming: false, recipientLabel: 'Lending Protocol' },
+    ];
+
+    const existingSum = txDefinitions.reduce((sum, def) =>
+        sum + (def.incoming ? Math.abs(def.fraction) : -Math.abs(def.fraction)), 0);
+    const remainingFraction = 1 - existingSum;
+
+    if (Math.abs(remainingFraction) > 0.001) {
+        txDefinitions.push({
+            fraction: remainingFraction,
+            daysAgo: remainingFraction > 0 ? 90 : 100,
+            description: remainingFraction > 0 ? 'Initial bridge deposit' : 'Protocol investment',
+            incoming: remainingFraction > 0,
+            recipientLabel: remainingFraction > 0 ? 'Bridge Service' : 'DeFi Protocol',
+        });
+    }
+
+    return transformUsdcTransaction(txDefinitions);
+}
+
+/**
+ * Transform USDC transaction definitions into actual transactions
+ */
+function transformUsdcTransaction(txDefinitions: UsdcTransactionDefinition[]): UsdcTransaction[] {
+    return txDefinitions.map((def, index) => {
+        const value = Math.floor(usdcInitialBalance * Math.abs(def.fraction));
+        const randomAddress = def.incoming ? getRandomPolygonAddress() : demoPolygonAddress;
+        const recipientAddress = def.incoming ? demoPolygonAddress : getRandomPolygonAddress();
+
+        if (def.recipientLabel) {
+            const { setContact } = useUsdcContactsStore();
+            setContact(def.incoming ? randomAddress : recipientAddress, def.recipientLabel);
+        }
+
+        return {
+            token: Config.polygon.usdc.tokenContract,
+            transactionHash: getRandomPolygonHash(),
+            logIndex: index,
+            sender: randomAddress,
+            recipient: recipientAddress,
+            value,
+            state: UsdcTransactionState.CONFIRMED,
+            blockHeight: 1000000 + index,
+            timestamp: toSecs(calculateDaysAgo(def.daysAgo)),
+        };
+    });
+}
+
+/**
+ * Insert fake USDC transactions into the store
+ */
+function insertFakeUsdcTransactions(txs = defineUsdcFakeTransactions()) {
+    const { addTransactions } = useUsdcTransactionsStore();
+    addTransactions(txs);
+}
+
+interface UsdtTransactionDefinition {
+    fraction: number;
+    daysAgo: number;
+    description: string;
+    recipientLabel?: string;
+    incoming: boolean;
+}
+
+/**
+ * Defines transaction definitions for demo USDT transactions
+ */
+function defineUsdtFakeTransactions(): UsdtTransaction[] {
+    const txDefinitions: UsdtTransactionDefinition[] = [
+        { fraction: 0.25, daysAgo: 0, description: 'Trading profit', incoming: true, recipientLabel: 'DEX Trading' },
+        { fraction: -0.08, daysAgo: 3, description: 'Merchandise payment', incoming: false },
+        { fraction: 0.15, daysAgo: 7, description: 'Freelance payment', incoming: true, recipientLabel: 'Client Pay' },
+        { fraction: -0.12, daysAgo: 15, description: 'Service subscription', incoming: false, recipientLabel: 'Web3 Service' },
+        { fraction: 0.3, daysAgo: 25, description: 'P2P exchange', incoming: true },
+        { fraction: -0.18, daysAgo: 35, description: 'Platform fees', incoming: false },
+        { fraction: 0.2, daysAgo: 50, description: 'Revenue share', incoming: true, recipientLabel: 'Revenue Pool' },
+        { fraction: -0.15, daysAgo: 70, description: 'Marketing campaign', incoming: false, recipientLabel: 'Marketing DAO' },
+    ];
+
+    const existingSum = txDefinitions.reduce((sum, def) =>
+        sum + (def.incoming ? Math.abs(def.fraction) : -Math.abs(def.fraction)), 0);
+    const remainingFraction = 1 - existingSum;
+
+    if (Math.abs(remainingFraction) > 0.001) {
+        txDefinitions.push({
+            fraction: remainingFraction,
+            daysAgo: remainingFraction > 0 ? 85 : 95,
+            description: remainingFraction > 0 ? 'Initial USDT deposit' : 'Portfolio rebalance',
+            incoming: remainingFraction > 0,
+            recipientLabel: remainingFraction > 0 ? 'Bridge Protocol' : 'Portfolio Manager',
+        });
+    }
+
+    return transformUsdtTransaction(txDefinitions);
+}
+
+/**
+ * Transform USDT transaction definitions into actual transactions
+ */
+function transformUsdtTransaction(txDefinitions: UsdtTransactionDefinition[]): UsdtTransaction[] {
+    return txDefinitions.map((def, index) => {
+        const value = Math.floor(usdtInitialBalance * Math.abs(def.fraction));
+        const randomAddress = def.incoming ? getRandomPolygonAddress() : demoPolygonAddress;
+        const recipientAddress = def.incoming ? demoPolygonAddress : getRandomPolygonAddress();
+
+        if (def.recipientLabel) {
+            const { setContact } = useUsdtContactsStore();
+            setContact(def.incoming ? randomAddress : recipientAddress, def.recipientLabel);
+        }
+
+        return {
+            token: Config.polygon.usdt_bridged.tokenContract,
+            transactionHash: getRandomPolygonHash(),
+            logIndex: index,
+            sender: randomAddress,
+            recipient: recipientAddress,
+            value,
+            state: UsdtTransactionState.CONFIRMED,
+            blockHeight: 1000000 + index,
+            timestamp: toSecs(calculateDaysAgo(def.daysAgo)),
+        };
+    });
+}
+
+/**
+ * Insert fake USDT transactions into the store
+ */
+function insertFakeUsdtTransactions(txs = defineUsdtFakeTransactions()) {
+    const { addTransactions } = useUsdtTransactionsStore();
+    addTransactions(txs);
+}
+
+// #endregion
+
+// #region Flows
 
 /**
  * Observes the staking modal and prevents from validating the info and instead fakes the staking process.
@@ -779,19 +928,14 @@ function replaceStakingFlow() {
                 retiredBalance: 0,
                 validator: validatorAddress,
             });
-            const { addTransactions } = useTransactionsStore();
-            addTransactions([
-                createFakeTransaction({
-                    value: amount,
-                    recipient: STAKING_CONTRACT_ADDRESS,
-                    sender: demoNimAddress,
-                    data: {
-                        type: 'add-stake',
-                        raw: '',
-                        staker: demoNimAddress,
-                    },
-                }),
-            ]);
+            const stakeTx: Partial<NimTransaction> = {
+                value: amount,
+                recipient: validatorAddress,
+                sender: demoNimAddress,
+                timestamp: Date.now(),
+                data: { type: 'add-stake', raw: '', staker: demoNimAddress },
+            };
+            insertFakeNimTransactions([stakeTx]);
         });
     });
 
@@ -803,35 +947,6 @@ function replaceStakingFlow() {
             observer.disconnect();
         }
     });
-}
-
-/**
- * Creates a fake transaction. Each call increments a global counter for the hash and block heights.
- */
-let txCounter = 0;
-let currentHead = 0;
-function createFakeTransaction(tx: Partial<PlainTransactionDetails>) {
-    return {
-        network: 'mainnet',
-        state: 'confirmed',
-        transactionHash: `0x${(txCounter++).toString(16)}`,
-        value: 50000000,
-        recipient: '',
-        fee: 0,
-        feePerByte: 0,
-        format: 'basic',
-        sender: '',
-        senderType: 'basic',
-        recipientType: 'basic',
-        validityStartHeight: currentHead++,
-        blockHeight: currentHead++,
-        flags: 0,
-        timestamp: Date.now(),
-        proof: { type: 'raw', raw: '' },
-        size: 0,
-        valid: true,
-        ...tx,
-    } as PlainTransactionDetails;
 }
 
 /**
@@ -1051,86 +1166,6 @@ function interceptFetchRequest() {
             return new Response(JSON.stringify(json));
         }
 
-        // if (isEstimateRequest) {
-        //     const body = args[1]?.body;
-        //     if (!body) throw new Error('[Demo] No body found in request');
-        //     type EstimateRequest = {
-        //         from: Record<SwapAsset, number>,
-        //         to: SwapAsset,
-        //         includedFees: 'required',
-        //     };
-        //     const { from: fromObj, to } = JSON.parse(body.toString()) as EstimateRequest;
-        //     const from = Object.keys(fromObj)[0] as SwapAsset;
-
-        //     // Validate the request
-        //     if (!from || !to) {
-        //         console.error('[Demo] Invalid request parameters:', { from, to });
-        //         return new Response(JSON.stringify({
-        //             error: 'Invalid request parameters',
-        //             status: 400,
-        //         }), { status: 400 });
-        //     }
-
-        //     // Calculate fees based on the value
-
-        //     const value = fromObj[from];
-        //     const networkFee = value * 0.0005; // 0.05% network fee
-        //     // const escrowFee = value * 0.001; // 0.1% escrow fee
-
-        //     // Calculate the destination amount using our mock rates
-        //     const estimatedAmount = calculateEstimatedAmount(from, to, value);
-
-        //     // Create mock estimate response with a valid structure
-        //     const estimate: FastspotEstimate[] = [{
-        //         from: [{
-        //             amount: `${value}`,
-        //             name: from,
-        //             symbol: from,
-        //             finalizeNetworkFee: {
-        //                 total: `${networkFee}`,
-        //                 totalIsIncluded: false,
-        //                 perUnit: `${getNetworkFeePerUnit(from)}`,
-        //             },
-        //             fundingNetworkFee: {
-        //                 total: `${networkFee}`,
-        //                 totalIsIncluded: false,
-        //                 perUnit: `${getNetworkFeePerUnit(from)}`,
-        //             },
-        //             operatingNetworkFee: {
-        //                 total: `${networkFee}`,
-        //                 totalIsIncluded: false,
-        //                 perUnit: `${getNetworkFeePerUnit(from)}`,
-        //             },
-        //         }],
-        //         to: [{
-        //             amount: `${estimatedAmount}`,
-        //             name: to,
-        //             symbol: to,
-        //             finalizeNetworkFee: {
-        //                 total: `${networkFee}`,
-        //                 totalIsIncluded: false,
-        //                 perUnit: `${getNetworkFeePerUnit(to)}`,
-        //             },
-        //             fundingNetworkFee: {
-        //                 total: `${networkFee}`,
-        //                 totalIsIncluded: false,
-        //                 perUnit: `${getNetworkFeePerUnit(to)}`,
-        //             },
-        //             operatingNetworkFee: {
-        //                 total: `${networkFee}`,
-        //                 totalIsIncluded: false,
-        //                 perUnit: `${getNetworkFeePerUnit(to)}`,
-        //             },
-        //         }],
-        //         direction: 'forward',
-        //         serviceFeePercentage: 0.01,
-        //     }];
-
-        //     console.log('[Demo] Mock estimate:', estimate);
-
-        //     return new Response(JSON.stringify(estimate));
-        // }
-
         if (isSwapRequest) {
             const swapId = url.pathname.split('/').slice(-1)[0];
 
@@ -1232,7 +1267,7 @@ function interceptFetchRequest() {
                             direction: 'send',
                             status: 'pending',
                             id: '2MzQo4ehDrSEsxX7RnysLL6VePD3tuNyx4M',
-                            intermediary: { },
+                            intermediary: {},
                         },
                         {
                             asset: swap.redeem.type,
@@ -1247,7 +1282,7 @@ function interceptFetchRequest() {
                             direction: 'receive',
                             status: 'pending',
                             id: 'eff8a1a5-4f4e-3895-b95c-fd5a40c99001',
-                            intermediary: { },
+                            intermediary: {},
                         },
                     ],
                 }));
@@ -1276,44 +1311,10 @@ function getNetworkFeePerUnit(asset: string): number {
 }
 
 /**
- * Calculate mock estimated amount for swaps based on predefined rates
- */
-function calculateEstimatedAmount(fromAsset: string, toAsset: string, value: number): number {
-    // Define mock exchange rates (realistic market rates)
-    const rates: Record<string, number> = {
-        [`${SwapAsset.NIM}-${SwapAsset.BTC}`]: 0.00000004, // 1 NIM = 0.00000004 BTC
-        [`${SwapAsset.NIM}-${SwapAsset.USDC_MATIC}`]: 0.0012, // 1 NIM = 0.0012 USDC
-        [`${SwapAsset.NIM}-${SwapAsset.USDT_MATIC}`]: 0.0012, // 1 NIM = 0.0012 USDT
-        [`${SwapAsset.BTC}-${SwapAsset.NIM}`]: 25000000, // 1 BTC = 25,000,000 NIM
-        [`${SwapAsset.BTC}-${SwapAsset.USDC_MATIC}`]: 30000, // 1 BTC = 30,000 USDC
-        [`${SwapAsset.BTC}-${SwapAsset.USDT_MATIC}`]: 30000, // 1 BTC = 30,000 USDT
-        [`${SwapAsset.USDC_MATIC}-${SwapAsset.NIM}`]: 833.33, // 1 USDC = 833.33 NIM
-        [`${SwapAsset.USDC_MATIC}-${SwapAsset.BTC}`]: 0.000033, // 1 USDC = 0.000033 BTC
-        [`${SwapAsset.USDC_MATIC}-${SwapAsset.USDT_MATIC}`]: 1, // 1 USDC = 1 USDT
-        [`${SwapAsset.USDT_MATIC}-${SwapAsset.NIM}`]: 833.33, // 1 USDT = 833.33 NIM
-        [`${SwapAsset.USDT_MATIC}-${SwapAsset.BTC}`]: 0.000033, // 1 USDT = 0.000033 BTC
-        [`${SwapAsset.USDT_MATIC}-${SwapAsset.USDC_MATIC}`]: 1, // 1 USDT = 1 USDT
-    };
-
-    const rate = rates[`${fromAsset}-${toAsset}`];
-    if (!rate) {
-        // If no direct rate, check reverse rate
-        const reverseRate = rates[`${toAsset}-${fromAsset}`];
-        if (reverseRate) {
-            return Math.floor(value * (1 / reverseRate));
-        }
-        return value; // 1:1 if no rate defined
-    }
-
-    return Math.floor(value * rate);
-}
-
-/**
  * Ensures the Send button in modals is always enabled in demo mode, regardless of network state.
  * This allows users to interact with the send functionality without waiting for network sync.
  */
 function enableSendModalInDemoMode() {
-    const observing = false;
     const observer = new MutationObserver(() => {
         // Target the send modal footer button
         const sendButton = document.querySelector('.send-modal-footer .nq-button');
@@ -1340,6 +1341,165 @@ function enableSendModalInDemoMode() {
 
     // Observe document for changes - particularly when modals open
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled'] });
+}
+
+let swapInterval: NodeJS.Timeout | null = null;
+function listenForSwapChanges() {
+    if (swapInterval) return;
+    swapInterval = setInterval(() => {
+        // Check if there are any active swaps that need to be processed
+        const { activeSwap } = useSwapsStore();
+        if (activeSwap && activeSwap.value?.state === SwapState.COMPLETE) {
+            completeSwap(activeSwap);
+        }
+    }, 2_000);
+}
+
+/**
+ * Completes an active swap by creating transactions for both sides of the swap
+ */
+function completeSwap(activeSwap: any) {
+    const { setActiveSwap } = useSwapsStore();
+    const startTime = Date.now();
+
+    // Create a timeout to simulate processing time
+    setTimeout(() => {
+        // Update the swap state to SUCCESS
+        setActiveSwap({
+            ...activeSwap,
+            state: SwapState.COMPLETE,
+            stateEnteredAt: startTime,
+        });
+
+        // Add transactions for both sides of the swap
+        const fromAsset = activeSwap.from.asset;
+        const toAsset = activeSwap.to.asset;
+        const fromAmount = activeSwap.from.amount;
+        const toAmount = activeSwap.to.amount;
+        const fromFee = activeSwap.from.fee || 0;
+        const toFee = activeSwap.to.fee || 0;
+
+        // Create outgoing transaction (from asset)
+        switch (fromAsset) {
+            case 'NIM': {
+                const tx: Partial<NimTransaction> = {
+                    value: -fromAmount,
+                    recipient: 'HTLC-ADDRESS',
+                    sender: demoNimAddress,
+                    timestamp: Date.now(),
+                    data: {
+                        type: 'htlc',
+                        hashAlgorithm: '',
+                        hashCount: 0,
+                        hashRoot: '',
+                        raw: '',
+                        recipient: 'HTLC-ADDRESS',
+                        sender: demoNimAddress,
+                        timeout: 0,
+                    },
+                }
+                insertFakeNimTransactions(transformNimTransaction([tx]));
+                break;
+            }
+            case 'BTC': {
+                const tx: BtcTransactionDefinition = {
+                    address: 'HTLC-ADDRESS',
+                    daysAgo: 0,
+                    description: `Swap ${fromAsset} to ${toAsset}`,
+                    fraction: -fromAmount / btcInitialBalance,
+                    incoming: false,
+                    recipientLabel: 'HTLC-ADDRESS',
+                }
+                insertFakeBtcTransactions(transformBtcTransaction([tx]));
+                break;
+            }
+            case 'USDC_MATIC': {
+                const tx: UsdcTransactionDefinition = {
+                    fraction: 1,
+                    daysAgo: 0,
+                    description: `Swap ${fromAsset} to ${toAsset}`,
+                    incoming: false,
+                    recipientLabel: demoPolygonAddress,
+                };
+
+                insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
+                break;
+            }
+            case 'USDT_MATIC': {
+                const tx: UsdtTransactionDefinition = {
+                    fraction: 1,
+                    daysAgo: 0,
+                    description: `Swap ${fromAsset} to ${toAsset}`,
+                    incoming: false,
+                    recipientLabel: demoPolygonAddress,
+                };
+
+                insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
+                break;
+            }
+        }
+
+        // Create incoming transaction (to asset)
+        switch (toAsset) {
+            case 'NIM': {
+                const tx: Partial<NimTransaction> = {
+                    value: toAmount,
+                    recipient: demoNimAddress,
+                    sender: 'HTLC-ADDRESS',
+                    timestamp: Date.now(),
+                    data: {
+                        type: 'htlc',
+                        hashAlgorithm: '',
+                        hashCount: 0,
+                        hashRoot: '',
+                        raw: '',
+                        recipient: demoNimAddress,
+                        sender: 'HTLC-ADDRESS',
+                        timeout: 0,
+                    },
+                }
+                insertFakeNimTransactions(transformNimTransaction([tx]));
+                break;
+            }
+            case 'BTC': {
+                const tx: BtcTransactionDefinition = {
+                    address: demoBtcAddress,
+                    daysAgo: 0,
+                    description: `Swap ${fromAsset} to ${toAsset}`,
+                    fraction: toAmount / btcInitialBalance,
+                    incoming: true,
+                    recipientLabel: demoBtcAddress,
+                }
+                insertFakeBtcTransactions(transformBtcTransaction([tx]));
+                break;
+            }
+            case 'USDC_MATIC': {
+                const tx: UsdcTransactionDefinition = {
+                    fraction: 1,
+                    daysAgo: 0,
+                    description: `Swap ${fromAsset} to ${toAsset}`,
+                    incoming: true,
+                    recipientLabel: demoPolygonAddress,
+                };
+                insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
+                break;
+            }
+            case 'USDT_MATIC': {
+                const tx: UsdtTransactionDefinition = {
+                    fraction: 1,
+                    daysAgo: 0,
+                    description: `Swap ${fromAsset} to ${toAsset}`,
+                    incoming: true,
+                    recipientLabel: demoPolygonAddress,
+                };
+
+                insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
+                break;
+            }
+        }
+        // eslint-disable-next-line no-console
+        console.log('Demo swap completed:', { fromAsset, toAsset, fromAmount, toAmount });
+    }, 3000); // Simulate a delay for the swap to complete
 }
 
 const ignoreHubRequests = [
@@ -1415,20 +1575,13 @@ export class DemoHubApi extends HubApi {
                         if (ignoreHubRequests.includes(requestName)) {
                             return;
                         }
-                        // Find the setupSwap handler in the DemoHubApi class and replace it with this:
 
                         if (requestName === 'setupSwap') {
-                            console.log('[DEMO]', {
-                                firstArg,
-                                args,
-                                promise: await firstArg,
-                            });
                             const swap = await firstArg as SetupSwapArgs;
                             const signerTransaction: SetupSwapResult = {
                                 nim: {
                                     transaction: new Uint8Array(),
                                     serializedTx: '0172720036a3b2ca9e0de8b369e6381753ebef945a020091fa7bbddf959616767c50c50962c9e056ade9c400000000000000989680000000000000000000c3e23d0500a60100010366687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f292520000000000000000000000000000000000000000000000000000000000000000000200demoSerializedTx',
-                                    // serializedTx: '0172720036a3b2ca9e0de8b369e6381753ebef945a020091fa7bbddf959616767c50c50962c9e056ade9c400000000000000989680000000000000000000c3e23d0500a60100010366687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925200000000000000000000000000000000000000000000000000000000000000000002003b571b3481bec4340ed715f6b59add1947667f2d51a70d05cc7b5778dae6e009a5342d2e62977c877342b1972ebe064e77c473603ac9a6b97ac1bdd0fa543f37487fab37256fad87d79314eee2dff3fc70623057fe17f07aa39f9cb9f99db0a',
                                     hash: '6c58b337a907fe000demoTxHash8a1f4ab4fdc0f69b1e582f',
                                     raw: {
                                         signerPublicKey: new Uint8Array(),
@@ -1457,527 +1610,8 @@ export class DemoHubApi extends HubApi {
                             onGoingSwaps.set(swap.swapId, swap);
 
                             resolve(signerTransaction);
+                            return
                         }
-                        //     if (requestName === 'setupSwap') {
-                        //         (firstArg as Function)();
-                        //         // Get swap amount and asset details from the DOM
-                        //         const leftColumn = document.querySelector('.swap-amounts .left-column');
-                        //         const leftAmountElement = leftColumn?.querySelector('.width-value');
-                        //         const rightColumn = document.querySelector('.swap-amounts .right-column');
-                        //         const rightAmountElement = rightColumn?.querySelector('.width-value');
-
-                        //         if (!leftAmountElement || !rightAmountElement || !leftColumn || !rightColumn) {
-                        //             console.warn('[Demo] Could not find swap amount elements');
-                        //             return {};
-                        //         }
-
-                        //         const leftValue = Number((leftAmountElement as HTMLDivElement).innerText.replace(/,/g, ''));
-                        //         const leftAsset = leftColumn.querySelector('.ticker')?.innerHTML.toUpperCase().trim() as SwapAsset;
-
-                        //         const rightValue = Number((rightAmountElement as HTMLDivElement).innerText.replace(/,/g, ''));
-                        //         const rightAsset = rightColumn.querySelector('.ticker')?.innerHTML.toUpperCase().trim() as SwapAsset;
-
-                        //         console.log(`[Demo] Setting up swap: ${leftValue} ${leftAsset} -> ${rightValue} ${rightAsset}`);
-
-                        //         // Check if we have valid values
-                        //         if (!leftValue || !rightValue || !leftAsset || !rightAsset) {
-                        //             console.warn('[Demo] Missing swap values');
-                        //             return {};
-                        //         }
-
-                        //         const direction = leftValue < rightValue ? 'forward' : 'reverse';
-                        //         const fromAsset = direction === 'forward' ? leftAsset : rightAsset;
-                        //         // @ts-expect-error Object key not specific enough?
-                        //         const toAsset: RequestAsset<SwapAsset> = direction === 'forward'
-                        //             ? { [rightAsset]: rightValue }
-                        //             : { [leftAsset]: leftValue };
-
-                        //         const swapSuggestion = await createSwap(fromAsset, toAsset);
-
-                        //         const { config } = useConfig();
-
-                        //         let fund: HtlcCreationInstructions | null = null;
-                        //         let redeem: HtlcSettlementInstructions | null = null;
-
-                        //         const { activeAddressInfo } = useAddressStore();
-
-                        //         const { availableExternalAddresses } = useBtcAddressStore();
-                        //         const nimAddress = activeAddressInfo.value!.address;
-                        //         const btcAddress = availableExternalAddresses.value[0];
-
-                        //         if (swapSuggestion.from.asset === SwapAsset.NIM) {
-                        //             const nimiqClient = await getNetworkClient();
-                        //             await nimiqClient.waitForConsensusEstablished();
-                        //             const headHeight = await nimiqClient.getHeadHeight();
-                        //             if (headHeight > 100) {
-                        //                 useNetworkStore().state.height = headHeight;
-                        //             } else {
-                        //                 throw new Error('Invalid network state, try please reloading the app');
-                        //             }
-
-                        //             fund = {
-                        //                 type: SwapAsset.NIM,
-                        //                 sender: nimAddress,
-                        //                 value: swapSuggestion.from.amount,
-                        //                 fee: swapSuggestion.from.fee,
-                        //                 validityStartHeight: useNetworkStore().state.height,
-                        //             };
-                        //         }
-
-                        //         const { accountUtxos, accountBalance: accountBtcBalance, } = useBtcAddressStore();
-                        //         if (swapSuggestion.from.asset === SwapAsset.BTC) {
-                        //             const electrumClient = await getElectrumClient();
-                        //             await electrumClient.waitForConsensusEstablished();
-
-                        //             // Assemble BTC inputs
-                        //             // Transactions to an HTLC are 46 weight units bigger because of the longer recipient address
-                        //             const requiredInputs = selectOutputs(
-                        //                 accountUtxos.value, swapSuggestion.from.amount, swapSuggestion.from.feePerUnit, 48);
-                        //             let changeAddress: string;
-                        //             if (requiredInputs.changeAmount > 0) {
-                        //                 const { nextChangeAddress } = useBtcAddressStore();
-                        //                 if (!nextChangeAddress.value) {
-                        //                     // FIXME: If no unused change address is found, need to request new ones from Hub!
-                        //                     throw new Error('No more unused change addresses (not yet implemented)');
-                        //                 }
-                        //                 changeAddress = nextChangeAddress.value;
-                        //             }
-
-                        //             fund = {
-                        //                 type: SwapAsset.BTC,
-                        //                 inputs: requiredInputs.utxos.map((utxo) => ({
-                        //                     address: utxo.address,
-                        //                     transactionHash: utxo.transactionHash,
-                        //                     outputIndex: utxo.index,
-                        //                     outputScript: utxo.witness.script,
-                        //                     value: utxo.witness.value,
-                        //                 })),
-                        //                 output: {
-                        //                     value: swapSuggestion.from.amount,
-                        //                 },
-                        //                 ...(requiredInputs.changeAmount > 0 ? {
-                        //                     changeOutput: {
-                        //                         address: changeAddress!,
-                        //                         value: requiredInputs.changeAmount,
-                        //                     },
-                        //                 } : {}),
-                        //                 refundAddress: btcAddress,
-                        //             };
-                        //         }
-
-                        //         const {
-                        //             activeAddress: activePolygonAddress,
-                        //             accountUsdcBalance,
-                        //             accountUsdtBridgedBalance,
-                        //         } = usePolygonAddressStore();
-
-                        //         if (swapSuggestion.from.asset === SwapAsset.USDC_MATIC) {
-                        //             const [client, htlcContract] = await Promise.all([
-                        //                 getPolygonClient(),
-                        //                 getUsdcHtlcContract(),
-                        //             ]);
-                        //             const fromAddress = activePolygonAddress.value!;
-
-                        //             const [
-                        //                 usdcNonce,
-                        //                 forwarderNonce,
-                        //                 blockHeight,
-                        //             ] = await Promise.all([
-                        //                 client.usdcToken.nonces(fromAddress) as Promise<BigNumber>,
-                        //                 htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
-                        //                 getPolygonBlockNumber(),
-                        //             ]);
-
-                        //             const { fee, gasLimit, gasPrice, relay, method } = {
-                        //                 fee: 1,
-                        //                 gasLimit: 1,
-                        //                 gasPrice: 1,
-                        //                 relay: {
-                        //                     pctRelayFee: 1,
-                        //                     baseRelayFee: 1,
-                        //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
-                        //                 },
-                        //                 method: 'open'
-                        //             };
-                        //             if (method !== 'open' && method !== 'openWithPermit') {
-                        //                 throw new Error('Wrong USDC contract method');
-                        //             }
-
-                        //             // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
-                        //             // Keyguard's SwapIFrameApi.
-                        //             const data = htlcContract.interface.encodeFunctionData(method, [
-                        // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        // /* address token */ config.polygon.usdc.tokenContract,
-                        // /* uint256 amount */ swapSuggestion.from.amount,
-                        // /* address refundAddress */ fromAddress,
-                        // /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
-                        // /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        // /* uint256 timeout */ 0,
-                        // /* uint256 fee */ fee,
-                        //                 ...(method === 'openWithPermit' ? [
-                        //     // // Approve the maximum possible amount so afterwards we can use the `open` method for
-                        //     // // lower fees
-                        //     // /* uint256 value */ client.ethers
-                        //     //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-                        //     /* uint256 value */ swapSuggestion.from.amount + fee,
-
-                        //     /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        //     /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        //     /* uint8 sigV */ 0,
-                        //                 ] : []),
-                        //             ]);
-
-                        //             const relayRequest: RelayRequest = {
-                        //                 request: {
-                        //                     from: fromAddress,
-                        //                     to: config.polygon.usdc.htlcContract,
-                        //                     data,
-                        //                     value: '0',
-                        //                     nonce: forwarderNonce.toString(),
-                        //                     gas: gasLimit.toString(),
-                        //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                        //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        //                 },
-                        //                 relayData: {
-                        //                     gasPrice: gasPrice.toString(),
-                        //                     pctRelayFee: relay.pctRelayFee.toString(),
-                        //                     baseRelayFee: relay.baseRelayFee.toString(),
-                        //                     relayWorker: relay.relayWorkerAddress,
-                        //                     paymaster: config.polygon.usdc.htlcContract,
-                        //                     paymasterData: '0x',
-                        //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        //                     forwarder: config.polygon.usdc.htlcContract,
-                        //                 },
-                        //             };
-
-                        //             fund = {
-                        //                 type: SwapAsset.USDC_MATIC,
-                        //                 ...relayRequest,
-                        //                 ...(method === 'openWithPermit' ? {
-                        //                     permit: {
-                        //                         tokenNonce: usdcNonce.toNumber(),
-                        //                     },
-                        //                 } : null),
-                        //             };
-                        //         }
-
-                        //         if (swapSuggestion.from.asset === SwapAsset.USDT_MATIC) {
-                        //             const [client, htlcContract] = await Promise.all([
-                        //                 getPolygonClient(),
-                        //                 getUsdtBridgedHtlcContract(),
-                        //             ]);
-                        //             const fromAddress = activePolygonAddress.value!;
-
-                        //             const [
-                        //                 usdtNonce,
-                        //                 forwarderNonce,
-                        //                 blockHeight,
-                        //             ] = await Promise.all([
-                        //                 client.usdtBridgedToken.getNonce(fromAddress) as Promise<BigNumber>,
-                        //                 htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
-                        //                 getPolygonBlockNumber(),
-                        //             ]);
-
-                        //             const { fee, gasLimit, gasPrice, relay, method } = {
-                        //                 fee: 1,
-                        //                 gasLimit: 1,
-                        //                 gasPrice: 1,
-                        //                 relay: {
-                        //                     pctRelayFee: 1,
-                        //                     baseRelayFee: 1,
-                        //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
-                        //                 },
-                        //                 method: 'open'
-                        //             };
-                        //             if (method !== 'open' && method !== 'openWithApproval') {
-                        //                 throw new Error('Wrong USDT contract method');
-                        //             }
-
-                        //             // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
-                        //             // Keyguard's SwapIFrameApi.
-                        //             const data = htlcContract.interface.encodeFunctionData(method, [
-                        // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        // /* address token */ config.polygon.usdt_bridged.tokenContract,
-                        // /* uint256 amount */ swapSuggestion.from.amount,
-                        // /* address refundAddress */ fromAddress,
-                        // /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
-                        // /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        // /* uint256 timeout */ 0,
-                        // /* uint256 fee */ fee,
-                        //                 ...(method === 'openWithApproval' ? [
-                        //     // // Approve the maximum possible amount so afterwards we can use the `open` method for
-                        //     // // lower fees
-                        //     // /* uint256 approval */ client.ethers
-                        //     //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-                        //     /* uint256 approval */ swapSuggestion.from.amount + fee,
-
-                        //     /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        //     /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        //     /* uint8 sigV */ 0,
-                        //                 ] : []),
-                        //             ]);
-
-                        //             const relayRequest: RelayRequest = {
-                        //                 request: {
-                        //                     from: fromAddress,
-                        //                     to: config.polygon.usdt_bridged.htlcContract,
-                        //                     data,
-                        //                     value: '0',
-                        //                     nonce: forwarderNonce.toString(),
-                        //                     gas: gasLimit.toString(),
-                        //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                        //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        //                 },
-                        //                 relayData: {
-                        //                     gasPrice: gasPrice.toString(),
-                        //                     pctRelayFee: relay.pctRelayFee.toString(),
-                        //                     baseRelayFee: relay.baseRelayFee.toString(),
-                        //                     relayWorker: relay.relayWorkerAddress,
-                        //                     paymaster: config.polygon.usdt_bridged.htlcContract,
-                        //                     paymasterData: '0x',
-                        //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        //                     forwarder: config.polygon.usdt_bridged.htlcContract,
-                        //                 },
-                        //             };
-
-                        //             fund = {
-                        //                 type: SwapAsset.USDT_MATIC,
-                        //                 ...relayRequest,
-                        //                 ...(method === 'openWithApproval' ? {
-                        //                     approval: {
-                        //                         tokenNonce: usdtNonce.toNumber(),
-                        //                     },
-                        //                 } : null),
-                        //             };
-                        //         }
-
-                        //         if (swapSuggestion.to.asset === SwapAsset.NIM) {
-                        //             const nimiqClient = await getNetworkClient();
-                        //             await nimiqClient.waitForConsensusEstablished();
-                        //             const headHeight = await nimiqClient.getHeadHeight();
-                        //             if (headHeight > 100) {
-                        //                 useNetworkStore().state.height = headHeight;
-                        //             } else {
-                        //                 throw new Error('Invalid network state, try please reloading the app');
-                        //             }
-
-                        //             redeem = {
-                        //                 type: SwapAsset.NIM,
-                        //                 recipient: nimAddress, // My address, must be redeem address of HTLC
-                        //                 value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Luna
-                        //                 fee: swapSuggestion.to.fee, // Luna
-                        //                 validityStartHeight: useNetworkStore().state.height,
-                        //             };
-                        //         }
-
-                        //         if (swapSuggestion.to.asset === SwapAsset.BTC) {
-                        //             const electrumClient = await getElectrumClient();
-                        //             await electrumClient.waitForConsensusEstablished();
-
-                        //             redeem = {
-                        //                 type: SwapAsset.BTC,
-                        //                 input: {
-                        //                     // transactionHash: transaction.transactionHash,
-                        //                     // outputIndex: output.index,
-                        //                     // outputScript: output.script,
-                        //                     value: swapSuggestion.to.amount, // Sats
-                        //                 },
-                        //                 output: {
-                        //                     address: btcAddress, // My address, must be redeem address of HTLC
-                        //                     value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
-                        //                 },
-                        //             };
-                        //         }
-
-                        //         if (swapSuggestion.to.asset === SwapAsset.USDC_MATIC) {
-                        //             const htlcContract = await getUsdcHtlcContract();
-                        //             const toAddress = activePolygonAddress.value!;
-
-                        //             const [
-                        //                 forwarderNonce,
-                        //                 blockHeight,
-                        //             ] = await Promise.all([
-                        //                 htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                        //                 getPolygonBlockNumber(),
-                        //             ]);
-
-                        //             const { fee, gasLimit, gasPrice, relay, method } = {
-                        //                 fee: 1,
-                        //                 gasLimit: 1,
-                        //                 gasPrice: 1,
-                        //                 relay: {
-                        //                     pctRelayFee: 1,
-                        //                     baseRelayFee: 1,
-                        //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
-                        //                 },
-                        //                 method: 'open'
-                        //             };
-                        //             if (method !== 'redeemWithSecretInData') {
-                        //                 throw new Error('Wrong USDC contract method');
-                        //             }
-
-                        //             const data = htlcContract.interface.encodeFunctionData(method, [
-                        // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        // /* address target */ toAddress,
-                        // /* uint256 fee */ fee,
-                        //             ]);
-
-                        //             const relayRequest: RelayRequest = {
-                        //                 request: {
-                        //                     from: toAddress,
-                        //                     to: config.polygon.usdc.htlcContract,
-                        //                     data,
-                        //                     value: '0',
-                        //                     nonce: forwarderNonce.toString(),
-                        //                     gas: gasLimit.toString(),
-                        //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                        //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        //                 },
-                        //                 relayData: {
-                        //                     gasPrice: gasPrice.toString(),
-                        //                     pctRelayFee: relay.pctRelayFee.toString(),
-                        //                     baseRelayFee: relay.baseRelayFee.toString(),
-                        //                     relayWorker: relay.relayWorkerAddress,
-                        //                     paymaster: config.polygon.usdc.htlcContract,
-                        //                     paymasterData: '0x',
-                        //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        //                     forwarder: config.polygon.usdc.htlcContract,
-                        //                 },
-                        //             };
-
-                        //             redeem = {
-                        //                 type: SwapAsset.USDC_MATIC,
-                        //                 ...relayRequest,
-                        //                 amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
-                        //             };
-                        //         }
-
-                        //         if (swapSuggestion.to.asset === SwapAsset.USDT_MATIC) {
-                        //             const htlcContract = await getUsdtBridgedHtlcContract();
-                        //             const toAddress = activePolygonAddress.value!;
-
-                        //             const [
-                        //                 forwarderNonce,
-                        //                 blockHeight,
-                        //             ] = await Promise.all([
-                        //                 htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                        //                 getPolygonBlockNumber(),
-                        //             ]);
-
-                        //             const { fee, gasLimit, gasPrice, relay, method } = {
-                        //                 fee: 1,
-                        //                 gasLimit: 1,
-                        //                 gasPrice: 1,
-                        //                 relay: {
-                        //                     pctRelayFee: 1,
-                        //                     baseRelayFee: 1,
-                        //                     relayWorkerAddress: '0x0000000000111111111122222222223333333333',
-                        //                 },
-                        //                 method: 'open'
-                        //             };
-                        //             if (method !== 'redeemWithSecretInData') {
-                        //                 throw new Error('Wrong USDT contract method');
-                        //             }
-
-                        //             const data = htlcContract.interface.encodeFunctionData(method, [
-                        // /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        // /* address target */ toAddress,
-                        // /* uint256 fee */ fee,
-                        //             ]);
-
-                        //             const relayRequest: RelayRequest = {
-                        //                 request: {
-                        //                     from: toAddress,
-                        //                     to: config.polygon.usdt_bridged.htlcContract,
-                        //                     data,
-                        //                     value: '0',
-                        //                     nonce: forwarderNonce.toString(),
-                        //                     gas: gasLimit.toString(),
-                        //                     validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                        //                         .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        //                 },
-                        //                 relayData: {
-                        //                     gasPrice: gasPrice.toString(),
-                        //                     pctRelayFee: relay.pctRelayFee.toString(),
-                        //                     baseRelayFee: relay.baseRelayFee.toString(),
-                        //                     relayWorker: relay.relayWorkerAddress,
-                        //                     paymaster: config.polygon.usdt_bridged.htlcContract,
-                        //                     paymasterData: '0x',
-                        //                     clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        //                     forwarder: config.polygon.usdt_bridged.htlcContract,
-                        //                 },
-                        //             };
-
-                        //             redeem = {
-                        //                 type: SwapAsset.USDT_MATIC,
-                        //                 ...relayRequest,
-                        //                 amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
-                        //             };
-                        //         }
-
-                        //         if (!fund || !redeem) {
-                        //             reject(new Error('UNEXPECTED: No funding or redeeming data objects'));
-                        //             return;
-                        //         }
-
-                        //         const serviceSwapFee = Math.round(
-                        //             (swapSuggestion.from.amount - swapSuggestion.from.serviceNetworkFee)
-                        //             * swapSuggestion.serviceFeePercentage,
-                        //         );
-
-                        //         const { addressInfos } = useAddressStore();
-
-                        //         const { activeAccountInfo } = useAccountStore();
-
-                        //         const { currency, exchangeRates } = useFiatStore();
-
-                        //         const {
-                        //             activeAddress
-
-                        //         } = usePolygonAddressStore();
-
-                        //         const request: Omit<SetupSwapRequest, 'appName'> = {
-                        //             accountId: activeAccountInfo.value!.id,
-                        //             swapId: swapSuggestion.id,
-                        //             fund,
-                        //             redeem,
-
-                        //             layout: 'slider',
-                        //             direction: direction === 'forward' ? 'left-to-right' : 'right-to-left',
-                        //             fiatCurrency: currency.value,
-                        //             fundingFiatRate: exchangeRates.value[assetToCurrency(
-                        //                 fund.type as SupportedSwapAsset,
-                        //             )][currency.value]!,
-                        //             redeemingFiatRate: exchangeRates.value[assetToCurrency(
-                        //                 redeem.type as SupportedSwapAsset,
-                        //             )][currency.value]!,
-                        //             fundFees: {
-                        //                 processing: 0,
-                        //                 redeeming: swapSuggestion.from.serviceNetworkFee,
-                        //             },
-                        //             redeemFees: {
-                        //                 funding: swapSuggestion.to.serviceNetworkFee,
-                        //                 processing: 0,
-                        //             },
-                        //             serviceSwapFee,
-                        //             nimiqAddresses: addressInfos.value.map((addressInfo) => ({
-                        //                 address: addressInfo.address,
-                        //                 balance: addressInfo.balance || 0,
-                        //             })),
-                        //             bitcoinAccount: {
-                        //                 balance: accountBtcBalance.value,
-                        //             },
-                        //             polygonAddresses: activePolygonAddress.value ? [{
-                        //                 address: activePolygonAddress.value,
-                        //                 usdcBalance: accountUsdcBalance.value,
-                        //                 usdtBalance: accountUsdtBridgedBalance.value,
-                        //             }] : [],
-                        //         };
-
-                        //         console.log('[Demo] Faking swap setup with request:', request);
-                        //         resolve(request)
-                        //         return;
-                        //     }
 
                         // Wait for router readiness
                         await new Promise<void>((resolve) => {
@@ -1994,3 +1628,4 @@ export class DemoHubApi extends HubApi {
         });
     }
 }
+

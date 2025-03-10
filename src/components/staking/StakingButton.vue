@@ -60,7 +60,7 @@ export default defineComponent({
             default: false,
         },
     },
-    setup(props) {
+    setup() {
         const router = useRouter();
         const { config } = useConfig();
         const { activeAddressInfo } = useAddressStore();

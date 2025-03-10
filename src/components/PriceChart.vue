@@ -1,46 +1,40 @@
 <template>
     <div class="price-chart flex-column">
-        <svg ref="svg$" xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" preserveAspectRatio="none"
-            :style="{ opacity: history.length >= 2 ? 1 : 0 }">
-            <path ref="path$"
-                :d="path"
-                fill="none"
-                stroke="currentColor"
-                opacity="0.5"
-                :stroke-width="strokeWidth"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
-        </svg>
+        <LineChart
+            :points="chartPoints"
+            :stroke-width="strokeWidth"
+            :style="{ opacity: history.length >= 2 ? 1 : 0 }"
+        >
+            <button v-if="showTimespanLabel" class="reset timespan" @click="$emit('timespan')">{{ timeRange }}</button>
 
-        <button v-if="showTimespanLabel" class="reset timespan" @click="$emit('timespan')">{{ timeRange }}</button>
-
-        <div class="meta flex-row">
-            <strong>{{currency.toUpperCase()}}</strong>
-            <div class="price">
-                <transition name="fade">
-                    <FiatAmount v-if="currentPrice !== undefined"
-                        :amount="currentPrice"
-                        :currency="fiatCurrency"
-                        :maxRelativeDeviation="0.001"
-                    />
-                </transition>
-                <transition name="fade">
-                    <div v-if="priceChange !== undefined" class="change" :class="priceChangeClass">
-                        {{ (priceChange * 100).toFixed(1) }}%
-                    </div>
-                </transition>
+            <div class="meta flex-row">
+                <strong>{{currency.toUpperCase()}}</strong>
+                <div class="price">
+                    <transition name="fade">
+                        <FiatAmount v-if="currentPrice !== undefined"
+                            :amount="currentPrice"
+                            :currency="fiatCurrency"
+                            :maxRelativeDeviation="0.001"
+                        />
+                    </transition>
+                    <transition name="fade">
+                        <div v-if="priceChange !== undefined" class="change" :class="priceChangeClass">
+                            {{ (priceChange * 100).toFixed(1) }}%
+                        </div>
+                    </transition>
+                </div>
             </div>
-        </div>
+        </LineChart>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import { Provider, getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_PRICE_CHART } from '../lib/Constants';
 import { useFiatStore } from '../stores/Fiat';
+import LineChart from './LineChart.vue';
 
 export enum TimeRange {
     '24h' = '24h',
@@ -66,8 +60,6 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const svg$ = ref<SVGElement>(null);
-        const path$ = ref<SVGPathElement>(null);
         const histories = ref<Record<TimeRange, Array<[/* timestamp */ number, /* price */ number]> | undefined>>({
             [TimeRange['24h']]: undefined,
             [TimeRange['7d']]: undefined,
@@ -81,29 +73,13 @@ export default defineComponent({
         };
         const history = computed(() => histories.value[props.timeRange] || []);
 
-        // Calculate SVG size
+        // Calculate chart points
+        const chartPoints = computed(() => history.value.map(([timestamp, price]) => ({
+            x: timestamp,
+            y: price,
+        })));
+
         const strokeWidth = 2.5;
-        const padding = strokeWidth * 2;
-        const width = ref<number>(120);
-        const height = ref<number>(52);
-        // Calculate the view box from the actual size in the dom to avoid stretching the strokeWidth. While
-        // vector-effect: non-scaling-stroke exists for this purpose, it unfortunately also affects the rendered path
-        // length, which leads to render errors when assigning a stroke-dashoffset calculated from getTotalLength() or
-        // even explicitly specified pathLength.
-        const viewBox = computed(
-            () => `-${strokeWidth / 2} -${padding} ${width.value + strokeWidth} ${height.value + 2 * padding}`,
-        );
-        const onResize = () => requestAnimationFrame(() => {
-            if (!svg$.value) return;
-            const svgBoundingBox = svg$.value.getBoundingClientRect();
-            width.value = svgBoundingBox.width;
-            height.value = svgBoundingBox.height;
-        });
-        onMounted(() => {
-            window.addEventListener('resize', onResize);
-            onResize();
-        });
-        onUnmounted(() => window.removeEventListener('resize', onResize));
 
         const { exchangeRates, currency: fiatCurrency, timestamp: lastExchangeRateUpdateTime } = useFiatStore();
         const historyFiatCurrency = computed(() => isHistorySupportedFiatCurrency(
@@ -128,76 +104,6 @@ export default defineComponent({
                 ? 'positive'
                 : 'negative');
 
-        // Calculate path
-        const path = computed(() => {
-            if (history.value.length < 2) return '';
-
-            // Normalize data points to the SVG's X and Y axis
-            const minTimestamp = history.value[0][0];
-            const maxTimestamp = history.value[history.value.length - 1][0];
-            const xScaleFactor = width.value / (maxTimestamp - minTimestamp);
-            const [minPrice, maxPrice] = history.value.reduce((result, [, price]) => {
-                // Could be written as one-liner by destructuring + constructing of new array but is more wasteful
-                result[0] = Math.min(result[0], price);
-                result[1] = Math.max(result[1], price);
-                return result;
-            }, [Number.MAX_VALUE, Number.MIN_VALUE]);
-            const yScaleFactor = height.value / (maxPrice - minPrice || 1);
-
-            const dataPoints = history.value.map(([timestamp, price]) => [
-                (timestamp - minTimestamp) * xScaleFactor,
-                height.value - (price - minPrice) * yScaleFactor, // subtract from height as in SVG y-axis 0 is on top
-            ]);
-
-            // Draw
-
-            // how smooth the resulting curve will be.
-            const smoothingFactor = .2;
-
-            const lineFromIndexToIndex = (startIndex: number, endIndex: number) => {
-                if (startIndex >= 0 && endIndex >= 0
-                    && startIndex < dataPoints.length && endIndex < dataPoints.length) {
-                    const x = dataPoints[startIndex][0] - dataPoints[endIndex][0];
-                    const y = dataPoints[startIndex][1] - dataPoints[endIndex][1];
-
-                    return {
-                        length: Math.sqrt(x ** 2 + y ** 2),
-                        angle: Math.atan2(y, x),
-                    };
-                }
-                throw new Error(`Index out of bounds ${startIndex} ${endIndex}`);
-            };
-
-            const controlPoint = (
-                current: number,
-                previous: number,
-                next: number,
-                end = false,
-            ): {x: number, y: number} => {
-                if (previous < 0) previous = current;
-                if (next >= dataPoints.length) next = current;
-
-                const line = lineFromIndexToIndex(previous, next);
-
-                return {
-                    x: dataPoints[current][0]
-                        - Math.cos(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
-                    y: dataPoints[current][1]
-                        - Math.sin(line.angle + (end ? Math.PI : 0)) * line.length * smoothingFactor,
-                };
-            };
-
-            return `${dataPoints.map(([x, y], index) => {
-                if (index === 0) return `M 0 ${y}`;
-                const { x: x1, y: y1 } = controlPoint(index - 1, index - 2, index);
-                const { x: x2, y: y2 } = controlPoint(index, index - 1, index + 1, true);
-                return 'C '
-                    + `${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
-            }).join(' ')}`;
-        });
-
-        let animateGraph = false;
-
         // Update history
         watch(() => [
             props.currency,
@@ -219,7 +125,6 @@ export default defineComponent({
             const isChartParametersUpdate = isCurrenciesUpdate || isTimeRangeUpdate;
             const isScheduledUpdate = lastUpdate !== previousLastUpdate;
 
-            animateGraph ||= isChartParametersUpdate; // Animate / re-draw the chart if chart parameters changed.
             // Clear cached histories, which also clears the chart, on chart parameters update other than only a time
             // range change, in which case we want to keep the cache for the other time range. Note that the condition
             // is not as concise as it could be, but maybe it's better readable like this.
@@ -289,43 +194,19 @@ export default defineComponent({
             }
         });
 
-        watch(history, async () => {
-            if (!path$.value) return;
-            if (!animateGraph) return;
-            // animate the chart line
-            if (history.value.length) {
-                // Reset strokeDashArray
-                path$.value.style.strokeDasharray = '';
-                // strokeDasharray reset gets applied
-                await new Promise((resolve) => { requestAnimationFrame(resolve); });
-                const pathLength = path$.value.getTotalLength();
-                path$.value.style.strokeDasharray = `0 ${pathLength}`;
-                // strokeDasharray gets applied
-                await new Promise((resolve) => { requestAnimationFrame(resolve); });
-                // ready to update strokeDasharray again
-                await new Promise((resolve) => { requestAnimationFrame(resolve); });
-                path$.value.style.strokeDasharray = `${pathLength} 0`;
-                animateGraph = false;
-            } else {
-                path$.value.style.strokeDasharray = '';
-            }
-        });
-
         return {
-            svg$,
-            path$,
             strokeWidth,
-            viewBox,
-            path,
             fiatCurrency,
             currentPrice,
             history,
+            chartPoints,
             priceChange,
             priceChangeClass,
         };
     },
     components: {
         FiatAmount,
+        LineChart,
     },
 });
 </script>
@@ -333,15 +214,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .price-chart {
     position: relative;
-}
-
-svg {
-    flex-grow: 1;
-    transition: opacity .3s var(--nimiq-ease);
-}
-
-svg path {
-    transition: stroke-dasharray 1.2s linear;
 }
 
 .timespan {

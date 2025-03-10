@@ -1,15 +1,303 @@
 <template>
-    <div></div>
+    <div class="staking-rewards-history-page flex-column">
+        <PageHeader :backArrow="true" @back="$emit('back')">
+            {{ $t('Rewards History') }}
+        </PageHeader>
+        <PageBody class="flex-column">
+            <div v-if="stakingEvents && stakingEvents.length > 0" class="rewards-list">
+                <div class="scroll-mask top"></div>
+                <button
+                    v-for="event in sortedStakingEvents"
+                    :key="event.date"
+                    class="reset transaction"
+                    @click="$router.push({name: 'transaction', params: {hash: event.transactionHash}})"
+                >
+                    <div class="date">
+                        <span class="day">{{ formatDateDay(event.date) }}</span><br>
+                        <span class="month">{{ formatDateMonth(event.date) }}</span>
+                    </div>
+                    <div class="identicon">
+                        <ValidatorIcon
+                            :validator="validators[event.sender_address] || { address: event.sender_address }" />
+                    </div>
+                    <div class="data">
+                        <div class="label">{{ getValidatorName(event.sender_address) || 'Staking Reward' }}</div>
+                        <div class="time-and-message">
+                            <span>{{ formatTime(event.date) }}</span>
+                        </div>
+                    </div>
+                    <div class="amounts isIncoming">
+                        <Amount :amount="event.value" value-mask/>
+                        <FiatConvertedAmount :amount="event.value" class="fiat-amount" value-mask/>
+                    </div>
+                </button>
+                <div class="scroll-mask bottom"></div>
+            </div>
+            <div v-else class="no-rewards flex-column">
+                <img src="/img/staking/no-rewards.svg" alt="No Rewards" />
+                <h2>{{ $t('No rewards yet') }}</h2>
+                <p>{{ $t('Your rewards will appear here once you start staking.') }}</p>
+            </div>
+        </PageBody>
+    </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
+import { PageHeader, PageBody } from '@nimiq/vue-components';
+import { useStakingStore, StakingEvent } from '../../stores/Staking';
+import Amount from '../Amount.vue';
+import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import ValidatorIcon from './ValidatorIcon.vue';
 
 export default defineComponent({
+    name: 'StakingRewardsHistoryPage',
+    setup() {
+        const { stakingEvents, validators } = useStakingStore();
 
+        const sortedStakingEvents = computed(() => {
+            const events = stakingEvents.value as StakingEvent[] | null;
+            if (!events) return [];
+            // Filter only reward events (type 6) and sort by date descending
+            return [...events]
+                .filter((event) => event.type === 6)
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) as any[];
+        });
+
+        function formatDateDay(dateString: string) {
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat(undefined, {
+                day: 'numeric',
+            }).format(date);
+        }
+
+        function formatDateMonth(dateString: string) {
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat(undefined, {
+                month: 'short',
+            }).format(date);
+        }
+
+        function formatTime(dateString: string) {
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat(undefined, {
+                hour: 'numeric',
+                minute: 'numeric',
+            }).format(date);
+        }
+
+        function getValidatorName(address: string) {
+            const validator = validators.value[address];
+            return validator && 'name' in validator ? validator.name : null;
+        }
+
+        return {
+            stakingEvents,
+            sortedStakingEvents,
+            formatDateDay,
+            formatDateMonth,
+            formatTime,
+            getValidatorName,
+            validators,
+        };
+    },
+    components: {
+        PageHeader,
+        PageBody,
+        Amount,
+        FiatConvertedAmount,
+        ValidatorIcon,
+    },
 });
 </script>
 
 <style lang="scss" scoped>
+@import "../../scss/variables.scss";
+@import "../../scss/mixins.scss";
 
+@include scroll-mask(true, true, true);
+
+.staking-rewards-history-page {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: 75rem;
+}
+
+.page-body {
+    padding: 1rem 0;
+    flex-grow: 1;
+    position: relative;
+}
+
+.rewards-list {
+    width: 100%;
+    padding: 0 2rem;
+    overflow-y: auto;
+    position: relative;
+
+    @extend %custom-scrollbar;
+}
+
+.transaction {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    border: 0;
+    background: transparent;
+    border-radius: .75rem;
+    cursor: pointer;
+    transition: background 400ms var(--nimiq-ease);
+    font-size: var(--body-size);
+    text-align: left;
+
+    &:hover,
+    &:focus {
+        background: var(--nimiq-highlight-bg);
+    }
+
+    > * {
+        margin: 0rem 1rem;
+    }
+
+    .date {
+        font-weight: bold;
+        text-transform: uppercase;
+        opacity: 0.4;
+        flex-grow: 0;
+        letter-spacing: 0.0125em;
+        line-height: 1;
+        flex-shrink: 0;
+        width: 3.75rem;
+        text-align: center;
+
+        > .month {
+            font-size: var(--small-label-size);
+            letter-spacing: 0.0667em;
+            text-transform: uppercase;
+        }
+    }
+
+    .identicon {
+        position: relative;
+        width: 6rem;
+        height: 6rem;
+        flex-shrink: 0;
+
+        svg {
+            width: 6rem;
+            height: 6rem;
+            padding: 0.375rem;
+        }
+    }
+
+    .data {
+        flex-grow: 1;
+        overflow: hidden;
+        line-height: 1.4;
+
+        .label {
+            white-space: nowrap;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+            font-weight: 600;
+        }
+
+        .time-and-message {
+            font-size: var(--small-size);
+            font-weight: 600;
+            color: var(--text-50);
+            white-space: nowrap;
+            mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+        }
+    }
+
+    .amounts {
+        --fiat-amount-height: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        line-height: 1.4;
+
+        .amount {
+            --size: var(--body-size);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+        }
+
+        .fiat-amount {
+            --size: var(--small-size);
+            font-size: var(--size);
+            font-weight: 600;
+            opacity: 0.4;
+            align-items: center;
+            line-height: 1;
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        &.isIncoming {
+            .amount {
+                color: var(--nimiq-green);
+                background: rgba(33, 188, 165, 0.1);
+                border-radius: 0.5rem;
+                padding: 0.25rem 0.75rem;
+                margin-right: -0.75rem;
+            }
+
+            .amount::before {
+                content: '+';
+                margin-right: -0.1em;
+            }
+        }
+    }
+}
+
+@media (max-width: $mobileBreakpoint) {
+    .transaction {
+        padding: 1rem 1rem;
+
+        > * {
+            margin: 0rem 0.75rem;
+        }
+
+        .identicon {
+            width: 5.5rem;
+            height: 5.5rem;
+
+            svg {
+                width: 5rem;
+                height: 5rem;
+                margin: 0.25rem;
+            }
+        }
+    }
+}
+
+.no-rewards {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem 0;
+
+    img {
+        width: 12rem;
+        height: auto;
+    }
+
+    h2 {
+        font-size: var(--h2-size);
+        font-weight: bold;
+        margin: 0;
+    }
+
+    p {
+        font-size: var(--small-size);
+        color: var(--text-60);
+        margin: 0;
+    }
+}
 </style>

@@ -36,19 +36,21 @@
                     </p>
                 </Tooltip>
             </span>
-            <div style="height: 150px; background: gainsboro;">
-                <!-- <h2
-                    style="font-size: 32px; font-weigth: bold; color: darkgrey; text-align: center; margin-top: 56px;"
-                >📈 Graph will come here</h2> -->
+            <div class="rewards-chart">
+                <LineChart
+                    :points="rewardsChartPoints"
+                    :stroke-width="2"
+                    stroke="var(--nimiq-green)"
+                    :stroke-opacity="1"
+                    :padding="8"
+                    height="150px"
+                    :animate="true"
+                >
+                    <div v-if="rewardsChartPoints.length === 0" class="no-rewards">
+                        No rewards yet
+                    </div>
+                </LineChart>
             </div>
-            <!-- <StakingGraph :stakedAmount="stake ? stake.balance : 0"
-                :apy="validator && 'annualReward' in validator ? validator.annualReward : 0" :readonly="true"
-                :period="{
-                    s: NOW,
-                    p: 12,
-                    m: MONTH,
-                }"
-                :key="graphUpdate" /> -->
 
             <div v-if="stake">
                 <span class="nq-label flex-row section-title">
@@ -160,9 +162,9 @@
             </i18n>
             <div v-else class="switch-validator"></div>
 
-            <!-- <button class="nq-button-s rewards-history" @click="$emit('next')">
+            <button class="nq-button-s rewards-history" @click="$emit('next')">
                 {{ $t('Rewards history') }} &gt;
-            </button> -->
+            </button>
         </PageBody>
     </div>
 </template>
@@ -183,7 +185,7 @@ import { useAddressStore } from '../../stores/Address';
 import { MIN_STAKE } from '../../lib/Constants';
 
 import Amount from '../Amount.vue';
-// import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
+import LineChart from '../LineChart.vue';
 import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
@@ -203,7 +205,7 @@ export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
+        const { activeStake: stake, activeValidator: validator, restakingRewards, stakingEvents } = useStakingStore();
         const { height, consensus } = useNetworkStore();
 
         const graphUpdate = ref(0);
@@ -257,6 +259,39 @@ export default defineComponent({
             ) return false;
 
             return true;
+        });
+
+        // Calculate rewards chart points
+        const rewardsChartPoints = computed(() => {
+            const events = stakingEvents.value;
+            if (!events) return [];
+
+            // Filter only reward events (type 6) and sort by date
+            const rewardEvents = events
+                .filter((event) => event.type === 6)
+                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+            // Group rewards by month
+            const monthlyRewards = new Map();
+            rewardEvents.forEach((event) => {
+                const date = new Date(event.date);
+                const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+                const currentValue = monthlyRewards.get(monthKey) || 0;
+                monthlyRewards.set(monthKey, currentValue + event.value);
+            });
+
+            // Calculate cumulative rewards by month
+            let cumulativeRewards = 0;
+            return Array.from(monthlyRewards.entries())
+                .map(([monthKey, monthlyReward]) => {
+                    cumulativeRewards += monthlyReward;
+                    // Use the first day of the month for the x-axis
+                    const [year, month] = monthKey.split('-');
+                    return {
+                        x: new Date(Date.UTC(Number(year), Number(month) - 1, 1)).getTime(),
+                        y: cumulativeRewards,
+                    };
+                });
         });
 
         async function deactivateAll() {
@@ -427,6 +462,7 @@ export default defineComponent({
             canSwitchValidator,
             consensus,
             MIN_STAKE,
+            rewardsChartPoints,
         };
     },
     components: {
@@ -444,6 +480,7 @@ export default defineComponent({
         ArrowRightSmallIcon,
         ValidatorIcon,
         FiatConvertedAmount,
+        LineChart,
     },
 });
 </script>
@@ -701,6 +738,23 @@ export default defineComponent({
             &:hover {
                 color: var(--text-60);
             }
+        }
+    }
+
+    .rewards-chart {
+        position: relative;
+        width: 100%;
+        height: 150px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+
+        .no-rewards {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-secondary);
+            font-size: var(--small-size);
         }
     }
 </style>

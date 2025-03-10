@@ -1,6 +1,6 @@
 <template>
     <Modal v-bind="$attrs" v-on="$listeners" class="staking-modal"
-        :class="{ 'large-modal': [Page.Graph, Page.Info].includes(page) }"
+        :class="{ 'large-modal': [Page.Graph, Page.Info, Page.RewardsHistory].includes(page) }"
         :showOverlay="shouldShowOverlay"
         @close-overlay="closeOverlay"
     >

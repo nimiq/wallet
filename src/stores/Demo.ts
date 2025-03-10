@@ -1102,10 +1102,6 @@ function interceptFetchRequest() {
                 return new Response(JSON.stringify(limits));
             }
 
-            // eslint-disable-next-line no-promise-executor-return
-            const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-            await sleep(1000 + Math.random() * 500);
-
             const asset = assetOrLimit as SwapAsset;
 
             const { exchangeRates, currency } = useFiatStore();
@@ -1345,163 +1341,192 @@ function listenForSwapChanges() {
     if (swapInterval) return;
     swapInterval = setInterval(() => {
         // Check if there are any active swaps that need to be processed
-        const { activeSwap } = useSwapsStore();
-        if (activeSwap && activeSwap.value?.state === SwapState.COMPLETE) {
-            completeSwap(activeSwap);
+        const swap = useSwapsStore().activeSwap.value;
+        if (!swap) return;
+        console.log('[Demo] Active swap:', { swap, state: swap.state });
+        switch (swap.state) {
+            case SwapState.AWAIT_INCOMING:
+                console.log('[Demo] Swap is in AWAIT_INCOMING state');
+                useSwapsStore().setActiveSwap({
+                    ...swap,
+                    state: SwapState.CREATE_OUTGOING,
+                });
+                break;
+            case SwapState.CREATE_OUTGOING:
+                console.log('[Demo] Swap is in CREATE_OUTGOING state');
+                useSwapsStore().setActiveSwap({
+                    ...swap,
+                    state: SwapState.AWAIT_SECRET,
+                });
+                break;
+            case SwapState.AWAIT_SECRET:
+                console.log('[Demo] Swap is in AWAIT_SECRET state');
+                useSwapsStore().setActiveSwap({
+                    ...swap,
+                    state: SwapState.SETTLE_INCOMING,
+                });
+                break;
+            case SwapState.SETTLE_INCOMING:
+                console.log('[Demo] Swap is in SETTLE_INCOMING state');
+                useSwapsStore().setActiveSwap({
+                    ...swap,
+                    state: SwapState.COMPLETE,
+                });
+                completeSwap(swap);
+                break;
+            case SwapState.COMPLETE:
+                console.log('[Demo] Swap is in COMPLETE state');
+                if (swapInterval)clearInterval(swapInterval);
+                swapInterval = null;
+                break;
+            default:
+                console.log('[Demo] Swap is in unknown state');
+                useSwapsStore().setActiveSwap({
+                    ...swap,
+                    state: SwapState.AWAIT_INCOMING,
+                });
+                break;
         }
-    }, 2_000);
+    }, 15_000);
 }
 
 /**
  * Completes an active swap by creating transactions for both sides of the swap
  */
 function completeSwap(activeSwap: any) {
-    const { setActiveSwap } = useSwapsStore();
-    const startTime = Date.now();
+    // Add transactions for both sides of the swap
+    const fromAsset = activeSwap.from.asset;
+    const toAsset = activeSwap.to.asset;
+    const fromAmount = activeSwap.from.amount;
+    const toAmount = activeSwap.to.amount;
+    // const fromFee = activeSwap.from.fee || 0;
+    // const toFee = activeSwap.to.fee || 0;
 
-    // Create a timeout to simulate processing time
-    setTimeout(() => {
-        // Update the swap state to SUCCESS
-        setActiveSwap({
-            ...activeSwap,
-            state: SwapState.COMPLETE,
-            stateEnteredAt: startTime,
-        });
-
-        // Add transactions for both sides of the swap
-        const fromAsset = activeSwap.from.asset;
-        const toAsset = activeSwap.to.asset;
-        const fromAmount = activeSwap.from.amount;
-        const toAmount = activeSwap.to.amount;
-        // const fromFee = activeSwap.from.fee || 0;
-        // const toFee = activeSwap.to.fee || 0;
-
-        // Create outgoing transaction (from asset)
-        switch (fromAsset) {
-            case 'NIM': {
-                const tx: Partial<NimTransaction> = {
-                    value: -fromAmount,
+    // Create outgoing transaction (from asset)
+    switch (fromAsset) {
+        case 'NIM': {
+            const tx: Partial<NimTransaction> = {
+                value: -fromAmount,
+                recipient: 'HTLC-ADDRESS',
+                sender: demoNimAddress,
+                timestamp: Date.now(),
+                data: {
+                    type: 'htlc',
+                    hashAlgorithm: '',
+                    hashCount: 0,
+                    hashRoot: '',
+                    raw: '',
                     recipient: 'HTLC-ADDRESS',
                     sender: demoNimAddress,
-                    timestamp: Date.now(),
-                    data: {
-                        type: 'htlc',
-                        hashAlgorithm: '',
-                        hashCount: 0,
-                        hashRoot: '',
-                        raw: '',
-                        recipient: 'HTLC-ADDRESS',
-                        sender: demoNimAddress,
-                        timeout: 0,
-                    },
-                };
-                insertFakeNimTransactions(transformNimTransaction([tx]));
-                break;
-            }
-            case 'BTC': {
-                const tx: BtcTransactionDefinition = {
-                    address: 'HTLC-ADDRESS',
-                    daysAgo: 0,
-                    description: `Swap ${fromAsset} to ${toAsset}`,
-                    fraction: -fromAmount / btcInitialBalance,
-                    incoming: false,
-                    recipientLabel: 'HTLC-ADDRESS',
-                };
-                insertFakeBtcTransactions(transformBtcTransaction([tx]));
-                break;
-            }
-            case 'USDC_MATIC': {
-                const tx: UsdcTransactionDefinition = {
-                    fraction: 1,
-                    daysAgo: 0,
-                    description: `Swap ${fromAsset} to ${toAsset}`,
-                    incoming: false,
-                    recipientLabel: demoPolygonAddress,
-                };
-
-                insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
-                break;
-            }
-            case 'USDT_MATIC': {
-                const tx: UsdtTransactionDefinition = {
-                    fraction: 1,
-                    daysAgo: 0,
-                    description: `Swap ${fromAsset} to ${toAsset}`,
-                    incoming: false,
-                    recipientLabel: demoPolygonAddress,
-                };
-
-                insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
-                break;
-            }
-            default: {
-                console.warn(`Unsupported asset type: ${fromAsset}`);
-            }
+                    timeout: 0,
+                },
+            };
+            insertFakeNimTransactions(transformNimTransaction([tx]));
+            break;
         }
+        case 'BTC': {
+            const tx: BtcTransactionDefinition = {
+                address: 'HTLC-ADDRESS',
+                daysAgo: 0,
+                description: `Swap ${fromAsset} to ${toAsset}`,
+                fraction: -fromAmount / btcInitialBalance,
+                incoming: false,
+                recipientLabel: 'HTLC-ADDRESS',
+            };
+            insertFakeBtcTransactions(transformBtcTransaction([tx]));
+            break;
+        }
+        case 'USDC_MATIC': {
+            const tx: UsdcTransactionDefinition = {
+                fraction: 1,
+                daysAgo: 0,
+                description: `Swap ${fromAsset} to ${toAsset}`,
+                incoming: false,
+                recipientLabel: demoPolygonAddress,
+            };
 
-        // Create incoming transaction (to asset)
-        switch (toAsset) {
-            case 'NIM': {
-                const tx: Partial<NimTransaction> = {
-                    value: toAmount,
+            insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
+            break;
+        }
+        case 'USDT_MATIC': {
+            const tx: UsdtTransactionDefinition = {
+                fraction: 1,
+                daysAgo: 0,
+                description: `Swap ${fromAsset} to ${toAsset}`,
+                incoming: false,
+                recipientLabel: demoPolygonAddress,
+            };
+
+            insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
+            break;
+        }
+        default: {
+            console.warn(`Unsupported asset type: ${fromAsset}`);
+        }
+    }
+
+    // Create incoming transaction (to asset)
+    switch (toAsset) {
+        case 'NIM': {
+            const tx: Partial<NimTransaction> = {
+                value: toAmount,
+                recipient: demoNimAddress,
+                sender: 'HTLC-ADDRESS',
+                timestamp: Date.now(),
+                data: {
+                    type: 'htlc',
+                    hashAlgorithm: '',
+                    hashCount: 0,
+                    hashRoot: '',
+                    raw: '',
                     recipient: demoNimAddress,
                     sender: 'HTLC-ADDRESS',
-                    timestamp: Date.now(),
-                    data: {
-                        type: 'htlc',
-                        hashAlgorithm: '',
-                        hashCount: 0,
-                        hashRoot: '',
-                        raw: '',
-                        recipient: demoNimAddress,
-                        sender: 'HTLC-ADDRESS',
-                        timeout: 0,
-                    },
-                };
-                insertFakeNimTransactions(transformNimTransaction([tx]));
-                break;
-            }
-            case 'BTC': {
-                const tx: BtcTransactionDefinition = {
-                    address: demoBtcAddress,
-                    daysAgo: 0,
-                    description: `Swap ${fromAsset} to ${toAsset}`,
-                    fraction: toAmount / btcInitialBalance,
-                    incoming: true,
-                    recipientLabel: demoBtcAddress,
-                };
-                insertFakeBtcTransactions(transformBtcTransaction([tx]));
-                break;
-            }
-            case 'USDC_MATIC': {
-                const tx: UsdcTransactionDefinition = {
-                    fraction: 1,
-                    daysAgo: 0,
-                    description: `Swap ${fromAsset} to ${toAsset}`,
-                    incoming: true,
-                    recipientLabel: demoPolygonAddress,
-                };
-                insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
-                break;
-            }
-            case 'USDT_MATIC': {
-                const tx: UsdtTransactionDefinition = {
-                    fraction: 1,
-                    daysAgo: 0,
-                    description: `Swap ${fromAsset} to ${toAsset}`,
-                    incoming: true,
-                    recipientLabel: demoPolygonAddress,
-                };
-
-                insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
-                break;
-            }
-            default: {
-                console.warn(`Unsupported asset type: ${toAsset}`);
-            }
+                    timeout: 0,
+                },
+            };
+            insertFakeNimTransactions(transformNimTransaction([tx]));
+            break;
         }
-        console.log('Demo swap completed:', { fromAsset, toAsset, fromAmount, toAmount });
-    }, 3000); // Simulate a delay for the swap to complete
+        case 'BTC': {
+            const tx: BtcTransactionDefinition = {
+                address: demoBtcAddress,
+                daysAgo: 0,
+                description: `Swap ${fromAsset} to ${toAsset}`,
+                fraction: toAmount / btcInitialBalance,
+                incoming: true,
+                recipientLabel: demoBtcAddress,
+            };
+            insertFakeBtcTransactions(transformBtcTransaction([tx]));
+            break;
+        }
+        case 'USDC_MATIC': {
+            const tx: UsdcTransactionDefinition = {
+                fraction: 1,
+                daysAgo: 0,
+                description: `Swap ${fromAsset} to ${toAsset}`,
+                incoming: true,
+                recipientLabel: demoPolygonAddress,
+            };
+            insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
+            break;
+        }
+        case 'USDT_MATIC': {
+            const tx: UsdtTransactionDefinition = {
+                fraction: 1,
+                daysAgo: 0,
+                description: `Swap ${fromAsset} to ${toAsset}`,
+                incoming: true,
+                recipientLabel: demoPolygonAddress,
+            };
+
+            insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
+            break;
+        }
+        default: {
+            console.warn(`Unsupported asset type: ${toAsset}`);
+        }
+    }
+    console.log('Demo swap completed:', { fromAsset, toAsset, fromAmount, toAmount });
 }
 
 const ignoreHubRequests = [

@@ -1,9 +1,9 @@
-/* eslint-disable max-len */
+/* eslint-disable max-len, consistent-return, no-console, no-async-promise-executor */
 import { createStore } from 'pinia';
 import VueRouter from 'vue-router';
 import { TransactionState as ElectrumTransactionState } from '@nimiq/electrum-client';
 import { CryptoCurrency, Utf8Tools } from '@nimiq/utils';
-import { Address, KeyPair, PlainTransactionDetails, PlainTransactionRecipientData, PrivateKey, TransactionFormat } from '@nimiq/core';
+import { KeyPair, PlainTransactionDetails, PrivateKey } from '@nimiq/core';
 import { AccountType, useAccountStore } from '@/stores/Account';
 import { AddressType, useAddressStore } from '@/stores/Address';
 import { toSecs, type Transaction as NimTransaction, useTransactionsStore } from '@/stores/Transactions';
@@ -14,8 +14,9 @@ import { useStakingStore } from '@/stores/Staking';
 import { useAccountSettingsStore } from '@/stores/AccountSettings';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import Config from 'config';
-import { AssetList, FastspotAsset, FastspotEstimate, FastspotFee, FastspotLimits, FastspotUserLimits, ReferenceAsset, SwapAsset, SwapStatus } from '@nimiq/fastspot-api';
+import { FastspotAsset, FastspotLimits, FastspotUserLimits, ReferenceAsset, SwapAsset, SwapStatus } from '@nimiq/fastspot-api';
 import HubApi, { SetupSwapResult } from '@nimiq/hub-api';
+import { useConfig } from '@/composables/useConfig';
 import { useBtcAddressStore } from './BtcAddress';
 import { useContactsStore } from './Contacts';
 import { useBtcLabelsStore } from './BtcLabels';
@@ -23,8 +24,6 @@ import { useUsdcContactsStore } from './UsdcContacts';
 import { useUsdtContactsStore } from './UsdtContacts';
 import { useFiatStore } from './Fiat';
 import { SwapState, useSwapsStore } from './Swaps';
-import { getUsdcHtlcContract } from '@/ethers';
-import { useConfig } from '@/composables/useConfig';
 
 export type DemoState = {
     active: boolean,
@@ -87,7 +86,6 @@ export const useDemoStore = createStore({
          * Initializes the demo environment and sets up various routes, data, and watchers.
          */
         async initialize(router: VueRouter) {
-            // eslint-disable-next-line no-console
             console.warn('[Demo] Initializing demo environment...');
 
             demoRouter = router;
@@ -454,7 +452,7 @@ function transformNimTransaction(txs: Partial<NimTransaction>[]): NimTransaction
             proof: { raw: '', type: 'raw' },
             data: tx.data || { type: 'raw', raw: '' },
             ...tx,
-        }
+        };
     });
 }
 
@@ -474,7 +472,7 @@ interface BtcTransactionDefinition {
     description: string;
     recipientLabel?: string;
     incoming: boolean;
-    address: string
+    address: string;
 }
 
 /**
@@ -489,7 +487,7 @@ function defineBtcFakeTransactions(): BtcTransaction[] {
             description: 'Initial BTC purchase from exchange',
             incoming: true,
             address: '1Kj4SNWFCxqvtP8nkJxeBwkXxgY9LW9rGg',
-            recipientLabel: 'Satoshi Exchange'
+            recipientLabel: 'Satoshi Exchange',
         },
         {
             fraction: 0.15,
@@ -497,7 +495,7 @@ function defineBtcFakeTransactions(): BtcTransaction[] {
             description: 'Mining pool payout',
             incoming: true,
             address: '1Hz7vQrRjnu3z9k7gxDYhKjEmABqChDvJr',
-            recipientLabel: 'Genesis Mining Pool'
+            recipientLabel: 'Genesis Mining Pool',
         },
         {
             fraction: -0.19,
@@ -505,7 +503,7 @@ function defineBtcFakeTransactions(): BtcTransaction[] {
             description: 'Purchase from online marketplace',
             incoming: false,
             address: '1LxKe5kKdgGVwXukEgqFxh6DrCXF2Pturc',
-            recipientLabel: 'Digital Bazaar Shop'
+            recipientLabel: 'Digital Bazaar Shop',
         },
         {
             fraction: 0.3,
@@ -513,28 +511,28 @@ function defineBtcFakeTransactions(): BtcTransaction[] {
             description: 'Company payment for consulting',
             incoming: true,
             address: '1N7aecJuKGDXzYK8CgpnNRYxdhZvXPxp3B',
-            recipientLabel: 'Corporate Treasury'
+            recipientLabel: 'Corporate Treasury',
         },
         {
             fraction: -0.15,
             daysAgo: 365,
             description: 'Auto-DCA investment program',
             incoming: false,
-            address: '12vxjmKJkfL9s5JwqUzEVVJGvKYJgALbsz'
+            address: '12vxjmKJkfL9s5JwqUzEVVJGvKYJgALbsz',
         },
         {
             fraction: 0.075,
             daysAgo: 180,
             description: 'P2P sale of digital goods',
             incoming: true,
-            address: '1MZYS9nvVmFvSK7em5zzAsnvRq82RUcypS'
+            address: '1MZYS9nvVmFvSK7em5zzAsnvRq82RUcypS',
         },
         {
             fraction: 0.05,
             daysAgo: 60,
             description: 'Recent purchase from exchange',
             incoming: true,
-            address: '1Kj4SNWFCxqvtP8nkJxeBwkXxgY9LW9rGg'
+            address: '1Kj4SNWFCxqvtP8nkJxeBwkXxgY9LW9rGg',
         },
     ].sort((a, b) => b.daysAgo - a.daysAgo);
 
@@ -688,7 +686,6 @@ function insertFakeBtcTransactions(txs = defineBtcFakeTransactions()) {
     const { addTransactions } = useBtcTransactionsStore();
     addTransactions(txs);
 }
-
 
 // #endregion
 
@@ -1075,7 +1072,6 @@ function interceptFetchRequest() {
         const url = new URL(args[0] as string);
         const isFastspotRequest = url.host === (new URL(Config.fastspot.apiEndpoint).host);
         const isLimitsRequest = url.pathname.includes('/limits');
-        const isEstimateRequest = url.pathname.includes('/estimate');
         const isAssetsRequest = url.pathname.includes('/assets');
         const isSwapRequest = url.pathname.includes('/swaps');
 
@@ -1106,6 +1102,7 @@ function interceptFetchRequest() {
                 return new Response(JSON.stringify(limits));
             }
 
+            // eslint-disable-next-line no-promise-executor-return
             const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
             await sleep(1000 + Math.random() * 500);
 
@@ -1376,8 +1373,8 @@ function completeSwap(activeSwap: any) {
         const toAsset = activeSwap.to.asset;
         const fromAmount = activeSwap.from.amount;
         const toAmount = activeSwap.to.amount;
-        const fromFee = activeSwap.from.fee || 0;
-        const toFee = activeSwap.to.fee || 0;
+        // const fromFee = activeSwap.from.fee || 0;
+        // const toFee = activeSwap.to.fee || 0;
 
         // Create outgoing transaction (from asset)
         switch (fromAsset) {
@@ -1397,7 +1394,7 @@ function completeSwap(activeSwap: any) {
                         sender: demoNimAddress,
                         timeout: 0,
                     },
-                }
+                };
                 insertFakeNimTransactions(transformNimTransaction([tx]));
                 break;
             }
@@ -1409,7 +1406,7 @@ function completeSwap(activeSwap: any) {
                     fraction: -fromAmount / btcInitialBalance,
                     incoming: false,
                     recipientLabel: 'HTLC-ADDRESS',
-                }
+                };
                 insertFakeBtcTransactions(transformBtcTransaction([tx]));
                 break;
             }
@@ -1436,6 +1433,9 @@ function completeSwap(activeSwap: any) {
 
                 insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
                 break;
+            }
+            default: {
+                console.warn(`Unsupported asset type: ${fromAsset}`);
             }
         }
 
@@ -1457,7 +1457,7 @@ function completeSwap(activeSwap: any) {
                         sender: 'HTLC-ADDRESS',
                         timeout: 0,
                     },
-                }
+                };
                 insertFakeNimTransactions(transformNimTransaction([tx]));
                 break;
             }
@@ -1469,7 +1469,7 @@ function completeSwap(activeSwap: any) {
                     fraction: toAmount / btcInitialBalance,
                     incoming: true,
                     recipientLabel: demoBtcAddress,
-                }
+                };
                 insertFakeBtcTransactions(transformBtcTransaction([tx]));
                 break;
             }
@@ -1496,8 +1496,10 @@ function completeSwap(activeSwap: any) {
                 insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
                 break;
             }
+            default: {
+                console.warn(`Unsupported asset type: ${toAsset}`);
+            }
         }
-        // eslint-disable-next-line no-console
         console.log('Demo swap completed:', { fromAsset, toAsset, fromAmount, toAmount });
     }, 3000); // Simulate a delay for the swap to complete
 }
@@ -1565,67 +1567,65 @@ export class DemoHubApi extends HubApi {
         const instance = new DemoHubApi();
         return new Proxy(instance, {
             get(target, prop: keyof HubApi) {
-                if (typeof target[prop] === 'function') {
-                    return async (...args: Parameters<HubApi[typeof prop]>) => new Promise(async (resolve, reject) => {
-                        const requestName = String(prop);
-                        const [firstArg] = args;
-                        // eslint-disable-next-line no-console
-                        console.warn(`[Demo] Mocking Hub call: ${requestName}("${firstArg}")`);
-
-                        if (ignoreHubRequests.includes(requestName)) {
-                            return;
-                        }
-
-                        if (requestName === 'setupSwap') {
-                            const swap = await firstArg as SetupSwapArgs;
-                            const signerTransaction: SetupSwapResult = {
-                                nim: {
-                                    transaction: new Uint8Array(),
-                                    serializedTx: '0172720036a3b2ca9e0de8b369e6381753ebef945a020091fa7bbddf959616767c50c50962c9e056ade9c400000000000000989680000000000000000000c3e23d0500a60100010366687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f292520000000000000000000000000000000000000000000000000000000000000000000200demoSerializedTx',
-                                    hash: '6c58b337a907fe000demoTxHash8a1f4ab4fdc0f69b1e582f',
-                                    raw: {
-                                        signerPublicKey: new Uint8Array(),
-                                        signature: new Uint8Array(),
-                                        sender: 'NQ86 D3M0 SW4P NB59 U3F8 NDLX CE0P AFMX Y52S',
-                                        senderType: 2,
-                                        recipient: swap.redeem.recipient,
-                                        recipientType: 0,
-                                        value: swap.redeem.value,
-                                        fee: 0,
-                                        validityStartHeight: swap.redeem.validityStartHeight,
-                                        extraData: new Uint8Array(),
-                                        flags: 0,
-                                        networkId: 5,
-                                        proof: new Uint8Array(),
-                                    },
-                                },
-                                btc: {
-                                    serializedTx: '0200000000010168c8952af998f2c68412a848a72d1f9b0b7ff27417df1cb85514c97474b51ba40000000000ffffffff026515000000000000220020bf0ffdd2ffb9a579973455cfe9b56515538b79361d5ae8a4d255dea2519ef77864c501000000000016001428257447efe2d254ce850ea2760274d233d86e5c024730440220792fa932d9d0591e3c5eb03f47d05912a1e21f3e76d169e383af66e47896ac8c02205947df5523490e4138f2da0fc5c9da3039750fe43bd217b68d26730fdcae7fbe012102ef8d4b51d1a075e67d62baa78991d5fc36a658fec28d8b978826058168ed2a1a00000000',
-                                    hash: '3090808993a796c26a614f5a4a36a48e0b4af6cd3e28e39f3f006e9a447da2b3',
-                                },
-                                refundTx: '02000000000101b3a27d449a6e003f9fe3283ecdf64a0b8ea4364a5a4f616ac296a793898090300000000000feffffff011e020000000000001600146d2146bb49f6d1de6b4f14e0a8074c79b887cef50447304402202a7dce2e39cf86ee1d7c1e9cc55f1e0fb26932fd22e5437e5e5804a9e5d220b1022031aa177ea085c10c4d54b2f5aa528aac0013b67f9ee674070aa2fb51894de80e0121025b4d40682bbcb5456a9d658971b725666a3cccaa2fb45d269d2f1486bf85b3c000636382012088a820be8719b9427f1551c4234f8b02d8f8aa055ae282b2e9eef6c155326ae951061f8876a914e546b01d8c9d9bf35f9f115132ce8eab7191a68d88ac67046716ca67b17576a9146d2146bb49f6d1de6b4f14e0a8074c79b887cef588ac686816ca67',
-                            };
-
-                            // Add to onGoingSwaps map
-                            onGoingSwaps.set(swap.swapId, swap);
-
-                            resolve(signerTransaction);
-                            return
-                        }
-
-                        // Wait for router readiness
-                        await new Promise<void>((resolve) => {
-                            demoRouter.onReady(resolve);
-                        });
-
-                        // eslint-disable-next-line no-console
-                        console.log('[Demo] Redirecting to fallback modal');
-                        demoRouter.push(`/${DemoModal.Fallback}`);
-                    });
+                if (typeof target[prop] !== 'function') {
+                    return target[prop];
                 }
-                return target[prop];
+
+                return async (...args: Parameters<HubApi[typeof prop]>) => new Promise(async (resolveInterceptedAction) => {
+                    const requestName = String(prop);
+                    const [firstArg] = args;
+                    console.warn(`[Demo] Mocking Hub call: ${requestName}("${firstArg}")`);
+
+                    if (ignoreHubRequests.includes(requestName)) {
+                        return;
+                    }
+
+                    if (requestName === 'setupSwap') {
+                        const swap = await firstArg as SetupSwapArgs;
+                        const signerTransaction: SetupSwapResult = {
+                            nim: {
+                                transaction: new Uint8Array(),
+                                serializedTx: '0172720036a3b2ca9e0de8b369e6381753ebef945a020091fa7bbddf959616767c50c50962c9e056ade9c400000000000000989680000000000000000000c3e23d0500a60100010366687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f292520000000000000000000000000000000000000000000000000000000000000000000200demoSerializedTx',
+                                hash: '6c58b337a907fe000demoTxHash8a1f4ab4fdc0f69b1e582f',
+                                raw: {
+                                    signerPublicKey: new Uint8Array(),
+                                    signature: new Uint8Array(),
+                                    sender: 'NQ86 D3M0 SW4P NB59 U3F8 NDLX CE0P AFMX Y52S',
+                                    senderType: 2,
+                                    recipient: swap.redeem.recipient,
+                                    recipientType: 0,
+                                    value: swap.redeem.value,
+                                    fee: 0,
+                                    validityStartHeight: swap.redeem.validityStartHeight,
+                                    extraData: new Uint8Array(),
+                                    flags: 0,
+                                    networkId: 5,
+                                    proof: new Uint8Array(),
+                                },
+                            },
+                            btc: {
+                                serializedTx: '0200000000010168c8952af998f2c68412a848a72d1f9b0b7ff27417df1cb85514c97474b51ba40000000000ffffffff026515000000000000220020bf0ffdd2ffb9a579973455cfe9b56515538b79361d5ae8a4d255dea2519ef77864c501000000000016001428257447efe2d254ce850ea2760274d233d86e5c024730440220792fa932d9d0591e3c5eb03f47d05912a1e21f3e76d169e383af66e47896ac8c02205947df5523490e4138f2da0fc5c9da3039750fe43bd217b68d26730fdcae7fbe012102ef8d4b51d1a075e67d62baa78991d5fc36a658fec28d8b978826058168ed2a1a00000000',
+                                hash: '3090808993a796c26a614f5a4a36a48e0b4af6cd3e28e39f3f006e9a447da2b3',
+                            },
+                            refundTx: '02000000000101b3a27d449a6e003f9fe3283ecdf64a0b8ea4364a5a4f616ac296a793898090300000000000feffffff011e020000000000001600146d2146bb49f6d1de6b4f14e0a8074c79b887cef50447304402202a7dce2e39cf86ee1d7c1e9cc55f1e0fb26932fd22e5437e5e5804a9e5d220b1022031aa177ea085c10c4d54b2f5aa528aac0013b67f9ee674070aa2fb51894de80e0121025b4d40682bbcb5456a9d658971b725666a3cccaa2fb45d269d2f1486bf85b3c000636382012088a820be8719b9427f1551c4234f8b02d8f8aa055ae282b2e9eef6c155326ae951061f8876a914e546b01d8c9d9bf35f9f115132ce8eab7191a68d88ac67046716ca67b17576a9146d2146bb49f6d1de6b4f14e0a8074c79b887cef588ac686816ca67',
+                        };
+
+                        // Add to onGoingSwaps map
+                        onGoingSwaps.set(swap.swapId, swap);
+
+                        resolveInterceptedAction(signerTransaction);
+                        return;
+                    }
+
+                    // Wait for router readiness
+                    await new Promise<void>((resolve) => {
+                        demoRouter.onReady(resolve);
+                    });
+
+                    console.log('[Demo] Redirecting to fallback modal');
+                    demoRouter.push(`/${DemoModal.Fallback}`);
+                });
             },
         });
     }
 }
-

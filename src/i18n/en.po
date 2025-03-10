@@ -282,7 +282,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:75
+#: src/components/staking/StakingInfoPage.vue:77
 msgid "Adjust Stake"
 msgstr ""
 
@@ -974,7 +974,7 @@ msgstr ""
 msgid "Earn new NIM by staking"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:11
+#: src/components/staking/StakingButton.vue:14
 #: src/components/staking/StakingSummaryMobile.vue:5
 msgid "Earn NIM every month by staking your NIM"
 msgstr ""
@@ -1706,6 +1706,10 @@ msgstr ""
 msgid "No request received."
 msgstr ""
 
+#: src/components/staking/StakingRewardsHistoryPage.vue:38
+msgid "No rewards yet"
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:77
 #: src/components/TransactionList.vue:71
 #: src/components/UsdcTransactionList.vue:62
@@ -2118,6 +2122,14 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:166
+msgid "Rewards history"
+msgstr ""
+
+#: src/components/staking/StakingRewardsHistoryPage.vue:4
+msgid "Rewards History"
+msgstr ""
+
 #: src/components/modals/StablecoinSendModal.vue:81
 msgid "Save and proceed"
 msgstr ""
@@ -2442,11 +2454,15 @@ msgstr ""
 msgid "Stable like USD, got it"
 msgstr ""
 
+#: src/components/staking/StakingButton.vue:34
+msgid "Stake"
+msgstr ""
+
 #: src/components/staking/StakingGraphPage.vue:69
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:29
+#: src/components/staking/StakingButton.vue:38
 msgid "Stake NIM"
 msgstr ""
 
@@ -2462,7 +2478,7 @@ msgstr ""
 msgid "Stake now"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:56
+#: src/components/staking/StakingInfoPage.vue:58
 msgid "Staked"
 msgstr ""
 
@@ -2896,7 +2912,7 @@ msgstr ""
 msgid "To {exchange}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:156
+#: src/components/staking/StakingInfoPage.vue:158
 msgid "To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
 msgstr ""
 
@@ -2965,7 +2981,7 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:159
+#: src/components/staking/StakingInfoPage.vue:161
 msgid "un-stake all"
 msgstr ""
 
@@ -3061,8 +3077,12 @@ msgstr ""
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:128
+#: src/components/staking/StakingInfoPage.vue:130
 msgid "Validator"
+msgstr ""
+
+#: src/components/staking/StakingOverview.vue:35
+msgid "Validator Name"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:223
@@ -3173,7 +3193,7 @@ msgid ""
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:77
+#: src/components/staking/StakingInfoPage.vue:79
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 

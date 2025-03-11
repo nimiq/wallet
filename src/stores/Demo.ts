@@ -92,9 +92,8 @@ export const useDemoStore = createStore({
 
             insertCustomDemoStyles();
             rewriteDemoRoutes();
-            setupVisualCues();
+            setupSingleMutationObserver();
             addDemoModalRoutes();
-            disableSwapTriggers();
             interceptFetchRequest();
 
             setupDemoAddresses();
@@ -111,7 +110,6 @@ export const useDemoStore = createStore({
             attachIframeListeners();
             replaceStakingFlow();
             replaceBuyNimFlow();
-            enableSellAndSwapModals();
 
             listenForSwapChanges();
         },
@@ -160,7 +158,7 @@ function insertCustomDemoStyles() {
 function rewriteDemoRoutes() {
     demoRouter.beforeEach((to, _from, next) => {
         // Redirect certain known paths to the Buy demo modal
-        if (to.path === '/simplex' || to.path === '/moonpay') {
+        if (to.path === '/buy') {
             return next({
                 path: `/${DemoModal.Buy}`,
                 query: { ...to.query, [DEMO_PARAM]: '' },
@@ -174,46 +172,88 @@ function rewriteDemoRoutes() {
 }
 
 /**
+ * Sets up a single mutation observer to handle all DOM-based demo features
+ */
+function setupSingleMutationObserver() {
+    // Track processed elements to avoid duplicate processing
+    const processedElements = new WeakSet();
+
+    // Handler function to process all DOM mutations
+    const processDomChanges = () => {
+        // Call each handler with the processed elements set
+        setupVisualCues(processedElements);
+        disableSwapTriggers(processedElements);
+        enableSellAndSwapModals(processedElements);
+    };
+
+    // Create one mutation observer for all DOM modifications
+    const mutationObserver = new MutationObserver(processDomChanges);
+
+    // Observe the entire document with a single observer
+    mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['disabled'],
+    });
+
+    processDomChanges();
+    // Also run checks when routes change to catch elements that appear after navigation
+    demoRouter.afterEach(() => {
+        // Wait for Vue to update the DOM after route change
+        setTimeout(processDomChanges, 100);
+    });
+}
+
+/**
  * Observes the home view to attach a highlight to some buttons for demonstration purposes.
  */
-function setupVisualCues() {
+function setupVisualCues(processedElements: WeakSet<Element>) {
     const highlightTargets = [
         ['.sidebar .trade-actions button', { top: '-18px', right: '-4px' }],
         ['.sidebar .swap-tooltip button', { top: '-18px', right: '-8px' }],
         ['.actions .staking-button', { top: '-2px', right: '-2px' }],
     ] as const;
 
-    const mutationObserver = new MutationObserver(() => {
-        if (window.location.pathname !== '/') return;
+    highlightTargets.forEach(([selector, position]) => {
+        const target = document.querySelector(selector);
+        if (!target || processedElements.has(target) || target.querySelector('.demo-highlight-badge')) return;
 
-        highlightTargets.forEach(([selector, position]) => {
-            const target = document.querySelector(selector);
-            if (!target || target.querySelector('.demo-highlight-badge')) return;
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('demo-highlight-badge');
+        wrapper.style.top = position.top;
+        wrapper.style.right = position.right;
+        const circle = document.createElement('div');
 
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('demo-highlight-badge');
-            wrapper.style.top = position.top;
-            wrapper.style.right = position.right;
-            const circle = document.createElement('div');
-
-            wrapper.appendChild(circle);
-            target.appendChild(wrapper);
-        });
+        wrapper.appendChild(circle);
+        target.appendChild(wrapper);
+        processedElements.add(target);
     });
-
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-function disableSwapTriggers() {
-    const mutationObserver = new MutationObserver(() => {
-        const swapTriggers = document.querySelectorAll(
-            '.account-grid > :where(.nim-usdc-swap-button, .nim-btc-swap-button, .btc-usdc-swap-button, .account-backgrounds)',
-        ) as NodeListOf<HTMLDivElement>;
-        swapTriggers.forEach((trigger) => trigger.remove());
-        const pairSelection = document.querySelector('.pair-selection');
-        if (pairSelection) pairSelection.remove();
+/**
+ * The only swap allowed is NIM-BTC.
+ * Removes the swap triggers from the account grid so the user does not the
+ * option to swap or sell assets in the demo environment.
+ * We also remove the pair selection in the SwapModal.
+ */
+function disableSwapTriggers(processedElements: WeakSet<Element>) {
+    const swapTriggers = document.querySelectorAll(
+        '.account-grid > :where(.nim-usdc-swap-button, .nim-btc-swap-button, .btc-usdc-swap-button, .account-backgrounds)',
+    ) as NodeListOf<HTMLDivElement>;
+
+    swapTriggers.forEach((trigger) => {
+        if (!processedElements.has(trigger)) {
+            trigger.remove();
+            processedElements.add(trigger);
+        }
     });
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    const pairSelection = document.querySelector('.pair-selection');
+    if (pairSelection && !processedElements.has(pairSelection)) {
+        pairSelection.remove();
+        processedElements.add(pairSelection);
+    }
 }
 
 /**
@@ -233,6 +273,10 @@ function addDemoModalRoutes() {
         props: { modal: true },
     });
 }
+
+// #endregion
+
+// #region Addresses Setup
 
 /**
  * Setup and initialize the demo data for all currencies.
@@ -867,39 +911,43 @@ function insertFakeUsdtTransactions(txs = defineUsdtFakeTransactions()) {
  * Observes the staking modal and prevents from validating the info and instead fakes the staking process.
  */
 function replaceBuyNimFlow() {
-    const targetSelector = '.sidebar .trade-actions';
-    let observing = false;
-    const observer = new MutationObserver(() => {
-        if (observing) return;
-
-        const target = document.querySelector(targetSelector);
-        if (!target) return;
-        observing = true;
-
-        target.innerHTML = '';
-
-        const btn1 = document.createElement('button');
-        btn1.className = 'nq-button-s inverse';
-        btn1.style.flex = '1';
-        btn1.addEventListener('click', () => {
-            demoRouter.push('/buy');
-        });
-        btn1.innerHTML = 'Buy';
-        const btn2 = document.createElement('button');
-        btn2.className = 'nq-button-s inverse';
-        btn2.style.flex = '1';
-        btn2.disabled = true;
-        btn2.innerHTML = 'Sell';
-        target.appendChild(btn1);
-        target.appendChild(btn2);
-    });
+    let observedTarget: HTMLDivElement | undefined;
 
     demoRouter.afterEach((to) => {
         if (to.path.startsWith('/')) {
-            observer.observe(document.body, { childList: true, subtree: true });
-        } else {
-            observing = false;
-            observer.disconnect();
+            const targetSelector = '.sidebar .trade-actions';
+            const checkForTradeActions = setInterval(() => {
+                const target = document.querySelector(targetSelector) as HTMLDivElement;
+                if (!target || target === observedTarget) return;
+                observedTarget = target;
+
+                target.innerHTML = '';
+
+                const btn1 = document.createElement('button');
+                btn1.className = 'nq-button-s inverse';
+                btn1.style.flex = '1';
+                btn1.addEventListener('click', () => {
+                    demoRouter.push('/buy');
+                });
+                btn1.innerHTML = 'Buy';
+
+                const btn2 = document.createElement('button');
+                btn2.className = 'nq-button-s inverse';
+                btn2.style.flex = '1';
+                btn2.disabled = true;
+                btn2.innerHTML = 'Sell';
+
+                target.appendChild(btn1);
+                target.appendChild(btn2);
+            }, 500);
+
+            // Clear interval when navigating away
+            demoRouter.afterEach((nextTo) => {
+                if (!nextTo.path.startsWith('/')) {
+                    clearInterval(checkForTradeActions);
+                    observedTarget = undefined;
+                }
+            });
         }
     });
 }
@@ -908,53 +956,53 @@ function replaceBuyNimFlow() {
  * Observes the staking modal and prevents from validating the info and instead fakes the staking process.
  */
 function replaceStakingFlow() {
-    const targetSelector = '.stake-graph-page .stake-button';
-    let observing = false;
-    const observer = new MutationObserver(() => {
-        if (observing) return;
-
-        const target = document.querySelector(targetSelector);
-        if (!target) return;
-
-        // remove previous listeners by cloning the element and replacing the original
-        const newElement = target.cloneNode(true) as HTMLButtonElement;
-        target.parentNode!.replaceChild(newElement, target);
-        newElement.removeAttribute('disabled');
-        observing = true;
-
-        newElement.addEventListener('click', async () => {
-            const { setStake } = useStakingStore();
-            const { activeValidator } = useStakingStore();
-            const amountInput = document.querySelector('.nq-input') as HTMLInputElement;
-            const amount = Number.parseFloat(amountInput.value.replaceAll(' ', '')) * 1e5;
-
-            const { address: validatorAddress } = activeValidator.value!;
-            demoRouter.push('/');
-            await new Promise<void>((resolve) => { window.setTimeout(resolve, 100); });
-            setStake({
-                activeBalance: amount,
-                inactiveBalance: nimInitialBalance - amount,
-                address: demoNimAddress,
-                retiredBalance: 0,
-                validator: validatorAddress,
-            });
-            const stakeTx: Partial<NimTransaction> = {
-                value: amount,
-                recipient: validatorAddress,
-                sender: demoNimAddress,
-                timestamp: Date.now(),
-                data: { type: 'add-stake', raw: '', staker: demoNimAddress },
-            };
-            insertFakeNimTransactions([stakeTx]);
-        });
-    });
+    let lastProcessedButton: HTMLButtonElement;
 
     demoRouter.afterEach((to) => {
         if (to.path === '/staking') {
-            observer.observe(document.body, { childList: true, subtree: true });
-        } else {
-            observing = false;
-            observer.disconnect();
+            const checkForStakeButton = setInterval(() => {
+                const target = document.querySelector('.stake-graph-page .stake-button');
+                if (!target || target === lastProcessedButton) return;
+
+                // remove previous listeners by cloning the element and replacing the original
+                const newElement = target.cloneNode(true) as HTMLButtonElement;
+                target.parentNode!.replaceChild(newElement, target);
+                newElement.removeAttribute('disabled');
+                lastProcessedButton = newElement;
+
+                newElement.addEventListener('click', async () => {
+                    const { setStake } = useStakingStore();
+                    const { activeValidator } = useStakingStore();
+                    const amountInput = document.querySelector('.nq-input') as HTMLInputElement;
+                    const amount = Number.parseFloat(amountInput.value.replaceAll(' ', '')) * 1e5;
+
+                    const { address: validatorAddress } = activeValidator.value!;
+                    demoRouter.push('/');
+                    await new Promise<void>((resolve) => { window.setTimeout(resolve, 100); });
+                    setStake({
+                        activeBalance: amount,
+                        inactiveBalance: nimInitialBalance - amount,
+                        address: demoNimAddress,
+                        retiredBalance: 0,
+                        validator: validatorAddress,
+                    });
+                    const stakeTx: Partial<NimTransaction> = {
+                        value: amount,
+                        recipient: validatorAddress,
+                        sender: demoNimAddress,
+                        timestamp: Date.now(),
+                        data: { type: 'add-stake', raw: '', staker: demoNimAddress },
+                    };
+                    insertFakeNimTransactions([stakeTx]);
+                });
+            }, 500);
+
+            // Clear interval when navigating away
+            demoRouter.afterEach((nextTo) => {
+                if (nextTo.path !== '/staking') {
+                    clearInterval(checkForStakeButton);
+                }
+            });
         }
     });
 }
@@ -1328,33 +1376,28 @@ function getNetworkFeePerUnit(asset: string): number {
  * Ensures the Send button in modals is always enabled in demo mode, regardless of network state.
  * This allows users to interact with the send functionality without waiting for network sync.
  */
-function enableSellAndSwapModals() {
-    const observer = new MutationObserver(() => {
-        // Target the send modal and swap footer button
-        const bottomButton = document.querySelector('.send-modal-footer .nq-button');
-        if (!bottomButton) return;
+function enableSellAndSwapModals(processedElements: WeakSet<Element>) {
+    // Target the send modal and swap footer button
+    const bottomButton = document.querySelector('.send-modal-footer .nq-button');
+    if (!bottomButton || processedElements.has(bottomButton)) return;
 
-        if (bottomButton.hasAttribute('disabled')) {
-            bottomButton.removeAttribute('disabled');
+    if (bottomButton.hasAttribute('disabled')) {
+        bottomButton.removeAttribute('disabled');
+        bottomButton.classList.remove('disabled');
+        processedElements.add(bottomButton);
 
-            // Also remove any visual indications of being disabled
-            bottomButton.classList.remove('disabled');
-
-            // Also find and hide any sync message if shown
-            const footer = document.querySelector('.send-modal-footer');
-            if (footer) {
-                const footerNotice = footer.querySelector('.footer-notice') as HTMLDivElement;
-                if (footerNotice && footerNotice.textContent
-                    && (footerNotice.textContent.includes('Connecting to Bitcoin')
-                        || footerNotice.textContent.includes('Syncing with Bitcoin'))) {
-                    footerNotice.style.display = 'none';
-                }
+        // Also find and hide any sync message if shown
+        const footer = document.querySelector('.send-modal-footer');
+        if (footer) {
+            const footerNotice = footer.querySelector('.footer-notice') as HTMLDivElement;
+            if (footerNotice && footerNotice.textContent
+                && (footerNotice.textContent.includes('Connecting to Bitcoin')
+                    || footerNotice.textContent.includes('Syncing with Bitcoin'))) {
+                footerNotice.style.display = 'none';
+                processedElements.add(footerNotice);
             }
         }
-    });
-
-    // Observe document for changes - particularly when modals open
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled'] });
+    }
 }
 
 let swapInterval: NodeJS.Timeout | null = null;
@@ -1397,7 +1440,7 @@ function listenForSwapChanges() {
                 break;
             case SwapState.COMPLETE:
                 console.log('[Demo] Swap is in COMPLETE state');
-                if (swapInterval)clearInterval(swapInterval);
+                if (swapInterval) clearInterval(swapInterval);
                 swapInterval = null;
                 break;
             default:

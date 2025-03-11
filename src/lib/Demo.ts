@@ -16,13 +16,13 @@ import Config from 'config';
 import { FastspotAsset, FastspotLimits, FastspotUserLimits, ReferenceAsset, SwapAsset, SwapStatus } from '@nimiq/fastspot-api';
 import HubApi, { SetupSwapResult } from '@nimiq/hub-api';
 import { useConfig } from '@/composables/useConfig';
-import { useBtcAddressStore } from '../stores/BtcAddress';
-import { useContactsStore } from '../stores/Contacts';
-import { useBtcLabelsStore } from '../stores/BtcLabels';
-import { useUsdcContactsStore } from '../stores/UsdcContacts';
-import { useUsdtContactsStore } from '../stores/UsdtContacts';
-import { useFiatStore } from '../stores/Fiat';
-import { SwapState, useSwapsStore } from '../stores/Swaps';
+import { useBtcAddressStore } from '@/stores/BtcAddress';
+import { useContactsStore } from '@/stores/Contacts';
+import { useBtcLabelsStore } from '@/stores/BtcLabels';
+import { useUsdcContactsStore } from '@/stores/UsdcContacts';
+import { useUsdtContactsStore } from '@/stores/UsdtContacts';
+import { useFiatStore } from '@/stores/Fiat';
+import { SwapState, useSwapsStore } from '@/stores/Swaps';
 
 export type DemoState = {
     active: boolean,
@@ -490,6 +490,14 @@ function insertFakeNimTransactions(txs = defineNimFakeTransactions()) {
     addTransactions(transformNimTransaction(txs));
 }
 
+/**
+ * Updates the NIM balance after a transaction
+ */
+function updateNimBalance(amount: number): void {
+    const { patchAddress, accountBalance } = useAddressStore();
+    patchAddress(demoNimAddress, { balance: accountBalance.value + amount });
+}
+
 export function dangerouslyInsertFakeBuyNimTransaction(amount: number) {
     const tx: Partial<NimTransaction> = {
         value: amount,
@@ -500,8 +508,12 @@ export function dangerouslyInsertFakeBuyNimTransaction(amount: number) {
             raw: encodeTextToHex('Online Purchase'),
         },
     };
-    const { addTransactions } = useTransactionsStore();
-    addTransactions(transformNimTransaction([tx]));
+
+    setTimeout(() => {
+        const { addTransactions } = useTransactionsStore();
+        addTransactions(transformNimTransaction([tx]));
+        updateNimBalance(amount);
+    }, 1_500)
 }
 
 // #region BTC txs
@@ -725,6 +737,23 @@ function getUTXOToSpend(knownUtxos: Map<string, any>) {
 function insertFakeBtcTransactions(txs = defineBtcFakeTransactions()) {
     const { addTransactions } = useBtcTransactionsStore();
     addTransactions(txs);
+}
+
+/**
+ * Updates the BTC address balance by managing UTXOs
+ */
+function updateBtcBalance(amount: number): void {
+    const { patchAddress } = useBtcAddressStore();
+    patchAddress(demoBtcAddress, {
+        utxos: [{
+            index: 0,
+            transactionHash: 'btc-tx-1',
+            witness: {
+                script: 'script',
+                value: amount,
+            },
+        }]
+    });
 }
 
 // #endregion
@@ -1469,6 +1498,7 @@ function completeSwap(activeSwap: any) {
                 },
             };
             insertFakeNimTransactions(transformNimTransaction([tx]));
+            updateBtcBalance(-toAmount * 1e8);
             break;
         }
         case 'BTC': {
@@ -1481,6 +1511,7 @@ function completeSwap(activeSwap: any) {
                 recipientLabel: 'HTLC-ADDRESS',
             };
             insertFakeBtcTransactions(transformBtcTransaction([tx]));
+            // updateBtcBalance(-toAmount * 1e8);
             break;
         }
         // case 'USDC_MATIC': {
@@ -1532,6 +1563,7 @@ function completeSwap(activeSwap: any) {
                 },
             };
             insertFakeNimTransactions(transformNimTransaction([tx]));
+            // updateNimBalance(toAmount * 1e5);
             break;
         }
         case 'BTC': {

@@ -94,6 +94,7 @@ export const useDemoStore = createStore({
             rewriteDemoRoutes();
             setupVisualCues();
             addDemoModalRoutes();
+            disableSwapTriggers();
             interceptFetchRequest();
 
             setupDemoAddresses();
@@ -200,6 +201,18 @@ function setupVisualCues() {
         });
     });
 
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+}
+
+function disableSwapTriggers() {
+    const mutationObserver = new MutationObserver(() => {
+        const swapTriggers = document.querySelectorAll(
+            '.account-grid > :where(.nim-usdc-swap-button, .nim-btc-swap-button, .btc-usdc-swap-button, .account-backgrounds)'
+        ) as NodeListOf<HTMLDivElement>;
+        swapTriggers.forEach((trigger) => trigger.remove());
+        const pairSelection = document.querySelector('.pair-selection');
+        if (pairSelection) pairSelection.remove();
+    });
     mutationObserver.observe(document.body, { childList: true, subtree: true });
 }
 
@@ -1055,6 +1068,17 @@ const demoCSS = `
 .send-modal-footer .footer-notice {
     display: none;
 }
+
+.account-grid > button.reset,
+.account-grid > .nimiq-account {
+    background: #e7e8ea;
+    border-radius: 8px;
+    transition: background 0.2s var(--nimiq-ease);
+}
+
+.account-grid > button:where(:hover, :focus-visible) {
+    background: #dedee2 !important;
+}
 `;
 
 /**
@@ -1433,30 +1457,30 @@ function completeSwap(activeSwap: any) {
             insertFakeBtcTransactions(transformBtcTransaction([tx]));
             break;
         }
-        case 'USDC_MATIC': {
-            const tx: UsdcTransactionDefinition = {
-                fraction: 1,
-                daysAgo: 0,
-                description: `Swap ${fromAsset} to ${toAsset}`,
-                incoming: false,
-                recipientLabel: demoPolygonAddress,
-            };
+        // case 'USDC_MATIC': {
+        //     const tx: UsdcTransactionDefinition = {
+        //         fraction: 1,
+        //         daysAgo: 0,
+        //         description: `Swap ${fromAsset} to ${toAsset}`,
+        //         incoming: false,
+        //         recipientLabel: demoPolygonAddress,
+        //     };
 
-            insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
-            break;
-        }
-        case 'USDT_MATIC': {
-            const tx: UsdtTransactionDefinition = {
-                fraction: 1,
-                daysAgo: 0,
-                description: `Swap ${fromAsset} to ${toAsset}`,
-                incoming: false,
-                recipientLabel: demoPolygonAddress,
-            };
+        //     insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
+        //     break;
+        // }
+        // case 'USDT_MATIC': {
+        //     const tx: UsdtTransactionDefinition = {
+        //         fraction: 1,
+        //         daysAgo: 0,
+        //         description: `Swap ${fromAsset} to ${toAsset}`,
+        //         incoming: false,
+        //         recipientLabel: demoPolygonAddress,
+        //     };
 
-            insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
-            break;
-        }
+        //     insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
+        //     break;
+        // }
         default: {
             console.warn(`Unsupported asset type: ${fromAsset}`);
         }
@@ -1496,29 +1520,29 @@ function completeSwap(activeSwap: any) {
             insertFakeBtcTransactions(transformBtcTransaction([tx]));
             break;
         }
-        case 'USDC_MATIC': {
-            const tx: UsdcTransactionDefinition = {
-                fraction: 1,
-                daysAgo: 0,
-                description: `Swap ${fromAsset} to ${toAsset}`,
-                incoming: true,
-                recipientLabel: demoPolygonAddress,
-            };
-            insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
-            break;
-        }
-        case 'USDT_MATIC': {
-            const tx: UsdtTransactionDefinition = {
-                fraction: 1,
-                daysAgo: 0,
-                description: `Swap ${fromAsset} to ${toAsset}`,
-                incoming: true,
-                recipientLabel: demoPolygonAddress,
-            };
+        // case 'USDC_MATIC': {
+        //     const tx: UsdcTransactionDefinition = {
+        //         fraction: 1,
+        //         daysAgo: 0,
+        //         description: `Swap ${fromAsset} to ${toAsset}`,
+        //         incoming: true,
+        //         recipientLabel: demoPolygonAddress,
+        //     };
+        //     insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
+        //     break;
+        // }
+        // case 'USDT_MATIC': {
+        //     const tx: UsdtTransactionDefinition = {
+        //         fraction: 1,
+        //         daysAgo: 0,
+        //         description: `Swap ${fromAsset} to ${toAsset}`,
+        //         incoming: true,
+        //         recipientLabel: demoPolygonAddress,
+        //     };
 
-            insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
-            break;
-        }
+        //     insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
+        //     break;
+        // }
         default: {
             console.warn(`Unsupported asset type: ${toAsset}`);
         }
@@ -1535,7 +1559,7 @@ interface SetupSwapArgs {
     accountId: string;
     swapId: string;
     fund: {
-        type: 'BTC' | 'NIM' | 'USDC' | 'USDT',
+        type: 'BTC' | 'NIM' /*| 'USDC' | 'USDT' */,
         inputs: {
             address: string,
             transactionHash: string,
@@ -1553,7 +1577,7 @@ interface SetupSwapArgs {
         refundAddress: string,
     };
     redeem: {
-        type: 'BTC' | 'NIM' | 'USDC' | 'USDT',
+        type: 'BTC' | 'NIM' /*| 'USDC' | 'USDT' */,
         recipient: string,
         value: number,
         fee: number,

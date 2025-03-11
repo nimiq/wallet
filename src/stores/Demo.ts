@@ -110,7 +110,7 @@ export const useDemoStore = createStore({
             attachIframeListeners();
             replaceStakingFlow();
             replaceBuyNimFlow();
-            enableSendModalInDemoMode();
+            enableSellAndSwapModals();
 
             listenForSwapChanges();
         },
@@ -1058,10 +1058,7 @@ const demoCSS = `
 `;
 
 /**
- * Intercepts fetch request:
- * - fastspot.apiEndpoint will return a mock limit response
- * - estimate endpoint will return mock estimate response
- * - the rest of requests will be passed through
+ * Intercepts fetch request for swaps
  */
 function interceptFetchRequest() {
     const originalFetch = window.fetch;
@@ -1307,17 +1304,17 @@ function getNetworkFeePerUnit(asset: string): number {
  * Ensures the Send button in modals is always enabled in demo mode, regardless of network state.
  * This allows users to interact with the send functionality without waiting for network sync.
  */
-function enableSendModalInDemoMode() {
+function enableSellAndSwapModals() {
     const observer = new MutationObserver(() => {
-        // Target the send modal footer button
-        const sendButton = document.querySelector('.send-modal-footer .nq-button');
-        if (!sendButton) return;
+        // Target the send modal and swap footer button
+        const bottomButton = document.querySelector('.send-modal-footer .nq-button');
+        if (!bottomButton) return;
 
-        if (sendButton.hasAttribute('disabled')) {
-            sendButton.removeAttribute('disabled');
+        if (bottomButton.hasAttribute('disabled')) {
+            bottomButton.removeAttribute('disabled');
 
             // Also remove any visual indications of being disabled
-            sendButton.classList.remove('disabled');
+            bottomButton.classList.remove('disabled');
 
             // Also find and hide any sync message if shown
             const footer = document.querySelector('.send-modal-footer');

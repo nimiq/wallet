@@ -207,7 +207,7 @@ function setupVisualCues() {
 function disableSwapTriggers() {
     const mutationObserver = new MutationObserver(() => {
         const swapTriggers = document.querySelectorAll(
-            '.account-grid > :where(.nim-usdc-swap-button, .nim-btc-swap-button, .btc-usdc-swap-button, .account-backgrounds)'
+            '.account-grid > :where(.nim-usdc-swap-button, .nim-btc-swap-button, .btc-usdc-swap-button, .account-backgrounds)',
         ) as NodeListOf<HTMLDivElement>;
         swapTriggers.forEach((trigger) => trigger.remove());
         const pairSelection = document.querySelector('.pair-selection');
@@ -1559,7 +1559,7 @@ interface SetupSwapArgs {
     accountId: string;
     swapId: string;
     fund: {
-        type: 'BTC' | 'NIM' /*| 'USDC' | 'USDT' */,
+        type: 'BTC' | 'NIM' /* | 'USDC' | 'USDT' */,
         inputs: {
             address: string,
             transactionHash: string,
@@ -1577,7 +1577,7 @@ interface SetupSwapArgs {
         refundAddress: string,
     };
     redeem: {
-        type: 'BTC' | 'NIM' /*| 'USDC' | 'USDT' */,
+        type: 'BTC' | 'NIM' /* | 'USDC' | 'USDT' */,
         recipient: string,
         value: number,
         fee: number,

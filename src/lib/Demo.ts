@@ -1,5 +1,4 @@
 /* eslint-disable max-len, consistent-return, no-console, no-async-promise-executor */
-import { createStore } from 'pinia';
 import VueRouter from 'vue-router';
 import { TransactionState as ElectrumTransactionState } from '@nimiq/electrum-client';
 import { CryptoCurrency, Utf8Tools } from '@nimiq/utils';
@@ -17,13 +16,13 @@ import Config from 'config';
 import { FastspotAsset, FastspotLimits, FastspotUserLimits, ReferenceAsset, SwapAsset, SwapStatus } from '@nimiq/fastspot-api';
 import HubApi, { SetupSwapResult } from '@nimiq/hub-api';
 import { useConfig } from '@/composables/useConfig';
-import { useBtcAddressStore } from './BtcAddress';
-import { useContactsStore } from './Contacts';
-import { useBtcLabelsStore } from './BtcLabels';
-import { useUsdcContactsStore } from './UsdcContacts';
-import { useUsdtContactsStore } from './UsdtContacts';
-import { useFiatStore } from './Fiat';
-import { SwapState, useSwapsStore } from './Swaps';
+import { useBtcAddressStore } from '../stores/BtcAddress';
+import { useContactsStore } from '../stores/Contacts';
+import { useBtcLabelsStore } from '../stores/BtcLabels';
+import { useUsdcContactsStore } from '../stores/UsdcContacts';
+import { useUsdtContactsStore } from '../stores/UsdtContacts';
+import { useFiatStore } from '../stores/Fiat';
+import { SwapState, useSwapsStore } from '../stores/Swaps';
 
 export type DemoState = {
     active: boolean,
@@ -68,69 +67,39 @@ const onGoingSwaps = new Map<string, SetupSwapArgs>();
 // We keep a reference to the router here.
 let demoRouter: VueRouter;
 
-// #region Store definition
+// #region Main
 
 /**
- * Main store for the demo environment.
+ * Initializes the demo environment and sets up various routes, data, and watchers.
  */
-export const useDemoStore = createStore({
-    id: 'demo-store',
-    state: (): DemoState => ({
-        active: checkIfDemoIsActive(),
-    }),
-    getters: {
-        isDemoEnabled: (state) => state.active,
-    },
-    actions: {
-        /**
-         * Initializes the demo environment and sets up various routes, data, and watchers.
-         */
-        async initialize(router: VueRouter) {
-            console.warn('[Demo] Initializing demo environment...');
+export function dangerouslyInitializeDemo(router: VueRouter) {
+    console.warn('[Demo] Initializing demo environment...');
 
-            demoRouter = router;
+    demoRouter = router;
 
-            insertCustomDemoStyles();
-            rewriteDemoRoutes();
-            setupSingleMutationObserver();
-            addDemoModalRoutes();
-            interceptFetchRequest();
+    insertCustomDemoStyles();
+    rewriteDemoRoutes();
+    setupSingleMutationObserver();
+    addDemoModalRoutes();
+    interceptFetchRequest();
 
-            setupDemoAddresses();
-            setupDemoAccount();
+    setupDemoAddresses();
+    setupDemoAccount();
 
-            insertFakeNimTransactions();
-            insertFakeBtcTransactions();
+    insertFakeNimTransactions();
+    insertFakeBtcTransactions();
 
-            if (useConfig().config.polygon.enabled) {
-                insertFakeUsdcTransactions();
-                insertFakeUsdtTransactions();
-            }
+    if (useConfig().config.polygon.enabled) {
+        insertFakeUsdcTransactions();
+        insertFakeUsdtTransactions();
+    }
 
-            attachIframeListeners();
-            replaceStakingFlow();
-            replaceBuyNimFlow();
+    attachIframeListeners();
+    replaceStakingFlow();
+    replaceBuyNimFlow();
 
-            listenForSwapChanges();
-        },
-
-        /**
-         * Adds a pretend buy transaction to show a deposit coming in.
-        */
-        async buyDemoNim(amount: number) {
-            const tx: Partial<NimTransaction> = {
-                value: amount,
-                recipient: demoNimAddress,
-                sender: buyFromAddress,
-                data: {
-                    type: 'raw',
-                    raw: encodeTextToHex('Online Purchase'),
-                },
-            };
-            insertFakeNimTransactions(transformNimTransaction([tx]));
-        },
-    },
-});
+    listenForSwapChanges();
+}
 
 // #endregion
 
@@ -519,6 +488,20 @@ function transformNimTransaction(txs: Partial<NimTransaction>[]): NimTransaction
 function insertFakeNimTransactions(txs = defineNimFakeTransactions()) {
     const { addTransactions } = useTransactionsStore();
     addTransactions(transformNimTransaction(txs));
+}
+
+export function dangerouslyInsertFakeBuyNimTransaction(amount: number) {
+    const tx: Partial<NimTransaction> = {
+        value: amount,
+        recipient: demoNimAddress,
+        sender: buyFromAddress,
+        data: {
+            type: 'raw',
+            raw: encodeTextToHex('Online Purchase'),
+        },
+    };
+    const { addTransactions } = useTransactionsStore();
+    addTransactions(transformNimTransaction([tx]));
 }
 
 // #region BTC txs

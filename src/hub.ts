@@ -18,6 +18,7 @@ import type { PlainTransactionDetails } from '@nimiq/core';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
+import { DemoHubApi, checkIfDemoIsActive } from '@/lib/Demo';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
@@ -38,7 +39,6 @@ import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY 
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
-import { DemoHubApi, checkIfDemoIsActive } from './stores/Demo';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {

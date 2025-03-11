@@ -10,7 +10,7 @@
       <div class="flex-row">
 
        <AmountInput v-model="amount" :decimals="5">
-          <AmountMenu slot="suffix" class="ticker" currency="nim"  :open="amountMenuOpened"
+          <AmountMenu slot="suffix" class="ticker" :currency="CryptoCurrency.NIM"  :open="amountMenuOpened"
             :activeCurrency="activeCurrency" :fiatCurrency="fiatCurrency" :feeOption="false"
             :otherFiatCurrencies="otherFiatCurrencies"
             @click.native.stop="amountMenuOpened = !amountMenuOpened"
@@ -44,12 +44,10 @@ import AmountMenu from '@/components/AmountMenu.vue';
 import Modal from '@/components/modals/Modal.vue';
 import { useAccountStore } from '@/stores/Account';
 import { useFiatStore } from '@/stores/Fiat';
-import { FIAT_CURRENCIES_OFFERED } from '@/lib/Constants';
-// import { useTransactionsStore } from '@/stores/Transactions';
-import { useDemoStore } from '@/stores/Demo';
+import { FIAT_CURRENCIES_OFFERED, CryptoCurrency } from '@/lib/Constants';
+import { dangerouslyInsertFakeBuyNimTransaction } from '@/lib/Demo';
 import { useRouter } from '@/router';
 import HighFiveIcon from '@/components/icons/HighFiveIcon.vue';
-// import { useAddressStore } from '@/stores/Address';
 
 export default defineComponent({
     setup() {
@@ -62,12 +60,8 @@ export default defineComponent({
         const showOverlay = ref(false);
         const router = useRouter();
 
-        // const { activeAddressInfo } = useAddressStore();
-        // const maxSendableAmount = computed(() => Math.max((activeAddressInfo.value!.balance || 0), 0));
-        // const sendMax = () => amount.value = maxSendableAmount.value;
-
         function buyDummyNim() {
-            useDemoStore().buyDemoNim(amount.value);
+            dangerouslyInsertFakeBuyNimTransaction(amount.value);
             showOverlay.value = true;
             setTimeout(() => {
                 showOverlay.value = false;
@@ -83,7 +77,7 @@ export default defineComponent({
             amountMenuOpened,
             buyDummyNim,
             showOverlay,
-            // sendMax,
+            CryptoCurrency,
         };
     },
     components: {

@@ -17,7 +17,7 @@ import { launchElectrum } from './electrum';
 import { launchPolygon } from './ethers';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
-import { useDemoStore } from './stores/Demo';
+import { checkIfDemoIsActive, dangerouslyInitializeDemo } from './lib/Demo';
 import { useSettingsStore } from './stores/Settings';
 import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
@@ -49,9 +49,10 @@ Vue.use(VuePortal, { name: 'Portal' });
 
 async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
-    const { isDemoEnabled } = useDemoStore();
 
-    if (!isDemoEnabled.value) {
+    const isDemoEnabled = checkIfDemoIsActive();
+
+    if (!isDemoEnabled) {
         await initStorage(); // Must be awaited before starting Vue
         initTrials(); // Must be called after storage was initialized, can affect Config
         // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
@@ -62,7 +63,7 @@ async function start() {
 
         serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
     } else {
-        useDemoStore().initialize(router);
+        dangerouslyInitializeDemo(router);
     }
 
     // Update exchange rates every 2 minutes or every 10 minutes, depending on whether the Wallet is currently actively
@@ -102,13 +103,13 @@ async function start() {
     const { language } = useSettingsStore();
     loadLanguage(language.value);
 
-    if (!isDemoEnabled.value) {
+    if (!isDemoEnabled) {
         startSentry();
     }
 
     const { config } = useConfig();
 
-    if (isDemoEnabled.value) {
+    if (isDemoEnabled) {
         document.title = 'Nimiq Wallet Demo';
     } else if (config.environment !== ENV_MAIN) {
         document.title = 'Nimiq Testnet Wallet';
@@ -119,7 +120,7 @@ async function start() {
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
     });
 
-    if (!isDemoEnabled.value) {
+    if (!isDemoEnabled) {
         watch(() => {
             if (!config.oasis.apiEndpoint) return;
             initOasisApi(config.oasis.apiEndpoint);

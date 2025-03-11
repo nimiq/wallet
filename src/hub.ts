@@ -125,7 +125,7 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     processAndStoreAccounts(accounts);
 
     // Open optional Welcome modal, Bitcoin activation modal or USDC activation modal if appropriate.
-    await new Promise((resolve) => { router.onReady(resolve); });
+    await new Promise<void>((resolve) => { router.onReady(resolve); });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
     const { requestType } = accounts[0];
@@ -390,7 +390,7 @@ export async function syncFromHub() {
     // for Ledgers USDC would not be enabled automatically on logins and the activation reminder on every app start
     // would be annoying for the user.
     const { activeAccountInfo } = useAccountStore();
-    await new Promise((resolve) => { router.onReady(resolve); });
+    await new Promise<void>((resolve) => { router.onReady(resolve); });
     if (
         areOptionalRedirectsAllowed(router.currentRoute)
         && activeAccountInfo.value?.type === AccountType.BIP39 // Legacy accounts and Ledgers are not supported.
@@ -434,7 +434,7 @@ export async function onboard(asRedirect = false) {
     // automatically on login), optionally offer to activate it. After activation, the Bitcoin activation modal leads
     // into the Welcome modal if not shown yet.
     const { activeAccountInfo } = useAccountStore();
-    await new Promise((resolve) => { router.onReady(resolve); });
+    await new Promise<void>((resolve) => { router.onReady(resolve); });
     if (
         areOptionalRedirectsAllowed(router.currentRoute)
         && activeAccountInfo.value

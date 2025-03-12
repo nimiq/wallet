@@ -494,15 +494,15 @@ function insertFakeNimTransactions(txs = defineNimFakeTransactions()) {
  * Updates the NIM balance after a transaction
  */
 function updateNimBalance(amount: number): void {
-  const addressStore = useAddressStore();
-  const currentAddressInfo = addressStore.addressInfos.value.find(info => info.address === demoNimAddress);
-  
-  if (currentAddressInfo) {
-    const newBalance = (currentAddressInfo.balance || 0) + amount;
-    addressStore.patchAddress(demoNimAddress, { balance: newBalance });
-  } else {
-    console.error('[Demo] Failed to update NIM balance: Address not found');
-  }
+    const addressStore = useAddressStore();
+    const currentAddressInfo = addressStore.addressInfos.value.find((info) => info.address === demoNimAddress);
+
+    if (currentAddressInfo) {
+        const newBalance = (currentAddressInfo.balance || 0) + amount;
+        addressStore.patchAddress(demoNimAddress, { balance: newBalance });
+    } else {
+        console.error('[Demo] Failed to update NIM balance: Address not found');
+    }
 }
 
 export function dangerouslyInsertFakeBuyNimTransaction(amount: number) {
@@ -520,7 +520,7 @@ export function dangerouslyInsertFakeBuyNimTransaction(amount: number) {
         const { addTransactions } = useTransactionsStore();
         addTransactions(transformNimTransaction([tx]));
         updateNimBalance(amount);
-    }, 1_500)
+    }, 1_500);
 }
 
 // #region BTC txs
@@ -752,31 +752,31 @@ function insertFakeBtcTransactions(txs = defineBtcFakeTransactions()) {
 function updateBtcBalance(amount: number): void {
     const btcAddressStore = useBtcAddressStore();
     const addressInfo = btcAddressStore.state.addressInfos[demoBtcAddress];
-    
+
     if (!addressInfo) {
         console.error('[Demo] Failed to update BTC balance: Address not found');
         return;
     }
-    
+
     // Create a unique transaction hash
     const txHash = `btc-tx-swap-${Date.now().toString(16)}`;
-    
+
     // Create a proper UTXO with the correct format
     const newUtxo = {
         transactionHash: txHash,
         index: 0,
         witness: {
             script: 'script',
-            value: amount * 1e-6,    
+            value: amount * 1e-6,
         },
-        txoValue: amount * 1e-6,     
+        txoValue: amount * 1e-6,
     };
-    
+
     btcAddressStore.addAddressInfos([{
         address: demoBtcAddress,
         utxos: [...(addressInfo.utxos || []), newUtxo],
     }]);
-    
+
     console.log(`[Demo] Updated BTC balance, added UTXO with value: ${amount * 1e-6}`);
 }
 
@@ -1504,143 +1504,218 @@ function listenForSwapChanges() {
  * Completes an active swap by creating transactions for both sides of the swap
  */
 function completeSwap(activeSwap: any) {
+    // Generate a unique hash for this swap to connect both sides
+    const swapHash = `swap-${Math.random().toString(36).slice(2, 10)}`;
+
     // Add transactions for both sides of the swap
     const fromAsset = activeSwap.from.asset;
     const toAsset = activeSwap.to.asset;
     const fromAmount = activeSwap.from.amount;
     const toAmount = activeSwap.to.amount;
-    // const fromFee = activeSwap.from.fee || 0;
-    // const toFee = activeSwap.to.fee || 0;
+
+    const { setSwap } = useSwapsStore();
+    const now = Date.now();
+    const nowSecs = Math.floor(now / 1000);
 
     // Create outgoing transaction (from asset)
     switch (fromAsset) {
         case 'NIM': {
+            // Create a unique transaction hash for the NIM transaction
+            const nimTxHash = `nim-swap-${Math.random().toString(16).slice(2, 10)}`;
+
+            // Create HTLC data that would be needed for a real swap
+            const nimHtlcAddress = `NQ${Math.random().toString(36).slice(2, 34)}`;
+            const btcAddress = `1${Math.random().toString(36).slice(2, 34)}`;
+
+            // Register the swap with the Swaps store first
+            setSwap(swapHash, {
+                id: swapHash,
+                in: {
+                    asset: SwapAsset.NIM,
+                    transactionHash: nimTxHash,
+                    htlc: {
+                        address: nimHtlcAddress,
+                        refundAddress: demoNimAddress,
+                        redeemAddress: btcAddress,
+                        timeoutMs: now + 3600000,
+                    },
+                },
+                out: {
+                    asset: SwapAsset.BTC,
+                    transactionHash: `btc-swap-${Math.random().toString(16).slice(2, 10)}`,
+                    outputIndex: 0,
+                    htlc: {
+                        address: `1HTLC${Math.random().toString(36).slice(2, 30)}`,
+                        script: 'btc-htlc-script',
+                        refundAddress: btcAddress,
+                        redeemAddress: demoBtcAddress,
+                        timeoutTimestamp: nowSecs + 7200,
+                    },
+                },
+            });
+
+            // Create the NIM transaction with proper HTLC data
             const tx: Partial<NimTransaction> = {
-                value: -fromAmount,
-                recipient: 'HTLC-ADDRESS',
+                value: fromAmount,
+                recipient: nimHtlcAddress,
                 sender: demoNimAddress,
-                timestamp: Date.now(),
+                timestamp: now,
+                transactionHash: nimTxHash,
                 data: {
                     type: 'htlc',
-                    hashAlgorithm: '',
-                    hashCount: 0,
-                    hashRoot: '',
-                    raw: '',
-                    recipient: 'HTLC-ADDRESS',
+                    hashAlgorithm: 'sha256',
+                    hashCount: 1,
+                    hashRoot: swapHash,
+                    raw: encodeTextToHex(`Swap ${fromAsset}-${toAsset}`),
+                    recipient: nimHtlcAddress,
                     sender: demoNimAddress,
-                    timeout: 0,
+                    timeout: nowSecs + 3600,
                 },
             };
+
             insertFakeNimTransactions(transformNimTransaction([tx]));
-            updateNimBalance(-toAmount);
+            updateNimBalance(-fromAmount);
             break;
         }
         case 'BTC': {
+            // Create a unique transaction hash for the BTC transaction
+            const btcTxHash = `btc-swap-${Math.random().toString(16).slice(2, 10)}`;
+
+            // Create HTLC data structures
+            const btcHtlcAddress = `1HTLC${Math.random().toString(36).slice(2, 30)}`;
+            const nimAddress = `NQ${Math.random().toString(36).slice(2, 34)}`;
+
+            // Register the swap with the Swaps store
+            setSwap(swapHash, {
+                id: swapHash,
+                in: {
+                    asset: SwapAsset.BTC,
+                    transactionHash: btcTxHash,
+                    outputIndex: 0,
+                    htlc: {
+                        address: btcHtlcAddress,
+                        script: 'btc-htlc-script',
+                        refundAddress: demoBtcAddress,
+                        redeemAddress: nimAddress,
+                        timeoutTimestamp: nowSecs + 7200,
+                    },
+                },
+                out: {
+                    asset: SwapAsset.NIM,
+                    transactionHash: `nim-swap-${Math.random().toString(16).slice(2, 10)}`,
+                    htlc: {
+                        address: nimAddress,
+                        refundAddress: nimAddress,
+                        redeemAddress: demoNimAddress,
+                        timeoutMs: now + 3600000,
+                    },
+                },
+            });
+
+            // Create the BTC transaction definition
             const tx: BtcTransactionDefinition = {
-                address: 'HTLC-ADDRESS',
+                address: btcHtlcAddress,
                 daysAgo: 0,
                 description: `Swap ${fromAsset} to ${toAsset}`,
-                fraction: -fromAmount / btcInitialBalance,
+                fraction: fromAmount / btcInitialBalance,
                 incoming: false,
-                recipientLabel: 'HTLC-ADDRESS',
+                recipientLabel: 'Bitcoin HTLC',
             };
+
             insertFakeBtcTransactions(transformBtcTransaction([tx]));
-            updateBtcBalance(-toAmount);
+            updateBtcBalance(-fromAmount);
             break;
         }
-        // case 'USDC_MATIC': {
-        //     const tx: UsdcTransactionDefinition = {
-        //         fraction: 1,
-        //         daysAgo: 0,
-        //         description: `Swap ${fromAsset} to ${toAsset}`,
-        //         incoming: false,
-        //         recipientLabel: demoPolygonAddress,
-        //     };
-
-        //     insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
-        //     break;
-        // }
-        // case 'USDT_MATIC': {
-        //     const tx: UsdtTransactionDefinition = {
-        //         fraction: 1,
-        //         daysAgo: 0,
-        //         description: `Swap ${fromAsset} to ${toAsset}`,
-        //         incoming: false,
-        //         recipientLabel: demoPolygonAddress,
-        //     };
-
-        //     insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
-        //     break;
-        // }
         default: {
-            console.warn(`Unsupported asset type: ${fromAsset}`);
+            console.warn(`Unsupported asset type for swap: ${fromAsset}`);
         }
     }
 
     // Create incoming transaction (to asset)
     switch (toAsset) {
         case 'NIM': {
+            // Create a unique transaction hash for the NIM settlement transaction
+            const nimSettlementTxHash = `nim-settle-${Math.random().toString(16).slice(2, 10)}`;
+
+            // Get the existing swap data to ensure we're using the same addresses
+            const existingSwap = useSwapsStore().getSwap.value(swapHash);
+            if (!existingSwap || !existingSwap.out || existingSwap.out.asset !== SwapAsset.NIM) {
+                console.error('[Demo] Existing swap not found or incorrect structure');
+                return;
+            }
+
+            // Update the swap to include the settlement transaction hash
+            setSwap(swapHash, {
+                ...existingSwap,
+                out: {
+                    ...existingSwap.out,
+                    transactionHash: nimSettlementTxHash,
+                },
+            });
+
+            // Create the NIM settlement transaction
             const tx: Partial<NimTransaction> = {
                 value: toAmount,
                 recipient: demoNimAddress,
-                sender: 'HTLC-ADDRESS',
-                timestamp: Date.now(),
+                sender: existingSwap.out.htlc?.address || 'HTLC-ADDRESS',
+                timestamp: now + 1000, // Slightly after the funding tx
+                transactionHash: nimSettlementTxHash,
                 data: {
                     type: 'htlc',
-                    hashAlgorithm: '',
-                    hashCount: 0,
-                    hashRoot: '',
-                    raw: '',
+                    hashAlgorithm: 'sha256',
+                    hashCount: 1,
+                    hashRoot: swapHash,
+                    raw: encodeTextToHex(`Swap ${fromAsset}-${toAsset}`),
                     recipient: demoNimAddress,
-                    sender: 'HTLC-ADDRESS',
-                    timeout: 0,
+                    sender: existingSwap.out.htlc?.address || 'HTLC-ADDRESS',
+                    timeout: nowSecs + 3600,
                 },
             };
+
             insertFakeNimTransactions(transformNimTransaction([tx]));
             updateNimBalance(toAmount);
             break;
         }
         case 'BTC': {
+            // Create a unique transaction hash for the BTC settlement transaction
+            const btcSettlementTxHash = `btc-settle-${Math.random().toString(16).slice(2, 10)}`;
+
+            // Get the existing swap data
+            const existingSwap = useSwapsStore().getSwap.value(swapHash);
+            if (!existingSwap || !existingSwap.out || existingSwap.out.asset !== SwapAsset.BTC) {
+                console.error('[Demo] Existing swap not found or incorrect structure');
+                return;
+            }
+
+            // Update the swap to include the settlement transaction hash
+            setSwap(swapHash, {
+                ...existingSwap,
+                out: {
+                    ...existingSwap.out,
+                    transactionHash: btcSettlementTxHash,
+                },
+            });
+
+            // Create the BTC settlement transaction
             const tx: BtcTransactionDefinition = {
                 address: demoBtcAddress,
                 daysAgo: 0,
                 description: `Swap ${fromAsset} to ${toAsset}`,
                 fraction: toAmount / btcInitialBalance,
                 incoming: true,
-                recipientLabel: demoBtcAddress,
+                recipientLabel: 'BTC Settlement',
             };
+
             insertFakeBtcTransactions(transformBtcTransaction([tx]));
             updateBtcBalance(toAmount);
             break;
         }
-        // case 'USDC_MATIC': {
-        //     const tx: UsdcTransactionDefinition = {
-        //         fraction: 1,
-        //         daysAgo: 0,
-        //         description: `Swap ${fromAsset} to ${toAsset}`,
-        //         incoming: true,
-        //         recipientLabel: demoPolygonAddress,
-        //     };
-        //     insertFakeUsdcTransactions(transformUsdcTransaction([tx]));
-        //     break;
-        // }
-        // case 'USDT_MATIC': {
-        //     const tx: UsdtTransactionDefinition = {
-        //         fraction: 1,
-        //         daysAgo: 0,
-        //         description: `Swap ${fromAsset} to ${toAsset}`,
-        //         incoming: true,
-        //         recipientLabel: demoPolygonAddress,
-        //     };
-
-        //     insertFakeUsdtTransactions(transformUsdtTransaction([tx]));
-        //     break;
-        // }
         default: {
-            console.warn(`Unsupported asset type: ${toAsset}`);
+            console.warn(`Unsupported asset type for swap: ${toAsset}`);
         }
     }
-    console.log('Demo swap completed:', { fromAsset, toAsset, fromAmount, toAmount });
+
+    console.log('[Demo] Swap completed:', { swapHash, fromAsset, toAsset, fromAmount, toAmount });
 }
 
 const ignoreHubRequests = [

@@ -1010,14 +1010,14 @@ function replaceStakingFlow() {
                     const { setStake } = useStakingStore();
                     const { activeValidator } = useStakingStore();
                     const amountInput = document.querySelector('.nq-input') as HTMLInputElement;
-                    const amount = Number.parseFloat(amountInput.value.replaceAll(' ', '')) * 1e5;
+                    const amount = Number.parseFloat(amountInput.value.replaceAll(/[^\d]/g, '')) * 1e5;
 
                     const { address: validatorAddress } = activeValidator.value!;
                     demoRouter.push('/');
                     await new Promise<void>((resolve) => { window.setTimeout(resolve, 100); });
                     setStake({
-                        activeBalance: amount,
-                        inactiveBalance: nimInitialBalance - amount,
+                        activeBalance: 0,
+                        inactiveBalance: amount,
                         address: demoNimAddress,
                         retiredBalance: 0,
                         validator: validatorAddress,

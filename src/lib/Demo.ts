@@ -494,8 +494,15 @@ function insertFakeNimTransactions(txs = defineNimFakeTransactions()) {
  * Updates the NIM balance after a transaction
  */
 function updateNimBalance(amount: number): void {
-    const { patchAddress, accountBalance } = useAddressStore();
-    patchAddress(demoNimAddress, { balance: accountBalance.value + amount });
+  const addressStore = useAddressStore();
+  const currentAddressInfo = addressStore.addressInfos.value.find(info => info.address === demoNimAddress);
+  
+  if (currentAddressInfo) {
+    const newBalance = (currentAddressInfo.balance || 0) + amount;
+    addressStore.patchAddress(demoNimAddress, { balance: newBalance });
+  } else {
+    console.error('[Demo] Failed to update NIM balance: Address not found');
+  }
 }
 
 export function dangerouslyInsertFakeBuyNimTransaction(amount: number) {
@@ -740,20 +747,37 @@ function insertFakeBtcTransactions(txs = defineBtcFakeTransactions()) {
 }
 
 /**
- * Updates the BTC address balance by managing UTXOs
+ * Updates the BTC address balance by adding a new UTXO
  */
 function updateBtcBalance(amount: number): void {
-    const { patchAddress } = useBtcAddressStore();
-    patchAddress(demoBtcAddress, {
-        utxos: [{
-            index: 0,
-            transactionHash: 'btc-tx-1',
-            witness: {
-                script: 'script',
-                value: amount,
-            },
-        }]
-    });
+    const btcAddressStore = useBtcAddressStore();
+    const addressInfo = btcAddressStore.state.addressInfos[demoBtcAddress];
+    
+    if (!addressInfo) {
+        console.error('[Demo] Failed to update BTC balance: Address not found');
+        return;
+    }
+    
+    // Create a unique transaction hash
+    const txHash = `btc-tx-swap-${Date.now().toString(16)}`;
+    
+    // Create a proper UTXO with the correct format
+    const newUtxo = {
+        transactionHash: txHash,
+        index: 0,
+        witness: {
+            script: 'script',
+            value: amount * 1e-6,    
+        },
+        txoValue: amount * 1e-6,     
+    };
+    
+    btcAddressStore.addAddressInfos([{
+        address: demoBtcAddress,
+        utxos: [...(addressInfo.utxos || []), newUtxo],
+    }]);
+    
+    console.log(`[Demo] Updated BTC balance, added UTXO with value: ${amount * 1e-6}`);
 }
 
 // #endregion
@@ -1072,6 +1096,11 @@ const demoCSS = `
     display: none;
 }
 
+/* Hide address */
+.active-address .meta .copyable {
+    display: none !important;
+}
+
 #app > div > .wallet-status-button.nq-button-pill {
     display: none;
 }
@@ -1138,6 +1167,11 @@ const demoCSS = `
 
 .account-grid > button:where(:hover, :focus-visible) {
     background: #dedee2 !important;
+}
+
+/* Hide links and addresses to block explorer in the swap animation */
+.swap-animation :where(.short-address, .blue-link.nq-link) {
+    display: none !important;
 }
 `;
 
@@ -1498,7 +1532,7 @@ function completeSwap(activeSwap: any) {
                 },
             };
             insertFakeNimTransactions(transformNimTransaction([tx]));
-            updateBtcBalance(-toAmount * 1e8);
+            updateNimBalance(-toAmount);
             break;
         }
         case 'BTC': {
@@ -1511,7 +1545,7 @@ function completeSwap(activeSwap: any) {
                 recipientLabel: 'HTLC-ADDRESS',
             };
             insertFakeBtcTransactions(transformBtcTransaction([tx]));
-            // updateBtcBalance(-toAmount * 1e8);
+            updateBtcBalance(-toAmount);
             break;
         }
         // case 'USDC_MATIC': {
@@ -1563,7 +1597,7 @@ function completeSwap(activeSwap: any) {
                 },
             };
             insertFakeNimTransactions(transformNimTransaction([tx]));
-            // updateNimBalance(toAmount * 1e5);
+            updateNimBalance(toAmount);
             break;
         }
         case 'BTC': {
@@ -1576,6 +1610,7 @@ function completeSwap(activeSwap: any) {
                 recipientLabel: demoBtcAddress,
             };
             insertFakeBtcTransactions(transformBtcTransaction([tx]));
+            updateBtcBalance(toAmount);
             break;
         }
         // case 'USDC_MATIC': {

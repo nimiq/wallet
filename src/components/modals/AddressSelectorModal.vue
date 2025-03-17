@@ -1,10 +1,10 @@
 <template>
     <Modal>
         <PageHeader>
-            <template v-if="name === 'send'">
+            <template v-if="$route.name === 'send'">
                 {{ $t("Choose a Sender")}}
             </template>
-            <template v-else-if="name === 'receive'">
+            <template v-else-if="$route.name === 'receive'">
                 {{ $t("Choose a Recipient")}}
             </template>
             <template v-else>
@@ -25,7 +25,7 @@
 <script lang="ts">
 import { PageBody, PageHeader } from '@nimiq/vue-components';
 import { defineComponent } from '@vue/composition-api';
-import { useRouter } from '@/router';
+import { useRoute, useRouter } from '@/router';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import AddressList from '../AddressList.vue';
 import { useAccountStore } from '../../stores/Account';
@@ -37,13 +37,12 @@ export default defineComponent({
         const { stablecoin } = useAccountSettingsStore();
 
         const router = useRouter();
-        const { name } = router.currentRoute;
 
         function addressSelected() {
             disableNextModalTransition();
 
             router.push({
-                name: `${name}-${activeCurrency.value}`,
+                name: `${useRoute().name}-${activeCurrency.value}`,
                 params: {
                     // It has to be a string since it is a value encapsulated in Location.params
                     // which is Dictionary<string>. Using a 'false' value will lead to the same
@@ -54,7 +53,6 @@ export default defineComponent({
         }
 
         return {
-            name,
             addressSelected,
             hasBitcoinAddresses,
             hasPolygonAddresses,

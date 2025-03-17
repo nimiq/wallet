@@ -420,7 +420,6 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const router = useRouter();
         const { $t } = useI18n();
 
         const constants = {
@@ -691,7 +690,7 @@ export default defineComponent({
             if (!tx) return;
             const plainTx = await sendTransaction(tx as SignedTransaction);
             await nextTick();
-            router.replace({
+            useRouter().replace({
                 name: RouteName.Transaction,
                 params: { transactionHash: plainTx.transactionHash },
             });

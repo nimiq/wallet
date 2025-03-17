@@ -38,12 +38,11 @@ import { useAddressStore } from '../stores/Address';
 
 export default defineComponent({
     setup(props, context) {
-        const router = useRouter();
         const { activeAccountInfo } = useAccountStore();
         const { state: addressState } = useAddressStore();
 
         function openMenu() {
-            router.push({
+            useRouter().push({
                 name: `${useRoute().name}-accounts`,
                 query: { sidebar: 'true' },
             });

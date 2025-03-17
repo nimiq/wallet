@@ -20,7 +20,6 @@ import { onboard } from '../hub';
 
 export default defineComponent({
     setup(props, context) {
-        const router = useRouter();
         const { accountInfos } = useAccountStore();
         const { activeAddressInfo } = useAddressStore();
 
@@ -35,7 +34,7 @@ export default defineComponent({
             };
 
             const url = createRequestLink(multiAddressAccount.value!.addresses[0], options);
-            router.push(`/${url}`);
+            useRouter().push(`/${url}`);
             context.emit('click');
         }
 

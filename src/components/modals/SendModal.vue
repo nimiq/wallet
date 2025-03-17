@@ -861,10 +861,9 @@ export default defineComponent({
             }
         }
 
-        const router = useRouter();
         function back() {
             disableNextModalTransition();
-            router.back();
+            useRouter().back();
         }
 
         let successCloseTimeout = 0;

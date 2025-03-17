@@ -36,12 +36,10 @@ export default defineComponent({
         const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
         const { stablecoin } = useAccountSettingsStore();
 
-        const router = useRouter();
-
         function addressSelected() {
             disableNextModalTransition();
 
-            router.push({
+            useRouter().push({
                 name: `${useRoute().name}-${activeCurrency.value}`,
                 params: {
                     // It has to be a string since it is a value encapsulated in Location.params

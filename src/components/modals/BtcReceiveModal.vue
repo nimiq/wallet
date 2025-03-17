@@ -323,10 +323,9 @@ export default defineComponent({
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });
 
-        const router = useRouter();
         function back() {
             disableNextModalTransition();
-            router.back();
+            useRouter().back();
         }
 
         return {

@@ -393,7 +393,6 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const router = useRouter();
         const { $t } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
         const transaction = computed(() => useBtcTransactionsStore().state.transactions[props.hash]);
@@ -575,7 +574,7 @@ export default defineComponent({
             if (!tx) return;
             const plainTx = await sendTransaction(tx as SignedBtcTransaction);
             await nextTick();
-            router.replace({
+            useRouter().replace({
                 name: RouteName.BtcTransaction,
                 params: { transactionHash: plainTx.transactionHash },
             });

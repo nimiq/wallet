@@ -548,11 +548,10 @@ export default defineComponent({
         }
 
         const { btcUnit } = useSettingsStore();
-        const router = useRouter();
 
         function back() {
             disableNextModalTransition();
-            router.back();
+            useRouter().back();
         }
 
         return {

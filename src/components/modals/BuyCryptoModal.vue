@@ -470,8 +470,6 @@ export default defineComponent({
             && !isBelowOasisMinimum.value,
         );
 
-        const router = useRouter();
-
         onMounted(() => {
             if (!swap.value) {
                 fetchAssets();
@@ -489,7 +487,7 @@ export default defineComponent({
             } else if (page.value === Pages.BANK_CHECK) {
                 goBack();
             } else {
-                router.back();
+                useRouter().back();
             }
         }
 

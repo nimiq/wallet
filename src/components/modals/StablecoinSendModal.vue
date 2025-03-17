@@ -715,11 +715,10 @@ export default defineComponent({
             statusScreenOpened.value = false;
         }
 
-        const router = useRouter();
         function back() {
             if (page.value === initialPage) {
                 disableNextModalTransition();
-                router.back();
+                useRouter().back();
             } else if (page.value === Pages.RECIPIENT_INPUT) {
                 page.value = Pages.WARNING;
             } else if (page.value === Pages.AMOUNT_INPUT) {

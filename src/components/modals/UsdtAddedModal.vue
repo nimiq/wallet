@@ -39,7 +39,6 @@ import { useWindowSize } from '../../composables/useWindowSize';
 export default defineComponent({
     name: 'usdt-added-modal',
     setup() {
-        const router = useRouter();
         const modal$ = ref<Modal>(null);
 
         useAccountSettingsStore().setKnowsAboutUsdt(true);
@@ -51,7 +50,7 @@ export default defineComponent({
             useAccountStore().setActiveCurrency(CryptoCurrency.USDC);
             await modal$.value?.forceClose();
             if (isMobile.value) {
-                router.push('/transactions');
+                useRouter().push('/transactions');
             }
         }
 

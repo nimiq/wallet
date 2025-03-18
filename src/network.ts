@@ -30,6 +30,7 @@ export async function getNetworkClient() {
         const clientConfig = new ClientConfiguration();
         clientConfig.network(config.environment === ENV_MAIN ? 'mainalbatross' : 'testalbatross');
         clientConfig.seedNodes(config.nimiqSeeds);
+        clientConfig.syncMode('pico');
         clientConfig.logLevel('debug');
         return Client.create(clientConfig.build());
     })();

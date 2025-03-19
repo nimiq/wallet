@@ -822,6 +822,11 @@ export default defineComponent({
         margin-top: -1.5rem;
         margin-bottom: -1.5rem;
 
+        & ::v-deep .tooltip-box {
+            padding: 0.75rem 1.25rem;
+            font-size: var(--body-size);
+        }
+
         &.btc-usdc-swap-button {
             margin-top: -2.5rem;
         }

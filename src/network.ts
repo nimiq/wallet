@@ -3,6 +3,7 @@ import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
+import { checkIfDemoIsActive } from '@/lib/Demo';
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
@@ -119,7 +120,7 @@ export async function launchNetwork() {
     network$.fetchingTxHistory--;
 
     async function updateBalances(addresses: string[] = [...balances.keys()]) {
-        if (!addresses.length) return;
+        if (!addresses.length || checkIfDemoIsActive()) return;
         await client.waitForConsensusEstablished();
         const accounts = await retry(() => client.getAccounts(addresses)).catch(reportFor('getAccounts'));
         if (!accounts) return;
@@ -304,6 +305,7 @@ export async function launchNetwork() {
     })();
 
     function transactionListener(plain: PlainTransactionDetails) {
+        if (checkIfDemoIsActive()) return;
         if (plain.recipient === STAKING_CONTRACT_ADDRESS) {
             if (plain.data.type === 'add-stake') {
                 if (!balances.has(plain.sender) && 'staker' in plain.data) {
@@ -341,6 +343,7 @@ export async function launchNetwork() {
     }
 
     function subscribe(addresses: string[]) {
+        if (checkIfDemoIsActive()) return false;
         client.addTransactionListener(transactionListener, addresses);
         updateBalances(addresses);
         updateStakes(addresses);
@@ -350,6 +353,7 @@ export async function launchNetwork() {
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
     watch(addressStore.addressInfos, () => {
+        if (checkIfDemoIsActive()) return;
         const newAddresses: string[] = [];
         const removedAddresses = new Set(subscribedAddresses);
 
@@ -381,6 +385,7 @@ export async function launchNetwork() {
 
     // Fetch transactions for active address
     watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress, trigger]) => {
+        if (checkIfDemoIsActive()) return;
         const address = activeAddress as string | null;
         if (!address || fetchedAddresses.value.includes(address)) return;
         addFetchedAddress(address);
@@ -429,6 +434,7 @@ export async function launchNetwork() {
     // Fetch transactions for proxies
     const proxyStore = useProxyStore();
     watch(proxyStore.networkTrigger, () => {
+        if (checkIfDemoIsActive()) return;
         const newProxies: string[] = [];
         const addressesToSubscribe: string[] = [];
         for (const proxyAddress of proxyStore.allProxies.value) {

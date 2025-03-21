@@ -1,16 +1,30 @@
 <template>
     <div class="staking-overview">
-        <div class="staking-container flex-row nq-green-bg" @click="openStakingModal">
+        <div class="staking-container flex-row nq-green-bg" @click="openStakingModal" :key="stake && stake.address">
             <div class="staking-info flex-row">
                 <RoundStakingIcon />
                 <div class="staking-amounts flex-column">
                     <div class="amount-row flex-row">
-                        <Amount :amount="(stake && stake.activeBalance) || 0" value-mask/> staked
+                        <Amount :amount="stakedBalance" value-mask/> staked
                     </div>
-                    <div class="details-row flex-row">
-                        <FiatConvertedAmount :amount="(stake && stake.activeBalance) || 0" value-mask/>
-                        <span class="dot"></span>
-                        <span>{{ percentage }}%</span>
+                    <div class="details-row flex-row" :class="{
+                        'full-opacity': stake && (stake.inactiveBalance || stake.retiredBalance),
+                    }">
+                        <template v-if="stake && (
+                            (stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance
+                        )">
+                            <CircleExclamationMarkIcon /> {{ $t('Payout ready')}}
+                        </template>
+                        <template v-else-if="stake && stake.inactiveBalance">
+                            <CircleArrowDownIcon /> {{ $t('Unstaking')}}
+                            <span class="dot"></span>
+                            <span>{{ inactiveReleaseTime }} left</span>
+                        </template>
+                        <template v-else>
+                            <FiatConvertedAmount :amount="stakedBalance" value-mask/>
+                            <span class="dot"></span>
+                            <span>{{ percentage }}%</span>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -63,19 +77,48 @@ import ValidatorIcon from './ValidatorIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
+import { useNetworkStore } from '../../stores/Network';
+import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
+import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
 
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
         const router = useRouter();
+        const { height } = useNetworkStore();
 
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value ? stake.value.activeBalance : 0);
+        const stakedBalance = computed(() => stake.value
+            ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance
+            : 0);
 
         const percentage = computed(() => Math.round((
-            stakedBalance.value / (availableBalance.value + stakedBalance.value + (stake.value?.inactiveBalance || 0))
+            stakedBalance.value / (availableBalance.value + stakedBalance.value)
         ) * 100));
+
+        const inactiveReleaseTime = computed(() => {
+            if (stake.value?.inactiveRelease) {
+                // TODO: Take validator jail release into account
+                const secondsRemaining = stake.value.inactiveRelease - height.value;
+                const date = new Date(Date.UTC(0, 0, 0, 0, 0, secondsRemaining));
+                const hours = date.getUTCHours().toString().padStart(2, '0');
+                const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+                const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+                return [
+                    ...(hours !== '' ? [hours] : []),
+                    minutes,
+                    seconds,
+                ].join(':');
+            }
+
+            return '00:00';
+        });
+
+        const hasUnstakableStake = computed(() => {
+            if (!stake.value?.inactiveBalance) return false;
+            return height.value > stake.value.inactiveRelease!;
+        });
 
         const openStakingModal = () => {
             router.push({ name: 'staking' });
@@ -85,7 +128,10 @@ export default defineComponent({
             stake,
             validator,
             restakingRewards,
+            stakedBalance,
             percentage,
+            inactiveReleaseTime,
+            hasUnstakableStake,
             openStakingModal,
         };
     },
@@ -97,6 +143,8 @@ export default defineComponent({
         ValidatorTrustScore,
         ValidatorReward,
         ShortAddress,
+        CircleArrowDownIcon,
+        CircleExclamationMarkIcon,
     },
 });
 </script>
@@ -155,7 +203,7 @@ export default defineComponent({
 
 .staking-info {
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
 
     .nq-icon {
         font-size: 3.25rem;
@@ -179,7 +227,7 @@ export default defineComponent({
     .amount-row {
         font-size: var(--body-size);
         font-weight: bold;
-        line-height: 1.2;
+        line-height: 2.5rem;
         align-items: center;
         gap: 0.5rem;
 
@@ -191,9 +239,14 @@ export default defineComponent({
     .details-row {
         font-size: var(--small-size);
         font-weight: 600;
+        line-height: 2.5rem;
         opacity: 0.7;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
+
+        &.full-opacity {
+            opacity: 1;
+        }
     }
 }
 
@@ -280,7 +333,6 @@ export default defineComponent({
     height: 3px;
     border-radius: 50%;
     background-color: currentColor;
-    margin: 0 0.25rem;
 }
 
 .staking-container ::v-deep .amount::after {

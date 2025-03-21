@@ -57,7 +57,7 @@ export default defineComponent({
         showText: {
             type: Boolean,
             required: false,
-            default: false,
+            default: true,
         },
     },
     setup() {

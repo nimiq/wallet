@@ -133,7 +133,6 @@ export default defineComponent({
 
 .container {
     width: 100%;
-    padding-right: 1rem;
     min-width: 5.5rem;
 }
 
@@ -270,8 +269,7 @@ input {
 </style>
 
 <style>
-.actions-mobile:has(.search-bar:focus-within)
-.container ~ :is(.reset.icon-button,.staking-button,button:has(.cashlink-button)) {
+.actions-mobile:has(.search-bar:focus-within) .container ~ :is(.reset.icon-button, .staking-button, .cashlink-button) {
    display: none;
 }
 </style>

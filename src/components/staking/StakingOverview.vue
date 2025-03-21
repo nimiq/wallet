@@ -2,7 +2,7 @@
     <div class="staking-overview">
         <div class="staking-container flex-row nq-green-bg" @click="openStakingModal">
             <div class="staking-info flex-row">
-                <TwoLeafStakingIcon />
+                <RoundStakingIcon />
                 <div class="staking-amounts flex-column">
                     <div class="amount-row flex-row">
                         <Amount :amount="(stake && stake.activeBalance) || 0" value-mask/> staked
@@ -15,34 +15,34 @@
                 </div>
             </div>
 
-            <div class="rewards flex-row">
+            <div v-if="restakingRewards" class="rewards flex-row">
                 <div class="rewards-amounts flex-column">
                     <div class="amount-row flex-row">
-                        +<Amount :amount="restakingRewards || 0" value-mask/>
+                        +<Amount :amount="restakingRewards" value-mask/>
                     </div>
                     <div class="details-row flex-row">
-                        <FiatConvertedAmount :amount="restakingRewards || 0" value-mask/>
+                        <FiatConvertedAmount :amount="restakingRewards" value-mask/>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="validator-container flex-row">
+        <div v-if="validator" class="validator-container flex-row">
             <div class="validator-details flex-column">
                 <div class="validator-name">
-                    <ValidatorIcon v-if="validator" :validator="validator" class="nq-icon" />
-                    <template v-if="validator && 'name' in validator">{{ validator.name }}</template>
-                    <template v-else>{{ $t('Validator Name') }}</template>
+                    <ValidatorIcon :validator="validator" class="nq-icon" />
+                    <template v-if="'name' in validator">{{ validator.name }}</template>
+                    <template v-else><ShortAddress :address="validator.address" /></template>
                 </div>
                 <div class="validator-stats flex-row">
                     <ValidatorTrustScore
-                        v-if="validator && 'score' in validator && typeof validator.score.total === 'number'"
+                        v-if="'score' in validator && typeof validator.score.total === 'number'"
                         :score="validator.score.total"
                         borderless
                     />
-                    <span class="dot"></span>
+                    <span v-if="'score' in validator || 'annualReward' in validator" class="dot"></span>
                     <ValidatorReward
-                        v-if="validator && 'annualReward' in validator"
+                        v-if="'annualReward' in validator"
                         :reward="validator.annualReward"
                     />
                 </div>
@@ -58,10 +58,11 @@ import { useAddressStore } from '../../stores/Address';
 import { useRouter } from '../../router';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
+import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
+import ShortAddress from '../ShortAddress.vue';
 
 export default defineComponent({
     setup() {
@@ -91,10 +92,11 @@ export default defineComponent({
     components: {
         Amount,
         FiatConvertedAmount,
-        TwoLeafStakingIcon,
+        RoundStakingIcon,
         ValidatorIcon,
         ValidatorTrustScore,
         ValidatorReward,
+        ShortAddress,
     },
 });
 </script>
@@ -134,6 +136,7 @@ export default defineComponent({
     flex-grow: 1;
     cursor: pointer;
     transition: transform 0.2s;
+    will-change: transform;
     height: 9rem;
 
     &:hover, &:focus {
@@ -174,7 +177,7 @@ export default defineComponent({
 
 .staking-amounts, .rewards-amounts {
     .amount-row {
-        font-size: var(--h2-size);
+        font-size: var(--body-size);
         font-weight: bold;
         line-height: 1.2;
         align-items: center;

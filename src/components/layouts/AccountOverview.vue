@@ -45,8 +45,6 @@
         <template v-else>
             <AccountBalance />
 
-            <!-- <StakingSummaryMobile v-if="isMobile && !totalAccountStake && nimAccountBalance" /> -->
-
             <div class=account-grid>
                 <div class="nimiq-background">
                     <div class="nimiq-account" ref="nimiqAccount$"
@@ -325,7 +323,6 @@ import LegacyAccountUpgradeButton from '../LegacyAccountUpgradeButton.vue';
 import LegacyAccountNoticeModal from '../modals/LegacyAccountNoticeModal.vue';
 // import OasisLaunchModal from '../swap/OasisLaunchModal.vue';
 import AttentionDot from '../AttentionDot.vue';
-// import StakingSummaryMobile from '../staking/StakingSummaryMobile.vue';
 import { backup, addAddress } from '../../hub';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useBtcAddressStore } from '../../stores/BtcAddress';

@@ -60,13 +60,12 @@
                 <div class="row flex-row">
                     <div class="col flex-grow">
                         <div class="amount-staked">
-                            <Amount :amount="stake.activeBalance" value-mask/>
+                            <Amount :amount="stakedBalance" value-mask/>
                         </div>
                         <div class="amount-staked-fiat flex-row">
-                            <FiatConvertedAmount :amount="stake.activeBalance" value-mask/>
-                            <span v-if="restakingRewards" class="nq-green flex-row">
-                                +<FiatConvertedAmount :amount="restakingRewards" value-mask/>
-                            </span>
+                            <FiatConvertedAmount :amount="stakedBalance" value-mask/>
+                            <span class="dot"></span>
+                            <span>{{ percentage }}%</span>
                         </div>
                     </div>
                     <div class="flex-row">
@@ -80,13 +79,13 @@
                         </Tooltip>
                     </div>
                 </div>
-                <div v-if="stake && stake.inactiveBalance && hasUnstakableStake"
+                <div v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)"
                     class="unstaking row flex-row nq-light-blue"
                 >
                     <span class="nq-button-pill payout-amount">
-                        <Amount :amount="stake.inactiveBalance" value-mask/>
+                        <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask/>
                     </span>
-                    <button class="nq-button-pill light-blue" @click="() => unstakeAll()">
+                    <button class="nq-button-pill light-blue" @click="() => unstakeAll(!!stake.retiredBalance)">
                         Pay out <ArrowRightSmallIcon />
                     </button>
                     <div class="flex-grow"></div>
@@ -104,22 +103,6 @@
                         <!-- TODO: Add cancel function -->
                     </button>
                     <div class="flex-grow"></div>
-                </div>
-                <div v-if="stake && stake.retiredBalance"
-                    class="unstaking row flex-row nq-light-blue"
-                >
-                    <span class="nq-button-pill payout-amount">
-                        <Amount :amount="stake.retiredBalance" value-mask/>
-                    </span>
-                    <button class="nq-button-pill light-blue"
-                        @click="() => unstakeAll(true)"
-                        :disabled="consensus !== 'established'"
-                    >
-                        Pay out <ArrowRightSmallIcon />
-                    </button>
-                    <div class="flex-grow"></div>
-                    <!-- <p>{{ $t('Auto-payout failed, please pay out manually.') }}</p> -->
-                    <!-- TODO: Setup watch tower for auto payout -->
                 </div>
             </div>
 
@@ -210,11 +193,13 @@ export default defineComponent({
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value ? stake.value.activeBalance : 0);
+        const stakedBalance = computed(() => stake.value
+            ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance
+            : 0);
 
-        const percentage = computed(() => (
-            stakedBalance.value / (availableBalance.value + stakedBalance.value + (stake.value?.inactiveBalance || 0))
-        ) * 100);
+        const percentage = computed(() => Math.round((
+            stakedBalance.value / (availableBalance.value + stakedBalance.value)
+        ) * 100));
 
         const inactiveReleaseTime = computed(() => {
             if (stake.value?.inactiveRelease) {
@@ -452,6 +437,7 @@ export default defineComponent({
             stake,
             validator,
             restakingRewards,
+            stakedBalance,
             percentage,
             inactiveReleaseTime,
             hasUnstakableStake,
@@ -587,6 +573,7 @@ export default defineComponent({
         line-height: 1;
         gap: 0.5rem;
         flex-wrap: wrap;
+        align-items: center;
     }
 
     .unstaking {
@@ -757,4 +744,12 @@ export default defineComponent({
             font-size: var(--small-size);
         }
     }
+
+.dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: currentColor;
+    margin: 0 0.25rem;
+}
 </style>

@@ -714,13 +714,13 @@ export default defineComponent({
             margin-left: 2rem;
         }
 
-        @media (max-width: 700px) { // Full mobile breakpoint
-            &.flex-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1.75rem;
-            }
-        }
+        // @media (max-width: 700px) { // Full mobile breakpoint
+        //     &.flex-row {
+        //         flex-direction: column;
+        //         align-items: flex-start;
+        //         gap: 1.75rem;
+        //     }
+        // }
     }
 
     .switch-validator {

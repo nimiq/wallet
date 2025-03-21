@@ -29,8 +29,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .validator-icon {
     --size: 5.5rem;
-    width: var(--size);
-    height: var(--size);
+    width: var(--size) !important;
+    height: var(--size) !important;
     display: block;
     object-fit: contain;
 }

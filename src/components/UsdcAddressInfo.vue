@@ -2,7 +2,7 @@
     <div class="reset usdc-address-info flex-column" v-on="$listeners">
         <div class="crypto-logo-container">
             <UsdcIcon v-if="isOwnAddress && stablecoin === CryptoCurrency.USDC" :class="{'nq-blue': dark}" />
-            <UsdtIcon v-if="isOwnAddress && stablecoin === CryptoCurrency.USDT" />
+            <UsdtIcon v-else-if="isOwnAddress && stablecoin === CryptoCurrency.USDT" />
             <Avatar v-else :label="localLabel || ''"/>
         </div>
         <input type="text" class="nq-input-s vanishing"

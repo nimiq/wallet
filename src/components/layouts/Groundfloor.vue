@@ -26,13 +26,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
-import { useRoute } from '@/router';
+import { useRouter } from '@/router';
 
 export default defineComponent({
     setup() {
+        const router = useRouter();
         const preventNextTransition = ref(false);
 
-        watch(() => useRoute(), (to) => {
+        watch(() => router.currentRoute, (to) => {
             preventNextTransition.value = to.name === 'network';
         }, { lazy: true });
 

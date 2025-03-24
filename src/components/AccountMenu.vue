@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { Identicon, MenuDotsIcon } from '@nimiq/vue-components';
-import { useRoute, useRouter } from '@/router';
+import { useRouter } from '@/router';
 
 import LoginFileIcon from './icons/LoginFileIcon.vue';
 import LedgerIcon from './icons/LedgerIcon.vue';
@@ -44,7 +44,7 @@ export default defineComponent({
 
         function openMenu() {
             router.push({
-                name: `${useRoute().name}-accounts`,
+                name: `${router.currentRoute.name}-accounts`,
                 query: { sidebar: 'true' },
             });
         }
@@ -56,7 +56,7 @@ export default defineComponent({
             && addressState.addressInfos[activeAccountInfo.value.addresses[0]]);
 
         function goToAccount(testForMenuOpening = true) {
-            if (testForMenuOpening && useRoute().name === 'root') {
+            if (testForMenuOpening && router.currentRoute.name === 'root') {
                 openMenu();
                 return;
             }

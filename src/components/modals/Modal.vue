@@ -28,7 +28,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
-import { useRoute, useRouter } from '@/router';
+import { useRouter } from '@/router';
 import { nextTick } from '@/lib/nextTick';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwipes } from '../../composables/useSwipes';
@@ -89,7 +89,7 @@ const Modal = defineComponent({
             // For example: choose a sender via AddressSelectorModal -> open qr scanner from SendModal -> after scan in
             // ScanQrModal return to SendModal -> abort the action in SendModal
 
-            while (useRoute().matched.find((routeRecord) => 'modal' in routeRecord.components
+            while (router.currentRoute.matched.find((routeRecord) => 'modal' in routeRecord.components
                 || 'persistent-modal' in routeRecord.components
                 || Object.values(routeRecord.components).some((component) => /modal/i.test(
                     'name' in component ? component.name as string : '')))

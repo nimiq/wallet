@@ -337,12 +337,12 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
     }
 }
 
-function areOptionalRedirectsAllowed(route: Route) {
+function areOptionalRedirectsAllowed(currentRoute: Route) {
     // Do not perform optional redirects if we're on any other modal or page already, other than the root page or the
     // account menu open on root. Notably, don't intercept payment flows by payment request links and do not open modals
     // while on /network or /settings because the optional modals we're opening here live on root as parent page (which
     // we could navigate to first of course, but here prefer not to; also see Sidebar.vue for further explanation).
-    return route.name && /^root(?:-accounts)?$/.test(route.name);
+    return currentRoute.name && /^root(?:-accounts)?$/.test(currentRoute.name);
 }
 
 export async function syncFromHub() {

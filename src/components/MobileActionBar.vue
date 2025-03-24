@@ -19,7 +19,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { useConfig } from '@/composables/useConfig';
-import { useRouter, RouteName, useRoute } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import { AddressType, useAddressStore } from '../stores/Address';
 import { useAccountStore } from '../stores/Account';
 import { CryptoCurrency } from '../lib/Constants';
@@ -89,7 +89,7 @@ export default defineComponent({
 
         const sendDisabled = computed(() => {
             if (config.disableNetworkInteraction && activeCurrency.value === CryptoCurrency.NIM) return true;
-            return useRoute().path !== '/' && nimOrBtcOrStable(
+            return router.currentRoute.path !== '/' && nimOrBtcOrStable(
                 !activeAddressInfo.value || !activeAddressInfo.value.balance,
                 !btcBalance.value,
                 (stablecoin.value === CryptoCurrency.USDC

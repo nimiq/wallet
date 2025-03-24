@@ -2,7 +2,7 @@
     <div class="network nq-blue-bg" :class="{'no-footer': !$config.enableBitcoin && !$config.polygon.enabled }">
         <div class="menu-bar full-width flex-row">
             <button class="reset menu-button"
-                @click="$router.push({ name: 'network', query: { sidebar: !$route.query.sidebar } })">
+                @click="$router.push({ name: 'network', query: { sidebar: !router.currentRoute.query.sidebar } })">
                 <MenuIcon/>
                 <AttentionDot v-if="updateAvailable"/>
             </button>
@@ -104,6 +104,7 @@ import MenuIcon from '../icons/MenuIcon.vue';
 import NetworkInfoModal from '../modals/NetworkInfoModal.vue';
 import AttentionDot from '../AttentionDot.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import router from '../../router';
 
 const LOCALSTORAGE_KEY = 'network-info-dismissed';
 
@@ -195,6 +196,7 @@ export default defineComponent({
             consensusStateString,
             btcFee,
             polygonFee,
+            router,
             stablecoin,
         };
     },

@@ -637,7 +637,3 @@ export function useRouter(): VueRouter {
     if (!injectedRouter) throw new Error('Router was not provided.');
     return injectedRouter;
 }
-
-export function useRoute(): Route {
-    return useRouter().currentRoute;
-}

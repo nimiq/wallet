@@ -66,7 +66,7 @@ import {
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
-import { useRouter, RouteName, useRoute } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
@@ -423,7 +423,7 @@ export default defineComponent({
                         });
 
                         // Open Swap modal to show payment instructions to user if not already open
-                        if (useRoute().name !== 'buy-crypto') router.push('buy-crypto');
+                        if (router.currentRoute.name !== 'buy-crypto') router.push('buy-crypto');
 
                         // Wait for OASIS HTLC to be funded out-of-band
                         const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
@@ -920,7 +920,7 @@ export default defineComponent({
                     }
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in a swap modal
-                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(useRoute().name!)) return;
+                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(router.currentRoute.name!)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }

@@ -289,7 +289,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "添加联络人"
 
-#: src/lib/StakingUtils.ts:98
+#: src/lib/StakingUtils.ts:95
 msgid "Add stake"
 msgstr ""
 
@@ -769,7 +769,7 @@ msgstr "连接到更高兑换限额的 TEN31 通行证"
 msgid "Connected to"
 msgstr "已连接至"
 
-#: src/components/layouts/Network.vue:120
+#: src/components/layouts/Network.vue:119
 msgid "connecting"
 msgstr "連接中"
 
@@ -834,7 +834,7 @@ msgstr ""
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:413
+#: src/components/modals/UsdcTransactionModal.vue:412
 #: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
@@ -880,7 +880,7 @@ msgstr "创建一个新的一次性地址"
 msgid "Create request link"
 msgstr "创建请求链接"
 
-#: src/lib/StakingUtils.ts:47
+#: src/lib/StakingUtils.ts:50
 msgid "Create validator"
 msgstr ""
 
@@ -918,7 +918,7 @@ msgstr "信用卡"
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:57
+#: src/lib/StakingUtils.ts:62
 msgid "Deactivate validator"
 msgstr ""
 
@@ -1096,7 +1096,7 @@ msgstr ""
 msgid "Error:"
 msgstr "错误:"
 
-#: src/components/layouts/Network.vue:121
+#: src/components/layouts/Network.vue:120
 msgid "established"
 msgstr "已建立"
 
@@ -1154,7 +1154,7 @@ msgstr "快速"
 msgid "Failed"
 msgstr "失败"
 
-#: src/components/modals/StablecoinSendModal.vue:758
+#: src/components/modals/StablecoinSendModal.vue:757
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1364,10 +1364,10 @@ msgstr "更高层面的去中心化"
 msgid "Historic value"
 msgstr "历史价值"
 
-#: src/components/modals/BtcTransactionModal.vue:471
-#: src/components/modals/TransactionModal.vue:542
-#: src/components/modals/UsdcTransactionModal.vue:409
-#: src/components/modals/UsdtTransactionModal.vue:388
+#: src/components/modals/BtcTransactionModal.vue:470
+#: src/components/modals/TransactionModal.vue:541
+#: src/components/modals/UsdcTransactionModal.vue:408
+#: src/components/modals/UsdtTransactionModal.vue:387
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:193
 #: src/composables/useUsdcTransactionInfo.ts:148
@@ -1375,11 +1375,11 @@ msgstr "历史价值"
 msgid "HTLC Creation"
 msgstr "HTLC创建"
 
-#: src/components/modals/BtcTransactionModal.vue:471
-#: src/components/modals/TransactionModal.vue:557
-#: src/components/modals/TransactionModal.vue:563
-#: src/components/modals/UsdcTransactionModal.vue:409
-#: src/components/modals/UsdtTransactionModal.vue:388
+#: src/components/modals/BtcTransactionModal.vue:470
+#: src/components/modals/TransactionModal.vue:556
+#: src/components/modals/TransactionModal.vue:562
+#: src/components/modals/UsdcTransactionModal.vue:408
+#: src/components/modals/UsdtTransactionModal.vue:387
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:208
 #: src/composables/useTransactionInfo.ts:214
@@ -1388,7 +1388,7 @@ msgstr "HTLC创建"
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
-#: src/components/modals/TransactionModal.vue:546
+#: src/components/modals/TransactionModal.vue:545
 #: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
@@ -1423,7 +1423,7 @@ msgstr "身份文件"
 msgid "If in doubt, you can always check your balance at {nimiqWatchLink}"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:229
+#: src/components/swap/SwapNotification.vue:228
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1746,7 +1746,7 @@ msgstr ""
 msgid "No availability data available yet."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:228
+#: src/components/swap/SwapNotification.vue:227
 msgid "No connection to {chain} network."
 msgstr "没有连接到 {chain} 网络"
 
@@ -1878,7 +1878,7 @@ msgstr ""
 msgid "Partially reverted"
 msgstr ""
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:117
 msgid "paused"
 msgstr ""
 
@@ -2041,7 +2041,7 @@ msgstr ""
 msgid "Rates the pool's potential to harm the network, based on its size."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:62
+#: src/lib/StakingUtils.ts:69
 msgid "Reactivate validator"
 msgstr ""
 
@@ -2131,8 +2131,8 @@ msgstr "刷新页面以继续"
 msgid "Refund"
 msgstr "退款"
 
-#: src/components/modals/UsdcTransactionModal.vue:578
-#: src/components/modals/UsdtTransactionModal.vue:546
+#: src/components/modals/UsdcTransactionModal.vue:577
+#: src/components/modals/UsdtTransactionModal.vue:545
 msgid "Refund failed: "
 msgstr ""
 
@@ -2192,11 +2192,11 @@ msgstr ""
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:114
+#: src/lib/StakingUtils.ts:127
 msgid "Retire stake"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:67
+#: src/lib/StakingUtils.ts:75
 msgid "Retire validator"
 msgstr ""
 
@@ -2422,7 +2422,7 @@ msgstr "SEPA即时网络费用"
 msgid "SEPA Instant transaction"
 msgstr "SEPA即时交易"
 
-#: src/lib/StakingUtils.ts:106
+#: src/lib/StakingUtils.ts:118
 msgid "Set active stake"
 msgstr ""
 
@@ -2581,7 +2581,7 @@ msgstr ""
 msgid "standard"
 msgstr "标准"
 
-#: src/lib/StakingUtils.ts:72
+#: src/lib/StakingUtils.ts:81
 msgid "Start staking"
 msgstr ""
 
@@ -2714,11 +2714,11 @@ msgstr ""
 msgid "Switch to USDT"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:85
+#: src/lib/StakingUtils.ts:104
 msgid "Switch validator"
 msgstr ""
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:118
 msgid "syncing"
 msgstr "正在同步"
 
@@ -3079,7 +3079,7 @@ msgstr "疑难解答"
 msgid "TrustScore"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:34
+#: src/components/AnnouncementBox.vue:33
 msgid "Try it now"
 msgstr "现在就试试"
 
@@ -3152,7 +3152,7 @@ msgstr "有可用更新"
 msgid "Update now"
 msgstr "现在更新"
 
-#: src/lib/StakingUtils.ts:52
+#: src/lib/StakingUtils.ts:56
 msgid "Update validator"
 msgstr ""
 

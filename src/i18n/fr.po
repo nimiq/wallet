@@ -300,7 +300,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "Ajouter un contact"
 
-#: src/lib/StakingUtils.ts:98
+#: src/lib/StakingUtils.ts:95
 msgid "Add stake"
 msgstr "Ajustement du staking"
 
@@ -803,7 +803,7 @@ msgstr "Connectez-vous à TEN31 Pass pour des limites de swap plus élevées."
 msgid "Connected to"
 msgstr "Connecté à"
 
-#: src/components/layouts/Network.vue:120
+#: src/components/layouts/Network.vue:119
 msgid "connecting"
 msgstr "connexion"
 
@@ -868,7 +868,7 @@ msgstr "Convertir en USDC"
 msgid "Convert your USDC.e to the new standard."
 msgstr "Convertissez votre USDC.e à la nouvelle norme."
 
-#: src/components/modals/UsdcTransactionModal.vue:413
+#: src/components/modals/UsdcTransactionModal.vue:412
 #: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr "{amount1} USDC.e convertis en {amount2} USDC"
@@ -918,7 +918,7 @@ msgstr "Créer une nouvelle adresse à usage unique."
 msgid "Create request link"
 msgstr "Créer un lien de requête"
 
-#: src/lib/StakingUtils.ts:47
+#: src/lib/StakingUtils.ts:50
 msgid "Create validator"
 msgstr "Créer un validateur"
 
@@ -956,7 +956,7 @@ msgstr "Carte de crédit"
 msgid "Crypto swaps are currently under maintenance."
 msgstr "Les swaps de crypto sont actuellement en maintenance."
 
-#: src/lib/StakingUtils.ts:57
+#: src/lib/StakingUtils.ts:62
 msgid "Deactivate validator"
 msgstr "Désactiver le validateur"
 
@@ -1148,7 +1148,7 @@ msgstr "Erreur {errorCode} : {errorMessage}"
 msgid "Error:"
 msgstr "Erreur :"
 
-#: src/components/layouts/Network.vue:121
+#: src/components/layouts/Network.vue:120
 msgid "established"
 msgstr "établi"
 
@@ -1206,7 +1206,7 @@ msgstr "express"
 msgid "Failed"
 msgstr "Échoué"
 
-#: src/components/modals/StablecoinSendModal.vue:758
+#: src/components/modals/StablecoinSendModal.vue:757
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 "Échec de la récupération des frais de l'{ticker}. Nouvelle tentative... "
@@ -1434,10 +1434,10 @@ msgstr "Le plus haut degré de décentralisation"
 msgid "Historic value"
 msgstr "Valeur historique"
 
-#: src/components/modals/BtcTransactionModal.vue:471
-#: src/components/modals/TransactionModal.vue:542
-#: src/components/modals/UsdcTransactionModal.vue:409
-#: src/components/modals/UsdtTransactionModal.vue:388
+#: src/components/modals/BtcTransactionModal.vue:470
+#: src/components/modals/TransactionModal.vue:541
+#: src/components/modals/UsdcTransactionModal.vue:408
+#: src/components/modals/UsdtTransactionModal.vue:387
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:193
 #: src/composables/useUsdcTransactionInfo.ts:148
@@ -1445,11 +1445,11 @@ msgstr "Valeur historique"
 msgid "HTLC Creation"
 msgstr "Création du HTLC"
 
-#: src/components/modals/BtcTransactionModal.vue:471
-#: src/components/modals/TransactionModal.vue:557
-#: src/components/modals/TransactionModal.vue:563
-#: src/components/modals/UsdcTransactionModal.vue:409
-#: src/components/modals/UsdtTransactionModal.vue:388
+#: src/components/modals/BtcTransactionModal.vue:470
+#: src/components/modals/TransactionModal.vue:556
+#: src/components/modals/TransactionModal.vue:562
+#: src/components/modals/UsdcTransactionModal.vue:408
+#: src/components/modals/UsdtTransactionModal.vue:387
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:208
 #: src/composables/useTransactionInfo.ts:214
@@ -1458,7 +1458,7 @@ msgstr "Création du HTLC"
 msgid "HTLC Refund"
 msgstr "Remboursement du HTLC"
 
-#: src/components/modals/TransactionModal.vue:546
+#: src/components/modals/TransactionModal.vue:545
 #: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
@@ -1495,7 +1495,7 @@ msgstr ""
 "En cas de doute, vous pouvez toujours vérifier votre solde sur "
 "{nimiqWatchLink}"
 
-#: src/components/swap/SwapNotification.vue:229
+#: src/components/swap/SwapNotification.vue:228
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1846,7 +1846,7 @@ msgstr "Aucune action n'est requise."
 msgid "No availability data available yet."
 msgstr "Il n'y a pas encore de données de disponibilité actives."
 
-#: src/components/swap/SwapNotification.vue:228
+#: src/components/swap/SwapNotification.vue:227
 msgid "No connection to {chain} network."
 msgstr "Pas de connexion au réseau {chain}."
 
@@ -1980,7 +1980,7 @@ msgstr "partiellement annulé"
 msgid "Partially reverted"
 msgstr "Partiellement annulé"
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:117
 msgid "paused"
 msgstr " en pause"
 
@@ -2158,7 +2158,7 @@ msgid "Rates the pool's potential to harm the network, based on its size."
 msgstr ""
 "Évalue la capacité du pool à nuire au réseau en fonction de sa taille."
 
-#: src/lib/StakingUtils.ts:62
+#: src/lib/StakingUtils.ts:69
 msgid "Reactivate validator"
 msgstr "Réactiver le validateur"
 
@@ -2252,8 +2252,8 @@ msgstr "Rafraîchir la page pour continuer."
 msgid "Refund"
 msgstr "Remboursement"
 
-#: src/components/modals/UsdcTransactionModal.vue:578
-#: src/components/modals/UsdtTransactionModal.vue:546
+#: src/components/modals/UsdcTransactionModal.vue:577
+#: src/components/modals/UsdtTransactionModal.vue:545
 msgid "Refund failed: "
 msgstr "Le remboursement a échoué :"
 
@@ -2318,11 +2318,11 @@ msgstr "Relancer le processus de paiement"
 msgid "Resulting BTC amount is too small."
 msgstr "Le montant de BTC obtenu est trop faible."
 
-#: src/lib/StakingUtils.ts:114
+#: src/lib/StakingUtils.ts:127
 msgid "Retire stake"
 msgstr "Retirer le staking"
 
-#: src/lib/StakingUtils.ts:67
+#: src/lib/StakingUtils.ts:75
 msgid "Retire validator"
 msgstr "Retirer le validateur"
 
@@ -2553,7 +2553,7 @@ msgstr "Frais du virement SEPA instantané"
 msgid "SEPA Instant transaction"
 msgstr "virement SEPA instantané"
 
-#: src/lib/StakingUtils.ts:106
+#: src/lib/StakingUtils.ts:118
 msgid "Set active stake"
 msgstr "Définir le staking actif"
 
@@ -2712,7 +2712,7 @@ msgstr "Staking avec {validator}"
 msgid "standard"
 msgstr "standard"
 
-#: src/lib/StakingUtils.ts:72
+#: src/lib/StakingUtils.ts:81
 msgid "Start staking"
 msgstr "Commencer à staker"
 
@@ -2848,11 +2848,11 @@ msgstr "Passer à l'USDC"
 msgid "Switch to USDT"
 msgstr "Passer à l'USDT"
 
-#: src/lib/StakingUtils.ts:85
+#: src/lib/StakingUtils.ts:104
 msgid "Switch validator"
 msgstr "Changer de validateur"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:118
 msgid "syncing"
 msgstr "synchronisation"
 
@@ -3255,7 +3255,7 @@ msgstr "Résolution des problèmes"
 msgid "TrustScore"
 msgstr "TrustScore"
 
-#: src/components/AnnouncementBox.vue:34
+#: src/components/AnnouncementBox.vue:33
 msgid "Try it now"
 msgstr "Essayez-le maintenant"
 
@@ -3335,7 +3335,7 @@ msgstr "Mise à jour disponible"
 msgid "Update now"
 msgstr "Mettre à jour"
 
-#: src/lib/StakingUtils.ts:52
+#: src/lib/StakingUtils.ts:56
 msgid "Update validator"
 msgstr "Mettre à jour le validateur"
 

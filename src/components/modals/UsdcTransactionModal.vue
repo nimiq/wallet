@@ -617,6 +617,7 @@ export default defineComponent({
             refundHtlc,
             ticker,
             assetToCurrency,
+            RouteName,
         };
     },
     components: {

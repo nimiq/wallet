@@ -110,6 +110,7 @@ export default defineComponent({
             logout,
             onboard,
             onAccountSelected,
+            RouteName,
         };
     },
     components: {

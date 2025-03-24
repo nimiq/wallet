@@ -6,7 +6,7 @@
             <UsdtIcon v-else-if="addressInfo.type === CryptoCurrency.USDT"/>
             <Identicon v-else :address="addressInfo.address"/>
 
-            <TwoLeafStakingIcon v-if="!embedded && stakesByAddress[addressInfo.address]" />
+            <TwoLeafStakingIcon v-if="!embedded && totalStake" />
             <VestingIcon v-else-if="addressInfo.type === AddressType.VESTING"/>
         </div>
         <span class="label">{{ addressInfo.label }}</span>
@@ -14,13 +14,13 @@
             <span class="crypto-balance">
                 <LockLockedIcon v-if="addressInfo.hasLockedBalance"/>
                 <Amount
-                    :amount="addressInfo.balance"
+                    :amount="addressInfo.balance + totalStake"
                     :currency="currentCurrency"
                     value-mask/>
             </span>
             <FiatConvertedAmount
                 class="fiat-balance"
-                :amount="addressInfo.balance"
+                :amount="addressInfo.balance + totalStake"
                 :currency="currentCurrency"
                 value-mask/>
         </div>
@@ -69,13 +69,14 @@ export default defineComponent({
             }
         });
 
-        const { stakesByAddress } = useStakingStore();
+        const { totalStakesByAddress } = useStakingStore();
+        const totalStake = computed(() => totalStakesByAddress.value[props.addressInfo.address] || 0);
 
         return {
             AddressType,
             CryptoCurrency,
             currentCurrency,
-            stakesByAddress,
+            totalStake,
         };
     },
     components: {

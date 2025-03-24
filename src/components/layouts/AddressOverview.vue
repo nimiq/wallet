@@ -123,14 +123,26 @@
                         <div v-if="activeCurrency === CryptoCurrency.USDT" class="label usdt">
                             {{ $t('Tether USD') }}
                         </div>
-                        <Amount v-if="activeCurrency === CryptoCurrency.NIM" :amount="activeAddressInfo.balance"
-                            value-mask/>
-                        <Amount v-if="activeCurrency === CryptoCurrency.BTC" :amount="btcAccountBalance" currency="btc"
-                            value-mask/>
+                        <Amount v-if="activeCurrency === CryptoCurrency.NIM"
+                            :amount="activeAddressInfo.balance + totalActiveStake"
+                            :currency="CryptoCurrency.NIM"
+                            value-mask
+                        />
+                        <Amount v-if="activeCurrency === CryptoCurrency.BTC"
+                            :amount="btcAccountBalance"
+                            :currency="CryptoCurrency.BTC"
+                            value-mask
+                        />
                         <Amount v-if="activeCurrency === CryptoCurrency.USDC"
-                            :amount="accountUsdcBridgedBalance + accountUsdcBalance" currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance"
+                            :currency="CryptoCurrency.USDC"
+                            value-mask
+                        />
                         <Amount v-if="activeCurrency === CryptoCurrency.USDT"
-                            :amount="accountUsdtBridgedBalance" :currency="CryptoCurrency.USDT" value-mask/>
+                            :amount="accountUsdtBridgedBalance"
+                            :currency="CryptoCurrency.USDT"
+                            value-mask
+                        />
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -156,21 +168,33 @@
 
                         <FiatConvertedAmount
                             v-if="activeCurrency === CryptoCurrency.NIM && activeAddressInfo.balance !== null"
-                            :amount="activeAddressInfo.balance" currency="nim" value-mask/>
+                            :amount="activeAddressInfo.balance + totalActiveStake"
+                            :currency="CryptoCurrency.NIM"
+                            value-mask
+                        />
                         <span v-else-if="activeCurrency === CryptoCurrency.NIM" class="fiat-amount"></span>
 
                         <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.BTC"
-                            :amount="btcAccountBalance" currency="btc" value-mask/>
+                            :amount="btcAccountBalance"
+                            :currency="CryptoCurrency.BTC"
+                            value-mask
+                        />
 
                         <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDC"
-                            :amount="accountUsdcBridgedBalance + accountUsdcBalance  " currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance"
+                            :currency="CryptoCurrency.USDC"
+                            value-mask
+                        />
                         <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDT"
-                            :amount="accountUsdtBridgedBalance  " currency="usdt" value-mask/>
+                            :amount="accountUsdtBridgedBalance"
+                            :currency="CryptoCurrency.USDT"
+                            value-mask
+                        />
                     </div>
                 </div>
             </div>
 
-            <StakingOverview v-if="activeCurrency === CryptoCurrency.NIM && activeStake" />
+            <StakingOverview v-if="activeCurrency === CryptoCurrency.NIM && totalActiveStake" />
 
             <div class="actions flex-row" v-if="!isMobile">
                 <SearchBar v-model="searchString"/>
@@ -208,7 +232,6 @@
                     </button>
                 </div>
             </div>
-            <!-- <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" /> -->
             <div
                 v-if="activeCurrency === CryptoCurrency.USDC && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -223,7 +246,6 @@
                     <span class="description">
                         <InfoCircleSmallIcon />
                         {{ $t('Convert your USDC.e to the new standard.') }}
-                        <!-- eslint-disable-next-line max-len -->
                         <a href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
                             target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
                     </span>
@@ -369,7 +391,7 @@ export default defineComponent({
             addressInfo: usdcAddressInfo,
         } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
-        const { activeStake, totalAccountStake } = useStakingStore();
+        const { totalActiveStake, totalAccountStake } = useStakingStore();
 
         const searchString = ref('');
 
@@ -602,7 +624,7 @@ export default defineComponent({
             if (!activeAccountInfo.value) return false;
 
             // Hide entry button when account is staked, as the entrypoint is then another UI element
-            if (activeStake.value) return false;
+            if (totalActiveStake.value) return false;
 
             // Hide button for legacy accounts except if they're already staking
             return activeAccountInfo.value.type !== AccountType.LEGACY || totalAccountStake.value > 0;
@@ -635,7 +657,7 @@ export default defineComponent({
             config,
             convertBridgedUsdcToNative,
             switchStablecoin,
-            activeStake,
+            totalActiveStake,
             windowWidth,
             showStakingButton,
             isMobile,

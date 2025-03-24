@@ -55,12 +55,14 @@ export default defineComponent({
 
         const { isMobile } = useWindowSize();
 
+        const router = useRouter();
+
         async function choose() {
             useAccountSettingsStore().setStablecoin(selection.value);
             useAccountStore().setActiveCurrency(selection.value);
             await modal$.value?.forceClose();
             if (isMobile.value) {
-                useRouter().push('/transactions');
+                router.push('/transactions');
             }
         }
 

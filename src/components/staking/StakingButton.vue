@@ -45,6 +45,7 @@ import HeroIcon from '../icons/Staking/HeroIcon.vue';
 
 export default defineComponent({
     setup() {
+        const router = useRouter();
         const { config } = useConfig();
         const { activeAddressInfo } = useAddressStore();
         const { totalAccountStake, totalActiveStake } = useStakingStore();
@@ -71,7 +72,7 @@ export default defineComponent({
             if (canStake.value) {
                 e.stopPropagation();
                 e.preventDefault();
-                useRouter().push({ name: RouteName.Staking });
+                router.push({ name: RouteName.Staking });
             }
         }
 

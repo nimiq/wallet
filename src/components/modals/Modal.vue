@@ -68,6 +68,8 @@ const Modal = defineComponent({
         },
     },
     setup(props, context) {
+        const router = useRouter();
+
         function close() {
             if (props.showOverlay) {
                 context.emit('close-overlay');
@@ -92,7 +94,7 @@ const Modal = defineComponent({
                 || Object.values(routeRecord.components).some((component) => /modal/i.test(
                     'name' in component ? component.name as string : '')))
             ) {
-                useRouter().back();
+                router.back();
 
                 // eslint-disable-next-line no-await-in-loop
                 await new Promise((resolve) => {

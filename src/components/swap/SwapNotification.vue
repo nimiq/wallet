@@ -113,6 +113,7 @@ export default defineComponent({
         const swapIsExpired = computed(() => !!activeSwap.value && activeSwap.value.state === SwapState.EXPIRED);
         const swapIsErrored = computed(() => !!activeSwap.value && activeSwap.value.error);
 
+        const router = useRouter();
         const { $t } = useI18n();
 
         function onUnload(event: BeforeUnloadEvent) {
@@ -422,7 +423,7 @@ export default defineComponent({
                         });
 
                         // Open Swap modal to show payment instructions to user if not already open
-                        if (useRoute().name !== 'buy-crypto') useRouter().push('buy-crypto');
+                        if (useRoute().name !== 'buy-crypto') router.push('buy-crypto');
 
                         // Wait for OASIS HTLC to be funded out-of-band
                         const fundingTx = await swapHandler.awaitOutgoing((htlc) => {
@@ -948,8 +949,6 @@ export default defineComponent({
             // Convert from Fastspot SwapAsset to LibSwap SwapAsset
             const fromAsset = activeSwap.value.from.asset as SwapAsset;
             const toAsset = activeSwap.value.to.asset as SwapAsset;
-
-            const router = useRouter();
 
             if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
                 router.push({ name: RouteName.Swap });

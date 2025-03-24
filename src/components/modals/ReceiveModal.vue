@@ -58,6 +58,7 @@ import QrCodeOverlay from './overlays/QrCodeOverlay.vue';
 export default defineComponent({
     name: 'receive-modal',
     setup() {
+        const router = useRouter();
         const addressQrCodeOverlayOpened = ref(false);
         const receiveLinkOverlayOpened = ref(false);
 
@@ -70,7 +71,7 @@ export default defineComponent({
 
         function back() {
             disableNextModalTransition();
-            useRouter().back();
+            router.back();
         }
 
         return {

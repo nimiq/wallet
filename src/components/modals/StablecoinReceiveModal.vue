@@ -64,6 +64,8 @@ export default defineComponent({
             RECEIVE,
         }
 
+        const router = useRouter();
+
         const { state: addresses$, addressInfo } = usePolygonAddressStore();
         const { stablecoin } = useAccountSettingsStore();
         const { state: transactions$ } = stablecoin.value === CryptoCurrency.USDC
@@ -91,7 +93,7 @@ export default defineComponent({
         function back() {
             if (page.value === initialPage) {
                 disableNextModalTransition();
-                useRouter().back();
+                router.back();
             } else if (page.value === Pages.RECEIVE) {
                 page.value = Pages.WARNING;
                 hasSeenAddress.value = false;

@@ -146,6 +146,8 @@ export default defineComponent({
             });
         }
 
+        const router = useRouter();
+
         async function loadScripts(): Promise<any> {
             // Check if script already exists
             if (document.querySelector('script#simplex-form-script')) {
@@ -157,7 +159,7 @@ export default defineComponent({
 
                 window.Simplex.subscribe('onlineFlowFinished', () => {
                     // Close modal
-                    useRouter().push('/');
+                    router.push('/');
                 });
             };
 
@@ -272,7 +274,7 @@ export default defineComponent({
 
             try {
                 // Try setting the language in the URL (Simplex SDK takes it from there)
-                await useRouter().replace({ name: 'simplex', query: { lang: language } });
+                await router.replace({ name: 'simplex', query: { lang: language } });
             } catch (error) {
                 // ignore
             }

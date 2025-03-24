@@ -20,6 +20,7 @@ const STORAGE_KEY = 'announcement-box-dismissed';
 
 export default defineComponent({
     setup() {
+        const router = useRouter();
         const { $t } = useI18n();
 
         // text and cta must be functions for translations to work!
@@ -31,7 +32,7 @@ export default defineComponent({
         // text = () => $t('Buy NIM & BTC with OASIS!');
         text = () => ''; // Disables AnnouncementBox
         cta = () => $t('Try it now');
-        action = () => useRouter().push({ name: RouteName.Buy });
+        action = () => router.push({ name: RouteName.Buy });
         storageKey = 'buy-with-oasis-1';
 
         const wasDismissed = ref(window.localStorage.getItem(STORAGE_KEY) === storageKey);

@@ -360,6 +360,7 @@ const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
 export default defineComponent({
     setup() {
+        const router = useRouter();
         const { activeAccountInfo, activeCurrency, hasBitcoinAddresses } = useAccountStore();
         const { activeAddressInfo, activeAddress } = useAddressStore();
         const { exchangeRates } = useFiatStore();
@@ -470,7 +471,7 @@ export default defineComponent({
             } else if (page.value === Pages.BANK_CHECK) {
                 goBack();
             } else {
-                useRouter().back();
+                router.back();
             }
         }
 

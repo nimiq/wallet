@@ -103,6 +103,7 @@ import Modal from './Modal.vue';
 export default defineComponent({
     setup() {
         const page = ref(1);
+        const router = useRouter();
 
         function reset() {
             page.value = 1;
@@ -110,7 +111,7 @@ export default defineComponent({
 
         function onButtonClick() {
             if (page.value === 3) {
-                useRouter().back();
+                router.back();
             } else {
                 page.value += 1;
             }

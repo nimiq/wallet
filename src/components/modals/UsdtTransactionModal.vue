@@ -329,6 +329,7 @@ export default defineComponent({
     },
     setup(props) {
         const constants = { FIAT_PRICE_UNAVAILABLE };
+        const router = useRouter();
         const { $t } = useI18n();
 
         const transaction = computed(() => useUsdtTransactionsStore().state.transactions[props.hash]);
@@ -536,7 +537,7 @@ export default defineComponent({
                     relayUrl!,
                 );
                 await nextTick();
-                useRouter().replace({
+                router.replace({
                     name: RouteName.UsdtTransaction,
                     params: { transactionHash: plainTx.transactionHash },
                 });

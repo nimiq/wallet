@@ -73,6 +73,7 @@ import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
 
 export default defineComponent({
     setup() {
+        const router = useRouter();
         const { accountInfos, activeAccountInfo, activeAccountId, selectAccount } = useAccountStore();
         const { isMobile } = useWindowSize();
 
@@ -87,8 +88,6 @@ export default defineComponent({
 
         function onAccountSelected(id: string) {
             selectAccount(id);
-
-            const router = useRouter();
 
             if (isMobile.value) {
                 router.replace({ name: RouteName.Root });

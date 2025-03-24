@@ -55,7 +55,7 @@ import { useAccountStore } from '../stores/Account';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { CryptoCurrency } from '../lib/Constants';
-import { useRouter } from '../router';
+import router from '../router';
 import { useSettingsStore } from '../stores/Settings';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { useStakingStore } from '../stores/Staking';
@@ -141,7 +141,7 @@ export default defineComponent({
         if (!props.embedded) {
             watch(activeAddress, () => activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value));
             /* Update the .active-box after the decimals setting is changed */
-            useRouter().afterEach((to, from) => {
+            router.afterEach((to, from) => {
                 if (from.name === 'settings' && from.query.sidebar && to.name === 'root' && activeAddress.value) {
                     nextTick(() =>
                         activeAddress.value && adjustBackgroundOffsetAndScale(activeAddress.value),

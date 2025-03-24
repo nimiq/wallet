@@ -42,32 +42,41 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
 
     if (transaction.recipient !== STAKING_CONTRACT_ADDRESS) return null;
 
-    switch (transaction.data.type) {
+    const rawDataFirstByte = transaction.data.type === 'raw' && transaction.data.raw.substring(0, 2);
+
+    switch (rawDataFirstByte || transaction.data.type) {
+        case '00':
         case 'create-validator': {
             const text = i18n.t('Create validator') as string;
             if (!verbose) return text;
             return text;
         }
+        case '01':
         case 'update-validator': {
             const text = i18n.t('Update validator') as string;
             if (!verbose) return text;
             return text;
         }
+        case '02':
         case 'deactivate-validator': {
             const text = i18n.t('Deactivate validator') as string;
             if (!verbose) return text;
             return text;
         }
+
+        case '03':
         case 'reactivate-validator': {
             const text = i18n.t('Reactivate validator') as string;
             if (!verbose) return text;
             return text;
         }
+        case '04':
         case 'retire-validator': {
             const text = i18n.t('Retire validator') as string;
             if (!verbose) return text;
             return text;
         }
+        case '05':
         case 'create-staker': {
             const text = i18n.t('Start staking') as string;
             if (!verbose) return text;
@@ -81,6 +90,16 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
             // }
             return text;
         }
+        case '06':
+        case 'add-stake': {
+            const text = i18n.t('Add stake') as string;
+            if (!verbose) return text;
+
+            // const staker = Nimiq.Address.unserialize(buf);
+            // text += ` for ${staker.toUserFriendlyAddress()}`;
+            return text;
+        }
+        case '07':
         case 'update-staker': {
             const text = i18n.t('Switch validator') as string;
             if (!verbose) return text;
@@ -94,14 +113,7 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
             // }
             return text;
         }
-        case 'add-stake': {
-            const text = i18n.t('Add stake') as string;
-            if (!verbose) return text;
-
-            // const staker = Nimiq.Address.unserialize(buf);
-            // text += ` for ${staker.toUserFriendlyAddress()}`;
-            return text;
-        }
+        case '08':
         case 'set-active-stake': {
             const text = i18n.t('Set active stake') as string;
 
@@ -110,6 +122,7 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
 
             return text;
         }
+        case '09':
         case 'retire-stake': {
             const text = i18n.t('Retire stake') as string;
 

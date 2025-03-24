@@ -249,7 +249,7 @@
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace({
                                 name: RouteName.BtcTransaction,
-                                params: { transactionHash: swapTransaction.transactionHash } },
+                                params: { hash: swapTransaction.transactionHash } },
                             )"
                         >
                             <div class="icon">
@@ -267,7 +267,7 @@
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace({
                                 name: RouteName.UsdcTransaction,
-                                params: { transactionHash: swapTransaction.transactionHash }
+                                params: { hash: swapTransaction.transactionHash }
                             })"
                         >
                             <div class="icon">
@@ -283,8 +283,8 @@
                         <button v-if="swapData.asset === SwapAsset.USDT_MATIC && swapTransaction"
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace({
-                                name: RouteName.USDTTransaction,
-                                params: { transactionHash: swapTransaction.transactionHash }
+                                name: RouteName.UsdtTransaction,
+                                params: { hash: swapTransaction.transactionHash }
                             })"
                         >
                             <div class="icon">
@@ -693,7 +693,7 @@ export default defineComponent({
             await nextTick();
             router.replace({
                 name: RouteName.Transaction,
-                params: { transactionHash: plainTx.transactionHash },
+                params: { hash: plainTx.transactionHash },
             });
         }
 

@@ -185,7 +185,7 @@
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace({
                                 name: RouteName.Transaction,
-                                params: { transactionHash: swapTransaction.transactionHash }
+                                params: { hash: swapTransaction.transactionHash }
                             })"
                         >
                             <div class="icon">
@@ -202,7 +202,7 @@
                             class="swap-other-side reset flex-row" :class="{'incoming': !isIncoming}"
                             @click="$router.replace({
                                 name: RouteName.BtcTransaction,
-                                params: { transactionHash: swapTransaction.transactionHash }
+                                params: { hash: swapTransaction.transactionHash }
                             })"
                         >
                             <div class="icon">
@@ -539,7 +539,7 @@ export default defineComponent({
                 await nextTick();
                 router.replace({
                     name: RouteName.UsdtTransaction,
-                    params: { transactionHash: plainTx.transactionHash },
+                    params: { hash: plainTx.transactionHash },
                 });
             } catch (e) {
                 const errorMessage = e instanceof Error ? e.message : String(e);

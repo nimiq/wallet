@@ -18,6 +18,7 @@ import type { PlainTransactionDetails } from '@nimiq/core';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
+import { DemoHubApi, checkIfDemoIsActive } from '@/lib/Demo';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
@@ -114,7 +115,7 @@ function getBehavior({
 
 // We can't use the reactive config via useConfig() here because that one can only be used after the composition-api
 // plugin has been registered in Vue 2.
-const hubApi = new HubApi(Config.hubEndpoint);
+const hubApi = checkIfDemoIsActive() ? DemoHubApi.create() : new HubApi(Config.hubEndpoint);
 
 hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     const { config } = useConfig();

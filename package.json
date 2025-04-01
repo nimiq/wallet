@@ -26,7 +26,7 @@
     "@adapttive/vue-markdown": "^4.0.1",
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
-    "@nimiq/core": "^2.0.8",
+    "@nimiq/core": "^2.0.9",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "^1.10.3",
     "@nimiq/hub-api": "^1.10.0",

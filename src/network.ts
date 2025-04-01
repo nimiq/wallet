@@ -407,12 +407,7 @@ export async function launchNetwork() {
                     () => client.getTransactionsByAddress(
                         address,
                         /* lastConfirmedHeight - 10 */ 0,
-                        knownTxDetails.map(
-                            // Forward-compatibility with @nimiq/core (core-rs-albatross #3340 is released)
-                            (tx) => String(tx.state) === TransactionState.MINED
-                                ? { ...tx, state: TransactionState.INCLUDED }
-                                : tx,
-                        ),
+                        knownTxDetails,
                         /* startAt */ undefined,
                         /* limit */ undefined,
                         // Reduce number of required history peers in the testnet
@@ -472,12 +467,7 @@ export async function launchNetwork() {
                     return retry(() => client.getTransactionsByAddress(
                         proxyAddress,
                         /* sinceBlockHeight */ 0,
-                        knownTxDetails.map(
-                            // Forward-compatibility with @nimiq/core (core-rs-albatross #3340 is released)
-                            (tx) => String(tx.state) === TransactionState.MINED
-                                ? { ...tx, state: TransactionState.INCLUDED }
-                                : tx,
-                        ),
+                        knownTxDetails,
                         /* startAt */ undefined,
                         /* limit */ undefined,
                         // Reduce number of required history peers in the testnet

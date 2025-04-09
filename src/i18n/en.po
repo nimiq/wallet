@@ -217,8 +217,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:154
-#: src/components/layouts/AccountOverview.vue:268
+#: src/components/layouts/AccountOverview.vue:157
+#: src/components/layouts/AccountOverview.vue:271
 msgid "Activate"
 msgstr ""
 
@@ -282,7 +282,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:77
+#: src/components/staking/StakingInfoPage.vue:76
 msgid "Adjust Stake"
 msgstr ""
 
@@ -307,12 +307,12 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:276
+#: src/components/layouts/AccountOverview.vue:279
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:277
+#: src/components/layouts/AddressOverview.vue:294
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -435,8 +435,8 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:135
-#: src/components/layouts/AddressOverview.vue:125
+#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:124
@@ -661,7 +661,7 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:224
+#: src/components/layouts/AccountOverview.vue:227
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -685,7 +685,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:279
+#: src/components/layouts/AddressOverview.vue:296
 #: src/components/staking/StakingModal.vue:155
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
@@ -794,11 +794,11 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:238
+#: src/components/layouts/AddressOverview.vue:255
 msgid "Convert to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:230
+#: src/components/layouts/AddressOverview.vue:248
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
@@ -886,7 +886,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:267
+#: src/components/staking/StakingInfoPage.vue:287
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -975,7 +975,6 @@ msgid "Earn new NIM by staking"
 msgstr ""
 
 #: src/components/staking/StakingButton.vue:14
-#: src/components/staking/StakingSummaryMobile.vue:5
 msgid "Earn NIM every month by staking your NIM"
 msgstr ""
 
@@ -1093,8 +1092,8 @@ msgstr ""
 msgid "Expired HTLC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:102
-#: src/components/layouts/AddressOverview.vue:54
+#: src/components/layouts/AddressOverview.vue:48
+#: src/components/layouts/AddressOverview.vue:95
 #: src/components/modals/AccountMenuModal.vue:32
 msgid "Export History"
 msgstr ""
@@ -1124,23 +1123,23 @@ msgstr ""
 msgid "Failed to fetch transactions"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:134
+#: src/components/TestnetFaucet.vue:137
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:77
+#: src/components/TestnetFaucet.vue:80
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:81
+#: src/components/TestnetFaucet.vue:84
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:88
+#: src/components/TestnetFaucet.vue:91
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:73
+#: src/components/TestnetFaucet.vue:76
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -1477,7 +1476,7 @@ msgstr ""
 msgid "Learn about the new Nimiq"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:233
+#: src/components/layouts/AddressOverview.vue:250
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:18
@@ -1492,11 +1491,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:223
+#: src/components/layouts/AddressOverview.vue:241
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:264
+#: src/components/layouts/AddressOverview.vue:281
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1821,6 +1820,10 @@ msgstr ""
 msgid "Payments, got it"
 msgstr ""
 
+#: src/components/staking/StakingOverview.vue:16
+msgid "Payout ready"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:241
 msgid "Pegged 1:1 to the U.S. Dollar"
 msgstr ""
@@ -1961,7 +1964,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:212
+#: src/components/layouts/AddressOverview.vue:231
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr ""
@@ -2059,13 +2062,13 @@ msgid "Reliability"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:34
-#: src/components/layouts/AddressOverview.vue:88
+#: src/components/layouts/AddressOverview.vue:81
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:139
-#: src/components/TestnetFaucet.vue:145
+#: src/components/TestnetFaucet.vue:142
+#: src/components/TestnetFaucet.vue:148
 msgid "Request failed"
 msgstr ""
 
@@ -2073,8 +2076,8 @@ msgstr ""
 msgid "Required"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:46
-#: src/components/layouts/AddressOverview.vue:94
+#: src/components/layouts/AddressOverview.vue:40
+#: src/components/layouts/AddressOverview.vue:87
 msgid "Rescan"
 msgstr ""
 
@@ -2122,7 +2125,7 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:166
+#: src/components/staking/StakingInfoPage.vue:149
 msgid "Rewards history"
 msgstr ""
 
@@ -2225,7 +2228,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:207
+#: src/components/layouts/AddressOverview.vue:226
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr ""
@@ -2284,7 +2287,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:337
+#: src/components/staking/StakingInfoPage.vue:357
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2410,7 +2413,7 @@ msgstr ""
 msgid "Show values as {currency}"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:265
+#: src/components/layouts/AddressOverview.vue:282
 msgid "Signup"
 msgstr ""
 
@@ -2428,8 +2431,8 @@ msgstr ""
 #: src/components/modals/SendModal.vue:825
 #: src/components/modals/StablecoinSendModal.vue:681
 #: src/components/staking/StakingGraphPage.vue:297
-#: src/components/staking/StakingInfoPage.vue:324
-#: src/components/staking/StakingInfoPage.vue:407
+#: src/components/staking/StakingInfoPage.vue:344
+#: src/components/staking/StakingInfoPage.vue:427
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr ""
@@ -2474,15 +2477,10 @@ msgstr ""
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr ""
 
-#: src/components/staking/StakingSummaryMobile.vue:8
-msgid "Stake now"
-msgstr ""
-
 #: src/components/staking/StakingInfoPage.vue:58
 msgid "Staked"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:40
 #: src/components/LegacyAccountNotice.vue:28
 #: src/components/staking/StakingInfoPage.vue:15
 msgid "Staking"
@@ -2512,7 +2510,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:308
+#: src/components/staking/StakingInfoPage.vue:328
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2524,7 +2522,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:393
+#: src/components/staking/StakingInfoPage.vue:413
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2549,7 +2547,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:189
+#: src/components/layouts/AccountOverview.vue:192
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr ""
 
@@ -2582,11 +2580,11 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:118
+#: src/components/layouts/AccountOverview.vue:121
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:85
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
@@ -2617,13 +2615,13 @@ msgstr ""
 msgid "Swiping Gestures"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:114
-#: src/components/layouts/AddressOverview.vue:66
+#: src/components/layouts/AddressOverview.vue:107
+#: src/components/layouts/AddressOverview.vue:60
 msgid "Switch to USDC"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:108
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:101
+#: src/components/layouts/AddressOverview.vue:54
 msgid "Switch to USDT"
 msgstr ""
 
@@ -2657,8 +2655,8 @@ msgid "TEN31 Verification"
 msgstr ""
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:216
-#: src/components/layouts/AddressOverview.vue:131
+#: src/components/layouts/AccountOverview.vue:219
+#: src/components/layouts/AddressOverview.vue:124
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
 #: src/components/UsdcAddressInfo.vue:14
@@ -2762,7 +2760,7 @@ msgstr ""
 msgid "The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:130
+#: src/components/TestnetFaucet.vue:133
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -2871,7 +2869,7 @@ msgstr ""
 msgid "This pool usually produces blocks."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:125
+#: src/components/TestnetFaucet.vue:128
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2912,12 +2910,12 @@ msgstr ""
 msgid "To {exchange}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:158
+#: src/components/staking/StakingInfoPage.vue:141
 msgid "To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:123
-#: src/components/layouts/AccountOverview.vue:194
+#: src/components/layouts/AccountOverview.vue:126
+#: src/components/layouts/AccountOverview.vue:197
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -2981,7 +2979,7 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:161
+#: src/components/staking/StakingInfoPage.vue:144
 msgid "un-stake all"
 msgstr ""
 
@@ -3020,6 +3018,10 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
+#: src/components/staking/StakingOverview.vue:19
+msgid "Unstaking"
+msgstr ""
+
 #: src/swap-kyc-handler.ts:148
 #: src/swap-kyc-handler.ts:157
 msgid "Unsupported currency"
@@ -3043,8 +3045,8 @@ msgid "Update validator"
 msgstr ""
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:213
-#: src/components/layouts/AddressOverview.vue:128
+#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AddressOverview.vue:121
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
@@ -3077,12 +3079,8 @@ msgstr ""
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:130
+#: src/components/staking/StakingInfoPage.vue:113
 msgid "Validator"
-msgstr ""
-
-#: src/components/staking/StakingOverview.vue:35
-msgid "Validator Name"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:223
@@ -3182,7 +3180,7 @@ msgstr ""
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:119
+#: src/components/TestnetFaucet.vue:122
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
@@ -3193,7 +3191,7 @@ msgid ""
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:79
+#: src/components/staking/StakingInfoPage.vue:78
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
@@ -3201,7 +3199,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:496
+#: src/components/layouts/AddressOverview.vue:512
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr ""
 
@@ -3313,7 +3311,11 @@ msgstr ""
 msgid "Your rewards are influenced by how many NIM are staked globally and your validator pool’s fee."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:273
+#: src/components/staking/StakingRewardsHistoryPage.vue:39
+msgid "Your rewards will appear here once you start staking."
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:290
 msgid "Your swap was successful!"
 msgstr ""
 

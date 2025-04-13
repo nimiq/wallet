@@ -86,7 +86,7 @@ import { toMs, Transaction, TransactionState } from '../stores/Transactions';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
-import { ENV_MAIN } from '../lib/Constants';
+import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { createCashlink } from '../hub';
 import { useConfig } from '../composables/useConfig';
@@ -173,11 +173,18 @@ export default defineComponent({
 
         // Apply search filter
         const filteredTxs = computed(() => {
-            if (!props.searchString) return transactionsForActiveAddress.value;
+            if (!props.searchString) {
+                return transactionsForActiveAddress.value.filter(
+                    tx => tx.recipient !== STAKING_CONTRACT_ADDRESS && tx.sender !== STAKING_CONTRACT_ADDRESS
+                );
+            }
 
             const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
 
             return transactionsForActiveAddress.value.filter((tx) => {
+                // Skip staking and unstaking transactions
+                if (tx.recipient === STAKING_CONTRACT_ADDRESS || tx.sender === STAKING_CONTRACT_ADDRESS) return false;
+
                 const transaction = ref<Readonly<Transaction>>(tx);
                 const { peerLabel, data } = useTransactionInfo(transaction);
 

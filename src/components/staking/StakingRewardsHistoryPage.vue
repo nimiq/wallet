@@ -1,6 +1,6 @@
 <template>
     <div class="staking-rewards-history-page flex-column">
-        <PageHeader :backArrow="true" @back="$emit('back')">
+        <PageHeader>
             {{ $t('Staking Rewards') }}
         </PageHeader>
         <PageBody class="flex-column">
@@ -121,13 +121,17 @@ export default defineComponent({
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    max-height: 75rem;
+    height: 100%;
+    max-height: 80vh;
+    overflow: hidden;
 }
 
 .page-body {
     padding: 1rem 0;
     flex-grow: 1;
     position: relative;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .rewards-list {
@@ -135,6 +139,8 @@ export default defineComponent({
     padding: 0 2rem;
     overflow-y: auto;
     position: relative;
+    height: 100%;
+    min-height: 0;
 
     @extend %custom-scrollbar;
 }

@@ -18,7 +18,8 @@
             </template>
             <template v-else-if="page === Page.Info">
                 <StakingInfoPage
-                    @back="page = Page.Graph" @next="page = Page.RewardsHistory"
+                    @back="page = Page.Graph"
+                    @next="overlay = Overlay.RewardsHistory"
                     @adjust-stake="adjustStake"
                     @switch-validator="switchValidator"
                     @statusChange="onStatusChange"
@@ -46,13 +47,19 @@
                 :title="statusTitle"
                 :message="statusMessage"
                 :main-action="statusMainAction"
-                @main-action="onStatusMainAction"
+                :light-blue="true"
+                status=""
+                :alternative-action="statusAlternativeAction"
+                :small="false"
             />
             <ValidatorDetailsOverlay v-else-if="overlay === Overlay.ValidatorDetails"
                 :noButton="page !== Page.ValidatorList"
                 :validator="selectedValidator"
                 @statusChange="onStatusChange"
                 @next="onConfirmValidator"
+            />
+            <StakingRewardsHistoryPage v-else-if="overlay === Overlay.RewardsHistory"
+                @back="closeOverlay"
             />
         </template>
     </Modal>
@@ -84,6 +91,7 @@ enum Page {
 enum Overlay {
     SelectAccount,
     ValidatorDetails,
+    RewardsHistory,
 }
 
 export enum StatusChangeType {
@@ -175,7 +183,8 @@ export default defineComponent({
         const shouldShowOverlay = computed(() =>
             overlay.value === Overlay.SelectAccount
             || statusType.value !== StatusChangeType.NONE
-            || overlay.value === Overlay.ValidatorDetails,
+            || overlay.value === Overlay.ValidatorDetails
+            || overlay.value === Overlay.RewardsHistory,
         );
 
         /* Event Handlers */

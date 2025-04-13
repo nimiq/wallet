@@ -1,7 +1,7 @@
 <template>
     <div class="staking-rewards-history-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
-            {{ $t('Rewards History') }}
+            {{ $t('Staking Rewards') }}
         </PageHeader>
         <PageBody class="flex-column">
             <div v-if="stakingEvents && stakingEvents.length > 0" class="rewards-list">

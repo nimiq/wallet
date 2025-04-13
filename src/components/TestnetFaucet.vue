@@ -70,9 +70,10 @@ export default defineComponent({
         const faucetInfoPromise = fetch(`${Config.faucetEndpoint}/info`)
             .then((res) => res.json() as Promise<FaucetInfoResponse>)
             .then((faucet) => {
-                // Only allow the faucet if ether both the faucet and the Config of the wallet are in mainnet or neither is.
-                if (Config.environment !== ENV_MAIN && faucet.network === "main"
-                    || Config.environment === ENV_MAIN && faucet.network !== 'main') {
+                // Only allow the faucet if either both the faucet and the Config of the wallet
+                // are in mainnet or neither is.
+                if ((Config.environment !== ENV_MAIN && faucet.network === 'main')
+                    || (Config.environment === ENV_MAIN && faucet.network !== 'main')) {
                     unavailableMsg.value = $t('Faucet unavailable (wrong network)');
                     canTap.value = false;
                 }

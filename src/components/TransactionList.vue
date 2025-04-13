@@ -26,7 +26,7 @@
             <template v-slot:default="{ item, index }">
                 <LoadingList v-if="item.loading" :delay="index * 100" :type="LoadingListType.TRANSACTION" />
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
-                    <div v-if="!item.sender" class="month-label flex-row">
+                    <div v-if="!item.sender && !item.isMonthlyReward" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
                         <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
                             <CircleSpinner/>
@@ -39,6 +39,12 @@
                             <span>{{ $t('Failed to fetch transactions') }}</span>
                         </div>
                     </div>
+                    <StakingRewardsListItem
+                        v-else-if="item.isMonthlyReward"
+                        :month-label="item.monthLabel"
+                        :monthly-reward="item.monthlyReward"
+                        :transaction-count="item.transactionCount"
+                    />
                     <TransactionListItem v-else :transaction="item"/>
                 </div>
             </template>
@@ -93,6 +99,11 @@ import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
+import { useStakingStore } from '../stores/Staking';
+import Amount from './Amount.vue';
+import FiatConvertedAmount from './FiatConvertedAmount.vue';
+import StakingIcon from './icons/Staking/StakingIcon.vue';
+import StakingRewardsListItem from './StakingRewardsListItem.vue';
 
 function processTimestamp(timestamp: number) {
     const date: Date = new Date(timestamp);
@@ -150,6 +161,7 @@ export default defineComponent({
         const { isFetchingTxHistory, fetchedAddresses } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
         const { config } = useConfig();
+        const { stakingEvents } = useStakingStore();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
@@ -209,6 +221,28 @@ export default defineComponent({
             });
         });
 
+        // Calculate monthly rewards
+        const monthlyRewards = computed(() => {
+            const events = stakingEvents.value;
+            if (!events) return new Map();
+
+            // Filter only reward events (type 6) and group by month
+            const rewardsByMonth = new Map();
+            events
+                .filter((event) => event.type === 6)
+                .forEach((event) => {
+                    const date = new Date(event.date);
+                    const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+                    const currentData = rewardsByMonth.get(monthKey) || { total: 0, count: 0 };
+                    rewardsByMonth.set(monthKey, {
+                        total: currentData.total + event.value,
+                        count: currentData.count + 1,
+                    });
+                });
+
+            return rewardsByMonth;
+        });
+
         const transactions = computed(() => {
             // Display loading transactions
             if (!filteredTxs.value.length && isFetchingTxHistory.value) {
@@ -249,12 +283,26 @@ export default defineComponent({
 
             if (!txs[n]) return transactionsWithMonths; // Address has no more txs
 
-            // Inject month + year labels
+            // Inject month + year labels and monthly rewards
             let { month: txMonth, year: txYear } = processTimestamp(toMs(txs[n].timestamp!));
             let txDate: Date;
 
             if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
                 transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
+
+                // Add monthly reward for current month if exists
+                const currentMonthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+                const currentMonthReward = monthlyRewards.value.get(currentMonthKey);
+                if (currentMonthReward) {
+                    transactionsWithMonths.push({
+                        transactionHash: `monthly-reward-${currentMonthKey}`,
+                        isMonthlyReward: true,
+                        monthlyReward: currentMonthReward.total,
+                        transactionCount: currentMonthReward.count,
+                        monthLabel: $t('This month'),
+                    });
+                }
+
                 isLatestMonth = false;
             }
 
@@ -272,7 +320,7 @@ export default defineComponent({
                 const txMonthYear = `${txMonth}.${txYear}`;
 
                 if (txMonthYear !== displayedMonthYear) {
-                    // Inject a month label
+                    // First inject the month label
                     transactionsWithMonths.push({
                         transactionHash: getLocaleMonthStringFromDate(
                             txDate,
@@ -284,6 +332,27 @@ export default defineComponent({
                         ),
                         isLatestMonth,
                     });
+
+                    // Then immediately inject the monthly reward summary if there were rewards
+                    const monthKey = `${txYear}-${String(txMonth + 1).padStart(2, '0')}`;
+                    const monthlyReward = monthlyRewards.value.get(monthKey);
+                    if (monthlyReward) {
+                        transactionsWithMonths.push({
+                            transactionHash: `monthly-reward-${monthKey}`,
+                            isMonthlyReward: true,
+                            monthlyReward: monthlyReward.total,
+                            transactionCount: monthlyReward.count,
+                            monthLabel: getLocaleMonthStringFromDate(
+                                txDate,
+                                locale,
+                                {
+                                    month: 'long',
+                                    year: txYear !== currentYear ? 'numeric' : undefined,
+                                },
+                            ),
+                        });
+                    }
+
                     isLatestMonth = false;
                     displayedMonthYear = txMonthYear;
                 }
@@ -415,6 +484,10 @@ export default defineComponent({
         CircleSpinner,
         AlertTriangleIcon,
         LoadingList,
+        Amount,
+        FiatConvertedAmount,
+        StakingIcon,
+        StakingRewardsListItem,
     },
 });
 </script>
@@ -438,6 +511,68 @@ export default defineComponent({
         text-transform: uppercase;
         font-weight: bold;
         opacity: 0.4;
+    }
+}
+
+.monthly-reward {
+    padding: 1.5rem 2rem;
+    margin: 1rem -2rem;
+    background: var(--nimiq-highlight-bg);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: default;
+
+    .left-section {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        .staking-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--nimiq-green);
+        }
+
+        .info {
+            .month-label {
+                padding: 0;
+                font-weight: 600;
+                font-size: var(--body-size);
+                opacity: 1;
+                color: var(--text-100);
+                margin-bottom: 0.25rem;
+            }
+
+            .transaction-count {
+                font-size: var(--small-size);
+                color: var(--text-60);
+            }
+        }
+    }
+
+    .reward-amount {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .amount {
+            font-weight: bold;
+            color: var(--nimiq-green);
+            font-size: var(--body-size);
+            margin-bottom: 0.25rem;
+
+            &::before {
+                content: '+';
+                margin-right: -0.1em;
+            }
+        }
+
+        .fiat-amount {
+            font-size: var(--small-size);
+            color: var(--text-60);
+        }
     }
 }
 

@@ -395,8 +395,7 @@ export async function launchNetwork() {
         subscribe(newAddresses);
     });
 
-    // Fetch transactions for active address
-    watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress, trigger]) => {
+    watch([addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
         const address = activeAddress as string | null;
         if (!address || fetchedAddresses.value.includes(address)) return;
         addFetchedAddress(address);
@@ -404,7 +403,8 @@ export async function launchNetwork() {
         console.debug('Scheduling transaction fetch for', address);
 
         const knownTxDetails = addressStore.transactionsForActiveAddress.value;
-
+        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
+        //        (even when cross-account transactions are already present)
         // const lastConfirmedHeight = knownTxDetails
         //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
         //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
@@ -413,33 +413,42 @@ export async function launchNetwork() {
 
         if ((trigger as number) > 0) updateBalances([address]);
 
-        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
-        //        (even when cross-account transactions are already present)
-        client.waitForConsensusEstablished()
-            .then(() => {
-                console.info('Fetching transaction history for', address, knownTxDetails);
-                const { config } = useConfig();
-                return retry(
+        await client.waitForConsensusEstablished();
+        const { config } = useConfig();
+
+        const limit = 10;
+        let lastFetchedTxLength = limit;
+        let startAt: string | undefined;
+
+        while (lastFetchedTxLength === limit) {
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                const txDetails = await retry(
+                    // eslint-disable-next-line no-loop-func
                     () => client.getTransactionsByAddress(
                         address,
-                        /* lastConfirmedHeight - 10 */ 0,
+                        /* lastConfirmedHeight - 10 */ undefined,
                         knownTxDetails,
-                        /* startAt */ undefined,
-                        /* limit */ undefined,
+                        /* startAt */ startAt,
+                        /* limit */ limit,
                         // Reduce number of required history peers in the testnet
                         /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
                     ),
                 );
-            })
-            .then((txDetails) => {
                 console.info('Got transaction history for', address, txDetails);
+
+                lastFetchedTxLength = txDetails.length;
+                if (txDetails.length > 0 && txDetails[lastFetchedTxLength - 1].blockHeight) {
+                    startAt = txDetails[lastFetchedTxLength - 1].transactionHash;
+                }
+
                 transactionsStore.addTransactions(txDetails);
-            })
-            .catch((error) => {
-                reportFor('getTransactionsByAddress')(error);
+            } catch (error) {
+                reportFor('getTransactionsByAddress')(error as Error);
                 removeFetchedAddress(address);
-            })
-            .finally(() => network$.fetchingTxHistory--);
+            }
+        }
+        network$.fetchingTxHistory--;
     });
 
     // Fetch transactions for proxies

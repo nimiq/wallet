@@ -514,68 +514,6 @@ export default defineComponent({
     }
 }
 
-.monthly-reward {
-    padding: 1.5rem 2rem;
-    margin: 1rem -2rem;
-    background: var(--nimiq-highlight-bg);
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: default;
-
-    .left-section {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-
-        .staking-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            color: var(--nimiq-green);
-        }
-
-        .info {
-            .month-label {
-                padding: 0;
-                font-weight: 600;
-                font-size: var(--body-size);
-                opacity: 1;
-                color: var(--text-100);
-                margin-bottom: 0.25rem;
-            }
-
-            .transaction-count {
-                font-size: var(--small-size);
-                color: var(--text-60);
-            }
-        }
-    }
-
-    .reward-amount {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-
-        .amount {
-            font-weight: bold;
-            color: var(--nimiq-green);
-            font-size: var(--body-size);
-            margin-bottom: 0.25rem;
-
-            &::before {
-                content: '+';
-                margin-right: -0.1em;
-            }
-        }
-
-        .fiat-amount {
-            font-size: var(--small-size);
-            color: var(--text-60);
-        }
-    }
-}
-
 .vue-recycle-scroller {
     position: absolute;
     left: 0;

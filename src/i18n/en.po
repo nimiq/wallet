@@ -710,7 +710,7 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:64
+#: src/components/staking/StakingGraphPage.vue:58
 msgid "Confirm stake"
 msgstr ""
 
@@ -1123,23 +1123,23 @@ msgstr ""
 msgid "Failed to fetch transactions"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:134
+#: src/components/TestnetFaucet.vue:138
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:77
+#: src/components/TestnetFaucet.vue:81
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:81
+#: src/components/TestnetFaucet.vue:85
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:88
+#: src/components/TestnetFaucet.vue:92
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:73
+#: src/components/TestnetFaucet.vue:77
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -2067,8 +2067,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:139
-#: src/components/TestnetFaucet.vue:145
+#: src/components/TestnetFaucet.vue:143
+#: src/components/TestnetFaucet.vue:149
 msgid "Request failed"
 msgstr ""
 
@@ -2276,8 +2276,8 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:141
-#: src/components/staking/StakingGraphPage.vue:236
+#: src/components/staking/StakingGraphPage.vue:133
+#: src/components/staking/StakingGraphPage.vue:228
 msgid "Sending Staking Transaction"
 msgstr ""
 
@@ -2430,7 +2430,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:825
 #: src/components/modals/StablecoinSendModal.vue:681
-#: src/components/staking/StakingGraphPage.vue:297
+#: src/components/staking/StakingGraphPage.vue:289
 #: src/components/staking/StakingInfoPage.vue:344
 #: src/components/staking/StakingInfoPage.vue:427
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
@@ -2461,7 +2461,7 @@ msgstr ""
 msgid "Stake"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:69
+#: src/components/staking/StakingGraphPage.vue:63
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
@@ -2502,7 +2502,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:223
+#: src/components/staking/StakingGraphPage.vue:215
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
@@ -2514,11 +2514,11 @@ msgstr ""
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:272
+#: src/components/staking/StakingGraphPage.vue:264
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:179
+#: src/components/staking/StakingGraphPage.vue:171
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
@@ -2760,7 +2760,7 @@ msgstr ""
 msgid "The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:130
+#: src/components/TestnetFaucet.vue:134
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -2869,7 +2869,7 @@ msgstr ""
 msgid "This pool usually produces blocks."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:125
+#: src/components/TestnetFaucet.vue:129
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -3010,7 +3010,7 @@ msgstr ""
 msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:72
+#: src/components/staking/StakingGraphPage.vue:66
 msgid "Unlock at any time. Your NIM will be available within ~24 hours."
 msgstr ""
 
@@ -3137,7 +3137,7 @@ msgstr ""
 msgid "When ready"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:76
+#: src/components/staking/StakingGraphPage.vue:70
 msgid "will be available within ~24 hours."
 msgstr ""
 
@@ -3180,7 +3180,7 @@ msgstr ""
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:119
+#: src/components/TestnetFaucet.vue:123
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 

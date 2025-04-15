@@ -55,10 +55,7 @@
                         borderless
                     />
                     <span v-if="'score' in validator || 'annualReward' in validator" class="dot"></span>
-                    <ValidatorReward
-                        v-if="'annualReward' in validator"
-                        :reward="validator.annualReward"
-                    />
+                    <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward" />
                 </div>
             </div>
         </div>

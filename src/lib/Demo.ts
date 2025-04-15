@@ -56,10 +56,10 @@ const demoPolygonAddress = '0xabc123DemoPolygonAddress';
 const buyFromAddress = 'NQ04 JG63 HYXL H3QF PPNA 7ED7 426M 3FQE FHE5';
 
 // We keep this as our global/final balance, which should result from the transactions
-const nimInitialBalance = 140_418_00000; // 14,041,800,000 - 14 april, 2018. 5 decimals.
-const btcInitialBalance = 1_0000000; // 1 BTC (8 decimals)
-const usdtInitialBalance = 5_000_000000; // 5000 USDT (6 decimals)
-const usdcInitialBalance = 3_000_000000; // 3000 USDC (6 decimals)
+const nimInitialBalance = 140_418 * 1e5; // 14,041,800,000 - 14 april, 2018. 5 decimals.
+const btcInitialBalance = 0.0025 * 1e8; // 1 BTC (8 decimals)
+const usdtInitialBalance = 514.83 * 1e6; // 5000 USDT (6 decimals)
+const usdcInitialBalance = 357.38 * 1e6; // 3000 USDC (6 decimals)
 
 // Swaps
 const onGoingSwaps = new Map<string, SetupSwapArgs>();
@@ -126,6 +126,12 @@ function insertCustomDemoStyles() {
  */
 function rewriteDemoRoutes() {
     demoRouter.beforeEach((to, _from, next) => {
+        if (to.path.startsWith('/receive/') && !to.path.startsWith('/receive/nim')) {
+            return next({
+                path: `/${DemoModal.Fallback}`,
+                query: { ...to.query, [DEMO_PARAM]: '' },
+            })
+        }
         // Redirect certain known paths to the Buy demo modal
         if (to.path === '/buy') {
             return next({
@@ -154,6 +160,7 @@ function setupSingleMutationObserver() {
         disableSwapTriggers(processedElements);
         enableSellAndSwapModals(processedElements);
         obfuscateAddresses(processedElements);
+        observeReceiveModal(processedElements);
     };
 
     // Create one mutation observer for all DOM modifications
@@ -1897,7 +1904,7 @@ function obfuscateAddresses(processedElements: WeakSet<HTMLElement>) {
 
     // Process NIM address displays: obfuscate address chunks beyond the first three.
     const nimAddressElements = document.querySelectorAll('.copyable.address-display') as NodeListOf<HTMLElement>;
-    nimAddressElements.forEach(el =>
+    nimAddressElements.forEach((el) =>
         processElement(el, (element) => {
             const chunks = element.querySelectorAll('.chunk');
             for (let i = 3; i < chunks.length; i++) {
@@ -1906,27 +1913,62 @@ function obfuscateAddresses(processedElements: WeakSet<HTMLElement>) {
                 chunk.textContent = 'XXXX';
                 if (space) chunk.appendChild(space);
             }
-        })
+        }),
     );
 
     // Process short address displays: change the last chunk of the short address.
     const shortAddressElements = document.querySelectorAll('.tooltip.interactive-short-address.is-copyable') as NodeListOf<HTMLElement>;
-    shortAddressElements.forEach(el =>
+    shortAddressElements.forEach((el) =>
         processElement(el, (element) => {
             const lastChunk = element.querySelector('.short-address .address:last-child');
             if (lastChunk) {
                 lastChunk.textContent = 'xxxx';
             }
-        })
+        }),
     );
 
     // Process tooltip boxes inside short address displays.
     const tooltipBoxElements = document.querySelectorAll('.tooltip.interactive-short-address.is-copyable .tooltip-box') as NodeListOf<HTMLElement>;
-    tooltipBoxElements.forEach(el => {
+    tooltipBoxElements.forEach((el) => {
         if (processedElements.has(el)) return;
         processedElements.add(el);
         el.textContent = 'Demo address';
         el.classList.add('demo-tooltip');
         addDemoClickHandler(el);
+    });
+}
+
+/**
+ * Observes the receive modal and redirects relevant button clicks to the fallback modal
+ */
+function observeReceiveModal(processedElements: WeakSet<Element>) {
+    // Find the receive modal
+    const receiveModal = document.querySelector('.receive-modal');
+    if (!receiveModal) return;
+    
+    // Look for buttons that should redirect to the fallback modal
+    const buttons = receiveModal.querySelectorAll('.nq-button-s, .qr-button');
+    
+    buttons.forEach(button => {
+        // Skip if we've already processed this button
+        if (processedElements.has(button)) return;
+        
+        // Mark as processed to avoid adding multiple listeners
+        processedElements.add(button);
+        
+        // Replace the original click handler with our redirect
+        button.addEventListener('click', (event) => {
+            // Prevent the default action and stop propagation
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Redirect to the fallback modal
+            demoRouter.replace({
+                path: `/${DemoModal.Fallback}`,
+                query: { [DEMO_PARAM]: '' },
+            });
+            
+            console.log('[Demo] Redirected receive modal button click to fallback modal');
+        }, true); // Use capture to intercept the event before other handlers
     });
 }

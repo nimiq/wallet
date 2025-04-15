@@ -11,15 +11,8 @@
                 <p class="nq-text nq-blue">
                     {{ $t('Use the slider to lock your NIM and earn rewards.') }}
                 </p>
-                <div v-if="validator" class="tooltip-bar flex-row">
-                    <LabelTooltip :validator="validator"
-                        @click="$emit('selectValidator', validator)"
-                        disabled
-                    />
-                    <ValidatorTrustScore v-if="'score' in validator && typeof validator.score.total === 'number'"
-                        :score="validator.score.total" dry />
-                    <ValidatorReward v-if="'annualReward' in validator "
-                        :reward="validator.annualReward" dry />
+                <div class="validator-info-bar flex-row" v-if="validator">
+                    <ValidatorInfoBar :validator="validator" @click="$emit('selectValidator', validator)" />
                 </div>
             </template>
         </PageHeader>
@@ -95,9 +88,7 @@ import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
 import { useNetworkStore } from '../../stores/Network';
 
-import LabelTooltip from './tooltips/LabelTooltip.vue';
-import ValidatorReward from './tooltips/ValidatorReward.vue';
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
+import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import AmountSlider from './AmountSlider.vue';
@@ -320,9 +311,7 @@ export default defineComponent({
     components: {
         PageHeader,
         PageBody,
-        LabelTooltip,
-        ValidatorTrustScore,
-        ValidatorReward,
+        ValidatorInfoBar,
         StakingGraph,
         AmountSlider,
         Amount,
@@ -345,6 +334,10 @@ export default defineComponent({
             > * + * {
                 margin-left: 0.75rem;
             }
+        }
+
+        .validator-info-bar {
+            justify-content: center;
         }
     }
 

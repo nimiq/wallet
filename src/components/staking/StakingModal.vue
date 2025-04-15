@@ -22,6 +22,7 @@
                     @next="overlay = Overlay.RewardsHistory"
                     @adjust-stake="adjustStake"
                     @switch-validator="switchValidator"
+                    @selectValidator="onSelectValidator"
                     @statusChange="onStatusChange"
                 />
             </template>

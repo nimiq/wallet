@@ -1497,7 +1497,7 @@ function listenForSwapChanges() {
                 });
                 break;
         }
-    }, 15_000);
+    }, 1_800);
 }
 
 /**

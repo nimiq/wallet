@@ -100,9 +100,6 @@ import { useWindowSize } from '../composables/useWindowSize';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
 import { useStakingStore } from '../stores/Staking';
-import Amount from './Amount.vue';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
-import StakingIcon from './icons/Staking/StakingIcon.vue';
 import StakingRewardsListItem from './StakingRewardsListItem.vue';
 
 function processTimestamp(timestamp: number) {
@@ -187,7 +184,7 @@ export default defineComponent({
         const filteredTxs = computed(() => {
             if (!props.searchString) {
                 return transactionsForActiveAddress.value.filter(
-                    tx => tx.recipient !== STAKING_CONTRACT_ADDRESS && tx.sender !== STAKING_CONTRACT_ADDRESS
+                    (tx) => tx.recipient !== STAKING_CONTRACT_ADDRESS && tx.sender !== STAKING_CONTRACT_ADDRESS,
                 );
             }
 
@@ -484,9 +481,6 @@ export default defineComponent({
         CircleSpinner,
         AlertTriangleIcon,
         LoadingList,
-        Amount,
-        FiatConvertedAmount,
-        StakingIcon,
         StakingRewardsListItem,
     },
 });

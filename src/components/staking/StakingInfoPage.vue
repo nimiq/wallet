@@ -2,17 +2,15 @@
     <div class="staking-info-page flex-column">
         <PageHeader :backArrow="false">
             <template v-if="validator">
-                <i18n path="Staking with {validator}" :tag="false">
-                    <template v-if="'name' in validator" slot="validator">
-                        {{ validator.name }}
-                    </template>
-                    <template v-else slot="validator">
-                        <ShortAddress :address="validator.address" />
-                    </template>
-                </i18n>
+                {{  $t('Staking overview') }}
             </template>
             <template v-else>
                 {{ $t('Staking') }}
+            </template>
+            <template #more>
+                <div class="validator-info-bar flex-row" v-if="validator">
+                    <ValidatorInfoBar :validator="validator" @click="$emit('selectValidator', validator)" />
+                </div>
             </template>
         </PageHeader>
         <PageBody class="flex-column">
@@ -170,6 +168,7 @@ import { MIN_STAKE } from '../../lib/Constants';
 import Amount from '../Amount.vue';
 import LineChart from '../LineChart.vue';
 import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
+import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import ShortAddress from '../ShortAddress.vue';
@@ -465,6 +464,7 @@ export default defineComponent({
         ArrowDownIcon,
         ArrowRightSmallIcon,
         ValidatorIcon,
+        ValidatorInfoBar,
         FiatConvertedAmount,
         LineChart,
     },
@@ -496,6 +496,11 @@ export default defineComponent({
                 font-family: inherit;
                 font-weight: inherit;
             }
+        }
+
+        .validator-info-bar {
+            justify-content: center;
+            margin-top: 1rem;
         }
     }
 

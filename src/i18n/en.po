@@ -282,7 +282,7 @@ msgstr ""
 msgid "Addresses"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:76
+#: src/components/staking/StakingInfoPage.vue:74
 msgid "Adjust Stake"
 msgstr ""
 
@@ -517,8 +517,8 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:56
-#: src/components/TransactionList.vue:66
+#: src/components/TransactionList.vue:62
+#: src/components/TransactionList.vue:72
 msgid "Buy NIM"
 msgstr ""
 
@@ -592,7 +592,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/TransactionList.vue:53
+#: src/components/TransactionList.vue:59
 #: src/composables/useTransactionInfo.ts:148
 msgid "Cashlink"
 msgstr ""
@@ -686,7 +686,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:155
+#: src/components/staking/StakingModal.vue:164
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr ""
@@ -710,12 +710,12 @@ msgstr ""
 msgid "Confirm account"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:64
+#: src/components/staking/StakingGraphPage.vue:57
 msgid "Confirm stake"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:48
+#: src/components/TransactionList.vue:54
 #: src/components/UsdcTransactionList.vue:45
 #: src/components/UsdtTransactionList.vue:45
 msgid "Congrats"
@@ -886,7 +886,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:287
+#: src/components/staking/StakingInfoPage.vue:286
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -1123,23 +1123,23 @@ msgstr ""
 msgid "Failed to fetch transactions"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:137
+#: src/components/TestnetFaucet.vue:138
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:80
+#: src/components/TestnetFaucet.vue:81
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:84
+#: src/components/TestnetFaucet.vue:85
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:91
+#: src/components/TestnetFaucet.vue:92
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:76
+#: src/components/TestnetFaucet.vue:77
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -1448,7 +1448,7 @@ msgstr ""
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
-#: src/components/TransactionList.vue:50
+#: src/components/TransactionList.vue:56
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 
@@ -1710,7 +1710,7 @@ msgid "No rewards yet"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:77
-#: src/components/TransactionList.vue:71
+#: src/components/TransactionList.vue:77
 #: src/components/UsdcTransactionList.vue:62
 #: src/components/UsdtTransactionList.vue:62
 msgid "No transactions found"
@@ -2067,8 +2067,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:142
-#: src/components/TestnetFaucet.vue:148
+#: src/components/TestnetFaucet.vue:143
+#: src/components/TestnetFaucet.vue:149
 msgid "Request failed"
 msgstr ""
 
@@ -2125,12 +2125,8 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:149
+#: src/components/staking/StakingInfoPage.vue:147
 msgid "Rewards history"
-msgstr ""
-
-#: src/components/staking/StakingRewardsHistoryPage.vue:4
-msgid "Rewards History"
 msgstr ""
 
 #: src/components/modals/StablecoinSendModal.vue:81
@@ -2276,8 +2272,8 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:141
-#: src/components/staking/StakingGraphPage.vue:236
+#: src/components/staking/StakingGraphPage.vue:132
+#: src/components/staking/StakingGraphPage.vue:227
 msgid "Sending Staking Transaction"
 msgstr ""
 
@@ -2287,7 +2283,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:357
+#: src/components/staking/StakingInfoPage.vue:356
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2430,9 +2426,9 @@ msgstr ""
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:825
 #: src/components/modals/StablecoinSendModal.vue:681
-#: src/components/staking/StakingGraphPage.vue:297
-#: src/components/staking/StakingInfoPage.vue:344
-#: src/components/staking/StakingInfoPage.vue:427
+#: src/components/staking/StakingGraphPage.vue:288
+#: src/components/staking/StakingInfoPage.vue:343
+#: src/components/staking/StakingInfoPage.vue:426
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr ""
@@ -2461,7 +2457,7 @@ msgstr ""
 msgid "Stake"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:69
+#: src/components/staking/StakingGraphPage.vue:62
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
@@ -2477,17 +2473,21 @@ msgstr ""
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:58
+#: src/components/staking/StakingInfoPage.vue:56
 msgid "Staked"
 msgstr ""
 
 #: src/components/LegacyAccountNotice.vue:28
-#: src/components/staking/StakingInfoPage.vue:15
+#: src/components/staking/StakingInfoPage.vue:8
 msgid "Staking"
 msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:5
-msgid "Staking with {validator}"
+msgid "Staking overview"
+msgstr ""
+
+#: src/components/staking/StakingRewardsHistoryPage.vue:4
+msgid "Staking Rewards"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:475
@@ -2502,7 +2502,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:223
+#: src/components/staking/StakingGraphPage.vue:214
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
@@ -2510,19 +2510,19 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:328
+#: src/components/staking/StakingInfoPage.vue:327
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:272
+#: src/components/staking/StakingGraphPage.vue:263
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:179
+#: src/components/staking/StakingGraphPage.vue:170
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:413
+#: src/components/staking/StakingInfoPage.vue:412
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2760,7 +2760,7 @@ msgstr ""
 msgid "The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:133
+#: src/components/TestnetFaucet.vue:134
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -2816,8 +2816,9 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:243
 #: src/components/BtcTransactionList.vue:265
-#: src/components/TransactionList.vue:228
-#: src/components/TransactionList.vue:250
+#: src/components/TransactionList.vue:269
+#: src/components/TransactionList.vue:291
+#: src/components/TransactionList.vue:302
 #: src/components/UsdcTransactionList.vue:205
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205
@@ -2869,7 +2870,7 @@ msgstr ""
 msgid "This pool usually produces blocks."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:128
+#: src/components/TestnetFaucet.vue:129
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2910,7 +2911,7 @@ msgstr ""
 msgid "To {exchange}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:141
+#: src/components/staking/StakingInfoPage.vue:139
 msgid "To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
 msgstr ""
 
@@ -2979,7 +2980,7 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:144
+#: src/components/staking/StakingInfoPage.vue:142
 msgid "un-stake all"
 msgstr ""
 
@@ -3010,7 +3011,7 @@ msgstr ""
 msgid "Unlike any other crypto, Nimiq connects your wallet directly to peers from all around the world. This makes you a first-class citizen of the blockchain."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:72
+#: src/components/staking/StakingGraphPage.vue:65
 msgid "Unlock at any time. Your NIM will be available within ~24 hours."
 msgstr ""
 
@@ -3079,7 +3080,7 @@ msgstr ""
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:113
+#: src/components/staking/StakingInfoPage.vue:111
 msgid "Validator"
 msgstr ""
 
@@ -3137,7 +3138,7 @@ msgstr ""
 msgid "When ready"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:76
+#: src/components/staking/StakingGraphPage.vue:69
 msgid "will be available within ~24 hours."
 msgstr ""
 
@@ -3180,7 +3181,7 @@ msgstr ""
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:122
+#: src/components/TestnetFaucet.vue:123
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
@@ -3191,7 +3192,7 @@ msgid ""
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:78
+#: src/components/staking/StakingInfoPage.vue:76
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
@@ -3216,7 +3217,7 @@ msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:49
+#: src/components/TransactionList.vue:55
 #: src/components/UsdcTransactionList.vue:46
 #: src/components/UsdtTransactionList.vue:46
 msgid "You now own crypto!"
@@ -3324,7 +3325,7 @@ msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:63
+#: src/components/TransactionList.vue:69
 #: src/components/UsdcTransactionList.vue:55
 #: src/components/UsdtTransactionList.vue:55
 msgid "Your transactions will appear here"

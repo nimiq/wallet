@@ -153,6 +153,7 @@ function setupSingleMutationObserver() {
         setupVisualCues(processedElements);
         disableSwapTriggers(processedElements);
         enableSellAndSwapModals(processedElements);
+        obfuscateAddresses(processedElements);
     };
 
     // Create one mutation observer for all DOM modifications
@@ -1117,6 +1118,17 @@ const demoCSS = `
     display: none;
 }
 
+/* Demo address tooltip styling */
+.tooltip.demo-tooltip {
+    width: max-content;
+    background: var(--nimiq-orange-bg);
+    margin-left: -7rem;
+}
+
+.tooltip.demo-tooltip::after {
+    background: #fc750c; /* Match the red theme for the demo warning */
+}
+
 .demo-highlight-badge {
     position: absolute;
     width: 34px;
@@ -1842,4 +1854,79 @@ export class DemoHubApi extends HubApi {
             },
         });
     }
+}
+
+/**
+ * Obfuscates addresses in the UI by:
+ * - Showing only first 3 chunks of addresses (rest are XXXX) for NIM addresses
+ * - Showing only the first few characters for BTC and polygon addresses
+ * - Changing the copy tooltip message
+ * - Changing the copy functionality to provide a demo disclaimer
+ */
+function obfuscateAddresses(processedElements: WeakSet<HTMLElement>) {
+    // Adds the common clipboard click handler to an element.
+    function addDemoClickHandler(el: HTMLElement) {
+        el.addEventListener('click', (e: MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            el.classList.add('copied');
+            setTimeout(() => el.classList.remove('copied'), 1500);
+            navigator.clipboard.writeText('This is a demo address - not for actual use');
+        }, true);
+    }
+
+    // Updates the tooltip for an element.
+    function updateTooltip(el: HTMLElement) {
+        const tooltip = el.querySelector('.tooltip') as HTMLElement;
+        if (tooltip && !processedElements.has(tooltip)) {
+            processedElements.add(tooltip);
+            tooltip.textContent = 'Demo address';
+            tooltip.classList.add('demo-tooltip');
+            addDemoClickHandler(tooltip);
+        }
+    }
+
+    // Processes an element: marks it as processed, applies any extra changes, updates tooltip, and adds a click handler.
+    function processElement(el: HTMLElement, extraProcess: ((el: HTMLElement) => void) | null = null) {
+        if (processedElements.has(el)) return;
+        processedElements.add(el);
+        if (extraProcess) extraProcess(el);
+        updateTooltip(el);
+        addDemoClickHandler(el);
+    }
+
+    // Process NIM address displays: obfuscate address chunks beyond the first three.
+    const nimAddressElements = document.querySelectorAll('.copyable.address-display') as NodeListOf<HTMLElement>;
+    nimAddressElements.forEach(el =>
+        processElement(el, (element) => {
+            const chunks = element.querySelectorAll('.chunk');
+            for (let i = 3; i < chunks.length; i++) {
+                const chunk = chunks[i];
+                const space = chunk.querySelector('.space');
+                chunk.textContent = 'XXXX';
+                if (space) chunk.appendChild(space);
+            }
+        })
+    );
+
+    // Process short address displays: change the last chunk of the short address.
+    const shortAddressElements = document.querySelectorAll('.tooltip.interactive-short-address.is-copyable') as NodeListOf<HTMLElement>;
+    shortAddressElements.forEach(el =>
+        processElement(el, (element) => {
+            const lastChunk = element.querySelector('.short-address .address:last-child');
+            if (lastChunk) {
+                lastChunk.textContent = 'xxxx';
+            }
+        })
+    );
+
+    // Process tooltip boxes inside short address displays.
+    const tooltipBoxElements = document.querySelectorAll('.tooltip.interactive-short-address.is-copyable .tooltip-box') as NodeListOf<HTMLElement>;
+    tooltipBoxElements.forEach(el => {
+        if (processedElements.has(el)) return;
+        processedElements.add(el);
+        el.textContent = 'Demo address';
+        el.classList.add('demo-tooltip');
+        addDemoClickHandler(el);
+    });
 }

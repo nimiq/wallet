@@ -1,5 +1,5 @@
  <template>
-    <div class="validator-trust-score"
+    <div class="validator-trust-score flex-row"
         :class="{
             'high-score': !dry && !disabled && stars >= 4.5,
             'low-score': !dry && !disabled && stars >= 2.5 && stars < 3.5,
@@ -32,7 +32,7 @@ export default defineComponent({
         borderless: {
             type: Boolean,
             required: false,
-            default: false,
+            default: true,
         },
     },
     setup(props) {
@@ -56,19 +56,11 @@ export default defineComponent({
 @import '../../../scss/functions.scss';
 
 .validator-trust-score {
-    height: 3.125rem;
-    line-height: 2.8rem;
-    padding: 0 .875rem;
-    border-radius: 5rem;
     white-space: nowrap;
-    font-size: var(--body-size);
-    font-weight: bold;
+    align-items: center;
 
     --color: var(--text-50);
-    --border-color: var(--color);
-
     color: var(--color);
-    border: 1.5px solid var(--border-color);
 
     &.high-score { --color: var(--nimiq-green) }
     &.low-score { --color: var(--nimiq-orange) }
@@ -76,29 +68,6 @@ export default defineComponent({
     &.disabled {
         --color: var(--text-40);
         font-style: italic;
-    }
-
-    &.dry {
-        --border-color: #{nimiq-blue(0.15)};
-        --color: var(--text-60);
-
-        padding: 0 1.375rem;
-        height: 3.25rem;
-        line-height: 3.125rem;
-
-        font-size: var(--small-size);
-        font-weight: 600;
-    }
-
-    &.borderless {
-        border: none;
-
-        padding: 0;
-        font-weight: 600;
-
-        svg {
-            margin-right: 0;
-        }
     }
 
     svg {

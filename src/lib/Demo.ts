@@ -125,25 +125,25 @@ function insertCustomDemoStyles() {
  * Sets up a router guard to handle redirects for the demo environment.
  */
 function rewriteDemoRoutes() {
-    demoRouter.beforeEach((to, _from, next) => {
+    demoRouter.beforeResolve(async (to, from, next) => {
+        // Avoid displaying receive modal
         if (to.path.startsWith('/receive/') && !to.path.startsWith('/receive/nim')) {
-            return next({
-                path: `/${DemoModal.Fallback}`,
-                query: { ...to.query, [DEMO_PARAM]: '' },
-            })
-        }
-        // Redirect certain known paths to the Buy demo modal
-        if (to.path === '/buy') {
-            return next({
-                path: `/${DemoModal.Buy}`,
-                query: { ...to.query, [DEMO_PARAM]: '' },
-            });
+            return next({ path: `/${DemoModal.Fallback}`, query: { ...to.query, [DEMO_PARAM]: '' } });
         }
 
-        // Ensure the ?demo param is in place
-        if (to.query.demo === '') return next();
-        return next({ path: to.path, query: { ...to.query, [DEMO_PARAM]: '' } });
+        // Redirect certain known paths to the Buy demo modal
+        if (to.path === '/buy') {
+            return next({ path: `/${DemoModal.Buy}`, query: { ...to.query, [DEMO_PARAM]: '' }, replace: true });
+        }
+
+        // FIXME: When clicking the hamburger menu, nothing opens
+        if (to.query[DEMO_PARAM] === undefined) {
+            next({ path: to.path, query: { ...to.query, [DEMO_PARAM]: '' }, replace: true });
+        }
+
+        next();
     });
+
 }
 
 /**
@@ -1945,29 +1945,29 @@ function observeReceiveModal(processedElements: WeakSet<Element>) {
     // Find the receive modal
     const receiveModal = document.querySelector('.receive-modal');
     if (!receiveModal) return;
-    
+
     // Look for buttons that should redirect to the fallback modal
     const buttons = receiveModal.querySelectorAll('.nq-button-s, .qr-button');
-    
+
     buttons.forEach(button => {
         // Skip if we've already processed this button
         if (processedElements.has(button)) return;
-        
+
         // Mark as processed to avoid adding multiple listeners
         processedElements.add(button);
-        
+
         // Replace the original click handler with our redirect
         button.addEventListener('click', (event) => {
             // Prevent the default action and stop propagation
             event.preventDefault();
             event.stopPropagation();
-            
+
             // Redirect to the fallback modal
             demoRouter.replace({
                 path: `/${DemoModal.Fallback}`,
                 query: { [DEMO_PARAM]: '' },
             });
-            
+
             console.log('[Demo] Redirected receive modal button click to fallback modal');
         }, true); // Use capture to intercept the event before other handlers
     });

@@ -9,6 +9,7 @@
         {{ $t('You don\'t even need your email.') }}
       </p>
       <p>
+        <!-- eslint-disable-next-line max-len -->
         {{ $t('Create a wallet simply by setting a password and give the real deal a try. No download, no costs, no personal data.') }}
       </p>
     </PageBody>

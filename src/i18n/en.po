@@ -2816,9 +2816,9 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:243
 #: src/components/BtcTransactionList.vue:265
-#: src/components/TransactionList.vue:269
-#: src/components/TransactionList.vue:291
-#: src/components/TransactionList.vue:302
+#: src/components/TransactionList.vue:266
+#: src/components/TransactionList.vue:288
+#: src/components/TransactionList.vue:299
 #: src/components/UsdcTransactionList.vue:205
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205

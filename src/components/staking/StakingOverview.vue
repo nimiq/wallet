@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div v-if="validator" class="validator-container flex-row">
+        <div v-if="validator" class="validator-container flex-row" @click="openValidatorDetailsModal">
             <div class="validator-details flex-column">
                 <div class="validator-name">
                     <ValidatorIcon :validator="validator" class="nq-icon" />
@@ -121,6 +121,10 @@ export default defineComponent({
             router.push({ name: 'staking' });
         };
 
+        const openValidatorDetailsModal = () => {
+            router.push({ name: 'validator-details' });
+        };
+
         return {
             stake,
             validator,
@@ -130,6 +134,7 @@ export default defineComponent({
             inactiveReleaseTime,
             hasUnstakableStake,
             openStakingModal,
+            openValidatorDetailsModal,
         };
     },
     components: {

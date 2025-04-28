@@ -88,6 +88,8 @@ const SimplexModal = () =>
 // Staking Modals
 const StakingModal = () =>
     import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
+const ValidatorDetailsModal = () =>
+    import(/* webpackChunkName: "validator-details-modal" */ './components/staking/ValidatorDetailsModal.vue');
 
 Vue.use(VueRouter);
 
@@ -135,6 +137,7 @@ export enum RouteName {
     RootReleaseNotes = 'root-release-notes',
     ExportHistory = 'export-history',
     Staking = 'staking',
+    ValidatorDetails = 'validator-details',
     WalletStatus = 'wallet-status',
     Settings = 'settings',
     SettingsAccounts = 'settings-accounts',
@@ -435,6 +438,14 @@ const routes: RouteConfig[] = [{
                 modal: StakingModal,
             },
             name: RouteName.Staking,
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/validator-details',
+            components: {
+                modal: ValidatorDetailsModal,
+            },
+            name: RouteName.ValidatorDetails,
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {

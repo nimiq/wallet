@@ -41,9 +41,9 @@
                     </div>
                     <StakingRewardsListItem
                         v-else-if="item.isMonthlyReward"
-                        :month-label="item.monthLabel"
                         :monthly-reward="item.monthlyReward"
                         :transaction-count="item.transactionCount"
+                        :month="getMonthFromReward(item)"
                     />
                     <TransactionListItem v-else :transaction="item"/>
                 </div>
@@ -296,7 +296,6 @@ export default defineComponent({
                         isMonthlyReward: true,
                         monthlyReward: currentMonthReward.total,
                         transactionCount: currentMonthReward.count,
-                        monthLabel: $t('This month'),
                     });
                 }
 
@@ -339,14 +338,6 @@ export default defineComponent({
                             isMonthlyReward: true,
                             monthlyReward: monthlyReward.total,
                             transactionCount: monthlyReward.count,
-                            monthLabel: getLocaleMonthStringFromDate(
-                                txDate,
-                                locale,
-                                {
-                                    month: 'long',
-                                    year: txYear !== currentYear ? 'numeric' : undefined,
-                                },
-                            ),
                         });
                     }
 
@@ -458,6 +449,14 @@ export default defineComponent({
             () => !!activeAddress.value && fetchedAddresses.value.includes(activeAddress.value),
         );
 
+        function getMonthFromReward(item: any) {
+            if (typeof item.transactionHash === 'string' && item.transactionHash.startsWith('monthly-reward-')) {
+                const parts = item.transactionHash.split('-');
+                return `${parts[2]}-${parts[3]}`;
+            }
+            return '';
+        }
+
         return {
             LoadingListType,
             activeAddress,
@@ -472,6 +471,7 @@ export default defineComponent({
             unclaimedCashlinkTxs,
             onCreateCashlink,
             scroller,
+            getMonthFromReward,
         };
     },
     components: {

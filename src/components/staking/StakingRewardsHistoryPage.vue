@@ -1,7 +1,7 @@
 <template>
     <div class="staking-rewards-history-page flex-column">
         <PageHeader>
-            {{ month ? $t('{month} Staking Rewards', { month: formatMonthTitle(month) }) : $t('Staking Rewards') }}
+            {{ month ? $t('{month}. Staking Rewards', { month: formatMonthTitle(month) }) : $t('Staking Rewards') }}
         </PageHeader>
         <PageBody class="flex-column">
             <div v-if="filteredStakingEvents && filteredStakingEvents.length > 0" class="rewards-list">
@@ -71,7 +71,8 @@ export default defineComponent({
         const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
 
         function formatMonthTitle(dateString: string) {
-            const date = new Date(dateString);
+            const [year, month] = dateString.split('-');
+            const date = new Date(parseInt(year), parseInt(month) - 1);
             return monthFormatter.value.format(date);
         }
 
@@ -87,7 +88,8 @@ export default defineComponent({
         const filteredStakingEvents = computed(() => {
             if (!props.month) return sortedStakingEvents.value;
 
-            const targetMonth = new Date(props.month);
+            const [year, month] = props.month.split('-');
+            const targetMonth = new Date(parseInt(year), parseInt(month) - 1);
             return sortedStakingEvents.value.filter(event => {
                 const eventDate = new Date(event.date);
                 return eventDate.getMonth() === targetMonth.getMonth() &&

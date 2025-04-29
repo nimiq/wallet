@@ -1,13 +1,13 @@
 <template>
     <div class="staking-rewards-history-page flex-column">
         <PageHeader>
-            {{ $t('Staking Rewards') }}
+            {{ month ? $t('{month} Staking Rewards', { month: formatMonthTitle(month) }) : $t('Staking Rewards') }}
         </PageHeader>
         <PageBody class="flex-column">
-            <div v-if="stakingEvents && stakingEvents.length > 0" class="rewards-list">
+            <div v-if="filteredStakingEvents && filteredStakingEvents.length > 0" class="rewards-list">
                 <div class="scroll-mask top"></div>
                 <button
-                    v-for="event in sortedStakingEvents"
+                    v-for="event in filteredStakingEvents"
                     :key="event.date"
                     class="reset transaction"
                     @click="$router.push({name: 'transaction', params: {hash: event.transactionHash}})"
@@ -49,11 +49,31 @@ import { useStakingStore, StakingEvent } from '../../stores/Staking';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
+import { useSettingsStore } from '../../stores/Settings';
 
 export default defineComponent({
     name: 'StakingRewardsHistoryPage',
-    setup() {
+    props: {
+        month: {
+            type: String,
+            default: '',
+            validator: (value: string) => {
+                if (!value) return true;
+                const date = new Date(value);
+                return !isNaN(date.getTime());
+            }
+        }
+    },
+    setup(props) {
         const { stakingEvents, validators } = useStakingStore();
+        const { language } = useSettingsStore();
+
+        const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
+
+        function formatMonthTitle(dateString: string) {
+            const date = new Date(dateString);
+            return monthFormatter.value.format(date);
+        }
 
         const sortedStakingEvents = computed(() => {
             const events = stakingEvents.value as StakingEvent[] | null;
@@ -62,6 +82,17 @@ export default defineComponent({
             return [...events]
                 .filter((event) => event.type === 6)
                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) as any[];
+        });
+
+        const filteredStakingEvents = computed(() => {
+            if (!props.month) return sortedStakingEvents.value;
+
+            const targetMonth = new Date(props.month);
+            return sortedStakingEvents.value.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate.getMonth() === targetMonth.getMonth() &&
+                       eventDate.getFullYear() === targetMonth.getFullYear();
+            });
         });
 
         function formatDateDay(dateString: string) {
@@ -94,11 +125,13 @@ export default defineComponent({
         return {
             stakingEvents,
             sortedStakingEvents,
+            filteredStakingEvents,
             formatDateDay,
             formatDateMonth,
             formatTime,
             getValidatorName,
             validators,
+            formatMonthTitle,
         };
     },
     components: {

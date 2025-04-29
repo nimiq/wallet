@@ -1,5 +1,5 @@
 <template>
-    <button class="reset staking-reward-item">
+    <button class="reset staking-reward-item" @click="openRewardsHistory">
         <div class="staking-icon-container">
             <StakingIcon class="staking-icon"/>
         </div>
@@ -17,7 +17,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
+import { useRouter } from '@/router';
+import { useI18n } from '@/lib/useI18n';
 import Amount from './Amount.vue';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import StakingIcon from './icons/Staking/StakingIcon.vue';
@@ -25,10 +27,6 @@ import StakingIcon from './icons/Staking/StakingIcon.vue';
 export default defineComponent({
     name: 'StakingRewardsListItem',
     props: {
-        monthLabel: {
-            type: String,
-            required: true,
-        },
         monthlyReward: {
             type: Number,
             required: true,
@@ -37,6 +35,42 @@ export default defineComponent({
             type: Number,
             required: true,
         },
+        month: {
+            type: String,
+            required: true,
+        },
+    },
+    setup(props) {
+        const router = useRouter();
+        const { $t, locale } = useI18n();
+
+        const monthLabel = computed(() => {
+            const [year, month] = props.month.split('-');
+            const date = new Date(parseInt(year), parseInt(month) - 1);
+            const now = new Date();
+
+            // Check if it's the current month
+            if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+                return $t('This month');
+            }
+
+            return new Intl.DateTimeFormat(locale, {
+                month: 'long',
+                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+            }).format(date);
+        });
+
+        const openRewardsHistory = () => {
+            router.push({
+                name: 'staking-rewards-history',
+                params: { month: props.month }
+            });
+        };
+
+        return {
+            openRewardsHistory,
+            monthLabel,
+        };
     },
     components: {
         Amount,

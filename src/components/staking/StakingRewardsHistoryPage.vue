@@ -6,11 +6,10 @@
         <PageBody class="flex-column">
             <div v-if="filteredStakingEvents && filteredStakingEvents.length > 0" class="rewards-list">
                 <div class="scroll-mask top"></div>
-                <button
+                <div
                     v-for="event in filteredStakingEvents"
                     :key="event.date"
                     class="reset transaction"
-                    @click="$router.push({name: 'transaction', params: {hash: event.transactionHash}})"
                 >
                     <div class="date">
                         <span class="day">{{ formatDateDay(event.date) }}</span><br>
@@ -30,7 +29,7 @@
                         <Amount :amount="event.value" value-mask/>
                         <FiatConvertedAmount :amount="event.value" class="fiat-amount" value-mask/>
                     </div>
-                </button>
+                </div>
                 <div class="scroll-mask bottom"></div>
             </div>
             <div v-else class="no-rewards flex-column">
@@ -189,7 +188,7 @@ export default defineComponent({
     border: 0;
     background: transparent;
     border-radius: .75rem;
-    cursor: pointer;
+    // cursor: pointer;
     transition: background 400ms var(--nimiq-ease);
     font-size: var(--body-size);
     text-align: left;

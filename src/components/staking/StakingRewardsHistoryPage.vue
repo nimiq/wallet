@@ -12,8 +12,8 @@
                     class="reset transaction"
                 >
                     <div class="date">
-                        <span class="day">{{ formatDateDay(event.date) }}</span><br>
-                        <span class="month">{{ formatDateMonth(event.date) }}</span>
+                        <span class="day">{{ getFormattedDate(event.date).dateDay.value }}</span><br>
+                        <span class="month">{{ getFormattedDate(event.date).dateMonth.value }}</span>
                     </div>
                     <div class="identicon">
                         <ValidatorIcon
@@ -22,7 +22,7 @@
                     <div class="data">
                         <div class="label">{{ getValidatorName(event.sender_address) || 'Staking Reward' }}</div>
                         <div class="time-and-message">
-                            <span>{{ formatTime(event.date) }}</span>
+                            <span>{{ getFormattedDate(event.date).dateTime.value }}</span>
                         </div>
                     </div>
                     <div class="amounts isIncoming">
@@ -42,13 +42,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useStakingStore, StakingEvent } from '../../stores/Staking';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 import { useSettingsStore } from '../../stores/Settings';
+import { useFormattedDate } from '../../composables/useFormattedDate';
 
 export default defineComponent({
     name: 'StakingRewardsHistoryPage',
@@ -96,40 +97,21 @@ export default defineComponent({
             });
         });
 
-        function formatDateDay(dateString: string) {
-            const date = new Date(dateString);
-            return new Intl.DateTimeFormat(undefined, {
-                day: 'numeric',
-            }).format(date);
-        }
-
-        function formatDateMonth(dateString: string) {
-            const date = new Date(dateString);
-            return new Intl.DateTimeFormat(undefined, {
-                month: 'short',
-            }).format(date);
-        }
-
-        function formatTime(dateString: string) {
-            const date = new Date(dateString);
-            return new Intl.DateTimeFormat(undefined, {
-                hour: 'numeric',
-                minute: 'numeric',
-            }).format(date);
-        }
-
         function getValidatorName(address: string) {
             const validator = validators.value[address];
             return validator && 'name' in validator ? validator.name : null;
+        }
+
+        function getFormattedDate(dateString: string) {
+            const timestamp = ref(new Date(dateString).getTime());
+            return useFormattedDate(timestamp);
         }
 
         return {
             stakingEvents,
             sortedStakingEvents,
             filteredStakingEvents,
-            formatDateDay,
-            formatDateMonth,
-            formatTime,
+            getFormattedDate,
             getValidatorName,
             validators,
             formatMonthTitle,

@@ -44,7 +44,7 @@ msgstr "{amount}/Transaktion"
 msgid "{bankName} offers generic and individual IBANs."
 msgstr "{bankName} bietet generische und individuelle IBANs an."
 
-#: src/components/modals/BtcTransactionModal.vue:318
+#: src/components/modals/BtcTransactionModal.vue:321
 #: src/components/modals/TransactionModal.vue:333
 #: src/components/modals/UsdcTransactionModal.vue:266
 #: src/components/modals/UsdtTransactionModal.vue:247
@@ -334,7 +334,7 @@ msgstr "alle"
 msgid "All countries"
 msgstr "Alle Länder"
 
-#: src/components/layouts/AccountOverview.vue:306
+#: src/components/layouts/AccountOverview.vue:276
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -513,14 +513,14 @@ msgstr ""
 msgid "Bitcoin Unit"
 msgstr "Bitcoin-Einheit"
 
-#: src/components/modals/BtcTransactionModal.vue:315
+#: src/components/modals/BtcTransactionModal.vue:318
 #: src/components/modals/TransactionModal.vue:330
 #: src/components/modals/UsdcTransactionModal.vue:263
 #: src/components/modals/UsdtTransactionModal.vue:244
 msgid "Block #{height}"
 msgstr "Block #{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:326
+#: src/components/modals/BtcTransactionModal.vue:329
 #: src/components/modals/TransactionModal.vue:343
 #: src/components/modals/UsdcTransactionModal.vue:276
 #: src/components/modals/UsdtTransactionModal.vue:257
@@ -803,7 +803,7 @@ msgstr "Verknüpfe dein Konto mit TEN31 Pass für höhere Tausch-Limits."
 msgid "Connected to"
 msgstr "Verbunden"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:120
 msgid "connecting"
 msgstr "verbinden"
 
@@ -869,7 +869,7 @@ msgstr "In USDC konvertieren"
 msgid "Convert your USDC.e to the new standard."
 msgstr "Konvertiere deine USDC.e zum neuen Standard"
 
-#: src/components/modals/UsdcTransactionModal.vue:412
+#: src/components/modals/UsdcTransactionModal.vue:413
 #: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr "{amount1} USDC.e in {amount2} USDC umgewandelt"
@@ -1146,7 +1146,7 @@ msgstr "Fehler {errorCode} : {errorMessage}"
 msgid "Error:"
 msgstr "Fehler:"
 
-#: src/components/layouts/Network.vue:120
+#: src/components/layouts/Network.vue:121
 msgid "established"
 msgstr "hergestellt"
 
@@ -1204,7 +1204,7 @@ msgstr "Express"
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: src/components/modals/StablecoinSendModal.vue:757
+#: src/components/modals/StablecoinSendModal.vue:758
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr "Konnte {ticker} Gebühren nicht abfragen... (Error: {message})"
 
@@ -1426,10 +1426,10 @@ msgstr "Höchster Grad an Dezentralisierung"
 msgid "Historic value"
 msgstr "Historischer Wert"
 
-#: src/components/modals/BtcTransactionModal.vue:470
-#: src/components/modals/TransactionModal.vue:541
-#: src/components/modals/UsdcTransactionModal.vue:408
-#: src/components/modals/UsdtTransactionModal.vue:387
+#: src/components/modals/BtcTransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:542
+#: src/components/modals/UsdcTransactionModal.vue:409
+#: src/components/modals/UsdtTransactionModal.vue:388
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:193
 #: src/composables/useUsdcTransactionInfo.ts:148
@@ -1437,11 +1437,11 @@ msgstr "Historischer Wert"
 msgid "HTLC Creation"
 msgstr "HTLC-Erstellung"
 
-#: src/components/modals/BtcTransactionModal.vue:470
-#: src/components/modals/TransactionModal.vue:556
-#: src/components/modals/TransactionModal.vue:562
-#: src/components/modals/UsdcTransactionModal.vue:408
-#: src/components/modals/UsdtTransactionModal.vue:387
+#: src/components/modals/BtcTransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:557
+#: src/components/modals/TransactionModal.vue:563
+#: src/components/modals/UsdcTransactionModal.vue:409
+#: src/components/modals/UsdtTransactionModal.vue:388
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:208
 #: src/composables/useTransactionInfo.ts:214
@@ -1450,7 +1450,7 @@ msgstr "HTLC-Erstellung"
 msgid "HTLC Refund"
 msgstr "HTLC-Rückerstattung"
 
-#: src/components/modals/TransactionModal.vue:545
+#: src/components/modals/TransactionModal.vue:546
 #: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
@@ -1485,7 +1485,7 @@ msgstr "Identifikations­dokument"
 msgid "If in doubt, you can always check your balance at {nimiqWatchLink}"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:228
+#: src/components/swap/SwapNotification.vue:229
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1830,7 +1830,7 @@ msgstr ""
 msgid "No availability data available yet."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:227
+#: src/components/swap/SwapNotification.vue:228
 msgid "No connection to {chain} network."
 msgstr "Keine Verbindung zum {chain}-Netzwerk"
 
@@ -1962,7 +1962,7 @@ msgstr "teilweise zurückgesetzt"
 msgid "Partially reverted"
 msgstr "Teilweise zurückgesetzt"
 
-#: src/components/layouts/Network.vue:117
+#: src/components/layouts/Network.vue:118
 msgid "paused"
 msgstr ""
 
@@ -2222,15 +2222,15 @@ msgstr "Referenzwährung"
 msgid "Refresh the page to continue."
 msgstr "Seite neuladen um fortzufahren."
 
-#: src/components/modals/BtcTransactionModal.vue:308
+#: src/components/modals/BtcTransactionModal.vue:311
 #: src/components/modals/TransactionModal.vue:323
 #: src/components/modals/UsdcTransactionModal.vue:256
 #: src/components/modals/UsdtTransactionModal.vue:237
 msgid "Refund"
 msgstr "Rückerstattung"
 
-#: src/components/modals/UsdcTransactionModal.vue:577
-#: src/components/modals/UsdtTransactionModal.vue:545
+#: src/components/modals/UsdcTransactionModal.vue:578
+#: src/components/modals/UsdtTransactionModal.vue:546
 msgid "Refund failed: "
 msgstr "Rückerstattung fehlgeschlagen:"
 
@@ -2825,7 +2825,7 @@ msgstr "Wechsel zu USDT"
 msgid "Switch validator"
 msgstr ""
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:119
 msgid "syncing"
 msgstr "abgleichen"
 
@@ -3213,7 +3213,7 @@ msgstr "Fehlerbehebung"
 msgid "TrustScore"
 msgstr "VertrauensScore"
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:34
 msgid "Try it now"
 msgstr "Jetzt probieren"
 

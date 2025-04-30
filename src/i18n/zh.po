@@ -41,7 +41,7 @@ msgstr "{amount}/交易"
 msgid "{bankName} offers generic and individual IBANs."
 msgstr "{bankName} 提供通用和个人 IBAN"
 
-#: src/components/modals/BtcTransactionModal.vue:318
+#: src/components/modals/BtcTransactionModal.vue:321
 #: src/components/modals/TransactionModal.vue:333
 #: src/components/modals/UsdcTransactionModal.vue:266
 #: src/components/modals/UsdtTransactionModal.vue:247
@@ -326,7 +326,7 @@ msgstr "全部"
 msgid "All countries"
 msgstr "所有国家"
 
-#: src/components/layouts/AccountOverview.vue:306
+#: src/components/layouts/AccountOverview.vue:276
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -487,14 +487,14 @@ msgstr "比特币地址仅使用一次，因此不在联系人内。请改用标
 msgid "Bitcoin Unit"
 msgstr "比特币单位"
 
-#: src/components/modals/BtcTransactionModal.vue:315
+#: src/components/modals/BtcTransactionModal.vue:318
 #: src/components/modals/TransactionModal.vue:330
 #: src/components/modals/UsdcTransactionModal.vue:263
 #: src/components/modals/UsdtTransactionModal.vue:244
 msgid "Block #{height}"
 msgstr "区块＃{height}"
 
-#: src/components/modals/BtcTransactionModal.vue:326
+#: src/components/modals/BtcTransactionModal.vue:329
 #: src/components/modals/TransactionModal.vue:343
 #: src/components/modals/UsdcTransactionModal.vue:276
 #: src/components/modals/UsdtTransactionModal.vue:257
@@ -769,7 +769,7 @@ msgstr "连接到更高兑换限额的 TEN31 通行证"
 msgid "Connected to"
 msgstr "已连接至"
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:120
 msgid "connecting"
 msgstr "連接中"
 
@@ -834,7 +834,7 @@ msgstr ""
 msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:412
+#: src/components/modals/UsdcTransactionModal.vue:413
 #: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
@@ -1096,7 +1096,7 @@ msgstr ""
 msgid "Error:"
 msgstr "错误:"
 
-#: src/components/layouts/Network.vue:120
+#: src/components/layouts/Network.vue:121
 msgid "established"
 msgstr "已建立"
 
@@ -1154,7 +1154,7 @@ msgstr "快速"
 msgid "Failed"
 msgstr "失败"
 
-#: src/components/modals/StablecoinSendModal.vue:757
+#: src/components/modals/StablecoinSendModal.vue:758
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1364,10 +1364,10 @@ msgstr "更高层面的去中心化"
 msgid "Historic value"
 msgstr "历史价值"
 
-#: src/components/modals/BtcTransactionModal.vue:470
-#: src/components/modals/TransactionModal.vue:541
-#: src/components/modals/UsdcTransactionModal.vue:408
-#: src/components/modals/UsdtTransactionModal.vue:387
+#: src/components/modals/BtcTransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:542
+#: src/components/modals/UsdcTransactionModal.vue:409
+#: src/components/modals/UsdtTransactionModal.vue:388
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:193
 #: src/composables/useUsdcTransactionInfo.ts:148
@@ -1375,11 +1375,11 @@ msgstr "历史价值"
 msgid "HTLC Creation"
 msgstr "HTLC创建"
 
-#: src/components/modals/BtcTransactionModal.vue:470
-#: src/components/modals/TransactionModal.vue:556
-#: src/components/modals/TransactionModal.vue:562
-#: src/components/modals/UsdcTransactionModal.vue:408
-#: src/components/modals/UsdtTransactionModal.vue:387
+#: src/components/modals/BtcTransactionModal.vue:474
+#: src/components/modals/TransactionModal.vue:557
+#: src/components/modals/TransactionModal.vue:563
+#: src/components/modals/UsdcTransactionModal.vue:409
+#: src/components/modals/UsdtTransactionModal.vue:388
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:208
 #: src/composables/useTransactionInfo.ts:214
@@ -1388,7 +1388,7 @@ msgstr "HTLC创建"
 msgid "HTLC Refund"
 msgstr "HTLC退款"
 
-#: src/components/modals/TransactionModal.vue:545
+#: src/components/modals/TransactionModal.vue:546
 #: src/composables/useTransactionInfo.ts:197
 #: src/composables/useUsdcTransactionInfo.ts:151
 #: src/composables/useUsdtTransactionInfo.ts:151
@@ -1423,7 +1423,7 @@ msgstr "身份文件"
 msgid "If in doubt, you can always check your balance at {nimiqWatchLink}"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:228
+#: src/components/swap/SwapNotification.vue:229
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1746,7 +1746,7 @@ msgstr ""
 msgid "No availability data available yet."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:227
+#: src/components/swap/SwapNotification.vue:228
 msgid "No connection to {chain} network."
 msgstr "没有连接到 {chain} 网络"
 
@@ -1878,7 +1878,7 @@ msgstr ""
 msgid "Partially reverted"
 msgstr ""
 
-#: src/components/layouts/Network.vue:117
+#: src/components/layouts/Network.vue:118
 msgid "paused"
 msgstr ""
 
@@ -2124,15 +2124,15 @@ msgstr "参考货币"
 msgid "Refresh the page to continue."
 msgstr "刷新页面以继续"
 
-#: src/components/modals/BtcTransactionModal.vue:308
+#: src/components/modals/BtcTransactionModal.vue:311
 #: src/components/modals/TransactionModal.vue:323
 #: src/components/modals/UsdcTransactionModal.vue:256
 #: src/components/modals/UsdtTransactionModal.vue:237
 msgid "Refund"
 msgstr "退款"
 
-#: src/components/modals/UsdcTransactionModal.vue:577
-#: src/components/modals/UsdtTransactionModal.vue:545
+#: src/components/modals/UsdcTransactionModal.vue:578
+#: src/components/modals/UsdtTransactionModal.vue:546
 msgid "Refund failed: "
 msgstr ""
 
@@ -2718,7 +2718,7 @@ msgstr ""
 msgid "Switch validator"
 msgstr ""
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:119
 msgid "syncing"
 msgstr "正在同步"
 
@@ -3079,7 +3079,7 @@ msgstr "疑难解答"
 msgid "TrustScore"
 msgstr ""
 
-#: src/components/AnnouncementBox.vue:33
+#: src/components/AnnouncementBox.vue:34
 msgid "Try it now"
 msgstr "现在就试试"
 

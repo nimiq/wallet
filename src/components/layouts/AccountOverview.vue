@@ -1,5 +1,5 @@
 <template>
-    <div class="account-overview" ref="root$">
+    <div class="account-overview">
         <div
             v-if="activeAccountInfo && activeAccountInfo.type === AccountType.BIP39 && !activeAccountInfo.fileExported"
             class="backup-warning file nq-orange-bg flex-row"
@@ -268,36 +268,6 @@
                         >{{ $t('Activate') }}</button>
                     </div>
                 </button>
-
-                <div class="account-backgrounds">
-                    <AddressListBackgroundSvg class="nimiq-account-background"
-                        v-if="accountBgPosition.nimiq"
-                        :width="accountBgPosition.nimiq.width"
-                        :height="accountBgPosition.nimiq.height"
-                        :style="accountBgPosition.nimiq"
-                        :cutouts="nimAccountBgCutouts"
-                    />
-                    <AddressListBackgroundSvg class="bitcoin-account-background"
-                        v-if="accountBgPosition.bitcoin"
-                        :width="accountBgPosition.bitcoin.width"
-                        :height="accountBgPosition.bitcoin.height"
-                        :style="accountBgPosition.bitcoin"
-                        :cutouts="{
-                            top: nimBtcSwapTooltip$ ? [nimBtcSwapTooltip$.isShown] : undefined,
-                            right: btcUsdcSwapTooltip$ ? [btcUsdcSwapTooltip$.isShown] : undefined,
-                        }"
-                    />
-                    <AddressListBackgroundSvg class="usdc-account-background"
-                        v-if="accountBgPosition.usdc"
-                        :width="accountBgPosition.usdc.width"
-                        :height="accountBgPosition.usdc.height"
-                        :style="accountBgPosition.usdc"
-                        :cutouts="{
-                            top: nimUsdcSwapTooltip$ ? [nimUsdcSwapTooltip$.isShown] : undefined,
-                            left: btcUsdcSwapTooltip$ ? [btcUsdcSwapTooltip$.isShown] : undefined,
-                        }"
-                    />
-                </div>
             </div>
 
             <div v-if="!canHaveMultipleAddresses">
@@ -329,11 +299,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted, onActivated } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
-import { nextTick } from '@/lib/nextTick';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -363,9 +332,7 @@ import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import MiniAddIcon from '../icons/MiniAddIcon.vue';
 import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
-import AddressListBackgroundSvg from '../AddressListBackgroundSvg.vue';
 import { useAddressStore } from '../../stores/Address';
-import { useConfig } from '../../composables/useConfig';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 // import { useStakingStore } from '../../stores/Staking';
 // import AccountStake from '../staking/AccountStake.vue';
@@ -390,7 +357,6 @@ export default defineComponent({
             accountUsdtBridgedBalance,
         } = usePolygonAddressStore();
         const { stablecoin, knowsAboutUsdt } = useAccountSettingsStore();
-        const { config } = useConfig();
 
         const isLegacyAccount = computed(() => (activeAccountInfo.value || false)
             && activeAccountInfo.value.type === AccountType.LEGACY);
@@ -455,108 +421,12 @@ export default defineComponent({
 
         const { updateAvailable } = useSettingsStore();
 
-        // Html refs for backgrounds and swap buttons' positions
-        const root$ = ref<HTMLElement | null>(null);
         const usdcAccount$ = ref<HTMLElement | null>(null);
         const nimiqAccount$ = ref<HTMLElement | null>(null);
         const bitcoinAccount$ = ref<HTMLElement | null>(null);
         const nimBtcSwapTooltip$ = ref<Tooltip | null>(null);
         const nimUsdcSwapTooltip$ = ref<Tooltip | null>(null);
         const btcUsdcSwapTooltip$ = ref<Tooltip | null>(null);
-
-        const forceUpdateRef = ref(false);
-        const resizeObserver = new ResizeObserver(forceUpdate);
-        const mutationObserver = new MutationObserver((mutations) => {
-            for (const mutation of mutations) {
-                if (mutation.target instanceof Element && !mutation.target.classList.contains('tooltip')) {
-                    forceUpdate();
-                    break;
-                }
-            }
-        });
-
-        // start observing on mount / listen to window resize
-        onMounted(async () => {
-            resizeObserver.observe(root$.value!);
-            mutationObserver.observe(root$.value!, { // for account switch & add address
-                attributes: false,
-                childList: true,
-                subtree: true,
-            });
-        });
-        // disconnect observers on unmount / remove window resize listener
-        onUnmounted(() => {
-            resizeObserver.disconnect();
-            mutationObserver.disconnect();
-        });
-        onActivated(forceUpdate); // to update on view change (settings <-> main view)
-
-        async function forceUpdate() {
-            await nextTick();
-            // trick to force vue to update the position on component resize
-            forceUpdateRef.value = !forceUpdateRef.value;
-            /**
-             * In some cases, the re-render after resize takes a bit too long
-             * and the background svg is not positioned correctly.
-             * (example: macos window maximize & minimize / toggling mobile view in devtools)
-             * This is workaround to force to re-render the background svg and position it correctly.
-             * This does the same as doing a setTimeout(() => forceUpdateRef.value = !forceUpdateRef.value, 0);
-             */
-            await nextTick();
-            forceUpdateRef.value = !forceUpdateRef.value;
-        }
-
-        const accountBgPosition = computed(() => {
-            // trick to force vue to update the position on component resize
-            // eslint-disable-next-line
-            forceUpdateRef.value;
-
-            const currencies = ['usdc', 'nimiq', 'bitcoin'];
-            const ret = currencies.reduce((obj: Record<string, any>, currency) => {
-                obj[currency] = null;
-                return obj;
-            }, {});
-
-            currencies.forEach((currency) => {
-                const el$ = {
-                    usdc: usdcAccount$.value,
-                    nimiq: nimiqAccount$.value,
-                    bitcoin: bitcoinAccount$.value,
-                }[currency];
-
-                if (el$ && root$.value) {
-                    const accountPosition = el$.getBoundingClientRect();
-                    const accountOverviewPosition: DOMRect = root$.value.getBoundingClientRect();
-
-                    ret[currency] = {
-                        height: accountPosition.height,
-                        width: accountPosition.width,
-                        top: `${accountPosition.top - accountOverviewPosition.top}px`,
-                        left: `${accountPosition.left - accountOverviewPosition.left}px`,
-                    };
-                }
-            });
-
-            return ret;
-        });
-
-        const nimAccountBgCutouts = computed(() => {
-            let bottom;
-
-            if (nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {
-                bottom = [nimBtcSwapTooltip$.value.isShown, nimUsdcSwapTooltip$.value.isShown];
-            } else if (nimBtcSwapTooltip$.value && !nimUsdcSwapTooltip$.value) {
-                bottom = (hasPolygonAddresses.value && config.polygon.enabled)
-                    ? [nimBtcSwapTooltip$.value.isShown, null]
-                    : [nimBtcSwapTooltip$.value.isShown];
-            } else if (!nimBtcSwapTooltip$.value && nimUsdcSwapTooltip$.value) {
-                bottom = (hasBitcoinAddresses.value && config.enableBitcoin)
-                    ? [null, nimUsdcSwapTooltip$.value.isShown]
-                    : [nimUsdcSwapTooltip$.value.isShown];
-            }
-
-            return { bottom };
-        });
 
         let timeoutid: any;
         function onSwapButtonPointerDown(event: TouchEvent, route: string) {
@@ -595,15 +465,12 @@ export default defineComponent({
             btcConsensus,
             polygonConsensus,
             updateAvailable,
-            root$,
             usdcAccount$,
             nimiqAccount$,
             bitcoinAccount$,
             nimBtcSwapTooltip$,
             nimUsdcSwapTooltip$,
             btcUsdcSwapTooltip$,
-            accountBgPosition,
-            nimAccountBgCutouts,
             onSwapButtonPointerDown,
             isMobile,
             RouteName,
@@ -634,7 +501,6 @@ export default defineComponent({
         DoubleArrowIcon,
         Tooltip,
         LinkedDoubleArrowIcon,
-        AddressListBackgroundSvg,
         // StakingSummaryMobile,
         // AccountStake,
     },
@@ -781,6 +647,9 @@ export default defineComponent({
         grid-row: 2;
         grid-column: 1 / 2;
     }
+    .nim-btc-swap-button:last-of-type {
+        grid-column-end: 3;
+    }
     .nim-usdc-swap-button {
         grid-row: 2;
         grid-column: 2 / 3;
@@ -843,6 +712,7 @@ export default defineComponent({
 .bitcoin-account,
 .usdc-account {
     z-index: 3;
+    background: var(--text-6);
 }
 
 .nimiq-account {
@@ -854,6 +724,7 @@ export default defineComponent({
     padding: var(--nimAccountPaddingY) var(--nimAccountPaddingX);
     padding-bottom: 0;
     flex-shrink: 1;
+    border-radius: 1.25rem;
 
     &:not(.scrolling) .address-list {
         overflow: unset;
@@ -1094,7 +965,7 @@ export default defineComponent({
         border: none;
         position: relative;
         top: 50%;
-        z-index: 2;
+        z-index: 4;
         transform: translateY(-50%);
         display: flex;
         justify-content: center;
@@ -1119,9 +990,10 @@ export default defineComponent({
         width: var(--size);
         background-color: var(--text-20);
         border-radius: 50%;
+        outline: 1.25rem solid var(--nimiq-gray);
 
         transition: {
-            property: height, width, background-color;
+            property: height, width, background-color, outline;
             duration: var(--transition-duration);
             timing-function: var(--nimiq-ease);
         };
@@ -1155,6 +1027,7 @@ export default defineComponent({
 
         .inner-circle {
             --size: 4rem;
+            outline-width: 0.325rem;
 
             background-color: var(--text-6);
 
@@ -1174,21 +1047,6 @@ export default defineComponent({
         .linked-double-arrow-icon {
             display: inline;
             margin: 0 0.5rem;
-        }
-    }
-}
-
-.account-backgrounds {
-    svg {
-        position: absolute;
-        z-index: 1;
-        border-radius: 1.25rem;
-        color: var(--text-6);
-        transition: color 400ms var(--nimiq-ease);
-
-        &::v-deep path {
-            transition: fill 400ms var(--nimiq-ease),
-                        d 200ms var(--nimiq-ease);
         }
     }
 }

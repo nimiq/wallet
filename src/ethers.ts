@@ -277,6 +277,48 @@ async function updateUsdtBridgedBalances(addresses: string[] = [...usdtBridgedBa
     }
 }
 
+// Safely queries logs over a block range, dynamically reducing the range if a provider error occurs.
+export async function safeQueryFilter(
+    contract: Contract,
+    event: EventFilter | string,
+    fromBlock: number,
+    toBlock: number,
+): Promise<Array<Event>> {
+    const allEvents: Event[] = [];
+    let currentStart = fromBlock;
+
+    // Loop until we’ve queried the full range of blocks
+    while (currentStart <= toBlock) {
+        let currentEnd = toBlock;
+
+        // Attempt to fetch logs in the current range
+        // Reduce the window size until it no longer crosses the provider’s limits.
+        while (true) {
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                const eventsChunk = await contract.queryFilter(event, currentStart, currentEnd);
+                allEvents.push(...eventsChunk);
+                break;
+            } catch (err: any) {
+                if (currentEnd - currentStart <= 1) {
+                    // eslint-disable-next-line
+                    console.error('QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
+                    throw err;
+                }
+
+                const mid = Math.floor((currentStart + currentEnd) / 2);
+                console.warn('QueryFilter failed, retrying with smaller range', currentStart, currentEnd);
+                currentEnd = mid;
+            }
+        }
+
+        // Move the window forward
+        currentStart = currentEnd + 1;
+    }
+
+    return allEvents;
+}
+
 function forgetBalances(addresses: string[]) {
     for (const address of addresses) {
         usdcBridgedBalances.delete(address);
@@ -607,8 +649,8 @@ export async function launchPolygon() {
                 console.debug(`Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    client.usdcBridgedToken.queryFilter(filterIncoming, startHeight, endHeight),
-                    client.usdcBridgedToken.queryFilter(filterOutgoing, startHeight, endHeight),
+                    safeQueryFilter(client.usdcBridgedToken, filterIncoming, startHeight, endHeight),
+                    safeQueryFilter(client.usdcBridgedToken, filterOutgoing, startHeight, endHeight),
                 ]);
 
                 // Ignore address poisoning transactions
@@ -710,7 +752,7 @@ export async function launchPolygon() {
                                 try {
                                     const { args, name } = htlcContract.interface.parseLog(innerLog);
                                     if (name === 'Open') {
-                                        return <HtlcEvent> {
+                                        return <HtlcEvent>{
                                             name,
                                             id: args.id,
                                             token: args.token,
@@ -738,14 +780,14 @@ export async function launchPolygon() {
                                 try {
                                     const { args, name } = htlcContract.interface.parseLog(innerLog);
                                     if (name === 'Redeem') {
-                                        return <HtlcEvent> {
+                                        return <HtlcEvent>{
                                             name,
                                             id: args.id,
                                             secret: args.secret,
                                         };
                                     }
                                     if (name === 'Refund') {
-                                        return <HtlcEvent> {
+                                        return <HtlcEvent>{
                                             name,
                                             id: args.id,
                                         };
@@ -914,8 +956,8 @@ export async function launchPolygon() {
                 console.debug(`Querying native logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    client.usdcToken.queryFilter(filterIncoming, startHeight, endHeight),
-                    client.usdcToken.queryFilter(filterOutgoing, startHeight, endHeight),
+                    safeQueryFilter(client.usdcBridgedToken, filterIncoming, startHeight, endHeight),
+                    safeQueryFilter(client.usdcBridgedToken, filterOutgoing, startHeight, endHeight),
                 ]);
 
                 // Ignore address poisoning transactions
@@ -986,7 +1028,7 @@ export async function launchPolygon() {
                                     try {
                                         const { args, name } = htlcContract.interface.parseLog(innerLog);
                                         if (name === 'Open') {
-                                            return <HtlcEvent> {
+                                            return <HtlcEvent>{
                                                 name,
                                                 id: args.id,
                                                 token: args.token,
@@ -1015,14 +1057,14 @@ export async function launchPolygon() {
                                     try {
                                         const { args, name } = htlcContract.interface.parseLog(innerLog);
                                         if (name === 'Redeem') {
-                                            return <HtlcEvent> {
+                                            return <HtlcEvent>{
                                                 name,
                                                 id: args.id,
                                                 secret: args.secret,
                                             };
                                         }
                                         if (name === 'Refund') {
-                                            return <HtlcEvent> {
+                                            return <HtlcEvent>{
                                                 name,
                                                 id: args.id,
                                             };
@@ -1175,8 +1217,8 @@ export async function launchPolygon() {
                 console.debug(`Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    client.usdtBridgedToken.queryFilter(filterIncoming, startHeight, endHeight),
-                    client.usdtBridgedToken.queryFilter(filterOutgoing, startHeight, endHeight),
+                    safeQueryFilter(client.usdcBridgedToken, filterIncoming, startHeight, endHeight),
+                    safeQueryFilter(client.usdcBridgedToken, filterOutgoing, startHeight, endHeight),
                 ]);
 
                 // Ignore address poisoning transactions
@@ -1247,7 +1289,7 @@ export async function launchPolygon() {
                                 try {
                                     const { args, name } = htlcContract.interface.parseLog(innerLog);
                                     if (name === 'Open') {
-                                        return <HtlcEvent> {
+                                        return <HtlcEvent>{
                                             name,
                                             id: args.id,
                                             token: args.token,
@@ -1275,14 +1317,14 @@ export async function launchPolygon() {
                                 try {
                                     const { args, name } = htlcContract.interface.parseLog(innerLog);
                                     if (name === 'Redeem') {
-                                        return <HtlcEvent> {
+                                        return <HtlcEvent>{
                                             name,
                                             id: args.id,
                                             secret: args.secret,
                                         };
                                     }
                                     if (name === 'Refund') {
-                                        return <HtlcEvent> {
+                                        return <HtlcEvent>{
                                             name,
                                             id: args.id,
                                         };
@@ -1403,7 +1445,7 @@ export async function calculateFee(
     let relay = await (forceRelay
         ? getRelayAddr(forceRelay.url).then((addr) => {
             if (!addr || !addr.ready) return undefined;
-            return <RelayServerInfo> {
+            return <RelayServerInfo>{
                 ...forceRelay,
                 minGasPrice: client.ethers.BigNumber.from(addr.minGasPrice),
             };

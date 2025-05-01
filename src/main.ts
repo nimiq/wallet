@@ -17,6 +17,7 @@ import { launchElectrum } from './electrum';
 import { launchPolygon } from './ethers';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
+import { checkIfDemoIsActive, dangerouslyInitializeDemo } from './lib/Demo';
 import { useSettingsStore } from './stores/Settings';
 import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
@@ -48,14 +49,22 @@ Vue.use(VuePortal, { name: 'Portal' });
 
 async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
-    await initStorage(); // Must be awaited before starting Vue
-    initTrials(); // Must be called after storage was initialized, can affect Config
-    // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
-    // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
-    await initHubApi();
-    syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
 
-    serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
+    const isDemoEnabled = checkIfDemoIsActive();
+
+    if (!isDemoEnabled) {
+        await initStorage(); // Must be awaited before starting Vue
+        initTrials(); // Must be called after storage was initialized, can affect Config
+        // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
+        // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code
+        // anyways.
+        await initHubApi();
+        syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
+
+        serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
+    } else {
+        dangerouslyInitializeDemo(router);
+    }
 
     // Update exchange rates every 2 minutes or every 10 minutes, depending on whether the Wallet is currently actively
     // used. If an update takes longer than that time due to a provider's rate limit, wait until the update succeeds
@@ -94,11 +103,15 @@ async function start() {
     const { language } = useSettingsStore();
     loadLanguage(language.value);
 
-    startSentry();
+    if (!isDemoEnabled) {
+        startSentry();
+    }
 
     const { config } = useConfig();
 
-    if (config.environment !== ENV_MAIN) {
+    if (isDemoEnabled) {
+        document.title = 'Nimiq Wallet Demo';
+    } else if (config.environment !== ENV_MAIN) {
         document.title = 'Nimiq Testnet Wallet';
     }
 
@@ -107,15 +120,17 @@ async function start() {
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
     });
 
-    watch(() => {
-        if (!config.oasis.apiEndpoint) return;
-        initOasisApi(config.oasis.apiEndpoint);
-    });
+    if (!isDemoEnabled) {
+        watch(() => {
+            if (!config.oasis.apiEndpoint) return;
+            initOasisApi(config.oasis.apiEndpoint);
+        });
 
-    watch(() => {
-        if (!config.ten31Pass.enabled) return;
-        initKycConnection();
-    });
+        watch(() => {
+            if (!config.ten31Pass.enabled) return;
+            initKycConnection();
+        });
+    }
 
     // Make reactive config accessible in components
     Vue.prototype.$config = config;

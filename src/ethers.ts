@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { ref, watch } from '@vue/composition-api';
-import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
+import type { Contract, ethers, Event, EventFilter, providers } from 'ethers';
+import { BigNumber } from 'ethers';
 import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log, TransactionReceipt } from '@ethersproject/abstract-provider';
@@ -849,7 +850,7 @@ export async function launchPolygon() {
         if ((trigger as number) > 0) updateUsdcBalances([address]);
 
         const client = await getPolygonClient();
-        const poolAddress = await getPoolAddress(client.usdcTransfer, config.polygon.usdc.tokenContract);
+        const poolAddress = '0x0000000000000000000000000000000000000000';
 
         console.debug('Fetching native USDC transaction history for', address, knownTxs);
 
@@ -873,16 +874,18 @@ export async function launchPolygon() {
         Promise.all([
             client.usdcToken.balanceOf(address) as Promise<BigNumber>,
             client.usdcToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            client.usdcToken.allowance(address, config.polygon.usdc.transferContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
-            client.usdcToken.allowance(address, config.polygon.usdc.htlcContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
+            // client.usdcToken.allowance(address, config.polygon.usdc.transferContract)
+            //     .then((allowance: BigNumber) => {
+            //         if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+            //         return MAX_ALLOWANCE.sub(allowance);
+            //     }) as Promise<BigNumber>,
+            BigNumber.from(0),
+            // client.usdcToken.allowance(address, config.polygon.usdc.htlcContract)
+            //     .then((allowance: BigNumber) => {
+            //         if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+            //         return MAX_ALLOWANCE.sub(allowance);
+            //     }) as Promise<BigNumber>,
+            BigNumber.from(0),
         ]).then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
             let blockHeight = await getPolygonBlockNumber();
 

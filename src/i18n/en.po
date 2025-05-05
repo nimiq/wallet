@@ -545,8 +545,8 @@ msgstr ""
 msgid "Buy more here in the wallet."
 msgstr ""
 
-#: src/components/TransactionList.vue:63
-#: src/components/TransactionList.vue:73
+#: src/components/TransactionList.vue:62
+#: src/components/TransactionList.vue:72
 msgid "Buy NIM"
 msgstr ""
 
@@ -620,7 +620,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/TransactionList.vue:60
+#: src/components/TransactionList.vue:59
 #: src/composables/useTransactionInfo.ts:148
 msgid "Cashlink"
 msgstr ""
@@ -743,7 +743,7 @@ msgid "Confirm stake"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:55
+#: src/components/TransactionList.vue:54
 #: src/components/UsdcTransactionList.vue:45
 #: src/components/UsdtTransactionList.vue:45
 msgid "Congrats"
@@ -1493,7 +1493,7 @@ msgstr ""
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
-#: src/components/TransactionList.vue:57
+#: src/components/TransactionList.vue:56
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 
@@ -1758,12 +1758,12 @@ msgstr ""
 msgid "No request received."
 msgstr ""
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:38
+#: src/components/staking/StakingRewardsHistoryPage.vue:37
 msgid "No rewards yet"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:77
-#: src/components/TransactionList.vue:78
+#: src/components/TransactionList.vue:77
 #: src/components/UsdcTransactionList.vue:62
 #: src/components/UsdtTransactionList.vue:62
 msgid "No transactions found"
@@ -2869,9 +2869,9 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:243
 #: src/components/BtcTransactionList.vue:265
-#: src/components/TransactionList.vue:267
-#: src/components/TransactionList.vue:289
-#: src/components/TransactionList.vue:300
+#: src/components/StakingRewardsListItem.vue:54
+#: src/components/TransactionList.vue:266
+#: src/components/TransactionList.vue:288
 #: src/components/UsdcTransactionList.vue:205
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205
@@ -3270,7 +3270,7 @@ msgid "You need a SEPA account that supports instant transactions."
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:56
+#: src/components/TransactionList.vue:55
 #: src/components/UsdcTransactionList.vue:46
 #: src/components/UsdtTransactionList.vue:46
 msgid "You now own crypto!"
@@ -3369,7 +3369,7 @@ msgstr ""
 msgid "Your rewards are influenced by how many NIM are staked globally and your validator pool’s fee."
 msgstr ""
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:39
+#: src/components/staking/StakingRewardsHistoryPage.vue:38
 msgid "Your rewards will appear here once you start staking."
 msgstr ""
 
@@ -3382,7 +3382,7 @@ msgid "Your transaction must be SEPA Instant"
 msgstr ""
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:70
+#: src/components/TransactionList.vue:69
 #: src/components/UsdcTransactionList.vue:55
 #: src/components/UsdtTransactionList.vue:55
 msgid "Your transactions will appear here"

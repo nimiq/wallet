@@ -91,7 +91,10 @@ const StakingModal = () =>
 const ValidatorDetailsModal = () =>
     import(/* webpackChunkName: "validator-details-modal" */ './components/staking/ValidatorDetailsModal.vue');
 const StakingRewardsHistoryModal = () =>
-    import(/* webpackChunkName: "staking-rewards-history-modal" */ './components/staking/StakingRewardsHistoryModal.vue');
+    import(
+        /* webpackChunkName: "staking-rewards-history-modal" */
+        './components/staking/StakingRewardsHistoryModal.vue'
+    );
 
 Vue.use(VueRouter);
 

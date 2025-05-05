@@ -60,9 +60,9 @@ export default defineComponent({
             validator: (value: string) => {
                 if (!value) return true;
                 const date = new Date(value);
-                return !isNaN(date.getTime());
-            }
-        }
+                return !Number.isNaN(date.getTime());
+            },
+        },
     },
     setup(props) {
         const { stakingEvents, validators } = useStakingStore();
@@ -72,7 +72,7 @@ export default defineComponent({
 
         function formatMonthTitle(dateString: string) {
             const [year, month] = dateString.split('-');
-            const date = new Date(parseInt(year), parseInt(month) - 1);
+            const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
             return monthFormatter.value.format(date);
         }
 
@@ -89,11 +89,11 @@ export default defineComponent({
             if (!props.month) return sortedStakingEvents.value;
 
             const [year, month] = props.month.split('-');
-            const targetMonth = new Date(parseInt(year), parseInt(month) - 1);
-            return sortedStakingEvents.value.filter(event => {
+            const targetMonth = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
+            return sortedStakingEvents.value.filter((event) => {
                 const eventDate = new Date(event.date);
-                return eventDate.getMonth() === targetMonth.getMonth() &&
-                       eventDate.getFullYear() === targetMonth.getFullYear();
+                return eventDate.getMonth() === targetMonth.getMonth()
+                    && eventDate.getFullYear() === targetMonth.getFullYear();
             });
         });
 

@@ -46,7 +46,7 @@ export default defineComponent({
 
         const monthLabel = computed(() => {
             const [year, month] = props.month.split('-');
-            const date = new Date(parseInt(year), parseInt(month) - 1);
+            const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
             const now = new Date();
 
             // Check if it's the current month
@@ -63,7 +63,7 @@ export default defineComponent({
         const openRewardsHistory = () => {
             router.push({
                 name: 'staking-rewards-history',
-                params: { month: props.month }
+                params: { month: props.month },
             });
         };
 

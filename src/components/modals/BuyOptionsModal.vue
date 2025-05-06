@@ -165,6 +165,9 @@
                 <a href="https://www.gate.io/de/trade/NIM_USDT" title="Gate.io" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/gateio.svg" alt="Gate.io">
                 </a>
+                <a href="https://www.mexc.com/exchange/NIM_USDT" title="MEXC" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/mexc.png" alt="MEXC">
+                </a>
                 <a href="https://ascendex.com" title="AscendEX (BitMax)" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/ascendex.png" alt="AscendEX">
                 </a>

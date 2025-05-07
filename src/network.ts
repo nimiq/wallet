@@ -19,6 +19,8 @@ let clientPromise: Promise<Client>;
 type Balances = Map<string, number>;
 const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
 
+let clientStartTimestamp: number | undefined;
+
 export async function getNetworkClient() {
     const { config } = useConfig();
 
@@ -32,6 +34,7 @@ export async function getNetworkClient() {
         clientConfig.seedNodes(config.nimiqSeeds);
         clientConfig.syncMode('pico');
         clientConfig.logLevel('debug');
+        clientStartTimestamp = Date.now();
         return Client.create(clientConfig.build());
     })();
 
@@ -209,6 +212,19 @@ export async function launchNetwork() {
     let networkWasReconnectedSinceLastConsensus = true;
     client.addConsensusChangedListener(async (consensus) => {
         network$.consensus = consensus;
+        if (clientStartTimestamp) {
+            // @ts-expect-error Matomo action queue is not typed
+            window._paq.push([
+                'trackEvent',
+                'Network',
+                `Consensus ${consensus}`,
+                Math.round((Date.now() - clientStartTimestamp) / 100) / 10,
+            ]);
+            if (consensus === 'established') {
+                // Prevent reporting of reconnections after the first time consensus was established
+                clientStartTimestamp = undefined;
+            }
+        }
 
         if (consensus === 'established') {
             const stop = watch(() => network$.fetchingTxHistory, (fetching) => {

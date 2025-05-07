@@ -166,4 +166,10 @@ export default {
             '1a0fc4eb1376b604c7df66d098b29bbb2fcfd68ef328ce98ae0f7d19f4f6d456',
         ],
     },
+
+    matomo: {
+        enabled: false,
+        host: '',
+        siteId: 0,
+    },
 };

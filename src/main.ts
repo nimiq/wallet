@@ -15,6 +15,7 @@ import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { launchElectrum } from './electrum';
 import { launchPolygon } from './ethers';
+import { initMatomo } from './matomo';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';
@@ -116,6 +117,10 @@ async function start() {
         if (!config.ten31Pass.enabled) return;
         initKycConnection();
     });
+
+    if (config.matomo.enabled) {
+        initMatomo(config.matomo.host, config.matomo.siteId, router);
+    }
 
     // Make reactive config accessible in components
     Vue.prototype.$config = config;

@@ -1473,10 +1473,10 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core@^2.0.0", "@nimiq/core@^2.0.9":
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.0.9.tgz#67e424b24eadeb337ac57a2629549b02a53fb22d"
-  integrity sha512-BsO9lwnN6qFuJq0pgdtpvwlnkleneTzmeB7yHF2CM3DJ5YLmjzwtvB8yB0wH6Miz0EsgBzVYRLJjwkcxgV5GdQ==
+"@nimiq/core@^2.0.0", "@nimiq/core@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.1.0.tgz#e1873c8da0a1d4122960caf22e82bd25281438ed"
+  integrity sha512-fLhd589UyTLdn9aGVADVud9xQw4FPUldRRJoRNpFbjdVKyPS6+ohV4bNHGsUzPrjPdz6zSO3XHy6AK2zNCmc7Q==
   dependencies:
     comlink "^4.4.1"
     websocket "^1.0.34"

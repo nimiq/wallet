@@ -52,7 +52,7 @@
                     <div class="nimiq-account" ref="nimiqAccount$"
                         :key="activeAccountId"
                         :class="{
-                            scrolling: nimiqAccount$ && nimiqAccount$.scrollHeight > nimiqAccount$.clientHeight,
+                            scrolling: isNimiqAddressListScrolling,
                         }">
                         <header class="flex-row">
                             <span class="nq-icon nimiq-logo"></span>
@@ -304,10 +304,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onActivated } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
+import { nextTick } from '@/lib/nextTick';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -433,6 +434,31 @@ export default defineComponent({
         const nimUsdcSwapTooltip$ = ref<Tooltip | null>(null);
         const btcUsdcSwapTooltip$ = ref<Tooltip | null>(null);
 
+        const forceUpdateRef = ref(false);
+        onActivated(forceUpdate); // to update on view change (settings <-> main view)
+
+        async function forceUpdate() {
+            await nextTick();
+            // trick to force vue to update the position on component resize
+            forceUpdateRef.value = !forceUpdateRef.value;
+            /**
+             * In some cases, the re-render after resize takes a bit too long
+             * and the background svg is not positioned correctly.
+             * (example: macos window maximize & minimize / toggling mobile view in devtools)
+             * This is workaround to force to re-render the background svg and position it correctly.
+             * This does the same as doing a setTimeout(() => forceUpdateRef.value = !forceUpdateRef.value, 0);
+             */
+            await nextTick();
+            forceUpdateRef.value = !forceUpdateRef.value;
+        }
+
+        const isNimiqAddressListScrolling = computed(() => {
+            // trick to force Vue to update the scrolling on component resize
+            forceUpdateRef.value; // eslint-disable-line no-unused-expressions
+
+            return nimiqAccount$.value && nimiqAccount$.value.scrollHeight > nimiqAccount$.value.clientHeight;
+        });
+
         let timeoutid: any;
         function onSwapButtonPointerDown(event: TouchEvent, route: string) {
             clearTimeout(timeoutid);
@@ -476,6 +502,7 @@ export default defineComponent({
             nimBtcSwapTooltip$,
             nimUsdcSwapTooltip$,
             btcUsdcSwapTooltip$,
+            isNimiqAddressListScrolling,
             onSwapButtonPointerDown,
             isMobile,
             RouteName,

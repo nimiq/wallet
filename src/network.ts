@@ -422,26 +422,43 @@ export async function launchNetwork() {
 
         while (lastFetchedTxLength === limit) {
             try {
+                // Determine list of known transactions to pass in
+                const knownTxStartIndex = startAt
+                    // eslint-disable-next-line no-loop-func
+                    ? knownTxDetails.findIndex((tx) => tx.transactionHash === startAt) || 0
+                    : 0;
+                const knownTxs = knownTxDetails.slice(knownTxStartIndex, knownTxStartIndex + limit);
+                console.info('Fetching transaction history for', address, knownTxs);
+
                 // eslint-disable-next-line no-await-in-loop
                 const txDetails = await retry(
                     // eslint-disable-next-line no-loop-func
                     () => client.getTransactionsByAddress(
                         address,
                         /* lastConfirmedHeight - 10 */ undefined,
-                        knownTxDetails,
-                        /* startAt */ startAt,
-                        /* limit */ limit,
+                        knownTxs,
+                        startAt,
+                        limit,
                         // Reduce number of required history peers in the testnet
                         /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
                     ),
                 );
+
+                // getTransactionsByAddress returns unfound (i.e. they were outside the limit) known txs as well,
+                // so we need to filter them out to determine the number of new transactions
+                const knownTxsHashes = new Set(knownTxs.map((tx) => tx.transactionHash));
+                const newTxDetails = txDetails.filter((tx) => !knownTxsHashes.has(tx.transactionHash));
+
                 console.info('Got transaction history for', address, txDetails);
 
-                lastFetchedTxLength = txDetails.length;
-                if (txDetails.length > 0 && txDetails[lastFetchedTxLength - 1].blockHeight) {
-                    startAt = txDetails[lastFetchedTxLength - 1].transactionHash;
+                lastFetchedTxLength = newTxDetails.length;
+                if (newTxDetails.length > 0 && newTxDetails[lastFetchedTxLength - 1].blockHeight) {
+                    startAt = newTxDetails[lastFetchedTxLength - 1].transactionHash;
                 }
 
+                // Here we still add all returned transactions to the store, because
+                // 1. It doesn't hurt
+                // 2. Some known transactions might have an updated state
                 transactionsStore.addTransactions(txDetails);
             } catch (error) {
                 reportFor('getTransactionsByAddress')(error as Error);

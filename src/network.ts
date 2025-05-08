@@ -216,9 +216,10 @@ export async function launchNetwork() {
             // @ts-expect-error Matomo action queue is not typed
             window._paq.push([
                 'trackEvent',
-                'Network',
-                `Consensus ${consensus}`,
-                Math.round((Date.now() - clientStartTimestamp) / 100) / 10,
+                'Network', // Category
+                'Consensus', // Action
+                consensus, // Name
+                Math.round((Date.now() - clientStartTimestamp) / 100) / 10, // Value
             ]);
             if (consensus === 'established') {
                 // Prevent reporting of reconnections after the first time consensus was established

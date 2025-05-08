@@ -48,17 +48,22 @@
             <!-- <StakingSummaryMobile v-if="isMobile && !totalAccountStake && nimAccountBalance" /> -->
 
             <div class=account-grid>
-                <div class="nimiq-account" ref="nimiqAccount$"
-                    :class="{ scrolling: nimiqAccount$ && nimiqAccount$.scrollHeight > nimiqAccount$.clientHeight }">
-                    <header class="flex-row">
-                        <span class="nq-icon nimiq-logo"></span>
-                        <span>NIM</span>
-                        <!-- <AccountStake v-if="totalAccountStake" /> -->
-                        <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
-                            <MiniAddIcon/>
-                        </button>
-                    </header>
-                    <AddressList @address-selected="onAddressSelected"/>
+                <div class="nimiq-background">
+                    <div class="nimiq-account" ref="nimiqAccount$"
+                        :key="activeAccountId"
+                        :class="{
+                            scrolling: nimiqAccount$ && nimiqAccount$.scrollHeight > nimiqAccount$.clientHeight,
+                        }">
+                        <header class="flex-row">
+                            <span class="nq-icon nimiq-logo"></span>
+                            <span>NIM</span>
+                            <!-- <AccountStake v-if="totalAccountStake" /> -->
+                            <button class="add-address reset" @click="activeAccountId && addAddress(activeAccountId)">
+                                <MiniAddIcon/>
+                            </button>
+                        </header>
+                        <AddressList @address-selected="onAddressSelected"/>
+                    </div>
                 </div>
 
                 <Tooltip
@@ -635,7 +640,7 @@ export default defineComponent({
 
     margin-top: 7rem;
 
-    .nimiq-account {
+    .nimiq-background {
         grid-row: 1;
         grid-column: 1 / 3;
         margin-bottom: calc(-1 * var(--grid-gap) / 2);
@@ -654,10 +659,10 @@ export default defineComponent({
         grid-row: 2;
         grid-column: 2 / 3;
     }
-    .nimiq-account ~ button:first-of-type {
+    .nimiq-background ~ button:first-of-type {
         grid-column-start: 1;
     }
-    .nimiq-account ~ button:last-of-type {
+    .nimiq-background ~ button:last-of-type {
         grid-column-end: 3;
     }
     .nim-btc-swap-button:first-of-type:last-of-type:nth-last-child(3),
@@ -708,11 +713,16 @@ export default defineComponent({
     }
 }
 
-.nimiq-account,
+.nimiq-background,
 .bitcoin-account,
 .usdc-account {
     z-index: 3;
     background: var(--text-6);
+    border-radius: 1.25rem;
+}
+
+.nimiq-background {
+    flex-shrink: 1;
 }
 
 .nimiq-account {
@@ -723,8 +733,7 @@ export default defineComponent({
 
     padding: var(--nimAccountPaddingY) var(--nimAccountPaddingX);
     padding-bottom: 0;
-    flex-shrink: 1;
-    border-radius: 1.25rem;
+    max-height: 100%;
 
     &:not(.scrolling) .address-list {
         overflow: unset;
@@ -802,7 +811,6 @@ export default defineComponent({
     font-size: var(--body-size);
     font-weight: 600;
     position: relative;
-    border-radius: 1.25rem;
     transition: color 400ms var(--nimiq-ease);
 
     &.active {

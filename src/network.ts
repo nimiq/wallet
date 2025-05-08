@@ -416,11 +416,14 @@ export async function launchNetwork() {
         await client.waitForConsensusEstablished();
         const { config } = useConfig();
 
-        const limit = 10;
+        let limit = 5; // This will be doubled to 10 in the first loop iteration
         let lastFetchedTxLength = limit;
         let startAt: string | undefined;
 
         while (lastFetchedTxLength === limit) {
+            // Double the limit until 100
+            limit = Math.min(100, limit * 2);
+
             try {
                 // Determine list of known transactions to pass in
                 const knownTxStartIndex = startAt

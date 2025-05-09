@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueMatomo from 'vue-matomo';
 import type VueRouter from 'vue-router';
 
-export function initMatomo(host: string, siteId: number, router: VueRouter) {
+export function initMatomo(host: string, siteId: number) {
     Vue.use(VueMatomo, {
         // Configure your matomo server and site by providing
         host,
@@ -22,7 +22,7 @@ export function initMatomo(host: string, siteId: number, router: VueRouter) {
         // trackerScriptUrl: 'https://example.com/whatever/script/path/you/have',
 
         // Enables automatically registering pageviews on the router
-        router,
+        // router: router,
 
         // Enables link tracking on regular links. Note that this won't
         // work for routing links (ie. internal Vue router links)

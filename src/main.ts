@@ -118,9 +118,10 @@ async function start() {
         initKycConnection();
     });
 
-    if (config.matomo.enabled) {
-        initMatomo(config.matomo.host, config.matomo.siteId, router);
-    }
+    watch(() => {
+        if (!config.matomo.enabled) return;
+        initMatomo(config.matomo.host, config.matomo.siteId);
+    });
 
     // Make reactive config accessible in components
     Vue.prototype.$config = config;

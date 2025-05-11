@@ -48,6 +48,22 @@
                         No rewards yet
                     </div>
                 </LineChart>
+                <div class="timerange-selector">
+                    <SliderToggle name="timerange-toggle" v-model="selectedRange">
+                        <template #ALL>
+                            <button class="reset timerange-btn">{{ $t('ALL') }}</button>
+                        </template>
+                        <template #Y1>
+                            <button class="reset timerange-btn">{{ $t('1Y') }}</button>
+                        </template>
+                        <template #M6>
+                            <button class="reset timerange-btn">{{ $t('6M') }}</button>
+                        </template>
+                        <template #M3>
+                            <button class="reset timerange-btn">{{ $t('3M') }}</button>
+                        </template>
+                    </SliderToggle>
+                </div>
             </div>
 
             <div v-if="stake">
@@ -158,6 +174,7 @@ import {
     PageBody,
     Tooltip,
     ArrowRightSmallIcon,
+    SliderToggle,
 } from '@nimiq/vue-components';
 
 import { useI18n } from '@/lib/useI18n';
@@ -277,6 +294,8 @@ export default defineComponent({
                     };
                 });
         });
+
+        const selectedRange = ref<'ALL' | 'Y1' | 'M6' | 'M3'>('ALL');
 
         async function deactivateAll() {
             if (stake.value?.activeBalance) {
@@ -448,6 +467,7 @@ export default defineComponent({
             consensus,
             MIN_STAKE,
             rewardsChartPoints,
+            selectedRange,
         };
     },
     components: {
@@ -467,6 +487,7 @@ export default defineComponent({
         ValidatorInfoBar,
         FiatConvertedAmount,
         LineChart,
+        SliderToggle,
     },
 });
 </script>
@@ -738,7 +759,6 @@ export default defineComponent({
         width: 100%;
         height: 150px;
         border-radius: 0.5rem;
-        overflow: hidden;
 
         .no-rewards {
             position: absolute;
@@ -747,6 +767,24 @@ export default defineComponent({
             transform: translate(-50%, -50%);
             color: var(--text-secondary);
             font-size: var(--small-size);
+        }
+    }
+
+    .timerange-selector {
+        position: absolute;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: white;
+        border-radius: 2000rem;
+        padding: 0.4rem;
+
+        &::v-deep .slider-toggle {
+            font-size: 1.375rem;
+            font-weight: 700;
+
+            --verticalPadding: 0.25rem;
+            --horizontalPadding: 1rem;
+            --padding: 0.2rem;
         }
     }
 

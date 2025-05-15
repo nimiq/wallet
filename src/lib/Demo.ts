@@ -1,4 +1,27 @@
 /* eslint-disable max-len, consistent-return, no-console, no-async-promise-executor */
+
+/**
+ * Demo Mode for the Nimiq Wallet
+ * ------------------------------
+ * 
+ * This module provides a complete demo environment for the Nimiq Wallet, allowing users to
+ * try out wallet features without connecting to real blockchain networks.
+ * 
+ * Demo mode can be activated in three ways:
+ * 1. By adding the '?demo=' URL parameter to any wallet URL
+ * 2. Setting config.demo.enabled = true in the configuration (always enabled)
+ * 3. Setting config.demo.enabled = 'domain.com' to enable only on a specific domain
+ * 
+ * When active, demo mode:
+ * - Creates fake accounts with demo balances
+ * - Generates fake transaction history
+ * - Simulates blockchain interactions like sending, receiving, and swapping
+ * - Obfuscates addresses and disables certain features that wouldn't work in demo mode
+ * - Redirects certain actions to explainer modals
+ * 
+ * This is intended for demonstration, educational, and testing purposes only.
+*/
+
 import VueRouter from 'vue-router';
 import { TransactionState as ElectrumTransactionState } from '@nimiq/electrum-client';
 import { CryptoCurrency, Utf8Tools } from '@nimiq/utils';
@@ -31,6 +54,8 @@ export type DemoState = {
 // The query param that activates the demo. e.g. https://wallet.nimiq.com/?demo=
 const DEMO_PARAM = 'demo';
 
+// No additional import needed, Config is already imported above
+
 const DemoFallbackModal = () =>
     import(
         /* webpackChunkName: 'demo-hub-fallback-modal' */
@@ -39,7 +64,7 @@ const DemoFallbackModal = () =>
 
 const DemoPurchaseModal = () =>
     import(
-        /* webpackChunkName: 'account-menu-modal' */
+        /* webpackChunkName: 'demo-modal-buy' */
         '@/components/modals/demos/DemoModalBuy.vue'
     );
 
@@ -73,12 +98,17 @@ let demoRouter: VueRouter;
  * Initializes the demo environment and sets up various routes, data, and watchers.
  */
 export function dangerouslyInitializeDemo(router: VueRouter) {
+    // Check if demo is active according to the configuration
+    if (!checkIfDemoIsActive()) {
+        console.info('[Demo] Demo mode not enabled in configuration. Skipping initialization.');
+        return;
+    }
+    
     console.warn('[Demo] Initializing demo environment...');
 
     demoRouter = router;
 
     insertCustomDemoStyles();
-    rewriteDemoRoutes();
     setupSingleMutationObserver();
     addDemoModalRoutes();
     interceptFetchRequest();
@@ -106,10 +136,28 @@ export function dangerouslyInitializeDemo(router: VueRouter) {
 // #region App setup
 
 /**
- * Checks if the 'demo' query param is present in the URL.
+ * Checks if the demo mode should be active based on the URL param and configuration.
+ * Demo mode is active if:
+ * 1. The demo query param is present in the URL, OR
+ * 2. The Config.demo.enabled is true, OR
+ * 3. The Config.demo.enabled is a string that matches the current hostname
  */
 export function checkIfDemoIsActive() {
-    return window.location.search.includes(DEMO_PARAM);
+    // Always check URL param first - this allows demo mode to be forced on any instance
+    if (window.location.search.includes(DEMO_PARAM)) return true;
+    
+    // Check configuration - can be boolean or string (hostname)
+    const demoConfig = Config.demo?.enabled;
+    
+    if (typeof demoConfig === 'boolean') {
+        return demoConfig;
+    }
+    
+    if (typeof demoConfig === 'string') {
+        return window.location.hostname === demoConfig;
+    }
+    
+    return false;
 }
 
 /**
@@ -119,30 +167,6 @@ function insertCustomDemoStyles() {
     const styleElement = document.createElement('style');
     styleElement.innerHTML = demoCSS;
     document.head.appendChild(styleElement);
-}
-
-/**
- * Sets up a router guard to handle redirects for the demo environment.
- */
-function rewriteDemoRoutes() {
-    demoRouter.beforeResolve(async (to, from, next) => {
-        // Avoid displaying receive modal
-        if (to.path.startsWith('/receive/') && !to.path.startsWith('/receive/nim')) {
-            return next({ path: `/${DemoModal.Fallback}`, query: { ...to.query, [DEMO_PARAM]: '' } });
-        }
-
-        // Redirect certain known paths to the Buy demo modal
-        if (to.path === '/buy') {
-            return next({ path: `/${DemoModal.Buy}`, query: { ...to.query, [DEMO_PARAM]: '' } });
-        }
-
-        // FIXME: When clicking the hamburger menu, nothing opens
-        if (to.query[DEMO_PARAM] === undefined) {
-            return next({ path: to.path, query: { ...to.query, [DEMO_PARAM]: '' }, replace: true });
-        }
-
-        next();
-    });
 }
 
 /**
@@ -320,7 +344,16 @@ function attachIframeListeners() {
         const { kind, data } = event.data as DemoFlowMessage;
         if (kind === MessageEventName.FlowChange && demoRoutes[data]) {
             useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
-            demoRouter.push(demoRoutes[data]);
+            
+            // Only include demo parameter in query if it's present in the current URL
+            const query = window.location.search.includes(DEMO_PARAM) 
+                ? { [DEMO_PARAM]: '' }
+                : undefined;
+                
+            demoRouter.push({
+                path: demoRoutes[data],
+                query,
+            });
         }
     });
 
@@ -971,7 +1004,14 @@ function replaceBuyNimFlow() {
                 btn1.className = 'nq-button-s inverse';
                 btn1.style.flex = '1';
                 btn1.addEventListener('click', () => {
-                    demoRouter.push('/buy');
+                    // Only include demo parameter in query if it's present in the current URL
+                    const query = window.location.search.includes(DEMO_PARAM) 
+                        ? { [DEMO_PARAM]: '' }
+                        : undefined;
+                    demoRouter.push({
+                        path: '/buy',
+                        query,
+                    });
                 });
                 btn1.innerHTML = 'Buy';
 
@@ -1021,7 +1061,17 @@ function replaceStakingFlow() {
                     const amount = Number.parseFloat(amountInput.value.replaceAll(/[^\d]/g, '')) * 1e5;
 
                     const { address: validatorAddress } = activeValidator.value!;
-                    demoRouter.push('/');
+                    
+                    // Only include demo parameter in query if it's present in the current URL
+                    const query = window.location.search.includes(DEMO_PARAM) 
+                        ? { [DEMO_PARAM]: '' }
+                        : undefined;
+                    
+                    demoRouter.push({
+                        path: '/',
+                        query,
+                    });
+                    
                     await new Promise<void>((resolve) => { window.setTimeout(resolve, 100); });
                     setStake({
                         activeBalance: 0,
@@ -1856,7 +1906,14 @@ export class DemoHubApi extends HubApi {
                     });
 
                     console.log('[Demo] Redirecting to fallback modal');
-                    demoRouter.push(`/${DemoModal.Fallback}`);
+                    // Only include demo parameter in query if it's present in the current URL
+                    const query = window.location.search.includes(DEMO_PARAM) 
+                        ? { [DEMO_PARAM]: '' }
+                        : undefined;
+                    demoRouter.push({
+                        path: `/${DemoModal.Fallback}`,
+                        query,
+                    });
                 });
             },
         });
@@ -1962,10 +2019,15 @@ function observeReceiveModal(processedElements: WeakSet<Element>) {
             event.preventDefault();
             event.stopPropagation();
 
+            // Only include demo parameter in query if it's present in the current URL
+            const query = window.location.search.includes(DEMO_PARAM) 
+                ? { [DEMO_PARAM]: '' }
+                : undefined;
+
             // Redirect to the fallback modal
             demoRouter.replace({
                 path: `/${DemoModal.Fallback}`,
-                query: { [DEMO_PARAM]: '' },
+                query,
             });
 
             console.log('[Demo] Redirected receive modal button click to fallback modal');

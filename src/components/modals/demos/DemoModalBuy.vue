@@ -58,16 +58,6 @@
                 message="This transaction is instant and secure."
             />
         </div>
-<!--
-    <PageBody slot="overlay" class="overlay-content">
-        <CheckmarkIcon />
-        <h2 class="nq-h2">
-          {{ $t('Your NIM is under its way!') }}
-        </h2>
-        <p>
-          {{ $t('This transaction is instant and secure.') }}
-        </p>
-    </PageBody> -->
   </Modal>
 </template>
 
@@ -326,8 +316,8 @@ export default defineComponent({
 
     ::v-deep .status-screen {
         height: 100%;
-  position: absolute;
-  inset: -6px;
-  width: calc(100% + 6px);
+        position: absolute;
+        inset: -6px;
+        width: calc(100% + 6px);
     }
 </style>

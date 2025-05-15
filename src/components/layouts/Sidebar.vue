@@ -20,7 +20,7 @@
             </Tooltip>
         </div>
 
-        <div v-if="isDemoEnabled" class="environment-notice demo-notice flex-row">
+        <div v-if="isDemoActive " class="environment-notice demo-notice flex-row">
             <StreetconeIcon/>
             <span class="nq-label">{{ $t('Demo mode') }}</span>
             <div class="flex-grow"></div>
@@ -380,7 +380,7 @@ export default defineComponent({
                 : null;
         });
 
-        const isDemoEnabled = checkIfDemoIsActive();
+        const isDemoActive  = checkIfDemoIsActive();
 
         return {
             CryptoCurrency,
@@ -408,7 +408,7 @@ export default defineComponent({
             openSellModal,
             nimSellOptions,
             activeCurrency,
-            isDemoEnabled,
+            isDemoActive ,
         };
     },
     components: {

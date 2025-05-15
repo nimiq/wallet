@@ -15,6 +15,7 @@ import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { launchElectrum } from './electrum';
 import { launchPolygon } from './ethers';
+import { initMatomo } from './matomo';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
 import { checkIfDemoIsActive, dangerouslyInitializeDemo } from './lib/Demo';
@@ -131,6 +132,11 @@ async function start() {
             initKycConnection();
         });
     }
+
+    watch(() => {
+        if (!config.matomo.enabled) return;
+        initMatomo(config.matomo.host, config.matomo.siteId);
+    });
 
     // Make reactive config accessible in components
     Vue.prototype.$config = config;

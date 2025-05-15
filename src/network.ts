@@ -20,6 +20,8 @@ let clientPromise: Promise<Client>;
 type Balances = Map<string, number>;
 const balances: Balances = new Map(); // Balances in Luna, excluding pending txs
 
+let clientStartTimestamp: number | undefined;
+
 export async function getNetworkClient() {
     const { config } = useConfig();
 
@@ -31,7 +33,9 @@ export async function getNetworkClient() {
         const clientConfig = new ClientConfiguration();
         clientConfig.network(config.environment === ENV_MAIN ? 'mainalbatross' : 'testalbatross');
         clientConfig.seedNodes(config.nimiqSeeds);
+        clientConfig.syncMode('pico');
         clientConfig.logLevel('debug');
+        clientStartTimestamp = Date.now();
         return Client.create(clientConfig.build());
     })();
 
@@ -209,6 +213,20 @@ export async function launchNetwork() {
     let networkWasReconnectedSinceLastConsensus = true;
     client.addConsensusChangedListener(async (consensus) => {
         network$.consensus = consensus;
+        if (clientStartTimestamp) {
+            // @ts-expect-error Matomo action queue is not typed
+            window._paq.push([
+                'trackEvent',
+                'Network', // Category
+                'Consensus', // Action
+                consensus, // Name
+                Math.round((Date.now() - clientStartTimestamp) / 100) / 10, // Value
+            ]);
+            if (consensus === 'established') {
+                // Prevent reporting of reconnections after the first time consensus was established
+                clientStartTimestamp = undefined;
+            }
+        }
 
         if (consensus === 'established') {
             const stop = watch(() => network$.fetchingTxHistory, (fetching) => {
@@ -383,7 +401,7 @@ export async function launchNetwork() {
     });
 
     // Fetch transactions for active address
-    watch([addressStore.activeAddress, txFetchTrigger], ([activeAddress, trigger]) => {
+    watch([addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
         if (checkIfDemoIsActive()) return;
         const address = activeAddress as string | null;
         if (!address || fetchedAddresses.value.includes(address)) return;
@@ -392,7 +410,8 @@ export async function launchNetwork() {
         console.debug('Scheduling transaction fetch for', address);
 
         const knownTxDetails = addressStore.transactionsForActiveAddress.value;
-
+        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
+        //        (even when cross-account transactions are already present)
         // const lastConfirmedHeight = knownTxDetails
         //     .filter((tx) => tx.state === TransactionState.CONFIRMED)
         //     .reduce((maxHeight, tx) => Math.max(tx.blockHeight!, maxHeight), 0);
@@ -401,33 +420,62 @@ export async function launchNetwork() {
 
         if ((trigger as number) > 0) updateBalances([address]);
 
-        // FIXME: Re-enable lastConfirmedHeight, but ensure it syncs from 0 the first time
-        //        (even when cross-account transactions are already present)
-        client.waitForConsensusEstablished()
-            .then(() => {
-                console.info('Fetching transaction history for', address, knownTxDetails);
-                const { config } = useConfig();
-                return retry(
+        await client.waitForConsensusEstablished();
+        const { config } = useConfig();
+
+        let limit = 5; // This will be doubled to 10 in the first loop iteration
+        let lastFetchedTxLength = limit;
+        let startAt: string | undefined;
+
+        while (lastFetchedTxLength === limit) {
+            // Double the limit until 100
+            limit = Math.min(100, limit * 2);
+
+            try {
+                // Determine list of known transactions to pass in
+                const knownTxStartIndex = startAt
+                    // eslint-disable-next-line no-loop-func
+                    ? knownTxDetails.findIndex((tx) => tx.transactionHash === startAt) || 0
+                    : 0;
+                const knownTxs = knownTxDetails.slice(knownTxStartIndex, knownTxStartIndex + limit);
+                console.info('Fetching transaction history for', address, knownTxs);
+
+                // eslint-disable-next-line no-await-in-loop
+                const txDetails = await retry(
+                    // eslint-disable-next-line no-loop-func
                     () => client.getTransactionsByAddress(
                         address,
-                        /* lastConfirmedHeight - 10 */ 0,
-                        knownTxDetails,
-                        /* startAt */ undefined,
-                        /* limit */ undefined,
+                        /* lastConfirmedHeight - 10 */ undefined,
+                        knownTxs,
+                        startAt,
+                        limit,
                         // Reduce number of required history peers in the testnet
                         /* minPeers */ config.environment === ENV_MAIN ? undefined : 1,
                     ),
                 );
-            })
-            .then((txDetails) => {
+
+                // getTransactionsByAddress returns unfound (i.e. they were outside the limit) known txs as well,
+                // so we need to filter them out to determine the number of new transactions
+                const knownTxsHashes = new Set(knownTxs.map((tx) => tx.transactionHash));
+                const newTxDetails = txDetails.filter((tx) => !knownTxsHashes.has(tx.transactionHash));
+
                 console.info('Got transaction history for', address, txDetails);
+
+                lastFetchedTxLength = newTxDetails.length;
+                if (newTxDetails.length > 0 && newTxDetails[lastFetchedTxLength - 1].blockHeight) {
+                    startAt = newTxDetails[lastFetchedTxLength - 1].transactionHash;
+                }
+
+                // Here we still add all returned transactions to the store, because
+                // 1. It doesn't hurt
+                // 2. Some known transactions might have an updated state
                 transactionsStore.addTransactions(txDetails);
-            })
-            .catch((error) => {
-                reportFor('getTransactionsByAddress')(error);
+            } catch (error) {
+                reportFor('getTransactionsByAddress')(error as Error);
                 removeFetchedAddress(address);
-            })
-            .finally(() => network$.fetchingTxHistory--);
+            }
+        }
+        network$.fetchingTxHistory--;
     });
 
     // Fetch transactions for proxies

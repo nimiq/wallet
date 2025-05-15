@@ -21,6 +21,7 @@ import { defineComponent, ref, Ref } from '@vue/composition-api';
 import { CircleSpinner, CrossIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
 import Config from 'config';
+import { ENV_MAIN } from '@/lib/Constants';
 import { useI18n } from '@/lib/useI18n';
 
 type FaucetInfoResponse = {
@@ -69,7 +70,10 @@ export default defineComponent({
         const faucetInfoPromise = fetch(`${Config.faucetEndpoint}/info`)
             .then((res) => res.json() as Promise<FaucetInfoResponse>)
             .then((faucet) => {
-                if (faucet.network !== Config.environment) {
+                // Only allow the faucet if either both the faucet and the Config of the wallet
+                // are in mainnet or neither is.
+                if ((Config.environment !== ENV_MAIN && faucet.network === 'main')
+                    || (Config.environment === ENV_MAIN && faucet.network !== 'main')) {
                     unavailableMsg.value = $t('Faucet unavailable (wrong network)');
                     canTap.value = false;
                 }

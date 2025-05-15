@@ -120,6 +120,7 @@ h3 {
     font-size: var(--small-label-size);
     line-height: 1;
     margin: 0;
+    white-space: nowrap;
 
     &.plus-more {
         margin-top: 1.5rem;
@@ -130,6 +131,7 @@ p {
     font-size: var(--body-size);
     line-height: 1;
     margin: .75rem 0 0;
+    white-space: nowrap;
 
     &.self {
         color: var(--nimiq-gold-darkened);

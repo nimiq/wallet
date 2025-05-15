@@ -133,4 +133,10 @@ export default {
             '91b21f4b100273bd7034f6369c29d1f7ba72dba7de6720ad3cd8b81916218913',
         ],
     },
+
+    matomo: {
+        enabled: true,
+        host: 'https://stats.nimiq-network.com',
+        siteId: 214,
+    },
 };

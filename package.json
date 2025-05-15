@@ -26,7 +26,7 @@
     "@adapttive/vue-markdown": "^4.0.1",
     "@formatjs/intl-displaynames": "^3.3.4",
     "@linusborg/vue-simple-portal": "^0.1.4",
-    "@nimiq/core": "^2.0.6",
+    "@nimiq/core": "^2.1.0",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "^1.10.3",
     "@nimiq/hub-api": "^1.10.0",
@@ -54,6 +54,7 @@
     "v-click-outside": "^3.0.1",
     "vue": "^2.6.11",
     "vue-i18n": "^8.15.5",
+    "vue-matomo": "^4.2.0",
     "vue-router": "^3.5.0",
     "vue-virtual-scroller": "https://github.com/sisou/vue-virtual-scroller#nimiq/build",
     "webpack-i18n-tools": "https://github.com/nimiq/webpack-i18n-tools"

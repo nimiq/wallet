@@ -447,7 +447,7 @@ fi
 # Get up-to-date browsers support list from caniuse.
 # The browserslist utility is meant to run via npx, even when usually using yarn, and is compatible with yarn.lock.
 echo -e "${CYAN}Updating browsers support list...${NC}"
-run_command "npx browserslist@latest --update-db" "Failed to update browsers list"
+run_command "npx update-browserslist-db@latest" "Failed to update browsers list"
 
 # Build Nginx path allowlist
 echo -e "${CYAN}Building Nginx path allowlist...${NC}"

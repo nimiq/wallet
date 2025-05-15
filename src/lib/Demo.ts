@@ -3,22 +3,22 @@
 /**
  * Demo Mode for the Nimiq Wallet
  * ------------------------------
- * 
+ *
  * This module provides a complete demo environment for the Nimiq Wallet, allowing users to
  * try out wallet features without connecting to real blockchain networks.
- * 
+ *
  * Demo mode can be activated in three ways:
  * 1. By adding the '?demo=' URL parameter to any wallet URL
  * 2. Setting config.demo.enabled = true in the configuration (always enabled)
  * 3. Setting config.demo.enabled = 'domain.com' to enable only on a specific domain
- * 
+ *
  * When active, demo mode:
  * - Creates fake accounts with demo balances
  * - Generates fake transaction history
  * - Simulates blockchain interactions like sending, receiving, and swapping
  * - Obfuscates addresses and disables certain features that wouldn't work in demo mode
  * - Redirects certain actions to explainer modals
- * 
+ *
  * This is intended for demonstration, educational, and testing purposes only.
 */
 
@@ -103,7 +103,7 @@ export function dangerouslyInitializeDemo(router: VueRouter) {
         console.info('[Demo] Demo mode not enabled in configuration. Skipping initialization.');
         return;
     }
-    
+
     console.warn('[Demo] Initializing demo environment...');
 
     demoRouter = router;
@@ -145,18 +145,18 @@ export function dangerouslyInitializeDemo(router: VueRouter) {
 export function checkIfDemoIsActive() {
     // Always check URL param first - this allows demo mode to be forced on any instance
     if (window.location.search.includes(DEMO_PARAM)) return true;
-    
+
     // Check configuration - can be boolean or string (hostname)
     const demoConfig = Config.demo?.enabled;
-    
+
     if (typeof demoConfig === 'boolean') {
         return demoConfig;
     }
-    
+
     if (typeof demoConfig === 'string') {
         return window.location.hostname === demoConfig;
     }
-    
+
     return false;
 }
 
@@ -344,12 +344,12 @@ function attachIframeListeners() {
         const { kind, data } = event.data as DemoFlowMessage;
         if (kind === MessageEventName.FlowChange && demoRoutes[data]) {
             useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
-            
+
             // Only include demo parameter in query if it's present in the current URL
-            const query = window.location.search.includes(DEMO_PARAM) 
+            const query = window.location.search.includes(DEMO_PARAM)
                 ? { [DEMO_PARAM]: '' }
                 : undefined;
-                
+
             demoRouter.push({
                 path: demoRoutes[data],
                 query,
@@ -1005,7 +1005,7 @@ function replaceBuyNimFlow() {
                 btn1.style.flex = '1';
                 btn1.addEventListener('click', () => {
                     // Only include demo parameter in query if it's present in the current URL
-                    const query = window.location.search.includes(DEMO_PARAM) 
+                    const query = window.location.search.includes(DEMO_PARAM)
                         ? { [DEMO_PARAM]: '' }
                         : undefined;
                     demoRouter.push({
@@ -1061,17 +1061,17 @@ function replaceStakingFlow() {
                     const amount = Number.parseFloat(amountInput.value.replaceAll(/[^\d]/g, '')) * 1e5;
 
                     const { address: validatorAddress } = activeValidator.value!;
-                    
+
                     // Only include demo parameter in query if it's present in the current URL
-                    const query = window.location.search.includes(DEMO_PARAM) 
+                    const query = window.location.search.includes(DEMO_PARAM)
                         ? { [DEMO_PARAM]: '' }
                         : undefined;
-                    
+
                     demoRouter.push({
                         path: '/',
                         query,
                     });
-                    
+
                     await new Promise<void>((resolve) => { window.setTimeout(resolve, 100); });
                     setStake({
                         activeBalance: 0,
@@ -1907,7 +1907,7 @@ export class DemoHubApi extends HubApi {
 
                     console.log('[Demo] Redirecting to fallback modal');
                     // Only include demo parameter in query if it's present in the current URL
-                    const query = window.location.search.includes(DEMO_PARAM) 
+                    const query = window.location.search.includes(DEMO_PARAM)
                         ? { [DEMO_PARAM]: '' }
                         : undefined;
                     demoRouter.push({
@@ -2020,7 +2020,7 @@ function observeReceiveModal(processedElements: WeakSet<Element>) {
             event.stopPropagation();
 
             // Only include demo parameter in query if it's present in the current URL
-            const query = window.location.search.includes(DEMO_PARAM) 
+            const query = window.location.search.includes(DEMO_PARAM)
                 ? { [DEMO_PARAM]: '' }
                 : undefined;
 
@@ -2069,7 +2069,7 @@ function observeTransactionList(processedElements: WeakSet<Element>) {
     if (message && message.innerText === 'NIM Bank purchase') {
         const iconDiv = transactionModal.querySelector('.identicon > .identicon');
         if (iconDiv) {
-            iconDiv.innerHTML= bankSvg.replaceAll('="48"', '="72"');
+            iconDiv.innerHTML = bankSvg.replaceAll('="48"', '="72"');
         }
     }
 }

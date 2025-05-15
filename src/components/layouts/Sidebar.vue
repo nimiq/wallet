@@ -380,7 +380,7 @@ export default defineComponent({
                 : null;
         });
 
-        const isDemoActive  = checkIfDemoIsActive();
+        const isDemoActive = checkIfDemoIsActive();
 
         return {
             CryptoCurrency,
@@ -408,7 +408,7 @@ export default defineComponent({
             openSellModal,
             nimSellOptions,
             activeCurrency,
-            isDemoActive ,
+            isDemoActive,
         };
     },
     components: {

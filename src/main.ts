@@ -51,9 +51,9 @@ Vue.use(VuePortal, { name: 'Portal' });
 async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
 
-    const isDemoActive  = checkIfDemoIsActive();
+    const isDemoActive = checkIfDemoIsActive();
 
-    if (!isDemoActive ) {
+    if (!isDemoActive) {
         await initStorage(); // Must be awaited before starting Vue
         initTrials(); // Must be called after storage was initialized, can affect Config
         // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
@@ -104,13 +104,13 @@ async function start() {
     const { language } = useSettingsStore();
     loadLanguage(language.value);
 
-    if (!isDemoActive ) {
+    if (!isDemoActive) {
         startSentry();
     }
 
     const { config } = useConfig();
 
-    if (isDemoActive ) {
+    if (isDemoActive) {
         document.title = 'Nimiq Wallet Demo';
     } else if (config.environment !== ENV_MAIN) {
         document.title = 'Nimiq Testnet Wallet';
@@ -121,7 +121,7 @@ async function start() {
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
     });
 
-    if (!isDemoActive ) {
+    if (!isDemoActive) {
         watch(() => {
             if (!config.oasis.apiEndpoint) return;
             initOasisApi(config.oasis.apiEndpoint);

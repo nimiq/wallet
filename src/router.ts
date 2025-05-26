@@ -47,6 +47,8 @@ const StablecoinSelectionModal = () =>
     import(/* webpackChunkName: "history-export-modal" */ './components/modals/StablecoinSelectionModal.vue');
 const WalletStatusModal = () =>
     import(/* webpackChunkName: "wallet-status-modal" */ './components/modals/WalletStatusModal.vue');
+const NimiqFeedbackModal = () =>
+    import(/* webpackChunkName: "nimiq-feedback-modal" */ './components/modals/NimiqFeedbackModal.vue');
 
 // Bitcoin Modals
 const BtcActivationModal = () =>
@@ -136,6 +138,7 @@ export enum RouteName {
     ExportHistory = 'export-history',
     Staking = 'staking',
     WalletStatus = 'wallet-status',
+    NimiqFeedback = 'nimiq-feedback',
     Settings = 'settings',
     SettingsAccounts = 'settings-accounts',
     Disclaimer = 'disclaimer',
@@ -444,6 +447,13 @@ const routes: RouteConfig[] = [{
             },
             name: RouteName.WalletStatus,
             meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/feedback',
+            components: {
+                modal: NimiqFeedbackModal,
+            },
+            name: RouteName.NimiqFeedback,
+            meta: { column: Columns.DYNAMIC },
         }],
         beforeEnter: (to, from, next) => {
             if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
@@ -620,7 +630,7 @@ function parseActivationRedirect(route: Route) {
     try {
         const hashParams = new URLSearchParams(route.hash.substring(1));
         redirect = decodeURIComponent(hashParams.get('redirect') || '') || undefined;
-    } catch (e) {} // eslint-disable-line no-empty
+    } catch (e) { } // eslint-disable-line no-empty
     return { redirect };
 }
 

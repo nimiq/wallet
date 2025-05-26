@@ -25,6 +25,7 @@ export default {
     ],
     disableNetworkInteraction: false,
     showHelpButton: true,
+    enableFeedback: true,
     faucetEndpoint: '',
     reportToSentry: true,
     enableBitcoin: true,

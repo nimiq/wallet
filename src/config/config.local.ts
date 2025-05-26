@@ -15,6 +15,7 @@ export default {
     ],
     disableNetworkInteraction: false,
     showHelpButton: true,
+    enableFeedback: true,
     faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
     reportToSentry: false,
     enableBitcoin: true,

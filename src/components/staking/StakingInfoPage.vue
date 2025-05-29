@@ -14,26 +14,6 @@
             </template>
         </PageHeader>
         <PageBody class="flex-column">
-            <span class="estimated-rewards-overlay">
-                <Tooltip
-                    preferredPosition="bottom right"
-                    :styles="{'width': '32rem', 'margin-left': '-6rem'}"
-                    :container="this"
-                >
-                    <div slot="trigger" class="flex-row">
-                        Estimated rewards <InfoCircleSmallIcon />
-                    </div>
-
-                    <img src="/img/staking/estimated-rewards-projection.svg" alt="Estimated Rewards Projection" />
-                    <p>
-                        Your reward is depending on how many people stake.
-                        The less people stake, the higher your rewards.
-                    </p>
-                    <p class="explainer">
-                        The corridor assumes that between 20% and 80% of all NIM holders stake.
-                    </p>
-                </Tooltip>
-            </span>
             <div class="rewards-chart">
                 <LineChart
                     :points="rewardsChartPoints"
@@ -530,30 +510,6 @@ export default defineComponent({
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
-
-        .estimated-rewards-overlay {
-            position: absolute;
-            top: 2.675rem;
-            left: 1.5rem;
-            z-index: 900;
-
-            ::v-deep .trigger {
-                line-height: 1.2;
-                font-size: var(--small-size);
-                font-weight: 600;
-                color: var(--text-40);
-                background: white;
-                padding: 0.25rem 0.5rem;
-
-                div {
-                    align-items: center;
-
-                    svg {
-                        margin-left: 0.5rem;
-                    }
-                }
-            }
-        }
     }
 
     .section-title {

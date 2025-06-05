@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted } from 'vue';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useAccountStore } from '../../stores/Account';

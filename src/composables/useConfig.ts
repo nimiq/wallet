@@ -1,5 +1,4 @@
-import { reactive } from '@vue/composition-api';
-import { UnwrapRef } from '@vue/composition-api/dist/reactivity/index.d';
+import { reactive, UnwrapRef } from 'vue';
 import Config from 'config';
 
 // FIXME: In Vue 2, composition-api methods cannot be used before the plugin is activated.

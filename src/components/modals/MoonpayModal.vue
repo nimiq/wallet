@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { SignBtcTransactionRequest } from '@nimiq/hub-api';
 import Modal from './Modal.vue';

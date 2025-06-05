@@ -1,4 +1,4 @@
-import { watch } from '@vue/composition-api';
+import { watch } from 'vue';
 import Ten31PassApi from '@nimiq/ten31-pass-api';
 import { useAccountStore } from '../stores/Account';
 import { KycProvider, useKycStore } from '../stores/Kyc';

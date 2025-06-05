@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, onMounted, Ref } from 'vue';
 import { LoadingSpinner } from '@nimiq/vue-components';
 import { provideI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';

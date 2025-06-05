@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { Tooltip } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useAddressStore } from '../../stores/Address';

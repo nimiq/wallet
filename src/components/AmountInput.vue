@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 
 const AmountInput = defineComponent({

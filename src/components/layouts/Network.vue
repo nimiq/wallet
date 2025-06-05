@@ -86,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, computed } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculatePolygonFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';

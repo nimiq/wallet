@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import VueCompositionApi, { watch } from '@vue/composition-api';
+import { createApp, watch } from 'vue';
+import { createPinia } from 'pinia';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
@@ -39,19 +39,13 @@ import '@/scss/themes.scss';
 
 // Set asset path relative to the public path defined in vue.config.json,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
-setVueComponentsAssetPath(`${process.env.BASE_URL}js/`, `${process.env.BASE_URL}img/`);
-
-Vue.config.productionTip = false;
-
-Vue.use(VueCompositionApi);
-Vue.use(VueVirtualScroller);
-Vue.use(VuePortal, { name: 'Portal' });
+setVueComponentsAssetPath(`${import.meta.env.BASE_URL}js/`, `${import.meta.env.BASE_URL}img/`);
 
 async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     initTrials(); // Must be called after storage was initialized, can affect Config
-    // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
+    // Must run after storage was initialized. Could potentially run in
     // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
     await initHubApi();
     syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
@@ -89,7 +83,7 @@ async function start() {
             queueExchangeRateUpdate();
         }, remainingTime);
     }
-    watch(isUserInactive, queueExchangeRateUpdate); // (Re)schedule exchange rate updates at the desired interval.
+    watch(isUserInactive, queueExchangeRateUpdate, { immediate: true }); // (Re)schedule exchange rate updates at the desired interval.
 
     // Fetch language file
     const { language } = useSettingsStore();
@@ -106,31 +100,36 @@ async function start() {
     watch(() => {
         if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
         initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
-    });
+    }, () => {}, { immediate: true });
 
     watch(() => {
         if (!config.oasis.apiEndpoint) return;
         initOasisApi(config.oasis.apiEndpoint);
-    });
+    }, () => {}, { immediate: true });
 
     watch(() => {
         if (!config.ten31Pass.enabled) return;
         initKycConnection();
-    });
+    }, () => {}, { immediate: true });
+
+    const app = createApp(App);
+    const pinia = createPinia();
+
+    app.use(router);
+    app.use(i18n);
+    app.use(pinia);
+    app.use(VueVirtualScroller);
+    app.use(VuePortal, { name: 'Portal' });
+
+    // Make reactive config accessible in components
+    app.config.globalProperties.$config = config;
 
     watch(() => {
         if (!config.matomo.enabled) return;
-        initMatomo(config.matomo.host, config.matomo.siteId);
-    });
+        initMatomo(app, config.matomo.host, config.matomo.siteId);
+    }, () => {}, { immediate: true });
 
-    // Make reactive config accessible in components
-    Vue.prototype.$config = config;
-
-    new Vue({
-        router,
-        i18n,
-        render: (h) => h(App),
-    }).$mount('#app');
+    app.mount('#app');
 
     launchNetwork();
 
@@ -139,12 +138,12 @@ async function start() {
     watch(() => {
         if (!config.enableBitcoin) return;
         launchElectrum();
-    });
+    }, () => {}, { immediate: true });
 
     watch(() => {
         if (!config.polygon.enabled) return;
         launchPolygon();
-    });
+    }, () => {}, { immediate: true });
 
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
@@ -156,14 +155,8 @@ async function start() {
 }
 start();
 
-declare module 'vue/types/vue' {
-    interface Vue {
+declare module '@vue/runtime-core' {
+    interface ComponentCustomProperties {
         $config: ReturnType<typeof useConfig>['config'];
-    }
-}
-
-declare module '@vue/composition-api/dist/component/component' {
-    interface SetupContext {
-        readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }
 }

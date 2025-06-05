@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { RouteName } from '@/router';
 import StakingButton from './StakingButton.vue';
 

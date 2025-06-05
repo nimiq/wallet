@@ -1,4 +1,4 @@
-import { Ref } from '@vue/composition-api';
+import { Ref } from 'vue';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { Transaction } from './BtcTransactions';

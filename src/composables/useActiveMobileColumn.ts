@@ -1,4 +1,4 @@
-import { Ref, ref } from '@vue/composition-api';
+import { Ref, ref } from 'vue';
 import router, { Columns } from '../router';
 
 export enum ColumnType {

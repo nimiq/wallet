@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch } from 'vue';
 import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 

@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { Identicon, LabelInput } from '@nimiq/vue-components';
 import AddressListItem from './AddressListItem.vue';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';

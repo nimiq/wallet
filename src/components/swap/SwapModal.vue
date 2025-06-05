@@ -259,7 +259,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import {
     PageHeader,
     PageBody,

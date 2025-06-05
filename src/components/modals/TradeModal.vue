@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { PageBody, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 

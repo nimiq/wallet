@@ -11,8 +11,8 @@ module.exports = {
         es6: true,
     },
     extends: [
-        'plugin:vue/essential',
-        '@vue/airbnb',
+        'plugin:vue/vue3-recommended',
+        'eslint:recommended',
         '@vue/typescript/recommended',
     ],
     parserOptions: {
@@ -24,7 +24,7 @@ module.exports = {
         'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
         'function-paren-newline': 'off',
-        indent: ['error', 4, { SwitchCase: 1 }],
+        'indent': ['error', 4, { SwitchCase: 1 }],
         'max-len': ['error', 120],
         'no-underscore-dangle': 'off',
         'no-param-reassign': 'off',
@@ -50,7 +50,6 @@ module.exports = {
         '@typescript-eslint/member-delimiter-style': ['error', memberDelimiterStyleOverrides],
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
-        // Do not require explicit function return value typings
         '@typescript-eslint/explicit-module-boundary-types': 'off',
 
         'no-useless-constructor': 'off',
@@ -62,10 +61,7 @@ module.exports = {
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
 
-        // False positives that are checked by TS
         'no-redeclare': 'off',
-        // 'no-param-reassign': 'off',
-        // 'import/no-unresolved': 'off',
     },
     overrides: [{
         files: ['src/components/icons/**/*', 'src/components/Avatar.vue'],

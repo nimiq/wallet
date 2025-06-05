@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref } from '@vue/composition-api';
+import { defineComponent, watch, ref } from 'vue';
 import { SliderToggle } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import { FilterState } from '../../lib/StakingUtils';

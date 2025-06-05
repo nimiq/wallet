@@ -37,7 +37,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Copyable, Tooltip } from '@nimiq/vue-components';
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import ShortAddress from './ShortAddress.vue';
 
 export default defineComponent({

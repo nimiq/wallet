@@ -18,7 +18,7 @@
         >
             <span class="alert-text">
                 <AlertTriangleIcon class="alert-icon"/>
-                {{ $t('There is no ‘forgot password’') }}
+                {{ $t('There is no 'forgot password'') }}
             </span>
             <button
                 class="nq-button-pill orange"
@@ -77,15 +77,19 @@
                     preferredPosition="top"
                     noFocus
                 >
-                    <button class="reset" slot="trigger"
-                        @click="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.BTC}`)"
-                        @focus="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.show()"
-                        @blur="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.hide()"
-                    >
-                        <div class="inner-circle"><DoubleArrowIcon /></div>
-                    </button>
+                    <template #trigger>
+                        <button class="reset"
+                            @click="onSwapButtonPointerDown($event, `${SwapAsset.NIM}-${SwapAsset.BTC}`)"
+                            @focus="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.show()"
+                            @blur="nimBtcSwapTooltip$ && nimBtcSwapTooltip$.hide()"
+                        >
+                            <div class="inner-circle"><DoubleArrowIcon /></div>
+                        </button>
+                    </template>
                     <i18n path="Swap NIM {arrowIcon} BTC">
-                        <LinkedDoubleArrowIcon slot="arrowIcon" />
+                        <template #arrowIcon>
+                            <LinkedDoubleArrowIcon />
+                        </template>
                     </i18n>
                 </Tooltip>
 
@@ -108,21 +112,25 @@
                     preferredPosition="top"
                     noFocus
                 >
-                    <button class="reset" slot="trigger" :disabled="!stablecoin"
-                        @click="onSwapButtonPointerDown(
-                            $event,
-                            `${SwapAsset.NIM}-${stablecoin === CryptoCurrency.USDC
-                                ? SwapAsset.USDC_MATIC
-                                : SwapAsset.USDT_MATIC}`
-                        )"
-                        @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
-                        @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
-                    >
-                        <div class="inner-circle"><DoubleArrowIcon /></div>
-                    </button>
+                    <template #trigger>
+                        <button class="reset" :disabled="!stablecoin"
+                            @click="onSwapButtonPointerDown(
+                                $event,
+                                `${SwapAsset.NIM}-${stablecoin === CryptoCurrency.USDC
+                                    ? SwapAsset.USDC_MATIC
+                                    : SwapAsset.USDT_MATIC}`
+                            )"
+                            @focus="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.show()"
+                            @blur="nimUsdcSwapTooltip$ && nimUsdcSwapTooltip$.hide()"
+                        >
+                            <div class="inner-circle"><DoubleArrowIcon /></div>
+                        </button>
+                    </template>
                     <i18n v-if="stablecoin" path="Swap NIM {arrowIcon} {ticker}">
-                        <LinkedDoubleArrowIcon slot="arrowIcon" />
-                        <template slot="ticker">{{ stablecoin.toUpperCase() }}</template>
+                        <template #arrowIcon>
+                            <LinkedDoubleArrowIcon />
+                        </template>
+                        <template #ticker>{{ stablecoin.toUpperCase() }}</template>
                     </i18n>
                     <template v-else>
                         {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
@@ -304,7 +312,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onActivated } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onActivated } from 'vue';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';

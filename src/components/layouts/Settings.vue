@@ -290,7 +290,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { CircleSpinner } from '@nimiq/vue-components';
 import { ValidationUtils } from '@nimiq/utils';
 import { RouteName } from '@/router';
@@ -427,7 +427,7 @@ export default defineComponent({
         }
 
         const copyrightYear = Math.max(
-            Number.parseInt(process.env.VUE_APP_COPYRIGHT_YEAR!, 10), // build year
+            Number.parseInt(import.meta.env.VITE_COPYRIGHT_YEAR!, 10), // build year
             new Date().getFullYear(), // user year
         );
 
@@ -455,7 +455,7 @@ export default defineComponent({
             connectKyc,
             disconnectKyc,
             copyrightYear,
-            VERSION: process.env.VERSION,
+            VERSION: import.meta.env.VITE_VERSION,
             RouteName,
         };
     },

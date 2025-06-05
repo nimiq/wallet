@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { ArrowRightSmallIcon } from '@nimiq/vue-components';
 import { LocaleMessage } from 'vue-i18n';
 import { RouteName, useRouter } from '@/router';

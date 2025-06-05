@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import Modal from './Modal.vue';

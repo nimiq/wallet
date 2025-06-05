@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { PageFooter, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountSettingsStore } from '../stores/AccountSettings';

@@ -249,7 +249,7 @@ import {
     FiatAmount,
     CircleSpinner,
 } from '@nimiq/vue-components';
-import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from 'vue';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';

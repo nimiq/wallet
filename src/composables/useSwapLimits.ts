@@ -1,4 +1,4 @@
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch } from 'vue';
 import { getLimits, getUserLimits, SwapAsset } from '@nimiq/fastspot-api';
 import { useTransactionsStore, Transaction as NimTransaction, toSecs } from '../stores/Transactions';
 import { SwapEurData, useSwapsStore } from '../stores/Swaps';

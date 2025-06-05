@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Tooltip } from '@nimiq/vue-components';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { Validator } from '../../../stores/Staking';
 import BlueLink from '../../BlueLink.vue';
 

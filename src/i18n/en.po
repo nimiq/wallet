@@ -217,8 +217,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:154
-#: src/components/layouts/AccountOverview.vue:268
+#: src/components/layouts/AccountOverview.vue:167
+#: src/components/layouts/AccountOverview.vue:281
 msgid "Activate"
 msgstr ""
 
@@ -274,6 +274,23 @@ msgstr ""
 msgid "Add stake"
 msgstr ""
 
+#: src/components/AddressOverview.vue:13
+#: src/components/AddressQRCodeModal.vue:14
+msgid "Address"
+msgstr ""
+
+#: src/components/AddressMenuModal.vue:4
+msgid "Address Menu"
+msgstr ""
+
+#: src/components/AddressOverview.vue:4
+msgid "Address Overview"
+msgstr ""
+
+#: src/components/AddressQRCodeModal.vue:4
+msgid "Address QR Code"
+msgstr ""
+
 #: src/components/modals/SendModal.vue:49
 msgid "Address unavailable?"
 msgstr ""
@@ -307,7 +324,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:276
+#: src/components/layouts/AccountOverview.vue:289
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -413,6 +430,10 @@ msgstr ""
 msgid "Back to Bank Details"
 msgstr ""
 
+#: src/components/AddressOverview.vue:17
+msgid "Balance"
+msgstr ""
+
 #: src/composables/useBtcTransactionInfo.ts:132
 #: src/composables/useTransactionInfo.ts:139
 #: src/composables/useUsdcTransactionInfo.ts:105
@@ -435,7 +456,7 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:135
+#: src/components/layouts/AccountOverview.vue:148
 #: src/components/layouts/AddressOverview.vue:125
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -661,7 +682,7 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:224
+#: src/components/layouts/AccountOverview.vue:237
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -811,6 +832,10 @@ msgstr ""
 msgid ""
 "Copy\n"
 "over"
+msgstr ""
+
+#: src/components/AddressMenuModal.vue:12
+msgid "Copy Address"
 msgstr ""
 
 #: src/components/modals/SimplexModal.vue:22
@@ -1124,23 +1149,23 @@ msgstr ""
 msgid "Failed to fetch transactions"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:134
+#: src/components/TestnetFaucet.vue:138
 msgid "Faucet error - please try again."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:77
+#: src/components/TestnetFaucet.vue:81
 msgid "Faucet is empty"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:81
+#: src/components/TestnetFaucet.vue:85
 msgid "Faucet is not available from your location"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:88
+#: src/components/TestnetFaucet.vue:92
 msgid "Faucet unavailable"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:73
+#: src/components/TestnetFaucet.vue:77
 msgid "Faucet unavailable (wrong network)"
 msgstr ""
 
@@ -2060,8 +2085,8 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:139
-#: src/components/TestnetFaucet.vue:145
+#: src/components/TestnetFaucet.vue:143
+#: src/components/TestnetFaucet.vue:149
 msgid "Request failed"
 msgstr ""
 
@@ -2390,6 +2415,10 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
+#: src/components/AddressMenuModal.vue:16
+msgid "Show QR Code"
+msgstr ""
+
 #: src/components/modals/AccountMenuModal.vue:12
 msgid "Show Recovery Words"
 msgstr ""
@@ -2533,7 +2562,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:189
+#: src/components/layouts/AccountOverview.vue:202
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr ""
 
@@ -2566,11 +2595,11 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:118
+#: src/components/layouts/AccountOverview.vue:129
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:89
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
@@ -2641,7 +2670,7 @@ msgid "TEN31 Verification"
 msgstr ""
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AccountOverview.vue:229
 #: src/components/layouts/AddressOverview.vue:131
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -2746,7 +2775,7 @@ msgstr ""
 msgid "The validator is solely responsible for the information provided above. It is not to be viewed as an endorsement or recommendation by Nimiq."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:130
+#: src/components/TestnetFaucet.vue:134
 msgid "There are currently no free NIM available."
 msgstr ""
 
@@ -2755,7 +2784,7 @@ msgid "There are many options, use a credit card or trade crypto. You can find 
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:21
-msgid "There is no ‘forgot password’"
+msgid "There is no "
 msgstr ""
 
 #: src/components/swap/SwapNotification.vue:23
@@ -2855,7 +2884,7 @@ msgstr ""
 msgid "This pool usually produces blocks."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:125
+#: src/components/TestnetFaucet.vue:129
 msgid "This service is currently not available in your region."
 msgstr ""
 
@@ -2900,8 +2929,8 @@ msgstr ""
 msgid "To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:123
-#: src/components/layouts/AccountOverview.vue:194
+#: src/components/layouts/AccountOverview.vue:136
+#: src/components/layouts/AccountOverview.vue:207
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -3027,7 +3056,7 @@ msgid "Update validator"
 msgstr ""
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:213
+#: src/components/layouts/AccountOverview.vue:226
 #: src/components/layouts/AddressOverview.vue:128
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
@@ -3162,7 +3191,7 @@ msgstr ""
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:119
+#: src/components/TestnetFaucet.vue:123
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 

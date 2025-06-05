@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { LoadingSpinner, CheckmarkIcon, AlertTriangleIcon, StopwatchIcon } from '@nimiq/vue-components';
 import { TransactionDetails as BtcTransactionDetails } from '@nimiq/electrum-client';
 import { Contract, getSwap, Swap } from '@nimiq/fastspot-api';
@@ -65,7 +65,7 @@ import {
 } from '@nimiq/oasis-api';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
-import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
+import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/libswap.js';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';

@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onBeforeUnmount } from 'vue';
 import { useI18n } from '@/lib/useI18n';
 import { useStakingStore, Validator } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';

@@ -1,10 +1,10 @@
-import Vue from 'vue';
+import { App } from 'vue';
 // @ts-expect-error No types available for vue-matomo
 import VueMatomo from 'vue-matomo';
-import type VueRouter from 'vue-router';
+import type Router from 'vue-router';
 
-export function initMatomo(host: string, siteId: number) {
-    Vue.use(VueMatomo, {
+export function initMatomo(app: App, host: string, siteId: number) {
+    app.use(VueMatomo, {
         // Configure your matomo server and site by providing
         host,
         siteId,

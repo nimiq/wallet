@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';

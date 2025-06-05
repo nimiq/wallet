@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { PageHeader, PageBody, AlertCircleIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import StopSignIcon from './icons/StopSignIcon.vue';
 import { useAccountSettingsStore } from '../stores/AccountSettings';

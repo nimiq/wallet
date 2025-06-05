@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/composition-api';
+import { defineComponent, onMounted, ref } from 'vue';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import VueMarkdown from '@adapttive/vue-markdown';
 import Modal from './Modal.vue';

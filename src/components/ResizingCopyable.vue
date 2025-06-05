@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Copyable } from '@nimiq/vue-components';
 
 export default defineComponent({

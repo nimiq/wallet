@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import { Bank } from '@nimiq/oasis-bank-list';
 import IBAN from 'iban';

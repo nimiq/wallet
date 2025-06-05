@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { Identicon } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { CryptoCurrency } from '../lib/Constants';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';

@@ -1,6 +1,6 @@
 // https://developers.google.com/web/fundamentals/design-and-ux/input/touch
 
-import { Ref } from '@vue/composition-api';
+import { Ref } from 'vue';
 
 /* global WebKitCSSMatrix */
 

@@ -1,4 +1,4 @@
-import { onUnmounted, Ref, watch } from '@vue/composition-api';
+import { onUnmounted, Ref, watch } from 'vue';
 import { getHtlc, SettlementInfo, SettlementStatus } from '@nimiq/oasis-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SwapData, SwapEurData, useSwapsStore } from '../stores/Swaps';

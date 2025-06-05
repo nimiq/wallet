@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { LabelInput } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import Avatar from './Avatar.vue';

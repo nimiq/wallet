@@ -124,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Identicon, Amount } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { nextTick } from '@/lib/nextTick';

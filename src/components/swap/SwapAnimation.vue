@@ -347,7 +347,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch, onUnmounted } from 'vue';
 import {
     CheckmarkIcon,
     Identicon,

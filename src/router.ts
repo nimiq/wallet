@@ -1,9 +1,7 @@
-import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
-import Vue from 'vue';
+import { createRouter, createWebHistory, RouteRecordRaw, NavigationGuardNext, RouteLocationNormalized as Route } from 'vue-router';
 import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
-import { Component } from 'vue-router/types/router.d';
-
-import { provide, inject } from '@vue/composition-api';
+import type { Component, DefineComponent, ComponentPublicInstance } from 'vue';
+import { provide, inject } from 'vue';
 
 // Start views
 import Groundfloor from './components/layouts/Groundfloor.vue';
@@ -13,83 +11,83 @@ import AddressOverview from './components/layouts/AddressOverview.vue';
 import { AccountType, useAccountStore } from './stores/Account';
 import { CryptoCurrency } from './lib/Constants';
 
+type AsyncComponent = () => Promise<{ default: DefineComponent<{}, {}, any> }>;
+
 // Main views
-const SettingsLayout = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
-const NetworkLayout = () =>
+const SettingsLayout: AsyncComponent = () => import(/* webpackChunkName: "settings" */ './components/layouts/Settings.vue');
+const NetworkLayout: AsyncComponent = () =>
     import(/* webpackChunkName: "network" */ './components/layouts/Network.vue');
 
 // Modals
-const AccountMenuModal = () =>
+const AccountMenuModal: AsyncComponent = () =>
     import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
-const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
-const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
-const AddressSelectorModal = () =>
+const SendModal: AsyncComponent = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
+const ReceiveModal: AsyncComponent = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
+const AddressSelectorModal: AsyncComponent = () =>
     import(/* webpackChunkName: "address-selector-modal" */ './components/modals/AddressSelectorModal.vue');
-const TransactionModal = () =>
+const TransactionModal: AsyncComponent = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
-const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
-const BuyOptionsModal = () =>
+const TradeModal: AsyncComponent = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
+const BuyOptionsModal: AsyncComponent = () =>
     import(/* webpackChunkName: "buy-options-modal" */ './components/modals/BuyOptionsModal.vue');
-const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
-const WelcomeModal = () =>
+const ScanQrModal: AsyncComponent = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
+const WelcomeModal: AsyncComponent = () =>
     import(/* webpackChunkName: "welcome-modal" */ './components/modals/WelcomeModal.vue');
-const WelcomeStakingModal = () =>
+const WelcomeStakingModal: AsyncComponent = () =>
     import(/* webpackChunkName: "welcome-staking-modal" */ './components/staking/WelcomeStakingModal.vue');
-const MigrationWelcomeModal = () =>
+const MigrationWelcomeModal: AsyncComponent = () =>
     import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
-const DisclaimerModal = () =>
+const DisclaimerModal: AsyncComponent = () =>
     import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
-const ReleaseNotesModal = () =>
+const ReleaseNotesModal: AsyncComponent = () =>
     import(/* webpackChunkName: "release-notes-modal" */ './components/modals/ReleaseNotesModal.vue');
-const HistoryExportModal = () =>
+const HistoryExportModal: AsyncComponent = () =>
     import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
-const StablecoinSelectionModal = () =>
+const StablecoinSelectionModal: AsyncComponent = () =>
     import(/* webpackChunkName: "history-export-modal" */ './components/modals/StablecoinSelectionModal.vue');
-const WalletStatusModal = () =>
+const WalletStatusModal: AsyncComponent = () =>
     import(/* webpackChunkName: "wallet-status-modal" */ './components/modals/WalletStatusModal.vue');
 
 // Bitcoin Modals
-const BtcActivationModal = () =>
+const BtcActivationModal: AsyncComponent = () =>
     import(/* webpackChunkName: "btc-activation-modal" */ './components/modals/BtcActivationModal.vue');
-const BtcSendModal = () => import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
-const BtcReceiveModal = () =>
+const BtcSendModal: AsyncComponent = () => import(/* webpackChunkName: "btc-send-modal" */ './components/modals/BtcSendModal.vue');
+const BtcReceiveModal: AsyncComponent = () =>
     import(/* webpackChunkName: "btc-receive-modal" */ './components/modals/BtcReceiveModal.vue');
-const BtcTransactionModal = () =>
+const BtcTransactionModal: AsyncComponent = () =>
     import(/* webpackChunkName: "btc-transaction-modal" */ './components/modals/BtcTransactionModal.vue');
 
 // Stablecoin Modals
-const PolygonActivationModal = () =>
+const PolygonActivationModal: AsyncComponent = () =>
     import(/* webpackChunkName: "polygon-activation-modal" */ './components/modals/PolygonActivationModal.vue');
-const StablecoinSendModal = () =>
+const StablecoinSendModal: AsyncComponent = () =>
     import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue');
-const StablecoinReceiveModal = () =>
+const StablecoinReceiveModal: AsyncComponent = () =>
     import(/* webpackChunkName: "stablecoin-receive-modal" */ './components/modals/StablecoinReceiveModal.vue');
-const UsdcTransactionModal = () =>
+const UsdcTransactionModal: AsyncComponent = () =>
     import(/* webpackChunkName: "usdc-transaction-modal" */ './components/modals/UsdcTransactionModal.vue');
-const UsdtTransactionModal = () =>
+const UsdtTransactionModal: AsyncComponent = () =>
     import(/* webpackChunkName: "usdt-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
-const UsdtAddedModal = () =>
+const UsdtAddedModal: AsyncComponent = () =>
     import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
 
 // Swap Modals
-const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
-const BuyCryptoModal = () =>
+const SwapModal: AsyncComponent = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
+const BuyCryptoModal: AsyncComponent = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
-const SellCryptoModal = () =>
+const SellCryptoModal: AsyncComponent = () =>
     import(/* webpackChunkName: "sell-crypto-modal" */ './components/modals/SellCryptoModal.vue');
 
-const MoonpayModal = () =>
+const MoonpayModal: AsyncComponent = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpayModal.vue');
-const MoonpaySellInfoModal = () =>
+const MoonpaySellInfoModal: AsyncComponent = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpaySellInfoModal.vue');
-const SimplexModal = () =>
+const SimplexModal: AsyncComponent = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 
 // Staking Modals
-const StakingModal = () =>
+const StakingModal: AsyncComponent = () =>
     import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
-
-Vue.use(VueRouter);
 
 export enum Columns {
     DYNAMIC,
@@ -145,17 +143,17 @@ export enum RouteName {
     NetworkReleaseNotes = 'network-release-notes',
 }
 
-const routes: RouteConfig[] = [{
+const routes: RouteRecordRaw[] = [{
     path: '/',
     name: RouteName.Root,
     components: {
-        groundfloor: Groundfloor,
+        groundfloor: Groundfloor as DefineComponent,
     },
     children: [{
         path: '',
         components: {
-            accountOverview: AccountOverview,
-            addressOverview: AddressOverview,
+            accountOverview: AccountOverview as DefineComponent,
+            addressOverview: AddressOverview as DefineComponent,
         },
         name: RouteName.Root,
         alias: '/transactions',
@@ -163,28 +161,28 @@ const routes: RouteConfig[] = [{
         children: [{
             path: '/accounts',
             components: {
-                modal: AccountMenuModal,
+                modal: AccountMenuModal as unknown as DefineComponent,
             },
             name: RouteName.RootAccounts,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send',
             components: {
-                modal: AddressSelectorModal,
+                modal: AddressSelectorModal as unknown as DefineComponent,
             },
             name: RouteName.Send,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send/nim',
             components: {
-                modal: SendModal,
+                modal: SendModal as unknown as DefineComponent,
             },
             name: RouteName.SendNim,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send/btc',
             components: {
-                modal: BtcSendModal,
+                modal: BtcSendModal as unknown as DefineComponent,
             },
             name: RouteName.SendBtc,
             meta: { column: Columns.DYNAMIC },
@@ -192,7 +190,7 @@ const routes: RouteConfig[] = [{
             path: '/send/usdc',
             alias: '/send/usdt',
             components: {
-                modal: StablecoinSendModal,
+                modal: StablecoinSendModal as unknown as DefineComponent,
             },
             name: RouteName.SendUsdc,
             props: { modal: true },
@@ -200,21 +198,21 @@ const routes: RouteConfig[] = [{
         }, {
             path: '/receive',
             components: {
-                modal: AddressSelectorModal,
+                modal: AddressSelectorModal as unknown as DefineComponent,
             },
             name: RouteName.Receive,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive/nim',
             components: {
-                modal: ReceiveModal,
+                modal: ReceiveModal as unknown as DefineComponent,
             },
             name: RouteName.ReceiveNim,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive/btc',
             components: {
-                modal: BtcReceiveModal,
+                modal: BtcReceiveModal as unknown as DefineComponent,
             },
             name: RouteName.ReceiveBtc,
             meta: { column: Columns.DYNAMIC },
@@ -222,14 +220,14 @@ const routes: RouteConfig[] = [{
             path: '/receive/usdc',
             alias: '/receive/usdt',
             components: {
-                modal: StablecoinReceiveModal,
+                modal: StablecoinReceiveModal as unknown as DefineComponent,
             },
             name: RouteName.ReceiveUsdc,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/transaction/:hash',
             components: {
-                modal: TransactionModal,
+                modal: TransactionModal as unknown as DefineComponent,
             },
             name: RouteName.Transaction,
             props: { modal: true },
@@ -237,114 +235,99 @@ const routes: RouteConfig[] = [{
         }, {
             path: '/trade',
             components: {
-                modal: TradeModal,
+                modal: TradeModal as unknown as DefineComponent,
             },
             name: RouteName.Trade,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/buy',
             components: {
-                modal: BuyOptionsModal,
+                modal: BuyOptionsModal as unknown as DefineComponent,
             },
             name: RouteName.Buy,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/buy-crypto',
             components: {
-                modal: BuyCryptoModal,
+                modal: BuyCryptoModal as unknown as DefineComponent,
             },
             name: RouteName.BuyCrypto,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/sell-crypto',
             components: {
-                modal: SellCryptoModal,
+                modal: SellCryptoModal as unknown as DefineComponent,
             },
             name: RouteName.SellCrypto,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/scan',
             components: {
-                modal: ScanQrModal,
+                modal: ScanQrModal as unknown as DefineComponent,
             },
             name: RouteName.Scan,
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/:requestUri(nimiq:.+)',
+            path: '/send-via-uri',
             components: {
-                modal: SendModal,
+                modal: SendModal as unknown as DefineComponent,
             },
             name: RouteName.SendViaUri,
-            props: {
-                // Pass full path including query parameters.
-                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
-            },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/welcome',
             components: {
-                modal: WelcomeModal,
+                modal: WelcomeModal as unknown as DefineComponent,
             },
             name: RouteName.Welcome,
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/welcome-staking',
             components: {
-                modal: WelcomeStakingModal,
+                modal: WelcomeStakingModal as unknown as DefineComponent,
             },
             name: RouteName.WelcomeStaking,
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/migration-welcome',
             components: {
-                modal: MigrationWelcomeModal,
+                modal: MigrationWelcomeModal as unknown as DefineComponent,
             },
             name: RouteName.MigrationWelcome,
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/btc-activation',
             components: {
-                modal: BtcActivationModal,
+                modal: BtcActivationModal as unknown as DefineComponent,
             },
             name: RouteName.BtcActivation,
-            props: {
-                modal: parseActivationRedirect,
-            },
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/btc-transaction/:hash',
             components: {
-                modal: BtcTransactionModal,
+                modal: BtcTransactionModal as unknown as DefineComponent,
             },
             name: RouteName.BtcTransaction,
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            path: '/:requestUri(bitcoin:.+)',
+            path: '/send-via-btc-uri',
             components: {
-                modal: BtcSendModal,
+                modal: BtcSendModal as unknown as DefineComponent,
             },
             name: RouteName.SendViaBtcUri,
-            props: {
-                // Pass full path including query parameters.
-                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
-            },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/usdc-activation',
-            alias: '/usdt-activation',
             components: {
-                modal: PolygonActivationModal,
+                modal: PolygonActivationModal as unknown as DefineComponent,
             },
             name: RouteName.UsdcActivation,
-            props: {
-                modal: parseActivationRedirect,
-            },
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/usdc-transaction/:hash',
             components: {
-                modal: UsdcTransactionModal,
+                modal: UsdcTransactionModal as unknown as DefineComponent,
             },
             name: RouteName.UsdcTransaction,
             props: { modal: true },
@@ -352,227 +335,162 @@ const routes: RouteConfig[] = [{
         }, {
             path: '/usdt-transaction/:hash',
             components: {
-                modal: UsdtTransactionModal,
+                modal: UsdtTransactionModal as unknown as DefineComponent,
             },
             name: RouteName.UsdtTransaction,
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            // Match complete pathname with all segments, which is important for polygon request links with contract
-            // functions as the contract function name is a separate path segment, e.g. /transfer.
-            path: '/:requestUri(polygon:.+)',
+            path: '/send-via-polygon-uri',
             components: {
-                modal: StablecoinSendModal,
+                modal: StablecoinSendModal as unknown as DefineComponent,
             },
             name: RouteName.SendViaPolygonUri,
-            props: {
-                // Pass full path including query parameters.
-                modal: (route: Route) => ({ requestUri: route.fullPath.substring(1) }),
-            },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/usdt-added',
             components: {
-                modal: UsdtAddedModal,
+                modal: UsdtAddedModal as unknown as DefineComponent,
             },
             name: RouteName.UsdtAdded,
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/stablecoin-selection',
             components: {
-                modal: StablecoinSelectionModal,
+                modal: StablecoinSelectionModal as unknown as DefineComponent,
             },
             name: RouteName.StablecoinSelection,
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/swap/:pair?',
+            path: '/swap',
             components: {
-                modal: SwapModal,
+                modal: SwapModal as unknown as DefineComponent,
             },
             name: RouteName.Swap,
-            props: { modal: true },
-            meta: { column: Columns.ACCOUNT },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/moonpay-sell-info',
             components: {
-                modal: MoonpaySellInfoModal,
+                modal: MoonpaySellInfoModal as unknown as DefineComponent,
             },
             name: RouteName.MoonpaySellInfo,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/moonpay',
             components: {
-                modal: MoonpayModal,
+                modal: MoonpayModal as unknown as DefineComponent,
             },
             name: RouteName.Moonpay,
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/simplex',
             components: {
-                'persistent-modal': SimplexModal,
+                modal: SimplexModal as unknown as DefineComponent,
             },
             name: RouteName.Simplex,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/release-notes',
             components: {
-                modal: ReleaseNotesModal,
+                modal: ReleaseNotesModal as unknown as DefineComponent,
             },
             name: RouteName.RootReleaseNotes,
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/export-history/:type',
+            path: '/export-history',
             components: {
-                modal: HistoryExportModal,
+                modal: HistoryExportModal as unknown as DefineComponent,
             },
             name: RouteName.ExportHistory,
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
+            meta: { column: Columns.DYNAMIC },
         }, {
             path: '/staking',
             components: {
-                modal: StakingModal,
+                modal: StakingModal as unknown as DefineComponent,
             },
             name: RouteName.Staking,
-            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/wallet-status',
             components: {
-                modal: WalletStatusModal,
+                modal: WalletStatusModal as unknown as DefineComponent,
             },
             name: RouteName.WalletStatus,
             meta: { column: Columns.DYNAMIC },
         }],
-        beforeEnter: (to, from, next) => {
-            if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
-                const parsed = parseNimiqSafeRequestLink(window.location.href);
-                if (!parsed) return next();
-                const path = createNimiqRequestLink(parsed.recipient, {
-                    ...parsed,
-                    type: NimiqRequestLinkType.URI,
-                });
-                return next({ path, replace: true });
-            }
-            return next();
-        },
     }, {
         path: '/settings',
         components: {
-            settings: SettingsLayout,
+            settings: SettingsLayout as unknown as DefineComponent,
         },
         name: RouteName.Settings,
         meta: { column: Columns.ACCOUNT },
         children: [{
-            path: '/accounts',
+            path: '',
             components: {
-                modal: AccountMenuModal,
+                modal: AccountMenuModal as unknown as DefineComponent,
             },
             name: RouteName.SettingsAccounts,
-            meta: { column: Columns.DYNAMIC },
+            meta: { column: Columns.ACCOUNT },
         }, {
             path: '/disclaimer',
             components: {
-                modal: DisclaimerModal,
+                modal: DisclaimerModal as unknown as DefineComponent,
             },
             name: RouteName.Disclaimer,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/release-notes',
             components: {
-                modal: ReleaseNotesModal,
+                modal: ReleaseNotesModal as unknown as DefineComponent,
             },
             name: RouteName.SettingsReleaseNotes,
-            meta: { column: Columns.DYNAMIC },
+            meta: { column: Columns.ACCOUNT },
         }],
-    }],
-}, {
-    path: '/network',
-    components: {
-        basement: NetworkLayout,
-    },
-    name: RouteName.Network,
-    meta: { column: Columns.ACCOUNT },
-    children: [{
-        path: '/accounts',
-        components: {
-            modal: AccountMenuModal,
-        },
-        name: RouteName.NetworkAccounts,
-        meta: { column: Columns.DYNAMIC },
     }, {
-        path: '/release-notes',
+        path: '/network',
         components: {
-            modal: ReleaseNotesModal,
+            network: NetworkLayout as unknown as DefineComponent,
         },
-        name: RouteName.NetworkReleaseNotes,
-        meta: { column: Columns.DYNAMIC },
+        name: RouteName.Network,
+        meta: { column: Columns.ACCOUNT },
+        children: [{
+            path: '',
+            components: {
+                modal: AccountMenuModal as unknown as DefineComponent,
+            },
+            name: RouteName.NetworkAccounts,
+            meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/release-notes',
+            components: {
+                modal: ReleaseNotesModal as unknown as DefineComponent,
+            },
+            name: RouteName.NetworkReleaseNotes,
+            meta: { column: Columns.ACCOUNT },
+        }],
     }],
 }];
 
-// If wallet was opened on a path other than root route, for example on a modal, inject a root history entry before the
-// actually requested route, such that a back navigation gets the user to the main wallet view, instead of leaving the
-// wallet. This is especially for mobile, where hitting the back button to close a modal and open the main view feels
-// more natural, like in a native app, and is also needed in general for modals to be closable by simple back navigation
-// in modal.forceClose. Unfortunately though, in newer Chrome versions, hitting the back button skips history entries
-// that have been inserted automatically without user interaction, see https://github.com/whatwg/html/issues/7832 and
-// https://groups.google.com/a/chromium.org/g/blink-dev/c/T8d4_BRb2xQ/m/WSdOiOFcBAAJ. However, Interacting with the page
-// _after_ the injection is also fine for activating the back button for the injected entry and programmatic back
-// navigation via history.back also continues to work.
-// We use the native history methods instead of the router and do the injection before initializing the router to avoid
-// interference with the router's navigation guards which might also want to redirect the route, and to avoid having to
-// wait for the router to initialize with the first view which only happens after the vue app is created in main.ts, for
-// example by waiting for router.onReady, which also waits for the initial view's components to be loaded.
-// If there's already a history state it means that the current history entry was already handled by our injection below
-// or by the router (which adds a history state to all routes) and the page was simply reloaded, such that we don't need
-// to run the injection logic again.
-const initialUrl = window.location.href;
-if (!window.history.state) {
-    // Only return to the initial url if it's not on the root route, i.e. if another view or modal is supposed to be
-    // opened. If it is on the root route, we don't add a second history entry for the root route, we do however close
-    // the sidebar, if it's open, by stripping the sidebar parameter, and keep it closed.
-    const shouldReturnToInitialUrl = new URL(initialUrl).pathname !== process.env.BASE_URL;
-    const rootUrl = new URL(initialUrl);
-    rootUrl.pathname = process.env.BASE_URL!;
-    if (shouldReturnToInitialUrl) {
-        // Can clear params and hash entirely as they're preserved in the initialUrl.
-        rootUrl.search = '';
-        rootUrl.hash = '';
-    } else {
-        // Only remove sidebar; preserve other search params and hash, especially rpc responses.
-        rootUrl.searchParams.delete('sidebar');
-    }
-
-    window.history.replaceState({ injected: true }, '', rootUrl); // inject history entry for root route
-    if (shouldReturnToInitialUrl) {
-        window.history.pushState({ injected: true }, '', initialUrl);
-    }
-}
-
-const router = new VueRouter({
-    mode: 'history',
-    base: process.env.BASE_URL,
+const router = createRouter({
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes,
 });
 
-// Offer to activate Bitcoin or USDC if a route requires it, but it's not activated yet
 function createActivationNavigationGuard(
     currency: CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT,
-    viewsRequiringActivation: Set<Component>,
-    // As method instead of just passing AccountType[] of supported types because AccountType is not available for
-    // passing in the top level yet due to a webpack bug (https://github.com/webpack/webpack/issues/3509).
+    viewsRequiringActivation: Set<() => Promise<{ default: DefineComponent }>>,
     isAccountTypeSupported: (type: AccountType) => boolean,
     isCurrencyActivated: () => boolean,
 ) {
     return (to: Route, from: Route, next: NavigationGuardNext) => {
         const requiresCurrencyActivation = to.matched.some(({ components }) =>
-            Object.values(components).some((view) => viewsRequiringActivation.has(view)
+            Object.values(components || {}).some((view) => viewsRequiringActivation.has(view as any)
                 || (view === SwapModal && !!to.params.pair?.includes(currency.toUpperCase()))));
-        const { activeAccountInfo: { value: activeAccount } } = useAccountStore();
-        const isUnsupportedAccount = !!activeAccount && !isAccountTypeSupported(activeAccount.type);
+        const { state: { activeAccountInfo } } = useAccountStore();
+        const isUnsupportedAccount = !!activeAccountInfo && !isAccountTypeSupported(activeAccountInfo.type);
         const isUnsupportedActivation = to.name === `${currency}-activation` && isUnsupportedAccount;
-        if ((!requiresCurrencyActivation && !isUnsupportedActivation) || isCurrencyActivated() || !activeAccount) {
+        if ((!requiresCurrencyActivation && !isUnsupportedActivation) || isCurrencyActivated() || !activeAccountInfo) {
             // Can continue to the requested view, or is not logged-in into any account yet, in which case we want to
             // preserve the original route to be redirected back to after login.
             next();
@@ -585,7 +503,7 @@ function createActivationNavigationGuard(
         } else {
             // open currency activation modal; store original target route in hash
             next({
-                name: `${currency}-activation`,
+                name: `${currency.toLowerCase()}-activation`,
                 // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams
                 // in parseActivationRedirect and also by the RPC api in case that the Hub activation request is
                 // executed as redirect.
@@ -595,45 +513,21 @@ function createActivationNavigationGuard(
         }
     };
 }
-router.beforeEach(createActivationNavigationGuard(
-    CryptoCurrency.BTC,
-    new Set([BtcSendModal, BtcReceiveModal]),
-    (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
-    () => useAccountStore().hasBitcoinAddresses.value,
-));
-router.beforeEach(createActivationNavigationGuard(
-    CryptoCurrency.USDC,
-    new Set([StablecoinSendModal, StablecoinReceiveModal]),
-    (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
-    () => useAccountStore().hasPolygonAddresses.value,
-));
-router.beforeEach(createActivationNavigationGuard(
-    CryptoCurrency.USDT,
-    new Set([StablecoinSendModal, StablecoinReceiveModal]),
-    (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
-    () => useAccountStore().hasPolygonAddresses.value,
-));
 
 function parseActivationRedirect(route: Route) {
-    // check for a redirect set by the activation navigation guard
-    let redirect: string | undefined;
-    try {
-        const hashParams = new URLSearchParams(route.hash.substring(1));
-        redirect = decodeURIComponent(hashParams.get('redirect') || '') || undefined;
-    } catch (e) {} // eslint-disable-line no-empty
-    return { redirect };
+    const hash = route.hash;
+    if (!hash) return null;
+    const match = hash.match(/#redirect=(.+)/);
+    if (!match) return null;
+    return decodeURIComponent(match[1]);
+}
+
+export function provideRouter(providedRouter: typeof router) {
+    provide('router', providedRouter);
+}
+
+export function useRouter(): typeof router {
+    return inject('router') as typeof router;
 }
 
 export default router;
-
-const RouterSymbol = Symbol('router');
-
-export function provideRouter(providedRouter: VueRouter) {
-    provide(RouterSymbol, providedRouter);
-}
-
-export function useRouter(): VueRouter {
-    const injectedRouter = inject(RouterSymbol) as VueRouter;
-    if (!injectedRouter) throw new Error('Router was not provided.');
-    return injectedRouter;
-}

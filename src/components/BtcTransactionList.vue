@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref /* , onMounted, onBeforeUnmount, watch */ } from 'vue';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import BtcTransactionListItem from '@/components/BtcTransactionListItem.vue';
 import { useI18n } from '@/lib/useI18n';

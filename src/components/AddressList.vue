@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted } from 'vue';
 
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';

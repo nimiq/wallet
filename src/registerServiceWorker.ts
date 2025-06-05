@@ -4,11 +4,11 @@ import { register } from 'register-service-worker';
 
 export const serviceWorkerHasUpdate = new Promise<true>((resolve) => {
     if (!navigator || !navigator.serviceWorker) return;
-    if (process.env.NODE_ENV !== 'production') return;
+    if (import.meta.env.MODE !== 'production') return;
 
     let updateInterval: number;
 
-    register(`${process.env.BASE_URL}service-worker.js`, {
+    register(`${import.meta.env.BASE_URL}service-worker.js`, {
         ready(registration) {
             console.log(
                 'App is being served from cache by a service worker.\n'

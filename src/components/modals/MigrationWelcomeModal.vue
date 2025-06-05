@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import BlueLink from '../BlueLink.vue';

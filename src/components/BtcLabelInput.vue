@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, Ref, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, Ref, ref, watch } from 'vue';
 import { LabelInput } from '@nimiq/vue-components';
 import { useBtcLabelsStore } from '@/stores/BtcLabels';
 import Avatar from './Avatar.vue';

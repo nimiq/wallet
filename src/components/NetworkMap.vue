@@ -25,7 +25,7 @@ j<template>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import { Tooltip } from '@nimiq/vue-components';
 import { getNetworkClient } from '../network';
 import { Peer, useNetworkStore } from '../stores/Network';

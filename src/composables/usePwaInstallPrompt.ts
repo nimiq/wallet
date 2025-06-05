@@ -1,4 +1,4 @@
-import { computed, ref, Ref } from '@vue/composition-api';
+import { computed, ref, Ref } from 'vue';
 
 /**
  * The BeforeInstallPromptEvent is fired at the Window.onbeforeinstallprompt

@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { CryptoCurrency } from '@nimiq/utils';
 
 import { nextTick } from '@/lib/nextTick';

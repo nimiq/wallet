@@ -1,6 +1,6 @@
 import { AssetList, Estimate, getAssets, RequestAsset, SwapAsset } from '@nimiq/fastspot-api';
 import { CurrencyInfo } from '@nimiq/utils';
-import { computed, onUnmounted, ref, getCurrentInstance, Ref } from '@vue/composition-api';
+import { computed, onUnmounted, ref, getCurrentInstance, Ref } from 'vue';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSettingsStore } from '../../../stores/Settings';

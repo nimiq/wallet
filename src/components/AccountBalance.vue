@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { FiatAmount } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
@@ -41,6 +41,11 @@ import { useAccountSettingsStore } from '../stores/AccountSettings';
 import { useStakingStore } from '../stores/Staking';
 
 export default defineComponent({
+    components: {
+        FiatAmount,
+        PrivacyOffIcon,
+        PrivacyOnIcon,
+    },
     setup() {
         const { accountBalance } = useAddressStore();
         const { totalAccountStake } = useStakingStore();
@@ -92,8 +97,8 @@ export default defineComponent({
             return amount;
         });
 
-        const fiatAmountContainer$ = ref<HTMLDivElement>(null);
-        const fiatAmount$ = ref<FiatAmount>(null);
+        const fiatAmountContainer$ = ref<HTMLDivElement | null>(null);
+        const fiatAmount$ = ref<InstanceType<typeof FiatAmount> | null>(null);
 
         const { isFullDesktop } = useWindowSize();
         const fiatAmountMaxSize = computed(() => isFullDesktop.value ? 7 : 5.5); // rem
@@ -105,8 +110,8 @@ export default defineComponent({
 
             if (!fiatAmountContainer$.value || !fiatAmount$.value) return;
 
-            const availableWidth = fiatAmountContainer$.value!.offsetWidth;
-            const referenceWidth = (fiatAmount$.value!.$el as HTMLElement).offsetWidth;
+            const availableWidth = fiatAmountContainer$.value.offsetWidth;
+            const referenceWidth = fiatAmount$.value.$el.offsetWidth;
             const scaleFactor = Math.round((availableWidth / referenceWidth) * 100) / 100;
 
             if (scaleFactor > 1.02 || scaleFactor < 0.98) { // needed for safari
@@ -134,11 +139,6 @@ export default defineComponent({
             amountsHidden,
             toggleAmountsHidden,
         };
-    },
-    components: {
-        FiatAmount,
-        PrivacyOffIcon,
-        PrivacyOnIcon,
     },
 });
 </script>

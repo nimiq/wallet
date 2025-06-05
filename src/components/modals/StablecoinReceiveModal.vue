@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from 'vue';
 import { PageHeader, PageBody, QrCode } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import { useRouter } from '@/router';

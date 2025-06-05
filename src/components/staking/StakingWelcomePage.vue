@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from '@vue/composition-api';
+import { computed, defineComponent, onMounted } from 'vue';
 import { PageHeader, PageBody, HexagonIcon } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import HeroIcon from '../icons/Staking/HeroIcon.vue';

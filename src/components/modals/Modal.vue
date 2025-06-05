@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import { nextTick } from '@/lib/nextTick';

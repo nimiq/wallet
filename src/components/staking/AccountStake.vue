@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import Amount from '../Amount.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { CryptoCurrency } from '../../lib/Constants';

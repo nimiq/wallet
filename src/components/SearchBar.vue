@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { useI18n } from '@/lib/useI18n';
-import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUnmounted, computed, watch } from 'vue';
 
 import CrossCloseButton from './CrossCloseButton.vue';
 

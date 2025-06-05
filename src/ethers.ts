@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch } from 'vue';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -659,24 +659,20 @@ export async function launchPolygon() {
                                 || log.args.to === '0x703EC732971cB23183582a6966bA70E164d89ab1' // v1 USDC transfer contract
                             )
                         )
+                        || (
+                            // Before v3, the first transfer to the HTLC contract was the fee paid to OpenGSN
+                            config.environment !== ENV_MAIN
+                            && (
+                                log.args.to === '0x573aA448cC6e28AF0EeC7E93037B5A592a83d936' // v1 USDC HTLC contract
+                                && !feeLog
+                                // When Fastspot is funding the HTLC, there's only one Transfer event, which is the main
+                                // `transferLog`, so don't handle any fee.
+                                && logs.filter((l) => l?.name === 'Transfer').length > 1
+                            )
+                        )
                     ) {
-                        // Find the main transfer log
-                        const mainTransferLog = allTransferLogs.find((otherLog) =>
-                            otherLog.transactionHash === log.transactionHash
-                            && otherLog.logIndex !== log.logIndex);
-
-                        if (mainTransferLog && mainTransferLog.args) {
-                            // Write this log's `value` as the main transfer log's `fee`
-                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
-                        } else if (!mainTransferLog) {
-                            // If no main transfer log was found, it means this transaction failed
-                            // and only the fee was paid.
-                            (log as TransferEvent).failed = true;
-                            return true;
-                        }
-
-                        // Then ignore this log
-                        return false;
+                        feeLog = log as TransferLog;
+                        return;
                     }
 
                     if (

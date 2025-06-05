@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageBody, PageHeader, PageFooter, CircleSpinner } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { ExportFormat, exportTransactions } from '../../lib/export/TransactionExport';

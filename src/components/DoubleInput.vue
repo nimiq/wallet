@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import MessageTransition from './MessageTransition.vue';
 

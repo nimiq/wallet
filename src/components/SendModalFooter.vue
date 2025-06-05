@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { AlertTriangleIcon, CircleSpinner, PageFooter } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { useBtcNetworkStore } from '../stores/BtcNetwork';

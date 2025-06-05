@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { ArrowRightSmallIcon, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { useConfig } from '@/composables/useConfig';
 import { useRouter, RouteName } from '@/router';

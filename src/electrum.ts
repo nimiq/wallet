@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { watch, computed, ref } from '@vue/composition-api';
+import { watch, computed, ref } from 'vue';
 import { ElectrumClient, ElectrumClientOptions, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import { useConfig } from './composables/useConfig';

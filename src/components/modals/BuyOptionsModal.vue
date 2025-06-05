@@ -203,7 +203,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { PageBody, FiatAmount, CircleSpinner } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CountrySelector from '../CountrySelector.vue';

@@ -9,7 +9,7 @@ export function startSentry() {
         dsn: 'https://788f2bf1f3f74e408e50d2f2e5488e14@o208918.ingest.sentry.io/5289326',
         Vue,
         environment: config.environment,
-        release: process.env.SENTRY_RELEASE,
+        release: import.meta.env.VITE_SENTRY_RELEASE,
         enabled: config.reportToSentry,
         logErrors: true,
         sampleRate: config.environment === ENV_MAIN ? 0.2 : 1,

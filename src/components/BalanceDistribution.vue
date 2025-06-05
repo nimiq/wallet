@@ -34,8 +34,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { nextTick } from '@/lib/nextTick';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';

@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { LabelInput } from '@nimiq/vue-components';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import Avatar from './Avatar.vue';

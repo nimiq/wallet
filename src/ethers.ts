@@ -302,12 +302,12 @@ export async function safeQueryFilter(
             } catch (err: any) {
                 if (currentEnd - currentStart <= 1) {
                     // eslint-disable-next-line
-                    console.error('QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
+                    console.error('ITEST QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
                     throw err;
                 }
 
                 const mid = Math.floor((currentStart + currentEnd) / 2);
-                console.warn('QueryFilter failed, retrying with smaller range', currentStart, currentEnd);
+                console.warn('ITEST QueryFilter failed, retrying with smaller range', currentStart, currentEnd);
                 currentEnd = mid;
             }
         }

@@ -1,19 +1,16 @@
 <template>
-    <button class="reset staking-reward-item" @click="openRewardsHistory">
+    <div class="reset staking-reward-item">
         <div class="staking-icon-container">
             <StakingIcon class="staking-icon"/>
         </div>
         <div class="info">
             <div class="title">{{ monthLabel }} staking rewards</div>
-            <div class="transaction-count">
-                <span>{{ transactionCount }} transactions</span>
-            </div>
         </div>
         <div class="amounts isIncoming">
             <Amount :amount="monthlyReward" class="amount"/>
             <FiatConvertedAmount :amount="monthlyReward" class="fiat-amount"/>
         </div>
-    </button>
+    </div>
 </template>
 
 <script lang="ts">
@@ -60,6 +57,7 @@ export default defineComponent({
             }).format(date);
         });
 
+        // Currently unused, as The Reward history is much too large
         const openRewardsHistory = () => {
             router.push({
                 name: 'staking-rewards-history',
@@ -92,14 +90,14 @@ export default defineComponent({
     border: 0;
     background: transparent;
     border-radius: .75rem;
-    cursor: pointer;
-    transition: background 400ms var(--nimiq-ease);
     font-size: var(--body-size);
+    // cursor: pointer;
+    // transition: background 400ms var(--nimiq-ease);
 
-    &:hover,
-    &:focus {
-        background: var(--nimiq-highlight-bg);
-    }
+    // &:hover,
+    // &:focus {
+    //     background: var(--nimiq-highlight-bg);
+    // }
 
     > * {
         margin: 0rem 1rem;

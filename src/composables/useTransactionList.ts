@@ -138,10 +138,13 @@ export function useTransactionList(options: UseTransactionListOptions) {
         const transactionsWithMonths: any[] = [];
         let isLatestMonth = true;
 
+        // Pre-calculate current month/year once
         const { month: currentMonth, year: currentYear } = processTimestamp(Date.now());
+        const currentMonthYear = `${currentMonth}.${currentYear}`;
         let n = 0;
         let hasThisMonthLabel = false;
 
+        // Handle pending transactions first
         if (txs[n].state === TransactionState.PENDING) {
             transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
             isLatestMonth = false;
@@ -152,69 +155,92 @@ export function useTransactionList(options: UseTransactionListOptions) {
             }
         }
 
-        let displayedMonthYear = `${currentMonth}.${currentYear}`;
+        // Collect all months that have transactions (excluding pending ones)
+        const monthsWithTransactions = new Set<string>();
+        const transactionsByMonth = new Map<string, any[]>();
 
-        while (n < txs.length) {
-            // Skip expired & invalidated txs
-            if (!txs[n].timestamp) {
-                transactionsWithMonths.push(txs[n]);
-                n++;
+        for (let i = n; i < txs.length; i++) {
+            // Push expired/invalidated txs directly to maintain their original position
+            if (!txs[i].timestamp) {
+                transactionsWithMonths.push(txs[i]);
                 continue;
             }
 
-            const { month: txMonth, year: txYear, date: txDate } = processTimestamp(toMs(txs[n].timestamp!));
-            const txMonthYear = `${txMonth}.${txYear}`;
+            const { month: txMonth, year: txYear } = processTimestamp(toMs(txs[i].timestamp!));
+            const monthYear = `${txMonth}.${txYear}`;
 
-            if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
-                // Inject month + year labels and monthly rewards
+            monthsWithTransactions.add(monthYear);
+            const monthTxs = transactionsByMonth.get(monthYear) || [];
+            if (monthTxs.length === 0) {
+                transactionsByMonth.set(monthYear, monthTxs);
+            }
+            monthTxs.push(txs[i]);
+        }
+
+        // Collect all months that have rewards
+        const monthsWithRewards = new Set<string>();
+        for (const [monthKey] of monthlyRewards.value) {
+            const [year, month] = monthKey.split('-');
+            const monthNum = parseInt(month) - 1; // Convert back to 0-based month
+            const monthYear = `${monthNum}.${year}`;
+            monthsWithRewards.add(monthYear);
+        }
+
+        // Merge all months and sort chronologically (newest first)
+        const allMonths = new Set([...monthsWithTransactions, ...monthsWithRewards]);
+        const sortedMonths = Array.from(allMonths).sort((a, b) => {
+            // Optimize sorting by comparing year first, then month
+            const [monthA, yearA] = a.split('.');
+            const [monthB, yearB] = b.split('.');
+            const yearDiff = parseInt(yearB) - parseInt(yearA);
+            return yearDiff !== 0 ? yearDiff : parseInt(monthB) - parseInt(monthA);
+        });
+
+        // Process each month
+        for (const monthYear of sortedMonths) {
+            const [month, year] = monthYear.split('.');
+            const monthNum = parseInt(month);
+            const yearNum = parseInt(year);
+            const monthKey = `${yearNum}-${String(monthNum + 1).padStart(2, '0')}`;
+
+            // Check if this is the current month and we haven't added the "This month" label yet
+            if (!hasThisMonthLabel && monthNum === currentMonth && yearNum === currentYear) {
                 transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
-
-                // Add monthly reward for current month if exists
-                const currentMonthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-                const currentMonthReward = monthlyRewards.value.get(currentMonthKey);
-                if (currentMonthReward) {
-                    transactionsWithMonths.push({
-                        transactionHash: `monthly-reward-${currentMonthKey}`,
-                        isMonthlyReward: true,
-                        monthlyReward: currentMonthReward.total,
-                        transactionCount: currentMonthReward.count,
-                    });
-                }
-
                 hasThisMonthLabel = true;
                 isLatestMonth = false;
-            } else if (txMonthYear !== displayedMonthYear) {
-                // First inject the month label
+            } else if (monthYear !== currentMonthYear) {
+                // Add month label for non-current months
+                const monthDate = new Date(yearNum, monthNum);
                 transactionsWithMonths.push({
                     transactionHash: getLocaleMonthStringFromDate(
-                        txDate,
+                        monthDate,
                         locale,
                         {
                             month: 'long',
-                            year: txYear !== currentYear ? 'numeric' : undefined,
+                            year: yearNum !== currentYear ? 'numeric' : undefined,
                         },
                     ),
                     isLatestMonth,
                 });
-
-                // Then immediately inject the monthly reward summary if there were rewards
-                const monthKey = `${txYear}-${String(txMonth + 1).padStart(2, '0')}`;
-                const monthlyReward = monthlyRewards.value.get(monthKey);
-                if (monthlyReward) {
-                    transactionsWithMonths.push({
-                        transactionHash: `monthly-reward-${monthKey}`,
-                        isMonthlyReward: true,
-                        monthlyReward: monthlyReward.total,
-                        transactionCount: monthlyReward.count,
-                    });
-                }
-
                 isLatestMonth = false;
-                displayedMonthYear = txMonthYear;
             }
 
-            transactionsWithMonths.push(txs[n]);
-            n++;
+            // Add monthly reward if exists
+            const monthlyReward = monthlyRewards.value.get(monthKey);
+            if (monthlyReward) {
+                transactionsWithMonths.push({
+                    transactionHash: `monthly-reward-${monthKey}`,
+                    isMonthlyReward: true,
+                    monthlyReward: monthlyReward.total,
+                    transactionCount: monthlyReward.count,
+                });
+            }
+
+            // Add transactions for this month
+            const monthTransactions = transactionsByMonth.get(monthYear) || [];
+            for (const tx of monthTransactions) {
+                transactionsWithMonths.push(tx);
+            }
         }
 
         return transactionsWithMonths;

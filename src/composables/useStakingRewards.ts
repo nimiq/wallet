@@ -6,6 +6,38 @@ export interface MonthlyReward {
     count: number;
 }
 
+/**
+ * useStakingRewards composable
+ *
+ * Provides computed staking rewards data grouped by month, including total rewards and transaction counts.
+ * Calculates monthly reward summaries from staking events and provides utility functions to
+ * access reward data for specific time periods.
+ *
+ * @returns {
+ *   monthlyRewards: ComputedRef<Map<string, MonthlyReward>>,
+ *   getMonthlyReward: (monthKey: string) => MonthlyReward | undefined,
+ *   getCurrentMonthReward: () => MonthlyReward | undefined,
+ *   totalRewards: ComputedRef<{ total: number, count: number }>
+ * }
+ *
+ * @example
+ * import { useStakingRewards } from '@/composables/useStakingRewards';
+ *
+ * const { monthlyRewards, getMonthlyReward, getCurrentMonthReward, totalRewards } = useStakingRewards();
+ *
+ * // Access all monthly rewards
+ * console.log(monthlyRewards.value);
+ *
+ * // Get rewards for a specific month (format: 'YYYY-MM')
+ * const januaryRewards = getMonthlyReward('2024-01');
+ *
+ * // Get current month rewards
+ * const currentRewards = getCurrentMonthReward();
+ *
+ * // Get total rewards across all months
+ * console.log(totalRewards.value.total); // Total reward amount
+ * console.log(totalRewards.value.count); // Total number of reward transactions
+ */
 export function useStakingRewards() {
     const { stakingEvents } = useStakingStore();
 
@@ -31,17 +63,28 @@ export function useStakingRewards() {
         return rewardsByMonth;
     });
 
-    // Get reward for a specific month
+    /**
+     * Get reward data for a specific month
+     * @param monthKey - Month identifier in 'YYYY-MM' format (e.g., '2024-01' for January 2024)
+     * @returns MonthlyReward object containing total rewards and transaction count, or undefined
+     * if no rewards exist for that month
+     */
     const getMonthlyReward = (monthKey: string): MonthlyReward | undefined => monthlyRewards.value.get(monthKey);
 
-    // Get current month reward
+    /**
+     * Get reward data for the current month
+     * @returns MonthlyReward object for the current month, or undefined if no rewards exist
+     */
     const getCurrentMonthReward = (): MonthlyReward | undefined => {
         const now = new Date();
         const currentMonthKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
         return getMonthlyReward(currentMonthKey);
     };
 
-    // Get total rewards across all months
+    /**
+     * Calculate total rewards across all months
+     * Aggregates all monthly rewards to provide overall staking reward statistics
+     */
     const totalRewards = computed(() => {
         let total = 0;
         let count = 0;

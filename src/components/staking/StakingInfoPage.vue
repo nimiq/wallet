@@ -14,115 +14,76 @@
             </template>
         </PageHeader>
         <PageBody class="flex-column">
-            <StakingRewardsChart />
-
-            <div v-if="stake">
-                <span class="nq-label flex-row section-title">
-                    <TwoLeafStakingIcon />
-                    {{ $t('Staked') }}
-                </span>
-                <div class="row flex-row">
-                    <div class="col flex-grow">
-                        <div class="amount-staked">
-                            <Amount :amount="stakedBalance" value-mask/>
-                        </div>
-                        <div class="amount-staked-fiat flex-row">
-                            <FiatConvertedAmount :amount="stakedBalance" value-mask/>
-                            <span class="dot"></span>
-                            <span>{{ percentage }}%</span>
-                        </div>
+            <div class="flex-row amounts" v-if="stake">
+                <StakingIcon :pulsing="true" />
+                <div class="flex-column flex-grow">
+                    <div class="amount-staked">
+                        <Amount :amount="stakedBalance" value-mask/>
+                        {{ $t('staked') }}
                     </div>
-                    <div class="flex-row">
-                        <Tooltip :disabled="!isStakeDeactivating" preferredPosition="top left"
-                            :container="this" class="adjust-stake">
-                            <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
-                                :disabled="isStakeDeactivating">
-                                {{ $t('Adjust Stake') }}
-                            </button>
-                            <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
-                        </Tooltip>
+                    <div class="amount-staked-fiat flex-row">
+                        <FiatConvertedAmount :amount="stakedBalance" value-mask/>
+                        <span class="dot"></span>
+                        <span>{{ percentage }}%</span>
                     </div>
                 </div>
-                <div v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)"
-                    class="unstaking row flex-row nq-light-blue"
-                >
-                    <span class="nq-button-pill payout-amount">
-                        <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask/>
-                    </span>
-                    <button class="nq-button-pill light-blue" @click="() => unstakeAll(!!stake.retiredBalance)">
-                        Pay out <ArrowRightSmallIcon />
-                    </button>
-                    <div class="flex-grow"></div>
-                    <!-- <p>{{ $t('Auto-payout failed, please pay out manually.') }}</p> -->
-                </div>
-                <div v-else-if="stake && stake.inactiveBalance"
-                    class="unstaking row flex-row nq-light-blue"
-                >
-                    <span class="nq-button-s unstaking-amount">
-                        <ArrowDownIcon />
-                        <Amount :amount="stake.inactiveBalance" value-mask/>
-                    </span>
-                    <button class="nq-button-s unstaking-progress">
-                        {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
-                        <!-- TODO: Add cancel function -->
-                    </button>
-                    <div class="flex-grow"></div>
+                <div class="flex-column">
+                    <Tooltip :disabled="!isStakeDeactivating" preferredPosition="bottom left"
+                        :container="this" class="adjust-stake">
+                        <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
+                            :disabled="isStakeDeactivating">
+                            {{ $t('Adjust Stake') }}
+                        </button>
+                        <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
+                    </Tooltip>
                 </div>
             </div>
-
-            <div class="horizontal-separator" />
-
-            <div v-if="validator">
-                <span class="nq-label flex-row section-title">
-                    {{ $t('Validator') }}
-                </span>
-                <div class="row flex-row">
-                    <div class="validator flex-grow">
-                        <div class="validator-top flex-row">
-                            <ValidatorIcon :validator="validator" />
-                            <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
-                            <ShortAddress v-else :address="validator.address"/>
-                        </div>
-                        <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore
-                                v-if="'score' in validator && typeof validator.score.total === 'number'"
-                                :score="validator.score.total"
-                                borderless
-                            />
-                            <strong class="dot"
-                                v-if="'annualReward' in validator
-                                    && 'score' in validator
-                                    && typeof validator.score.total === 'number'"
-                            >&middot;</strong>
-                            <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
-                        </div>
-                    </div>
+            <div class="flex-row rewards-and-chart">
+                <div class="flex-column nq-green-bg rewards">
+                    <h2 class="flex-row nq-label">{{ $t('Rewards') }}</h2>
+                </div>
+                <div class="flex-column flex-grow chart">
+                    <h2 class="nq-label title">{{  $t('Reward History') }}</h2>
+                    <StakingRewardsChart class="flex-grow" />
                 </div>
             </div>
+            <div class="flex-row flex-grow history">
+                Placeholder
 
-            <i18n v-if="showDeactivateAll"
-                tag="span"
-                path="To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
-                class="switch-validator"
-            >
-                <a href="#" slot="unstakeLink" @click="deactivateAll">{{ $t('un-stake all') }}</a>
-            </i18n>
-            <div v-else class="switch-validator"></div>
-
-            <button class="nq-button-s rewards-history" @click="$emit('next')">
-                {{ $t('Rewards history') }} &gt;
-            </button>
+                <button class="nq-button-s rewards-history" @click="$emit('next')">
+                    {{ $t('Rewards history') }} &gt;
+                </button>
+            </div>
         </PageBody>
+        <PageFooter v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
+            <div class="flex-row unstaking nq-light-blue">
+                <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask class="flex-grow" />
+                <button class="nq-button-pill light-blue" @click="() => unstakeAll(!!stake.retiredBalance)">
+                    Pay out <ArrowRightSmallIcon />
+                </button>
+            </div>
+        </PageFooter>
+        <PageFooter v-else-if="stake && stake.inactiveBalance">
+            <div class="flex-row unstaking nq-light-blue">
+                <CircleArrowDownIcon /> {{  $t('Unstaking') }}
+                <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
+                <button class="nq-button-s unstaking-progress">
+                    {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
+                    <!-- TODO: Add cancel function -->
+                </button>
+            </div>
+        </PageFooter>
     </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import {
-    PageHeader,
-    PageBody,
-    Tooltip,
     ArrowRightSmallIcon,
+    PageBody,
+    PageFooter,
+    PageHeader,
+    Tooltip,
 } from '@nimiq/vue-components';
 
 import { useI18n } from '@/lib/useI18n';
@@ -131,11 +92,8 @@ import { useAddressStore } from '../../stores/Address';
 import { MIN_STAKE } from '../../lib/Constants';
 
 import Amount from '../Amount.vue';
-import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import ValidatorReward from './tooltips/ValidatorReward.vue';
-import ShortAddress from '../ShortAddress.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -144,9 +102,8 @@ import StakingRewardsChart from './StakingRewardsGraph.vue';
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
 import { getNetworkClient } from '../../network';
-import ArrowDownIcon from '../icons/ArrowDownIcon.vue';
-import ValidatorIcon from './ValidatorIcon.vue';
 import { reportToSentry } from '../../lib/Sentry';
+import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
 
 export default defineComponent({
     setup(props, context) {
@@ -385,17 +342,14 @@ export default defineComponent({
         };
     },
     components: {
-        PageHeader,
         PageBody,
-        TwoLeafStakingIcon,
+        PageFooter,
+        PageHeader,
+        StakingIcon,
         Amount,
         Tooltip,
-        ValidatorTrustScore,
-        ValidatorReward,
-        ShortAddress,
-        ArrowDownIcon,
+        CircleArrowDownIcon,
         ArrowRightSmallIcon,
-        ValidatorIcon,
         ValidatorInfoBar,
         FiatConvertedAmount,
         StakingRewardsChart,
@@ -437,10 +391,71 @@ export default defineComponent({
     }
 
     .page-body {
-        padding: 0 2rem 4rem;
+        padding: 0 2rem;
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
+        gap: 2rem;
+    }
+
+    .amounts {
+        .staking-icon {
+            width: 6rem;
+            height: 6rem;
+            margin-right: 1rem;
+
+            ::v-deep path {
+                stroke-width: 5;
+            }
+        }
+
+        > * {
+            justify-content: center;
+        }
+    }
+
+    .rewards-and-chart {
+        gap: 1rem;
+
+        h2 {
+                margin: 2rem;
+                font-size: 1.5rem;
+        }
+
+        .rewards {
+            border-radius: 0.75rem;
+            justify-items:left;
+
+            h2 {
+                color: white;
+                opacity: 70%;
+            }
+        }
+
+        .chart {
+            position:relative;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 0 0 1.5px var(--text-10);
+
+            h2 {
+                position: absolute;
+            }
+
+        }
+    }
+
+    .page-footer {
+        padding: 3rem;
+
+        .unstaking {
+            align-items: center;
+            color: var(--nimiq-light-blue);
+            gap: 0.75rem;
+
+            > .amount {
+                margin-left: 1rem;
+            }
+        }
     }
 
     .section-title {
@@ -462,7 +477,7 @@ export default defineComponent({
         font-size: var(--size);
         font-weight: bold;
         line-height: 1;
-        margin-bottom: 1rem;
+        margin-bottom: .5rem;
     }
 
     .adjust-stake {
@@ -489,71 +504,6 @@ export default defineComponent({
         align-items: center;
     }
 
-    .unstaking {
-        flex-wrap: wrap;
-        align-items: center;
-        --size: var(--body-size);
-        font-size: var(--size);
-        font-weight: 600;
-        margin-top: 2rem;
-
-        .nq-button-s,
-        .nq-button-pill {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            color: white;
-
-            &:first-child {
-                z-index: 2;
-                box-shadow: 0px 0px 0px 3px white;
-                cursor: default;
-
-                .nq-icon {
-                    margin-right: 0.75rem;
-                }
-            }
-
-            &:nth-child(2) {
-                padding-left: 2rem;
-                margin-left: -0.4rem;
-
-                --left-radius: 0px;
-                border-top-left-radius: var(--left-radius);
-                border-bottom-left-radius: var(--left-radius);
-
-                .nq-icon {
-                    margin-left: 0.75rem;
-                }
-            }
-
-            &.unstaking-amount { background-color: #797B91 }
-
-            &.payout-amount .amount::after {
-                top: 0.09em;
-             }
-
-            &.unstaking-progress {
-                color: nimiq-blue(0.6);
-
-                pointer-events: none;
-                cursor: default;
-
-                span {
-                    color: nimiq-blue(1);
-                    margin-left: 1rem;
-                }
-            }
-        }
-        p {
-            color: nimiq-blue(0.6);
-            font-size: 1.5rem;
-            margin: 0;
-            margin-top: 1rem;
-            width: 100%;
-        }
-    }
-
     .horizontal-separator {
         width: 100%;
         height: 0.1875rem;
@@ -562,45 +512,6 @@ export default defineComponent({
 
         margin-top: 1rem;
         margin-bottom: 1rem;
-    }
-
-    .validator {
-        .flex-row {
-            align-items: center;
-        }
-
-        .validator-top {
-            font-size: var(--h2-size);
-
-            .validator-icon {
-                margin-right: 0.75rem;
-                --size: 3rem;
-            }
-
-            .validator-label {
-                font-weight: bold;
-            }
-
-            .short-address {
-                font-weight: 500;
-            }
-
-            .validator-reward-bubble {
-                margin-left: 2rem;
-            }
-        }
-
-        .validator-bottom {
-            font-size: var(--small-size);
-            color: var(--text-50);
-            font-weight: 600;
-            line-height: 1;
-            margin-top: 0.75rem;
-
-            .dot {
-                margin: 0 0.675rem;
-            }
-        }
     }
 
     .rewards-history {

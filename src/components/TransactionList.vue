@@ -82,46 +82,18 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
-import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
-import { useI18n } from '@/lib/useI18n';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
-import { toMs, Transaction, TransactionState } from '../stores/Transactions';
-import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
-import { parseData } from '../lib/DataFormatting';
-import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from '../lib/Constants';
+import { ENV_MAIN } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { createCashlink } from '../hub';
 import { useConfig } from '../composables/useConfig';
-import { useWindowSize } from '../composables/useWindowSize';
-import { useTransactionInfo } from '../composables/useTransactionInfo';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
-import { useStakingRewards } from '../composables/useStakingRewards';
 import StakingRewardsListItem from './StakingRewardsListItem.vue';
-
-function processTimestamp(timestamp: number) {
-    const date: Date = new Date(timestamp);
-
-    return {
-        month: date.getMonth(),
-        year: date.getFullYear(),
-        date,
-    };
-}
-
-function getLocaleMonthStringFromDate(
-    date: Date,
-    locale: string,
-    options: {
-        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow',
-        year?: 'numeric' | '2-digit',
-    },
-) {
-    return new Intl.DateTimeFormat(locale, options).format(date);
-}
+import { useTransactionList } from '../composables/useTransactionList';
 
 export default defineComponent({
     props: {
@@ -135,19 +107,12 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { $t, locale } = useI18n();
-        const { activeAddress, state: addresses$, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
+        const { activeAddress, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
         const { isFetchingTxHistory, fetchedAddresses } = useNetworkStore();
-        const { getLabel: getContactLabel } = useContactsStore();
         const { config } = useConfig();
-        const { monthlyRewards } = useStakingRewards();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
-
-        // Height of items in pixel
-        const { isMobile } = useWindowSize();
-        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
 
         const txCount = computed(() => transactionsForActiveAddress.value.length);
 
@@ -162,154 +127,9 @@ export default defineComponent({
             context.emit('unclaimed-cashlink-count', count);
         });
 
-        // Apply search filter
-        const filteredTxs = computed(() => {
-            if (!props.searchString) {
-                return transactionsForActiveAddress.value.filter(
-                    (tx) => tx.recipient !== STAKING_CONTRACT_ADDRESS && tx.sender !== STAKING_CONTRACT_ADDRESS,
-                );
-            }
-
-            const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
-
-            return transactionsForActiveAddress.value.filter((tx) => {
-                // Skip staking and unstaking transactions
-                if (tx.recipient === STAKING_CONTRACT_ADDRESS || tx.sender === STAKING_CONTRACT_ADDRESS) return false;
-
-                const transaction = ref<Readonly<Transaction>>(tx);
-                const { peerLabel, data } = useTransactionInfo(transaction);
-
-                const senderLabel = addresses$.addressInfos[tx.sender]
-                    ? addresses$.addressInfos[tx.sender].label
-                    : getContactLabel.value(tx.sender) || AddressBook.getLabel(tx.sender) || '';
-
-                const recipientLabel = addresses$.addressInfos[tx.recipient]
-                    ? addresses$.addressInfos[tx.recipient].label
-                    : getContactLabel.value(tx.recipient) || AddressBook.getLabel(tx.recipient) || '';
-
-                const concatenatedTxStrings = `
-                    ${tx.sender.replace(/\s/g, '')}
-                    ${tx.recipient.replace(/\s/g, '')}
-                    ${peerLabel.value ? (peerLabel.value as string).toUpperCase() : ''}
-                    ${senderLabel ? senderLabel.toUpperCase() : ''}
-                    ${recipientLabel ? recipientLabel.toUpperCase() : ''}
-                    ${data.value.toUpperCase()}
-                    ${parseData(tx.data.raw).toUpperCase()}
-                `;
-                return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
-            });
-        });
-
-        const transactions = computed(() => {
-            // Display loading transactions
-            if (!filteredTxs.value.length && isFetchingTxHistory.value) {
-                // create just as many placeholders that the scroller doesn't start recycling them because the loading
-                // animation breaks for recycled entries due to the animation delay being off.
-                const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
-                const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize.value);
-                return [...new Array(placeholderCount)].map((e, i) => ({ transactionHash: i, loading: true }));
-            }
-
-            if (!filteredTxs.value.length) return [];
-
-            const txs = filteredTxs.value;
-
-            // Inject "This month" label
-            const transactionsWithMonths: any[] = [];
-            let isLatestMonth = true;
-
-            const { month: currentMonth, year: currentYear } = processTimestamp(Date.now());
-            let n = 0;
-            let hasThisMonthLabel = false;
-
-            if (txs[n].state === TransactionState.PENDING) {
-                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
-                isLatestMonth = false;
-                hasThisMonthLabel = true;
-                while (txs[n] && txs[n].state === TransactionState.PENDING) {
-                    transactionsWithMonths.push(txs[n]);
-                    n++;
-                }
-            }
-
-            // Skip expired & invalidated txs
-            while (txs[n] && !txs[n].timestamp) {
-                transactionsWithMonths.push(txs[n]);
-                n++;
-            }
-
-            if (!txs[n]) return transactionsWithMonths; // Address has no more txs
-
-            // Inject month + year labels and monthly rewards
-            let { month: txMonth, year: txYear } = processTimestamp(toMs(txs[n].timestamp!));
-            let txDate: Date;
-
-            if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
-                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
-
-                // Add monthly reward for current month if exists
-                const currentMonthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-                const currentMonthReward = monthlyRewards.value.get(currentMonthKey);
-                if (currentMonthReward) {
-                    transactionsWithMonths.push({
-                        transactionHash: `monthly-reward-${currentMonthKey}`,
-                        isMonthlyReward: true,
-                        monthlyReward: currentMonthReward.total,
-                        transactionCount: currentMonthReward.count,
-                    });
-                }
-
-                isLatestMonth = false;
-            }
-
-            let displayedMonthYear = `${currentMonth}.${currentYear}`;
-
-            while (n < txs.length) {
-                // Skip expired & invalidated txs
-                if (!txs[n].timestamp) {
-                    transactionsWithMonths.push(txs[n]);
-                    n++;
-                    continue;
-                }
-
-                ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(toMs(txs[n].timestamp!)));
-                const txMonthYear = `${txMonth}.${txYear}`;
-
-                if (txMonthYear !== displayedMonthYear) {
-                    // First inject the month label
-                    transactionsWithMonths.push({
-                        transactionHash: getLocaleMonthStringFromDate(
-                            txDate,
-                            locale,
-                            {
-                                month: 'long',
-                                year: txYear !== currentYear ? 'numeric' : undefined,
-                            },
-                        ),
-                        isLatestMonth,
-                    });
-
-                    // Then immediately inject the monthly reward summary if there were rewards
-                    const monthKey = `${txYear}-${String(txMonth + 1).padStart(2, '0')}`;
-                    const monthlyReward = monthlyRewards.value.get(monthKey);
-                    if (monthlyReward) {
-                        transactionsWithMonths.push({
-                            transactionHash: `monthly-reward-${monthKey}`,
-                            isMonthlyReward: true,
-                            monthlyReward: monthlyReward.total,
-                            transactionCount: monthlyReward.count,
-                        });
-                    }
-
-                    isLatestMonth = false;
-                    displayedMonthYear = txMonthYear;
-                }
-
-                transactionsWithMonths.push(txs[n]);
-                n++;
-            }
-
-            return transactionsWithMonths;
+        const { transactions, itemSize } = useTransactionList({
+            searchString: computed(() => props.searchString),
+            scrollerBuffer,
         });
 
         const root: Ref<null | HTMLElement> = ref(null);

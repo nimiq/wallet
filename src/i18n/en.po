@@ -2878,9 +2878,9 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:243
 #: src/components/BtcTransactionList.vue:265
-#: src/components/StakingRewardsListItem.vue:54
+#: src/components/StakingRewardsListItem.vue:51
+#: src/components/TransactionList.vue:244
 #: src/components/TransactionList.vue:266
-#: src/components/TransactionList.vue:288
 #: src/components/UsdcTransactionList.vue:205
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205

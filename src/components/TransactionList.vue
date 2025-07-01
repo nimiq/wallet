@@ -99,7 +99,7 @@ import { useConfig } from '../composables/useConfig';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
-import { useStakingStore } from '../stores/Staking';
+import { useStakingRewards } from '../composables/useStakingRewards';
 import StakingRewardsListItem from './StakingRewardsListItem.vue';
 
 function processTimestamp(timestamp: number) {
@@ -158,7 +158,7 @@ export default defineComponent({
         const { isFetchingTxHistory, fetchedAddresses } = useNetworkStore();
         const { getLabel: getContactLabel } = useContactsStore();
         const { config } = useConfig();
-        const { stakingEvents } = useStakingStore();
+        const { monthlyRewards } = useStakingRewards();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
@@ -216,28 +216,6 @@ export default defineComponent({
                 `;
                 return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
             });
-        });
-
-        // Calculate monthly rewards
-        const monthlyRewards = computed(() => {
-            const events = stakingEvents.value;
-            if (!events) return new Map();
-
-            // Filter only reward events (type 6) and group by month
-            const rewardsByMonth = new Map();
-            events
-                .filter((event) => event.type === 6)
-                .forEach((event) => {
-                    const date = new Date(event.date);
-                    const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
-                    const currentData = rewardsByMonth.get(monthKey) || { total: 0, count: 0 };
-                    rewardsByMonth.set(monthKey, {
-                        total: currentData.total + event.value,
-                        count: currentData.count + 1,
-                    });
-                });
-
-            return rewardsByMonth;
         });
 
         const transactions = computed(() => {

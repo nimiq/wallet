@@ -123,24 +123,6 @@ function getLocaleMonthStringFromDate(
     return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
-// function getCloserElement(element: any, classToFind: string): HTMLElement {
-//     let e = element as HTMLElement;
-//
-//     if (!e) throw new Error('element undefined');
-//
-//     const selector = `.${classToFind}`;
-//
-//     if (e.matches(selector)) return e;
-//
-//     const child = e.querySelector(`.${classToFind}`) as HTMLElement;
-//     if (child) return child;
-//
-//     while (e && !e.matches(selector)) {
-//         e = e.parentNode as HTMLElement;
-//     }
-//     return e;
-// }
-
 export default defineComponent({
     props: {
         searchString: {
@@ -330,56 +312,7 @@ export default defineComponent({
             return transactionsWithMonths;
         });
 
-        // listening for DOM changes for animations in the virtual scroll
-        // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
-        // only runs on transaction hash change.
         const root: Ref<null | HTMLElement> = ref(null);
-        // (() => {
-        //     let txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
-        //     const config = { characterData: true, childList: true, subtree: true };
-        //     const callback = async function mutationCallback(mutationsList: MutationRecord[]) {
-        //         if (!transactions.value.length) return;
-        //         const changedIndexes: string[] = [];
-        //
-        //         for (const mutation of mutationsList) {
-        //             let element: null | HTMLElement = null;
-        //
-        //             if (mutation.target) {
-        //                 if (
-        //                     mutation.type === 'childList'
-        //                     && !(mutation.target as HTMLElement).classList.contains('transaction-list')
-        //                     && !(mutation.target as HTMLElement).classList.contains('resize-observer')
-        //                 ) {
-        //                     element = getCloserElement(mutation.target, 'list-element');
-        //                 } else if (
-        //                     mutation.type === 'characterData'
-        //                     && mutation.target.parentNode
-        //                 ) {
-        //                     element = getCloserElement(mutation.target.parentNode, 'list-element');
-        //                 }
-        //             }
-        //
-        //             if (element && !changedIndexes.includes(element.dataset.id!)) {
-        //                 changedIndexes.push(element.dataset.id!);
-        //
-        //                 const changedTxHash = element.dataset.hash as string;
-        //
-        //                 if (!txHashList.includes(changedTxHash + activeAddress.value)) { // added element
-        //                     txHashList.push(changedTxHash + activeAddress.value);
-        //                     element.classList.remove('fadein');
-        //                     requestAnimationFrame(() => element!.classList.add('fadein'));
-        //                 }
-        //             }
-        //         }
-        //
-        //         txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
-        //     };
-        //
-        //     const observer = new MutationObserver(callback);
-        //
-        //     onMounted(() => observer.observe(root.value!, config));
-        //     onBeforeUnmount(() => observer.disconnect());
-        // })();
 
         // Does not need to be reactive, as the environment doesn't change during runtime.
         const isMainnet = config.environment === ENV_MAIN;

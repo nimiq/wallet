@@ -5,7 +5,7 @@
                 <RoundStakingIcon />
                 <div class="staking-amounts flex-column">
                     <div class="amount-row flex-row">
-                        <Amount :amount="stakedBalance" value-mask/> staked
+                        <Amount :amount="stakedBalance" value-mask/> {{ $t('staked') }}
                     </div>
                     <div class="details-row flex-row" :class="{
                         'full-opacity': stake && (stake.inactiveBalance || stake.retiredBalance),

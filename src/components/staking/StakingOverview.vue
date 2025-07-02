@@ -164,7 +164,7 @@ export default defineComponent({
     padding-left: calc(var(--padding) + 2rem);
     padding-right: calc(var(--padding) + 3rem);
 
-    padding-top: -1rem; // 24px
+    margin-top: -1rem; // 24px
     padding-bottom: 4.125rem;
 
     @media (max-width: $tabletBreakpoint) {
@@ -188,6 +188,7 @@ export default defineComponent({
     transition: transform 0.2s;
     will-change: transform;
     height: 9rem;
+    flex-wrap: wrap;
 
     &:hover, &:focus {
         transform: scale(1.01);
@@ -204,6 +205,7 @@ export default defineComponent({
 }
 
 .staking-info {
+    height: 100%;
     align-items: center;
     gap: 2rem;
 
@@ -217,6 +219,7 @@ export default defineComponent({
     }
 
     @media (max-width: $tabletBreakpoint) {
+        height: auto;
         width: 100%;
 
         .nq-icon {
@@ -279,6 +282,7 @@ export default defineComponent({
     align-items: center;
     gap: 1rem;
     height: 9rem;
+    flex-shrink: 0;
 
     @media (max-width: $tabletBreakpoint) {
         width: 100%;

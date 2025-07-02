@@ -181,7 +181,7 @@ export function useTransactionList(options: UseTransactionListOptions) {
         const monthsWithRewards = new Set<string>();
         for (const [monthKey] of monthlyRewards.value) {
             const [year, month] = monthKey.split('-');
-            const monthNum = parseInt(month) - 1; // Convert back to 0-based month
+            const monthNum = parseInt(month, 10) - 1; // Convert back to 0-based month
             const monthYear = `${monthNum}.${year}`;
             monthsWithRewards.add(monthYear);
         }
@@ -192,15 +192,15 @@ export function useTransactionList(options: UseTransactionListOptions) {
             // Optimize sorting by comparing year first, then month
             const [monthA, yearA] = a.split('.');
             const [monthB, yearB] = b.split('.');
-            const yearDiff = parseInt(yearB) - parseInt(yearA);
-            return yearDiff !== 0 ? yearDiff : parseInt(monthB) - parseInt(monthA);
+            const yearDiff = parseInt(yearB, 10) - parseInt(yearA, 10);
+            return yearDiff !== 0 ? yearDiff : parseInt(monthB, 10) - parseInt(monthA, 10);
         });
 
         // Process each month
         for (const monthYear of sortedMonths) {
             const [month, year] = monthYear.split('.');
-            const monthNum = parseInt(month);
-            const yearNum = parseInt(year);
+            const monthNum = parseInt(month, 10);
+            const yearNum = parseInt(year, 10);
             const monthKey = `${yearNum}-${String(monthNum + 1).padStart(2, '0')}`;
 
             // Check if this is the current month and we haven't added the "This month" label yet

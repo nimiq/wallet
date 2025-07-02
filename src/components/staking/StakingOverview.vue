@@ -2,7 +2,7 @@
     <div class="staking-overview">
         <div class="staking-container flex-row nq-green-bg" @click="openStakingModal" :key="stake && stake.address">
             <div class="staking-info flex-row">
-                <RoundStakingIcon />
+                <RoundStakingIcon color="white" />
                 <div class="staking-amounts flex-column">
                     <div class="amount-row flex-row">
                         <Amount :amount="stakedBalance" value-mask/> {{ $t('staked') }}

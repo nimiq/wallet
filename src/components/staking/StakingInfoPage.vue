@@ -15,7 +15,7 @@
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-row amounts" v-if="stake">
-                <StakingIcon :pulsing="true" />
+                <RoundStakingIcon color="green" />
                 <div class="flex-column flex-grow">
                     <div class="amount-staked">
                         <Amount :amount="stakedBalance" value-mask/>
@@ -92,7 +92,7 @@ import { useAddressStore } from '../../stores/Address';
 import { MIN_STAKE } from '../../lib/Constants';
 
 import Amount from '../Amount.vue';
-import StakingIcon from '../icons/Staking/StakingIcon.vue';
+import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
@@ -345,7 +345,7 @@ export default defineComponent({
         PageBody,
         PageFooter,
         PageHeader,
-        StakingIcon,
+        RoundStakingIcon,
         Amount,
         Tooltip,
         CircleArrowDownIcon,
@@ -399,14 +399,10 @@ export default defineComponent({
     }
 
     .amounts {
-        .staking-icon {
+        .round-staking-icon {
             width: 6rem;
             height: 6rem;
             margin-right: 1rem;
-
-            ::v-deep path {
-                stroke-width: 5;
-            }
         }
 
         > * {

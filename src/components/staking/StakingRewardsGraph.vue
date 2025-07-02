@@ -7,7 +7,8 @@
             :stroke-opacity="1"
             :padding="8"
             height="150px"
-            :animate="true"
+            :animate="false"
+            :smoothing-factor="0.05"
         >
             <div v-if="points.length === 0" class="no-rewards">
                 No rewards yet
@@ -57,7 +58,41 @@ export default defineComponent({
                 .filter((event) => event.type === 6)
                 .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-            // Group rewards by month
+            if (rewardEvents.length === 0) return [];
+
+            // Calculate the date range based on selected time range
+            const now = new Date();
+            let startDate: Date;
+            let endDate: Date;
+
+            switch (selectedRange.value) {
+                case 'Y1':
+                    startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    endDate = now;
+                    break;
+                case 'M6':
+                    startDate = new Date(now.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
+                    endDate = now;
+                    break;
+                case 'M3':
+                    startDate = new Date(now.getTime() - 3 * 30 * 24 * 60 * 60 * 1000);
+                    endDate = now;
+                    break;
+                default: // ALL
+                    startDate = new Date(rewardEvents[0].date);
+                    endDate = now;
+                    break;
+            }
+
+            // Calculate cumulative rewards up to the start date (for proper baseline)
+            let baselineRewards = 0;
+            if (selectedRange.value !== 'ALL') {
+                baselineRewards = rewardEvents
+                    .filter((event) => new Date(event.date) < startDate)
+                    .reduce((sum, event) => sum + event.value, 0);
+            }
+
+            // Group all rewards by month for the entire period
             const monthlyRewards = new Map();
             rewardEvents.forEach((event) => {
                 const date = new Date(event.date);
@@ -66,18 +101,40 @@ export default defineComponent({
                 monthlyRewards.set(monthKey, currentValue + event.value);
             });
 
-            // Calculate cumulative rewards by month
-            let cumulativeRewards = 0;
-            return Array.from(monthlyRewards.entries())
-                .map(([monthKey, monthlyReward]) => {
-                    cumulativeRewards += monthlyReward;
-                    // Use the first day of the month for the x-axis
-                    const [year, month] = monthKey.split('-');
-                    return {
-                        x: new Date(Date.UTC(Number(year), Number(month) - 1, 1)).getTime(),
-                        y: cumulativeRewards,
-                    };
+            // Create a continuous timeline for the selected range
+            const timeline = [];
+            const currentDate = new Date(startDate);
+            currentDate.setUTCDate(1); // Start from first day of month
+            currentDate.setUTCHours(0, 0, 0, 0);
+
+            let cumulativeRewards = baselineRewards;
+
+            while (currentDate <= endDate) {
+                const monthKey = `${currentDate.getUTCFullYear()}-${
+                    String(currentDate.getUTCMonth() + 1).padStart(2, '0')
+                }`;
+                const monthlyReward = monthlyRewards.get(monthKey) || 0;
+                cumulativeRewards += monthlyReward;
+
+                timeline.push({
+                    x: currentDate.getTime(),
+                    y: cumulativeRewards,
                 });
+
+                // Move to next month
+                currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
+            }
+
+            // If no data points were created (e.g., no rewards in selected range),
+            // add at least one point to show the baseline
+            if (timeline.length === 0) {
+                timeline.push({
+                    x: startDate.getTime(),
+                    y: baselineRewards,
+                });
+            }
+
+            return timeline;
         });
 
         return {

@@ -34,9 +34,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import { nextTick } from '@/lib/nextTick';
+import Vue, { defineComponent, computed, ref, watch, nextTick } from 'vue';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
@@ -85,10 +83,10 @@ export default defineComponent({
         const RADIUS = (SVG_SIZE - STROKE_WIDTH) / 2;
         const ARC_GAP = STROKE_WIDTH;
 
-        const svg$ = ref<Vue>(null);
+        const svg$ = ref<Vue | null>(null);
         const fullCircleLength = ref(0);
-        const highlightedCurrency = ref<SupportedCurrency>(null);
-        const cachedCurrencyArcs = ref<Partial<Record<SupportedCurrency, CurrencyArc>>>(null);
+        const highlightedCurrency = ref<SupportedCurrency | null>(null);
+        const cachedCurrencyArcs = ref<Partial<Record<SupportedCurrency, CurrencyArc>> | null>(null);
 
         // Rotate by -90 degree to start at the top. Offset by linecap and half gap to have the gap centered at the top.
         // Note: positive values result in counterclockwise rotation, negative values in clockwise rotation.

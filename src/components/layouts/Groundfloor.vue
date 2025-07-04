@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { useRouter } from '@/router';
 
 export default defineComponent({
@@ -35,7 +35,7 @@ export default defineComponent({
 
         watch(() => router.currentRoute, (to) => {
             preventNextTransition.value = to.name === 'network';
-        }, { lazy: true });
+        });
 
         return {
             preventNextTransition,

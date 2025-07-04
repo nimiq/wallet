@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref } from 'vue';
 import {
     ArrowRightSmallIcon,
     PageBody,

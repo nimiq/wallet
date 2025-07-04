@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { RouteName } from '@/router';
 import CircledQuestionMark from './icons/CircledQuestionMark.vue';
 

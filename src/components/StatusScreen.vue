@@ -106,9 +106,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, nextTick } from 'vue';
 import { LoadingSpinner, CheckmarkIcon, FaceNeutralIcon, FaceSadIcon } from '@nimiq/vue-components';
-import { nextTick } from '@/lib/nextTick';
 
 export const SUCCESS_REDIRECT_DELAY = 2000; // 1s of transition + 1s of display
 

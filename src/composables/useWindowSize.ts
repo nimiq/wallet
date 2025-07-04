@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, Ref, computed } from '@vue/composition-api';
+import { ref, onMounted, onUnmounted, Ref, computed } from 'vue';
 import { mobileBreakpoint, tabletBreakpoint, halfMobileBreakpoint } from '../scss/modules/variables';
 
 let numberOfListeners = 0;

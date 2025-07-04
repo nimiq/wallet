@@ -259,7 +259,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -372,10 +372,11 @@ export default defineComponent({
                 if (overallEnabledAssets.length < 2) return `${SwapAsset.NIM}-${SwapAsset.BTC}`; // fallback
                 return `${overallEnabledAssets[0]}-${overallEnabledAssets[1]}`;
             },
-            validator(value) {
+            validator(value: string) {
                 const [left, right] = value.split('-');
                 const walletEnabledAssets = getWalletEnabledAssets();
-                return walletEnabledAssets.includes(left) && walletEnabledAssets.includes(right);
+                return walletEnabledAssets.includes(left as SupportedSwapAsset)
+                    && walletEnabledAssets.includes(right as SupportedSwapAsset);
             },
         },
     },
@@ -385,8 +386,8 @@ export default defineComponent({
 
         const { $t } = useI18n();
 
-        const estimate = ref<Estimate>(null);
-        const estimateError = ref<string>(null);
+        const estimate = ref<Estimate | null>(null);
+        const estimateError = ref<string | null>(null);
 
         const { activeAccountInfo } = useAccountStore();
 
@@ -420,11 +421,11 @@ export default defineComponent({
         });
 
         const { activeSwap: swap, setActiveSwap, setSwap } = useSwapsStore();
-        const swapError = ref<string>(null);
+        const swapError = ref<string | null>(null);
 
         const currentlySigning = ref(false);
 
-        const assets = ref<AssetList>(null);
+        const assets = ref<AssetList | null>(null);
 
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
@@ -451,13 +452,13 @@ export default defineComponent({
 
         // Re-run limit calculation when address changes (only NIM address can change within the active account)
         watch(activeAddress, (address) => {
-            limitsNimAddress.value = address || undefined;
-        }, { lazy: true });
+            limitsNimAddress.value = address.value || undefined;
+        });
 
         // Re-run limit calculation when exchange rates change
         watch(exchangeRates, () => {
             if (limits.value) recalculateLimits();
-        }, { lazy: true, deep: true });
+        }, { deep: true });
 
         const currentLimitFiat = computed(() => {
             if (!limits.value) return null;
@@ -570,9 +571,9 @@ export default defineComponent({
         watch([leftAsset, rightAsset], ([newLeft]) => {
             wantLeft.value = 0;
             wantRight.value = 0;
-            fixedAsset.value = newLeft;
+            fixedAsset.value = newLeft as SupportedSwapAsset;
             updateEstimate();
-        }, { lazy: true });
+        });
 
         const direction = computed(() => {
             // Try to determine direction based on swap values wanted by user first.
@@ -899,12 +900,12 @@ export default defineComponent({
             method: 'open' | 'openWithPermit' | 'openWithApproval' | 'redeemWithSecretInData',
         };
 
-        const polygonFeeStuff = ref<PolygonFees>(null);
-        const polygonFeeError = ref<string>(null);
+        const polygonFeeStuff = ref<PolygonFees | null>(null);
+        const polygonFeeError = ref<string | null>(null);
 
         // Used for Fastspot service fee calculation
-        const stableUsdPriceInWei = ref<number>(null);
-        const polygonGasPrice = ref<number>(null);
+        const stableUsdPriceInWei = ref<number | null>(null);
+        const polygonGasPrice = ref<number | null>(null);
 
         async function calculatePolygonHtlcFee(forOpening: boolean, prevPolygonFees: PolygonFees | null) {
             const prevMethod = prevPolygonFees?.method;
@@ -1221,7 +1222,7 @@ export default defineComponent({
                 wantLeft.value = -accountBalance(leftAsset.value);
                 wantRight.value = 0;
             }
-        }, { lazy: true });
+        });
 
         const newRightBalance = computed(() => accountBalance(rightAsset.value) + (wantRight.value || getRight.value));
 
@@ -1231,7 +1232,7 @@ export default defineComponent({
                 wantRight.value = -accountBalance(rightAsset.value);
                 wantLeft.value = 0;
             }
-        }, { lazy: true });
+        });
 
         const myLeftFeeFiat = computed(() => {
             let fee: number;

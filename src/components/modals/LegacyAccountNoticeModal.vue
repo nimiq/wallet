@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { PageBody } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import LegacyAccountNotice from '../LegacyAccountNotice.vue';

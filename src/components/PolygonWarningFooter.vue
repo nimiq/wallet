@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { PageFooter, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { useWindowSize } from '../composables/useWindowSize';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
@@ -42,12 +42,12 @@ export default defineComponent({
         type: {
             type: String,
             required: true,
-            validator: (type) => ['sending', 'receiving'].includes(type),
+            validator: (type: string) => ['sending', 'receiving'].includes(type),
         },
         level: {
             type: String,
             default: 'info',
-            validator: (level) => ['info', 'warning'].includes(level),
+            validator: (level: string) => ['info', 'warning'].includes(level),
         },
     },
     setup() {

@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { useRouter } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import Amount from './Amount.vue';

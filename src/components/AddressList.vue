@@ -42,11 +42,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted } from '@vue/composition-api';
+import Vue, { defineComponent, computed, ref, watch, onMounted, onActivated, onUnmounted, nextTick } from 'vue';
 
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import AddressListItem from './AddressListItem.vue';
 import AddIcon from './icons/AddIcon.vue';
 import { useAddressStore, AddressType, AddressInfo } from '../stores/Address';
@@ -237,7 +235,7 @@ export default defineComponent({
             if (Boolean(newStake) !== Boolean(oldStake) && activeAddress.value) {
                 adjustBackgroundOffsetAndScale(activeAddress.value);
             }
-        }, { lazy: true });
+        });
 
         return {
             root$,

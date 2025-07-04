@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, ref, watch } from 'vue';
 
 export default defineComponent({
     props: {

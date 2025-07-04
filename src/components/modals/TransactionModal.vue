@@ -348,7 +348,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, nextTick } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -369,7 +369,6 @@ import { SettlementStatus } from '@nimiq/oasis-api';
 import { useRouter, RouteName } from '@/router';
 import Config from 'config';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import Modal from './Modal.vue';

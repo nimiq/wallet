@@ -290,7 +290,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { CircleSpinner } from '@nimiq/vue-components';
 import { ValidationUtils } from '@nimiq/utils';
 import { RouteName } from '@/router';
@@ -330,7 +330,7 @@ export default defineComponent({
             window.location.reload();
         }
 
-        const fileInput$ = ref<HTMLInputElement>(null);
+        const fileInput$ = ref<HTMLInputElement | null>(null);
 
         function readFile(data: string) {
             // Reset file input

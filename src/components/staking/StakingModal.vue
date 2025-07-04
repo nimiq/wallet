@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onBeforeUnmount } from 'vue';
 import { useI18n } from '@/lib/useI18n';
 import { useStakingStore, Validator } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
@@ -204,7 +204,7 @@ export default defineComponent({
         /* Watchers */
         watch(activeStake, (stake) => {
             if (!stake) page.value = totalAccountStake.value ? Page.ValidatorList : Page.Welcome;
-        }, { lazy: true });
+        });
 
         watch(page, (newPage) => showOverlayIfInvalidAccount(newPage as Page));
         watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay));

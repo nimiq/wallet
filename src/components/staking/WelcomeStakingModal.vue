@@ -111,7 +111,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import Modal from '../modals/Modal.vue';
 import { WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';

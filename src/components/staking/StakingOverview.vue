@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { useRouter } from '../../router';

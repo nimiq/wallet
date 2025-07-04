@@ -261,7 +261,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent, nextTick } from 'vue';
 import {
     ArrowRightIcon,
     FiatAmount,
@@ -287,7 +287,6 @@ import { useUsdtContactsStore } from '@/stores/UsdtContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';

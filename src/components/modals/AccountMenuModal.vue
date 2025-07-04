@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { AlertTriangleIcon } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
 

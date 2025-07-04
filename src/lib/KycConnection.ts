@@ -1,4 +1,4 @@
-import { watch } from '@vue/composition-api';
+import { watch } from 'vue';
 import Ten31PassApi from '@nimiq/ten31-pass-api';
 import { useAccountStore } from '../stores/Account';
 import { KycProvider, useKycStore } from '../stores/Kyc';
@@ -14,17 +14,17 @@ export function init() {
     ten31PassApi = new Ten31PassApi(config.ten31Pass.apiEndpoint);
 
     watch(connectedUser, async (user) => {
-        if (!user) return;
+        if (!user.value) return;
 
         try {
-            if (!await ten31PassApi.getAppGrantInfo(user.appGrant)) {
+            if (!await ten31PassApi.getAppGrantInfo(user.value.appGrant)) {
                 // grant doesn't exist or expired
                 disconnectKyc();
             }
         } catch (error) {
             console.warn(error); // eslint-disable-line no-console
         }
-    }, { lazy: false });
+    });
 }
 
 export async function connectKyc(provider = KycProvider.TEN31PASS) {

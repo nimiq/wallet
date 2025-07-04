@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-import { watch, computed, ref } from '@vue/composition-api';
+import { watch, computed, ref } from 'vue';
 import { ElectrumClient, ElectrumClientOptions, TransactionDetails } from '@nimiq/electrum-client';
 import { SignedBtcTransaction } from '@nimiq/hub-api';
 import { useConfig } from './composables/useConfig';
 
-import { AccountInfo, useAccountStore } from './stores/Account';
+import { useAccountStore } from './stores/Account';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useBtcNetworkStore } from './stores/BtcNetwork';
 import { useBtcTransactionsStore, Transaction } from './stores/BtcTransactions';
@@ -212,7 +212,7 @@ export async function launchElectrum() {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
                     stop();
                 }
-            }, { lazy: true });
+            });
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory();
             txHistoryWasInvalidatedSinceLastConsensus = true;
@@ -233,7 +233,7 @@ export async function launchElectrum() {
 
     // Fetch transactions for active account
     watch([activeAccountInfo, txFetchTrigger], async ([accountInfo]) => {
-        const account = accountInfo as AccountInfo | null;
+        const account = accountInfo.value;
         if (!account) return;
 
         const { addressSet, activeAddresses } = btcAddressStore;

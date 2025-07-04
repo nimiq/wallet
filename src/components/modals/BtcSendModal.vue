@@ -135,7 +135,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -145,7 +145,6 @@ import {
 import { parseRequestLink, Currency, CurrencyInfo } from '@nimiq/utils';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import BtcAddressInput from '../BtcAddressInput.vue';
 import BtcLabelInput from '../BtcLabelInput.vue';
@@ -328,7 +327,7 @@ export default defineComponent({
             fiatAmount.value = amount.value * fiat$.exchangeRates.btc[currency]! * fiatToBtcDecimalRatio.value;
         });
 
-        watch(() => {
+        watch([activeCurrency, fiatAmount, exchangeRates, fiatToBtcDecimalRatio], () => {
             if (activeCurrency.value === CryptoCurrency.BTC || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
@@ -397,12 +396,13 @@ export default defineComponent({
             addressInputValue.value = parsedRequestLink.recipient;
             // Wait for BtcAddressInput to trigger onAddressEntered which sets recipientWithLabel.
             await new Promise<void>((resolve) => {
-                const unwatch = watch(() => {
+                const unwatch = watch(recipientWithLabel, () => {
                     if (recipientWithLabel.value?.address !== parsedRequestLink.recipient) return;
                     resolve();
                     unwatch();
-                });
+                }, { immediate: true });
             });
+
             if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
                 recipientWithLabel.value!.label = parsedRequestLink.label;
             }
@@ -416,8 +416,8 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<BtcAddressInput>(null);
-        const labelInput$ = ref<BtcLabelInput>(null);
+        const addressInput$ = ref<BtcAddressInput | null>(null);
+        const labelInput$ = ref<BtcLabelInput | null>(null);
 
         const { isMobile } = useWindowSize();
 
@@ -435,15 +435,15 @@ export default defineComponent({
                 // If an initial address was set via request link, focus the label input instead of the address input,
                 // once the request link populated and the label input showed up.
                 await new Promise<void>((resolve) => {
-                    const unwatch = watch(() => {
+                    const unwatch = watch(labelInput$, () => {
                         if (!labelInput$.value) return;
                         resolve();
                         unwatch();
-                    });
+                    }, { immediate: true });
                 });
-                focus(labelInput$);
+                focus(labelInput$ as Ref<BtcLabelInput>);
             } else {
-                focus(addressInput$);
+                focus(addressInput$ as Ref<BtcAddressInput>);
             }
         });
 
@@ -454,7 +454,7 @@ export default defineComponent({
         const statusState = ref<State>(State.LOADING);
         const statusTitle = ref('');
         const statusMessage = ref('');
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         async function sign() {
             if (!canSend.value) return;

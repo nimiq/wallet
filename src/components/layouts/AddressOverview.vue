@@ -317,7 +317,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from 'vue';
 import {
     Identicon,
     GearIcon,
@@ -398,7 +398,7 @@ export default defineComponent({
         const unclaimedCashlinkCount = ref(0);
         const showUnclaimedCashlinkList = ref(false);
 
-        const address$ = ref<HTMLDivElement>(null);
+        const address$ = ref<HTMLDivElement | null>(null);
         const addressMasked = ref<boolean>(false);
 
         const { isMobile, isFullDesktop, width: windowWidth } = useWindowSize();

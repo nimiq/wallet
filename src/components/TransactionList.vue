@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from 'vue';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -122,7 +122,7 @@ export default defineComponent({
         ));
 
         // Count unclaimed cashlinks
-        watch(() => {
+        watch(unclaimedCashlinkTxs, () => {
             const count = unclaimedCashlinkTxs.value.length;
             context.emit('unclaimed-cashlink-count', count);
         });

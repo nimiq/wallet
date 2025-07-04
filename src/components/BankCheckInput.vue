@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onMounted } from 'vue';
 import { LabelInput, CaretRightSmallIcon, Tooltip, AlertTriangleIcon, CrossIcon } from '@nimiq/vue-components';
 import { Bank, BANK_NETWORK, SEPA_INSTANT_SUPPORT, loadBankList } from '@nimiq/oasis-bank-list';
 import BankIcon from './icons/BankIcon.vue';
@@ -111,6 +111,13 @@ import { SEPA_COUNTRY_CODES } from '../lib/Countries';
 type CountryInfo = {
     name: string,
     code: string,
+}
+
+// Define the tooltip interface with the methods that are actually used
+interface TooltipInstance {
+    isShown: boolean;
+    show(): void;
+    hide(): void;
 }
 
 function unicodeNormalize(s: string) {
@@ -148,18 +155,18 @@ const BankCheckInput = defineComponent({
             ),
         );
 
-        const bankSearchInput$ = ref<LabelInput>(null);
-        const bankAutocomplete$ = ref<HTMLUListElement>(null);
-        const tooltips$ = ref<Array<Tooltip>>([]);
+        const bankSearchInput$ = ref<LabelInput | null>(null);
+        const bankAutocomplete$ = ref<HTMLUListElement | null>(null);
+        const tooltips$ = ref<Array<TooltipInstance>>([]);
 
         const selectedBankIndex = ref(0);
-        const currentCountry = ref<CountryInfo>(null);
+        const currentCountry = ref<CountryInfo | null>(null);
         const countryDropdownOpened = ref(false);
         const isScrollable = ref(false);
 
         const intlCollator = new Intl.Collator(undefined, { sensitivity: 'base' });
 
-        const bankToConfirm = ref<Bank & { tooltip: undefined }>(null);
+        const bankToConfirm = ref<Bank & { tooltip: undefined } | null>(null);
 
         /* Lazy-load the complete bank lists */
         const banks = ref<Bank[]>([]);
@@ -219,7 +226,7 @@ const BankCheckInput = defineComponent({
         const visibleBanks = computed(() => {
             if (bankToConfirm.value) return [bankToConfirm.value];
 
-            const b: (Bank & { tooltip?: Tooltip })[] = [...(
+            const b: (Bank & { tooltip?: TooltipInstance })[] = [...(
                 isScrollable.value
                     ? matchingBanks.value
                     : matchingBanks.value.slice(0, 3)
@@ -229,7 +236,7 @@ const BankCheckInput = defineComponent({
 
             for (let i = 0, tIndex = 0; i < b.length; i++) {
                 if (checkBankSupport(b[i], SEPA_INSTANT_SUPPORT.FULL_OR_SHARED)) {
-                    b[i].tooltip = tooltips$.value[tIndex];
+                    b[i].tooltip = tooltips$.value[tIndex] as TooltipInstance;
                     tIndex++;
                 }
             }
@@ -310,7 +317,7 @@ const BankCheckInput = defineComponent({
             }
         }
 
-        function selectBank(bank: Bank & { tooltip?: Tooltip }) {
+        function selectBank(bank: Bank & { tooltip?: TooltipInstance }) {
             if (bankToConfirm.value?.BIC === bank.BIC) return;
 
             // Only continue if the selected bank supports the wanted direction
@@ -334,7 +341,7 @@ const BankCheckInput = defineComponent({
             setBank(bankToConfirm.value);
         }
 
-        function setBank(bank: Bank & { tooltip?: Tooltip }) {
+        function setBank(bank: Bank & { tooltip?: TooltipInstance }) {
             localValue.value = bank.name;
             context.emit('bank-selected', { ...bank, tooltip: undefined } as Bank);
         }

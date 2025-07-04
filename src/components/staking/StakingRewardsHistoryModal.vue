@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { useRouter } from '@/router';
 import Modal from '../modals/Modal.vue';
 import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';

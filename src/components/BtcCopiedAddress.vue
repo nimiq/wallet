@@ -31,8 +31,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { defineComponent, ref } from '@vue/composition-api';
+import Vue, { defineComponent, ref } from 'vue';
 import { LabelInput } from '@nimiq/vue-components';
 import InteractiveShortAddress from './InteractiveShortAddress.vue';
 import Avatar from './Avatar.vue';
@@ -63,7 +62,7 @@ const BtcCopiedAddress = defineComponent({
         const { removeCopiedAddresses } = useBtcAddressStore();
         const { removeSenderLabelByAddress } = useBtcLabelsStore();
 
-        const labelInput$ = ref<LabelInput>(null);
+        const labelInput$ = ref<LabelInput | null>(null);
 
         function focus() {
             if (!labelInput$.value) return;

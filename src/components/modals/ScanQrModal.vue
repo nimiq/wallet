@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { PageBody, QrScanner } from '@nimiq/vue-components';
 import {
     parseRequestLink,
@@ -243,7 +243,7 @@ export default defineComponent({
             }
         };
 
-        const goCryptoStatus = ref<ReturnType<typeof goCryptoStatusToUserFriendlyMessage>>(null);
+        const goCryptoStatus = ref<ReturnType<typeof goCryptoStatusToUserFriendlyMessage> | null>(null);
         function resetGoCryptoPaymentStatus() {
             goCryptoStatus.value = null;
         }

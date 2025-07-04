@@ -35,9 +35,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { defineComponent, computed, ref } from 'vue';
 import { Copyable, Tooltip } from '@nimiq/vue-components';
-import { defineComponent, computed, ref } from '@vue/composition-api';
 import ShortAddress from './ShortAddress.vue';
 
 export default defineComponent({
@@ -65,8 +64,8 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const tooltip$ = ref<Tooltip>(null);
-        const copyable$ = ref<Copyable>(null);
+        const tooltip$ = ref<Tooltip | null>(null);
+        const copyable$ = ref<Copyable | null>(null);
 
         const tooltipHorizontalPosition = computed(() => props.tooltipPosition.split(' ').pop());
 

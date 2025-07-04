@@ -74,12 +74,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch, nextTick } from 'vue';
 import { PageHeader, PageBody, PageFooter, LabelInput } from '@nimiq/vue-components';
 import { Bank } from '@nimiq/oasis-bank-list';
 import IBAN from 'iban';
 import { BankAccount, useBankStore } from '@/stores/Bank';
-import { nextTick } from '@/lib/nextTick';
 import BankCheckInput from '../../BankCheckInput.vue';
 import MessageTransition from '../../MessageTransition.vue';
 import DoubleInput from '../../DoubleInput.vue';
@@ -94,8 +93,8 @@ export default defineComponent({
     setup(props, context) {
         const { bank, bankAccount } = useBankStore();
 
-        const bankCheckInput$ = ref<BankCheckInput>(null);
-        const accountNameInput$ = ref<LabelInput>(null);
+        const bankCheckInput$ = ref<BankCheckInput | null>(null);
+        const accountNameInput$ = ref<LabelInput | null>(null);
 
         const currentStep = ref<Step>(Step.BANK_CHECK);
         const bankName = ref(bank.value?.name || '');

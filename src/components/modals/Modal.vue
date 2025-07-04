@@ -26,10 +26,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted, Ref, ref, watch, nextTick } from 'vue';
 import { SmallPage, CloseButton } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
-import { nextTick } from '@/lib/nextTick';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useSwipes } from '../../composables/useSwipes';
 import { useSettingsStore } from '../../stores/Settings';
@@ -116,8 +115,8 @@ const Modal = defineComponent({
         });
 
         // Swiping
-        const main$ = ref<HTMLDivElement>(null);
-        const handle$ = ref<HTMLDivElement>(null);
+        const main$ = ref<HTMLDivElement | null>(null);
+        const handle$ = ref<HTMLDivElement | null>(null);
         const showSwipeHandle = ref(false);
 
         async function updateSwipeRestPosition(
@@ -163,7 +162,7 @@ const Modal = defineComponent({
                     detachSwipe();
                     showSwipeHandle.value = false;
                 }
-            }, { lazy: true });
+            });
 
             if (isMobile.value && swipingEnabled.value === 1) {
                 showSwipeHandle.value = true;

@@ -27,8 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from '@vue/composition-api';
-import { nextTick } from '@/lib/nextTick';
+import { defineComponent, onMounted, ref, watch, nextTick } from 'vue';
 import MessageTransition from './MessageTransition.vue';
 
 export default defineComponent({
@@ -36,7 +35,7 @@ export default defineComponent({
         extended: Boolean,
     },
     setup(props) {
-        const secondInput$ = ref<HTMLDivElement>(null);
+        const secondInput$ = ref<HTMLDivElement | null>(null);
 
         const labelInputHeight = ref(0);
 

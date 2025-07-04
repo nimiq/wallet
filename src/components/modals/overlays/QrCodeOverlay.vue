@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { PageBody, PageHeader, QrCode } from '@nimiq/vue-components';
 import { useWindowSize } from '../../../composables/useWindowSize';
 import InteractiveShortAddress from '../../InteractiveShortAddress.vue';

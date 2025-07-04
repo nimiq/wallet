@@ -249,10 +249,9 @@ import {
     FiatAmount,
     CircleSpinner,
 } from '@nimiq/vue-components';
-import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch, nextTick } from 'vue';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { sendPolygonTransaction } from '../../hub';
@@ -308,7 +307,7 @@ export default defineComponent({
             AMOUNT_INPUT,
         }
 
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         const { state: addresses$, addressInfo } = usePolygonAddressStore();
         const { stablecoin } = useAccountSettingsStore();
@@ -440,7 +439,7 @@ export default defineComponent({
         const amount = ref(0);
         const fee = ref<number>(0);
         const feeLoading = ref(true); // Only true for first fee loading, not for updates.
-        const feeError = ref<string>(null);
+        const feeError = ref<string | null>(null);
 
         const relay = ref<RelayServerInfo | null>(null);
 
@@ -482,7 +481,7 @@ export default defineComponent({
                 * fiatToCoinDecimalRatio.value;
         });
 
-        watch(() => {
+        watch([activeCurrency, fiatAmount, exchangeRates, fiatToCoinDecimalRatio], () => {
             if (
                 activeCurrency.value === CryptoCurrency.USDC
                 || activeCurrency.value === CryptoCurrency.USDT
@@ -579,9 +578,9 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<AddressInput>(null);
-        const labelInput$ = ref<LabelInput>(null);
-        const amountInput$ = ref<AmountInput>(null);
+        const addressInput$ = ref<AddressInput | null>(null);
+        const labelInput$ = ref<LabelInput | null>(null);
+        const amountInput$ = ref<AmountInput | null>(null);
 
         const { isMobile } = useWindowSize();
 
@@ -596,19 +595,19 @@ export default defineComponent({
 
         watch(page, (currentPage) => {
             if (currentPage === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
+                focus(addressInput$ as Ref<AddressInput>);
             } else if (currentPage === Pages.AMOUNT_INPUT) {
-                focus(amountInput$);
+                focus(amountInput$ as Ref<AmountInput>);
             }
         });
 
         watch(recipientDetailsOpened, (isOpened) => {
             if (isOpened) {
-                focus(labelInput$);
+                focus(labelInput$ as Ref<LabelInput>);
             } else if (page.value === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
+                focus(addressInput$ as Ref<AddressInput>);
             } else {
-                focus(amountInput$);
+                focus(amountInput$ as Ref<AmountInput>);
             }
         });
 

@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { Identicon, MenuDotsIcon } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 

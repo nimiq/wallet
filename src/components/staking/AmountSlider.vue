@@ -61,10 +61,9 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { Ref, defineComponent, ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { CryptoCurrency } from '@nimiq/utils';
 
-import { nextTick } from '@/lib/nextTick';
 import { useAddressStore } from '../../stores/Address';
 
 import VerticalLineIcon from '../icons/Staking/VerticalLineIcon.vue';
@@ -211,18 +210,18 @@ export default defineComponent({
         let amountBox:DOMRect;
         let pivotPoint: Point;
 
-        const $container = ref<HTMLElement>(null);
-        const $knob = ref<HTMLElement>(null);
-        const $slide = ref<HTMLElement>(null);
-        const $backgroundLinesLeft = ref<HTMLElement>(null);
-        const $backgroundMiddlePlant = ref<HTMLElement>(null);
-        const $backgroundLinesRight = ref<HTMLElement>(null);
-        const $backgroundRightPlant = ref<HTMLElement>(null);
-        const $progressBar = ref<HTMLElement>(null);
-        const $percentText = ref<HTMLElement>(null);
-        const $stakedNIMText = ref<HTMLElement>(null);
-        const $stakedNIMAmount = ref<HTMLInputElement>(null);
-        const $dotIndicator = ref<HTMLElement>(null);
+        const $container = ref<HTMLElement | null>(null);
+        const $knob = ref<HTMLElement | null>(null);
+        const $slide = ref<HTMLElement | null>(null);
+        const $backgroundLinesLeft = ref<HTMLElement | null>(null);
+        const $backgroundMiddlePlant = ref<HTMLElement | null>(null);
+        const $backgroundLinesRight = ref<HTMLElement | null>(null);
+        const $backgroundRightPlant = ref<HTMLElement | null>(null);
+        const $progressBar = ref<HTMLElement | null>(null);
+        const $percentText = ref<HTMLElement | null>(null);
+        const $stakedNIMText = ref<HTMLElement | null>(null);
+        const $stakedNIMAmount = ref<HTMLInputElement | null>(null);
+        const $dotIndicator = ref<HTMLElement | null>(null);
 
         const atClick = (e: MouseEvent | TouchEvent) => {
             e.preventDefault();

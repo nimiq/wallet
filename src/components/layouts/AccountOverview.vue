@@ -302,11 +302,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, onActivated } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, onActivated, nextTick } from 'vue';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { ArrowRightSmallIcon, AlertTriangleIcon, CircleSpinner, Tooltip } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
-import { nextTick } from '@/lib/nextTick';
 import AccountBalance from '../AccountBalance.vue';
 import AddressList from '../AddressList.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';

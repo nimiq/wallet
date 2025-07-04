@@ -1,4 +1,4 @@
-import { watch } from '@vue/composition-api';
+import { watch } from 'vue';
 import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill';
 
 import type {

@@ -1,4 +1,4 @@
-import { Ref } from '@vue/composition-api';
+import { Ref } from 'vue';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { Transaction } from './BtcTransactions';
@@ -64,8 +64,8 @@ export const useBtcAddressStore = createStore({
             const utxos = [] as Array<UTXO & { address: string }>;
 
             // Note: Using concat() as it is optimized for arrays and faster than array spread
-            const addressInfos = (addressSet as Ref<BtcAddressSet>).value.internal
-                .concat((addressSet as Ref<BtcAddressSet>).value.external);
+            const addressInfos = (addressSet.value as BtcAddressSet).internal
+                .concat((addressSet.value as BtcAddressSet).external);
 
             for (const addressInfo of addressInfos) {
                 for (const utxo of addressInfo.utxos) {
@@ -77,7 +77,7 @@ export const useBtcAddressStore = createStore({
             }
             return utxos;
         },
-        accountBalance: (state, { accountUtxos }) => (accountUtxos as Ref<UTXO[]>).value
+        accountBalance: (state, { accountUtxos }) => (accountUtxos.value as UTXO[])
             .reduce((sum, utxo) => sum + utxo.witness.value, 0),
         // activeExternalAddresses that were copied
         copiedExternalAddresses: (state, { activeExternalAddresses }): Readonly<BtcCopiedAddresses> => {
@@ -97,7 +97,7 @@ export const useBtcAddressStore = createStore({
                 .filter(({ txoCount, address }: BtcAddressInfo) => !txoCount && !copiedExternalAddresses.value[address])
                 .map((btcAddressInfo: BtcAddressInfo) => btcAddressInfo.address),
         nextChangeAddress: (state, { addressSet }): string | undefined =>
-            (addressSet as Ref<BtcAddressSet>).value.internal.find((addressInfo) => !addressInfo.txoCount)?.address,
+            (addressSet.value as BtcAddressSet).internal.find((addressInfo) => !addressInfo.txoCount)?.address,
     },
     actions: {
         addAddressInfos(addressInfos: BtcAddressInfo[]) {

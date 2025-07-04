@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch } from 'vue';
 import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 'ethers';
 import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log, TransactionReceipt } from '@ethersproject/abstract-provider';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
-import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
+import { usePolygonAddressStore } from './stores/PolygonAddress';
 import { usePolygonNetworkStore } from './stores/PolygonNetwork';
 import {
     HtlcEvent,
@@ -102,7 +102,7 @@ export async function getPolygonClient(): Promise<PolygonClient> {
         if (!unwatchGetPolygonClientConfig) return;
         unwatchGetPolygonClientConfig();
         unwatchGetPolygonClientConfig = null;
-    }, { lazy: true });
+    });
 
     let provider: providers.BaseProvider;
     const [ethers, rpcEndpoint] = await Promise.all([
@@ -460,19 +460,19 @@ export async function launchPolygon() {
     // Auto-detect stablecoin from balances and transactions
     const { stablecoin, setStablecoin } = useAccountSettingsStore();
     watch(addressStore.addressInfo, (ai) => {
-        if (!ai || stablecoin.value) {
+        if (!ai.value || stablecoin.value) {
             return;
         }
 
-        const usdcNativeBalance = ai.balanceUsdc ?? undefined;
-        const usdcBridgedBalance = ai.balanceUsdcBridged ?? undefined;
+        const usdcNativeBalance = ai.value.balanceUsdc ?? undefined;
+        const usdcBridgedBalance = ai.value.balanceUsdcBridged ?? undefined;
         const usdcBalance = usdcNativeBalance !== undefined && usdcBridgedBalance !== undefined
             ? usdcNativeBalance + usdcBridgedBalance
             : usdcNativeBalance !== undefined
                 ? usdcNativeBalance
                 : usdcBridgedBalance;
 
-        const usdtBalance = ai.balanceUsdtBridged ?? undefined;
+        const usdtBalance = ai.value.balanceUsdtBridged ?? undefined;
 
         if (usdcBalance !== undefined && usdtBalance !== undefined) {
             if (usdcBalance > 0.01e6 && !usdtBalance) {
@@ -520,7 +520,7 @@ export async function launchPolygon() {
         addressInfo,
         trigger,
     ]) => {
-        const address = (addressInfo as PolygonAddressInfo | null)?.address;
+        const address = addressInfo.value?.address;
         if (!address || fetchedUsdcBridgedAddresses.has(address)) return;
         fetchedUsdcBridgedAddresses.add(address);
 
@@ -827,7 +827,7 @@ export async function launchPolygon() {
         addressInfo,
         trigger,
     ]) => {
-        const address = (addressInfo as PolygonAddressInfo | null)?.address;
+        const address = addressInfo.value?.address;
         if (!address || fetchedUsdcAddresses.has(address)) return;
         fetchedUsdcAddresses.add(address);
 
@@ -1088,7 +1088,7 @@ export async function launchPolygon() {
         addressInfo,
         trigger,
     ]) => {
-        const address = (addressInfo as PolygonAddressInfo | null)?.address;
+        const address = addressInfo.value?.address;
         if (!address || fetchedUsdtBridgedAddresses.has(address)) return;
         fetchedUsdtBridgedAddresses.add(address);
 

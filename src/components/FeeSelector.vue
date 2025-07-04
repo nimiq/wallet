@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from 'vue';
 import { ENV_MAIN } from '../lib/Constants';
 import { useConfig } from '../composables/useConfig';
 import SpeedGauge from './SpeedGauge.vue';

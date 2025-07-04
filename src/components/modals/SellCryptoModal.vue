@@ -259,7 +259,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, onMounted, nextTick } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -293,7 +293,6 @@ import {
 } from '@nimiq/hub-api';
 import { Bank } from '@nimiq/oasis-bank-list';
 import { useRouter } from '@/router';
-import { nextTick } from '@/lib/nextTick';
 import { getNetworkClient } from '../../network';
 import { SwapState, useSwapsStore } from '../../stores/Swaps';
 import { useNetworkStore } from '../../stores/Network';
@@ -381,14 +380,14 @@ export default defineComponent({
         const currentLimitCrypto = useCurrentLimitCrypto(currentLimitFiat);
         const { estimate } = useSwapEstimate();
 
-        const cryptoAmountInput$ = ref<AmountInput>(null);
+        const cryptoAmountInput$ = ref<AmountInput | null>(null);
 
         const addressListOpened = ref(false);
         const selectedFiatCurrency = ref(FiatCurrency.EUR);
         const page = ref((bank.value && bankAccount.value) ? Pages.SETUP_BUY : Pages.WELCOME);
 
-        const estimateError = ref<string>(null);
-        const swapError = ref<string>(null);
+        const estimateError = ref<string | null>(null);
+        const swapError = ref<string | null>(null);
 
         onMounted(() => {
             if (activeAccountInfo.value && activeAccountInfo.value.type === AccountType.LEDGER) {
@@ -928,7 +927,7 @@ export default defineComponent({
             if (_fiatAmount.value || _cryptoAmount.value) {
                 updateEstimate();
             }
-        }, { lazy: true });
+        });
 
         const amountMenuOpened = ref(false);
 

@@ -189,7 +189,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';

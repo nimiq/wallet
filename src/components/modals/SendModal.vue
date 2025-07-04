@@ -250,7 +250,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, Ref, onBeforeUnmount, nextTick } from 'vue';
 import {
     PageHeader,
     PageBody,
@@ -267,7 +267,6 @@ import {
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import ContactShortcuts from '../ContactShortcuts.vue';
 import ContactBook from '../ContactBook.vue';
@@ -326,7 +325,7 @@ export default defineComponent({
         }
         const page = ref(Pages.RECIPIENT_INPUT);
 
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
 
         const { state: addresses$, activeAddressInfo, addressInfos } = useAddressStore();
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
@@ -508,7 +507,7 @@ export default defineComponent({
             fiatAmount.value = amount.value * fiat$.exchangeRates.nim[currency]! * fiatToNimDecimalRatio.value;
         });
 
-        watch(() => {
+        watch([activeCurrency, fiatAmount, exchangeRates, fiatToNimDecimalRatio], () => {
             if (activeCurrency.value === CryptoCurrency.NIM || gotRequestUriAmount.value) return;
             amount.value = Math.floor(
                 fiatAmount.value
@@ -721,9 +720,9 @@ export default defineComponent({
          * Autofocus
          */
 
-        const addressInput$ = ref<AddressInput>(null);
-        const labelInput$ = ref<LabelInput>(null);
-        const amountInput$ = ref<AmountInput>(null);
+        const addressInput$ = ref<AddressInput | null>(null);
+        const labelInput$ = ref<LabelInput | null>(null);
+        const amountInput$ = ref<AmountInput | null>(null);
 
         const { isMobile } = useWindowSize();
 
@@ -738,19 +737,19 @@ export default defineComponent({
 
         watch(page, (currentPage) => {
             if (currentPage === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
+                focus(addressInput$ as Ref<AddressInput>);
             } else if (currentPage === Pages.AMOUNT_INPUT) {
-                focus(amountInput$);
+                focus(amountInput$ as Ref<AmountInput>);
             }
         });
 
         watch(recipientDetailsOpened, (isOpened) => {
             if (isOpened) {
-                focus(labelInput$);
+                focus(labelInput$ as Ref<LabelInput>);
             } else if (page.value === Pages.RECIPIENT_INPUT) {
-                focus(addressInput$);
+                focus(addressInput$ as Ref<AddressInput>);
             } else {
-                focus(amountInput$);
+                focus(amountInput$ as Ref<AmountInput>);
             }
         });
 
@@ -773,7 +772,7 @@ export default defineComponent({
 
             try {
                 const abortController = new AbortController();
-                const unwatchGoCryptoExpiry = watch(() => {
+                const unwatchGoCryptoExpiry = watch(goCryptoExpiryEarlyCountdown, () => {
                     if (!isGoCryptoExpiryEarlyCountdownExpired()) return;
                     abortController.abort();
                 });

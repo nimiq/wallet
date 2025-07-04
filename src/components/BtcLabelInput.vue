@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, Ref, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, Ref, ref, watch } from 'vue';
 import { LabelInput } from '@nimiq/vue-components';
 import { useBtcLabelsStore } from '@/stores/BtcLabels';
 import Avatar from './Avatar.vue';
@@ -50,8 +50,8 @@ const BtcLabelInput = defineComponent({
         });
 
         const { recipientLabels } = useBtcLabelsStore();
-        const input$ = ref<LabelInput>(null);
-        const btcLabelAutocomplete$ = ref<HTMLUListElement>(null);
+        const input$ = ref<LabelInput | null>(null);
+        const btcLabelAutocomplete$ = ref<HTMLUListElement | null>(null);
         const selectedLabelIndex: Ref<number> = ref(0);
 
         function focus() {

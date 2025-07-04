@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import VueCompositionApi, { watch } from '@vue/composition-api';
+import VueCompositionApi from '@vue/composition-api';
+import Vue, { watch } from 'vue';
 // @ts-expect-error Could not find a declaration file for module 'vue-virtual-scroller'.
 import VueVirtualScroller from 'vue-virtual-scroller';
 import { setAssetPublicPath as setVueComponentsAssetPath } from '@nimiq/vue-components';
@@ -7,6 +7,7 @@ import { init as initFastspotApi } from '@nimiq/fastspot-api';
 import { init as initOasisApi } from '@nimiq/oasis-api';
 // @ts-expect-error missing types for this package
 import VuePortal from '@linusborg/vue-simple-portal';
+// import VueCompositionApi from '@vue/composition-api';
 
 import App from './App.vue';
 import { serviceWorkerHasUpdate } from './registerServiceWorker';
@@ -63,11 +64,75 @@ async function start() {
     // before queueing the next update. If the last update before page load was less than 2 minutes ago, wait the
     // remaining time first.
     const { timestamp: lastSuccessfulExchangeRateUpdate, updateExchangeRates } = useFiatStore();
-    const { isUserInactive } = useInactivityDetection();
     let lastTriedExchangeRateUpdate = lastSuccessfulExchangeRateUpdate.value;
     const TWO_MINUTES = 2 * 60 * 1000;
     const TEN_MINUTES = 5 * TWO_MINUTES;
     let exchangeRateUpdateTimer = -1;
+
+    // Fetch language file
+    const { language } = useSettingsStore();
+    loadLanguage(language.value);
+
+    startSentry();
+
+    const { config } = useConfig();
+
+    if (config.environment !== ENV_MAIN) {
+        document.title = 'Nimiq Testnet Wallet';
+    }
+
+    watch(config.fastspot, () => {
+        if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
+        initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
+    });
+
+    watch(config.oasis, () => {
+        if (!config.oasis.apiEndpoint) return;
+        initOasisApi(config.oasis.apiEndpoint);
+    });
+
+    watch(config.ten31Pass, () => {
+        if (!config.ten31Pass.enabled) return;
+        initKycConnection();
+    });
+
+    watch(config.matomo, () => {
+        if (!config.matomo.enabled) return;
+        initMatomo(config.matomo.host, config.matomo.siteId);
+    });
+
+    // Make reactive config accessible in components
+    Vue.prototype.$config = config;
+
+    new Vue({
+        router,
+        i18n,
+        render: (h) => h(App),
+    }).$mount('#app');
+
+    launchNetwork();
+
+    const { state: { activeCurrency } } = useAccountStore();
+
+    watch(() => config.enableBitcoin, () => {
+        if (!config.enableBitcoin) return;
+        launchElectrum();
+    });
+
+    watch(config.polygon, () => {
+        if (!config.polygon.enabled) return;
+        launchPolygon();
+    });
+
+    if (
+        (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
+        || (activeCurrency === CryptoCurrency.USDC && !config.polygon.enabled)
+        || (activeCurrency === CryptoCurrency.USDT && !config.polygon.enabled)
+    ) {
+        useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
+    }
+
+    const { isUserInactive } = useInactivityDetection();
     function queueExchangeRateUpdate() {
         const interval = isUserInactive.value ? TEN_MINUTES : TWO_MINUTES;
         // Update lastTriedExchangeRateUpdate as there might have been other exchange rate updates in the meantime, for
@@ -91,68 +156,6 @@ async function start() {
     }
     watch(isUserInactive, queueExchangeRateUpdate); // (Re)schedule exchange rate updates at the desired interval.
 
-    // Fetch language file
-    const { language } = useSettingsStore();
-    loadLanguage(language.value);
-
-    startSentry();
-
-    const { config } = useConfig();
-
-    if (config.environment !== ENV_MAIN) {
-        document.title = 'Nimiq Testnet Wallet';
-    }
-
-    watch(() => {
-        if (!config.fastspot.apiEndpoint || !config.fastspot.apiKey) return;
-        initFastspotApi(config.fastspot.apiEndpoint, config.fastspot.apiKey);
-    });
-
-    watch(() => {
-        if (!config.oasis.apiEndpoint) return;
-        initOasisApi(config.oasis.apiEndpoint);
-    });
-
-    watch(() => {
-        if (!config.ten31Pass.enabled) return;
-        initKycConnection();
-    });
-
-    watch(() => {
-        if (!config.matomo.enabled) return;
-        initMatomo(config.matomo.host, config.matomo.siteId);
-    });
-
-    // Make reactive config accessible in components
-    Vue.prototype.$config = config;
-
-    new Vue({
-        router,
-        i18n,
-        render: (h) => h(App),
-    }).$mount('#app');
-
-    launchNetwork();
-
-    const { state: { activeCurrency } } = useAccountStore();
-
-    watch(() => {
-        if (!config.enableBitcoin) return;
-        launchElectrum();
-    });
-
-    watch(() => {
-        if (!config.polygon.enabled) return;
-        launchPolygon();
-    });
-
-    if (
-        (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
-        || (activeCurrency === CryptoCurrency.USDC && !config.polygon.enabled)
-        || (activeCurrency === CryptoCurrency.USDT && !config.polygon.enabled)
-    ) {
-        useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
-    }
 }
 start();
 
@@ -162,7 +165,7 @@ declare module 'vue/types/vue' {
     }
 }
 
-declare module '@vue/composition-api/dist/component/component' {
+declare module 'vue' {
     interface SetupContext {
         readonly refs: { [key: string]: Vue | Element | Vue[] | Element[] };
     }

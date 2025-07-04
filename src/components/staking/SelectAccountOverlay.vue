@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted } from 'vue';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useAddressStore } from '../../stores/Address';
 import { useAccountStore } from '../../stores/Account';
@@ -27,7 +27,7 @@ export default defineComponent({
             context.emit('selected');
         };
 
-        const root = ref<HTMLElement>(null);
+        const root = ref<HTMLElement | null>(null);
         const scrollbarVisible = ref(false);
         onMounted(() => {
             watch(addressInfos, () => {

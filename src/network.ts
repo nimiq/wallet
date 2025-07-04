@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { ref, watch } from '@vue/composition-api';
+import { ref, watch } from 'vue';
 import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
@@ -172,15 +172,15 @@ export async function launchNetwork() {
     }
 
     watch([addressStore.activeAddress], ([activeAddress]) => {
-        if (!activeAddress) return;
+        if (!activeAddress.value) return;
         const { config } = useConfig();
         const endpoint = config.staking.stakeEventsEndpoint;
-        const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'));
+        const url = endpoint.replace('ADDRESS', activeAddress.value.replaceAll(' ', '+'));
         retry(
             () => fetch(url)
                 .then((res) => res.json())
                 .then((events: AddStakeEvent[]) => {
-                    useStakingStore().setStakingEvents(activeAddress, events);
+                    useStakingStore().setStakingEvents(activeAddress.value!, events);
                     console.log('Got add-stake events for', activeAddress, events);
                 }),
             { maxRetries: 3 },
@@ -233,7 +233,7 @@ export async function launchNetwork() {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
                     stop();
                 }
-            }, { lazy: true });
+            });
             networkWasReconnectedSinceLastConsensus = false;
         } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
             invalidateTransactionHistory(true);
@@ -397,7 +397,7 @@ export async function launchNetwork() {
     });
 
     watch([addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
-        const address = activeAddress as string | null;
+        const address = activeAddress.value;
         if (!address || fetchedAddresses.value.includes(address)) return;
         addFetchedAddress(address);
 

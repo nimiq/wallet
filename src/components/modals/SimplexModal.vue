@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onActivated, onUnmounted, computed } from 'vue';
 import { Tooltip, InfoCircleSmallIcon, PageHeader, PageBody, Identicon } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import Modal from './Modal.vue';

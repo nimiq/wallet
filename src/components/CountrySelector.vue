@@ -41,11 +41,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch, nextTick } from 'vue';
 // @ts-expect-error Could not find a declaration file for module 'v-click-outside'.
 import vClickOutside from 'v-click-outside';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import I18nDisplayNames from '../lib/I18nDisplayNames';
 import CountryFlag from './CountryFlag.vue';
 import { ALL_COUNTRY_CODES } from '../lib/Countries';
@@ -83,8 +82,8 @@ export default defineComponent({
 
         const searchTerm = ref('');
 
-        const input$ = ref<HTMLInputElement>(null);
-        const list$ = ref<HTMLUListElement>(null);
+        const input$ = ref<HTMLInputElement | null>(null);
+        const list$ = ref<HTMLUListElement | null>(null);
 
         async function setOpen(open: boolean) {
             isOpen.value = open;

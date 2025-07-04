@@ -43,10 +43,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, onMounted, Ref } from '@vue/composition-api';
+import Vue, { defineComponent, ref, watch, computed, onMounted, Ref, nextTick, getCurrentInstance } from 'vue';
 import { LoadingSpinner } from '@nimiq/vue-components';
 import { provideI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
@@ -63,9 +62,11 @@ import WalletStatusButton from './components/WalletStatusButton.vue';
 
 export default defineComponent({
     name: 'app',
-    setup(props, context) {
+    setup() {
+        const instance = getCurrentInstance();
+
         provideRouter(router);
-        provideI18n(context.root);
+        provideI18n(instance?.proxy as Vue);
 
         const { config } = useConfig();
         const isMainnet = config.environment === ENV_MAIN;
@@ -84,7 +85,7 @@ export default defineComponent({
         });
 
         // Swiping
-        const main$ = ref<HTMLDivElement>(null);
+        const main$ = ref<HTMLDivElement>();
         let mobileTapArea$: HTMLDivElement | null = null;
         const { width, isMobile } = useWindowSize();
 
@@ -158,12 +159,12 @@ export default defineComponent({
         watch([isMobile, swipingEnabled], ([isMobileNow, newSwiping], [wasMobile, oldSwiping]) => {
             if (!main$.value) return;
 
-            if ((isMobileNow && !wasMobile) || (newSwiping === 1 && oldSwiping !== 1)) {
+            if ((isMobileNow && !wasMobile) || (newSwiping.value === 1 && oldSwiping.value !== 1)) {
                 attachSwipe();
-            } else if (!isMobileNow || newSwiping !== 1) {
+            } else if (!isMobileNow || newSwiping.value !== 1) {
                 detachSwipe();
             }
-        }, { lazy: true });
+        });
 
         onMounted(() => {
             if (isMobile.value && swipingEnabled.value === 1) attachSwipe();

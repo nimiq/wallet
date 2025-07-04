@@ -1,9 +1,7 @@
+import Vue, { provide, inject } from 'vue';
 import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
-import Vue from 'vue';
 import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
 import { Component } from 'vue-router/types/router.d';
-
-import { provide, inject } from '@vue/composition-api';
 
 // Start views
 import Groundfloor from './components/layouts/Groundfloor.vue';

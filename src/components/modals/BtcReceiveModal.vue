@@ -121,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref, onUnmounted, onMounted } from '@vue/composition-api';
+import { defineComponent, computed, watch, ref, onUnmounted, onMounted, nextTick } from 'vue';
 import {
     PageBody,
     PageHeader,
@@ -132,7 +132,6 @@ import {
 } from '@nimiq/vue-components';
 import { useRouter } from '@/router';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useBtcLabelsStore } from '../../stores/BtcLabels';
@@ -202,8 +201,8 @@ export default defineComponent({
         }
 
         // Copied addresses
-        const addressList$ = ref<HTMLDivElement>(null);
-        const copiedAddresses$ = ref<BtcCopiedAddress[]>(null);
+        const addressList$ = ref<HTMLDivElement | null>(null);
+        const copiedAddresses$ = ref<BtcCopiedAddress[] | null>(null);
         const addressCopied = ref(false);
         const recentlyCopiedAddresses = computed(() =>
             Object.keys(copiedExternalAddresses.value)
@@ -285,8 +284,8 @@ export default defineComponent({
         );
 
         // Auto-adapt font-size for the address to always fit the grey box
-        const availableAddressCopyable$ = ref<Copyable>(null);
-        const addressWidthFinder$ = ref<HTMLDivElement>(null);
+        const availableAddressCopyable$ = ref<Copyable | null>(null);
+        const addressWidthFinder$ = ref<HTMLDivElement | null>(null);
         const addressFontSizeScaleFactor = ref(1);
         let addressPadding: number | null = null;
 

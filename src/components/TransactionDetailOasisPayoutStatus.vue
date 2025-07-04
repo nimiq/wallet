@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { CircleSpinner, Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { SettlementStatus } from '@nimiq/oasis-api';
 import { SwapEurData } from '../stores/Swaps';

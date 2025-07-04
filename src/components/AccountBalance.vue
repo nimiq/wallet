@@ -24,9 +24,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { FiatAmount } from '@nimiq/vue-components';
-import { nextTick } from '@/lib/nextTick';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
 import PrivacyOnIcon from './icons/PrivacyOnIcon.vue';
 import { useAddressStore } from '../stores/Address';
@@ -92,8 +91,8 @@ export default defineComponent({
             return amount;
         });
 
-        const fiatAmountContainer$ = ref<HTMLDivElement>(null);
-        const fiatAmount$ = ref<FiatAmount>(null);
+        const fiatAmountContainer$ = ref<HTMLDivElement | null>(null);
+        const fiatAmount$ = ref<FiatAmount | null>(null);
 
         const { isFullDesktop } = useWindowSize();
         const fiatAmountMaxSize = computed(() => isFullDesktop.value ? 7 : 5.5); // rem
@@ -121,7 +120,7 @@ export default defineComponent({
 
         watch(fiatAmount$, () => {
             if (!fiatAmount$.value) updateFontSize();
-        }, { lazy: true });
+        });
 
         const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
 

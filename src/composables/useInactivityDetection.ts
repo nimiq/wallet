@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, Ref } from '@vue/composition-api';
+import { ref, onMounted, onUnmounted, Ref } from 'vue';
 
 const INACTIVITY_TIME_TRESHOLD = 5 * 60 * 1000;
 const ACTIVITY_EVENTS_THROTTLE_TIME = 10 * 1000;

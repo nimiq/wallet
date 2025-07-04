@@ -26,7 +26,7 @@
 import { useConfig } from '@/composables/useConfig';
 import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import { AlertTriangleIcon, FiatAmount, Identicon } from '@nimiq/vue-components';
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { getBackgroundClass } from '../lib/AddressColor';
 import { CryptoCurrency } from '../lib/Constants';
 import { AccountType, useAccountStore } from '../stores/Account';

@@ -347,7 +347,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch, onUnmounted } from 'vue';
 import {
     CheckmarkIcon,
     Identicon,
@@ -459,7 +459,7 @@ export default defineComponent({
         const { $t } = useI18n();
 
         // NIM Identicon
-        const identicon$ = ref<Identicon>(null);
+        const identicon$ = ref<Identicon | null>(null);
         const identiconUrl = ref('');
         if (props.fromAsset === SwapAsset.NIM || props.toAsset === SwapAsset.NIM) {
             onMounted(() => {

@@ -1,4 +1,4 @@
-import { inject, provide } from '@vue/composition-api';
+import { inject, provide } from 'vue';
 import type { Vue } from 'vue/types/vue';
 
 const i18nSymbol = Symbol('i18n');

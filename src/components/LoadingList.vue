@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import { HexagonIcon } from '@nimiq/vue-components';
 
 export enum LoadingListType {

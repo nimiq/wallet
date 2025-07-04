@@ -32,7 +32,7 @@
     ]
   },
   "vueCompilerOptions": {
-    "target": 2
+    "target": 2.7
   },
   "include": [
     "types/*",
@@ -46,3 +46,4 @@
     "node_modules"
   ]
 }
+

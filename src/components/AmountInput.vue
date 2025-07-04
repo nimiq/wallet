@@ -22,8 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
-import { nextTick } from '@/lib/nextTick';
+import { defineComponent, ref, watch, onMounted, nextTick } from 'vue';
 
 const AmountInput = defineComponent({
     props: {
@@ -67,10 +66,10 @@ const AmountInput = defineComponent({
         const isFocussed = ref(false);
 
         // Refs
-        const fullWidth$ = ref<HTMLDivElement>(null);
-        const input$ = ref<HTMLInputElement>(null);
-        const widthPlaceholder$ = ref<HTMLSpanElement>(null);
-        const widthValue$ = ref<HTMLSpanElement>(null);
+        const fullWidth$ = ref<HTMLDivElement | null>(null);
+        const input$ = ref<HTMLInputElement | null>(null);
+        const widthPlaceholder$ = ref<HTMLSpanElement | null>(null);
+        const widthValue$ = ref<HTMLSpanElement | null>(null);
 
         onMounted(() => {
             if (props.maxFontSize) {

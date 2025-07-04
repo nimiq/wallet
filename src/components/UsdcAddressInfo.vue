@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { CryptoCurrency } from '@nimiq/utils';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import Avatar from './Avatar.vue';

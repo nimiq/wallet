@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useStakingStore, StakingEvent } from '../../stores/Staking';
 import Amount from '../Amount.vue';

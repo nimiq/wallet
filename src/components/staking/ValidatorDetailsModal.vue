@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import Modal from '../modals/Modal.vue';
 import { useStakingStore } from '../../stores/Staking';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';

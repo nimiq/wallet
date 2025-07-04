@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { Validator } from '../../../stores/Staking';
 import ValidatorIcon from '../ValidatorIcon.vue';
 

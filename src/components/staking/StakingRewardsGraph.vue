@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import { SliderToggle } from '@nimiq/vue-components';
 import LineChart from '../LineChart.vue';
 import { useStakingStore } from '../../stores/Staking';

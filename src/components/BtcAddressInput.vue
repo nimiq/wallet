@@ -34,11 +34,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch, nextTick } from 'vue';
 import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { parseRequestLink, Currency } from '@nimiq/utils';
 import { useI18n } from '@/lib/useI18n';
-import { nextTick } from '@/lib/nextTick';
 import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
 import { normalizeAddress, validateAddress } from '../lib/BitcoinTransactionUtils';
@@ -67,7 +66,7 @@ const BtcAddressInput = defineComponent({
         const { $t } = useI18n();
         const { config } = useConfig();
 
-        const input$ = ref<LabelInput>(null);
+        const input$ = ref<LabelInput | null>(null);
         const inputFontSizeScaleFactor = ref(1);
         let inputPadding: number | null = null;
 

@@ -25,7 +25,7 @@ j<template>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed, watch } from 'vue';
 import { Tooltip } from '@nimiq/vue-components';
 import { getNetworkClient } from '../network';
 import { Peer, useNetworkStore } from '../stores/Network';
@@ -42,9 +42,9 @@ import NetworkMapPeerList from './NetworkMapPeerList.vue';
 
 export default defineComponent({
     setup(props, context) {
-        const container$ = ref<HTMLDivElement>(null);
-        const network$ = ref<HTMLCanvasElement>(null);
-        const overlay$ = ref<HTMLCanvasElement>(null);
+        const container$ = ref<HTMLDivElement | null>(null);
+        const network$ = ref<HTMLCanvasElement | null>(null);
+        const overlay$ = ref<HTMLCanvasElement | null>(null);
         const nodes = ref<NodeHexagon[]>([]);
         const scale = ref(SCALING_FACTOR);
         const width = ref(2 * WIDTH);

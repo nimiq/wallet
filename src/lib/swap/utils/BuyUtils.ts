@@ -6,7 +6,7 @@ import {
     Htlc as OasisHtlc,
     HtlcStatus,
 } from '@nimiq/oasis-api';
-import { computed } from '@vue/composition-api';
+import { computed } from 'vue';
 import { useAccountStore } from '../../../stores/Account';
 import { useFiatStore } from '../../../stores/Fiat';
 import { useSwapsStore } from '../../../stores/Swaps';

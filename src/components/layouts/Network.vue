@@ -86,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, computed } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, computed } from 'vue';
 import { InfoCircleIcon, CircleSpinner } from '@nimiq/vue-components';
 import { calculateFee as calculatePolygonFee } from '@/ethers';
 import { estimateFees } from '@/lib/BitcoinTransactionUtils';
@@ -128,7 +128,7 @@ export default defineComponent({
             showNetworkInfo.value = false;
         }
 
-        const map$ = ref<HTMLDivElement>(null);
+        const map$ = ref<HTMLDivElement | null>(null);
         function scrollMap(x: number) {
             const mapWidth = map$.value!.children[0]!.clientWidth;
             const adjustedX = x * (mapWidth / WIDTH);

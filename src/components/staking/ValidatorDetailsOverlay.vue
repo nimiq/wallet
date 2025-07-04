@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { Validator, useStakingStore } from '../../stores/Staking';

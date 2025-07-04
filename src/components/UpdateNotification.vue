@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import { BottomOverlay, CircleSpinner } from '@nimiq/vue-components';
 import { useSettingsStore } from '../stores/Settings';
 import { updateServiceWorker } from '../registerServiceWorker';

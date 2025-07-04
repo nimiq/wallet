@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Copyable } from '@nimiq/vue-components';
 
 export default defineComponent({
@@ -20,8 +20,8 @@ export default defineComponent({
         text: String,
     },
     setup(props) {
-        const copyable$ = ref<Copyable>(null);
-        const widthFinder$ = ref<HTMLDivElement>(null);
+        const copyable$ = ref<Copyable | null>(null);
+        const widthFinder$ = ref<HTMLDivElement | null>(null);
         const addressFontSizeScaleFactor = ref(1);
 
         async function updateAddressFontSizeScaleFactor() {
@@ -41,7 +41,7 @@ export default defineComponent({
             updateAddressFontSizeScaleFactor();
             window.addEventListener('resize', updateAddressFontSizeScaleFactor);
         });
-        watch(() => props.text, updateAddressFontSizeScaleFactor, { lazy: true });
+        watch(() => props.text, updateAddressFontSizeScaleFactor);
         onUnmounted(() => {
             window.removeEventListener('resize', updateAddressFontSizeScaleFactor);
         });

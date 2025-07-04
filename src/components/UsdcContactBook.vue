@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { LabelInput } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import Avatar from './Avatar.vue';
@@ -89,7 +89,7 @@ export default defineComponent({
 
         const { accountInfos } = useAccountStore();
 
-        const list$ = ref<HTMLDivElement>(null);
+        const list$ = ref<HTMLDivElement | null>(null);
 
         const ownAddressInfos = computed(() => Object.values($polygonAddresses.addressInfos)
             .filter((addressInfo) => addressInfo.address !== activeAddressInfo.value?.address)

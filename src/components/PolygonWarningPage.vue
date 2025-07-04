@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { PageHeader, PageBody, AlertCircleIcon, AlertTriangleIcon } from '@nimiq/vue-components';
 import StopSignIcon from './icons/StopSignIcon.vue';
 import { useAccountSettingsStore } from '../stores/AccountSettings';
@@ -39,7 +39,7 @@ export default defineComponent({
         type: {
             type: String,
             required: true,
-            validator: (type) => ['sending', 'receiving'].includes(type),
+            validator: (type: string) => ['sending', 'receiving'].includes(type),
         },
         canGoBack: {
             type: Boolean,

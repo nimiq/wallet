@@ -371,9 +371,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, onUnmounted, ref, watch, nextTick } from 'vue';
 import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
-import { nextTick } from '@/lib/nextTick';
 import Modal from './Modal.vue';
 import AmountMenu from '../AmountMenu.vue';
 import { Languages } from '../../i18n/i18n-setup';
@@ -402,7 +401,7 @@ export default defineComponent({
             CryptoCurrency.USDC,
         ];
 
-        const modal$ = ref<Modal>(null);
+        const modal$ = ref<Modal | null>(null);
         const page = ref(1);
 
         const highlightedCurrencyIndex = ref(0);

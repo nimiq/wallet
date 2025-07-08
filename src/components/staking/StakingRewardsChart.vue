@@ -1,14 +1,22 @@
 <template>
     <div class="staking-rewards-chart">
-        <LineChart
-            v-if="chartData"
+        <div v-if="isLoading" class="loading flex-row">
+            <CircleSpinner/>
+            <span>{{ $t('Loading chart...') }}</span>
+        </div>
+        <component
+            :is="LineChartComponent"
+            v-else-if="chartData && LineChartComponent"
             :chart-data="chartData"
             :chart-options="chartOptions"
             :height="null"
             :width="null"
         />
-        <div v-else class="no-rewards">
-            No rewards yet
+        <div v-else-if="!chartData" class="no-rewards">
+            {{ $t('No rewards yet') }}
+        </div>
+        <div v-else-if="loadError" class="error">
+            {{ $t('Failed to load chart') }}
         </div>
         <div class="timerange-selector">
             <SliderToggle name="timerange-toggle" v-model="selectedRange">
@@ -30,35 +38,58 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
-import { SliderToggle } from '@nimiq/vue-components';
-import { Line as LineChart } from 'vue-chartjs/legacy';
-import {
-    Chart as ChartJS,
-    Title,
-    Tooltip,
-    LineElement,
-    LinearScale,
-    CategoryScale,
-    PointElement,
-    ChartOptions,
-} from 'chart.js';
+import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
+import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
-
-ChartJS.register(
-    Title,
-    Tooltip,
-    LineElement,
-    LinearScale,
-    CategoryScale,
-    PointElement,
-);
 
 export default defineComponent({
     name: 'StakingRewardsChart',
     setup() {
         const { stakingEvents } = useStakingStore();
         const selectedRange = ref<'ALL' | 'Y1' | 'M6' | 'M3'>('ALL');
+        const isLoading = ref(true);
+        const loadError = ref(false);
+        const LineChartComponent = ref(null);
+
+        // Lazy load chart.js dependencies
+        const loadChartDependencies = async () => {
+            try {
+                isLoading.value = true;
+                loadError.value = false;
+
+                // Import chart.js and register components
+                const [
+                    { Chart: ChartJS, Title, Tooltip, LineElement, LinearScale, CategoryScale, PointElement },
+                    { Line }
+                ] = await Promise.all([
+                    import('chart.js'),
+                    import('vue-chartjs/legacy')
+                ]);
+
+                // Register chart.js components
+                ChartJS.register(
+                    Title,
+                    Tooltip,
+                    LineElement,
+                    LinearScale,
+                    CategoryScale,
+                    PointElement,
+                );
+
+                // Set the LineChart component
+                LineChartComponent.value = Line;
+                isLoading.value = false;
+            } catch (error) {
+                console.error('Failed to load chart dependencies:', error);
+                loadError.value = true;
+                isLoading.value = false;
+            }
+        };
+
+        // Load dependencies when component mounts
+        onMounted(() => {
+            loadChartDependencies();
+        });
 
         // Calculate rewards chart data
         const chartData = computed(() => {
@@ -175,7 +206,7 @@ export default defineComponent({
         });
 
         // Chart options
-        const chartOptions: ChartOptions<'line'> = {
+        const chartOptions = computed(() => ({
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -233,17 +264,20 @@ export default defineComponent({
             // },
 
             animation: false,
-        };
+        }));
 
         return {
             selectedRange,
             chartData,
             chartOptions,
+            isLoading,
+            loadError,
+            LineChartComponent,
         };
     },
     components: {
-        LineChart,
         SliderToggle,
+        CircleSpinner,
     },
 });
 </script>
@@ -255,13 +289,34 @@ export default defineComponent({
     height: 150px;
     border-radius: 0.5rem;
 
-    .no-rewards {
+    .loading {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         color: var(--text-secondary);
         font-size: var(--small-size);
+
+        span {
+            font-size: var(--small-size);
+            opacity: 0.5;
+            margin-left: 1rem;
+            font-weight: 600;
+        }
+    }
+
+    .no-rewards,
+    .error {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-secondary);
+        font-size: var(--small-size);
+    }
+
+    .error {
+        color: var(--error-color);
     }
 
     :v-deep canvas {

@@ -97,7 +97,7 @@ import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
-import StakingRewardsChart from './StakingRewardsGraph.vue';
+import StakingRewardsChart from './StakingRewardsChart.vue';
 
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';

@@ -1,3 +1,4 @@
+/* eslint-disable max-len, no-console */
 import VueRouter from 'vue-router';
 import { demoCSS, DemoModal, bankSvg } from './DemoConstants';
 

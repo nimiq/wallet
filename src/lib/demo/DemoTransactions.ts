@@ -1,3 +1,4 @@
+/* eslint-disable max-len, no-console */
 import { KeyPair, PlainTransactionDetails, PrivateKey } from '@nimiq/core';
 import { TransactionState as ElectrumTransactionState } from '@nimiq/electrum-client';
 import {

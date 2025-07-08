@@ -1,3 +1,4 @@
+/* eslint-disable max-len, no-console, no-async-promise-executor */
 import HubApi, { SetupSwapResult } from '@nimiq/hub-api';
 import { ignoreHubRequests } from './DemoConstants';
 import { addOngoingSwap } from './DemoSwaps';

@@ -24,7 +24,7 @@
 
 import VueRouter from 'vue-router';
 import { useConfig } from '@/composables/useConfig';
-import { checkIfDemoIsActive, DemoState, DemoModal, MessageEventName, demoRoutes, type DemoFlowMessage, type DemoFlowType } from './DemoConstants';
+import { checkIfDemoIsActive, DemoState, DemoModal, MessageEventName, demoRoutes, type DemoFlowMessage, type DemoFlowType, type WalletPlaygroundMessage, type PlaygroundState } from './DemoConstants';
 import { insertCustomDemoStyles, setupSingleMutationObserver } from './DemoDom';
 import { setupDemoAddresses, setupDemoAccount } from './DemoAccounts';
 import {
@@ -47,6 +47,13 @@ import { interceptFetchRequest, listenForSwapChanges } from './DemoSwaps';
 
 // Keep a reference to the router here
 let demoRouter: VueRouter;
+
+// Playground state for tracking current action
+let playgroundState: PlaygroundState = {
+    connected: false,
+    address: null,
+    selectedAction: 'idle',
+};
 
 // Demo modal imports for dynamic loading
 const DemoFallbackModal = () =>
@@ -118,35 +125,226 @@ function addDemoModalRoutes(): void {
 
 /**
  * Listens for messages from iframes (or parent frames) about changes in the user flow.
+ * Extended to handle wallet playground messages for iframe communication.
  */
 function attachIframeListeners(): void {
     window.addEventListener('message', (event) => {
+        // Log incoming messages for debugging
+        console.log('[Demo] Received message:', event.data, 'from:', event.origin);
+        
         if (!event.data || typeof event.data !== 'object') return;
+
+        // Handle legacy FlowChange messages
         const { kind, data } = event.data as DemoFlowMessage;
         if (kind === MessageEventName.FlowChange && demoRoutes[data]) {
-            // Dynamic import to avoid circular dependencies
-            import('@/stores/Account').then(({ useAccountStore }) => {
-                import('@nimiq/utils').then(({ CryptoCurrency }) => {
-                    useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
-                });
-            });
+            handleFlowChange(data);
+            return;
+        }
 
-            demoRouter.push({
-                path: demoRoutes[data],
-            });
+        // Handle wallet playground messages
+        const { type, data: messageData } = event.data as WalletPlaygroundMessage;
+        if (type) {
+            handleWalletPlaygroundMessage(type, messageData, event.origin);
         }
     });
 
     demoRouter.afterEach((to) => {
         const match = Object.entries(demoRoutes).find(([, route]) => route === to.path);
         if (!match) return;
-        window.parent.postMessage({ kind: MessageEventName.FlowChange, data: match[0] as DemoFlowType }, '*');
+
+        const flowType = match[0] as DemoFlowType;
+        playgroundState.selectedAction = flowType;
+
+        // Send flow change to parent
+        window.parent.postMessage({ kind: MessageEventName.FlowChange, data: flowType }, '*');
+    });
+}
+
+/**
+ * Handles legacy flow change messages
+ */
+function handleFlowChange(flowType: DemoFlowType): void {
+    console.log('[Demo] Handling flow change:', flowType);
+
+    // Dynamic import to avoid circular dependencies
+    import('@/stores/Account').then(({ useAccountStore }) => {
+        import('@nimiq/utils').then(({ CryptoCurrency }) => {
+            useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
+        });
+    });
+
+    // Update playground state
+    playgroundState.selectedAction = flowType;
+
+    // Navigate to the appropriate route
+    if (demoRoutes[flowType]) {
+        demoRouter.push({
+            path: demoRoutes[flowType],
+        });
+    }
+}
+
+/**
+ * Handles wallet playground messages from parent frame
+ */
+function handleWalletPlaygroundMessage(messageType: string, data: any, origin: string): void {
+    console.log('[Demo] Received wallet playground message:', messageType, data, 'from:', origin);
+
+    try {
+        switch (messageType) {
+            case 'parent:ready':
+                handleParentReady(origin);
+                break;
+
+            case 'wallet:action:change':
+                handleActionChange(data);
+                break;
+
+            case 'wallet:state':
+                handleStateUpdate(data);
+                break;
+
+            case 'wallet:connect:response':
+                handleConnectResponse(data);
+                break;
+
+            case 'wallet:transaction:response':
+            case 'wallet:sign:response':
+                handleTransactionResponse(data);
+                break;
+
+            case 'wallet:disconnect':
+                handleDisconnect();
+                break;
+
+            default:
+                console.warn('[Demo] Unknown wallet playground message type:', messageType);
+        }
+    } catch (error) {
+        console.error('[Demo] Error handling wallet playground message:', error);
+    }
+}
+
+/**
+ * Handles parent:ready message by responding with playground:ready
+ */
+function handleParentReady(origin: string): void {
+    console.log('[Demo] Parent is ready, sending playground:ready response');
+
+    // Initialize playground state with demo data
+    playgroundState = {
+        connected: true,
+        address: 'NQ57 2814 7L5B NBBD 0EU7 EL71 HXP8 M7H8 MHKD', // Demo address
+        selectedAction: 'idle',
+    };
+
+    // Send playground:ready message back to parent
+    window.parent.postMessage({
+        type: 'playground:ready',
+        data: playgroundState,
+    }, origin);
+}
+
+/**
+ * Handles wallet:action:change message by updating the selected action
+ */
+function handleActionChange(data: { action: DemoFlowType }): void {
+    if (!data || !data.action) {
+        console.warn('[Demo] Invalid action change data:', data);
+        return;
+    }
+
+    const { action } = data;
+    console.log('[Demo] Changing action to:', action);
+
+    // Update playground state
+    playgroundState.selectedAction = action;
+
+    // Navigate to the appropriate route
+    if (demoRoutes[action]) {
+        demoRouter.push({
+            path: demoRoutes[action],
+        });
+    }
+
+    // Set active currency for financial actions
+    if (action === 'buy' || action === 'swap' || action === 'stake') {
+        import('@/stores/Account').then(({ useAccountStore }) => {
+            import('@nimiq/utils').then(({ CryptoCurrency }) => {
+                useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
+            });
+        });
+    }
+}
+
+/**
+ * Handles wallet:state message by updating the full state
+ */
+function handleStateUpdate(data: Partial<PlaygroundState>): void {
+    console.log('[Demo] Updating state:', data);
+
+    if (data) {
+        Object.assign(playgroundState, data);
+
+        // If action changed, navigate to appropriate route
+        if (data.selectedAction && demoRoutes[data.selectedAction]) {
+            demoRouter.push({
+                path: demoRoutes[data.selectedAction],
+            });
+        }
+    }
+}
+
+/**
+ * Handles wallet:connect:response message
+ */
+function handleConnectResponse(data: any): void {
+    console.log('[Demo] Connect response:', data);
+    playgroundState.connected = true;
+
+    // Could implement UI feedback here
+}
+
+/**
+ * Handles wallet:transaction:response and wallet:sign:response messages
+ */
+function handleTransactionResponse(data: any): void {
+    console.log('[Demo] Transaction/Sign response:', data);
+
+    // Could implement transaction feedback here
+}
+
+/**
+ * Handles wallet:disconnect message
+ */
+function handleDisconnect(): void {
+    console.log('[Demo] Disconnecting wallet');
+    playgroundState.connected = false;
+    playgroundState.address = null;
+    playgroundState.selectedAction = 'idle';
+
+    // Navigate back to idle state
+    demoRouter.push({
+        path: demoRoutes.idle,
     });
 }
 
 // Export types and constants for backward compatibility
 export type { DemoState, DemoFlowType, DemoFlowMessage };
 export { checkIfDemoIsActive, DemoModal, MessageEventName, demoRoutes };
+
+// Export new playground types and functionality
+export type { WalletPlaygroundMessage, PlaygroundState };
+
+// Export function to get current playground state
+export function getPlaygroundState(): PlaygroundState {
+    return { ...playgroundState };
+}
+
+// Export function to manually update playground state (for testing purposes)
+export function updatePlaygroundState(updates: Partial<PlaygroundState>): void {
+    Object.assign(playgroundState, updates);
+}
 
 // Export the main transaction insertion function that was exposed in the original module
 export { dangerouslyInsertFakeBuyNimTransaction };

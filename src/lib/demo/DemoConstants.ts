@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 // Demo state type
 export type DemoState = {
     active: boolean,
@@ -26,17 +28,31 @@ export enum MessageEventName {
     FlowChange = 'FlowChange'
 }
 
-// Flow types
-export type DemoFlowType = 'buy' | 'swap' | 'stake';
+// Flow types - supporting wallet playground actions
+export type DemoFlowType = 'buy' | 'swap' | 'stake' | 'idle';
 
 // Flow message structure
 export type DemoFlowMessage = { kind: 'FlowChange', data: DemoFlowType };
 
-// Demo routes mapping
+// Wallet playground message types
+export type WalletPlaygroundMessage = {
+    type: 'parent:ready' | 'wallet:action:change' | 'wallet:state' | 'wallet:connect:response' | 'wallet:transaction:response' | 'wallet:sign:response' | 'wallet:disconnect',
+    data?: any,
+};
+
+// Playground state type
+export type PlaygroundState = {
+    connected: boolean,
+    address: string | null,
+    selectedAction: DemoFlowType,
+};
+
+// Demo routes mapping - including idle state
 export const demoRoutes: Record<DemoFlowType, string> = {
     buy: '/buy',
     swap: '/swap/NIM-BTC',
     stake: '/staking',
+    idle: '/', // Default route for idle state
 };
 
 // Hub API requests to ignore

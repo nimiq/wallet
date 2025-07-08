@@ -6,7 +6,10 @@
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "serve": "yarn pre && yarn vue-cli-service serve --port 8081",
+    "serve:demo": "yarn pre && build=demo yarn vue-cli-service serve --port 8081",
     "build": "yarn pre && yarn vue-cli-service build",
+    "build:demo": "yarn pre && build=demo NODE_ENV=production yarn vue-cli-service build",
+    "build:demo-production": "yarn pre && build=demo-production NODE_ENV=production yarn vue-cli-service build",
     "lint": "vue-cli-service lint --no-fix",
     "lint:fix": "vue-cli-service lint",
     "build:bitcoinjs": "yarn --silent browserify bitcoinjs-parts.js -p common-shakeify -s BitcoinJS | yarn terser --compress --mangle --source-map --output public/bitcoin/BitcoinJS.min.js",

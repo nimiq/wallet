@@ -30,6 +30,12 @@ export default {
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 5 * 60e3, // 5 minutes
 
+    demo: {
+        // Controls if demo mode is enabled. When set to a string, demo mode is only enabled
+        // if the current hostname matches this value. When true, demo mode is always enabled.
+        enabled: 'wallet-demo.nimiq.com',
+    },
+
     staking: {
         // The block heights determining the on-chain pre-staking window. All transactions inside this window count
         // for pre-staking.

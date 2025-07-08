@@ -76,6 +76,9 @@ export default defineComponent({
                     PointElement,
                 );
 
+                // Register the custom plugin globally
+                ChartJS.register(verticalLinesBelowLine);
+
                 // Set the LineChart component
                 LineChartComponent.value = Line;
                 isLoading.value = false;
@@ -143,43 +146,39 @@ export default defineComponent({
                 monthlyRewards.set(monthKey, currentValue + event.value);
             });
 
-            // Create a continuous timeline for the selected range
+            // Create a fixed number of points (e.g., 20 points) for consistent data density
+            const FIXED_POINTS = 40;
             const labels: string[] = [];
             const data: number[] = [];
-            const currentDate = new Date(startDate);
-            currentDate.setUTCDate(1); // Start from first day of month
-            currentDate.setUTCHours(0, 0, 0, 0);
-
             let cumulativeRewards = baselineRewards;
 
-            while (currentDate <= endDate) {
-                const monthKey = `${currentDate.getUTCFullYear()}-${
-                    String(currentDate.getUTCMonth() + 1).padStart(2, '0')
-                }`;
-                const monthlyReward = monthlyRewards.get(monthKey) || 0;
-                cumulativeRewards += monthlyReward;
+            // Calculate time interval between points
+            const timeRange = endDate.getTime() - startDate.getTime();
+            const intervalMs = timeRange / (FIXED_POINTS - 1);
 
-                // Format label as "MMM YYYY"
-                const label = currentDate.toLocaleDateString('en-US', {
-                    month: 'short',
-                    year: 'numeric',
-                });
+            for (let i = 0; i < FIXED_POINTS; i++) {
+                const pointDate = new Date(startDate.getTime() + (i * intervalMs));
+
+                // Calculate cumulative rewards up to this point
+                const rewardsUpToPoint = rewardEvents
+                    .filter((event) => new Date(event.date) <= pointDate)
+                    .reduce((sum, event) => sum + event.value, 0);
+
+                const totalRewards = baselineRewards + rewardsUpToPoint;
+
+                // Format label as "MMM YYYY" for the first, last, and every 5th point
+                let label = '';
+                if (i === 0 || i === FIXED_POINTS - 1 || i % 5 === 0) {
+                    label = pointDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                        year: 'numeric',
+                    });
+                } else {
+                    label = ''; // Empty label for intermediate points
+                }
+
                 labels.push(label);
-                data.push(cumulativeRewards);
-
-                // Move to next month
-                currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
-            }
-
-            // If no data points were created (e.g., no rewards in selected range),
-            // add at least one point to show the baseline
-            if (labels.length === 0) {
-                const startLabel = startDate.toLocaleDateString('en-US', {
-                    month: 'short',
-                    year: 'numeric',
-                });
-                labels.push(startLabel);
-                data.push(baselineRewards);
+                data.push(totalRewards);
             }
 
             return {
@@ -200,10 +199,62 @@ export default defineComponent({
                         // pointHoverBorderColor: '#fff',
                         // pointHoverBorderWidth: 2,
                         showLine: true,
+                        // Add white border effect using stroke
+                        borderDash: [],
+                        borderDashOffset: 0,
+                        // Use a custom plugin to add white border
+                        borderCapStyle: 'round',
+                        borderJoinStyle: 'round',
                     },
                 ],
             };
         });
+
+                // Custom plugin for vertical lines below the line and white border effect
+        const verticalLinesBelowLine = {
+            id: 'verticalLinesBelowLine',
+            beforeDatasetsDraw(chart: any) {
+                const {ctx, chartArea, data, scales} = chart;
+                if (!data.datasets.length) return;
+                const dataset = data.datasets[0];
+                if (!dataset.data || !dataset.data.length) return;
+
+                // Draw vertical lines
+                ctx.save();
+                ctx.strokeStyle = 'rgba(31, 35, 72, 0.12)'; // light gray, adjust as needed
+                ctx.lineWidth = 1;
+                for (let i = 0; i < dataset.data.length; i++) {
+                    const x = scales.x.getPixelForValue(i);
+                    const y = scales.y.getPixelForValue(dataset.data[i]);
+                    ctx.beginPath();
+                    ctx.moveTo(x, scales.y.getPixelForValue(scales.y.min)); // from x-axis
+                    ctx.lineTo(x, y); // up to the data point
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // Draw white border effect BEFORE the green line
+                ctx.save();
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 8;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                ctx.beginPath();
+                for (let i = 0; i < dataset.data.length; i++) {
+                    const x = scales.x.getPixelForValue(i);
+                    const y = scales.y.getPixelForValue(dataset.data[i]);
+
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+                ctx.restore();
+            },
+        };
 
         // Chart options
         const chartOptions = computed(() => ({
@@ -230,7 +281,6 @@ export default defineComponent({
                 //     },
                 },
             },
-
             scales: {
                 x: {
                     display: false,
@@ -287,7 +337,10 @@ export default defineComponent({
     position: relative;
     width: 100%;
     height: 150px;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--text-10);
+    overflow: hidden;
+    padding: .5px;
 
     .loading {
         position: absolute;

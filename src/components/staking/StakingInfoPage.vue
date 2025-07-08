@@ -430,8 +430,6 @@ export default defineComponent({
 
         .chart {
             position:relative;
-            border-radius: 0.75rem;
-            box-shadow: inset 0 0 0 1.5px var(--text-10);
 
             h2 {
                 position: absolute;

@@ -1,19 +1,15 @@
 <template>
-    <div class="rewards-chart">
+    <div class="staking-rewards-chart">
         <LineChart
-            :points="points"
-            :stroke-width="2"
-            stroke="var(--nimiq-green)"
-            :stroke-opacity="1"
-            :padding="8"
-            height="150px"
-            :animate="false"
-            :smoothing-factor="0.05"
-        >
-            <div v-if="points.length === 0" class="no-rewards">
-                No rewards yet
-            </div>
-        </LineChart>
+            v-if="chartData"
+            :chart-data="chartData"
+            :chart-options="chartOptions"
+            :height="null"
+            :width="null"
+        />
+        <div v-else class="no-rewards">
+            No rewards yet
+        </div>
         <div class="timerange-selector">
             <SliderToggle name="timerange-toggle" v-model="selectedRange">
                 <template #ALL>
@@ -36,29 +32,44 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { SliderToggle } from '@nimiq/vue-components';
-import LineChart from '../LineChart.vue';
+import { Line as LineChart } from 'vue-chartjs/legacy';
+import {
+    Chart as ChartJS,
+    Title,
+    Tooltip,
+    LineElement,
+    LinearScale,
+    CategoryScale,
+    PointElement,
+    ChartOptions,
+} from 'chart.js';
 import { useStakingStore } from '../../stores/Staking';
+
+ChartJS.register(
+    Title,
+    Tooltip,
+    LineElement,
+    LinearScale,
+    CategoryScale,
+    PointElement,
+);
 
 export default defineComponent({
     name: 'StakingRewardsChart',
-    components: {
-        LineChart,
-        SliderToggle,
-    },
     setup() {
         const { stakingEvents } = useStakingStore();
         const selectedRange = ref<'ALL' | 'Y1' | 'M6' | 'M3'>('ALL');
 
-        // Calculate rewards chart points
-        const points = computed(() => {
-            if (!stakingEvents.value) return [];
+        // Calculate rewards chart data
+        const chartData = computed(() => {
+            if (!stakingEvents.value) return null;
 
             // Filter only reward events (type 6) and sort by date
             const rewardEvents = stakingEvents.value
                 .filter((event) => event.type === 6)
                 .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-            if (rewardEvents.length === 0) return [];
+            if (rewardEvents.length === 0) return null;
 
             // Calculate the date range based on selected time range
             const now = new Date();
@@ -102,7 +113,8 @@ export default defineComponent({
             });
 
             // Create a continuous timeline for the selected range
-            const timeline = [];
+            const labels: string[] = [];
+            const data: number[] = [];
             const currentDate = new Date(startDate);
             currentDate.setUTCDate(1); // Start from first day of month
             currentDate.setUTCHours(0, 0, 0, 0);
@@ -116,10 +128,13 @@ export default defineComponent({
                 const monthlyReward = monthlyRewards.get(monthKey) || 0;
                 cumulativeRewards += monthlyReward;
 
-                timeline.push({
-                    x: currentDate.getTime(),
-                    y: cumulativeRewards,
+                // Format label as "MMM YYYY"
+                const label = currentDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    year: 'numeric',
                 });
+                labels.push(label);
+                data.push(cumulativeRewards);
 
                 // Move to next month
                 currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
@@ -127,26 +142,114 @@ export default defineComponent({
 
             // If no data points were created (e.g., no rewards in selected range),
             // add at least one point to show the baseline
-            if (timeline.length === 0) {
-                timeline.push({
-                    x: startDate.getTime(),
-                    y: baselineRewards,
+            if (labels.length === 0) {
+                const startLabel = startDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    year: 'numeric',
                 });
+                labels.push(startLabel);
+                data.push(baselineRewards);
             }
 
-            return timeline;
+            return {
+                labels,
+                datasets: [
+                    {
+                        label: 'Cumulative Rewards',
+                        data,
+                        borderColor: '#21BCA5' /* --nimiq-green */,
+                        // backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        // pointHoverRadius: 4,
+                        // pointHoverBackgroundColor: '#21BCA5' /* --nimiq-green */,
+                        // pointHoverBorderColor: '#fff',
+                        // pointHoverBorderWidth: 2,
+                        showLine: true,
+                    },
+                ],
+            };
         });
+
+        // Chart options
+        const chartOptions: ChartOptions<'line'> = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    enabled: false,
+                //     mode: 'index',
+                //     intersect: false,
+                //     backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                //     titleColor: '#fff',
+                //     bodyColor: '#fff',
+                //     borderColor: 'var(--nimiq-green)',
+                //     borderWidth: 1,
+                //     callbacks: {
+                //         label: (context) => {
+                //             const value = context.parsed.y;
+                //             return `Rewards: ${value.toFixed(2)} NIM`;
+                //         },
+                //     },
+                },
+            },
+
+            scales: {
+                x: {
+                    display: false,
+                    ticks: {
+                        display: false,
+                    },
+                    grid: {
+                        display: false,
+                    },
+                    beginAtZero: false,
+                },
+                y: {
+                    display: false,
+                    ticks: {
+                        display: false,
+                    },
+                    grid: {
+                        display: false,
+                    },
+                    beginAtZero: false,
+                },
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
+            // elements: {
+            //     point: {
+            //         hoverRadius: 4,
+            //     },
+            // },
+
+            animation: false,
+        };
 
         return {
             selectedRange,
-            points,
+            chartData,
+            chartOptions,
         };
+    },
+    components: {
+        LineChart,
+        SliderToggle,
     },
 });
 </script>
 
 <style lang="scss" scoped>
-.rewards-chart {
+.staking-rewards-chart {
     position: relative;
     width: 100%;
     height: 150px;
@@ -160,6 +263,11 @@ export default defineComponent({
         color: var(--text-secondary);
         font-size: var(--small-size);
     }
+
+    :v-deep canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
 }
 
 .timerange-selector {
@@ -169,6 +277,7 @@ export default defineComponent({
     background: white;
     border-radius: 2000rem;
     padding: 0.4rem;
+    z-index: 10;
 
     ::v-deep .slider-toggle {
         font-size: 1.375rem;

@@ -147,7 +147,7 @@ msgstr ""
 msgid "15m"
 msgstr ""
 
-#: src/components/staking/StakingRewardsGraph.vue:18
+#: src/components/staking/StakingRewardsChart.vue:27
 msgid "1Y"
 msgstr ""
 
@@ -179,7 +179,7 @@ msgstr ""
 msgid "30-day Limit"
 msgstr ""
 
-#: src/components/staking/StakingRewardsGraph.vue:24
+#: src/components/staking/StakingRewardsChart.vue:33
 msgid "3M"
 msgstr ""
 
@@ -191,7 +191,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/staking/StakingRewardsGraph.vue:21
+#: src/components/staking/StakingRewardsChart.vue:30
 msgid "6M"
 msgstr ""
 
@@ -327,7 +327,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/staking/StakingRewardsGraph.vue:15
+#: src/components/staking/StakingRewardsChart.vue:24
 msgid "ALL"
 msgstr ""
 
@@ -1159,6 +1159,10 @@ msgstr ""
 msgid "Failed to fetch transactions"
 msgstr ""
 
+#: src/components/staking/StakingRewardsChart.vue:19
+msgid "Failed to load chart"
+msgstr ""
+
 #: src/components/TestnetFaucet.vue:138
 msgid "Faucet error - please try again."
 msgstr ""
@@ -1570,6 +1574,10 @@ msgstr ""
 msgid "Load file"
 msgstr ""
 
+#: src/components/staking/StakingRewardsChart.vue:5
+msgid "Loading chart..."
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:116
 msgid "Loading fees and limits"
 msgstr ""
@@ -1758,6 +1766,7 @@ msgstr ""
 msgid "No request received."
 msgstr ""
 
+#: src/components/staking/StakingRewardsChart.vue:16
 #: src/components/staking/StakingRewardsHistoryPage.vue:37
 msgid "No rewards yet"
 msgstr ""

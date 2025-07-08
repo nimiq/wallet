@@ -40,33 +40,124 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
-import { useStakingStore } from '../../stores/Staking';
+import { useStakingStore, StakingEvent } from '../../stores/Staking';
+
+type TimeRange = 'ALL' | 'Y1' | 'M6' | 'M3';
+
+// Chart configuration constants
+const FIXED_POINTS = 40; // Number of data points to generate for smooth chart
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+const DAYS_PER_MONTH = 30;
+const DAYS_PER_YEAR = 365;
+
+// Custom Chart.js plugin for visual effects
+const verticalLinesBelowLine = {
+    id: 'verticalLinesBelowLine',
+    beforeDatasetsDraw(chart: any) {
+        const { ctx, data, scales } = chart;
+        if (!data.datasets.length) return;
+        const dataset = data.datasets[0];
+        if (!dataset.data || !dataset.data.length) return;
+
+        // Draw vertical lines
+        ctx.save();
+        ctx.strokeStyle = 'rgba(31, 35, 72, 0.12)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < dataset.data.length; i++) {
+            const x = scales.x.getPixelForValue(i);
+            const y = scales.y.getPixelForValue(dataset.data[i]);
+            ctx.beginPath();
+            ctx.moveTo(x, scales.y.getPixelForValue(scales.y.min));
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // Draw white border effect BEFORE the green line
+        ctx.save();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+        for (let i = 0; i < dataset.data.length; i++) {
+            const x = scales.x.getPixelForValue(i);
+            const y = scales.y.getPixelForValue(dataset.data[i]);
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.stroke();
+        ctx.restore();
+    },
+};
 
 export default defineComponent({
     name: 'StakingRewardsChart',
     setup() {
         const { stakingEvents } = useStakingStore();
-        const selectedRange = ref<'ALL' | 'Y1' | 'M6' | 'M3'>('ALL');
+        const selectedRange = ref<TimeRange>('ALL');
         const isLoading = ref(true);
         const loadError = ref(false);
         const LineChartComponent = ref(null);
 
-        // Lazy load chart.js dependencies
+        // Calculate date range based on selected time period
+        const getDateRange = (range: TimeRange, rewardEvents: StakingEvent[]): { startDate: Date, endDate: Date } => {
+            const now = new Date();
+
+            switch (range) {
+                case 'Y1':
+                    return {
+                        startDate: new Date(now.getTime() - DAYS_PER_YEAR * MILLISECONDS_PER_DAY),
+                        endDate: now,
+                    };
+                case 'M6':
+                    return {
+                        startDate: new Date(now.getTime() - 6 * DAYS_PER_MONTH * MILLISECONDS_PER_DAY),
+                        endDate: now,
+                    };
+                case 'M3':
+                    return {
+                        startDate: new Date(now.getTime() - 3 * DAYS_PER_MONTH * MILLISECONDS_PER_DAY),
+                        endDate: now,
+                    };
+                default: // ALL
+                    return {
+                        startDate: new Date(rewardEvents[0].date),
+                        endDate: now,
+                    };
+            }
+        };
+
+        // Calculate rewards earned before the selected time range (for proper baseline)
+        const calculateBaselineRewards = (rewardEvents: StakingEvent[], startDate: Date, range: TimeRange): number => {
+            if (range === 'ALL') return 0;
+
+            return rewardEvents
+                .filter((event) => new Date(event.date) < startDate)
+                .reduce((sum, event) => sum + event.value, 0);
+        };
+
+        // Lazy load Chart.js and its dependencies
         const loadChartDependencies = async () => {
             try {
                 isLoading.value = true;
                 loadError.value = false;
 
-                // Import chart.js and register components
+                // Import Chart.js components and Vue wrapper
                 const [
                     { Chart: ChartJS, Title, Tooltip, LineElement, LinearScale, CategoryScale, PointElement },
-                    { Line }
+                    { Line },
                 ] = await Promise.all([
                     import('chart.js'),
-                    import('vue-chartjs/legacy')
+                    import('vue-chartjs/legacy'),
                 ]);
 
-                // Register chart.js components
+                // Register all required Chart.js components
                 ChartJS.register(
                     Title,
                     Tooltip,
@@ -74,110 +165,67 @@ export default defineComponent({
                     LinearScale,
                     CategoryScale,
                     PointElement,
+                    verticalLinesBelowLine,
                 );
 
-                // Register the custom plugin globally
-                ChartJS.register(verticalLinesBelowLine);
-
-                // Set the LineChart component
                 LineChartComponent.value = Line;
                 isLoading.value = false;
             } catch (error) {
-                console.error('Failed to load chart dependencies:', error);
+                console.error('Failed to load chart dependencies:', error); // eslint-disable-line no-console
                 loadError.value = true;
                 isLoading.value = false;
             }
         };
 
-        // Load dependencies when component mounts
         onMounted(() => {
             loadChartDependencies();
         });
 
-        // Calculate rewards chart data
+        // Generate chart data from staking reward events
         const chartData = computed(() => {
             if (!stakingEvents.value) return null;
 
-            // Filter only reward events (type 6) and sort by date
+            // Filter reward events (type 6) and sort by date
             const rewardEvents = stakingEvents.value
                 .filter((event) => event.type === 6)
                 .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
             if (rewardEvents.length === 0) return null;
 
-            // Calculate the date range based on selected time range
-            const now = new Date();
-            let startDate: Date;
-            let endDate: Date;
+            const { startDate, endDate } = getDateRange(selectedRange.value, rewardEvents);
+            const baselineRewards = calculateBaselineRewards(rewardEvents, startDate, selectedRange.value);
 
-            switch (selectedRange.value) {
-                case 'Y1':
-                    startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
-                    endDate = now;
-                    break;
-                case 'M6':
-                    startDate = new Date(now.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
-                    endDate = now;
-                    break;
-                case 'M3':
-                    startDate = new Date(now.getTime() - 3 * 30 * 24 * 60 * 60 * 1000);
-                    endDate = now;
-                    break;
-                default: // ALL
-                    startDate = new Date(rewardEvents[0].date);
-                    endDate = now;
-                    break;
+            // Pre-calculate cumulative rewards for efficient lookup
+            const cumulativeRewards: number[] = [];
+            let cumulative = 0;
+            for (const event of rewardEvents) {
+                cumulative += event.value;
+                cumulativeRewards.push(cumulative);
             }
 
-            // Calculate cumulative rewards up to the start date (for proper baseline)
-            let baselineRewards = 0;
-            if (selectedRange.value !== 'ALL') {
-                baselineRewards = rewardEvents
-                    .filter((event) => new Date(event.date) < startDate)
-                    .reduce((sum, event) => sum + event.value, 0);
-            }
-
-            // Group all rewards by month for the entire period
-            const monthlyRewards = new Map();
-            rewardEvents.forEach((event) => {
-                const date = new Date(event.date);
-                const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
-                const currentValue = monthlyRewards.get(monthKey) || 0;
-                monthlyRewards.set(monthKey, currentValue + event.value);
-            });
-
-            // Create a fixed number of points (e.g., 20 points) for consistent data density
-            const FIXED_POINTS = 40;
+            // Generate data points for smooth chart rendering
             const labels: string[] = [];
             const data: number[] = [];
-            let cumulativeRewards = baselineRewards;
-
-            // Calculate time interval between points
             const timeRange = endDate.getTime() - startDate.getTime();
             const intervalMs = timeRange / (FIXED_POINTS - 1);
 
             for (let i = 0; i < FIXED_POINTS; i++) {
                 const pointDate = new Date(startDate.getTime() + (i * intervalMs));
 
-                // Calculate cumulative rewards up to this point
-                const rewardsUpToPoint = rewardEvents
-                    .filter((event) => new Date(event.date) <= pointDate)
-                    .reduce((sum, event) => sum + event.value, 0);
-
-                const totalRewards = baselineRewards + rewardsUpToPoint;
-
-                // Format label as "MMM YYYY" for the first, last, and every 5th point
-                let label = '';
-                if (i === 0 || i === FIXED_POINTS - 1 || i % 5 === 0) {
-                    label = pointDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                        year: 'numeric',
-                    });
-                } else {
-                    label = ''; // Empty label for intermediate points
+                // Find the index of the last event that occurred before or at pointDate
+                let eventIndex = -1;
+                for (let j = 0; j < rewardEvents.length; j++) {
+                    if (new Date(rewardEvents[j].date) <= pointDate) {
+                        eventIndex = j;
+                    } else {
+                        break; // Events are sorted, so we can break early
+                    }
                 }
 
-                labels.push(label);
+                const rewardsUpToPoint = eventIndex >= 0 ? cumulativeRewards[eventIndex] : 0;
+                const totalRewards = baselineRewards + rewardsUpToPoint;
+
+                labels.push(`point-${i}`); // Simple labels for Chart.js (not displayed)
                 data.push(totalRewards);
             }
 
@@ -187,22 +235,15 @@ export default defineComponent({
                     {
                         label: 'Cumulative Rewards',
                         data,
-                        borderColor: '#21BCA5' /* --nimiq-green */,
-                        // backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                        borderColor: '#21BCA5', // Nimiq green
                         borderWidth: 2,
                         fill: false,
-                        tension: 0.4,
-                        pointRadius: 0,
+                        tension: 0.4, // Smooth curve
+                        pointRadius: 0, // Hide points
                         pointHoverRadius: 0,
-                        // pointHoverRadius: 4,
-                        // pointHoverBackgroundColor: '#21BCA5' /* --nimiq-green */,
-                        // pointHoverBorderColor: '#fff',
-                        // pointHoverBorderWidth: 2,
                         showLine: true,
-                        // Add white border effect using stroke
                         borderDash: [],
                         borderDashOffset: 0,
-                        // Use a custom plugin to add white border
                         borderCapStyle: 'round',
                         borderJoinStyle: 'round',
                     },
@@ -210,80 +251,21 @@ export default defineComponent({
             };
         });
 
-                // Custom plugin for vertical lines below the line and white border effect
-        const verticalLinesBelowLine = {
-            id: 'verticalLinesBelowLine',
-            beforeDatasetsDraw(chart: any) {
-                const {ctx, chartArea, data, scales} = chart;
-                if (!data.datasets.length) return;
-                const dataset = data.datasets[0];
-                if (!dataset.data || !dataset.data.length) return;
-
-                // Draw vertical lines
-                ctx.save();
-                ctx.strokeStyle = 'rgba(31, 35, 72, 0.12)'; // light gray, adjust as needed
-                ctx.lineWidth = 1;
-                for (let i = 0; i < dataset.data.length; i++) {
-                    const x = scales.x.getPixelForValue(i);
-                    const y = scales.y.getPixelForValue(dataset.data[i]);
-                    ctx.beginPath();
-                    ctx.moveTo(x, scales.y.getPixelForValue(scales.y.min)); // from x-axis
-                    ctx.lineTo(x, y); // up to the data point
-                    ctx.stroke();
-                }
-                ctx.restore();
-
-                // Draw white border effect BEFORE the green line
-                ctx.save();
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 8;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                ctx.beginPath();
-                for (let i = 0; i < dataset.data.length; i++) {
-                    const x = scales.x.getPixelForValue(i);
-                    const y = scales.y.getPixelForValue(dataset.data[i]);
-
-                    if (i === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                }
-                ctx.stroke();
-                ctx.restore();
-            },
-        };
-
-        // Chart options
+        // Chart.js configuration options
         const chartOptions = computed(() => ({
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false,
+                    display: false, // Hide legend
                 },
                 tooltip: {
-                    enabled: false,
-                //     mode: 'index',
-                //     intersect: false,
-                //     backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                //     titleColor: '#fff',
-                //     bodyColor: '#fff',
-                //     borderColor: 'var(--nimiq-green)',
-                //     borderWidth: 1,
-                //     callbacks: {
-                //         label: (context) => {
-                //             const value = context.parsed.y;
-                //             return `Rewards: ${value.toFixed(2)} NIM`;
-                //         },
-                //     },
+                    enabled: false, // Disable tooltips
                 },
             },
             scales: {
                 x: {
-                    display: false,
+                    display: false, // Hide x-axis
                     ticks: {
                         display: false,
                     },
@@ -293,7 +275,7 @@ export default defineComponent({
                     beginAtZero: false,
                 },
                 y: {
-                    display: false,
+                    display: false, // Hide y-axis
                     ticks: {
                         display: false,
                     },
@@ -307,13 +289,7 @@ export default defineComponent({
                 intersect: false,
                 mode: 'index',
             },
-            // elements: {
-            //     point: {
-            //         hoverRadius: 4,
-            //     },
-            // },
-
-            animation: false,
+            animation: false, // Disable all animations
         }));
 
         return {

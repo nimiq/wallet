@@ -51,9 +51,6 @@ export type DemoState = {
     active: boolean,
 };
 
-// The query param that activates the demo. e.g. https://wallet.nimiq.com/?demo=
-const DEMO_PARAM = 'demo';
-
 // No additional import needed, Config is already imported above
 
 const DemoFallbackModal = () =>
@@ -136,28 +133,11 @@ export function dangerouslyInitializeDemo(router: VueRouter) {
 // #region App setup
 
 /**
- * Checks if the demo mode should be active based on the URL param and configuration.
- * Demo mode is active if:
- * 1. The demo query param is present in the URL, OR
- * 2. The Config.demo.enabled is true, OR
- * 3. The Config.demo.enabled is a string that matches the current hostname
+ * Checks if the demo mode should be active.
+ * In demo builds, this always returns true since demo builds are separate deployments.
  */
 export function checkIfDemoIsActive() {
-    // Always check URL param first - this allows demo mode to be forced on any instance
-    if (window.location.search.includes(DEMO_PARAM)) return true;
-
-    // Check configuration - can be boolean or string (hostname)
-    const demoConfig = Config.demo?.enabled;
-
-    if (typeof demoConfig === 'boolean') {
-        return demoConfig;
-    }
-
-    if (typeof demoConfig === 'string') {
-        return window.location.hostname === demoConfig;
-    }
-
-    return false;
+    return true;
 }
 
 /**
@@ -345,14 +325,8 @@ function attachIframeListeners() {
         if (kind === MessageEventName.FlowChange && demoRoutes[data]) {
             useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
 
-            // Only include demo parameter in query if it's present in the current URL
-            const query = window.location.search.includes(DEMO_PARAM)
-                ? { [DEMO_PARAM]: '' }
-                : undefined;
-
             demoRouter.push({
                 path: demoRoutes[data],
-                query,
             });
         }
     });
@@ -1004,13 +978,8 @@ function replaceBuyNimFlow() {
                 btn1.className = 'nq-button-s inverse';
                 btn1.style.flex = '1';
                 btn1.addEventListener('click', () => {
-                    // Only include demo parameter in query if it's present in the current URL
-                    const query = window.location.search.includes(DEMO_PARAM)
-                        ? { [DEMO_PARAM]: '' }
-                        : undefined;
                     demoRouter.push({
                         path: '/buy',
-                        query,
                     });
                 });
                 btn1.innerHTML = 'Buy';
@@ -1062,14 +1031,8 @@ function replaceStakingFlow() {
 
                     const { address: validatorAddress } = activeValidator.value!;
 
-                    // Only include demo parameter in query if it's present in the current URL
-                    const query = window.location.search.includes(DEMO_PARAM)
-                        ? { [DEMO_PARAM]: '' }
-                        : undefined;
-
                     demoRouter.push({
                         path: '/',
-                        query,
                     });
 
                     await new Promise<void>((resolve) => { window.setTimeout(resolve, 100); });
@@ -1906,13 +1869,8 @@ export class DemoHubApi extends HubApi {
                     });
 
                     console.log('[Demo] Redirecting to fallback modal');
-                    // Only include demo parameter in query if it's present in the current URL
-                    const query = window.location.search.includes(DEMO_PARAM)
-                        ? { [DEMO_PARAM]: '' }
-                        : undefined;
                     demoRouter.push({
                         path: `/${DemoModal.Fallback}`,
-                        query,
                     });
                 });
             },
@@ -2019,15 +1977,9 @@ function observeReceiveModal(processedElements: WeakSet<Element>) {
             event.preventDefault();
             event.stopPropagation();
 
-            // Only include demo parameter in query if it's present in the current URL
-            const query = window.location.search.includes(DEMO_PARAM)
-                ? { [DEMO_PARAM]: '' }
-                : undefined;
-
             // Redirect to the fallback modal
             demoRouter.replace({
                 path: `/${DemoModal.Fallback}`,
-                query,
             });
 
             console.log('[Demo] Redirected receive modal button click to fallback modal');

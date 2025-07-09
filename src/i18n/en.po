@@ -922,7 +922,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:177
+#: src/components/staking/StakingInfoPage.vue:184
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -2187,7 +2187,7 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:46
+#: src/components/staking/StakingInfoPage.vue:53
 msgid "Reward History"
 msgstr ""
 
@@ -2195,7 +2195,7 @@ msgstr ""
 msgid "Rewards"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:54
+#: src/components/staking/StakingInfoPage.vue:61
 msgid "Rewards history"
 msgstr ""
 
@@ -2353,7 +2353,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:247
+#: src/components/staking/StakingInfoPage.vue:254
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2497,8 +2497,8 @@ msgstr ""
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:234
-#: src/components/staking/StakingInfoPage.vue:317
+#: src/components/staking/StakingInfoPage.vue:241
+#: src/components/staking/StakingInfoPage.vue:324
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr ""
@@ -2581,7 +2581,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:218
+#: src/components/staking/StakingInfoPage.vue:225
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2593,7 +2593,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:303
+#: src/components/staking/StakingInfoPage.vue:310
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -3082,7 +3082,7 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:68
+#: src/components/staking/StakingInfoPage.vue:75
 #: src/components/staking/StakingOverview.vue:19
 msgid "Unstaking"
 msgstr ""

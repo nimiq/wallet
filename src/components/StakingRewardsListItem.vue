@@ -1,6 +1,6 @@
 <template>
     <div class="reset staking-reward-item">
-        <svg class="staking-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg v-if="!hideIcon" class="staking-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- eslint-disable max-len -->
             <path fill-rule="evenodd" clip-rule="evenodd"
                 d="M10 20c5.523 0 10-4.477 10-10S15.523 0 10 0 0 4.477 0 10s4.477 10 10 10ZM5.125 4.75a.833.833 0 0 0-.834.833c0 1.568.16 3.175.979 4.395.757 1.129 1.975 1.789 3.715 1.948v3.472a.833.833 0 1 0 1.667 0v-1.759c1.59-.129 2.925-.646 3.899-1.62 1.138-1.138 1.652-2.77 1.652-4.728a.833.833 0 0 0-.833-.833c-.987 0-1.888.023-2.667.153-.787.13-1.516.38-2.118.879a3.288 3.288 0 0 0-.238.218 4.111 4.111 0 0 0-.54-1.202C8.94 5.222 7.391 4.75 5.125 4.75Zm3.751 4.072c.059.417.087.89.1 1.428-1.27-.146-1.933-.621-2.323-1.201-.417-.621-.613-1.49-.673-2.604 1.493.108 2.12.51 2.446.994.213.316.362.755.45 1.383Zm4.496 2.019c-.595.596-1.472.998-2.698 1.123.087-1.938.472-2.774.976-3.192.292-.242.702-.413 1.326-.517.431-.072.932-.106 1.52-.121-.124 1.23-.527 2.11-1.124 2.707Z"
@@ -15,7 +15,7 @@
             </defs>
         </svg>
         <div class="info">
-            <div class="title">{{ monthLabel }} staking rewards</div>
+            <div class="title">{{ monthLabel }}<span v-if="!hideAdditionalText"> staking rewards</span></div>
         </div>
         <div class="amounts isIncoming">
             <Amount :amount="monthlyReward" class="amount"/>
@@ -34,6 +34,16 @@ import FiatConvertedAmount from './FiatConvertedAmount.vue';
 export default defineComponent({
     name: 'StakingRewardsListItem',
     props: {
+        hideIcon: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+        hideAdditionalText: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
         monthlyReward: {
             type: Number,
             required: true,

@@ -55,16 +55,33 @@
                 </div>
             </div>
             <div class="flex-row flex-grow history">
-                Placeholder
-
-                <button class="nq-button-s rewards-history" @click="$emit('next')">
-                    {{ $t('Rewards history') }} &gt;
-                </button>
+                <RecycleScroller
+                    :items="rewards"
+                    :item-size="itemSize"
+                    key-field="month"
+                    :buffer="scrollerBuffer"
+                    ref="scroller"
+                >
+                    <template v-slot:default="{ item, index }">
+                        <LoadingList v-if="item.loading" :delay="index * 100" :type="LoadingListType.TRANSACTION" />
+                        <div v-else class="list-element" :data-id="index" :data-hash="item.id">
+                            <StakingRewardsListItem
+                                :monthly-reward="item.total"
+                                :transaction-count="1"
+                                :month="item.month"
+                                :hideIcon="true"
+                                :hideAdditionalText="true"
+                            />
+                        </div>
+                    </template>
+                </RecycleScroller>
             </div>
         </PageBody>
         <PageFooter v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
             <div class="flex-row unstaking nq-light-blue">
-                <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask class="flex-grow" />
+                <CircleExclamationMarkIcon />
+                <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask />
+                <span class="flex-grow">{{ $t('ready for pay out') }}</span>
                 <button class="nq-button-pill light-blue" @click="() => unstakeAll(!!stake.retiredBalance)">
                     Pay out <ArrowRightSmallIcon />
                 </button>
@@ -94,6 +111,8 @@ import {
 } from '@nimiq/vue-components';
 
 import { useI18n } from '@/lib/useI18n';
+import { useStakingRewards } from '@/composables/useStakingRewards';
+import { useWindowSize } from '@/composables/useWindowSize';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { MIN_STAKE } from '../../lib/Constants';
@@ -111,13 +130,27 @@ import { useNetworkStore } from '../../stores/Network';
 import { getNetworkClient } from '../../network';
 import { reportToSentry } from '../../lib/Sentry';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
+import StakingRewardsListItem from '../StakingRewardsListItem.vue';
+import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
+
+type Reward = {
+    total: number,
+    month: string,
+    loading: boolean,
+}
 
 export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
-        const { height, consensus } = useNetworkStore();
+        const { height, consensus, isFetchingTxHistory } = useNetworkStore();
+        const { monthlyRewards } = useStakingRewards();
+        const { isMobile } = useWindowSize();
+
+        // Height of items in pixel
+        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+        const scrollerBuffer = 300;
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
@@ -145,6 +178,27 @@ export default defineComponent({
             }
 
             return '00:00';
+        });
+
+        const rewards = computed(() => {
+            const rew: Reward[] = [];
+
+            // Display loading transactions
+            if (!monthlyRewards.value.size && isFetchingTxHistory.value) {
+                // create just as many placeholders that the scroller doesn't start recycling them because the loading
+                // animation breaks for recycled entries due to the animation delay being off.
+                const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
+                const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize.value);
+                for (let i = 0; i < placeholderCount; i++) {
+                    rew.push({ total: 0, month: i.toString(), loading: true });
+                }
+                return rew;
+            }
+
+            monthlyRewards.value.forEach((r, m, _map) => {
+                rew.push({ total: r.total, month: m, loading: false });
+            });
+            return rew.reverse();
         });
 
         const hasUnstakableStake = computed(() => {
@@ -346,6 +400,9 @@ export default defineComponent({
             consensus,
             MIN_STAKE,
             selectedRange,
+            rewards,
+            itemSize,
+            scrollerBuffer,
         };
     },
     components: {
@@ -356,10 +413,12 @@ export default defineComponent({
         Amount,
         Tooltip,
         CircleArrowDownIcon,
+        CircleExclamationMarkIcon,
         ArrowRightSmallIcon,
         ValidatorInfoBar,
         FiatConvertedAmount,
         StakingRewardsChart,
+        StakingRewardsListItem,
     },
 });
 </script>
@@ -467,17 +526,34 @@ export default defineComponent({
         }
     }
 
+    .history {
+        position: relative;
+
+        .vue-recycle-scroller {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding-right: calc(2rem + var(--padding) - 6px);
+            padding-left: calc(2rem + var(--padding));
+            padding-bottom: var(--padding, 4rem);
+
+            touch-action: pan-y;
+
+            @extend %custom-scrollbar;
+        }
+    }
+
     .page-footer {
         padding: 3rem;
-
+        box-shadow: 0 -3rem 2rem -1rem rgba(0, 0, 0, 0.05);
         .unstaking {
             align-items: center;
             color: var(--nimiq-light-blue);
+            font-size: 2rem;
+            font-weight: 600;
             gap: 0.75rem;
-
-            > .amount {
-                margin-left: 1rem;
-            }
         }
     }
 

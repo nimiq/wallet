@@ -40,7 +40,14 @@
             </div>
             <div class="flex-row rewards-and-chart">
                 <div class="flex-column nq-green-bg rewards">
-                    <h2 class="flex-row nq-label">{{ $t('Rewards') }}</h2>
+                    <h2 class="flex-row nq-label flex-grow">{{ $t('Rewards') }}</h2>
+                    <div class="amount-row flex-row row">
+                        +<Amount :amount="restakingRewards" value-mask/>
+                    </div>
+                    <div class="details-row flex-row row">
+                        <FiatConvertedAmount :amount="restakingRewards" value-mask/>
+                    </div>
+
                 </div>
                 <div class="flex-column flex-grow chart">
                     <h2 class="nq-label title">{{  $t('Reward History') }}</h2>
@@ -421,10 +428,32 @@ export default defineComponent({
         .rewards {
             border-radius: 0.75rem;
             justify-items:left;
+            padding-bottom: 2rem;
 
             h2 {
                 color: white;
                 opacity: 70%;
+            }
+
+            .amount-row {
+                font-size: var(--body-size);
+                font-weight: bold;
+                line-height: 2.5rem;
+                align-items: center;
+                gap: 0.5rem;
+
+                @media (max-width: $tabletBreakpoint) {
+                    font-size: var(--h3-size);
+                }
+            }
+
+            .details-row {
+                font-size: var(--small-size);
+                font-weight: 600;
+                line-height: 2.5rem;
+                opacity: 0.7;
+                align-items: center;
+                gap: 0.75rem;
             }
         }
 

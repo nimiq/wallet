@@ -295,20 +295,22 @@ export async function safeQueryFilter(
         // Reduce the window size until it no longer crosses the provider’s limits.
         while (true) {
             try {
+                console.warn('ITEST Trying to fetch ', currentStart, currentEnd);
                 // eslint-disable-next-line no-await-in-loop
                 const eventsChunk = await contract.queryFilter(event, currentStart, currentEnd);
                 allEvents.push(...eventsChunk);
                 break;
-            } catch (err: any) {
-                if (currentEnd - currentStart <= 1) {
-                    // eslint-disable-next-line
-                    console.error('ITEST QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
-                    throw err;
+            } catch (err: unknown) {
+                if (err instanceof Error) { //TODO
+                    console.warn('ITEST ', err);
+                    if (currentEnd - currentStart < 1) {
+                        // eslint-disable-next-line
+                        console.error('ITEST QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
+                        throw err;
+                    }
+                    console.warn('ITEST QueryFilter failed, retrying with smaller range');
+                    currentEnd = Math.floor((currentEnd - currentStart) / 2) + currentStart; // Splits range in half
                 }
-
-                const mid = Math.floor((currentStart + currentEnd) / 2);
-                console.warn('ITEST QueryFilter failed, retrying with smaller range', currentStart, currentEnd);
-                currentEnd = mid;
             }
         }
 

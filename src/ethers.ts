@@ -300,16 +300,33 @@ export async function safeQueryFilter(
                 const eventsChunk = await contract.queryFilter(event, currentStart, currentEnd);
                 allEvents.push(...eventsChunk);
                 break;
-            } catch (err: unknown) {
-                if (err instanceof Error) { //TODO
-                    console.warn('ITEST ', err);
+            } catch (err: any) {
+                console.warn('ITEST ', err);
+                // Retry only if failed from query timeout error.
+                const message = err?.message ?? '';
+                if (!(typeof message === 'string' && message.includes('Query timeout exceeded'))) {
+                    console.error('QueryFilter Unexpected Error, giving up:', err);
+                    throw err;
+                }
+
+                // Sets the suggested range, otherwise halves the range.
+                const match = message.match(/\[(0x[0-9a-fA-F]+),\s*(0x[0-9a-fA-F]+)\]/);
+                if (match) {
+                    const suggestedEnd = parseInt(match[2], 16);
+
+                    if (parseInt(match[1], 16) === currentStart && suggestedEnd < currentEnd) {
+                        console.warn(`QueryFilter Timeout - using suggested range: ${currentStart}-${suggestedEnd}`);
+                        currentEnd = suggestedEnd;
+                    }
+                } else {
+                    // Fail if minimum window is reached
                     if (currentEnd - currentStart < 1) {
                         // eslint-disable-next-line
-                        console.error('ITEST QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
+                        console.error('QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
                         throw err;
                     }
-                    console.warn('ITEST QueryFilter failed, retrying with smaller range');
-                    currentEnd = Math.floor((currentEnd - currentStart) / 2) + currentStart; // Splits range in half
+                    console.warn('QueryFilter Timeout - retrying with halved range');
+                    currentEnd = Math.floor((currentEnd - currentStart) / 2) + currentStart;
                 }
             }
         }

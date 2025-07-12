@@ -292,3 +292,111 @@ export const useStakingStore = createStore({
         },
     },
 });
+
+// Test case for evaluating the performance of staking event handling. Optimizing the performance of staking event
+// handling is crucial, as potentially tens of thousands of staking events have to be processed, which can freeze up the
+// Wallet.
+// // @ts-expect-error assigning a method on window for testing purposes
+// window.testStakingEventsPerformance = async function testStakingEventsPerformance() {
+//     const TEST_ADDRESS = 'NQ51 VQXG TDUX R3TN M0HV 15VQ CLHU BU84 E9S6';
+//     const TEST_EVENT_COUNT = 40000;
+//     const TEST_VUE_TICKS_TO_AWAIT = 2;
+//     const [
+//         { default: Vue },
+//         { useConfig },
+//     ] = await Promise.all([import('vue'), import('@/composables/useConfig')]);
+//     const { activeAddress } = useAddressStore();
+//     const { state: stakingState, setStakingEvents } = useStakingStore();
+//
+//     if (activeAddress.value !== TEST_ADDRESS) {
+//         // eslint-disable-next-line no-alert
+//         alert('Please run the test with NQ51 VQXG TDUX R3TN M0HV 15VQ CLHU BU84 E9S6 as active address '
+//             + '("Green Address" of Matheo\'s "Green Account").');
+//         return;
+//     }
+//
+//     // Utilities
+//     function logDuration(activity: string, start: number) {
+//         // eslint-disable-next-line no-console
+//         console.log(`testStakingEventsPerformance: ${activity} took ${(Date.now() - start) / 1000}s`);
+//     }
+//     async function awaitVueTicks(count: number, logDurations: boolean) {
+//         for (let i = 1; i <= count; ++i) {
+//             const start = Date.now();
+//             await Vue.nextTick(); // eslint-disable-line no-await-in-loop
+//             if (!logDurations) continue;
+//             logDuration(`Vue.nextTick() ${i} of ${count}`, start);
+//         }
+//     }
+//
+//     // Clear existing events for a clean state. Run in a named method for nicer labeling in performance profiler
+//     await (async function prepareTest() {
+//         const knownStakingEventAddresses = Object.keys(stakingState.stakingEventsByAddress);
+//         for (const address of knownStakingEventAddresses) {
+//             setStakingEvents(address, []);
+//         }
+//         // Wait for changes to take effect
+//         await awaitVueTicks(TEST_VUE_TICKS_TO_AWAIT, false);
+//     }());
+//
+//     let stakingEvents: StakingEvent[] = [];
+//     await (async function runTest() {
+//         let start: number;
+//         stakingEvents = await (async function fetchStakingEvents() {
+//             const { config } = useConfig();
+//             const endpoint = config.staking.stakeEventsEndpoint;
+//             const url = endpoint.replace('ADDRESS', TEST_ADDRESS.replaceAll(' ', '+'));
+//             start = Date.now();
+//             const stakingEventsFetchResponse = await fetch(url);
+//             logDuration('Fetching staking events', start);
+//             start = Date.now();
+//             const events = await stakingEventsFetchResponse.json();
+//             logDuration(`Parsing ${events.length} staking events`, start);
+//             // Restrict number of events for comparable test cases
+//             if (events.length < TEST_EVENT_COUNT) {
+//                 // eslint-disable-next-line no-console
+//                 console.warn(`testStakingEventsPerformance: Only ${stakingEvents.length} events available instead `
+//                     + `of desired ${TEST_EVENT_COUNT}`);
+//             } else {
+//                 events.splice(TEST_EVENT_COUNT, events.length - TEST_EVENT_COUNT);
+//             }
+//             return events;
+//         }());
+//
+//         await (async function applyStatkingEvents() {
+//             start = Date.now();
+//             setStakingEvents(TEST_ADDRESS, stakingEvents);
+//             logDuration('setStakingEvents', start);
+//             await awaitVueTicks(TEST_VUE_TICKS_TO_AWAIT, true);
+//         }());
+//     }());
+//
+//     (function checkSorting() {
+//         let unsortedStakingEventCount = 0;
+//         let previousTimestamp = 0;
+//         for (const event of stakingEvents) {
+//             const timestamp = new Date(event.date).getTime();
+//             if (timestamp < previousTimestamp) {
+//                 unsortedStakingEventCount++;
+//                 // console.log( // eslint-disable-line no-console
+//                 //     'testStakingEventsPerformance: event not sorted by timestamp:',
+//                 //     event,
+//                 //     new Date(previousTimestamp),
+//                 //     new Date(timestamp),
+//                 // );
+//             }
+//             previousTimestamp = timestamp;
+//         }
+//         // eslint-disable-next-line no-console
+//         console.log(`testStakingEventsPerformance: ${unsortedStakingEventCount} of ${stakingEvents.length} staking `
+//             + 'events are not sorted by date.');
+//
+//         // Test how long sorting takes. Work on a shallow copy, to not modify the original data in the store.
+//         const sortedStakingEvents = [...stakingEvents];
+//         const start = Date.now();
+//         sortedStakingEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+//         logDuration('sorting (with Date parsing)', start);
+//     }());
+//
+//     console.log('testStakingEventsPerformance: tests finished'); // eslint-disable-line no-console
+// };

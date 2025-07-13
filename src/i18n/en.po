@@ -306,6 +306,10 @@ msgstr ""
 msgid "Addresses are checked locally on your device and are not sent to an external service."
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:36
+msgid "Adjust"
+msgstr ""
+
 #: src/components/staking/StakingInfoPage.vue:35
 msgid "Adjust Stake"
 msgstr ""
@@ -922,7 +926,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:184
+#: src/components/staking/StakingInfoPage.vue:241
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -2026,6 +2030,10 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
+#: src/components/staking/StakingInfoPage.vue:87
+msgid "ready for pay out"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:231
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
@@ -2187,16 +2195,12 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:53
+#: src/components/staking/StakingInfoPage.vue:54
 msgid "Reward History"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:43
+#: src/components/staking/StakingInfoPage.vue:44
 msgid "Rewards"
-msgstr ""
-
-#: src/components/staking/StakingInfoPage.vue:61
-msgid "Rewards history"
 msgstr ""
 
 #: src/components/modals/StablecoinSendModal.vue:83
@@ -2353,7 +2357,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:254
+#: src/components/staking/StakingInfoPage.vue:311
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2497,8 +2501,8 @@ msgstr ""
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:241
-#: src/components/staking/StakingInfoPage.vue:324
+#: src/components/staking/StakingInfoPage.vue:298
+#: src/components/staking/StakingInfoPage.vue:381
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr ""
@@ -2581,7 +2585,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:225
+#: src/components/staking/StakingInfoPage.vue:282
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2593,7 +2597,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:310
+#: src/components/staking/StakingInfoPage.vue:367
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2887,7 +2891,7 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:243
 #: src/components/BtcTransactionList.vue:265
-#: src/components/StakingRewardsListItem.vue:61
+#: src/components/StakingRewardsListItem.vue:71
 #: src/components/UsdcTransactionList.vue:205
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205
@@ -3082,7 +3086,7 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:75
+#: src/components/staking/StakingInfoPage.vue:95
 #: src/components/staking/StakingOverview.vue:19
 msgid "Unstaking"
 msgstr ""
@@ -3252,7 +3256,7 @@ msgid ""
 "- on supported exchanges."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:37
+#: src/components/staking/StakingInfoPage.vue:38
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 

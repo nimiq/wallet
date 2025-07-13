@@ -19,7 +19,7 @@
                 <div class="flex-column flex-grow">
                     <div class="amount-staked">
                         <Amount :amount="stakedBalance" value-mask/>
-                        {{ $t('staked') }}
+                        <span class="sm-hidden">&nbsp;{{ $t('staked') }}</span>
                     </div>
                     <div class="amount-staked-fiat flex-row">
                         <FiatConvertedAmount :amount="stakedBalance" value-mask/>
@@ -32,7 +32,8 @@
                         :container="this" class="adjust-stake">
                         <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
                             :disabled="isStakeDeactivating">
-                            {{ $t('Adjust Stake') }}
+                            <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
+                            <span class="hidden sm-visible">{{ $t('Adjust') }}</span>
                         </button>
                         <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                     </Tooltip>
@@ -55,6 +56,7 @@
                 </div>
             </div>
             <div class="flex-row flex-grow history">
+                <div class="scroll-mask top"></div>
                 <RecycleScroller
                     :items="rewards"
                     :item-size="itemSize"
@@ -75,6 +77,7 @@
                         </div>
                     </template>
                 </RecycleScroller>
+                <div class="scroll-mask bottom" v-if="stake && !stake.inactiveBalance && !stake.retiredBalance"></div>
             </div>
         </PageBody>
         <PageFooter v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
@@ -425,9 +428,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
     @import '../../scss/mixins.scss';
+    @import '../../scss/variables.scss';
+
+    @include scroll-mask(false, true, true);
 
     .staking-info-page {
         flex-grow: 1;
+        height: 600px;
     }
 
     .page-header {
@@ -469,6 +476,7 @@ export default defineComponent({
             width: 6rem;
             height: 6rem;
             margin-right: 1rem;
+            flex-shrink: 0;
         }
 
         > * {
@@ -478,10 +486,18 @@ export default defineComponent({
 
     .rewards-and-chart {
         gap: 1rem;
+        overflow-y: auto;
+
+        @extend %custom-scrollbar;
+
+        @media (max-width: $tabletBreakpoint) {
+            padding: 0 2rem;
+            margin: 0 -2rem;
+        }
 
         h2 {
-                margin: 2rem;
-                font-size: 1.5rem;
+            margin: 2rem;
+            font-size: 1.5rem;
         }
 
         .rewards {
@@ -500,10 +516,6 @@ export default defineComponent({
                 line-height: 2.5rem;
                 align-items: center;
                 gap: 0.5rem;
-
-                @media (max-width: $tabletBreakpoint) {
-                    font-size: var(--h3-size);
-                }
             }
 
             .details-row {
@@ -519,15 +531,19 @@ export default defineComponent({
         .chart {
             position:relative;
 
-            h2 {
-                position: absolute;
-            }
-
+            h2 { position: absolute }
         }
     }
 
     .history {
         position: relative;
+        overflow: hidden;
+
+        .scroll-mask {
+            position: absolute;
+            width: calc(100% - 1rem);
+            left: 0;
+        }
 
         .vue-recycle-scroller {
             position: absolute;
@@ -535,9 +551,9 @@ export default defineComponent({
             top: 0;
             width: 100%;
             height: 100%;
-            padding-right: calc(2rem + var(--padding) - 6px);
-            padding-left: calc(2rem + var(--padding));
-            padding-bottom: var(--padding, 4rem);
+            padding-right: calc(2rem - 6px);
+            padding-left: 2rem;
+            // padding-bottom: 2rem;
 
             touch-action: pan-y;
 
@@ -548,12 +564,22 @@ export default defineComponent({
     .page-footer {
         padding: 3rem;
         box-shadow: 0 -3rem 2rem -1rem rgba(0, 0, 0, 0.05);
+
         .unstaking {
             align-items: center;
             color: var(--nimiq-light-blue);
             font-size: 2rem;
             font-weight: 600;
             gap: 0.75rem;
+
+            svg {
+                flex-shrink: 0;
+            }
+
+            .amount {
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
         }
     }
 
@@ -658,4 +684,21 @@ export default defineComponent({
     background-color: currentColor;
     margin: 0 0.25rem;
 }
+
+.hidden {
+    display: none;
+    visibility: unset;
+}
+
+@media (max-width: $mobileBreakpoint) {
+    .sm-hidden {
+        display: none;
+    }
+    .sm-visible {
+        display: block;
+    }
+}
+
+// @media (max-width: 375px) {
+// }
 </style>

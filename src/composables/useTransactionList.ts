@@ -3,12 +3,12 @@ import { AddressBook } from '@nimiq/utils';
 import { useI18n } from '@/lib/useI18n';
 import { useAddressStore } from '../stores/Address';
 import { toMs, Transaction, TransactionState } from '../stores/Transactions';
+import { useStakingStore } from '../stores/Staking';
 import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
 import { parseData } from '../lib/DataFormatting';
 import { STAKING_CONTRACT_ADDRESS } from '../lib/Constants';
 import { useTransactionInfo } from './useTransactionInfo';
-import { useStakingRewards } from './useStakingRewards';
 import { useWindowSize } from './useWindowSize';
 
 /**
@@ -76,7 +76,7 @@ export function useTransactionList(options: UseTransactionListOptions) {
     const { state: addresses$, transactionsForActiveAddress } = useAddressStore();
     const { isFetchingTxHistory } = useNetworkStore();
     const { getLabel: getContactLabel } = useContactsStore();
-    const { monthlyRewards } = useStakingRewards();
+    const { monthlyRewards } = useStakingStore();
     const { isMobile } = useWindowSize();
 
     // Height of items in pixel

@@ -113,7 +113,6 @@ import {
 } from '@nimiq/vue-components';
 
 import { useI18n } from '@/lib/useI18n';
-import { useStakingRewards } from '@/composables/useStakingRewards';
 import { useWindowSize } from '@/composables/useWindowSize';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
@@ -147,9 +146,8 @@ export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
+        const { activeStake: stake, activeValidator: validator, restakingRewards, monthlyRewards } = useStakingStore();
         const { height, consensus, isFetchingTxHistory } = useNetworkStore();
-        const { monthlyRewards } = useStakingRewards();
         const { isMobile } = useWindowSize();
 
         // Height of items in pixel

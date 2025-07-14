@@ -54,7 +54,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
-import { useStakingRewards } from '@/composables/useStakingRewards';
+import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../lib/StakingUtils';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ValidatorIcon from './staking/ValidatorIcon.vue';
 import Amount from './Amount.vue';
@@ -88,7 +88,6 @@ export default defineComponent({
     setup(props) {
         const router = useRouter();
         const { validators: validatorList } = useStakingStore();
-        const { getMonthLabel, isOngoingMonth } = useStakingRewards();
 
         const monthLabel = computed(() => getMonthLabel(props.month));
         const validators = computed(() => props.validatorsAddresses.map(
@@ -96,7 +95,7 @@ export default defineComponent({
         );
 
         // Check if we should show the "Ongoing" indicator
-        const showOngoingIndicator = computed(() => isOngoingMonth(props.month));
+        const showOngoingIndicator = computed(() => isCurrentMonthAndStakingOngoing(props.month));
 
         // Currently unused, as The Reward history is much too large
         const openRewardsHistory = () => {

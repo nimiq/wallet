@@ -17,6 +17,12 @@ export type AddStakeEvent = {
     type: number,
 }
 
+export interface MonthlyReward {
+    total: number;
+    count: number;
+    validators: string[];
+}
+
 export type StakingEvent = AddStakeEvent;
 
 export type Stake = {
@@ -237,6 +243,43 @@ export const useStakingStore = createStore({
             }
 
             return totalRestakingRewards;
+        },
+        // monthly rewards grouped by month
+        monthlyRewards: (state, { stakingEvents }): Readonly<Map<string, MonthlyReward>> => {
+            const events = stakingEvents.value;
+            const rewardsByMonth = new Map<string, MonthlyReward>();
+            if (!events) return rewardsByMonth;
+
+            // Cache event count, to avoid repeatedly accessing it with the overhead of Vue's reactivity system, which
+            // can become noticeable here as we're processing potentially tens of thousands of staking events.
+            const eventCount = events.length;
+
+            // Include only reward events (type 6) and group by month
+            for (let i = 0; i < eventCount; ++i) {
+                const event = events[i];
+                if (event.type !== /* reward */ 6) continue;
+                const date = new Date(event.date);
+                const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+                let currentData = rewardsByMonth.get(monthKey);
+                if (!currentData) {
+                    // Create new month data only once
+                    currentData = { total: 0, count: 0, validators: [] };
+                    rewardsByMonth.set(monthKey, currentData);
+                }
+
+                // Update totals
+                currentData.total += event.value;
+                currentData.count += 1;
+
+                // Add validator if not already present
+                // Cache the senderAddress, to avoid accessing it twice, with the overhead of Vue's reactivity system.
+                const senderAddress = event.sender_address;
+                if (!currentData.validators.includes(senderAddress)) {
+                    currentData.validators.push(senderAddress);
+                }
+            }
+
+            return rewardsByMonth;
         },
     },
     actions: {

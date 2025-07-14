@@ -83,7 +83,7 @@ import {
 import { useFiatStore } from '@/stores/Fiat';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
-import { useStakingRewards } from '@/composables/useStakingRewards';
+import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '@/lib/StakingUtils';
 import { useStakingStore } from '@/stores/Staking';
 import { useAddressStore } from '@/stores/Address';
 import { RouteName, useRouter } from '@/router';
@@ -100,8 +100,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { getMonthLabel, isOngoingMonth, getMonthlyReward } = useStakingRewards();
-        const { validators: validatorList } = useStakingStore();
+        const { validators: validatorList, monthlyRewards } = useStakingStore();
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const router = useRouter();
         const constants = { FIAT_PRICE_UNAVAILABLE };
@@ -120,8 +119,8 @@ export default defineComponent({
         ) ? preferredFiatCurrency.value : FiatCurrency.USD);
 
         const monthLabel = computed(() => getMonthLabel(props.month));
-        const showOngoingIndicator = computed(() => isOngoingMonth(props.month));
-        const monthlyReward = computed(() => getMonthlyReward(props.month));
+        const showOngoingIndicator = computed(() => isCurrentMonthAndStakingOngoing(props.month));
+        const monthlyReward = computed(() => monthlyRewards.value.get(props.month));
 
         // Build timestamps list for this month's staking reward events
         const monthRewardTimestamps = computed(() => {

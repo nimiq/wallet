@@ -1,6 +1,6 @@
-// import { DateTime } from 'luxon';
 import { i18n } from '../i18n/i18n-setup';
 import { Transaction } from '../stores/Transactions';
+import { useStakingStore } from '../stores/Staking';
 import { STAKING_CONTRACT_ADDRESS } from './Constants';
 
 export enum FilterState {
@@ -8,18 +8,6 @@ export enum FilterState {
     PAYOUT = 'payoutTime',
     REWARD = 'reward',
     SEARCH = 'search',
-}
-
-// export const NOW = DateTime.now();
-// export const MONTH = DateTime.fromObject({ months: 1 });
-
-export function getPayoutText(payoutType: 'none' | 'direct' | 'restake') {
-    switch (payoutType) {
-        case 'none': return i18n.t('No Payout');
-        case 'direct': return i18n.t('Wallet Payout');
-        case 'restake': return i18n.t('Restake Rewards');
-        default: throw new Error('Invalid payout type');
-    }
 }
 
 export function getStakingTransactionMeaning(transaction: Transaction, verbose: boolean): string | null {
@@ -133,4 +121,51 @@ export function getStakingTransactionMeaning(transaction: Transaction, verbose: 
         }
         default: throw new Error(`Unknown staking data type: ${JSON.stringify(transaction.data)}`);
     }
+}
+
+/**
+ * Check if staking in the current month is ongoing
+ * @param monthKey - Month identifier in 'YYYY-MM' format (e.g., '2024-01' for January 2024)
+ * @returns true if the current month is ongoing, false otherwise
+ * (if the user is currently staking with the last validator in the list, it's ongoing)
+ */
+export function isCurrentMonthAndStakingOngoing(monthKey: string): boolean {
+    const { isCurrentMonth } = isCurrentMonthAndYear(monthKey);
+    if (!isCurrentMonth) return false;
+
+    // Check if the user is currently staking with any of the validators in this list
+    const { activeStake, monthlyRewards } = useStakingStore();
+    if (!activeStake.value || !activeStake.value.validator) return false;
+
+    // Check if the active validator is the last one in the list (most recent rewards)
+    const validators = monthlyRewards.value.get(monthKey)?.validators;
+    const lastValidatorAddress = validators?.[validators.length - 1];
+    return activeStake.value.validator === lastValidatorAddress;
+}
+
+/**
+ * Get the label for a month
+ * @param monthKey - Month identifier in 'YYYY-MM' format (e.g., '2024-01' for January 2024)
+ * @returns Month label as a string
+ */
+export function getMonthLabel(monthKey: string): string {
+    const { date, isCurrentYear, isCurrentMonth } = isCurrentMonthAndYear(monthKey);
+
+    if (isCurrentMonth) {
+        return i18n.t('This month').toString();
+    }
+
+    return new Intl.DateTimeFormat(i18n.locale, {
+        month: 'long',
+        year: !isCurrentYear ? 'numeric' : undefined,
+    }).format(date);
+}
+
+function isCurrentMonthAndYear(monthKey: string) {
+    const [year, month] = monthKey.split('-');
+    const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
+    const now = new Date();
+    const isCurrentYear = date.getFullYear() === now.getFullYear();
+    const isCurrentMonth = isCurrentYear && date.getMonth() === now.getMonth();
+    return { date, isCurrentMonth, isCurrentYear };
 }

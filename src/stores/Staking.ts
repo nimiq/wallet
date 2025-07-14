@@ -213,18 +213,32 @@ export const useStakingStore = createStore({
                 || (activeValidator.value as RegisteredValidator).payoutType !== 'restake'
             ) return null;
 
-            const events = stakingEvents.value as StakingEvent[] | null;
+            const events: StakingEvent[] | null = stakingEvents.value;
             if (!events || !Array.isArray(events)) return null;
 
-            const addStakeEvents: AddStakeEvent[] = events.filter((event) => {
-                if (event.type !== 6) return false;
-                if (!activeValidator.value) return true;
-                if (event.sender_address === activeValidator.value.address) return true;
-                if (!activeValidator.value.rewardAddress) return true; // TODO: Get reward address
-                if (event.sender_address === activeValidator.value.rewardAddress) return true;
-                return false;
-            });
-            return addStakeEvents.reduce((sum, event) => sum + event.value, 0);
+            let totalRestakingRewards = 0;
+            // Cache values, to avoid repeatedly accessing them with the overhead of Vue's reactivity system, which
+            // is quite noticeable here as we're processing potentially tens of thousands of staking events.
+            const eventCount = events.length;
+            const { address: validatorAddress, rewardAddress: validatorRewardAddress } = activeValidator.value;
+            for (let i = 0; i < eventCount; ++i) {
+                const event = events[i];
+                if (event.type !== /* restaking reward */ 6) continue;
+                const { sender_address: rewardSenderAddress } = event;
+                if (rewardSenderAddress === validatorAddress
+                    || (validatorRewardAddress
+                        ? rewardSenderAddress === validatorRewardAddress
+                        // TODO ideally, we should somehow get the validator reward address, if it's not known. The
+                        //  current behavior of including the reward by default is probably not ideal, as a validator
+                        //  could use it to artificially inflate its reported rewards. Consider getting the appropriate
+                        //  validator reward address, or removing true as default value.
+                        : true
+                    )) {
+                    totalRestakingRewards += event.value;
+                }
+            }
+
+            return totalRestakingRewards;
         },
     },
     actions: {

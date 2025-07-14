@@ -50,21 +50,19 @@ export function useStakingRewards() {
     // Calculate monthly rewards grouped by month
     const monthlyRewards = computed(() => {
         const events = stakingEvents.value;
-        if (!events) return new Map<string, MonthlyReward>();
-
-        // Pre-allocate the Map for better performance
         const rewardsByMonth = new Map<string, MonthlyReward>();
+        if (!events) return rewardsByMonth;
 
-        // Use a single loop with early filtering for better performance
-        for (let i = 0; i < events.length; i++) {
+        // Cache event count, to avoid repeatedly accessing it with the overhead of Vue's reactivity system, which can
+        // become noticeable here as we're processing potentially tens of thousands of staking events.
+        const eventCount = events.length;
+
+        // Filter only reward events (type 6) and group by month
+        for (let i = 0; i < eventCount; ++i) {
             const event = events[i];
-
-            // Skip non-reward events early
-            if (event.type !== 6) continue;
-
+            if (event.type !== /* reward */ 6) continue;
             const date = new Date(event.date);
             const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
-
             let currentData = rewardsByMonth.get(monthKey);
             if (!currentData) {
                 // Create new month data only once
@@ -77,8 +75,10 @@ export function useStakingRewards() {
             currentData.count += 1;
 
             // Add validator if not already present
-            if (!currentData.validators.includes(event.sender_address)) {
-                currentData.validators.push(event.sender_address);
+            // Cache the senderAddress, to avoid accessing it twice, with the overhead of Vue's reactivity system.
+            const senderAddress = event.sender_address;
+            if (!currentData.validators.includes(senderAddress)) {
+                currentData.validators.push(senderAddress);
             }
         }
 
@@ -128,13 +128,14 @@ export function useStakingRewards() {
         const now = new Date();
 
         // Check if it's the current month
-        if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+        const isCurrentYear = date.getFullYear() === now.getFullYear();
+        if (isCurrentYear && date.getMonth() === now.getMonth()) {
             return $t('This month').toString();
         }
 
         return new Intl.DateTimeFormat(locale, {
             month: 'long',
-            year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+            year: !isCurrentYear ? 'numeric' : undefined,
         }).format(date);
     };
 

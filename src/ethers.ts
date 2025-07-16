@@ -285,6 +285,7 @@ export async function safeQueryFilter(
     toBlock: number,
 ): Promise<Array<Event>> {
     const allEvents: Event[] = [];
+    const MAX_RANGE = 2000;
     let currentStart = fromBlock;
 
     // Loop until we’ve queried the full range of blocks
@@ -301,32 +302,19 @@ export async function safeQueryFilter(
                 allEvents.push(...eventsChunk);
                 break;
             } catch (err: any) {
-                console.warn('ITEST ', err);
-                // Retry only if failed from query timeout error.
-                const message = err?.message ?? '';
-                if (!(typeof message === 'string' && message.includes('Query timeout exceeded'))) {
-                    console.error('QueryFilter Unexpected Error, giving up:', err);
+                console.warn('ITEST Query filter failed', err);
+
+                // Fail if minimum window is reached
+                if (currentEnd - currentStart <= 8) {
+                    // eslint-disable-next-line
+                    console.error('ITEST Query filter failed with the smallest window, giving up.', currentStart, currentEnd);
                     throw err;
-                }
-
-                // Sets the suggested range, otherwise halves the range.
-                const match = message.match(/\[(0x[0-9a-fA-F]+),\s*(0x[0-9a-fA-F]+)\]/);
-                if (match) {
-                    const suggestedEnd = parseInt(match[2], 16);
-
-                    if (parseInt(match[1], 16) === currentStart && suggestedEnd < currentEnd) {
-                        console.warn(`QueryFilter Timeout - using suggested range: ${currentStart}-${suggestedEnd}`);
-                        currentEnd = suggestedEnd;
-                    }
+                } else if (currentEnd - currentStart > MAX_RANGE) {
+                    currentEnd = currentStart + MAX_RANGE;
+                    console.warn('ITEST Query filter failed retrying with rage of 2000.', currentStart, currentEnd);
                 } else {
-                    // Fail if minimum window is reached
-                    if (currentEnd - currentStart < 1) {
-                        // eslint-disable-next-line
-                        console.error('QueryFilter failed with the smallest window, giving up.', currentStart, currentEnd);
-                        throw err;
-                    }
-                    console.warn('QueryFilter Timeout - retrying with halved range');
                     currentEnd = Math.floor((currentEnd - currentStart) / 2) + currentStart;
+                    console.warn('ITEST Query filter failed retrying with halved range.', currentStart, currentEnd);
                 }
             }
         }

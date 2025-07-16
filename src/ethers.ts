@@ -296,25 +296,25 @@ export async function safeQueryFilter(
         // Reduce the window size until it no longer crosses the provider’s limits.
         while (true) {
             try {
-                console.warn('ITEST Trying to fetch ', currentStart, currentEnd);
+                console.warn('Trying to fetch ', currentStart, currentEnd);
                 // eslint-disable-next-line no-await-in-loop
                 const eventsChunk = await contract.queryFilter(event, currentStart, currentEnd);
                 allEvents.push(...eventsChunk);
                 break;
             } catch (err: any) {
-                console.warn('ITEST Query filter failed', err);
+                console.warn('Query filter failed', err);
 
                 // Fail if minimum window is reached
                 if (currentEnd - currentStart <= 8) {
                     // eslint-disable-next-line
-                    console.error('ITEST Query filter failed with the smallest window, giving up.', currentStart, currentEnd);
+                    console.error('Query filter failed with the smallest window, giving up.', currentStart, currentEnd);
                     throw err;
                 } else if (currentEnd - currentStart > MAX_RANGE) {
                     currentEnd = currentStart + MAX_RANGE;
-                    console.warn('ITEST Query filter failed retrying with rage of 2000.', currentStart, currentEnd);
+                    console.warn('Query filter failed retrying with rage of 2000.', currentStart, currentEnd);
                 } else {
                     currentEnd = Math.floor((currentEnd - currentStart) / 2) + currentStart;
-                    console.warn('ITEST Query filter failed retrying with halved range.', currentStart, currentEnd);
+                    console.warn('Query filter failed retrying with halved range.', currentStart, currentEnd);
                 }
             }
         }

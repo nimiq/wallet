@@ -285,19 +285,19 @@ export async function safeQueryFilter(
     toBlock: number,
 ): Promise<Array<Event>> {
     const allEvents: Event[] = [];
-    const RECOMMENDED_MAX_RANGE = 2000; // Higher block ranges trigger a limit of 10K log entries.
+    const MAX_RECOMMENDED_RANGE = 2000; // Higher block ranges trigger a limit of 10K log entries.
     let currentStart = fromBlock;
+    let currentEnd = toBlock;
 
     // Loop until we’ve queried the full range of blocks, retries upon failures.
-    // 1st we try querying with the given block range
-    // 2nd try uses the max recommended range
-    // Subsequent tries halve the range
-    // Fails when the range is meaningfully small
+    // If the request with the original params fails, any subsequent requests will
+    // have a block range <= `MAX_RECOMMENDED_RANGE`.
+    // 1st try - queries with the given block range
+    // 2nd try - uses the max recommended range
+    // Subsequent tries halve the range until success or minimum range reached.
     while (currentStart <= toBlock) {
-        let currentEnd = toBlock;
-
-        // Attempt to fetch logs in the current range
-        // Reduce the window size until it no longer crosses the provider’s limits.
+        // Attempt to fetch logs in the current range.
+        // Reduce the window size until it no longer crosses breaches alchemy's limits.
         while (true) {
             try {
                 console.warn('Trying to fetch ', currentStart, currentEnd);
@@ -306,27 +306,29 @@ export async function safeQueryFilter(
                 allEvents.push(...eventsChunk);
                 break;
             } catch (err: any) {
-                console.warn('Query filter failed', err);
+                const currentRage = currentEnd - currentStart;
 
-                // Fail if minimum window is reached
-                if (currentEnd - currentStart <= 8) {
+                // Fail if minimum range is reached.
+                if (currentRage <= 8) {
                     // eslint-disable-next-line
-                    console.error('Query filter failed with the smallest window, giving up.', currentStart, currentEnd);
+                    console.error('Query filter failed with the smallest window, giving up.', err, currentStart, currentEnd);
                     throw err;
                 }
                 // Try the recommended max range first, otherwise halves the range.
-                if (currentEnd - currentStart > RECOMMENDED_MAX_RANGE) {
-                    currentEnd = currentStart + RECOMMENDED_MAX_RANGE;
-                    console.warn('Query filter failed retrying with rage of 2000.', currentStart, currentEnd);
+                if (currentRage > MAX_RECOMMENDED_RANGE) {
+                    currentEnd = currentStart + MAX_RECOMMENDED_RANGE;
+                    console.warn('Query filter failed retrying with rage of 2000.', err, currentStart, currentEnd);
                 } else {
-                    currentEnd = Math.floor((currentEnd - currentStart) / 2) + currentStart;
-                    console.warn('Query filter failed retrying with halved range.', currentStart, currentEnd);
+                    currentEnd = Math.floor(currentRage / 2) + currentStart;
+                    console.warn('Query filter failed retrying with halved range.', err, currentStart, currentEnd);
                 }
             }
         }
 
-        // Move the window forward
+        // Move the window forward.
         currentStart = currentEnd + 1;
+        // Ensures subsequent requests follow the recommended range.
+        currentEnd = currentStart + MAX_RECOMMENDED_RANGE;
     }
 
     return allEvents;

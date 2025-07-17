@@ -285,10 +285,14 @@ export async function safeQueryFilter(
     toBlock: number,
 ): Promise<Array<Event>> {
     const allEvents: Event[] = [];
-    const MAX_RANGE = 2000;
+    const RECOMMENDED_MAX_RANGE = 2000; // Higher block ranges trigger a limit of 10K log entries.
     let currentStart = fromBlock;
 
-    // Loop until we’ve queried the full range of blocks
+    // Loop until we’ve queried the full range of blocks, retries upon failures.
+    // 1st we try querying with the given block range
+    // 2nd try uses the max recommended range
+    // Subsequent tries halve the range
+    // Fails when the range is meaningfully small
     while (currentStart <= toBlock) {
         let currentEnd = toBlock;
 
@@ -309,8 +313,10 @@ export async function safeQueryFilter(
                     // eslint-disable-next-line
                     console.error('Query filter failed with the smallest window, giving up.', currentStart, currentEnd);
                     throw err;
-                } else if (currentEnd - currentStart > MAX_RANGE) {
-                    currentEnd = currentStart + MAX_RANGE;
+                }
+                // Try the recommended max range first, otherwise halves the range.
+                if (currentEnd - currentStart > RECOMMENDED_MAX_RANGE) {
+                    currentEnd = currentStart + RECOMMENDED_MAX_RANGE;
                     console.warn('Query filter failed retrying with rage of 2000.', currentStart, currentEnd);
                 } else {
                     currentEnd = Math.floor((currentEnd - currentStart) / 2) + currentStart;

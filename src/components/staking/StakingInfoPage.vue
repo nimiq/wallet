@@ -71,8 +71,7 @@
                                 :monthly-reward="item.total"
                                 :transaction-count="1"
                                 :month="item.month"
-                                :hideIcon="true"
-                                :hideAdditionalText="true"
+                                hideIcon
                             />
                         </div>
                     </template>

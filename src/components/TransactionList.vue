@@ -44,6 +44,7 @@
                         :monthly-reward="item.monthlyReward"
                         :transaction-count="item.transactionCount"
                         :month="getMonthFromReward(item)"
+                        hide-month
                     />
                     <TransactionListItem v-else :transaction="item"/>
                 </div>

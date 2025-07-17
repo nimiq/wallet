@@ -15,7 +15,10 @@
             </defs>
         </svg>
         <div class="info">
-            <div class="title">{{ monthLabel }}<span v-if="!hideAdditionalText"> staking rewards</span></div>
+            <div class="title">
+                <span v-if="!hideMonth">{{ monthLabel }}</span>
+                <span v-else>{{ $t('Staking rewards') }}</span>
+            </div>
         </div>
         <div class="amounts isIncoming">
             <Amount :amount="monthlyReward" class="amount"/>
@@ -39,7 +42,7 @@ export default defineComponent({
             required: false,
             default: false,
         },
-        hideAdditionalText: {
+        hideMonth: {
             type: Boolean,
             required: false,
             default: false,

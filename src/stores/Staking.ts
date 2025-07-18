@@ -1,3 +1,4 @@
+import { nonReactive } from '@vue/composition-api';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
@@ -342,10 +343,14 @@ export const useStakingStore = createStore({
         setStakingEvents(address: string, events: StakingEvent[]) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new stake in Vue 3.
-            this.state.stakingEventsByAddress = {
+            // We mark the staking events as non-reactive, as they're static data anyways. This avoids the significant
+            // overhead, that Vue's reactivity system would add when setting the data, and on any data access. The
+            // change of the stakingEventsByAddress property itself is still detected and correctly triggers the
+            // recalculation of all computed composables.
+            this.state.stakingEventsByAddress = nonReactive({
                 ...this.state.stakingEventsByAddress,
                 [address]: events,
-            };
+            });
         },
     },
 });

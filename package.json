@@ -19,7 +19,8 @@
     "release": "./scripts/deploy.sh",
     "test": "echo 'No tests'",
     "utils:getBankList": "oasis-bank-list-update",
-    "utils:makeNginxAllowlist": "node ./scripts/makeNginxAllowlist.js"
+    "utils:makeNginxAllowlist": "node ./scripts/makeNginxAllowlist.js",
+    "postinstall": "patch-package"
   },
   "main": "src/main.ts",
   "dependencies": {
@@ -84,7 +85,9 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-vue": "^8.0.3",
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
+    "patch-package": "^8.0.0",
     "path-to-regexp": "^6.3.0",
+    "postinstall-postinstall": "^2.1.0",
     "sass": "^1.46.0",
     "sass-loader": "^8.0.2",
     "typescript": "~4.5.5",

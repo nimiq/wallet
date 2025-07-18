@@ -327,7 +327,7 @@ export async function launchNetwork() {
                     // This is a staking transaction from a validator to one of our stakers
                     updateStakes([plain.data.staker]);
                     // Then ignore this transaction
-                    // TODO: Store for tracking of staking rewards?
+                    // TODO: Store for tracking of staking rewards? / update staking events?
                     return;
                 }
             }
@@ -357,11 +357,11 @@ export async function launchNetwork() {
         }
     }
 
-    function subscribe(addresses: string[]) {
+    function subscribe(addresses: string[], isProxy: boolean) {
         client.addTransactionListener(transactionListener, addresses);
+        if (isProxy) return; // only need transactions for proxies
         updateBalances(addresses);
         updateStakes(addresses);
-        return true;
     }
 
     // Subscribe to new addresses (for balance updates and transactions)
@@ -393,7 +393,7 @@ export async function launchNetwork() {
         if (!newAddresses.length) return;
 
         console.debug('Subscribing addresses', newAddresses);
-        subscribe(newAddresses);
+        subscribe(newAddresses, /* isProxy */ false);
     });
 
     watch([addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
@@ -495,7 +495,7 @@ export async function launchNetwork() {
                 addressesToSubscribe.push(proxyAddress);
             }
         }
-        if (addressesToSubscribe.length) subscribe(addressesToSubscribe);
+        if (addressesToSubscribe.length) subscribe(addressesToSubscribe, /* isProxy */ true);
         if (!newProxies.length) return;
 
         console.debug(`Fetching history for ${newProxies.length} proxies`);
@@ -539,7 +539,7 @@ export async function launchNetwork() {
                         // which in turn runs the ProxyDetection again and triggers the network and this watcher again
                         // for the second pass if needed.
                         subscribedProxies.add(proxyAddress);
-                        subscribe([proxyAddress]);
+                        subscribe([proxyAddress], /* isProxy */ true);
                     }
                     transactionsStore.addTransactions(txDetails);
                 })

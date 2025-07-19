@@ -312,6 +312,7 @@ export const useStakingStore = createStore({
             });
         },
         removeStake(address: string) {
+            if (!(address in this.state.stakeByAddress)) return;
             const stakes = { ...this.state.stakeByAddress };
             delete stakes[address];
             this.state.stakeByAddress = stakes;

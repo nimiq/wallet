@@ -232,7 +232,7 @@ export function useTransactionList(options: UseTransactionListOptions) {
                     transactionHash: `monthly-reward-${monthKey}`,
                     isMonthlyReward: true,
                     monthlyReward: monthlyReward.total,
-                    transactionCount: monthlyReward.count,
+                    validators: monthlyReward.validators,
                 });
             }
 

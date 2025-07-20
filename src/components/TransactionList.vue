@@ -42,7 +42,7 @@
                     <StakingRewardsListItem
                         v-else-if="item.isMonthlyReward"
                         :monthly-reward="item.monthlyReward"
-                        :transaction-count="item.transactionCount"
+                        :validators-addresses="item.validators"
                         :month="getMonthFromReward(item)"
                         hide-month
                     />
@@ -383,6 +383,10 @@ export default defineComponent({
             }
         }
     }
+}
+
+.staking-reward-item {
+    padding-left: 2rem;
 }
 
 .after-first-tx {

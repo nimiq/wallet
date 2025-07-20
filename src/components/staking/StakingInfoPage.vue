@@ -69,8 +69,8 @@
                         <div v-else class="list-element" :data-id="index" :data-hash="item.id">
                             <StakingRewardsListItem
                                 :monthly-reward="item.total"
-                                :transaction-count="1"
                                 :month="item.month"
+                                :validators-addresses="item.validators"
                                 hideIcon
                             />
                         </div>
@@ -138,6 +138,7 @@ import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIco
 type Reward = {
     total: number,
     month: string,
+    validators: string[],
     loading: boolean,
 }
 
@@ -192,13 +193,13 @@ export default defineComponent({
                 const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
                 const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize.value);
                 for (let i = 0; i < placeholderCount; i++) {
-                    rew.push({ total: 0, month: i.toString(), loading: true });
+                    rew.push({ total: 0, month: i.toString(), validators: [], loading: true });
                 }
                 return rew;
             }
 
             monthlyRewards.value.forEach((r, m, _map) => {
-                rew.push({ total: r.total, month: m, loading: false });
+                rew.push({ total: r.total, month: m, validators: r.validators, loading: false });
             });
             return rew.reverse();
         });

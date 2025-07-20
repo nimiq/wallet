@@ -4,14 +4,17 @@ import { useStakingStore } from '../stores/Staking';
 export interface MonthlyReward {
     total: number;
     count: number;
+    validators: string[];
 }
 
 /**
  * useStakingRewards composable
  *
- * Provides computed staking rewards data grouped by month, including total rewards and transaction counts.
+ * Provides computed staking rewards data grouped by month, including total rewards, transaction counts,
+ * and a list of validators that provided rewards for that month.
  * Calculates monthly reward summaries from staking events and provides utility functions to
  * access reward data for specific time periods.
+ * Optimized for handling millions of events efficiently.
  *
  * @returns {
  *   monthlyRewards: ComputedRef<Map<string, MonthlyReward>>,
@@ -30,6 +33,7 @@ export interface MonthlyReward {
  *
  * // Get rewards for a specific month (format: 'YYYY-MM')
  * const januaryRewards = getMonthlyReward('2024-01');
+ * console.log(januaryRewards?.validators); // List of validator addresses
  *
  * // Get current month rewards
  * const currentRewards = getCurrentMonthReward();
@@ -46,19 +50,35 @@ export function useStakingRewards() {
         const events = stakingEvents.value;
         if (!events) return new Map<string, MonthlyReward>();
 
-        // Filter only reward events (type 6) and group by month
+        // Pre-allocate the Map for better performance
         const rewardsByMonth = new Map<string, MonthlyReward>();
-        events
-            .filter((event) => event.type === 6)
-            .forEach((event) => {
-                const date = new Date(event.date);
-                const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
-                const currentData = rewardsByMonth.get(monthKey) || { total: 0, count: 0 };
-                rewardsByMonth.set(monthKey, {
-                    total: currentData.total + event.value,
-                    count: currentData.count + 1,
-                });
-            });
+
+        // Use a single loop with early filtering for better performance
+        for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+
+            // Skip non-reward events early
+            if (event.type !== 6) continue;
+
+            const date = new Date(event.date);
+            const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+
+            let currentData = rewardsByMonth.get(monthKey);
+            if (!currentData) {
+                // Create new month data only once
+                currentData = { total: 0, count: 0, validators: [] };
+                rewardsByMonth.set(monthKey, currentData);
+            }
+
+            // Update totals
+            currentData.total += event.value;
+            currentData.count += 1;
+
+            // Add validator if not already present
+            if (!currentData.validators.includes(event.sender_address)) {
+                currentData.validators.push(event.sender_address);
+            }
+        }
 
         return rewardsByMonth;
     });
@@ -66,7 +86,7 @@ export function useStakingRewards() {
     /**
      * Get reward data for a specific month
      * @param monthKey - Month identifier in 'YYYY-MM' format (e.g., '2024-01' for January 2024)
-     * @returns MonthlyReward object containing total rewards and transaction count, or undefined
+     * @returns MonthlyReward object containing total rewards, transaction count, and validator list, or undefined
      * if no rewards exist for that month
      */
     const getMonthlyReward = (monthKey: string): MonthlyReward | undefined => monthlyRewards.value.get(monthKey);

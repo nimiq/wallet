@@ -1,4 +1,4 @@
-import { nonReactive } from '@vue/composition-api';
+import { set as vueCompositionApiSet, nonReactive } from '@vue/composition-api';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
@@ -108,8 +108,6 @@ export const useStakingStore = createStore({
         },
         validatorsList: (state, { validators }): Readonly<Validator[]> => Object.values(validators.value),
 
-        // stake object for each addresses
-        stakesByAddress: (state): Readonly<Record<string, Stake>> => state.stakeByAddress,
         // total stake amount for each address
         totalStakesByAddress: (state): Readonly<Record<string, number>> => {
             const totals: Record<string, number> = {};
@@ -176,13 +174,6 @@ export const useStakingStore = createStore({
             return stakeByAccount;
         },
 
-        // cumulated stake object for the active account
-        accountStake: (state, { stakesByAccount }): Readonly<Stake | null> => {
-            const { activeAccountId } = useAccountStore();
-            if (!activeAccountId.value) return null;
-
-            return (stakesByAccount.value as Record<string, Stake>)[activeAccountId.value] ?? null;
-        },
         // total stake amount for the active account
         totalAccountStake: (state, { totalStakesByAccount }) => {
             const { activeAccountId } = useAccountStore();
@@ -291,43 +282,17 @@ export const useStakingStore = createStore({
     },
     actions: {
         setStake(stake: Stake) {
-            // Need to assign whole object for change detection of new addresses.
-            // TODO: Simply set new stake in Vue 3.
-            this.state.stakeByAddress = {
-                ...this.state.stakeByAddress,
-                [stake.address]: stake,
-            };
-        },
-        setStakes(stakes: Stake[]) {
-            const newStakes: {[address: string]: Stake} = {};
-
-            for (const stake of stakes) {
-                newStakes[stake.address] = stake;
-            }
-
-            this.state.stakeByAddress = newStakes;
-        },
-        patchStake(address: string, patch: Partial<Omit<Stake, 'address'>>) {
-            if (!this.state.stakeByAddress[address]) return;
-
-            this.setStake({
-                ...this.state.stakeByAddress[address],
-                ...patch,
-            });
+            vueCompositionApiSet(this.state.stakeByAddress, stake.address, stake);
         },
         removeStake(address: string) {
+            // TODO once not using @vue/composition-api anymore, use Vue.delete in Vue 2.7, or plain js delete in Vue 3.
             if (!(address in this.state.stakeByAddress)) return;
-            const stakes = { ...this.state.stakeByAddress };
-            delete stakes[address];
-            this.state.stakeByAddress = stakes;
-        },
-        setValidator(validator: RawValidator) {
-            // Need to assign whole object for change detection of new addresses.
-            // TODO: Simply set new validator in Vue 3.
-            this.state.chainValidators = {
-                ...this.state.chainValidators,
-                [validator.address]: validator,
-            };
+            // Note that null must be used for the reactivity system, not undefined. Undefined behaves strange and
+            // triggers reactive updates on unrelated addresses, which is what we want to avoid. Note that we also
+            // delete the key immediately, such that dependencies do not actually get to see the null value, and don't
+            // have to handle it.
+            vueCompositionApiSet(this.state.stakeByAddress, address, null); // for change detection
+            delete this.state.stakeByAddress[address]; // for also removing the key
         },
         setValidators(validators: RawValidator[]) {
             const newValidators: {[address: string]: RawValidator} = {};
@@ -348,12 +313,12 @@ export const useStakingStore = createStore({
             this.state.apiValidators = newApiValidators;
         },
         setStakingEvents(address: string, events: AggregatedRestakingEvent[]) {
-            // Need to assign whole object for change detection of new addresses.
-            // TODO: Simply set new stake in Vue 3.
             // We mark the staking events as non-reactive, as they're static data anyways. This avoids the significant
             // overhead, that Vue's reactivity system would add when setting the data, and on any data access. The
             // change of the stakingEventsByAddress property itself is still detected and correctly triggers the
-            // recalculation of all computed composables.
+            // recalculation of all computed composables. In fact, here, we do not use vueCompositionApiSet to set just
+            // the child property, and instead replace the entire object on purpose, as the child properties are not
+            // reactive.
             this.state.stakingEventsByAddress = nonReactive({
                 ...this.state.stakingEventsByAddress,
                 [address]: events,

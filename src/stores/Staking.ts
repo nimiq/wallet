@@ -9,6 +9,7 @@ export type StakingState = {
     apiValidators: Record<string, ApiValidator>,
     stakeByAddress: Record<string, Stake>,
     stakingEventsByAddress: Record<string, AggregatedRestakingEvent[]>,
+    // experiment: Record<string, number>,
 }
 
 export type AggregatedRestakingEvent = {
@@ -85,6 +86,8 @@ export const useStakingStore = createStore({
         apiValidators: {},
         stakeByAddress: {},
         stakingEventsByAddress: {},
+        // experiment: { constant: 0, a: 0, b: 0 }, // like this, reactivity works
+        // experiment: {}, // like this, it doesn't
     } as StakingState),
     getters: {
         validators: (state): Readonly<Record<string, Validator>> => {
@@ -279,6 +282,41 @@ export const useStakingStore = createStore({
 
             return rewardsByMonth;
         },
+
+        // experimentConstant: (state) => {
+        //     console.log('experiment: constant getter update'); // eslint-disable-line no-console
+        //     return state.experiment.constant || null;
+        // },
+        // experimentSum: (state) => {
+        //     console.log('experiment: sum getter update'); // eslint-disable-line no-console
+        //     return state.experiment.a + state.experiment.b || null;
+        // },
+        // experimentDynamicSum: (state) => {
+        //     console.log('experiment: dynamic sum getter update'); // eslint-disable-line no-console
+        //     return Object.values(state.experiment).reduce((sum, entry) => sum + entry, 0);
+        // },
+        // experimentSumWithDependencies: (state) => {
+        //     console.log('experiment: sum with dependencies getter update'); // eslint-disable-line no-console
+        //     if (!Object.getOwnPropertyDescriptor(state.experiment, 'a')?.get) {
+        //         console.log('experiment: setting up reactivity on a'); // eslint-disable-line no-console
+        //         let value = null;
+        //         if ('a' in state.experiment) {
+        //             value = state.experiment.a;
+        //             delete state.experiment.a;
+        //         }
+        //         vueCompositionApiSet(state.experiment, 'a', value);
+        //     }
+        //     if (!Object.getOwnPropertyDescriptor(state.experiment, 'b')?.get) {
+        //         console.log('experiment: setting up reactivity on b'); // eslint-disable-line no-console
+        //         let value = null;
+        //         if ('b' in state.experiment) {
+        //             value = state.experiment.b;
+        //             delete state.experiment.b;
+        //         }
+        //         vueCompositionApiSet(state.experiment, 'b', value);
+        //     }
+        //     return state.experiment.a + state.experiment.b || null;
+        // },
     },
     actions: {
         setStake(stake: Stake) {
@@ -324,6 +362,21 @@ export const useStakingStore = createStore({
                 [address]: events,
             });
         },
+
+        // setExperimentConstant() {
+        //     console.log('experiment: set experiment constant'); // eslint-disable-line no-console
+        //     vueCompositionApiSet(this.state.experiment, 'constant', 1);
+        // },
+        // setExperimentA() {
+        //     const newValue = (this.state.experiment.a || 0) + 1;
+        //     console.log('experiment: set experiment a to', newValue); // eslint-disable-line no-console
+        //     vueCompositionApiSet(this.state.experiment, 'a', newValue);
+        // },
+        // setExperimentB() {
+        //     const newValue = (this.state.experiment.b || 0) + 1;
+        //     console.log('experiment: set experiment b to', newValue); // eslint-disable-line no-console
+        //     vueCompositionApiSet(this.state.experiment, 'b', newValue);
+        // },
     },
 });
 
@@ -441,4 +494,38 @@ export const useStakingStore = createStore({
 //     }());
 //
 //     console.log('testStakingEventsPerformance: tests finished'); // eslint-disable-line no-console
+// };
+
+// Experiment results:
+// - if constant, a, b are pre-defined on the state, reactivity works. In that case, the constant getter is not run
+//   again each iteration, as it didn't change (-> setting the same value again does not mark the dependency dirty), and
+//   the sum getter is run only once, not twice (-> setting a and b individually does not result in two computations).
+// - if constant, a, b are not pre-defined, getters are not recomputed, i.e. reactivity is not working with
+//   vueCompositionApiSet?
+// - changes to store due to experiment are persisted, if reactivity works -> store subscriptions seem to be deep
+//   watchers, yay. (Yes, confirmed it to be a deep watcher in the code)
+// - The approach of setting dependencies manually, before accessing them the first time, as in
+//   experimentSumWithDependencies, works. If the property is already defined, it needs to be deleted first.
+// // @ts-expect-error experiment
+// window.startExperiment = () => {
+//     const {
+//         experimentConstant,
+//         experimentSum,
+//         experimentDynamicSum,
+//         experimentSumWithDependencies,
+//         setExperimentConstant,
+//         setExperimentA,
+//         setExperimentB,
+//     } = useStakingStore();
+//     setInterval(() => {
+//         // eslint-disable-next-line no-console
+//         setExperimentConstant();
+//         setExperimentA();
+//         setExperimentB();
+//     }, 10000);
+//     watch(() => {
+//         console.log(`experiment: constant - ${experimentConstant.value}, sum - ${experimentSum.value}, `
+//             + `dynamic sum: ${experimentDynamicSum.value}, `
+//             + `sum with dependencies - ${experimentSumWithDependencies.value}`);
+//     });
 // };

@@ -1,7 +1,7 @@
-import { set as vueCompositionApiSet, nonReactive } from '@vue/composition-api';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
+import VueCompositionApiUtils from '../lib/VueCompositionApiUtils';
 import { calculateStakingReward } from '../lib/AlbatrossMath';
 
 export type StakingState = {
@@ -114,7 +114,10 @@ export const useStakingStore = createStore({
         // total stake amount for each address
         totalStakesByAddress: (state): Readonly<Record<string, number>> => {
             const totals: Record<string, number> = {};
-            for (const [address, stake] of Object.entries(state.stakeByAddress)) {
+            const { stakeByAddress } = state;
+            for (const address of Object.keys(stakeByAddress)) {
+                const stake = VueCompositionApiUtils.getPropertyAndEnableReactiveUpdates(stakeByAddress, address);
+                if (!stake) continue;
                 totals[address] = stake.activeBalance + stake.inactiveBalance + stake.retiredBalance;
             }
             return totals;
@@ -125,7 +128,10 @@ export const useStakingStore = createStore({
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
 
-            return state.stakeByAddress[activeAddress.value] || null;
+            return VueCompositionApiUtils.getPropertyAndEnableReactiveUpdates(
+                state.stakeByAddress,
+                activeAddress.value,
+            );
         },
         // total stake amount for the active address
         totalActiveStake: (state, { activeStake }): Readonly<number> => {
@@ -141,17 +147,18 @@ export const useStakingStore = createStore({
             const { accountInfos } = useAccountStore();
             const accounts = Object.values(accountInfos.value);
 
+            const { stakeByAddress } = state;
             const stakes: Record<string, Stake> = {};
             for (const accountInfo of accounts) { // for each account
                 for (const address of accountInfo.addresses) { // for each address
-                    if (state.stakeByAddress[address]) { // if there is a stake for this address
-                        if (!stakes[accountInfo.id]) { // if there is no stake for this account
-                            stakes[accountInfo.id] = { ...state.stakeByAddress[address] }; // create a new stake object
-                        } else { // if there is a stake for this account
-                            stakes[accountInfo.id].activeBalance += state.stakeByAddress[address].activeBalance;
-                            stakes[accountInfo.id].inactiveBalance += state.stakeByAddress[address].inactiveBalance;
-                            stakes[accountInfo.id].retiredBalance += state.stakeByAddress[address].retiredBalance;
-                        }
+                    const stake = VueCompositionApiUtils.getPropertyAndEnableReactiveUpdates(stakeByAddress, address);
+                    if (!stake) continue; // there is no stake for this address
+                    if (!stakes[accountInfo.id]) { // there is no entry for this account yet
+                        stakes[accountInfo.id] = { ...stake, address: accountInfo.id }; // create a new stake object
+                    } else { // there already is an entry for this account
+                        stakes[accountInfo.id].activeBalance += stake.activeBalance;
+                        stakes[accountInfo.id].inactiveBalance += stake.inactiveBalance;
+                        stakes[accountInfo.id].retiredBalance += stake.retiredBalance;
                     }
                 }
                 if (!stakes[accountInfo.id]) {
@@ -320,17 +327,10 @@ export const useStakingStore = createStore({
     },
     actions: {
         setStake(stake: Stake) {
-            vueCompositionApiSet(this.state.stakeByAddress, stake.address, stake);
+            VueCompositionApiUtils.set(this.state.stakeByAddress, stake.address, stake);
         },
         removeStake(address: string) {
-            // TODO once not using @vue/composition-api anymore, use Vue.delete in Vue 2.7, or plain js delete in Vue 3.
-            if (!(address in this.state.stakeByAddress)) return;
-            // Note that null must be used for the reactivity system, not undefined. Undefined behaves strange and
-            // triggers reactive updates on unrelated addresses, which is what we want to avoid. Note that we also
-            // delete the key immediately, such that dependencies do not actually get to see the null value, and don't
-            // have to handle it.
-            vueCompositionApiSet(this.state.stakeByAddress, address, null); // for change detection
-            delete this.state.stakeByAddress[address]; // for also removing the key
+            VueCompositionApiUtils.delete(this.state.stakeByAddress, address);
         },
         setValidators(validators: RawValidator[]) {
             const newValidators: {[address: string]: RawValidator} = {};
@@ -357,7 +357,7 @@ export const useStakingStore = createStore({
             // recalculation of all computed composables. In fact, here, we do not use vueCompositionApiSet to set just
             // the child property, and instead replace the entire object on purpose, as the child properties are not
             // reactive.
-            this.state.stakingEventsByAddress = nonReactive({
+            this.state.stakingEventsByAddress = VueCompositionApiUtils.nonReactive({
                 ...this.state.stakingEventsByAddress,
                 [address]: events,
             });

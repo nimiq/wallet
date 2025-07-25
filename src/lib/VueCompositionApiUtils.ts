@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { set, nonReactive } from '@vue/composition-api';
 
 /**
@@ -20,76 +21,21 @@ export default class VueCompositionApiUtils {
 
     /**
      * Set a property on an object and setup reactivity handling. Using this method is required to circumvent the
-     * limitations of Vue 2's reactivity system, see https://v2.vuejs.org/v2/guide/reactivity.html.
-     * Note that only new usages after setting up reactivity handling via this method receive this and future reactive
-     * updates in computed composables, watchers, etc. Any prior access of the property does not register the property
-     * as a dependency of the composable or watcher, as the reactivity handling taking care of that was not setup yet.
-     * This is the case for both, direct access of the property in question, and indirect access via Object.entries()
-     * and the like.
-     * To circumvent this issue use getPropertyAndEnableReactiveUpdates() for access of the property. Object.entries()
-     * etc. will work automatically by set notifying about a change for the target object, if the property did not exist
-     * yet.
+     * limitations of Vue 2's reactivity system, see https://v2.vuejs.org/v2/guide/reactivity.html. Different to Vue.set
+     * and @vue/composition-api's set, this version also makes already existing properties reactive, if they are not
+     * reactive yet, and ensures firing change notifications also on those. This is particularly important for stores,
+     * where non-reactive entries might have been created via store.patch. Notifications are fired for an individual
+     * property that has been changed, or for the entire target object when a property is added, e.g. to notify usages
+     * of Object.keys, Object.entries and the like.
      *
-     * TODO on Vue 2.7 use Vue.set instead, and on Vue 3 this method might not be needed at all. However, the caveats
-     *  regarding reactivity of prior access might remain.
+     * TODO once we stop using store.patch (or maybe also when updating pinia), or update to Vue 3, this method will not
+     *  be required anymore.
      */
     static set<T extends Record<string, unknown>, K extends keyof T>(target: T, key: K, value: T[K]): T[K] {
         const propertyDescriptor = Object.getOwnPropertyDescriptor(target, key);
-        return VueCompositionApiUtils._setWithKnownPropertyDescriptor(target, key, value, propertyDescriptor);
-    }
-
-    /**
-     * Get a property of an object and make sure future reactive updates are received, even if the property is not
-     * reactive yet or does not even exist yet. If the property does not exist yet, it will be set to null. Therefore,
-     * any code that accesses this property should make sure it handles null values.
-     *
-     * TODO check whether this method is still required with Vue 2.7 or Vue 3.
-     */
-    static getPropertyAndEnableReactiveUpdates<T extends Record<string, unknown | null>, K extends keyof T>(
-        target: T,
-        key: K,
-    ): T[K] | null {
-        const propertyDescriptor = Object.getOwnPropertyDescriptor(target, key);
-        if (!propertyDescriptor || !propertyDescriptor.get) {
-            // The getter for Vue 2's reactivity system is not setup yet, so we set the reactivity up first. If the
-            // value does not exist yet, we set it to null. Note that setting undefined does not seem to be supported by
-            // the reactivity system. Also note that if a getter is already defined, we just _assume_ that it's the
-            // getter of Vue 2's reactivity system.
-            const value = target[key] !== undefined ? target[key] : null;
-            VueCompositionApiUtils._setWithKnownPropertyDescriptor(target, key, value as any, propertyDescriptor);
-        }
-        // Now that we made sure, that reactivity on the property is setup, it will be registered as reactive dependency
-        // on access.
-        return target[key];
-    }
-
-    /**
-     * Delete a property and fire change notifications. We provide this method as @vue/composition-api does not. It's
-     * not perfect though. A change notification is fired for the property and its value, but not on the target object
-     * regarding the removal of the property. I.e. watchers and computed composables accessing the value, for example
-     * via target[property] or Object.values(target) get notified about the change, not however those that only use for
-     * example Object.keys(target).
-     * To make Object.keys() work, we could consider a utility method for that, and track interested usages in a
-     * WeakMap<object, Ref>, with the ref being updated in set and delete, if a property is added / removed, and
-     * accessed in the Object.keys utility method to be notified on changes.
-     *
-     * TODO once not using @vue/composition-api anymore, use Vue.delete in Vue 2.7, or plain js delete in Vue 3.
-     */
-    static delete<T extends Record<string, unknown>, K extends keyof T>(target: T, key: K) {
-        if (!(key in target)) return;
-        set(target, key, undefined); // for change detection
-        delete target[key]; // for also removing the key
-    }
-
-    private static _setWithKnownPropertyDescriptor<T extends Record<string, unknown>, K extends keyof T>(
-        target: T,
-        key: K,
-        value: T[K],
-        knownPropertyDescriptor: PropertyDescriptor | undefined,
-    ): T[K] {
-        if (knownPropertyDescriptor) {
+        if (propertyDescriptor) {
             // Property already exists.
-            if (knownPropertyDescriptor.set) {
+            if (propertyDescriptor.set) {
                 // Property already has a setter. We _assume_ that's already the setter for Vue 2's reactivity system,
                 // and save us the overhead of calling @vue/composition-api's set with its additional checks.
                 target[key] = value;
@@ -101,6 +47,20 @@ export default class VueCompositionApiUtils {
             delete target[key];
         }
         return set(target, key, value);
+    }
+
+    /**
+     * Delete a property and fire change notifications. Using this method is required to circumvent the limitations of
+     * Vue 2's reactivity system, see https://v2.vuejs.org/v2/guide/reactivity.html. Because @vue/composition-api does
+     * not provide a delete method, we provide it here as counterpart to set. Even though we're simply using Vue.delete
+     * here, it seems to be playing well with @vue/composition-api and set. Deleting a property via this method triggers
+     * change notifications on the target object, which ensures that usages of APIs like Object.keys and Object.entries
+     * get correctly notified of the change.
+     *
+     * TODO once removing the set method, this one can go too. Use Vue.delete in Vue 2.7, or plain js delete in Vue 3.
+     */
+    static delete<T extends Record<string, unknown>, K extends keyof T>(target: T, key: K) {
+        Vue.delete(target as object, key as string);
     }
 }
 
@@ -138,11 +98,9 @@ export default class VueCompositionApiUtils {
 // window.testVueCompositionApiUtils = async function testVueCompositionApiPluginUtils() {
 //     const STANDARD_REACTIVITY_SET_HANDLER_TO_TEST: 'composition-api' | 'vue' = 'composition-api';
 //     const [
-//         { default: Vue },
 //         { reactive, watch },
 //         { createStore },
 //     ] = await Promise.all([
-//         import('vue'),
 //         import('@vue/composition-api'),
 //         import('pinia'),
 //     ]);

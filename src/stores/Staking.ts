@@ -111,10 +111,7 @@ export const useStakingStore = createStore({
         // total stake amount for each address
         totalStakesByAddress: (state): Readonly<Record<string, number>> => {
             const totals: Record<string, number> = {};
-            const { stakeByAddress } = state;
-            for (const address of Object.keys(stakeByAddress)) {
-                const stake = VueCompositionApiUtils.getPropertyAndEnableReactiveUpdates(stakeByAddress, address);
-                if (!stake) continue;
+            for (const [address, stake] of Object.entries(state.stakeByAddress)) {
                 totals[address] = stake.activeBalance + stake.inactiveBalance + stake.retiredBalance;
             }
             return totals;
@@ -125,10 +122,7 @@ export const useStakingStore = createStore({
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
 
-            return VueCompositionApiUtils.getPropertyAndEnableReactiveUpdates(
-                state.stakeByAddress,
-                activeAddress.value,
-            );
+            return state.stakeByAddress[activeAddress.value] || null;
         },
         // total stake amount for the active address
         totalActiveStake: (state, { activeStake }): Readonly<number> => {
@@ -148,7 +142,7 @@ export const useStakingStore = createStore({
             const stakes: Record<string, Stake> = {};
             for (const accountInfo of accounts) { // for each account
                 for (const address of accountInfo.addresses) { // for each address
-                    const stake = VueCompositionApiUtils.getPropertyAndEnableReactiveUpdates(stakeByAddress, address);
+                    const stake = stakeByAddress[address];
                     if (!stake) continue; // there is no stake for this address
                     if (!stakes[accountInfo.id]) { // there is no entry for this account yet
                         stakes[accountInfo.id] = { ...stake, address: accountInfo.id }; // create a new stake object

@@ -261,8 +261,7 @@ export const useStakingStore = createStore({
             for (let i = 0; i < eventCount; ++i) {
                 const event = events[i];
                 if (event.type !== /* reward */ 6) continue;
-                const date = new Date(event.date);
-                const monthKey = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+                const monthKey = event.date.substring(0, 7); // extract YYYY-MM part from date
                 let currentData = rewardsByMonth.get(monthKey);
                 if (!currentData) {
                     // Create new month data only once

@@ -30,8 +30,6 @@ export {
     DemoHubApi,
     type DemoState,
     type DemoFlowType,
-    type DemoFlowMessage,
     DemoModal,
-    MessageEventName,
     demoRoutes,
 } from './demo/index';

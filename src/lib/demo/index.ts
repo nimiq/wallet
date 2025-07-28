@@ -24,7 +24,7 @@
 
 import VueRouter from 'vue-router';
 import { useConfig } from '@/composables/useConfig';
-import { checkIfDemoIsActive, DemoState, DemoModal, MessageEventName, demoRoutes, type DemoFlowMessage, type DemoFlowType, type WalletPlaygroundMessage, type PlaygroundState } from './DemoConstants';
+import { checkIfDemoIsActive, DemoState, DemoModal, demoRoutes, type DemoFlowType, type WalletPlaygroundMessage, type PlaygroundState } from './DemoConstants';
 import { insertCustomDemoStyles, setupSingleMutationObserver } from './DemoDom';
 import { setupDemoAddresses, setupDemoAccount } from './DemoAccounts';
 import {
@@ -131,18 +131,16 @@ function attachIframeListeners(): void {
     window.addEventListener('message', (event) => {
         // Log incoming messages for debugging
         console.log('[Demo] Received message:', event.data, 'from:', event.origin);
-        
         if (!event.data || typeof event.data !== 'object') return;
 
-        // Handle legacy FlowChange messages
-        const { kind, data } = event.data as DemoFlowMessage;
-        if (kind === MessageEventName.FlowChange && demoRoutes[data]) {
-            handleFlowChange(data);
+        // Handle standardized wallet action messages
+        const { type, data: messageData } = event.data as WalletPlaygroundMessage;
+        if (type && type.startsWith('wallet:action:')) {
+            handleWalletActionMessage(type);
             return;
         }
 
         // Handle wallet playground messages
-        const { type, data: messageData } = event.data as WalletPlaygroundMessage;
         if (type) {
             handleWalletPlaygroundMessage(type, messageData, event.origin);
         }
@@ -155,16 +153,37 @@ function attachIframeListeners(): void {
         const flowType = match[0] as DemoFlowType;
         playgroundState.selectedAction = flowType;
 
-        // Send flow change to parent
-        window.parent.postMessage({ kind: MessageEventName.FlowChange, data: flowType }, '*');
+        // Send standardized action message to parent
+        let messageType = '';
+        switch (flowType) {
+            case 'buy':
+                messageType = 'wallet:action:open-buy-demo-nim-modal';
+                break;
+            case 'stake':
+                messageType = 'wallet:action:open-staking-modal';
+                break;
+            case 'swap':
+                messageType = 'wallet:action:open-swap-modal';
+                break;
+            case 'idle':
+                messageType = 'wallet:action:close-modal';
+                break;
+            default:
+                // No action needed for unknown flow types
+                break;
+        }
+
+        if (messageType) {
+            window.parent.postMessage({ type: messageType }, '*');
+        }
     });
 }
 
 /**
- * Handles legacy flow change messages
+ * Handles standardized wallet action messages
  */
-function handleFlowChange(flowType: DemoFlowType): void {
-    console.log('[Demo] Handling flow change:', flowType);
+function handleWalletActionMessage(messageType: string): void {
+    console.log('[Demo] Handling wallet action:', messageType);
 
     // Dynamic import to avoid circular dependencies
     import('@/stores/Account').then(({ useAccountStore }) => {
@@ -172,6 +191,26 @@ function handleFlowChange(flowType: DemoFlowType): void {
             useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
         });
     });
+
+    // Map message types to flow types and routes
+    let flowType: DemoFlowType;
+    switch (messageType) {
+        case 'wallet:action:open-buy-demo-nim-modal':
+            flowType = 'buy';
+            break;
+        case 'wallet:action:open-staking-modal':
+            flowType = 'stake';
+            break;
+        case 'wallet:action:open-swap-modal':
+            flowType = 'swap';
+            break;
+        case 'wallet:action:close-modal':
+            flowType = 'idle';
+            break;
+        default:
+            console.warn('[Demo] Unknown wallet action message:', messageType);
+            return;
+    }
 
     // Update playground state
     playgroundState.selectedAction = flowType;
@@ -330,8 +369,8 @@ function handleDisconnect(): void {
 }
 
 // Export types and constants for backward compatibility
-export type { DemoState, DemoFlowType, DemoFlowMessage };
-export { checkIfDemoIsActive, DemoModal, MessageEventName, demoRoutes };
+export type { DemoState, DemoFlowType };
+export { checkIfDemoIsActive, DemoModal, demoRoutes };
 
 // Export new playground types and functionality
 export type { WalletPlaygroundMessage, PlaygroundState };

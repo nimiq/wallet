@@ -23,16 +23,8 @@ export const btcInitialBalance = 0.0025 * 1e8; // 1 BTC (8 decimals)
 export const usdtInitialBalance = 514.83 * 1e6; // 5000 USDT (6 decimals)
 export const usdcInitialBalance = 357.38 * 1e6; // 3000 USDC (6 decimals)
 
-// Message event types
-export enum MessageEventName {
-    FlowChange = 'FlowChange'
-}
-
 // Flow types - supporting wallet playground actions
 export type DemoFlowType = 'buy' | 'swap' | 'stake' | 'idle';
-
-// Flow message structure
-export type DemoFlowMessage = { kind: 'FlowChange', data: DemoFlowType };
 
 // Wallet playground message types
 export type WalletPlaygroundMessage = {

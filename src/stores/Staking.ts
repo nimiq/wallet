@@ -256,26 +256,37 @@ export const useStakingStore = createStore({
             const eventCount = events.length;
 
             // Include only reward events (type 6) and group by month
+            let previousEventMonth: string | undefined;
+            let previousEventMonthReward: MonthlyReward | undefined;
             for (let i = 0; i < eventCount; ++i) {
                 const event = events[i];
                 if (event.type !== /* reward */ 6) continue;
                 const monthKey = event.date.substring(0, 7); // extract YYYY-MM part from date
-                let currentData = rewardsByMonth.get(monthKey);
-                if (!currentData) {
-                    // Create new month data only once
-                    currentData = { total: 0, count: 0, validators: [] };
-                    rewardsByMonth.set(monthKey, currentData);
+                let monthRewards;
+                if (monthKey === previousEventMonth) {
+                    // Use cached entry to avoid a more expensive lookup from the map.
+                    monthRewards = previousEventMonthReward!;
+                } else {
+                    monthRewards = rewardsByMonth.get(monthKey);
+                    if (!monthRewards) {
+                        // Create new month rewards entry only once, if it doesn't exist yet.
+                        monthRewards = { total: 0, count: 0, validators: [] };
+                        rewardsByMonth.set(monthKey, monthRewards);
+                    }
+
+                    previousEventMonth = monthKey;
+                    previousEventMonthReward = monthRewards;
                 }
 
                 // Update totals
-                currentData.total += event.value;
-                currentData.count += 1;
+                monthRewards.total += event.value;
+                monthRewards.count += 1;
 
                 // Add validator if not already present
                 // Cache the senderAddress, to avoid accessing it twice, with the overhead of Vue's reactivity system.
                 const senderAddress = event.sender_address;
-                if (!currentData.validators.includes(senderAddress)) {
-                    currentData.validators.push(senderAddress);
+                if (!monthRewards.validators.includes(senderAddress)) {
+                    monthRewards.validators.push(senderAddress);
                 }
             }
 

@@ -185,9 +185,8 @@ export default defineComponent({
         const chartData = computed(() => {
             if (!stakingEvents.value || !Array.isArray(stakingEvents.value)) return null;
 
-            // Filter reward events (type 6) and sort by date
-            const rewardEvents = stakingEvents.value
-                .filter((event) => event.type === 6)
+            // Sort by date
+            const rewardEvents = [...stakingEvents.value]
                 .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
             if (rewardEvents.length === 0) return null;

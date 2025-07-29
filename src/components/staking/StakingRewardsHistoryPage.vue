@@ -79,9 +79,8 @@ export default defineComponent({
         const sortedStakingEvents = computed(() => {
             const events = stakingEvents.value as StakingEvent[] | null;
             if (!events) return [];
-            // Filter only reward events (type 6) and sort by date descending
+            // Sort by date descending
             return [...events]
-                .filter((event) => event.type === 6)
                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) as any[];
         });
 

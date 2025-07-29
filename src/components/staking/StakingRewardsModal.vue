@@ -132,7 +132,6 @@ export default defineComponent({
             const { stakingEvents } = useStakingStore();
             const events = stakingEvents.value || [];
             return events
-                .filter((e) => e.type === 6)
                 .filter((e) => {
                     const d = new Date(e.date);
                     return d.getUTCFullYear() === year && (d.getUTCMonth() + 1) === month;
@@ -159,7 +158,6 @@ export default defineComponent({
             const { stakingEvents } = useStakingStore();
             const [year, month] = props.month.split('-').map((s) => parseInt(s, 10));
             const events = (stakingEvents.value || [])
-                .filter((e) => e.type === 6)
                 .filter((e) => {
                     const d = new Date(e.date);
                     return d.getUTCFullYear() === year && (d.getUTCMonth() + 1) === month;

@@ -228,7 +228,6 @@ export const useStakingStore = createStore({
             const { address: validatorAddress, rewardAddress: validatorRewardAddress } = activeValidator.value;
             for (let i = 0; i < eventCount; ++i) {
                 const event = events[i];
-                if (event.type !== /* restaking reward */ 6) continue;
                 const { sender_address: rewardSenderAddress } = event;
                 if (rewardSenderAddress === validatorAddress
                     || (validatorRewardAddress
@@ -255,12 +254,11 @@ export const useStakingStore = createStore({
             // can become noticeable here as we're processing potentially tens of thousands of staking events.
             const eventCount = events.length;
 
-            // Include only reward events (type 6) and group by month
+            // Group by month
             let previousEventMonth: string | undefined;
             let previousEventMonthReward: MonthlyReward | undefined;
             for (let i = 0; i < eventCount; ++i) {
                 const event = events[i];
-                if (event.type !== /* reward */ 6) continue;
                 const monthKey = event.date.substring(0, 7); // extract YYYY-MM part from date
                 let monthRewards;
                 if (monthKey === previousEventMonth) {

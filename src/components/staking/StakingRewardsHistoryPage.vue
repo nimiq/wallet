@@ -65,7 +65,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { stakingEvents, validators } = useStakingStore();
+        const { sortedStakingEvents, validators } = useStakingStore();
         const { language } = useSettingsStore();
 
         const monthFormatter = computed(() => new Intl.DateTimeFormat(language.value, { month: 'short' }));
@@ -76,20 +76,19 @@ export default defineComponent({
             return monthFormatter.value.format(date);
         }
 
-        const sortedStakingEvents = computed(() => {
-            const events = stakingEvents.value as StakingEvent[] | null;
+        const reverseSortedStakingEvents = computed(() => {
+            const events = sortedStakingEvents.value;
             if (!events) return [];
-            // Sort by date descending
-            return [...events]
-                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) as any[];
+            // Sort by descending date; create a copy to not modify the original array.
+            return [...events].reverse();
         });
 
         const filteredStakingEvents = computed(() => {
-            if (!props.month) return sortedStakingEvents.value;
+            if (!props.month) return reverseSortedStakingEvents.value;
 
             const [year, month] = props.month.split('-');
             const targetMonth = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
-            return sortedStakingEvents.value.filter((event) => {
+            return reverseSortedStakingEvents.value.filter((event) => {
                 const eventDate = new Date(event.date);
                 return eventDate.getMonth() === targetMonth.getMonth()
                     && eventDate.getFullYear() === targetMonth.getFullYear();
@@ -107,8 +106,6 @@ export default defineComponent({
         }
 
         return {
-            stakingEvents,
-            sortedStakingEvents,
             filteredStakingEvents,
             getFormattedDate,
             getValidatorName,

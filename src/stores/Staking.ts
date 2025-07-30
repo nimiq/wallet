@@ -213,6 +213,25 @@ export const useStakingStore = createStore({
             if (!events || !Array.isArray(events)) return null;
             return events;
         },
+        sortedStakingEvents: (state, { stakingEvents }): Readonly<StakingEvent[] | null> => {
+            if (!stakingEvents.value) return null;
+            // Sort ascending by date.
+            // Note that sorting the staking events is an expensive operation as we're potentially dealing with tens of
+            // thousands of entries. Therefore, we do not always already sort the staking events in the stakingEvents
+            // getter, but in a separate getter, such that sorting is only done on demand, when this separate getter is
+            // accessed. If the sortedStakingEvents getter is accessed multiple times or from multiple places, sorting
+            // is only done once, as the getter caches the result, as long as stakingEvents didn't change.
+            // Also note that by use of sort() (as opposed to toSorted()) here we sort the original stakingEvents array
+            // as a side effect. While this is not necessarily the cleanest behavior for a getter, this side effect is
+            // desirable here, as a repeated sort call on the same, already sorted data can then be cheaper, depending
+            // on the sort algorithm used underneath.
+            stakingEvents.value.sort((a: StakingEvent, b: StakingEvent) =>
+                // @ts-expect-error ts complains about Dates not being numbers, however they're automatically converted.
+                // We do not manually call valueOf() or getTime() as a small performance optimization as we process
+                // potentially many staking events.
+                new Date(a.date) - new Date(b.date));
+            return stakingEvents.value;
+        },
         restakingRewards: (state, { stakingEvents, activeValidator }): Readonly<number | null> => {
             // Only show rewards for restaking validators
             if (

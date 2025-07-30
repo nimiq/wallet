@@ -99,14 +99,17 @@ const verticalLinesBelowLine = {
 export default defineComponent({
     name: 'StakingRewardsChart',
     setup() {
-        const { stakingEvents } = useStakingStore();
+        const { sortedStakingEvents } = useStakingStore();
         const selectedRange = ref<TimeRange>('ALL');
         const isLoading = ref(true);
         const loadError = ref(false);
         const LineChartComponent = ref(null);
 
         // Calculate date range based on selected time period
-        const getDateRange = (range: TimeRange, rewardEvents: StakingEvent[]): { startDate: Date, endDate: Date } => {
+        const getDateRange = (
+            range: TimeRange,
+            rewardEvents: Readonly<StakingEvent[]>,
+        ): { startDate: Date, endDate: Date } => {
             const now = new Date();
 
             switch (range) {
@@ -134,7 +137,11 @@ export default defineComponent({
         };
 
         // Calculate rewards earned before the selected time range (for proper baseline)
-        const calculateBaselineRewards = (rewardEvents: StakingEvent[], startDate: Date, range: TimeRange): number => {
+        const calculateBaselineRewards = (
+            rewardEvents: Readonly<StakingEvent[]>,
+            startDate: Date,
+            range: TimeRange,
+        ): number => {
             if (range === 'ALL') return 0;
 
             return rewardEvents
@@ -183,21 +190,15 @@ export default defineComponent({
 
         // Generate chart data from staking reward events
         const chartData = computed(() => {
-            if (!stakingEvents.value || !Array.isArray(stakingEvents.value)) return null;
+            if (!sortedStakingEvents.value || !sortedStakingEvents.value.length) return null;
 
-            // Sort by date
-            const rewardEvents = [...stakingEvents.value]
-                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-            if (rewardEvents.length === 0) return null;
-
-            const { startDate, endDate } = getDateRange(selectedRange.value, rewardEvents);
-            const baselineRewards = calculateBaselineRewards(rewardEvents, startDate, selectedRange.value);
+            const { startDate, endDate } = getDateRange(selectedRange.value, sortedStakingEvents.value);
+            const baselineRewards = calculateBaselineRewards(sortedStakingEvents.value, startDate, selectedRange.value);
 
             // Pre-calculate cumulative rewards for efficient lookup
             const cumulativeRewards: number[] = [];
             let cumulative = 0;
-            for (const event of rewardEvents) {
+            for (const event of sortedStakingEvents.value) {
                 cumulative += event.value;
                 cumulativeRewards.push(cumulative);
             }
@@ -213,8 +214,8 @@ export default defineComponent({
 
                 // Find the index of the last event that occurred before or at pointDate
                 let eventIndex = -1;
-                for (let j = 0; j < rewardEvents.length; j++) {
-                    if (new Date(rewardEvents[j].date) <= pointDate) {
+                for (let j = 0; j < sortedStakingEvents.value.length; j++) {
+                    if (new Date(sortedStakingEvents.value[j].date) <= pointDate) {
                         eventIndex = j;
                     } else {
                         break; // Events are sorted, so we can break early

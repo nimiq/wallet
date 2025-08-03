@@ -223,11 +223,9 @@ export const useStakingStore = createStore({
             // as a side effect. While this is not necessarily the cleanest behavior for a getter, this side effect is
             // desirable here, as a repeated sort call on the same, already sorted data can then be cheaper, depending
             // on the sort algorithm used underneath.
-            stakingEvents.value.sort((a: StakingEvent, b: StakingEvent) =>
-                // @ts-expect-error ts complains about Dates not being numbers, however they're automatically converted.
-                // We do not manually call valueOf() or getTime() as a small performance optimization as we process
-                // potentially many staking events.
-                new Date(a.date) - new Date(b.date));
+            // Since the dates are ISO 8601 encoded, we can simply sort the date strings in lexicographic order without
+            // having to parse the dates to a timestamp, which would be much more expensive.
+            stakingEvents.value.sort((a: StakingEvent, b: StakingEvent) => a.date < b.date ? -1 : 1);
             return stakingEvents.value;
         },
         restakingRewards: (state, { stakingEvents, activeValidator }): Readonly<number | null> => {

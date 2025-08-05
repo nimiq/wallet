@@ -239,8 +239,8 @@ msgstr "Limites du compte"
 msgid "Accounts"
 msgstr "Comptes"
 
-#: src/components/layouts/AccountOverview.vue:154
-#: src/components/layouts/AccountOverview.vue:268
+#: src/components/layouts/AccountOverview.vue:159
+#: src/components/layouts/AccountOverview.vue:273
 msgid "Activate"
 msgstr "Activer"
 
@@ -337,7 +337,7 @@ msgstr "Toutes"
 msgid "All countries"
 msgstr "Tous les pays"
 
-#: src/components/layouts/AccountOverview.vue:276
+#: src/components/layouts/AccountOverview.vue:281
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -489,7 +489,7 @@ msgid "BIC works, too."
 msgstr "Le BIC fonctionne également."
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:135
+#: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:125
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -729,7 +729,7 @@ msgstr "Choisir un Validateur"
 msgid "Choose an Address"
 msgstr "Choisissez une adresse"
 
-#: src/components/layouts/AccountOverview.vue:224
+#: src/components/layouts/AccountOverview.vue:229
 msgid "Choose Stablecoin"
 msgstr "Choisir un Stablecoin"
 
@@ -1222,23 +1222,23 @@ msgstr ""
 msgid "Failed to fetch transactions"
 msgstr "Échec de la récupération des transactions"
 
-#: src/components/TestnetFaucet.vue:134
+#: src/components/TestnetFaucet.vue:138
 msgid "Faucet error - please try again."
 msgstr "Erreur du Faucet - veuillez réessayer."
 
-#: src/components/TestnetFaucet.vue:77
+#: src/components/TestnetFaucet.vue:81
 msgid "Faucet is empty"
 msgstr "Le Faucet est vide"
 
-#: src/components/TestnetFaucet.vue:81
+#: src/components/TestnetFaucet.vue:85
 msgid "Faucet is not available from your location"
 msgstr "Faucet non disponible depuis votre localisation"
 
-#: src/components/TestnetFaucet.vue:88
+#: src/components/TestnetFaucet.vue:92
 msgid "Faucet unavailable"
 msgstr "Faucet indisponible"
 
-#: src/components/TestnetFaucet.vue:73
+#: src/components/TestnetFaucet.vue:77
 msgid "Faucet unavailable (wrong network)"
 msgstr "Faucet indisponible (mauvais réseau)"
 
@@ -2281,7 +2281,7 @@ msgstr "Fiabilité"
 msgid "Rename"
 msgstr "Renommer"
 
-#: src/components/TestnetFaucet.vue:139 src/components/TestnetFaucet.vue:145
+#: src/components/TestnetFaucet.vue:143 src/components/TestnetFaucet.vue:149
 msgid "Request failed"
 msgstr "Requête échouée"
 
@@ -2768,7 +2768,7 @@ msgstr "Frais minimes et paiements très rapides"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/layouts/AccountOverview.vue:189
+#: src/components/layouts/AccountOverview.vue:194
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "Swap BTC {arrowIcon} {ticker}"
 
@@ -2803,11 +2803,11 @@ msgstr "Le Swap a expiré"
 msgid "Swap more per 30 days."
 msgstr "Swappez-en plus par période de 30 jours."
 
-#: src/components/layouts/AccountOverview.vue:118
+#: src/components/layouts/AccountOverview.vue:123
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "Swap NIM {arrowIcon} {ticker}"
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:87
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Swap NIM {arrowIcon} BTC"
 
@@ -2878,7 +2878,7 @@ msgid "TEN31 Verification"
 msgstr "Vérification TEN31"
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AccountOverview.vue:221
 #: src/components/layouts/AddressOverview.vue:131
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -3020,7 +3020,7 @@ msgstr ""
 "Elles ne doivent pas être considérées comme une approbation ou une "
 "recommandation de la part de Nimiq."
 
-#: src/components/TestnetFaucet.vue:130
+#: src/components/TestnetFaucet.vue:134
 msgid "There are currently no free NIM available."
 msgstr "Il n'y a actuellement aucun NIM gratuit disponible."
 
@@ -3143,7 +3143,7 @@ msgstr "Il arrive que ce pool ne produise pas de blocs."
 msgid "This pool usually produces blocks."
 msgstr "Ce pool produit habituellement des blocs."
 
-#: src/components/TestnetFaucet.vue:125
+#: src/components/TestnetFaucet.vue:129
 msgid "This service is currently not available in your region."
 msgstr "Ce service n'est actuellement pas disponible dans votre région."
 
@@ -3200,8 +3200,8 @@ msgstr ""
 "Pour changer de validateur, dé-stakez tous vos NIM et relancez le processus."
 " Cliquez ici pour {unstakeLink}."
 
-#: src/components/layouts/AccountOverview.vue:123
-#: src/components/layouts/AccountOverview.vue:194
+#: src/components/layouts/AccountOverview.vue:128
+#: src/components/layouts/AccountOverview.vue:199
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr "Pour échanger avec de l'USDC/USDT, choisissez un Stablecoin."
@@ -3340,7 +3340,7 @@ msgid "Update validator"
 msgstr "Mettre à jour le validateur"
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:213
+#: src/components/layouts/AccountOverview.vue:218
 #: src/components/layouts/AddressOverview.vue:128
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
@@ -3499,7 +3499,7 @@ msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr ""
 "Vous ne pouvez en recevoir que depuis des adresses {ticker} de Polygon !"
 
-#: src/components/TestnetFaucet.vue:119
+#: src/components/TestnetFaucet.vue:123
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 "Vous pourrez recevoir plus de NIM gratuitement dans {waitTime} heures."

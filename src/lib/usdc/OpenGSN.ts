@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import type { BigNumber, Contract } from 'ethers';
-import { getPolygonBlockNumber, PolygonClient } from '../../ethers';
+import { getPolygonBlockNumber, PolygonClient, safeQueryFilter } from '../../ethers';
 import { OPENGSN_RELAY_HUB_CONTRACT_ABI } from './ContractABIs';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../Constants';
@@ -119,7 +119,8 @@ async function* relayServerRegisterGen(
         const { fromBlock, toBlock } = blocks.value;
 
         // eslint-disable-next-line no-await-in-loop
-        events = await relayHub.queryFilter(
+        events = await safeQueryFilter(
+            relayHub,
             relayHub.filters.RelayServerRegistered(),
             fromBlock,
             toBlock,
@@ -151,7 +152,7 @@ async function* relayServerRegisterGen(
                 return false;
             }
 
-            return <RelayRegistration> {
+            return <RelayRegistration>{
                 relayManagerAddress,
                 baseRelayFee,
                 pctRelayFee,
@@ -264,7 +265,7 @@ async function* relayServerRegisterGen(
                 const filterFromBlock = Math.max(filterToBlock - STEP_BLOCKS, earliestBlock);
 
                 // eslint-disable-next-line no-await-in-loop
-                const logs = await relayHub.queryFilter(filter, filterFromBlock, filterToBlock);
+                const logs = await safeQueryFilter(relayHub, filter, filterFromBlock, filterToBlock);
                 if (logs.length) break;
 
                 startBlock = filterFromBlock;

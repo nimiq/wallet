@@ -50,7 +50,7 @@ export default {
         enabled: true,
         networkId: 137,
         rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
-        rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned
+        rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
         usdc_bridged: {
             tokenContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
             transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',

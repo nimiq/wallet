@@ -13,10 +13,21 @@ crypto.createHash = (alg, opts) => {
     return origCreateHash(alg === 'md4' ? 'md5' : alg, opts);
 };
 
-const buildName = process.env.NODE_ENV === 'production' ? process.env.build : 'local';
+let buildName;
+if (process.env.NODE_ENV === 'production') {
+    buildName = process.env.build;
+} else if (process.env.build?.startsWith('demo')) {
+    buildName = 'demo';
+} else {
+    buildName = 'local';
+}
+
 if (!buildName) {
     throw new Error('Please specify the build config with the `build` environment variable');
 }
+
+// Log the buildName value to help debugging
+console.log('Build name:', buildName);
 
 let release;
 if (process.env.NODE_ENV !== 'production') {
@@ -24,6 +35,9 @@ if (process.env.NODE_ENV !== 'production') {
 } else if (process.env.CI) {
     // CI environment variables are documented at https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
     release = `${process.env.CI_COMMIT_BRANCH}-${process.env.CI_PIPELINE_ID}-${process.env.CI_COMMIT_SHORT_SHA}`;
+} else if (buildName.startsWith('demo')) {
+    // For demo builds, use a special release tag format
+    release = `demo-${new Date().toISOString().split('T')[0]}`;
 } else {
     release = child_process.execSync("git tag --points-at HEAD").toString().split('\n')[0];
 }
@@ -46,11 +60,38 @@ function sri(asset) {
 process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = sri(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')));
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
 
-console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
+console.log('Building for:', buildName, ', release:', `"wallet-${release}"`, buildName === 'demo' ? '(DEMO MODE)' : '');
+
+const configFileMap = {
+    'local': 'config.local.ts',
+    'testnet': 'config.testnet.ts',
+    'mainnet': 'config.mainnet.ts',
+    'demo': 'config.local.ts',
+    'demo-production': 'config.mainnet.ts',
+};
+
+const tsConfigFileMap = {
+    'local': 'tsconfig.local.json',
+    'testnet': 'tsconfig.testnet.json',
+    'mainnet': 'tsconfig.mainnet.json',
+    'demo': 'tsconfig.local.json',
+    'demo-production': 'tsconfig.mainnet.json',
+};
+
+const configFile = configFileMap[buildName] || 'config.local.ts';
+const tsConfigFile = tsConfigFileMap[buildName] || 'tsconfig.json';
+
+const specificConfigPath = path.join(__dirname, 'src/config', configFile);
+const configPath = fs.existsSync(specificConfigPath) ? specificConfigPath : path.join(__dirname, 'src/config/config.local.ts');
+
+const specificTsConfigPath = path.join(__dirname, tsConfigFile);
+const tsConfigPath = fs.existsSync(specificTsConfigPath) ? specificTsConfigPath : path.join(__dirname, 'tsconfig.json');
+
+console.log(`Using config: ${configPath}, tsconfig: ${tsConfigPath}`);
 
 module.exports = {
     pages: {
-        index: 'src/main.ts',
+        index: buildName === 'demo' ? 'src/main-demo.ts' : 'src/main.ts',
         'swap-kyc-handler': {
             // Unfortunately this includes the complete chunk-vendors and chunk-common, and even their css. Can we
             // improve this? The `chunks` option doesn't seem to be too useful here. At least the chunks should be
@@ -66,6 +107,7 @@ module.exports = {
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
                 'process.env.VERSION': `"${release}"`,
+                'process.env.IS_DEMO_BUILD': JSON.stringify(buildName === 'demo'),
             }),
             new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],
@@ -75,7 +117,7 @@ module.exports = {
         // Resolve config for yarn build
         resolve: {
             alias: {
-                config: path.join(__dirname, `src/config/config.${buildName}.ts`)
+                config: configPath
             },
             // In Webpack 5, NodeJS polyfills have to be explicitly configured
             fallback: {
@@ -152,8 +194,8 @@ module.exports = {
             .use('ts-loader')
                 .loader('ts-loader')
                 .tap(options => {
-                    options.configFile = `tsconfig.${buildName}.json`
-                    return options
+                    options.configFile = tsConfigPath;
+                    return options;
                 });
     },
     // Note: the pwa is only setup on production builds, thus to test this config, a production build has to be built
@@ -163,7 +205,8 @@ module.exports = {
             mainnet: 'Nimiq Wallet',
             testnet: 'Nimiq Testnet Wallet',
             local: 'Nimiq Local Wallet',
-        }[buildName],
+            demo: 'Nimiq Wallet Demo',
+        }[buildName] || 'Nimiq Wallet',
         msTileColor: '#1F2348',
         manifestOptions: {
             start_url: '/',
@@ -186,7 +229,9 @@ module.exports = {
                     type: "image/png"
                 },
             ],
-            description: "Securely manage your Nimiq and Bitcoin accounts. Send and receive NIM and BTC, view balances, swap between NIM and BTC, and buy and sell with Nimiq OASIS.",
+            description: buildName === 'demo'
+                ? "Experience the Nimiq Wallet in demo mode. Try out all features with simulated accounts and transactions."
+                : "Securely manage your Nimiq and Bitcoin accounts. Send and receive NIM and BTC, view balances, swap between NIM and BTC, and buy and sell with Nimiq OASIS.",
             screenshots: [
                 {
                     src: "./img/screenshots/01-Send-and-receive.png",

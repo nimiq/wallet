@@ -297,30 +297,30 @@ export async function safeQueryFilter(
     // Subsequent tries halve the range until success or minimum range reached.
     while (currentStart <= toBlock) {
         // Attempt to fetch logs in the current range.
-        // Reduce the window size until it no longer crosses breaches alchemy's limits.
+        // Reduce the window size until it no longer exceeds alchemy's limits.
         while (true) {
             try {
-                console.warn('Trying to fetch ', currentStart, currentEnd);
+                console.warn('Trying to fetch from Alchemy:', currentStart, currentEnd);
                 // eslint-disable-next-line no-await-in-loop
                 const eventsChunk = await contract.queryFilter(event, currentStart, currentEnd);
                 allEvents.push(...eventsChunk);
                 break;
             } catch (err: any) {
-                const currentRage = currentEnd - currentStart;
+                const currentRange = currentEnd - currentStart;
 
                 // Fail if minimum range is reached.
-                if (currentRage <= 8) {
+                if (currentRange <= 8) {
                     // eslint-disable-next-line
                     console.error('Query filter failed with the smallest window, giving up.', err, currentStart, currentEnd);
                     throw err;
                 }
                 // Try the recommended max range first, otherwise halves the range.
-                if (currentRage > MAX_RECOMMENDED_RANGE) {
+                if (currentRange > MAX_RECOMMENDED_RANGE) {
                     currentEnd = currentStart + MAX_RECOMMENDED_RANGE;
-                    console.warn('Query filter failed retrying with rage of 2000.', err, currentStart, currentEnd);
+                    console.warn('Query filter failed. Retrying with range of 2000.', err, currentStart, currentEnd);
                 } else {
-                    currentEnd = Math.floor(currentRage / 2) + currentStart;
-                    console.warn('Query filter failed retrying with halved range.', err, currentStart, currentEnd);
+                    currentEnd = currentStart + Math.floor(currentRange / 2);
+                    console.warn('Query filter failed. Retrying with halved range.', err, currentStart, currentEnd);
                 }
             }
         }
@@ -971,8 +971,8 @@ export async function launchPolygon() {
                 console.debug(`Querying native logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    safeQueryFilter(client.usdcBridgedToken, filterIncoming, startHeight, endHeight),
-                    safeQueryFilter(client.usdcBridgedToken, filterOutgoing, startHeight, endHeight),
+                    safeQueryFilter(client.usdcToken, filterIncoming, startHeight, endHeight),
+                    safeQueryFilter(client.usdcToken, filterOutgoing, startHeight, endHeight),
                 ]);
 
                 // Ignore address poisoning transactions
@@ -1232,8 +1232,8 @@ export async function launchPolygon() {
                 console.debug(`Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
 
                 let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
-                    safeQueryFilter(client.usdcBridgedToken, filterIncoming, startHeight, endHeight),
-                    safeQueryFilter(client.usdcBridgedToken, filterOutgoing, startHeight, endHeight),
+                    safeQueryFilter(client.usdtBridgedToken, filterIncoming, startHeight, endHeight),
+                    safeQueryFilter(client.usdtBridgedToken, filterOutgoing, startHeight, endHeight),
                 ]);
 
                 // Ignore address poisoning transactions

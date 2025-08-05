@@ -302,7 +302,6 @@ export async function safeQueryFilter(
         // Reduce the window size until it no longer exceeds alchemy's limits.
         while (true) { // eslint-disable-line no-constant-condition
             try {
-                console.warn('Trying to fetch from Alchemy:', currentStart, currentEnd);
                 // eslint-disable-next-line no-await-in-loop
                 const eventsChunk = await contract.queryFilter(event, currentStart, currentEnd);
                 allEvents.push(...eventsChunk);

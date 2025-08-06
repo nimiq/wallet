@@ -33,14 +33,14 @@ import {
     insertFakeBtcTransactions,
     insertFakeUsdcTransactions,
     insertFakeUsdtTransactions,
-    createStakeTransaction,
-    createSwapOutgoingTransaction,
-    createSwapIncomingTransaction,
-    completeSwapTransactions,
-    transformNimTransaction,
-    transformBtcTransaction,
-    updateNimBalance,
-    updateBtcBalance,
+    // createStakeTransaction,
+    // createSwapOutgoingTransaction,
+    // createSwapIncomingTransaction,
+    // completeSwapTransactions,
+    // transformNimTransaction,
+    // transformBtcTransaction,
+    // updateNimBalance,
+    // updateBtcBalance,
 } from './DemoTransactions';
 import { replaceBuyNimFlow, replaceStakingFlow } from './DemoFlows';
 import { interceptFetchRequest, listenForSwapChanges } from './DemoSwaps';

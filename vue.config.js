@@ -34,12 +34,12 @@ const isDemoBuild = buildName.startsWith('demo');
 let release;
 if (process.env.NODE_ENV !== 'production') {
     release = 'dev';
-} else if (process.env.CI) {
-    // CI environment variables are documented at https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-    release = `${process.env.CI_COMMIT_BRANCH}-${process.env.CI_PIPELINE_ID}-${process.env.CI_COMMIT_SHORT_SHA}`;
 } else if (isDemoBuild) {
     // For demo builds, use a special release tag format
     release = `demo-${new Date().toISOString().split('T')[0]}`;
+} else if (process.env.CI) {
+    // CI environment variables are documented at https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+    release = `${process.env.CI_COMMIT_BRANCH}-${process.env.CI_PIPELINE_ID}-${process.env.CI_COMMIT_SHORT_SHA}`;
 } else {
     release = child_process.execSync("git tag --points-at HEAD").toString().split('\n')[0];
 }

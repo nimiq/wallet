@@ -1,5 +1,8 @@
 # Nimiq Wallet
 
+> [!WARNING]
+> There is an Open PR: https://github.com/nimiq/wallet/pull/263 that it is out of sync already.
+
 ## Project setup
 ```
 yarn install

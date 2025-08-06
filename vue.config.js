@@ -29,13 +29,15 @@ if (!buildName) {
 // Log the buildName value to help debugging
 console.log('Build name:', buildName);
 
+const isDemoBuild = buildName.startsWith('demo');
+
 let release;
 if (process.env.NODE_ENV !== 'production') {
     release = 'dev';
 } else if (process.env.CI) {
     // CI environment variables are documented at https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
     release = `${process.env.CI_COMMIT_BRANCH}-${process.env.CI_PIPELINE_ID}-${process.env.CI_COMMIT_SHORT_SHA}`;
-} else if (buildName.startsWith('demo')) {
+} else if (isDemoBuild) {
     // For demo builds, use a special release tag format
     release = `demo-${new Date().toISOString().split('T')[0]}`;
 } else {
@@ -60,7 +62,7 @@ function sri(asset) {
 process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = sri(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')));
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
 
-console.log('Building for:', buildName, ', release:', `"wallet-${release}"`, buildName.startsWith('demo') ? '(DEMO MODE)' : '');
+console.log('Building for:', buildName, ', release:', `"wallet-${release}"`, isDemoBuild ? '(DEMO MODE)' : '');
 
 const configFileMap = {
     'local': 'config.local.ts',
@@ -91,7 +93,7 @@ console.log(`Using config: ${configPath}, tsconfig: ${tsConfigPath}`);
 
 module.exports = {
     pages: {
-        index: buildName === 'demo' ? 'src/main-demo.ts' : 'src/main.ts',
+        index: isDemoBuild ? 'src/main-demo.ts' : 'src/main.ts',
         'swap-kyc-handler': {
             // Unfortunately this includes the complete chunk-vendors and chunk-common, and even their css. Can we
             // improve this? The `chunks` option doesn't seem to be too useful here. At least the chunks should be
@@ -107,7 +109,7 @@ module.exports = {
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
                 'process.env.VERSION': `"${release}"`,
-                'process.env.IS_DEMO_BUILD': buildName.startsWith('demo'),
+                'process.env.IS_DEMO_BUILD': isDemoBuild,
             }),
             new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],

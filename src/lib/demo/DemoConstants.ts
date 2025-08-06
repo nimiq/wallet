@@ -173,5 +173,5 @@ export const bankSvg = `<svg class="bank-icon" width="48" height="48" viewBox="0
  * This ensures demo builds are separate deployments with no runtime activation.
  */
 export function checkIfDemoIsActive(): boolean {
-    return process.env.IS_DEMO_BUILD === 'true';
+    return !!(process.env as any).IS_DEMO_BUILD;
 }

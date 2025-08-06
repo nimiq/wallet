@@ -60,7 +60,7 @@ function sri(asset) {
 process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = sri(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')));
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
 
-console.log('Building for:', buildName, ', release:', `"wallet-${release}"`, buildName === 'demo' ? '(DEMO MODE)' : '');
+console.log('Building for:', buildName, ', release:', `"wallet-${release}"`, buildName.startsWith('demo') ? '(DEMO MODE)' : '');
 
 const configFileMap = {
     'local': 'config.local.ts',
@@ -107,7 +107,7 @@ module.exports = {
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
                 'process.env.VERSION': `"${release}"`,
-                'process.env.IS_DEMO_BUILD': JSON.stringify(buildName === 'demo'),
+                'process.env.IS_DEMO_BUILD': JSON.stringify(buildName.startsWith('demo')),
             }),
             new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],

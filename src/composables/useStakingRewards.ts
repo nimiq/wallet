@@ -1,6 +1,6 @@
 import { computed } from '@vue/composition-api';
-import { useStakingStore } from '../stores/Staking';
 import { useI18n } from '@/lib/useI18n';
+import { useStakingStore } from '@/stores/Staking';
 
 export interface MonthlyReward {
     total: number;

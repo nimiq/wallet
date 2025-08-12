@@ -58,8 +58,13 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex-spacer"></div>
+
+            <div class="flex-row">
+                <button class="nq-button-s" @click="goToStakingOverview">
+                    {{ $t('Go to staking overview') }}
+                </button>
+            </div>
         </PageBody>
     </Modal>
 </template>
@@ -81,6 +86,7 @@ import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_
 import { useStakingRewards } from '@/composables/useStakingRewards';
 import { useStakingStore } from '@/stores/Staking';
 import { useAddressStore } from '@/stores/Address';
+import { RouteName, useRouter } from '@/router';
 import ValidatorIcon from './ValidatorIcon.vue';
 import Modal from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
@@ -97,7 +103,7 @@ export default defineComponent({
         const { getMonthLabel, isOngoingMonth, getMonthlyReward } = useStakingRewards();
         const { validators: validatorList } = useStakingStore();
         const { activeAddress, activeAddressInfo } = useAddressStore();
-
+        const router = useRouter();
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         // Historic fiat value for the whole month's rewards
@@ -188,6 +194,10 @@ export default defineComponent({
             return 'name' in validator ? validator.name : validatorAddress;
         });
 
+        const goToStakingOverview = () => {
+            router.push({ name: RouteName.Staking });
+        };
+
         return {
             constants,
             fiatHistoric,
@@ -201,6 +211,7 @@ export default defineComponent({
             myLabel,
             validatorList,
             validatorName,
+            goToStakingOverview,
         };
     },
     components: {

@@ -1197,6 +1197,7 @@ msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
+#: src/components/staking/StakingRewardsModal.vue:42
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1292,6 +1293,10 @@ msgstr ""
 msgid "Get verified for higher limits by authenticating with {provider}. These are the requirements:"
 msgstr ""
 
+#: src/components/staking/StakingRewardsModal.vue:65
+msgid "Go to staking overview"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
@@ -1337,6 +1342,7 @@ msgstr ""
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
 #: src/components/modals/UsdtTransactionModal.vue:167
+#: src/components/staking/StakingRewardsModal.vue:52
 msgid "Historic value"
 msgstr ""
 
@@ -2844,6 +2850,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:224
 #: src/components/modals/TransactionModal.vue:209
 #: src/components/modals/TransactionModal.vue:234
+#: src/components/staking/StakingRewardsModal.vue:54
 msgid "This historic value is based on an average of cross-exchange prices. It might vary due to market volatility and liquidity."
 msgstr ""
 

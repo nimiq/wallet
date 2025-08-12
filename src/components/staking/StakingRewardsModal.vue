@@ -36,18 +36,17 @@
                     :amount="monthlyReward.total"
                     value-mask
                 />
-
-                <!-- <div class="flex-row">
-                    <div v-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
-                    <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                <div class="flex-row">
+                    <div v-if="fiatHistoricValue === undefined" class="fiat-amount">&nbsp;</div>
+                    <div v-else-if="isFiatHistoricUnavailable" class="fiat-amount">
                         {{ $t('Fiat value unavailable') }}
                     </div>
                     <div v-else class="fiat-amount">
                         <Tooltip>
                             <template slot="trigger">
                                 <FiatAmount
-                                    :amount="fiat.value"
-                                    :currency="fiat.currency"
+                                    :amount="fiatHistoricValue"
+                                    :currency="fiatHistoricCurrency"
                                     value-mask/>
                             </template>
                             <span>{{ $t('Historic value') }}</span>
@@ -57,7 +56,7 @@
                             </p>
                         </Tooltip>
                     </div>
-                </div> -->
+                </div>
             </div>
 
             <div class="flex-spacer"></div>
@@ -66,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -75,28 +74,16 @@ import {
     AddressDisplay,
     FiatAmount,
     Tooltip,
-    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
-import { useI18n } from '@/lib/useI18n';
-import Amount from '../Amount.vue';
-import Modal from '../modals/Modal.vue';
-import BlueLink from '../BlueLink.vue';
-import { useTransactionsStore, toMs } from '../../stores/Transactions';
-import { useAddressStore } from '../../stores/Address';
-import { useContactsStore } from '../../stores/Contacts';
-import { useNetworkStore } from '../../stores/Network';
-import { twoDigit } from '../../lib/NumberFormatting';
-import { parseData } from '../../lib/DataFormatting';
-import {
-    CryptoCurrency,
-    FIAT_PRICE_UNAVAILABLE,
-} from '../../lib/Constants';
-import { useAccountStore } from '../../stores/Account';
-import { explorerTxLink } from '../../lib/ExplorerUtils';
-import { getStakingTransactionMeaning } from '../../lib/StakingUtils';
-import ValidatorIcon from './ValidatorIcon.vue';
+import { useFiatStore } from '@/stores/Fiat';
+import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
+import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { useStakingRewards } from '@/composables/useStakingRewards';
 import { useStakingStore } from '@/stores/Staking';
+import { useAddressStore } from '@/stores/Address';
+import ValidatorIcon from './ValidatorIcon.vue';
+import Modal from '../modals/Modal.vue';
+import Amount from '../Amount.vue';
 
 export default defineComponent({
     name: 'staking-rewards-modal',
@@ -111,18 +98,87 @@ export default defineComponent({
         const { validators: validatorList } = useStakingStore();
         const { activeAddress, activeAddressInfo } = useAddressStore();
 
-        const constants = {
-            FIAT_PRICE_UNAVAILABLE,
-        };
-        // Fiat conversion (simplified)
-        const fiat = computed(() => ({
-            value: undefined,
-            currency: 'USD',
-        }));
+        const constants = { FIAT_PRICE_UNAVAILABLE };
+
+        // Historic fiat value for the whole month's rewards
+        const { currency: preferredFiatCurrency, timestamp: lastExchangeRateUpdateTime } = useFiatStore();
+        const fiatHistoric = ref<
+            { value: number | typeof FIAT_PRICE_UNAVAILABLE | undefined, currency: FiatCurrency } | null
+        >(null);
+        const fiatHistoricValue = computed(() => fiatHistoric.value?.value);
+        const fiatHistoricCurrency = computed(() => fiatHistoric.value?.currency || FiatCurrency.USD);
+        const isFiatHistoricUnavailable = computed(() => fiatHistoric.value?.value === FIAT_PRICE_UNAVAILABLE);
+        const historyFiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
+            preferredFiatCurrency.value,
+            FIAT_API_PROVIDER_TX_HISTORY,
+        ) ? preferredFiatCurrency.value : FiatCurrency.USD);
 
         const monthLabel = computed(() => getMonthLabel(props.month));
         const showOngoingIndicator = computed(() => isOngoingMonth(props.month));
         const monthlyReward = computed(() => getMonthlyReward(props.month));
+
+        // Build timestamps list for this month's staking reward events
+        const monthRewardTimestamps = computed(() => {
+            const rewards = monthlyReward.value;
+            if (!rewards) return [];
+            // We need to collect all reward event timestamps for this month. Pull from store's stakingEvents.
+            // Filter by month key equality.
+            const [year, month] = props.month.split('-').map((s) => parseInt(s, 10));
+            const { stakingEvents } = useStakingStore();
+            const events = stakingEvents.value || [];
+            return events
+                .filter((e) => e.type === 6)
+                .filter((e) => {
+                    const d = new Date(e.date);
+                    return d.getUTCFullYear() === year && (d.getUTCMonth() + 1) === month;
+                })
+                .map((e) => new Date(e.date).getTime());
+        });
+
+        // Recompute fiat when inputs change
+        const recomputeFiat = async () => {
+            const timestamps = [...monthRewardTimestamps.value];
+            const rewards = monthlyReward.value;
+            if (!rewards || timestamps.length === 0) {
+                fiatHistoric.value = { currency: historyFiatCurrency.value, value: undefined };
+                return;
+            }
+            // Fetch historic rates for each reward timestamp and sum converted values
+            const ratesMap = await getHistoricExchangeRates(
+                CryptoCurrency.NIM,
+                historyFiatCurrency.value,
+                timestamps,
+                FIAT_API_PROVIDER_TX_HISTORY,
+            );
+            // To map each timestamp to its corresponding event value, re-iterate the events in the same filtering order
+            const { stakingEvents } = useStakingStore();
+            const [year, month] = props.month.split('-').map((s) => parseInt(s, 10));
+            const events = (stakingEvents.value || [])
+                .filter((e) => e.type === 6)
+                .filter((e) => {
+                    const d = new Date(e.date);
+                    return d.getUTCFullYear() === year && (d.getUTCMonth() + 1) === month;
+                });
+            let totalFiat = 0;
+            for (const e of events) {
+                const ts = new Date(e.date).getTime();
+                const rate = ratesMap.get(ts);
+                if (rate === undefined) {
+                    fiatHistoric.value = { currency: historyFiatCurrency.value, value: FIAT_PRICE_UNAVAILABLE };
+                    return;
+                }
+                totalFiat += rate * (e.value / 1e5);
+            }
+            fiatHistoric.value = { currency: historyFiatCurrency.value, value: totalFiat };
+        };
+
+        watch([
+            () => props.month,
+            () => historyFiatCurrency.value,
+            () => lastExchangeRateUpdateTime.value,
+            () => monthRewardTimestamps.value.length,
+        ], () => { recomputeFiat(); });
+        recomputeFiat();
 
         const myLabel = computed(() => activeAddressInfo.value?.label);
         const validatorName = computed(() => {
@@ -134,7 +190,10 @@ export default defineComponent({
 
         return {
             constants,
-            fiat,
+            fiatHistoric,
+            fiatHistoricValue,
+            fiatHistoricCurrency,
+            isFiatHistoricUnavailable,
             monthLabel,
             showOngoingIndicator,
             monthlyReward,
@@ -154,8 +213,6 @@ export default defineComponent({
         AddressDisplay,
         FiatAmount,
         Tooltip,
-        InfoCircleSmallIcon,
-        BlueLink,
         ValidatorIcon,
     },
 });

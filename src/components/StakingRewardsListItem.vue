@@ -1,5 +1,5 @@
 <template>
-    <div class="reset staking-reward-item">
+    <div class="reset staking-reward-item" @click="openRewardsHistory">
         <div class="info">
             <div class="title flex-row">
                 <!-- eslint-disable max-len -->
@@ -52,12 +52,12 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { useRouter } from '@/router';
-import { useI18n } from '@/lib/useI18n';
+import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
-import Amount from './Amount.vue';
+import { useStakingRewards } from '@/composables/useStakingRewards';
 import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ValidatorIcon from './staking/ValidatorIcon.vue';
+import Amount from './Amount.vue';
 
 export default defineComponent({
     name: 'StakingRewardsListItem',
@@ -87,49 +87,21 @@ export default defineComponent({
     },
     setup(props) {
         const router = useRouter();
-        const { $t, locale } = useI18n();
-        const { validators: validatorList, activeStake } = useStakingStore();
+        const { validators: validatorList } = useStakingStore();
+        const { getMonthLabel, isOngoingMonth } = useStakingRewards();
 
-        const monthLabel = computed(() => {
-            const [year, month] = props.month.split('-');
-            const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
-            const now = new Date();
-
-            // Check if it's the current month
-            if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
-                return $t('This month');
-            }
-
-            return new Intl.DateTimeFormat(locale, {
-                month: 'long',
-                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
-            }).format(date);
-        });
-
-        const validators = computed(() => props.validatorsAddresses.map((validator) => validatorList.value[validator]));
+        const monthLabel = computed(() => getMonthLabel(props.month));
+        const validators = computed(() => props.validatorsAddresses.map(
+            (validator) => validatorList.value[validator] || { address: validator }),
+        );
 
         // Check if we should show the "Ongoing" indicator
-        const showOngoingIndicator = computed(() => {
-            // Check if it's the current month
-            const [year, month] = props.month.split('-');
-            const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
-            const now = new Date();
-            const isCurrentMonth = date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-
-            if (!isCurrentMonth) return false;
-
-            // Check if the user is currently staking with any of the validators in this list
-            if (!activeStake.value || !activeStake.value.validator) return false;
-
-            // Check if the active validator is the last one in the list (most recent rewards)
-            const lastValidatorAddress = props.validatorsAddresses[props.validatorsAddresses.length - 1];
-            return activeStake.value.validator === lastValidatorAddress;
-        });
+        const showOngoingIndicator = computed(() => isOngoingMonth(props.month));
 
         // Currently unused, as The Reward history is much too large
         const openRewardsHistory = () => {
             router.push({
-                name: 'staking-rewards-history',
+                name: RouteName.StakingRewards,
                 params: { month: props.month },
             });
         };
@@ -163,13 +135,13 @@ export default defineComponent({
     background: transparent;
     border-radius: .75rem;
     font-size: var(--body-size);
-    // cursor: pointer;
-    // transition: background 400ms var(--nimiq-ease);
+    cursor: pointer;
+    transition: background 400ms var(--nimiq-ease);
 
-    // &:hover,
-    // &:focus {
-    //     background: var(--nimiq-highlight-bg);
-    // }
+    &:hover,
+    &:focus {
+        background: var(--nimiq-highlight-bg);
+    }
 
     > * {
         margin: 0rem 1rem;

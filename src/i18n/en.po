@@ -1819,6 +1819,7 @@ msgstr ""
 msgid "One Account, many Addresses"
 msgstr ""
 
+#: src/components/staking/StakingRewardsModal.vue:8
 #: src/components/StakingRewardsListItem.vue:24
 msgid "Ongoing"
 msgstr ""
@@ -2545,6 +2546,7 @@ msgid "Staking rewards"
 msgstr ""
 
 #: src/components/staking/StakingRewardsHistoryPage.vue:4
+#: src/components/staking/StakingRewardsModal.vue:4
 msgid "Staking Rewards"
 msgstr ""
 
@@ -2874,11 +2876,11 @@ msgstr ""
 
 #: src/components/BtcTransactionList.vue:243
 #: src/components/BtcTransactionList.vue:265
-#: src/components/StakingRewardsListItem.vue:100
 #: src/components/UsdcTransactionList.vue:205
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205
 #: src/components/UsdtTransactionList.vue:227
+#: src/composables/useStakingRewards.ts:132
 #: src/composables/useTransactionList.ts:149
 #: src/composables/useTransactionList.ts:208
 msgid "This month"

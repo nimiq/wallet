@@ -95,6 +95,8 @@ const StakingRewardsHistoryModal = () =>
         /* webpackChunkName: "staking-rewards-history-modal" */
         './components/staking/StakingRewardsHistoryModal.vue'
     );
+const StakingRewardsModal = () =>
+    import(/* webpackChunkName: "staking-rewards-modal" */ './components/staking/StakingRewardsModal.vue');
 
 Vue.use(VueRouter);
 
@@ -152,6 +154,7 @@ export enum RouteName {
     Network = 'network',
     NetworkAccounts = 'network-accounts',
     NetworkReleaseNotes = 'network-release-notes',
+    StakingRewards = 'staking-rewards',
 }
 
 const routes: RouteConfig[] = [{
@@ -460,6 +463,14 @@ const routes: RouteConfig[] = [{
                 modal: StakingRewardsHistoryModal,
             },
             name: RouteName.StakingRewardsHistory,
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/staking-rewards/:month?',
+            components: {
+                modal: StakingRewardsModal,
+            },
+            name: RouteName.StakingRewards,
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {

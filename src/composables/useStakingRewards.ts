@@ -1,5 +1,6 @@
 import { computed } from '@vue/composition-api';
 import { useStakingStore } from '../stores/Staking';
+import { useI18n } from '@/lib/useI18n';
 
 export interface MonthlyReward {
     total: number;
@@ -43,7 +44,8 @@ export interface MonthlyReward {
  * console.log(totalRewards.value.count); // Total number of reward transactions
  */
 export function useStakingRewards() {
-    const { stakingEvents } = useStakingStore();
+    const { locale, $t } = useI18n();
+    const { stakingEvents, activeStake } = useStakingStore();
 
     // Calculate monthly rewards grouped by month
     const monthlyRewards = computed(() => {
@@ -115,10 +117,57 @@ export function useStakingRewards() {
         return { total, count };
     });
 
+    /**
+     * Get the label for a month
+     * @param monthKey - Month identifier in 'YYYY-MM' format (e.g., '2024-01' for January 2024)
+     * @returns Month label as a string
+     */
+    const getMonthLabel = (monthKey: string): string => {
+        const [year, month] = monthKey.split('-');
+        const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
+        const now = new Date();
+
+        // Check if it's the current month
+        if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+            return $t('This month').toString();
+        }
+
+        return new Intl.DateTimeFormat(locale, {
+            month: 'long',
+            year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+        }).format(date);
+    };
+
+    /**
+     * Check if the current month is ongoing
+     * @param monthKey - Month identifier in 'YYYY-MM' format (e.g., '2024-01' for January 2024)
+     * @returns true if the current month is ongoing, false otherwise
+     * (if the user is currently staking with the last validator in the list, it's ongoing)
+     */
+    const isOngoingMonth = (monthKey: string): boolean => {
+        // Check if it's the current month
+        const [year, month] = monthKey.split('-');
+        const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
+        const now = new Date();
+        const isCurrentMonth = date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+
+        if (!isCurrentMonth) return false;
+
+        // Check if the user is currently staking with any of the validators in this list
+        if (!activeStake.value || !activeStake.value.validator) return false;
+
+        // Check if the active validator is the last one in the list (most recent rewards)
+        const validators = getMonthlyReward(monthKey)?.validators;
+        const lastValidatorAddress = validators?.[validators.length - 1];
+        return activeStake.value.validator === lastValidatorAddress;
+    };
+
     return {
         monthlyRewards,
         getMonthlyReward,
         getCurrentMonthReward,
         totalRewards,
+        getMonthLabel,
+        isOngoingMonth,
     };
 }

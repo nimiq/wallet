@@ -16,7 +16,7 @@ import { Validator } from '../../stores/Staking';
 export default defineComponent({
     props: {
         validator: {
-            type: Object as () => Validator,
+            type: Object as () => Validator | { address: string },
             required: true,
         },
     },

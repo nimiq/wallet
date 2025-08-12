@@ -100,10 +100,17 @@ export default defineComponent({
 
         // Currently unused, as The Reward history is much too large
         const openRewardsHistory = () => {
-            router.push({
-                name: RouteName.StakingRewards,
-                params: { month: props.month },
-            });
+            if (router.currentRoute.name === RouteName.Staking) {
+                router.replace({
+                    name: RouteName.StakingRewards,
+                    params: { month: props.month },
+                });
+            } else {
+                router.push({
+                    name: RouteName.StakingRewards,
+                    params: { month: props.month },
+                });
+            }
         };
 
         return {

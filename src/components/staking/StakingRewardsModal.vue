@@ -195,7 +195,7 @@ export default defineComponent({
         });
 
         const goToStakingOverview = () => {
-            router.push({ name: RouteName.Staking });
+            router.replace({ name: RouteName.Staking });
         };
 
         return {

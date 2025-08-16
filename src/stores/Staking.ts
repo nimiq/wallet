@@ -283,36 +283,33 @@ export const useStakingStore = createStore({
     },
     actions: {
         setStake(stake: Stake) {
-            VueCompositionApiUtils.set(this.state.stakeByAddress, stake.address, stake);
+            VueCompositionApiUtils.update(this.state.stakeByAddress, stake.address, stake);
         },
         removeStake(address: string) {
             VueCompositionApiUtils.delete(this.state.stakeByAddress, address);
         },
         setValidators(validators: RawValidator[]) {
             const newValidators: {[address: string]: RawValidator} = {};
-
             for (const validator of validators) {
                 newValidators[validator.address] = validator;
             }
-
-            this.state.chainValidators = newValidators;
+            VueCompositionApiUtils.updateObject(this.state.chainValidators, newValidators);
         },
         setApiValidators(apiValidators: ApiValidator[]) {
             const newApiValidators: {[address: string]: ApiValidator} = {};
-
             for (const validator of apiValidators) {
                 newApiValidators[validator.address] = validator;
             }
-
-            this.state.apiValidators = newApiValidators;
+            VueCompositionApiUtils.updateObject(this.state.apiValidators, newApiValidators);
         },
         setStakingEvents(address: string, events: AggregatedRestakingEvent[]) {
             // We mark the staking events as non-reactive, as they're static data anyways. This avoids the significant
             // overhead, that Vue's reactivity system would add when setting the data, and on any data access. The
             // change of the stakingEventsByAddress property itself is still detected and correctly triggers the
-            // recalculation of all computed composables. In fact, here, we do not use vueCompositionApiSet to set just
-            // the child property, and instead replace the entire object on purpose, as the child properties are not
-            // reactive.
+            // recalculation of all computed composables. In fact, here, we do not use VueCompositionApiUtils.set to
+            // set just the child property or VueCompositionApiUtils.update, and instead replace the entire object on
+            // purpose, as the child properties are not reactive, and would not detect any changes if we wouldn't
+            // replace the entire parent object.
             this.state.stakingEventsByAddress = VueCompositionApiUtils.nonReactive({
                 ...this.state.stakingEventsByAddress,
                 [address]: events,

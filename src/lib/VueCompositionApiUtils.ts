@@ -1,5 +1,16 @@
 import Vue from 'vue';
-import { set, nonReactive } from '@vue/composition-api';
+import { set, nonReactive, VueWatcher } from '@vue/composition-api';
+
+const KEY_OBSERVABLE = '__ob__'; // the key that is used by Vue's reactivity system for an object's Observer
+// Hack for accessing Vue's internal class Dep, which is needed for disabling tracking access of reactive data in a
+// watcher or computed composable.
+const Dep: { target?: VueWatcher } = (new Vue()).$data[KEY_OBSERVABLE].dep.constructor;
+
+export const enum MissingPropertyDeletionStrategy {
+    DELETE,
+    PRESERVE,
+    PRESERVE_ON_ROOT,
+}
 
 /**
  * A collection of utilities to make Vue's composition API more usable.
@@ -37,7 +48,9 @@ export default class VueCompositionApiUtils {
             // Property already exists.
             if (propertyDescriptor.set) {
                 // Property already has a setter. We _assume_ that's already the setter for Vue 2's reactivity system,
-                // and save us the overhead of calling @vue/composition-api's set with its additional checks.
+                // and save us the overhead of calling @vue/composition-api's set with its additional checks, and also
+                // avoid firing change notifications, if the value didn't change, based on the === check in Vue's
+                // defineReactive.
                 target[key] = value;
                 return value;
             }
@@ -47,6 +60,102 @@ export default class VueCompositionApiUtils {
             delete target[key];
         }
         return set(target, key, value);
+    }
+
+    /**
+     * Update a property in place, while triggering as few change notifications as possible. See updateObject.
+     */
+    static update<T extends Record<string, unknown>, K extends keyof T>(target: T, key: K, value: T[K]): void {
+        VueCompositionApiUtils.updateObject(
+            target,
+            { [key]: value } as T as Partial<T>,
+            MissingPropertyDeletionStrategy.PRESERVE_ON_ROOT,
+        );
+    }
+
+    /**
+     * Update object target in place, such that it matches object source (depending on missingPropertyDeletionStrategy),
+     * while triggering as few change notifications as possible. For example, if source is equal to target, no change
+     * notifications are triggered, including if source is not the same object as target (no strict equality), but has
+     * the same properties and same values. If only the values of some properties of target or of a child object change,
+     * only notifications for those properties are triggered. If a property is added or removed to target or a child
+     * object, unfortunately, a change notification on that property's parent still has to be triggered, as opposed to
+     * just on the property.
+     *
+     * One thing to consider is that while this method minimizes the change notifications, and thus can improve the
+     * performance by avoiding running unnecessary watchers and computed composables, obviously recursing the objects
+     * in this method also has a performance impact, but more importantly even, if the source object contains a lot of
+     * changes, they are all processed by Vue, and even though dependent watchers are being called only once, this
+     * processing has a high performance impact in itself, too. Thus, if you are expecting a lot of changes, for example
+     * when initializing the stores from persisted data, it is better to use set instead of update/updateObject.
+     */
+    static updateObject<T extends Record<string, unknown>>(
+        target: T,
+        source: Partial<T>,
+        missingPropertyDeletionStrategy: MissingPropertyDeletionStrategy = MissingPropertyDeletionStrategy.DELETE,
+    ): void {
+        let keysToDelete: Set<keyof T> | undefined;
+        if (missingPropertyDeletionStrategy === MissingPropertyDeletionStrategy.DELETE) {
+            keysToDelete = new Set(Object.keys(target) as Array<keyof T>);
+            keysToDelete.delete(KEY_OBSERVABLE); // preserve the target's observable
+        } else if (missingPropertyDeletionStrategy === MissingPropertyDeletionStrategy.PRESERVE_ON_ROOT) {
+            // Change missingPropertyDeletionStrategy for recursive calls on child objects.
+            missingPropertyDeletionStrategy = MissingPropertyDeletionStrategy.DELETE;
+        }
+
+        // Hide a potential current watcher in Dep.target, to avoid registering the data accesses we're making here as a
+        // dependency for that watcher. This doesn't interfere with correctly notifying prior registered dependencies.
+        const currentWatcher = Dep.target;
+        Dep.target = undefined;
+        try {
+            for (const key of Object.keys(source) as Array<keyof T>) {
+                keysToDelete?.delete(key);
+                if (key === KEY_OBSERVABLE) continue; // preserve the target's observable
+
+                if (!(key in target)) {
+                    // Property does not exist on target yet. Define it. A change notification will be triggered by set
+                    // on the parent object, target, because a new property is being added. No need for the additional
+                    // handling of VueCompositionApiUtils.set here, as we already checked that the property doesn't
+                    // exist on the target yet.
+                    set(target, key, source[key]);
+                    continue;
+                }
+
+                // If source[key] or target[key] isn't an object, target[key] can just be replaced with source[key].
+                // The setter of Vue's defineReactive will trigger a change notification on the property if the value
+                // did in fact change, based on a === check.
+                // Start with checking source[key], because it's likely that source might just be a plain object without
+                // reactive getters, i.e. accessing it is cheaper than accessing target[key], which likely is reactive.
+                // The access of source[key] and target[key] is why we hid the current watcher on Dep.target.
+                const newValue = source[key]; // cache value, in case it involves calling a getter
+                if (typeof newValue !== 'object' || newValue === null) {
+                    VueCompositionApiUtils.set(target, key, newValue);
+                    continue;
+                }
+                const oldValue = target[key]; // cache value, in case it involves calling a getter
+                if (typeof oldValue !== 'object' || oldValue === null) {
+                    VueCompositionApiUtils.set(target, key, newValue);
+                    continue;
+                }
+
+                // Both, target[key] and source[key] are objects. Don't replace target[key], but instead recurse to
+                // trigger as little change notifications as possible, only for child properties that actually changed.
+                VueCompositionApiUtils.updateObject(
+                    oldValue as Record<string, unknown>,
+                    newValue as Record<string, unknown>,
+                    missingPropertyDeletionStrategy,
+                );
+            }
+        } finally {
+            Dep.target = currentWatcher; // restore tracking of dependencies on the current watcher
+        }
+
+        if (keysToDelete) {
+            for (const key of keysToDelete) {
+                // Delete removed properties. This will cause a change notification on the parent object, target.
+                VueCompositionApiUtils.delete(target, key);
+            }
+        }
     }
 
     /**

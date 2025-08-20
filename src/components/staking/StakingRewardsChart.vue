@@ -136,19 +136,6 @@ export default defineComponent({
             }
         };
 
-        // Calculate rewards earned before the selected time range (for proper baseline)
-        const calculateBaselineRewards = (
-            rewardEvents: Readonly<StakingEvent[]>,
-            startDate: Date,
-            range: TimeRange,
-        ): number => {
-            if (range === 'ALL') return 0;
-
-            return rewardEvents
-                .filter((event) => new Date(event.date) < startDate)
-                .reduce((sum, event) => sum + event.value, 0);
-        };
-
         // Lazy load Chart.js and its dependencies
         const loadChartDependencies = async () => {
             try {
@@ -193,7 +180,6 @@ export default defineComponent({
             if (!sortedStakingEvents.value || !sortedStakingEvents.value.length) return null;
 
             const { startDate, endDate } = getDateRange(selectedRange.value, sortedStakingEvents.value);
-            const baselineRewards = calculateBaselineRewards(sortedStakingEvents.value, startDate, selectedRange.value);
 
             // Pre-calculate cumulative rewards for efficient lookup
             const cumulativeRewards: number[] = [];
@@ -223,10 +209,9 @@ export default defineComponent({
                 }
 
                 const rewardsUpToPoint = eventIndex >= 0 ? cumulativeRewards[eventIndex] : 0;
-                const totalRewards = baselineRewards + rewardsUpToPoint;
 
                 labels.push(`point-${i}`); // Simple labels for Chart.js (not displayed)
-                data.push(totalRewards);
+                data.push(rewardsUpToPoint);
             }
 
             return {

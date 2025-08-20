@@ -196,12 +196,12 @@ export default defineComponent({
             const intervalMs = timeRange / (FIXED_POINTS - 1);
 
             for (let i = 0; i < FIXED_POINTS; i++) {
-                const pointDate = new Date(startDate.getTime() + (i * intervalMs));
+                const pointDateIsoString = new Date(startDate.getTime() + (i * intervalMs)).toISOString();
 
                 // Find the index of the last event that occurred before or at pointDate
                 let eventIndex = -1;
                 for (let j = 0; j < sortedStakingEvents.value.length; j++) {
-                    if (new Date(sortedStakingEvents.value[j].date) <= pointDate) {
+                    if (sortedStakingEvents.value[j].date <= pointDateIsoString) {
                         eventIndex = j;
                     } else {
                         break; // Events are sorted, so we can break early

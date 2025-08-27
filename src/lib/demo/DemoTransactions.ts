@@ -453,7 +453,7 @@ export function transformBtcTransaction(txDefinitions: BtcTransactionDefinition[
                     },
                     {
                         // Change output.
-                        value: 1000000,
+                        value: 100000,
                         address: demoBtcAddress,
                         script: 'script',
                         index: 1,

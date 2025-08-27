@@ -19,7 +19,7 @@ export const buyFromAddress = 'NQ04 JG63 HYXL H3QF PPNA 7ED7 426M 3FQE FHE5';
 
 // Initial balances
 export const nimInitialBalance = 140_418 * 1e5; // 14,041,800,000 - 14 april, 2018. 5 decimals.
-export const btcInitialBalance = 0.0025 * 1e8; // 0.0025 BTC (8 decimals)
+export const btcInitialBalance = 0.00025 * 1e8; // 0.00025 BTC (8 decimals)
 export const usdtInitialBalance = 514.83 * 1e6; // 5000 USDT (6 decimals)
 export const usdcInitialBalance = 357.38 * 1e6; // 3000 USDC (6 decimals)
 

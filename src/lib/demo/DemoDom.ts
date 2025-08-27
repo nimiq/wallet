@@ -104,27 +104,29 @@ function disableSwapTriggers(processedElements: WeakSet<Element>): void {
  * This allows users to interact with the send functionality without waiting for network sync.
  */
 function enableSellAndSwapModals(processedElements: WeakSet<Element>): void {
-    // Target the send modal and swap footer button
-    const bottomButton = document.querySelector('.send-modal-footer .nq-button');
-    if (!bottomButton || processedElements.has(bottomButton)) return;
+    // Target both send modal and swap modal footer buttons
+    const footerButtons = document.querySelectorAll('.send-modal-footer .nq-button, .modal .send-modal-footer .nq-button');
+    footerButtons.forEach((bottomButton) => {
+        if (!bottomButton || processedElements.has(bottomButton)) return;
 
-    if (bottomButton.hasAttribute('disabled')) {
-        bottomButton.removeAttribute('disabled');
-        bottomButton.classList.remove('disabled');
-        processedElements.add(bottomButton);
+        if (bottomButton.hasAttribute('disabled')) {
+            bottomButton.removeAttribute('disabled');
+            bottomButton.classList.remove('disabled');
+            processedElements.add(bottomButton);
 
-        // Also find and hide any sync message if shown
-        const footer = document.querySelector('.send-modal-footer');
-        if (footer) {
-            const footerNotice = footer.querySelector('.footer-notice') as HTMLDivElement;
-            if (footerNotice && footerNotice.textContent
-                && (footerNotice.textContent.includes('Connecting to Bitcoin')
-                    || footerNotice.textContent.includes('Syncing with Bitcoin'))) {
-                footerNotice.style.display = 'none';
-                processedElements.add(footerNotice);
+            // Also find and hide any sync message if shown
+            const footer = bottomButton.closest('.send-modal-footer');
+            if (footer) {
+                const footerNotice = footer.querySelector('.footer-notice') as HTMLDivElement;
+                if (footerNotice && footerNotice.textContent
+                    && (footerNotice.textContent.includes('Connecting to Bitcoin')
+                        || footerNotice.textContent.includes('Syncing with Bitcoin'))) {
+                    footerNotice.style.display = 'none';
+                    processedElements.add(footerNotice);
+                }
             }
         }
-    }
+    });
 }
 
 /**

@@ -321,7 +321,6 @@ export function getPlaygroundState(): PlaygroundState {
     return { ...playgroundState };
 }
 
-
 // Export the main transaction insertion function that was exposed in the original module
 export { dangerouslyInsertFakeBuyNimTransaction };
 

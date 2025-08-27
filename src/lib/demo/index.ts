@@ -252,9 +252,11 @@ function handleActionMessage(messageType: string): void {
     playgroundState.selectedAction = flowType;
 
     // Navigate to the appropriate route
-    if (demoRoutes[flowType]) {
+    if (demoRoutes[flowType] && demoRouter.currentRoute.path !== demoRoutes[flowType]) {
         demoRouter.push({
             path: demoRoutes[flowType],
+        }).catch(() => {
+            // Silently ignore navigation duplicated errors
         });
     }
 }
@@ -294,9 +296,11 @@ function handleActionChange(data: { action: DemoFlowType }): void {
     playgroundState.selectedAction = action;
 
     // Navigate to the appropriate route
-    if (demoRoutes[action]) {
+    if (demoRoutes[action] && demoRouter.currentRoute.path !== demoRoutes[action]) {
         demoRouter.push({
             path: demoRoutes[action],
+        }).catch(() => {
+            // Silently ignore navigation duplicated errors
         });
     }
 

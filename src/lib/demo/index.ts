@@ -42,7 +42,7 @@ import {
     // updateNimBalance,
     // updateBtcBalance,
 } from './DemoTransactions';
-import { replaceBuyNimFlow, replaceStakingFlow } from './DemoFlows';
+import { replaceBuyNimFlow, replaceStakingFlow, replaceSwapFlow } from './DemoFlows';
 import { interceptFetchRequest, listenForSwapChanges } from './DemoSwaps';
 
 // Keep a reference to the router here
@@ -67,6 +67,7 @@ const DemoPurchaseModal = () =>
         /* webpackChunkName: 'demo-modal-buy' */
         '@/components/modals/demos/DemoModalBuy.vue'
     );
+
 
 /**
  * Initializes the demo environment and sets up various routes, data, and watchers.
@@ -101,8 +102,41 @@ export function dangerouslyInitializeDemo(router: VueRouter): void {
     attachIframeListeners();
     replaceStakingFlow(demoRouter);
     replaceBuyNimFlow(demoRouter);
+    replaceSwapFlow(demoRouter);
 
     listenForSwapChanges();
+
+    // Send initial ready message to parent frame
+    sendInitialReadyMessage();
+}
+
+/**
+ * Sends initial ready message to parent frame when demo loads
+ */
+function sendInitialReadyMessage(): void {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', sendInitialReadyMessage);
+        return;
+    }
+
+    // Small delay to ensure iframe is fully loaded
+    setTimeout(() => {
+        // Initialize playground state with demo data
+        playgroundState = {
+            connected: true,
+            address: 'NQ57 2814 7L5B NBBD 0EU7 EL71 HXP8 M7H8 MHKD', // Demo address
+            selectedAction: 'idle',
+        };
+
+        // Send ready signal to parent
+        window.parent.postMessage({
+            type: 'playground:ready',
+            data: playgroundState,
+        }, '*');
+
+        console.log('[Demo] Sent initial playground:ready message to parent');
+    }, 500);
 }
 
 /**
@@ -133,17 +167,21 @@ function attachIframeListeners(): void {
         console.log('[Demo] Received message:', event.data, 'from:', event.origin);
         if (!event.data || typeof event.data !== 'object') return;
 
+        // Handle both type and kind properties (website compatibility)
+        const message = event.data as WalletPlaygroundMessage;
+        const messageType = message.type || message.kind;
+        const messageData = message.data;
+
+        if (!messageType) return;
+
         // Handle standardized wallet action messages
-        const { type, data: messageData } = event.data as WalletPlaygroundMessage;
-        if (type && type.startsWith('wallet:action:')) {
-            handleWalletActionMessage(type);
+        if (messageType.startsWith('wallet:action:')) {
+            handleWalletActionMessage(messageType);
             return;
         }
 
         // Handle wallet playground messages
-        if (type) {
-            handleWalletPlaygroundMessage(type, messageData, event.origin);
-        }
+        handleWalletPlaygroundMessage(messageType, messageData, event.origin);
     });
 
     demoRouter.afterEach((to) => {
@@ -232,6 +270,8 @@ function handleWalletPlaygroundMessage(messageType: string, data: any, origin: s
     try {
         switch (messageType) {
             case 'parent:ready':
+            case 'playground:ready':
+            case 'wallet:demo:ready':
                 handleParentReady(origin);
                 break;
 
@@ -270,14 +310,7 @@ function handleWalletPlaygroundMessage(messageType: string, data: any, origin: s
 function handleParentReady(origin: string): void {
     console.log('[Demo] Parent is ready, sending playground:ready response');
 
-    // Initialize playground state with demo data
-    playgroundState = {
-        connected: true,
-        address: 'NQ57 2814 7L5B NBBD 0EU7 EL71 HXP8 M7H8 MHKD', // Demo address
-        selectedAction: 'idle',
-    };
-
-    // Send playground:ready message back to parent
+    // Send playground:ready message back to parent (state already initialized)
     window.parent.postMessage({
         type: 'playground:ready',
         data: playgroundState,

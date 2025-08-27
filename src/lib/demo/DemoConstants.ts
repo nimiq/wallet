@@ -19,7 +19,7 @@ export const buyFromAddress = 'NQ04 JG63 HYXL H3QF PPNA 7ED7 426M 3FQE FHE5';
 
 // Initial balances
 export const nimInitialBalance = 140_418 * 1e5; // 14,041,800,000 - 14 april, 2018. 5 decimals.
-export const btcInitialBalance = 0.0025 * 1e8; // 1 BTC (8 decimals)
+export const btcInitialBalance = 0.0025 * 1e8; // 0.0025 BTC (8 decimals)
 export const usdtInitialBalance = 514.83 * 1e6; // 5000 USDT (6 decimals)
 export const usdcInitialBalance = 357.38 * 1e6; // 3000 USDC (6 decimals)
 
@@ -28,8 +28,10 @@ export type DemoFlowType = 'buy' | 'swap' | 'stake' | 'idle';
 
 // Wallet playground message types
 export type WalletPlaygroundMessage = {
-    type: 'parent:ready' | 'wallet:action:change' | 'wallet:state' | 'wallet:connect:response' | 'wallet:transaction:response' | 'wallet:sign:response' | 'wallet:disconnect',
+    type: 'parent:ready' | 'playground:ready' | 'wallet:demo:ready' | 'wallet:action:change' | 'wallet:state' | 'wallet:connect:response' | 'wallet:transaction:response' | 'wallet:sign:response' | 'wallet:disconnect' | 'wallet:action:open-buy-demo-nim-modal' | 'wallet:action:open-staking-modal' | 'wallet:action:open-swap-modal' | 'wallet:action:close-modal',
+    kind?: string, // For backward compatibility with website
     data?: any,
+    id?: string,
 };
 
 // Playground state type
@@ -41,7 +43,7 @@ export type PlaygroundState = {
 
 // Demo routes mapping - including idle state
 export const demoRoutes: Record<DemoFlowType, string> = {
-    buy: '/buy',
+    buy: '/demo-buy',
     swap: '/swap/NIM-BTC',
     stake: '/staking',
     idle: '/', // Default route for idle state

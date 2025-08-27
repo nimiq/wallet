@@ -43,7 +43,7 @@ export default {
     },
 
     polygon: {
-        enabled: false,
+        enabled: true,
         networkId: 80002,
         rpcEndpoint: 'wss://polygon-amoy.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 1_296_000, // 30 days - Range not limited, only limited by number of logs returned

@@ -24,7 +24,7 @@ export function replaceBuyNimFlow(demoRouter: VueRouter): void {
                 btn1.style.flex = '1';
                 btn1.addEventListener('click', () => {
                     demoRouter.push({
-                        path: '/buy',
+                        path: '/demo-buy',
                     });
                 });
                 btn1.innerHTML = 'Buy';
@@ -47,6 +47,37 @@ export function replaceBuyNimFlow(demoRouter: VueRouter): void {
                 }
             });
         }
+    });
+}
+
+/**
+ * Replaces the swap button with a demo version that opens the actual swap modal with demo functionality.
+ */
+export function replaceSwapFlow(demoRouter: VueRouter): void {
+    let lastProcessedButton: HTMLButtonElement;
+
+    demoRouter.afterEach(() => {
+        const checkForSwapButton = setInterval(() => {
+            const target = document.querySelector('.sidebar .swap-tooltip button');
+            if (!target || target === lastProcessedButton) return;
+
+            // remove previous listeners by cloning the element and replacing the original
+            const newElement = target.cloneNode(true) as HTMLButtonElement;
+            target.parentNode!.replaceChild(newElement, target);
+            newElement.removeAttribute('disabled');
+            lastProcessedButton = newElement;
+
+            newElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                demoRouter.push({
+                    path: '/swap/NIM-BTC',
+                });
+            });
+        }, 500);
+
+        // Clear interval when navigating away (though we want this to persist)
+        setTimeout(() => clearInterval(checkForSwapButton), 30000); // Stop after 30 seconds to avoid memory leaks
     });
 }
 

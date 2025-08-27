@@ -282,7 +282,7 @@ export async function launchNetwork() {
         const block = await retry(() => client.getBlock(hash)).catch(reportFor('getBlock'));
         if (!block) return;
         const { height, timestamp, epoch } = block;
-        console.log('Head is now at', height);
+        console.debug('Nimiq head is now at', height);
         patchNetworkStore({ height, timestamp });
 
         // The NanoApi did recheck all balances on every block

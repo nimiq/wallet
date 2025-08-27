@@ -232,8 +232,8 @@ msgstr "账户限额"
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:154
-#: src/components/layouts/AccountOverview.vue:268
+#: src/components/layouts/AccountOverview.vue:159
+#: src/components/layouts/AccountOverview.vue:273
 msgid "Activate"
 msgstr "激活"
 
@@ -326,7 +326,7 @@ msgstr "全部"
 msgid "All countries"
 msgstr "所有国家"
 
-#: src/components/layouts/AccountOverview.vue:276
+#: src/components/layouts/AccountOverview.vue:281
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -463,7 +463,7 @@ msgid "BIC works, too."
 msgstr "BIC适用"
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:135
+#: src/components/layouts/AccountOverview.vue:140
 #: src/components/layouts/AddressOverview.vue:125
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -695,7 +695,7 @@ msgstr ""
 msgid "Choose an Address"
 msgstr "选择地址"
 
-#: src/components/layouts/AccountOverview.vue:224
+#: src/components/layouts/AccountOverview.vue:229
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -1166,23 +1166,23 @@ msgstr ""
 msgid "Failed to fetch transactions"
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:134
+#: src/components/TestnetFaucet.vue:138
 msgid "Faucet error - please try again."
 msgstr "水龙头错误－请重试"
 
-#: src/components/TestnetFaucet.vue:77
+#: src/components/TestnetFaucet.vue:81
 msgid "Faucet is empty"
 msgstr "水龙头是空的"
 
-#: src/components/TestnetFaucet.vue:81
+#: src/components/TestnetFaucet.vue:85
 msgid "Faucet is not available from your location"
 msgstr "你所在的位置无法使用水龙头"
 
-#: src/components/TestnetFaucet.vue:88
+#: src/components/TestnetFaucet.vue:92
 msgid "Faucet unavailable"
 msgstr "水龙头无法使用"
 
-#: src/components/TestnetFaucet.vue:73
+#: src/components/TestnetFaucet.vue:77
 msgid "Faucet unavailable (wrong network)"
 msgstr "水龙头无法使用（网络错误）"
 
@@ -2157,7 +2157,7 @@ msgstr ""
 msgid "Rename"
 msgstr "重新命名"
 
-#: src/components/TestnetFaucet.vue:139 src/components/TestnetFaucet.vue:145
+#: src/components/TestnetFaucet.vue:143 src/components/TestnetFaucet.vue:149
 msgid "Request failed"
 msgstr "请求失败"
 
@@ -2634,7 +2634,7 @@ msgstr "超低手续费，超快支付"
 msgid "Swap"
 msgstr "交换"
 
-#: src/components/layouts/AccountOverview.vue:189
+#: src/components/layouts/AccountOverview.vue:194
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "兑换 BTC {arrowIcon} {ticker}"
 
@@ -2669,11 +2669,11 @@ msgstr "交换已过期"
 msgid "Swap more per 30 days."
 msgstr "每30天进行更多的兑换。"
 
-#: src/components/layouts/AccountOverview.vue:118
+#: src/components/layouts/AccountOverview.vue:123
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "兑换 NIM {arrowIcon} {ticker}"
 
-#: src/components/layouts/AccountOverview.vue:82
+#: src/components/layouts/AccountOverview.vue:87
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "兑换 NIM {arrowIcon} BTC"
 
@@ -2743,7 +2743,7 @@ msgid "TEN31 Verification"
 msgstr "TEN31 验证"
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AccountOverview.vue:221
 #: src/components/layouts/AddressOverview.vue:131
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -2862,7 +2862,7 @@ msgid ""
 "is not to be viewed as an endorsement or recommendation by Nimiq."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:130
+#: src/components/TestnetFaucet.vue:134
 msgid "There are currently no free NIM available."
 msgstr "目前没有免费的NIM"
 
@@ -2975,7 +2975,7 @@ msgstr ""
 msgid "This pool usually produces blocks."
 msgstr ""
 
-#: src/components/TestnetFaucet.vue:125
+#: src/components/TestnetFaucet.vue:129
 msgid "This service is currently not available in your region."
 msgstr "你所在的地区目前尚未提供这项服务"
 
@@ -3026,8 +3026,8 @@ msgid ""
 "here to {unstakeLink}."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:123
-#: src/components/layouts/AccountOverview.vue:194
+#: src/components/layouts/AccountOverview.vue:128
+#: src/components/layouts/AccountOverview.vue:199
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -3157,7 +3157,7 @@ msgid "Update validator"
 msgstr ""
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:213
+#: src/components/layouts/AccountOverview.vue:218
 #: src/components/layouts/AddressOverview.vue:128
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
@@ -3300,7 +3300,7 @@ msgstr ""
 msgid "You can receive from Polygon {ticker} addresses only!"
 msgstr "您仅可以接受来自于 Polygon {ticker}的地址！"
 
-#: src/components/TestnetFaucet.vue:119
+#: src/components/TestnetFaucet.vue:123
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "你可以在{waitTime}小时内收到更多的免费NIM"
 

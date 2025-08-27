@@ -28,8 +28,7 @@ export type DemoFlowType = 'buy' | 'swap' | 'stake' | 'idle';
 
 // Wallet playground message types
 export type WalletPlaygroundMessage = {
-    type: 'parent:ready' | 'playground:ready' | 'wallet:demo:ready' | 'wallet:action:change' | 'wallet:state' | 'wallet:connect:response' | 'wallet:transaction:response' | 'wallet:sign:response' | 'wallet:disconnect' | 'wallet:action:open-buy-demo-nim-modal' | 'wallet:action:open-staking-modal' | 'wallet:action:open-swap-modal' | 'wallet:action:close-modal',
-    kind?: string, // For backward compatibility with website
+    type: 'demo:ready' | 'action:change' | 'action:open-buy-modal' | 'action:open-staking-modal' | 'action:open-swap-modal' | 'action:close-modal',
     data?: any,
     id?: string,
 };

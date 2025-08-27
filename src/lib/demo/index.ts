@@ -130,11 +130,11 @@ function sendInitialReadyMessage(): void {
 
         // Send ready signal to parent
         window.parent.postMessage({
-            type: 'playground:ready',
+            type: 'demo:ready',
             data: playgroundState,
         }, '*');
 
-        console.log('[Demo] Sent initial playground:ready message to parent');
+        console.log('[Demo] Sent initial demo:ready message to parent');
     }, 500);
 }
 
@@ -166,16 +166,16 @@ function attachIframeListeners(): void {
         console.log('[Demo] Received message:', event.data, 'from:', event.origin);
         if (!event.data || typeof event.data !== 'object') return;
 
-        // Handle both type and kind properties (website compatibility)
+        // Handle message data
         const message = event.data as WalletPlaygroundMessage;
-        const messageType = message.type || message.kind;
+        const messageType = message.type;
         const messageData = message.data;
 
         if (!messageType) return;
 
-        // Handle standardized wallet action messages
-        if (messageType.startsWith('wallet:action:')) {
-            handleWalletActionMessage(messageType);
+        // Handle standardized action messages
+        if (messageType.startsWith('action:')) {
+            handleActionMessage(messageType);
             return;
         }
 
@@ -190,24 +190,23 @@ function attachIframeListeners(): void {
         const flowType = match[0] as DemoFlowType;
         playgroundState.selectedAction = flowType;
 
-        // Send standardized action message to parent
+        // Send action message to parent
         let messageType = '';
         switch (flowType) {
             case 'buy':
-                messageType = 'wallet:action:open-buy-demo-nim-modal';
+                messageType = 'action:open-buy-modal';
                 break;
             case 'stake':
-                messageType = 'wallet:action:open-staking-modal';
+                messageType = 'action:open-staking-modal';
                 break;
             case 'swap':
-                messageType = 'wallet:action:open-swap-modal';
+                messageType = 'action:open-swap-modal';
                 break;
             case 'idle':
-                messageType = 'wallet:action:close-modal';
+                messageType = 'action:close-modal';
                 break;
             default:
-                // No action needed for unknown flow types
-                break;
+                return;
         }
 
         if (messageType) {
@@ -217,10 +216,10 @@ function attachIframeListeners(): void {
 }
 
 /**
- * Handles standardized wallet action messages
+ * Handles action messages from parent
  */
-function handleWalletActionMessage(messageType: string): void {
-    console.log('[Demo] Handling wallet action:', messageType);
+function handleActionMessage(messageType: string): void {
+    console.log('[Demo] Handling action:', messageType);
 
     // Dynamic import to avoid circular dependencies
     import('@/stores/Account').then(({ useAccountStore }) => {
@@ -232,20 +231,20 @@ function handleWalletActionMessage(messageType: string): void {
     // Map message types to flow types and routes
     let flowType: DemoFlowType;
     switch (messageType) {
-        case 'wallet:action:open-buy-demo-nim-modal':
+        case 'action:open-buy-modal':
             flowType = 'buy';
             break;
-        case 'wallet:action:open-staking-modal':
+        case 'action:open-staking-modal':
             flowType = 'stake';
             break;
-        case 'wallet:action:open-swap-modal':
+        case 'action:open-swap-modal':
             flowType = 'swap';
             break;
-        case 'wallet:action:close-modal':
+        case 'action:close-modal':
             flowType = 'idle';
             break;
         default:
-            console.warn('[Demo] Unknown wallet action message:', messageType);
+            console.warn('[Demo] Unknown action message:', messageType);
             return;
     }
 
@@ -268,56 +267,19 @@ function handleWalletPlaygroundMessage(messageType: string, data: any, origin: s
 
     try {
         switch (messageType) {
-            case 'parent:ready':
-            case 'playground:ready':
-            case 'wallet:demo:ready':
-                handleParentReady(origin);
-                break;
-
-            case 'wallet:action:change':
+            case 'action:change':
                 handleActionChange(data);
                 break;
 
-            case 'wallet:state':
-                handleStateUpdate(data);
-                break;
-
-            case 'wallet:connect:response':
-                handleConnectResponse(data);
-                break;
-
-            case 'wallet:transaction:response':
-            case 'wallet:sign:response':
-                handleTransactionResponse(data);
-                break;
-
-            case 'wallet:disconnect':
-                handleDisconnect();
-                break;
-
             default:
-                console.warn('[Demo] Unknown wallet playground message type:', messageType);
+                console.warn('[Demo] Unknown playground message type:', messageType);
         }
     } catch (error) {
         console.error('[Demo] Error handling wallet playground message:', error);
     }
 }
-
 /**
- * Handles parent:ready message by responding with playground:ready
- */
-function handleParentReady(origin: string): void {
-    console.log('[Demo] Parent is ready, sending playground:ready response');
-
-    // Send playground:ready message back to parent (state already initialized)
-    window.parent.postMessage({
-        type: 'playground:ready',
-        data: playgroundState,
-    }, origin);
-}
-
-/**
- * Handles wallet:action:change message by updating the selected action
+ * Handles action:change message by updating the selected action
  */
 function handleActionChange(data: { action: DemoFlowType }): void {
     if (!data || !data.action) {
@@ -347,59 +309,6 @@ function handleActionChange(data: { action: DemoFlowType }): void {
         });
     }
 }
-
-/**
- * Handles wallet:state message by updating the full state
- */
-function handleStateUpdate(data: Partial<PlaygroundState>): void {
-    console.log('[Demo] Updating state:', data);
-
-    if (data) {
-        Object.assign(playgroundState, data);
-
-        // If action changed, navigate to appropriate route
-        if (data.selectedAction && demoRoutes[data.selectedAction]) {
-            demoRouter.push({
-                path: demoRoutes[data.selectedAction],
-            });
-        }
-    }
-}
-
-/**
- * Handles wallet:connect:response message
- */
-function handleConnectResponse(data: any): void {
-    console.log('[Demo] Connect response:', data);
-    playgroundState.connected = true;
-
-    // Could implement UI feedback here
-}
-
-/**
- * Handles wallet:transaction:response and wallet:sign:response messages
- */
-function handleTransactionResponse(data: any): void {
-    console.log('[Demo] Transaction/Sign response:', data);
-
-    // Could implement transaction feedback here
-}
-
-/**
- * Handles wallet:disconnect message
- */
-function handleDisconnect(): void {
-    console.log('[Demo] Disconnecting wallet');
-    playgroundState.connected = false;
-    playgroundState.address = null;
-    playgroundState.selectedAction = 'idle';
-
-    // Navigate back to idle state
-    demoRouter.push({
-        path: demoRoutes.idle,
-    });
-}
-
 // Export types and constants for backward compatibility
 export type { DemoState, DemoFlowType };
 export { checkIfDemoIsActive, DemoModal, demoRoutes };
@@ -412,10 +321,6 @@ export function getPlaygroundState(): PlaygroundState {
     return { ...playgroundState };
 }
 
-// Export function to manually update playground state (for testing purposes)
-export function updatePlaygroundState(updates: Partial<PlaygroundState>): void {
-    Object.assign(playgroundState, updates);
-}
 
 // Export the main transaction insertion function that was exposed in the original module
 export { dangerouslyInsertFakeBuyNimTransaction };

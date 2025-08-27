@@ -68,7 +68,6 @@ const DemoPurchaseModal = () =>
         '@/components/modals/demos/DemoModalBuy.vue'
     );
 
-
 /**
  * Initializes the demo environment and sets up various routes, data, and watchers.
  */

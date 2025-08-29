@@ -32,6 +32,10 @@ export function calculateDaysAgo(days: number): number {
 export const getRandomPolygonHash = () => `0x${Math.random().toString(16).slice(2, 66)}`;
 
 /**
- * Generates a random Polygon address
+ * Generates a random Polygon address (valid Ethereum format)
  */
-export const getRandomPolygonAddress = () => `0x${Math.random().toString(16).slice(2, 42)}`;
+export const getRandomPolygonAddress = () => {
+    const bytes = new Uint8Array(20);
+    crypto.getRandomValues(bytes);
+    return `0x${Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')}`;
+};

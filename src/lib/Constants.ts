@@ -6,7 +6,7 @@ export { CryptoCurrency } from '@nimiq/utils';
 export const CASHLINK_ADDRESS = 'cashlink';
 export const BANK_ADDRESS = 'bank';
 
-export const ENV_MAIN = 'main';
+export const ENV_MAIN = 'MainAlbatross';
 export const ENV_TEST = 'test';
 export const ENV_DEV = 'dev';
 

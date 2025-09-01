@@ -163,7 +163,7 @@ function addDemoModalRoutes(): void {
     demoRouter.addRoute(RouteName.Root, {
         name: DemoModal.Fallback,
         path: `/${DemoModal.Fallback}`,
-        components: { 
+        components: {
             modal: DemoFallbackModal,
             accountOverview: AccountOverview,
             addressOverview: AddressOverview,
@@ -171,11 +171,11 @@ function addDemoModalRoutes(): void {
         props: { modal: true },
         meta: { column: Columns.DYNAMIC },
     });
-    
+
     demoRouter.addRoute(RouteName.Root, {
         name: DemoModal.Buy,
         path: `/${DemoModal.Buy}`,
-        components: { 
+        components: {
             modal: DemoPurchaseModal,
             accountOverview: AccountOverview,
             addressOverview: AddressOverview,
@@ -183,7 +183,7 @@ function addDemoModalRoutes(): void {
         props: { modal: true },
         meta: { column: Columns.DYNAMIC },
     });
-    
+
     // Mark routes as added on the router instance
     (demoRouter as any)._demoRoutesAdded = true;
     console.debug('[Demo] Demo routes added successfully');
@@ -211,7 +211,7 @@ function attachIframeListeners(): void {
 
         // Only send message if modal state actually changed
         if (newModal === currentModal) return;
-        
+
         currentModal = newModal;
         sendModalStateMessage(newModal);
     });
@@ -232,7 +232,7 @@ function getModalTypeFromPath(path: string): DemoFlowType {
  */
 function sendModalStateMessage(modalType: DemoFlowType): void {
     let messageType: string;
-    
+
     switch (modalType) {
         case 'buy':
             messageType = 'action:open-buy-modal';

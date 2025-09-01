@@ -23,8 +23,9 @@
 */
 
 import VueRouter from 'vue-router';
+import { RouteName, Columns } from '@/router';
 import { useConfig } from '@/composables/useConfig';
-import { checkIfDemoIsActive, DemoState, DemoModal, demoRoutes, type DemoFlowType, type WalletPlaygroundMessage, type PlaygroundState } from './DemoConstants';
+import { checkIfDemoIsActive, DemoState, DemoModal, demoRoutes, type DemoFlowType, type WalletPlaygroundMessage } from './DemoConstants';
 import { insertCustomDemoStyles, setupSingleMutationObserver } from './DemoDom';
 import { setupDemoAddresses, setupDemoAccount } from './DemoAccounts';
 import {
@@ -48,12 +49,11 @@ import { interceptFetchRequest, listenForSwapChanges } from './DemoSwaps';
 // Keep a reference to the router here
 let demoRouter: VueRouter;
 
-// Playground state for tracking current action
-let playgroundState: PlaygroundState = {
-    connected: false,
-    address: null,
-    selectedAction: 'idle',
-};
+// Simple state tracking for current modal
+let currentModal: DemoFlowType = 'idle';
+
+// Track if demo has been initialized to prevent duplicate initialization
+let isInitialized = false;
 
 // Demo modal imports for dynamic loading
 const DemoFallbackModal = () =>
@@ -75,6 +75,12 @@ export function dangerouslyInitializeDemo(router: VueRouter): void {
     // Check if demo is active according to the configuration
     if (!checkIfDemoIsActive()) {
         console.info('[Demo] Demo mode not enabled in configuration. Skipping initialization.');
+        return;
+    }
+
+    // Prevent duplicate initialization during hot reload
+    if (isInitialized && demoRouter === router) {
+        console.debug('[Demo] Demo already initialized, skipping duplicate initialization.');
         return;
     }
 
@@ -107,6 +113,9 @@ export function dangerouslyInitializeDemo(router: VueRouter): void {
 
     // Send initial ready message to parent frame
     sendInitialReadyMessage();
+
+    // Mark as initialized
+    isInitialized = true;
 }
 
 /**
@@ -121,17 +130,14 @@ function sendInitialReadyMessage(): void {
 
     // Small delay to ensure iframe is fully loaded
     setTimeout(() => {
-        // Initialize playground state with demo data
-        playgroundState = {
-            connected: true,
-            address: 'NQ57 2814 7L5B NBBD 0EU7 EL71 HXP8 M7H8 MHKD', // Demo address
-            selectedAction: 'idle',
-        };
-
         // Send ready signal to parent
         window.parent.postMessage({
             type: 'demo:ready',
-            data: playgroundState,
+            data: {
+                connected: true,
+                address: 'NQ57 2814 7L5B NBBD 0EU7 EL71 HXP8 M7H8 MHKD',
+                selectedAction: 'idle',
+            },
         }, '*');
 
         console.log('[Demo] Sent initial demo:ready message to parent');
@@ -142,187 +148,165 @@ function sendInitialReadyMessage(): void {
  * Adds routes pointing to our demo modals.
  */
 function addDemoModalRoutes(): void {
-    demoRouter.addRoute('root', {
+    // Use a flag attached to the router instance to track if routes were added
+    // This persists across hot reloads since the router instance persists
+    if ((demoRouter as any)._demoRoutesAdded) {
+        console.debug('[Demo] Routes already added to router, skipping duplicate registration');
+        return;
+    }
+
+    // Import layout components for explicit inclusion
+    const AccountOverview = () => import(/* webpackChunkName: "account-overview" */ '@/components/layouts/AccountOverview.vue');
+    const AddressOverview = () => import(/* webpackChunkName: "address-overview" */ '@/components/layouts/AddressOverview.vue');
+
+    // Add demo routes with explicit layout components
+    demoRouter.addRoute(RouteName.Root, {
         name: DemoModal.Fallback,
         path: `/${DemoModal.Fallback}`,
-        components: { modal: DemoFallbackModal },
+        components: { 
+            modal: DemoFallbackModal,
+            accountOverview: AccountOverview,
+            addressOverview: AddressOverview,
+        },
         props: { modal: true },
+        meta: { column: Columns.DYNAMIC },
     });
-    demoRouter.addRoute('root', {
+    
+    demoRouter.addRoute(RouteName.Root, {
         name: DemoModal.Buy,
         path: `/${DemoModal.Buy}`,
-        components: { modal: DemoPurchaseModal },
+        components: { 
+            modal: DemoPurchaseModal,
+            accountOverview: AccountOverview,
+            addressOverview: AddressOverview,
+        },
         props: { modal: true },
+        meta: { column: Columns.DYNAMIC },
     });
+    
+    // Mark routes as added on the router instance
+    (demoRouter as any)._demoRoutesAdded = true;
+    console.debug('[Demo] Demo routes added successfully');
 }
 
 /**
- * Listens for messages from iframes (or parent frames) about changes in the user flow.
- * Extended to handle wallet playground messages for iframe communication.
+ * Listens for messages from parent and monitors route changes for modal communication
  */
 function attachIframeListeners(): void {
+    // Listen for messages from parent frame
     window.addEventListener('message', (event) => {
-        // Log incoming messages for debugging
         console.log('[Demo] Received message:', event.data, 'from:', event.origin);
         if (!event.data || typeof event.data !== 'object') return;
 
-        // Handle message data
         const message = event.data as WalletPlaygroundMessage;
-        const messageType = message.type;
-        const messageData = message.data;
+        if (!message.type || !message.type.startsWith('action:')) return;
 
-        if (!messageType) return;
-
-        // Handle standardized action messages
-        if (messageType.startsWith('action:')) {
-            handleActionMessage(messageType);
-            return;
-        }
-
-        // Handle wallet playground messages
-        handleWalletPlaygroundMessage(messageType, messageData, event.origin);
+        handleParentAction(message.type);
     });
 
-    demoRouter.afterEach((to) => {
-        const match = Object.entries(demoRoutes).find(([, route]) => route === to.path);
-        if (!match) return;
+    // Monitor route changes to send modal open/close messages
+    demoRouter.afterEach((to, from) => {
+        const newModal = getModalTypeFromPath(to.path);
+        const oldModal = getModalTypeFromPath(from.path);
 
-        const flowType = match[0] as DemoFlowType;
-        playgroundState.selectedAction = flowType;
-
-        // Send action message to parent
-        let messageType = '';
-        switch (flowType) {
-            case 'buy':
-                messageType = 'action:open-buy-modal';
-                break;
-            case 'stake':
-                messageType = 'action:open-staking-modal';
-                break;
-            case 'swap':
-                messageType = 'action:open-swap-modal';
-                break;
-            case 'idle':
-                messageType = 'action:close-modal';
-                break;
-            default:
-                return;
-        }
-
-        if (messageType) {
-            window.parent.postMessage({ type: messageType }, '*');
-        }
+        // Only send message if modal state actually changed
+        if (newModal === currentModal) return;
+        
+        currentModal = newModal;
+        sendModalStateMessage(newModal);
     });
 }
 
 /**
- * Handles action messages from parent
+ * Determines modal type from route path
  */
-function handleActionMessage(messageType: string): void {
-    console.log('[Demo] Handling action:', messageType);
+function getModalTypeFromPath(path: string): DemoFlowType {
+    if (path.startsWith('/swap/')) return 'swap';
+    if (path === '/staking') return 'stake';
+    if (path === '/demo-buy' || path === '/buy') return 'buy';
+    return 'idle';
+}
 
-    // Dynamic import to avoid circular dependencies
-    import('@/stores/Account').then(({ useAccountStore }) => {
-        import('@nimiq/utils').then(({ CryptoCurrency }) => {
-            useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
-        });
-    });
+/**
+ * Sends appropriate modal state message to parent
+ */
+function sendModalStateMessage(modalType: DemoFlowType): void {
+    let messageType: string;
+    
+    switch (modalType) {
+        case 'buy':
+            messageType = 'action:open-buy-modal';
+            break;
+        case 'stake':
+            messageType = 'action:open-staking-modal';
+            break;
+        case 'swap':
+            messageType = 'action:open-swap-modal';
+            break;
+        case 'idle':
+            messageType = 'action:close-modal';
+            break;
+        default:
+            return;
+    }
 
-    // Map message types to flow types and routes
-    let flowType: DemoFlowType;
+    window.parent.postMessage({ type: messageType }, '*');
+    console.log(`[Demo] Sent ${messageType} to parent`);
+}
+
+/**
+ * Handles action messages from parent frame
+ */
+function handleParentAction(messageType: string): void {
+    console.log('[Demo] Handling parent action:', messageType);
+
+    // Map message types to routes
+    let targetRoute: string;
     switch (messageType) {
         case 'action:open-buy-modal':
-            flowType = 'buy';
+            targetRoute = demoRoutes.buy;
             break;
         case 'action:open-staking-modal':
-            flowType = 'stake';
+            targetRoute = demoRoutes.stake;
             break;
         case 'action:open-swap-modal':
-            flowType = 'swap';
+            targetRoute = demoRoutes.swap;
             break;
         case 'action:close-modal':
-            flowType = 'idle';
+            targetRoute = demoRoutes.idle;
             break;
         default:
             console.warn('[Demo] Unknown action message:', messageType);
             return;
     }
 
-    // Update playground state
-    playgroundState.selectedAction = flowType;
-
-    // Navigate to the appropriate route
-    if (demoRoutes[flowType] && demoRouter.currentRoute.path !== demoRoutes[flowType]) {
-        demoRouter.push({
-            path: demoRoutes[flowType],
-        }).catch(() => {
-            // Silently ignore navigation duplicated errors
-        });
-    }
-}
-
-/**
- * Handles wallet playground messages from parent frame
- */
-function handleWalletPlaygroundMessage(messageType: string, data: any, origin: string): void {
-    console.log('[Demo] Received wallet playground message:', messageType, data, 'from:', origin);
-
-    try {
-        switch (messageType) {
-            case 'action:change':
-                handleActionChange(data);
-                break;
-
-            default:
-                console.warn('[Demo] Unknown playground message type:', messageType);
-        }
-    } catch (error) {
-        console.error('[Demo] Error handling wallet playground message:', error);
-    }
-}
-/**
- * Handles action:change message by updating the selected action
- */
-function handleActionChange(data: { action: DemoFlowType }): void {
-    if (!data || !data.action) {
-        console.warn('[Demo] Invalid action change data:', data);
-        return;
-    }
-
-    const { action } = data;
-    console.log('[Demo] Changing action to:', action);
-
-    // Update playground state
-    playgroundState.selectedAction = action;
-
-    // Navigate to the appropriate route
-    if (demoRoutes[action] && demoRouter.currentRoute.path !== demoRoutes[action]) {
-        demoRouter.push({
-            path: demoRoutes[action],
-        }).catch(() => {
-            // Silently ignore navigation duplicated errors
-        });
-    }
-
-    // Set active currency for financial actions
-    if (action === 'buy' || action === 'swap' || action === 'stake') {
-        import('@/stores/Account').then(({ useAccountStore }) => {
-            import('@nimiq/utils').then(({ CryptoCurrency }) => {
-                useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
+    // Navigate if not already on target route
+    if (demoRouter.currentRoute.path !== targetRoute) {
+        // Set active currency for financial actions
+        if (messageType.includes('modal')) {
+            import('@/stores/Account').then(({ useAccountStore }) => {
+                import('@nimiq/utils').then(({ CryptoCurrency }) => {
+                    useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
+                });
             });
+        }
+
+        demoRouter.push({ path: targetRoute }).catch(() => {
+            // Silently ignore navigation duplicated errors
         });
     }
 }
+
 // Export types and constants for backward compatibility
 export type { DemoState, DemoFlowType };
 export { checkIfDemoIsActive, DemoModal, demoRoutes };
 
-// Export new playground types and functionality
-export type { WalletPlaygroundMessage, PlaygroundState };
+// Export message type for compatibility
+export type { WalletPlaygroundMessage };
 
-// Export function to get current playground state
-export function getPlaygroundState(): PlaygroundState {
-    return { ...playgroundState };
+// Export function to get current modal state
+export function getCurrentModal(): DemoFlowType {
+    return currentModal;
 }
 
 // Export the main transaction insertion function that was exposed in the original module

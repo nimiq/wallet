@@ -26,23 +26,15 @@ export const usdcInitialBalance = 357.38 * 1e6; // 3000 USDC (6 decimals)
 // Flow types - supporting wallet playground actions
 export type DemoFlowType = 'buy' | 'swap' | 'stake' | 'idle';
 
-// Wallet playground message types
+// Iframe communication message types
 export type WalletPlaygroundMessage = {
-    type: 'demo:ready' | 'action:change' | 'action:open-buy-modal' | 'action:open-staking-modal' | 'action:open-swap-modal' | 'action:close-modal',
+    type: 'demo:ready' | 'action:open-buy-modal' | 'action:open-staking-modal' | 'action:open-swap-modal' | 'action:close-modal',
     data?: any,
-    id?: string,
-};
-
-// Playground state type
-export type PlaygroundState = {
-    connected: boolean,
-    address: string | null,
-    selectedAction: DemoFlowType,
 };
 
 // Demo routes mapping - including idle state
 export const demoRoutes: Record<DemoFlowType, string> = {
-    buy: '/demo-buy',
+    buy: '/demo-buy', // Use demo buy route to show custom modal
     swap: '/swap/NIM-BTC',
     stake: '/staking',
     idle: '/', // Default route for idle state

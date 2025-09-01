@@ -20,12 +20,6 @@ export default {
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
 
-    demo: {
-        // Controls if demo mode is enabled. When set to a string, demo mode is only enabled
-        // if the current hostname matches this value. When true, demo mode is always enabled.
-        enabled: false,
-    },
-
     staking: {
         // The block heights determining the on-chain pre-staking window. All transactions inside this window count
         // for pre-staking.

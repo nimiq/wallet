@@ -20,12 +20,6 @@ export default {
     enableBitcoin: true,
     pageVisibilityTxRefreshInterval: 2 * 60e3, // 2 minutes
 
-    demo: {
-        // Controls if demo mode is enabled. When set to a string, demo mode is only enabled
-        // if the current hostname matches this value. When true, demo mode is always enabled.
-        enabled: false,
-    },
-
     staking: {
         prestakingStartBlock: 3_023_730,
         prestakingEndBlock: 3_028_050,

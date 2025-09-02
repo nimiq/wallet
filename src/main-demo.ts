@@ -18,6 +18,7 @@ import { CryptoCurrency } from './lib/Constants';
 import { useConfig } from './composables/useConfig';
 import { initPwa } from './composables/usePwaInstallPrompt';
 import { useInactivityDetection } from './composables/useInactivityDetection';
+import { launchNetwork } from './network';
 
 // Side-effects
 import './lib/AddressBook';
@@ -103,8 +104,12 @@ async function startDemo() {
         render: (h) => h(App),
     }).$mount('#app');
 
-    // Note: We don't launch network, electrum, or polygon connections in demo mode
-    // as the demo uses simulated data instead of real blockchain connections
+    // Launch the Nimiq network connection for demo mode
+    // This enables network synchronization to start automatically on app load
+    launchNetwork();
+
+    // Note: We don't launch electrum or polygon connections in demo mode
+    // as BTC and USDC/USDT use simulated data instead of real blockchain connections
 
     // Set active currency to NIM by default for demo
     const { state: { activeCurrency } } = useAccountStore();

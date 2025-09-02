@@ -185,12 +185,12 @@
         <div class="flex-grow"></div>
 
         <AccountMenu
-            :class="{'active': $route.name === 'root'}"
+            :class="{'active': $route.name === RouteName.Root}"
             @click="navigateTo('/')"/>
 
         <button
             class="network reset flex-row"
-            :class="{'active': $route.name === 'network'}"
+            :class="{'active': $route.name === RouteName.Network}"
             @click="navigateTo('/network')"
         >
             <ConsensusIcon/>
@@ -198,7 +198,7 @@
         </button>
         <button
             class="settings reset flex-row"
-            :class="{'active': $route.name === 'settings'}"
+            :class="{'active': $route.name === RouteName.Settings}"
             @click="navigateTo('/settings')"
         >
             <GearIcon/>
@@ -213,7 +213,7 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
-import { checkIfDemoIsActive } from '@/lib/Demo';
+import { checkIfDemoIsActive } from '@/lib/demo';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -384,6 +384,7 @@ export default defineComponent({
 
         return {
             CryptoCurrency,
+            RouteName,
             navigateTo,
             resetState,
             isTestnet,
@@ -401,7 +402,6 @@ export default defineComponent({
             updateAvailable,
             hideTooltips,
             openModal,
-            RouteName,
             SellProvider,
             enabledSellProviders,
             sellEnabled,

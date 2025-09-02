@@ -3,7 +3,7 @@ import { ref, watch } from '@vue/composition-api';
 import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
-import { checkIfDemoIsActive } from '@/lib/Demo';
+import { checkIfDemoIsActive } from '@/lib/demo';
 import { useAddressStore } from './stores/Address';
 import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';

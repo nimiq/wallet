@@ -8,7 +8,7 @@ import { init as initFastspotApi } from '@nimiq/fastspot-api';
 import VuePortal from '@linusborg/vue-simple-portal';
 
 import App from './App.vue';
-import { dangerouslyInitializeDemo } from './lib/Demo';
+import { dangerouslyInitializeDemo } from './lib/demo';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
 import { useSettingsStore } from './stores/Settings';

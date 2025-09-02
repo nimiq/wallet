@@ -69,7 +69,7 @@ import Modal from '@/components/modals/Modal.vue';
 import { useAccountStore } from '@/stores/Account';
 import { useFiatStore } from '@/stores/Fiat';
 import { FIAT_CURRENCIES_OFFERED, CryptoCurrency } from '@/lib/Constants';
-import { dangerouslyInsertFakeBuyNimTransaction } from '@/lib/Demo';
+import { dangerouslyInsertFakeBuyNimTransaction } from '@/lib/demo';
 import { useRouter } from '@/router';
 import BankIconButton from '@/components/BankIconButton.vue';
 import { useAddressStore } from '@/stores/Address';

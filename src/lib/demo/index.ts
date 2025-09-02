@@ -52,8 +52,6 @@ let demoRouter: VueRouter;
 // Simple state tracking for current modal
 let currentModal: DemoFlowType = 'idle';
 
-// Track if demo has been initialized to prevent duplicate initialization
-let isInitialized = false;
 
 // Demo modal imports for dynamic loading
 const DemoFallbackModal = () =>
@@ -75,12 +73,6 @@ export function dangerouslyInitializeDemo(router: VueRouter): void {
     // Check if demo is active according to the configuration
     if (!checkIfDemoIsActive()) {
         console.info('[Demo] Demo mode not enabled in configuration. Skipping initialization.');
-        return;
-    }
-
-    // Prevent duplicate initialization during hot reload
-    if (isInitialized && demoRouter === router) {
-        console.debug('[Demo] Demo already initialized, skipping duplicate initialization.');
         return;
     }
 
@@ -114,8 +106,6 @@ export function dangerouslyInitializeDemo(router: VueRouter): void {
     // Send initial ready message to parent frame
     sendInitialReadyMessage();
 
-    // Mark as initialized
-    isInitialized = true;
 }
 
 /**
@@ -148,12 +138,6 @@ function sendInitialReadyMessage(): void {
  * Adds routes pointing to our demo modals.
  */
 function addDemoModalRoutes(): void {
-    // Use a flag attached to the router instance to track if routes were added
-    // This persists across hot reloads since the router instance persists
-    if ((demoRouter as any)._demoRoutesAdded) {
-        console.debug('[Demo] Routes already added to router, skipping duplicate registration');
-        return;
-    }
 
     // Import layout components for explicit inclusion
     const AccountOverview = () => import(/* webpackChunkName: "account-overview" */ '@/components/layouts/AccountOverview.vue');
@@ -184,8 +168,6 @@ function addDemoModalRoutes(): void {
         meta: { column: Columns.DYNAMIC },
     });
 
-    // Mark routes as added on the router instance
-    (demoRouter as any)._demoRoutesAdded = true;
     console.debug('[Demo] Demo routes added successfully');
 }
 

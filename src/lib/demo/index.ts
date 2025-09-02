@@ -139,10 +139,16 @@ function addDemoModalRoutes(): void {
 
 function attachIframeListeners(): void {
     window.addEventListener('message', (event) => {
-        console.log('[Demo] Received message:', event.data, 'from:', event.origin);
         if (!event.data || typeof event.data !== 'object') return;
 
         const message = event.data as WalletPlaygroundMessage;
+        
+        // Only log messages with expected types
+        const expectedTypes = ['demo:ready', 'action:open-buy-modal', 'action:open-staking-modal', 'action:open-swap-modal', 'action:close-modal'];
+        if (message.type && expectedTypes.includes(message.type)) {
+            console.log('[Demo] Received message:', event.data, 'from:', event.origin);
+        }
+        
         if (!message.type || !message.type.startsWith('action:')) return;
 
         handleParentAction(message.type);

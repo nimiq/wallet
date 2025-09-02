@@ -109,7 +109,7 @@ module.exports = {
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
                 'process.env.VERSION': `"${release}"`,
-                'process.env.IS_DEMO_BUILD': isDemoBuild,
+                'IS_DEMO_BUILD': isDemoBuild,
             }),
             new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],

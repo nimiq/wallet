@@ -31,7 +31,7 @@
         <div class="mobile-menu-bar flex-row">
             <button
                 class="reset menu-button"
-                @click="$router.replace({ name: RouteName.Root, query: { sidebar: 'true' } })"
+                @click="$router.push({ name: RouteName.Root, query: { sidebar: 'true' } })"
             >
                 <MenuIcon/>
                 <AttentionDot v-if="updateAvailable"/>

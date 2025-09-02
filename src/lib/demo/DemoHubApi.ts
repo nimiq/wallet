@@ -54,7 +54,7 @@ interface SetupSwapArgs {
 }
 
 /**
- * Replacement of the Hub API class to capture and redirect calls to our demo modals instead.
+ * Mock Hub API that redirects calls to demo modals instead of real Hub.
  */
 export class DemoHubApi extends HubApi {
     static create(): DemoHubApi {

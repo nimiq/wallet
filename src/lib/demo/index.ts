@@ -1,26 +1,9 @@
 /* eslint-disable max-len, consistent-return, no-console, no-async-promise-executor */
 
 /**
- * Demo Mode for the Nimiq Wallet
- * ------------------------------
- *
- * This module provides a complete demo environment for the Nimiq Wallet, allowing users to
- * try out wallet features without connecting to real blockchain networks.
- *
- * Demo mode can only be activated through build commands:
- * - yarn serve:demo (development)
- * - yarn build:demo (production build)
- * - yarn build:demo-production (production build with mainnet config)
- *
- * When active, demo mode:
- * - Creates fake accounts with demo balances
- * - Generates fake transaction history
- * - Simulates blockchain interactions like sending, receiving, and swapping
- * - Obfuscates addresses and disables certain features that wouldn't work in demo mode
- * - Redirects certain actions to explainer modals
- *
- * This is intended for demonstration, educational, and testing purposes only.
-*/
+ * Demo environment for trying wallet features without real blockchain connections.
+ * Only activated through build commands (yarn serve:demo, yarn build:demo).
+ */
 
 import VueRouter from 'vue-router';
 import { RouteName, Columns } from '@/router';
@@ -46,13 +29,8 @@ import {
 import { replaceBuyNimFlow, replaceStakingFlow, replaceSwapFlow } from './DemoFlows';
 import { interceptFetchRequest, listenForSwapChanges } from './DemoSwaps';
 
-// Keep a reference to the router here
 let demoRouter: VueRouter;
-
-// Simple state tracking for current modal
 let currentModal: DemoFlowType = 'idle';
-
-// Demo modal imports for dynamic loading
 const DemoFallbackModal = () =>
     import(
         /* webpackChunkName: 'demo-hub-fallback-modal' */
@@ -65,11 +43,7 @@ const DemoPurchaseModal = () =>
         '@/components/modals/demos/DemoModalBuy.vue'
     );
 
-/**
- * Initializes the demo environment and sets up various routes, data, and watchers.
- */
 export function dangerouslyInitializeDemo(router: VueRouter): void {
-    // Check if demo is active according to the configuration
     if (!checkIfDemoIsActive()) {
         console.info('[Demo] Demo mode not enabled in configuration. Skipping initialization.');
         return;
@@ -132,15 +106,10 @@ function sendInitialReadyMessage(): void {
     }, 500);
 }
 
-/**
- * Adds routes pointing to our demo modals.
- */
 function addDemoModalRoutes(): void {
-    // Import layout components for explicit inclusion
     const AccountOverview = () => import(/* webpackChunkName: "account-overview" */ '@/components/layouts/AccountOverview.vue');
     const AddressOverview = () => import(/* webpackChunkName: "address-overview" */ '@/components/layouts/AddressOverview.vue');
 
-    // Add demo routes with explicit layout components
     demoRouter.addRoute(RouteName.Root, {
         name: DemoModal.Fallback,
         path: `/${DemoModal.Fallback}`,
@@ -168,11 +137,7 @@ function addDemoModalRoutes(): void {
     console.debug('[Demo] Demo routes added successfully');
 }
 
-/**
- * Listens for messages from parent and monitors route changes for modal communication
- */
 function attachIframeListeners(): void {
-    // Listen for messages from parent frame
     window.addEventListener('message', (event) => {
         console.log('[Demo] Received message:', event.data, 'from:', event.origin);
         if (!event.data || typeof event.data !== 'object') return;
@@ -183,21 +148,15 @@ function attachIframeListeners(): void {
         handleParentAction(message.type);
     });
 
-    // Monitor route changes to send modal open/close messages
     demoRouter.afterEach((to) => {
         const newModal = getModalTypeFromPath(to.path);
-
-        // Only send message if modal state actually changed
-        if (newModal === currentModal) return;
+        if (newModal === currentModal) return; // Only send if state changed
 
         currentModal = newModal;
         sendModalStateMessage(newModal);
     });
 }
 
-/**
- * Determines modal type from route path
- */
 function getModalTypeFromPath(path: string): DemoFlowType {
     if (path.startsWith('/swap/')) return 'swap';
     if (path === '/staking') return 'stake';
@@ -205,9 +164,6 @@ function getModalTypeFromPath(path: string): DemoFlowType {
     return 'idle';
 }
 
-/**
- * Sends appropriate modal state message to parent
- */
 function sendModalStateMessage(modalType: DemoFlowType): void {
     let messageType: string;
 
@@ -238,7 +194,6 @@ function sendModalStateMessage(modalType: DemoFlowType): void {
 function handleParentAction(messageType: string): void {
     console.log('[Demo] Handling parent action:', messageType);
 
-    // Map message types to routes
     let targetRoute: string;
     switch (messageType) {
         case 'action:open-buy-modal':
@@ -258,10 +213,8 @@ function handleParentAction(messageType: string): void {
             return;
     }
 
-    // Navigate if not already on target route
     if (demoRouter.currentRoute.path !== targetRoute) {
-        // Set active currency for financial actions
-        if (messageType.includes('modal')) {
+        if (messageType.includes('modal')) { // Set active currency for financial actions
             import('@/stores/Account').then(({ useAccountStore }) => {
                 import('@nimiq/utils').then(({ CryptoCurrency }) => {
                     useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
@@ -269,20 +222,13 @@ function handleParentAction(messageType: string): void {
             });
         }
 
-        demoRouter.push({ path: targetRoute }).catch(() => {
-            // Silently ignore navigation duplicated errors
-        });
+        // eslint-disable-next-line  @typescript-eslint/no-empty-function
+        demoRouter.push({ path: targetRoute }).catch(() => {}); // Ignore duplicate navigation errors
     }
 }
 
-// Export types and constants for backward compatibility
-export type { DemoState, DemoFlowType };
+export type { DemoState, DemoFlowType, WalletPlaygroundMessage };
 export { checkIfDemoIsActive, DemoModal, demoRoutes };
-
-// Export message type for compatibility
-export type { WalletPlaygroundMessage };
-
-// Export function to get current modal state
 export function getCurrentModal(): DemoFlowType {
     return currentModal;
 }

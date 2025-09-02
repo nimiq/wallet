@@ -20,9 +20,9 @@ msgstr ""
 msgid "{amount} fee"
 msgstr ""
 
-#: src/components/layouts/Network.vue:30
-#: src/components/layouts/Network.vue:50
-#: src/components/layouts/Network.vue:65
+#: src/components/layouts/Network.vue:35
+#: src/components/layouts/Network.vue:55
+#: src/components/layouts/Network.vue:70
 msgid "{amount}/tx"
 msgstr ""
 
@@ -38,7 +38,7 @@ msgstr ""
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
-#: src/components/layouts/Network.vue:28
+#: src/components/layouts/Network.vue:33
 msgid "{count} Peer | {count} Peers"
 msgstr ""
 
@@ -127,11 +127,11 @@ msgstr ""
 msgid "1"
 msgstr ""
 
-#: src/components/layouts/Network.vue:36
+#: src/components/layouts/Network.vue:41
 msgid "1-2 sec"
 msgstr ""
 
-#: src/components/layouts/Network.vue:57
+#: src/components/layouts/Network.vue:62
 msgid "10 min"
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "2-4h"
 msgstr ""
 
-#: src/components/layouts/Network.vue:72
+#: src/components/layouts/Network.vue:77
 msgid "20 sec"
 msgstr ""
 
@@ -217,8 +217,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:159
-#: src/components/layouts/AccountOverview.vue:273
+#: src/components/layouts/AccountOverview.vue:162
+#: src/components/layouts/AccountOverview.vue:276
 msgid "Activate"
 msgstr ""
 
@@ -307,7 +307,7 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:281
+#: src/components/layouts/AccountOverview.vue:284
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
@@ -405,7 +405,7 @@ msgstr ""
 msgid "Awaiting swap secret"
 msgstr ""
 
-#: src/components/layouts/Network.vue:14
+#: src/components/layouts/Network.vue:19
 msgid "Back to addresses"
 msgstr ""
 
@@ -434,8 +434,8 @@ msgstr ""
 msgid "BIC works, too."
 msgstr ""
 
-#: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:140
+#: src/components/AddressList.vue:196
+#: src/components/layouts/AccountOverview.vue:143
 #: src/components/layouts/AddressOverview.vue:125
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -663,7 +663,7 @@ msgstr ""
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:229
+#: src/components/layouts/AccountOverview.vue:232
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -739,7 +739,7 @@ msgstr ""
 msgid "Connected to"
 msgstr ""
 
-#: src/components/layouts/Network.vue:120
+#: src/components/layouts/Network.vue:125
 msgid "connecting"
 msgstr ""
 
@@ -1068,7 +1068,7 @@ msgstr ""
 msgid "Error:"
 msgstr ""
 
-#: src/components/layouts/Network.vue:121
+#: src/components/layouts/Network.vue:126
 msgid "established"
 msgstr ""
 
@@ -1823,7 +1823,7 @@ msgstr ""
 msgid "Partially reverted"
 msgstr ""
 
-#: src/components/layouts/Network.vue:118
+#: src/components/layouts/Network.vue:123
 msgid "paused"
 msgstr ""
 
@@ -2555,7 +2555,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:194
+#: src/components/layouts/AccountOverview.vue:197
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr ""
 
@@ -2588,11 +2588,11 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:126
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:87
+#: src/components/layouts/AccountOverview.vue:90
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
@@ -2637,7 +2637,7 @@ msgstr ""
 msgid "Switch validator"
 msgstr ""
 
-#: src/components/layouts/Network.vue:119
+#: src/components/layouts/Network.vue:124
 msgid "syncing"
 msgstr ""
 
@@ -2662,8 +2662,8 @@ msgstr ""
 msgid "TEN31 Verification"
 msgstr ""
 
-#: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:221
+#: src/components/AddressList.vue:215
+#: src/components/layouts/AccountOverview.vue:224
 #: src/components/layouts/AddressOverview.vue:131
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -2922,8 +2922,8 @@ msgstr ""
 msgid "To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:128
-#: src/components/layouts/AccountOverview.vue:199
+#: src/components/layouts/AccountOverview.vue:131
+#: src/components/layouts/AccountOverview.vue:202
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -3048,8 +3048,8 @@ msgstr ""
 msgid "Update validator"
 msgstr ""
 
-#: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:218
+#: src/components/AddressList.vue:205
+#: src/components/layouts/AccountOverview.vue:221
 #: src/components/layouts/AddressOverview.vue:128
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50

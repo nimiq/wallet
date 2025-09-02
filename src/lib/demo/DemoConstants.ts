@@ -1,58 +1,48 @@
 /* eslint-disable max-len */
 
-// Demo state type
 export type DemoState = {
     active: boolean,
 };
 
-// Demo modal types
 export const DemoModal = {
     Fallback: 'demo-fallback',
     Buy: 'demo-buy',
 } as const;
-
-// Demo addresses
 export const demoNimAddress = 'NQ57 2814 7L5B NBBD 0EU7 EL71 HXP8 M7H8 MHKD';
 export const demoBtcAddress = '1XYZDemoAddress';
 export const demoPolygonAddress = '0xabc123DemoPolygonAddress';
 export const buyFromAddress = 'NQ04 JG63 HYXL H3QF PPNA 7ED7 426M 3FQE FHE5';
 
-// Initial balances
-export const nimInitialBalance = 140_418 * 1e5; // 14,041,800,000 - 14 april, 2018. 5 decimals.
-export const btcInitialBalance = 0.00025 * 1e8; // 0.00025 BTC (8 decimals)
-export const usdtInitialBalance = 514.83 * 1e6; // 5000 USDT (6 decimals)
-export const usdcInitialBalance = 357.38 * 1e6; // 3000 USDC (6 decimals)
+// Initial balance represents 14 april, 2018 (birth of Nimiq)
+export const nimInitialBalance = 140_418 * 1e5;
+export const btcInitialBalance = 0.00025 * 1e8;
+export const usdtInitialBalance = 514.83 * 1e6;
+export const usdcInitialBalance = 357.38 * 1e6;
 
-// Flow types - supporting wallet playground actions
 export type DemoFlowType = 'buy' | 'swap' | 'stake' | 'idle';
 
-// Iframe communication message types
 export type WalletPlaygroundMessage = {
     type: 'demo:ready' | 'action:open-buy-modal' | 'action:open-staking-modal' | 'action:open-swap-modal' | 'action:close-modal',
     data?: any,
 };
 
-// Demo routes mapping - including idle state
 export const demoRoutes: Record<DemoFlowType, string> = {
-    buy: '/demo-buy', // Use demo buy route to show custom modal
+    buy: '/demo-buy',
     swap: '/swap/NIM-BTC',
     stake: '/staking',
-    idle: '/', // Default route for idle state
+    idle: '/',
 };
 
-// Hub API requests to ignore
+// Ignored to prevent unnecessary Hub initialization
 export const ignoreHubRequests = [
     'addBtcAddresses',
     'on',
 ];
-
-// Demo CSS styles
 export const demoCSS = `
 .transaction-list .month-label > :where(.fetching, .failed-to-fetch) {
     display: none;
 }
 
-/* Hide address */
 .active-address .meta .copyable {
     display: none !important;
 }
@@ -73,7 +63,6 @@ export const demoCSS = `
     display: none;
 }
 
-/* Demo address tooltip styling */
 .tooltip.demo-tooltip {
     width: max-content;
     background: var(--nimiq-orange-bg);
@@ -81,7 +70,7 @@ export const demoCSS = `
 }
 
 .tooltip.demo-tooltip::after {
-    background: #fc750c; /* Match the red theme for the demo warning */
+    background: #fc750c;
 }
 
 .demo-highlight-badge {
@@ -136,13 +125,10 @@ export const demoCSS = `
     background: #dedee2 !important;
 }
 
-/* Hide links and addresses to block explorer in the swap animation */
 .swap-animation :where(.short-address, .blue-link.nq-link) {
     display: none !important;
 }
 `;
-
-// Bank SVG icon
 export const bankSvg = `<svg class="bank-icon" width="48" height="48" viewBox="0 0 66 66" 
         fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M65.012 40.982c-4.408 17.682-22.315 28.438-39.999 24.03C7.339 60.605-3.422 42.698.989 
@@ -158,13 +144,9 @@ export const bankSvg = `<svg class="bank-icon" width="48" height="48" viewBox="0
     </svg>`;
 
 /**
- * Checks if the demo mode should be active.
- * Demo mode is only activated through build commands:
- * - yarn serve:demo
- * - yarn build:demo
- * - yarn build:demo-production
+ * Demo mode is only activated through build commands (yarn serve:demo, yarn build:demo).
  * This ensures demo builds are separate deployments with no runtime activation.
  */
 export function checkIfDemoIsActive(): boolean {
-    return !!(process.env as any).IS_DEMO_BUILD;
+    return IS_DEMO_BUILD; // Replaced at build time by webpack DefinePlugin
 }

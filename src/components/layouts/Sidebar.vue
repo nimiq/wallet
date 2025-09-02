@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar padding flex-column">
-        <div v-if="isTestnet" class="testnet-notice flex-row">
+        <div v-if="isTestnet" class="environment-notice flex-row">
             <StreetconeIcon/>
             <span class="nq-label">{{ $t('PoS Testnet') }}</span>
             <div class="flex-grow"></div>
@@ -16,6 +16,26 @@
                 <template #default>
                     <p>{{ $t('You are connecting to the Nimiq PoS and Bitcoin Testnets.') }}</p>
                     <p>{{ $t('Please do not use your Mainnet accounts!') }}</p>
+                </template>
+            </Tooltip>
+        </div>
+
+        <div v-if="isDemoActive " class="environment-notice demo-notice flex-row">
+            <StreetconeIcon/>
+            <span class="nq-label">{{ $t('Demo mode') }}</span>
+            <div class="flex-grow"></div>
+            <Tooltip preferredPosition="bottom left"
+                :container="$parent"
+                theme="inverse"
+                :styles="{ transform: 'translate(0.5rem, 2rem)' }"
+                ref="demoTooltip"
+            >
+                <template #trigger>
+                    <InfoCircleIcon/>
+                </template>
+                <template #default>
+                    <p>{{ $t('Experience the Nimiq Wallet risk-free.' ) }}</p>
+                    <p>{{ $t('Explore and learn how it all works, safely and without real assets.') }}</p>
                 </template>
             </Tooltip>
         </div>
@@ -165,12 +185,12 @@
         <div class="flex-grow"></div>
 
         <AccountMenu
-            :class="{'active': $route.name === 'root'}"
+            :class="{'active': $route.name === RouteName.Root}"
             @click="navigateTo('/')"/>
 
         <button
             class="network reset flex-row"
-            :class="{'active': $route.name === 'network'}"
+            :class="{'active': $route.name === RouteName.Network}"
             @click="navigateTo('/network')"
         >
             <ConsensusIcon/>
@@ -178,7 +198,7 @@
         </button>
         <button
             class="settings reset flex-row"
-            :class="{'active': $route.name === 'settings'}"
+            :class="{'active': $route.name === RouteName.Settings}"
             @click="navigateTo('/settings')"
         >
             <GearIcon/>
@@ -193,6 +213,7 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
 import { RouteName, useRouter } from '@/router';
+import { checkIfDemoIsActive } from '@/lib/demo';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -359,8 +380,11 @@ export default defineComponent({
                 : null;
         });
 
+        const isDemoActive = checkIfDemoIsActive();
+
         return {
             CryptoCurrency,
+            RouteName,
             navigateTo,
             resetState,
             isTestnet,
@@ -378,13 +402,13 @@ export default defineComponent({
             updateAvailable,
             hideTooltips,
             openModal,
-            RouteName,
             SellProvider,
             enabledSellProviders,
             sellEnabled,
             openSellModal,
             nimSellOptions,
             activeCurrency,
+            isDemoActive,
         };
     },
     components: {
@@ -424,7 +448,7 @@ $balance-distribution-display-breakpoint: 450px;
     padding-bottom: max(var(--padding-bottom), env(safe-area-inset-bottom));
 }
 
-.testnet-notice {
+.environment-notice {
     align-items: center;
     width: calc(100% + calc(2 * var(--padding-sides)));
     margin: calc(-1 * var(--padding-top)) calc(-1 * var(--padding-sides)) var(--padding-top);

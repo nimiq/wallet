@@ -50,7 +50,7 @@ import { nextTick } from '@/lib/nextTick';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
-import router, { provideRouter } from './router';
+import router, { provideRouter, RouteName } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
 import { useWindowSize } from './composables/useWindowSize';
@@ -110,7 +110,7 @@ export default defineComponent({
                 await router.push({ name: router.currentRoute.name!, query: { sidebar: 'true' } });
             } else if (currentXPosition <= transactionsBarrier && (initialXPosition) > transactionsBarrier) {
                 // Go to transactions
-                if (router.currentRoute.name === 'root') {
+                if (router.currentRoute.name === RouteName.Root) {
                     await router.push('/transactions');
                 }
             } else if (

@@ -1,0 +1,7 @@
+{
+  "name": "nimiq-wallet-demo",
+  "compatibility_date": "2025-08-06",
+  "assets": {
+    "directory": "./dist"
+  }
+}

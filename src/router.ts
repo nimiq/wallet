@@ -579,7 +579,7 @@ function createActivationNavigationGuard(
         } else if (isUnsupportedAccount) {
             // unsupported account; go to main view
             next({
-                name: 'root',
+                name: RouteName.Root,
                 replace: true,
             });
         } else {

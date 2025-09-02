@@ -13,7 +13,14 @@ export enum ColumnType {
 let activeMobileColumn: Ref<ColumnType> | null = null;
 
 // Adding this code at the end of the call stack so router is not undefined
-setTimeout(() => {
+const initializeRouterGuard = () => {
+    // Check if router and beforeResolve method exist (needed for demo mode initialization)
+    if (!router || typeof router.beforeResolve !== 'function') {
+        // Retry after a longer delay if router is not ready (happens in demo mode)
+        setTimeout(initializeRouterGuard, 100);
+        return;
+    }
+
     router.beforeResolve((to, from, next) => {
         if (!activeMobileColumn) {
             activeMobileColumn = ref(ColumnType.ACCOUNT);
@@ -43,7 +50,8 @@ setTimeout(() => {
 
         next();
     });
-}, 0);
+};
+setTimeout(initializeRouterGuard, 0);
 
 export function useActiveMobileColumn() {
     if (!activeMobileColumn) {

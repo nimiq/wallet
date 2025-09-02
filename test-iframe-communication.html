@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Iframe Communication</title>
+</head>
+<body>
+    <h1>Demo Wallet Iframe Communication Test</h1>
+    <div id="messages"></div>
+    <div>
+        <button onclick="testOpenBuyModal()">Open Buy Modal</button>
+        <button onclick="testOpenStakingModal()">Open Staking Modal</button>
+        <button onclick="testOpenSwapModal()">Open Swap Modal</button>
+        <button onclick="testCloseModal()">Close Modal</button>
+    </div>
+    
+    
+    <iframe id="demoFrame" src="http://localhost:8081" width="800" height="600" style="border: 1px solid #ccc; margin-top: 20px;"></iframe>
+
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const demoFrame = document.getElementById('demoFrame');
+        
+        // Listen for messages from iframe
+        window.addEventListener('message', (event) => {
+            if (event.source !== demoFrame.contentWindow) return;
+            
+            const message = event.data;
+            const div = document.createElement('div');
+            div.innerHTML = `<strong>Received:</strong> ${JSON.stringify(message)} <em>(${new Date().toLocaleTimeString()})</em>`;
+            div.style.marginBottom = '5px';
+            div.style.padding = '5px';
+            div.style.backgroundColor = '#f0f0f0';
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+        
+        function sendMessage(type, data = {}) {
+            demoFrame.contentWindow.postMessage({ type, data }, '*');
+            
+            const div = document.createElement('div');
+            div.innerHTML = `<strong>Sent:</strong> ${JSON.stringify({ type, data })} <em>(${new Date().toLocaleTimeString()})</em>`;
+            div.style.marginBottom = '5px';
+            div.style.padding = '5px';
+            div.style.backgroundColor = '#e6f3ff';
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function testOpenBuyModal() {
+            sendMessage('action:open-buy-modal');
+        }
+        
+        function testOpenStakingModal() {
+            sendMessage('action:open-staking-modal');
+        }
+        
+        function testOpenSwapModal() {
+            sendMessage('action:open-swap-modal');
+        }
+        
+        function testCloseModal() {
+            sendMessage('action:close-modal');
+        }
+        
+        // Simple implementation to simulate expected host behavior
+        console.log('Host iframe communication test ready');
+        console.log('Expected message types:', [
+            'demo:ready',
+            'action:open-buy-modal',
+            'action:open-staking-modal', 
+            'action:open-swap-modal',
+            'action:close-modal'
+        ]);
+    </script>
+</body>
+</html>

@@ -52,7 +52,6 @@ let demoRouter: VueRouter;
 // Simple state tracking for current modal
 let currentModal: DemoFlowType = 'idle';
 
-
 // Demo modal imports for dynamic loading
 const DemoFallbackModal = () =>
     import(
@@ -105,7 +104,6 @@ export function dangerouslyInitializeDemo(router: VueRouter): void {
 
     // Send initial ready message to parent frame
     sendInitialReadyMessage();
-
 }
 
 /**
@@ -138,7 +136,6 @@ function sendInitialReadyMessage(): void {
  * Adds routes pointing to our demo modals.
  */
 function addDemoModalRoutes(): void {
-
     // Import layout components for explicit inclusion
     const AccountOverview = () => import(/* webpackChunkName: "account-overview" */ '@/components/layouts/AccountOverview.vue');
     const AddressOverview = () => import(/* webpackChunkName: "address-overview" */ '@/components/layouts/AddressOverview.vue');
@@ -187,9 +184,8 @@ function attachIframeListeners(): void {
     });
 
     // Monitor route changes to send modal open/close messages
-    demoRouter.afterEach((to, from) => {
+    demoRouter.afterEach((to) => {
         const newModal = getModalTypeFromPath(to.path);
-        const oldModal = getModalTypeFromPath(from.path);
 
         // Only send message if modal state actually changed
         if (newModal === currentModal) return;

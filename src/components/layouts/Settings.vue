@@ -1,7 +1,7 @@
 <template>
     <div class="settings flex-row">
         <div class="mobile-menu-bar flex-row">
-            <button class="reset menu-button" @click="$router.push({name: 'settings', query: {sidebar: true}})">
+            <button class="reset menu-button" @click="$router.push({name: RouteName.Settings, query: {sidebar: true}})">
                 <MenuIcon/>
             </button>
 

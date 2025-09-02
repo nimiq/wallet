@@ -48,7 +48,7 @@ export default defineComponent({
                 }
             }
 
-            context.emit('fee', fee);
+            context.emit('fee', { fee, delay: delay.value });
         });
 
         const speed = computed(() => {

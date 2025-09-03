@@ -31,9 +31,11 @@
         <UpdateNotification/>
 
         <transition name="fade">
-            <div v-if="$config.showHelpButton && $route.name !== 'network' && $route.name !== 'settings'">
-                <WalletStatusButton/>
-            </div>
+            <WalletToolbar
+                v-if="showHelpButton || showNimiqFeedbackButton"
+                :showHelpButton="showHelpButton"
+                :showNimiqFeedbackButton="showNimiqFeedbackButton"
+            />
         </transition>
 
         <div v-if="!hasAccounts" class="loader flex-row">
@@ -59,7 +61,7 @@ import { useSwipes } from './composables/useSwipes';
 import { useNetworkStore } from './stores/Network';
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
-import WalletStatusButton from './components/WalletStatusButton.vue';
+import WalletToolbar from './components/WalletToolbar.vue';
 
 export default defineComponent({
     name: 'app',
@@ -171,12 +173,21 @@ export default defineComponent({
 
         const { consensus } = useNetworkStore();
 
+        const showHelpButton = computed(() =>
+            config.showHelpButton
+                && router.currentRoute.name !== 'network' && router.currentRoute.name !== 'settings');
+        const showNimiqFeedbackButton = computed(() =>
+            config.enableFeedback
+                && router.currentRoute.name !== 'network' && router.currentRoute.name !== 'settings');
+
         return {
             isMainnet,
             activeMobileColumn,
             hasAccounts,
             main$,
             consensus,
+            showHelpButton,
+            showNimiqFeedbackButton,
         };
     },
     components: {
@@ -184,7 +195,7 @@ export default defineComponent({
         SwapNotification,
         UpdateNotification,
         LoadingSpinner,
-        WalletStatusButton,
+        WalletToolbar,
     },
 });
 </script>

@@ -24,6 +24,7 @@ import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
 import { useStakingStore } from './stores/Staking';
 import { useGeoIp } from './composables/useGeoIp';
+import VueCompositionApiUtils from './lib/VueCompositionApiUtils';
 import { reportToSentry } from './lib/Sentry';
 
 const StorageKeys = {
@@ -272,7 +273,9 @@ export async function initStorage() {
             (state) => state, // this is the default, but we still provide it for ts type inference
             (storedStakingState) => ({
                 ...storedStakingState,
-                validators: {},
+                // Make the staking events non-reactive to avoid the very noticeable performance impact of Vue's
+                // reactivity system on the possibly tens of thousands of entries. See Staking.ts
+                stakingEventsByAddress: VueCompositionApiUtils.nonReactive(storedStakingState.stakingEventsByAddress),
             }),
         ),
     ]);
@@ -292,7 +295,17 @@ async function initStoreStore<State extends StateTree, StoredState>(
 ): Promise<StoredState | undefined> {
     const storedState = await Storage.get<StoredState>(storageKey);
     if (storedState) {
-        store.patch(readTransform(storedState));
+        // Don't use store.patch, because it's broken. It doesn't properly set up reactivity on newly created properties
+        // as it does not use Vue.set to create them. This causes this data to not trigger change notifications, both on
+        // the current change and on future changes, even if Vue.set is used in the future. See experiments and comments
+        // in VueCompositionApiUtils.ts.
+        // However, also don't use VueCompositionApiUtils.updateObject, to avoid the performance overhead of recursing
+        // the object checking for changes, which is not needed here, as we're initiating the object here and pretty
+        // much all data changes. It is thus more efficient to simply overwrite the entire object.
+        store.state = {
+            ...store.state,
+            ...readTransform(storedState),
+        };
     }
     unsubscriptions.push(
         // Write state back to storage on changes.

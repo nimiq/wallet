@@ -318,9 +318,9 @@ export default class VueCompositionApiUtils {
 // the store for the first time by store.patch as opposed to by set or being defined on the initial state, no reactivity
 // is setup, and also later calls of set on that property will not setup any reactivity anymore. Those issues are fixed
 // by using our VueCompositionApiUtils by them enforcing reactivity by deleting the existing property, even if it was
-// already defined by store.patch, however the better way would be to avoid store.patch altogether. Currently, in the
-// Wallet, all stores are affected, as they all are restored from their persisted state via store.patch, and thus, we
-// currently always have to do the hack of reassigning entire objects, with the following performance implications:
+// already defined by store.patch, however the better way would be to avoid store.patch altogether.
+// We removed the use of store.patch in the meantime. However, the previous hack of reassigning entire objects has not
+// been removed everywhere yet, with the following performance implications:
 // - running all reactivity getters to copy the old object
 // - setting up the reactivity handlers again on the new object
 // - triggering all watchers and computed composables that use the changed object, even if the actually changed or added
@@ -336,8 +336,8 @@ export default class VueCompositionApiUtils {
 // that explicitly lists the actual dependencies and triggers the watcher callback only on actual changes can be used,
 // instead of effect watchers or computed composables. Additionally, repeated watcher invocations could be debounced.
 // TODO get rid of store.patch!! Then change the store actions to only set/add the properties that are actually
-//  changing, instead of replacing the entire object. The VueCompositionApiUtils should also then not mostly not
-//  be needed anymore.
+//  changing, instead of replacing the entire object. The VueCompositionApiUtils should also then mostly not be needed
+//  anymore.
 // // @ts-expect-error assigning a method on window for testing purposes
 // window.testVueCompositionApiUtils = async function testVueCompositionApiPluginUtils() {
 //     const STANDARD_REACTIVITY_SET_HANDLER_TO_TEST: 'composition-api' | 'vue' = 'composition-api';

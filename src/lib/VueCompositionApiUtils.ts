@@ -40,12 +40,14 @@ export default class VueCompositionApiUtils {
      * reactive yet, and ensures firing change notifications also on those. This is particularly important for stores,
      * where non-reactive entries might have been created via store.patch. Notifications are fired for an individual
      * property that has been changed, or for the entire target object when a property is added, e.g. to notify usages
-     * of Object.keys, Object.entries and the like.
+     * of Object.keys, Object.entries and the like. If an array entry is set, the change is always fired on the entire
+     * array, not only on the index added, because Vue 2 does not track individual array indices in the way it tracks
+     * individual properties.
      *
      * TODO once we stop using store.patch (or maybe also when updating pinia), or update to Vue 3, this method will not
      *  be required anymore.
      */
-    static set<T extends Record<string, unknown>, K extends keyof T>(target: T, key: K, value: T[K]): T[K] {
+    static set<T extends Record<string, unknown> | unknown[], K extends keyof T>(target: T, key: K, value: T[K]): T[K] {
         const propertyDescriptor = Object.getOwnPropertyDescriptor(target, key);
         if (propertyDescriptor) {
             // Property already exists.
@@ -57,11 +59,16 @@ export default class VueCompositionApiUtils {
                 target[key] = value;
                 return value;
             }
-            // The property already exist, but no reactivity is setup. In this case, @vue/composition-api's set does not
-            // setup the reactivity anymore. To avoid this and enforce setting up the reactivity, we delete the existing
-            // property before calling set.
+            // The property already exist, but has no setter.
+            // If target is a regular object, that means that no reactivity was setup for the property. In this case,
+            // @vue/composition-api's set does not setup the reactivity anymore. To avoid this and enforce setting up
+            // the reactivity, we delete the existing property before calling set.
+            // If target is an array, that's normal, as Vue 2 does not track individual array indices via setters in the
+            // way it tracks individual properties on objects. We still just delete the entry, as it does no harm, and
+            // checking for an array would probably be more overhead.
             delete target[key];
         }
+        // Note that this supports regular objects and arrays.
         return set(target, key, value);
     }
 
@@ -97,7 +104,8 @@ export default class VueCompositionApiUtils {
      * the same properties and same values. If only the values of some properties of target or of a child object change,
      * only notifications for those properties are triggered. If a property is added or removed to target or a child
      * object, unfortunately, a change notification on that property's parent still has to be triggered, as opposed to
-     * just on the property.
+     * just on the property. If an array entry is set, the change is always fired on the entire array, not only on the
+     * index added, because Vue 2 does not track individual array indices in the way it tracks individual properties.
      *
      * One thing to consider is that while this method minimizes the change notifications, and thus can improve the
      * performance by avoiding running unnecessary watchers and computed composables, obviously recursing the objects
@@ -148,14 +156,16 @@ export default class VueCompositionApiUtils {
                     // Property does not exist on target yet. Define it. A change notification will be triggered by set
                     // on the parent object, target, because a new property is being added. No need for the additional
                     // handling of VueCompositionApiUtils.set here, as we already checked that the property doesn't
-                    // exist on the target yet.
+                    // exist on the target yet. Note that set also correctly works if target is an array, in which case
+                    // a notification is triggered on the array.
                     set(target, key, source[key]);
                     continue;
                 }
 
                 // If source[key] or target[key] isn't an object, target[key] can just be replaced with source[key].
-                // The setter of Vue's defineReactive will trigger a change notification on the property if the value
-                // did in fact change, based on a === check.
+                // For regular objects, the setter of Vue's defineReactive will trigger a change notification on the
+                // property if the value did in fact change, based on a === check. For arrays, set triggers a change
+                // notification always on the entire array via array.splice.
                 // Start with checking source[key], because it's likely that source might just be a plain object without
                 // reactive getters, i.e. accessing it is cheaper than accessing target[key], which likely is reactive.
                 // The access of source[key] and target[key] is why we hid the current watcher on Dep.target.
@@ -170,22 +180,38 @@ export default class VueCompositionApiUtils {
                     continue;
                 }
 
-                // Both, target[key] and source[key] are objects. Don't replace target[key], but instead recurse to
-                // trigger as little change notifications as possible, only for child properties that actually changed.
-                VueCompositionApiUtils.updateObject(
-                    oldValue as Record<string, unknown>,
-                    newValue as Record<string, unknown>,
-                    missingPropertyDeletionStrategy as any,
-                );
+                // target[key] and source[key] are regular objects or arrays.
+                if (Array.isArray(newValue) !== Array.isArray(oldValue)) {
+                    // If they are of different type, i.e. one is an array and the other one not, replace target[key].
+                    // Note that set works for regular objects and arrays.
+                    VueCompositionApiUtils.set(target, key, newValue);
+                } else {
+                    // If they are of the same type, i.e. both regular objects or both arrays, don't replace target[key]
+                    // but instead recurse to trigger as little change notifications as possible, only for child
+                    // properties that actually changed.
+                    VueCompositionApiUtils.updateObject(
+                        oldValue as Record<string, unknown>, // arrays can also be treated as records
+                        newValue as Record<string, unknown>, // arrays can also be treated as records
+                        missingPropertyDeletionStrategy as any,
+                    );
+                }
             }
         } finally {
             Dep.target = currentWatcher; // restore tracking of dependencies on the current watcher
         }
 
         if (keysToDelete) {
-            for (const key of keysToDelete) {
-                // Delete removed properties. This will cause a change notification on the parent object, target.
-                VueCompositionApiUtils.delete(target, key);
+            if (!Array.isArray(target)) {
+                // Delete the properties on regular object which do not exist on source anymore.
+                for (const key of keysToDelete) {
+                    // Delete removed properties. This will cause a change notification on the parent object, target.
+                    VueCompositionApiUtils.delete(target, key);
+                }
+            } else {
+                // Delete superfluous entries of array, if source is shorter than target.
+                // Note that splice is one of the arrayMethods patched by Vue 2 for reactivity handling.
+                // Delete entries at once for better performance.
+                target.splice(target.length - keysToDelete.size, keysToDelete.size);
             }
         }
     }
@@ -197,11 +223,12 @@ export default class VueCompositionApiUtils {
      * not provide a delete method, we provide it here as counterpart to set. Even though we're simply using Vue.delete
      * here, it seems to be playing well with @vue/composition-api and set. Deleting a property via this method triggers
      * change notifications on the target object, which ensures that usages of APIs like Object.keys and Object.entries
-     * get correctly notified of the change.
+     * get correctly notified of the change. Similarly, deleting an entry of an array triggers a change notification on
+     * the array.
      *
      * TODO once removing the set method, this one can go too. Use Vue.delete in Vue 2.7, or plain js delete in Vue 3.
      */
-    static delete<T extends Record<string, unknown>, K extends keyof T>(target: T, key: K) {
+    static delete<T extends Record<string, unknown> | unknown[], K extends keyof T>(target: T, key: K) {
         Vue.delete(target as object, key as string);
     }
 }

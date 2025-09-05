@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import { set, nonReactive, VueWatcher } from '@vue/composition-api';
 
+// Note: this natively already supports object types, array types and primitive types for T.
+type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
+
 const KEY_OBSERVABLE = '__ob__'; // the key that is used by Vue's reactivity system for an object's Observer
 // Hack for accessing Vue's internal class Dep, which is needed for disabling tracking access of reactive data in a
 // watcher or computed composable.
@@ -66,13 +69,27 @@ export default class VueCompositionApiUtils {
      * Update a property in place, while triggering as few change notifications as possible. See updateObject.
      */
     static update<T extends Record<string, unknown>, K extends keyof T>(target: T, key: K, value: T[K]): void {
-        VueCompositionApiUtils.updateObject(
-            target,
-            { [key]: value } as T as Partial<T>,
-            MissingPropertyDeletionStrategy.PRESERVE_ON_ROOT,
-        );
+        const source: Partial<T> = {};
+        source[key] = value;
+        VueCompositionApiUtils.updateObject(target, source, MissingPropertyDeletionStrategy.PRESERVE_ON_ROOT);
     }
 
+    /**
+     * Patch a property in place, while triggering as few change notifications as possible. See updateObject.
+     * Modifies or creates only the properties of target and its children, which are contained in the patch. Others are
+     * not touched and not deleted.
+     */
+    static patch<T extends Record<string, unknown>, K extends keyof T>(
+        target: T,
+        key: K,
+        patch: DeepPartial<T[K]>,
+    ): void {
+        const source: DeepPartial<T> = {};
+        source[key] = patch;
+        VueCompositionApiUtils.updateObject(target, source, MissingPropertyDeletionStrategy.PRESERVE);
+    }
+
+    /* eslint-disable lines-between-class-members */
     /**
      * Update object target in place, such that it matches object source (depending on missingPropertyDeletionStrategy),
      * while triggering as few change notifications as possible. For example, if source is equal to target, no change
@@ -87,11 +104,26 @@ export default class VueCompositionApiUtils {
      * in this method also has a performance impact, but more importantly even, if the source object contains a lot of
      * changes, they are all processed by Vue, and even though dependent watchers are being called only once, this
      * processing has a high performance impact in itself, too. Thus, if you are expecting a lot of changes, for example
-     * when initializing the stores from persisted data, it is better to use set instead of update/updateObject.
+     * when initializing the stores from persisted data, it is better to use set instead of update/patch/updateObject.
      */
     static updateObject<T extends Record<string, unknown>>(
         target: T,
         source: Partial<T>,
+        missingPropertyDeletionStrategy: MissingPropertyDeletionStrategy.PRESERVE_ON_ROOT,
+    ): void;
+    static updateObject<T extends Record<string, unknown>>(
+        target: T,
+        source: DeepPartial<T>,
+        missingPropertyDeletionStrategy: MissingPropertyDeletionStrategy.PRESERVE,
+    ): void;
+    static updateObject<T extends Record<string, unknown>>(
+        target: T,
+        source: T,
+        missingPropertyDeletionStrategy?: MissingPropertyDeletionStrategy.DELETE,
+    ): void;
+    static updateObject<T extends Record<string, unknown>>(
+        target: T,
+        source: DeepPartial<T>,
         missingPropertyDeletionStrategy: MissingPropertyDeletionStrategy = MissingPropertyDeletionStrategy.DELETE,
     ): void {
         let keysToDelete: Set<keyof T> | undefined;
@@ -108,7 +140,7 @@ export default class VueCompositionApiUtils {
         const currentWatcher = Dep.target;
         Dep.target = undefined;
         try {
-            for (const key of Object.keys(source) as Array<keyof T>) {
+            for (const key of Object.keys(source)) {
                 keysToDelete?.delete(key);
                 if (key === KEY_OBSERVABLE) continue; // preserve the target's observable
 
@@ -127,7 +159,7 @@ export default class VueCompositionApiUtils {
                 // Start with checking source[key], because it's likely that source might just be a plain object without
                 // reactive getters, i.e. accessing it is cheaper than accessing target[key], which likely is reactive.
                 // The access of source[key] and target[key] is why we hid the current watcher on Dep.target.
-                const newValue = source[key]; // cache value, in case it involves calling a getter
+                const newValue = source[key] as T[keyof T]; // cache value, in case it involves calling a getter
                 if (typeof newValue !== 'object' || newValue === null) {
                     VueCompositionApiUtils.set(target, key, newValue);
                     continue;
@@ -143,7 +175,7 @@ export default class VueCompositionApiUtils {
                 VueCompositionApiUtils.updateObject(
                     oldValue as Record<string, unknown>,
                     newValue as Record<string, unknown>,
-                    missingPropertyDeletionStrategy,
+                    missingPropertyDeletionStrategy as any,
                 );
             }
         } finally {
@@ -157,6 +189,7 @@ export default class VueCompositionApiUtils {
             }
         }
     }
+    /* eslint-enable lines-between-class-members */
 
     /**
      * Delete a property and fire change notifications. Using this method is required to circumvent the limitations of

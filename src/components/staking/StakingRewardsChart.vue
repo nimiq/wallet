@@ -183,7 +183,7 @@ export default defineComponent({
 
         // Generate chart data from staking reward events
         const chartData = computed(() => {
-            if (!stakingEvents.value) return null;
+            if (!stakingEvents.value || !Array.isArray(stakingEvents.value)) return null;
 
             // Filter reward events (type 6) and sort by date
             const rewardEvents = stakingEvents.value

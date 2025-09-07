@@ -212,7 +212,7 @@ export const useStakingStore = createStore({
             ) return null;
 
             const events = stakingEvents.value as StakingEvent[] | null;
-            if (!events) return null;
+            if (!events || !Array.isArray(events)) return null;
 
             const addStakeEvents: AddStakeEvent[] = events.filter((event) => {
                 if (event.type !== 6) return false;

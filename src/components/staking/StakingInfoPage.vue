@@ -16,7 +16,7 @@
         <PageBody class="flex-column">
             <div class="flex-row amounts" v-if="stake">
                 <RoundStakingIcon color="green" />
-                <div class="flex-column flex-grow">
+                <div class="flex-column flex-grow" v-if="stakedBalance">
                     <div class="amount-staked">
                         <Amount :amount="stakedBalance" value-mask/>
                         <span class="sm-hidden">&nbsp;{{ $t('staked') }}</span>
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="flex-row rewards-and-chart">
-                <div class="flex-column nq-green-bg rewards">
+                <div class="flex-column nq-green-bg rewards" v-if="restakingRewards">
                     <h2 class="flex-row nq-label flex-grow">{{ $t('Rewards') }}</h2>
                     <div class="amount-row flex-row row">
                         +<Amount :amount="restakingRewards" value-mask/>
@@ -134,6 +134,7 @@ import { reportToSentry } from '../../lib/Sentry';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
 import StakingRewardsListItem from '../StakingRewardsListItem.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
+import LoadingList, { LoadingListType } from '../LoadingList.vue';
 
 type Reward = {
     total: number,
@@ -406,6 +407,7 @@ export default defineComponent({
             rewards,
             itemSize,
             scrollerBuffer,
+            LoadingListType,
         };
     },
     components: {
@@ -422,6 +424,7 @@ export default defineComponent({
         FiatConvertedAmount,
         StakingRewardsChart,
         StakingRewardsListItem,
+        LoadingList,
     },
 });
 </script>

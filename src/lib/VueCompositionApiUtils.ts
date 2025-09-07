@@ -162,39 +162,45 @@ export default class VueCompositionApiUtils {
                     continue;
                 }
 
-                // If source[key] or target[key] isn't an object, target[key] can just be replaced with source[key].
+                // Unless source[key] and target[key] are both plain objects, (in which case we want to recurse to find
+                // the properties that actually changed), target[key] can just be replaced with source[key], namely if
+                // - both or one are not an object, or null, i.e. at least one is of primitive type, or null.
+                // - only one is an array
+                // - and even if both are arrays, as explained below.
+                //
                 // For regular objects, the setter of Vue's defineReactive will trigger a change notification on the
                 // property if the value did in fact change, based on a === check. For arrays, set triggers a change
-                // notification always on the entire array via array.splice.
+                // notification always on the entire array via array.splice, when setting one of its entries via set.
+                //
+                // Because of this behavior for arrays in Vue 2, we can just as well replace the entire array at once,
+                // instead of recursing the array, and save us the effort of detecting the actual changes in the array.
+                // Note that, as already mentioned, for setting properties, set checks whether the value changed at all,
+                // via a === check, and if that is not the case, does not trigger change notifications, so if the array
+                // is a property of an object and its reference remained the same, nothing is triggered, as desired.
+                // TODO check whether Vue 3 still has the behavior of notifying changes to array entries on the entire
+                //  array.
+                //
                 // Start with checking source[key], because it's likely that source might just be a plain object without
                 // reactive getters, i.e. accessing it is cheaper than accessing target[key], which likely is reactive.
                 // The access of source[key] and target[key] is why we hid the current watcher on Dep.target.
                 const newValue = source[key] as T[keyof T]; // cache value, in case it involves calling a getter
-                if (typeof newValue !== 'object' || newValue === null) {
+                if (typeof newValue !== 'object' || newValue === null || Array.isArray(newValue)) {
                     VueCompositionApiUtils.set(target, key, newValue);
                     continue;
                 }
                 const oldValue = target[key]; // cache value, in case it involves calling a getter
-                if (typeof oldValue !== 'object' || oldValue === null) {
+                if (typeof oldValue !== 'object' || oldValue === null || Array.isArray(oldValue)) {
                     VueCompositionApiUtils.set(target, key, newValue);
                     continue;
                 }
 
-                // target[key] and source[key] are regular objects or arrays.
-                if (Array.isArray(newValue) !== Array.isArray(oldValue)) {
-                    // If they are of different type, i.e. one is an array and the other one not, replace target[key].
-                    // Note that set works for regular objects and arrays.
-                    VueCompositionApiUtils.set(target, key, newValue);
-                } else {
-                    // If they are of the same type, i.e. both regular objects or both arrays, don't replace target[key]
-                    // but instead recurse to trigger as little change notifications as possible, only for child
-                    // properties that actually changed.
-                    VueCompositionApiUtils.updateObject(
-                        oldValue as Record<string, unknown>, // arrays can also be treated as records
-                        newValue as Record<string, unknown>, // arrays can also be treated as records
-                        missingPropertyDeletionStrategy as any,
-                    );
-                }
+                // target[key] and source[key] are both regular objects, not primitive types or arrays. Recurse to
+                // trigger as little change notifications as possible, only for child properties that actually changed.
+                VueCompositionApiUtils.updateObject(
+                    oldValue as Record<string, unknown>,
+                    newValue as Record<string, unknown>,
+                    missingPropertyDeletionStrategy as any,
+                );
             }
         } finally {
             Dep.target = currentWatcher; // restore tracking of dependencies on the current watcher
@@ -210,7 +216,7 @@ export default class VueCompositionApiUtils {
             } else {
                 // Delete superfluous entries of array, if source is shorter than target.
                 // Note that splice is one of the arrayMethods patched by Vue 2 for reactivity handling.
-                // Delete entries at once for better performance.
+                // Delete entries at once for better performance, and not having to be mindful about indices shifting.
                 target.splice(target.length - keysToDelete.size, keysToDelete.size);
             }
         }

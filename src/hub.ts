@@ -518,6 +518,41 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
     return txDetails;
 }
 
+export async function signStakingRaw(request: Omit<SignStakingRequest, 'appName'>)
+    : Promise<SignedTransaction | SignedTransaction[] | null> {
+    try {
+        const requestShape = Array.isArray((request as any).transaction) ? 'array' : 'single';
+        const txLen = Array.isArray((request as any).transaction)
+            ? (request as any).transaction.length
+            : ((request as any).transaction || '').length;
+        // eslint-disable-next-line no-console
+        console.debug('signStakingRaw: request', { requestShape, txLen });
+
+        const signedTransactions = await hubApi.signStaking({
+            appName: APP_NAME,
+            ...request,
+        });
+
+        if (!signedTransactions) {
+            // eslint-disable-next-line no-console
+            console.debug('signStakingRaw: no result (null)');
+            return null;
+        }
+
+        const resultShape = Array.isArray(signedTransactions) ? 'array' : 'single';
+        const resultCount = Array.isArray(signedTransactions) ? signedTransactions.length : 1;
+        // eslint-disable-next-line no-console
+        console.debug('signStakingRaw: result', { resultShape, resultCount });
+        return signedTransactions as SignedTransaction | SignedTransaction[];
+    } catch (error: any) {
+        // eslint-disable-next-line no-console
+        console.error('signStakingRaw: error', { message: error?.message });
+        const handled = onError(error);
+        if (handled === null) return null;
+        throw error;
+    }
+}
+
 export async function createCashlink(senderAddress: string, senderBalance?: number) {
     const cashlink = await hubApi.createCashlink({
         appName: APP_NAME,

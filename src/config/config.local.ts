@@ -138,6 +138,11 @@ export default {
         },
     },
 
+    // Albatross Watchtower (local uses testnet instance)
+    albatrossWatchtower: {
+        endpoint: 'https://watchtower.pos.nimiq-testnet.com',
+    },
+
     moonpay: {
         enabled: false,
         // This is a publishable key

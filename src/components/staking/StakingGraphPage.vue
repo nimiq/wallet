@@ -78,11 +78,13 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 
-import { useI18n } from '@/lib/useI18n';
+import { useI18n } from '../../lib/useI18n';
 import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { getNetworkClient } from '../../network';
-import { sendStaking } from '../../hub';
+import { sendStaking, signStakingRaw } from '../../hub';
+import { startUnstaking } from '../../lib/AlbatrossWatchtower';
+// import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
@@ -227,6 +229,7 @@ export default defineComponent({
                         title: $t('Sending Staking Transaction') as string,
                     });
 
+                    // First sign and send deactivation, then sign retire+remove together and schedule with watchtower
                     const transaction = TransactionBuilder.newSetActiveStake(
                         Address.fromUserFriendlyAddress(activeAddress.value!),
                         BigInt(activeStake.value!.activeBalance + stakeDelta.value),
@@ -234,6 +237,11 @@ export default defineComponent({
                         useNetworkStore().state.height,
                         await client.getNetworkId(),
                     );
+                    // eslint-disable-next-line no-console
+                    console.debug('staking: deactivation tx prepared', {
+                        delta: stakeDelta.value,
+                        newActive: activeStake.value!.activeBalance + stakeDelta.value,
+                    });
                     const txs = await sendStaking({
                         transaction: transaction.serialize(),
                         recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
@@ -251,11 +259,133 @@ export default defineComponent({
                         context.emit('statusChange', {
                             type: StatusChangeType.NONE,
                         });
+                        // eslint-disable-next-line no-console
+                        console.error('staking: deactivation send returned null');
                         return;
                     }
 
                     if (txs.some((tx) => tx.executionResult === false)) {
+                        // eslint-disable-next-line no-console
+                        console.error('staking: deactivation executionResult=false');
                         throw new Error('The transaction did not succeed');
+                    }
+
+                    try {
+                        // Build retire and remove and sign together (2 tx max)
+                        // Compute validity start heights close to when the watchtower expects to send them:
+                        // end of current epoch + one epoch. Using Policy from @nimiq/core to approximate.
+                        const { Policy } = await import('@nimiq/core');
+                        const headHeight = useNetworkStore().state.height;
+                        const targetValidAt = Policy.electionBlockAfter(headHeight) + Policy.BLOCKS_PER_EPOCH;
+                        const retireStart = targetValidAt + 1;
+                        const removeStart = retireStart + 1;
+
+                        const retireUnsigned = TransactionBuilder.newRetireStake(
+                            Address.fromUserFriendlyAddress(activeAddress.value!),
+                            BigInt(Math.abs(stakeDelta.value)),
+                            BigInt(0),
+                            retireStart,
+                            await client.getNetworkId(),
+                        );
+                        const removeUnsigned = TransactionBuilder.newRemoveStake(
+                            Address.fromUserFriendlyAddress(activeAddress.value!),
+                            BigInt(Math.abs(stakeDelta.value)),
+                            BigInt(0),
+                            removeStart,
+                            await client.getNetworkId(),
+                        );
+
+                        // eslint-disable-next-line no-console
+                        console.debug('watchtower: signing retire+remove');
+                        const signed = await signStakingRaw({
+                            transaction: [retireUnsigned.serialize(), removeUnsigned.serialize()],
+                            recipientLabel:
+                                'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                            // @ts-expect-error Not typed yet in Hub
+                            validatorAddress: activeValidator.value!.address,
+                            validatorImageUrl: 'logo' in activeValidator.value!
+                                && !activeValidator.value.hasDefaultLogo
+                                ? activeValidator.value.logo
+                                : undefined,
+                        });
+
+                        if (!signed || !Array.isArray(signed) || signed.length < 2) {
+                            // eslint-disable-next-line no-console
+                            console.error('watchtower: signing retire+remove returned empty');
+                            return;
+                        }
+
+                        const retireSerialized = signed[0].serializedTx;
+                        const removeSerialized = signed[1].serializedTx;
+                        const deactivationHash = txs[0]?.transactionHash;
+
+                        // eslint-disable-next-line no-console
+                        console.debug('watchtower: signed retire/remove lengths', {
+                            retireLen: retireSerialized.length,
+                            removeLen: removeSerialized.length,
+                            deactivationHash,
+                        });
+                        try {
+                            await startUnstaking({
+                                staker_address: activeAddress.value!,
+                                transactions: {
+                                    inactive_stake_tx_hash: deactivationHash,
+                                    retire_tx: retireSerialized,
+                                    unstake_tx: removeSerialized,
+                                },
+                            });
+                            // eslint-disable-next-line no-console
+                            console.debug('watchtower: startUnstaking posted');
+                        } catch (err: any) {
+                            const is406 = String(err?.message || '').startsWith('HTTP 406');
+                            if (!is406) throw err;
+
+                            // Retry with backoff until accepted by watchtower (deactivation macro-confirmed)
+                            let attempt = 0;
+                            const maxAttempts = 60; // ~30 minutes with 30s interval
+                            const retry = async () => {
+                                attempt += 1;
+                                try {
+                                    await startUnstaking({
+                                        staker_address: activeAddress.value!,
+                                        transactions: {
+                                            inactive_stake_tx_hash: deactivationHash,
+                                            retire_tx: retireSerialized,
+                                            unstake_tx: removeSerialized,
+                                        },
+                                    });
+                                    // eslint-disable-next-line no-console
+                                    console.debug('watchtower: startUnstaking posted on retry', { attempt });
+                                } catch (e: any) {
+                                    if (
+                                        attempt < maxAttempts
+                                        && String(e?.message || '').startsWith('HTTP 406')
+                                    ) {
+                                        // eslint-disable-next-line no-console
+                                        console.debug('watchtower: retrying in 30s', { attempt });
+                                        window.setTimeout(retry, 10_000);
+                                    } else if (attempt >= maxAttempts) {
+                                        // eslint-disable-next-line no-console
+                                        console.error('watchtower: giving up after retries');
+                                    } else {
+                                        // eslint-disable-next-line no-console
+                                        console.error('watchtower: retry failed with non-406');
+                                    }
+                                }
+                            };
+                            // eslint-disable-next-line no-console
+                            console.debug('watchtower: initial 406, scheduling retries');
+                            window.setTimeout(retry, 10_000);
+                        }
+                    } catch (wtError) {
+                        // Non-fatal: deactivation succeeded; watchtower scheduling failed
+                        // Report but do not block UX
+                        reportToSentry(wtError as any);
+                        // eslint-disable-next-line no-console
+                        console.error(
+                            'watchtower: scheduling failed',
+                            wtError instanceof Error ? wtError.message : String(wtError),
+                        );
                     }
 
                     context.emit('statusChange', {

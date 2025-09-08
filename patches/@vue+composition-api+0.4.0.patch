@@ -1,17 +1,19 @@
 diff --git a/node_modules/@vue/composition-api/dist/index.d.ts b/node_modules/@vue/composition-api/dist/index.d.ts
-index af9e9b3..bb0cca1 100644
+index af9e9b3..93fa413 100644
 --- a/node_modules/@vue/composition-api/dist/index.d.ts
 +++ b/node_modules/@vue/composition-api/dist/index.d.ts
-@@ -18,3 +18,7 @@ export * from './apis/lifecycle';
+@@ -18,3 +18,9 @@ export * from './apis/lifecycle';
  export * from './apis/watch';
  export * from './apis/computed';
  export * from './apis/inject';
 +
-+// We patch the package to export nonReactive.
++// We patch the package to export nonReactive, isNonReactive and isReactive.
 +// Note that nonReactive does not work on arrays!
 +export { nonReactive } from './reactivity/reactive';
++export declare function isNonReactive(obj: unknown): boolean;
++export declare function isReactive(obj: unknown): boolean;
 diff --git a/node_modules/@vue/composition-api/dist/vue-composition-api.module.js b/node_modules/@vue/composition-api/dist/vue-composition-api.module.js
-index a86e538..6d18c8a 100644
+index a86e538..aa0857e 100644
 --- a/node_modules/@vue/composition-api/dist/vue-composition-api.module.js
 +++ b/node_modules/@vue/composition-api/dist/vue-composition-api.module.js
 @@ -1048,3 +1048,7 @@ if (currentVue && typeof window !== 'undefined' && window.Vue) {
@@ -19,6 +21,6 @@ index a86e538..6d18c8a 100644
  export default plugin;
  export { computed, createComponent, createElement, defineComponent, getCurrentVM as getCurrentInstance, inject, isRef, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onServerPrefetch, onUnmounted, onUpdated, provide, reactive, ref, set, toRefs, watch };
 +
-+// We patch the package to export nonReactive
++// We patch the package to export nonReactive, isNonReactive and isReactive.
 +// Note that nonReactive does not work on arrays!
-+export { nonReactive };
++export { nonReactive, isNonReactive, isReactive };

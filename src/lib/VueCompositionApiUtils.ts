@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { set, nonReactive, VueWatcher } from '@vue/composition-api';
+import { set, nonReactive, isNonReactive, isReactive, VueWatcher } from '@vue/composition-api';
 
 // Note: this natively already supports object types, array types and primitive types for T.
 type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
@@ -152,45 +152,66 @@ export default class VueCompositionApiUtils {
                 keysToDelete?.delete(key);
                 if (key === KEY_OBSERVABLE) continue; // preserve the target's observable
 
+                // First check for cases in which we do not want to recurse, but replace the value entirely via set.
+                // Note that we use set throughout, and not VueCompositionApiUtils.set, because we don't want to enforce
+                // setting up reactivity on non-reactive data.
+                // If target is a reactive plain object, and the property already exists, set triggers a notification
+                // for only that property (via the setter of Vue's defineReactive), and only if the value actually
+                // changed, based on a strict equality check (===). If the property does not already exist, set triggers
+                // a notification on the entire parent, target, for usages like Object.keys(target) to also be notified.
+                // If target is an array, a notification is always triggered on the entire array via array.splice when
+                // setting an entry, as Vue 2 does not track individual array indices in the same way it tracks
+                // individual properties, and there is no equality check that skips unnecessary notifications.
                 if (!(key in target)) {
-                    // Property does not exist on target yet. Define it. A change notification will be triggered by set
-                    // on the parent object, target, because a new property is being added. No need for the additional
-                    // handling of VueCompositionApiUtils.set here, as we already checked that the property doesn't
-                    // exist on the target yet. Note that set also correctly works if target is an array, in which case
-                    // a notification is triggered on the array.
+                    // Property does not exist on target yet. We don't have to recurse and can just set the property.
                     set(target, key, source[key]);
                     continue;
                 }
-
-                // Unless source[key] and target[key] are both plain objects, (in which case we want to recurse to find
-                // the properties that actually changed), target[key] can just be replaced with source[key], namely if
+                // Unless source[key] and target[key] are both reactive plain objects, (in which case we want to recurse
+                // to find the properties that actually changed), target[key] can just be replaced with source[key],
+                // namely if
                 // - both or one are not an object, or null, i.e. at least one is of primitive type, or null.
-                // - only one is an array
-                // - and even if both are arrays, as explained below.
-                //
-                // For regular objects, the setter of Vue's defineReactive will trigger a change notification on the
-                // property if the value did in fact change, based on a === check. For arrays, set triggers a change
-                // notification always on the entire array via array.splice, when setting one of its entries via set.
-                //
-                // Because of this behavior for arrays in Vue 2, we can just as well replace the entire array at once,
-                // instead of recursing the array, and save us the effort of detecting the actual changes in the array.
-                // Note that, as already mentioned, for setting properties, set checks whether the value changed at all,
-                // via a === check, and if that is not the case, does not trigger change notifications, so if the array
-                // is a property of an object and its reference remained the same, nothing is triggered, as desired.
-                // TODO check whether Vue 3 still has the behavior of notifying changes to array entries on the entire
-                //  array.
+                // - only one is an array.
+                // - even both are arrays:
+                //   Because of the behavior for arrays in Vue 2 described above, we can just as well replace the entire
+                //   array at once, instead of recursing it, and save us the effort of detecting the actual changes in
+                //   the array. Note that, as already mentioned, for setting properties, set checks whether the value
+                //   changed at all via a === check, and if that is not the case, does not trigger change notifications,
+                //   so if the array is a property of an object and its reference remained the same, it does not trigger
+                //   a change notification, as desired.
+                //   TODO check whether Vue 3 still has the behavior of notifying changes to array entries on the entire
+                //    array.
+                // - only one is reactive. In that case we want to replace the old reactive/non-reactive object with the
+                //   new non-reactive/reactive object.
+                // - both are non-reactive. In that case we have to replace the entire object and not recurse, as no
+                //   change notification would be triggered on the the children of the non-reactive target.
                 //
                 // Start with checking source[key], because it's likely that source might just be a plain object without
                 // reactive getters, i.e. accessing it is cheaper than accessing target[key], which likely is reactive.
                 // The access of source[key] and target[key] is why we hid the current watcher on Dep.target.
                 const newValue = source[key] as T[keyof T]; // cache value, in case it involves calling a getter
-                if (typeof newValue !== 'object' || newValue === null || Array.isArray(newValue)) {
-                    VueCompositionApiUtils.set(target, key, newValue);
+                if (typeof newValue !== 'object'
+                    || newValue === null
+                    || Array.isArray(newValue)
+                    // For the source data, we check for whether it's explicitly marked as non-reactive, and not just to
+                    // be a non-reactive plain object, because passing plain, non-reactive data, for example retrieved
+                    // via a fetch, with the intention to update the target with its values, is a regular use case, with
+                    // no intention of the data being treated as non-reactive.
+                    || isNonReactive(newValue)
+                ) {
+                    set(target, key, newValue);
                     continue;
                 }
                 const oldValue = target[key]; // cache value, in case it involves calling a getter
-                if (typeof oldValue !== 'object' || oldValue === null || Array.isArray(oldValue)) {
-                    VueCompositionApiUtils.set(target, key, newValue);
+                if (typeof oldValue !== 'object'
+                    || oldValue === null
+                    || Array.isArray(oldValue)
+                    // For the target data, we check for whether it's generally non-reactive, including if it's not
+                    // explicitly marked as non-reactive, but just a plain, non-reactive object, because recursing on
+                    // non-reactive data is unnecessary, as no changes would be triggered on its children.
+                    || !isReactive(oldValue)
+                ) {
+                    set(target, key, newValue);
                     continue;
                 }
 
@@ -210,13 +231,15 @@ export default class VueCompositionApiUtils {
             if (!Array.isArray(target)) {
                 // Delete the properties on regular object which do not exist on source anymore.
                 for (const key of keysToDelete) {
-                    // Delete removed properties. This will cause a change notification on the parent object, target.
+                    // Delete removed properties. This will cause a change notification on the parent object, target, if
+                    // target is reactive.
                     VueCompositionApiUtils.delete(target, key);
                 }
             } else {
                 // Delete superfluous entries of array, if source is shorter than target.
-                // Note that splice is one of the arrayMethods patched by Vue 2 for reactivity handling.
-                // Delete entries at once for better performance, and not having to be mindful about indices shifting.
+                // Note that splice is one of the arrayMethods patched by Vue 2 for reactivity handling (if target is
+                // reactive). Delete entries at once for better performance, and not having to be mindful about index
+                // shifting.
                 target.splice(target.length - keysToDelete.size, keysToDelete.size);
             }
         }

@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 
 import { useI18n } from '../../lib/useI18n';
@@ -84,7 +84,7 @@ import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { getNetworkClient } from '../../network';
 import { sendStaking, signStakingRaw } from '../../hub';
 import { startUnstaking } from '../../lib/AlbatrossWatchtower';
-// import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
+import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
@@ -114,6 +114,85 @@ export default defineComponent({
                 newStake.value = amount;
                 stakeDelta.value = amount - (activeStake.value?.activeBalance || 0);
             }
+        }
+
+        async function waitForMacroConfirmation(hash: string) {
+            const { state: transactions$, addTransactions } = useTransactionsStore();
+
+            console.debug('macro-confirmation: start waiting', { hash });
+
+            // Seed store with tx details if missing
+            if (!transactions$.transactions[hash]) {
+                try {
+                    const client = await getNetworkClient();
+                    const details = await client.getTransaction(hash);
+                    console.debug('macro-confirmation: seeded tx from network', {
+                        hash,
+                        state: details.state,
+                    });
+                    addTransactions([details]);
+                } catch (e) {
+                    // Not yet retrievable, continue and poll
+                    console.debug('macro-confirmation: tx not retrievable yet', { hash });
+                }
+            }
+
+            // Resolve immediately if already confirmed
+            if (transactions$.transactions[hash]?.state === TransactionState.CONFIRMED) {
+                console.debug('macro-confirmation: already confirmed', { hash });
+                return;
+            }
+
+            await new Promise<void>((resolve, reject) => {
+                let stopped = false;
+                const stop = watch(
+                    () => transactions$.transactions[hash]?.state,
+                    (state) => {
+                        console.debug('macro-confirmation: watcher state update', { hash, state });
+                        if (state === TransactionState.CONFIRMED) {
+                            if (!stopped) { stopped = true; stop(); }
+                            console.debug('macro-confirmation: resolved confirmed', { hash });
+                            resolve();
+                        } else if (
+                            state === TransactionState.INVALIDATED
+                            || state === TransactionState.EXPIRED
+                        ) {
+                            if (!stopped) { stopped = true; stop(); }
+                            console.error('macro-confirmation: tx invalidated/expired', { hash, state });
+                            reject(new Error('Deactivation transaction was invalidated or expired'));
+                        }
+                    },
+                );
+
+                // Polling fallback: fetch tx details periodically and re-add to store
+                let tries = 0;
+                const interval = window.setInterval(async () => {
+                    if (stopped) { window.clearInterval(interval); return; }
+                    const current = transactions$.transactions[hash]?.state;
+                    console.debug('macro-confirmation: polling status', { hash, state: current, tries });
+                    if (
+                        current === TransactionState.CONFIRMED
+                        || current === TransactionState.INVALIDATED
+                        || current === TransactionState.EXPIRED
+                    ) {
+                        // Let the watcher handle resolve/reject on next tick
+                        return;
+                    }
+                    try {
+                        const client = await getNetworkClient();
+                        const details = await client.getTransaction(hash);
+                        addTransactions([details]);
+                        console.debug('macro-confirmation: refreshed tx from network', {
+                            hash,
+                            state: details.state,
+                        });
+                    } catch (e) {
+                        // Ignore until available
+                        console.debug('macro-confirmation: still not retrievable', { hash });
+                    }
+                    tries += 1;
+                }, 5000);
+            });
         }
 
         async function performStaking() {
@@ -271,14 +350,33 @@ export default defineComponent({
                     }
 
                     try {
+                        const deactivationHash = txs[0]?.transactionHash;
+                        // Wait until the deactivation tx is macro-confirmed before notifying the watchtower
+                        console.debug('watchtower: waiting for macro-confirmation', {
+                            deactivationHash,
+                        });
+                        await waitForMacroConfirmation(deactivationHash);
+
+                        // Fetch deactivation details to align validity heights with watchtower expectations
+                        const deactivationDetails = await client.getTransaction(deactivationHash);
+                        const deactHeight = deactivationDetails.blockHeight!;
+
                         // Build retire and remove and sign together (2 tx max)
-                        // Compute validity start heights close to when the watchtower expects to send them:
-                        // end of current epoch + one epoch. Using Policy from @nimiq/core to approximate.
+                        // Compute validity start heights exactly as the watchtower expects:
+                        // retire at end of current epoch + one epoch; unstake at retire + 1.
                         const { Policy } = await import('@nimiq/core');
-                        const headHeight = useNetworkStore().state.height;
-                        const targetValidAt = Policy.electionBlockAfter(headHeight) + Policy.BLOCKS_PER_EPOCH;
-                        const retireStart = targetValidAt + 1;
+                        const targetValidAt = Policy.electionBlockAfter(deactHeight)
+                            + Policy.BLOCKS_PER_EPOCH;
+                        const retireStart = targetValidAt;
                         const removeStart = retireStart + 1;
+
+                        // eslint-disable-next-line no-console
+                        console.debug('watchtower: computed validity starts', {
+                            deactHeight,
+                            targetValidAt,
+                            retireStart,
+                            removeStart,
+                        });
 
                         const retireUnsigned = TransactionBuilder.newRetireStake(
                             Address.fromUserFriendlyAddress(activeAddress.value!),
@@ -317,66 +415,22 @@ export default defineComponent({
 
                         const retireSerialized = signed[0].serializedTx;
                         const removeSerialized = signed[1].serializedTx;
-                        const deactivationHash = txs[0]?.transactionHash;
 
                         // eslint-disable-next-line no-console
-                        console.debug('watchtower: signed retire/remove lengths', {
-                            retireLen: retireSerialized.length,
-                            removeLen: removeSerialized.length,
+                        console.debug('watchtower: startUnstaking after macro-confirmation', {
                             deactivationHash,
                         });
-                        try {
-                            await startUnstaking({
-                                staker_address: activeAddress.value!,
-                                transactions: {
-                                    inactive_stake_tx_hash: deactivationHash,
-                                    retire_tx: retireSerialized,
-                                    unstake_tx: removeSerialized,
-                                },
-                            });
-                            // eslint-disable-next-line no-console
-                            console.debug('watchtower: startUnstaking posted');
-                        } catch (err: any) {
-                            const is406 = String(err?.message || '').startsWith('HTTP 406');
-                            if (!is406) throw err;
 
-                            // Retry with backoff until accepted by watchtower (deactivation macro-confirmed)
-                            let attempt = 0;
-                            const maxAttempts = 60; // ~30 minutes with 30s interval
-                            const retry = async () => {
-                                attempt += 1;
-                                try {
-                                    await startUnstaking({
-                                        staker_address: activeAddress.value!,
-                                        transactions: {
-                                            inactive_stake_tx_hash: deactivationHash,
-                                            retire_tx: retireSerialized,
-                                            unstake_tx: removeSerialized,
-                                        },
-                                    });
-                                    // eslint-disable-next-line no-console
-                                    console.debug('watchtower: startUnstaking posted on retry', { attempt });
-                                } catch (e: any) {
-                                    if (
-                                        attempt < maxAttempts
-                                        && String(e?.message || '').startsWith('HTTP 406')
-                                    ) {
-                                        // eslint-disable-next-line no-console
-                                        console.debug('watchtower: retrying in 30s', { attempt });
-                                        window.setTimeout(retry, 10_000);
-                                    } else if (attempt >= maxAttempts) {
-                                        // eslint-disable-next-line no-console
-                                        console.error('watchtower: giving up after retries');
-                                    } else {
-                                        // eslint-disable-next-line no-console
-                                        console.error('watchtower: retry failed with non-406');
-                                    }
-                                }
-                            };
-                            // eslint-disable-next-line no-console
-                            console.debug('watchtower: initial 406, scheduling retries');
-                            window.setTimeout(retry, 10_000);
-                        }
+                        await startUnstaking({
+                            staker_address: activeAddress.value!,
+                            transactions: {
+                                inactive_stake_tx_hash: deactivationHash,
+                                retire_tx: retireSerialized,
+                                unstake_tx: removeSerialized,
+                            },
+                        });
+                        // eslint-disable-next-line no-console
+                        console.debug('watchtower: startUnstaking posted');
                     } catch (wtError) {
                         // Non-fatal: deactivation succeeded; watchtower scheduling failed
                         // Report but do not block UX

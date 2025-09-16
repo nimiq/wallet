@@ -1,16 +1,21 @@
 <template>
-    <Modal :showOverlay="statusScreenOpened" ref="modal$" @close-overlay="onCloseOverlay">
+    <Modal :showOverlay="statusScreenOpened || recipientFlaggedAddressWarningOpened"
+        :closeButtonInverse="recipientFlaggedAddressWarningOpened"
+        @close-overlay="onCloseOverlay"
+        class="btc-send-modal"
+        ref="modal$"
+    >
         <div class="page flex-column" @click="amountMenuOpened = false">
             <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
                 {{ $t('Send Transaction') }}
             </PageHeader>
             <PageBody class="flex-column">
-                <DoubleInput :extended="!!recipientWithLabel">
-                    <template #second v-if="recipientWithLabel">
+                <DoubleInput :extended="!!recipientInfo">
+                    <template #second v-if="recipientInfo">
                         <BtcLabelInput
-                            v-model="recipientWithLabel.label"
+                            v-model="recipientInfo.label"
                             :placeholder="$t('Name this recipient...')"
-                            :disabled="recipientWithLabel.type === RecipientType.KNOWN_CONTACT"
+                            :disabled="recipientInfo.type !== RecipientType.NEW_CONTACT"
                             ref="labelInput$"/>
                     </template>
 
@@ -119,6 +124,17 @@
             ><template #cta>{{ $t('Send {currency}', { currency: 'BTC' }) }}</template></SendModalFooter>
         </div>
 
+        <transition name="fade" slot="overlay">
+            <FlaggedAddressWarning
+                v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
+                :info="recipientInfo.flaggedInfo"
+                :currency="CryptoCurrency.BTC"
+                @abort="reset"
+                @continue="recipientFlaggedAddressWarningOpened = false;"
+                class="page"
+            />
+        </transition>
+
         <div v-if="statusScreenOpened" slot="overlay" class="page">
             <StatusScreen
                 :title="statusTitle"
@@ -164,6 +180,7 @@ import { useSettingsStore } from '../../stores/Settings';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
 import { selectOutputs, estimateFees, normalizeAddress, validateAddress } from '../../lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '../../electrum';
@@ -173,6 +190,7 @@ export enum RecipientType {
     NEW_CONTACT,
     KNOWN_CONTACT,
     GLOBAL_ADDRESS,
+    FLAGGED,
 }
 
 export default defineComponent({
@@ -196,20 +214,56 @@ export default defineComponent({
         } = useBtcLabelsStore();
         const { state: network$, isFetchingTxHistory } = useBtcNetworkStore();
 
-        const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
+        function reset() {
+            gotRequestUriRecipient.value = false;
+            gotRequestUriAmount.value = false;
+            resetRecipient();
+            addressInputValue.value = '';
+            amount.value = 0;
+            fiatAmount.value = 0;
+            activeCurrency.value = CryptoCurrency.BTC;
+            // feePerByte.value = 0;
+            recipientFlaggedAddressWarningOpened.value = false;
+            amountMenuOpened.value = false;
+            statusScreenOpened.value = false;
+        }
+
+        const recipientInfo = ref<{
+            address: string,
+            label: string,
+            type: RecipientType,
+            flaggedInfo: FlaggedAddressInfo | null,
+        } | null>(null);
+        const recipientFlaggedAddressWarningOpened = ref(false);
+
+        function updateRecipientInfo(
+            address: string,
+            label: string,
+            type: RecipientType,
+            flaggedInfo: FlaggedAddressInfo | null,
+        ) {
+            if (address === recipientInfo.value?.address && recipientInfo.value.type === RecipientType.FLAGGED) {
+                // Do not overwrite label, type and flaggedInfo set for flagged address in useFlaggedAddressCheck.
+                return;
+            }
+            recipientInfo.value = { address, label, type, flaggedInfo };
+        }
 
         function saveRecipientLabel() {
-            if (!recipientWithLabel.value || recipientWithLabel.value.type !== RecipientType.NEW_CONTACT) return;
-            setRecipientLabel(recipientWithLabel.value.address, recipientWithLabel.value.label);
+            if (!recipientInfo.value || recipientInfo.value.type !== RecipientType.NEW_CONTACT) return;
+            setRecipientLabel(recipientInfo.value.address, recipientInfo.value.label);
         }
 
         function resetRecipient() {
-            if (gotRequestUriRecipient.value) return;
-            recipientWithLabel.value = null;
+            if (gotRequestUriRecipient.value && !recipientFlaggedAddressWarningOpened.value) return;
+            // Don't reset addressInputValue here because resetRecipient might have been called in response to the input
+            // event on BtcAddressInput, which just changed the value.
+            recipientInfo.value = null;
+            gotRequestUriRecipient.value = false;
         }
 
         function onAddressEntered(address: string) {
-            if (recipientWithLabel.value && recipientWithLabel.value.address === address) return;
+            if (address === recipientInfo.value?.address) return; // ignore double invocations
 
             // Find label across recipient labels, own addresses
             let label = '';
@@ -237,17 +291,21 @@ export default defineComponent({
             //     type = RecipientType.GLOBAL_ADDRESS;
             // }
 
-            recipientWithLabel.value = { address, label, type };
+            updateRecipientInfo(address, label, type, null);
         }
 
         function onDomainEntered(domain: string, address: string) {
-            recipientWithLabel.value = {
-                address,
-                label: domain,
-                type: RecipientType.NEW_CONTACT,
-            };
+            updateRecipientInfo(address, domain, RecipientType.NEW_CONTACT, null);
             addressInputValue.value = address;
         }
+
+        useFlaggedAddressCheck(recipientInfo, RecipientType, CryptoCurrency.BTC);
+
+        watch(
+            () => recipientInfo.value?.flaggedInfo,
+            (flaggedInfo) => recipientFlaggedAddressWarningOpened.value = !!flaggedInfo,
+            { lazy: true },
+        );
 
         const amount = ref(0);
         const feePerByte = ref(1);
@@ -358,8 +416,8 @@ export default defineComponent({
         const canSend = computed(() =>
             network$.consensus === 'established'
             && !!network$.height
-            && !!recipientWithLabel.value
-            && !!recipientWithLabel.value.address
+            && !!recipientInfo.value
+            && !!recipientInfo.value.address
             && !isFetchingTxHistory.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value,
@@ -395,16 +453,16 @@ export default defineComponent({
 
             gotRequestUriRecipient.value = true;
             addressInputValue.value = parsedRequestLink.recipient;
-            // Wait for BtcAddressInput to trigger onAddressEntered which sets recipientWithLabel.
+            // Wait for BtcAddressInput to trigger onAddressEntered which sets recipientInfo.
             await new Promise<void>((resolve) => {
                 const unwatch = watch(() => {
-                    if (recipientWithLabel.value?.address !== parsedRequestLink.recipient) return;
+                    if (recipientInfo.value?.address !== parsedRequestLink.recipient) return;
                     resolve();
                     unwatch();
                 });
             });
-            if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
-                recipientWithLabel.value!.label = parsedRequestLink.label;
+            if (!recipientInfo.value!.label && parsedRequestLink.label) {
+                recipientInfo.value!.label = parsedRequestLink.label;
             }
         }
 
@@ -486,8 +544,8 @@ export default defineComponent({
                         value: utxo.witness.value,
                     })),
                     output: {
-                        address: recipientWithLabel.value!.address,
-                        label: recipientWithLabel.value!.label,
+                        address: recipientInfo.value!.address,
+                        label: recipientInfo.value!.label,
                         value: amount.value,
                     },
                     ...(requiredInputs.value.changeAmount > 0 ? {
@@ -507,10 +565,10 @@ export default defineComponent({
 
                 // Show success screen
                 statusState.value = State.SUCCESS;
-                statusTitle.value = recipientWithLabel.value!.label
+                statusTitle.value = recipientInfo.value!.label
                     ? $t('Sent {btc} BTC to {name}', {
                         btc: amount.value / 1e8,
-                        name: recipientWithLabel.value!.label,
+                        name: recipientInfo.value!.label,
                     }) as string
                     : $t('Sent {btc} BTC', {
                         btc: amount.value / 1e8,
@@ -540,6 +598,11 @@ export default defineComponent({
         }
 
         function onCloseOverlay() {
+            if (recipientFlaggedAddressWarningOpened.value) {
+                reset();
+                return;
+            }
+
             if (statusState.value !== State.WARNING) {
                 // Do nothing when the loading or success status overlays are shown as they will be auto-closed.
                 return;
@@ -567,7 +630,8 @@ export default defineComponent({
             resetRecipient,
             onAddressEntered,
             onDomainEntered,
-            recipientWithLabel,
+            recipientInfo,
+            recipientFlaggedAddressWarningOpened,
             gotRequestUriRecipient,
             gotRequestUriAmount,
             parseRequestUri,
@@ -605,6 +669,7 @@ export default defineComponent({
             onStatusAlternativeAction,
             onCloseOverlay,
 
+            reset,
             back,
             RouteName,
         };
@@ -622,6 +687,7 @@ export default defineComponent({
         Tooltip,
         InfoCircleSmallIcon,
         SendModalFooter,
+        FlaggedAddressWarning: () => import('../FlaggedAddressWarning.vue'), // load only on demand as rarely used
         StatusScreen,
         DoubleInput,
     },
@@ -844,6 +910,14 @@ export default defineComponent({
         ::v-deep .footer-notice {
             margin-bottom: -1rem;
         }
+    }
+
+    .flagged-address-warning {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
     }
 
     @media (max-width: $mobileBreakpoint) { // Full Mobile Breakpoint

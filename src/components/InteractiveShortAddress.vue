@@ -8,6 +8,7 @@
         ref="tooltip$"
         :preferredPosition="tooltipPosition"
         :container="tooltipContainer"
+        :theme="tooltipTheme"
         :noFocus="copyable"
         @mouseenter.native.capture.stop="scheduleShowTooltip"
         @mouseleave.native.capture.stop="hideTooltip"
@@ -55,8 +56,9 @@ export default defineComponent({
         tooltipPosition: {
             type: String as () => 'top left' | 'top right' | 'bottom left' | 'bottom right',
             default: 'bottom right',
-            validator: (val: string) => /^(?:top|bottom) (?:left|right)$/.test(val),
+            validator: (val: string) => /^(?:top|bottom)(?: (?:left|right))?$/.test(val),
         },
+        tooltipTheme: String as () => Tooltip.Themes,
         // Because the address in the tooltip is typically much longer than the short address, offset the tooltip
         // position by default.
         offsetTooltipPosition: {

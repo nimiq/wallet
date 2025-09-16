@@ -1,7 +1,9 @@
 <template>
     <Modal :showOverlay="contactListOpened
         || recipientDetailsOpened
+        || recipientFlaggedAddressWarningOpened
         || statusScreenOpened"
+        :closeButtonInverse="recipientFlaggedAddressWarningOpened"
         @close-overlay="onCloseOverlay"
         class="send-modal"
         ref="modal$"
@@ -67,16 +69,16 @@
             </PageBody>
         </div>
 
-        <div v-if="recipientDetailsOpened && recipientWithLabel" slot="overlay" class="page flex-column">
+        <div v-if="recipientDetailsOpened && recipientInfo" slot="overlay" class="page flex-column">
             <PageBody class="page__recipient-overlay flex-column">
-                <Avatar :label="recipientWithLabel.label"/>
+                <Avatar :label="recipientInfo.label"/>
                 <LabelInput
-                    v-if="recipientWithLabel.type === RecipientType.CONTACT"
-                    v-model="recipientWithLabel.label"
+                    v-if="recipientInfo.type === RecipientType.CONTACT"
+                    v-model="recipientInfo.label"
                     :placeholder="$t('Name this contact...')"
                     ref="labelInput$"/>
-                <label v-else>{{ recipientWithLabel.label }}</label>
-                <AddressDisplay :address="recipientWithLabel.address" format="ethereum" copyable/>
+                <label v-else>{{ recipientInfo.label }}</label>
+                <AddressDisplay :address="recipientInfo.address" format="ethereum" copyable/>
                 <LongPressButton @long-press="recipientDetailsOpened = false; page = Pages.AMOUNT_INPUT">
                     {{ $t('Save and proceed') }}
                     <template #subline>{{ $t('Long press to confirm') }}</template>
@@ -85,8 +87,19 @@
             <PolygonWarningFooter type="sending" level="warning"/>
         </div>
 
+        <transition name="fade" slot="overlay">
+            <FlaggedAddressWarning
+                v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
+                :info="recipientInfo.flaggedInfo"
+                :currency="stablecoin"
+                @abort="reset"
+                @continue="page = Pages.AMOUNT_INPUT; closeRecipientDetails();"
+                class="page page__flagged-address-warning"
+            />
+        </transition>
+
         <div
-            v-if="page === Pages.AMOUNT_INPUT && recipientWithLabel" class="page flex-column"
+            v-if="page === Pages.AMOUNT_INPUT && recipientInfo" class="page flex-column"
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
@@ -102,10 +115,10 @@
                         <div class="separator"></div>
                     </div>
                     <UsdcAddressInfo
-                        :address="recipientWithLabel.address"
-                        :label="recipientWithLabel.label"
+                        :address="recipientInfo.address"
+                        :label="recipientInfo.label"
                         tooltipPosition="bottom left"
-                        :editable="recipientWithLabel.type === RecipientType.CONTACT"
+                        :editable="recipientInfo.type === RecipientType.CONTACT"
                     />
                 </section>
 
@@ -255,6 +268,7 @@ import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { sendPolygonTransaction } from '../../hub';
 import { loadEthersLibrary, calculateFee } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
@@ -290,6 +304,7 @@ export enum RecipientType {
     CONTACT,
     OWN_ADDRESS,
     GLOBAL_ADDRESS,
+    FLAGGED,
 }
 
 export default defineComponent({
@@ -329,12 +344,49 @@ export default defineComponent({
             .some(({ sender }) => normalizedUserAddresses.includes(sender.toLowerCase()));
         const page = ref(hasEverSent ? Pages.RECIPIENT_INPUT : Pages.WARNING);
 
+        function reset() {
+            gotRequestUriRecipient.value = false;
+            gotRequestUriAmount.value = false;
+            resetRecipient();
+            isResolvingUnstoppableDomain.value = false;
+            resolverError.value = '';
+            amount.value = 0;
+            fiatAmount.value = 0;
+            // fee.value = 0;
+            activeCurrency.value = stablecoin.value!;
+            page.value = Pages.RECIPIENT_INPUT;
+            recipientDetailsOpened.value = false;
+            recipientFlaggedAddressWarningOpened.value = false;
+            contactListOpened.value = false;
+            amountMenuOpened.value = false;
+            statusScreenOpened.value = false;
+        }
+
+        const recipientInfo = ref<{
+            address: string,
+            label: string,
+            type: RecipientType,
+            flaggedInfo: FlaggedAddressInfo | null,
+        } | null>(null);
         const recipientDetailsOpened = ref(false);
-        const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
+        const recipientFlaggedAddressWarningOpened = ref(false);
+
+        function updateRecipientInfo(
+            address: string,
+            label: string,
+            type: RecipientType,
+            flaggedInfo: FlaggedAddressInfo | null,
+        ) {
+            if (address === recipientInfo.value?.address && recipientInfo.value.type === RecipientType.FLAGGED) {
+                // Do not overwrite label, type and flaggedInfo set for flagged address in useFlaggedAddressCheck.
+                return;
+            }
+            recipientInfo.value = { address, label, type, flaggedInfo };
+        }
 
         function saveRecipientLabel() {
-            if (!recipientWithLabel.value || recipientWithLabel.value.type !== RecipientType.CONTACT) return;
-            setContact(recipientWithLabel.value.address, recipientWithLabel.value.label);
+            if (!recipientInfo.value || recipientInfo.value.type !== RecipientType.CONTACT) return;
+            setContact(recipientInfo.value.address, recipientInfo.value.label);
         }
 
         const recentContacts = computed(() => contacts.value.slice(0, 3));
@@ -342,11 +394,7 @@ export default defineComponent({
 
         const contactListOpened = ref(false);
         function onContactSelected(contact: {address: string, label: string}, type = RecipientType.CONTACT) {
-            recipientWithLabel.value = {
-                address: contact.address,
-                label: contact.label,
-                type,
-            };
+            updateRecipientInfo(contact.address, contact.label, type, null);
             contactListOpened.value = false;
             page.value = Pages.AMOUNT_INPUT;
         }
@@ -384,6 +432,10 @@ export default defineComponent({
         });
 
         function onAddressEntered(address: string, fallbackLabel = '') {
+            // In StablecoinSendModal we allow double invocation of onAddressEntered (different to SendModal), as we
+            // make use of that when exiting the method early when on Pages.WARNING, and then invoking it again in
+            // closePolygonWarningPage.
+
             // Find label across contacts, own addresses
             let label = fallbackLabel;
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
@@ -405,7 +457,7 @@ export default defineComponent({
                 type = RecipientType.CONTACT;
             }
 
-            recipientWithLabel.value = { address, label, type };
+            updateRecipientInfo(address, label, type, null);
             if (page.value === Pages.WARNING) {
                 // Don't interrupt display of warning page. Page and overlay changes will be triggered in
                 // closePolygonWarningPage.
@@ -422,19 +474,38 @@ export default defineComponent({
             }
         }
 
-        const isValidRecipient = computed(() => recipientWithLabel.value?.address !== addressInfo.value?.address);
+        const isValidRecipient = computed(() => recipientInfo.value?.address !== addressInfo.value?.address);
+        useFlaggedAddressCheck(recipientInfo, RecipientType, 'evm');
+
+        watch(
+            () => recipientInfo.value?.flaggedInfo,
+            (flaggedInfo) => {
+                if (flaggedInfo) {
+                    // Address is flagged. Go back to recipient page, in case that the flow already proceeded, and show
+                    // FlaggedAddressWarning.
+                    page.value = Pages.RECIPIENT_INPUT;
+                    recipientFlaggedAddressWarningOpened.value = true;
+                } else {
+                    recipientFlaggedAddressWarningOpened.value = false;
+                }
+            },
+            { lazy: true },
+        );
 
         function resetRecipient() {
-            if (gotRequestUriRecipient.value) return;
+            if (gotRequestUriRecipient.value && !recipientFlaggedAddressWarningOpened.value) return;
             addressInputValue.value = '';
-            recipientWithLabel.value = null;
+            recipientInfo.value = null;
+            gotRequestUriRecipient.value = false;
         }
 
         function closeRecipientDetails() {
-            recipientDetailsOpened.value = false;
-            if (page.value === Pages.RECIPIENT_INPUT && !gotRequestUriRecipient.value) {
+            if (page.value === Pages.RECIPIENT_INPUT
+                && (!gotRequestUriRecipient.value || recipientFlaggedAddressWarningOpened.value)) {
                 resetRecipient();
             }
+            recipientDetailsOpened.value = false;
+            recipientFlaggedAddressWarningOpened.value = false;
         }
 
         const amount = ref(0);
@@ -602,8 +673,14 @@ export default defineComponent({
             }
         });
 
-        watch(recipientDetailsOpened, (isOpened) => {
-            if (isOpened) {
+        watch([recipientDetailsOpened, recipientFlaggedAddressWarningOpened], ([detailsOpened, warningOpened]) => {
+            if (warningOpened) {
+                if (document.activeElement && 'blur' in document.activeElement) {
+                    (document.activeElement as HTMLInputElement | HTMLTextAreaElement).blur();
+                }
+                return;
+            }
+            if (detailsOpened) {
                 focus(labelInput$);
             } else if (page.value === Pages.RECIPIENT_INPUT) {
                 focus(addressInput$);
@@ -636,9 +713,9 @@ export default defineComponent({
                     stablecoin.value === CryptoCurrency.USDC
                         ? config.polygon.usdc.tokenContract
                         : config.polygon.usdt_bridged.tokenContract,
-                    recipientWithLabel.value!.address,
+                    recipientInfo.value!.address,
                     amount.value,
-                    recipientWithLabel.value!.label,
+                    recipientInfo.value!.label,
                     relay.value || undefined,
                 );
 
@@ -657,10 +734,10 @@ export default defineComponent({
 
                 // Show success screen
                 statusState.value = State.SUCCESS;
-                statusTitle.value = recipientWithLabel.value!.label
+                statusTitle.value = recipientInfo.value!.label
                     ? $t('Sent {coin} {ticker} to {name}', {
                         coin: amount.value / 1e6,
-                        name: recipientWithLabel.value!.label,
+                        name: recipientInfo.value!.label,
                         ticker: stablecoin.value!.toUpperCase(),
                     }) as string
                     : $t('Sent {coin} {ticker}', {
@@ -696,13 +773,18 @@ export default defineComponent({
                 // Skip recipient page and navigate directly to amount page, and let onAddressEntered open recipient
                 // details over amount page, if it's an unknown address.
                 page.value = Pages.AMOUNT_INPUT;
-                onAddressEntered(recipientWithLabel.value!.address);
+                onAddressEntered(recipientInfo.value!.address);
             } else {
                 page.value = Pages.RECIPIENT_INPUT;
             }
         }
 
         function onCloseOverlay() {
+            if (recipientFlaggedAddressWarningOpened.value) {
+                reset();
+                return;
+            }
+
             contactListOpened.value = false;
             if (recipientDetailsOpened.value) {
                 closeRecipientDetails();
@@ -823,8 +905,9 @@ export default defineComponent({
             onContactSelected,
             addressInputValue,
             onAddressEntered,
+            recipientInfo,
             recipientDetailsOpened,
-            recipientWithLabel,
+            recipientFlaggedAddressWarningOpened,
             closeRecipientDetails,
             gotRequestUriRecipient,
             gotRequestUriAmount,
@@ -869,6 +952,7 @@ export default defineComponent({
             onStatusAlternativeAction,
             onCloseOverlay,
 
+            reset,
             back,
             config,
             RouteName,
@@ -887,6 +971,7 @@ export default defineComponent({
         LabelInput,
         LongPressButton,
         AddressDisplay,
+        FlaggedAddressWarning: () => import('../FlaggedAddressWarning.vue'), // load only on demand as rarely used
         AmountInput,
         AmountMenu,
         FiatConvertedAmount,
@@ -1039,6 +1124,14 @@ export default defineComponent({
         & + .polygon-warning-footer {
             padding-bottom: 2rem;
         }
+    }
+
+    .page__flagged-address-warning {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
     }
 
     .sender-recipient {

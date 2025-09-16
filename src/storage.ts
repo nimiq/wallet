@@ -152,7 +152,19 @@ export async function initStorage() {
             (state) => state.settings,
             (storedAccountSettings) => ({ settings: storedAccountSettings }),
         ),
-        initStoreStore(useFiatStore(), StorageKeys.FIAT).then((storedFiatState) => {
+        initStoreStore(
+            useFiatStore(),
+            StorageKeys.FIAT,
+            (state) => state, // this is the default, but we still provide it for ts type inference
+            (storedFiatState) => {
+                if (storedFiatState.timestamp && Math.abs(Date.now() - storedFiatState.timestamp) > 10 * 60 * 1000) {
+                    // Discard stored exchange rates if they're older than 10 minutes.
+                    storedFiatState.timestamp = 0;
+                    storedFiatState.exchangeRates = {};
+                }
+                return storedFiatState;
+            },
+        ).then((storedFiatState) => {
             if (storedFiatState) return;
             // Get location from GeoIP service to set initial fiat currency. We do this in the background to not block
             // app startup. There is theoretically a race condition between the geo ip check and the Wallet redirecting

@@ -1,11 +1,11 @@
-# 
+#
 # Translators:
 # Miao Yu <miaoyu319@gmail.com>, 2021
 # Daniel, 2022
 # Sven <sven@nimiq.com>, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
 # Sam, 2024
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: Sam, 2024\n"
@@ -216,6 +216,10 @@ msgstr ""
 "弹出窗口已打开，\n"
 "单击任意位置即可回到上一页"
 
+#: src/components/FlaggedAddressWarning.vue:37
+msgid "Abort"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -300,6 +304,12 @@ msgstr "地址无法使用？"
 #: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
 msgstr "地址"
+
+#: src/components/FlaggedAddressWarning.vue:32
+msgid ""
+"Addresses are checked locally on your device and are not send to an external"
+" service."
+msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:75
 msgid "Adjust Stake"
@@ -806,6 +816,10 @@ msgstr "联系信息"
 msgid "Continue"
 msgstr "继续"
 
+#: src/components/FlaggedAddressWarning.vue:38
+msgid "Continue anyway"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
 msgstr "继续交换"
@@ -916,6 +930,10 @@ msgstr "信用卡"
 #: src/components/layouts/Sidebar.vue:147
 #: src/components/swap/SwapModal.vue:415
 msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:30
+msgid "Dataset: {name}"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:62
@@ -1226,6 +1244,15 @@ msgstr "通过银行转帐完成最终交换"
 msgid "Finalizing swap"
 msgstr "最后确认互换"
 
+#: src/components/FlaggedAddressWarning.vue:5
+#: src/composables/useFlaggedAddressCheck.ts:43
+msgid "Flagged Address"
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:29
+msgid "Flagged as: {type}"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:121
 msgid ""
 "For a decentralized\n"
@@ -1522,6 +1549,10 @@ msgstr "通过{cashlink}邀请朋友或在钱包里购买更多"
 msgid "Is your bank eligible?"
 msgstr "你的银行是否符合条件？"
 
+#: src/components/FlaggedAddressWarning.vue:18
+msgid "It's recommendable to abort the transaction."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr "你现在可以安全关闭电子钱包"
@@ -1638,6 +1669,10 @@ msgstr "请长按确认"
 #: src/components/modals/StablecoinReceiveModal.vue:17
 msgid "Make sure they are sending Polygon {ticker}."
 msgstr "请确保他们是从 Polygon 发送 {ticker}"
+
+#: src/components/FlaggedAddressWarning.vue:80
+msgid "malicious"
+msgstr ""
 
 #: src/components/modals/PolygonActivationModal.vue:19
 msgid ""
@@ -3359,6 +3394,10 @@ msgstr "你将发送 {amount} {ticker}"
 #: src/components/modals/SendModal.vue:168
 msgid "You will send {amount} NIM"
 msgstr "你将发送{amount}NIM"
+
+#: src/components/FlaggedAddressWarning.vue:21
+msgid "Your {currency} would most likely be stolen."
+msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"

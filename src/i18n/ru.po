@@ -1,4 +1,4 @@
-# 
+#
 # Translators:
 # Пётр Павлович, 2021
 # Vad <vjuruss@gmail.com>, 2022
@@ -6,7 +6,7 @@
 # Oscar_6, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
 # Alexander Ivanov <saiv46.dev+transifex@gmail.com>, 2024
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: Alexander Ivanov <saiv46.dev+transifex@gmail.com>, 2024\n"
@@ -220,6 +220,10 @@ msgstr ""
 "Открыто всплывающее окно.\n"
 "Нажмите где-нибудь, чтобы вернуть его на передний план."
 
+#: src/components/FlaggedAddressWarning.vue:37
+msgid "Abort"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -307,6 +311,12 @@ msgstr "Адрес недоступен?"
 #: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
 msgstr "Адреса"
+
+#: src/components/FlaggedAddressWarning.vue:32
+msgid ""
+"Addresses are checked locally on your device and are not send to an external"
+" service."
+msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:75
 msgid "Adjust Stake"
@@ -832,6 +842,10 @@ msgstr "Контакты"
 msgid "Continue"
 msgstr "Продолжить"
 
+#: src/components/FlaggedAddressWarning.vue:38
+msgid "Continue anyway"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
 msgstr "Продолжить обмен"
@@ -944,6 +958,10 @@ msgstr "Банковская карта"
 #: src/components/layouts/Sidebar.vue:147
 #: src/components/swap/SwapModal.vue:415
 msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:30
+msgid "Dataset: {name}"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:62
@@ -1264,6 +1282,15 @@ msgstr "Завершите обмен, отправив банковский п�
 #: src/components/swap/SwapAnimation.vue:301
 msgid "Finalizing swap"
 msgstr "Завершаем обмен"
+
+#: src/components/FlaggedAddressWarning.vue:5
+#: src/composables/useFlaggedAddressCheck.ts:43
+msgid "Flagged Address"
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:29
+msgid "Flagged as: {type}"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:121
 msgid ""
@@ -1586,6 +1613,10 @@ msgstr ""
 msgid "Is your bank eligible?"
 msgstr "Подходит ли ваш банк?"
 
+#: src/components/FlaggedAddressWarning.vue:18
+msgid "It's recommendable to abort the transaction."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr "Теперь можно закрыть кошелек"
@@ -1700,6 +1731,10 @@ msgstr "Удерживайте для подтверждения"
 #: src/components/modals/StablecoinReceiveModal.vue:17
 msgid "Make sure they are sending Polygon {ticker}."
 msgstr "Убедитесь что они отправляют Polygon {ticker}."
+
+#: src/components/FlaggedAddressWarning.vue:80
+msgid "malicious"
+msgstr ""
 
 #: src/components/modals/PolygonActivationModal.vue:19
 msgid ""
@@ -3467,6 +3502,10 @@ msgstr "Вы отправите {amount} {ticker}"
 #: src/components/modals/SendModal.vue:168
 msgid "You will send {amount} NIM"
 msgstr "Вы отправите {amount} NIM "
+
+#: src/components/FlaggedAddressWarning.vue:21
+msgid "Your {currency} would most likely be stolen."
+msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"

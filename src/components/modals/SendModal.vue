@@ -1,9 +1,11 @@
 <template>
     <Modal :showOverlay="contactListOpened
         || recipientDetailsOpened
+        || recipientFlaggedAddressWarningOpened
         || addressListOpened
         || feeSelectionOpened
         || statusType !== 'none'"
+        :closeButtonInverse="recipientFlaggedAddressWarningOpened"
         @close-overlay="onCloseOverlay"
         class="send-modal"
         ref="modal$"
@@ -64,18 +66,18 @@
             </PageBody>
         </div>
 
-        <div v-if="recipientDetailsOpened && recipientWithLabel" slot="overlay" class="page flex-column">
+        <div v-if="recipientDetailsOpened && recipientInfo" slot="overlay" class="page flex-column">
             <PageBody class="page__recipient-overlay recipient-overlay flex-column">
                 <div class="spacing-top"></div>
                 <div class="flex-grow"></div>
-                <Identicon :address="recipientWithLabel.address"/>
+                <Identicon :address="recipientInfo.address"/>
                 <LabelInput
-                    v-if="recipientWithLabel.type === RecipientType.CONTACT"
-                    v-model="recipientWithLabel.label"
+                    v-if="recipientInfo.type === RecipientType.CONTACT"
+                    v-model="recipientInfo.label"
                     :placeholder="$t('Name this contact...')"
                     ref="labelInput$"/>
-                <label v-else>{{ recipientWithLabel.label }}</label>
-                <AddressDisplay :address="recipientWithLabel.address" copyable/>
+                <label v-else>{{ recipientInfo.label }}</label>
+                <AddressDisplay :address="recipientInfo.address" copyable/>
                 <div class="flex-grow"></div>
                 <button
                     class="nq-button light-blue"
@@ -88,8 +90,19 @@
             </PageBody>
         </div>
 
+        <transition name="fade" slot="overlay">
+            <FlaggedAddressWarning
+                v-if="recipientFlaggedAddressWarningOpened && recipientInfo && recipientInfo.flaggedInfo"
+                :info="recipientInfo.flaggedInfo"
+                :currency="CryptoCurrency.NIM"
+                @abort="reset"
+                @continue="page = Pages.AMOUNT_INPUT; closeRecipientDetails();"
+                class="page"
+            />
+        </transition>
+
         <div
-            v-if="page === Pages.AMOUNT_INPUT && recipientWithLabel" class="page flex-column"
+            v-if="page === Pages.AMOUNT_INPUT && recipientInfo" class="page flex-column"
             :key="Pages.AMOUNT_INPUT" @click="amountMenuOpened = false"
         >
             <PageHeader
@@ -111,8 +124,8 @@
                         <div class="separator"></div>
                     </div>
                     <IdenticonButton
-                        :address="recipientWithLabel.address"
-                        :label="recipientWithLabel.label"
+                        :address="recipientInfo.address"
+                        :label="recipientInfo.label"
                         @click="recipientDetailsOpened = true"/>
                 </section>
 
@@ -294,6 +307,7 @@ import {
     GoCryptoPaymentApiError,
 } from '../../lib/GoCrypto';
 import { useWindowSize } from '../../composables/useWindowSize';
+import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { i18n } from '../../i18n/i18n-setup';
 import {
     isValidDomain as isValidUnstoppableDomain,
@@ -308,6 +322,7 @@ export enum RecipientType {
     // GoCrypto payments show a recipient label, which shouldn't be stored as contact as GoCrypto recycles addresses
     // such that different addresses can be used for the same shop, and different shops can use the same address.
     GO_CRYPTO,
+    FLAGGED,
 }
 
 export default defineComponent({
@@ -332,12 +347,53 @@ export default defineComponent({
         const { contactsArray: contacts, setContact, getLabel } = useContactsStore();
         const { consensus, height } = useNetworkStore();
 
+        function reset() {
+            gotRequestUriRecipient.value = false;
+            gotRequestUriAmount.value = false;
+            gotRequestUriMessage.value = false;
+            resetRecipient();
+            isResolvingUnstoppableDomain.value = false;
+            resolverError.value = '';
+            amount.value = 0;
+            fiatAmount.value = 0;
+            activeCurrency.value = CryptoCurrency.NIM;
+            feePerByte.value = 0;
+            message.value = '';
+            page.value = Pages.RECIPIENT_INPUT;
+            recipientDetailsOpened.value = false;
+            recipientFlaggedAddressWarningOpened.value = false;
+            contactListOpened.value = false;
+            addressListOpened.value = false;
+            amountMenuOpened.value = false;
+            feeSelectionOpened.value = false;
+            statusType.value = 'none';
+        }
+
+        const recipientInfo = ref<{
+            address: string,
+            label: string,
+            type: RecipientType,
+            flaggedInfo: FlaggedAddressInfo | null,
+        } | null>(null);
         const recipientDetailsOpened = ref(false);
-        const recipientWithLabel = ref<{address: string, label: string, type: RecipientType} | null>(null);
+        const recipientFlaggedAddressWarningOpened = ref(false);
+
+        function updateRecipientInfo(
+            address: string,
+            label: string,
+            type: RecipientType,
+            flaggedInfo: FlaggedAddressInfo | null,
+        ) {
+            if (address === recipientInfo.value?.address && recipientInfo.value.type === RecipientType.FLAGGED) {
+                // Do not overwrite label, type and flaggedInfo set for flagged address in useFlaggedAddressCheck.
+                return;
+            }
+            recipientInfo.value = { address, label, type, flaggedInfo };
+        }
 
         function saveRecipientLabel() {
-            if (!recipientWithLabel.value || recipientWithLabel.value.type !== RecipientType.CONTACT) return;
-            setContact(recipientWithLabel.value.address, recipientWithLabel.value.label);
+            if (!recipientInfo.value || recipientInfo.value.type !== RecipientType.CONTACT) return;
+            setContact(recipientInfo.value.address, recipientInfo.value.label);
         }
 
         const recentContacts = computed(() => contacts.value.slice(0, 3));
@@ -345,10 +401,7 @@ export default defineComponent({
 
         const contactListOpened = ref(false);
         function onContactSelected(contact: {address: string, label: string}, type = RecipientType.CONTACT) {
-            recipientWithLabel.value = {
-                ...contact,
-                type,
-            };
+            updateRecipientInfo(contact.address, contact.label, type, null);
             contactListOpened.value = false;
             page.value = Pages.AMOUNT_INPUT;
         }
@@ -370,11 +423,7 @@ export default defineComponent({
                     if (normalizedAddress && ValidationUtils.isValidAddress(normalizedAddress)) {
                         const label = getLabel.value(normalizedAddress);
                         if (!label) setContact(normalizedAddress, domain);
-                        recipientWithLabel.value = {
-                            address: normalizedAddress,
-                            label: label || domain,
-                            type: RecipientType.CONTACT,
-                        };
+                        updateRecipientInfo(normalizedAddress, label || domain, RecipientType.CONTACT, null);
                         page.value = Pages.AMOUNT_INPUT;
                     } else {
                         resolverError.value = $t('Domain does not resolve to a valid address') as string;
@@ -391,6 +440,8 @@ export default defineComponent({
         });
 
         function onAddressEntered(address: string) {
+            if (address === recipientInfo.value?.address) return; // ignore double invocations, e.g. on blur after input
+
             // Find label across contacts, own addresses
             let label = '';
             let type = RecipientType.CONTACT; // Can be stored as a new contact by default
@@ -412,7 +463,7 @@ export default defineComponent({
                 type = RecipientType.GLOBAL_ADDRESS;
             }
 
-            recipientWithLabel.value = { address, label, type };
+            updateRecipientInfo(address, label, type, null);
             if (label || gotRequestUriRecipient.value) {
                 // Go directly to the amount page
                 page.value = Pages.AMOUNT_INPUT;
@@ -422,19 +473,38 @@ export default defineComponent({
             }
         }
 
-        const isValidRecipient = computed(() => recipientWithLabel.value?.address !== activeAddressInfo.value?.address);
+        const isValidRecipient = computed(() => recipientInfo.value?.address !== activeAddressInfo.value?.address);
+        useFlaggedAddressCheck(recipientInfo, RecipientType, CryptoCurrency.NIM);
+
+        watch(
+            () => recipientInfo.value?.flaggedInfo,
+            (flaggedInfo) => {
+                if (flaggedInfo) {
+                    // Address is flagged. Go back to recipient page, in case that the flow already proceeded, and show
+                    // FlaggedAddressWarning.
+                    page.value = Pages.RECIPIENT_INPUT;
+                    recipientFlaggedAddressWarningOpened.value = true;
+                } else {
+                    recipientFlaggedAddressWarningOpened.value = false;
+                }
+            },
+            { lazy: true },
+        );
 
         function resetRecipient() {
-            if (gotRequestUriRecipient.value) return;
+            if (gotRequestUriRecipient.value && !recipientFlaggedAddressWarningOpened.value) return;
             addressInputValue.value = '';
-            recipientWithLabel.value = null;
+            recipientInfo.value = null;
+            gotRequestUriRecipient.value = false;
         }
 
         function closeRecipientDetails() {
-            recipientDetailsOpened.value = false;
-            if (page.value === Pages.RECIPIENT_INPUT && !gotRequestUriRecipient.value) {
+            if (page.value === Pages.RECIPIENT_INPUT
+                && (!gotRequestUriRecipient.value || recipientFlaggedAddressWarningOpened.value)) {
                 resetRecipient();
             }
+            recipientDetailsOpened.value = false;
+            recipientFlaggedAddressWarningOpened.value = false;
         }
 
         function onCreateCashlink() {
@@ -572,10 +642,10 @@ export default defineComponent({
 
             gotRequestUriRecipient.value = true;
             onAddressEntered(parsedRequestLink.recipient);
-            if (!recipientWithLabel.value!.label && parsedRequestLink.label) {
-                recipientWithLabel.value!.label = parsedRequestLink.label;
+            if (!recipientInfo.value!.label && parsedRequestLink.label) {
+                recipientInfo.value!.label = parsedRequestLink.label;
                 if (goCryptoId) {
-                    recipientWithLabel.value!.type = RecipientType.GO_CRYPTO;
+                    recipientInfo.value!.type = RecipientType.GO_CRYPTO;
                     recipientDetailsOpened.value = false; // hide recipient overlay as GoCrypto label isn't editable
                 }
             }
@@ -603,7 +673,7 @@ export default defineComponent({
             try {
                 goCryptoPaymentDetails = await fetchGoCryptoPaymentDetails({ paymentId });
                 if (('recipient' in goCryptoPaymentDetails
-                        && goCryptoPaymentDetails.recipient !== recipientWithLabel.value?.address)
+                        && goCryptoPaymentDetails.recipient !== recipientInfo.value?.address)
                     || ('amount' in goCryptoPaymentDetails && goCryptoPaymentDetails.amount !== amount.value)) {
                     // The GoCrypto payment request does not match the payment info.
                     endMonitoring = true;
@@ -744,8 +814,14 @@ export default defineComponent({
             }
         });
 
-        watch(recipientDetailsOpened, (isOpened) => {
-            if (isOpened) {
+        watch([recipientDetailsOpened, recipientFlaggedAddressWarningOpened], ([detailsOpened, warningOpened]) => {
+            if (warningOpened) {
+                if (document.activeElement && 'blur' in document.activeElement) {
+                    (document.activeElement as HTMLInputElement | HTMLTextAreaElement).blur();
+                }
+                return;
+            }
+            if (detailsOpened) {
                 focus(labelInput$);
             } else if (page.value === Pages.RECIPIENT_INPUT) {
                 focus(addressInput$);
@@ -779,9 +855,9 @@ export default defineComponent({
                 });
                 const plainTx = await sendTransaction({
                     sender: activeAddressInfo.value!.address,
-                    recipient: recipientWithLabel.value!.address,
+                    recipient: recipientInfo.value!.address,
                     // recipientType: 0 | 1 | 2 | undefined,
-                    recipientLabel: recipientWithLabel.value!.label,
+                    recipientLabel: recipientInfo.value!.label,
                     value: amount.value,
                     fee: fee.value,
                     extraData: message.value || undefined,
@@ -802,10 +878,10 @@ export default defineComponent({
                 // Show success screen
                 statusType.value = 'signing';
                 statusState.value = State.SUCCESS;
-                statusTitle.value = recipientWithLabel.value!.label
+                statusTitle.value = recipientInfo.value!.label
                     ? $t('Sent {nim} NIM to {name}', {
                         nim: amount.value / 1e5,
-                        name: recipientWithLabel.value!.label,
+                        name: recipientInfo.value!.label,
                     }) as string
                     : $t('Sent {nim} NIM', {
                         nim: amount.value / 1e5,
@@ -842,6 +918,11 @@ export default defineComponent({
         }
 
         function onCloseOverlay() {
+            if (recipientFlaggedAddressWarningOpened.value) {
+                reset();
+                return;
+            }
+
             contactListOpened.value = false;
             if (recipientDetailsOpened.value) {
                 closeRecipientDetails();
@@ -891,8 +972,9 @@ export default defineComponent({
             addressInputValue,
             onAddressEntered,
             onCreateCashlink,
+            recipientInfo,
             recipientDetailsOpened,
-            recipientWithLabel,
+            recipientFlaggedAddressWarningOpened,
             closeRecipientDetails,
             gotRequestUriRecipient,
             gotRequestUriAmount,
@@ -942,6 +1024,7 @@ export default defineComponent({
             onStatusAlternativeAction,
             onCloseOverlay,
 
+            reset,
             back,
             RouteName,
         };
@@ -957,6 +1040,7 @@ export default defineComponent({
         Identicon,
         LabelInput,
         AddressDisplay,
+        FlaggedAddressWarning: () => import('../FlaggedAddressWarning.vue'), // load only on demand as rarely used
         IdenticonButton,
         TriangleDownIcon,
         AddressList,
@@ -1119,6 +1203,14 @@ export default defineComponent({
                 border-radius: 0.625rem;
             }
         }
+    }
+
+    .flagged-address-warning {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
     }
 
     .identicon-section {

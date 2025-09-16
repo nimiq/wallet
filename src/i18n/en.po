@@ -203,6 +203,10 @@ msgid ""
 "click anywhere to bring it back to the front."
 msgstr ""
 
+#: src/components/FlaggedAddressWarning.vue:37
+msgid "Abort"
+msgstr ""
+
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
 "Account creation was massively improved. Give\n"
@@ -280,6 +284,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:39
 msgid "Addresses"
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:32
+msgid "Addresses are checked locally on your device and are not send to an external service."
 msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:75
@@ -774,6 +782,10 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
+#: src/components/FlaggedAddressWarning.vue:38
+msgid "Continue anyway"
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
 msgstr ""
@@ -880,6 +892,10 @@ msgstr ""
 #: src/components/layouts/Sidebar.vue:147
 #: src/components/swap/SwapModal.vue:415
 msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:30
+msgid "Dataset: {name}"
 msgstr ""
 
 #: src/lib/StakingUtils.ts:62
@@ -1184,6 +1200,15 @@ msgstr ""
 msgid "Finalizing swap"
 msgstr ""
 
+#: src/components/FlaggedAddressWarning.vue:5
+#: src/composables/useFlaggedAddressCheck.ts:43
+msgid "Flagged Address"
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:29
+msgid "Flagged as: {type}"
+msgstr ""
+
 #: src/components/modals/WelcomeModal.vue:121
 msgid ""
 "For a decentralized\n"
@@ -1457,6 +1482,10 @@ msgstr ""
 msgid "Is your bank eligible?"
 msgstr ""
 
+#: src/components/FlaggedAddressWarning.vue:18
+msgid "It's recommendable to abort the transaction."
+msgstr ""
+
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
 msgstr ""
@@ -1570,6 +1599,10 @@ msgstr ""
 
 #: src/components/modals/StablecoinReceiveModal.vue:17
 msgid "Make sure they are sending Polygon {ticker}."
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:80
+msgid "malicious"
 msgstr ""
 
 #: src/components/modals/PolygonActivationModal.vue:19
@@ -3218,6 +3251,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:168
 msgid "You will send {amount} NIM"
+msgstr ""
+
+#: src/components/FlaggedAddressWarning.vue:21
+msgid "Your {currency} would most likely be stolen."
 msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:9

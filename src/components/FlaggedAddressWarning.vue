@@ -29,7 +29,7 @@
                     <p>{{ $t('Flagged as: {type}', { type: translatedType }) }}</p>
                     <p>{{ $t('Dataset: {name}', { name: info.dataset }) }}</p>
                     <p class="privacy-note">{{
-                        $t('Addresses are checked locally on your device and are not send to an external service.')
+                        $t('Addresses are checked locally on your device and are not sent to an external service.')
                     }}</p>
                 </Tooltip>
             </p>
@@ -108,6 +108,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "../scss/variables.scss";
+
 .flagged-address-warning {
     contain: size layout style paint;
     font-size: var(--body-size);
@@ -214,6 +216,21 @@ label {
 
     &:hover {
         opacity: .8;
+    }
+}
+
+@media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
+    .page-body {
+        padding-top: 5rem;
+    }
+
+    label {
+        margin-top: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .address-display {
+        margin-bottom: 2.5rem;
     }
 }
 </style>

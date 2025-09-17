@@ -287,7 +287,7 @@ msgid "Addresses"
 msgstr ""
 
 #: src/components/FlaggedAddressWarning.vue:32
-msgid "Addresses are checked locally on your device and are not send to an external service."
+msgid "Addresses are checked locally on your device and are not sent to an external service."
 msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:75

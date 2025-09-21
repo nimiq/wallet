@@ -19,6 +19,7 @@ import {
 import { useTransactionsStore } from './Transactions';
 import { useBtcTransactionsStore } from './BtcTransactions';
 import { useUsdcTransactionsStore } from './UsdcTransactions';
+import { useUsdtTransactionsStore } from './UsdtTransactions';
 
 export type FiatState = {
     currency: FiatCurrencyOffered,
@@ -155,6 +156,7 @@ export const useFiatStore = createStore({
             useTransactionsStore().calculateFiatAmounts();
             useBtcTransactionsStore().calculateFiatAmounts();
             useUsdcTransactionsStore().calculateFiatAmounts();
+            useUsdtTransactionsStore().calculateFiatAmounts();
         },
         async updateExchangeRates(failGracefully = true) {
             const currentCurrency = this.state.currency;

@@ -119,27 +119,27 @@ export default defineComponent({
         async function waitForMacroConfirmation(hash: string) {
             const { state: transactions$, addTransactions } = useTransactionsStore();
 
-            console.debug('macro-confirmation: start waiting', { hash });
+            console.debug('[unstake] macro-confirmation: start waiting', { hash });
 
             // Seed store with tx details if missing
             if (!transactions$.transactions[hash]) {
                 try {
                     const client = await getNetworkClient();
                     const details = await client.getTransaction(hash);
-                    console.debug('macro-confirmation: seeded tx from network', {
+                    console.debug('[unstake] macro-confirmation: seeded tx from network', {
                         hash,
                         state: details.state,
                     });
                     addTransactions([details]);
                 } catch (e) {
                     // Not yet retrievable, continue and poll
-                    console.debug('macro-confirmation: tx not retrievable yet', { hash });
+                    console.debug('[unstake] macro-confirmation: tx not retrievable yet', { hash });
                 }
             }
 
             // Resolve immediately if already confirmed
             if (transactions$.transactions[hash]?.state === TransactionState.CONFIRMED) {
-                console.debug('macro-confirmation: already confirmed', { hash });
+                console.debug('[unstake] macro-confirmation: already confirmed', { hash });
                 return;
             }
 
@@ -148,17 +148,17 @@ export default defineComponent({
                 const stop = watch(
                     () => transactions$.transactions[hash]?.state,
                     (state) => {
-                        console.debug('macro-confirmation: watcher state update', { hash, state });
+                        console.debug('[unstake] macro-confirmation: watcher state update', { hash, state });
                         if (state === TransactionState.CONFIRMED) {
                             if (!stopped) { stopped = true; stop(); }
-                            console.debug('macro-confirmation: resolved confirmed', { hash });
+                            console.debug('[unstake] macro-confirmation: resolved confirmed', { hash });
                             resolve();
                         } else if (
                             state === TransactionState.INVALIDATED
                             || state === TransactionState.EXPIRED
                         ) {
                             if (!stopped) { stopped = true; stop(); }
-                            console.error('macro-confirmation: tx invalidated/expired', { hash, state });
+                            console.error('[unstake] macro-confirmation: tx invalidated/expired', { hash, state });
                             reject(new Error('Deactivation transaction was invalidated or expired'));
                         }
                     },
@@ -169,7 +169,7 @@ export default defineComponent({
                 const interval = window.setInterval(async () => {
                     if (stopped) { window.clearInterval(interval); return; }
                     const current = transactions$.transactions[hash]?.state;
-                    console.debug('macro-confirmation: polling status', { hash, state: current, tries });
+                    console.debug('[unstake] macro-confirmation: polling status', { hash, state: current, tries });
                     if (
                         current === TransactionState.CONFIRMED
                         || current === TransactionState.INVALIDATED
@@ -182,13 +182,13 @@ export default defineComponent({
                         const client = await getNetworkClient();
                         const details = await client.getTransaction(hash);
                         addTransactions([details]);
-                        console.debug('macro-confirmation: refreshed tx from network', {
+                        console.debug('[unstake] macro-confirmation: refreshed tx from network', {
                             hash,
                             state: details.state,
                         });
                     } catch (e) {
                         // Ignore until available
-                        console.debug('macro-confirmation: still not retrievable', { hash });
+                        console.debug('[unstake] macro-confirmation: still not retrievable', { hash });
                     }
                     tries += 1;
                 }, 5000);
@@ -317,7 +317,7 @@ export default defineComponent({
                         await client.getNetworkId(),
                     );
                     // eslint-disable-next-line no-console
-                    console.debug('staking: deactivation tx prepared', {
+                    console.debug('[unstake] staking: deactivation tx prepared', {
                         delta: stakeDelta.value,
                         newActive: activeStake.value!.activeBalance + stakeDelta.value,
                     });
@@ -339,20 +339,20 @@ export default defineComponent({
                             type: StatusChangeType.NONE,
                         });
                         // eslint-disable-next-line no-console
-                        console.error('staking: deactivation send returned null');
+                        console.error('[unstake] staking: deactivation send returned null');
                         return;
                     }
 
                     if (txs.some((tx) => tx.executionResult === false)) {
                         // eslint-disable-next-line no-console
-                        console.error('staking: deactivation executionResult=false');
+                        console.error('[unstake] staking: deactivation executionResult=false');
                         throw new Error('The transaction did not succeed');
                     }
 
                     try {
                         const deactivationHash = txs[0]?.transactionHash;
                         // Wait until the deactivation tx is macro-confirmed before notifying the watchtower
-                        console.debug('watchtower: waiting for macro-confirmation', {
+                        console.debug('[unstake] watchtower: waiting for macro-confirmation', {
                             deactivationHash,
                         });
                         await waitForMacroConfirmation(deactivationHash);
@@ -362,82 +362,157 @@ export default defineComponent({
                         const deactHeight = deactivationDetails.blockHeight!;
 
                         // Build retire and remove and sign together (2 tx max)
-                        // Compute validity start heights exactly as the watchtower expects:
-                        // retire at end of current epoch + one epoch; unstake at retire + 1.
-                        const { Policy } = await import('@nimiq/core');
-                        const targetValidAt = Policy.electionBlockAfter(deactHeight)
-                            + Policy.BLOCKS_PER_EPOCH;
+                        // Compute validity start heights exactly as the watchtower expects (without relying on
+                        // Policy network defaults): retire at end of current epoch + one epoch; unstake at retire + 1.
+                        const { useConfig } = await import('@/composables/useConfig');
+                        const cfg = useConfig().config;
+                        const genesis = cfg.staking?.genesis?.height || 0;
+                        const BLOCKS_PER_BATCH = 60;
+                        const BATCHES_PER_EPOCH = 720;
+                        const BLOCKS_PER_EPOCH = BLOCKS_PER_BATCH * BATCHES_PER_EPOCH;
+                        const relative = Math.max(0, deactHeight - genesis);
+                        const remainder = relative % BLOCKS_PER_EPOCH;
+                        const remainingToEpochEnd = remainder === 0 ? 0 : BLOCKS_PER_EPOCH - remainder;
+                        const nextElection = deactHeight + remainingToEpochEnd;
+                        const targetValidAt = nextElection + BLOCKS_PER_EPOCH;
+
+                        // Use exact macro-final height for retire, unstake at retire + 1
                         const retireStart = targetValidAt;
                         const removeStart = retireStart + 1;
 
                         // eslint-disable-next-line no-console
-                        console.debug('watchtower: computed validity starts', {
+                        console.debug('[unstake] watchtower: computed validity starts', {
                             deactHeight,
                             targetValidAt,
                             retireStart,
                             removeStart,
                         });
 
-                        const retireUnsigned = TransactionBuilder.newRetireStake(
-                            Address.fromUserFriendlyAddress(activeAddress.value!),
-                            BigInt(Math.abs(stakeDelta.value)),
-                            BigInt(0),
-                            retireStart,
-                            await client.getNetworkId(),
-                        );
-                        const removeUnsigned = TransactionBuilder.newRemoveStake(
-                            Address.fromUserFriendlyAddress(activeAddress.value!),
-                            BigInt(Math.abs(stakeDelta.value)),
-                            BigInt(0),
-                            removeStart,
-                            await client.getNetworkId(),
-                        );
-
-                        // eslint-disable-next-line no-console
-                        console.debug('watchtower: signing retire+remove');
-                        const signed = await signStakingRaw({
-                            transaction: [retireUnsigned.serialize(), removeUnsigned.serialize()],
-                            recipientLabel:
-                                'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                            // @ts-expect-error Not typed yet in Hub
-                            validatorAddress: activeValidator.value!.address,
-                            validatorImageUrl: 'logo' in activeValidator.value!
-                                && !activeValidator.value.hasDefaultLogo
-                                ? activeValidator.value.logo
-                                : undefined,
-                        });
-
-                        if (!signed || !Array.isArray(signed) || signed.length < 2) {
+                        let retireSerialized: string;
+                        let removeSerialized: string;
+                        {
+                            const retireUnsigned = TransactionBuilder.newRetireStake(
+                                Address.fromUserFriendlyAddress(activeAddress.value!),
+                                BigInt(Math.abs(stakeDelta.value)),
+                                BigInt(0),
+                                retireStart,
+                                await client.getNetworkId(),
+                            );
+                            const removeUnsigned = TransactionBuilder.newRemoveStake(
+                                Address.fromUserFriendlyAddress(activeAddress.value!),
+                                BigInt(Math.abs(stakeDelta.value)),
+                                BigInt(0),
+                                removeStart,
+                                await client.getNetworkId(),
+                            );
                             // eslint-disable-next-line no-console
-                            console.error('watchtower: signing retire+remove returned empty');
-                            return;
+                            console.debug('[unstake] watchtower: signing retire+remove (initial)');
+                            const signed = await signStakingRaw({
+                                transaction: [retireUnsigned.serialize(), removeUnsigned.serialize()],
+                                recipientLabel:
+                                    'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                                // @ts-expect-error Not typed yet in Hub
+                                validatorAddress: activeValidator.value!.address,
+                                validatorImageUrl: 'logo' in activeValidator.value!
+                                    && !activeValidator.value.hasDefaultLogo
+                                    ? activeValidator.value.logo
+                                    : undefined,
+                            });
+                            if (!signed || !Array.isArray(signed) || signed.length < 2) {
+                                // eslint-disable-next-line no-console
+                                console.error('[unstake] watchtower: signing retire+remove returned empty');
+                                return;
+                            }
+                            retireSerialized = signed[0].serializedTx;
+                            removeSerialized = signed[1].serializedTx;
                         }
 
-                        const retireSerialized = signed[0].serializedTx;
-                        const removeSerialized = signed[1].serializedTx;
+                        // Align validity start with watchtower expectations based on the deactivation block
+                        const deactivationDetails2 = await client.getTransaction(deactivationHash);
+                        const deactHeight2 = deactivationDetails2.blockHeight!;
+                        const relative2 = Math.max(0, deactHeight2 - genesis);
+                        const remainder2 = relative2 % BLOCKS_PER_EPOCH;
+                        const remainingToEpochEnd2 = remainder2 === 0 ? 0 : BLOCKS_PER_EPOCH - remainder2;
+                        const nextElection2 = deactHeight2 + remainingToEpochEnd2;
+                        const requiredRetireValidAt = nextElection2 + BLOCKS_PER_EPOCH;
+                        const desiredRetireStart = requiredRetireValidAt;
+                        const desiredRemoveStart = desiredRetireStart + 1;
+
+                        // If our starts are not exactly desired, rebuild and re-sign
+                        if (retireStart !== desiredRetireStart) {
+                            const retireStart2 = desiredRetireStart;
+                            const removeStart2 = desiredRemoveStart;
+                            const retire2 = TransactionBuilder.newRetireStake(
+                                Address.fromUserFriendlyAddress(activeAddress.value!),
+                                BigInt(Math.abs(stakeDelta.value)),
+                                BigInt(0),
+                                retireStart2,
+                                await client.getNetworkId(),
+                            );
+                            const remove2 = TransactionBuilder.newRemoveStake(
+                                Address.fromUserFriendlyAddress(activeAddress.value!),
+                                BigInt(Math.abs(stakeDelta.value)),
+                                BigInt(0),
+                                removeStart2,
+                                await client.getNetworkId(),
+                            );
+                            const signed2 = await signStakingRaw({
+                                transaction: [retire2.serialize(), remove2.serialize()],
+                                recipientLabel:
+                                    'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                                // @ts-expect-error Not typed yet in Hub
+                                validatorAddress: activeValidator.value!.address,
+                                validatorImageUrl: 'logo' in activeValidator.value!
+                                    && !activeValidator.value.hasDefaultLogo
+                                    ? activeValidator.value.logo
+                                    : undefined,
+                            });
+                            if (signed2 && Array.isArray(signed2) && signed2.length >= 2) {
+                                retireSerialized = signed2[0].serializedTx;
+                                removeSerialized = signed2[1].serializedTx;
+                                // eslint-disable-next-line no-console
+                                console.debug('[unstake] watchtower: rebuilt txs with required validity', {
+                                    deactHeight: deactHeight2,
+                                    requiredRetireValidAt,
+                                    desiredRetireStart,
+                                });
+                            }
+                        }
 
                         // eslint-disable-next-line no-console
-                        console.debug('watchtower: startUnstaking after macro-confirmation', {
+                        console.debug('[unstake] watchtower: startUnstaking after macro-confirmation', {
                             deactivationHash,
                         });
 
-                        await startUnstaking({
-                            staker_address: activeAddress.value!,
-                            transactions: {
-                                inactive_stake_tx_hash: deactivationHash,
-                                retire_tx: retireSerialized,
-                                unstake_tx: removeSerialized,
-                            },
-                        });
-                        // eslint-disable-next-line no-console
-                        console.debug('watchtower: startUnstaking posted');
+
+                        try {
+                            await startUnstaking({
+                                staker_address: activeAddress.value!,
+                                transactions: {
+                                    inactive_stake_tx_hash: deactivationHash,
+                                    retire_tx: retireSerialized,
+                                    unstake_tx: removeSerialized,
+                                },
+                            });
+                            // eslint-disable-next-line no-console
+                            console.debug('[unstake] watchtower: startUnstaking posted');
+                        } catch (postErr: any) {
+                            const errMsg = String(postErr?.message || '');
+                            const is406 = errMsg.startsWith('HTTP 406');
+                            // eslint-disable-next-line no-console
+                            console.debug('[unstake] watchtower: post failed', {
+                                is406,
+                                err: errMsg,
+                            });
+                            throw postErr;
+                        }
                     } catch (wtError) {
                         // Non-fatal: deactivation succeeded; watchtower scheduling failed
                         // Report but do not block UX
                         reportToSentry(wtError as any);
                         // eslint-disable-next-line no-console
                         console.error(
-                            'watchtower: scheduling failed',
+                            '[unstake] watchtower: scheduling failed',
                             wtError instanceof Error ? wtError.message : String(wtError),
                         );
                     }

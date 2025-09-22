@@ -1,5 +1,11 @@
 import Vue from 'vue';
-import { set, nonReactive, isNonReactive, isReactive, VueWatcher } from '@vue/composition-api';
+import {
+    set,
+    nonReactive,
+    isNonReactive as isExplicitlyNonReactive,
+    isReactive,
+    VueWatcher,
+} from '@vue/composition-api';
 
 // Note: this natively already supports object types, array types and primitive types for T.
 type DeepPartial<T> = { [P in keyof T]?: DeepPartial<T[P]> };
@@ -186,6 +192,10 @@ export default class VueCompositionApiUtils {
                 // - both are non-reactive. In that case we have to replace the entire object and not recurse, as no
                 //   change notification would be triggered on the the children of the non-reactive target.
                 //
+                // When replacing an object instead of recursing it, due to non-reactivity, source data as patches have
+                // to still be applied recursively, which is why we do the checks for non-object and array types first,
+                // and then check for non-reactivity separately in a second step.
+                //
                 // Start with checking source[key], because it's likely that source might just be a plain object without
                 // reactive getters, i.e. accessing it is cheaper than accessing target[key], which likely is reactive.
                 // The access of source[key] and target[key] is why we hid the current watcher on Dep.target.
@@ -193,11 +203,6 @@ export default class VueCompositionApiUtils {
                 if (typeof newValue !== 'object'
                     || newValue === null
                     || Array.isArray(newValue)
-                    // For the source data, we check for whether it's explicitly marked as non-reactive, and not just to
-                    // be a non-reactive plain object, because passing plain, non-reactive data, for example retrieved
-                    // via a fetch, with the intention to update the target with its values, is a regular use case, with
-                    // no intention of the data being treated as non-reactive.
-                    || isNonReactive(newValue)
                 ) {
                     set(target, key, newValue);
                     continue;
@@ -206,17 +211,58 @@ export default class VueCompositionApiUtils {
                 if (typeof oldValue !== 'object'
                     || oldValue === null
                     || Array.isArray(oldValue)
+                ) {
+                    set(target, key, newValue);
+                    continue;
+                }
+                // target[key] and source[key] are both regular objects, not primitive types or arrays. Check for
+                // non-reactivity, see above.
+                if (
+                    // For the source data, we check for whether it's explicitly marked as non-reactive, and not just to
+                    // be a non-reactive plain object, because passing plain, non-reactive data, for example retrieved
+                    // via a fetch, with the intention of updating the target with its values, is a regular use case,
+                    // with no intention of the data being treated as non-reactive.
+                    isExplicitlyNonReactive(newValue)
                     // For the target data, we check for whether it's generally non-reactive, including if it's not
                     // explicitly marked as non-reactive, but just a plain, non-reactive object, because recursing on
                     // non-reactive data is unnecessary, as no changes would be triggered on its children.
                     || !isReactive(oldValue)
                 ) {
-                    set(target, key, newValue);
+                    if (missingPropertyDeletionStrategy === MissingPropertyDeletionStrategy.DELETE) {
+                        // Missing properties on source[key] are to be deleted from target[key], thus we can simply
+                        // replace the entire object.
+                        set(target, key, newValue);
+                    } else {
+                        // Missing properties on source[key] are not to be deleted from target[key], i.e. it is to be
+                        // considered a patch, which has to be applied recursively.
+                        // If target is reactive (while source[key] or target[key] are not), we assign a new object (a
+                        // copy) to target[key], such that target can trigger a change notification for key. If target
+                        // is non-reactive we don't have to assign a new object and can just patch target[key] in situ.
+                        const isTargetReactive = isReactive(target);
+                        let patchedValue = isTargetReactive
+                            ? { ...oldValue } // create a copy
+                            : oldValue; // patch original target[key] in situ
+                        if (isTargetReactive // if target is not reactive, there's no need to mark children non-reactive
+                            && (isExplicitlyNonReactive(oldValue) || isExplicitlyNonReactive(newValue))) {
+                            patchedValue = nonReactive(patchedValue);
+                        }
+                        // Recursively apply patch.
+                        VueCompositionApiUtils.updateObject(
+                            patchedValue as Record<string, unknown>,
+                            newValue as Record<string, unknown>,
+                            missingPropertyDeletionStrategy as any,
+                        );
+                        if (isTargetReactive) {
+                            // We created a copy which we now have to assign.
+                            set(target, key, patchedValue);
+                        }
+                    }
                     continue;
                 }
 
-                // target[key] and source[key] are both regular objects, not primitive types or arrays. Recurse to
-                // trigger as little change notifications as possible, only for child properties that actually changed.
+                // target[key] and source[key] are both regular, reactive objects, not primitive types, arrays, or non-
+                // reactive data. Recurse to trigger as little change notifications as possible, only for sub-properties
+                // that actually changed.
                 VueCompositionApiUtils.updateObject(
                     oldValue as Record<string, unknown>,
                     newValue as Record<string, unknown>,

@@ -177,14 +177,16 @@ export default defineComponent({
 
         // Generate chart data from staking reward events
         const chartData = computed(() => {
-            if (!sortedStakingEvents.value || !sortedStakingEvents.value.length) return null;
+            // Cache result of sortedStakingEvents.value getter to avoid overhead of Vue's reactivity system on access.
+            const events = sortedStakingEvents.value;
+            if (!events || !events.length) return null;
 
-            const { startDate, endDate } = getDateRange(selectedRange.value, sortedStakingEvents.value);
+            const { startDate, endDate } = getDateRange(selectedRange.value, events);
 
             // Pre-calculate cumulative rewards for efficient lookup
             const cumulativeRewards: number[] = [];
             let cumulative = 0;
-            for (const event of sortedStakingEvents.value) {
+            for (const event of events) {
                 cumulative += event.value;
                 cumulativeRewards.push(cumulative);
             }
@@ -200,8 +202,9 @@ export default defineComponent({
 
                 // Find the index of the last event that occurred before or at pointDate
                 let eventIndex = -1;
-                for (let j = 0; j < sortedStakingEvents.value.length; j++) {
-                    if (sortedStakingEvents.value[j].date <= pointDateIsoString) {
+                const eventCount = events.length;
+                for (let j = 0; j < eventCount; j++) {
+                    if (events[j].date <= pointDateIsoString) {
                         eventIndex = j;
                     } else {
                         break; // Events are sorted, so we can break early

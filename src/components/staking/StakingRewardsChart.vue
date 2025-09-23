@@ -45,7 +45,7 @@ import { useStakingStore, StakingEvent } from '../../stores/Staking';
 type TimeRange = 'ALL' | 'Y1' | 'M6' | 'M3';
 
 // Chart configuration constants
-const FIXED_POINTS = 40; // Number of data points to generate for smooth chart
+const CHART_POINT_COUNT = 40; // Number of data points to generate for smooth chart
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const DAYS_PER_MONTH = 30;
 const DAYS_PER_YEAR = 365;
@@ -183,38 +183,27 @@ export default defineComponent({
 
             const { startDate, endDate } = getDateRange(selectedRange.value, events);
 
-            // Pre-calculate cumulative rewards for efficient lookup
-            const cumulativeRewards: number[] = [];
-            let cumulative = 0;
-            for (const event of events) {
-                cumulative += event.value;
-                cumulativeRewards.push(cumulative);
-            }
-
             // Generate data points for smooth chart rendering
             const labels: string[] = [];
             const data: number[] = [];
             const timeRange = endDate.getTime() - startDate.getTime();
-            const intervalMs = timeRange / (FIXED_POINTS - 1);
+            const intervalMs = timeRange / (CHART_POINT_COUNT - 1);
 
-            for (let i = 0; i < FIXED_POINTS; i++) {
-                const pointDateIsoString = new Date(startDate.getTime() + (i * intervalMs)).toISOString();
+            let eventIndex = 0;
+            let cumulativeRewards = 0;
+            for (let pointIndex = 0; pointIndex < CHART_POINT_COUNT; pointIndex++) {
+                const pointDateIsoString = new Date(startDate.getTime() + (pointIndex * intervalMs)).toISOString();
 
-                // Find the index of the last event that occurred before or at pointDate
-                let eventIndex = -1;
+                // Find the index of the first event that occurred after point date and cumulative rewards until there.
                 const eventCount = events.length;
-                for (let j = 0; j < eventCount; j++) {
-                    if (events[j].date <= pointDateIsoString) {
-                        eventIndex = j;
-                    } else {
-                        break; // Events are sorted, so we can break early
-                    }
+                for (; eventIndex < eventCount; eventIndex++) {
+                    const event = events[eventIndex];
+                    if (event.date > pointDateIsoString) break;
+                    cumulativeRewards += event.value;
                 }
 
-                const rewardsUpToPoint = eventIndex >= 0 ? cumulativeRewards[eventIndex] : 0;
-
-                labels.push(`point-${i}`); // Simple labels for Chart.js (not displayed)
-                data.push(rewardsUpToPoint);
+                labels.push(`point-${pointIndex}`); // Simple labels for Chart.js (not displayed)
+                data.push(cumulativeRewards);
             }
 
             return {

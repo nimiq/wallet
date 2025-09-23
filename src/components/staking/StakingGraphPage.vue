@@ -364,17 +364,10 @@ export default defineComponent({
                         // Build retire and remove and sign together (2 tx max)
                         // Compute validity start heights exactly as the watchtower expects (without relying on
                         // Policy network defaults): retire at end of current epoch + one epoch; unstake at retire + 1.
-                        const { useConfig } = await import('@/composables/useConfig');
-                        const cfg = useConfig().config;
-                        const genesis = cfg.staking?.genesis?.height || 0;
-                        const BLOCKS_PER_BATCH = 60;
-                        const BATCHES_PER_EPOCH = 720;
-                        const BLOCKS_PER_EPOCH = BLOCKS_PER_BATCH * BATCHES_PER_EPOCH;
-                        const relative = Math.max(0, deactHeight - genesis);
-                        const remainder = relative % BLOCKS_PER_EPOCH;
-                        const remainingToEpochEnd = remainder === 0 ? 0 : BLOCKS_PER_EPOCH - remainder;
-                        const nextElection = deactHeight + remainingToEpochEnd;
-                        const targetValidAt = nextElection + BLOCKS_PER_EPOCH;
+                        const { usePolicy } = await import('@/composables/usePolicy');
+                        const policy = usePolicy();
+                        const nextElection = policy.electionBlockAfter(deactHeight);
+                        const targetValidAt = nextElection + policy.blocksPerEpoch();
 
                         // Use exact macro-final height for retire, unstake at retire + 1
                         const retireStart = targetValidAt;
@@ -430,11 +423,8 @@ export default defineComponent({
                         // Align validity start with watchtower expectations based on the deactivation block
                         const deactivationDetails2 = await client.getTransaction(deactivationHash);
                         const deactHeight2 = deactivationDetails2.blockHeight!;
-                        const relative2 = Math.max(0, deactHeight2 - genesis);
-                        const remainder2 = relative2 % BLOCKS_PER_EPOCH;
-                        const remainingToEpochEnd2 = remainder2 === 0 ? 0 : BLOCKS_PER_EPOCH - remainder2;
-                        const nextElection2 = deactHeight2 + remainingToEpochEnd2;
-                        const requiredRetireValidAt = nextElection2 + BLOCKS_PER_EPOCH;
+                        const nextElection2 = policy.electionBlockAfter(deactHeight2);
+                        const requiredRetireValidAt = nextElection2 + policy.blocksPerEpoch();
                         const desiredRetireStart = requiredRetireValidAt;
                         const desiredRemoveStart = desiredRetireStart + 1;
 
@@ -483,7 +473,6 @@ export default defineComponent({
                         console.debug('[unstake] watchtower: startUnstaking after macro-confirmation', {
                             deactivationHash,
                         });
-
 
                         try {
                             await startUnstaking({

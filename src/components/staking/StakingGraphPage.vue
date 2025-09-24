@@ -365,7 +365,7 @@ export default defineComponent({
                         // Compute validity start heights exactly as the watchtower expects (without relying on
                         // Policy network defaults): retire at end of current epoch + one epoch; unstake at retire + 1.
                         const { usePolicy } = await import('@/composables/usePolicy');
-                        const policy = usePolicy();
+                        const policy = await usePolicy();
                         const nextElection = policy.electionBlockAfter(deactHeight);
                         const targetValidAt = nextElection + policy.blocksPerEpoch();
 

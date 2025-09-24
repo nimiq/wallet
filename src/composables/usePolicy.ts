@@ -2,35 +2,46 @@
  * Lightweight Policy composable to mirror the subset of @nimiq/core Policy we need in the wallet.
  *
  * Goals:
- * - Provide blocksPerBatch, batchesPerEpoch from core Policy (fixed constants),
+ * - Provide blocksPerBatch, batchesPerEpoch directly from @nimiq/core Policy (fixed chain constants),
  * - Provide blocksPerEpoch derived from those constants,
  * - Provide genesisBlockNumber from runtime config,
  * - Provide electionBlockAfter(height) aligned with chain policy using the configured genesis.
  *
- * Notes:
- * - We read BATCHES_PER_EPOCH and BLOCKS_PER_BATCH from @nimiq/core once (lazy),
- *   but also initialize with sane defaults (60, 720) which match current chain policy.
+ * Behavior:
+ * - We always load BLOCKS_PER_BATCH and BATCHES_PER_EPOCH from @nimiq/core and wait until available
+ *   (WASM may need a short warm-up). There are no wallet-side fallbacks.
+ * - The genesis block number is read from the wallet config so we can target the correct network
+ *   (e.g., testnet vs mainnet) when aligning epoch math with other components (like the watchtower).
  */
 
 import { useConfig } from '@/composables/useConfig';
 
-let cachedBlocksPerBatch = 60; // Matches core for mainnet/testnet
-let cachedBatchesPerEpoch = 720; // Matches core for mainnet/testnet
+// Core-provided constants (initialized once when core is ready)
+let cachedBlocksPerBatch = 0;
+let cachedBatchesPerEpoch = 0;
 let coreLoaded = false;
+let loadingPromise: Promise<void> | null = null;
 
 async function loadCorePolicyConstants(): Promise<void> {
     if (coreLoaded) return;
-    try {
+    if (loadingPromise) return loadingPromise;
+    loadingPromise = (async () => {
         const { Policy } = await import('@nimiq/core');
-        // If available, prefer the constants from core
-        const bpb = (Policy as any).BLOCKS_PER_BATCH;
-        const bpe = (Policy as any).BATCHES_PER_EPOCH;
-        if (typeof bpb === 'number' && bpb > 0) cachedBlocksPerBatch = bpb;
-        if (typeof bpe === 'number' && bpe > 0) cachedBatchesPerEpoch = bpe;
-        coreLoaded = true;
-    } catch {
-        // Keep defaults; core might not be ready in this context
-    }
+        // Retry until Policy exposes constants (in case WASM init lags)
+        for (let i = 0; i < 50; i += 1) {
+            const bpb = (Policy as any).BLOCKS_PER_BATCH;
+            const bpe = (Policy as any).BATCHES_PER_EPOCH;
+            if (typeof bpb === 'number' && bpb > 0 && typeof bpe === 'number' && bpe > 0) {
+                cachedBlocksPerBatch = bpb;
+                cachedBatchesPerEpoch = bpe;
+                coreLoaded = true;
+                return;
+            }
+            await new Promise((r) => { window.setTimeout(r, 50); });
+        }
+        throw new Error('Failed to load Policy constants from @nimiq/core');
+    })();
+    return loadingPromise;
 }
 
 function computeBlocksPerEpoch(): number {
@@ -44,10 +55,9 @@ function electionBlockAfter(height: number, genesis: number, blocksPerEpoch: num
     return genesis + k * blocksPerEpoch;
 }
 
-export function usePolicy() {
-    // Kick off a lazy load of core constants
-    // They equal our defaults today, but this ensures future-proofing.
-    loadCorePolicyConstants();
+export async function usePolicy() {
+    // Ensure core constants are loaded before exposing the API
+    await loadCorePolicyConstants();
 
     const { config } = useConfig();
     const genesisBlockNumber = config.staking?.genesis?.height || 0;

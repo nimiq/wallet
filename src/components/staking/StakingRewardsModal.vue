@@ -100,7 +100,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-        const { validators: validatorList, monthlyRewards } = useStakingStore();
+        const { validators: validatorList, monthlyRewards, stakingEvents } = useStakingStore();
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const router = useRouter();
         const constants = { FIAT_PRICE_UNAVAILABLE };
@@ -126,17 +126,15 @@ export default defineComponent({
         const monthRewardTimestamps = computed(() => {
             const rewards = monthlyReward.value;
             if (!rewards) return [];
-            // We need to collect all reward event timestamps for this month. Pull from store's stakingEvents.
-            // Filter by month key equality.
-            const [year, month] = props.month.split('-').map((s) => parseInt(s, 10));
-            const { stakingEvents } = useStakingStore();
+            const monthKey = props.month; // YYYY-MM format; cache to avoid overhead of reactivity system on access
             const events = stakingEvents.value || [];
-            return events
-                .filter((e) => {
-                    const d = new Date(e.date);
-                    return d.getUTCFullYear() === year && (d.getUTCMonth() + 1) === month;
-                })
-                .map((e) => new Date(e.date).getTime());
+            // We need to collect all reward event timestamps for this month.
+            const timestamps: number[] = [];
+            for (const event of events) {
+                if (!event.date.startsWith(monthKey)) continue; // Filter by month key equality.
+                timestamps.push(new Date(event.date).getTime());
+            }
+            return timestamps;
         });
 
         // Recompute fiat when inputs change
@@ -154,23 +152,18 @@ export default defineComponent({
                 timestamps,
                 FIAT_API_PROVIDER_TX_HISTORY,
             );
-            // To map each timestamp to its corresponding event value, re-iterate the events in the same filtering order
-            const { stakingEvents } = useStakingStore();
-            const [year, month] = props.month.split('-').map((s) => parseInt(s, 10));
-            const events = (stakingEvents.value || [])
-                .filter((e) => {
-                    const d = new Date(e.date);
-                    return d.getUTCFullYear() === year && (d.getUTCMonth() + 1) === month;
-                });
+            const monthKey = props.month; // YYYY-MM format; cache to avoid overhead of reactivity system on access
+            const events = stakingEvents.value || [];
             let totalFiat = 0;
-            for (const e of events) {
-                const ts = new Date(e.date).getTime();
-                const rate = ratesMap.get(ts);
+            for (const event of events) {
+                if (!event.date.startsWith(monthKey)) continue; // Filter by month key equality.
+                const timestamp = new Date(event.date).getTime();
+                const rate = ratesMap.get(timestamp);
                 if (rate === undefined) {
                     fiatHistoric.value = { currency: historyFiatCurrency.value, value: FIAT_PRICE_UNAVAILABLE };
                     return;
                 }
-                totalFiat += rate * (e.value / 1e5);
+                totalFiat += rate * (event.value / 1e5);
             }
             fiatHistoric.value = { currency: historyFiatCurrency.value, value: totalFiat };
         };

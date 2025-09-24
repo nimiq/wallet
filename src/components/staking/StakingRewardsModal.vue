@@ -123,28 +123,24 @@ export default defineComponent({
         const monthlyReward = computed(() => monthlyRewards.value.get(props.month));
 
         // Build timestamps list for this month's staking reward events
-        const monthRewardTimestamps = computed(() => {
+        const monthEvents = computed(() => {
             const rewards = monthlyReward.value;
             if (!rewards) return [];
             const monthKey = props.month; // YYYY-MM format; cache to avoid overhead of reactivity system on access
-            const events = stakingEvents.value || [];
-            // We need to collect all reward event timestamps for this month.
-            const timestamps: number[] = [];
-            for (const event of events) {
-                if (!event.date.startsWith(monthKey)) continue; // Filter by month key equality.
-                timestamps.push(new Date(event.date).getTime());
-            }
-            return timestamps;
+            return (stakingEvents.value || []).filter((event) => event.date.startsWith(monthKey));
         });
 
         // Recompute fiat when inputs change
         const recomputeFiat = async () => {
-            const timestamps = [...monthRewardTimestamps.value];
-            const rewards = monthlyReward.value;
-            if (!rewards || timestamps.length === 0) {
+            // Cache getter value, to use fixed data across this async method, even if the getter changes.
+            const events = monthEvents.value;
+            const eventCount = events.length;
+            if (!eventCount) {
                 fiatHistoric.value = { currency: historyFiatCurrency.value, value: undefined };
                 return;
             }
+            const timestamps = events.map((event) => new Date(event.date).getTime());
+
             // Fetch historic rates for each reward timestamp and sum converted values
             const ratesMap = await getHistoricExchangeRates(
                 CryptoCurrency.NIM,
@@ -152,18 +148,16 @@ export default defineComponent({
                 timestamps,
                 FIAT_API_PROVIDER_TX_HISTORY,
             );
-            const monthKey = props.month; // YYYY-MM format; cache to avoid overhead of reactivity system on access
-            const events = stakingEvents.value || [];
+
             let totalFiat = 0;
-            for (const event of events) {
-                if (!event.date.startsWith(monthKey)) continue; // Filter by month key equality.
-                const timestamp = new Date(event.date).getTime();
+            for (let i = 0; i < eventCount; i++) {
+                const timestamp = timestamps[i];
                 const rate = ratesMap.get(timestamp);
                 if (rate === undefined) {
                     fiatHistoric.value = { currency: historyFiatCurrency.value, value: FIAT_PRICE_UNAVAILABLE };
                     return;
                 }
-                totalFiat += rate * (event.value / 1e5);
+                totalFiat += rate * (events[i].value / 1e5);
             }
             fiatHistoric.value = { currency: historyFiatCurrency.value, value: totalFiat };
         };
@@ -172,7 +166,7 @@ export default defineComponent({
             () => props.month,
             () => historyFiatCurrency.value,
             () => lastExchangeRateUpdateTime.value,
-            () => monthRewardTimestamps.value.length,
+            () => monthEvents.value.length, // new events might have been added
         ], () => { recomputeFiat(); });
         recomputeFiat();
 

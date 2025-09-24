@@ -420,55 +420,6 @@ export default defineComponent({
                             removeSerialized = signed[1].serializedTx;
                         }
 
-                        // Align validity start with watchtower expectations based on the deactivation block
-                        const deactivationDetails2 = await client.getTransaction(deactivationHash);
-                        const deactHeight2 = deactivationDetails2.blockHeight!;
-                        const nextElection2 = policy.electionBlockAfter(deactHeight2);
-                        const requiredRetireValidAt = nextElection2 + policy.blocksPerEpoch();
-                        const desiredRetireStart = requiredRetireValidAt;
-                        const desiredRemoveStart = desiredRetireStart + 1;
-
-                        // If our starts are not exactly desired, rebuild and re-sign
-                        if (retireStart !== desiredRetireStart) {
-                            const retireStart2 = desiredRetireStart;
-                            const removeStart2 = desiredRemoveStart;
-                            const retire2 = TransactionBuilder.newRetireStake(
-                                Address.fromUserFriendlyAddress(activeAddress.value!),
-                                BigInt(Math.abs(stakeDelta.value)),
-                                BigInt(0),
-                                retireStart2,
-                                await client.getNetworkId(),
-                            );
-                            const remove2 = TransactionBuilder.newRemoveStake(
-                                Address.fromUserFriendlyAddress(activeAddress.value!),
-                                BigInt(Math.abs(stakeDelta.value)),
-                                BigInt(0),
-                                removeStart2,
-                                await client.getNetworkId(),
-                            );
-                            const signed2 = await signStakingRaw({
-                                transaction: [retire2.serialize(), remove2.serialize()],
-                                recipientLabel:
-                                    'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                                // @ts-expect-error Not typed yet in Hub
-                                validatorAddress: activeValidator.value!.address,
-                                validatorImageUrl: 'logo' in activeValidator.value!
-                                    && !activeValidator.value.hasDefaultLogo
-                                    ? activeValidator.value.logo
-                                    : undefined,
-                            });
-                            if (signed2 && Array.isArray(signed2) && signed2.length >= 2) {
-                                retireSerialized = signed2[0].serializedTx;
-                                removeSerialized = signed2[1].serializedTx;
-                                // eslint-disable-next-line no-console
-                                console.debug('[unstake] watchtower: rebuilt txs with required validity', {
-                                    deactHeight: deactHeight2,
-                                    requiredRetireValidAt,
-                                    desiredRetireStart,
-                                });
-                            }
-                        }
-
                         // eslint-disable-next-line no-console
                         console.debug('[unstake] watchtower: startUnstaking after macro-confirmation', {
                             deactivationHash,

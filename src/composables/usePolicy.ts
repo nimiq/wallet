@@ -23,23 +23,27 @@ let coreLoaded = false;
 let loadingPromise: Promise<void> | null = null;
 
 async function loadCorePolicyConstants(): Promise<void> {
-    if (coreLoaded) return;
+    if (coreLoaded) return Promise.resolve();
     if (loadingPromise) return loadingPromise;
     loadingPromise = (async () => {
         const { Policy } = await import('@nimiq/core');
-        // Retry until Policy exposes constants (in case WASM init lags)
-        for (let i = 0; i < 50; i += 1) {
-            const bpb = (Policy as any).BLOCKS_PER_BATCH;
-            const bpe = (Policy as any).BATCHES_PER_EPOCH;
-            if (typeof bpb === 'number' && bpb > 0 && typeof bpe === 'number' && bpe > 0) {
-                cachedBlocksPerBatch = bpb;
-                cachedBatchesPerEpoch = bpe;
-                coreLoaded = true;
-                return;
-            }
-            await new Promise((r) => { window.setTimeout(r, 50); });
-        }
-        throw new Error('Failed to load Policy constants from @nimiq/core');
+        await new Promise<void>((resolve, reject) => {
+            let attempts = 0;
+            const timer = window.setInterval(() => {
+                const bpb = (Policy as any).BLOCKS_PER_BATCH;
+                const bpe = (Policy as any).BATCHES_PER_EPOCH;
+                if (typeof bpb === 'number' && bpb > 0 && typeof bpe === 'number' && bpe > 0) {
+                    cachedBlocksPerBatch = bpb;
+                    cachedBatchesPerEpoch = bpe;
+                    window.clearInterval(timer);
+                    resolve();
+                } else if (++attempts >= 50) {
+                    window.clearInterval(timer);
+                    reject(new Error('Failed to load Policy constants from @nimiq/core'));
+                }
+            }, 50);
+        });
+        coreLoaded = true;
     })();
     return loadingPromise;
 }

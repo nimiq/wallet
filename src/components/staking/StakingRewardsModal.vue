@@ -106,7 +106,7 @@ export default defineComponent({
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         // Historic fiat value for the whole month's rewards
-        const { currency: preferredFiatCurrency, timestamp: lastExchangeRateUpdateTime } = useFiatStore();
+        const { currency: preferredFiatCurrency } = useFiatStore();
         const fiatHistoric = ref<
             { value: number | typeof FIAT_PRICE_UNAVAILABLE | undefined, currency: FiatCurrency } | null
         >(null);
@@ -165,10 +165,8 @@ export default defineComponent({
         watch([
             () => props.month,
             () => historyFiatCurrency.value,
-            () => lastExchangeRateUpdateTime.value,
             () => monthEvents.value.length, // new events might have been added
-        ], () => { recomputeFiat(); });
-        recomputeFiat();
+        ], recomputeFiat, { lazy: false });
 
         const myLabel = computed(() => activeAddressInfo.value?.label);
         const validatorName = computed(() => {

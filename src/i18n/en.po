@@ -67,10 +67,6 @@ msgstr ""
 msgid "{fee} fee"
 msgstr ""
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:4
-msgid "{month}. Staking Rewards"
-msgstr ""
-
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:63
 msgid "{perc}% of swap value."
@@ -1781,7 +1777,6 @@ msgid "No request received."
 msgstr ""
 
 #: src/components/staking/StakingRewardsChart.vue:16
-#: src/components/staking/StakingRewardsHistoryPage.vue:37
 msgid "No rewards yet"
 msgstr ""
 
@@ -2584,7 +2579,6 @@ msgstr ""
 msgid "Staking rewards"
 msgstr ""
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:4
 #: src/components/staking/StakingRewardsModal.vue:4
 msgid "Staking Rewards"
 msgstr ""
@@ -3403,10 +3397,6 @@ msgstr ""
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:29
 msgid "Your rewards are influenced by how many NIM are staked globally and your validator pool’s fee."
-msgstr ""
-
-#: src/components/staking/StakingRewardsHistoryPage.vue:38
-msgid "Your rewards will appear here once you start staking."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:290

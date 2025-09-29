@@ -90,11 +90,6 @@ const StakingModal = () =>
     import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
 const ValidatorDetailsModal = () =>
     import(/* webpackChunkName: "validator-details-modal" */ './components/staking/ValidatorDetailsModal.vue');
-const StakingRewardsHistoryModal = () =>
-    import(
-        /* webpackChunkName: "staking-rewards-history-modal" */
-        './components/staking/StakingRewardsHistoryModal.vue'
-    );
 const StakingRewardsModal = () =>
     import(/* webpackChunkName: "staking-rewards-modal" */ './components/staking/StakingRewardsModal.vue');
 
@@ -145,7 +140,6 @@ export enum RouteName {
     ExportHistory = 'export-history',
     Staking = 'staking',
     ValidatorDetails = 'validator-details',
-    StakingRewardsHistory = 'staking-rewards-history',
     WalletStatus = 'wallet-status',
     Settings = 'settings',
     SettingsAccounts = 'settings-accounts',
@@ -455,14 +449,6 @@ const routes: RouteConfig[] = [{
                 modal: ValidatorDetailsModal,
             },
             name: RouteName.ValidatorDetails,
-            props: { modal: true },
-            meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/staking-rewards-history/:month?',
-            components: {
-                modal: StakingRewardsHistoryModal,
-            },
-            name: RouteName.StakingRewardsHistory,
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {

@@ -1,6 +1,6 @@
 <template>
     <Modal v-bind="$attrs" v-on="$listeners" class="staking-modal"
-        :class="{ 'large-modal': [Page.Graph, Page.Info, Page.RewardsHistory].includes(page) }"
+        :class="{ 'large-modal': [Page.Graph, Page.Info].includes(page) }"
         :showOverlay="shouldShowOverlay"
         @close-overlay="closeOverlay"
     >
@@ -19,15 +19,11 @@
             <template v-else-if="page === Page.Info">
                 <StakingInfoPage
                     @back="page = Page.Graph"
-                    @next="overlay = Overlay.RewardsHistory"
                     @adjust-stake="adjustStake"
                     @switch-validator="switchValidator"
                     @selectValidator="onSelectValidator"
                     @statusChange="onStatusChange"
                 />
-            </template>
-            <template v-else-if="page === Page.RewardsHistory">
-                <StakingRewardsHistoryPage @back="page = Page.Info" />
             </template>
             <template v-else-if="page === Page.ValidatorList">
                 <StakingValidatorPage
@@ -59,9 +55,6 @@
                 @statusChange="onStatusChange"
                 @next="onConfirmValidator"
             />
-            <StakingRewardsHistoryPage v-else-if="overlay === Overlay.RewardsHistory"
-                @back="closeOverlay"
-            />
         </template>
     </Modal>
 </template>
@@ -76,7 +69,6 @@ import StakingWelcomePage from './StakingWelcomePage.vue';
 import StakingValidatorPage from './StakingValidatorPage.vue';
 import StakingGraphPage from './StakingGraphPage.vue';
 import StakingInfoPage from './StakingInfoPage.vue';
-import StakingRewardsHistoryPage from './StakingRewardsHistoryPage.vue';
 import SelectAccountOverlay from './SelectAccountOverlay.vue';
 import StatusScreen, { State } from '../StatusScreen.vue';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
@@ -85,14 +77,12 @@ enum Page {
     Welcome, // StakingWelcomePage
     Graph, // StakingGraphPage
     Info, // StakingInfoPage
-    RewardsHistory, // StakingRewardsHistoryPage
     ValidatorList, // StakingValidatorPage
 }
 
 enum Overlay {
     SelectAccount,
     ValidatorDetails,
-    RewardsHistory,
 }
 
 export enum StatusChangeType {
@@ -184,8 +174,7 @@ export default defineComponent({
         const shouldShowOverlay = computed(() =>
             overlay.value === Overlay.SelectAccount
             || statusType.value !== StatusChangeType.NONE
-            || overlay.value === Overlay.ValidatorDetails
-            || overlay.value === Overlay.RewardsHistory,
+            || overlay.value === Overlay.ValidatorDetails,
         );
 
         /* Event Handlers */
@@ -258,7 +247,6 @@ export default defineComponent({
         StakingValidatorPage,
         StakingGraphPage,
         StakingInfoPage,
-        StakingRewardsHistoryPage,
         SelectAccountOverlay,
         StatusScreen,
         ValidatorDetailsOverlay,

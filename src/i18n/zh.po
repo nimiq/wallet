@@ -2,13 +2,13 @@
 # Translators:
 # Miao Yu <miaoyu319@gmail.com>, 2021
 # Daniel, 2022
-# Sven <sven@nimiq.com>, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
 # Sam, 2024
+# Sven <sven@nimiq.com>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sam, 2024\n"
+"Last-Translator: Sven <sven@nimiq.com>, 2025\n"
 "Language-Team: Chinese (https://app.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
@@ -77,10 +77,6 @@ msgstr ""
 msgid "{fee} fee"
 msgstr "{fee} 费用"
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:4
-msgid "{month}. Staking Rewards"
-msgstr ""
-
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:63
 msgid "{perc}% of swap value."
@@ -132,7 +128,7 @@ msgstr "+另外{n}个"
 
 #: src/components/StakingRewardsListItem.vue:39
 msgid "+{validatorCount} more"
-msgstr ""
+msgstr "+另外{validatorCount}个"
 
 #: src/components/modals/StablecoinSendModal.vue:179
 #: src/components/modals/StablecoinSendModal.vue:205
@@ -313,7 +309,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "添加联络人"
 
-#: src/lib/StakingUtils.ts:95
+#: src/lib/StakingUtils.ts:83
 msgid "Add stake"
 msgstr ""
 
@@ -758,7 +754,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:164
+#: src/components/staking/StakingModal.vue:154
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"
@@ -922,7 +918,7 @@ msgstr "创建一个新的一次性地址"
 msgid "Create request link"
 msgstr "创建请求链接"
 
-#: src/lib/StakingUtils.ts:50
+#: src/lib/StakingUtils.ts:38
 msgid "Create validator"
 msgstr ""
 
@@ -964,15 +960,15 @@ msgstr ""
 msgid "Dataset: {name}"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:62
+#: src/lib/StakingUtils.ts:50
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:241
+#: src/components/staking/StakingInfoPage.vue:240
 msgid "Deactivating Stake"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:30
+#: src/lib/StakingUtils.ts:18
 msgid "Delete validator"
 msgstr ""
 
@@ -1843,10 +1839,6 @@ msgstr "交换因为没有收到任何资金而过期了"
 msgid "No payment request found"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:18
-msgid "No Payout"
-msgstr ""
-
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
 msgstr "无需注册"
@@ -1860,7 +1852,6 @@ msgid "No request received."
 msgstr "未收到请求。"
 
 #: src/components/staking/StakingRewardsChart.vue:16
-#: src/components/staking/StakingRewardsHistoryPage.vue:37
 msgid "No rewards yet"
 msgstr ""
 
@@ -2135,7 +2126,7 @@ msgstr ""
 msgid "Rates the pool's potential to harm the network, based on its size."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:69
+#: src/lib/StakingUtils.ts:57
 msgid "Reactivate validator"
 msgstr ""
 
@@ -2278,10 +2269,6 @@ msgstr "重置你的钱包设置，并从区块链重新加载数据"
 msgid "Resolving Unstoppable Domain..."
 msgstr "正在解析 Unstoppable域名"
 
-#: src/lib/StakingUtils.ts:20
-msgid "Restake Rewards"
-msgstr ""
-
 #: src/components/swap/SwapAnimation.vue:650
 msgid "Restart payout process"
 msgstr ""
@@ -2290,11 +2277,11 @@ msgstr ""
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:127
+#: src/lib/StakingUtils.ts:115
 msgid "Retire stake"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:75
+#: src/lib/StakingUtils.ts:63
 msgid "Retire validator"
 msgstr ""
 
@@ -2478,7 +2465,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/staking/StakingInfoPage.vue:311
+#: src/components/staking/StakingInfoPage.vue:310
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2528,7 +2515,7 @@ msgstr "SEPA即时网络费用"
 msgid "SEPA Instant transaction"
 msgstr "SEPA即时交易"
 
-#: src/lib/StakingUtils.ts:118
+#: src/lib/StakingUtils.ts:106
 msgid "Set active stake"
 msgstr ""
 
@@ -2623,8 +2610,8 @@ msgstr "跳过"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:298
-#: src/components/staking/StakingInfoPage.vue:381
+#: src/components/staking/StakingInfoPage.vue:297
+#: src/components/staking/StakingInfoPage.vue:380
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr "出了些问题"
@@ -2687,7 +2674,6 @@ msgstr ""
 msgid "Staking rewards"
 msgstr ""
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:4
 #: src/components/staking/StakingRewardsModal.vue:4
 msgid "Staking Rewards"
 msgstr ""
@@ -2696,7 +2682,7 @@ msgstr ""
 msgid "standard"
 msgstr "标准"
 
-#: src/lib/StakingUtils.ts:81
+#: src/lib/StakingUtils.ts:69
 msgid "Start staking"
 msgstr ""
 
@@ -2712,7 +2698,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:282
+#: src/components/staking/StakingInfoPage.vue:281
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2724,7 +2710,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:367
+#: src/components/staking/StakingInfoPage.vue:366
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2829,7 +2815,7 @@ msgstr ""
 msgid "Switch to USDT"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:104
+#: src/lib/StakingUtils.ts:92
 msgid "Switch validator"
 msgstr ""
 
@@ -3042,9 +3028,8 @@ msgstr "这可能会花费{min}分钟"
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205
 #: src/components/UsdtTransactionList.vue:227
-#: src/composables/useStakingRewards.ts:132
 #: src/composables/useTransactionList.ts:149
-#: src/composables/useTransactionList.ts:208
+#: src/composables/useTransactionList.ts:208 src/lib/StakingUtils.ts:155
 msgid "This month"
 msgstr "本月份"
 
@@ -3238,7 +3223,7 @@ msgstr "不像其他加密货币一样，Nimiq将您的钱包直接连接到来�
 msgid "Unlock at any time. Your NIM will be available within ~24 hours."
 msgstr ""
 
-#: src/lib/StakingUtils.ts:35
+#: src/lib/StakingUtils.ts:23
 msgid "Unstake"
 msgstr ""
 
@@ -3264,7 +3249,7 @@ msgstr "有可用更新"
 msgid "Update now"
 msgstr "现在更新"
 
-#: src/lib/StakingUtils.ts:56
+#: src/lib/StakingUtils.ts:44
 msgid "Update validator"
 msgstr ""
 
@@ -3317,10 +3302,6 @@ msgstr "等待 {currency}"
 
 #: src/components/SendModalFooter.vue:79
 msgid "Waiting for Nimiq network information"
-msgstr ""
-
-#: src/lib/StakingUtils.ts:19
-msgid "Wallet Payout"
 msgstr ""
 
 #: src/components/modals/UsdtAddedModal.vue:8
@@ -3557,10 +3538,6 @@ msgstr "你的付款正在处理中"
 msgid ""
 "Your rewards are influenced by how many NIM are staked globally and your "
 "validator pool’s fee."
-msgstr ""
-
-#: src/components/staking/StakingRewardsHistoryPage.vue:38
-msgid "Your rewards will appear here once you start staking."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:290

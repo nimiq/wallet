@@ -218,8 +218,8 @@ type NormalizeEvmAddress<S extends string> = Lowercase<S>;
 // there is a non-normalized address, which will not be excluded, the result of Exclude will be non-empty, which is an
 // invalid index for {} and results in a type error as desired. The type error will even tell us which addresses are not
 // normalized.
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars */
 type __expectNormalizedNimAddresses = {}[Exclude<__nimAddresses, CheckNimAddressFormat<__nimAddresses>>];
 type __expectNormalizedBtcAddresses = {}[Exclude<__btcAddresses, NormalizeBtcAddress<__btcAddresses>>];
 type __expectNormalizedEvmAddresses = {}[Exclude<__evmAddresses, NormalizeEvmAddress<__evmAddresses>>];
-/* eslint-enable @typescript-eslint/ban-types */
+/* eslint-enable @typescript-eslint/ban-types, @typescript-eslint/no-unused-vars */

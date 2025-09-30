@@ -8,14 +8,15 @@ export type StakingState = {
     chainValidators: Record<string, RawValidator>,
     apiValidators: Record<string, ApiValidator>,
     stakeByAddress: Record<string, Stake>,
-    stakingEventsByAddress: Record<string, StakingEvent[]>,
+    stakingEventsByAddress: Record<string, AggregatedRestakingEvent[]>,
 }
 
-export type AddStakeEvent = {
-    sender_address:string, // eslint-disable-line camelcase
-    date: string,
-    value: number,
-    type: number,
+export type AggregatedRestakingEvent = {
+    /* eslint-disable camelcase */
+    sender_address: string,
+    time_window: string, // ISO 8601 encoded
+    aggregated_value: number,
+    /* eslint-enable camelcase */
 }
 
 export interface MonthlyReward {
@@ -23,8 +24,6 @@ export interface MonthlyReward {
     count: number;
     validators: string[];
 }
-
-export type StakingEvent = AddStakeEvent;
 
 export type Stake = {
     address: string,
@@ -204,29 +203,11 @@ export const useStakingStore = createStore({
             };
         },
 
-        stakingEventsByAddress: (state): Readonly<Record<string, StakingEvent[]>> => state.stakingEventsByAddress,
-        stakingEvents: (state): Readonly<StakingEvent[] | null> => {
+        stakingEvents: (state): Readonly<AggregatedRestakingEvent[] | null> => {
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
 
             return state.stakingEventsByAddress[activeAddress.value] || null;
-        },
-        sortedStakingEvents: (state, { stakingEvents }): Readonly<StakingEvent[] | null> => {
-            if (!stakingEvents.value) return null;
-            // Sort ascending by date.
-            // Note that sorting the staking events is an expensive operation as we're potentially dealing with tens of
-            // thousands of entries. Therefore, we do not always already sort the staking events in the stakingEvents
-            // getter, but in a separate getter, such that sorting is only done on demand, when this separate getter is
-            // accessed. If the sortedStakingEvents getter is accessed multiple times or from multiple places, sorting
-            // is only done once, as the getter caches the result, as long as stakingEvents didn't change.
-            // Also note that by use of sort() (as opposed to toSorted()) here we sort the original stakingEvents array
-            // as a side effect. While this is not necessarily the cleanest behavior for a getter, this side effect is
-            // desirable here, as a repeated sort call on the same, already sorted data can then be cheaper, depending
-            // on the sort algorithm used underneath.
-            // Since the dates are ISO 8601 encoded, we can simply sort the date strings in lexicographic order without
-            // having to parse the dates to a timestamp, which would be much more expensive.
-            stakingEvents.value.sort((a: StakingEvent, b: StakingEvent) => a.date < b.date ? -1 : 1);
-            return stakingEvents.value;
         },
         restakingRewards: (state, { stakingEvents, activeValidator }): Readonly<number | null> => {
             // Only show rewards for restaking validators
@@ -235,7 +216,7 @@ export const useStakingStore = createStore({
                 || (activeValidator.value as RegisteredValidator).payoutType !== 'restake'
             ) return null;
 
-            const events: StakingEvent[] | null = stakingEvents.value;
+            const events: Readonly<AggregatedRestakingEvent[] | null> = stakingEvents.value;
             if (!events || !Array.isArray(events)) return null;
 
             let totalRestakingRewards = 0;
@@ -255,7 +236,7 @@ export const useStakingStore = createStore({
                         //  validator reward address, or removing true as default value.
                         : true
                     )) {
-                    totalRestakingRewards += event.value;
+                    totalRestakingRewards += event.aggregated_value;
                 }
             }
 
@@ -263,7 +244,7 @@ export const useStakingStore = createStore({
         },
         // monthly rewards grouped by month
         monthlyRewards: (state, { stakingEvents }): Readonly<Map<string, MonthlyReward>> => {
-            const events = stakingEvents.value;
+            const events: Readonly<AggregatedRestakingEvent[] | null> = stakingEvents.value;
             const rewardsByMonth = new Map<string, MonthlyReward>();
             if (!events) return rewardsByMonth;
 
@@ -276,7 +257,7 @@ export const useStakingStore = createStore({
             let previousEventMonthReward: MonthlyReward | undefined;
             for (let i = 0; i < eventCount; ++i) {
                 const event = events[i];
-                const monthKey = event.date.substring(0, 7); // extract YYYY-MM part from date
+                const monthKey = event.time_window.substring(0, 7); // extract YYYY-MM part from date
                 let monthRewards;
                 if (monthKey === previousEventMonth) {
                     // Use cached entry to avoid a more expensive lookup from the map.
@@ -294,7 +275,7 @@ export const useStakingStore = createStore({
                 }
 
                 // Update totals
-                monthRewards.total += event.value;
+                monthRewards.total += event.aggregated_value;
                 monthRewards.count += 1;
 
                 // Add validator if not already present
@@ -366,7 +347,7 @@ export const useStakingStore = createStore({
 
             this.state.apiValidators = newApiValidators;
         },
-        setStakingEvents(address: string, events: StakingEvent[]) {
+        setStakingEvents(address: string, events: AggregatedRestakingEvent[]) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new stake in Vue 3.
             // We mark the staking events as non-reactive, as they're static data anyways. This avoids the significant
@@ -386,6 +367,7 @@ export const useStakingStore = createStore({
 // Wallet.
 // // @ts-expect-error assigning a method on window for testing purposes
 // window.testStakingEventsPerformance = async function testStakingEventsPerformance() {
+//     const TEST_USE_CACHED_API_RESPONSE = true;
 //     const TEST_ADDRESS = 'NQ51 VQXG TDUX R3TN M0HV 15VQ CLHU BU84 E9S6';
 //     const TEST_EVENT_COUNT = 40000;
 //     const TEST_VUE_TICKS_TO_AWAIT = 2;
@@ -418,7 +400,9 @@ export const useStakingStore = createStore({
 //     }
 //
 //     // Clear existing events for a clean state. Run in a named method for nicer labeling in performance profiler
+//     let cachedApiResponse: AggregatedRestakingEvent[] = [];
 //     await (async function prepareTest() {
+//         cachedApiResponse = stakingState.stakingEventsByAddress[TEST_ADDRESS];
 //         const knownStakingEventAddresses = Object.keys(stakingState.stakingEventsByAddress);
 //         for (const address of knownStakingEventAddresses) {
 //             setStakingEvents(address, []);
@@ -427,28 +411,33 @@ export const useStakingStore = createStore({
 //         await awaitVueTicks(TEST_VUE_TICKS_TO_AWAIT, false);
 //     }());
 //
-//     let stakingEvents: StakingEvent[] = [];
+//     let stakingEvents: AggregatedRestakingEvent[] = [];
 //     await (async function runTest() {
 //         let start: number;
-//         stakingEvents = await (async function fetchStakingEvents() {
-//             const { config } = useConfig();
-//             const endpoint = config.staking.stakeEventsEndpoint;
-//             const url = endpoint.replace('ADDRESS', TEST_ADDRESS.replaceAll(' ', '+'));
-//             start = Date.now();
-//             const stakingEventsFetchResponse = await fetch(url);
-//             logDuration('Fetching staking events', start);
-//             start = Date.now();
-//             const events = await stakingEventsFetchResponse.json();
-//             logDuration(`Parsing ${events.length} staking events`, start);
+//         await (async function fetchStakingEvents() {
+//             if (TEST_USE_CACHED_API_RESPONSE) {
+//                 // eslint-disable-next-line no-console
+//                 console.warn('testStakingEventsPerformance: using cached events from store');
+//                 stakingEvents = [...cachedApiResponse];
+//             } else {
+//                 const { config } = useConfig();
+//                 const endpoint = config.staking.stakeEventsEndpoint;
+//                 const url = endpoint.replace('ADDRESS', TEST_ADDRESS.replaceAll(' ', '+'));
+//                 start = Date.now();
+//                 const stakingEventsFetchResponse = await fetch(url);
+//                 logDuration('Fetching staking events', start);
+//                 start = Date.now();
+//                 stakingEvents = await stakingEventsFetchResponse.json();
+//                 logDuration(`Parsing ${stakingEvents.length} staking events`, start);
+//             }
 //             // Restrict number of events for comparable test cases
-//             if (events.length < TEST_EVENT_COUNT) {
+//             if (stakingEvents.length < TEST_EVENT_COUNT) {
 //                 // eslint-disable-next-line no-console
 //                 console.warn(`testStakingEventsPerformance: Only ${stakingEvents.length} events available instead `
 //                     + `of desired ${TEST_EVENT_COUNT}`);
 //             } else {
-//                 events.splice(TEST_EVENT_COUNT, events.length - TEST_EVENT_COUNT);
+//                 stakingEvents.splice(TEST_EVENT_COUNT, stakingEvents.length - TEST_EVENT_COUNT);
 //             }
-//             return events;
 //         }());
 //
 //         await (async function applyStatkingEvents() {
@@ -463,7 +452,7 @@ export const useStakingStore = createStore({
 //         let unsortedStakingEventCount = 0;
 //         let previousTimestamp = 0;
 //         for (const event of stakingEvents) {
-//             const timestamp = new Date(event.date).getTime();
+//             const timestamp = new Date(event.time_window).getTime();
 //             if (timestamp < previousTimestamp) {
 //                 unsortedStakingEventCount++;
 //                 // console.log( // eslint-disable-line no-console
@@ -482,7 +471,7 @@ export const useStakingStore = createStore({
 //         // Test how long sorting takes. Work on a shallow copy, to not modify the original data in the store.
 //         const sortedStakingEvents = [...stakingEvents];
 //         const start = Date.now();
-//         sortedStakingEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+//         sortedStakingEvents.sort((a, b) => new Date(b.time_window).getTime() - new Date(a.time_window).getTime());
 //         logDuration('sorting (with Date parsing)', start);
 //     }());
 //

@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
 import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
-import { useStakingStore, StakingEvent } from '../../stores/Staking';
+import { useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 
 type TimeRange = 'ALL' | 'Y1' | 'M6' | 'M3';
 
@@ -99,7 +99,7 @@ const verticalLinesBelowLine = {
 export default defineComponent({
     name: 'StakingRewardsChart',
     setup() {
-        const { sortedStakingEvents } = useStakingStore();
+        const { stakingEvents } = useStakingStore();
         const selectedRange = ref<TimeRange>('ALL');
         const isLoading = ref(true);
         const loadError = ref(false);
@@ -108,7 +108,7 @@ export default defineComponent({
         // Calculate date range based on selected time period
         const getDateRange = (
             range: TimeRange,
-            rewardEvents: Readonly<StakingEvent[]>,
+            rewardEvents: Readonly<AggregatedRestakingEvent[]>,
         ): { startDate: Date, endDate: Date } => {
             const now = new Date();
 
@@ -130,7 +130,7 @@ export default defineComponent({
                     };
                 default: // ALL
                     return {
-                        startDate: new Date(rewardEvents[0].date),
+                        startDate: new Date(rewardEvents[0].time_window),
                         endDate: now,
                     };
             }
@@ -177,8 +177,8 @@ export default defineComponent({
 
         // Generate chart data from staking reward events
         const chartData = computed(() => {
-            // Cache result of sortedStakingEvents.value getter to avoid overhead of Vue's reactivity system on access.
-            const events = sortedStakingEvents.value;
+            // Cache result of stakingEvents.value getter to avoid overhead of Vue's reactivity system on access.
+            const events = stakingEvents.value;
             if (!events || !events.length) return null;
 
             const { startDate, endDate } = getDateRange(selectedRange.value, events);
@@ -198,8 +198,8 @@ export default defineComponent({
                 const eventCount = events.length;
                 for (; eventIndex < eventCount; eventIndex++) {
                     const event = events[eventIndex];
-                    if (event.date > pointDateIsoString) break;
-                    cumulativeRewards += event.value;
+                    if (event.time_window > pointDateIsoString) break;
+                    cumulativeRewards += event.aggregated_value;
                 }
 
                 labels.push(`point-${pointIndex}`); // Simple labels for Chart.js (not displayed)

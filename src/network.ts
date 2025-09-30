@@ -8,7 +8,7 @@ import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
-import { AddStakeEvent, ApiValidator, RawValidator, useStakingStore } from './stores/Staking';
+import { useStakingStore, ApiValidator, RawValidator, AggregatedRestakingEvent } from './stores/Staking';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
@@ -175,16 +175,24 @@ export async function launchNetwork() {
         if (!activeAddress) return;
         const { config } = useConfig();
         const endpoint = config.staking.stakeEventsEndpoint;
-        const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'));
+        // TODO fetch only the data we're missing
+        // eslint-disable-next-line prefer-template
+        const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'))
+            + `?from=2024-11-18&to=${new Date().toISOString().substring(0, 7)}`; // from PoS launch to today
         retry(
             () => fetch(url)
                 .then((res) => res.json())
-                .then((events: AddStakeEvent[]) => {
+                .then((data) => {
+                    if (!data || typeof data !== 'object' || !Array.isArray(data.groups)) {
+                        // caught below
+                        throw new Error('Invalid staking events');
+                    }
+                    const events: AggregatedRestakingEvent[] = data.groups;
                     useStakingStore().setStakingEvents(activeAddress, events);
-                    console.log('Got add-stake events for', activeAddress, events);
+                    console.log('Got aggregated restaking events for', activeAddress, events);
                 }),
             { maxRetries: 3 },
-        ).catch(reportFor('fetch(add-stake events)'));
+        ).catch(reportFor('fetch(aggregated restaking events)'));
     });
 
     function forgetBalances(addresses: string[]) {

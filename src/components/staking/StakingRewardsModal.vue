@@ -127,7 +127,7 @@ export default defineComponent({
             const rewards = monthlyReward.value;
             if (!rewards) return [];
             const monthKey = props.month; // YYYY-MM format; cache to avoid overhead of reactivity system on access
-            return (stakingEvents.value || []).filter((event) => event.date.startsWith(monthKey));
+            return (stakingEvents.value || []).filter((event) => event.time_window.startsWith(monthKey));
         });
 
         // Recompute fiat when inputs change
@@ -139,7 +139,7 @@ export default defineComponent({
                 fiatHistoric.value = { currency: historyFiatCurrency.value, value: undefined };
                 return;
             }
-            const timestamps = events.map((event) => new Date(event.date).getTime());
+            const timestamps = events.map((event) => new Date(event.time_window).getTime());
 
             // Fetch historic rates for each reward timestamp and sum converted values
             const ratesMap = await getHistoricExchangeRates(
@@ -157,7 +157,7 @@ export default defineComponent({
                     fiatHistoric.value = { currency: historyFiatCurrency.value, value: FIAT_PRICE_UNAVAILABLE };
                     return;
                 }
-                totalFiat += rate * (events[i].value / 1e5);
+                totalFiat += rate * (events[i].aggregated_value / 1e5);
             }
             fiatHistoric.value = { currency: historyFiatCurrency.value, value: totalFiat };
         };

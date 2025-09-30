@@ -65,6 +65,7 @@ async function getFlaggedAddressInfo(
     for (const flaggedAddressType of Object.keys(FLAGGED_ADDRESSES) as Array<keyof typeof FLAGGED_ADDRESSES>) {
         if (typeFilter && flaggedAddressType !== typeFilter) continue;
         const datasetsById = FLAGGED_ADDRESSES[flaggedAddressType];
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [datasetId, { label: datasetLabel, ...addressesByChain }] of Object.entries(datasetsById)) {
             for (const chain of Object.keys(addressesByChain) as Array<keyof typeof addressesByChain>) {
                 if (chainFilter && chain !== chainFilter) continue;

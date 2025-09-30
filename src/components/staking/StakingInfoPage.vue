@@ -197,7 +197,7 @@ export default defineComponent({
                 return rew;
             }
 
-            monthlyRewards.value.forEach((r, m, _map) => {
+            monthlyRewards.value.forEach((r, m) => {
                 rew.push({ total: r.total, month: m, validators: r.validators, loading: false });
             });
             return rew.reverse();

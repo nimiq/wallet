@@ -75,10 +75,6 @@ msgstr "{disabledAsset}trocas estão de momento em manutenção"
 msgid "{fee} fee"
 msgstr "{fee} taxa"
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:4
-msgid "{month}. Staking Rewards"
-msgstr ""
-
 #: src/components/swap/SwapFeesTooltip.vue:22
 #: src/components/swap/SwapFeesTooltip.vue:63
 msgid "{perc}% of swap value."
@@ -130,7 +126,7 @@ msgstr "+{n} mais"
 
 #: src/components/StakingRewardsListItem.vue:39
 msgid "+{validatorCount} more"
-msgstr ""
+msgstr "+{validatorCount} mais"
 
 #: src/components/modals/StablecoinSendModal.vue:179
 #: src/components/modals/StablecoinSendModal.vue:205
@@ -320,7 +316,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "Adicionar contacto"
 
-#: src/lib/StakingUtils.ts:95
+#: src/lib/StakingUtils.ts:83
 msgid "Add stake"
 msgstr "Adicionar participação"
 
@@ -789,7 +785,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Clicar em 'Troubleshooting' para saber mais."
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:164
+#: src/components/staking/StakingModal.vue:154
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fechar"
@@ -955,7 +951,7 @@ msgstr "Cria um novo endereço de uso único."
 msgid "Create request link"
 msgstr "Cria um link de pedido"
 
-#: src/lib/StakingUtils.ts:50
+#: src/lib/StakingUtils.ts:38
 msgid "Create validator"
 msgstr "Criar validador"
 
@@ -997,15 +993,15 @@ msgstr "Trocas de crypto estão de momento em manutenção."
 msgid "Dataset: {name}"
 msgstr ""
 
-#: src/lib/StakingUtils.ts:62
+#: src/lib/StakingUtils.ts:50
 msgid "Deactivate validator"
 msgstr "Desativar validador"
 
-#: src/components/staking/StakingInfoPage.vue:241
+#: src/components/staking/StakingInfoPage.vue:240
 msgid "Deactivating Stake"
 msgstr "A desativar a participação"
 
-#: src/lib/StakingUtils.ts:30
+#: src/lib/StakingUtils.ts:18
 msgid "Delete validator"
 msgstr "Eliminar validador"
 
@@ -1926,10 +1922,6 @@ msgstr "Nenhuns fundos foram recebidos e por isso a troca expirou."
 msgid "No payment request found"
 msgstr "Pedido de pagamento não encontrado"
 
-#: src/lib/StakingUtils.ts:18
-msgid "No Payout"
-msgstr "Nenhum pagamento"
-
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
 msgstr "Sem registo"
@@ -1943,7 +1935,6 @@ msgid "No request received."
 msgstr "Nenhum pedido recebido."
 
 #: src/components/staking/StakingRewardsChart.vue:16
-#: src/components/staking/StakingRewardsHistoryPage.vue:37
 msgid "No rewards yet"
 msgstr ""
 
@@ -2235,7 +2226,7 @@ msgstr ""
 "Classifica o potencial da pool para causar danos à rede, com base no seu "
 "tamanho."
 
-#: src/lib/StakingUtils.ts:69
+#: src/lib/StakingUtils.ts:57
 msgid "Reactivate validator"
 msgstr "Reativar o validador"
 
@@ -2384,10 +2375,6 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr "A resolver Unstopable Domain..."
 
-#: src/lib/StakingUtils.ts:20
-msgid "Restake Rewards"
-msgstr "Participar novamente com Recompensas"
-
 #: src/components/swap/SwapAnimation.vue:650
 msgid "Restart payout process"
 msgstr "Reiniciar o processo de pagamento"
@@ -2396,11 +2383,11 @@ msgstr "Reiniciar o processo de pagamento"
 msgid "Resulting BTC amount is too small."
 msgstr "O valor resultante de BTC é demasiado baixo."
 
-#: src/lib/StakingUtils.ts:127
+#: src/lib/StakingUtils.ts:115
 msgid "Retire stake"
 msgstr "Retirar a participação"
 
-#: src/lib/StakingUtils.ts:75
+#: src/lib/StakingUtils.ts:63
 msgid "Retire validator"
 msgstr "Retirar o validador"
 
@@ -2586,7 +2573,7 @@ msgstr "Enviar transação de participação"
 msgid "Sending Transaction"
 msgstr "A enviar Transação"
 
-#: src/components/staking/StakingInfoPage.vue:311
+#: src/components/staking/StakingInfoPage.vue:310
 msgid "Sending Unstaking Transaction"
 msgstr "Enviar transação de retirar a participação"
 
@@ -2636,7 +2623,7 @@ msgstr "Taxa instantânea SEPA"
 msgid "SEPA Instant transaction"
 msgstr "Transação SEPA Instant"
 
-#: src/lib/StakingUtils.ts:118
+#: src/lib/StakingUtils.ts:106
 msgid "Set active stake"
 msgstr "Selecionar participação ativa"
 
@@ -2731,8 +2718,8 @@ msgstr "Pular"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:298
-#: src/components/staking/StakingInfoPage.vue:381
+#: src/components/staking/StakingInfoPage.vue:297
+#: src/components/staking/StakingInfoPage.vue:380
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr "Algo deu errado"
@@ -2795,7 +2782,6 @@ msgstr ""
 msgid "Staking rewards"
 msgstr ""
 
-#: src/components/staking/StakingRewardsHistoryPage.vue:4
 #: src/components/staking/StakingRewardsModal.vue:4
 msgid "Staking Rewards"
 msgstr ""
@@ -2804,7 +2790,7 @@ msgstr ""
 msgid "standard"
 msgstr "padrão"
 
-#: src/lib/StakingUtils.ts:81
+#: src/lib/StakingUtils.ts:69
 msgid "Start staking"
 msgstr "Começar a participar"
 
@@ -2821,7 +2807,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr "Validador alterado com sucesso para {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:282
+#: src/components/staking/StakingInfoPage.vue:281
 msgid "Successfully deactivated {amount} NIM"
 msgstr "{amount} NIM desativado com sucesso"
 
@@ -2834,7 +2820,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr "{amount} NIM participado com sucesso com {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:367
+#: src/components/staking/StakingInfoPage.vue:366
 msgid "Successfully unstaked {amount} NIM"
 msgstr "{amount} NIM retirado com sucesso"
 
@@ -2939,7 +2925,7 @@ msgstr "Muda para USDC"
 msgid "Switch to USDT"
 msgstr "Muda para USDT"
 
-#: src/lib/StakingUtils.ts:104
+#: src/lib/StakingUtils.ts:92
 msgid "Switch validator"
 msgstr "Trocar de validador"
 
@@ -3173,9 +3159,8 @@ msgstr "Isto pode levar até {min} minutos."
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205
 #: src/components/UsdtTransactionList.vue:227
-#: src/composables/useStakingRewards.ts:132
 #: src/composables/useTransactionList.ts:149
-#: src/composables/useTransactionList.ts:208
+#: src/composables/useTransactionList.ts:208 src/lib/StakingUtils.ts:155
 msgid "This month"
 msgstr "Este mês"
 
@@ -3385,7 +3370,7 @@ msgstr ""
 "Desbloqueia a qualquer momento. O teu NIM vai estar disponível em "
 "aproximadamente 24 horas."
 
-#: src/lib/StakingUtils.ts:35
+#: src/lib/StakingUtils.ts:23
 msgid "Unstake"
 msgstr "Remover participação"
 
@@ -3411,7 +3396,7 @@ msgstr "Atualização disponível"
 msgid "Update now"
 msgstr "Atualizar agora"
 
-#: src/lib/StakingUtils.ts:56
+#: src/lib/StakingUtils.ts:44
 msgid "Update validator"
 msgstr "Atualizar validador"
 
@@ -3465,10 +3450,6 @@ msgstr "À espera da {currency}"
 #: src/components/SendModalFooter.vue:79
 msgid "Waiting for Nimiq network information"
 msgstr "À espera de informações da rede da Nimiq"
-
-#: src/lib/StakingUtils.ts:19
-msgid "Wallet Payout"
-msgstr "Pagamento da Wallet"
 
 #: src/components/modals/UsdtAddedModal.vue:8
 msgid "We added support for USDT, which you can now use instead of USDC."
@@ -3731,10 +3712,6 @@ msgid ""
 msgstr ""
 "As tuas recompensas são influenciadas pela quantidade de NIM participado "
 "globalmente e pela taxa da tua pool de validadores."
-
-#: src/components/staking/StakingRewardsHistoryPage.vue:38
-msgid "Your rewards will appear here once you start staking."
-msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:290
 msgid "Your swap was successful!"

@@ -26,7 +26,7 @@ export default {
         transitionBlock: 3_032_010,
         validatorsApiBase: 'https://validators-api-testnet.nuxt.dev',
         validatorsPath: '/api/v1/validators',
-        stakeEventsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/staker/ADDRESS/events?filter=add-stake',
+        stakeEventsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/staker/ADDRESS/events/restake-grouped',
         genesis: {
             height: 3032010,
             date: new Date('2024-11-13T20:00:00Z'),

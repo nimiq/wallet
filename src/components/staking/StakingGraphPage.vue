@@ -82,7 +82,7 @@ import { useI18n } from '../../lib/useI18n';
 import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { getNetworkClient } from '../../network';
-import { sendStaking, signStakingRaw } from '../../hub';
+import { sendStaking, unstakeFlow } from '../../hub';
 import { startUnstaking } from '../../lib/AlbatrossWatchtower';
 import { useTransactionsStore, TransactionState } from '../../stores/Transactions';
 
@@ -308,7 +308,7 @@ export default defineComponent({
                         title: $t('Sending Staking Transaction') as string,
                     });
 
-                    // First sign and send deactivation, then sign retire+remove together and schedule with watchtower
+                    // One-shot signing flow via Hub: deactivation then retire+remove
                     const transaction = TransactionBuilder.newSetActiveStake(
                         Address.fromUserFriendlyAddress(activeAddress.value!),
                         BigInt(activeStake.value!.activeBalance + stakeDelta.value),
@@ -316,145 +316,36 @@ export default defineComponent({
                         useNetworkStore().state.height,
                         await client.getNetworkId(),
                     );
-                    // eslint-disable-next-line no-console
-                    console.debug('[unstake] staking: deactivation tx prepared', {
-                        delta: stakeDelta.value,
-                        newActive: activeStake.value!.activeBalance + stakeDelta.value,
-                    });
-                    const txs = await sendStaking({
-                        transaction: transaction.serialize(),
-                        recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                        // @ts-expect-error Not typed yet in Hub
-                        validatorAddress: activeValidator.value!.address,
-                        validatorImageUrl: 'logo' in activeValidator.value! && !activeValidator.value.hasDefaultLogo
-                            ? activeValidator.value.logo
-                            : undefined,
-                        amount: Math.abs(stakeDelta.value),
-                    }).catch((error) => {
-                        throw new Error(error.data);
-                    });
-
-                    if (!txs) {
-                        context.emit('statusChange', {
-                            type: StatusChangeType.NONE,
-                        });
-                        // eslint-disable-next-line no-console
-                        console.error('[unstake] staking: deactivation send returned null');
-                        return;
-                    }
-
-                    if (txs.some((tx) => tx.executionResult === false)) {
-                        // eslint-disable-next-line no-console
-                        console.error('[unstake] staking: deactivation executionResult=false');
-                        throw new Error('The transaction did not succeed');
-                    }
-
                     try {
-                        const deactivationHash = txs[0]?.transactionHash;
-                        // Wait until the deactivation tx is macro-confirmed before notifying the watchtower
-                        console.debug('[unstake] watchtower: waiting for macro-confirmation', {
-                            deactivationHash,
+                        const result = await unstakeFlow({
+                            senderLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                            recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                            deactivation: transaction.serialize(),
+                            staker: activeAddress.value!,
+                            amount: Math.abs(stakeDelta.value),
+                            validatorAddress: activeValidator.value!.address,
+                            validatorImageUrl: 'logo' in activeValidator.value!
+                                && !activeValidator.value.hasDefaultLogo
+                                ? activeValidator.value.logo
+                                : undefined,
                         });
-                        await waitForMacroConfirmation(deactivationHash);
+                        if (!result) throw new Error('Unstake flow was canceled');
 
-                        // Fetch deactivation details to align validity heights with watchtower expectations
-                        const deactivationDetails = await client.getTransaction(deactivationHash);
-                        const deactHeight = deactivationDetails.blockHeight!;
-
-                        // Build retire and remove and sign together (2 tx max)
-                        // Compute validity start heights exactly as the watchtower expects (without relying on
-                        // Policy network defaults): retire at end of current epoch + one epoch; unstake at retire + 1.
-                        const { usePolicy } = await import('@/composables/usePolicy');
-                        const policy = await usePolicy();
-                        const nextElection = policy.electionBlockAfter(deactHeight);
-                        const targetValidAt = nextElection + policy.blocksPerEpoch();
-
-                        // Use exact macro-final height for retire, unstake at retire + 1
-                        const retireStart = targetValidAt;
-                        const removeStart = retireStart + 1;
-
-                        // eslint-disable-next-line no-console
-                        console.debug('[unstake] watchtower: computed validity starts', {
-                            deactHeight,
-                            targetValidAt,
-                            retireStart,
-                            removeStart,
-                        });
-
-                        let retireSerialized: string;
-                        let removeSerialized: string;
-                        {
-                            const retireUnsigned = TransactionBuilder.newRetireStake(
-                                Address.fromUserFriendlyAddress(activeAddress.value!),
-                                BigInt(Math.abs(stakeDelta.value)),
-                                BigInt(0),
-                                retireStart,
-                                await client.getNetworkId(),
-                            );
-                            const removeUnsigned = TransactionBuilder.newRemoveStake(
-                                Address.fromUserFriendlyAddress(activeAddress.value!),
-                                BigInt(Math.abs(stakeDelta.value)),
-                                BigInt(0),
-                                removeStart,
-                                await client.getNetworkId(),
-                            );
-                            // eslint-disable-next-line no-console
-                            console.debug('[unstake] watchtower: signing retire+remove (initial)');
-                            const signed = await signStakingRaw({
-                                transaction: [retireUnsigned.serialize(), removeUnsigned.serialize()],
-                                recipientLabel:
-                                    'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                                // @ts-expect-error Not typed yet in Hub
-                                validatorAddress: activeValidator.value!.address,
-                                validatorImageUrl: 'logo' in activeValidator.value!
-                                    && !activeValidator.value.hasDefaultLogo
-                                    ? activeValidator.value.logo
-                                    : undefined,
-                            });
-                            if (!signed || !Array.isArray(signed) || signed.length < 2) {
-                                // eslint-disable-next-line no-console
-                                console.error('[unstake] watchtower: signing retire+remove returned empty');
-                                return;
-                            }
-                            retireSerialized = signed[0].serializedTx;
-                            removeSerialized = signed[1].serializedTx;
-                        }
-
-                        // eslint-disable-next-line no-console
-                        console.debug('[unstake] watchtower: startUnstaking after macro-confirmation', {
-                            deactivationHash,
-                        });
-
+                        // After Hub flow, notify watchtower using returned signed retire/remove
                         try {
                             await startUnstaking({
                                 staker_address: activeAddress.value!,
                                 transactions: {
-                                    inactive_stake_tx_hash: deactivationHash,
-                                    retire_tx: retireSerialized,
-                                    unstake_tx: removeSerialized,
+                                    inactive_stake_tx_hash: result.deactivation.raw.transactionHash,
+                                    retire_tx: result.retire.serializedTx,
+                                    unstake_tx: result.remove.serializedTx,
                                 },
                             });
-                            // eslint-disable-next-line no-console
-                            console.debug('[unstake] watchtower: startUnstaking posted');
                         } catch (postErr: any) {
-                            const errMsg = String(postErr?.message || '');
-                            const is406 = errMsg.startsWith('HTTP 406');
-                            // eslint-disable-next-line no-console
-                            console.debug('[unstake] watchtower: post failed', {
-                                is406,
-                                err: errMsg,
-                            });
-                            throw postErr;
+                            reportToSentry(postErr);
                         }
-                    } catch (wtError) {
-                        // Non-fatal: deactivation succeeded; watchtower scheduling failed
-                        // Report but do not block UX
-                        reportToSentry(wtError as any);
-                        // eslint-disable-next-line no-console
-                        console.error(
-                            '[unstake] watchtower: scheduling failed',
-                            wtError instanceof Error ? wtError.message : String(wtError),
-                        );
+                    } catch (error) {
+                        throw error;
                     }
 
                     context.emit('statusChange', {

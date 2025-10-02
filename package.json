@@ -29,7 +29,7 @@
     "@nimiq/core": "^2.1.0",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "^1.10.3",
-    "@nimiq/hub-api": "^1.10.0",
+    "@nimiq/hub-api": "../hub/client",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "^1.5.1",
     "@nimiq/oasis-api": "^1.1.1",

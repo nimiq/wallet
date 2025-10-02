@@ -2332,8 +2332,8 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:134
-#: src/components/staking/StakingGraphPage.vue:229
+#: src/components/staking/StakingGraphPage.vue:213
+#: src/components/staking/StakingGraphPage.vue:308
 msgid "Sending Staking Transaction"
 msgstr ""
 
@@ -2486,7 +2486,7 @@ msgstr ""
 #: src/components/modals/SendModal.vue:640
 #: src/components/modals/SendModal.vue:825
 #: src/components/modals/StablecoinSendModal.vue:681
-#: src/components/staking/StakingGraphPage.vue:418
+#: src/components/staking/StakingGraphPage.vue:379
 #: src/components/staking/StakingInfoPage.vue:299
 #: src/components/staking/StakingInfoPage.vue:382
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
@@ -2568,7 +2568,7 @@ msgstr ""
 msgid "Store of value, got it"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:216
+#: src/components/staking/StakingGraphPage.vue:295
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
@@ -2580,11 +2580,11 @@ msgstr ""
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:393
+#: src/components/staking/StakingGraphPage.vue:354
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:172
+#: src/components/staking/StakingGraphPage.vue:251
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 

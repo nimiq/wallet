@@ -553,6 +553,20 @@ export async function signStakingRaw(request: Omit<SignStakingRequest, 'appName'
     }
 }
 
+export async function unstakeFlow(request: any): Promise<any> {
+    try {
+        const result = await hubApi.unstakeFlow({
+            appName: APP_NAME,
+            ...request,
+        });
+        return result as any;
+    } catch (error: any) {
+        const handled = onError(error);
+        if (handled === null) return null;
+        throw error;
+    }
+}
+
 export async function createCashlink(senderAddress: string, senderBalance?: number) {
     const cashlink = await hubApi.createCashlink({
         appName: APP_NAME,

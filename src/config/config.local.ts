@@ -140,7 +140,8 @@ export default {
 
     // Albatross Watchtower (local uses testnet instance)
     albatrossWatchtower: {
-        endpoint: 'https://watchtower.pos.nimiq-testnet.com',
+        // endpoint: 'https://watchtower.pos.nimiq-testnet.com',
+        endpoint: 'http://localhost:8082',
     },
 
     moonpay: {

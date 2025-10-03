@@ -202,7 +202,9 @@ export const useStakingStore = createStore({
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
 
-            return state.stakingEventsByAddress[activeAddress.value] || null;
+            const events = state.stakingEventsByAddress[activeAddress.value] || null;
+            if (!events || !Array.isArray(events)) return null;
+            return events;
         },
         restakingRewards: (state, { stakingEvents, activeValidator }): Readonly<number | null> => {
             // Only show rewards for restaking validators
@@ -212,7 +214,7 @@ export const useStakingStore = createStore({
             ) return null;
 
             const events = stakingEvents.value as StakingEvent[] | null;
-            if (!events) return null;
+            if (!events || !Array.isArray(events)) return null;
 
             const addStakeEvents: AddStakeEvent[] = events.filter((event) => {
                 if (event.type !== 6) return false;

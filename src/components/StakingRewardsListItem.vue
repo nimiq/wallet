@@ -45,7 +45,10 @@
         </div>
         <div class="amounts isIncoming">
             <Amount :amount="monthlyReward" class="amount"/>
+            <!-- HIDDEN TEMPORARILY: Show fiat value only in detailed modal for monthly rewards
             <FiatConvertedAmount :amount="monthlyReward" class="fiat-amount"/>
+            -->
+            <div class="fiat-amount">&nbsp;</div> <!-- Remove this once we show the fiat value again -->
         </div>
     </div>
 </template>

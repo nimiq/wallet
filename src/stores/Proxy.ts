@@ -1,3 +1,4 @@
+import { CryptoCurrency } from '@nimiq/utils';
 import { createStore } from 'pinia';
 
 // A proxy is an address for forwarding funds. Most prominently Cashlinks are an example of a proxy.
@@ -18,10 +19,10 @@ export type Cashlink = {
     value: number,
 };
 
-export const useProxyStore = createStore({
-    id: 'proxies',
+const proxyStoreFactory = (c: CryptoCurrency) => createStore({
+    id: `${c}Proxies`,
     state: (): ProxyState => ({
-        claimed: [], // TODO: Use Sets in Vue 3
+        claimed: [],
         funded: [],
         networkTrigger: 0,
         hubCashlinks: {},
@@ -68,3 +69,6 @@ export const useProxyStore = createStore({
         },
     },
 });
+
+export const useProxyStore = proxyStoreFactory(CryptoCurrency.NIM);
+export const useUsdtProxyStore = proxyStoreFactory(CryptoCurrency.USDT);

@@ -508,7 +508,11 @@ export default defineComponent({
         }
 
         function onCreateCashlink() {
-            createCashlink(activeAddressInfo.value!.address, activeAddressInfo.value!.balance || undefined);
+            createCashlink(
+                activeAddressInfo.value!.address,
+                CryptoCurrency.NIM,
+                activeAddressInfo.value!.balance || undefined,
+            );
         }
 
         const backgroundAddresses = computed(() => { // eslint-disable-line arrow-body-style

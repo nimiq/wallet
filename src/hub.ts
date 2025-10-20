@@ -24,7 +24,7 @@ import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useTransactionsStore } from './stores/Transactions';
 import { useBtcTransactionsStore } from './stores/BtcTransactions';
 import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
-import { useProxyStore, Cashlink } from './stores/Proxy';
+import { useProxyStore, useUsdtProxyStore, Cashlink } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
@@ -34,7 +34,11 @@ import router, { RouteName } from './router';
 import { useSettingsStore } from './stores/Settings';
 import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
-import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import {
+    CryptoCurrency,
+    WELCOME_MODAL_LOCALSTORAGE_KEY,
+    WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
+} from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
@@ -518,7 +522,11 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
     return txDetails;
 }
 
-export async function createCashlink(senderAddress: string, senderBalance?: number) {
+export async function createCashlink(
+    senderAddress: string,
+    currency: CryptoCurrency,
+    senderBalance?: number,
+) {
     const cashlink = await hubApi.createCashlink({
         appName: APP_NAME,
         senderAddress,
@@ -528,8 +536,15 @@ export async function createCashlink(senderAddress: string, senderBalance?: numb
     if (!cashlink) return false;
 
     // Handle cashlink
-    const proxyStore = useProxyStore();
-    proxyStore.addHubCashlink(cashlink);
+    if (currency === CryptoCurrency.NIM) {
+        const proxyStore = useProxyStore();
+        proxyStore.addHubCashlink(cashlink);
+    } else if (currency === CryptoCurrency.USDT) {
+        const proxyStore = useUsdtProxyStore();
+        proxyStore.addHubCashlink(cashlink);
+    } else {
+        throw new Error(`No proxy store exists for the supplied currency ${currency}`);
+    }
 
     return true;
 }

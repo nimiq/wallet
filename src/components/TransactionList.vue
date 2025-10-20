@@ -76,7 +76,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
-import { AddressBook } from '@nimiq/utils';
+import { AddressBook, CryptoCurrency } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
 import { useI18n } from '@/lib/useI18n';
 import TestnetFaucet from './TestnetFaucet.vue';
@@ -343,7 +343,11 @@ export default defineComponent({
         const isMainnet = config.environment === ENV_MAIN;
 
         function onCreateCashlink() {
-            createCashlink(activeAddress.value!, activeAddressInfo.value!.balance || undefined);
+            createCashlink(
+                activeAddress.value!,
+                CryptoCurrency.NIM,
+                activeAddressInfo.value!.balance || undefined,
+            );
         }
 
         // Scroll to top when

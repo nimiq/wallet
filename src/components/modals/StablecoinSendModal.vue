@@ -55,6 +55,12 @@
                         </template>
                     </span>
                 </section>
+                <section v-if="stablecoin === CryptoCurrency.USDT" class="cashlink-section">
+                    <span>{{ $t('Address unavailable?') }}</span>
+                    <button class="nq-button-s" @click="onCreateCashlink" @mousedown.prevent>
+                        {{ $t('Create a Cashlink') }}
+                    </button>
+                </section>
             </PageBody>
             <PolygonWarningFooter type="sending" level="info"/>
             <button class="reset scan-qr-button" @click="$router.push({ name: RouteName.Scan })">
@@ -269,7 +275,7 @@ import { nextTick } from '@/lib/nextTick';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
-import { sendPolygonTransaction } from '../../hub';
+import { sendPolygonTransaction, createCashlink } from '../../hub';
 import { loadEthersLibrary, calculateFee } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
 import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
@@ -506,6 +512,24 @@ export default defineComponent({
             }
             recipientDetailsOpened.value = false;
             recipientFlaggedAddressWarningOpened.value = false;
+        }
+
+        function onCreateCashlink() {
+            if (activeCurrency.value !== CryptoCurrency.USDT) {
+                throw new Error('Stablecoin Cashlinks are only available for USDT on Polygon');
+            }
+            if (!addressInfo.value) {
+                throw new Error('No active Polygon address');
+            }
+            const fromAddress = addressInfo.value.address;
+
+            createCashlink(
+                fromAddress,
+                CryptoCurrency.USDT,
+                addressInfo.value.balanceUsdtBridged !== null
+                    ? addressInfo.value.balanceUsdtBridged
+                    : undefined,
+            );
         }
 
         const amount = ref(0);
@@ -905,6 +929,7 @@ export default defineComponent({
             onContactSelected,
             addressInputValue,
             onAddressEntered,
+            onCreateCashlink,
             recipientInfo,
             recipientDetailsOpened,
             recipientFlaggedAddressWarningOpened,
@@ -1061,6 +1086,16 @@ export default defineComponent({
 
         .address-input.display-as-domain ~ .notice {
             margin-top: 1rem;
+        }
+    }
+
+    .cashlink-section {
+        text-align: center;
+
+        span {
+            display: block;
+            opacity: 0.7;
+            margin-bottom: 1.75rem;
         }
     }
 

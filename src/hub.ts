@@ -34,7 +34,11 @@ import router, { RouteName } from './router';
 import { useSettingsStore } from './stores/Settings';
 import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
-import { WELCOME_MODAL_LOCALSTORAGE_KEY, WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from './lib/Constants';
+import {
+    WELCOME_MODAL_LOCALSTORAGE_KEY,
+    WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
+    MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
+} from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
@@ -400,13 +404,16 @@ export async function syncFromHub() {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.push({ name: RouteName.UsdcActivation });
     } else {
-        // Check if the WelcomeStakingModal should be shown
+        const multisigModalAlreadyShown = window.localStorage.getItem(
+            MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
+        );
         const welcomeStakingModalAlreadyShown = window.localStorage.getItem(
             WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
         );
 
-        if (!welcomeStakingModalAlreadyShown) {
-            // Show WelcomeStakingModal if not shown before
+        if (!multisigModalAlreadyShown && areOptionalRedirectsAllowed(router.currentRoute)) {
+            router.push({ name: RouteName.MultisigAnnouncement });
+        } else if (!welcomeStakingModalAlreadyShown) {
             router.push({ name: RouteName.WelcomeStaking });
         }
     }

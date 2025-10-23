@@ -542,6 +542,7 @@ export async function createCashlink(
     } else if (currency === CryptoCurrency.USDT) {
         const proxyStore = useUsdtProxyStore();
         proxyStore.addHubCashlink(cashlink);
+        proxyStore.triggerNetwork();
     } else {
         throw new Error(`No proxy store exists for the supplied currency ${currency}`);
     }

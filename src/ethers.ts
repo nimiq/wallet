@@ -39,6 +39,7 @@ import { getPoolAddress, getUsdPrice } from './lib/usdc/Uniswap';
 import { replaceKey } from './lib/KeyReplacer';
 import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useAccountSettingsStore } from './stores/AccountSettings';
+import { useUsdtProxyStore } from './stores/Proxy';
 
 export async function loadEthersLibrary() {
     return import(/* webpackChunkName: "ethers-js" */ 'ethers');
@@ -477,6 +478,9 @@ export async function launchPolygon() {
     const usdcTransactionsStore = useUsdcTransactionsStore();
     const usdtTransactionsStore = useUsdtTransactionsStore();
     const { config } = useConfig();
+
+    const subscribedProxies = new Set<string>();
+    const seenProxies = new Set<string>();
 
     // Subscribe to new addresses (for balance updates and transactions)
     // Also remove logged out addresses from fetched (so that they get fetched on next login)
@@ -1132,6 +1136,197 @@ export async function launchPolygon() {
                 fetchedUsdcAddresses.delete(address);
             })
             .then(() => network$.fetchingUsdcTxHistory--);
+    });
+
+    const usdtProxyStore = useUsdtProxyStore();
+    watch(usdtProxyStore.networkTrigger, async () => {
+        // At this time Here we have been triggered by the addition of a cashlink via the Hub.
+        // As we are not listening for outgoing transactions for our own addresses as we expect to witness every send
+        // and since that does not hold true for cashlinks we must now manually retrieve that historic transaction.
+
+        // First, set up the new listeners for the newly added cashlinks, to witness when they are redeemed.
+        // none of the other cashlinks are relevant for now as they are concerned with syncing.
+        // TODO syncing
+        let newProxy: string | undefined;
+        const addressesToSubscribe: string[] = [];
+        for (const proxyAddress of Object.keys(usdtProxyStore.state.hubCashlinks)) {
+            if (!seenProxies.has(proxyAddress)) {
+                // For new addresses the tx history and if required subscribing is handled below
+                seenProxies.add(proxyAddress);
+                if (newProxy === undefined) {
+                    newProxy = proxyAddress;
+                } else {
+                    console.error('Detected multiple new proxies');
+                }
+                subscribedProxies.add(proxyAddress);
+            }
+        }
+
+        if (newProxy === undefined) {
+            // No new proxy was added
+            console.error('Expected a new proxy, but found none');
+            return;
+        }
+
+        // Update the subscriptions, so any redeeming can be witnessed.
+        // refreshCashlinkSubscriptions(); // not necessary until we link the funding and redeeming
+
+        // Refresh the balance of the newly added cashlink address.
+        updateUsdtBridgedBalances([newProxy]);
+
+        // The remainder of this code block should be removed and refactored
+        // here we make a bunch of assumptions for time's sake:
+        // - all transactions witnessed are going to be cashlink transactions.
+        // - there are no transaction which do not use out gas abstraction.
+        // - They are all in the same format
+        const knownTxs = Object.values(usdtTransactionsStore.state.transactions)
+            .filter((tx) => (!tx.token || tx.token === config.polygon.usdt_bridged.tokenContract)
+                && (tx.sender === newProxy || tx.recipient === newProxy));
+        const earliestHeightToCheck = config.polygon.usdt_bridged.earliestHistoryScanHeight;
+
+        network$.fetchingUsdtTxHistory++;
+        const client = await getPolygonClient();
+        const poolAddress = await getPoolAddress(client.usdtBridgedTransfer, config.polygon.usdt_bridged.tokenContract);
+
+        console.debug('For Cashlink: Fetching bridged USDT transaction history for', newProxy, knownTxs);
+
+        // EventFilters only allow to query with an AND condition between arguments (topics). So while
+        // we could specify an array of parameters to match for each topic (which are OR'd), we cannot
+        // OR two AND pairs. That requires two separate requests.
+        const filterIncoming = client.usdtBridgedToken.filters.Transfer(null, newProxy);
+        const filterOutgoing = client.usdtBridgedToken.filters.Transfer(newProxy);
+
+        const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
+
+        const MAX_ALLOWANCE = client.ethers
+            .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+
+        // The minimum allowance that should remain so we can be certain the max allowance was ever given.
+        // If the current allowance is below this number, we ignore allowance counting for the history sync.
+        const MIN_ALLOWANCE = client.ethers
+            .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
+
+        Promise.all([
+            client.usdtBridgedToken.balanceOf(newProxy) as Promise<BigNumber>,
+            client.usdtBridgedToken.getNonce(newProxy).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+            client.usdtBridgedToken.allowance(newProxy, config.polygon.usdt_bridged.transferContract)
+                .then((allowance: BigNumber) => {
+                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+                    return MAX_ALLOWANCE.sub(allowance);
+                }) as Promise<BigNumber>,
+        ]).then(async ([balance, nonce, transferAllowanceUsed]) => {
+            let blockHeight = await getPolygonBlockNumber();
+
+            // To filter known txs
+            const knownHashes = knownTxs.map(
+                (tx) => tx.transactionHash,
+            );
+
+            const uniswapEventsByTransactionHash = new Map<string, Promise<UniswapEvent | undefined>>();
+
+            /* eslint-disable max-len */
+            while (balance.gt(0) || nonce > 0 || transferAllowanceUsed.gt(0)) {
+                const startHeight = Math.max(blockHeight - STEP_BLOCKS, earliestHeightToCheck);
+                const endHeight = blockHeight;
+                blockHeight = startHeight;
+
+                console.debug('For Cashlinks: Bridged USDT Sync start', {
+                    balance: balance.toNumber() / 1e6,
+                    nonce,
+                    transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+                });
+
+                console.debug(`For Cashlinks: Querying bridged logs from ${startHeight} to ${endHeight} = ${endHeight - startHeight}`);
+
+                let [logsIn, logsOut/* , metaTxs */] = await Promise.all([ // eslint-disable-line no-await-in-loop
+                    safeQueryFilter(client.usdtBridgedToken, filterIncoming, startHeight, endHeight),
+                    safeQueryFilter(client.usdtBridgedToken, filterOutgoing, startHeight, endHeight),
+                ]);
+
+                // Ignore address poisoning transactions
+                logsIn = logsIn.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+                logsOut = logsOut.filter((log) => !!log.args && !(log.args.value as BigNumber).isZero());
+
+                console.debug(`For Cashlinks: Got ${logsIn.length} incoming bridged logs, ${logsOut.length} outgoing bridged logs` /* , and ${metaTxs.length} meta tx logs` */);
+
+                // TODO: When switching to use max-approval, only reduce nonce once the allowances are 0
+                const outgoingTxs = new Set(logsOut.map((ev) => ev.transactionHash));
+                console.debug(`For Cashlinks: Found ${outgoingTxs.size} outgoing bridged txs`);
+                nonce -= outgoingTxs.size;
+
+                // should be none
+                const txsUsingHtlcAllowance = new Set(logsOut
+                    .filter((ev) => ev.args?.to === config.polygon.usdt_bridged.htlcContract) // Only HTLC fundings are relevant
+                    .map((ev) => ev.transactionHash));
+
+                const allTransferLogs = logsIn.concat(logsOut);
+
+                // eslint-disable-next-line no-loop-func
+                const newLogs = allTransferLogs.filter((log) => {
+                    if (!log.args) return false;
+
+                    // TODO: When switching to use max-approval, remove nonce <= 0 check, so allowances get reduced first
+                    if (log.args.from === newProxy && nonce <= 0) {
+                        balance = balance.add(log.args.value);
+                        transferAllowanceUsed = transferAllowanceUsed.sub(log.args.value);
+                    }
+                    if (log.args.to === newProxy) {
+                        balance = balance.sub(log.args.value);
+                    }
+
+                    if (knownHashes.includes(log.transactionHash)) return false;
+
+                    // Transfers to the Uniswap pool are the fees paid to OpenGSN
+                    if (log.args.to === poolAddress) {
+                        // Find the main transfer log
+                        const mainTransferLog = allTransferLogs.find((otherLog) =>
+                            otherLog.transactionHash === log.transactionHash
+                            && otherLog.logIndex !== log.logIndex);
+
+                        if (mainTransferLog && mainTransferLog.args) {
+                            // Write this log's `value` as the main transfer log's `fee`
+                            mainTransferLog.args = addFeeToArgs(mainTransferLog.args, log.args.value);
+                        } else if (!mainTransferLog) {
+                            // If no main transfer log was found, it means this transaction failed
+                            // and only the fee was paid.
+                            (log as TransferEvent).failed = true;
+                            return true;
+                        }
+
+                        // Then ignore this log
+                        return false;
+                    }
+                    return true;
+                }) as TransferEvent[];
+
+                const logsAndBlocks = newLogs.map((log) => ({
+                    log,
+                    block: log.getBlock(),
+                    event: uniswapEventsByTransactionHash.get(log.transactionHash),
+                }));
+
+                // TODO: Allow individual fetches to fail, but still add the other transactions?
+                await Promise.all(logsAndBlocks.map( // eslint-disable-line no-await-in-loop
+                    async ({ log, block, event }) => logAndBlockToPlain(
+                        log,
+                        await block,
+                        await event,
+                    ),
+                )).then((transactions) => {
+                    usdtTransactionsStore.addTransactions(transactions);
+                });
+            } // End while loop
+            /* eslint-enable max-len */
+
+            console.debug('Bridged USDT Sync end', {
+                balance: balance.toNumber() / 1e6,
+                nonce,
+                transferAllowance: transferAllowanceUsed.toNumber() / 1e6,
+            });
+        }).catch((error) => {
+            console.error(error);
+        }).then(() => network$.fetchingUsdtTxHistory--);
+        usdtProxyStore.state.hubCashlinks = {};
     });
 
     // Fetch transactions for active address

@@ -45,7 +45,7 @@ export default defineComponent({
         }
 
         function close() {
-            window.localStorage.setItem(MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY, 'true');
+            window.localStorage.setItem(MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY, '1');
             modal$.value!.forceClose();
         }
 

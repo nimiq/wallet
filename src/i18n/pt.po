@@ -560,6 +560,7 @@ msgstr "Bloco #{height}"
 msgid "Block explorer"
 msgstr "Explorador de bloco"
 
+#: src/components/modals/MultisigAnnouncementModal.vue:16
 #: src/components/modals/PolygonActivationModal.vue:28
 msgid "blog post"
 msgstr "post no blog"
@@ -727,6 +728,10 @@ msgstr "Alterar a tua configuração do idioma."
 #: src/components/staking/ValidatorDetailsOverlay.vue:119
 msgid "Changing validator"
 msgstr "Mudar de validador"
+
+#: src/components/modals/MultisigAnnouncementModal.vue:6
+msgid "Check out Nimiq Multisig Wallets"
+msgstr "Confere as Wallets Nimiq Multisig"
 
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:97
@@ -2249,6 +2254,10 @@ msgstr ""
 "Lê tudo sobre isto aqui {blog_post} ou clica em baixo para a introdução da "
 "nova wallet."
 
+#: src/components/modals/MultisigAnnouncementModal.vue:12
+msgid "Read all about it in this {blog_post} or get right into it."
+msgstr "Lê tudo sobre isto neste {blog_post} ou começa já."
+
 #: src/components/staking/StakingInfoPage.vue:96
 msgid "ready for pay out"
 msgstr ""
@@ -2681,6 +2690,10 @@ msgstr ""
 "Partilha o link ou código QR com o remetente.\n"
 "Inclui valor opcional."
 
+#: src/components/modals/MultisigAnnouncementModal.vue:8
+msgid "Share wallets with family, friends, and business partners."
+msgstr "Partilha wallets com a família, amigos, e parceiros de negócio."
+
 #: src/components/modals/ReceiveModal.vue:8
 #: src/components/modals/StablecoinReceiveModal.vue:16
 msgid "Share your address with the sender."
@@ -2720,6 +2733,7 @@ msgid "Simulate EUR payment"
 msgstr "Simula pagamento Euro"
 
 #: src/components/modals/BtcActivationModal.vue:28
+#: src/components/modals/MultisigAnnouncementModal.vue:23
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "Pular"
@@ -3459,6 +3473,10 @@ msgstr "Usa o deslizador para bloquear o teu NIM e ganhar recompensas."
 #: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "Contrato de Vesting"
+
+#: src/components/modals/MultisigAnnouncementModal.vue:21
+msgid "VISIT MULTISIG.NIMIQ.COM"
+msgstr "VISITA MULTISIG.NIMIQ.COM"
 
 #: src/components/modals/BuyCryptoModal.vue:21
 msgid "Wait for the swap to be set up."

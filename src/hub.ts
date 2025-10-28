@@ -404,17 +404,17 @@ export async function syncFromHub() {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
         router.push({ name: RouteName.UsdcActivation });
     } else {
-        const multisigModalAlreadyShown = window.localStorage.getItem(
-            MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
-        );
         const welcomeStakingModalAlreadyShown = window.localStorage.getItem(
             WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
         );
+        const multisigModalAlreadyShown = window.localStorage.getItem(
+            MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
+        );
 
-        if (!multisigModalAlreadyShown && areOptionalRedirectsAllowed(router.currentRoute)) {
-            router.push({ name: RouteName.MultisigAnnouncement });
-        } else if (!welcomeStakingModalAlreadyShown) {
+        if (!welcomeStakingModalAlreadyShown) {
             router.push({ name: RouteName.WelcomeStaking });
+        } else if (!multisigModalAlreadyShown) {
+            router.push({ name: RouteName.MultisigAnnouncement });
         }
     }
 }

@@ -113,17 +113,30 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import { useRouter, RouteName } from '@/router';
 import Modal from '../modals/Modal.vue';
-import { WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import {
+    WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
+    MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
+} from '../../lib/Constants';
 
 export default defineComponent({
     name: 'WelcomeStakingModal',
     setup() {
         const $modal = ref<Modal | null>(null);
+        const router = useRouter();
 
         async function close() {
             window.localStorage.setItem(WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY, '1');
             await $modal.value?.forceClose();
+
+            const multisigModalAlreadyShown = window.localStorage.getItem(
+                MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
+            );
+
+            if (!multisigModalAlreadyShown) {
+                await router.push({ name: RouteName.MultisigAnnouncement });
+            }
         }
 
         return { $modal, close };

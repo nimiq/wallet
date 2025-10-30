@@ -181,10 +181,18 @@ export default defineComponent({
             () => !!activeAddress.value && fetchedAddresses.value.includes(activeAddress.value),
         );
 
-        function getMonthFromReward(item: any) {
+        interface MonthlyRewardItem {
+            transactionHash: string;
+            isMonthlyReward?: boolean;
+        }
+
+        function getMonthFromReward(item: MonthlyRewardItem): string {
             if (typeof item.transactionHash === 'string' && item.transactionHash.startsWith('monthly-reward-')) {
                 const parts = item.transactionHash.split('-');
-                return `${parts[2]}-${parts[3]}`;
+                if (parts.length >= 4) {
+                    return `${parts[2]}-${parts[3]}`;
+                }
+                // Invalid format, return empty string
             }
             return '';
         }

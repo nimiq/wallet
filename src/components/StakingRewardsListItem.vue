@@ -33,7 +33,7 @@
                         >
                             <ValidatorIcon :validator="validator" />
                         </span>
-                        <span>
+                        <span v-if="validators.length">
                             {{ 'name' in validators[0] ? validators[0].name : validators[0].address }}
                             <span v-if="validators.length > 1" class="validator-count">
                                 {{ $t('+{validatorCount} more', { validatorCount: validators.length - 1 }) }}
@@ -58,7 +58,6 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../lib/StakingUtils';
-import FiatConvertedAmount from './FiatConvertedAmount.vue';
 import ValidatorIcon from './staking/ValidatorIcon.vue';
 import Amount from './Amount.vue';
 
@@ -124,7 +123,6 @@ export default defineComponent({
     },
     components: {
         Amount,
-        FiatConvertedAmount,
         ValidatorIcon,
     },
 });

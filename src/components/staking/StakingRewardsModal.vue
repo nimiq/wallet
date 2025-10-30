@@ -10,7 +10,7 @@
             </span>
         </PageHeader>
         <PageBody class="flex-column">
-            <div class="flex-row sender-recipient" v-if="monthlyReward">
+            <div class="flex-row sender-recipient" v-if="monthlyReward && monthlyReward.validators.length">
                 <div class="address-info flex-column">
                     <div class="identicon">
                         <ValidatorIcon :validator="
@@ -170,7 +170,7 @@ export default defineComponent({
 
         const myLabel = computed(() => activeAddressInfo.value?.label);
         const validatorName = computed(() => {
-            if (!monthlyReward.value) return '';
+            if (!monthlyReward.value || !monthlyReward.value.validators.length) return '';
             const validatorAddress = monthlyReward.value.validators[0];
             const validator = validatorList.value[validatorAddress] || { address: validatorAddress };
             return 'name' in validator ? validator.name : validatorAddress;

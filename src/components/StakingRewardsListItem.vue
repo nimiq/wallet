@@ -101,17 +101,16 @@ export default defineComponent({
 
         // Currently unused, as The Reward history is much too large
         const openRewardsHistory = () => {
-            if (router.currentRoute.name === RouteName.Staking) {
-                router.replace({
-                    name: RouteName.StakingRewards,
-                    params: { month: props.month },
-                });
-            } else {
-                router.push({
-                    name: RouteName.StakingRewards,
-                    params: { month: props.month },
-                });
-            }
+            // Only show back arrow when opened from the staking overview modal
+            const isFromStakingOverview = router.currentRoute.name === RouteName.Staking;
+
+            router.push({
+                name: RouteName.StakingRewards,
+                params: {
+                    month: props.month,
+                    ...(isFromStakingOverview && { canUserGoBack: 'true' }),
+                },
+            });
         };
 
         return {

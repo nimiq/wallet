@@ -1,6 +1,6 @@
 <template>
     <Modal class="staking-rewards-modal">
-        <PageHeader>
+        <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
             <label>{{ $t('Staking Rewards') }}</label>
             <span slot="more" class="date">
                 {{ monthLabel }}
@@ -180,6 +180,10 @@ export default defineComponent({
             router.replace({ name: RouteName.Staking });
         };
 
+        function back() {
+            router.back();
+        }
+
         return {
             constants,
             fiatHistoric,
@@ -194,6 +198,7 @@ export default defineComponent({
             validatorList,
             validatorName,
             goToStakingOverview,
+            back,
         };
     },
     components: {

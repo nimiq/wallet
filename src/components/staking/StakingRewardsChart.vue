@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted } from '@vue/composition-api';
 import { SliderToggle, CircleSpinner } from '@nimiq/vue-components';
 import { useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 
@@ -104,6 +104,7 @@ export default defineComponent({
         const isLoading = ref(true);
         const loadError = ref(false);
         const LineChartComponent = ref(null);
+        const ChartJSInstance = ref<any>(null);
 
         // Calculate date range based on selected time period
         const getDateRange = (
@@ -129,6 +130,7 @@ export default defineComponent({
                         endDate: now,
                     };
                 default: // ALL
+                    if (!rewardEvents.length) return { startDate: now, endDate: now };
                     return {
                         startDate: new Date(rewardEvents[0].time_window),
                         endDate: now,
@@ -143,6 +145,8 @@ export default defineComponent({
                 loadError.value = false;
 
                 // Import Chart.js components and Vue wrapper
+                // Dynamic imports - eslint errors are false positives for lazy-loaded dependencies
+                /* eslint-disable import/no-unresolved, import/extensions */
                 const [
                     { Chart: ChartJS, Title, Tooltip, LineElement, LinearScale, CategoryScale, PointElement },
                     { Line },
@@ -150,6 +154,7 @@ export default defineComponent({
                     import('chart.js'),
                     import('vue-chartjs/legacy'),
                 ]);
+                /* eslint-enable import/no-unresolved, import/extensions */
 
                 // Register all required Chart.js components
                 ChartJS.register(
@@ -162,6 +167,7 @@ export default defineComponent({
                     verticalLinesBelowLine,
                 );
 
+                ChartJSInstance.value = ChartJS;
                 LineChartComponent.value = Line;
                 isLoading.value = false;
             } catch (error) {
@@ -173,6 +179,17 @@ export default defineComponent({
 
         onMounted(() => {
             loadChartDependencies();
+        });
+
+        onUnmounted(() => {
+            // Cleanup: unregister custom plugin to prevent memory leaks
+            if (ChartJSInstance.value) {
+                try {
+                    ChartJSInstance.value.unregister(verticalLinesBelowLine);
+                } catch (error) {
+                    // Plugin might not be registered, safe to ignore
+                }
+            }
         });
 
         // Generate chart data from staking reward events

@@ -90,14 +90,15 @@ export default defineComponent({
             ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance
             : 0);
 
-        const percentage = computed(() => Math.round((
-            stakedBalance.value / (availableBalance.value + stakedBalance.value)
-        ) * 100));
+        const percentage = computed(() => {
+            const total = availableBalance.value + stakedBalance.value;
+            return total > 0 ? Math.round((stakedBalance.value / total) * 100) : 0;
+        });
 
         const inactiveReleaseTime = computed(() => {
             if (stake.value?.inactiveRelease) {
                 // TODO: Take validator jail release into account
-                const secondsRemaining = stake.value.inactiveRelease - height.value;
+                const secondsRemaining = Math.max(0, stake.value.inactiveRelease - height.value);
                 const date = new Date(Date.UTC(0, 0, 0, 0, 0, secondsRemaining));
                 const hours = date.getUTCHours().toString().padStart(2, '0');
                 const minutes = date.getUTCMinutes().toString().padStart(2, '0');
@@ -113,8 +114,8 @@ export default defineComponent({
         });
 
         const hasUnstakableStake = computed(() => {
-            if (!stake.value?.inactiveBalance) return false;
-            return height.value > stake.value.inactiveRelease!;
+            if (!stake.value?.inactiveBalance || !stake.value.inactiveRelease) return false;
+            return height.value > stake.value.inactiveRelease;
         });
 
         const openStakingModal = () => {

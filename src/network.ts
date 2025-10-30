@@ -171,8 +171,11 @@ export async function launchNetwork() {
         });
     }
 
+    let currentFetchAddress: string | null = null;
     watch([addressStore.activeAddress], ([activeAddress]) => {
         if (!activeAddress) return;
+        currentFetchAddress = activeAddress;
+        const fetchAddress = activeAddress; // Capture for closure
         const { config } = useConfig();
         const endpoint = config.staking.stakeEventsEndpoint;
         // TODO fetch only the data we're missing
@@ -188,8 +191,11 @@ export async function launchNetwork() {
                         throw new Error('Invalid staking events');
                     }
                     const events: AggregatedRestakingEvent[] = data.groups;
-                    useStakingStore().setStakingEvents(activeAddress, events);
-                    console.log('Got aggregated restaking events for', activeAddress, events);
+                    // Only update if this is still the active address
+                    if (fetchAddress === currentFetchAddress) {
+                        useStakingStore().setStakingEvents(activeAddress, events);
+                        console.log('Got aggregated restaking events for', activeAddress, events);
+                    }
                 }),
             { maxRetries: 3 },
         ).catch(reportFor('fetch(aggregated restaking events)'));

@@ -450,7 +450,7 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
-            path: '/staking-rewards/:month?',
+            path: '/staking/rewards/:month?',
             components: {
                 modal: StakingModal,
             },

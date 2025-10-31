@@ -57,6 +57,7 @@
 import { defineComponent, computed } from '@vue/composition-api';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
+import { disableNextModalTransition } from './modals/Modal.vue';
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../lib/StakingUtils';
 import ValidatorIcon from './staking/ValidatorIcon.vue';
 import Amount from './Amount.vue';
@@ -103,6 +104,11 @@ export default defineComponent({
         const openRewardsHistory = () => {
             // Only show back arrow when opened from the staking overview modal
             const isFromStakingOverview = router.currentRoute.name === RouteName.Staking;
+
+            // Disable transition only when navigating from staking modal to rewards modal
+            if (isFromStakingOverview) {
+                disableNextModalTransition();
+            }
 
             router.push({
                 name: RouteName.StakingRewards,

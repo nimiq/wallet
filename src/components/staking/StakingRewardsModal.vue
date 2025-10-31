@@ -88,7 +88,7 @@ import { useStakingStore } from '@/stores/Staking';
 import { useAddressStore } from '@/stores/Address';
 import { RouteName, useRouter } from '@/router';
 import ValidatorIcon from './ValidatorIcon.vue';
-import Modal from '../modals/Modal.vue';
+import Modal, { disableNextModalTransition } from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 
 export default defineComponent({
@@ -177,10 +177,15 @@ export default defineComponent({
         });
 
         const goToStakingOverview = () => {
+            disableNextModalTransition();
             router.replace({ name: RouteName.Staking });
         };
 
         function back() {
+            // Only disable transition if we came from the staking modal (indicated by canUserGoBack param)
+            if (router.currentRoute.params.canUserGoBack) {
+                disableNextModalTransition();
+            }
             router.back();
         }
 

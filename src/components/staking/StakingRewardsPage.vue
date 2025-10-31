@@ -1,6 +1,6 @@
 <template>
-    <Modal class="staking-rewards-modal">
-        <PageHeader :backArrow="!!$route.params.canUserGoBack" @back="back">
+    <div class="staking-rewards-page flex-column">
+        <PageHeader :backArrow="showBackArrow" @back="$emit('back')">
             <label>{{ $t('Staking Rewards') }}</label>
             <span slot="more" class="date">
                 {{ monthLabel }}
@@ -59,14 +59,8 @@
                 </div>
             </div>
             <div class="flex-spacer"></div>
-
-            <div class="flex-row">
-                <button class="nq-button-s" @click="goToStakingOverview">
-                    {{ $t('Go to staking overview') }}
-                </button>
-            </div>
         </PageBody>
-    </Modal>
+    </div>
 </template>
 
 <script lang="ts">
@@ -86,23 +80,24 @@ import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '@/lib/StakingUtils';
 import { useStakingStore } from '@/stores/Staking';
 import { useAddressStore } from '@/stores/Address';
-import { RouteName, useRouter } from '@/router';
 import ValidatorIcon from './ValidatorIcon.vue';
-import Modal, { disableNextModalTransition } from '../modals/Modal.vue';
 import Amount from '../Amount.vue';
 
 export default defineComponent({
-    name: 'staking-rewards-modal',
+    name: 'staking-rewards-page',
     props: {
         month: {
             type: String,
             required: true,
         },
+        showBackArrow: {
+            type: Boolean,
+            default: false,
+        },
     },
     setup(props) {
         const { validators: validatorList, monthlyRewards, stakingEvents } = useStakingStore();
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const router = useRouter();
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
         // Historic fiat value for the whole month's rewards
@@ -176,19 +171,6 @@ export default defineComponent({
             return 'name' in validator ? validator.name : validatorAddress;
         });
 
-        const goToStakingOverview = () => {
-            disableNextModalTransition();
-            router.replace({ name: RouteName.Staking });
-        };
-
-        function back() {
-            // Only disable transition if we came from the staking modal (indicated by canUserGoBack param)
-            if (router.currentRoute.params.canUserGoBack) {
-                disableNextModalTransition();
-            }
-            router.back();
-        }
-
         return {
             constants,
             fiatHistoric,
@@ -202,8 +184,6 @@ export default defineComponent({
             myLabel,
             validatorList,
             validatorName,
-            goToStakingOverview,
-            back,
         };
     },
     components: {
@@ -212,7 +192,6 @@ export default defineComponent({
         Identicon,
         PageBody,
         PageHeader,
-        Modal,
         AddressDisplay,
         FiatAmount,
         Tooltip,
@@ -224,6 +203,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import "../../scss/variables.scss";
 @import '../../scss/functions.scss';
+
+.staking-rewards-page {
+    flex-grow: 1;
+}
 
 .page-header {
     ::v-deep .nq-h1 {

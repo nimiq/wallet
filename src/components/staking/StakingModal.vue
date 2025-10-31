@@ -34,6 +34,14 @@
                 />
                     <!-- @next="page = isStaking ? Page.Info : Page.Graph; closeOverlay()" -->
             </template>
+            <template v-else-if="page === Page.Rewards">
+                <StakingRewardsPage
+                    v-if="hasRewardDataForMonth"
+                    :month="selectedRewardsMonth"
+                    :showBackArrow="showRewardsBackArrow"
+                    @back="goBackFromRewards"
+                />
+            </template>
         </transition>
         <template slot="overlay">
             <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
@@ -62,6 +70,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onBeforeUnmount } from '@vue/composition-api';
 import { useI18n } from '@/lib/useI18n';
+import { RouteName, useRouter } from '@/router';
 import { useStakingStore, Validator } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import Modal from '../modals/Modal.vue';
@@ -69,6 +78,7 @@ import StakingWelcomePage from './StakingWelcomePage.vue';
 import StakingValidatorPage from './StakingValidatorPage.vue';
 import StakingGraphPage from './StakingGraphPage.vue';
 import StakingInfoPage from './StakingInfoPage.vue';
+import StakingRewardsPage from './StakingRewardsPage.vue';
 import SelectAccountOverlay from './SelectAccountOverlay.vue';
 import StatusScreen, { State } from '../StatusScreen.vue';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
@@ -78,6 +88,7 @@ enum Page {
     Graph, // StakingGraphPage
     Info, // StakingInfoPage
     ValidatorList, // StakingValidatorPage
+    Rewards, // StakingRewardsPage
 }
 
 enum Overlay {
@@ -102,15 +113,31 @@ type StatusChangeParams = {
 };
 
 export default defineComponent({
-    setup() {
+    props: {
+        month: {
+            type: String,
+            default: undefined,
+        },
+    },
+    setup(props) {
         const { $t } = useI18n();
         const { activeAddressInfo } = useAddressStore();
-        const { activeValidator, activeStake, totalAccountStake } = useStakingStore();
-        const page = ref(activeValidator.value
-            ? Page.Info
-            : totalAccountStake.value
-                ? Page.ValidatorList
-                : Page.Welcome);
+        const { activeValidator, activeStake, totalAccountStake, monthlyRewards } = useStakingStore();
+
+        // Store selected rewards month
+        const selectedRewardsMonth = ref<string | undefined>(props.month);
+
+        // Track if rewards page should show back arrow (only when navigated from Info page internally)
+        const showRewardsBackArrow = ref<boolean>(false);
+
+        // Determine initial page based on route
+        const page = ref(props.month
+            ? Page.Rewards
+            : activeValidator.value
+                ? Page.Info
+                : totalAccountStake.value
+                    ? Page.ValidatorList
+                    : Page.Welcome);
         const overlay = ref<Overlay | null>(null);
 
         const isStaking = computed(() => !!(activeStake.value?.activeBalance || activeStake.value?.inactiveBalance));
@@ -118,9 +145,24 @@ export default defineComponent({
             ? !activeAddressInfo.value.balance && !isStaking.value
             : false);
 
+        // Check if selected rewards month has data
+        const hasRewardDataForMonth = computed(() =>
+            selectedRewardsMonth.value && monthlyRewards.value.has(selectedRewardsMonth.value),
+        );
+
+        const router = useRouter();
+
         const adjustStake = () => { page.value = Page.Graph; };
         const switchValidator = () => { page.value = Page.ValidatorList; };
         const closeOverlay = () => { overlay.value = null; };
+
+        // Rewards navigation - goBackFromRewards is called when user clicks back arrow on rewards page
+        const goBackFromRewards = () => {
+            selectedRewardsMonth.value = undefined;
+            showRewardsBackArrow.value = false;
+            page.value = Page.Info;
+            router.replace({ name: RouteName.Staking }).catch(() => { /* route already at target */ });
+        };
 
         /* Status Screen */
         const statusType = ref<StatusChangeType>(StatusChangeType.NONE);
@@ -198,6 +240,21 @@ export default defineComponent({
         watch(page, (newPage) => showOverlayIfInvalidAccount(newPage as Page));
         watch(overlay, (newOverlay) => showOverlayIfInvalidAccount(newOverlay as Overlay));
 
+        // Watch for route changes to sync page with URL
+        watch(() => props.month, (month) => {
+            if (month) {
+                // Check if we're navigating from Info page (internal navigation)
+                // If so, show back arrow. Otherwise (external entry), don't show it.
+                showRewardsBackArrow.value = page.value === Page.Info;
+                selectedRewardsMonth.value = month;
+                page.value = Page.Rewards;
+            } else if (page.value === Page.Rewards) {
+                // If we were on rewards page and month is removed, go back to info
+                showRewardsBackArrow.value = false;
+                page.value = activeValidator.value ? Page.Info : Page.ValidatorList;
+            }
+        });
+
         /* Component Lifecycle */
         onBeforeUnmount(() => {
             if (!activeStake.value?.activeBalance && !activeStake.value?.inactiveBalance) {
@@ -229,6 +286,12 @@ export default defineComponent({
             onSelectValidator,
             onConfirmValidator,
 
+            // Rewards
+            selectedRewardsMonth,
+            hasRewardDataForMonth,
+            showRewardsBackArrow,
+            goBackFromRewards,
+
             // StatusScreen
             statusType,
             statusState,
@@ -247,6 +310,7 @@ export default defineComponent({
         StakingValidatorPage,
         StakingGraphPage,
         StakingInfoPage,
+        StakingRewardsPage,
         SelectAccountOverlay,
         StatusScreen,
         ValidatorDetailsOverlay,

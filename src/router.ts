@@ -90,8 +90,6 @@ const StakingModal = () =>
     import(/* webpackChunkName: "staking-modal" */ './components/staking/StakingModal.vue');
 const ValidatorDetailsModal = () =>
     import(/* webpackChunkName: "validator-details-modal" */ './components/staking/ValidatorDetailsModal.vue');
-const StakingRewardsModal = () =>
-    import(/* webpackChunkName: "staking-rewards-modal" */ './components/staking/StakingRewardsModal.vue');
 
 Vue.use(VueRouter);
 
@@ -454,7 +452,7 @@ const routes: RouteConfig[] = [{
         }, {
             path: '/staking-rewards/:month?',
             components: {
-                modal: StakingRewardsModal,
+                modal: StakingModal,
             },
             name: RouteName.StakingRewards,
             props: { modal: true },

@@ -20,17 +20,17 @@
         </div>
         <div class="timerange-selector">
             <SliderToggle name="timerange-toggle" v-model="selectedRange">
-                <template #ALL>
-                    <button class="reset timerange-btn">{{ $t('ALL') }}</button>
-                </template>
-                <template #Y1>
-                    <button class="reset timerange-btn">{{ $t('1Y') }}</button>
+                <template #M3>
+                    <button class="reset timerange-btn">{{ $t('3M') }}</button>
                 </template>
                 <template #M6>
                     <button class="reset timerange-btn">{{ $t('6M') }}</button>
                 </template>
-                <template #M3>
-                    <button class="reset timerange-btn">{{ $t('3M') }}</button>
+                <template #Y1>
+                    <button class="reset timerange-btn">{{ $t('1Y') }}</button>
+                </template>
+                <template #ALL>
+                    <button class="reset timerange-btn">{{ $t('ALL') }}</button>
                 </template>
             </SliderToggle>
         </div>

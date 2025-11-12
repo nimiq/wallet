@@ -5,7 +5,7 @@
             <span slot="more" class="date">
                 {{ monthLabel }}
                 <span v-if="showOngoingIndicator">
-                    <strong>&middot;</strong> <OngoingShimmer>{{ $t('Ongoing') }}</OngoingShimmer>
+                    <strong>&middot;</strong> <TextShimmer>{{ $t('Ongoing') }}</TextShimmer>
                 </span>
             </span>
         </PageHeader>
@@ -82,7 +82,7 @@ import { useStakingStore } from '@/stores/Staking';
 import { useAddressStore } from '@/stores/Address';
 import ValidatorIcon from './ValidatorIcon.vue';
 import Amount from '../Amount.vue';
-import OngoingShimmer from './OngoingShimmer.vue';
+import TextShimmer from './TextShimmer.vue';
 
 export default defineComponent({
     name: 'staking-rewards-page',
@@ -197,7 +197,7 @@ export default defineComponent({
         FiatAmount,
         Tooltip,
         ValidatorIcon,
-        OngoingShimmer,
+        TextShimmer,
     },
 });
 </script>

@@ -147,7 +147,7 @@ msgstr ""
 msgid "15m"
 msgstr ""
 
-#: src/components/staking/StakingRewardsChart.vue:27
+#: src/components/staking/StakingRewardsChart.vue:30
 msgid "1Y"
 msgstr ""
 
@@ -179,7 +179,7 @@ msgstr ""
 msgid "30-day Limit"
 msgstr ""
 
-#: src/components/staking/StakingRewardsChart.vue:33
+#: src/components/staking/StakingRewardsChart.vue:24
 msgid "3M"
 msgstr ""
 
@@ -191,7 +191,7 @@ msgstr ""
 msgid "6h+"
 msgstr ""
 
-#: src/components/staking/StakingRewardsChart.vue:30
+#: src/components/staking/StakingRewardsChart.vue:27
 msgid "6M"
 msgstr ""
 
@@ -331,7 +331,7 @@ msgstr ""
 msgid "all"
 msgstr ""
 
-#: src/components/staking/StakingRewardsChart.vue:24
+#: src/components/staking/StakingRewardsChart.vue:33
 msgid "ALL"
 msgstr ""
 

@@ -1,17 +1,17 @@
 <template>
-    <span class="ongoing-shimmer"><slot /></span>
+    <span class="text-shimmer"><slot /></span>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
-    name: 'OngoingShimmer',
+    name: 'TextShimmer',
 });
 </script>
 
 <style scoped lang="scss">
-.ongoing-shimmer {
+.text-shimmer {
     background: linear-gradient(
         110deg,
         currentColor 0%,

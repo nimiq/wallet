@@ -21,7 +21,7 @@
             </div>
             <div class="details flex-row">
                 <template v-if="showOngoingIndicator">
-                    <OngoingShimmer>{{ $t('Ongoing') }}</OngoingShimmer>
+                    <TextShimmer>{{ $t('Ongoing') }}</TextShimmer>
                     &nbsp;<div class="dot"></div>&nbsp;
                 </template>
                 <i18n path="Paid out by {validator}" tag="span" class="flex-row">
@@ -60,7 +60,7 @@ import { useStakingStore } from '@/stores/Staking';
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../lib/StakingUtils';
 import ValidatorIcon from './staking/ValidatorIcon.vue';
 import Amount from './Amount.vue';
-import OngoingShimmer from './staking/OngoingShimmer.vue';
+import TextShimmer from './staking/TextShimmer.vue';
 
 export default defineComponent({
     name: 'StakingRewardsListItem',
@@ -122,7 +122,7 @@ export default defineComponent({
     components: {
         Amount,
         ValidatorIcon,
-        OngoingShimmer,
+        TextShimmer,
     },
 });
 </script>

@@ -24,15 +24,15 @@ export default defineComponent({
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 2000ms linear infinite;
+    animation: shimmer 5000ms linear infinite;
 }
 
 @keyframes shimmer {
     0% {
         background-position: 150% 0;
     }
-    55% {
-        background-position: 150% 0;
+    15% {
+        background-position: -50% 0;
     }
     100% {
         background-position: -50% 0;

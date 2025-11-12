@@ -337,6 +337,8 @@ msgid ""
 "Addresses are checked locally on your device and are not sent to an external"
 " service."
 msgstr ""
+"Les adresses sont vérifiées localement sur votre appareil et ne sont pas "
+"envoyées vers un service externe."
 
 #: src/components/staking/StakingInfoPage.vue:36
 msgid "Adjust"
@@ -788,7 +790,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Cliquez sur \"Résolution des problèmes\" pour en apprendre plus."
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:154
+#: src/components/staking/StakingModal.vue:196
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fermer"
@@ -1002,7 +1004,7 @@ msgstr "Dataset : {name}"
 msgid "Deactivate validator"
 msgstr "Désactiver le validateur"
 
-#: src/components/staking/StakingInfoPage.vue:240
+#: src/components/staking/StakingInfoPage.vue:241
 msgid "Deactivating Stake"
 msgstr "Désactivation du staking"
 
@@ -1309,7 +1311,7 @@ msgstr "Récupération"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
-#: src/components/staking/StakingRewardsModal.vue:42
+#: src/components/staking/StakingRewardsPage.vue:42
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1437,10 +1439,6 @@ msgstr ""
 "Réalisez une vérification pour des limites plus élevées en vous "
 "authentifiant auprès de {provider}. Voici les conditions requises :"
 
-#: src/components/staking/StakingRewardsModal.vue:65
-msgid "Go to staking overview"
-msgstr "Aller à la vue d'ensemble du staking"
-
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
@@ -1490,7 +1488,7 @@ msgstr "Le plus haut degré de décentralisation"
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
 #: src/components/modals/UsdtTransactionModal.vue:167
-#: src/components/staking/StakingRewardsModal.vue:52
+#: src/components/staking/StakingRewardsPage.vue:52
 msgid "Historic value"
 msgstr "Valeur historique"
 
@@ -2030,7 +2028,7 @@ msgstr "Un compte peut supporter plusieurs adresses."
 msgid "One Account, many Addresses"
 msgstr "Un Compte, plusieurs Adresses"
 
-#: src/components/staking/StakingRewardsModal.vue:8
+#: src/components/staking/StakingRewardsPage.vue:8
 #: src/components/StakingRewardsListItem.vue:24
 msgid "Ongoing"
 msgstr "En cours"
@@ -2596,7 +2594,7 @@ msgstr "Envoi de la transaction du staking"
 msgid "Sending Transaction"
 msgstr "Envoi de la transaction en cours"
 
-#: src/components/staking/StakingInfoPage.vue:310
+#: src/components/staking/StakingInfoPage.vue:311
 msgid "Sending Unstaking Transaction"
 msgstr "Envoi de la transaction du dé-stake"
 
@@ -2741,8 +2739,8 @@ msgstr "Passer"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:297
-#: src/components/staking/StakingInfoPage.vue:380
+#: src/components/staking/StakingInfoPage.vue:298
+#: src/components/staking/StakingInfoPage.vue:381
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
@@ -2805,7 +2803,7 @@ msgstr "Aperçu du staking"
 msgid "Staking rewards"
 msgstr "Récompenses du staking"
 
-#: src/components/staking/StakingRewardsModal.vue:4
+#: src/components/staking/StakingRewardsPage.vue:4
 msgid "Staking Rewards"
 msgstr "Récompenses de staking"
 
@@ -2831,7 +2829,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr "Le validateur a été remplacé avec succès par {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:281
+#: src/components/staking/StakingInfoPage.vue:282
 msgid "Successfully deactivated {amount} NIM"
 msgstr "Désactivation réussie de {amount} NIM"
 
@@ -2844,7 +2842,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr "Staking de {amount}NIM réussi avec {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:366
+#: src/components/staking/StakingInfoPage.vue:367
 msgid "Successfully unstaked {amount} NIM"
 msgstr "Dé-staking de {amount} NIM réussi "
 
@@ -3149,7 +3147,7 @@ msgstr "Pensez aux fonctionnalités, pas à la monnaie"
 #: src/components/modals/BtcTransactionModal.vue:224
 #: src/components/modals/TransactionModal.vue:209
 #: src/components/modals/TransactionModal.vue:234
-#: src/components/staking/StakingRewardsModal.vue:54
+#: src/components/staking/StakingRewardsPage.vue:54
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."

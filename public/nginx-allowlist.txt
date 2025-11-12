@@ -39,7 +39,7 @@
 ^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/staking[\/#\?]?$
 ^\/validator-details[\/#\?]?$
-^\/staking-rewards(?:\/([^\/#\?]+?))?[\/#\?]?$
+^\/staking\/rewards(?:\/([^\/#\?]+?))?[\/#\?]?$
 ^\/wallet-status[\/#\?]?$
 ^\/settings[\/#\?]?$
 ^\/accounts[\/#\?]?$

@@ -237,7 +237,7 @@ msgstr ""
 
 #: src/components/FlaggedAddressWarning.vue:37
 msgid "Abort"
-msgstr ""
+msgstr "Abortar"
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -785,7 +785,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Clicar em 'Troubleshooting' para saber mais."
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:154
+#: src/components/staking/StakingModal.vue:196
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fechar"
@@ -873,7 +873,7 @@ msgstr "Continuar"
 
 #: src/components/FlaggedAddressWarning.vue:38
 msgid "Continue anyway"
-msgstr ""
+msgstr "Continuar na mesma"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
@@ -991,13 +991,13 @@ msgstr "Trocas de crypto estão de momento em manutenção."
 
 #: src/components/FlaggedAddressWarning.vue:30
 msgid "Dataset: {name}"
-msgstr ""
+msgstr "Dataset: {name}"
 
 #: src/lib/StakingUtils.ts:50
 msgid "Deactivate validator"
 msgstr "Desativar validador"
 
-#: src/components/staking/StakingInfoPage.vue:240
+#: src/components/staking/StakingInfoPage.vue:241
 msgid "Deactivating Stake"
 msgstr "A desativar a participação"
 
@@ -1302,7 +1302,7 @@ msgstr "À procura"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
-#: src/components/staking/StakingRewardsModal.vue:42
+#: src/components/staking/StakingRewardsPage.vue:42
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1324,11 +1324,11 @@ msgstr "A finalizar a troca"
 #: src/components/FlaggedAddressWarning.vue:5
 #: src/composables/useFlaggedAddressCheck.ts:43
 msgid "Flagged Address"
-msgstr ""
+msgstr "Endereço assinalado"
 
 #: src/components/FlaggedAddressWarning.vue:29
 msgid "Flagged as: {type}"
-msgstr ""
+msgstr "Assinalado como: {type}"
 
 #: src/components/modals/WelcomeModal.vue:121
 msgid ""
@@ -1429,10 +1429,6 @@ msgstr ""
 "Sê verificado para limites mais altos ao autenticar com {provider}. Estes "
 "são os requesitos:"
 
-#: src/components/staking/StakingRewardsModal.vue:65
-msgid "Go to staking overview"
-msgstr ""
-
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
@@ -1482,7 +1478,7 @@ msgstr "O maior grau de descentraliazação"
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
 #: src/components/modals/UsdtTransactionModal.vue:167
-#: src/components/staking/StakingRewardsModal.vue:52
+#: src/components/staking/StakingRewardsPage.vue:52
 msgid "Historic value"
 msgstr "Valor histórico"
 
@@ -1661,7 +1657,7 @@ msgstr "O teu banco é elegível?"
 
 #: src/components/FlaggedAddressWarning.vue:18
 msgid "It's recommendable to abort the transaction."
-msgstr ""
+msgstr "É recomendado abortar a transação."
 
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
@@ -1786,7 +1782,7 @@ msgstr "Certifica-te que estão a enviar endereços Polygon {ticker}."
 
 #: src/components/FlaggedAddressWarning.vue:80
 msgid "malicious"
-msgstr ""
+msgstr "malicioso"
 
 #: src/components/modals/PolygonActivationModal.vue:19
 msgid ""
@@ -2013,7 +2009,7 @@ msgstr "Agora uma conta pode ter vários endereços."
 msgid "One Account, many Addresses"
 msgstr "Uma Conta, vários Endereços."
 
-#: src/components/staking/StakingRewardsModal.vue:8
+#: src/components/staking/StakingRewardsPage.vue:8
 #: src/components/StakingRewardsListItem.vue:24
 msgid "Ongoing"
 msgstr ""
@@ -2573,7 +2569,7 @@ msgstr "Enviar transação de participação"
 msgid "Sending Transaction"
 msgstr "A enviar Transação"
 
-#: src/components/staking/StakingInfoPage.vue:310
+#: src/components/staking/StakingInfoPage.vue:311
 msgid "Sending Unstaking Transaction"
 msgstr "Enviar transação de retirar a participação"
 
@@ -2718,8 +2714,8 @@ msgstr "Pular"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:297
-#: src/components/staking/StakingInfoPage.vue:380
+#: src/components/staking/StakingInfoPage.vue:298
+#: src/components/staking/StakingInfoPage.vue:381
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr "Algo deu errado"
@@ -2782,7 +2778,7 @@ msgstr ""
 msgid "Staking rewards"
 msgstr ""
 
-#: src/components/staking/StakingRewardsModal.vue:4
+#: src/components/staking/StakingRewardsPage.vue:4
 msgid "Staking Rewards"
 msgstr ""
 
@@ -2807,7 +2803,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr "Validador alterado com sucesso para {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:281
+#: src/components/staking/StakingInfoPage.vue:282
 msgid "Successfully deactivated {amount} NIM"
 msgstr "{amount} NIM desativado com sucesso"
 
@@ -2820,7 +2816,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr "{amount} NIM participado com sucesso com {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:366
+#: src/components/staking/StakingInfoPage.vue:367
 msgid "Successfully unstaked {amount} NIM"
 msgstr "{amount} NIM retirado com sucesso"
 
@@ -3118,7 +3114,7 @@ msgstr "Pensa em recursos e não em moedas"
 #: src/components/modals/BtcTransactionModal.vue:224
 #: src/components/modals/TransactionModal.vue:209
 #: src/components/modals/TransactionModal.vue:234
-#: src/components/staking/StakingRewardsModal.vue:54
+#: src/components/staking/StakingRewardsPage.vue:54
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."
@@ -3614,7 +3610,7 @@ msgstr "Vais enviar {amount} NIM"
 
 #: src/components/FlaggedAddressWarning.vue:21
 msgid "Your {currency} would most likely be stolen."
-msgstr ""
+msgstr "O teu {currency} tem probabilidade de ser roubado."
 
 #: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"

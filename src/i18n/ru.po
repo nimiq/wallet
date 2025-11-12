@@ -779,7 +779,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Нажмите на «Решение проблем», чтобы узнать больше."
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:154
+#: src/components/staking/StakingModal.vue:196
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Закрыть"
@@ -992,7 +992,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:240
+#: src/components/staking/StakingInfoPage.vue:241
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -1292,7 +1292,7 @@ msgstr "Загрузка"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
-#: src/components/staking/StakingRewardsModal.vue:42
+#: src/components/staking/StakingRewardsPage.vue:42
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1416,10 +1416,6 @@ msgstr ""
 "Пройдите проверку на повышенные лимиты, авторизовавшись с {provider}.\n"
 "Вам потребуется:"
 
-#: src/components/staking/StakingRewardsModal.vue:65
-msgid "Go to staking overview"
-msgstr ""
-
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
@@ -1469,7 +1465,7 @@ msgstr "Высшая степень децентрализации"
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
 #: src/components/modals/UsdtTransactionModal.vue:167
-#: src/components/staking/StakingRewardsModal.vue:52
+#: src/components/staking/StakingRewardsPage.vue:52
 msgid "Historic value"
 msgstr "Историческая стоимость"
 
@@ -1993,7 +1989,7 @@ msgstr "Один аккаунт теперь поддерживает неско
 msgid "One Account, many Addresses"
 msgstr "Один Аккаунт, много Адресов"
 
-#: src/components/staking/StakingRewardsModal.vue:8
+#: src/components/staking/StakingRewardsPage.vue:8
 #: src/components/StakingRewardsListItem.vue:24
 msgid "Ongoing"
 msgstr ""
@@ -2539,7 +2535,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "Транзакция отправляется"
 
-#: src/components/staking/StakingInfoPage.vue:310
+#: src/components/staking/StakingInfoPage.vue:311
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2684,8 +2680,8 @@ msgstr "Пропустить"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:297
-#: src/components/staking/StakingInfoPage.vue:380
+#: src/components/staking/StakingInfoPage.vue:298
+#: src/components/staking/StakingInfoPage.vue:381
 #: src/components/staking/ValidatorDetailsOverlay.vue:177
 msgid "Something went wrong"
 msgstr "Операция не удалась"
@@ -2749,7 +2745,7 @@ msgstr ""
 msgid "Staking rewards"
 msgstr ""
 
-#: src/components/staking/StakingRewardsModal.vue:4
+#: src/components/staking/StakingRewardsPage.vue:4
 msgid "Staking Rewards"
 msgstr ""
 
@@ -2773,7 +2769,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:281
+#: src/components/staking/StakingInfoPage.vue:282
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2785,7 +2781,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:366
+#: src/components/staking/StakingInfoPage.vue:367
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -3073,7 +3069,7 @@ msgstr "Думайте о возможностях, а не валюте"
 #: src/components/modals/BtcTransactionModal.vue:224
 #: src/components/modals/TransactionModal.vue:209
 #: src/components/modals/TransactionModal.vue:234
-#: src/components/staking/StakingRewardsModal.vue:54
+#: src/components/staking/StakingRewardsPage.vue:54
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."

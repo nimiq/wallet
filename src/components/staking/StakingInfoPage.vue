@@ -540,6 +540,7 @@ export default defineComponent({
     .history {
         position: relative;
         overflow: hidden;
+        margin: 0 -2rem;
 
         .scroll-mask {
             position: absolute;

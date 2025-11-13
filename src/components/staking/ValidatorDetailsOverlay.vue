@@ -202,7 +202,6 @@ export default defineComponent({
 
 .validator-details-overlay {
     max-height: calc(100% - 12rem);
-    padding-top: 1rem;
 
     &.no-button {
         max-height: 100%;

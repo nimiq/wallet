@@ -470,10 +470,11 @@ export default defineComponent({
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
-        gap: 2rem;
     }
 
     .amounts {
+        margin-bottom: 2rem;
+
         .round-staking-icon {
             width: 6rem;
             height: 6rem;
@@ -489,6 +490,7 @@ export default defineComponent({
     .rewards-and-chart {
         gap: 1rem;
         overflow-y: auto;
+        margin-bottom: 1rem;
 
         @extend %custom-scrollbar;
 
@@ -556,7 +558,7 @@ export default defineComponent({
             height: 100%;
             padding-right: calc(2rem - 6px);
             padding-left: 2rem;
-            // padding-bottom: 2rem;
+            padding-top: 2rem;
 
             touch-action: pan-y;
 

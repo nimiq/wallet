@@ -284,6 +284,7 @@ export default defineComponent({
     gap: 1rem;
     height: 9rem;
     flex-shrink: 0;
+    cursor: pointer;
 
     @media (max-width: $tabletBreakpoint) {
         width: 100%;

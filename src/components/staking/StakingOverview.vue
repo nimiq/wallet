@@ -1,6 +1,9 @@
 <template>
     <div class="staking-overview">
-        <div class="staking-container flex-row nq-green-bg" @click="openStakingModal" :key="stake && stake.address">
+        <div class="staking-container flex-row nq-button-pill green"
+            @click="openStakingModal"
+            :key="stake && stake.address"
+        >
             <div class="staking-info flex-row">
                 <RoundStakingIcon color="white" />
                 <div class="staking-amounts flex-column">
@@ -41,7 +44,7 @@
             </div>
         </div>
 
-        <div v-if="validator" class="validator-container flex-row" @click="openValidatorDetailsModal">
+        <div v-if="validator" class="validator-container flex-row nq-button-s" @click="openValidatorDetailsModal">
             <div class="validator-details flex-column">
                 <div class="validator-name">
                     <ValidatorIcon :validator="validator" class="nq-icon" />
@@ -185,15 +188,8 @@ export default defineComponent({
     align-items: center;
     gap: 2rem;
     flex-grow: 1;
-    cursor: pointer;
-    transition: transform 0.2s;
-    will-change: transform;
     height: 9rem;
     flex-wrap: wrap;
-
-    &:hover, &:focus {
-        transform: scale(1.01);
-    }
 
     @media (max-width: $tabletBreakpoint) {
         width: 100%;
@@ -284,7 +280,6 @@ export default defineComponent({
     gap: 1rem;
     height: 9rem;
     flex-shrink: 0;
-    cursor: pointer;
 
     @media (max-width: $tabletBreakpoint) {
         width: 100%;

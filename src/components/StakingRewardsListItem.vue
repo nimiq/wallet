@@ -196,19 +196,6 @@ export default defineComponent({
             .validator-icon-container {
                 position: relative;
 
-                &:before {
-                    content: "";
-                    display: block;
-                    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-                    background: white;
-                    height: 100%;
-                    width: 100%;
-                    flex-shrink: 0;
-                    position: absolute;
-                    top: 0;
-                    left: -2px;
-                }
-
                 img,
                 .validator-icon{
                     --size: 1.5rem;

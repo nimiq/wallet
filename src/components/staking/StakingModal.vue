@@ -322,9 +322,14 @@ export default defineComponent({
     .modal {
         ::v-deep .small-page {
             overflow: hidden;
+
             transition:
                 width var(--transition-time) var(--nimiq-ease),
                 transform var(--transition-time) var(--nimiq-ease);
+
+            &:first-child {
+                height: 37.5rem;
+            }
         }
 
         &.large-modal {

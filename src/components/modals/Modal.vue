@@ -339,6 +339,7 @@ export default Modal;
 
 <style lang="scss">
 @import "../../scss/variables.scss";
+@import '../../scss/functions.scss';
 
 :root {
     --modal-transition-time: 0.45s;

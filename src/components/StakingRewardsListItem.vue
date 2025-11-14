@@ -27,10 +27,11 @@
                 <i18n path="Paid out by {validator}" tag="span" class="flex-row">
                     <template v-slot:validator>
                         <span
-                            v-for="validator in validators"
+                            v-for="(validator, index) in validators"
                             :key="validator.address"
                             class="validator-icon-container"
                         >
+                            <span v-if="index > 0" class="validator-separator"></span>
                             <ValidatorIcon :validator="validator" />
                         </span>
                         <span v-if="validators.length">
@@ -147,6 +148,10 @@ export default defineComponent({
     &:hover,
     &:focus {
         background: var(--nimiq-highlight-bg);
+
+        .validator-separator:before {
+            background: var(--nimiq-highlight-bg) !important;
+        }
     }
 
     > * {
@@ -196,8 +201,30 @@ export default defineComponent({
             .validator-icon-container {
                 position: relative;
 
+                .validator-separator {
+                    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+                    flex-shrink: 0;
+                    position: absolute;
+                    top: .5px;
+                    left: -1.5px;
+                    height: calc(100% - 1px);
+
+                    &:before {
+                        content: '';
+                        height: 100%;
+                        transition: background 400ms var(--nimiq-ease);
+                    }
+
+                    &,
+                    &::before {
+                        background: white;
+                        width: 100%;
+                        display: block;
+                    }
+                }
+
                 img,
-                .validator-icon{
+                .validator-icon {
                     --size: 1.5rem;
                     position: relative;
                 }

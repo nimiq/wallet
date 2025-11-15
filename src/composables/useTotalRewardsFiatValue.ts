@@ -19,7 +19,7 @@ export type MonthlyRewardsMap = Map<string, { total: number, validators: string[
  * Composable for calculating total fiat value of all staking rewards across all months
  * Uses month-based exchange rates:
  * - Past months: End-of-month exchange rate
- * - Current month: Per-event historic rates
+ * - Current month: Current exchange rate (real-time)
  */
 export function useTotalRewardsFiatValue(
     monthlyRewards: Ref<MonthlyRewardsMap>,
@@ -27,7 +27,7 @@ export function useTotalRewardsFiatValue(
         | Ref<AggregatedRestakingEvent[] | undefined | null>
         | Ref<Readonly<AggregatedRestakingEvent[] | null>>,
 ) {
-    const { currency: preferredFiatCurrency } = useFiatStore();
+    const { currency: preferredFiatCurrency, exchangeRates } = useFiatStore();
 
     const fiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
         preferredFiatCurrency.value,
@@ -55,11 +55,7 @@ export function useTotalRewardsFiatValue(
                 allTimestamps.push(endOfMonthTimestamp);
                 monthTimestampMap.set(monthKey, { isCurrentMonth: false, timestamp: endOfMonthTimestamp });
             } else {
-                // For current month: collect all event timestamps
-                const events = (stakingEvents.value || []).filter((event) =>
-                    event.time_window.startsWith(monthKey));
-                const timestamps = events.map((event) => new Date(event.time_window).getTime());
-                allTimestamps.push(...timestamps);
+                // For current month: will use current exchange rate (no timestamp needed)
                 monthTimestampMap.set(monthKey, { isCurrentMonth: true });
             }
         }
@@ -88,20 +84,14 @@ export function useTotalRewardsFiatValue(
                 // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
                 totalFiat += rate * (monthData.total / 1e5);
             } else {
-                // For current month: Sum per-event rates
-                const events = (stakingEvents.value || []).filter((event) =>
-                    event.time_window.startsWith(monthKey));
-
-                for (const event of events) {
-                    const timestamp = new Date(event.time_window).getTime();
-                    const rate = ratesMap.get(timestamp);
-                    if (rate === undefined) {
-                        totalRewardsFiatValue.value = FIAT_PRICE_UNAVAILABLE;
-                        return;
-                    }
-                    // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
-                    totalFiat += rate * (event.aggregated_value / 1e5);
+                // For current month: Use current exchange rate for total amount
+                const currentRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
+                if (currentRate === undefined) {
+                    totalRewardsFiatValue.value = FIAT_PRICE_UNAVAILABLE;
+                    return;
                 }
+                // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
+                totalFiat += currentRate * (monthData.total / 1e5);
             }
         }
 
@@ -113,6 +103,7 @@ export function useTotalRewardsFiatValue(
         () => monthlyRewards.value.size,
         fiatCurrency,
         () => stakingEvents.value?.length,
+        exchangeRates, // Watch exchange rates for real-time updates
     ], calculateTotalRewardsFiatValue, { lazy: false });
 
     return {

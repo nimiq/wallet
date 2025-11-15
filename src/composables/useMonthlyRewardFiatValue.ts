@@ -14,7 +14,7 @@ import { getEndOfMonthTimestamp, isCurrentMonthAndYear } from '@/lib/StakingUtil
  * Composable for calculating fiat value of staking rewards for a given month
  * Uses month-based exchange rates:
  * - Past months: End-of-month exchange rate
- * - Current month: Per-event historic rates
+ * - Current month: Current exchange rate (real-time)
  */
 export function useMonthlyRewardFiatValue(
     monthKey: Ref<string>,
@@ -23,7 +23,7 @@ export function useMonthlyRewardFiatValue(
         | Ref<AggregatedRestakingEvent[] | undefined | null>
         | Ref<Readonly<AggregatedRestakingEvent[] | null>>,
 ) {
-    const { currency: preferredFiatCurrency } = useFiatStore();
+    const { currency: preferredFiatCurrency, exchangeRates } = useFiatStore();
 
     const fiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
         preferredFiatCurrency.value,
@@ -54,35 +54,14 @@ export function useMonthlyRewardFiatValue(
             // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
             fiatValue.value = rate * (nimAmount.value / 1e5);
         } else {
-            // For current month: Use historic rates for each individual event
-            const events = (stakingEvents.value || []).filter((event) =>
-                event.time_window.startsWith(monthKey.value));
-
-            if (events.length === 0) {
-                fiatValue.value = 0;
+            // For current month: Use current exchange rate for total amount
+            const currentRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];
+            if (currentRate === undefined) {
+                fiatValue.value = FIAT_PRICE_UNAVAILABLE;
                 return;
             }
-
-            const timestamps = events.map((event) => new Date(event.time_window).getTime());
-            const ratesMap = await getHistoricExchangeRates(
-                CryptoCurrency.NIM,
-                fiatCurrency.value,
-                timestamps,
-                FIAT_API_PROVIDER_TX_HISTORY,
-            );
-
-            let totalFiat = 0;
-            for (const event of events) {
-                const timestamp = new Date(event.time_window).getTime();
-                const rate = ratesMap.get(timestamp);
-                if (rate === undefined) {
-                    fiatValue.value = FIAT_PRICE_UNAVAILABLE;
-                    return;
-                }
-                // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
-                totalFiat += rate * (event.aggregated_value / 1e5);
-            }
-            fiatValue.value = totalFiat;
+            // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
+            fiatValue.value = currentRate * (nimAmount.value / 1e5);
         }
     };
 
@@ -92,6 +71,7 @@ export function useMonthlyRewardFiatValue(
         nimAmount,
         fiatCurrency,
         () => stakingEvents.value?.length,
+        exchangeRates, // Watch exchange rates for real-time updates
     ], calculateFiatValue, { lazy: false });
 
     return {

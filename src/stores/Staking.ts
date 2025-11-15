@@ -1,14 +1,25 @@
 import { nonReactive } from '@vue/composition-api';
+import Vue from 'vue';
+import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
+import { useFiatStore } from './Fiat';
 import { calculateStakingReward } from '../lib/AlbatrossMath';
+import {
+    CryptoCurrency,
+    FiatCurrency,
+    FIAT_API_PROVIDER_TX_HISTORY,
+    FIAT_PRICE_UNAVAILABLE,
+} from '../lib/Constants';
+import { getEndOfMonthTimestamp, isCurrentMonthAndYear } from '../lib/StakingUtils';
 
 export type StakingState = {
     chainValidators: Record<string, RawValidator>,
     apiValidators: Record<string, ApiValidator>,
     stakeByAddress: Record<string, Stake>,
     stakingEventsByAddress: Record<string, AggregatedRestakingEvent[]>,
+    cachedMonthlyRewardsByAddress: Record<string, Map<string, MonthlyReward>>,
 }
 
 export type AggregatedRestakingEvent = {
@@ -23,6 +34,7 @@ export interface MonthlyReward {
     total: number;
     count: number;
     validators: string[];
+    fiatValue?: Partial<Record<FiatCurrency, number | typeof FIAT_PRICE_UNAVAILABLE>>;
 }
 
 export type Stake = {
@@ -85,6 +97,7 @@ export const useStakingStore = createStore({
         apiValidators: {},
         stakeByAddress: {},
         stakingEventsByAddress: {},
+        cachedMonthlyRewardsByAddress: {},
     } as StakingState),
     getters: {
         validators: (state): Readonly<Record<string, Validator>> => {
@@ -250,6 +263,11 @@ export const useStakingStore = createStore({
             const rewardsByMonth = new Map<string, MonthlyReward>();
             if (!events) return rewardsByMonth;
 
+            // Get previously cached monthly rewards for the ACTIVE ADDRESS to preserve fiatValue
+            const { activeAddress } = useAddressStore();
+            const cachedRewards = (activeAddress.value && state.cachedMonthlyRewardsByAddress[activeAddress.value])
+                || new Map<string, MonthlyReward>();
+
             // Cache event count, to avoid repeatedly accessing it with the overhead of Vue's reactivity system, which
             // can become noticeable here as we're processing potentially tens of thousands of staking events.
             const eventCount = events.length;
@@ -268,7 +286,14 @@ export const useStakingStore = createStore({
                     monthRewards = rewardsByMonth.get(monthKey);
                     if (!monthRewards) {
                         // Create new month rewards entry only once, if it doesn't exist yet.
-                        monthRewards = { total: 0, count: 0, validators: [] };
+                        // Preserve cached fiatValue from previous calculation
+                        const cachedMonth = cachedRewards.get(monthKey);
+                        monthRewards = {
+                            total: 0,
+                            count: 0,
+                            validators: [],
+                            ...(cachedMonth?.fiatValue ? { fiatValue: cachedMonth.fiatValue } : {}),
+                        };
                         rewardsByMonth.set(monthKey, monthRewards);
                     }
 
@@ -360,6 +385,89 @@ export const useStakingStore = createStore({
                 ...this.state.stakingEventsByAddress,
                 [address]: events,
             });
+
+            // Calculate and cache fiat values for the newly loaded events
+            // This is called here (not just on address change) because staking events are loaded
+            // asynchronously after address changes, so we need to wait until they're actually available
+            const { activeAddress } = useAddressStore();
+            if (activeAddress.value === address) {
+                // Only calculate if this is for the currently active address
+                this.calculateMonthlyFiatValues();
+            }
+        },
+
+        async calculateMonthlyFiatValues(fiatCurrency?: FiatCurrency) {
+            const fiatStore = useFiatStore();
+            const { activeAddress } = useAddressStore();
+
+            // Need an active address to know which cache to update
+            if (!activeAddress.value) return;
+
+            fiatCurrency = fiatCurrency || fiatStore.currency.value;
+            const historyFiatCurrency = isHistorySupportedFiatCurrency(fiatCurrency, FIAT_API_PROVIDER_TX_HISTORY)
+                ? fiatCurrency
+                : FiatCurrency.USD;
+
+            // Get monthly rewards from getter (already filtered by active address)
+            const monthlyRewards = (this.monthlyRewards as any).value as Map<string, MonthlyReward>;
+            if (!monthlyRewards || monthlyRewards.size === 0) return;
+
+            // Filter months that need fiat value calculation
+            const monthsToUpdate: Array<{ monthKey: string, monthData: MonthlyReward, timestamp: number }> = [];
+
+            for (const [monthKey, monthData] of monthlyRewards.entries()) {
+                const { isCurrentMonth } = isCurrentMonthAndYear(monthKey);
+
+                // Skip current month (calculated in real-time by composables)
+                // Only calculate for past months that don't have cached value for this currency
+                if (!isCurrentMonth
+                    && typeof monthData.fiatValue?.[fiatCurrency] !== 'number'
+                    && typeof monthData.fiatValue?.[historyFiatCurrency] !== 'number') {
+                    const endOfMonthTimestamp = getEndOfMonthTimestamp(monthKey);
+                    monthsToUpdate.push({ monthKey, monthData, timestamp: endOfMonthTimestamp });
+                }
+            }
+
+            if (!monthsToUpdate.length) return;
+
+            // Batch fetch all needed exchange rates
+            const historicExchangeRates = await getHistoricExchangeRates(
+                CryptoCurrency.NIM,
+                historyFiatCurrency,
+                monthsToUpdate.map((m) => m.timestamp),
+                FIAT_API_PROVIDER_TX_HISTORY,
+            );
+
+            // Get or create the cache for this address
+            const addressCache = this.state.cachedMonthlyRewardsByAddress[activeAddress.value] || new Map();
+            const newCachedMonthlyRewards = new Map(addressCache);
+
+            for (const { monthKey, monthData, timestamp } of monthsToUpdate) {
+                const exchangeRate = historicExchangeRates.get(timestamp);
+
+                // Initialize fiatValue object if needed
+                monthData.fiatValue ||= {};
+
+                // Set via Vue.set for reactivity
+                Vue.set(
+                    monthData.fiatValue!,
+                    historyFiatCurrency,
+                    exchangeRate !== undefined
+                        ? exchangeRate * (monthData.total / 1e5)
+                        : FIAT_PRICE_UNAVAILABLE,
+                );
+
+                // Update cached rewards for this address
+                newCachedMonthlyRewards.set(monthKey, { ...monthData });
+            }
+
+            // Update the cached monthly rewards for this address in state
+            // Need to use Vue.set for proper reactivity in Vue 2
+            Vue.set(this.state.cachedMonthlyRewardsByAddress, activeAddress.value, newCachedMonthlyRewards);
+
+            // Manually notify the store of deep changes to trigger subscriptions
+            // TODO this hack is likely not necessary in newer pinia versions
+            this.patch({});
         },
     },
 });

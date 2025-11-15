@@ -146,6 +146,24 @@ async function start() {
         launchPolygon();
     });
 
+    // Watch for currency and address changes to recalculate staking fiat values
+    const { useStakingStore } = await import('./stores/Staking');
+    const { useAddressStore } = await import('./stores/Address');
+
+    const stakingStore = useStakingStore();
+    const fiatStoreInstance = useFiatStore();
+    const addressStore = useAddressStore();
+
+    // Recalculate staking fiat values when currency changes
+    watch(fiatStoreInstance.currency, (newCurrency) => {
+        stakingStore.calculateMonthlyFiatValues(newCurrency);
+    });
+
+    // Recalculate staking fiat values when active address changes (loads different rewards)
+    watch(addressStore.activeAddress, () => {
+        stakingStore.calculateMonthlyFiatValues();
+    });
+
     if (
         (activeCurrency === CryptoCurrency.BTC && !config.enableBitcoin)
         || (activeCurrency === CryptoCurrency.USDC && !config.polygon.enabled)

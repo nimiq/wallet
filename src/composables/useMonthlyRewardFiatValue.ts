@@ -1,7 +1,7 @@
 import { ref, computed, watch, Ref } from '@vue/composition-api';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { useFiatStore } from '@/stores/Fiat';
-import { AggregatedRestakingEvent } from '@/stores/Staking';
+import { useStakingStore, AggregatedRestakingEvent } from '@/stores/Staking';
 import {
     CryptoCurrency,
     FiatCurrency,
@@ -24,6 +24,7 @@ export function useMonthlyRewardFiatValue(
         | Ref<Readonly<AggregatedRestakingEvent[] | null>>,
 ) {
     const { currency: preferredFiatCurrency, exchangeRates } = useFiatStore();
+    const stakingStore = useStakingStore();
 
     const fiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
         preferredFiatCurrency.value,
@@ -36,7 +37,18 @@ export function useMonthlyRewardFiatValue(
         const { isCurrentMonth } = isCurrentMonthAndYear(monthKey.value);
 
         if (!isCurrentMonth) {
-            // For past months: Use end-of-month exchange rate
+            // For past months: Check cache first
+            const monthlyRewards = (stakingStore.monthlyRewards as any).value as Map<string, any>;
+            const cachedMonth = monthlyRewards?.get(monthKey.value);
+            const cachedValue = cachedMonth?.fiatValue?.[fiatCurrency.value];
+
+            // If we have a cached value (number or FIAT_PRICE_UNAVAILABLE), use it
+            if (typeof cachedValue === 'number' || cachedValue === FIAT_PRICE_UNAVAILABLE) {
+                fiatValue.value = cachedValue;
+                return;
+            }
+
+            // If not cached, fetch and calculate (store will cache it)
             const endOfMonthTimestamp = getEndOfMonthTimestamp(monthKey.value);
             const ratesMap = await getHistoricExchangeRates(
                 CryptoCurrency.NIM,

@@ -1,7 +1,7 @@
 import { ref, computed, watch, Ref } from '@vue/composition-api';
 import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { useFiatStore } from '@/stores/Fiat';
-import { AggregatedRestakingEvent } from '@/stores/Staking';
+import { useStakingStore, AggregatedRestakingEvent } from '@/stores/Staking';
 import {
     CryptoCurrency,
     FiatCurrency,
@@ -28,6 +28,7 @@ export function useTotalRewardsFiatValue(
         | Ref<Readonly<AggregatedRestakingEvent[] | null>>,
 ) {
     const { currency: preferredFiatCurrency, exchangeRates } = useFiatStore();
+    const stakingStore = useStakingStore();
 
     const fiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
         preferredFiatCurrency.value,
@@ -42,31 +43,46 @@ export function useTotalRewardsFiatValue(
             return;
         }
 
-        // Collect all timestamps we need rates for
+        // Get cached monthly rewards from store
+        const cachedMonthlyRewards = (stakingStore.monthlyRewards as any).value as Map<string, any>;
+
+        // Collect only timestamps for months that don't have cached values
         const allTimestamps: number[] = [];
-        const monthTimestampMap = new Map<string, { isCurrentMonth: boolean, timestamp?: number }>();
+        const monthTimestampMap = new Map<string, { isCurrentMonth: boolean, timestamp?: number, cached?: boolean }>();
 
         for (const [monthKey] of monthlyRewards.value.entries()) {
             const { isCurrentMonth } = isCurrentMonthAndYear(monthKey);
 
             if (!isCurrentMonth) {
-                // For past months: collect end-of-month timestamp
-                const endOfMonthTimestamp = getEndOfMonthTimestamp(monthKey);
-                allTimestamps.push(endOfMonthTimestamp);
-                monthTimestampMap.set(monthKey, { isCurrentMonth: false, timestamp: endOfMonthTimestamp });
+                // Check if we have a cached value for this month and currency
+                const cachedMonth = cachedMonthlyRewards?.get(monthKey);
+                const cachedValue = cachedMonth?.fiatValue?.[fiatCurrency.value];
+
+                if (typeof cachedValue === 'number' || cachedValue === FIAT_PRICE_UNAVAILABLE) {
+                    // We have a cached value, mark it and skip fetching
+                    monthTimestampMap.set(monthKey, { isCurrentMonth: false, cached: true });
+                } else {
+                    // For past months without cache: collect end-of-month timestamp
+                    const endOfMonthTimestamp = getEndOfMonthTimestamp(monthKey);
+                    allTimestamps.push(endOfMonthTimestamp);
+                    monthTimestampMap.set(monthKey, { isCurrentMonth: false, timestamp: endOfMonthTimestamp });
+                }
             } else {
                 // For current month: will use current exchange rate (no timestamp needed)
                 monthTimestampMap.set(monthKey, { isCurrentMonth: true });
             }
         }
 
-        // Fetch all rates in a single API call
-        const ratesMap = await getHistoricExchangeRates(
-            CryptoCurrency.NIM,
-            fiatCurrency.value,
-            allTimestamps,
-            FIAT_API_PROVIDER_TX_HISTORY,
-        );
+        // Fetch rates only for uncached months (if any)
+        let ratesMap: Map<number, number | undefined> | undefined;
+        if (allTimestamps.length > 0) {
+            ratesMap = await getHistoricExchangeRates(
+                CryptoCurrency.NIM,
+                fiatCurrency.value,
+                allTimestamps,
+                FIAT_API_PROVIDER_TX_HISTORY,
+            );
+        }
 
         // Calculate total fiat value
         let totalFiat = 0;
@@ -74,15 +90,28 @@ export function useTotalRewardsFiatValue(
             const monthInfo = monthTimestampMap.get(monthKey);
             if (!monthInfo) continue;
 
-            if (!monthInfo.isCurrentMonth && monthInfo.timestamp) {
-                // For past months: Use end-of-month exchange rate
-                const rate = ratesMap.get(monthInfo.timestamp);
-                if (rate === undefined) {
-                    totalRewardsFiatValue.value = FIAT_PRICE_UNAVAILABLE;
-                    return;
+            if (!monthInfo.isCurrentMonth) {
+                if (monthInfo.cached) {
+                    // Use cached value
+                    const cachedMonth = cachedMonthlyRewards?.get(monthKey);
+                    const cachedValue = cachedMonth?.fiatValue?.[fiatCurrency.value];
+                    if (cachedValue === FIAT_PRICE_UNAVAILABLE) {
+                        totalRewardsFiatValue.value = FIAT_PRICE_UNAVAILABLE;
+                        return;
+                    }
+                    if (typeof cachedValue === 'number') {
+                        totalFiat += cachedValue;
+                    }
+                } else if (monthInfo.timestamp && ratesMap) {
+                    // Use freshly fetched rate
+                    const rate = ratesMap.get(monthInfo.timestamp);
+                    if (rate === undefined) {
+                        totalRewardsFiatValue.value = FIAT_PRICE_UNAVAILABLE;
+                        return;
+                    }
+                    // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
+                    totalFiat += rate * (monthData.total / 1e5);
                 }
-                // Convert from Luna (1e5 = 1 NIM) to NIM, then to fiat
-                totalFiat += rate * (monthData.total / 1e5);
             } else {
                 // For current month: Use current exchange rate for total amount
                 const currentRate = exchangeRates.value[CryptoCurrency.NIM]?.[fiatCurrency.value];

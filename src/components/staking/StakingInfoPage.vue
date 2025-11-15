@@ -46,7 +46,14 @@
                         +<Amount :amount="restakingRewards" value-mask/>
                     </div>
                     <div class="details-row flex-row row">
-                        <FiatConvertedAmount :amount="restakingRewards" value-mask/>
+                        <div v-if="totalRewardsFiatValue === undefined" class="fiat-loading-placeholder"></div>
+                        <FiatAmount
+                            v-else-if="totalRewardsFiatValue !== constants.FIAT_PRICE_UNAVAILABLE"
+                            :amount="totalRewardsFiatValue"
+                            :currency="fiatCurrency"
+                            value-mask
+                        />
+                        <span v-else class="fiat-unavailable">{{ $t('Fiat value unavailable') }}</span>
                     </div>
 
                 </div>
@@ -106,6 +113,7 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import {
     ArrowRightSmallIcon,
+    FiatAmount,
     PageBody,
     PageFooter,
     PageHeader,
@@ -116,6 +124,7 @@ import { useI18n } from '@/lib/useI18n';
 import { useWindowSize } from '@/composables/useWindowSize';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
+import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
 import { MIN_STAKE } from '../../lib/Constants';
 
 import Amount from '../Amount.vue';
@@ -146,13 +155,25 @@ export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator, restakingRewards, monthlyRewards } = useStakingStore();
+        const {
+            activeStake: stake,
+            activeValidator: validator,
+            restakingRewards,
+            monthlyRewards,
+            stakingEvents,
+        } = useStakingStore();
         const { height, consensus, isFetchingTxHistory } = useNetworkStore();
         const { isMobile } = useWindowSize();
 
         // Height of items in pixel
         const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
         const scrollerBuffer = 300;
+
+        // Calculate total rewards fiat value using month-based logic via composable
+        const { totalRewardsFiatValue, fiatCurrency, constants } = useTotalRewardsFiatValue(
+            monthlyRewards,
+            stakingEvents,
+        );
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
@@ -407,6 +428,9 @@ export default defineComponent({
             itemSize,
             scrollerBuffer,
             LoadingListType,
+            totalRewardsFiatValue,
+            fiatCurrency,
+            constants,
         };
     },
     components: {
@@ -421,6 +445,7 @@ export default defineComponent({
         ArrowRightSmallIcon,
         ValidatorInfoBar,
         FiatConvertedAmount,
+        FiatAmount,
         StakingRewardsChart,
         StakingRewardsListItem,
         LoadingList,
@@ -529,6 +554,16 @@ export default defineComponent({
                 opacity: 0.7;
                 align-items: center;
                 gap: 0.75rem;
+
+                .fiat-loading-placeholder {
+                    @include fiat-loading-placeholder(6rem, 2rem, rgba(255, 255, 255, 0.3));
+                    margin-top: 0.25rem;
+                    margin-bottom: 0.25rem;
+                }
+
+                .fiat-unavailable {
+                    opacity: 0.5;
+                }
             }
         }
 

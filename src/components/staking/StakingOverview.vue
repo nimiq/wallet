@@ -38,7 +38,14 @@
                         +<Amount :amount="restakingRewards" value-mask/>
                     </div>
                     <div class="details-row flex-row">
-                        <FiatConvertedAmount :amount="restakingRewards" value-mask/>
+                        <div v-if="totalRewardsFiatValue === undefined" class="fiat-loading-placeholder"></div>
+                        <FiatAmount
+                            v-else-if="totalRewardsFiatValue !== constants.FIAT_PRICE_UNAVAILABLE"
+                            :amount="totalRewardsFiatValue"
+                            :currency="fiatCurrency"
+                            value-mask
+                        />
+                        <span v-else class="fiat-unavailable">{{ $t('unavailable') }}</span>
                     </div>
                 </div>
             </div>
@@ -67,9 +74,11 @@
 
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
+import { FiatAmount } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { useRouter } from '../../router';
+import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
 import Amount from '../Amount.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
@@ -84,7 +93,13 @@ import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIco
 export default defineComponent({
     setup() {
         const { activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
+        const {
+            activeStake: stake,
+            activeValidator: validator,
+            restakingRewards,
+            monthlyRewards,
+            stakingEvents,
+        } = useStakingStore();
         const router = useRouter();
         const { height } = useNetworkStore();
 
@@ -97,6 +112,12 @@ export default defineComponent({
             const total = availableBalance.value + stakedBalance.value;
             return total > 0 ? Math.round((stakedBalance.value / total) * 100) : 0;
         });
+
+        // Calculate total rewards fiat value using month-based logic via composable
+        const { totalRewardsFiatValue, fiatCurrency, constants } = useTotalRewardsFiatValue(
+            monthlyRewards,
+            stakingEvents,
+        );
 
         const inactiveReleaseTime = computed(() => {
             if (stake.value?.inactiveRelease) {
@@ -139,11 +160,15 @@ export default defineComponent({
             hasUnstakableStake,
             openStakingModal,
             openValidatorDetailsModal,
+            totalRewardsFiatValue,
+            fiatCurrency,
+            constants,
         };
     },
     components: {
         Amount,
         FiatConvertedAmount,
+        FiatAmount,
         RoundStakingIcon,
         ValidatorIcon,
         ValidatorTrustScore,
@@ -157,6 +182,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../scss/functions.scss';
+@import '../../scss/mixins.scss';
 @import '../../scss/variables.scss';
 
 .staking-overview {
@@ -248,6 +274,14 @@ export default defineComponent({
 
         &.full-opacity {
             opacity: 1;
+        }
+
+        .fiat-loading-placeholder {
+            @include fiat-loading-placeholder(5rem, 1.25rem, rgba(255, 255, 255, 0.3));
+        }
+
+        .fiat-unavailable {
+            opacity: 0.5;
         }
     }
 }

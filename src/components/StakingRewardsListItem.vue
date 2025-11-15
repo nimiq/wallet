@@ -46,19 +46,25 @@
         </div>
         <div class="amounts isIncoming">
             <Amount :amount="monthlyReward" class="amount"/>
-            <!-- HIDDEN TEMPORARILY: Show fiat value only in detailed modal for monthly rewards
-            <FiatConvertedAmount :amount="monthlyReward" class="fiat-amount"/>
-            -->
-            <div class="fiat-amount">&nbsp;</div> <!-- Remove this once we show the fiat value again -->
+            <div v-if="fiatValue === undefined" class="fiat-amount fiat-loading">&nbsp;</div>
+            <FiatAmount
+                v-else-if="fiatValue !== constants.FIAT_PRICE_UNAVAILABLE"
+                :amount="fiatValue"
+                :currency="fiatCurrency"
+                class="fiat-amount"
+            />
+            <span v-else class="fiat-amount fiat-unavailable">{{ $t('unavailable') }}</span>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
+import { FiatAmount } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
 import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../lib/StakingUtils';
+import { useMonthlyRewardFiatValue } from '../composables/useMonthlyRewardFiatValue';
 import ValidatorIcon from './staking/ValidatorIcon.vue';
 import Amount from './Amount.vue';
 import TextShimmer from './staking/TextShimmer.vue';
@@ -91,7 +97,7 @@ export default defineComponent({
     },
     setup(props) {
         const router = useRouter();
-        const { validators: validatorList } = useStakingStore();
+        const { validators: validatorList, stakingEvents } = useStakingStore();
 
         const monthLabel = computed(() => getMonthLabel(props.month));
         const validators = computed(() => props.validatorsAddresses.map(
@@ -101,10 +107,14 @@ export default defineComponent({
         // Check if we should show the "Ongoing" indicator
         const showOngoingIndicator = computed(() => isCurrentMonthAndStakingOngoing(props.month));
 
-        // Currently unused, as The Reward history is much too large
+        // Calculate fiat value using month-based logic via composable
+        const { fiatValue, fiatCurrency, constants } = useMonthlyRewardFiatValue(
+            computed(() => props.month),
+            computed(() => props.monthlyReward),
+            stakingEvents,
+        );
+
         const openRewardsHistory = () => {
-            // Since StakingRewardsModal is now integrated as a page in StakingModal,
-            // we no longer need to disable transitions or pass canUserGoBack param
             router.push({
                 name: RouteName.StakingRewards,
                 params: {
@@ -118,10 +128,14 @@ export default defineComponent({
             monthLabel,
             validators,
             showOngoingIndicator,
+            fiatValue,
+            fiatCurrency,
+            constants,
         };
     },
     components: {
         Amount,
+        FiatAmount,
         ValidatorIcon,
         TextShimmer,
     },
@@ -130,6 +144,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "../scss/variables.scss";
+@import "../scss/mixins.scss";
 
 .staking-reward-item {
     display: flex;
@@ -265,6 +280,14 @@ export default defineComponent({
             line-height: 1;
             white-space: nowrap;
             text-align: right;
+
+            &.fiat-loading {
+                @include fiat-loading-placeholder(4rem, 1.6rem);
+            }
+
+            &.fiat-unavailable {
+                @include fiat-unavailable;
+            }
         }
 
         &.isIncoming {

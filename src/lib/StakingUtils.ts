@@ -161,7 +161,7 @@ export function getMonthLabel(monthKey: string): string {
     }).format(date);
 }
 
-function isCurrentMonthAndYear(monthKey: string) {
+export function isCurrentMonthAndYear(monthKey: string) {
     const [year, month] = monthKey.split('-');
     const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1);
     const now = new Date();
@@ -192,4 +192,17 @@ export function buildRewardsByValidatorMap(events: readonly AggregatedRestakingE
         }
     }
     return rewardsByValidator;
+}
+
+/**
+ * Get the timestamp for the end of a given month
+ * @param monthKey - Month identifier in 'YYYY-MM' format (e.g., '2024-01' for January 2024)
+ * @returns Unix timestamp (in milliseconds) for the last second of the month (23:59:59)
+ */
+export function getEndOfMonthTimestamp(monthKey: string): number {
+    const [year, month] = monthKey.split('-');
+    // Create date for first day of next month
+    const nextMonth = new Date(parseInt(year, 10), parseInt(month, 10), 1);
+    // Subtract 1 second to get last second of current month
+    return nextMonth.getTime() - 1000;
 }

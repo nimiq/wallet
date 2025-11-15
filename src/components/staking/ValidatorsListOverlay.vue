@@ -60,7 +60,7 @@ import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq
 import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
 import { Validator, useStakingStore, AggregatedRestakingEvent } from '../../stores/Staking';
 import { useI18n } from '../../lib/useI18n';
-import { buildRewardsByValidatorMap } from '../../lib/StakingUtils';
+import { buildRewardsByValidatorMap, getEndOfMonthTimestamp, isCurrentMonthAndYear } from '../../lib/StakingUtils';
 import ValidatorIcon from './ValidatorIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
 import Amount from '../Amount.vue';
@@ -160,51 +160,89 @@ export default defineComponent({
             events: readonly AggregatedRestakingEvent[],
             rewardsByValidator: Map<string, { amount: number, timestamps: number[] }>,
         ) => {
-            // Get historic fiat rates for all timestamps
-            const allTimestamps = Array.from(rewardsByValidator.values())
-                .flatMap((data) => data.timestamps);
-            const ratesMap = await getHistoricExchangeRates(
-                CryptoCurrency.NIM,
-                fiatCurrency.value,
-                allTimestamps,
-                FIAT_API_PROVIDER_TX_HISTORY,
-            );
+            // Determine if this is the current month using helper function
+            const { isCurrentMonth } = isCurrentMonthAndYear(props.month);
 
-            const eventsByKey = new Map<string, AggregatedRestakingEvent>();
-            for (const event of events) {
-                const timestamp = new Date(event.time_window).getTime();
-                const key = `${timestamp}-${event.sender_address}`;
-                eventsByKey.set(key, event);
-            }
+            if (!isCurrentMonth) {
+                // For past months: Use end-of-month exchange rate
+                const endOfMonthTimestamp = getEndOfMonthTimestamp(props.month);
+                const ratesMap = await getHistoricExchangeRates(
+                    CryptoCurrency.NIM,
+                    fiatCurrency.value,
+                    [endOfMonthTimestamp],
+                    FIAT_API_PROVIDER_TX_HISTORY,
+                );
 
-            // Update fiat values for each validator
-            const updatedRewards = validatorRewards.value.map((reward) => {
-                const validatorData = rewardsByValidator.get(reward.validator.address);
-                if (!validatorData) return reward;
+                const rate = ratesMap.get(endOfMonthTimestamp);
 
-                // Calculate fiat value
-                let fiatValue: number | typeof FIAT_PRICE_UNAVAILABLE = 0;
-                for (const timestamp of validatorData.timestamps) {
-                    const rate = ratesMap.get(timestamp);
+                // Update fiat values for each validator using end-of-month rate
+                const updatedRewards = validatorRewards.value.map((reward) => {
+                    const validatorData = rewardsByValidator.get(reward.validator.address);
+                    if (!validatorData) return reward;
+
                     if (rate === undefined) {
-                        fiatValue = FIAT_PRICE_UNAVAILABLE;
-                        break;
+                        return {
+                            ...reward,
+                            fiatValue: FIAT_PRICE_UNAVAILABLE,
+                        };
                     }
 
-                    const key = `${timestamp}-${reward.validator.address}`;
-                    const event = eventsByKey.get(key);
-                    if (event) {
-                        fiatValue += rate * (event.aggregated_value / 1e5);
-                    }
+                    // Apply end-of-month rate to validator's total amount
+                    const fiatValue = rate * (validatorData.amount / 1e5);
+                    return {
+                        ...reward,
+                        fiatValue,
+                    };
+                });
+
+                validatorRewards.value = updatedRewards;
+            } else {
+                // For current month: Use historic rates for each individual reward event
+                const allTimestamps = Array.from(rewardsByValidator.values())
+                    .flatMap((data) => data.timestamps);
+                const ratesMap = await getHistoricExchangeRates(
+                    CryptoCurrency.NIM,
+                    fiatCurrency.value,
+                    allTimestamps,
+                    FIAT_API_PROVIDER_TX_HISTORY,
+                );
+
+                const eventsByKey = new Map<string, AggregatedRestakingEvent>();
+                for (const event of events) {
+                    const timestamp = new Date(event.time_window).getTime();
+                    const key = `${timestamp}-${event.sender_address}`;
+                    eventsByKey.set(key, event);
                 }
 
-                return {
-                    ...reward,
-                    fiatValue: fiatValue === FIAT_PRICE_UNAVAILABLE ? FIAT_PRICE_UNAVAILABLE : fiatValue,
-                };
-            });
+                // Update fiat values for each validator
+                const updatedRewards = validatorRewards.value.map((reward) => {
+                    const validatorData = rewardsByValidator.get(reward.validator.address);
+                    if (!validatorData) return reward;
 
-            validatorRewards.value = updatedRewards;
+                    // Calculate fiat value
+                    let fiatValue: number | typeof FIAT_PRICE_UNAVAILABLE = 0;
+                    for (const timestamp of validatorData.timestamps) {
+                        const rate = ratesMap.get(timestamp);
+                        if (rate === undefined) {
+                            fiatValue = FIAT_PRICE_UNAVAILABLE;
+                            break;
+                        }
+
+                        const key = `${timestamp}-${reward.validator.address}`;
+                        const event = eventsByKey.get(key);
+                        if (event) {
+                            fiatValue += rate * (event.aggregated_value / 1e5);
+                        }
+                    }
+
+                    return {
+                        ...reward,
+                        fiatValue: fiatValue === FIAT_PRICE_UNAVAILABLE ? FIAT_PRICE_UNAVAILABLE : fiatValue,
+                    };
+                });
+
+                validatorRewards.value = updatedRewards;
+            }
         };
 
         // Recalculate rewards when month, validators, or events change
@@ -373,20 +411,7 @@ export default defineComponent({
             }
 
             .fiat-loading-placeholder {
-                width: 5rem;
-                height: 1.25rem;
-                background-color: var(--text-6);
-                border-radius: 0.5rem;
-                animation: breathing 1s infinite;
-            }
-
-            @keyframes breathing {
-                0%, 100% {
-                    opacity: 1;
-                }
-                50% {
-                    opacity: 0.5;
-                }
+                @include fiat-loading-placeholder(5rem, 1.25rem);
             }
         }
     }

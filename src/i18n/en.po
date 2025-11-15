@@ -926,7 +926,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:241
+#: src/components/staking/StakingInfoPage.vue:262
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -1209,6 +1209,7 @@ msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
+#: src/components/staking/StakingInfoPage.vue:56
 #: src/components/staking/StakingRewardsPage.vue:52
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
@@ -1267,7 +1268,7 @@ msgstr ""
 msgid "free"
 msgstr ""
 
-#: src/components/staking/ValidatorsListOverlay.vue:159
+#: src/components/staking/ValidatorsListOverlay.vue:138
 msgid "From {day} {month}"
 msgstr ""
 
@@ -2050,7 +2051,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or click below for the new wallet intro."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:86
+#: src/components/staking/StakingInfoPage.vue:93
 msgid "ready for pay out"
 msgstr ""
 
@@ -2211,7 +2212,7 @@ msgstr ""
 msgid "Reward"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:54
+#: src/components/staking/StakingInfoPage.vue:61
 msgid "Reward History"
 msgstr ""
 
@@ -2373,7 +2374,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:311
+#: src/components/staking/StakingInfoPage.vue:332
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2517,8 +2518,8 @@ msgstr ""
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:298
-#: src/components/staking/StakingInfoPage.vue:381
+#: src/components/staking/StakingInfoPage.vue:319
+#: src/components/staking/StakingInfoPage.vue:402
 #: src/components/staking/ValidatorDetailsOverlay.vue:181
 msgid "Something went wrong"
 msgstr ""
@@ -2605,7 +2606,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:282
+#: src/components/staking/StakingInfoPage.vue:303
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2617,7 +2618,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:367
+#: src/components/staking/StakingInfoPage.vue:388
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -3072,7 +3073,9 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
+#: src/components/staking/StakingOverview.vue:48
 #: src/components/staking/ValidatorsListOverlay.vue:43
+#: src/components/StakingRewardsListItem.vue:56
 msgid "unavailable"
 msgstr ""
 
@@ -3111,7 +3114,7 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:94
+#: src/components/staking/StakingInfoPage.vue:101
 #: src/components/staking/StakingOverview.vue:22
 msgid "Unstaking"
 msgstr ""
@@ -3125,7 +3128,7 @@ msgstr ""
 msgid "Unsupported KYC provider {provider}."
 msgstr ""
 
-#: src/components/staking/ValidatorsListOverlay.vue:161
+#: src/components/staking/ValidatorsListOverlay.vue:140
 msgid "Until {day} {month}"
 msgstr ""
 

@@ -47,8 +47,8 @@
                     value-mask
                 />
                 <div class="flex-row">
-                    <div v-if="fiatHistoricValue === undefined" class="fiat-amount">&nbsp;</div>
-                    <div v-else-if="isFiatHistoricUnavailable" class="fiat-amount">
+                    <div v-if="fiatHistoricValue === undefined" class="fiat-amount fiat-loading"></div>
+                    <div v-else-if="isFiatHistoricUnavailable" class="fiat-amount fiat-unavailable">
                         {{ $t('Fiat value unavailable') }}
                     </div>
                     <div v-else class="fiat-amount">
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
@@ -84,12 +84,14 @@ import {
     FiatAmount,
     Tooltip,
 } from '@nimiq/vue-components';
-import { useFiatStore } from '@/stores/Fiat';
-import { getHistoricExchangeRates, isHistorySupportedFiatCurrency } from '@nimiq/utils';
-import { CryptoCurrency, FiatCurrency, FIAT_API_PROVIDER_TX_HISTORY, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
-import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '@/lib/StakingUtils';
+import { FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import {
+    isCurrentMonthAndStakingOngoing,
+    getMonthLabel,
+} from '@/lib/StakingUtils';
 import { useStakingStore } from '@/stores/Staking';
 import { useAddressStore } from '@/stores/Address';
+import { useMonthlyRewardFiatValue } from '@/composables/useMonthlyRewardFiatValue';
 import ValidatorIcon from './ValidatorIcon.vue';
 import ValidatorIconStack from './ValidatorIconStack.vue';
 import Amount from '../Amount.vue';
@@ -110,70 +112,21 @@ export default defineComponent({
     setup(props, context) {
         const { validators: validatorList, monthlyRewards, stakingEvents } = useStakingStore();
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const constants = { FIAT_PRICE_UNAVAILABLE };
-
-        // Historic fiat value for the whole month's rewards
-        const { currency: preferredFiatCurrency } = useFiatStore();
-        const fiatHistoric = ref<
-            { value: number | typeof FIAT_PRICE_UNAVAILABLE | undefined, currency: FiatCurrency } | null
-        >(null);
-        const fiatHistoricValue = computed(() => fiatHistoric.value?.value);
-        const fiatHistoricCurrency = computed(() => fiatHistoric.value?.currency || FiatCurrency.USD);
-        const isFiatHistoricUnavailable = computed(() => fiatHistoric.value?.value === FIAT_PRICE_UNAVAILABLE);
-        const historyFiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
-            preferredFiatCurrency.value,
-            FIAT_API_PROVIDER_TX_HISTORY,
-        ) ? preferredFiatCurrency.value : FiatCurrency.USD);
 
         const monthLabel = computed(() => getMonthLabel(props.month));
         const showOngoingIndicator = computed(() => isCurrentMonthAndStakingOngoing(props.month));
         const monthlyReward = computed(() => monthlyRewards.value.get(props.month));
 
-        // Build timestamps list for this month's staking reward events
-        const monthEvents = computed(() => {
-            const rewards = monthlyReward.value;
-            if (!rewards) return [];
-            const monthKey = props.month; // YYYY-MM format; cache to avoid overhead of reactivity system on access
-            return (stakingEvents.value || []).filter((event) => event.time_window.startsWith(monthKey));
-        });
+        // Calculate fiat value using the composable
+        const { fiatValue, fiatCurrency, constants } = useMonthlyRewardFiatValue(
+            computed(() => props.month),
+            computed(() => monthlyReward.value?.total || 0),
+            stakingEvents,
+        );
 
-        // Recompute fiat when inputs change
-        const recomputeFiat = async () => {
-            // Cache getter value, to use fixed data across this async method, even if the getter changes.
-            const events = monthEvents.value;
-            const eventCount = events.length;
-            if (!eventCount) {
-                fiatHistoric.value = { currency: historyFiatCurrency.value, value: undefined };
-                return;
-            }
-            const timestamps = events.map((event) => new Date(event.time_window).getTime());
-
-            // Fetch historic rates for each reward timestamp and sum converted values
-            const ratesMap = await getHistoricExchangeRates(
-                CryptoCurrency.NIM,
-                historyFiatCurrency.value,
-                timestamps,
-                FIAT_API_PROVIDER_TX_HISTORY,
-            );
-
-            let totalFiat = 0;
-            for (let i = 0; i < eventCount; i++) {
-                const timestamp = timestamps[i];
-                const rate = ratesMap.get(timestamp);
-                if (rate === undefined) {
-                    fiatHistoric.value = { currency: historyFiatCurrency.value, value: FIAT_PRICE_UNAVAILABLE };
-                    return;
-                }
-                totalFiat += rate * (events[i].aggregated_value / 1e5);
-            }
-            fiatHistoric.value = { currency: historyFiatCurrency.value, value: totalFiat };
-        };
-
-        watch([
-            () => props.month,
-            () => historyFiatCurrency.value,
-            () => monthEvents.value.length, // new events might have been added
-        ], recomputeFiat, { lazy: false });
+        const fiatHistoricValue = fiatValue;
+        const fiatHistoricCurrency = fiatCurrency;
+        const isFiatHistoricUnavailable = computed(() => fiatValue.value === FIAT_PRICE_UNAVAILABLE);
 
         const myLabel = computed(() => activeAddressInfo.value?.label);
 
@@ -209,7 +162,6 @@ export default defineComponent({
 
         return {
             constants,
-            fiatHistoric,
             fiatHistoricValue,
             fiatHistoricCurrency,
             isFiatHistoricUnavailable,
@@ -244,6 +196,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import "../../scss/variables.scss";
+@import "../../scss/mixins.scss";
 @import '../../scss/functions.scss';
 
 .staking-rewards-page {
@@ -403,6 +356,14 @@ export default defineComponent({
         font-weight: 600;
         color: var(--text-50);
         line-height: 1;
+
+        &.fiat-loading {
+            @include fiat-loading-placeholder(8rem, 1.8rem);
+        }
+
+        &.fiat-unavailable {
+            opacity: 0.5;
+        }
 
         .tooltip {
             ::v-deep .trigger {

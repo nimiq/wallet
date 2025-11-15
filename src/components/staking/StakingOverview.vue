@@ -278,7 +278,9 @@ export default defineComponent({
         }
 
         .fiat-loading-placeholder {
-            @include fiat-loading-placeholder(5rem, 1.25rem, rgba(255, 255, 255, 0.3));
+            @include fiat-loading-placeholder(5rem, 2rem, rgba(255, 255, 255, 0.3));
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
         }
 
         .fiat-unavailable {

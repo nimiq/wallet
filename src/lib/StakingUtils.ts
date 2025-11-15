@@ -1,6 +1,6 @@
 import { i18n } from '../i18n/i18n-setup';
 import { Transaction } from '../stores/Transactions';
-import { useStakingStore } from '../stores/Staking';
+import { useStakingStore, AggregatedRestakingEvent } from '../stores/Staking';
 import { STAKING_CONTRACT_ADDRESS } from './Constants';
 
 export enum FilterState {
@@ -168,4 +168,28 @@ function isCurrentMonthAndYear(monthKey: string) {
     const isCurrentYear = date.getFullYear() === now.getFullYear();
     const isCurrentMonth = isCurrentYear && date.getMonth() === now.getMonth();
     return { date, isCurrentMonth, isCurrentYear };
+}
+
+/**
+ * Build a map of rewards grouped by validator address
+ * @param events - Array of staking events to process
+ * @returns Map of validator addresses to their total rewards and event timestamps
+ */
+export function buildRewardsByValidatorMap(events: readonly AggregatedRestakingEvent[]) {
+    const rewardsByValidator = new Map<string, { amount: number, timestamps: number[] }>();
+    for (const event of events) {
+        const validatorAddress = event.sender_address;
+        const existing = rewardsByValidator.get(validatorAddress);
+        const timestamp = new Date(event.time_window).getTime();
+        if (existing) {
+            existing.amount += event.aggregated_value;
+            existing.timestamps.push(timestamp);
+        } else {
+            rewardsByValidator.set(validatorAddress, {
+                amount: event.aggregated_value,
+                timestamps: [timestamp],
+            });
+        }
+    }
+    return rewardsByValidator;
 }

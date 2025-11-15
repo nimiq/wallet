@@ -40,6 +40,8 @@
                     :month="selectedRewardsMonth"
                     :showBackArrow="showRewardsBackArrow"
                     @back="goBackFromRewards"
+                    @show-validators="onShowValidators"
+                    @show-validator="onSelectValidator"
                 />
             </template>
         </transition>
@@ -57,12 +59,23 @@
                 :alternative-action="statusAlternativeAction"
                 :small="false"
             />
-            <ValidatorDetailsOverlay v-else-if="overlay === Overlay.ValidatorDetails"
-                :noButton="page !== Page.ValidatorList"
-                :validator="selectedValidator"
-                @statusChange="onStatusChange"
-                @next="onConfirmValidator"
-            />
+            <transition v-else name="fade" mode="out-in">
+                <ValidatorDetailsOverlay v-if="overlay === Overlay.ValidatorDetails"
+                    :key="'details'"
+                    :noButton="page !== Page.ValidatorList"
+                    :showBackArrow="showValidatorDetailsBackArrow"
+                    :validator="selectedValidator"
+                    @statusChange="onStatusChange"
+                    @next="onConfirmValidator"
+                    @back="goBackFromValidatorDetails"
+                />
+                <ValidatorsListOverlay v-else-if="overlay === Overlay.ValidatorsList"
+                    :key="'list'"
+                    :validators="selectedValidators"
+                    :month="selectedRewardsMonth"
+                    @select-validator="onSelectValidatorFromList"
+                />
+            </transition>
         </template>
     </Modal>
 </template>
@@ -82,6 +95,7 @@ import StakingRewardsPage from './StakingRewardsPage.vue';
 import SelectAccountOverlay from './SelectAccountOverlay.vue';
 import StatusScreen, { State } from '../StatusScreen.vue';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
+import ValidatorsListOverlay from './ValidatorsListOverlay.vue';
 
 enum Page {
     Welcome, // StakingWelcomePage
@@ -94,6 +108,7 @@ enum Page {
 enum Overlay {
     SelectAccount,
     ValidatorDetails,
+    ValidatorsList,
 }
 
 export enum StatusChangeType {
@@ -216,18 +231,42 @@ export default defineComponent({
         const shouldShowOverlay = computed(() =>
             overlay.value === Overlay.SelectAccount
             || statusType.value !== StatusChangeType.NONE
-            || overlay.value === Overlay.ValidatorDetails,
+            || overlay.value === Overlay.ValidatorDetails
+            || overlay.value === Overlay.ValidatorsList,
         );
 
         /* Event Handlers */
         const selectedValidator = ref<Validator | null>(null);
+        const selectedValidators = ref<Validator[]>([]);
+        const showValidatorDetailsBackArrow = ref(false);
+
         function onSelectValidator(validator: Validator) {
             selectedValidator.value = validator;
+            showValidatorDetailsBackArrow.value = false;
             overlay.value = Overlay.ValidatorDetails;
+        }
+
+        function onSelectValidatorFromList(validator: Validator) {
+            selectedValidator.value = validator;
+            showValidatorDetailsBackArrow.value = true;
+            overlay.value = Overlay.ValidatorDetails;
+        }
+
+        function onShowValidators(validators: Validator[]) {
+            selectedValidators.value = validators;
+            showValidatorDetailsBackArrow.value = false;
+            overlay.value = Overlay.ValidatorsList;
+        }
+
+        function goBackFromValidatorDetails() {
+            selectedValidator.value = null;
+            showValidatorDetailsBackArrow.value = false;
+            overlay.value = Overlay.ValidatorsList;
         }
 
         function onConfirmValidator() {
             selectedValidator.value = null;
+            showValidatorDetailsBackArrow.value = false;
             overlay.value = null;
             page.value = Page.Graph;
         }
@@ -279,11 +318,16 @@ export default defineComponent({
             invalidAccount,
             isStaking,
             selectedValidator,
+            selectedValidators,
+            showValidatorDetailsBackArrow,
 
             // Staking methods / handlers
             adjustStake,
             switchValidator,
             onSelectValidator,
+            onSelectValidatorFromList,
+            onShowValidators,
+            goBackFromValidatorDetails,
             onConfirmValidator,
 
             // Rewards
@@ -314,6 +358,7 @@ export default defineComponent({
         SelectAccountOverlay,
         StatusScreen,
         ValidatorDetailsOverlay,
+        ValidatorsListOverlay,
     },
 });
 </script>
@@ -346,6 +391,17 @@ export default defineComponent({
 
     .fade-enter,
     .fade-leave-to {
+        opacity: 0;
+    }
+
+    // Fade transition for validator overlays
+    ::v-deep .fade-enter-active,
+    ::v-deep .fade-leave-active {
+        transition: opacity 300ms var(--nimiq-ease);
+    }
+
+    ::v-deep .fade-enter,
+    ::v-deep .fade-leave-to {
         opacity: 0;
     }
 </style>

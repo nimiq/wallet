@@ -116,7 +116,7 @@ msgstr ""
 msgid "+{n} more"
 msgstr ""
 
-#: src/components/StakingRewardsListItem.vue:39
+#: src/components/StakingRewardsListItem.vue:40
 msgid "+{validatorCount} more"
 msgstr ""
 
@@ -657,7 +657,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:115
+#: src/components/staking/ValidatorDetailsOverlay.vue:119
 msgid "Changing validator"
 msgstr ""
 
@@ -718,7 +718,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:196
+#: src/components/staking/StakingModal.vue:211
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr ""
@@ -1209,7 +1209,7 @@ msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
-#: src/components/staking/StakingRewardsPage.vue:42
+#: src/components/staking/StakingRewardsPage.vue:52
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1265,6 +1265,10 @@ msgstr ""
 
 #: src/components/modals/SendModal.vue:540
 msgid "free"
+msgstr ""
+
+#: src/components/staking/ValidatorsListOverlay.vue:159
+msgid "From {day} {month}"
 msgstr ""
 
 #: src/components/NetworkMapPeerList.vue:12
@@ -1359,7 +1363,7 @@ msgstr ""
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
 #: src/components/modals/UsdtTransactionModal.vue:167
-#: src/components/staking/StakingRewardsPage.vue:52
+#: src/components/staking/StakingRewardsPage.vue:62
 msgid "Historic value"
 msgstr ""
 
@@ -1673,6 +1677,12 @@ msgstr ""
 msgid "More locations will be supported in the future."
 msgstr ""
 
+#: src/components/staking/StakingRewardsPage.vue:21
+msgid ""
+"Multiple\n"
+"Validators"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
 msgstr ""
@@ -1681,6 +1691,10 @@ msgstr ""
 msgid ""
 "Multiple addresses and Login Files\n"
 "are supported by new accounts only."
+msgstr ""
+
+#: src/components/staking/ValidatorsListOverlay.vue:5
+msgid "Multiple Validators"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:77
@@ -1892,7 +1906,7 @@ msgstr ""
 msgid "Payments, got it"
 msgstr ""
 
-#: src/components/staking/StakingOverview.vue:16
+#: src/components/staking/StakingOverview.vue:19
 msgid "Payout ready"
 msgstr ""
 
@@ -2505,7 +2519,7 @@ msgstr ""
 #: src/components/staking/StakingGraphPage.vue:288
 #: src/components/staking/StakingInfoPage.vue:298
 #: src/components/staking/StakingInfoPage.vue:381
-#: src/components/staking/ValidatorDetailsOverlay.vue:177
+#: src/components/staking/ValidatorDetailsOverlay.vue:181
 msgid "Something went wrong"
 msgstr ""
 
@@ -2550,7 +2564,7 @@ msgid "Stake NIM to generate rewards for securing the network."
 msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:22
-#: src/components/staking/StakingOverview.vue:8
+#: src/components/staking/StakingOverview.vue:11
 msgid "staked"
 msgstr ""
 
@@ -2587,7 +2601,7 @@ msgstr ""
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:161
+#: src/components/staking/ValidatorDetailsOverlay.vue:165
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
@@ -2865,7 +2879,7 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:224
 #: src/components/modals/TransactionModal.vue:209
 #: src/components/modals/TransactionModal.vue:234
-#: src/components/staking/StakingRewardsPage.vue:54
+#: src/components/staking/StakingRewardsPage.vue:64
 msgid "This historic value is based on an average of cross-exchange prices. It might vary due to market volatility and liquidity."
 msgstr ""
 
@@ -3058,6 +3072,10 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
+#: src/components/staking/ValidatorsListOverlay.vue:43
+msgid "unavailable"
+msgstr ""
+
 #: src/composables/useTransactionInfo.ts:149
 msgid "Unclaimed Cashlink"
 msgstr ""
@@ -3094,7 +3112,7 @@ msgid "Unstake"
 msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:94
-#: src/components/staking/StakingOverview.vue:19
+#: src/components/staking/StakingOverview.vue:22
 msgid "Unstaking"
 msgstr ""
 
@@ -3105,6 +3123,10 @@ msgstr ""
 
 #: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
+msgstr ""
+
+#: src/components/staking/ValidatorsListOverlay.vue:161
+msgid "Until {day} {month}"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:15

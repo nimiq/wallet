@@ -12,14 +12,24 @@
         <PageBody class="flex-column">
             <div class="flex-row sender-recipient" v-if="monthlyReward && monthlyReward.validators.length">
                 <div class="address-info flex-column">
-                    <div class="identicon">
-                        <ValidatorIcon :validator="
-                            validatorList[monthlyReward.validators[0]]
-                            || { address: monthlyReward.validators[0] }
-                        "/>
-                    </div>
-                    <span class="label">{{ validatorName }}</span>
-                    <AddressDisplay :address="monthlyReward.validators[0]" copyable/>
+                    <template v-if="hasMultipleValidators">
+                        <ValidatorIconStack
+                            :validators="validatorObjects"
+                            :interactive="true"
+                            @click.native="onValidatorStackClick"
+                        />
+                        <span class="label multiple-validators">{{ $t('Multiple\nValidators') }}</span>
+                    </template>
+                    <template v-else>
+                        <div class="identicon" @click="onValidatorClick">
+                            <ValidatorIcon :validator="
+                                validatorList[monthlyReward.validators[0]]
+                                || { address: monthlyReward.validators[0] }
+                            "/>
+                        </div>
+                        <span class="label">{{ validatorName }}</span>
+                        <AddressDisplay :address="monthlyReward.validators[0]" copyable/>
+                    </template>
                 </div>
                 <ArrowRightIcon class="arrow"/>
                 <div class="address-info flex-column">
@@ -81,6 +91,7 @@ import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '@/lib/StakingUti
 import { useStakingStore } from '@/stores/Staking';
 import { useAddressStore } from '@/stores/Address';
 import ValidatorIcon from './ValidatorIcon.vue';
+import ValidatorIconStack from './ValidatorIconStack.vue';
 import Amount from '../Amount.vue';
 import TextShimmer from './TextShimmer.vue';
 
@@ -96,7 +107,7 @@ export default defineComponent({
             default: false,
         },
     },
-    setup(props) {
+    setup(props, context) {
         const { validators: validatorList, monthlyRewards, stakingEvents } = useStakingStore();
         const { activeAddress, activeAddressInfo } = useAddressStore();
         const constants = { FIAT_PRICE_UNAVAILABLE };
@@ -165,12 +176,36 @@ export default defineComponent({
         ], recomputeFiat, { lazy: false });
 
         const myLabel = computed(() => activeAddressInfo.value?.label);
+
+        // Get all validator objects for this month's rewards
+        const validatorObjects = computed(() => {
+            if (!monthlyReward.value || !monthlyReward.value.validators.length) return [];
+            return monthlyReward.value.validators.map((validatorAddress) =>
+                validatorList.value[validatorAddress] || { address: validatorAddress },
+            );
+        });
+
+        const hasMultipleValidators = computed(() =>
+            monthlyReward.value && monthlyReward.value.validators.length > 1,
+        );
+
         const validatorName = computed(() => {
             if (!monthlyReward.value || !monthlyReward.value.validators.length) return '';
             const validatorAddress = monthlyReward.value.validators[0];
             const validator = validatorList.value[validatorAddress] || { address: validatorAddress };
             return 'name' in validator ? validator.name : validatorAddress;
         });
+
+        function onValidatorStackClick() {
+            context.emit('show-validators', validatorObjects.value);
+        }
+
+        function onValidatorClick() {
+            if (!monthlyReward.value || !monthlyReward.value.validators.length) return;
+            const validatorAddress = monthlyReward.value.validators[0];
+            const validator = validatorList.value[validatorAddress] || { address: validatorAddress };
+            context.emit('show-validator', validator);
+        }
 
         return {
             constants,
@@ -185,6 +220,10 @@ export default defineComponent({
             myLabel,
             validatorList,
             validatorName,
+            validatorObjects,
+            hasMultipleValidators,
+            onValidatorStackClick,
+            onValidatorClick,
         };
     },
     components: {
@@ -197,6 +236,7 @@ export default defineComponent({
         FiatAmount,
         Tooltip,
         ValidatorIcon,
+        ValidatorIconStack,
         TextShimmer,
     },
 });
@@ -258,11 +298,21 @@ export default defineComponent({
     width: 19rem;
 }
 
+.validator-icon-stack {
+    margin-top: -1rem;
+}
+
 .identicon {
     position: relative;
     width: 9rem;
     height: 9rem;
     margin: -0.5rem 0;
+    cursor: pointer;
+    transition: transform 200ms var(--nimiq-ease);
+
+    &:hover {
+        transform: scale(1.05);
+    }
 
     > .identicon, > .validator-icon {
         margin: 0;
@@ -283,11 +333,19 @@ export default defineComponent({
 }
 
 .label {
-    margin: 2rem 0 1rem;
-    white-space: nowrap;
     overflow: hidden;
     width: 100%;
-    mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+
+    &.multiple-validators {
+        white-space: pre-line;
+        margin-top: .5rem;
+    }
+
+    &:not(.multiple-validators) {
+        margin: 2rem 0 1rem;
+        white-space: nowrap;
+        mask: linear-gradient(90deg , white, white calc(100% - 3rem), rgba(255,255,255, 0));
+    }
 }
 
 .nq-input-s {

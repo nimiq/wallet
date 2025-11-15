@@ -118,7 +118,7 @@ export default defineComponent({
         const monthlyReward = computed(() => monthlyRewards.value.get(props.month));
 
         // Calculate fiat value using the composable
-        const { fiatValue, fiatCurrency, constants } = useMonthlyRewardFiatValue(
+        const { fiatValue, fiatCurrency } = useMonthlyRewardFiatValue(
             computed(() => props.month),
             computed(() => monthlyReward.value?.total || 0),
             stakingEvents,
@@ -161,7 +161,6 @@ export default defineComponent({
         }
 
         return {
-            constants,
             fiatHistoricValue,
             fiatHistoricCurrency,
             isFiatHistoricUnavailable,

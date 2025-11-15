@@ -48,7 +48,7 @@
             <Amount :amount="monthlyReward" class="amount"/>
             <div v-if="fiatValue === undefined" class="fiat-amount fiat-loading">&nbsp;</div>
             <FiatAmount
-                v-else-if="fiatValue !== constants.FIAT_PRICE_UNAVAILABLE"
+                v-else-if="fiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
                 :amount="fiatValue"
                 :currency="fiatCurrency"
                 class="fiat-amount"
@@ -63,11 +63,12 @@ import { defineComponent, computed } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import { useRouter, RouteName } from '@/router';
 import { useStakingStore } from '@/stores/Staking';
-import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../lib/StakingUtils';
-import { useMonthlyRewardFiatValue } from '../composables/useMonthlyRewardFiatValue';
-import ValidatorIcon from './staking/ValidatorIcon.vue';
-import Amount from './Amount.vue';
-import TextShimmer from './staking/TextShimmer.vue';
+import * as Constants from '../../lib/Constants';
+import { isCurrentMonthAndStakingOngoing, getMonthLabel } from '../../lib/StakingUtils';
+import { useMonthlyRewardFiatValue } from '../../composables/useMonthlyRewardFiatValue';
+import ValidatorIcon from './ValidatorIcon.vue';
+import Amount from '../Amount.vue';
+import TextShimmer from './TextShimmer.vue';
 
 export default defineComponent({
     name: 'StakingRewardsListItem',
@@ -108,7 +109,7 @@ export default defineComponent({
         const showOngoingIndicator = computed(() => isCurrentMonthAndStakingOngoing(props.month));
 
         // Calculate fiat value using month-based logic via composable
-        const { fiatValue, fiatCurrency, constants } = useMonthlyRewardFiatValue(
+        const { fiatValue, fiatCurrency } = useMonthlyRewardFiatValue(
             computed(() => props.month),
             computed(() => props.monthlyReward),
             stakingEvents,
@@ -124,13 +125,13 @@ export default defineComponent({
         };
 
         return {
+            Constants,
             openRewardsHistory,
             monthLabel,
             validators,
             showOngoingIndicator,
             fiatValue,
             fiatCurrency,
-            constants,
         };
     },
     components: {
@@ -143,8 +144,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "../scss/variables.scss";
-@import "../scss/mixins.scss";
+@import "../../scss/variables.scss";
+@import "../../scss/mixins.scss";
 
 .staking-reward-item {
     display: flex;

@@ -48,7 +48,7 @@
                     <div class="details-row flex-row row">
                         <div v-if="totalRewardsFiatValue === undefined" class="fiat-loading-placeholder"></div>
                         <FiatAmount
-                            v-else-if="totalRewardsFiatValue !== constants.FIAT_PRICE_UNAVAILABLE"
+                            v-else-if="totalRewardsFiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
                             :amount="totalRewardsFiatValue"
                             :currency="fiatCurrency"
                             value-mask
@@ -125,7 +125,7 @@ import { useWindowSize } from '@/composables/useWindowSize';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
-import { MIN_STAKE } from '../../lib/Constants';
+import * as Constants from '../../lib/Constants';
 
 import Amount from '../Amount.vue';
 import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
@@ -140,7 +140,7 @@ import { useNetworkStore } from '../../stores/Network';
 import { getNetworkClient } from '../../network';
 import { reportToSentry } from '../../lib/Sentry';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
-import StakingRewardsListItem from '../StakingRewardsListItem.vue';
+import StakingRewardsListItem from './StakingRewardsListItem.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
 import LoadingList, { LoadingListType } from '../LoadingList.vue';
 
@@ -170,7 +170,7 @@ export default defineComponent({
         const scrollerBuffer = 300;
 
         // Calculate total rewards fiat value using month-based logic via composable
-        const { totalRewardsFiatValue, fiatCurrency, constants } = useTotalRewardsFiatValue(
+        const { totalRewardsFiatValue, fiatCurrency } = useTotalRewardsFiatValue(
             monthlyRewards,
             stakingEvents,
         );
@@ -422,7 +422,6 @@ export default defineComponent({
             unstakeAll,
             canSwitchValidator,
             consensus,
-            MIN_STAKE,
             selectedRange,
             rewards,
             itemSize,
@@ -430,7 +429,7 @@ export default defineComponent({
             LoadingListType,
             totalRewardsFiatValue,
             fiatCurrency,
-            constants,
+            Constants,
         };
     },
     components: {

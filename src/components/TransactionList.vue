@@ -93,7 +93,7 @@ import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyD
 import { createCashlink } from '../hub';
 import { useConfig } from '../composables/useConfig';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
-import StakingRewardsListItem from './StakingRewardsListItem.vue';
+import StakingRewardsListItem from './staking/StakingRewardsListItem.vue';
 import { useTransactionList } from '../composables/useTransactionList';
 
 export default defineComponent({

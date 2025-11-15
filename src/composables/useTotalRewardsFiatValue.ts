@@ -118,6 +118,5 @@ export function useTotalRewardsFiatValue(
     return {
         totalRewardsFiatValue,
         fiatCurrency,
-        constants: { FIAT_PRICE_UNAVAILABLE },
     };
 }

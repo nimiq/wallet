@@ -40,7 +40,7 @@
                     <div class="details-row flex-row">
                         <div v-if="totalRewardsFiatValue === undefined" class="fiat-loading-placeholder"></div>
                         <FiatAmount
-                            v-else-if="totalRewardsFiatValue !== constants.FIAT_PRICE_UNAVAILABLE"
+                            v-else-if="totalRewardsFiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
                             :amount="totalRewardsFiatValue"
                             :currency="fiatCurrency"
                             value-mask
@@ -89,6 +89,7 @@ import ShortAddress from '../ShortAddress.vue';
 import { useNetworkStore } from '../../stores/Network';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
+import * as Constants from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
@@ -114,7 +115,7 @@ export default defineComponent({
         });
 
         // Calculate total rewards fiat value using month-based logic via composable
-        const { totalRewardsFiatValue, fiatCurrency, constants } = useTotalRewardsFiatValue(
+        const { totalRewardsFiatValue, fiatCurrency } = useTotalRewardsFiatValue(
             monthlyRewards,
             stakingEvents,
         );
@@ -162,7 +163,7 @@ export default defineComponent({
             openValidatorDetailsModal,
             totalRewardsFiatValue,
             fiatCurrency,
-            constants,
+            Constants,
         };
     },
     components: {

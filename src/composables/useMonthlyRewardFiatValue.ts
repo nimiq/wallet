@@ -97,6 +97,5 @@ export function useMonthlyRewardFiatValue(
     return {
         fiatValue,
         fiatCurrency,
-        constants: { FIAT_PRICE_UNAVAILABLE },
     };
 }

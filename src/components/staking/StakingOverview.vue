@@ -38,7 +38,7 @@
                         +<Amount :amount="restakingRewards" value-mask/>
                     </div>
                     <div class="details-row flex-row">
-                        <div v-if="totalRewardsFiatValue === undefined" class="fiat-loading-placeholder"></div>
+                        <div v-if="totalRewardsFiatValue === undefined" class="amount-loading-placeholder"></div>
                         <FiatAmount
                             v-else-if="totalRewardsFiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
                             :amount="totalRewardsFiatValue"
@@ -277,8 +277,8 @@ export default defineComponent({
             opacity: 1;
         }
 
-        .fiat-loading-placeholder {
-            @include fiat-loading-placeholder(5rem, 2rem, rgba(255, 255, 255, 0.3));
+        .amount-loading-placeholder {
+            @include amount-loading-placeholder(5rem, 2rem, rgba(255, 255, 255, 0.3));
             margin-top: 0.25rem;
             margin-bottom: 0.25rem;
         }

@@ -196,7 +196,7 @@
 }
 
 // Breathing animation for loading placeholders
-@keyframes fiat-loading-breathe {
+@keyframes amount-loading-breathe {
     0%, 100% {
         opacity: 0.4;
     }
@@ -205,13 +205,13 @@
     }
 }
 
-// Mixin for fiat loading placeholder styling
-@mixin fiat-loading-placeholder($width: 5rem, $height: 1.25rem, $background: var(--text-12)) {
+// Mixin for amount loading placeholder styling
+@mixin amount-loading-placeholder($width: 5rem, $height: 1.25rem, $background: var(--text-12)) {
     min-width: $width;
     height: $height;
     background-color: $background;
     border-radius: 0.5rem;
-    animation: fiat-loading-breathe 1s infinite;
+    animation: amount-loading-breathe 1s infinite;
 }
 
 // Mixin for fiat unavailable state

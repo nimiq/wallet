@@ -369,7 +369,7 @@ svg {
             }
 
             &.fiat-loading {
-                @include fiat-loading-placeholder(4rem, 1.6rem);
+                @include amount-loading-placeholder(4rem, 1.6rem);
             }
 
             &.fiat-unavailable {

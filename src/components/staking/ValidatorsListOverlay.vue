@@ -42,7 +42,7 @@
                                     class="unavailable">
                                     {{ $t('unavailable') }}
                                 </span>
-                                <div v-else class="fiat-loading-placeholder"></div>
+                                <div v-else class="amount-loading-placeholder"></div>
                             </div>
                         </div>
                     </div>
@@ -410,8 +410,8 @@ export default defineComponent({
                 opacity: 0.5;
             }
 
-            .fiat-loading-placeholder {
-                @include fiat-loading-placeholder(5rem, 1.25rem);
+            .amount-loading-placeholder {
+                @include amount-loading-placeholder(5rem, 1.25rem);
             }
         }
     }

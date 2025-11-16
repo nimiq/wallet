@@ -357,7 +357,7 @@ export default defineComponent({
         line-height: 1;
 
         &.fiat-loading {
-            @include fiat-loading-placeholder(8rem, 1.8rem);
+            @include amount-loading-placeholder(8rem, 1.8rem);
         }
 
         &.fiat-unavailable {

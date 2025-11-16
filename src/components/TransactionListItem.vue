@@ -61,8 +61,8 @@
             <Amount :amount="transaction.value" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
-                <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
-                <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                <div v-else-if="fiat.value === undefined" class="fiat-amount fiat-loading">&nbsp;</div>
+                <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount fiat-unavailable">
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
@@ -188,6 +188,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "../scss/variables.scss";
+@import "../scss/mixins.scss";
 
 svg {
     display: block;
@@ -365,6 +366,14 @@ svg {
 
             &.loading {
                 min-height: var(--fiat-amount-height); // to avoid jumping when fiat value loaded
+            }
+
+            &.fiat-loading {
+                @include fiat-loading-placeholder(4rem, 1.6rem);
+            }
+
+            &.fiat-unavailable {
+                @include fiat-unavailable;
             }
         }
 

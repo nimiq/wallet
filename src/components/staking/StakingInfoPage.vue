@@ -516,7 +516,7 @@ export default defineComponent({
 
     .rewards-and-chart {
         gap: 1rem;
-        overflow-y: auto;
+        overflow-x: auto;
         margin-bottom: 1rem;
 
         @extend %custom-scrollbar;
@@ -533,8 +533,9 @@ export default defineComponent({
 
         .rewards {
             border-radius: 0.75rem;
-            justify-items:left;
+            justify-items: left;
             padding-bottom: 2rem;
+            flex-shrink: 0;
 
             h2 {
                 color: white;
@@ -574,7 +575,8 @@ export default defineComponent({
         }
 
         .chart {
-            position:relative;
+            position: relative;
+            min-width: 200px;
 
             h2 { position: absolute }
         }

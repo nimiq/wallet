@@ -10,6 +10,7 @@
 import { defineComponent } from '@vue/composition-api';
 import { Validator } from '../../../stores/Staking';
 import ValidatorIcon from '../ValidatorIcon.vue';
+import ShortAddress from '../../ShortAddress.vue';
 
 export default defineComponent({
     props: {
@@ -20,6 +21,7 @@ export default defineComponent({
     },
     components: {
         ValidatorIcon,
+        ShortAddress,
     },
 });
 

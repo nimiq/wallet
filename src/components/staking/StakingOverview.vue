@@ -64,6 +64,7 @@
                         :score="validator.score.total"
                         borderless
                     />
+                    <div v-else-if="'name' in validator" class="amount-loading-placeholder"></div>
                     <span v-if="'score' in validator || 'annualReward' in validator" class="dot"></span>
                     <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward" />
                 </div>
@@ -363,6 +364,10 @@ export default defineComponent({
             ::v-deep .validator-trust-score {
                 font-size: var(--small-size);
                 height: auto;
+            }
+
+            .amount-loading-placeholder {
+                @include amount-loading-placeholder(3.5rem, 2rem);
             }
         }
     }

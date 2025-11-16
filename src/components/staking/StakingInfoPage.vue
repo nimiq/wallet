@@ -39,14 +39,17 @@
                     </Tooltip>
                 </div>
             </div>
-            <div class="flex-row rewards-and-chart">
-                <div class="flex-column nq-green-bg rewards" v-if="restakingRewards">
+            <div class="flex-row rewards-and-chart" v-if="stake">
+                <div class="flex-column nq-green-bg rewards">
                     <h2 class="flex-row nq-label flex-grow">{{ $t('Rewards') }}</h2>
                     <div class="amount-row flex-row row">
-                        +<Amount :amount="restakingRewards" value-mask/>
+                        <template v-if="!!restakingRewards">
+                            +<Amount :amount="restakingRewards" value-mask/>
+                        </template>
+                        <div v-else class="amount-loading-placeholder"></div>
                     </div>
                     <div class="details-row flex-row row">
-                        <div v-if="totalRewardsFiatValue === undefined" class="fiat-loading-placeholder"></div>
+                        <div v-if="!totalRewardsFiatValue" class="amount-loading-placeholder"></div>
                         <FiatAmount
                             v-else-if="totalRewardsFiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
                             :amount="totalRewardsFiatValue"
@@ -544,6 +547,10 @@ export default defineComponent({
                 line-height: 2.5rem;
                 align-items: center;
                 gap: 0.5rem;
+
+                .amount-loading-placeholder {
+                    @include amount-loading-placeholder(12rem, 2.5rem, rgba(255, 255, 255, 0.3));
+                }
             }
 
             .details-row {
@@ -554,8 +561,8 @@ export default defineComponent({
                 align-items: center;
                 gap: 0.75rem;
 
-                .fiat-loading-placeholder {
-                    @include fiat-loading-placeholder(6rem, 2rem, rgba(255, 255, 255, 0.3));
+                .amount-loading-placeholder {
+                    @include amount-loading-placeholder(6rem, 2rem, rgba(255, 255, 255, 0.3));
                     margin-top: 0.25rem;
                     margin-bottom: 0.25rem;
                 }

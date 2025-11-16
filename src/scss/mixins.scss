@@ -206,7 +206,7 @@
 }
 
 // Mixin for fiat loading placeholder styling
-@mixin fiat-loading-placeholder($width: 5rem, $height: 1.25rem, $background: var(--text-6)) {
+@mixin fiat-loading-placeholder($width: 5rem, $height: 1.25rem, $background: var(--text-12)) {
     min-width: $width;
     height: $height;
     background-color: $background;

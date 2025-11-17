@@ -126,7 +126,7 @@ msgstr ""
 msgid "+{n} more"
 msgstr "+另外{n}个"
 
-#: src/components/StakingRewardsListItem.vue:39
+#: src/components/staking/StakingRewardsListItem.vue:40
 msgid "+{validatorCount} more"
 msgstr "+另外{validatorCount}个"
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "15m"
 msgstr "15分钟"
 
-#: src/components/staking/StakingRewardsChart.vue:27
+#: src/components/staking/StakingRewardsChart.vue:30
 msgid "1Y"
 msgstr ""
 
@@ -189,7 +189,7 @@ msgstr "3"
 msgid "30-day Limit"
 msgstr "30天限额"
 
-#: src/components/staking/StakingRewardsChart.vue:33
+#: src/components/staking/StakingRewardsChart.vue:24
 msgid "3M"
 msgstr ""
 
@@ -201,7 +201,7 @@ msgstr ""
 msgid "6h+"
 msgstr "6小时以上"
 
-#: src/components/staking/StakingRewardsChart.vue:30
+#: src/components/staking/StakingRewardsChart.vue:27
 msgid "6M"
 msgstr ""
 
@@ -352,7 +352,7 @@ msgstr "72 小时后"
 msgid "all"
 msgstr "全部"
 
-#: src/components/staking/StakingRewardsChart.vue:24
+#: src/components/staking/StakingRewardsChart.vue:33
 msgid "ALL"
 msgstr ""
 
@@ -693,7 +693,7 @@ msgstr "更改密码"
 msgid "Change your language setting."
 msgstr "更改你的语言设置"
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:115
+#: src/components/staking/ValidatorDetailsOverlay.vue:119
 msgid "Changing validator"
 msgstr ""
 
@@ -754,7 +754,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "点击 “疑难解答” 以了解更多信息"
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:196
+#: src/components/staking/StakingModal.vue:211
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"
@@ -964,7 +964,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:241
+#: src/components/staking/StakingInfoPage.vue:265
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -1253,7 +1253,8 @@ msgstr "正在取得更新"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
-#: src/components/staking/StakingRewardsPage.vue:42
+#: src/components/staking/StakingInfoPage.vue:59
+#: src/components/staking/StakingRewardsPage.vue:52
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1316,6 +1317,10 @@ msgstr ""
 #: src/components/modals/SendModal.vue:540
 msgid "free"
 msgstr "免费"
+
+#: src/components/staking/ValidatorsListOverlay.vue:138
+msgid "From {day} {month}"
+msgstr ""
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1416,7 +1421,7 @@ msgstr "更高层面的去中心化"
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
 #: src/components/modals/UsdtTransactionModal.vue:167
-#: src/components/staking/StakingRewardsPage.vue:52
+#: src/components/staking/StakingRewardsPage.vue:62
 msgid "Historic value"
 msgstr "历史价值"
 
@@ -1744,6 +1749,12 @@ msgstr ""
 msgid "More locations will be supported in the future."
 msgstr "未来将在更多地方支持"
 
+#: src/components/staking/StakingRewardsPage.vue:21
+msgid ""
+"Multiple\n"
+"Validators"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
 msgstr "多个地址"
@@ -1755,6 +1766,10 @@ msgid ""
 msgstr ""
 "多个地址和登录文件\n"
 "仅支持新帐户"
+
+#: src/components/staking/ValidatorsListOverlay.vue:5
+msgid "Multiple Validators"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:77
 #: src/components/modals/StablecoinSendModal.vue:78
@@ -1924,8 +1939,8 @@ msgstr "一个帐户现在可以拥有多个地址"
 msgid "One Account, many Addresses"
 msgstr "一个帐户，多个地址"
 
+#: src/components/staking/StakingRewardsListItem.vue:24
 #: src/components/staking/StakingRewardsPage.vue:8
-#: src/components/StakingRewardsListItem.vue:24
 msgid "Ongoing"
 msgstr ""
 
@@ -1941,7 +1956,7 @@ msgstr "覆盖Keyguard的打开方式"
 msgid "p.a."
 msgstr ""
 
-#: src/components/StakingRewardsListItem.vue:27
+#: src/components/staking/StakingRewardsListItem.vue:27
 msgid "Paid out by {validator}"
 msgstr ""
 
@@ -1971,7 +1986,7 @@ msgstr ""
 msgid "Payments, got it"
 msgstr "付款，收到"
 
-#: src/components/staking/StakingOverview.vue:16
+#: src/components/staking/StakingOverview.vue:19
 msgid "Payout ready"
 msgstr ""
 
@@ -2132,7 +2147,7 @@ msgid ""
 "intro."
 msgstr "在这个{blog_post}中阅读更多信息，或点击下方查看新的钱包介绍。"
 
-#: src/components/staking/StakingInfoPage.vue:86
+#: src/components/staking/StakingInfoPage.vue:96
 msgid "ready for pay out"
 msgstr ""
 
@@ -2295,7 +2310,7 @@ msgstr "重试..."
 msgid "Reward"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:54
+#: src/components/staking/StakingInfoPage.vue:64
 msgid "Reward History"
 msgstr ""
 
@@ -2461,7 +2476,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "正在发送交易"
 
-#: src/components/staking/StakingInfoPage.vue:311
+#: src/components/staking/StakingInfoPage.vue:335
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2606,9 +2621,9 @@ msgstr "跳过"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:298
-#: src/components/staking/StakingInfoPage.vue:381
-#: src/components/staking/ValidatorDetailsOverlay.vue:177
+#: src/components/staking/StakingInfoPage.vue:322
+#: src/components/staking/StakingInfoPage.vue:405
+#: src/components/staking/ValidatorDetailsOverlay.vue:181
 msgid "Something went wrong"
 msgstr "出了些问题"
 
@@ -2653,7 +2668,7 @@ msgid "Stake NIM to generate rewards for securing the network."
 msgstr "质押NIM取得奖励，并确保网络安全"
 
 #: src/components/staking/StakingInfoPage.vue:22
-#: src/components/staking/StakingOverview.vue:8
+#: src/components/staking/StakingOverview.vue:11
 msgid "staked"
 msgstr ""
 
@@ -2666,7 +2681,7 @@ msgstr "质押"
 msgid "Staking overview"
 msgstr ""
 
-#: src/components/StakingRewardsListItem.vue:20
+#: src/components/staking/StakingRewardsListItem.vue:20
 msgid "Staking rewards"
 msgstr ""
 
@@ -2690,11 +2705,11 @@ msgstr "储藏价值，收到"
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:161
+#: src/components/staking/ValidatorDetailsOverlay.vue:165
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:282
+#: src/components/staking/StakingInfoPage.vue:306
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2706,7 +2721,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:367
+#: src/components/staking/StakingInfoPage.vue:391
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2985,7 +3000,7 @@ msgstr "关注功能，而非货币"
 #: src/components/modals/BtcTransactionModal.vue:224
 #: src/components/modals/TransactionModal.vue:209
 #: src/components/modals/TransactionModal.vue:234
-#: src/components/staking/StakingRewardsPage.vue:54
+#: src/components/staking/StakingRewardsPage.vue:64
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."
@@ -3183,6 +3198,12 @@ msgstr "交易时长"
 msgid "Type to search..."
 msgstr ""
 
+#: src/components/staking/StakingOverview.vue:48
+#: src/components/staking/StakingRewardsListItem.vue:56
+#: src/components/staking/ValidatorsListOverlay.vue:43
+msgid "unavailable"
+msgstr ""
+
 #: src/composables/useTransactionInfo.ts:149
 msgid "Unclaimed Cashlink"
 msgstr "未认领的现金链接"
@@ -3223,8 +3244,8 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:94
-#: src/components/staking/StakingOverview.vue:19
+#: src/components/staking/StakingInfoPage.vue:104
+#: src/components/staking/StakingOverview.vue:22
 msgid "Unstaking"
 msgstr ""
 
@@ -3235,6 +3256,10 @@ msgstr "尚未支持的货币"
 #: src/swap-kyc-handler.ts:242
 msgid "Unsupported KYC provider {provider}."
 msgstr "尚未支持的 KYC 提供商 {provider}。"
+
+#: src/components/staking/ValidatorsListOverlay.vue:140
+msgid "Until {day} {month}"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"

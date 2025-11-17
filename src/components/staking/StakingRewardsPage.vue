@@ -11,7 +11,7 @@
         </PageHeader>
         <PageBody class="flex-column">
             <div class="flex-row sender-recipient" v-if="monthlyReward && monthlyReward.validators.length">
-                <div class="address-info flex-column">
+                <div class="sender address-info flex-column">
                     <template v-if="hasMultipleValidators">
                         <ValidatorIconStack
                             :validators="validatorObjects"
@@ -32,7 +32,7 @@
                     </template>
                 </div>
                 <ArrowRightIcon class="arrow"/>
-                <div class="address-info flex-column">
+                <div class="recipient address-info flex-column">
                     <Identicon :address="activeAddress"/>
                     <span class="label">{{ myLabel }}</span>
                     <AddressDisplay :address="activeAddress" copyable/>
@@ -259,11 +259,12 @@ export default defineComponent({
     width: 9rem;
     height: 9rem;
     margin: -0.5rem 0;
-    cursor: pointer;
     transition: transform 200ms var(--nimiq-ease);
 
-    &:hover {
-        transform: scale(1.05);
+    .sender & {
+        cursor: pointer;
+
+        &:hover { transform: scale(1.05) }
     }
 
     > .identicon, > .validator-icon {

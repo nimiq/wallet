@@ -26,7 +26,7 @@ export default {
         prestakingStartBlock: 3_023_730,
         prestakingEndBlock: 3_028_050,
         transitionBlock: 3_032_010,
-        validatorsApiBase: 'https://validators-api-testnet.nuxt.dev',
+        validatorsApiBase: '',
         validatorsPath: '/api/v1/validators',
         stakeEventsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/staker/ADDRESS/events/restake-grouped',
         genesis: {

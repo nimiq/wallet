@@ -51,7 +51,7 @@
                 </radialGradient>
             </defs>
         </svg>
-        <div class="shimmer"></div>
+        <div class="shimmer" :class="color"></div>
     </div>
 </template>
 
@@ -124,10 +124,13 @@ export default defineComponent({
     position: relative;
 }
 
+.shimmer.white { --shimmer-color: #fff }
+.shimmer.gray { --shimmer-color: rgba(31, 35, 72, 0.15) }
+.shimmer.green { --shimmer-color: #13B59D }
+
 .shimmer {
     --shimmer-size: 40px;
     --shimmer-border-size: 2.5px;
-    --shimmer-color: rgba(255, 255, 255, .8);
     --shimmer-gradient: radial-gradient(circle, #fff 0%, transparent calc(var(--shimmer-size) * .6));
     --shimmer-gradient-position: center calc(var(--shimmer-size) * .6);
 
@@ -141,6 +144,8 @@ export default defineComponent({
 
     border: var(--shimmer-border-size) solid var(--shimmer-color);
     border-radius: 50%;
+
+    opacity: .8;
 
     mask-image: var(--shimmer-gradient);
     mask-position: var(--shimmer-gradient-position);

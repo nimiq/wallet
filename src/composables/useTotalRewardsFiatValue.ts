@@ -39,7 +39,9 @@ export function useTotalRewardsFiatValue(
 
     const calculateTotalRewardsFiatValue = async () => {
         if (!monthlyRewards.value.size) {
-            totalRewardsFiatValue.value = undefined;
+            // If staking events haven't been loaded yet (null), keep as undefined (loading state)
+            // If staking events have been loaded but there are no rewards, set to 0
+            totalRewardsFiatValue.value = stakingEvents.value === null ? undefined : 0;
             return;
         }
 
@@ -131,7 +133,7 @@ export function useTotalRewardsFiatValue(
     watch([
         () => monthlyRewards.value.size,
         fiatCurrency,
-        () => stakingEvents.value?.length,
+        stakingEvents, // Watch stakingEvents to detect when it changes from null to loaded
         exchangeRates, // Watch exchange rates for real-time updates
     ], calculateTotalRewardsFiatValue, { lazy: false });
 

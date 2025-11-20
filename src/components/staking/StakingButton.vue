@@ -27,7 +27,6 @@
                     @mousedown.prevent
                 >
                     <StakingIcon
-                        :pulsing="!totalAccountStake && canStake"
                         :disabled="$config.disableNetworkInteraction"
                         :gradients="!showText"
                     />

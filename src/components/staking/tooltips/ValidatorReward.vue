@@ -18,8 +18,16 @@ export default defineComponent({
             type: Number,
             required: true,
         },
-        dry: Boolean,
-        percentOnly: Boolean,
+        dry: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
+        percentOnly: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
     },
     setup(props) {
         // Ensure we show at most 3 significant digits (except if the integer part is longer than that)
@@ -53,16 +61,5 @@ export default defineComponent({
     color: var(--text-50);
 
     &.low-reward { color: var(--nimiq-orange) }
-
-    &.dry {
-        box-shadow: inset 0 0 0 .1875rem nimiq-blue(0.15);
-        padding: 0 1.375rem;
-        border-radius: 5rem;
-        height: 3.25rem;
-
-        font-size: var(--small-size);
-        font-weight: 600;
-        color: var(--text-60);
-    }
 }
 </style>

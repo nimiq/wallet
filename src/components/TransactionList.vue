@@ -26,7 +26,7 @@
             <template v-slot:default="{ item, index }">
                 <LoadingList v-if="item.loading" :delay="index * 100" :type="LoadingListType.TRANSACTION" />
                 <div v-else class="list-element" :data-id="index" :data-hash="item.transactionHash">
-                    <div v-if="!item.sender" class="month-label flex-row">
+                    <div v-if="!item.sender && !item.isMonthlyReward" class="month-label flex-row">
                         <label>{{ item.transactionHash }}</label>
                         <div v-if="item.isLatestMonth && isFetchingTxHistory" class="fetching flex-row">
                             <CircleSpinner/>
@@ -39,6 +39,13 @@
                             <span>{{ $t('Failed to fetch transactions') }}</span>
                         </div>
                     </div>
+                    <StakingRewardsListItem
+                        v-else-if="item.isMonthlyReward"
+                        :monthly-reward="item.monthlyReward"
+                        :validators-addresses="item.validators"
+                        :month="getMonthFromReward(item)"
+                        hide-month
+                    />
                     <TransactionListItem v-else :transaction="item"/>
                 </div>
             </template>
@@ -76,62 +83,18 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { CircleSpinner, AlertTriangleIcon } from '@nimiq/vue-components';
-import { AddressBook } from '@nimiq/utils';
 import TransactionListItem from '@/components/TransactionListItem.vue';
-import { useI18n } from '@/lib/useI18n';
 import TestnetFaucet from './TestnetFaucet.vue';
 import CrossCloseButton from './CrossCloseButton.vue';
 import { useAddressStore } from '../stores/Address';
-import { toMs, Transaction, TransactionState } from '../stores/Transactions';
-import { useContactsStore } from '../stores/Contacts';
 import { useNetworkStore } from '../stores/Network';
-import { parseData } from '../lib/DataFormatting';
 import { ENV_MAIN } from '../lib/Constants';
 import { isProxyData, ProxyType, ProxyTransactionDirection } from '../lib/ProxyDetection';
 import { createCashlink } from '../hub';
 import { useConfig } from '../composables/useConfig';
-import { useWindowSize } from '../composables/useWindowSize';
-import { useTransactionInfo } from '../composables/useTransactionInfo';
 import LoadingList, { LoadingListType } from './LoadingList.vue';
-
-function processTimestamp(timestamp: number) {
-    const date: Date = new Date(timestamp);
-
-    return {
-        month: date.getMonth(),
-        year: date.getFullYear(),
-        date,
-    };
-}
-
-function getLocaleMonthStringFromDate(
-    date: Date,
-    locale: string,
-    options: {
-        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow',
-        year?: 'numeric' | '2-digit',
-    },
-) {
-    return new Intl.DateTimeFormat(locale, options).format(date);
-}
-
-// function getCloserElement(element: any, classToFind: string): HTMLElement {
-//     let e = element as HTMLElement;
-//
-//     if (!e) throw new Error('element undefined');
-//
-//     const selector = `.${classToFind}`;
-//
-//     if (e.matches(selector)) return e;
-//
-//     const child = e.querySelector(`.${classToFind}`) as HTMLElement;
-//     if (child) return child;
-//
-//     while (e && !e.matches(selector)) {
-//         e = e.parentNode as HTMLElement;
-//     }
-//     return e;
-// }
+import StakingRewardsListItem from './staking/StakingRewardsListItem.vue';
+import { useTransactionList } from '../composables/useTransactionList';
 
 export default defineComponent({
     props: {
@@ -145,18 +108,12 @@ export default defineComponent({
         },
     },
     setup(props, context) {
-        const { $t, locale } = useI18n();
-        const { activeAddress, state: addresses$, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
+        const { activeAddress, activeAddressInfo, transactionsForActiveAddress } = useAddressStore();
         const { isFetchingTxHistory, fetchedAddresses } = useNetworkStore();
-        const { getLabel: getContactLabel } = useContactsStore();
         const { config } = useConfig();
 
         // Amount of pixel to add to edges of the scrolling visible area to start rendering items further away
         const scrollerBuffer = 300;
-
-        // Height of items in pixel
-        const { isMobile } = useWindowSize();
-        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
 
         const txCount = computed(() => transactionsForActiveAddress.value.length);
 
@@ -171,173 +128,12 @@ export default defineComponent({
             context.emit('unclaimed-cashlink-count', count);
         });
 
-        // Apply search filter
-        const filteredTxs = computed(() => {
-            if (!props.searchString) return transactionsForActiveAddress.value;
-
-            const searchStrings = props.searchString.toUpperCase().split(' ').filter((value) => value !== '');
-
-            return transactionsForActiveAddress.value.filter((tx) => {
-                const transaction = ref<Readonly<Transaction>>(tx);
-                const { peerLabel, data } = useTransactionInfo(transaction);
-
-                const senderLabel = addresses$.addressInfos[tx.sender]
-                    ? addresses$.addressInfos[tx.sender].label
-                    : getContactLabel.value(tx.sender) || AddressBook.getLabel(tx.sender) || '';
-
-                const recipientLabel = addresses$.addressInfos[tx.recipient]
-                    ? addresses$.addressInfos[tx.recipient].label
-                    : getContactLabel.value(tx.recipient) || AddressBook.getLabel(tx.recipient) || '';
-
-                const concatenatedTxStrings = `
-                    ${tx.sender.replace(/\s/g, '')}
-                    ${tx.recipient.replace(/\s/g, '')}
-                    ${peerLabel.value ? (peerLabel.value as string).toUpperCase() : ''}
-                    ${senderLabel ? senderLabel.toUpperCase() : ''}
-                    ${recipientLabel ? recipientLabel.toUpperCase() : ''}
-                    ${data.value.toUpperCase()}
-                    ${parseData(tx.data.raw).toUpperCase()}
-                `;
-                return searchStrings.every((searchString) => concatenatedTxStrings.includes(searchString));
-            });
+        const { transactions, itemSize } = useTransactionList({
+            searchString: computed(() => props.searchString),
+            scrollerBuffer,
         });
 
-        const transactions = computed(() => {
-            // Display loading transactions
-            if (!filteredTxs.value.length && isFetchingTxHistory.value) {
-                // create just as many placeholders that the scroller doesn't start recycling them because the loading
-                // animation breaks for recycled entries due to the animation delay being off.
-                const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
-                const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize.value);
-                return [...new Array(placeholderCount)].map((e, i) => ({ transactionHash: i, loading: true }));
-            }
-
-            if (!filteredTxs.value.length) return [];
-
-            const txs = filteredTxs.value;
-
-            // Inject "This month" label
-            const transactionsWithMonths: any[] = [];
-            let isLatestMonth = true;
-
-            const { month: currentMonth, year: currentYear } = processTimestamp(Date.now());
-            let n = 0;
-            let hasThisMonthLabel = false;
-
-            if (txs[n].state === TransactionState.PENDING) {
-                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
-                isLatestMonth = false;
-                hasThisMonthLabel = true;
-                while (txs[n] && txs[n].state === TransactionState.PENDING) {
-                    transactionsWithMonths.push(txs[n]);
-                    n++;
-                }
-            }
-
-            // Skip expired & invalidated txs
-            while (txs[n] && !txs[n].timestamp) {
-                transactionsWithMonths.push(txs[n]);
-                n++;
-            }
-
-            if (!txs[n]) return transactionsWithMonths; // Address has no more txs
-
-            // Inject month + year labels
-            let { month: txMonth, year: txYear } = processTimestamp(toMs(txs[n].timestamp!));
-            let txDate: Date;
-
-            if (!hasThisMonthLabel && txMonth === currentMonth && txYear === currentYear) {
-                transactionsWithMonths.push({ transactionHash: $t('This month'), isLatestMonth });
-                isLatestMonth = false;
-            }
-
-            let displayedMonthYear = `${currentMonth}.${currentYear}`;
-
-            while (n < txs.length) {
-                // Skip expired & invalidated txs
-                if (!txs[n].timestamp) {
-                    transactionsWithMonths.push(txs[n]);
-                    n++;
-                    continue;
-                }
-
-                ({ month: txMonth, year: txYear, date: txDate } = processTimestamp(toMs(txs[n].timestamp!)));
-                const txMonthYear = `${txMonth}.${txYear}`;
-
-                if (txMonthYear !== displayedMonthYear) {
-                    // Inject a month label
-                    transactionsWithMonths.push({
-                        transactionHash: getLocaleMonthStringFromDate(
-                            txDate,
-                            locale,
-                            {
-                                month: 'long',
-                                year: txYear !== currentYear ? 'numeric' : undefined,
-                            },
-                        ),
-                        isLatestMonth,
-                    });
-                    isLatestMonth = false;
-                    displayedMonthYear = txMonthYear;
-                }
-
-                transactionsWithMonths.push(txs[n]);
-                n++;
-            }
-
-            return transactionsWithMonths;
-        });
-
-        // listening for DOM changes for animations in the virtual scroll
-        // TODO reconsider whether we actually want to have this animation. If so, fix it such that the animation
-        // only runs on transaction hash change.
         const root: Ref<null | HTMLElement> = ref(null);
-        // (() => {
-        //     let txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
-        //     const config = { characterData: true, childList: true, subtree: true };
-        //     const callback = async function mutationCallback(mutationsList: MutationRecord[]) {
-        //         if (!transactions.value.length) return;
-        //         const changedIndexes: string[] = [];
-        //
-        //         for (const mutation of mutationsList) {
-        //             let element: null | HTMLElement = null;
-        //
-        //             if (mutation.target) {
-        //                 if (
-        //                     mutation.type === 'childList'
-        //                     && !(mutation.target as HTMLElement).classList.contains('transaction-list')
-        //                     && !(mutation.target as HTMLElement).classList.contains('resize-observer')
-        //                 ) {
-        //                     element = getCloserElement(mutation.target, 'list-element');
-        //                 } else if (
-        //                     mutation.type === 'characterData'
-        //                     && mutation.target.parentNode
-        //                 ) {
-        //                     element = getCloserElement(mutation.target.parentNode, 'list-element');
-        //                 }
-        //             }
-        //
-        //             if (element && !changedIndexes.includes(element.dataset.id!)) {
-        //                 changedIndexes.push(element.dataset.id!);
-        //
-        //                 const changedTxHash = element.dataset.hash as string;
-        //
-        //                 if (!txHashList.includes(changedTxHash + activeAddress.value)) { // added element
-        //                     txHashList.push(changedTxHash + activeAddress.value);
-        //                     element.classList.remove('fadein');
-        //                     requestAnimationFrame(() => element!.classList.add('fadein'));
-        //                 }
-        //             }
-        //         }
-        //
-        //         txHashList = transactions.value.map((tx: Transaction) => tx.transactionHash + activeAddress.value);
-        //     };
-        //
-        //     const observer = new MutationObserver(callback);
-        //
-        //     onMounted(() => observer.observe(root.value!, config));
-        //     onBeforeUnmount(() => observer.disconnect());
-        // })();
 
         // Does not need to be reactive, as the environment doesn't change during runtime.
         const isMainnet = config.environment === ENV_MAIN;
@@ -385,6 +181,22 @@ export default defineComponent({
             () => !!activeAddress.value && fetchedAddresses.value.includes(activeAddress.value),
         );
 
+        interface MonthlyRewardItem {
+            transactionHash: string;
+            isMonthlyReward?: boolean;
+        }
+
+        function getMonthFromReward(item: MonthlyRewardItem): string {
+            if (typeof item.transactionHash === 'string' && item.transactionHash.startsWith('monthly-reward-')) {
+                const parts = item.transactionHash.split('-');
+                if (parts.length >= 4) {
+                    return `${parts[2]}-${parts[3]}`;
+                }
+                // Invalid format, return empty string
+            }
+            return '';
+        }
+
         return {
             LoadingListType,
             activeAddress,
@@ -399,6 +211,7 @@ export default defineComponent({
             unclaimedCashlinkTxs,
             onCreateCashlink,
             scroller,
+            getMonthFromReward,
         };
     },
     components: {
@@ -408,6 +221,7 @@ export default defineComponent({
         CircleSpinner,
         AlertTriangleIcon,
         LoadingList,
+        StakingRewardsListItem,
     },
 });
 </script>
@@ -577,6 +391,10 @@ export default defineComponent({
             }
         }
     }
+}
+
+.staking-reward-item {
+    padding-left: 2rem;
 }
 
 .after-first-tx {

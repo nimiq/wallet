@@ -16,7 +16,7 @@ import { Validator } from '../../stores/Staking';
 export default defineComponent({
     props: {
         validator: {
-            type: Object as () => Validator,
+            type: Object as () => Validator | { address: string },
             required: true,
         },
     },
@@ -27,10 +27,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-img, .identicon {
+img,
+.validator-icon {
     --size: 5.5rem;
-    width: var(--size);
-    height: var(--size);
+    width: var(--size) !important;
+    height: var(--size) !important;
     display: block;
     object-fit: contain;
 }

@@ -269,10 +269,31 @@ export async function initStorage() {
         initStoreStore(
             useStakingStore(),
             StorageKeys.STAKING,
-            (state) => state, // this is the default, but we still provide it for ts type inference
+            (state) => ({
+                // Only serialize persistable state (avoid nonReactive data)
+                stakeByAddress: state.stakeByAddress,
+                cachedMonthlyRewardsByAddress: Object.fromEntries(
+                    Object.entries(state.cachedMonthlyRewardsByAddress).map(([address, rewardsMap]) => [
+                        address,
+                        Array.from(rewardsMap.entries()),
+                    ]),
+                ),
+            }),
             (storedStakingState) => ({
                 ...storedStakingState,
-                validators: {},
+                // Convert Record<string, Array> back to Record<string, Map> after deserialization
+                cachedMonthlyRewardsByAddress: Object.fromEntries(
+                    Object.entries(storedStakingState.cachedMonthlyRewardsByAddress || {}).map(
+                        ([address, rewardsArray]) => [
+                            address,
+                            new Map(rewardsArray as Array<[string, any]>),
+                        ],
+                    ),
+                ) as Record<string, Map<string, any>>,
+                // Reset non-persisted state
+                chainValidators: {},
+                apiValidators: {},
+                stakingEventsByAddress: {},
             }),
         ),
     ]);
@@ -282,6 +303,7 @@ export async function initStorage() {
     btcTransactionsStore.calculateFiatAmounts();
     usdcTransactionsStore.calculateFiatAmounts();
     usdtTransactionsStore.calculateFiatAmounts();
+    useStakingStore().calculateMonthlyFiatValues();
 }
 
 async function initStoreStore<State extends StateTree, StoredState>(

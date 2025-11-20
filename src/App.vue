@@ -460,6 +460,12 @@ body {
     display: block;
 }
 
+// Ensure back arrow is always clickable above page header content
+.page-header-back-button {
+    z-index: 1;
+    position: relative;
+}
+
 .nq-card {
     padding-bottom: env(safe-area-inset-bottom);
 }

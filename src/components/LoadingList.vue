@@ -55,7 +55,10 @@ export enum LoadingListType {
 
 export default defineComponent({
     props: {
-        delay: Number, // in milliseconds
+        delay: {
+            type: Number, // in milliseconds
+            required: false,
+        },
         length: {
             type: Number,
             default: 1,

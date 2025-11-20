@@ -1,7 +1,7 @@
 <template>
     <div class="validator-details-overlay" :class="{ 'no-button': noButton }">
         <div class="scroll-container">
-            <PageHeader>
+            <PageHeader :backArrow="showBackArrow" @back="$emit('back')">
                 <ValidatorIcon :validator="validator" />
                 <span v-if="'name' in validator">
                     {{ validator.name }}
@@ -85,6 +85,10 @@ export default defineComponent({
         noButton: {
             type: Boolean,
             default: true,
+        },
+        showBackArrow: {
+            type: Boolean,
+            default: false,
         },
     },
     setup(props, context) {
@@ -202,7 +206,6 @@ export default defineComponent({
 
 .validator-details-overlay {
     max-height: calc(100% - 12rem);
-    padding-top: 1rem;
 
     &.no-button {
         max-height: 100%;

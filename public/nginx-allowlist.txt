@@ -38,6 +38,8 @@
 ^\/release-notes[\/#\?]?$
 ^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/staking[\/#\?]?$
+^\/validator-details[\/#\?]?$
+^\/staking\/rewards(?:\/([^\/#\?]+?))?[\/#\?]?$
 ^\/wallet-status[\/#\?]?$
 ^\/settings[\/#\?]?$
 ^\/accounts[\/#\?]?$

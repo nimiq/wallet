@@ -1,5 +1,8 @@
 <template>
-    <div class="staking-button" @click.capture="!totalAccountStake && customClickHandler($event)">
+    <div class="staking-button"
+        @click.capture="!totalAccountStake && customClickHandler($event)"
+        :class="{ 'show-text': showText }"
+    >
         <Tooltip class="staking-feature-tip" ref="$CTATooltip"
             v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
             preferredPosition="bottom"
@@ -18,11 +21,17 @@
         >
             <template #trigger>
                 <button class="stake"
+                    :class="{ 'nq-button-pill green': showText }"
                     :disabled="!canStake"
                     @click="$router.push({ name: RouteName.Staking })"
                     @mousedown.prevent
                 >
-                    <HeroIcon :pulsing="!totalAccountStake && canStake" :disabled="$config.disableNetworkInteraction" />
+                    <StakingIcon
+                        :pulsing="!totalAccountStake && canStake"
+                        :disabled="$config.disableNetworkInteraction"
+                        :gradients="!showText"
+                    />
+                    <span v-if="showText" class="stake-text">{{ $t('Stake') }}</span>
                 </button>
             </template>
             <template #default>
@@ -41,9 +50,16 @@ import { useStakingStore } from '../../stores/Staking';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { MIN_STAKE } from '../../lib/Constants';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
+    props: {
+        showText: {
+            type: Boolean,
+            required: false,
+            default: true,
+        },
+    },
     setup() {
         const router = useRouter();
         const { config } = useConfig();
@@ -129,7 +145,7 @@ export default defineComponent({
     },
     components: {
         Tooltip,
-        HeroIcon,
+        StakingIcon,
     },
 });
 </script>
@@ -140,8 +156,11 @@ export default defineComponent({
     height: 6.75rem;
     margin: -1.25rem 0;
 
-    & ::v-deep svg {
-        font-size: 6.75rem;
+    & ::v-deep svg { font-size: 6.75rem }
+
+    &.show-text {
+        display: flex;
+        align-items: center;
     }
 }
 
@@ -154,6 +173,20 @@ export default defineComponent({
     transition: opacity 1s ease-in-out;
 
     &[disabled] { cursor: not-allowed }
+
+    .show-text & {
+        display: flex;
+        align-items: center;
+        height: 4.25rem;
+        border-radius: 20rem;
+        padding-right: 1.875rem;
+        justify-content: center;
+
+        .staking-icon {
+            margin-right: -1rem;
+            margin-left: -.5rem;
+        }
+    }
 }
 
 .tooltip.staking-feature-tip {
@@ -188,14 +221,16 @@ export default defineComponent({
 .tooltip.staking-button-tooltip {
     z-index: 4;
 
+    --tooltip-offset: 1.2rem;
+
     ::v-deep .trigger::after {
-        transform: translateY(calc(1rem - 1px)) rotate(180deg);
+        transform: translateY(calc(2rem - var(--tooltip-offset) - 1px)) rotate(180deg);
     }
 
     ::v-deep .tooltip-box {
         white-space: nowrap;
         padding: 0.4375rem 1.125rem;
-        transform: translateY(-1rem);
+        transform: translateY(calc(var(--tooltip-offset) * -1));
     }
 }
 </style>

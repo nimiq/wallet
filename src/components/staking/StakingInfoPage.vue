@@ -2,222 +2,197 @@
     <div class="staking-info-page flex-column">
         <PageHeader :backArrow="false">
             <template v-if="validator">
-                <i18n path="Staking with {validator}" :tag="false">
-                    <template v-if="'name' in validator" slot="validator">
-                        {{ validator.name }}
-                    </template>
-                    <template v-else slot="validator">
-                        <ShortAddress :address="validator.address" />
-                    </template>
-                </i18n>
+                {{  $t('Staking overview') }}
             </template>
             <template v-else>
                 {{ $t('Staking') }}
             </template>
+            <template #more>
+                <div class="validator-info-bar flex-row" v-if="validator">
+                    <ValidatorInfoBar :validator="validator" @click="$emit('selectValidator', validator)" />
+                </div>
+            </template>
         </PageHeader>
         <PageBody class="flex-column">
-            <span class="estimated-rewards-overlay">
-                <Tooltip
-                    preferredPosition="bottom right"
-                    :styles="{'width': '32rem', 'margin-left': '-6rem'}"
-                    :container="this"
-                >
-                    <div slot="trigger" class="flex-row">
-                        Estimated rewards <InfoCircleSmallIcon />
+            <div class="flex-row amounts" v-if="stake">
+                <RoundStakingIcon color="green" />
+                <div class="flex-column flex-grow" v-if="stakedBalance">
+                    <div class="amount-staked">
+                        <Amount :amount="stakedBalance" value-mask/>
+                        <span class="sm-hidden">&nbsp;{{ $t('staked') }}</span>
                     </div>
-
-                    <img src="/img/staking/estimated-rewards-projection.svg" alt="Estimated Rewards Projection" />
-                    <p>
-                        Your reward is depending on how many people stake.
-                        The less people stake, the higher your rewards.
-                    </p>
-                    <p class="explainer">
-                        The corridor assumes that between 20% and 80% of all NIM holders stake.
-                    </p>
-                </Tooltip>
-            </span>
-            <div style="height: 150px; background: gainsboro;">
-                <!-- <h2
-                    style="font-size: 32px; font-weigth: bold; color: darkgrey; text-align: center; margin-top: 56px;"
-                >📈 Graph will come here</h2> -->
-            </div>
-            <!-- <StakingGraph :stakedAmount="stake ? stake.balance : 0"
-                :apy="validator && 'annualReward' in validator ? validator.annualReward : 0" :readonly="true"
-                :period="{
-                    s: NOW,
-                    p: 12,
-                    m: MONTH,
-                }"
-                :key="graphUpdate" /> -->
-
-            <div v-if="stake">
-                <span class="nq-label flex-row section-title">
-                    <TwoLeafStakingIcon />
-                    {{ $t('Staked') }}
-                </span>
-                <div class="row flex-row">
-                    <div class="col flex-grow">
-                        <div class="amount-staked">
-                            <Amount :amount="stake.activeBalance" value-mask/>
-                        </div>
-                        <div class="amount-staked-fiat flex-row">
-                            <FiatConvertedAmount :amount="stake.activeBalance" value-mask/>
-                            <span v-if="restakingRewards" class="nq-green flex-row">
-                                +<FiatConvertedAmount :amount="restakingRewards" value-mask/>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex-row">
-                        <Tooltip :disabled="!isStakeDeactivating" preferredPosition="top left"
-                            :container="this" class="adjust-stake">
-                            <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
-                                :disabled="isStakeDeactivating">
-                                {{ $t('Adjust Stake') }}
-                            </button>
-                            <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
-                        </Tooltip>
+                    <div class="amount-staked-fiat flex-row">
+                        <FiatConvertedAmount :amount="stakedBalance" value-mask/>
+                        <span class="dot"></span>
+                        <span>{{ percentage }}%</span>
                     </div>
                 </div>
-                <div v-if="stake && stake.inactiveBalance && hasUnstakableStake"
-                    class="unstaking row flex-row nq-light-blue"
-                >
-                    <span class="nq-button-pill payout-amount">
-                        <Amount :amount="stake.inactiveBalance" value-mask/>
-                    </span>
-                    <button class="nq-button-pill light-blue" @click="() => unstakeAll()">
-                        Pay out <ArrowRightSmallIcon />
-                    </button>
-                    <div class="flex-grow"></div>
-                    <!-- <p>{{ $t('Auto-payout failed, please pay out manually.') }}</p> -->
-                </div>
-                <div v-else-if="stake && stake.inactiveBalance"
-                    class="unstaking row flex-row nq-light-blue"
-                >
-                    <span class="nq-button-s unstaking-amount">
-                        <ArrowDownIcon />
-                        <Amount :amount="stake.inactiveBalance" value-mask/>
-                    </span>
-                    <button class="nq-button-s unstaking-progress">
-                        {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
-                        <!-- TODO: Add cancel function -->
-                    </button>
-                    <div class="flex-grow"></div>
-                </div>
-                <div v-if="stake && stake.retiredBalance"
-                    class="unstaking row flex-row nq-light-blue"
-                >
-                    <span class="nq-button-pill payout-amount">
-                        <Amount :amount="stake.retiredBalance" value-mask/>
-                    </span>
-                    <button class="nq-button-pill light-blue"
-                        @click="() => unstakeAll(true)"
-                        :disabled="consensus !== 'established'"
-                    >
-                        Pay out <ArrowRightSmallIcon />
-                    </button>
-                    <div class="flex-grow"></div>
-                    <!-- <p>{{ $t('Auto-payout failed, please pay out manually.') }}</p> -->
-                    <!-- TODO: Setup watch tower for auto payout -->
+                <div class="flex-column">
+                    <Tooltip :disabled="!isStakeDeactivating" preferredPosition="bottom left"
+                        :container="this" class="adjust-stake">
+                        <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
+                            :disabled="isStakeDeactivating">
+                            <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
+                            <span class="hidden sm-visible">{{ $t('Adjust') }}</span>
+                        </button>
+                        <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
+                    </Tooltip>
                 </div>
             </div>
+            <div class="flex-row rewards-and-chart" v-if="stake">
+                <div class="flex-column nq-green-bg rewards">
+                    <h2 class="flex-row nq-label flex-grow">{{ $t('Rewards') }}</h2>
+                    <div class="amount-row flex-row row">
+                        <template v-if="!!restakingRewards">
+                            +<Amount :amount="restakingRewards" value-mask/>
+                        </template>
+                        <div v-else class="amount-loading-placeholder"></div>
+                    </div>
+                    <div class="details-row flex-row row">
+                        <div v-if="!totalRewardsFiatValue" class="amount-loading-placeholder"></div>
+                        <FiatAmount
+                            v-else-if="totalRewardsFiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
+                            :amount="totalRewardsFiatValue"
+                            :currency="fiatCurrency"
+                            value-mask
+                        />
+                        <span v-else class="fiat-unavailable">{{ $t('Fiat value unavailable') }}</span>
+                    </div>
 
-            <div class="horizontal-separator" />
-
-            <div v-if="validator">
-                <span class="nq-label flex-row section-title">
-                    {{ $t('Validator') }}
-                </span>
-                <div class="row flex-row">
-                    <div class="validator flex-grow">
-                        <div class="validator-top flex-row">
-                            <ValidatorIcon :validator="validator" />
-                            <span v-if="'name' in validator" class="validator-label">{{ validator.name }}</span>
-                            <ShortAddress v-else :address="validator.address"/>
-                        </div>
-                        <div class="validator-bottom flex-row">
-                            <ValidatorTrustScore
-                                v-if="'score' in validator && typeof validator.score.total === 'number'"
-                                :score="validator.score.total"
-                                borderless
+                </div>
+                <div class="flex-column flex-grow chart">
+                    <h2 class="nq-label title">{{  $t('Reward History') }}</h2>
+                    <StakingRewardsChart class="flex-grow" />
+                </div>
+            </div>
+            <div class="flex-row flex-grow history">
+                <div class="scroll-mask top"></div>
+                <RecycleScroller
+                    :items="rewards"
+                    :item-size="itemSize"
+                    key-field="month"
+                    :buffer="scrollerBuffer"
+                    ref="scroller"
+                >
+                    <template v-slot:default="{ item, index }">
+                        <LoadingList v-if="item.loading" :delay="index * 100" :type="LoadingListType.TRANSACTION" />
+                        <div v-else class="list-element" :data-id="index" :data-hash="item.id">
+                            <StakingRewardsListItem
+                                :monthly-reward="item.total"
+                                :month="item.month"
+                                :validators-addresses="item.validators"
+                                hideIcon
                             />
-                            <strong class="dot"
-                                v-if="'annualReward' in validator
-                                    && 'score' in validator
-                                    && typeof validator.score.total === 'number'"
-                            >&middot;</strong>
-                            <ValidatorReward v-if="'annualReward' in validator" :reward="validator.annualReward"/>
                         </div>
-                    </div>
-                </div>
+                    </template>
+                </RecycleScroller>
+                <div class="scroll-mask bottom" v-if="stake && !stake.inactiveBalance && !stake.retiredBalance"></div>
             </div>
-
-            <i18n v-if="showDeactivateAll"
-                tag="span"
-                path="To change your validator, un-stake all NIM and restart the process. Click here to {unstakeLink}."
-                class="switch-validator"
-            >
-                <a href="#" slot="unstakeLink" @click="deactivateAll">{{ $t('un-stake all') }}</a>
-            </i18n>
-            <div v-else class="switch-validator"></div>
-
-            <!-- <button class="nq-button-s rewards-history" @click="$emit('next')">
-                {{ $t('Rewards history') }} &gt;
-            </button> -->
         </PageBody>
+        <PageFooter v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
+            <div class="flex-row unstaking nq-light-blue">
+                <CircleExclamationMarkIcon />
+                <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask />
+                <span class="flex-grow">{{ $t('ready for pay out') }}</span>
+                <button class="nq-button-pill light-blue" @click="() => unstakeAll(!!stake.retiredBalance)">
+                    Pay out <ArrowRightSmallIcon />
+                </button>
+            </div>
+        </PageFooter>
+        <PageFooter v-else-if="stake && stake.inactiveBalance">
+            <div class="flex-row unstaking nq-light-blue">
+                <CircleArrowDownIcon /> {{  $t('Unstaking') }}
+                <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
+                <button class="nq-button-s unstaking-progress">
+                    {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
+                    <!-- TODO: Add cancel function -->
+                </button>
+            </div>
+        </PageFooter>
     </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import {
-    InfoCircleSmallIcon,
-    PageHeader,
-    PageBody,
-    Tooltip,
     ArrowRightSmallIcon,
+    FiatAmount,
+    PageBody,
+    PageFooter,
+    PageHeader,
+    Tooltip,
 } from '@nimiq/vue-components';
 
 import { useI18n } from '@/lib/useI18n';
+import { useWindowSize } from '@/composables/useWindowSize';
 import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
-import { MIN_STAKE } from '../../lib/Constants';
+import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
+import * as Constants from '../../lib/Constants';
 
 import Amount from '../Amount.vue';
-// import StakingGraph, { NOW, MONTH } from './graph/StakingGraph.vue';
-import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
-import ValidatorTrustScore from './tooltips/ValidatorTrustScore.vue';
-import ValidatorReward from './tooltips/ValidatorReward.vue';
-import ShortAddress from '../ShortAddress.vue';
+import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
+import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import { StatusChangeType } from './StakingModal.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
+import StakingRewardsChart from './StakingRewardsChart.vue';
 
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
 import { getNetworkClient } from '../../network';
-import ArrowDownIcon from '../icons/ArrowDownIcon.vue';
-import ValidatorIcon from './ValidatorIcon.vue';
 import { reportToSentry } from '../../lib/Sentry';
+import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
+import StakingRewardsListItem from './StakingRewardsListItem.vue';
+import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
+import LoadingList, { LoadingListType } from '../LoadingList.vue';
+
+type Reward = {
+    total: number,
+    month: string,
+    validators: string[],
+    loading: boolean,
+}
 
 export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress, activeAddressInfo } = useAddressStore();
-        const { activeStake: stake, activeValidator: validator, restakingRewards } = useStakingStore();
-        const { height, consensus } = useNetworkStore();
+        const {
+            activeStake: stake,
+            activeValidator: validator,
+            restakingRewards,
+            monthlyRewards,
+            stakingEvents,
+        } = useStakingStore();
+        const { height, consensus, isFetchingTxHistory } = useNetworkStore();
+        const { isMobile } = useWindowSize();
+
+        // Height of items in pixel
+        const itemSize = computed(() => isMobile.value ? 68 : 72); // mobile: 64px + 4px margin between items
+        const scrollerBuffer = 300;
+
+        // Calculate total rewards fiat value using month-based logic via composable
+        const { totalRewardsFiatValue, fiatCurrency } = useTotalRewardsFiatValue(
+            monthlyRewards,
+            stakingEvents,
+        );
 
         const graphUpdate = ref(0);
         const availableBalance = computed(() => activeAddressInfo.value?.balance || 0);
-        const stakedBalance = computed(() => stake.value ? stake.value.activeBalance : 0);
+        const stakedBalance = computed(() => stake.value
+            ? stake.value.activeBalance + stake.value.inactiveBalance + stake.value.retiredBalance
+            : 0);
 
-        const percentage = computed(() => (
-            stakedBalance.value / (availableBalance.value + stakedBalance.value + (stake.value?.inactiveBalance || 0))
-        ) * 100);
+        const percentage = computed(() => {
+            const total = availableBalance.value + stakedBalance.value;
+            return total > 0 ? Math.round((stakedBalance.value / total) * 100) : 0;
+        });
 
         const inactiveReleaseTime = computed(() => {
             if (stake.value?.inactiveRelease) {
                 // TODO: Take validator jail release into account
-                const secondsRemaining = stake.value.inactiveRelease - height.value;
+                const secondsRemaining = Math.max(0, stake.value.inactiveRelease - height.value);
                 const date = new Date(Date.UTC(0, 0, 0, 0, 0, secondsRemaining));
                 const hours = date.getUTCHours().toString().padStart(2, '0');
                 const minutes = date.getUTCMinutes().toString().padStart(2, '0');
@@ -232,9 +207,30 @@ export default defineComponent({
             return '00:00';
         });
 
+        const rewards = computed(() => {
+            const rew: Reward[] = [];
+
+            // Display loading transactions
+            if (!monthlyRewards.value.size && isFetchingTxHistory.value) {
+                // create just as many placeholders that the scroller doesn't start recycling them because the loading
+                // animation breaks for recycled entries due to the animation delay being off.
+                const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
+                const placeholderCount = Math.floor((listHeight + scrollerBuffer) / itemSize.value);
+                for (let i = 0; i < placeholderCount; i++) {
+                    rew.push({ total: 0, month: i.toString(), validators: [], loading: true });
+                }
+                return rew;
+            }
+
+            monthlyRewards.value.forEach((r, m) => {
+                rew.push({ total: r.total, month: m, validators: r.validators, loading: false });
+            });
+            return rew.reverse();
+        });
+
         const hasUnstakableStake = computed(() => {
-            if (!stake.value?.inactiveBalance) return false;
-            return height.value > stake.value.inactiveRelease!;
+            if (!stake.value?.inactiveBalance || !stake.value.inactiveRelease) return false;
+            return height.value > stake.value.inactiveRelease;
         });
 
         const isStakeDeactivating = computed(() =>
@@ -258,6 +254,8 @@ export default defineComponent({
 
             return true;
         });
+
+        const selectedRange = ref<'ALL' | 'Y1' | 'M6' | 'M3'>('ALL');
 
         async function deactivateAll() {
             if (stake.value?.activeBalance) {
@@ -417,6 +415,7 @@ export default defineComponent({
             stake,
             validator,
             restakingRewards,
+            stakedBalance,
             percentage,
             inactiveReleaseTime,
             hasUnstakableStake,
@@ -426,33 +425,45 @@ export default defineComponent({
             unstakeAll,
             canSwitchValidator,
             consensus,
-            MIN_STAKE,
+            selectedRange,
+            rewards,
+            itemSize,
+            scrollerBuffer,
+            LoadingListType,
+            totalRewardsFiatValue,
+            fiatCurrency,
+            Constants,
         };
     },
     components: {
-        PageHeader,
         PageBody,
-        TwoLeafStakingIcon,
-        // StakingGraph,
+        PageFooter,
+        PageHeader,
+        RoundStakingIcon,
         Amount,
         Tooltip,
-        InfoCircleSmallIcon,
-        ValidatorTrustScore,
-        ValidatorReward,
-        ShortAddress,
-        ArrowDownIcon,
+        CircleArrowDownIcon,
+        CircleExclamationMarkIcon,
         ArrowRightSmallIcon,
-        ValidatorIcon,
+        ValidatorInfoBar,
         FiatConvertedAmount,
+        FiatAmount,
+        StakingRewardsChart,
+        StakingRewardsListItem,
+        LoadingList,
     },
 });
 </script>
 
 <style lang="scss" scoped>
     @import '../../scss/mixins.scss';
+    @import '../../scss/variables.scss';
+
+    @include scroll-mask(false, true, true);
 
     .staking-info-page {
         flex-grow: 1;
+        height: 600px;
     }
 
     .page-header {
@@ -474,35 +485,148 @@ export default defineComponent({
                 font-weight: inherit;
             }
         }
+
+        .validator-info-bar {
+            justify-content: center;
+            margin-top: 1rem;
+        }
     }
 
     .page-body {
-        padding: 0 2rem 4rem;
+        padding: 0 2rem;
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
+    }
 
-        .estimated-rewards-overlay {
-            position: absolute;
-            top: 2.675rem;
-            left: 1.5rem;
-            z-index: 900;
+    .amounts {
+        margin-bottom: 2rem;
 
-            ::v-deep .trigger {
-                line-height: 1.2;
+        .round-staking-icon {
+            width: 6rem;
+            height: 6rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        > * {
+            justify-content: center;
+        }
+    }
+
+    .rewards-and-chart {
+        gap: 1rem;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+
+        @extend %custom-scrollbar;
+
+        @media (max-width: $tabletBreakpoint) {
+            padding: 0 2rem;
+            margin: 0 -2rem;
+        }
+
+        h2 {
+            margin: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .rewards {
+            border-radius: 0.75rem;
+            justify-items: left;
+            padding-bottom: 2rem;
+            flex-shrink: 0;
+
+            h2 {
+                color: white;
+                opacity: 70%;
+            }
+
+            .amount-row {
+                font-size: var(--body-size);
+                font-weight: bold;
+                line-height: 2.5rem;
+                align-items: center;
+                gap: 0.5rem;
+
+                .amount-loading-placeholder {
+                    @include amount-loading-placeholder(12rem, 2.5rem, rgba(255, 255, 255, 0.3));
+                }
+            }
+
+            .details-row {
                 font-size: var(--small-size);
                 font-weight: 600;
-                color: var(--text-40);
-                background: white;
-                padding: 0.25rem 0.5rem;
+                line-height: 2.5rem;
+                opacity: 0.7;
+                align-items: center;
+                gap: 0.75rem;
 
-                div {
-                    align-items: center;
-
-                    svg {
-                        margin-left: 0.5rem;
-                    }
+                .amount-loading-placeholder {
+                    @include amount-loading-placeholder(6rem, 2rem, rgba(255, 255, 255, 0.3));
+                    margin-top: 0.25rem;
+                    margin-bottom: 0.25rem;
                 }
+
+                .fiat-unavailable {
+                    opacity: 0.5;
+                }
+            }
+        }
+
+        .chart {
+            position: relative;
+            min-width: 200px;
+
+            h2 { position: absolute }
+        }
+    }
+
+    .history {
+        position: relative;
+        overflow: hidden;
+        margin: 0 -2rem;
+
+        .scroll-mask {
+            position: absolute;
+            width: calc(100% - 1rem);
+            left: 0;
+        }
+
+        .vue-recycle-scroller {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding-right: calc(2rem - 6px);
+            padding-left: 2rem;
+            padding-top: 2rem;
+
+            touch-action: pan-y;
+
+            @extend %custom-scrollbar;
+        }
+    }
+
+    .page-footer {
+        padding: 3rem;
+        box-shadow: 0 -3rem 2rem -1rem rgba(0, 0, 0, 0.05);
+
+        .unstaking {
+            align-items: center;
+            color: var(--nimiq-light-blue);
+            font-size: 2rem;
+            font-weight: 600;
+            gap: 0.75rem;
+
+            svg {
+                flex-shrink: 0;
+            }
+
+            .amount {
+                text-overflow: ellipsis;
+                overflow: hidden;
             }
         }
     }
@@ -526,7 +650,7 @@ export default defineComponent({
         font-size: var(--size);
         font-weight: bold;
         line-height: 1;
-        margin-bottom: 1rem;
+        margin-bottom: .5rem;
     }
 
     .adjust-stake {
@@ -550,71 +674,7 @@ export default defineComponent({
         line-height: 1;
         gap: 0.5rem;
         flex-wrap: wrap;
-    }
-
-    .unstaking {
-        flex-wrap: wrap;
         align-items: center;
-        --size: var(--body-size);
-        font-size: var(--size);
-        font-weight: 600;
-        margin-top: 2rem;
-
-        .nq-button-s,
-        .nq-button-pill {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            color: white;
-
-            &:first-child {
-                z-index: 2;
-                box-shadow: 0px 0px 0px 3px white;
-                cursor: default;
-
-                .nq-icon {
-                    margin-right: 0.75rem;
-                }
-            }
-
-            &:nth-child(2) {
-                padding-left: 2rem;
-                margin-left: -0.4rem;
-
-                --left-radius: 0px;
-                border-top-left-radius: var(--left-radius);
-                border-bottom-left-radius: var(--left-radius);
-
-                .nq-icon {
-                    margin-left: 0.75rem;
-                }
-            }
-
-            &.unstaking-amount { background-color: #797B91 }
-
-            &.payout-amount .amount::after {
-                top: 0.09em;
-             }
-
-            &.unstaking-progress {
-                color: nimiq-blue(0.6);
-
-                pointer-events: none;
-                cursor: default;
-
-                span {
-                    color: nimiq-blue(1);
-                    margin-left: 1rem;
-                }
-            }
-        }
-        p {
-            color: nimiq-blue(0.6);
-            font-size: 1.5rem;
-            margin: 0;
-            margin-top: 1rem;
-            width: 100%;
-        }
     }
 
     .horizontal-separator {
@@ -625,45 +685,6 @@ export default defineComponent({
 
         margin-top: 1rem;
         margin-bottom: 1rem;
-    }
-
-    .validator {
-        .flex-row {
-            align-items: center;
-        }
-
-        .validator-top {
-            font-size: var(--h2-size);
-
-            .validator-icon {
-                margin-right: 0.75rem;
-                --size: 3rem;
-            }
-
-            .validator-label {
-                font-weight: bold;
-            }
-
-            .short-address {
-                font-weight: 500;
-            }
-
-            .validator-reward-bubble {
-                margin-left: 2rem;
-            }
-        }
-
-        .validator-bottom {
-            font-size: var(--small-size);
-            color: var(--text-50);
-            font-weight: 600;
-            line-height: 1;
-            margin-top: 0.75rem;
-
-            .dot {
-                margin: 0 0.675rem;
-            }
-        }
     }
 
     .rewards-history {
@@ -677,13 +698,13 @@ export default defineComponent({
             margin-left: 2rem;
         }
 
-        @media (max-width: 700px) { // Full mobile breakpoint
-            &.flex-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1.75rem;
-            }
-        }
+        // @media (max-width: 700px) { // Full mobile breakpoint
+        //     &.flex-row {
+        //         flex-direction: column;
+        //         align-items: flex-start;
+        //         gap: 1.75rem;
+        //     }
+        // }
     }
 
     .switch-validator {
@@ -703,4 +724,29 @@ export default defineComponent({
             }
         }
     }
+
+.dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: currentColor;
+    margin: 0 0.25rem;
+}
+
+.hidden {
+    display: none;
+    visibility: unset;
+}
+
+@media (max-width: $mobileBreakpoint) {
+    .sm-hidden {
+        display: none;
+    }
+    .sm-visible {
+        display: block;
+    }
+}
+
+// @media (max-width: 375px) {
+// }
 </style>

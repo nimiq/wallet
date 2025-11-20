@@ -1,7 +1,7 @@
 <template>
     <div class="address-overview"
         :class="{ 'no-accounts flex-column': activeCurrency === CryptoCurrency.NIM && !activeAddressInfo }">
-        <HeroIcon class="svg-id-fix" />
+        <StakingIcon class="svg-id-fix" />
         <template
             v-if="activeAddressInfo
                 || activeCurrency === CryptoCurrency.BTC
@@ -10,64 +10,57 @@
         >
             <div class="actions-mobile flex-row" v-if="isMobile">
                 <button class="reset icon-button" @click="$router.back()"><ArrowLeftIcon/></button>
-                <div class="flex-row justify-between w-full">
-                    <SearchBar v-model="searchString"/>
 
-                    <CashlinkButton
-                        v-if="activeCurrency === CryptoCurrency.NIM && unclaimedCashlinkCount"
-                        :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
-                        :unclaimedCashlinkCount="unclaimedCashlinkCount"
-                        @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
-                    />
+                <SearchBar v-model="searchString"/>
 
-                    <StakingButton v-if="showStakingButton" />
-                    <button
-                        class="reset icon-button"
-                        @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
-                    >
-                        <MenuDotsIcon/>
-                        <div class="popup-menu nq-blue-bg">
-                            <button v-if="activeCurrency === CryptoCurrency.NIM"
-                                class="reset flex-row"
-                                @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
-                            >
-                                <RenameIcon/>{{ $t('Rename') }}
-                            </button>
-                            <button v-if="activeCurrency === CryptoCurrency.NIM"
-                                class="reset flex-row"
-                                @mousedown="$router.push({ name: RouteName.Staking })"
-                            >
-                                <TwoLeafStakingIcon/>{{ $t('Staking') }}
-                            </button>
-                            <button v-if="activeCurrency === CryptoCurrency.BTC"
-                                class="reset flex-row"
-                                @pointerdown="rescan"
-                            >
-                                <RefreshIcon/>{{ $t('Rescan') }}
-                            </button>
-                            <button
-                                class="reset flex-row"
-                                @pointerdown="$router.push({
-                                    name: RouteName.ExportHistory, params: { type: address } }
-                                )"
-                            >
-                                <BoxedArrowUpIcon />{{ $t('Export History') }}
-                            </button>
-                            <button v-if="activeCurrency === CryptoCurrency.USDC"
-                                class="reset flex-row"
-                                @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
-                            >
-                                <UsdtIcon/>{{ $t('Switch to USDT') }}
-                            </button>
-                            <button v-if="activeCurrency === CryptoCurrency.USDT"
-                                class="reset flex-row"
-                                @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
-                            >
-                                <UsdcIcon/>{{ $t('Switch to USDC') }}
-                            </button>
-                        </div>
-                    </button>
-                </div>
+                <CashlinkButton
+                    v-if="activeCurrency === CryptoCurrency.NIM && unclaimedCashlinkCount"
+                    :showUnclaimedCashlinkList="showUnclaimedCashlinkList"
+                    :unclaimedCashlinkCount="unclaimedCashlinkCount"
+                    @toggle-unclaimed-cashlink-list="toggleUnclaimedCashlinkList"
+                />
+
+                <StakingButton v-if="showStakingButton" />
+                <button
+                    class="reset icon-button"
+                    @click="$event.currentTarget.focus() /* Required for MacOS Safari & Firefox */"
+                >
+                    <MenuDotsIcon/>
+                    <div class="popup-menu nq-blue-bg">
+                        <button v-if="activeCurrency === CryptoCurrency.NIM"
+                            class="reset flex-row"
+                            @pointerdown="rename(activeAccountId, activeAddressInfo.address)"
+                        >
+                            <RenameIcon/>{{ $t('Rename') }}
+                        </button>
+                        <button v-if="activeCurrency === CryptoCurrency.BTC"
+                            class="reset flex-row"
+                            @pointerdown="rescan"
+                        >
+                            <RefreshIcon/>{{ $t('Rescan') }}
+                        </button>
+                        <button
+                            class="reset flex-row"
+                            @pointerdown="$router.push({
+                                name: RouteName.ExportHistory, params: { type: address } }
+                            )"
+                        >
+                            <BoxedArrowUpIcon />{{ $t('Export History') }}
+                        </button>
+                        <button v-if="activeCurrency === CryptoCurrency.USDC"
+                            class="reset flex-row"
+                            @pointerdown="switchStablecoin($event, CryptoCurrency.USDT)"
+                        >
+                            <UsdtIcon/>{{ $t('Switch to USDT') }}
+                        </button>
+                        <button v-if="activeCurrency === CryptoCurrency.USDT"
+                            class="reset flex-row"
+                            @pointerdown="switchStablecoin($event, CryptoCurrency.USDC)"
+                        >
+                            <UsdcIcon/>{{ $t('Switch to USDC') }}
+                        </button>
+                    </div>
+                </button>
             </div>
 
             <div class="active-address flex-row">
@@ -130,14 +123,26 @@
                         <div v-if="activeCurrency === CryptoCurrency.USDT" class="label usdt">
                             {{ $t('Tether USD') }}
                         </div>
-                        <Amount v-if="activeCurrency === CryptoCurrency.NIM" :amount="activeAddressInfo.balance"
-                            value-mask/>
-                        <Amount v-if="activeCurrency === CryptoCurrency.BTC" :amount="btcAccountBalance" currency="btc"
-                            value-mask/>
+                        <Amount v-if="activeCurrency === CryptoCurrency.NIM"
+                            :amount="activeAddressInfo.balance + totalActiveStake"
+                            :currency="CryptoCurrency.NIM"
+                            value-mask
+                        />
+                        <Amount v-if="activeCurrency === CryptoCurrency.BTC"
+                            :amount="btcAccountBalance"
+                            :currency="CryptoCurrency.BTC"
+                            value-mask
+                        />
                         <Amount v-if="activeCurrency === CryptoCurrency.USDC"
-                            :amount="accountUsdcBridgedBalance + accountUsdcBalance" currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance"
+                            :currency="CryptoCurrency.USDC"
+                            value-mask
+                        />
                         <Amount v-if="activeCurrency === CryptoCurrency.USDT"
-                            :amount="accountUsdtBridgedBalance" :currency="CryptoCurrency.USDT" value-mask/>
+                            :amount="accountUsdtBridgedBalance"
+                            :currency="CryptoCurrency.USDT"
+                            value-mask
+                        />
                     </div>
                     <div class="flex-row">
                         <!-- We need to key the Copyable component, so that the tooltip disappears when
@@ -163,19 +168,33 @@
 
                         <FiatConvertedAmount
                             v-if="activeCurrency === CryptoCurrency.NIM && activeAddressInfo.balance !== null"
-                            :amount="activeAddressInfo.balance" currency="nim" value-mask/>
+                            :amount="activeAddressInfo.balance + totalActiveStake"
+                            :currency="CryptoCurrency.NIM"
+                            value-mask
+                        />
                         <span v-else-if="activeCurrency === CryptoCurrency.NIM" class="fiat-amount"></span>
 
                         <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.BTC"
-                            :amount="btcAccountBalance" currency="btc" value-mask/>
+                            :amount="btcAccountBalance"
+                            :currency="CryptoCurrency.BTC"
+                            value-mask
+                        />
 
                         <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDC"
-                            :amount="accountUsdcBridgedBalance + accountUsdcBalance  " currency="usdc" value-mask/>
+                            :amount="accountUsdcBridgedBalance + accountUsdcBalance"
+                            :currency="CryptoCurrency.USDC"
+                            value-mask
+                        />
                         <FiatConvertedAmount v-if="activeCurrency === CryptoCurrency.USDT"
-                            :amount="accountUsdtBridgedBalance  " currency="usdt" value-mask/>
+                            :amount="accountUsdtBridgedBalance"
+                            :currency="CryptoCurrency.USDT"
+                            value-mask
+                        />
                     </div>
                 </div>
             </div>
+
+            <StakingOverview v-if="activeCurrency === CryptoCurrency.NIM && totalActiveStake" />
 
             <div class="actions flex-row" v-if="!isMobile">
                 <SearchBar v-model="searchString"/>
@@ -189,8 +208,8 @@
                     />
 
                     <template v-if="activeCurrency === CryptoCurrency.NIM">
-                        <StakingPreview v-if="activeStake && windowWidth > 860" />
-                        <StakingButton v-else-if="showStakingButton" />
+                        <StakingButton v-if="showStakingButton" />
+                        <div class="vertical-separator"></div>
                     </template>
 
                     <button class="send nq-button-pill light-blue flex-row"
@@ -213,7 +232,6 @@
                     </button>
                 </div>
             </div>
-            <StakingPreview v-if="activeStake && isMobile" class="staking-preview-mobile" />
             <div
                 v-if="activeCurrency === CryptoCurrency.USDC && accountUsdcBridgedBalance >= 0.1e6"
                 class="bridged-usdc-notice"
@@ -228,7 +246,6 @@
                     <span class="description">
                         <InfoCircleSmallIcon />
                         {{ $t('Convert your USDC.e to the new standard.') }}
-                        <!-- eslint-disable-next-line max-len -->
                         <a href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
                             target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
                     </span>
@@ -329,9 +346,7 @@ import UsdtTransactionList from '../UsdtTransactionList.vue';
 import MobileActionBar from '../MobileActionBar.vue';
 import RenameIcon from '../icons/AccountMenu/RenameIcon.vue';
 import RefreshIcon from '../icons/RefreshIcon.vue';
-import StakingPreview from '../staking/StakingPreview.vue';
 import StakingButton from '../staking/StakingButton.vue';
-import TwoLeafStakingIcon from '../icons/Staking/TwoLeafStakingIcon.vue';
 import CashlinkButton from '../CashlinkButton.vue';
 
 import { useAccountStore, AccountType } from '../../stores/Account';
@@ -357,9 +372,10 @@ import {
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { i18n } from '../../i18n/i18n-setup';
 import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
-import HeroIcon from '../icons/Staking/HeroIcon.vue';
+import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
+import StakingOverview from '../staking/StakingOverview.vue';
 
 export default defineComponent({
     name: 'address-overview',
@@ -375,7 +391,7 @@ export default defineComponent({
             addressInfo: usdcAddressInfo,
         } = usePolygonAddressStore();
         const { promoBoxVisible, setPromoBoxVisible } = useSwapsStore();
-        const { activeStake, totalAccountStake } = useStakingStore();
+        const { totalActiveStake, totalAccountStake } = useStakingStore();
 
         const searchString = ref('');
 
@@ -601,11 +617,17 @@ export default defineComponent({
         }
 
         const showStakingButton = computed(() => {
-            // Hide button for legacy accounts except if they're already staking
+            // Only NIM can be staked
             if (activeCurrency.value !== CryptoCurrency.NIM) return false;
+
+            // Hide button when no account is selected
             if (!activeAccountInfo.value) return false;
-            if (activeAccountInfo.value.type !== AccountType.LEGACY) return true;
-            return totalAccountStake.value > 0;
+
+            // Hide entry button when account is staked, as the entrypoint is then another UI element
+            if (totalActiveStake.value) return false;
+
+            // Hide button for legacy accounts except if they're already staking
+            return activeAccountInfo.value.type !== AccountType.LEGACY || totalAccountStake.value > 0;
         });
 
         return {
@@ -635,7 +657,7 @@ export default defineComponent({
             config,
             convertBridgedUsdcToNative,
             switchStablecoin,
-            activeStake,
+            totalActiveStake,
             windowWidth,
             showStakingButton,
             isMobile,
@@ -667,9 +689,8 @@ export default defineComponent({
         UsdtIcon,
         CashlinkButton,
         StakingButton,
-        StakingPreview,
-        HeroIcon,
-        TwoLeafStakingIcon,
+        StakingIcon,
+        StakingOverview,
     },
 });
 </script>
@@ -916,11 +937,23 @@ export default defineComponent({
     justify-content: space-between;
     margin-bottom: 0.75rem;
     align-items: center;
+    gap: 1rem;
     margin: 0 var(--padding) 2rem;
     padding: 0 3rem 0 2rem;
 
-    button {
-        flex-shrink: 0;
+    button { flex-shrink: 0 }
+
+    .vertical-separator {
+        background: rgba(31, 35, 72, 0.15);
+        border-radius: 2rem;
+        width: 1.5px;
+
+        height: 3rem;
+        margin-top: 0.625rem;
+        margin-bottom: 0.625rem;
+
+        margin-left: 2rem;
+        margin-right: .5rem;
     }
 }
 
@@ -933,7 +966,7 @@ export default defineComponent({
         font-weight: 600;
         word-break: keep-all;
         border-radius: 0.5rem;
-        z-index: 1;
+        z-index: 10; // Above StakingButton
         pointer-events: none;
         opacity: 0;
         transition: opacity 0.3s var(--nimiq-ease);
@@ -1049,10 +1082,6 @@ export default defineComponent({
     .nq-button-pill {
         white-space: nowrap;
     }
-}
-
-.staking-button {
-    margin-left: 1rem;
 }
 
 .send, .receive {

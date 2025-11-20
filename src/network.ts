@@ -8,7 +8,7 @@ import { useTransactionsStore, TransactionState } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
-import { AddStakeEvent, ApiValidator, RawValidator, useStakingStore } from './stores/Staking';
+import { useStakingStore, ApiValidator, RawValidator, AggregatedRestakingEvent } from './stores/Staking';
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
@@ -171,20 +171,34 @@ export async function launchNetwork() {
         });
     }
 
+    let currentFetchAddress: string | null = null;
     watch([addressStore.activeAddress], ([activeAddress]) => {
         if (!activeAddress) return;
+        currentFetchAddress = activeAddress;
+        const fetchAddress = activeAddress; // Capture for closure
         const { config } = useConfig();
         const endpoint = config.staking.stakeEventsEndpoint;
-        const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'));
+        // TODO fetch only the data we're missing
+        // eslint-disable-next-line prefer-template
+        const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'))
+            + `?from=2024-11-18&to=${new Date().toISOString()}`; // from PoS launch to now
         retry(
             () => fetch(url)
                 .then((res) => res.json())
-                .then((events: AddStakeEvent[]) => {
-                    useStakingStore().setStakingEvents(activeAddress, events);
-                    console.log('Got add-stake events for', activeAddress, events);
+                .then((data) => {
+                    if (!data || typeof data !== 'object' || !Array.isArray(data.groups)) {
+                        // caught below
+                        throw new Error('Invalid staking events');
+                    }
+                    const events: AggregatedRestakingEvent[] = data.groups;
+                    // Only update if this is still the active address
+                    if (fetchAddress === currentFetchAddress) {
+                        useStakingStore().setStakingEvents(activeAddress, events);
+                        console.log('Got aggregated restaking events for', activeAddress, events);
+                    }
                 }),
             { maxRetries: 3 },
-        ).catch(reportFor('fetch(add-stake events)'));
+        ).catch(reportFor('fetch(aggregated restaking events)'));
     });
 
     function forgetBalances(addresses: string[]) {
@@ -327,7 +341,7 @@ export async function launchNetwork() {
                     // This is a staking transaction from a validator to one of our stakers
                     updateStakes([plain.data.staker]);
                     // Then ignore this transaction
-                    // TODO: Store for tracking of staking rewards?
+                    // TODO: Store for tracking of staking rewards? / update staking events?
                     return;
                 }
             }
@@ -357,11 +371,11 @@ export async function launchNetwork() {
         }
     }
 
-    function subscribe(addresses: string[]) {
+    function subscribe(addresses: string[], isProxy: boolean) {
         client.addTransactionListener(transactionListener, addresses);
+        if (isProxy) return; // only need transactions for proxies
         updateBalances(addresses);
         updateStakes(addresses);
-        return true;
     }
 
     // Subscribe to new addresses (for balance updates and transactions)
@@ -393,7 +407,7 @@ export async function launchNetwork() {
         if (!newAddresses.length) return;
 
         console.debug('Subscribing addresses', newAddresses);
-        subscribe(newAddresses);
+        subscribe(newAddresses, /* isProxy */ false);
     });
 
     watch([addressStore.activeAddress, txFetchTrigger], async ([activeAddress, trigger]) => {
@@ -495,7 +509,7 @@ export async function launchNetwork() {
                 addressesToSubscribe.push(proxyAddress);
             }
         }
-        if (addressesToSubscribe.length) subscribe(addressesToSubscribe);
+        if (addressesToSubscribe.length) subscribe(addressesToSubscribe, /* isProxy */ true);
         if (!newProxies.length) return;
 
         console.debug(`Fetching history for ${newProxies.length} proxies`);
@@ -539,7 +553,7 @@ export async function launchNetwork() {
                         // which in turn runs the ProxyDetection again and triggers the network and this watcher again
                         // for the second pass if needed.
                         subscribedProxies.add(proxyAddress);
-                        subscribe([proxyAddress]);
+                        subscribe([proxyAddress], /* isProxy */ true);
                     }
                     transactionsStore.addTransactions(txDetails);
                 })

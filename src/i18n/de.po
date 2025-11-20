@@ -2,16 +2,16 @@
 # Translators:
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Matheo <matheo@nimiq.com>, 2021
-# Sven <sven@nimiq.com>, 2022
 # Daniel, 2023
 # Redexe <timo.niehoff@yahoo.de>, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
 # Michael <jiggaaa20@gmail.com>, 2024
 # Michael Passias, 2025
+# Sven <sven@nimiq.com>, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Michael Passias, 2025\n"
+"Last-Translator: Sven <sven@nimiq.com>, 2025\n"
 "Language-Team: German (https://app.transifex.com/nimiq-foundation/teams/110181/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -92,7 +92,7 @@ msgstr "{percentage} Gebühren"
 #: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:18
 #: src/components/staking/ValidatorDetailsOverlay.vue:43
 msgid "{poolName} Website"
-msgstr ""
+msgstr "{poolName} Webseite"
 
 #: src/components/kyc/KycOverlay.vue:38
 msgid "{provider} is provided by {companyLogo}"
@@ -129,6 +129,10 @@ msgstr "+ Netzwerkgebühren, Registrierung erforderlich ab $700"
 msgid "+{n} more"
 msgstr "+{n} weitere"
 
+#: src/components/staking/StakingRewardsListItem.vue:40
+msgid "+{validatorCount} more"
+msgstr "+{validatorCount} weitere"
+
 #: src/components/modals/StablecoinSendModal.vue:179
 #: src/components/modals/StablecoinSendModal.vue:205
 #: src/components/swap/SwapModal.vue:60
@@ -142,7 +146,7 @@ msgstr "1"
 
 #: src/components/layouts/Network.vue:36
 msgid "1-2 sec"
-msgstr ""
+msgstr "1-2 Sek."
 
 #: src/components/layouts/Network.vue:57
 msgid "10 min"
@@ -150,11 +154,15 @@ msgstr "10 Min."
 
 #: src/components/staking/StakingGraph.vue:12
 msgid "12M"
-msgstr ""
+msgstr "12M"
 
 #: src/components/FeeSelector.vue:8
 msgid "15m"
 msgstr "15m"
+
+#: src/components/staking/StakingRewardsChart.vue:30
+msgid "1Y"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:21
 #: src/components/modals/SellCryptoModal.vue:20
@@ -184,13 +192,21 @@ msgstr "3"
 msgid "30-day Limit"
 msgstr "30-Tage-Limit"
 
+#: src/components/staking/StakingRewardsChart.vue:24
+msgid "3M"
+msgstr ""
+
 #: src/components/staking/StakingGraph.vue:10
 msgid "4M"
-msgstr ""
+msgstr "4M"
 
 #: src/components/FeeSelector.vue:6
 msgid "6h+"
 msgstr "6h+"
+
+#: src/components/staking/StakingRewardsChart.vue:27
+msgid "6M"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:96
 msgid ""
@@ -200,7 +216,7 @@ msgstr ""
 
 #: src/components/staking/StakingGraph.vue:11
 msgid "8M"
-msgstr ""
+msgstr "8M"
 
 #: src/components/layouts/Settings.vue:366
 msgid ""
@@ -214,6 +230,8 @@ msgstr ""
 #: src/App.vue:4
 msgid "A network issue occurred, please stand by. Click {link} for updates."
 msgstr ""
+"Ein Netzwerkproblem ist aufgetreten, bitte warte einen Moment. Klicke auf "
+"{link} für Updates."
 
 #: src/lib/KycConnection.ts:40
 msgid ""
@@ -225,7 +243,7 @@ msgstr ""
 
 #: src/components/FlaggedAddressWarning.vue:37
 msgid "Abort"
-msgstr ""
+msgstr "Abbruch"
 
 #: src/components/modals/MigrationWelcomeModal.vue:76
 msgid ""
@@ -243,8 +261,8 @@ msgstr "Konto-Limits"
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/layouts/AccountOverview.vue:159
-#: src/components/layouts/AccountOverview.vue:273
+#: src/components/layouts/AccountOverview.vue:157
+#: src/components/layouts/AccountOverview.vue:271
 msgid "Activate"
 msgstr "Aktivieren"
 
@@ -301,9 +319,9 @@ msgstr ""
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
-#: src/lib/StakingUtils.ts:95
+#: src/lib/StakingUtils.ts:83
 msgid "Add stake"
-msgstr ""
+msgstr "Stake hinzufügen"
 
 #: src/components/modals/SendModal.vue:51
 msgid "Address unavailable?"
@@ -315,17 +333,21 @@ msgstr "Adressen"
 
 #: src/components/FlaggedAddressWarning.vue:32
 msgid ""
-"Addresses are checked locally on your device and are not send to an external"
+"Addresses are checked locally on your device and are not sent to an external"
 " service."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:75
-msgid "Adjust Stake"
+#: src/components/staking/StakingInfoPage.vue:36
+msgid "Adjust"
 msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:35
+msgid "Adjust Stake"
+msgstr "Stake anpassen"
 
 #: src/components/staking/StakingGraphPage.vue:8
 msgid "Adjust your stake"
-msgstr ""
+msgstr "Deinen Stake anpassen"
 
 #: src/components/layouts/Settings.vue:183
 msgid "Advanced"
@@ -340,11 +362,15 @@ msgstr "Nach 72 Stunden"
 msgid "all"
 msgstr "alle"
 
+#: src/components/staking/StakingRewardsChart.vue:33
+msgid "ALL"
+msgstr ""
+
 #: src/components/CountrySelector.vue:120
 msgid "All countries"
 msgstr "Alle Länder"
 
-#: src/components/layouts/AccountOverview.vue:281
+#: src/components/layouts/AccountOverview.vue:279
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -353,7 +379,7 @@ msgstr ""
 "Jetzt aktualisieren um alle neuen Funktionen nutzen zu können. Es dauert "
 "auch wirklich nur ein paar Sekunden!"
 
-#: src/components/layouts/AddressOverview.vue:277
+#: src/components/layouts/AddressOverview.vue:294
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -371,7 +397,7 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:29
 msgid "Almost instant transactions"
-msgstr ""
+msgstr "Beinahe sofortige Transaktionen"
 
 #: src/components/modals/DisclaimerModal.vue:6
 msgid "Always backup your Recovery Words, Password and Login Files."
@@ -460,7 +486,7 @@ msgstr "Automatischer Modus nutzt {behavior}."
 
 #: src/components/staking/ValidatorScoreDetails.vue:9
 msgid "Availability"
-msgstr ""
+msgstr "Verfügbarkeit"
 
 #: src/components/swap/SwapAnimation.vue:294
 msgid "Awaiting swap secret"
@@ -496,8 +522,8 @@ msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:140
-#: src/components/layouts/AddressOverview.vue:125
+#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:124
@@ -587,7 +613,7 @@ msgstr "Max. Betrag"
 msgid "Buy more here in the wallet."
 msgstr "Kaufe mehr hier in der Wallet."
 
-#: src/components/TransactionList.vue:56 src/components/TransactionList.vue:66
+#: src/components/TransactionList.vue:63 src/components/TransactionList.vue:73
 msgid "Buy NIM"
 msgstr "NIM kaufen"
 
@@ -670,7 +696,7 @@ msgstr "Abgebrochener Tausch"
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
-#: src/components/TransactionList.vue:53
+#: src/components/TransactionList.vue:60
 #: src/composables/useTransactionInfo.ts:148
 msgid "Cashlink"
 msgstr "Cashlink"
@@ -703,7 +729,7 @@ msgstr "Passwort ändern"
 msgid "Change your language setting."
 msgstr "Ändere deine Spracheinstellung."
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:115
+#: src/components/staking/ValidatorDetailsOverlay.vue:119
 msgid "Changing validator"
 msgstr "Validator ändern"
 
@@ -739,7 +765,7 @@ msgstr "Wähle einen Validator"
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
-#: src/components/layouts/AccountOverview.vue:229
+#: src/components/layouts/AccountOverview.vue:227
 msgid "Choose Stablecoin"
 msgstr "Wähle Stablecoin"
 
@@ -763,8 +789,8 @@ msgstr "Klicke hier für mehr infos"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Klicke auf 'Fehlerbehebung' um mehr zu erfahren."
 
-#: src/components/layouts/AddressOverview.vue:279
-#: src/components/staking/StakingModal.vue:155
+#: src/components/layouts/AddressOverview.vue:296
+#: src/components/staking/StakingModal.vue:211
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Schließen"
@@ -786,12 +812,12 @@ msgstr "Bestätigen"
 msgid "Confirm account"
 msgstr "Konto bestätigen"
 
-#: src/components/staking/StakingGraphPage.vue:64
+#: src/components/staking/StakingGraphPage.vue:57
 msgid "Confirm stake"
-msgstr ""
+msgstr "Stake bestätigen"
 
 #: src/components/BtcTransactionList.vue:54
-#: src/components/TransactionList.vue:48
+#: src/components/TransactionList.vue:55
 #: src/components/UsdcTransactionList.vue:45
 #: src/components/UsdtTransactionList.vue:45
 msgid "Congrats"
@@ -853,7 +879,7 @@ msgstr "Weiter"
 
 #: src/components/FlaggedAddressWarning.vue:38
 msgid "Continue anyway"
-msgstr ""
+msgstr "Trotzdem fortfahren"
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:93
 msgid "Continue Swap"
@@ -861,7 +887,7 @@ msgstr "Tausch fortsetzen"
 
 #: src/components/staking/WelcomeStakingModal.vue:107
 msgid "Continue to Wallet"
-msgstr ""
+msgstr "Weiter zur Wallet"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:45
 msgid "Continue with Moonpay"
@@ -875,11 +901,11 @@ msgstr "Konvertierung von USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Konvertierung von USDC.e zu USDC"
 
-#: src/components/layouts/AddressOverview.vue:238
+#: src/components/layouts/AddressOverview.vue:255
 msgid "Convert to USDC"
 msgstr "In USDC konvertieren"
 
-#: src/components/layouts/AddressOverview.vue:230
+#: src/components/layouts/AddressOverview.vue:248
 msgid "Convert your USDC.e to the new standard."
 msgstr "Konvertiere deine USDC.e zum neuen Standard"
 
@@ -933,9 +959,9 @@ msgstr "Erstelle eine neue Einmaladdresse."
 msgid "Create request link"
 msgstr "Zahlungslink erstellen"
 
-#: src/lib/StakingUtils.ts:50
+#: src/lib/StakingUtils.ts:38
 msgid "Create validator"
-msgstr ""
+msgstr "Validator erstellen"
 
 #: src/components/modals/BtcReceiveModal.vue:198
 msgid "Created {count} day ago | Created {count} days ago"
@@ -973,19 +999,19 @@ msgstr "Krypto-Swaps werden derzeit gewartet."
 
 #: src/components/FlaggedAddressWarning.vue:30
 msgid "Dataset: {name}"
-msgstr ""
+msgstr "Datensatz: {name}"
 
-#: src/lib/StakingUtils.ts:62
+#: src/lib/StakingUtils.ts:50
 msgid "Deactivate validator"
-msgstr ""
+msgstr "Validator deaktivieren"
 
-#: src/components/staking/StakingInfoPage.vue:267
+#: src/components/staking/StakingInfoPage.vue:265
 msgid "Deactivating Stake"
-msgstr ""
+msgstr "Deaktiviere Stake"
 
-#: src/lib/StakingUtils.ts:30
+#: src/lib/StakingUtils.ts:18
 msgid "Delete validator"
-msgstr ""
+msgstr "Validator löschen"
 
 #: src/components/modals/BuyOptionsModal.vue:10
 msgid ""
@@ -1021,6 +1047,8 @@ msgid ""
 "Do not stake with this pool!\n"
 "It controls a critical share of the total stake, making it a potential threat to the network."
 msgstr ""
+"Stake nicht mit diesem Pool!\n"
+"Er kontrolliert einen kritischen Anteil des gesamten Stakes und stellt dadurch eine potenzielle Bedrohung für das Netzwerk dar."
 
 #: src/components/BtcAddressInput.vue:103
 #: src/components/modals/SendModal.vue:429
@@ -1030,7 +1058,7 @@ msgstr "Domain beinhaltet keine gültige Adresse."
 
 #: src/components/staking/ValidatorScoreDetails.vue:47
 msgid "Dominance"
-msgstr ""
+msgstr "Dominanz"
 
 #: src/components/swap/SwapAnimation.vue:321
 #: src/components/swap/SwapAnimation.vue:329
@@ -1078,10 +1106,9 @@ msgstr "Dauer und Gebühren sind Schätzungen."
 msgid "Earn new NIM by staking"
 msgstr "Verdiene neue NIM durch Staking"
 
-#: src/components/staking/StakingButton.vue:11
-#: src/components/staking/StakingSummaryMobile.vue:5
+#: src/components/staking/StakingButton.vue:14
 msgid "Earn NIM every month by staking your NIM"
-msgstr ""
+msgstr "Verdiene jeden Monat NIM, indem du deine NIM stakest."
 
 #: src/components/modals/BtcActivationModal.vue:10
 msgid ""
@@ -1170,7 +1197,7 @@ msgstr "hergestellt"
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:18
 msgid "Estimated yearly reward"
-msgstr ""
+msgstr "Geschätzte jährliche Belohnung"
 
 #: src/components/modals/BtcTransactionModal.vue:21
 #: src/components/modals/BtcTransactionModal.vue:36
@@ -1203,8 +1230,8 @@ msgstr "Abgelaufen"
 msgid "Expired HTLC"
 msgstr "Abelaufener HTLC"
 
-#: src/components/layouts/AddressOverview.vue:102
-#: src/components/layouts/AddressOverview.vue:54
+#: src/components/layouts/AddressOverview.vue:48
+#: src/components/layouts/AddressOverview.vue:95
 #: src/components/modals/AccountMenuModal.vue:32
 msgid "Export History"
 msgstr "Exportiere Verlauf"
@@ -1229,9 +1256,15 @@ msgstr "Konnte {ticker} Gebühren nicht abfragen... (Error: {message})"
 #: src/components/swap/SwapModal.vue:1005
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
+"Abrufen der Polygon-Gebühren fehlgeschlagen. Erneuter Versuch... (Fehler: "
+"{message})"
 
 #: src/components/TransactionList.vue:39
 msgid "Failed to fetch transactions"
+msgstr "Abrufen der Transaktionen fehlgeschlagen"
+
+#: src/components/staking/StakingRewardsChart.vue:19
+msgid "Failed to load chart"
 msgstr ""
 
 #: src/components/TestnetFaucet.vue:138
@@ -1276,6 +1309,8 @@ msgstr "Lade"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
+#: src/components/staking/StakingInfoPage.vue:59
+#: src/components/staking/StakingRewardsPage.vue:52
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
 #: src/components/UsdtTransactionListItem.vue:59
@@ -1297,11 +1332,11 @@ msgstr "Tausch wird abgeschlossen"
 #: src/components/FlaggedAddressWarning.vue:5
 #: src/composables/useFlaggedAddressCheck.ts:43
 msgid "Flagged Address"
-msgstr ""
+msgstr "Verdächtige Adresse"
 
 #: src/components/FlaggedAddressWarning.vue:29
 msgid "Flagged as: {type}"
-msgstr ""
+msgstr "Markiert als: {type}"
 
 #: src/components/modals/WelcomeModal.vue:121
 msgid ""
@@ -1314,6 +1349,7 @@ msgstr ""
 #: src/components/staking/StakingWelcomePage.vue:29
 msgid "For a small fee, validator pools do the staking for you."
 msgstr ""
+"Für eine kleine Gebühr übernehmen Validator-Pools das Staking für dich."
 
 #: src/components/modals/WelcomeModal.vue:186
 msgid ""
@@ -1338,6 +1374,10 @@ msgstr ""
 #: src/components/modals/SendModal.vue:540
 msgid "free"
 msgstr "gratis"
+
+#: src/components/staking/ValidatorsListOverlay.vue:138
+msgid "From {day} {month}"
+msgstr ""
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1424,11 +1464,11 @@ msgstr ""
 
 #: src/components/WalletStatusButton.vue:4
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: src/App.vue:7
 msgid "here"
-msgstr ""
+msgstr "hier"
 
 #: src/components/modals/StablecoinSelectionModal.vue:15
 msgid "Higher liquidity and global market adoption."
@@ -1450,6 +1490,7 @@ msgstr "Höchster Grad an Dezentralisierung"
 #: src/components/modals/UsdcTransactionModal.vue:186
 #: src/components/modals/UsdtTransactionModal.vue:141
 #: src/components/modals/UsdtTransactionModal.vue:167
+#: src/components/staking/StakingRewardsPage.vue:62
 msgid "Historic value"
 msgstr "Historischer Wert"
 
@@ -1511,6 +1552,8 @@ msgstr "Identifikations­dokument"
 #: src/components/modals/WalletStatusModal.vue:29
 msgid "If in doubt, you can always check your balance at {nimiqWatchLink}"
 msgstr ""
+"Wenn du unsicher bist, kannst du deinen Kontostand jederzeit unter "
+"{nimiqWatchLink} überprüfen."
 
 #: src/components/swap/SwapNotification.vue:229
 msgid ""
@@ -1537,6 +1580,7 @@ msgstr ""
 #: src/components/modals/WalletStatusModal.vue:37
 msgid "If you require further assistance, please reach out at {discordLink}"
 msgstr ""
+"Wenn du weitere Unterstützung benötigst, besuche uns hier: {discordLink}"
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1576,11 +1620,11 @@ msgstr ""
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:22
 msgid "incl. pool fee"
-msgstr ""
+msgstr "inkl. Pool Gebühr"
 
 #: src/components/modals/WalletStatusModal.vue:23
 msgid "Incomplete balances being displayed."
-msgstr ""
+msgstr "Unvollständige Kontostände werden angezeigt."
 
 #: src/components/modals/BtcSendModal.vue:103
 msgid ""
@@ -1618,7 +1662,7 @@ msgstr "ungültig"
 msgid "Invalid swap state, swap aborted!"
 msgstr "Ungültiger Swap-Zustand, Tausch abgebrochen!"
 
-#: src/components/TransactionList.vue:50
+#: src/components/TransactionList.vue:57
 msgid "Invite a friend with a {cashlink} or buy more here in the wallet."
 msgstr ""
 "Lade einen Freund mit einem {cashlink} ein oder kaufe mehr hier in der "
@@ -1630,7 +1674,7 @@ msgstr "Ist deine Bank geeignet?"
 
 #: src/components/FlaggedAddressWarning.vue:18
 msgid "It's recommendable to abort the transaction."
-msgstr ""
+msgstr "Wir raten dir, die Transaktion abzubrechen."
 
 #: src/components/swap/SwapNotification.vue:39
 msgid "It's safe to close your wallet now"
@@ -1650,9 +1694,9 @@ msgstr "Sprache"
 
 #: src/components/modals/PolygonActivationModal.vue:96
 msgid "Learn about the new Nimiq"
-msgstr ""
+msgstr "Erfahre mehr über das neue Nimiq"
 
-#: src/components/layouts/AddressOverview.vue:233
+#: src/components/layouts/AddressOverview.vue:250
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:18
@@ -1661,17 +1705,17 @@ msgstr "Mehr erfahren"
 
 #: src/components/staking/WelcomeStakingModal.vue:103
 msgid "Learn more about the update"
-msgstr ""
+msgstr "Lerne mehr über das Update"
 
 #: src/components/modals/MigrationWelcomeModal.vue:61
 msgid "Learn more here"
 msgstr "Hier erfährst du mehr"
 
-#: src/components/layouts/AddressOverview.vue:223
+#: src/components/layouts/AddressOverview.vue:241
 msgid "Legacy USDC (USDC.e)"
 msgstr "Legacy USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:264
+#: src/components/layouts/AddressOverview.vue:281
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Los geht's! Erstelle jetzt dein Nimiq-Konto:"
 
@@ -1697,6 +1741,10 @@ msgstr "Link in diesem Browser nicht verfügbar"
 msgid "Load file"
 msgstr "Datei laden"
 
+#: src/components/staking/StakingRewardsChart.vue:5
+msgid "Loading chart..."
+msgstr ""
+
 #: src/components/swap/SwapModal.vue:116
 msgid "Loading fees and limits"
 msgstr "Lade Gebühren und Limits."
@@ -1719,6 +1767,8 @@ msgstr "Lade..."
 #: src/components/staking/StakingWelcomePage.vue:12
 msgid "Lock up NIM to support the network and earn new NIM as a reward."
 msgstr ""
+"Sperre NIM, um das Netzwerk zu unterstützen und neue NIM als Belohnung zu "
+"erhalten."
 
 #: src/components/swap/SwapAnimation.vue:288
 #: src/components/swap/SwapAnimation.vue:291
@@ -1751,7 +1801,7 @@ msgstr "Vergewissere dich dass die Sender:innen Polygon {ticker} senden."
 
 #: src/components/FlaggedAddressWarning.vue:80
 msgid "malicious"
-msgstr ""
+msgstr "schädlich"
 
 #: src/components/modals/PolygonActivationModal.vue:19
 msgid ""
@@ -1793,6 +1843,12 @@ msgstr ""
 msgid "More locations will be supported in the future."
 msgstr "In der Zukunft werden weitere Länder unterstützt."
 
+#: src/components/staking/StakingRewardsPage.vue:21
+msgid ""
+"Multiple\n"
+"Validators"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
 msgstr "Mehrere Adressen"
@@ -1804,6 +1860,10 @@ msgid ""
 msgstr ""
 "Mehrere Adressen und Login-Datei\n"
 "werden nur von neuen Konten unterstützt."
+
+#: src/components/staking/ValidatorsListOverlay.vue:5
+msgid "Multiple Validators"
+msgstr ""
 
 #: src/components/modals/SendModal.vue:77
 #: src/components/modals/StablecoinSendModal.vue:78
@@ -1830,7 +1890,7 @@ msgstr "Netzwerkgebühr: {sats} sat/vByte"
 #: src/components/staking/StakingGraph.vue:6
 #: src/components/staking/StakingGraph.vue:7
 msgid "NIM"
-msgstr ""
+msgstr "NIM"
 
 #: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
@@ -1851,6 +1911,8 @@ msgid ""
 "Nimiq now runs on ‘Proof-of-Stake’. Enjoy the massive performance boost, "
 "energy-efficiency and staking."
 msgstr ""
+"Nimiq läuft jetzt mit \"Proof-of-Stake\". Genieße den enormen "
+"Leistungszuwachs, die Energieeffizienz und das Staking."
 
 #: src/components/modals/BtcSendModal.vue:116
 msgid "Nimiq wallet does not support transaction messages for Bitcoin."
@@ -1859,11 +1921,11 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:101
 msgid "No action required."
-msgstr ""
+msgstr "Keine Aktion erforderlich."
 
 #: src/components/staking/ValidatorScoreDetails.vue:118
 msgid "No availability data available yet."
-msgstr ""
+msgstr "Noch keine Verfügbarkeitsdaten verfügbar."
 
 #: src/components/swap/SwapNotification.vue:228
 msgid "No connection to {chain} network."
@@ -1876,7 +1938,7 @@ msgstr "Keine Beschreibung verfügbar"
 
 #: src/components/staking/ValidatorScoreDetails.vue:152
 msgid "No dominance data available yet."
-msgstr ""
+msgstr "Noch keine Daten zur Dominanz verfügbar."
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "No funds were received so the swap expired."
@@ -1886,24 +1948,24 @@ msgstr "Da keine Geldbeträge eingegangen sind, ist der Tausch abgelaufen."
 msgid "No payment request found"
 msgstr "Keine Zahlungsanforderung gefunden"
 
-#: src/lib/StakingUtils.ts:18
-msgid "No Payout"
-msgstr ""
-
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
 msgstr "Keine Registrierung"
 
 #: src/components/staking/ValidatorScoreDetails.vue:135
 msgid "No reliability data available yet."
-msgstr ""
+msgstr "Noch keine Zuverlässigkeitsdaten vorhanden."
 
 #: src/swap-kyc-handler.ts:119
 msgid "No request received."
 msgstr "Keine Anfrage erhalten."
 
+#: src/components/staking/StakingRewardsChart.vue:16
+msgid "No rewards yet"
+msgstr ""
+
 #: src/components/BtcTransactionList.vue:77
-#: src/components/TransactionList.vue:71
+#: src/components/TransactionList.vue:78
 #: src/components/UsdcTransactionList.vue:62
 #: src/components/UsdtTransactionList.vue:62
 msgid "No transactions found"
@@ -1975,6 +2037,11 @@ msgstr "Ein Konto kann jetzt mehrere Adressen haben."
 msgid "One Account, many Addresses"
 msgstr "Ein Konto, viele Adressen"
 
+#: src/components/staking/StakingRewardsListItem.vue:24
+#: src/components/staking/StakingRewardsPage.vue:8
+msgid "Ongoing"
+msgstr ""
+
 #: src/components/modals/BtcActivationModal.vue:14
 msgid "Or buy BTC directly in the wallet."
 msgstr "Oder kaufe BTC direkt in der Wallet."
@@ -1986,6 +2053,10 @@ msgstr "Überschreibe wie der Keyguard geöffnet wird."
 #: src/components/staking/tooltips/ValidatorReward.vue:8
 msgid "p.a."
 msgstr "p.a."
+
+#: src/components/staking/StakingRewardsListItem.vue:27
+msgid "Paid out by {validator}"
+msgstr ""
 
 #: src/components/UsdcTransactionListItem.vue:40
 #: src/components/UsdtTransactionListItem.vue:40
@@ -1999,7 +2070,7 @@ msgstr "Teilweise zurückgesetzt"
 
 #: src/components/layouts/Network.vue:118
 msgid "paused"
-msgstr ""
+msgstr "pausiert"
 
 #: src/components/modals/SendModal.vue:185
 msgid "Pay within {countdown}"
@@ -2012,6 +2083,10 @@ msgstr "Zahlungsanforderung wurde bereits bezahlt"
 #: src/components/modals/WelcomeModal.vue:350
 msgid "Payments, got it"
 msgstr "Zahlungen, verstanden"
+
+#: src/components/staking/StakingOverview.vue:19
+msgid "Payout ready"
+msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:241
 msgid "Pegged 1:1 to the U.S. Dollar"
@@ -2078,7 +2153,7 @@ msgstr "Stelle sicher, dass du eine Instant-Überweisung sendest!"
 
 #: src/components/modals/WalletStatusModal.vue:12
 msgid "Please have patience while we fix:"
-msgstr ""
+msgstr "Bitte hab Geduld, während wir Folgendes beheben:"
 
 #: src/components/swap/SwapAnimation.vue:38
 #: src/components/swap/SwapAnimation.vue:54
@@ -2123,7 +2198,7 @@ msgstr "Pop-Ups"
 
 #: src/components/layouts/Sidebar.vue:5
 msgid "PoS Testnet"
-msgstr ""
+msgstr "PoS Testnet"
 
 #: src/composables/useTransactionInfo.ts:113
 msgid "Pre-staking Migration Address"
@@ -2131,7 +2206,7 @@ msgstr "Vorstaking-Migrationsadresse"
 
 #: src/components/modals/WalletStatusModal.vue:19
 msgid "Problems with un-staking."
-msgstr ""
+msgstr "Probleme beim Unstaken."
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
@@ -2152,27 +2227,33 @@ msgstr "Limits erhöhen"
 #: src/components/modals/WalletStatusModal.vue:18
 #: src/components/modals/WalletStatusModal.vue:22
 msgid "Rare"
-msgstr ""
+msgstr "Selten"
 
 #: src/components/staking/ValidatorScoreDetails.vue:33
 msgid ""
 "Rates the pool's ability to correctly produce blocks and earn rewards when "
 "selected."
 msgstr ""
+"Bewertet die Fähigkeit des Pools, Blöcke korrekt zu erzeugen und Belohnungen"
+" zu verdienen, wenn er ausgewählt wird."
 
 #: src/components/staking/ValidatorScoreDetails.vue:14
 msgid ""
 "Rates the pool's availability to be selected for block production, which "
 "earns rewards."
 msgstr ""
+"Bewertet die Verfügbarkeit des Pools, für die Blockproduktion ausgewählt zu "
+"werden, wodurch Belohnungen verdient werden."
 
 #: src/components/staking/ValidatorScoreDetails.vue:52
 msgid "Rates the pool's potential to harm the network, based on its size."
 msgstr ""
+"Bewertet das Potenzial des Pools, dem Netzwerk zu schaden, basierend auf "
+"seiner Größe."
 
-#: src/lib/StakingUtils.ts:69
+#: src/lib/StakingUtils.ts:57
 msgid "Reactivate validator"
-msgstr ""
+msgstr "Validator reaktivieren"
 
 #: src/components/modals/PolygonActivationModal.vue:22
 msgid ""
@@ -2182,7 +2263,11 @@ msgstr ""
 "Lese mehr darüber ins unserem {blog_post} oder klicke unten für die neue "
 "Wallet Einführung."
 
-#: src/components/layouts/AddressOverview.vue:212
+#: src/components/staking/StakingInfoPage.vue:96
+msgid "ready for pay out"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:231
 #: src/components/MobileActionBar.vue:4
 msgid "Receive"
 msgstr "Empfangen"
@@ -2285,10 +2370,10 @@ msgstr "Versionshinweise"
 
 #: src/components/staking/ValidatorScoreDetails.vue:28
 msgid "Reliability"
-msgstr ""
+msgstr "Zuverlässigkeit"
 
 #: src/components/layouts/AddressOverview.vue:34
-#: src/components/layouts/AddressOverview.vue:88
+#: src/components/layouts/AddressOverview.vue:81
 #: src/components/modals/AccountMenuModal.vue:16
 msgid "Rename"
 msgstr "Umbenennen"
@@ -2301,8 +2386,8 @@ msgstr "Anfrage fehlgeschlagen"
 msgid "Required"
 msgstr "Erforderlich"
 
-#: src/components/layouts/AddressOverview.vue:46
-#: src/components/layouts/AddressOverview.vue:94
+#: src/components/layouts/AddressOverview.vue:40
+#: src/components/layouts/AddressOverview.vue:87
 msgid "Rescan"
 msgstr "Neu scannen"
 
@@ -2317,10 +2402,6 @@ msgstr ""
 msgid "Resolving Unstoppable Domain..."
 msgstr "Unstoppable Domain wird aufgelöst..."
 
-#: src/lib/StakingUtils.ts:20
-msgid "Restake Rewards"
-msgstr "Belohnungen weiter staken"
-
 #: src/components/swap/SwapAnimation.vue:650
 msgid "Restart payout process"
 msgstr "Auszahlungsprozess neu starten"
@@ -2329,13 +2410,13 @@ msgstr "Auszahlungsprozess neu starten"
 msgid "Resulting BTC amount is too small."
 msgstr "Der resultierende BTC-Betrag ist zu klein."
 
-#: src/lib/StakingUtils.ts:127
+#: src/lib/StakingUtils.ts:115
 msgid "Retire stake"
-msgstr ""
+msgstr "Stake zurückziehen"
 
-#: src/lib/StakingUtils.ts:75
+#: src/lib/StakingUtils.ts:63
 msgid "Retire validator"
-msgstr ""
+msgstr "Validator stilllegen"
 
 #: src/components/modals/BtcSendModal.vue:143
 #: src/components/modals/SendModal.vue:255
@@ -2350,6 +2431,14 @@ msgstr "Versuche erneut..."
 #: src/components/staking/ValidatorFilter.vue:12
 msgid "Reward"
 msgstr "Belohnung"
+
+#: src/components/staking/StakingInfoPage.vue:64
+msgid "Reward History"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:44
+msgid "Rewards"
+msgstr ""
 
 #: src/components/modals/StablecoinSendModal.vue:83
 msgid "Save and proceed"
@@ -2394,7 +2483,7 @@ msgstr "Währung und Menge auswählen"
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:54
 msgid "Select validator"
-msgstr ""
+msgstr "Validator auswählen"
 
 #: src/components/layouts/Settings.vue:140
 msgid "Select which unit to show Bitcoin amounts in."
@@ -2452,7 +2541,7 @@ msgstr ""
 msgid "Selling now available"
 msgstr "Verkaufen jetzt möglich"
 
-#: src/components/layouts/AddressOverview.vue:207
+#: src/components/layouts/AddressOverview.vue:226
 #: src/components/MobileActionBar.vue:10
 msgid "Send"
 msgstr "Senden"
@@ -2503,10 +2592,10 @@ msgstr "Sende USDT"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
 
-#: src/components/staking/StakingGraphPage.vue:141
-#: src/components/staking/StakingGraphPage.vue:236
+#: src/components/staking/StakingGraphPage.vue:132
+#: src/components/staking/StakingGraphPage.vue:227
 msgid "Sending Staking Transaction"
-msgstr ""
+msgstr "Staking-Transaktion wird gesendet"
 
 #: src/components/modals/BtcSendModal.vue:523
 #: src/components/modals/SendModal.vue:847
@@ -2514,9 +2603,9 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "Transaktion wird versendet"
 
-#: src/components/staking/StakingInfoPage.vue:337
+#: src/components/staking/StakingInfoPage.vue:335
 msgid "Sending Unstaking Transaction"
-msgstr ""
+msgstr "Unstaking-Transaktion wird gesendet"
 
 #: src/components/modals/BtcSendModal.vue:573
 msgid "Sent {btc} BTC"
@@ -2564,9 +2653,9 @@ msgstr "SEPA-Instant-Gebühr"
 msgid "SEPA Instant transaction"
 msgstr "SEPA-Echtzeitüberweisung"
 
-#: src/lib/StakingUtils.ts:118
+#: src/lib/StakingUtils.ts:106
 msgid "Set active stake"
-msgstr ""
+msgstr "Aktiven Stake festlegen"
 
 #: src/components/modals/SendModal.vue:111
 #: src/components/modals/SendModal.vue:88
@@ -2576,7 +2665,7 @@ msgstr "Betrag festlegen"
 
 #: src/components/staking/StakingGraphPage.vue:5
 msgid "Set an Amount"
-msgstr ""
+msgstr "Betrag festlegen"
 
 #: src/components/AmountMenu.vue:15
 msgid "Set fee"
@@ -2641,7 +2730,7 @@ msgstr "Wiederherstellungswörter anzeigen"
 msgid "Show values as {currency}"
 msgstr "Zeige Werte in {currency}"
 
-#: src/components/layouts/AddressOverview.vue:265
+#: src/components/layouts/AddressOverview.vue:282
 msgid "Signup"
 msgstr "Anmelden"
 
@@ -2658,10 +2747,10 @@ msgstr "Überspringen"
 #: src/components/modals/SendModal.vue:710
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
-#: src/components/staking/StakingGraphPage.vue:297
-#: src/components/staking/StakingInfoPage.vue:324
-#: src/components/staking/StakingInfoPage.vue:407
-#: src/components/staking/ValidatorDetailsOverlay.vue:177
+#: src/components/staking/StakingGraphPage.vue:288
+#: src/components/staking/StakingInfoPage.vue:322
+#: src/components/staking/StakingInfoPage.vue:405
+#: src/components/staking/ValidatorDetailsOverlay.vue:181
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
 
@@ -2685,79 +2774,87 @@ msgstr "Stabilität gepaart mit Selbstaufbewahrung"
 msgid "Stable like USD, got it"
 msgstr "Stabil wie USD, verstanden"
 
-#: src/components/staking/StakingGraphPage.vue:69
-msgid "Stake must be at least {minStake}."
+#: src/components/staking/StakingButton.vue:34
+msgid "Stake"
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:29
+#: src/components/staking/StakingGraphPage.vue:62
+msgid "Stake must be at least {minStake}."
+msgstr "Der Stake muss mindestens {minStake} betragen."
+
+#: src/components/staking/StakingButton.vue:38
 msgid "Stake NIM"
-msgstr ""
+msgstr "NIM staken"
 
 #: src/components/staking/StakingWelcomePage.vue:8
 msgid "Stake NIM to earn NIM"
-msgstr ""
+msgstr "NIM staken, um NIM zu verdienen"
 
 #: src/components/LegacyAccountNotice.vue:29
 msgid "Stake NIM to generate rewards for securing the network."
 msgstr "Stake deine NIM für Zinsen und um das Netzwerk zu sichern."
 
-#: src/components/staking/StakingSummaryMobile.vue:8
-msgid "Stake now"
+#: src/components/staking/StakingInfoPage.vue:22
+#: src/components/staking/StakingOverview.vue:11
+msgid "staked"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:56
-msgid "Staked"
-msgstr ""
-
-#: src/components/layouts/AddressOverview.vue:40
 #: src/components/LegacyAccountNotice.vue:28
-#: src/components/staking/StakingInfoPage.vue:15
+#: src/components/staking/StakingInfoPage.vue:8
 msgid "Staking"
 msgstr "Staking"
 
 #: src/components/staking/StakingInfoPage.vue:5
-msgid "Staking with {validator}"
+msgid "Staking overview"
+msgstr ""
+
+#: src/components/staking/StakingRewardsListItem.vue:20
+msgid "Staking rewards"
+msgstr ""
+
+#: src/components/staking/StakingRewardsPage.vue:4
+msgid "Staking Rewards"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:545
 msgid "standard"
 msgstr "Standard"
 
-#: src/lib/StakingUtils.ts:81
+#: src/lib/StakingUtils.ts:69
 msgid "Start staking"
-msgstr ""
+msgstr "Staken beginnen"
 
 #: src/components/modals/WelcomeModal.vue:351
 msgid "Store of value, got it"
 msgstr "Wertaufbewahrung, verstanden"
 
-#: src/components/staking/StakingGraphPage.vue:223
+#: src/components/staking/StakingGraphPage.vue:214
 msgid "Successfully added {amount} NIM to your stake with {validator}"
-msgstr ""
+msgstr "Erfolgreich {amount} NIM zu deinem Stake bei {validator} hinzugefügt"
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:161
+#: src/components/staking/ValidatorDetailsOverlay.vue:165
 msgid "Successfully changed validator to {validator}"
 msgstr "Validator erfolgreich geändert zu {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:308
+#: src/components/staking/StakingInfoPage.vue:306
 msgid "Successfully deactivated {amount} NIM"
-msgstr ""
+msgstr "Erfolgreich {amount} NIM deaktiviert"
 
-#: src/components/staking/StakingGraphPage.vue:272
+#: src/components/staking/StakingGraphPage.vue:263
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
-msgstr ""
+msgstr "Erfolgreich {amount} NIM von deinem Stake bei {validator} deaktiviert"
 
-#: src/components/staking/StakingGraphPage.vue:179
+#: src/components/staking/StakingGraphPage.vue:170
 msgid "Successfully staked {amount} NIM with {validator}"
-msgstr ""
+msgstr "Erfolgreich {amount} NIM mit {validator} gestaket"
 
-#: src/components/staking/StakingInfoPage.vue:393
+#: src/components/staking/StakingInfoPage.vue:391
 msgid "Successfully unstaked {amount} NIM"
-msgstr ""
+msgstr "Erfolgreich {amount} NIM ungestaket"
 
 #: src/components/staking/WelcomeStakingModal.vue:64
 msgid "Super eco-friendly"
-msgstr ""
+msgstr "Super umweltfreundlich"
 
 #: src/components/modals/WelcomeModal.vue:109
 msgid "Super low fees, super fast payments"
@@ -2776,7 +2873,7 @@ msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 msgid "Swap"
 msgstr "Tausch"
 
-#: src/components/layouts/AccountOverview.vue:194
+#: src/components/layouts/AccountOverview.vue:192
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "Tausche BTC {arrowIcon} {ticker}"
 
@@ -2811,11 +2908,11 @@ msgstr "Tausch ist abgelaufen"
 msgid "Swap more per 30 days."
 msgstr "Tausche mehr pro 30 Tage."
 
-#: src/components/layouts/AccountOverview.vue:123
+#: src/components/layouts/AccountOverview.vue:121
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "Tausche NIM {arrowIcon} {ticker}"
 
-#: src/components/layouts/AccountOverview.vue:87
+#: src/components/layouts/AccountOverview.vue:85
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Tausche NIM {arrowIcon} BTC"
 
@@ -2846,19 +2943,19 @@ msgstr "Tausche bis zu {limit} pro 30 Tage."
 msgid "Swiping Gestures"
 msgstr "Wisch-Gesten"
 
-#: src/components/layouts/AddressOverview.vue:114
-#: src/components/layouts/AddressOverview.vue:66
+#: src/components/layouts/AddressOverview.vue:107
+#: src/components/layouts/AddressOverview.vue:60
 msgid "Switch to USDC"
 msgstr "Wechsel zu USDC"
 
-#: src/components/layouts/AddressOverview.vue:108
-#: src/components/layouts/AddressOverview.vue:60
+#: src/components/layouts/AddressOverview.vue:101
+#: src/components/layouts/AddressOverview.vue:54
 msgid "Switch to USDT"
 msgstr "Wechsel zu USDT"
 
-#: src/lib/StakingUtils.ts:104
+#: src/lib/StakingUtils.ts:92
 msgid "Switch validator"
-msgstr ""
+msgstr "Validator wechseln"
 
 #: src/components/layouts/Network.vue:119
 msgid "syncing"
@@ -2867,6 +2964,7 @@ msgstr "abgleichen"
 #: src/components/modals/WalletStatusModal.vue:15
 msgid "Syncing takes long and fails in certain cases."
 msgstr ""
+"Das Synchronisieren dauert lange und schlägt in bestimmten Fällen fehl."
 
 #: src/components/SendModalFooter.vue:69
 msgid "Syncing with Bitcoin network"
@@ -2887,8 +2985,8 @@ msgid "TEN31 Verification"
 msgstr "TEN31-Verifizierung"
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:221
-#: src/components/layouts/AddressOverview.vue:131
+#: src/components/layouts/AccountOverview.vue:219
+#: src/components/layouts/AddressOverview.vue:124
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
 #: src/components/UsdcAddressInfo.vue:14
@@ -2937,12 +3035,17 @@ msgid ""
 "The network and your NIM successfully migrated to Proof-of-Stake. The wallet"
 " is not fully up to speed yet but we’re getting there."
 msgstr ""
+"Das Netzwerk und deine NIM wurden erfolgreich auf Proof-of-Stake migriert. "
+"Die Wallet ist noch nicht ganz auf dem neuesten Stand, aber wir sind auf dem"
+" Weg dorthin."
 
 #: src/App.vue:11
 msgid ""
 "The network is temporarily not processing transactions or staking rewards, "
 "thank you for your patience."
 msgstr ""
+"Das Netzwerk verarbeitet derzeit vorübergehend keine Transaktionen oder "
+"Staking-Belohnungen. Vielen Dank für deine Geduld."
 
 #: src/components/modals/MigrationWelcomeModal.vue:7
 msgid ""
@@ -2982,7 +3085,7 @@ msgstr ""
 
 #: src/components/staking/ValidatorScoreDetails.vue:127
 msgid "The pool sometimes fails to be available for block production."
-msgstr ""
+msgstr "Der Pool ist manchmal nicht für die Blockproduktion verfügbar."
 
 #: src/components/modals/BuyCryptoModal.vue:44
 #: src/components/modals/SellCryptoModal.vue:43
@@ -2999,6 +3102,8 @@ msgid ""
 "The Simplex integration is currently disabled while the network is "
 "experiencing an outage."
 msgstr ""
+"Die Simplex-Integration ist derzeit deaktiviert, da das Netzwerk ausgefallen"
+" ist."
 
 #: src/components/swap/SwapAnimation.vue:19
 msgid "The swap expired"
@@ -3006,7 +3111,7 @@ msgstr "Der Tausch ist abgelaufen"
 
 #: src/components/modals/WalletStatusModal.vue:16
 msgid "The transaction history does not update correctly."
-msgstr ""
+msgstr "Der Transaktionsverlauf wird nicht korrekt aktualisiert."
 
 #: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:15
 msgid "The validator is solely responsible for information provided above."
@@ -3019,6 +3124,9 @@ msgid ""
 "The validator is solely responsible for the information provided above. It "
 "is not to be viewed as an endorsement or recommendation by Nimiq."
 msgstr ""
+"Der Validator ist allein für die oben bereitgestellten Informationen "
+"verantwortlich. Dies stellt keine Unterstützung oder Empfehlung durch Nimiq "
+"dar."
 
 #: src/components/TestnetFaucet.vue:134
 msgid "There are currently no free NIM available."
@@ -3048,6 +3156,7 @@ msgstr "Denk an Funktion, nicht an Währung"
 #: src/components/modals/BtcTransactionModal.vue:224
 #: src/components/modals/TransactionModal.vue:209
 #: src/components/modals/TransactionModal.vue:234
+#: src/components/staking/StakingRewardsPage.vue:64
 msgid ""
 "This historic value is based on an average of cross-exchange prices. It "
 "might vary due to market volatility and liquidity."
@@ -3085,12 +3194,12 @@ msgstr "Das kann bis zu {min} Minuten dauern."
 
 #: src/components/BtcTransactionList.vue:243
 #: src/components/BtcTransactionList.vue:265
-#: src/components/TransactionList.vue:228
-#: src/components/TransactionList.vue:250
 #: src/components/UsdcTransactionList.vue:205
 #: src/components/UsdcTransactionList.vue:227
 #: src/components/UsdtTransactionList.vue:205
 #: src/components/UsdtTransactionList.vue:227
+#: src/composables/useTransactionList.ts:149
+#: src/composables/useTransactionList.ts:208 src/lib/StakingUtils.ts:155
 msgid "This month"
 msgstr "Diesen Monat"
 
@@ -3099,44 +3208,49 @@ msgid ""
 "This pool controls a large share of the total stake.\n"
 "Support the network by staking with a smaller pool."
 msgstr ""
+"Dieser Pool kontrolliert einen großen Anteil des gesamten Stakes.\n"
+"Unterstütze das Netzwerk, indem du bei einem kleineren Pool stakest."
 
 #: src/components/staking/ValidatorScoreDetails.vue:164
 msgid ""
 "This pool controls an almost critical share of the total stake.\n"
 "Choose a smaller pool to improve the network’s security."
 msgstr ""
+"Dieser Pool kontrolliert einen nahezu kritischen Anteil des gesamten Stakes.\n"
+"Wähle einen kleineren Pool, um die Sicherheit des Netzwerks zu verbessern."
 
 #: src/components/staking/ValidatorScoreDetails.vue:121
 msgid "This pool is reliably available for block production."
-msgstr ""
+msgstr "Dieser Pool ist zuverlässig für die Blockproduktion verfügbar."
 
 #: src/components/staking/ValidatorScoreDetails.vue:155
 msgid "This pool is safe to stake with."
-msgstr ""
+msgstr "Dieser Pool ist sicher zum Staken."
 
 #: src/components/staking/ValidatorScoreDetails.vue:124
 msgid "This pool is usually available for block production."
-msgstr ""
+msgstr "Dieser Pool ist normalerweise für die Blockproduktion verfügbar."
 
 #: src/components/staking/ValidatorScoreDetails.vue:129
 msgid "This pool regularly fails to be available for block production."
 msgstr ""
+"Dieser Pool steht regelmäßig nicht für die Blockproduktion zur Verfügung."
 
 #: src/components/staking/ValidatorScoreDetails.vue:146
 msgid "This pool regularly fails to produce blocks."
-msgstr ""
+msgstr "Dieser Pool schlägt regelmäßig bei der Blockproduktion fehl."
 
 #: src/components/staking/ValidatorScoreDetails.vue:138
 msgid "This pool reliably produces blocks."
-msgstr ""
+msgstr "Dieser Pool produziert zuverlässig Blöcke."
 
 #: src/components/staking/ValidatorScoreDetails.vue:144
 msgid "This pool sometimes fails to produce blocks."
-msgstr ""
+msgstr "Dieser Pool schlägt manchmal bei der Blockproduktion fehl."
 
 #: src/components/staking/ValidatorScoreDetails.vue:141
 msgid "This pool usually produces blocks."
-msgstr ""
+msgstr "Dieser Pool produziert normalerweise Blöcke."
 
 #: src/components/TestnetFaucet.vue:129
 msgid "This service is currently not available in your region."
@@ -3187,14 +3301,8 @@ msgstr "Zeitraum"
 msgid "To {exchange}"
 msgstr "Zu {exchange}"
 
-#: src/components/staking/StakingInfoPage.vue:156
-msgid ""
-"To change your validator, un-stake all NIM and restart the process. Click "
-"here to {unstakeLink}."
-msgstr ""
-
-#: src/components/layouts/AccountOverview.vue:128
-#: src/components/layouts/AccountOverview.vue:199
+#: src/components/layouts/AccountOverview.vue:126
+#: src/components/layouts/AccountOverview.vue:197
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr "Um mit USDC/USDT zu tauschen, wähle einen Stablecoin."
@@ -3260,8 +3368,10 @@ msgstr "Tx Zeit"
 msgid "Type to search..."
 msgstr "Tippe zum Suchen…"
 
-#: src/components/staking/StakingInfoPage.vue:159
-msgid "un-stake all"
+#: src/components/staking/StakingOverview.vue:48
+#: src/components/staking/StakingRewardsListItem.vue:56
+#: src/components/staking/ValidatorsListOverlay.vue:43
+msgid "unavailable"
 msgstr ""
 
 #: src/composables/useTransactionInfo.ts:149
@@ -3301,12 +3411,19 @@ msgstr ""
 "direkt mit Gleichgesinnten auf der ganzen Welt. Das macht dich zu einem "
 "Bürger erster Klasse auf der Blockchain."
 
-#: src/components/staking/StakingGraphPage.vue:72
+#: src/components/staking/StakingGraphPage.vue:65
 msgid "Unlock at any time. Your NIM will be available within ~24 hours."
 msgstr ""
+"Jederzeit entsperren. Deine NIM werden innerhalb von etwa 24 Stunden "
+"verfügbar sein."
 
-#: src/lib/StakingUtils.ts:35
+#: src/lib/StakingUtils.ts:23
 msgid "Unstake"
+msgstr "Unstaken"
+
+#: src/components/staking/StakingInfoPage.vue:104
+#: src/components/staking/StakingOverview.vue:22
+msgid "Unstaking"
 msgstr ""
 
 #: src/swap-kyc-handler.ts:148 src/swap-kyc-handler.ts:157
@@ -3317,6 +3434,10 @@ msgstr "Nicht unterstützte Währung"
 msgid "Unsupported KYC provider {provider}."
 msgstr "KYC-Anbieter {provider} wird nicht unterstützt."
 
+#: src/components/staking/ValidatorsListOverlay.vue:140
+msgid "Until {day} {month}"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
 msgstr "Update verfügbar"
@@ -3326,13 +3447,13 @@ msgstr "Update verfügbar"
 msgid "Update now"
 msgstr "Jetzt aktualisieren"
 
-#: src/lib/StakingUtils.ts:56
+#: src/lib/StakingUtils.ts:44
 msgid "Update validator"
-msgstr ""
+msgstr "Validator aktualisieren"
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:218
-#: src/components/layouts/AddressOverview.vue:128
+#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AddressOverview.vue:121
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
@@ -3365,10 +3486,8 @@ msgstr "Nutze die Nimiq Wallet als Web-App außerhalb des Browsers."
 #: src/components/staking/StakingGraphPage.vue:12
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
-
-#: src/components/staking/StakingInfoPage.vue:128
-msgid "Validator"
-msgstr "Validator"
+"Verwende den Schieberegler, um deine NIM zu sperren und Belohnungen zu "
+"verdienen."
 
 #: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
@@ -3386,10 +3505,6 @@ msgstr "Warte auf {currency}"
 msgid "Waiting for Nimiq network information"
 msgstr "Warte auf Nimiq-Netzwerkinformationen"
 
-#: src/lib/StakingUtils.ts:19
-msgid "Wallet Payout"
-msgstr "Wallet Auszahlung"
-
 #: src/components/modals/UsdtAddedModal.vue:8
 msgid "We added support for USDT, which you can now use instead of USDC."
 msgstr ""
@@ -3398,7 +3513,7 @@ msgstr ""
 
 #: src/components/modals/WalletStatusModal.vue:4
 msgid "We’re busy fixing the wallet but your NIM are safe"
-msgstr ""
+msgstr "Wir arbeiten gerade an der Wallet, aber deine NIM sind sicher."
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""
@@ -3410,7 +3525,7 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:4
 msgid "Welcome to the new Nimiq"
-msgstr ""
+msgstr "Entdecke das neue Nimiq"
 
 #: src/components/modals/PolygonActivationModal.vue:16
 msgid ""
@@ -3432,9 +3547,9 @@ msgstr "Wie heißt deine Bank?"
 msgid "When ready"
 msgstr "Wenn fertig"
 
-#: src/components/staking/StakingGraphPage.vue:76
+#: src/components/staking/StakingGraphPage.vue:69
 msgid "will be available within ~24 hours."
-msgstr ""
+msgstr "wird innerhalb von etwa 24 Stunden verfügbar sein."
 
 #: src/components/modals/BtcReceiveModal.vue:14
 msgid ""
@@ -3472,7 +3587,7 @@ msgstr "Ohne eine individuelle IBAN sind Rückerstattungen unmöglich!"
 
 #: src/components/layouts/Sidebar.vue:17
 msgid "You are connecting to the Nimiq PoS and Bitcoin Testnets."
-msgstr ""
+msgstr "Du verbindest dich mit den Nimiq PoS- und Bitcoin-Testnets."
 
 #: src/components/LegacyAccountNotice.vue:4
 msgid "You are using a Legacy Account "
@@ -3500,15 +3615,15 @@ msgstr ""
 "- in der Wallet, indem du NIM zuerst gegen BTC oder USDC tauschst, die dann verkauft werden können.\n"
 "- auf unterstützten Börsen."
 
-#: src/components/staking/StakingInfoPage.vue:77
+#: src/components/staking/StakingInfoPage.vue:38
 msgid "You can't adjust your stake while you're unstaking"
-msgstr ""
+msgstr "Du kannst deinen Stake nicht anpassen, während du unstakest."
 
 #: src/components/layouts/Sidebar.vue:153
 msgid "You currently have no balance to swap."
 msgstr "Du hast aktuell kein Guthaben zum tauschen."
 
-#: src/components/layouts/AddressOverview.vue:496
+#: src/components/layouts/AddressOverview.vue:512
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "Du hast nicht genug USDC.e, um die Tauschgebühren zu bezahlen ({fee})"
 
@@ -3530,7 +3645,7 @@ msgid "You need a SEPA account that supports instant transactions."
 msgstr "Du brauchst ein SEPA-Konto, das Instant-Überweisungen unterstützt."
 
 #: src/components/BtcTransactionList.vue:55
-#: src/components/TransactionList.vue:49
+#: src/components/TransactionList.vue:56
 #: src/components/UsdcTransactionList.vue:46
 #: src/components/UsdtTransactionList.vue:46
 msgid "You now own crypto!"
@@ -3554,7 +3669,7 @@ msgstr "Du sendest {amount} NIM"
 
 #: src/components/FlaggedAddressWarning.vue:21
 msgid "Your {currency} would most likely be stolen."
-msgstr ""
+msgstr "Deine {currency} würden höchstwahrscheinlich gestohlen werden."
 
 #: src/components/layouts/AccountOverview.vue:9
 msgid "Your account is not safe yet!"
@@ -3651,8 +3766,10 @@ msgid ""
 "Your rewards are influenced by how many NIM are staked globally and your "
 "validator pool’s fee."
 msgstr ""
+"Deine Belohnungen werden davon beeinflusst, wie viele NIM weltweit gestaket "
+"sind und welche Gebühr dein Validator-Pool erhebt."
 
-#: src/components/layouts/AddressOverview.vue:273
+#: src/components/layouts/AddressOverview.vue:290
 msgid "Your swap was successful!"
 msgstr "Dein Tausch war erfolgreich!"
 
@@ -3661,7 +3778,7 @@ msgid "Your transaction must be SEPA Instant"
 msgstr "Deine Überweisung muss SEPA-Instant sein."
 
 #: src/components/BtcTransactionList.vue:65
-#: src/components/TransactionList.vue:63
+#: src/components/TransactionList.vue:70
 #: src/components/UsdcTransactionList.vue:55
 #: src/components/UsdtTransactionList.vue:55
 msgid "Your transactions will appear here"

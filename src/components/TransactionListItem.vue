@@ -32,7 +32,7 @@
                 && (swapData.asset === SwapAsset.USDC || swapData.asset === SwapAsset.USDC_MATIC)"/>
             <UsdtIcon v-else-if="swapData && swapData.asset === SwapAsset.USDT_MATIC"/>
             <BankIcon v-else-if="swapData && swapData.asset === SwapAsset.EUR"/>
-            <HeroIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
+            <StakingIcon v-else-if="peerAddress === constants.STAKING_CONTRACT_ADDRESS" full-size/>
             <Identicon v-else :address="peerAddress" />
             <div v-if="isCashlink" class="cashlink-or-swap"><CashlinkXSmallIcon/></div>
             <div v-if="swapInfo || isSwapProxy" class="cashlink-or-swap"><SwapSmallIcon/></div>
@@ -61,8 +61,8 @@
             <Amount :amount="transaction.value" value-mask/>
             <transition v-if="!swapData || swapData.asset !== SwapAsset.EUR" name="fade">
                 <FiatConvertedAmount v-if="state === TransactionState.PENDING" :amount="transaction.value" value-mask/>
-                <div v-else-if="fiat.value === undefined" class="fiat-amount">&nbsp;</div>
-                <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount">
+                <div v-else-if="fiat.value === undefined" class="fiat-amount fiat-loading">&nbsp;</div>
+                <div v-else-if="fiat.value === constants.FIAT_PRICE_UNAVAILABLE" class="fiat-amount fiat-unavailable">
                     {{ $t('Fiat value unavailable') }}
                 </div>
                 <div v-else class="fiat-amount flex-row">
@@ -109,7 +109,7 @@ import {
 import { useTransactionInfo } from '../composables/useTransactionInfo';
 import { useFormattedDate } from '../composables/useFormattedDate';
 import TransactionListOasisPayoutStatus from './TransactionListOasisPayoutStatus.vue';
-import HeroIcon from './icons/Staking/HeroIcon.vue';
+import StakingIcon from './icons/Staking/StakingIcon.vue';
 
 export default defineComponent({
     props: {
@@ -181,13 +181,14 @@ export default defineComponent({
         BankIcon,
         SwapSmallIcon,
         TransactionListOasisPayoutStatus,
-        HeroIcon,
+        StakingIcon,
     },
 });
 </script>
 
 <style scoped lang="scss">
 @import "../scss/variables.scss";
+@import "../scss/mixins.scss";
 
 svg {
     display: block;
@@ -264,12 +265,12 @@ svg {
 
         img { height: 100% }
 
-        svg:not(.hero-icon) {
+        svg:not(.staking-icon) {
             height: 100%;
             width: 100%;
         }
 
-        > svg:not(.hero-icon) {
+        > svg:not(.staking-icon) {
             width: 6rem;
             height: 6rem;
             padding: 0.375rem;
@@ -366,6 +367,14 @@ svg {
             &.loading {
                 min-height: var(--fiat-amount-height); // to avoid jumping when fiat value loaded
             }
+
+            &.fiat-loading {
+                @include amount-loading-placeholder(4rem, 1.6rem);
+            }
+
+            &.fiat-unavailable {
+                @include fiat-unavailable;
+            }
         }
 
         > * {
@@ -445,7 +454,7 @@ svg {
             width: 5.5rem;
             height: 5.5rem;
 
-            > svg:not(.hero-icon) {
+            > svg:not(.staking-icon) {
                 width: 5rem;
                 height: 5rem;
                 margin: 0.25rem;

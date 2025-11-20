@@ -464,7 +464,6 @@ export default defineComponent({
 
     .staking-info-page {
         flex-grow: 1;
-        height: 600px;
     }
 
     .page-header {
@@ -498,6 +497,7 @@ export default defineComponent({
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
+        overflow: hidden;
     }
 
     .amounts {

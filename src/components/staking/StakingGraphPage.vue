@@ -1,5 +1,5 @@
 <template>
-    <div class="stake-graph-page flex-column">
+    <div class="staking-graph-page flex-column">
         <PageHeader :backArrow="true" @back="$emit('back')">
             <template v-if="!activeStake || !activeStake.activeBalance" #default>
                 {{ $t('Set an Amount') }}
@@ -323,7 +323,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    .stake-graph-page { flex-grow: 1 }
+    .staking-graph-page { flex-grow: 1 }
 
     .page-header {
         padding-bottom: 3rem;

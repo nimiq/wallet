@@ -568,7 +568,7 @@ msgstr "Bloc #{height}"
 msgid "Block explorer"
 msgstr "Explorateur de blocs"
 
-#: src/components/modals/MultisigAnnouncementModal.vue:16
+#: src/components/modals/MultisigAnnouncementModal.vue:17
 #: src/components/modals/PolygonActivationModal.vue:28
 msgid "blog post"
 msgstr "article de blog"
@@ -795,7 +795,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Cliquez sur \"Résolution des problèmes\" pour en apprendre plus."
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:211
+#: src/components/staking/StakingModal.vue:212
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Fermer"
@@ -1009,7 +1009,7 @@ msgstr "Dataset : {name}"
 msgid "Deactivate validator"
 msgstr "Désactiver le validateur"
 
-#: src/components/staking/StakingInfoPage.vue:265
+#: src/components/staking/StakingInfoPage.vue:266
 msgid "Deactivating Stake"
 msgstr "Désactivation du staking"
 
@@ -1316,7 +1316,7 @@ msgstr "Récupération"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
-#: src/components/staking/StakingInfoPage.vue:59
+#: src/components/staking/StakingInfoPage.vue:60
 #: src/components/staking/StakingRewardsPage.vue:52
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
@@ -1385,7 +1385,7 @@ msgstr "gratuit"
 
 #: src/components/staking/ValidatorsListOverlay.vue:138
 msgid "From {day} {month}"
-msgstr ""
+msgstr "Depuis le {day} {month}"
 
 #: src/components/NetworkMapPeerList.vue:12
 msgid "Full Node"
@@ -1857,6 +1857,8 @@ msgid ""
 "Multiple\n"
 "Validators"
 msgstr ""
+"Validateurs\n"
+"multiples"
 
 #: src/components/LegacyAccountNotice.vue:14
 msgid "Multiple Addresses"
@@ -1872,7 +1874,7 @@ msgstr ""
 
 #: src/components/staking/ValidatorsListOverlay.vue:5
 msgid "Multiple Validators"
-msgstr ""
+msgstr "Validateurs multiples"
 
 #: src/components/modals/SendModal.vue:77
 #: src/components/modals/StablecoinSendModal.vue:78
@@ -2279,7 +2281,7 @@ msgstr ""
 "Découvrez tout à ce sujet dans cet {blog_post} ou passez directement à "
 "l'action."
 
-#: src/components/staking/StakingInfoPage.vue:96
+#: src/components/staking/StakingInfoPage.vue:97
 msgid "ready for pay out"
 msgstr "prêt pour le paiement"
 
@@ -2449,7 +2451,7 @@ msgstr "Nouvelle tentative..."
 msgid "Reward"
 msgstr "Récompense"
 
-#: src/components/staking/StakingInfoPage.vue:64
+#: src/components/staking/StakingInfoPage.vue:65
 msgid "Reward History"
 msgstr "Historique des récompenses"
 
@@ -2620,7 +2622,7 @@ msgstr "Envoi de la transaction du staking"
 msgid "Sending Transaction"
 msgstr "Envoi de la transaction en cours"
 
-#: src/components/staking/StakingInfoPage.vue:335
+#: src/components/staking/StakingInfoPage.vue:336
 msgid "Sending Unstaking Transaction"
 msgstr "Envoi de la transaction du dé-stake"
 
@@ -2762,7 +2764,7 @@ msgid "Simulate EUR payment"
 msgstr "Simuler le paiement en Euro"
 
 #: src/components/modals/BtcActivationModal.vue:28
-#: src/components/modals/MultisigAnnouncementModal.vue:23
+#: src/components/modals/MultisigAnnouncementModal.vue:25
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "Passer"
@@ -2772,8 +2774,8 @@ msgstr "Passer"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:322
-#: src/components/staking/StakingInfoPage.vue:405
+#: src/components/staking/StakingInfoPage.vue:323
+#: src/components/staking/StakingInfoPage.vue:406
 #: src/components/staking/ValidatorDetailsOverlay.vue:181
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
@@ -2798,7 +2800,7 @@ msgstr "La stabilité mêlée à l'autogestion"
 msgid "Stable like USD, got it"
 msgstr "Stable comme le dollar, c'est noté."
 
-#: src/components/staking/StakingButton.vue:34
+#: src/components/staking/StakingButton.vue:33
 msgid "Stake"
 msgstr "Stake"
 
@@ -2806,7 +2808,7 @@ msgstr "Stake"
 msgid "Stake must be at least {minStake}."
 msgstr "Le staking doit être au moins de {minStake} ."
 
-#: src/components/staking/StakingButton.vue:38
+#: src/components/staking/StakingButton.vue:37
 msgid "Stake NIM"
 msgstr "Staker du NIM"
 
@@ -2862,7 +2864,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr "Le validateur a été remplacé avec succès par {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:306
+#: src/components/staking/StakingInfoPage.vue:307
 msgid "Successfully deactivated {amount} NIM"
 msgstr "Désactivation réussie de {amount} NIM"
 
@@ -2875,7 +2877,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr "Staking de {amount}NIM réussi avec {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:391
+#: src/components/staking/StakingInfoPage.vue:392
 msgid "Successfully unstaked {amount} NIM"
 msgstr "Dé-staking de {amount} NIM réussi "
 
@@ -3396,7 +3398,7 @@ msgstr "Tapez pour rechercher..."
 #: src/components/staking/StakingRewardsListItem.vue:56
 #: src/components/staking/ValidatorsListOverlay.vue:43
 msgid "unavailable"
-msgstr ""
+msgstr "indisponible"
 
 #: src/composables/useTransactionInfo.ts:149
 msgid "Unclaimed Cashlink"
@@ -3445,7 +3447,7 @@ msgstr ""
 msgid "Unstake"
 msgstr "Dé-stake"
 
-#: src/components/staking/StakingInfoPage.vue:104
+#: src/components/staking/StakingInfoPage.vue:105
 #: src/components/staking/StakingOverview.vue:22
 msgid "Unstaking"
 msgstr "Dé-stake"
@@ -3460,7 +3462,7 @@ msgstr "Fournisseur {provider} KYC non supporté."
 
 #: src/components/staking/ValidatorsListOverlay.vue:140
 msgid "Until {day} {month}"
-msgstr ""
+msgstr "Avant le {day} {month}"
 
 #: src/components/layouts/Settings.vue:15
 msgid "Update Available"
@@ -3518,7 +3520,7 @@ msgstr ""
 msgid "Vesting Contract"
 msgstr "Contrat d'acquisition"
 
-#: src/components/modals/MultisigAnnouncementModal.vue:21
+#: src/components/modals/MultisigAnnouncementModal.vue:23
 msgid "VISIT MULTISIG.NIMIQ.COM"
 msgstr "VISITER MULTISIG.NIMIQ.COM"
 

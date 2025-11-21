@@ -30,6 +30,7 @@
 ^\/usdt-transaction(?:\/([^\/#\?]+?))[\/#\?]?$
 ^(?:\/(polygon:.+))[\/#\?]?$
 ^\/usdt-added[\/#\?]?$
+^\/multisig-announcement[\/#\?]?$
 ^\/stablecoin-selection[\/#\?]?$
 ^\/swap(?:\/([^\/#\?]+?))?[\/#\?]?$
 ^\/moonpay-sell-info[\/#\?]?$

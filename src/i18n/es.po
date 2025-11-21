@@ -566,7 +566,7 @@ msgstr "Bloque #{height}"
 msgid "Block explorer"
 msgstr "Explorador de Bloques"
 
-#: src/components/modals/MultisigAnnouncementModal.vue:16
+#: src/components/modals/MultisigAnnouncementModal.vue:17
 #: src/components/modals/PolygonActivationModal.vue:28
 msgid "blog post"
 msgstr "entrada de blog"
@@ -796,7 +796,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Haga click en ‘Solución de problemas’ para aprender más."
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:211
+#: src/components/staking/StakingModal.vue:212
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Cerrar"
@@ -1008,7 +1008,7 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:265
+#: src/components/staking/StakingInfoPage.vue:266
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -1308,7 +1308,7 @@ msgstr "Recolectando"
 
 #: src/components/BtcTransactionListItem.vue:68
 #: src/components/modals/TransactionModal.vue:221
-#: src/components/staking/StakingInfoPage.vue:59
+#: src/components/staking/StakingInfoPage.vue:60
 #: src/components/staking/StakingRewardsPage.vue:52
 #: src/components/TransactionListItem.vue:66
 #: src/components/UsdcTransactionListItem.vue:59
@@ -2247,7 +2247,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or get right into it."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:96
+#: src/components/staking/StakingInfoPage.vue:97
 msgid "ready for pay out"
 msgstr ""
 
@@ -2416,7 +2416,7 @@ msgstr "Intentando de nuevo..."
 msgid "Reward"
 msgstr "Recompensa"
 
-#: src/components/staking/StakingInfoPage.vue:64
+#: src/components/staking/StakingInfoPage.vue:65
 msgid "Reward History"
 msgstr ""
 
@@ -2586,7 +2586,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr "Enviando Transacción"
 
-#: src/components/staking/StakingInfoPage.vue:335
+#: src/components/staking/StakingInfoPage.vue:336
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2726,7 +2726,7 @@ msgid "Simulate EUR payment"
 msgstr "Simular pago en EUR"
 
 #: src/components/modals/BtcActivationModal.vue:28
-#: src/components/modals/MultisigAnnouncementModal.vue:23
+#: src/components/modals/MultisigAnnouncementModal.vue:25
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "Omitir"
@@ -2736,8 +2736,8 @@ msgstr "Omitir"
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:322
-#: src/components/staking/StakingInfoPage.vue:405
+#: src/components/staking/StakingInfoPage.vue:323
+#: src/components/staking/StakingInfoPage.vue:406
 #: src/components/staking/ValidatorDetailsOverlay.vue:181
 msgid "Something went wrong"
 msgstr "Algo ha salido mal"
@@ -2762,7 +2762,7 @@ msgstr "Estabilidad mezclada con auto-custodia"
 msgid "Stable like USD, got it"
 msgstr "Estable como USD, entendido"
 
-#: src/components/staking/StakingButton.vue:34
+#: src/components/staking/StakingButton.vue:33
 msgid "Stake"
 msgstr ""
 
@@ -2770,7 +2770,7 @@ msgstr ""
 msgid "Stake must be at least {minStake}."
 msgstr ""
 
-#: src/components/staking/StakingButton.vue:38
+#: src/components/staking/StakingButton.vue:37
 msgid "Stake NIM"
 msgstr ""
 
@@ -2826,7 +2826,7 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr "Cambio el validador exitosamente a {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:306
+#: src/components/staking/StakingInfoPage.vue:307
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2838,7 +2838,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:391
+#: src/components/staking/StakingInfoPage.vue:392
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -3389,7 +3389,7 @@ msgstr ""
 msgid "Unstake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:104
+#: src/components/staking/StakingInfoPage.vue:105
 #: src/components/staking/StakingOverview.vue:22
 msgid "Unstaking"
 msgstr ""
@@ -3458,7 +3458,7 @@ msgstr ""
 msgid "Vesting Contract"
 msgstr "Contrato Vesting"
 
-#: src/components/modals/MultisigAnnouncementModal.vue:21
+#: src/components/modals/MultisigAnnouncementModal.vue:23
 msgid "VISIT MULTISIG.NIMIQ.COM"
 msgstr ""
 

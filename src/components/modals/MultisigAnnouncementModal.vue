@@ -13,7 +13,9 @@
                     class="nq-text secondary"
                 >
                     <template #blog_post>
-                        <a href="https://www.nimiq.com/blog/" target="_blank" rel="noopener">{{ $t('blog post') }}</a>
+                        <a href="https://www.nimiq.com/blog/multisig-shared-wallet/" target="_blank" rel="noopener">
+                            {{ $t('blog post') }}
+                        </a>
                     </template>
                 </i18n>
                 <div class="flex-grow"></div>

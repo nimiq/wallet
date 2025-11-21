@@ -224,21 +224,40 @@ export const useStakingStore = createStore({
             if (!events || !Array.isArray(events)) return null;
             return events;
         },
-        restakingRewards: (state, { stakingEvents, activeValidator }): Readonly<number | null> => {
-            // Only show rewards for restaking validators
-            if (
-                !activeValidator.value
-                || (activeValidator.value as RegisteredValidator).payoutType !== 'restake'
-            ) return null;
-
+        restakingRewards: (state, { stakingEvents, activeStake, activeValidator }): Readonly<number | null> => {
             const events: Readonly<AggregatedRestakingEvent[] | null> = stakingEvents.value;
             if (!events || !Array.isArray(events)) return null;
+
+            // If we have validator API data and it's not a restaking validator, return 0 (no restaking rewards)
+            if (activeValidator.value
+                && (activeValidator.value as RegisteredValidator).payoutType
+                && (activeValidator.value as RegisteredValidator).payoutType !== 'restake') {
+                return 0;
+            }
 
             let totalRestakingRewards = 0;
             // Cache values, to avoid repeatedly accessing them with the overhead of Vue's reactivity system, which
             // is quite noticeable here as we're processing potentially tens of thousands of staking events.
             const eventCount = events.length;
-            const { address: validatorAddress, rewardAddress: validatorRewardAddress } = activeValidator.value;
+
+            // Get validator address from stake (blockchain data) if available
+            const stake = activeStake.value as Stake | null;
+            const validatorAddress = stake?.validator;
+
+            // Get rewardAddress from activeValidator if available (from API), but don't wait for it
+            const validatorRewardAddress = activeValidator.value
+                ? (activeValidator.value as RegisteredValidator).rewardAddress
+                : undefined;
+
+            // If we don't have validator info yet, sum all events (will be refined once validator data loads)
+            if (!validatorAddress) {
+                for (let i = 0; i < eventCount; ++i) {
+                    totalRestakingRewards += events[i].aggregated_value;
+                }
+                return totalRestakingRewards;
+            }
+
+            // Filter by validator address
             for (let i = 0; i < eventCount; ++i) {
                 const event = events[i];
                 const { sender_address: rewardSenderAddress } = event;

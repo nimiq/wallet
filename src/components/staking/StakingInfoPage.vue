@@ -43,13 +43,14 @@
                 <div class="flex-column nq-green-bg rewards">
                     <h2 class="flex-row nq-label flex-grow">{{ $t('Rewards') }}</h2>
                     <div class="amount-row flex-row row">
-                        <template v-if="!!restakingRewards">
+                        <template v-if="restakingRewards !== null && restakingRewards !== undefined">
                             +<Amount :amount="restakingRewards" value-mask/>
                         </template>
                         <div v-else class="amount-loading-placeholder"></div>
                     </div>
                     <div class="details-row flex-row row">
-                        <div v-if="!totalRewardsFiatValue" class="amount-loading-placeholder"></div>
+                        <div v-if="totalRewardsFiatValue === null || totalRewardsFiatValue === undefined"
+                            class="amount-loading-placeholder"></div>
                         <FiatAmount
                             v-else-if="totalRewardsFiatValue !== Constants.FIAT_PRICE_UNAVAILABLE"
                             :amount="totalRewardsFiatValue"
@@ -165,7 +166,7 @@ export default defineComponent({
             monthlyRewards,
             stakingEvents,
         } = useStakingStore();
-        const { height, consensus, isFetchingTxHistory } = useNetworkStore();
+        const { height, consensus } = useNetworkStore();
         const { isMobile } = useWindowSize();
 
         // Height of items in pixel
@@ -210,8 +211,8 @@ export default defineComponent({
         const rewards = computed(() => {
             const rew: Reward[] = [];
 
-            // Display loading transactions
-            if (!monthlyRewards.value.size && isFetchingTxHistory.value) {
+            // Display loading placeholders while staking events are still loading
+            if (!monthlyRewards.value.size && stakingEvents.value === null) {
                 // create just as many placeholders that the scroller doesn't start recycling them because the loading
                 // animation breaks for recycled entries due to the animation delay being off.
                 const listHeight = window.innerHeight - 220; // approximated to avoid enforced layouting by offsetHeight
@@ -463,7 +464,6 @@ export default defineComponent({
 
     .staking-info-page {
         flex-grow: 1;
-        height: 600px;
     }
 
     .page-header {
@@ -497,6 +497,7 @@ export default defineComponent({
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
+        overflow: hidden;
     }
 
     .amounts {

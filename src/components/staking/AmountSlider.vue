@@ -266,9 +266,9 @@ export default defineComponent({
             const offsetX = getPointAtPercent(percent);
             updatePosition(offsetX);
             updateInputWidth(formatNumber(amount / 1e5));
-            context.emit('amount-staked', currentAmount.value);
 
             if (!firstRender) {
+                context.emit('amount-staked', currentAmount.value);
                 timeoutID = window.setTimeout(() => {
                     animate.value = false;
                 }, 1000);

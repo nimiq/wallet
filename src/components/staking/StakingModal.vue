@@ -58,6 +58,7 @@
                 status=""
                 :alternative-action="statusAlternativeAction"
                 :small="false"
+                @main-action="onStatusMainAction"
             />
             <transition v-else name="fade" mode="out-in">
                 <ValidatorDetailsOverlay v-if="overlay === Overlay.ValidatorDetails"

@@ -202,7 +202,6 @@ export default defineComponent({
                 margin-bottom: 1.25rem;
 
                 svg {
-                    margin-left: 0.25rem;
                     height: 16rem;
                 }
             }

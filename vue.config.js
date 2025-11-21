@@ -285,4 +285,14 @@ module.exports = {
             },
         },
     }),
+    // TODO Delete this once BYT-34 is resolved
+    devServer: {
+        proxy: (buildName === 'testnet' || buildName === 'local' || process.env.build === 'testnet') ? {
+            '/api/v1/validators': {
+                target: 'http://localhost:8081', // Assuming the dev server runs on 8081
+                pathRewrite: { '^/api/v1/validators': '/validators-testnet.json' },
+                changeOrigin: true,
+            },
+        } : null,
+    },
 };

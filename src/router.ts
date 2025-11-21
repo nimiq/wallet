@@ -70,6 +70,8 @@ const UsdtTransactionModal = () =>
     import(/* webpackChunkName: "usdt-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
 const UsdtAddedModal = () =>
     import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
+const MultisigAnnouncementModal = () =>
+    import(/* webpackChunkName: "multisig-announcement-modal" */ './components/modals/MultisigAnnouncementModal.vue');
 
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
@@ -130,6 +132,7 @@ export enum RouteName {
     SendViaPolygonUri = 'send-via-polygon-uri',
     UsdtAdded = 'usdt-added',
     StablecoinSelection = 'stablecoin-selection',
+    MultisigAnnouncement = 'multisig-announcement',
     Swap = 'swap',
     MoonpaySellInfo = 'moonpay-sell-info',
     Moonpay = 'moonpay',
@@ -380,6 +383,13 @@ const routes: RouteConfig[] = [{
                 modal: UsdtAddedModal,
             },
             name: RouteName.UsdtAdded,
+            meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/multisig-announcement',
+            components: {
+                modal: MultisigAnnouncementModal,
+            },
+            name: RouteName.MultisigAnnouncement,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/stablecoin-selection',

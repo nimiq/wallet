@@ -6,12 +6,12 @@
 # Redexe <timo.niehoff@yahoo.de>, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
 # Michael <jiggaaa20@gmail.com>, 2024
-# Michael Passias, 2025
 # Sven <sven@nimiq.com>, 2025
+# Michael Passias, 2025
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sven <sven@nimiq.com>, 2025\n"
+"Last-Translator: Michael Passias, 2025\n"
 "Language-Team: German (https://app.transifex.com/nimiq-foundation/teams/110181/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
@@ -565,6 +565,7 @@ msgstr "Block #{height}"
 msgid "Block explorer"
 msgstr "Block Explorer"
 
+#: src/components/modals/MultisigAnnouncementModal.vue:16
 #: src/components/modals/PolygonActivationModal.vue:28
 msgid "blog post"
 msgstr "Blog Beitrag"
@@ -732,6 +733,10 @@ msgstr "Ändere deine Spracheinstellung."
 #: src/components/staking/ValidatorDetailsOverlay.vue:119
 msgid "Changing validator"
 msgstr "Validator ändern"
+
+#: src/components/modals/MultisigAnnouncementModal.vue:6
+msgid "Check out Nimiq Multisig Wallets"
+msgstr "Probiere Nimiq-Multisig-Wallets aus."
 
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:97
@@ -2263,6 +2268,10 @@ msgstr ""
 "Lese mehr darüber ins unserem {blog_post} oder klicke unten für die neue "
 "Wallet Einführung."
 
+#: src/components/modals/MultisigAnnouncementModal.vue:12
+msgid "Read all about it in this {blog_post} or get right into it."
+msgstr "Lies alles darüber in diesem {blog_post} oder leg direkt los."
+
 #: src/components/staking/StakingInfoPage.vue:96
 msgid "ready for pay out"
 msgstr ""
@@ -2700,6 +2709,10 @@ msgstr ""
 "Teile den Link oder QR-Code mit dem Sender. \n"
 "Füge optional einen Betrag hinzu."
 
+#: src/components/modals/MultisigAnnouncementModal.vue:8
+msgid "Share wallets with family, friends, and business partners."
+msgstr "Teile Wallets mit Familie, Freunden und Geschäftspartnern."
+
 #: src/components/modals/ReceiveModal.vue:8
 #: src/components/modals/StablecoinReceiveModal.vue:16
 msgid "Share your address with the sender."
@@ -2739,6 +2752,7 @@ msgid "Simulate EUR payment"
 msgstr "EUR-Zahlung simulieren"
 
 #: src/components/modals/BtcActivationModal.vue:28
+#: src/components/modals/MultisigAnnouncementModal.vue:23
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "Überspringen"
@@ -3492,6 +3506,10 @@ msgstr ""
 #: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "Vesting-Vertrag"
+
+#: src/components/modals/MultisigAnnouncementModal.vue:21
+msgid "VISIT MULTISIG.NIMIQ.COM"
+msgstr "BESUCHE MULTISIG.NIMIQ.COM"
 
 #: src/components/modals/BuyCryptoModal.vue:21
 msgid "Wait for the swap to be set up."

@@ -560,6 +560,7 @@ msgstr "Блок #{height} "
 msgid "Block explorer"
 msgstr "Обозреватель блоков"
 
+#: src/components/modals/MultisigAnnouncementModal.vue:16
 #: src/components/modals/PolygonActivationModal.vue:28
 msgid "blog post"
 msgstr "нашем блоге"
@@ -720,6 +721,10 @@ msgstr "Изменить язык интерфейса."
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:119
 msgid "Changing validator"
+msgstr ""
+
+#: src/components/modals/MultisigAnnouncementModal.vue:6
+msgid "Check out Nimiq Multisig Wallets"
 msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
@@ -2215,6 +2220,10 @@ msgid ""
 "intro."
 msgstr ""
 
+#: src/components/modals/MultisigAnnouncementModal.vue:12
+msgid "Read all about it in this {blog_post} or get right into it."
+msgstr ""
+
 #: src/components/staking/StakingInfoPage.vue:96
 msgid "ready for pay out"
 msgstr ""
@@ -2647,6 +2656,10 @@ msgstr ""
 "Поделитесь ссылкой или QR-кодом\n"
 "с отправителем. "
 
+#: src/components/modals/MultisigAnnouncementModal.vue:8
+msgid "Share wallets with family, friends, and business partners."
+msgstr ""
+
 #: src/components/modals/ReceiveModal.vue:8
 #: src/components/modals/StablecoinReceiveModal.vue:16
 msgid "Share your address with the sender."
@@ -2686,6 +2699,7 @@ msgid "Simulate EUR payment"
 msgstr "Симулировать платёж в евро"
 
 #: src/components/modals/BtcActivationModal.vue:28
+#: src/components/modals/MultisigAnnouncementModal.vue:23
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "Пропустить"
@@ -3410,6 +3424,10 @@ msgstr ""
 #: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
 msgstr "Вестинговый контракт"
+
+#: src/components/modals/MultisigAnnouncementModal.vue:21
+msgid "VISIT MULTISIG.NIMIQ.COM"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:21
 msgid "Wait for the swap to be set up."

@@ -45,6 +45,7 @@ export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 // original welcome screen was already shown.
 export const WELCOME_MODAL_LOCALSTORAGE_KEY = 'welcome-2-modal-shown';
 export const WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY = 'welcome-staking-modal-shown';
+export const MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY = 'multisig-announcement-modal-shown';
 
 // Albatross
 // export const BATCH_LENGTH = 60;

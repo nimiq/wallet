@@ -10,6 +10,14 @@ export enum FilterState {
     SEARCH = 'search',
 }
 
+export enum StakingOperationType {
+    NONE,
+    STAKING,
+    UNSTAKING,
+    VALIDATOR,
+    DEACTIVATING,
+}
+
 export function getStakingTransactionMeaning(transaction: Transaction, verbose: boolean): string | null {
     if (transaction.sender === STAKING_CONTRACT_ADDRESS) {
         // @ts-expect-error Missmatch with Nimiq.PlainTransactionDetails from fastspot-api

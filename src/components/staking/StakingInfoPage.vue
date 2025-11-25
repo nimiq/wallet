@@ -135,7 +135,7 @@ import Amount from '../Amount.vue';
 import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-import { StatusChangeType } from './StakingModal.vue';
+import { StakingOperationType } from '../../lib/StakingUtils';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StakingRewardsChart from './StakingRewardsChart.vue';
 
@@ -261,7 +261,7 @@ export default defineComponent({
         async function deactivateAll() {
             if (stake.value?.activeBalance) {
                 context.emit('statusChange', {
-                    type: StatusChangeType.VALIDATOR,
+                    type: StakingOperationType.VALIDATOR,
                     state: State.LOADING,
                     title: $t('Deactivating Stake') as string,
                 });
@@ -293,7 +293,7 @@ export default defineComponent({
 
                     if (!txs) {
                         context.emit('statusChange', {
-                            type: StatusChangeType.NONE,
+                            type: StakingOperationType.NONE,
                         });
                         return;
                     }
@@ -312,7 +312,7 @@ export default defineComponent({
                     // // Close staking modal
                     // router.back();
                     context.emit('statusChange', {
-                        type: StatusChangeType.NONE,
+                        type: StakingOperationType.NONE,
                         timeout: SUCCESS_REDIRECT_DELAY,
                     });
                 } catch (error: any) {
@@ -331,7 +331,7 @@ export default defineComponent({
 
         async function unstakeAll(removeOnly = false) {
             context.emit('statusChange', {
-                type: StatusChangeType.UNSTAKING,
+                type: StakingOperationType.UNSTAKING,
                 state: State.LOADING,
                 title: $t('Sending Unstaking Transaction') as string,
             });
@@ -378,7 +378,7 @@ export default defineComponent({
 
                 if (!txs) {
                     context.emit('statusChange', {
-                        type: StatusChangeType.NONE,
+                        type: StakingOperationType.NONE,
                     });
                     return;
                 }
@@ -395,7 +395,7 @@ export default defineComponent({
                 // // Close staking modal
                 // router.back();
                 context.emit('statusChange', {
-                    type: StatusChangeType.NONE,
+                    type: StakingOperationType.NONE,
                     timeout: SUCCESS_REDIRECT_DELAY,
                 });
             } catch (error: any) {

@@ -49,7 +49,7 @@
             <SelectAccountOverlay v-if="overlay === Overlay.SelectAccount"
                 @selected="switchValidator"
             />
-            <StatusScreen v-else-if="statusType !== StatusChangeType.NONE"
+            <StatusScreen v-else-if="statusType !== StakingOperationType.NONE"
                 :state="statusState"
                 :title="statusTitle"
                 :message="statusMessage"
@@ -61,7 +61,7 @@
                 @main-action="onStatusMainAction"
             />
             <transition v-else name="fade" mode="out-in">
-                <ValidatorDetailsOverlay v-if="overlay === Overlay.ValidatorDetails"
+                <ValidatorDetailsOverlay v-if="overlay === Overlay.ValidatorDetails && selectedValidator"
                     :key="'details'"
                     :noButton="page !== Page.ValidatorList"
                     :showBackArrow="showValidatorDetailsBackArrow"
@@ -97,6 +97,7 @@ import SelectAccountOverlay from './SelectAccountOverlay.vue';
 import StatusScreen, { State } from '../StatusScreen.vue';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
 import ValidatorsListOverlay from './ValidatorsListOverlay.vue';
+import { StakingOperationType } from '../../lib/StakingUtils';
 
 enum Page {
     Welcome, // StakingWelcomePage
@@ -112,16 +113,8 @@ enum Overlay {
     ValidatorsList,
 }
 
-export enum StatusChangeType {
-    NONE,
-    STAKING,
-    UNSTAKING,
-    VALIDATOR,
-    DEACTIVATING,
-}
-
 type StatusChangeParams = {
-    type?: StatusChangeType,
+    type?: StakingOperationType,
     state?: State,
     title?: string,
     message?: string,
@@ -181,7 +174,7 @@ export default defineComponent({
         };
 
         /* Status Screen */
-        const statusType = ref<StatusChangeType>(StatusChangeType.NONE);
+        const statusType = ref<StakingOperationType>(StakingOperationType.NONE);
         const statusState = ref<State>(State.LOADING);
         const statusTitle = ref('');
         const statusMessage = ref('');
@@ -215,7 +208,7 @@ export default defineComponent({
 
         function onStatusMainAction() {
             updateStatusScreen({
-                type: StatusChangeType.NONE,
+                type: StakingOperationType.NONE,
                 state: State.LOADING,
                 title: '',
                 message: '',
@@ -231,7 +224,7 @@ export default defineComponent({
 
         const shouldShowOverlay = computed(() =>
             overlay.value === Overlay.SelectAccount
-            || statusType.value !== StatusChangeType.NONE
+            || statusType.value !== StakingOperationType.NONE
             || overlay.value === Overlay.ValidatorDetails
             || overlay.value === Overlay.ValidatorsList,
         );
@@ -345,7 +338,7 @@ export default defineComponent({
             statusMainAction,
             statusAlternativeAction,
             onStatusChange,
-            StatusChangeType,
+            StakingOperationType,
             onStatusMainAction,
         };
     },

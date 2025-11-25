@@ -658,7 +658,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:119
+#: src/components/staking/ValidatorDetailsOverlay.vue:120
 msgid "Changing validator"
 msgstr ""
 
@@ -723,7 +723,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:212
+#: src/components/staking/StakingModal.vue:207
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr ""
@@ -2534,7 +2534,7 @@ msgstr ""
 #: src/components/staking/StakingGraphPage.vue:288
 #: src/components/staking/StakingInfoPage.vue:323
 #: src/components/staking/StakingInfoPage.vue:406
-#: src/components/staking/ValidatorDetailsOverlay.vue:181
+#: src/components/staking/ValidatorDetailsOverlay.vue:182
 msgid "Something went wrong"
 msgstr ""
 
@@ -2616,7 +2616,7 @@ msgstr ""
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:165
+#: src/components/staking/ValidatorDetailsOverlay.vue:166
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 

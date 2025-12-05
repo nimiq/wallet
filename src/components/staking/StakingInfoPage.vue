@@ -687,7 +687,10 @@ export default defineComponent({
             position: relative;
             min-width: 200px;
 
-            h2 { position: absolute }
+            h2 {
+                position: absolute;
+                z-index: 2;
+            }
         }
     }
 

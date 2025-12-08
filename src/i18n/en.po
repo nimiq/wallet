@@ -931,11 +931,11 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:481
+#: src/components/staking/StakingInfoPage.vue:465
 msgid "Deactivating remaining stake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:317
+#: src/components/staking/StakingInfoPage.vue:301
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -2395,7 +2395,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:387
+#: src/components/staking/StakingInfoPage.vue:371
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2544,10 +2544,10 @@ msgstr ""
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:374
-#: src/components/staking/StakingInfoPage.vue:457
-#: src/components/staking/StakingInfoPage.vue:472
-#: src/components/staking/StakingInfoPage.vue:537
+#: src/components/staking/StakingInfoPage.vue:358
+#: src/components/staking/StakingInfoPage.vue:441
+#: src/components/staking/StakingInfoPage.vue:456
+#: src/components/staking/StakingInfoPage.vue:521
 #: src/components/staking/ValidatorDetailsOverlay.vue:182
 msgid "Something went wrong"
 msgstr ""
@@ -2634,8 +2634,8 @@ msgstr ""
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:358
-#: src/components/staking/StakingInfoPage.vue:523
+#: src/components/staking/StakingInfoPage.vue:342
+#: src/components/staking/StakingInfoPage.vue:507
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
@@ -2647,7 +2647,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:443
+#: src/components/staking/StakingInfoPage.vue:427
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -3213,7 +3213,7 @@ msgstr ""
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:473
+#: src/components/staking/StakingInfoPage.vue:457
 msgid "Validator information not available"
 msgstr ""
 

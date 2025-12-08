@@ -1,6 +1,7 @@
 <template>
     <Modal v-bind="$attrs" v-on="$listeners" class="validator-details-modal large-modal">
         <ValidatorDetailsOverlay
+            v-if="activeValidator"
             :noButton="true"
             :validator="activeValidator"
         />
@@ -8,14 +9,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, watch, onMounted, ref } from '@vue/composition-api';
 import Modal from '../modals/Modal.vue';
 import { useStakingStore } from '../../stores/Staking';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
+import { useRouter } from '../../router';
 
 export default defineComponent({
     setup() {
         const { activeValidator } = useStakingStore();
+        const router = useRouter();
+        const isRedirecting = ref(false);
+
+        function redirectToRoot() {
+            if (isRedirecting.value) return;
+            isRedirecting.value = true;
+            router.replace({ name: 'root' }).catch(() => {
+                isRedirecting.value = false;
+            });
+        }
+
+        // Check on mount if validator exists
+        onMounted(() => {
+            if (activeValidator.value === null) {
+                redirectToRoot();
+            }
+        });
+
+        // Also watch for changes during the modal lifetime
+        watch(activeValidator, (validator) => {
+            if (validator === null) {
+                redirectToRoot();
+            }
+        });
 
         return {
             activeValidator,

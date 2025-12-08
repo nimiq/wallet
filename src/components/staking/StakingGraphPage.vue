@@ -92,7 +92,7 @@ import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import AmountSlider from './AmountSlider.vue';
-import { StatusChangeType } from './StakingModal.vue';
+import { StakingOperationType } from '../../lib/StakingUtils';
 import MessageTransition from '../MessageTransition.vue';
 import StakingGraph from './StakingGraph.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -127,7 +127,7 @@ export default defineComponent({
             try {
                 if (stakeDelta.value > 0) {
                     context.emit('statusChange', {
-                        type: StatusChangeType.STAKING,
+                        type: StakingOperationType.STAKING,
                         state: State.LOADING,
                         title: $t('Sending Staking Transaction') as string,
                     });
@@ -156,7 +156,7 @@ export default defineComponent({
 
                         if (!txs) {
                             context.emit('statusChange', {
-                                type: StatusChangeType.NONE,
+                                type: StakingOperationType.NONE,
                             });
                             return;
                         }
@@ -200,7 +200,7 @@ export default defineComponent({
 
                         if (!txs) {
                             context.emit('statusChange', {
-                                type: StatusChangeType.NONE,
+                                type: StakingOperationType.NONE,
                             });
                             return;
                         }
@@ -222,7 +222,7 @@ export default defineComponent({
                     }
                 } else {
                     context.emit('statusChange', {
-                        type: StatusChangeType.DEACTIVATING,
+                        type: StakingOperationType.DEACTIVATING,
                         state: State.LOADING,
                         title: $t('Sending Staking Transaction') as string,
                     });
@@ -249,7 +249,7 @@ export default defineComponent({
 
                     if (!txs) {
                         context.emit('statusChange', {
-                            type: StatusChangeType.NONE,
+                            type: StakingOperationType.NONE,
                         });
                         return;
                     }
@@ -276,7 +276,7 @@ export default defineComponent({
                 }
 
                 window.setTimeout(() => {
-                    context.emit('statusChange', { type: StatusChangeType.NONE });
+                    context.emit('statusChange', { type: StakingOperationType.NONE });
                     context.emit('next');
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {

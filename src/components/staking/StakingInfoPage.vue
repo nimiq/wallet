@@ -91,13 +91,33 @@
             </div>
         </PageBody>
         <PageFooter v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
-            <div class="flex-row unstaking nq-light-blue">
-                <CircleExclamationMarkIcon />
-                <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask />
-                <span class="flex-grow">{{ $t('ready for pay out') }}</span>
-                <button class="nq-button-pill light-blue" @click="() => unstakeAll(!!stake.retiredBalance)">
-                    Pay out <ArrowRightSmallIcon />
-                </button>
+            <div class="flex-column footer-content">
+                <div class="flex-row unstaking nq-light-blue">
+                    <CircleExclamationMarkIcon />
+                    <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask />
+                    <span class="flex-grow">{{ $t('ready for pay out') }}</span>
+
+                    <!-- Show "Unstake rest" if there's blocking sub-minimum stake -->
+                    <button v-if="hasSubMinimumStakeBlockingPayout"
+                        class="nq-button-pill light-blue"
+                        @click="unstakeRest">
+                        {{ $t('Unstake rest') }} <ArrowRightSmallIcon />
+                    </button>
+
+                    <!-- Otherwise show normal "Pay out" button -->
+                    <button v-else
+                        class="nq-button-pill light-blue"
+                        @click="() => unstakeAll(!!stake.retiredBalance)">
+                        {{ $t('Pay out') }} <ArrowRightSmallIcon />
+                    </button>
+                </div>
+
+                <!-- Explanatory message when "Unstake rest" is shown -->
+                <div v-if="hasSubMinimumStakeBlockingPayout" class="footer-notice">
+                    {{ $t('You got some new rewards since you unstaked your funds.') }}
+                    <br />
+                    {{ $t('In order to pay out, unstake all.') }}
+                </div>
             </div>
         </PageFooter>
         <PageFooter v-else-if="stake && stake.inactiveBalance">
@@ -130,12 +150,13 @@ import { useStakingStore } from '../../stores/Staking';
 import { useAddressStore } from '../../stores/Address';
 import { useTotalRewardsFiatValue } from '../../composables/useTotalRewardsFiatValue';
 import * as Constants from '../../lib/Constants';
+import { MIN_STAKE } from '../../lib/Constants';
 
 import Amount from '../Amount.vue';
 import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-import { StatusChangeType } from './StakingModal.vue';
+import { StakingOperationType } from '../../lib/StakingUtils';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StakingRewardsChart from './StakingRewardsChart.vue';
 
@@ -234,6 +255,20 @@ export default defineComponent({
             return height.value > stake.value.inactiveRelease;
         });
 
+        const hasSubMinimumStakeBlockingPayout = computed(() => {
+            if (!stake.value) return false;
+
+            // Only trigger when retiredBalance is ready for final payout
+            // (not when inactiveBalance is ready - that should be retired first via normal "Pay out" flow)
+            const hasRetiredFunds = stake.value.retiredBalance > 0;
+
+            // Check if active balance is blocking the final payout (> 0 but < MIN_STAKE)
+            const hasBlockingStake = stake.value.activeBalance > 0
+                && stake.value.activeBalance < MIN_STAKE;
+
+            return hasRetiredFunds && hasBlockingStake;
+        });
+
         const isStakeDeactivating = computed(() =>
             !!(stake.value?.inactiveBalance && stake.value.inactiveBalance > 0),
         );
@@ -261,7 +296,7 @@ export default defineComponent({
         async function deactivateAll() {
             if (stake.value?.activeBalance) {
                 context.emit('statusChange', {
-                    type: StatusChangeType.VALIDATOR,
+                    type: StakingOperationType.VALIDATOR,
                     state: State.LOADING,
                     title: $t('Deactivating Stake') as string,
                 });
@@ -293,7 +328,7 @@ export default defineComponent({
 
                     if (!txs) {
                         context.emit('statusChange', {
-                            type: StatusChangeType.NONE,
+                            type: StakingOperationType.NONE,
                         });
                         return;
                     }
@@ -312,7 +347,7 @@ export default defineComponent({
                     // // Close staking modal
                     // router.back();
                     context.emit('statusChange', {
-                        type: StatusChangeType.NONE,
+                        type: StakingOperationType.NONE,
                         timeout: SUCCESS_REDIRECT_DELAY,
                     });
                 } catch (error: any) {
@@ -331,7 +366,7 @@ export default defineComponent({
 
         async function unstakeAll(removeOnly = false) {
             context.emit('statusChange', {
-                type: StatusChangeType.UNSTAKING,
+                type: StakingOperationType.UNSTAKING,
                 state: State.LOADING,
                 title: $t('Sending Unstaking Transaction') as string,
             });
@@ -378,7 +413,7 @@ export default defineComponent({
 
                 if (!txs) {
                     context.emit('statusChange', {
-                        type: StatusChangeType.NONE,
+                        type: StakingOperationType.NONE,
                     });
                     return;
                 }
@@ -395,7 +430,87 @@ export default defineComponent({
                 // // Close staking modal
                 // router.back();
                 context.emit('statusChange', {
-                    type: StatusChangeType.NONE,
+                    type: StakingOperationType.NONE,
+                    timeout: SUCCESS_REDIRECT_DELAY,
+                });
+            } catch (error: any) {
+                reportToSentry(error);
+
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: $t('Something went wrong') as string,
+                    message: `${error.message} - ${error.data}`,
+                });
+            }
+        }
+
+        async function unstakeRest() {
+            if (!stake.value?.activeBalance) return;
+
+            // Guard against validator being null
+            if (!validator.value) {
+                reportToSentry(new Error('Attempted unstakeRest without validator'));
+                context.emit('statusChange', {
+                    type: StakingOperationType.NONE,
+                    state: State.WARNING,
+                    title: $t('Something went wrong') as string,
+                    message: $t('Validator information not available') as string,
+                });
+                return;
+            }
+
+            context.emit('statusChange', {
+                type: StakingOperationType.DEACTIVATING,
+                state: State.LOADING,
+                title: $t('Deactivating remaining stake') as string,
+            });
+
+            try {
+                const { Address, TransactionBuilder } = await import('@nimiq/core');
+                const client = await getNetworkClient();
+
+                // Set active stake to 0 to deactivate all remaining stake
+                const transaction = TransactionBuilder.newSetActiveStake(
+                    Address.fromUserFriendlyAddress(activeAddress.value!),
+                    BigInt(0),
+                    BigInt(0),
+                    useNetworkStore().state.height,
+                    await client.getNetworkId(),
+                );
+
+                const deactivatedAmount = stake.value!.activeBalance;
+
+                const txs = await sendStaking({
+                    transaction: transaction.serialize(),
+                    recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
+                    // @ts-expect-error Not typed yet in Hub
+                    validatorAddress: validator.value!.address,
+                    validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultLogo
+                        ? validator.value.logo
+                        : undefined,
+                    amount: deactivatedAmount,
+                });
+
+                if (!txs) {
+                    context.emit('statusChange', {
+                        type: StakingOperationType.NONE,
+                    });
+                    return;
+                }
+
+                if (txs.some((tx) => tx.executionResult === false)) {
+                    throw new Error('The transaction did not succeed');
+                }
+
+                context.emit('statusChange', {
+                    state: State.SUCCESS,
+                    title: $t('Successfully deactivated {amount} NIM', {
+                        amount: deactivatedAmount / 1e5,
+                    }),
+                });
+
+                context.emit('statusChange', {
+                    type: StakingOperationType.NONE,
                     timeout: SUCCESS_REDIRECT_DELAY,
                 });
             } catch (error: any) {
@@ -420,10 +535,12 @@ export default defineComponent({
             percentage,
             inactiveReleaseTime,
             hasUnstakableStake,
+            hasSubMinimumStakeBlockingPayout,
             isStakeDeactivating,
             showDeactivateAll,
             deactivateAll,
             unstakeAll,
+            unstakeRest,
             canSwitchValidator,
             consensus,
             selectedRange,
@@ -579,7 +696,10 @@ export default defineComponent({
             position: relative;
             min-width: 200px;
 
-            h2 { position: absolute }
+            h2 {
+                position: absolute;
+                z-index: 2;
+            }
         }
     }
 
@@ -614,6 +734,10 @@ export default defineComponent({
         padding: 3rem;
         box-shadow: 0 -3rem 2rem -1rem rgba(0, 0, 0, 0.05);
 
+        .footer-content {
+            gap: 1rem;
+        }
+
         .unstaking {
             align-items: center;
             color: var(--nimiq-light-blue);
@@ -629,6 +753,14 @@ export default defineComponent({
                 text-overflow: ellipsis;
                 overflow: hidden;
             }
+        }
+
+        .footer-notice {
+            font-size: var(--small-size);
+            font-weight: 600;
+            color: var(--text-50);
+            text-align: left;
+            line-height: 1.4;
         }
     }
 

@@ -70,13 +70,14 @@ import { useAddressStore } from '../../stores/Address';
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import { StatusChangeType } from './StakingModal.vue';
+import { StakingOperationType } from '../../lib/StakingUtils';
 import { getNetworkClient } from '../../network';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import BlueLink from '../BlueLink.vue';
 import { reportToSentry } from '../../lib/Sentry';
 
 export default defineComponent({
+    name: 'ValidatorDetailsOverlay',
     props: {
         validator: {
             type: Object as () => Validator,
@@ -114,7 +115,7 @@ export default defineComponent({
                     context.emit('next');
                 } else {
                     context.emit('statusChange', {
-                        type: StatusChangeType.VALIDATOR,
+                        type: StakingOperationType.VALIDATOR,
                         state: State.LOADING,
                         title: $t('Changing validator') as string,
                     });
@@ -151,7 +152,7 @@ export default defineComponent({
 
                     if (!txs) {
                         context.emit('statusChange', {
-                            type: StatusChangeType.NONE,
+                            type: StakingOperationType.NONE,
                         });
                         return;
                     }
@@ -169,7 +170,7 @@ export default defineComponent({
                     });
 
                     window.setTimeout(() => {
-                        context.emit('statusChange', { type: StatusChangeType.NONE });
+                        context.emit('statusChange', { type: StakingOperationType.NONE });
                         context.emit('next');
                     }, SUCCESS_REDIRECT_DELAY);
                 }

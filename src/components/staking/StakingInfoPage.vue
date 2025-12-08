@@ -91,24 +91,33 @@
             </div>
         </PageBody>
         <PageFooter v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
-            <div class="flex-row unstaking nq-light-blue">
-                <CircleExclamationMarkIcon />
-                <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask />
-                <span class="flex-grow">{{ $t('ready for pay out') }}</span>
+            <div class="flex-column footer-content">
+                <div class="flex-row unstaking nq-light-blue">
+                    <CircleExclamationMarkIcon />
+                    <Amount :amount="stake.retiredBalance || stake.inactiveBalance" value-mask />
+                    <span class="flex-grow">{{ $t('ready for pay out') }}</span>
 
-                <!-- Show "Unstake rest" if there's blocking sub-minimum stake -->
-                <button v-if="hasSubMinimumStakeBlockingPayout"
-                    class="nq-button-pill light-blue"
-                    @click="unstakeRest">
-                    {{ $t('Unstake rest') }} <ArrowRightSmallIcon />
-                </button>
+                    <!-- Show "Unstake rest" if there's blocking sub-minimum stake -->
+                    <button v-if="hasSubMinimumStakeBlockingPayout"
+                        class="nq-button-pill light-blue"
+                        @click="unstakeRest">
+                        {{ $t('Unstake rest') }} <ArrowRightSmallIcon />
+                    </button>
 
-                <!-- Otherwise show normal "Pay out" button -->
-                <button v-else
-                    class="nq-button-pill light-blue"
-                    @click="() => unstakeAll(!!stake.retiredBalance)">
-                    {{ $t('Pay out') }} <ArrowRightSmallIcon />
-                </button>
+                    <!-- Otherwise show normal "Pay out" button -->
+                    <button v-else
+                        class="nq-button-pill light-blue"
+                        @click="() => unstakeAll(!!stake.retiredBalance)">
+                        {{ $t('Pay out') }} <ArrowRightSmallIcon />
+                    </button>
+                </div>
+
+                <!-- Explanatory message when "Unstake rest" is shown -->
+                <div v-if="hasSubMinimumStakeBlockingPayout" class="footer-notice">
+                    {{ $t('You got some new rewards since you unstaked your funds.') }}
+                    <br />
+                    {{ $t('In order to pay out, unstake all.') }}
+                </div>
             </div>
         </PageFooter>
         <PageFooter v-else-if="stake && stake.inactiveBalance">
@@ -725,6 +734,10 @@ export default defineComponent({
         padding: 3rem;
         box-shadow: 0 -3rem 2rem -1rem rgba(0, 0, 0, 0.05);
 
+        .footer-content {
+            gap: 1rem;
+        }
+
         .unstaking {
             align-items: center;
             color: var(--nimiq-light-blue);
@@ -740,6 +753,14 @@ export default defineComponent({
                 text-overflow: ellipsis;
                 overflow: hidden;
             }
+        }
+
+        .footer-notice {
+            font-size: var(--small-size);
+            font-weight: 600;
+            color: var(--text-50);
+            text-align: left;
+            line-height: 1.4;
         }
     }
 

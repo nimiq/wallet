@@ -13,6 +13,7 @@ import { serviceWorkerHasUpdate } from './registerServiceWorker';
 import { initStorage } from './storage';
 import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
+import { getDebugAddress, injectDebugAccount, isDebugLoginEnabled } from './lib/DebugLogin';
 import { launchElectrum } from './electrum';
 import { launchPolygon } from './ethers';
 import { initMatomo } from './matomo';
@@ -51,10 +52,40 @@ async function start() {
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     initTrials(); // Must be called after storage was initialized, can affect Config
-    // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
-    // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
-    await initHubApi();
-    syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
+    // Check for debug login mode (only in local dev with debugMainnetMode enabled)
+    const debugLoginEnabled = isDebugLoginEnabled();
+    const debugAddress = getDebugAddress();
+
+    console.log('[Debug] isDebugLoginEnabled():', debugLoginEnabled); // eslint-disable-line no-console
+    console.log('[Debug] Debug address from sessionStorage:', debugAddress); // eslint-disable-line no-console
+
+    if (debugLoginEnabled) {
+        // Debug mode is enabled - skip Hub entirely
+        console.log('[Debug] ===== DEBUG MODE ACTIVE ====='); // eslint-disable-line no-console
+        console.log('[Debug] Skipping Hub initialization completely'); // eslint-disable-line no-console
+
+        if (debugAddress) {
+            // Debug address is set - inject the account
+            console.log('[Debug] Injecting debug account with address:', debugAddress); // eslint-disable-line no-console
+            injectDebugAccount(debugAddress);
+            console.log('[Debug] Account injection complete'); // eslint-disable-line no-console
+
+            // Verify the account was added
+            const accountStore = useAccountStore();
+            console.log('[Debug] Accounts in store:', Object.keys(accountStore.state.accountInfos)); // eslint-disable-line no-console
+            console.log('[Debug] Active account:', accountStore.state.activeAccountId); // eslint-disable-line no-console
+        } else {
+            // No debug address yet - show debug UI to user (no accounts, so DebugLoginOverlay will display)
+            console.log('[Debug] No debug address set yet - waiting for user input'); // eslint-disable-line no-console
+        }
+    } else {
+        // Normal mode: initialize Hub and sync accounts
+        console.log('[Debug] Normal mode - initializing Hub'); // eslint-disable-line no-console
+        // Must run after VueCompositionApi has been enabled and after storage was initialized. Could potentially run in
+        // background and in parallel to syncFromHub, but RedirectRpcClient.init does not actually run async code anyways.
+        await initHubApi();
+        syncFromHub(); // Can run parallel to Vue initialization; must be called after storage was initialized.
+    }
 
     serviceWorkerHasUpdate.then((hasUpdate) => useSettingsStore().state.updateAvailable = hasUpdate);
 

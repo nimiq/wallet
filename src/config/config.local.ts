@@ -7,104 +7,94 @@ import { ENV_DEV } from '../lib/Constants';
 export default {
     hubEndpoint: `${window.location.protocol}//${window.location.hostname}:8080`,
     environment: ENV_DEV,
+    debugMainnetMode: true, // Enable mainnet connection for local debugging
     nimiqSeeds: [
-        '/dns4/seed1.pos.nimiq-testnet.com/tcp/8443/wss',
-        '/dns4/seed2.pos.nimiq-testnet.com/tcp/8443/wss',
-        '/dns4/seed3.pos.nimiq-testnet.com/tcp/8443/wss',
-        '/dns4/seed4.pos.nimiq-testnet.com/tcp/8443/wss',
+        '/dns4/aurora.seed.nimiq.com/tcp/443/wss',
+        '/dns4/catalyst.seed.nimiq.network/tcp/443/wss',
+        '/dns4/cipher.seed.nimiq-network.com/tcp/443/wss',
+        '/dns4/eclipse.seed.nimiq.cloud/tcp/443/wss',
+        '/dns4/lumina.seed.nimiq.systems/tcp/443/wss',
+        '/dns4/nebula.seed.nimiq.com/tcp/443/wss',
+        '/dns4/nexus.seed.nimiq.network/tcp/443/wss',
+        '/dns4/polaris.seed.nimiq-network.com/tcp/443/wss',
+        '/dns4/photon.seed.nimiq.cloud/tcp/443/wss',
+        '/dns4/pulsar.seed.nimiq.systems/tcp/443/wss',
+        '/dns4/quasar.seed.nimiq.com/tcp/443/wss',
+        '/dns4/solstice.seed.nimiq.network/tcp/443/wss',
+        '/dns4/vortex.seed.nimiq.cloud/tcp/443/wss',
+        '/dns4/zenith.seed.nimiq.systems/tcp/443/wss',
     ],
     disableNetworkInteraction: false,
     showHelpButton: true,
-    faucetEndpoint: 'https://faucet.pos.nimiq-testnet.com',
+    faucetEndpoint: '', // No faucet on mainnet
     reportToSentry: false,
     enableBitcoin: true,
-    pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute
+    pageVisibilityTxRefreshInterval: 1 * 60e3, // 1 minute (dev-friendly, faster than mainnet's 5 min)
 
     staking: {
-        // The block heights determining the on-chain pre-staking window. All transactions inside this window count
-        // for pre-staking.
-        prestakingStartBlock: 3_023_730,
-        prestakingEndBlock: 3_028_050,
-        transitionBlock: 3_032_010,
-        validatorsApiBase: 'https://validators-api-testnet.nuxt.dev',
+        // Mainnet staking configuration
+        prestakingStartBlock: 3_392_200, // 2024-10-06T02:53:18Z
+        prestakingEndBlock: 3_456_000, // ~2024-11-19T16:00:00Z
+        transitionBlock: 3_456_000,
+        validatorsApiBase: 'https://validators-api-mainnet.nuxt.dev',
         validatorsPath: '/api/v1/validators',
-        stakeEventsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/staker/ADDRESS/events/restake-grouped',
+        stakeEventsEndpoint: 'https://v2.nimiqwatch.com/api/v2/staker/ADDRESS/events/restake-grouped',
         genesis: {
-            height: 3032010,
-            date: new Date('2024-11-13T20:00:00Z'),
-            supply: 12_030_755_339_52899,
+            height: 3456000,
+            date: new Date('2024-11-19T16:00:00Z'),
+            supply: 12_893_109_654_06244,
         },
     },
 
     polygon: {
-        enabled: false,
-        networkId: 80002,
-        rpcEndpoint: 'wss://polygon-amoy.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
+        enabled: true, // Mainnet Polygon enabled
+        networkId: 137, // Mainnet
+        rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
-        // eslint-disable-next-line max-len
-        // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdc_bridged: {
-            /** @deprecated */
-            tokenContract: '',
-            /** @deprecated */
-            transferContract: '', // v3
-            /** @deprecated */
-            htlcContract: '', // v3
-            /**
-             * **At which block to stop the reverse transaction-history scan**
-             *
-             * Address history is looked up in reverse, stopping when both the address's nonce and balance become zero.
-             * To limit the duration and number of blocks that need to be scanned, we configure this number as the block
-             * height at which the Wallet's USDC-integration was launched in the network that this config is for.
-             *
-             * This means, if an address was already used for USDC-on-Polygon before we launched the USDC-integration,
-             * those transfers will not show up in the transaction history. That should not matter for almost all our
-             * users. Most likely users to encounter missing txs could be Ledger users who used their USDC account
-             * before. This is a trade-off we have to make for performance. The balance displayed for all users will be
-             * correct, however.
-             *
-             * Set to `0` to disable early stopping.
-             */
-            earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
+            tokenContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+            transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
+            htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
+            earliestHistoryScanHeight: 39624290, // see config.local.ts
         },
         usdc: {
-            tokenContract: '0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582',
-            transferContract: '', // v1
-            htlcContract: '',
-            earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
+            tokenContract: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+            transferContract: '0x3157d422cd1be13AC4a7cb00957ed717e648DFf2',
+            htlcContract: '0x0cFD862bE942846Cebad797d7c1BC6e47714959b',
+            earliestHistoryScanHeight: 45319261, // Native USDC contract creation block
         },
         usdt_bridged: {
-            tokenContract: '0x1616d425Cd540B256475cBfb604586C8598eC0FB',
-            transferContract: '',
-            htlcContract: '',
-            earliestHistoryScanHeight: 13320830, // Block when USDT was added to the Wallet
+            tokenContract: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+            transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
+            htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
+            earliestHistoryScanHeight: 63189500, // Block when USDT was added to the Wallet
         },
         usdcConversion: {
-            swapContract: '',
-            swapPoolContract: '',
+            swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
+            swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',
         },
-        openGsnRelayHubContract: '',
-        uniswapQuoterContract: '',
-        wpolContract: '0xA5733b3A8e62A8faF43b0376d5fAF46E89B3033E',
+        openGsnRelayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
+        uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
+        wpolContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     },
 
     fastspot: {
         enabled: true, // Set to false to hide the swap feature.
-        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC],
-        apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
+        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC, SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC],
+        apiEndpoint: 'https://api.go.fastspot.io/fast/v1', // Mainnet
         // This is a publishable key
-        apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',
-        watchtowerEndpoint: 'https://watch.fastspot.io/test',
+        apiKey: 'c20d43d0-8f60-4fca-a298-85e80f64d042', // Mainnet key
+        watchtowerEndpoint: 'https://watch.fastspot.io/main', // Mainnet
         feePercentage: 0.0025, // 0.25%
-        sepaFee: 0, // Euro
+        sepaFee: 0.25, // Euro
     },
 
     oasis: {
         underMaintenance: true,
-        apiEndpoint: 'https://api-sandbox.nimiqoasis.com/v1',
+        apiEndpoint: 'https://oasis.ten31.com/v1', // Mainnet
         feePercentage: 0.01, // 1% - only used for estimate creation
-        minFee: 0.50, // Euro
-        minBuyAmount: 35, // Euro
+        minFee: 1, // Euro
+        minBuyAmount: 5, // Euro
         maxFreeAmount: 999, // Euro
         maxKycAmount: 4999, // Euro
     },

@@ -37,7 +37,8 @@
         </transition>
 
         <div v-if="!hasAccounts" class="loader flex-row">
-            <LoadingSpinner/>
+            <DebugLoginOverlay v-if="showDebugLogin"/>
+            <LoadingSpinner v-else/>
         </div>
     </div><!-- #app -->
 </template>
@@ -50,6 +51,7 @@ import { nextTick } from '@/lib/nextTick';
 import Sidebar from './components/layouts/Sidebar.vue';
 import SwapNotification from './components/swap/SwapNotification.vue';
 import UpdateNotification from './components/UpdateNotification.vue';
+import DebugLoginOverlay from './components/DebugLoginOverlay.vue';
 import router, { provideRouter } from './router';
 import { useAccountStore } from './stores/Account';
 import { useSettingsStore } from './stores/Settings';
@@ -60,6 +62,7 @@ import { useNetworkStore } from './stores/Network';
 import { useConfig } from './composables/useConfig';
 import { ENV_MAIN } from './lib/Constants';
 import WalletStatusButton from './components/WalletStatusButton.vue';
+import { isDebugLoginEnabled } from './lib/DebugLogin';
 
 export default defineComponent({
     name: 'app',
@@ -75,6 +78,9 @@ export default defineComponent({
         const { accountInfos } = useAccountStore();
         // Convert result of computation to boolean, to not trigger rerender when number of accounts changes above 0.
         const hasAccounts = computed(() => Boolean(Object.keys(accountInfos.value).length));
+
+        // Check if debug login UI should be shown (only in local dev mode)
+        const showDebugLogin = computed(() => isDebugLoginEnabled());
 
         const { amountsHidden, swipingEnabled } = useSettingsStore();
 
@@ -175,6 +181,7 @@ export default defineComponent({
             isMainnet,
             activeMobileColumn,
             hasAccounts,
+            showDebugLogin,
             main$,
             consensus,
         };
@@ -185,6 +192,7 @@ export default defineComponent({
         UpdateNotification,
         LoadingSpinner,
         WalletStatusButton,
+        DebugLoginOverlay,
     },
 });
 </script>

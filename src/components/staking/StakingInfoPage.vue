@@ -258,15 +258,15 @@ export default defineComponent({
         const hasSubMinimumStakeBlockingPayout = computed(() => {
             if (!stake.value) return false;
 
-            // Only trigger when retiredBalance is ready for final payout
-            // (not when inactiveBalance is ready - that should be retired first via normal "Pay out" flow)
-            const hasRetiredFunds = stake.value.retiredBalance > 0;
+            // Check if there are funds ready for payout (either retired or inactive that's ready)
+            const hasReadyFunds = stake.value.retiredBalance > 0
+                || (stake.value.inactiveBalance > 0 && hasUnstakableStake.value);
 
             // Check if active balance is blocking the final payout (> 0 but < MIN_STAKE)
             const hasBlockingStake = stake.value.activeBalance > 0
                 && stake.value.activeBalance < MIN_STAKE;
 
-            return hasRetiredFunds && hasBlockingStake;
+            return hasReadyFunds && hasBlockingStake;
         });
 
         const isStakeDeactivating = computed(() =>

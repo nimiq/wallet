@@ -23,7 +23,12 @@
                         <p>{{ $t('Takes two ways of writing to yourself, like a messenger + email.') }}</p>
                     </div>
                     <div class="time-estimate">
-                        <ShieldTimeIcon variant="orange" />
+                        <Tooltip preferredPosition="top right" theme="inverse"
+                            :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }">
+                            <ShieldTimeIcon slot="trigger" variant="orange" />
+                            {{ $t('Sending yourself backup codes is convenient but only as secure as the '
+                                + 'channels you use.') }}
+                        </Tooltip>
                         <span>~3min</span>
                     </div>
                 </button>
@@ -37,7 +42,11 @@
                         <p>{{ $t('Takes a pen, a piece of paper and a safe place to store it.') }}</p>
                     </div>
                     <div class="time-estimate">
-                        <ShieldTimeIcon variant="green" />
+                        <Tooltip preferredPosition="top right" theme="inverse"
+                            :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }">
+                            <ShieldTimeIcon slot="trigger" variant="green" />
+                            {{ $t('Recovery words are the most secure way of backing up your account.') }}
+                        </Tooltip>
                         <span>~10min</span>
                     </div>
                 </button>
@@ -53,7 +62,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
-import { PageBody, ArrowLeftIcon } from '@nimiq/vue-components';
+import { PageBody, ArrowLeftIcon, Tooltip } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import MessagesIcon from '../icons/MessagesIcon.vue';
@@ -108,6 +117,7 @@ export default defineComponent({
         MessagesIcon,
         WordsIcon,
         ShieldTimeIcon,
+        Tooltip,
     },
 });
 </script>
@@ -246,7 +256,7 @@ export default defineComponent({
             height: 2.375rem; // 19px
         }
 
-        span {
+        span:last-child {
             font-size: 1.75rem; // 14px
             font-weight: 500;
             opacity: 0.7;

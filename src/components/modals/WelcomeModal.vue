@@ -218,17 +218,14 @@ export default defineComponent({
             margin-top: 1.5rem;
             color: var(--text-60);
         }
-
-        @media (max-width: $mobileBreakpoint) { // Full mobile breakpoint
-            white-space: normal;
-        }
     }
 
     .think-features {
         display: flex;
         align-items: center;
         padding: 0;
-        height: 28.75rem;
+        height: 28.75rem; // 230px
+        overflow-y: hidden;
 
         --border: 1px solid #{nimiq-blue(0.15)};
         border-top: var(--border);
@@ -238,7 +235,7 @@ export default defineComponent({
     .circles-area {
         position: relative;
         width: 32.875rem; // 263px
-        height: 28.75rem; // 230px
+        height: 100%;
         flex-shrink: 0;
 
         .circle {
@@ -257,6 +254,8 @@ export default defineComponent({
 
         .attribute {
             position: absolute;
+            left: 50%;
+            top: 50%;
             text-align: center;
             margin-bottom: 2rem;
             font-size: 2rem;
@@ -267,18 +266,20 @@ export default defineComponent({
         }
 
         .attribute-nim {
-            top: 16px;
-            left: 160px;
+            transform: translate3d(28.5px, -99px, 0) scale(1);
         }
 
         .attribute-btc {
-            top: 0px;
-            left: 85px;
+            transform: translate3d(-46.5px, -115px, 0) scale(1);
         }
 
         .attribute-usdc {
-            top: 155px;
-            left: 35px;
+            transform: translate3d(-96.5px, 40px, 0) scale(1);
+        }
+
+        @media (max-width: 445px) {
+            transform: translateX(-1rem) scale(0.8);
+            width: 50%;
         }
     }
 
@@ -289,6 +290,10 @@ export default defineComponent({
         height: 100%;
         gap: 3rem;
         padding: 4rem;
+
+        @media (max-width: 445px) {
+            padding: 4rem 2rem;
+        }
     }
 
     .currency-item {
@@ -350,7 +355,7 @@ export default defineComponent({
         }
 
         &.active .currency-description {
-            max-height: 4rem;
+            max-height: 6rem;
             opacity: .6;
         }
     }

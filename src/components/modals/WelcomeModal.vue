@@ -60,14 +60,16 @@
 import { computed, defineComponent, onUnmounted, ref } from '@vue/composition-api';
 import { PageHeader, PageBody, PageFooter, Tooltip } from '@nimiq/vue-components';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
-import Modal from './Modal.vue';
+import Modal, { disableNextModalTransition } from './Modal.vue';
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import { useRouter, RouteName } from '../../router';
 
 export default defineComponent({
     setup() {
+        const router = useRouter();
         const { state: settings$, setLanguage } = useSettingsStore();
         const { isMobile } = useWindowSize();
 
@@ -108,9 +110,9 @@ export default defineComponent({
             stopInterval();
         });
 
-        async function onButtonClick(event: MouseEvent) {
+        async function onButtonClick() {
             window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
-            await modal$.value!.forceClose();
+            router.push({ name: RouteName.SplitRecovery });
         }
 
         async function onSkipClick() {

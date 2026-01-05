@@ -72,6 +72,8 @@ const UsdtAddedModal = () =>
     import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
 const MultisigAnnouncementModal = () =>
     import(/* webpackChunkName: "multisig-announcement-modal" */ './components/modals/MultisigAnnouncementModal.vue');
+const SplitRecoveryModal = () =>
+    import(/* webpackChunkName: "split-recovery-modal" */ './components/modals/SplitRecoveryModal.vue');
 
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
@@ -133,6 +135,7 @@ export enum RouteName {
     UsdtAdded = 'usdt-added',
     StablecoinSelection = 'stablecoin-selection',
     MultisigAnnouncement = 'multisig-announcement',
+    SplitRecovery = 'split-recovery',
     Swap = 'swap',
     MoonpaySellInfo = 'moonpay-sell-info',
     Moonpay = 'moonpay',
@@ -443,6 +446,13 @@ const routes: RouteConfig[] = [{
                 modal: MultisigAnnouncementModal,
             },
             name: RouteName.MultisigAnnouncement,
+            meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/split-recovery',
+            components: {
+                modal: SplitRecoveryModal,
+            },
+            name: RouteName.SplitRecovery,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/stablecoin-selection',

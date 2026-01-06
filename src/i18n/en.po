@@ -2,10 +2,6 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/components/modals/WelcomeModal.vue:174
-msgid "‘Digital gold’, the original crypto"
-msgstr ""
-
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
 msgstr ""
@@ -473,6 +469,7 @@ msgstr ""
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:124
 #: src/components/modals/BtcTransactionModal.vue:136
+#: src/components/modals/WelcomeModal.vue:48
 #: src/components/swap/SwapBalanceBar.vue:19
 #: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:127
@@ -646,10 +643,6 @@ msgstr ""
 msgid "Cashlink to {address}"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:110
-msgid "Censorship-resistant network connection"
-msgstr ""
-
 #: src/components/modals/AccountMenuModal.vue:23
 msgid "Change password"
 msgstr ""
@@ -726,14 +719,6 @@ msgstr ""
 #: src/components/staking/StakingModal.vue:205
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:242
-msgid "Comparably centralized"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:176
-msgid "Comparably high transaction fees/time"
 msgstr ""
 
 #: src/components/SendModalFooter.vue:9
@@ -909,10 +894,6 @@ msgstr ""
 msgid "Created yesterday"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:111
-msgid "Creates staking rewards"
-msgstr ""
-
 #: src/components/modals/BuyOptionsModal.vue:113
 #: src/components/modals/BuyOptionsModal.vue:43
 msgid "Credit Card"
@@ -951,12 +932,6 @@ msgstr ""
 
 #: src/components/swap/OasisLaunchModal.vue:19
 msgid "Developer resources"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:10
-msgid ""
-"Different currencies can do different things.\n"
-"Use them your way and make the most of it."
 msgstr ""
 
 #: src/components/layouts/Settings.vue:281
@@ -1080,10 +1055,6 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:249
 msgid "Enter the password of the trial you want to enable, then press enter."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:353
-msgid "Enter the wallet"
 msgstr ""
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
@@ -1247,30 +1218,24 @@ msgstr ""
 msgid "Flagged as: {type}"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:121
-msgid ""
-"For a decentralized\n"
-"store of value"
+#: src/components/modals/WelcomeModal.vue:50
+msgid "For a decentralized store of value"
 msgstr ""
 
 #: src/components/staking/StakingWelcomePage.vue:29
 msgid "For a small fee, validator pools do the staking for you."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:186
-msgid ""
-"For a USD-pegged\n"
-"store of value"
+#: src/components/modals/WelcomeModal.vue:59
+msgid "For a USD-pegged store of value"
 msgstr ""
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:57
-msgid ""
-"For fast and low-fee\n"
-"crypto payments"
+#: src/components/modals/WelcomeModal.vue:41
+msgid "For fast and low-fee crypto payments"
 msgstr ""
 
 #: src/components/modals/SendModal.vue:540
@@ -1331,7 +1296,6 @@ msgstr ""
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
-#: src/components/modals/WelcomeModal.vue:349
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1359,10 +1323,6 @@ msgstr ""
 
 #: src/components/modals/StablecoinSelectionModal.vue:12
 msgid "Higher transparency and regulatory compliance."
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:175
-msgid "Highest degree of decentralization"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:196
@@ -1463,6 +1423,10 @@ msgstr ""
 
 #: src/components/modals/MigrationWelcomeModal.vue:55
 msgid "Import it to any browser and enter your password to use the same addresses."
+msgstr ""
+
+#: src/components/modals/SplitRecoveryModal.vue:9
+msgid "Important: Create a backup"
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:55
@@ -1733,6 +1697,11 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
+#: src/components/modals/WelcomeModal.vue:66
+msgid "Next: Create a backup"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:39
 #: src/components/staking/StakingGraph.vue:5
 #: src/components/staking/StakingGraph.vue:6
 #: src/components/staking/StakingGraph.vue:7
@@ -1924,16 +1893,8 @@ msgstr ""
 msgid "Payment request has already been paid"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:350
-msgid "Payments, got it"
-msgstr ""
-
 #: src/components/staking/StakingOverview.vue:19
 msgid "Payout ready"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:241
-msgid "Pegged 1:1 to the U.S. Dollar"
 msgstr ""
 
 #: src/components/BtcTransactionListItem.vue:47
@@ -1956,7 +1917,7 @@ msgstr ""
 msgid "Per-swap limits raised to {amount}"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:42
+#: src/components/modals/WelcomeModal.vue:29
 msgid "Performance"
 msgstr ""
 
@@ -2132,6 +2093,10 @@ msgstr ""
 msgid "Recovery Words"
 msgstr ""
 
+#: src/components/modals/SplitRecoveryModal.vue:48
+msgid "Recovery words are the most secure way of backing up your account."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
 msgstr ""
@@ -2175,6 +2140,10 @@ msgstr ""
 
 #: src/components/staking/ValidatorScoreDetails.vue:28
 msgid "Reliability"
+msgstr ""
+
+#: src/components/modals/SplitRecoveryModal.vue:56
+msgid "Remind me later"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:34
@@ -2276,7 +2245,7 @@ msgstr ""
 msgid "Search transactions by contact, address, etc."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:43
+#: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
 msgstr ""
 
@@ -2384,6 +2353,10 @@ msgstr ""
 msgid "Send USDT"
 msgstr ""
 
+#: src/components/modals/SplitRecoveryModal.vue:22
+msgid "Send yourself two backup codes"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
@@ -2401,6 +2374,10 @@ msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:371
 msgid "Sending Unstaking Transaction"
+msgstr ""
+
+#: src/components/modals/SplitRecoveryModal.vue:29
+msgid "Sending yourself backup codes is convenient but only as secure as the channels you use."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:573
@@ -2525,10 +2502,6 @@ msgstr ""
 msgid "Show Recovery Words"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:319
-msgid "Show values as {currency}"
-msgstr ""
-
 #: src/components/layouts/AddressOverview.vue:282
 msgid "Signup"
 msgstr ""
@@ -2541,6 +2514,10 @@ msgstr ""
 #: src/components/modals/MultisigAnnouncementModal.vue:25
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:69
+msgid "Skip (not recommended)"
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:587
@@ -2564,16 +2541,8 @@ msgstr ""
 msgid "Speed up your Transaction"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:44
+#: src/components/modals/WelcomeModal.vue:31
 msgid "Stability"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:240
-msgid "Stability mixed with self-custody"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:352
-msgid "Stable like USD, got it"
 msgstr ""
 
 #: src/components/staking/StakingButton.vue:33
@@ -2626,10 +2595,6 @@ msgstr ""
 msgid "Start staking"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:351
-msgid "Store of value, got it"
-msgstr ""
-
 #: src/components/staking/StakingGraphPage.vue:214
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
@@ -2659,10 +2624,6 @@ msgstr ""
 msgid "Super eco-friendly"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:109
-msgid "Super low fees, super fast payments"
-msgstr ""
-
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
@@ -2678,12 +2639,6 @@ msgstr ""
 
 #: src/components/layouts/AccountOverview.vue:192
 msgid "Swap BTC {arrowIcon} {ticker}"
-msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:16
-msgid ""
-"Swap coins and use\n"
-"value your way."
 msgstr ""
 
 #: src/components/swap/SwapModal.vue:7
@@ -2768,6 +2723,14 @@ msgstr ""
 
 #: src/components/SendModalFooter.vue:69
 msgid "Syncing with Bitcoin network"
+msgstr ""
+
+#: src/components/modals/SplitRecoveryModal.vue:42
+msgid "Takes a pen, a piece of paper and a safe place to store it."
+msgstr ""
+
+#: src/components/modals/SplitRecoveryModal.vue:23
+msgid "Takes two ways of writing to yourself, like a messenger + email."
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
@@ -2897,6 +2860,10 @@ msgstr ""
 msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
 msgstr ""
 
+#: src/components/modals/SplitRecoveryModal.vue:11
+msgid "There is no 'forget password' or Login File recovery. Create a backup to stay in control."
+msgstr ""
+
 #: src/components/layouts/AccountOverview.vue:21
 msgid "There is no ‘forgot password’"
 msgstr ""
@@ -2905,8 +2872,8 @@ msgstr ""
 msgid "There's a problem"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:8
-msgid "Think features, not currency"
+#: src/components/modals/WelcomeModal.vue:4
+msgid "Think value, not currency"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:198
@@ -3185,6 +3152,7 @@ msgstr ""
 #: src/components/AddressList.vue:200
 #: src/components/layouts/AccountOverview.vue:216
 #: src/components/layouts/AddressOverview.vue:121
+#: src/components/modals/WelcomeModal.vue:57
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
@@ -3203,6 +3171,12 @@ msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:6
+msgid ""
+"Use different cryptos for different things –\n"
+"with the Nimiq Wallet and ease-of-use."
 msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:24
@@ -3300,6 +3274,10 @@ msgstr ""
 
 #: src/components/BankCheckInput.vue:70
 msgid "Without an individual IBAN, refunds are impossible!"
+msgstr ""
+
+#: src/components/modals/SplitRecoveryModal.vue:41
+msgid "Write down 24 recovery words"
 msgstr ""
 
 #: src/components/layouts/Sidebar.vue:17

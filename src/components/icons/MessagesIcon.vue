@@ -13,4 +13,3 @@
         </defs>
     </svg>
 </template>
-

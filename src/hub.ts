@@ -36,7 +36,6 @@ import { useFiatStore } from './stores/Fiat';
 import { useKycStore } from './stores/Kyc';
 import {
     WELCOME_MODAL_LOCALSTORAGE_KEY,
-    WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY,
     MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
 } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';

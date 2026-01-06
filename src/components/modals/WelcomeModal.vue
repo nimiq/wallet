@@ -97,7 +97,11 @@ import Modal from './Modal.vue';
 import { Languages } from '../../i18n/i18n-setup';
 import { useSettingsStore } from '../../stores/Settings';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { CryptoCurrency, MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
+import {
+    CryptoCurrency,
+    MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
+    WELCOME_MODAL_LOCALSTORAGE_KEY,
+} from '../../lib/Constants';
 import { useRouter, RouteName } from '../../router';
 
 export default defineComponent({
@@ -305,7 +309,7 @@ export default defineComponent({
             filter: grayscale(100%) brightness(0.5);
             transition: filter 0.35s ease;
         }
-        
+
         .bitcoin,
         .usdc {
             color: var(--nimiq-blue);
@@ -314,7 +318,7 @@ export default defineComponent({
 
         &.active {
             opacity: 1;
-            
+
             .nq-icon.nimiq-logo { filter: grayscale(0%) }
             .bitcoin { color: var(--bitcoin-orange) }
             .usdc { color: var(--usdc-blue) }
@@ -359,7 +363,7 @@ export default defineComponent({
             opacity: .6;
         }
     }
-    
+
     // Animation states - NIM highlighted
     .think-features.highlight-nim {
         .circle-nim {

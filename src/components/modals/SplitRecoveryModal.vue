@@ -275,7 +275,7 @@ export default defineComponent({
     opacity: 0.7;
     cursor: pointer;
     text-decoration: none !important;
-    
+
     transition: opacity 0.2s var(--nimiq-ease);
 
     .caret-right-icon {
@@ -323,4 +323,3 @@ export default defineComponent({
     }
 }
 </style>
-

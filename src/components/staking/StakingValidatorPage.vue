@@ -37,6 +37,8 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
+import { useConfig } from '../../composables/useConfig';
+import { ENV_DEV } from '../../lib/Constants';
 
 // import ValidatorFilter from './ValidatorFilter.vue';
 import ValidatorListItem from './ValidatorListItem.vue';
@@ -53,6 +55,7 @@ export default defineComponent({
     },
     setup() {
         const { validatorsList } = useStakingStore();
+        const { config } = useConfig();
 
         const validatorList$ = ref<HTMLElement | null>(null);
 
@@ -87,11 +90,18 @@ export default defineComponent({
                 default: {
                     // Only show pools by default when search string is less than 3 characters
                     const showDefaultList = searchValue.value.length < 3;
+                    const isLocalDev = config.environment === ENV_DEV;
 
                     return validatorsList.value.slice()
                         .filter((validator) => {
                             if (showDefaultList) {
-                                // Filter to show only pools
+                                // In local dev, show all validators even if API is unavailable
+                                // Otherwise, filter to show only pools with payout types
+                                if (isLocalDev) {
+                                    return 'payoutType' in validator
+                                        ? validator.payoutType !== 'none'
+                                        : true; // Show validators without API data in local dev
+                                }
                                 return 'payoutType' in validator && validator.payoutType !== 'none';
                             }
 

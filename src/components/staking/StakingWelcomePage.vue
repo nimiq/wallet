@@ -40,6 +40,8 @@
 import { computed, defineComponent, onMounted } from '@vue/composition-api';
 import { PageHeader, PageBody, HexagonIcon } from '@nimiq/vue-components';
 import { useStakingStore } from '../../stores/Staking';
+import { useConfig } from '../../composables/useConfig';
+import { ENV_DEV } from '../../lib/Constants';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import ValidatorIcon from './ValidatorIcon.vue';
 import { getNetworkClient, updateValidators } from '../../network';
@@ -61,11 +63,27 @@ export default defineComponent({
         // .map((validator) => validator.icon));
 
         const { validatorsList } = useStakingStore();
+        const { config } = useConfig();
 
-        const validators = computed(() => validatorsList.value.length === 0
-            ? Array.from({ length: 10 }) as undefined[]
-            : validatorsList.value.filter((validator) => 'payoutType' in validator && validator.payoutType !== 'none'),
-        );
+        const validators = computed(() => {
+            if (validatorsList.value.length === 0) {
+                return Array.from({ length: 10 }) as undefined[];
+            }
+
+            const isLocalDev = config.environment === ENV_DEV;
+
+            // In local dev, show all validators even if API is unavailable
+            const filtered = validatorsList.value.filter((validator) => {
+                if (isLocalDev) {
+                    return 'payoutType' in validator
+                        ? validator.payoutType !== 'none'
+                        : true; // Show validators without API data in local dev
+                }
+                return 'payoutType' in validator && validator.payoutType !== 'none';
+            });
+
+            return filtered;
+        });
 
         function getTopPosition(index: number) {
             return `${((Math.sin((index + 1) * (Math.PI / 10))) * 25)}px`;

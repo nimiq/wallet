@@ -1,5 +1,5 @@
 <template>
-    <Modal class="moonpay-modal">
+    <Modal class="moonpay-modal" emitClose @close="close">
         <PageHeader>
             {{ $t('Buy with Simplex') }}
         </PageHeader>
@@ -323,12 +323,19 @@ export default defineComponent({
 
         const currentlyShownAddress = computed(() => walletAddresses[cryptoCurrencyCode.value]);
 
+        function close() {
+            // Force navigation to home instead of using router.back()
+            // to avoid issues with Simplex widget interfering with browser history
+            router.push('/');
+        }
+
         return {
             showAddressCopyUi,
             currentlyShownAddress,
             mustReload,
             cryptoCurrencyCode,
             CryptoCurrency,
+            close,
         };
     },
     components: {

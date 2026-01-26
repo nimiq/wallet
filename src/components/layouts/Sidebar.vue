@@ -233,12 +233,32 @@ export default defineComponent({
         }
 
         async function openModal(routeName: RouteName, params: Record<string, string> = {}) {
+            // Try to find a context-specific variant of the modal for Settings or Network pages.
+            // For example, if we're on Settings and trying to open 'buy', try 'settings-buy' first.
+            let targetRouteName = routeName;
+            const currentRouteName = router.currentRoute.name;
+
+            if (currentRouteName === RouteName.Settings || currentRouteName === RouteName.Network) {
+                const prefix = currentRouteName === RouteName.Settings ? 'settings' : 'network';
+                const contextRouteName = `${prefix}-${routeName}` as RouteName;
+
+                // Check if this context-specific route exists
+                try {
+                    const contextRoute = router.resolve({ name: contextRouteName });
+                    if (contextRoute && contextRoute.route.matched.length > 0) {
+                        targetRouteName = contextRouteName;
+                    }
+                } catch (e) {
+                    // Route doesn't exist, fall back to original
+                }
+            }
+
             // Each modal is expected to be sitting above a specific parent route / background page. If we're not
             // currently on that route, navigate to it first, such that the modal can be closed later by a simple back
             // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
             // current route, but with the modal still open on top.
-            const modalRoute = router.resolve({ name: routeName }).route;
-            const expectedParentRoute = modalRoute.matched.find(({ name }) => !!name && name !== routeName);
+            const modalRoute = router.resolve({ name: targetRouteName }).route;
+            const expectedParentRoute = modalRoute.matched.find(({ name }) => !!name && name !== targetRouteName);
             if (expectedParentRoute && router.currentRoute.name !== expectedParentRoute.name) {
                 // Don't keep the sidebar open for this navigation on mobile because closing it would be a back
                 // navigation on the parent page, leading back to the route we're currently on, instead of closing the
@@ -246,7 +266,7 @@ export default defineComponent({
                 await navigateTo(expectedParentRoute.path);
             }
             return router.push({
-                name: routeName,
+                name: targetRouteName,
                 query: { sidebar: 'true' }, // on mobile keep sidebar open in background
                 params,
             }).catch(() => { /* ignore */ });

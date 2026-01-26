@@ -152,6 +152,71 @@ export enum RouteName {
     StakingRewards = 'staking-rewards',
 }
 
+/**
+ * Helper function to create context-specific route variants for Settings and Network pages.
+ * This allows modals opened from the sidebar to close back to the correct parent page.
+ *
+ * @param baseRouteName - The base route name (e.g., 'buy', 'swap')
+ * @param routeConfig - The route configuration object (without name, will be generated)
+ * @returns An object with base, settings, and network route variants
+ */
+function createContextRoutes(
+    baseRouteName: RouteName,
+    routeConfig: Partial<RouteConfig>,
+): { base: RouteConfig, settings: RouteConfig, network: RouteConfig } {
+    // Generate the context-specific route names by prefixing with 'settings-' or 'network-'
+    const settingsRouteName = `settings-${baseRouteName}` as RouteName;
+    const networkRouteName = `network-${baseRouteName}` as RouteName;
+
+    return {
+        base: {
+            ...routeConfig,
+            name: baseRouteName,
+        } as RouteConfig,
+        settings: {
+            ...routeConfig,
+            name: settingsRouteName,
+        } as RouteConfig,
+        network: {
+            ...routeConfig,
+            name: networkRouteName,
+        } as RouteConfig,
+    };
+}
+
+// Define sidebar modal routes that should be available from Settings and Network pages
+const sidebarModalRoutes = {
+    buy: createContextRoutes(RouteName.Buy, {
+        path: '/buy',
+        components: {
+            modal: BuyOptionsModal,
+        },
+        meta: { column: Columns.DYNAMIC },
+    }),
+    swap: createContextRoutes(RouteName.Swap, {
+        path: '/swap/:pair?',
+        components: {
+            modal: SwapModal,
+        },
+        props: { modal: true },
+        meta: { column: Columns.ACCOUNT },
+    }),
+    sellCrypto: createContextRoutes(RouteName.SellCrypto, {
+        path: '/sell-crypto',
+        components: {
+            modal: SellCryptoModal,
+        },
+        meta: { column: Columns.DYNAMIC },
+    }),
+    moonpaySellInfo: createContextRoutes(RouteName.MoonpaySellInfo, {
+        path: '/moonpay-sell-info',
+        components: {
+            modal: MoonpaySellInfoModal,
+        },
+        meta: { column: Columns.DYNAMIC },
+    }),
+};
+
 const routes: RouteConfig[] = [{
     path: '/',
     name: RouteName.Root,
@@ -248,28 +313,16 @@ const routes: RouteConfig[] = [{
             },
             name: RouteName.Trade,
             meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/buy',
-            components: {
-                modal: BuyOptionsModal,
-            },
-            name: RouteName.Buy,
-            meta: { column: Columns.DYNAMIC },
-        }, {
+        },
+        {
             path: '/buy-crypto',
             components: {
                 modal: BuyCryptoModal,
             },
             name: RouteName.BuyCrypto,
             meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/sell-crypto',
-            components: {
-                modal: SellCryptoModal,
-            },
-            name: RouteName.SellCrypto,
-            meta: { column: Columns.DYNAMIC },
-        }, {
+        },
+        {
             path: '/scan',
             components: {
                 modal: ScanQrModal,
@@ -398,22 +451,8 @@ const routes: RouteConfig[] = [{
             },
             name: RouteName.StablecoinSelection,
             meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/swap/:pair?',
-            components: {
-                modal: SwapModal,
-            },
-            name: RouteName.Swap,
-            props: { modal: true },
-            meta: { column: Columns.ACCOUNT },
-        }, {
-            path: '/moonpay-sell-info',
-            components: {
-                modal: MoonpaySellInfoModal,
-            },
-            name: RouteName.MoonpaySellInfo,
-            meta: { column: Columns.DYNAMIC },
-        }, {
+        },
+        {
             path: '/moonpay',
             components: {
                 modal: MoonpayModal,
@@ -474,7 +513,13 @@ const routes: RouteConfig[] = [{
             },
             name: RouteName.WalletStatus,
             meta: { column: Columns.DYNAMIC },
-        }],
+        },
+        // Sidebar modals - base routes
+        sidebarModalRoutes.buy.base,
+        sidebarModalRoutes.sellCrypto.base,
+        sidebarModalRoutes.swap.base,
+        sidebarModalRoutes.moonpaySellInfo.base,
+        ],
         beforeEnter: (to, from, next) => {
             if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
                 const parsed = parseNimiqSafeRequestLink(window.location.href);
@@ -515,7 +560,13 @@ const routes: RouteConfig[] = [{
             },
             name: RouteName.SettingsReleaseNotes,
             meta: { column: Columns.DYNAMIC },
-        }],
+        },
+        // Sidebar modals - settings routes
+        sidebarModalRoutes.buy.settings,
+        sidebarModalRoutes.swap.settings,
+        sidebarModalRoutes.sellCrypto.settings,
+        sidebarModalRoutes.moonpaySellInfo.settings,
+        ],
     }],
 }, {
     path: '/network',
@@ -538,7 +589,13 @@ const routes: RouteConfig[] = [{
         },
         name: RouteName.NetworkReleaseNotes,
         meta: { column: Columns.DYNAMIC },
-    }],
+    },
+    // Sidebar modals - network routes
+    sidebarModalRoutes.buy.network,
+    sidebarModalRoutes.swap.network,
+    sidebarModalRoutes.sellCrypto.network,
+    sidebarModalRoutes.moonpaySellInfo.network,
+    ],
 }];
 
 // If wallet was opened on a path other than root route, for example on a modal, inject a root history entry before the

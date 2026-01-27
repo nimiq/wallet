@@ -394,9 +394,9 @@ export async function syncFromHub() {
     // would be annoying for the user.
     const { activeAccountInfo } = useAccountStore();
     await new Promise<void>((resolve) => { router.onReady(resolve); });
+    if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     if (
-        areOptionalRedirectsAllowed(router.currentRoute)
-        && activeAccountInfo.value?.type === AccountType.BIP39 // Legacy accounts and Ledgers are not supported.
+        activeAccountInfo.value?.type === AccountType.BIP39 // Legacy accounts and Ledgers are not supported.
         && !activeAccountInfo.value.polygonAddresses?.length
         && config.polygon.enabled
     ) {

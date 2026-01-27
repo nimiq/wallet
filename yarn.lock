@@ -1481,6 +1481,14 @@
     comlink "^4.4.1"
     websocket "^1.0.34"
 
+"@nimiq/core@^2.1.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.2.1.tgz#d027dea5a5db78eb08ca228cf9014ae6571064bb"
+  integrity sha512-RrjZrSxR/1fBVhBddXABiQ2L/9QT7hRTBFpLYURcm2LX4mTgRIyz5YLpNEnzFrShNR2kITaa51KAl5X3JLfIZQ==
+  dependencies:
+    comlink "^4.4.1"
+    websocket "^1.0.34"
+
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.2.2"
   resolved "https://github.com/nimiq/electrum-client#4f706a0acb13b8e8abdf5be68cfc036eb102e3fc"
@@ -1492,12 +1500,12 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.3.tgz#9a4b6c5594708f3dd76f8bf1b0fd189ca886dbce"
   integrity sha512-CUkIAcF7R3OlN45idB+yC9Wnuz2YXTPx25xYswCdmbMGu/EGZFNnGHLIe6HkbHd8Eh+uBrwqBmLZGm8jyQ9+6A==
 
-"@nimiq/hub-api@^1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.10.0.tgz#fa7c33d402f10dc5816fb2537d737a79f903fe15"
-  integrity sha512-cic8Omk2MEmnGiodCNUYBqHtY3ypD9ARn+0GC5RTPExpzDJRmXfVLOakq88UxIWPc56DhL3qxdfkU2feZt/74w==
+"@nimiq/hub-api@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.13.0.tgz#212cc7e544069b68bcb10fac156eefcf5e8b89cf"
+  integrity sha512-QJ6QVsU7PJKwwULI/vOiPLStIrl52bUNLl69d/Svdbcj0x38FaYGVbLhuBXUJH2vfVdqMgdJbEZ5mw/y2OpPng==
   dependencies:
-    "@nimiq/core" "^2.0.0"
+    "@nimiq/core" "^2.1.1"
     "@nimiq/fastspot-api" "^1.10.2"
     "@nimiq/rpc" "^0.4.0"
     "@nimiq/utils" "^0.5.0"

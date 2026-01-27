@@ -8,7 +8,7 @@
             <div class="header">
                 <h1 class="nq-h1">{{ $t('Important: Create a backup') }}</h1>
                 <p class="nq-text">
-                    {{ $t('There is no \'forget password\' or Login File recovery. '
+                    {{ $t('There is no \'forgot password\' or Login File recovery. '
                         + 'Create a backup to stay in control.') }}
                 </p>
             </div>
@@ -85,15 +85,13 @@ export default defineComponent({
 
         async function startBackupCodes() {
             if (!activeAccountId.value) return;
-            // For now, use the standard backup flow with fileOnly option
-            // This can be replaced with a split backup flow when implemented
-            await backup(activeAccountId.value, { fileOnly: true });
+            await backup(activeAccountId.value, 'backupCodesOnly');
             await modal$.value?.forceClose();
         }
 
         async function startRecoveryWords() {
             if (!activeAccountId.value) return;
-            await backup(activeAccountId.value, { wordsOnly: true });
+            await backup(activeAccountId.value, 'wordsOnly');
             await modal$.value?.forceClose();
         }
 

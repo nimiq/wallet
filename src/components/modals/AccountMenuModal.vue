@@ -3,12 +3,12 @@
         <div v-if="activeAccountId && activeAccountInfo" class="current-account">
             <AccountMenuItem :id="activeAccountId"/>
             <button v-if="canExportFile" class="item reset flex-row"
-                @click="backup(activeAccountId, { fileOnly: true })">
+                @click="backup(activeAccountId, 'fileOnly')">
                 <LoginFileDownloadIcon/>{{ $t('Save Login File') }}
                 <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
             </button>
             <button v-if="canExportWords" class="item reset flex-row"
-                @click="backup(activeAccountId, { wordsOnly: true })">
+                @click="backup(activeAccountId, 'wordsOnly')">
                 <BackupIcon/>{{ $t('Show Recovery Words') }}
                 <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
             </button>

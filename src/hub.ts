@@ -306,6 +306,7 @@ function processAndStoreAccounts(accounts: Account[], replaceState = false): voi
             label: account.label,
             fileExported: account.fileExported,
             wordsExported: account.wordsExported,
+            backupCodesExported: account.backupCodesExported,
             addresses,
             btcAddresses: { ...account.btcAddresses },
             polygonAddresses: [...account.polygonAddresses],
@@ -477,11 +478,11 @@ export async function addAddress(accountId: string) {
     return true;
 }
 
-export async function backup(accountId: string, options: { wordsOnly?: boolean, fileOnly?: boolean }) {
+export async function backup(accountId: string, exportMethod: 'fileOnly' | 'wordsOnly' | 'backupCodesOnly') {
     const exportResult = await hubApi.export({
         appName: APP_NAME,
         accountId,
-        ...options,
+        [exportMethod]: true,
     }, getBehavior()).catch(onError);
     if (!exportResult) return false;
 

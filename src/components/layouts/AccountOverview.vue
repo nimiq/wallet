@@ -8,7 +8,10 @@
                 <AlertTriangleIcon class="alert-icon"/>
                 {{ $t('Your account is not safe yet!') }}
             </span>
-            <button class="nq-button-s inverse" @click="backup(activeAccountInfo.id)" @mousedown.prevent>
+            <button
+                class="nq-button-s inverse"
+                @click="backup(activeAccountInfo.id, 'fileOnly')" @mousedown.prevent
+            >
                 {{ $t('Login File') }}<ArrowRightSmallIcon/>
             </button>
         </div>
@@ -22,7 +25,7 @@
             </span>
             <button
                 class="nq-button-pill orange"
-                @click="backup(activeAccountInfo.id, { wordsOnly: true })" @mousedown.prevent
+                @click="backup(activeAccountInfo.id, 'wordsOnly')" @mousedown.prevent
             >
                 {{ $t('Recovery Words') }}<ArrowRightSmallIcon/>
             </button>

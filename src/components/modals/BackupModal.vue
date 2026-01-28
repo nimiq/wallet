@@ -1,5 +1,6 @@
 <template>
-    <Modal ref="modal$" class="backup-modal" :class="{ 'hide-close-button': showBackButton }" closeButtonInverse>
+    <Modal ref="modal$" class="backup-modal" :class="{ 'hide-close-button': showBackButton && !hasStartedBackup }"
+        closeButtonInverse>
         <PageBody class="flex-column">
             <button v-if="showBackButton" class="reset back-button" @click="goBack">
                 <ArrowLeftIcon />
@@ -52,7 +53,7 @@
                 </button>
             </div>
 
-            <a v-if="showSkipButton" class="skip-link nq-link" @click="onSkipClick">
+            <a v-if="showSkipButton && !hasStartedBackup" class="skip-link nq-link" @click="onSkipClick">
                 {{ $t('Remind me later') }}
                 <CaretRightIcon />
             </a>
@@ -88,6 +89,7 @@ export default defineComponent({
         const router = useRouter();
         const modal$ = ref<InstanceType<typeof Modal> | null>(null);
         const { activeAccountId } = useAccountStore();
+        const hasStartedBackup = ref(false);
 
         function goBack() {
             router.back();
@@ -96,13 +98,13 @@ export default defineComponent({
         async function startBackupCodes() {
             if (!activeAccountId.value) return;
             await backup(activeAccountId.value, 'backupCodesOnly');
-            await modal$.value?.forceClose();
+            hasStartedBackup.value = true;
         }
 
         async function startRecoveryWords() {
             if (!activeAccountId.value) return;
             await backup(activeAccountId.value, 'wordsOnly');
-            await modal$.value?.forceClose();
+            hasStartedBackup.value = true;
         }
 
         async function onSkipClick() {
@@ -111,6 +113,7 @@ export default defineComponent({
 
         return {
             modal$,
+            hasStartedBackup,
             goBack,
             startBackupCodes,
             startRecoveryWords,

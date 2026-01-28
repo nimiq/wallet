@@ -5,6 +5,8 @@
 ^\/[\/#\?]?$
 ^\/transactions[\/#\?]?$
 ^\/accounts[\/#\?]?$
+^\/backup[\/#\?]?$
+^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/send[\/#\?]?$
 ^\/send\/nim[\/#\?]?$
 ^\/send\/btc[\/#\?]?$
@@ -21,6 +23,7 @@
 ^\/scan[\/#\?]?$
 ^(?:\/(nimiq:.+))[\/#\?]?$
 ^\/welcome[\/#\?]?$
+^\/welcome-backup[\/#\?]?$
 ^\/welcome-staking[\/#\?]?$
 ^\/migration-welcome[\/#\?]?$
 ^\/btc-activation[\/#\?]?$
@@ -33,12 +36,10 @@
 ^(?:\/(polygon:.+))[\/#\?]?$
 ^\/usdt-added[\/#\?]?$
 ^\/multisig-announcement[\/#\?]?$
-^\/backup[\/#\?]?$
 ^\/stablecoin-selection[\/#\?]?$
 ^\/moonpay[\/#\?]?$
 ^\/simplex[\/#\?]?$
 ^\/release-notes[\/#\?]?$
-^\/export-history(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/staking[\/#\?]?$
 ^\/validator-details[\/#\?]?$
 ^\/staking\/rewards(?:\/([^\/#\?]+?))?[\/#\?]?$

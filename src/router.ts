@@ -23,6 +23,8 @@ const AccountMenuModal = () =>
     import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
 const BackupModal = () =>
     import(/* webpackChunkName: "backup-modal" */ './components/modals/BackupModal.vue');
+const HistoryExportModal = () =>
+    import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
 const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
 const AddressSelectorModal = () =>
@@ -45,8 +47,6 @@ const DisclaimerModal = () =>
     import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
 const ReleaseNotesModal = () =>
     import(/* webpackChunkName: "release-notes-modal" */ './components/modals/ReleaseNotesModal.vue');
-const HistoryExportModal = () =>
-    import(/* webpackChunkName: "history-export-modal" */ './components/modals/HistoryExportModal.vue');
 const StablecoinSelectionModal = () =>
     import(/* webpackChunkName: "history-export-modal" */ './components/modals/StablecoinSelectionModal.vue');
 const WalletStatusModal = () =>
@@ -123,6 +123,7 @@ export enum RouteName {
     Scan = 'scan',
     SendViaUri = 'send-via-uri',
     Welcome = 'welcome',
+    WelcomeBackup = 'welcome-backup',
     WelcomeStaking = 'welcome-staking',
     MigrationWelcome = 'migration-welcome',
     BtcActivation = 'btc-activation',
@@ -243,6 +244,21 @@ const routes: RouteConfig[] = [{
             name: RouteName.RootAccounts,
             meta: { column: Columns.DYNAMIC },
         }, {
+            path: '/backup',
+            components: {
+                modal: BackupModal,
+            },
+            name: RouteName.Backup,
+            meta: { column: Columns.ACCOUNT },
+        }, {
+            path: '/export-history/:type',
+            components: {
+                modal: HistoryExportModal,
+            },
+            name: RouteName.ExportHistory,
+            props: { modal: true },
+            meta: { column: Columns.ADDRESS },
+        }, {
             path: '/send',
             components: {
                 modal: AddressSelectorModal,
@@ -351,6 +367,16 @@ const routes: RouteConfig[] = [{
             name: RouteName.Welcome,
             meta: { column: Columns.ACCOUNT },
         }, {
+            path: '/welcome-backup',
+            components: {
+                modal: BackupModal,
+            },
+            name: RouteName.WelcomeBackup,
+            props: {
+                modal: { showBackButton: true, showSkipButton: true }, // props for BackupModal
+            },
+            meta: { column: Columns.ACCOUNT },
+        }, {
             path: '/welcome-staking',
             components: {
                 modal: WelcomeStakingModal,
@@ -448,13 +474,6 @@ const routes: RouteConfig[] = [{
             name: RouteName.MultisigAnnouncement,
             meta: { column: Columns.ACCOUNT },
         }, {
-            path: '/backup',
-            components: {
-                modal: BackupModal,
-            },
-            name: RouteName.Backup,
-            meta: { column: Columns.ACCOUNT },
-        }, {
             path: '/stablecoin-selection',
             components: {
                 modal: StablecoinSelectionModal,
@@ -484,14 +503,6 @@ const routes: RouteConfig[] = [{
             },
             name: RouteName.RootReleaseNotes,
             meta: { column: Columns.DYNAMIC },
-        }, {
-            path: '/export-history/:type',
-            components: {
-                modal: HistoryExportModal,
-            },
-            name: RouteName.ExportHistory,
-            props: { modal: true },
-            meta: { column: Columns.ADDRESS },
         }, {
             path: '/staking',
             components: {

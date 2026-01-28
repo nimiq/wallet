@@ -156,7 +156,7 @@ export default defineComponent({
 
         async function onButtonClick() {
             window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
-            router.push({ name: RouteName.Backup });
+            router.push({ name: RouteName.WelcomeBackup });
         }
 
         async function onSkipClick() {

@@ -1,7 +1,7 @@
 <template>
-    <Modal class="backup-modal" ref="modal$">
+    <Modal ref="modal$" class="backup-modal" :class="{ 'hide-close-button': showBackButton }" closeButtonInverse>
         <PageBody class="flex-column">
-            <button class="reset back-button" @click="goBack">
+            <button v-if="showBackButton" class="reset back-button" @click="goBack">
                 <ArrowLeftIcon />
             </button>
 
@@ -52,7 +52,7 @@
                 </button>
             </div>
 
-            <a class="skip-link nq-link" @click="onSkipClick">
+            <a v-if="showSkipButton" class="skip-link nq-link" @click="onSkipClick">
                 {{ $t('Remind me later') }}
                 <CaretRightIcon />
             </a>
@@ -74,6 +74,16 @@ import { backup } from '../../hub';
 
 export default defineComponent({
     name: 'BackupModal',
+    props: {
+        showBackButton: {
+            type: Boolean,
+            default: false,
+        },
+        showSkipButton: {
+            type: Boolean,
+            default: false,
+        },
+    },
     setup() {
         const router = useRouter();
         const modal$ = ref<InstanceType<typeof Modal> | null>(null);
@@ -131,7 +141,7 @@ export default defineComponent({
     min-height: auto;
 }
 
-.modal ::v-deep .close-button {
+.modal.hide-close-button ::v-deep .close-button {
     display: none;
 }
 
@@ -143,7 +153,7 @@ export default defineComponent({
 
 .back-button {
     position: absolute;
-    top: 4rem;
+    top: 5rem;
     left: 4rem;
     color: white;
     opacity: 0.8;
@@ -302,7 +312,7 @@ export default defineComponent({
     }
 
     .back-button {
-        top: 3rem;
+        top: 3.75rem;
         left: 2rem;
     }
 

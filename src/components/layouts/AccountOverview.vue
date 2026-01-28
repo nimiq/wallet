@@ -16,7 +16,7 @@
             </button>
         </div>
         <div
-            v-else-if="activeAccountInfo && !activeAccountInfo.wordsExported"
+            v-else-if="activeAccountInfo && !activeAccountInfo.wordsExported && !activeAccountInfo.backupCodesExported"
             class="backup-warning words nq-orange flex-row"
         >
             <span class="alert-text">
@@ -25,9 +25,9 @@
             </span>
             <button
                 class="nq-button-pill orange"
-                @click="backup(activeAccountInfo.id, 'wordsOnly')" @mousedown.prevent
+                @click.stop="$router.push({ name: RouteName.Backup })" @mousedown.prevent
             >
-                {{ $t('Recovery Words') }}<ArrowRightSmallIcon/>
+                {{ $t('Backup') }}<ArrowRightSmallIcon/>
             </button>
         </div>
 

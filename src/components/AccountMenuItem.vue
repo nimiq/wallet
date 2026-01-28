@@ -18,7 +18,10 @@
             </div>
             <FiatAmount :amount="fiatAccountBalance" :currency="fiatCurrency" value-mask/>
         </div>
-        <AlertTriangleIcon v-if="!accountInfo.fileExported || !accountInfo.wordsExported"/>
+        <AlertTriangleIcon
+            v-if="(!accountInfo.fileExported && accountInfo.type === AccountType.BIP39)
+                || (!accountInfo.wordsExported && !accountInfo.backupCodesExported)"
+        />
     </component>
 </template>
 

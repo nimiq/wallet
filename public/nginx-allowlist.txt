@@ -33,6 +33,7 @@
 ^(?:\/(polygon:.+))[\/#\?]?$
 ^\/usdt-added[\/#\?]?$
 ^\/multisig-announcement[\/#\?]?$
+^\/backup[\/#\?]?$
 ^\/stablecoin-selection[\/#\?]?$
 ^\/moonpay[\/#\?]?$
 ^\/simplex[\/#\?]?$

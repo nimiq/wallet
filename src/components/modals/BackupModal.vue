@@ -1,5 +1,5 @@
 <template>
-    <Modal class="split-recovery-modal" ref="modal$">
+    <Modal class="backup-modal" ref="modal$">
         <PageBody class="flex-column">
             <button class="reset back-button" @click="goBack">
                 <ArrowLeftIcon />
@@ -25,7 +25,7 @@
                     <div class="time-estimate">
                         <Tooltip preferredPosition="top right" theme="inverse"
                             :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }">
-                            <ShieldTimeIcon slot="trigger" variant="orange" />
+                            <ShieldIcon slot="trigger" variant="orange" />
                             {{ $t('Sending yourself backup codes is convenient but only as secure as the '
                                 + 'channels you use.') }}
                         </Tooltip>
@@ -44,7 +44,7 @@
                     <div class="time-estimate">
                         <Tooltip preferredPosition="top right" theme="inverse"
                             :styles="{ 'min-width': '22rem', transform: 'translate(-10px, -15.5px)' }">
-                            <ShieldTimeIcon slot="trigger" variant="green" />
+                            <ShieldIcon slot="trigger" variant="green" />
                             {{ $t('Recovery words are the most secure way of backing up your account.') }}
                         </Tooltip>
                         <span>~10min</span>
@@ -67,13 +67,13 @@ import Modal from './Modal.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import MessagesIcon from '../icons/MessagesIcon.vue';
 import WordsIcon from '../icons/WordsIcon.vue';
-import ShieldTimeIcon from '../icons/ShieldTimeIcon.vue';
+import ShieldIcon from '../icons/ShieldIcon.vue';
 import { useRouter } from '../../router';
 import { useAccountStore } from '../../stores/Account';
 import { backup } from '../../hub';
 
 export default defineComponent({
-    name: 'SplitRecoveryModal',
+    name: 'BackupModal',
     setup() {
         const router = useRouter();
         const modal$ = ref<InstanceType<typeof Modal> | null>(null);
@@ -114,7 +114,7 @@ export default defineComponent({
         CaretRightIcon,
         MessagesIcon,
         WordsIcon,
-        ShieldTimeIcon,
+        ShieldIcon,
         Tooltip,
     },
 });
@@ -249,7 +249,7 @@ export default defineComponent({
         gap: 1.5rem;
         color: white;
 
-        .shield-time-icon {
+        .shield-icon {
             width: 2.25rem; // 18px
             height: 2.375rem; // 19px
         }

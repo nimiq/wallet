@@ -21,6 +21,8 @@ const NetworkLayout = () =>
 // Modals
 const AccountMenuModal = () =>
     import(/* webpackChunkName: "account-menu-modal" */ './components/modals/AccountMenuModal.vue');
+const BackupModal = () =>
+    import(/* webpackChunkName: "backup-modal" */ './components/modals/BackupModal.vue');
 const SendModal = () => import(/* webpackChunkName: "send-modal" */ './components/modals/SendModal.vue');
 const ReceiveModal = () => import(/* webpackChunkName: "receive-modal" */ './components/modals/ReceiveModal.vue');
 const AddressSelectorModal = () =>
@@ -37,6 +39,8 @@ const WelcomeStakingModal = () =>
     import(/* webpackChunkName: "welcome-staking-modal" */ './components/staking/WelcomeStakingModal.vue');
 const MigrationWelcomeModal = () =>
     import(/* webpackChunkName: "migration-welcome-modal" */ './components/modals/MigrationWelcomeModal.vue');
+const MultisigAnnouncementModal = () =>
+    import(/* webpackChunkName: "multisig-announcement-modal" */ './components/modals/MultisigAnnouncementModal.vue');
 const DisclaimerModal = () =>
     import(/* webpackChunkName: "disclaimer-modal" */ './components/modals/DisclaimerModal.vue');
 const ReleaseNotesModal = () =>
@@ -70,10 +74,6 @@ const UsdtTransactionModal = () =>
     import(/* webpackChunkName: "usdt-transaction-modal" */ './components/modals/UsdtTransactionModal.vue');
 const UsdtAddedModal = () =>
     import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
-const MultisigAnnouncementModal = () =>
-    import(/* webpackChunkName: "multisig-announcement-modal" */ './components/modals/MultisigAnnouncementModal.vue');
-const SplitRecoveryModal = () =>
-    import(/* webpackChunkName: "split-recovery-modal" */ './components/modals/SplitRecoveryModal.vue');
 
 // Swap Modals
 const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
@@ -135,7 +135,7 @@ export enum RouteName {
     UsdtAdded = 'usdt-added',
     StablecoinSelection = 'stablecoin-selection',
     MultisigAnnouncement = 'multisig-announcement',
-    SplitRecovery = 'split-recovery',
+    Backup = 'backup',
     Swap = 'swap',
     MoonpaySellInfo = 'moonpay-sell-info',
     Moonpay = 'moonpay',
@@ -448,11 +448,11 @@ const routes: RouteConfig[] = [{
             name: RouteName.MultisigAnnouncement,
             meta: { column: Columns.ACCOUNT },
         }, {
-            path: '/split-recovery',
+            path: '/backup',
             components: {
-                modal: SplitRecoveryModal,
+                modal: BackupModal,
             },
-            name: RouteName.SplitRecovery,
+            name: RouteName.Backup,
             meta: { column: Columns.ACCOUNT },
         }, {
             path: '/stablecoin-selection',

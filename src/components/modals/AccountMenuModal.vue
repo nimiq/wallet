@@ -7,10 +7,12 @@
                 <LoginFileDownloadIcon/>{{ $t('Save Login File') }}
                 <AlertTriangleIcon v-if="!activeAccountInfo.fileExported" class="alert"/>
             </button>
-            <button v-if="canExportWords" class="item reset flex-row"
-                @click="backup(activeAccountId, 'wordsOnly')">
-                <BackupIcon/>{{ $t('Show Recovery Words') }}
-                <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported" class="alert"/>
+            <button v-if="canExportBackup" class="item reset flex-row"
+                @click="$router.push({ name: RouteName.Backup })">
+                <BackupIcon/>{{ $t('Create Backup') }}
+                <AlertTriangleIcon v-if="!activeAccountInfo.wordsExported && !activeAccountInfo.backupCodesExported"
+                    class="alert"
+                />
             </button>
             <button class="item reset flex-row" @click="rename(activeAccountId)">
                 <RenameIcon/>{{ $t('Rename') }}
@@ -80,7 +82,7 @@ export default defineComponent({
         const canExportFile = computed(() => activeAccountInfo.value?.type === AccountType.BIP39);
         const isNotLedger = computed(() =>
             !!activeAccountInfo.value && activeAccountInfo.value.type !== AccountType.LEDGER);
-        const canExportWords = isNotLedger;
+        const canExportBackup = isNotLedger;
         const canChangePassword = isNotLedger;
 
         const otherAccountIds = computed(() => Object.keys(accountInfos.value)
@@ -101,7 +103,7 @@ export default defineComponent({
             activeAccountInfo,
             activeAccountId,
             canExportFile,
-            canExportWords,
+            canExportBackup,
             canChangePassword,
             backup,
             rename,

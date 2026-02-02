@@ -225,7 +225,7 @@ export default defineComponent({
         const { config } = useConfig();
         const { isMobile, height: windowHeight } = useWindowSize();
 
-        async function navigateTo(path: string) {
+        async function navigateTo(path: string | { name: string }) {
             if (isMobile.value) {
                 return router.replace(path);
             }
@@ -263,7 +263,7 @@ export default defineComponent({
                 // Don't keep the sidebar open for this navigation on mobile because closing it would be a back
                 // navigation on the parent page, leading back to the route we're currently on, instead of closing the
                 // sidebar.
-                await navigateTo(expectedParentRoute.path);
+                await navigateTo({ name: expectedParentRoute.name! });
             }
             return router.push({
                 name: targetRouteName,

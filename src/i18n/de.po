@@ -622,7 +622,7 @@ msgstr "NIM kaufen"
 msgid "Buy NIM & BTC"
 msgstr "Kaufe NIM und BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:158
+#: src/components/modals/BuyOptionsModal.vue:161
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Kaufe NIM auf einer Kryptobörse:"
 
@@ -1997,11 +1997,15 @@ msgstr "Keine ausstehende Zahlungsanforderung"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Nicht alle Konten dieser Bank unterstützen Instant-Überweisungen."
 
+#: src/components/modals/BuyOptionsModal.vue:153
+msgid "Not available for NIM"
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:157
 msgid "Not available in your browser"
 msgstr "Nicht verfügbar in deinem Browser"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:154
 #: src/components/modals/BuyOptionsModal.vue:87
 msgid "Not available in your country"
 msgstr "Nicht verfügbar in deinem Land"
@@ -3646,7 +3650,7 @@ msgstr "Du kannst nur von Polygon {ticker}-Adressen empfangen!"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "In {waitTime} Stunden kannst du erneut kostenlose NIM erhalten."
 
-#: src/components/layouts/Sidebar.vue:353
+#: src/components/layouts/Sidebar.vue:373
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"

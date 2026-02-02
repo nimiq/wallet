@@ -625,7 +625,7 @@ msgstr "Acheter des NIM"
 msgid "Buy NIM & BTC"
 msgstr "Acheter NIM et BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:158
+#: src/components/modals/BuyOptionsModal.vue:161
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Acheter du NIM sur une plateforme d'échange :"
 
@@ -1011,7 +1011,7 @@ msgstr "Désactiver le validateur"
 
 #: src/components/staking/StakingInfoPage.vue:465
 msgid "Deactivating remaining stake"
-msgstr ""
+msgstr "Désactivation du staking restant"
 
 #: src/components/staking/StakingInfoPage.vue:301
 msgid "Deactivating Stake"
@@ -1631,7 +1631,7 @@ msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:119
 msgid "In order to pay out, unstake all."
-msgstr ""
+msgstr "Pour effectuer un paiement, dé-stakez l'ensemble."
 
 #: src/components/staking/ValidatorDetailsOverlay.vue:22
 msgid "incl. pool fee"
@@ -2005,11 +2005,15 @@ msgstr ""
 "Tous les comptes fournis par cette banque ne supportent pas forcément les "
 "transactions instantanées."
 
+#: src/components/modals/BuyOptionsModal.vue:153
+msgid "Not available for NIM"
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:157
 msgid "Not available in your browser"
 msgstr "Non disponible avec votre navigateur"
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:154
 #: src/components/modals/BuyOptionsModal.vue:87
 msgid "Not available in your country"
 msgstr "Non disponible dans votre pays"
@@ -2095,7 +2099,7 @@ msgstr " en pause"
 
 #: src/components/staking/StakingInfoPage.vue:111
 msgid "Pay out"
-msgstr ""
+msgstr "Payer"
 
 #: src/components/modals/SendModal.vue:185
 msgid "Pay within {countdown}"
@@ -3464,7 +3468,7 @@ msgstr "Dé-stake"
 
 #: src/components/staking/StakingInfoPage.vue:104
 msgid "Unstake rest"
-msgstr ""
+msgstr "Dé-staker le reste"
 
 #: src/components/staking/StakingInfoPage.vue:125
 #: src/components/staking/StakingOverview.vue:22
@@ -3537,7 +3541,7 @@ msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:457
 msgid "Validator information not available"
-msgstr ""
+msgstr "Informations sur le validateur indisponibles"
 
 #: src/components/layouts/Settings.vue:223
 msgid "Vesting Contract"
@@ -3661,7 +3665,7 @@ msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 "Vous pourrez recevoir plus de NIM gratuitement dans {waitTime} heures."
 
-#: src/components/layouts/Sidebar.vue:353
+#: src/components/layouts/Sidebar.vue:373
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3695,6 +3699,8 @@ msgstr ""
 #: src/components/staking/StakingInfoPage.vue:117
 msgid "You got some new rewards since you unstaked your funds."
 msgstr ""
+"Vous avez obtenu de nouvelles récompenses depuis que vous avez dé-staké vos "
+"fonds."
 
 #: src/components/swap/SwapAnimation.vue:116
 msgid "You have exceeded your OASIS limit."

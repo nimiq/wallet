@@ -1,3 +1,7 @@
+^\/buy[\/#\?]?$
+^\/swap(?:\/([^\/#\?]+?))?[\/#\?]?$
+^\/sell-crypto[\/#\?]?$
+^\/moonpay-sell-info[\/#\?]?$
 ^\/[\/#\?]?$
 ^\/transactions[\/#\?]?$
 ^\/accounts[\/#\?]?$
@@ -13,9 +17,7 @@
 ^\/receive\/usdt[\/#\?]?$
 ^\/transaction(?:\/([^\/#\?]+?))[\/#\?]?$
 ^\/trade[\/#\?]?$
-^\/buy[\/#\?]?$
 ^\/buy-crypto[\/#\?]?$
-^\/sell-crypto[\/#\?]?$
 ^\/scan[\/#\?]?$
 ^(?:\/(nimiq:.+))[\/#\?]?$
 ^\/welcome[\/#\?]?$
@@ -32,8 +34,6 @@
 ^\/usdt-added[\/#\?]?$
 ^\/multisig-announcement[\/#\?]?$
 ^\/stablecoin-selection[\/#\?]?$
-^\/swap(?:\/([^\/#\?]+?))?[\/#\?]?$
-^\/moonpay-sell-info[\/#\?]?$
 ^\/moonpay[\/#\?]?$
 ^\/simplex[\/#\?]?$
 ^\/release-notes[\/#\?]?$

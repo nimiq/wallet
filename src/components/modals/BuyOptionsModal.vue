@@ -32,8 +32,8 @@
                             <i18n path="min {amount}" tag="span" class="low">
                                 <FiatAmount slot="amount"
                                     :amount="3.00"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
-                                        ? currency
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                        ? fiatCurrency
                                         : FiatCurrency.USD"
                                 />
                             </i18n>
@@ -49,8 +49,8 @@
                             <i18n path="min {amount}" tag="span" class="low">
                                 <FiatAmount slot="amount"
                                     :amount="3.50"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
-                                        ? currency
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                        ? fiatCurrency
                                         : FiatCurrency.USD"
                                 />
                             </i18n>
@@ -68,8 +68,8 @@
                                 <i18n path="min {amount}" tag="span" class="low">
                                     <FiatAmount slot="amount"
                                         :amount="3.00"
-                                        :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
-                                            ? currency
+                                        :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                            ? fiatCurrency
                                             : FiatCurrency.USD"
                                     />
                                 </i18n>
@@ -102,8 +102,8 @@
                             <i18n path="min {amount}" tag="span" class="low">
                                 <FiatAmount slot="amount"
                                     :amount="3.99"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
-                                        ? currency
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                        ? fiatCurrency
                                         : FiatCurrency.USD"
                                 />
                             </i18n>
@@ -119,8 +119,8 @@
                             <i18n path="min {amount}" tag="span" class="low">
                                 <FiatAmount slot="amount"
                                     :amount="3.99"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(currency)
-                                        ? currency
+                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
+                                        ? fiatCurrency
                                         : FiatCurrency.USD"
                                 />
                             </i18n>
@@ -149,7 +149,10 @@
                     </footer>
                     <footer v-else class="flex-row">
                         <ForbiddenIcon/>
-                        {{ $t('Not available in your country') }}
+                        {{ cryptoCurrency === CryptoCurrency.NIM
+                            ? $t('Not available for NIM')
+                            : $t('Not available in your country')
+                        }}
                     </footer>
                 </Component>
             </div>
@@ -210,8 +213,9 @@ import CountrySelector from '../CountrySelector.vue';
 import CountryFlag from '../CountryFlag.vue';
 import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import ForbiddenIcon from '../icons/ForbiddenIcon.vue';
+import { useAccountStore } from '../../stores/Account';
 import { useFiatStore } from '../../stores/Fiat';
-import { FiatCurrency } from '../../lib/Constants';
+import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 import { useConfig } from '../../composables/useConfig';
 import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
@@ -228,7 +232,8 @@ type Country = {
 export default defineComponent({
     name: 'buy-options-modal',
     setup() {
-        const { currency } = useFiatStore();
+        const { activeCurrency: cryptoCurrency } = useAccountStore();
+        const { currency: fiatCurrency } = useFiatStore();
         const { canUseSwaps/* , trials */ } = useSettingsStore();
         const { stablecoin } = useAccountSettingsStore();
         const { config } = useConfig();
@@ -236,15 +241,14 @@ export default defineComponent({
         const country = ref<Country>(null);
 
         const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            if (!config.moonpay.enabled) return false;
-            if (!country.value) return true;
-            return MOONPAY_COUNTRY_CODES.includes(country.value.code);
+            return config.moonpay.enabled
+                && cryptoCurrency.value !== CryptoCurrency.NIM // not currently available for NIM
+                && (!country.value || MOONPAY_COUNTRY_CODES.includes(country.value.code));
         });
 
         const isSimplexAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            if (!config.simplex.enabled) return false;
-            if (!country.value) return true;
-            return SIMPLEX_COUNTRY_CODES.includes(country.value.code);
+            return config.simplex.enabled
+                && (!country.value || SIMPLEX_COUNTRY_CODES.includes(country.value.code));
         });
 
         const isCreditCardAvailable = computed(() => isMoonpayAvailable.value || isSimplexAvailable.value);
@@ -264,12 +268,14 @@ export default defineComponent({
         });
 
         return {
+            CryptoCurrency,
             stablecoin,
             country,
             isMoonpayAvailable,
             isSimplexAvailable,
             isCreditCardAvailable,
-            currency,
+            cryptoCurrency,
+            fiatCurrency,
             FiatCurrency,
             canUseSwaps,
         };

@@ -97,10 +97,12 @@ export default defineComponent({
         if (defaultCurrencyCode === CryptoCurrency.USDC) defaultCurrencyCode = 'usdc_polygon';
         if (defaultCurrencyCode === CryptoCurrency.USDT) defaultCurrencyCode = 'usdt_polygon';
 
-        const nimAddress = !config.disableNetworkInteraction
-            // Remove spaces in NIM address, as spaces are invalid URI components
-            ? useAddressStore().state.activeAddress?.replace(/\s/g, '')
-            : undefined;
+        // NIM is not currency supported anymore by Moonpay.
+        const nimAddress = undefined;
+        // const nimAddress = !config.disableNetworkInteraction
+        //     // Remove spaces in NIM address, as spaces are invalid URI components
+        //     ? useAddressStore().state.activeAddress?.replace(/\s/g, '')
+        //     : undefined;
 
         // Having a BTC address must be optional, so that the widget also works
         // for legacy or non-bitcoin-activated accounts.

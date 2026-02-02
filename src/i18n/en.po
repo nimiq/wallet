@@ -559,7 +559,7 @@ msgstr ""
 msgid "Buy NIM & BTC"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:158
+#: src/components/modals/BuyOptionsModal.vue:161
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -1820,11 +1820,15 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
+#: src/components/modals/BuyOptionsModal.vue:153
+msgid "Not available for NIM"
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:157
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:152
+#: src/components/modals/BuyOptionsModal.vue:154
 #: src/components/modals/BuyOptionsModal.vue:87
 msgid "Not available in your country"
 msgstr ""

@@ -107,7 +107,7 @@ export default {
     },
 
     moonpay: {
-        enabled: true,
+        enabled: false,
         // This is a publishable key
         clientApiKey: 'pk_live_fBJsMWLtYLqqRR1mtw8mr4fQ7lCMakNL',
         signatureEndpoint: 'https://moosign.nimiq.network',

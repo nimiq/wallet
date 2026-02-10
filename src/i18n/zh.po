@@ -2,21 +2,17 @@
 # Translators:
 # Miao Yu <miaoyu319@gmail.com>, 2021
 # Daniel, 2022
+# Sam, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2024
-# Sam, 2024
-# Sven <sven@nimiq.com>, 2025
+# Sven <sven@nimiq.com>, 2026
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Sven <sven@nimiq.com>, 2025\n"
+"Last-Translator: Sven <sven@nimiq.com>, 2026\n"
 "Language-Team: Chinese (https://app.transifex.com/nimiq-foundation/teams/110181/zh/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-#: src/components/modals/WelcomeModal.vue:174
-msgid "‘Digital gold’, the original crypto"
-msgstr "\"数字黄金\"，独创的虚拟货币"
 
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
@@ -252,8 +248,8 @@ msgstr "账户限额"
 msgid "Accounts"
 msgstr "账户"
 
-#: src/components/layouts/AccountOverview.vue:157
-#: src/components/layouts/AccountOverview.vue:271
+#: src/components/layouts/AccountOverview.vue:160
+#: src/components/layouts/AccountOverview.vue:274
 msgid "Activate"
 msgstr "激活"
 
@@ -283,7 +279,7 @@ msgstr "添加标签，在你的历史记录中快速检索交易"
 msgid "Add a public message..."
 msgstr "添加公开信息..."
 
-#: src/components/modals/AccountMenuModal.vue:52
+#: src/components/modals/AccountMenuModal.vue:54
 msgid "Add account"
 msgstr "添加账户"
 
@@ -360,7 +356,7 @@ msgstr ""
 msgid "All countries"
 msgstr "所有国家"
 
-#: src/components/layouts/AccountOverview.vue:279
+#: src/components/layouts/AccountOverview.vue:282
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -475,6 +471,10 @@ msgstr "返回地址"
 msgid "Back to Bank Details"
 msgstr "返回银行详情"
 
+#: src/components/layouts/AccountOverview.vue:30
+msgid "Backup"
+msgstr "备份"
+
 #: src/composables/useBtcTransactionInfo.ts:132
 #: src/composables/useTransactionInfo.ts:139
 #: src/composables/useUsdcTransactionInfo.ts:105
@@ -497,12 +497,13 @@ msgid "BIC works, too."
 msgstr "BIC适用"
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AccountOverview.vue:141
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:124
 #: src/components/modals/BtcTransactionModal.vue:136
+#: src/components/modals/WelcomeModal.vue:48
 #: src/components/swap/SwapBalanceBar.vue:19
 #: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:127
@@ -682,11 +683,7 @@ msgstr ""
 msgid "Cashlink to {address}"
 msgstr "发送至{address}的现金链接"
 
-#: src/components/modals/WelcomeModal.vue:110
-msgid "Censorship-resistant network connection"
-msgstr "不受审查的网络连接"
-
-#: src/components/modals/AccountMenuModal.vue:23
+#: src/components/modals/AccountMenuModal.vue:25
 msgid "Change password"
 msgstr "更改密码"
 
@@ -734,7 +731,7 @@ msgstr ""
 msgid "Choose an Address"
 msgstr "选择地址"
 
-#: src/components/layouts/AccountOverview.vue:227
+#: src/components/layouts/AccountOverview.vue:230
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -763,14 +760,6 @@ msgstr "点击 “疑难解答” 以了解更多信息"
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "关闭"
-
-#: src/components/modals/WelcomeModal.vue:242
-msgid "Comparably centralized"
-msgstr "相对集中的"
-
-#: src/components/modals/WelcomeModal.vue:176
-msgid "Comparably high transaction fees/time"
-msgstr "相对较高的交易时长和费用"
 
 #: src/components/SendModalFooter.vue:9 src/components/swap/SwapModal.vue:194
 #: src/components/swap/SwapModal.vue:199 src/components/swap/SwapModal.vue:211
@@ -918,6 +907,10 @@ msgstr "为每笔交易创建一个新地址"
 msgid "Create a new single-use address."
 msgstr "创建一个新的一次性地址"
 
+#: src/components/modals/AccountMenuModal.vue:12
+msgid "Create Backup"
+msgstr ""
+
 #: src/components/modals/BtcReceiveModal.vue:102
 #: src/components/modals/ReceiveModal.vue:26
 msgid "Create request link"
@@ -946,10 +939,6 @@ msgstr "刚创建"
 #: src/components/modals/BtcReceiveModal.vue:196
 msgid "Created yesterday"
 msgstr "昨天创建"
-
-#: src/components/modals/WelcomeModal.vue:111
-msgid "Creates staking rewards"
-msgstr "创建质押收益"
 
 #: src/components/modals/BuyOptionsModal.vue:113
 #: src/components/modals/BuyOptionsModal.vue:43
@@ -992,12 +981,6 @@ msgstr ""
 #: src/components/swap/OasisLaunchModal.vue:19
 msgid "Developer resources"
 msgstr "开发者资源"
-
-#: src/components/modals/WelcomeModal.vue:10
-msgid ""
-"Different currencies can do different things.\n"
-"Use them your way and make the most of it."
-msgstr "不同的货币可以做不同的事情。用你自己的方式使用它们，充分利用它们。"
 
 #: src/components/layouts/Settings.vue:281
 #: src/components/modals/DisclaimerModal.vue:4
@@ -1126,10 +1109,6 @@ msgstr "输入收件人地址..."
 msgid "Enter the password of the trial you want to enable, then press enter."
 msgstr "输入你要启用的试用版的密码后，按下快车键"
 
-#: src/components/modals/WelcomeModal.vue:353
-msgid "Enter the wallet"
-msgstr "进入钱包"
-
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
 msgid "Enter your bank details"
 msgstr "输入你的银行详细信息"
@@ -1187,7 +1166,7 @@ msgstr "过期的 HTLC"
 
 #: src/components/layouts/AddressOverview.vue:48
 #: src/components/layouts/AddressOverview.vue:95
-#: src/components/modals/AccountMenuModal.vue:32
+#: src/components/modals/AccountMenuModal.vue:34
 msgid "Export History"
 msgstr "导出历史记录"
 
@@ -1291,37 +1270,25 @@ msgstr ""
 msgid "Flagged as: {type}"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:121
-msgid ""
-"For a decentralized\n"
-"store of value"
+#: src/components/modals/WelcomeModal.vue:50
+msgid "For a decentralized store of value"
 msgstr ""
-"为了一个去中心化的\n"
-"储藏价值"
 
 #: src/components/staking/StakingWelcomePage.vue:29
 msgid "For a small fee, validator pools do the staking for you."
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:186
-msgid ""
-"For a USD-pegged\n"
-"store of value"
+#: src/components/modals/WelcomeModal.vue:59
+msgid "For a USD-pegged store of value"
 msgstr ""
-"为了与美元挂钩\n"
-"储藏价值"
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
 msgstr "初学者友好"
 
-#: src/components/modals/WelcomeModal.vue:57
-msgid ""
-"For fast and low-fee\n"
-"crypto payments"
+#: src/components/modals/WelcomeModal.vue:41
+msgid "For fast and low-fee crypto payments"
 msgstr ""
-"为了一个更快和费用更低的\n"
-"虚拟货币支付"
 
 #: src/components/modals/SendModal.vue:540
 msgid "free"
@@ -1386,7 +1353,6 @@ msgstr "通过使用{provider}进行身份验证以获取更高的限额。要�
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
-#: src/components/modals/WelcomeModal.vue:349
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1417,10 +1383,6 @@ msgstr ""
 #: src/components/modals/StablecoinSelectionModal.vue:12
 msgid "Higher transparency and regulatory compliance."
 msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:175
-msgid "Highest degree of decentralization"
-msgstr "更高层面的去中心化"
 
 #: src/components/modals/BtcTransactionModal.vue:196
 #: src/components/modals/BtcTransactionModal.vue:222
@@ -1525,6 +1487,10 @@ msgstr "将保险箱中导出的联系人导入钱包"
 msgid ""
 "Import it to any browser and enter your password to use the same addresses."
 msgstr "导入到任意浏览器中，输入密码即可使用相同的地址"
+
+#: src/components/modals/BackupModal.vue:10
+msgid "Important: Create a backup"
+msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:55
 msgid ""
@@ -1705,11 +1671,11 @@ msgstr ""
 "使用新版的Nimiq登录文件\n"
 "登录设备"
 
-#: src/components/layouts/AccountOverview.vue:12
+#: src/components/layouts/AccountOverview.vue:15
 msgid "Login File"
 msgstr "登录文件"
 
-#: src/components/modals/AccountMenuModal.vue:35
+#: src/components/modals/AccountMenuModal.vue:37
 msgid "Logout"
 msgstr "登出"
 
@@ -1805,6 +1771,11 @@ msgstr "网络"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "网络费用：{sats} 聪 (sat) / 交易大小 (vByte)"
 
+#: src/components/modals/WelcomeModal.vue:66
+msgid "Next: Create a backup"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:39
 #: src/components/staking/StakingGraph.vue:5
 #: src/components/staking/StakingGraph.vue:6
 #: src/components/staking/StakingGraph.vue:7
@@ -2003,17 +1974,9 @@ msgstr ""
 msgid "Payment request has already been paid"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:350
-msgid "Payments, got it"
-msgstr "付款，收到"
-
 #: src/components/staking/StakingOverview.vue:19
 msgid "Payout ready"
 msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:241
-msgid "Pegged 1:1 to the U.S. Dollar"
-msgstr "与美元1:1挂钩"
 
 #: src/components/BtcTransactionListItem.vue:47
 #: src/components/TransactionListItem.vue:47
@@ -2035,7 +1998,7 @@ msgstr "待处理..."
 msgid "Per-swap limits raised to {amount}"
 msgstr "每次交换限制提高到 {amount}"
 
-#: src/components/modals/WelcomeModal.vue:42
+#: src/components/modals/WelcomeModal.vue:29
 msgid "Performance"
 msgstr "性能"
 
@@ -2225,9 +2188,9 @@ msgstr "最近复制"
 msgid "Recipient"
 msgstr "接收者"
 
-#: src/components/layouts/AccountOverview.vue:27
-msgid "Recovery Words"
-msgstr "复原字"
+#: src/components/modals/BackupModal.vue:49
+msgid "Recovery words are the most secure way of backing up your account."
+msgstr ""
 
 #: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
@@ -2276,9 +2239,13 @@ msgstr "发行说明"
 msgid "Reliability"
 msgstr ""
 
+#: src/components/modals/BackupModal.vue:57
+msgid "Remind me later"
+msgstr ""
+
 #: src/components/layouts/AddressOverview.vue:34
 #: src/components/layouts/AddressOverview.vue:81
-#: src/components/modals/AccountMenuModal.vue:16
+#: src/components/modals/AccountMenuModal.vue:18
 msgid "Rename"
 msgstr "重新命名"
 
@@ -2375,7 +2342,7 @@ msgstr "搜索交易"
 msgid "Search transactions by contact, address, etc."
 msgstr "通过联系人，地址等搜索交易"
 
-#: src/components/modals/WelcomeModal.vue:43
+#: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
 msgstr "安全性"
 
@@ -2486,6 +2453,10 @@ msgstr "发送 USDC"
 msgid "Send USDT"
 msgstr "发送 USDT"
 
+#: src/components/modals/BackupModal.vue:23
+msgid "Send yourself two backup codes"
+msgstr ""
+
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "从你的钱包中发送、接收和持有BTC"
@@ -2503,6 +2474,12 @@ msgstr "正在发送交易"
 
 #: src/components/staking/StakingInfoPage.vue:371
 msgid "Sending Unstaking Transaction"
+msgstr ""
+
+#: src/components/modals/BackupModal.vue:30
+msgid ""
+"Sending yourself backup codes is convenient but only as secure as the "
+"channels you use."
 msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:573
@@ -2624,14 +2601,6 @@ msgstr "显示小数"
 msgid "Show Link"
 msgstr "显示链接"
 
-#: src/components/modals/AccountMenuModal.vue:12
-msgid "Show Recovery Words"
-msgstr "显示恢复字"
-
-#: src/components/modals/WelcomeModal.vue:319
-msgid "Show values as {currency}"
-msgstr "显示价值为 {currency}"
-
 #: src/components/layouts/AddressOverview.vue:282
 msgid "Signup"
 msgstr "注册"
@@ -2645,6 +2614,10 @@ msgstr "模拟欧元付款"
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "跳过"
+
+#: src/components/modals/WelcomeModal.vue:69
+msgid "Skip (not recommended)"
+msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:587
 #: src/components/modals/SendModal.vue:710
@@ -2667,17 +2640,9 @@ msgstr "你的交易出错了"
 msgid "Speed up your Transaction"
 msgstr "加快交易"
 
-#: src/components/modals/WelcomeModal.vue:44
+#: src/components/modals/WelcomeModal.vue:31
 msgid "Stability"
 msgstr "稳定性"
-
-#: src/components/modals/WelcomeModal.vue:240
-msgid "Stability mixed with self-custody"
-msgstr "稳定性与自我托管相结合"
-
-#: src/components/modals/WelcomeModal.vue:352
-msgid "Stable like USD, got it"
-msgstr "稳定如 USD，收到"
 
 #: src/components/staking/StakingButton.vue:33
 msgid "Stake"
@@ -2729,10 +2694,6 @@ msgstr "标准"
 msgid "Start staking"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:351
-msgid "Store of value, got it"
-msgstr "储藏价值，收到"
-
 #: src/components/staking/StakingGraphPage.vue:214
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
@@ -2762,10 +2723,6 @@ msgstr ""
 msgid "Super eco-friendly"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:109
-msgid "Super low fees, super fast payments"
-msgstr "超低手续费，超快支付"
-
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
@@ -2779,17 +2736,9 @@ msgstr "超低手续费，超快支付"
 msgid "Swap"
 msgstr "交换"
 
-#: src/components/layouts/AccountOverview.vue:192
+#: src/components/layouts/AccountOverview.vue:195
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "兑换 BTC {arrowIcon} {ticker}"
-
-#: src/components/modals/WelcomeModal.vue:16
-msgid ""
-"Swap coins and use\n"
-"value your way."
-msgstr ""
-"兑换加密货币\n"
-"并以您的方式使用。"
 
 #: src/components/swap/SwapModal.vue:7
 msgid "Swap Currencies"
@@ -2814,11 +2763,11 @@ msgstr "交换已过期"
 msgid "Swap more per 30 days."
 msgstr "每30天进行更多的兑换。"
 
-#: src/components/layouts/AccountOverview.vue:121
+#: src/components/layouts/AccountOverview.vue:124
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "兑换 NIM {arrowIcon} {ticker}"
 
-#: src/components/layouts/AccountOverview.vue:85
+#: src/components/layouts/AccountOverview.vue:88
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "兑换 NIM {arrowIcon} BTC"
 
@@ -2875,6 +2824,14 @@ msgstr ""
 msgid "Syncing with Bitcoin network"
 msgstr ""
 
+#: src/components/modals/BackupModal.vue:43
+msgid "Takes a pen, a piece of paper and a safe place to store it."
+msgstr ""
+
+#: src/components/modals/BackupModal.vue:24
+msgid "Takes two ways of writing to yourself, like a messenger + email."
+msgstr ""
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr "TEN31银行提供了一个银行帐户锁定你的付款"
@@ -2888,7 +2845,7 @@ msgid "TEN31 Verification"
 msgstr "TEN31 验证"
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:219
+#: src/components/layouts/AccountOverview.vue:222
 #: src/components/layouts/AddressOverview.vue:124
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -3017,17 +2974,23 @@ msgid ""
 " exchanges on {link}"
 msgstr "我们有多种选择，你可以使用信用卡或交易加密货币，也可以在 {link} 上找到更多的交易所"
 
-#: src/components/layouts/AccountOverview.vue:21
+#: src/components/layouts/AccountOverview.vue:24
 msgid "There is no ‘forgot password’"
 msgstr "没有 “忘记密码” 的选项"
+
+#: src/components/modals/BackupModal.vue:12
+msgid ""
+"There is no 'forgot password' or Login File recovery. Create a backup to "
+"stay in control."
+msgstr ""
 
 #: src/components/swap/SwapNotification.vue:23
 msgid "There's a problem"
 msgstr "有问题"
 
-#: src/components/modals/WelcomeModal.vue:8
-msgid "Think features, not currency"
-msgstr "关注功能，而非货币"
+#: src/components/modals/WelcomeModal.vue:4
+msgid "Think value, not currency"
+msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:198
 #: src/components/modals/BtcTransactionModal.vue:224
@@ -3166,8 +3129,8 @@ msgstr "时间范围"
 msgid "To {exchange}"
 msgstr "返回{exchange}"
 
-#: src/components/layouts/AccountOverview.vue:126
-#: src/components/layouts/AccountOverview.vue:197
+#: src/components/layouts/AccountOverview.vue:129
+#: src/components/layouts/AccountOverview.vue:200
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
@@ -3312,8 +3275,9 @@ msgid "Update validator"
 msgstr ""
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AccountOverview.vue:219
 #: src/components/layouts/AddressOverview.vue:121
+#: src/components/modals/WelcomeModal.vue:57
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
@@ -3333,6 +3297,12 @@ msgstr "USDT网络费用"
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr "使用SEPA即时帐户在几分钟内得到付款"
+
+#: src/components/modals/WelcomeModal.vue:6
+msgid ""
+"Use different cryptos for different things –\n"
+"with the Nimiq Wallet and ease-of-use."
+msgstr ""
 
 #: src/components/modals/BtcReceiveModal.vue:24
 msgid "Use labels to easily identify transactions."
@@ -3438,6 +3408,10 @@ msgstr "你如果没有SEPA即时银行账户，资金将需要1-3个工作日�
 #: src/components/BankCheckInput.vue:70
 msgid "Without an individual IBAN, refunds are impossible!"
 msgstr "如果没有个人 IBAN，退款将无法执行！"
+
+#: src/components/modals/BackupModal.vue:42
+msgid "Write down 24 recovery words"
+msgstr ""
 
 #: src/components/layouts/Sidebar.vue:17
 msgid "You are connecting to the Nimiq PoS and Bitcoin Testnets."

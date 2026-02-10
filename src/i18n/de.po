@@ -2,24 +2,20 @@
 # Translators:
 # Sebastian Langer <basti@b-compu.de>, 2020
 # Matheo <matheo@nimiq.com>, 2021
-# Daniel, 2023
+# Michael <jiggaaa20@gmail.com>, 2023
 # Redexe <timo.niehoff@yahoo.de>, 2024
 # Sören Schwert <hello@soerenschwert.de>, 2024
-# Michael <jiggaaa20@gmail.com>, 2024
 # Sven <sven@nimiq.com>, 2025
 # Michael Passias, 2025
+# Daniel, 2026
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Michael Passias, 2025\n"
+"Last-Translator: Daniel, 2026\n"
 "Language-Team: German (https://app.transifex.com/nimiq-foundation/teams/110181/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: src/components/modals/WelcomeModal.vue:174
-msgid "‘Digital gold’, the original crypto"
-msgstr "\"Digitales Gold\", die erste Kryptowährung"
 
 #: src/components/modals/MigrationWelcomeModal.vue:32
 msgid "{accounts} hold, manage and aggregate addresses."
@@ -261,8 +257,8 @@ msgstr "Konto-Limits"
 msgid "Accounts"
 msgstr "Konten"
 
-#: src/components/layouts/AccountOverview.vue:157
-#: src/components/layouts/AccountOverview.vue:271
+#: src/components/layouts/AccountOverview.vue:160
+#: src/components/layouts/AccountOverview.vue:274
 msgid "Activate"
 msgstr "Aktivieren"
 
@@ -293,7 +289,7 @@ msgstr "Mit einer Beschriftung ist die Transaktion leichter wiederzufinden."
 msgid "Add a public message..."
 msgstr "Öffentliche Nachricht hinzufügen..."
 
-#: src/components/modals/AccountMenuModal.vue:52
+#: src/components/modals/AccountMenuModal.vue:54
 msgid "Add account"
 msgstr "Konto hinzufügen"
 
@@ -370,7 +366,7 @@ msgstr ""
 msgid "All countries"
 msgstr "Alle Länder"
 
-#: src/components/layouts/AccountOverview.vue:279
+#: src/components/layouts/AccountOverview.vue:282
 #: src/components/LegacyAccountNotice.vue:37
 msgid ""
 "All new features are exclusive to new accounts. Upgrade now, it only takes "
@@ -500,6 +496,10 @@ msgstr "Zurück zu Adressen"
 msgid "Back to Bank Details"
 msgstr "Zurück zu Bankdetails"
 
+#: src/components/layouts/AccountOverview.vue:30
+msgid "Backup"
+msgstr "Backup"
+
 #: src/composables/useBtcTransactionInfo.ts:132
 #: src/composables/useTransactionInfo.ts:139
 #: src/composables/useUsdcTransactionInfo.ts:105
@@ -522,12 +522,13 @@ msgid "BIC works, too."
 msgstr "BIC funktioniert auch."
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:138
+#: src/components/layouts/AccountOverview.vue:141
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
 #: src/components/modals/BtcTransactionModal.vue:124
 #: src/components/modals/BtcTransactionModal.vue:136
+#: src/components/modals/WelcomeModal.vue:48
 #: src/components/swap/SwapBalanceBar.vue:19
 #: src/components/swap/SwapBalanceBar.vue:45
 #: src/composables/useTransactionInfo.ts:127
@@ -718,11 +719,7 @@ msgstr "Cashlink-Aufladung"
 msgid "Cashlink to {address}"
 msgstr "Cashlink an {address}"
 
-#: src/components/modals/WelcomeModal.vue:110
-msgid "Censorship-resistant network connection"
-msgstr "Zensurresistente Netzwerk Verbindung"
-
-#: src/components/modals/AccountMenuModal.vue:23
+#: src/components/modals/AccountMenuModal.vue:25
 msgid "Change password"
 msgstr "Passwort ändern"
 
@@ -770,7 +767,7 @@ msgstr "Wähle einen Validator"
 msgid "Choose an Address"
 msgstr "Adresse auswählen"
 
-#: src/components/layouts/AccountOverview.vue:227
+#: src/components/layouts/AccountOverview.vue:230
 msgid "Choose Stablecoin"
 msgstr "Wähle Stablecoin"
 
@@ -799,14 +796,6 @@ msgstr "Klicke auf 'Fehlerbehebung' um mehr zu erfahren."
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Schließen"
-
-#: src/components/modals/WelcomeModal.vue:242
-msgid "Comparably centralized"
-msgstr "Eher zentralisiert"
-
-#: src/components/modals/WelcomeModal.vue:176
-msgid "Comparably high transaction fees/time"
-msgstr "Ähnlich hohe Transaktionszeit und Gebühr"
 
 #: src/components/SendModalFooter.vue:9 src/components/swap/SwapModal.vue:194
 #: src/components/swap/SwapModal.vue:199 src/components/swap/SwapModal.vue:211
@@ -959,6 +948,10 @@ msgstr "Benutze eine neue Adresse für jede Transaktion."
 msgid "Create a new single-use address."
 msgstr "Erstelle eine neue Einmaladdresse."
 
+#: src/components/modals/AccountMenuModal.vue:12
+msgid "Create Backup"
+msgstr "Backup erstellen"
+
 #: src/components/modals/BtcReceiveModal.vue:102
 #: src/components/modals/ReceiveModal.vue:26
 msgid "Create request link"
@@ -987,10 +980,6 @@ msgstr "Gerade eben erstellt"
 #: src/components/modals/BtcReceiveModal.vue:196
 msgid "Created yesterday"
 msgstr "Gestern erstellt"
-
-#: src/components/modals/WelcomeModal.vue:111
-msgid "Creates staking rewards"
-msgstr "Erzeugt Einnahmen durch Staking"
 
 #: src/components/modals/BuyOptionsModal.vue:113
 #: src/components/modals/BuyOptionsModal.vue:43
@@ -1033,14 +1022,6 @@ msgstr ""
 #: src/components/swap/OasisLaunchModal.vue:19
 msgid "Developer resources"
 msgstr "Entwickler-Resourcen"
-
-#: src/components/modals/WelcomeModal.vue:10
-msgid ""
-"Different currencies can do different things.\n"
-"Use them your way and make the most of it."
-msgstr ""
-"Unterschiedliche Währungen können unterschiedliche Dinge. Nutze sie nach "
-"deinen Wünschen und mach das Beste draus."
 
 #: src/components/layouts/Settings.vue:281
 #: src/components/modals/DisclaimerModal.vue:4
@@ -1180,10 +1161,6 @@ msgstr ""
 "Gib das Passwort der Testversion ein, die du aktivieren möchtest, und drücke"
 " dann die Eingabetaste."
 
-#: src/components/modals/WelcomeModal.vue:353
-msgid "Enter the wallet"
-msgstr "Öffne deine Wallet"
-
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
 msgid "Enter your bank details"
 msgstr "Deine Bankkontodaten"
@@ -1241,7 +1218,7 @@ msgstr "Abelaufener HTLC"
 
 #: src/components/layouts/AddressOverview.vue:48
 #: src/components/layouts/AddressOverview.vue:95
-#: src/components/modals/AccountMenuModal.vue:32
+#: src/components/modals/AccountMenuModal.vue:34
 msgid "Export History"
 msgstr "Exportiere Verlauf"
 
@@ -1347,38 +1324,26 @@ msgstr "Verdächtige Adresse"
 msgid "Flagged as: {type}"
 msgstr "Markiert als: {type}"
 
-#: src/components/modals/WelcomeModal.vue:121
-msgid ""
-"For a decentralized\n"
-"store of value"
-msgstr ""
-"Für die dezentrale\n"
-"Wertaufbewahrung"
+#: src/components/modals/WelcomeModal.vue:50
+msgid "For a decentralized store of value"
+msgstr "Für dezentrale Wertaufbewahrung"
 
 #: src/components/staking/StakingWelcomePage.vue:29
 msgid "For a small fee, validator pools do the staking for you."
 msgstr ""
 "Für eine kleine Gebühr übernehmen Validator-Pools das Staking für dich."
 
-#: src/components/modals/WelcomeModal.vue:186
-msgid ""
-"For a USD-pegged\n"
-"store of value"
-msgstr ""
-"Für ein USD gekoppeltes\n"
-"Wertaufbewahrungsmittel"
+#: src/components/modals/WelcomeModal.vue:59
+msgid "For a USD-pegged store of value"
+msgstr "Für US-Dollar gebundene Wertaufbewahrung"
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
 msgstr "Für Anfänger"
 
-#: src/components/modals/WelcomeModal.vue:57
-msgid ""
-"For fast and low-fee\n"
-"crypto payments"
-msgstr ""
-"Für schnelle und günstige\n"
-"Kryptozahlungen"
+#: src/components/modals/WelcomeModal.vue:41
+msgid "For fast and low-fee crypto payments"
+msgstr "Für schnelle und günstige Kryptozahlungen"
 
 #: src/components/modals/SendModal.vue:540
 msgid "free"
@@ -1453,7 +1418,6 @@ msgstr ""
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
-#: src/components/modals/WelcomeModal.vue:349
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1486,10 +1450,6 @@ msgstr "Höhere Liquidität und globale Marktakzeptanz."
 #: src/components/modals/StablecoinSelectionModal.vue:12
 msgid "Higher transparency and regulatory compliance."
 msgstr "Höhere Transparenz und regulatorische Konformität."
-
-#: src/components/modals/WelcomeModal.vue:175
-msgid "Highest degree of decentralization"
-msgstr "Höchster Grad an Dezentralisierung"
 
 #: src/components/modals/BtcTransactionModal.vue:196
 #: src/components/modals/BtcTransactionModal.vue:222
@@ -1605,6 +1565,10 @@ msgid ""
 msgstr ""
 "Einfach in einem anderen Browser importieren und Passwort eingeben um "
 "Zugriff auf die selben Adressen zu erlangen."
+
+#: src/components/modals/BackupModal.vue:10
+msgid "Important: Create a backup"
+msgstr "Wichtig: erstelle ein Backup"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 msgid ""
@@ -1796,11 +1760,11 @@ msgstr ""
 "Mit den neuen Nimiq Login-Dateien kannst du dich auf all deinen Geräten "
 "anmelden."
 
-#: src/components/layouts/AccountOverview.vue:12
+#: src/components/layouts/AccountOverview.vue:15
 msgid "Login File"
 msgstr "Login‑Datei"
 
-#: src/components/modals/AccountMenuModal.vue:35
+#: src/components/modals/AccountMenuModal.vue:37
 msgid "Logout"
 msgstr "Ausloggen"
 
@@ -1899,6 +1863,11 @@ msgstr "Netzwerk"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Netzwerkgebühr: {sats} sat/vByte"
 
+#: src/components/modals/WelcomeModal.vue:66
+msgid "Next: Create a backup"
+msgstr "Als nächstes: ein Backup erstellen"
+
+#: src/components/modals/WelcomeModal.vue:39
 #: src/components/staking/StakingGraph.vue:5
 #: src/components/staking/StakingGraph.vue:6
 #: src/components/staking/StakingGraph.vue:7
@@ -2101,17 +2070,9 @@ msgstr "Zahler innerhalb {countdown}"
 msgid "Payment request has already been paid"
 msgstr "Zahlungsanforderung wurde bereits bezahlt"
 
-#: src/components/modals/WelcomeModal.vue:350
-msgid "Payments, got it"
-msgstr "Zahlungen, verstanden"
-
 #: src/components/staking/StakingOverview.vue:19
 msgid "Payout ready"
 msgstr ""
-
-#: src/components/modals/WelcomeModal.vue:241
-msgid "Pegged 1:1 to the U.S. Dollar"
-msgstr "1:1 an den U.S. Dollar gekoppelt"
 
 #: src/components/BtcTransactionListItem.vue:47
 #: src/components/TransactionListItem.vue:47
@@ -2133,7 +2094,7 @@ msgstr "Ausstehend..."
 msgid "Per-swap limits raised to {amount}"
 msgstr "Pro-Tausch-Grenze erhöht auf {amount}"
 
-#: src/components/modals/WelcomeModal.vue:42
+#: src/components/modals/WelcomeModal.vue:29
 msgid "Performance"
 msgstr "Leistung"
 
@@ -2343,9 +2304,10 @@ msgstr "Kürzlich kopiert"
 msgid "Recipient"
 msgstr "Empfänger"
 
-#: src/components/layouts/AccountOverview.vue:27
-msgid "Recovery Words"
-msgstr "Wiederherstellungswörter"
+#: src/components/modals/BackupModal.vue:49
+msgid "Recovery words are the most secure way of backing up your account."
+msgstr ""
+"Wiederherstellungswörter sind die sicherste Methode dein Konto zu sichern."
 
 #: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
@@ -2397,9 +2359,13 @@ msgstr "Versionshinweise"
 msgid "Reliability"
 msgstr "Zuverlässigkeit"
 
+#: src/components/modals/BackupModal.vue:57
+msgid "Remind me later"
+msgstr "Später erinnern"
+
 #: src/components/layouts/AddressOverview.vue:34
 #: src/components/layouts/AddressOverview.vue:81
-#: src/components/modals/AccountMenuModal.vue:16
+#: src/components/modals/AccountMenuModal.vue:18
 msgid "Rename"
 msgstr "Umbenennen"
 
@@ -2497,7 +2463,7 @@ msgstr "Transaktionen suchen"
 msgid "Search transactions by contact, address, etc."
 msgstr "Suche Transaktionen mittels Kontakt, Adresse, usw."
 
-#: src/components/modals/WelcomeModal.vue:43
+#: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
 msgstr "Sicherheit"
 
@@ -2613,6 +2579,10 @@ msgstr "Sende USDC"
 msgid "Send USDT"
 msgstr "Sende USDT"
 
+#: src/components/modals/BackupModal.vue:23
+msgid "Send yourself two backup codes"
+msgstr "Sende zwei Backup-Codes an dich selbst."
+
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
@@ -2631,6 +2601,14 @@ msgstr "Transaktion wird versendet"
 #: src/components/staking/StakingInfoPage.vue:371
 msgid "Sending Unstaking Transaction"
 msgstr "Unstaking-Transaktion wird gesendet"
+
+#: src/components/modals/BackupModal.vue:30
+msgid ""
+"Sending yourself backup codes is convenient but only as secure as the "
+"channels you use."
+msgstr ""
+"Backup-Codes an dich selbst zu senden is bequem, aber nur so sicher wie die "
+"verwendeten Kommunikationskanäle."
 
 #: src/components/modals/BtcSendModal.vue:573
 msgid "Sent {btc} BTC"
@@ -2751,14 +2729,6 @@ msgstr "Nachkommastellen"
 msgid "Show Link"
 msgstr "Link anzeigen"
 
-#: src/components/modals/AccountMenuModal.vue:12
-msgid "Show Recovery Words"
-msgstr "Wiederherstellungswörter anzeigen"
-
-#: src/components/modals/WelcomeModal.vue:319
-msgid "Show values as {currency}"
-msgstr "Zeige Werte in {currency}"
-
 #: src/components/layouts/AddressOverview.vue:282
 msgid "Signup"
 msgstr "Anmelden"
@@ -2772,6 +2742,10 @@ msgstr "EUR-Zahlung simulieren"
 #: src/components/modals/PolygonActivationModal.vue:46
 msgid "Skip"
 msgstr "Überspringen"
+
+#: src/components/modals/WelcomeModal.vue:69
+msgid "Skip (not recommended)"
+msgstr "Überspringen (nicht empfohlen)"
 
 #: src/components/modals/BtcSendModal.vue:587
 #: src/components/modals/SendModal.vue:710
@@ -2794,17 +2768,9 @@ msgstr "Es gibt ein Problem mit deiner Überweisung"
 msgid "Speed up your Transaction"
 msgstr "Beschleunige deine Transaktion"
 
-#: src/components/modals/WelcomeModal.vue:44
+#: src/components/modals/WelcomeModal.vue:31
 msgid "Stability"
 msgstr "Stabilität"
-
-#: src/components/modals/WelcomeModal.vue:240
-msgid "Stability mixed with self-custody"
-msgstr "Stabilität gepaart mit Selbstaufbewahrung"
-
-#: src/components/modals/WelcomeModal.vue:352
-msgid "Stable like USD, got it"
-msgstr "Stabil wie USD, verstanden"
 
 #: src/components/staking/StakingButton.vue:33
 msgid "Stake"
@@ -2856,10 +2822,6 @@ msgstr "Standard"
 msgid "Start staking"
 msgstr "Staken beginnen"
 
-#: src/components/modals/WelcomeModal.vue:351
-msgid "Store of value, got it"
-msgstr "Wertaufbewahrung, verstanden"
-
 #: src/components/staking/StakingGraphPage.vue:214
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr "Erfolgreich {amount} NIM zu deinem Stake bei {validator} hinzugefügt"
@@ -2889,10 +2851,6 @@ msgstr "Erfolgreich {amount} NIM ungestaket"
 msgid "Super eco-friendly"
 msgstr "Super umweltfreundlich"
 
-#: src/components/modals/WelcomeModal.vue:109
-msgid "Super low fees, super fast payments"
-msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
-
 #. avoid displaying the proxy address until we know related peer address
 #: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
@@ -2906,17 +2864,9 @@ msgstr "Sehr niedrige Gebühren, sehr schnelle Zahlungen"
 msgid "Swap"
 msgstr "Tausch"
 
-#: src/components/layouts/AccountOverview.vue:192
+#: src/components/layouts/AccountOverview.vue:195
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr "Tausche BTC {arrowIcon} {ticker}"
-
-#: src/components/modals/WelcomeModal.vue:16
-msgid ""
-"Swap coins and use\n"
-"value your way."
-msgstr ""
-"Tausche Coins und nutze \n"
-"Werte nach deinen Belieben"
 
 #: src/components/swap/SwapModal.vue:7
 msgid "Swap Currencies"
@@ -2941,11 +2891,11 @@ msgstr "Tausch ist abgelaufen"
 msgid "Swap more per 30 days."
 msgstr "Tausche mehr pro 30 Tage."
 
-#: src/components/layouts/AccountOverview.vue:121
+#: src/components/layouts/AccountOverview.vue:124
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr "Tausche NIM {arrowIcon} {ticker}"
 
-#: src/components/layouts/AccountOverview.vue:85
+#: src/components/layouts/AccountOverview.vue:88
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr "Tausche NIM {arrowIcon} BTC"
 
@@ -3003,6 +2953,18 @@ msgstr ""
 msgid "Syncing with Bitcoin network"
 msgstr "Synchronisierung mit dem Bitcoin-Netzwerk"
 
+#: src/components/modals/BackupModal.vue:43
+msgid "Takes a pen, a piece of paper and a safe place to store it."
+msgstr ""
+"Du benötigst einen Stift, ein Blatt Papier und einen sicheren "
+"Aufbewahrungsort."
+
+#: src/components/modals/BackupModal.vue:24
+msgid "Takes two ways of writing to yourself, like a messenger + email."
+msgstr ""
+"Du benötigst zwei Methoden Textnachrichten an dich selbst zu schicken, "
+"beispielsweise per Messenger + E-Mail."
+
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
 msgstr ""
@@ -3018,7 +2980,7 @@ msgid "TEN31 Verification"
 msgstr "TEN31-Verifizierung"
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:219
+#: src/components/layouts/AccountOverview.vue:222
 #: src/components/layouts/AddressOverview.vue:124
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -3173,17 +3135,25 @@ msgstr ""
 "Es gibt viele Möglichkeiten, benutze deine Kreditkarte oder tausche mit "
 "anderen Kryptowährungen. Weitere Tauschbörsen findest du unter {link}"
 
-#: src/components/layouts/AccountOverview.vue:21
+#: src/components/layouts/AccountOverview.vue:24
 msgid "There is no ‘forgot password’"
 msgstr "Es gibt kein \"Passwort vergessen\""
+
+#: src/components/modals/BackupModal.vue:12
+msgid ""
+"There is no 'forgot password' or Login File recovery. Create a backup to "
+"stay in control."
+msgstr ""
+"Es gibt keine Passwort- oder Login‑Datei-Wiederherstellungsoption. Bewahre "
+"dir Zugang mit einem Backup."
 
 #: src/components/swap/SwapNotification.vue:23
 msgid "There's a problem"
 msgstr "Es gibt ein Problem"
 
-#: src/components/modals/WelcomeModal.vue:8
-msgid "Think features, not currency"
-msgstr "Denk an Funktion, nicht an Währung"
+#: src/components/modals/WelcomeModal.vue:4
+msgid "Think value, not currency"
+msgstr "Verschiedene Währungen für verschiedene Einsatzzwecke"
 
 #: src/components/modals/BtcTransactionModal.vue:198
 #: src/components/modals/BtcTransactionModal.vue:224
@@ -3334,8 +3304,8 @@ msgstr "Zeitraum"
 msgid "To {exchange}"
 msgstr "Zu {exchange}"
 
-#: src/components/layouts/AccountOverview.vue:126
-#: src/components/layouts/AccountOverview.vue:197
+#: src/components/layouts/AccountOverview.vue:129
+#: src/components/layouts/AccountOverview.vue:200
 #: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr "Um mit USDC/USDT zu tauschen, wähle einen Stablecoin."
@@ -3489,8 +3459,9 @@ msgid "Update validator"
 msgstr "Validator aktualisieren"
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:216
+#: src/components/layouts/AccountOverview.vue:219
 #: src/components/layouts/AddressOverview.vue:121
+#: src/components/modals/WelcomeModal.vue:57
 #: src/components/swap/SwapBalanceBar.vue:24
 #: src/components/swap/SwapBalanceBar.vue:50
 #: src/components/UsdcAddressInfo.vue:14
@@ -3511,6 +3482,14 @@ msgstr "USDT Netzwerkgebühr"
 msgid "Use a SEPA Instant account to get payouts in minutes."
 msgstr ""
 "Nutze ein SEPA-Instant-Bankkonto um Auszahlungen in Minuten zu erhalten."
+
+#: src/components/modals/WelcomeModal.vue:6
+msgid ""
+"Use different cryptos for different things –\n"
+"with the Nimiq Wallet and ease-of-use."
+msgstr ""
+"Verwende verschiedene Währungen für verschiedene Zwecke –\n"
+"ganz einfach mit der Nimiq Wallet."
 
 #: src/components/modals/BtcReceiveModal.vue:24
 msgid "Use labels to easily identify transactions."
@@ -3629,6 +3608,10 @@ msgstr ""
 #: src/components/BankCheckInput.vue:70
 msgid "Without an individual IBAN, refunds are impossible!"
 msgstr "Ohne eine individuelle IBAN sind Rückerstattungen unmöglich!"
+
+#: src/components/modals/BackupModal.vue:42
+msgid "Write down 24 recovery words"
+msgstr "Schreibe 24 Wiederherstellungswörter auf"
 
 #: src/components/layouts/Sidebar.vue:17
 msgid "You are connecting to the Nimiq PoS and Bitcoin Testnets."

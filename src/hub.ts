@@ -413,7 +413,8 @@ export async function syncFromHub() {
             MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
         );
 
-        if (!welcomeModalAlreadyShown) {
+        if (!welcomeModalAlreadyShown && config.enableBitcoin && config.polygon.enabled) {
+            // Show regular first-time welcome flow which talks about Bitcoin and USDC.
             router.push({ name: RouteName.Welcome });
         } else if (!multisigModalAlreadyShown) {
             router.push({ name: RouteName.MultisigAnnouncement });

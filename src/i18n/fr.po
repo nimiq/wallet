@@ -4,12 +4,12 @@
 # Daniel, 2022
 # Pierre SAULAY <pierresaulay@protonmail.ch>, 2023
 # Sören Schwert <hello@soerenschwert.de>, 2024
-# Robinson BARAIS, 2025
 # Matheo <matheo@nimiq.com>, 2026
+# Robinson BARAIS, 2026
 # 
 msgid ""
 msgstr ""
-"Last-Translator: Matheo <matheo@nimiq.com>, 2026\n"
+"Last-Translator: Robinson BARAIS, 2026\n"
 "Language-Team: French (https://app.transifex.com/nimiq-foundation/teams/110181/fr/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: fr\n"
@@ -1328,7 +1328,7 @@ msgstr "Marqué comme : {type}"
 
 #: src/components/modals/WelcomeModal.vue:50
 msgid "For a decentralized store of value"
-msgstr ""
+msgstr "Pour un stockage de valeur décentralisé"
 
 #: src/components/staking/StakingWelcomePage.vue:29
 msgid "For a small fee, validator pools do the staking for you."
@@ -1338,7 +1338,7 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:59
 msgid "For a USD-pegged store of value"
-msgstr ""
+msgstr "Pour une réserve de valeur indexée sur le dollar américain"
 
 #: src/components/modals/TradeModal.vue:49
 msgid "For beginners"
@@ -1346,7 +1346,7 @@ msgstr "Pour les débutants"
 
 #: src/components/modals/WelcomeModal.vue:41
 msgid "For fast and low-fee crypto payments"
-msgstr ""
+msgstr "Pour des paiements crypto rapides et peu coûteux"
 
 #: src/components/modals/SendModal.vue:540
 msgid "free"
@@ -1570,7 +1570,7 @@ msgstr ""
 
 #: src/components/modals/BackupModal.vue:10
 msgid "Important: Create a backup"
-msgstr ""
+msgstr "Important : Créer une sauvegarde"
 
 #: src/components/modals/BtcReceiveModal.vue:55
 msgid ""
@@ -1869,9 +1869,9 @@ msgstr "Réseau"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Frais de réseau: {sats} sat/vByte"
 
-#: src/components/modals/WelcomeModal.vue:66
+#: src/components/modals/WelcomeModal.vue:67
 msgid "Next: Create a backup"
-msgstr ""
+msgstr "Suivant : Créer une sauvegarde"
 
 #: src/components/modals/WelcomeModal.vue:39
 #: src/components/staking/StakingGraph.vue:5
@@ -1976,7 +1976,7 @@ msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:153
 msgid "Not available for NIM"
-msgstr ""
+msgstr "Non disponible pour NIM"
 
 #: src/components/layouts/Sidebar.vue:157
 msgid "Not available in your browser"
@@ -2316,6 +2316,8 @@ msgstr "Destinataire"
 #: src/components/modals/BackupModal.vue:49
 msgid "Recovery words are the most secure way of backing up your account."
 msgstr ""
+"Les mots de récupération sont le moyen le plus sûr de sauvegarder votre "
+"compte."
 
 #: src/components/layouts/Settings.vue:205
 msgid "Redirect mode does not yet support swaps."
@@ -2369,7 +2371,7 @@ msgstr "Fiabilité"
 
 #: src/components/modals/BackupModal.vue:57
 msgid "Remind me later"
-msgstr ""
+msgstr "Me le rappeler plus tard"
 
 #: src/components/layouts/AddressOverview.vue:34
 #: src/components/layouts/AddressOverview.vue:81
@@ -2590,7 +2592,7 @@ msgstr "Envoyer de l'USDT"
 
 #: src/components/modals/BackupModal.vue:23
 msgid "Send yourself two backup codes"
-msgstr ""
+msgstr "Envoyez-vous deux codes de secours"
 
 #: src/components/LegacyAccountNotice.vue:22
 msgid "Send, receive and hold BTC in your wallet."
@@ -2616,6 +2618,8 @@ msgid ""
 "Sending yourself backup codes is convenient but only as secure as the "
 "channels you use."
 msgstr ""
+"L'envoi de codes de secours à vous-même est pratique, mais son niveau de "
+"sécurité dépend de celui des canaux que vous utilisez."
 
 #: src/components/modals/BtcSendModal.vue:573
 msgid "Sent {btc} BTC"
@@ -2752,9 +2756,9 @@ msgstr "Simuler le paiement en Euro"
 msgid "Skip"
 msgstr "Passer"
 
-#: src/components/modals/WelcomeModal.vue:69
+#: src/components/modals/WelcomeModal.vue:70
 msgid "Skip (not recommended)"
-msgstr ""
+msgstr "Passer (non recommandé)"
 
 #: src/components/modals/BtcSendModal.vue:587
 #: src/components/modals/SendModal.vue:710
@@ -2964,13 +2968,20 @@ msgstr "La synchronisation prend du temps et peut échoue dans certains cas."
 msgid "Syncing with Bitcoin network"
 msgstr "Synchronisation avec le réseau Bitcoin"
 
+#: src/components/modals/WelcomeModal.vue:75
+msgid "Take me to the Wallet"
+msgstr ""
+
 #: src/components/modals/BackupModal.vue:43
 msgid "Takes a pen, a piece of paper and a safe place to store it."
 msgstr ""
+"Il faut un stylo, une feuille de papier et un endroit sûr pour les stocker."
 
 #: src/components/modals/BackupModal.vue:24
 msgid "Takes two ways of writing to yourself, like a messenger + email."
 msgstr ""
+"Il existe deux façons de s'écrire à soi-même, comme une application de chat "
+"et une adresse e-mail."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."
@@ -3149,6 +3160,8 @@ msgid ""
 "There is no 'forgot password' or Login File recovery. Create a backup to "
 "stay in control."
 msgstr ""
+"Il n'y a pas de fonction « mot de passe oublié » ni de récupération du "
+"fichier de connexion. Créez une sauvegarde pour garder le contrôle."
 
 #: src/components/swap/SwapNotification.vue:23
 msgid "There's a problem"
@@ -3156,7 +3169,7 @@ msgstr "Il y a un problème"
 
 #: src/components/modals/WelcomeModal.vue:4
 msgid "Think value, not currency"
-msgstr ""
+msgstr "Pensez en termes de valeur, pas de monnaie"
 
 #: src/components/modals/BtcTransactionModal.vue:198
 #: src/components/modals/BtcTransactionModal.vue:224
@@ -3492,6 +3505,8 @@ msgid ""
 "Use different cryptos for different things –\n"
 "with the Nimiq Wallet and ease-of-use."
 msgstr ""
+"Utilisez différentes cryptomonnaies pour différentes choses –\n"
+"avec le Wallet Nimiq et sa facilité d'utilisation."
 
 #: src/components/modals/BtcReceiveModal.vue:24
 msgid "Use labels to easily identify transactions."
@@ -3613,7 +3628,7 @@ msgstr "Sans IBAN individuel, les remboursements sont impossibles !"
 
 #: src/components/modals/BackupModal.vue:42
 msgid "Write down 24 recovery words"
-msgstr ""
+msgstr "Notez les 24 mots de récupération"
 
 #: src/components/layouts/Sidebar.vue:17
 msgid "You are connecting to the Nimiq PoS and Bitcoin Testnets."

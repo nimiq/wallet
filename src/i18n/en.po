@@ -1705,7 +1705,7 @@ msgstr ""
 msgid "Network fee: {sats} sat/vByte"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:66
+#: src/components/modals/WelcomeModal.vue:67
 msgid "Next: Create a backup"
 msgstr ""
 
@@ -2516,7 +2516,7 @@ msgstr ""
 msgid "Skip"
 msgstr ""
 
-#: src/components/modals/WelcomeModal.vue:69
+#: src/components/modals/WelcomeModal.vue:70
 msgid "Skip (not recommended)"
 msgstr ""
 
@@ -2723,6 +2723,10 @@ msgstr ""
 
 #: src/components/SendModalFooter.vue:69
 msgid "Syncing with Bitcoin network"
+msgstr ""
+
+#: src/components/modals/WelcomeModal.vue:75
+msgid "Take me to the Wallet"
 msgstr ""
 
 #: src/components/modals/BackupModal.vue:43

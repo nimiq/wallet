@@ -1846,7 +1846,7 @@ msgstr "Red"
 msgid "Network fee: {sats} sat/vByte"
 msgstr "Cuota de red: {sats} sat/vByte"
 
-#: src/components/modals/WelcomeModal.vue:66
+#: src/components/modals/WelcomeModal.vue:67
 msgid "Next: Create a backup"
 msgstr ""
 
@@ -2714,7 +2714,7 @@ msgstr "Simular pago en EUR"
 msgid "Skip"
 msgstr "Omitir"
 
-#: src/components/modals/WelcomeModal.vue:69
+#: src/components/modals/WelcomeModal.vue:70
 msgid "Skip (not recommended)"
 msgstr ""
 
@@ -2926,6 +2926,10 @@ msgstr ""
 #: src/components/SendModalFooter.vue:69
 msgid "Syncing with Bitcoin network"
 msgstr "Sincronizando con la red de Bitcoin"
+
+#: src/components/modals/WelcomeModal.vue:75
+msgid "Take me to the Wallet"
+msgstr ""
 
 #: src/components/modals/BackupModal.vue:43
 msgid "Takes a pen, a piece of paper and a safe place to store it."

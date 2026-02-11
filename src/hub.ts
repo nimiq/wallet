@@ -127,24 +127,26 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
-    // Open optional Welcome modal, Bitcoin activation modal or USDC activation modal if appropriate.
+    // Open optional Welcome modal, Backup modal, Bitcoin activation modal or USDC activation modal if appropriate.
     await new Promise<void>((resolve) => { router.onReady(resolve); });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
-    const { requestType } = accounts[0];
+    const { requestType, type: accountType, btcAddresses } = accounts[0];
 
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
-            // Signup of a Keyguard account
+            // Signup of a Keyguard account. Ledger can not be signed up, but only logged in.
             if (!welcomeModalAlreadyShown && config.enableBitcoin && config.polygon.enabled) {
                 // Show regular first-time welcome flow which talks about Bitcoin and USDC.
                 router.push({ name: RouteName.Welcome });
+            } else {
+                // Ask user to back up his new Keyguard account.
+                router.push({ name: RouteName.Backup });
             }
             break;
         case HubApi.RequestType.LOGIN:
             // Login of a Keyguard or Ledger account
-            if (accounts[0].type !== AccountType.LEGACY && !accounts[0].btcAddresses?.external.length
-                && config.enableBitcoin) {
+            if (accountType !== AccountType.LEGACY && !btcAddresses?.external.length && config.enableBitcoin) {
                 // After adding an account that supports Bitcoin without it being activated yet (this is the case for
                 // Ledger logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for
                 // Keyguard accounts it's automatically activated on login), offer to activate it. After activation, the
@@ -436,20 +438,20 @@ export async function onboard(asRedirect = false) {
 
     processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
 
-    // After adding an account that supports Bitcoin without it being activated yet (this is the case for Ledger logins
-    // where Bitcoin is not automatically activated as it requires the Bitcoin app; for Keyguard accounts it's activated
-    // automatically on login), optionally offer to activate it. After activation, the Bitcoin activation modal leads
-    // into the Welcome modal if not shown yet.
+    // Open optional Backup modal or Bitcoin activation modal if appropriate.
     const { activeAccountInfo } = useAccountStore();
     await new Promise<void>((resolve) => { router.onReady(resolve); });
-    if (
-        areOptionalRedirectsAllowed(router.currentRoute)
-        && activeAccountInfo.value
-        && activeAccountInfo.value.type !== AccountType.LEGACY // Legacy accounts are not supported.
-        && !activeAccountInfo.value.btcAddresses?.external.length
-        && config.enableBitcoin
-    ) {
+    if (!areOptionalRedirectsAllowed(router.currentRoute) || !activeAccountInfo.value) return true;
+    const { type: accountType, btcAddresses, wordsExported, backupCodesExported } = activeAccountInfo.value;
+    if (accountType !== AccountType.LEGACY && !btcAddresses?.external.length && config.enableBitcoin) {
+        // After adding an account that supports Bitcoin without it being activated yet (this is the case for Ledger
+        // logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for Keyguard accounts
+        // it's activated automatically on login), optionally offer to activate it. After activation, the Bitcoin
+        // activation modal leads into the Welcome modal if not shown yet.
         router.push({ name: RouteName.BtcActivation });
+    } else if (accountType !== AccountType.LEDGER && !wordsExported && !backupCodesExported) {
+        // Ask user to back up his Keyguard account.
+        router.push({ name: RouteName.Backup });
     }
     return true;
 }

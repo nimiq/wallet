@@ -127,11 +127,19 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     // listed in the Hub iframe cookie).
     processAndStoreAccounts(accounts);
 
+    const { requestType, type: accountType, btcAddresses } = accounts[0];
+    if (requestType === HubApi.RequestType.LOGIN && accountType !== AccountType.LEDGER) {
+        // On login of a Keyguard account assume that the user had already seen the Welcome modal when crating the
+        // account. Set the flag to not show it again to avoid annoying him. For Ledger accounts, we can't do the same
+        // as there is no distinction between signup and login.
+        window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
+        window.localStorage.setItem(MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY, '1');
+    }
+
     // Open optional Welcome modal, Backup modal, Bitcoin activation modal or USDC activation modal if appropriate.
     await new Promise<void>((resolve) => { router.onReady(resolve); });
     if (!areOptionalRedirectsAllowed(router.currentRoute)) return;
     const welcomeModalAlreadyShown = window.localStorage.getItem(WELCOME_MODAL_LOCALSTORAGE_KEY);
-    const { requestType, type: accountType, btcAddresses } = accounts[0];
 
     switch (requestType) {
         case HubApi.RequestType.SIGNUP:
@@ -439,11 +447,18 @@ export async function onboard(asRedirect = false) {
 
     processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
 
+    const { requestType, type: accountType, btcAddresses, wordsExported, backupCodesExported } = accounts[0];
+    if (requestType === HubApi.RequestType.LOGIN && accountType !== AccountType.LEDGER) {
+        // On login of a Keyguard account assume that the user had already seen the Welcome modal when crating the
+        // account. Set the flag to not show it again to avoid annoying him. For Ledger accounts, we can't do the same
+        // as there is no distinction between signup and login.
+        window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
+        window.localStorage.setItem(MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY, '1');
+    }
+
     // Open optional Backup modal or Bitcoin activation modal if appropriate.
-    const { activeAccountInfo } = useAccountStore();
     await new Promise<void>((resolve) => { router.onReady(resolve); });
-    if (!areOptionalRedirectsAllowed(router.currentRoute) || !activeAccountInfo.value) return true;
-    const { type: accountType, btcAddresses, wordsExported, backupCodesExported } = activeAccountInfo.value;
+    if (!areOptionalRedirectsAllowed(router.currentRoute)) return true;
     if (accountType !== AccountType.LEGACY && !btcAddresses?.external.length && config.enableBitcoin) {
         // After adding an account that supports Bitcoin without it being activated yet (this is the case for Ledger
         // logins where Bitcoin is not automatically activated as it requires the Bitcoin app; for Keyguard accounts

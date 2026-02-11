@@ -62,13 +62,18 @@
         </PageBody>
 
         <PageFooter>
-            <button class="nq-button light-blue" @click="onButtonClick" @mousedown.prevent>
-                {{ $t('Next: Create a backup') }}
+            <template v-if="!isAccountBackedUp">
+                <button class="nq-button light-blue" @click="goToBackup" @mousedown.prevent>
+                    {{ $t('Next: Create a backup') }}
+                </button>
+                <a class="skip-link nq-link" @click="closeModal">
+                    {{ $t('Skip (not recommended)') }}
+                    <CaretRightIcon />
+                </a>
+            </template>
+            <button v-else class="nq-button light-blue" @click="closeModal" @mousedown.prevent>
+                {{ $t('Take me to the Wallet') }}
             </button>
-            <a class="skip-link nq-link" @click="onSkipClick">
-                {{ $t('Skip (not recommended)') }}
-                <CaretRightIcon />
-            </a>
             <transition name="fadeY">
                 <div class="flex-row flags">
                     <Tooltip v-for="(lang, i) in Languages" :key="lang.code"
@@ -95,6 +100,7 @@ import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import Modal from './Modal.vue';
 import { Languages } from '../../i18n/i18n-setup';
+import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useWindowSize } from '../../composables/useWindowSize';
 import {
@@ -107,6 +113,7 @@ import { useRouter, RouteName } from '../../router';
 export default defineComponent({
     setup() {
         const router = useRouter();
+        const { activeAccountInfo } = useAccountStore();
         const { state: settings$, setLanguage } = useSettingsStore();
         const { isMobile } = useWindowSize();
 
@@ -154,12 +161,21 @@ export default defineComponent({
             stopInterval();
         });
 
-        async function onButtonClick() {
+        const isAccountBackedUp = computed(() => {
+            if (!activeAccountInfo.value) return true; // consider backed up if account unknown
+            const { type: accountType, wordsExported, backupCodesExported } = activeAccountInfo.value;
+            return accountType === AccountType.LEDGER // Ledgers are backed up outside the Keyguard.
+                // Accounts which only have their Login File exported are not considered backed up, as the Login File is
+                // more akin to a form of Login, which should be backed up with the Recovery Words or Backup Codes.
+                || wordsExported || backupCodesExported;
+        });
+
+        async function goToBackup() {
             window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
             router.push({ name: RouteName.WelcomeBackup });
         }
 
-        async function onSkipClick() {
+        async function closeModal() {
             window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
             await modal$.value!.forceClose();
 
@@ -175,9 +191,10 @@ export default defineComponent({
         return {
             modal$,
             highlightedCurrency,
+            isAccountBackedUp,
             selectCurrency,
-            onButtonClick,
-            onSkipClick,
+            goToBackup,
+            closeModal,
             Languages,
             settings$,
             setLanguage,
@@ -449,7 +466,7 @@ export default defineComponent({
             opacity: 0.7;
             cursor: pointer;
             text-decoration: none !important;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
 
             .caret-right-icon {
                 height: 1.25rem;
@@ -474,6 +491,7 @@ export default defineComponent({
             display: flex;
             justify-content: space-evenly;
             align-items: center;
+            margin-top: 1rem;
             margin-bottom: 2rem;
         }
 

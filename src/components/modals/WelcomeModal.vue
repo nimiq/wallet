@@ -103,11 +103,7 @@ import { Languages } from '../../i18n/i18n-setup';
 import { useAccountStore, AccountType } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useWindowSize } from '../../composables/useWindowSize';
-import {
-    CryptoCurrency,
-    MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
-    WELCOME_MODAL_LOCALSTORAGE_KEY,
-} from '../../lib/Constants';
+import { CryptoCurrency, WELCOME_MODAL_LOCALSTORAGE_KEY } from '../../lib/Constants';
 import { useRouter, RouteName } from '../../router';
 
 export default defineComponent({
@@ -178,14 +174,6 @@ export default defineComponent({
         async function closeModal() {
             window.localStorage.setItem(WELCOME_MODAL_LOCALSTORAGE_KEY, '1');
             await modal$.value!.forceClose();
-
-            const multisigModalAlreadyShown = window.localStorage.getItem(
-                MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
-            );
-
-            if (!multisigModalAlreadyShown) {
-                await router.push({ name: RouteName.MultisigAnnouncement });
-            }
         }
 
         return {

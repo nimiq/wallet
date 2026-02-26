@@ -41,7 +41,7 @@ import { useConfig } from '../../composables/useConfig';
 import { useRouter } from '../../router';
 import {
     normalizeAddress as normalizeBitcoinAddress,
-    validateAddress as validateBitcoinAddress,
+    validateAddressSync as validateBitcoinAddress,
 } from '../../lib/BitcoinTransactionUtils';
 import {
     GOCRYPTO_ID_PARAM,
@@ -50,7 +50,6 @@ import {
     goCryptoStatusToUserFriendlyMessage,
 } from '../../lib/GoCrypto';
 import { ENV_MAIN } from '../../lib/Constants';
-import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
 import { loadEthersLibrary } from '../../ethers';
 
 export default defineComponent({
@@ -115,9 +114,17 @@ export default defineComponent({
 
             if (config.enableBitcoin && hasBitcoinAddresses.value) {
                 // Run in parallel, without awaiting.
-                loadBitcoinJS().then(() => {
+                // eslint-disable-next-line import/extensions, import/no-unresolved
+                import('bitcoinjs-lib/src/address').then(({
+                    fromBase58Check: addressFromBase58Check,
+                    fromBech32: addressFromBech32,
+                }) => {
+                    const validateAddress = (address: string) => validateBitcoinAddress(
+                        address,
+                        { addressFromBase58Check, addressFromBech32 },
+                    );
                     // BTC Address
-                    if (validateBitcoinAddress(result)) {
+                    if (validateAddress(result)) {
                         router.replace(`/${createBitcoinRequestLink(result)}`);
                         return;
                     }
@@ -129,7 +136,7 @@ export default defineComponent({
                             [Currency.BTC]: normalizeBitcoinAddress,
                         },
                         isValidAddress: {
-                            [Currency.BTC]: validateBitcoinAddress,
+                            [Currency.BTC]: validateAddress,
                         },
                     });
                     if (requestLink) {

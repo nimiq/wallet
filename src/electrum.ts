@@ -9,7 +9,6 @@ import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
 import { useBtcNetworkStore } from './stores/BtcNetwork';
 import { useBtcTransactionsStore, Transaction } from './stores/BtcTransactions';
 import { BTC_ADDRESS_GAP, ENV_MAIN } from './lib/Constants';
-import { loadBitcoinJS } from './lib/BitcoinJSLoader';
 import { addBtcAddresses } from './hub';
 import { HTLC_ADDRESS_LENGTH } from './lib/BtcHtlcDetection';
 
@@ -27,10 +26,6 @@ export async function getElectrumClient(): Promise<ElectrumClient> {
     clientPromise = new Promise<ElectrumClient>((resolve) => {
         resolver = resolve;
     });
-
-    // @nimiq/electrum-client already depends on a globally available BitcoinJS,
-    // so we need to load it first.
-    await loadBitcoinJS();
 
     const { GenesisConfig, ElectrumClient: Client } = await import(
         /* webpackChunkName: "electrum-client" */ '@nimiq/electrum-client');

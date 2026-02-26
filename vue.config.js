@@ -43,7 +43,6 @@ function sri(asset) {
 
 // Accessible within client code via process.env.VUE_APP_*,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
-process.env.VUE_APP_BITCOIN_JS_INTEGRITY_HASH = sri(fs.readFileSync(path.join(__dirname, 'public/bitcoin/BitcoinJS.min.js')));
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
@@ -77,16 +76,13 @@ module.exports = {
             alias: {
                 config: path.join(__dirname, `src/config/config.${buildName}.ts`)
             },
-            // In Webpack 5, NodeJS polyfills have to be explicitly configured
+            // In Webpack 5, NodeJS polyfills have to be explicitly configured. See here for a list of polyfills webpack
+            // had used before webpack 5: https://webpack.js.org/configuration/resolve/#resolvefallback
             fallback: {
-                buffer: require.resolve('buffer/'),
-                stream: require.resolve('stream-browserify'), // Needed by bitcoinjs-lib/tiny-secp256k1
+                stream: require.resolve('readable-stream/'),
+                assert: require.resolve('assert/'),
             },
         },
-        // externals: {
-        //     'bitcoinjs-lib': 'BitcoinJS',
-        //     'buffer': 'BitcoinJS',
-        // },
         optimization: {
             // Required to correctly cache-bust, as the ServiceWorker omits revision hashes when it detects a hash
             // in the filename. But that only works when filename hashes are calculated based on the real content

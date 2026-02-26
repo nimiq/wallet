@@ -1,7 +1,6 @@
 import { TransactionDetails } from '@nimiq/electrum-client';
 import { getContract, SwapAsset } from '@nimiq/fastspot-api';
 import { getElectrumClient } from '../electrum';
-import { loadBitcoinJS } from './BitcoinJSLoader';
 import { ENV_MAIN } from './Constants';
 import { useConfig } from '../composables/useConfig';
 import { reportToSentry } from './Sentry';
@@ -20,14 +19,22 @@ export const HTLC_ADDRESS_LENGTH = 62;
 async function decodeBtcHtlcScript(script: string) {
     const { config } = useConfig();
 
+    const [
+        { toBech32: addressToBech32 },
+        { decompile: scriptDecompile, toASM: scriptToAsm, number: { decode: scriptDecodeNumber } },
+        { Buffer },
+    ] = await Promise.all([
+        import('bitcoinjs-lib/src/address'), // eslint-disable-line import/extensions, import/no-unresolved
+        import('bitcoinjs-lib/src/script'), // eslint-disable-line import/extensions, import/no-unresolved
+        import('buffer'),
+    ] as const);
+
     const error = new Error('Invalid BTC HTLC script');
 
-    await loadBitcoinJS();
-
     if (!script || typeof script !== 'string' || !script.length) throw error;
-    const chunks = BitcoinJS.script.decompile(Buffer.from(script, 'hex'));
+    const chunks = scriptDecompile(Buffer.from(script, 'hex'));
     if (!chunks) throw error;
-    const asm = BitcoinJS.script.toASM(chunks).split(' ');
+    const asm = scriptToAsm(chunks).split(' ');
 
     let branchesVerifiedIndividually = false;
 
@@ -56,8 +63,7 @@ async function decodeBtcHtlcScript(script: string) {
     }
 
     // Check timeout
-    // @ts-expect-error Argument of type 'Buffer' is not assignable to parameter of type 'Buffer'
-    const timeoutTimestamp = BitcoinJS.script.number.decode(BitcoinJS.Buffer.from(asm[++i], 'hex')) + (60 * 60);
+    const timeoutTimestamp = scriptDecodeNumber(Buffer.from(asm[++i], 'hex')) + (60 * 60);
     if (asm[++i] !== 'OP_CHECKLOCKTIMEVERIFY' || asm[++i] !== 'OP_DROP') throw error;
 
     // Check refund address
@@ -76,11 +82,9 @@ async function decodeBtcHtlcScript(script: string) {
     if (asm.length !== ++i) throw error;
     /* eslint-enable no-plusplus */
 
-    const refundAddress = BitcoinJS.address
-        .toBech32(Buffer.from(refundAddressBytes, 'hex'), 0, config.environment === ENV_MAIN ? 'bc' : 'tb');
-
-    const redeemAddress = BitcoinJS.address
-        .toBech32(Buffer.from(redeemAddressBytes, 'hex'), 0, config.environment === ENV_MAIN ? 'bc' : 'tb');
+    const addressPrefix = config.environment === ENV_MAIN ? 'bc' : 'tb';
+    const refundAddress = addressToBech32(Buffer.from(refundAddressBytes, 'hex'), 0, addressPrefix);
+    const redeemAddress = addressToBech32(Buffer.from(redeemAddressBytes, 'hex'), 0, addressPrefix);
 
     return {
         refundAddress,

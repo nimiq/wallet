@@ -181,7 +181,6 @@ import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib
 import { sendBtcTransaction } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
-import { loadBitcoinJS } from '../../lib/BitcoinJSLoader';
 import { selectOutputs, estimateFees, normalizeAddress, validateAddress } from '../../lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '../../electrum';
 import DoubleInput from '../DoubleInput.vue';
@@ -428,9 +427,8 @@ export default defineComponent({
         const gotRequestUriRecipient = ref(false);
         const gotRequestUriAmount = ref(false);
         async function parseRequestUri(uri: string, event?: ClipboardEvent) {
-            // We don't validate addresses here yet because it requires asynchronously loading BitcoinJS, and
-            // event.preventDefault() needs to be called synchronously below. Instead, the validation happens afterward.
-            // The normalization does not require BitcoinJS to be loaded.
+            // We don't validate addresses here yet because it's async, and event.preventDefault() needs to be called
+            // synchronously below. Instead, the validation happens afterward.
             const parsedRequestLink = parseRequestLink(uri, {
                 currencies: [Currency.BTC],
                 normalizeAddress: {
@@ -443,8 +441,7 @@ export default defineComponent({
                 event.stopPropagation(); // Prevent pasting
             }
 
-            await loadBitcoinJS();
-            if (!validateAddress(parsedRequestLink.recipient)) return;
+            if (!(await validateAddress(parsedRequestLink.recipient))) return;
 
             if (parsedRequestLink.amount) {
                 gotRequestUriAmount.value = true;

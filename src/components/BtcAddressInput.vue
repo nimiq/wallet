@@ -39,7 +39,6 @@ import { LabelInput, ScanQrCodeIcon } from '@nimiq/vue-components';
 import { parseRequestLink, Currency } from '@nimiq/utils';
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
-import { loadBitcoinJS } from '../lib/BitcoinJSLoader';
 import { ENV_MAIN } from '../lib/Constants';
 import { normalizeAddress, validateAddress } from '../lib/BitcoinTransactionUtils';
 import {
@@ -91,12 +90,9 @@ const BtcAddressInput = defineComponent({
                 const domain = address.value;
                 const ticker = config.environment === ENV_MAIN ? 'BTC' : 'TBTC';
                 try {
-                    const [resolvedAddress] = await Promise.all([
-                        resolveUnstoppableDomain(domain, ticker),
-                        loadBitcoinJS(),
-                    ]);
+                    const resolvedAddress = await resolveUnstoppableDomain(domain, ticker);
                     const normalizedAddress = resolvedAddress && normalizeAddress(resolvedAddress);
-                    if (normalizedAddress && validateAddress(normalizedAddress)) {
+                    if (normalizedAddress && await validateAddress(normalizedAddress)) {
                         context.emit('domain-address', domain, normalizedAddress);
                         invalid.value = false;
                     } else {
@@ -123,8 +119,7 @@ const BtcAddressInput = defineComponent({
             }
 
             const normalizedAddress = normalizeAddress(address.value);
-            await loadBitcoinJS();
-            if (validateAddress(normalizedAddress)) {
+            if (await validateAddress(normalizedAddress)) {
                 context.emit('address', normalizedAddress);
                 invalid.value = false;
             } else {
@@ -174,8 +169,8 @@ const BtcAddressInput = defineComponent({
                 normalizeAddress: {
                     [Currency.BTC]: normalizeAddress,
                 },
-                // No need to pass isValidAddress (which would require loading BitcoinJS) because validity will be
-                // checked in onUpdate, too.
+                // No need to pass isValidAddress (via validateAddressSync, which requires loading bitcoinjs-lib)
+                // because validity will be checked in onUpdate, too.
             });
             if (bitcoinRequestLink) {
                 event.preventDefault();

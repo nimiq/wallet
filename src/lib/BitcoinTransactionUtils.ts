@@ -93,18 +93,29 @@ export const BIP84_ADDRESS_PREFIX = {
     TEST: 'tb',
 };
 
-export function validateAddress(address: string) {
+export async function validateAddress(address: string) {
+    const {
+        fromBase58Check: addressFromBase58Check,
+        fromBech32: addressFromBech32,
+    } = await import('bitcoinjs-lib/src/address'); // eslint-disable-line import/extensions, import/no-unresolved
+    return validateAddressSync(address, { addressFromBase58Check, addressFromBech32 });
+}
+
+export function validateAddressSync(address: string, { addressFromBase58Check, addressFromBech32 }: {
+    addressFromBase58Check: (typeof import('bitcoinjs-lib/src/address'))['fromBase58Check'],
+    addressFromBech32: (typeof import('bitcoinjs-lib/src/address'))['fromBech32'],
+}) {
     const { config } = useConfig();
     const network = config.environment === ENV_MAIN ? 'MAIN' : 'TEST';
     try {
-        const parsedAddress = BitcoinJS.address.fromBase58Check(address);
+        const parsedAddress = addressFromBase58Check(address);
         return BIP49_ADDRESS_VERSIONS[network].includes(parsedAddress.version); // Check includes legacy BIP44 versions
     } catch (error) {
         // Ignore
     }
 
     try {
-        const parsedAddress = BitcoinJS.address.fromBech32(address);
+        const parsedAddress = addressFromBech32(address);
         return BIP84_ADDRESS_PREFIX[network] === parsedAddress.prefix;
     } catch (error) {
         // Ignore

@@ -34,6 +34,10 @@ export default {
         },
     },
 
+    albatrossWatchtower: {
+        endpoint: 'https://watchtower.pos.nimiq-testnet.com',
+    },
+
     polygon: {
         enabled: false,
         networkId: 80002,

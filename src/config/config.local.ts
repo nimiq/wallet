@@ -36,6 +36,10 @@ export default {
         },
     },
 
+    albatrossWatchtower: {
+        endpoint: 'http://localhost:8082',
+    },
+
     polygon: {
         enabled: false,
         networkId: 80002,

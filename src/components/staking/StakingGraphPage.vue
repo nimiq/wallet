@@ -81,8 +81,10 @@ import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nim
 import { useI18n } from '@/lib/useI18n';
 import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
-import { getNetworkClient } from '../../network';
-import { sendStaking } from '../../hub';
+import { getNetworkClient, sendTransaction as sendTx, waitForTransactionConfirmation } from '../../network';
+import { usePolicy } from '../../composables/usePolicy';
+import { sendStaking, signUnstakingTransactions } from '../../hub';
+import { startUnstaking } from '../../lib/AlbatrossWatchtower';
 
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
@@ -227,35 +229,134 @@ export default defineComponent({
                         title: $t('Sending Staking Transaction') as string,
                     });
 
-                    const transaction = TransactionBuilder.newSetActiveStake(
+                    const unstakeAmount = Math.abs(stakeDelta.value);
+
+                    // Load policy to calculate correct validity heights for retire/unstake transactions
+                    const policy = await usePolicy();
+
+                    // Use current height as the basis for validity height calculations
+                    // This ensures our calculated heights are <= what the watchtower will calculate
+                    // (since the actual block will be currentHeight or later)
+                    const currentHeight = useNetworkStore().state.height;
+
+                    // Calculate when the retire transaction can be broadcast (after inactivation period)
+                    // This matches the watchtower's logic: election_block_after + blocks_per_epoch
+                    const nextElectionBlock = policy.electionBlockAfter(currentHeight);
+                    const retireValidityStartHeight = nextElectionBlock + policy.blocksPerEpoch();
+
+                    // Unstake must be valid 1 block after retire
+                    const unstakeValidityStartHeight = retireValidityStartHeight + 1;
+
+                    // eslint-disable-next-line no-console
+                    console.debug('Unstaking transaction validity heights:', {
+                        currentHeight,
+                        nextElectionBlock,
+                        retireValidityStartHeight,
+                        unstakeValidityStartHeight,
+                        blocksPerEpoch: policy.blocksPerEpoch(),
+                        genesisBlockNumber: policy.genesisBlockNumber,
+                    });
+
+                    // Build all 3 transactions for the unstaking watchtower flow:
+                    // 1. Deactivation: Move active stake to inactive
+                    const deactivationTx = TransactionBuilder.newSetActiveStake(
                         Address.fromUserFriendlyAddress(activeAddress.value!),
                         BigInt(activeStake.value!.activeBalance + stakeDelta.value),
                         BigInt(0),
-                        useNetworkStore().state.height,
+                        currentHeight,
                         await client.getNetworkId(),
                     );
-                    const txs = await sendStaking({
-                        transaction: transaction.serialize(),
+
+                    // 2. Retire: Move inactive stake to retired (will be broadcast after epoch boundary)
+                    // Must specify the TOTAL inactive balance after deactivation
+                    const totalInactiveAfterDeactivation = (activeStake.value!.inactiveBalance || 0) + unstakeAmount;
+                    const retireTx = TransactionBuilder.newRetireStake(
+                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        BigInt(totalInactiveAfterDeactivation),
+                        BigInt(0),
+                        retireValidityStartHeight,
+                        await client.getNetworkId(),
+                    );
+
+                    // 3. Remove: Remove retired stake and send funds back (will be broadcast after retire)
+                    // Must remove TOTAL retired balance (existing retired + newly retired)
+                    const totalRetiredAfterRetire = (activeStake.value!.retiredBalance || 0)
+                        + totalInactiveAfterDeactivation;
+                    const removeTx = TransactionBuilder.newRemoveStake(
+                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        BigInt(totalRetiredAfterRetire),
+                        BigInt(0),
+                        unstakeValidityStartHeight,
+                        await client.getNetworkId(),
+                    );
+
+                    // Sign all 3 transactions at once using the SignTransaction API
+                    const signedTransactions = await signUnstakingTransactions({
+                        sender: activeAddress.value!,
+                        senderLabel: activeAddress.value!,
                         recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                        // @ts-expect-error Not typed yet in Hub
+                        transactions: [
+                            deactivationTx.serialize(),
+                            retireTx.serialize(),
+                            removeTx.serialize(),
+                        ],
                         validatorAddress: activeValidator.value!.address,
                         validatorImageUrl: 'logo' in activeValidator.value! && !activeValidator.value.hasDefaultLogo
                             ? activeValidator.value.logo
                             : undefined,
-                        amount: Math.abs(stakeDelta.value),
                     }).catch((error) => {
-                        throw new Error(error.data);
+                        throw new Error(error?.data || error?.message || error);
                     });
 
-                    if (!txs) {
+                    if (!signedTransactions) {
                         context.emit('statusChange', {
                             type: StakingOperationType.NONE,
                         });
                         return;
                     }
 
-                    if (txs.some((tx) => tx.executionResult === false)) {
-                        throw new Error('The transaction did not succeed');
+                    // Validate that we received 3 signed transactions
+                    if (!Array.isArray(signedTransactions) || signedTransactions.length !== 3) {
+                        const got = Array.isArray(signedTransactions) ? signedTransactions.length : 'non-array';
+                        throw new Error(`Expected 3 signed transactions, got ${got}`);
+                    }
+
+                    // Broadcast the deactivation transaction immediately
+                    const deactivationResult = await sendTx(signedTransactions[0]);
+
+                    if (!deactivationResult || deactivationResult.executionResult === false) {
+                        throw new Error('Deactivation transaction failed');
+                    }
+
+                    // Wait for the deactivation transaction to be confirmed before sending to watchtower
+                    // The watchtower requires the transaction to be confirmed on-chain
+                    try {
+                        await waitForTransactionConfirmation(signedTransactions[0].hash, {
+                            requireConfirmed: true,
+                        });
+                    } catch (confirmationError: any) {
+                        // Log confirmation timeout but continue - watchtower is optional
+                        reportToSentry(confirmationError);
+                        // eslint-disable-next-line no-console
+                        console.warn('Transaction confirmation timeout:', confirmationError);
+                    }
+
+                    // Send the retire and remove transactions to the watchtower
+                    try {
+                        await startUnstaking({
+                            staker_address: activeAddress.value!,
+                            transactions: {
+                                inactive_stake_tx_hash: signedTransactions[0].hash,
+                                retire_tx: signedTransactions[1].serializedTx,
+                                unstake_tx: signedTransactions[2].serializedTx,
+                            },
+                        });
+                    } catch (watchtowerError: any) {
+                        // Log watchtower error but don't fail the unstaking operation
+                        // The deactivation was successful, watchtower is just for automation
+                        reportToSentry(watchtowerError);
+                        // eslint-disable-next-line no-console
+                        console.warn('Watchtower registration failed:', watchtowerError);
                     }
 
                     context.emit('statusChange', {
@@ -263,16 +364,11 @@ export default defineComponent({
                         title: $t(
                             'Successfully deactivated {amount} NIM from your stake with {validator}',
                             {
-                                amount: Math.abs((activeStake.value!.inactiveBalance - stakeDelta.value) / 1e5),
+                                amount: Math.abs(unstakeAmount / 1e5),
                                 validator: validatorLabelOrAddress,
                             },
                         ),
                     });
-
-                    // if (Math.abs(stakeDelta.value) === activeStake.value!.activeBalance) {
-                    //     // Close staking modal
-                    //     router.back();
-                    // }
                 }
 
                 window.setTimeout(() => {

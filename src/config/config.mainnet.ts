@@ -47,6 +47,10 @@ export default {
         },
     },
 
+    albatrossWatchtower: {
+        endpoint: 'https://watchtower.pos.nimiq.com',
+    },
+
     polygon: {
         enabled: true,
         // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.

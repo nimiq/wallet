@@ -573,6 +573,70 @@ export async function sendTransaction(tx: SignedTransaction | string) {
     return plain;
 }
 
+export function waitForTransactionConfirmation(
+    txHash: string,
+    options?: Partial<{
+        timeout: number,
+        /** Wait for macro-block confirmation (CONFIRMED state), not just micro-block inclusion */
+        requireConfirmed: boolean,
+    }>,
+): Promise<void> {
+    const defaults = {
+        timeout: 120000, // 2 minutes (2 macro blocks in Albatross)
+        requireConfirmed: false,
+    };
+
+    const { timeout, requireConfirmed } = { ...defaults, ...options };
+    const transactionsStore = useTransactionsStore();
+
+    return new Promise((resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const isReady = (tx: any) => {
+            if (!tx) return false;
+            if (requireConfirmed) {
+                return tx.state === TransactionState.CONFIRMED
+                    || tx.state === TransactionState.MINED;
+            }
+            return tx.state === TransactionState.INCLUDED
+                || tx.state === TransactionState.CONFIRMED
+                || tx.state === TransactionState.MINED;
+        };
+
+        const currentTx = transactionsStore.state.transactions[txHash];
+        console.debug('waitForTransactionConfirmation: initial check', {
+            txHash, state: currentTx?.state, requireConfirmed,
+        });
+
+        if (isReady(currentTx)) {
+            console.debug('waitForTransactionConfirmation: already ready, resolving immediately');
+            resolve();
+            return;
+        }
+
+        // Set up timeout
+        const timeoutId = setTimeout(() => {
+            const tx = transactionsStore.state.transactions[txHash];
+            console.warn('waitForTransactionConfirmation: timeout', { txHash, currentState: tx?.state });
+            stopWatcher();
+            reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
+        }, timeout);
+
+        // Watch for transaction state changes
+        const stopWatcher = watch(
+            () => transactionsStore.state.transactions[txHash],
+            (tx) => {
+                console.debug('waitForTransactionConfirmation: state changed', { txHash, state: tx?.state });
+                if (isReady(tx)) {
+                    console.debug('waitForTransactionConfirmation: transaction ready, resolving');
+                    clearTimeout(timeoutId);
+                    stopWatcher();
+                    resolve();
+                }
+            },
+        );
+    });
+}
+
 async function retry<T>(func: (...args: any[]) => T | Promise<T>, options?: Partial<{
     baseDelay: number,
     maxRetries: number,

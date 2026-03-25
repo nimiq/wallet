@@ -64,14 +64,14 @@ export default defineComponent({
             console.debug('Scanned QR code:', result); // eslint-disable-line no-console
 
             // Cashlink
-            if (/https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
+            if (/^https:\/\/hub\.nimiq(-testnet)?\.com\/cashlink\//.test(result)) {
                 // result is a cashlink so redirect to hub
                 window.location.href = result;
                 return;
             }
 
             // Nimiq-controlled short-links
-            if (/https:\/\/nim\.id\/.+/.test(result)) {
+            if (/^https:\/\/nim\.id\/.+/.test(result)) {
                 window.location.href = result;
                 return;
             }

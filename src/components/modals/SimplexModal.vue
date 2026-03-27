@@ -1,5 +1,5 @@
 <template>
-    <Modal class="moonpay-modal" emitClose @close="close">
+    <Modal class="simplex-modal" emitClose @close="close">
         <PageHeader>
             {{ $t('Buy with Simplex') }}
         </PageHeader>
@@ -354,7 +354,7 @@ export default defineComponent({
 @import '../../scss/functions.scss';
 
 .modal ::v-deep .small-page {
-    height: 83.25rem; /* Height to fit Moonpay confirmation page without iframe scrollbar, with two-line disclaimer */
+    height: 83.25rem; /* Height to fit Simplex confirmation page without iframe scrollbar, with two-line disclaimer */
 }
 
 .page-header {

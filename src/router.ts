@@ -88,6 +88,8 @@ const MoonpaySellInfoModal = () =>
     import(/* webpackChunkName: "moonpay-modal" */ './components/modals/MoonpaySellInfoModal.vue');
 const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
+const CoinifyModal = () =>
+    import(/* webpackChunkName: "coinify-modal" */ './components/modals/CoinifyModal.vue');
 
 // Staking Modals
 const StakingModal = () =>
@@ -141,6 +143,7 @@ export enum RouteName {
     MoonpaySellInfo = 'moonpay-sell-info',
     Moonpay = 'moonpay',
     Simplex = 'simplex',
+    Coinify = 'coinify',
     RootReleaseNotes = 'root-release-notes',
     ExportHistory = 'export-history',
     Staking = 'staking',
@@ -495,6 +498,13 @@ const routes: RouteConfig[] = [{
                 'persistent-modal': SimplexModal,
             },
             name: RouteName.Simplex,
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            path: '/coinify',
+            components: {
+                modal: CoinifyModal,
+            },
+            name: RouteName.Coinify,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/release-notes',

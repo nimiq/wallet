@@ -125,6 +125,12 @@ export default {
         apiKey: 'pk_test_4cc61433-31dc-4020-b442-ba7b77cc9fa7',
     },
 
+    coinify: {
+        enabled: true,
+        widgetUrl: 'https://trade-ui.sandbox.coinify.com',
+        partnerId: '', // sandbox partner ID
+    },
+
     goCrypto: {
         enabled: true,
         apiEndpoint: 'https://api.staging.gocrypto.com/',

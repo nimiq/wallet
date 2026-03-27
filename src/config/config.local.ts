@@ -153,6 +153,12 @@ export default {
         apiKey: 'pk_test_0c3e2ecd-1546-4068-ae01-d49382e1266a',
     },
 
+    coinify: {
+        enabled: true,
+        widgetUrl: 'https://trade-ui.sandbox.coinify.com',
+        partnerId: '39f9f437-44b7-4a8b-a858-f512d14ec9c5', // sandbox partner ID
+    },
+
     goCrypto: {
         enabled: true,
         apiEndpoint: 'https://api.staging.gocrypto.com/',

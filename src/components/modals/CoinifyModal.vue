@@ -22,8 +22,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, onUnmounted } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import { CryptoCurrency } from '@nimiq/utils';
 import router from '@/router';
 import { useFiatStore } from '@/stores/Fiat';
 import { useAccountStore } from '@/stores/Account';
@@ -52,6 +53,8 @@ export default defineComponent({
         const { availableExternalAddresses } = useBtcAddressStore();
         const { activeAddress: polygonActiveAddress } = usePolygonAddressStore();
 
+        const widgetAddresses = new Map<string, string>();
+
         const widgetUrl = computed(() => {
             const url = new URL(config.coinify.widgetUrl);
             url.searchParams.set('partnerId', config.coinify.partnerId);
@@ -72,19 +75,95 @@ export default defineComponent({
 
             // Pass the relevant addresses for the selected cryptocurrencies, so the user doesn't have to enter
             // them manually in the widget.
-            const addresses = [`NIM:${activeAddress.value!.replace(/\s/g, '')}`];
-            const walletTypes = ['NIM:self_hosted'];
+            widgetAddresses.set('NIM', activeAddress.value!.replace(/\s/g, ''));
             if (config.enableBitcoin && hasBitcoinAddresses.value && availableExternalAddresses.value.length) {
-                addresses.push(`BTC:${availableExternalAddresses.value[0]}`);
-                walletTypes.push('BTC:self_hosted');
+                widgetAddresses.set('BTC', availableExternalAddresses.value[0]);
             }
             if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
-                addresses.push(`${stablecoin.value.toUpperCase()}POLYGON:${polygonActiveAddress.value}`);
-                walletTypes.push(`${stablecoin.value.toUpperCase()}POLYGON:self_hosted`);
+                widgetAddresses.set(`${stablecoin.value.toUpperCase()}POLYGON`, polygonActiveAddress.value!);
             }
+
+            const addresses = [...widgetAddresses.entries()].map(([crypto, address]) => `${crypto}:${address}`);
+            const walletTypes = [...widgetAddresses.keys()].map((crypto) => `${crypto}:self_hosted`);
             url.searchParams.set('address', addresses.join(','));
             url.searchParams.set('walletType', walletTypes.join(','));
             return url.toString();
+        });
+
+        function onWidgetMessage(event: MessageEvent) {
+            if (event.origin !== config.coinify.widgetUrl) return;
+
+            const msg = event.data;
+
+            // We are only interested in sell confirmation events, where the user must make a transaction to Coinify
+            if (msg.event === 'trade.trade-created' && msg.context.transferIn.medium === 'blockchain') {
+                const payload = msg as {
+                    type: 'event',
+                    event: 'trade.trade-created',
+                    context: {
+                        createTime: string, // "2021-01-21T15:12:20.300Z"
+                        id: number, // 123456
+                        inAmount: number, // In full coins, e.g. 53.25
+                        inCurrency: string, // e.g. "EUR" or "NIM"
+                        isPriceQuoteApproximate: boolean,
+                        outAmountExpected: number, // In full coins, e.g. 0.00187817
+                        outCurrency: string, // e.g. "BTC"
+                        quoteExpireTime: string, // "2021-01-21T15:27:20.300Z"
+                        state: string, // e.g. "awaiting_transfer_in",
+                        traderEmail: string,
+                        traderId: number,
+                        transferIn: {
+                            id: number, // 123456
+                            sendAmount: number, // In full coins, e.g. 116023.12353
+                            receiveAmount: number, // In full coins, e.g. 116000
+                            currency: 'NIM' | 'BTC' | 'USDCPOLYGON' | 'USDTPOLYGON',
+                            medium: 'blockchain',
+                            details?: {
+                                account: string, // The crypto address the user should send the coins to
+                                memo?: string | null,
+                                paymentUri: string,
+                            },
+                        },
+                        transferOut: {
+                            id: number, // 123456
+                            sendAmount: number, // In full coins, e.g. 55.05
+                            receiveAmount: number, // In full coins, e.g. 50
+                            currency: string, // e.g. "USD"
+                            medium: 'bank',
+                            details: any, // Not relevant for our use case, can be ignored
+                        },
+                        updateTime: string, // "2021-01-21T15:12:20.300Z"
+                    },
+                };
+
+                // For NIM and BTC we can use the payment URI as-is
+                if (payload.context.inCurrency === 'NIM' || payload.context.inCurrency === 'BTC') {
+                    router.push(`/${payload.context.transferIn.details!.paymentUri}`);
+                }
+                // For USDC/T, we have to handle some things
+                if (payload.context.inCurrency === 'USDCPOLYGON') {
+                    // Ensure the user is in USDC mode
+                    useAccountSettingsStore().setStablecoin(CryptoCurrency.USDC);
+                    const paymentUri = payload.context.transferIn.details!.paymentUri
+                        .replace('usdc-polygon:', 'polygon:');
+                    router.push(`/${paymentUri}`);
+                }
+                if (payload.context.inCurrency === 'USDTPOLYGON') {
+                    // Ensure the user is in USDT mode
+                    useAccountSettingsStore().setStablecoin(CryptoCurrency.USDT);
+                    const paymentUri = payload.context.transferIn.details!.paymentUri
+                        .replace('usdt-polygon:', 'polygon:');
+                    router.push(`/${paymentUri}`);
+                }
+            }
+        }
+
+        onMounted(() => {
+            window.addEventListener('message', onWidgetMessage, false);
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener('message', onWidgetMessage, false);
         });
 
         function close() {

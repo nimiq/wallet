@@ -7,7 +7,7 @@
                     <a slot="link" href="https://coinify.com" target="_blank" rel="noopener">coinify.com</a>
                 </i18n>
             </Tooltip>
-            <span class="nq-label">Coinify</span>
+            <img src="../../assets/exchanges/coinify-full.png" alt="Coinify Logo">
             <div class="flex-spacer"></div>
         </header>
         <div class="separator"></div>
@@ -24,19 +24,66 @@
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
+import router from '@/router';
+import { useFiatStore } from '@/stores/Fiat';
+import { useAccountStore } from '@/stores/Account';
+import { useAccountSettingsStore } from '@/stores/AccountSettings';
+import { useAddressStore } from '@/stores/Address';
+import { useBtcAddressStore } from '@/stores/BtcAddress';
+import { usePolygonAddressStore } from '@/stores/PolygonAddress';
 import Modal from './Modal.vue';
 import { useConfig } from '../../composables/useConfig';
-import router from '@/router';
 
 export default defineComponent({
     name: 'CoinifyModal',
-    components: { Modal, Tooltip, InfoCircleSmallIcon },
-    setup() {
+    props: {
+        flow: {
+            type: String as () => 'buy' | 'sell',
+            default: 'buy' as const,
+            // validator: val => ['buy', 'sell'].includes(val), // Adding this breaks type-inference for props
+        },
+    },
+    setup(props) {
         const { config } = useConfig();
+        const { currency } = useFiatStore();
+        const { activeCurrency, hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
+        const { stablecoin } = useAccountSettingsStore();
+        const { activeAddress } = useAddressStore();
+        const { availableExternalAddresses } = useBtcAddressStore();
+        const { activeAddress: polygonActiveAddress } = usePolygonAddressStore();
 
         const widgetUrl = computed(() => {
             const url = new URL(config.coinify.widgetUrl);
             url.searchParams.set('partnerId', config.coinify.partnerId);
+            url.searchParams.set('partnerName', 'Nimiq');
+            url.searchParams.set('targetPage', props.flow);
+            url.searchParams.set('defaultCryptoCurrency', activeCurrency.value.toUpperCase());
+            url.searchParams.set('defaultFiatCurrency', currency.value.toUpperCase());
+
+            // Determine which cryptocurrencies to offer based on config and available addresses.
+            // NIM is always offered, BTC and Polygon options are conditional.
+            const cryptoCurrencies = ['NIM'];
+            if (config.enableBitcoin && hasBitcoinAddresses.value) cryptoCurrencies.push('BTC');
+            if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
+                // Coinify does not (yet) support USDT on Polygon, but passing it in does no harm, it's simply ignored.
+                cryptoCurrencies.push(`${stablecoin.value.toUpperCase()}POLYGON`);
+            }
+            url.searchParams.set('cryptoCurrencies', cryptoCurrencies.join(','));
+
+            // Pass the relevant addresses for the selected cryptocurrencies, so the user doesn't have to enter
+            // them manually in the widget.
+            const addresses = [`NIM:${activeAddress.value!.replace(/\s/g, '')}`];
+            const walletTypes = ['NIM:self_hosted'];
+            if (config.enableBitcoin && hasBitcoinAddresses.value && availableExternalAddresses.value.length) {
+                addresses.push(`BTC:${availableExternalAddresses.value[0]}`);
+                walletTypes.push('BTC:self_hosted');
+            }
+            if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
+                addresses.push(`${stablecoin.value.toUpperCase()}POLYGON:${polygonActiveAddress.value}`);
+                walletTypes.push(`${stablecoin.value.toUpperCase()}POLYGON:self_hosted`);
+            }
+            url.searchParams.set('address', addresses.join(','));
+            url.searchParams.set('walletType', walletTypes.join(','));
             return url.toString();
         });
 
@@ -50,6 +97,11 @@ export default defineComponent({
             widgetUrl,
             close,
         };
+    },
+    components: {
+        Modal,
+        Tooltip,
+        InfoCircleSmallIcon,
     },
 });
 </script>
@@ -81,6 +133,10 @@ header {
 
     .nq-label {
         font-size: 2rem;
+    }
+
+    img {
+        width: 18rem;
     }
 
     .flex-spacer {

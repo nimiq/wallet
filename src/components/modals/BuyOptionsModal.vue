@@ -88,12 +88,12 @@
                     </footer>
                 </Component>
 
-                <Component :is="isMoonpayAvailable ? 'router-link' : 'span'"
-                    :to="{ name: 'moonpay', query: $route.query }" replace
-                    class="option moonpay flex-column"
-                    :class="{disabled: !isMoonpayAvailable}"
+                <Component :is="isCoinifyAvailable ? 'router-link' : 'span'"
+                    :to="{ name: 'coinify', query: $route.query }" replace
+                    class="option coinify flex-column"
+                    :class="{disabled: !isCoinifyAvailable}"
                 >
-                    <img src="../../assets/exchanges/moonpay-mono.svg" class="logo" alt="Moonpay">
+                    <img src="../../assets/exchanges/coinify-mono.png" class="logo" alt="Coinify">
 
                     <div class="fees">
                         <div>{{ $t('Bank Transfer') }}</div>
@@ -101,10 +101,8 @@
                             1%<br>
                             <i18n path="min {amount}" tag="span" class="low">
                                 <FiatAmount slot="amount"
-                                    :amount="3.99"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                        ? fiatCurrency
-                                        : FiatCurrency.USD"
+                                    :amount="4.99"
+                                    :currency="FiatCurrency.USD"
                                 />
                             </i18n>
                         </div>
@@ -118,10 +116,8 @@
                             4.5%<br>
                             <i18n path="min {amount}" tag="span" class="low">
                                 <FiatAmount slot="amount"
-                                    :amount="3.99"
-                                    :currency="[FiatCurrency.EUR, FiatCurrency.GBP].includes(fiatCurrency)
-                                        ? fiatCurrency
-                                        : FiatCurrency.USD"
+                                    :amount="4.99"
+                                    :currency="FiatCurrency.USD"
                                 />
                             </i18n>
                         </div>
@@ -142,7 +138,7 @@
                         </template>
                     </div>
 
-                    <footer v-if="isMoonpayAvailable" class="flex-row">
+                    <footer v-if="isCoinifyAvailable" class="flex-row">
                         {{ $t('+ network fees, registration required') }}
                         <div class="flex-grow"></div>
                         <CaretRightIcon/>
@@ -219,7 +215,7 @@ import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 import { useConfig } from '../../composables/useConfig';
 import { useGeoIp } from '../../composables/useGeoIp';
 import I18nDisplayNames from '../../lib/I18nDisplayNames';
-import { MOONPAY_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
+import { COINIFY_COUNTRY_CODES, SIMPLEX_COUNTRY_CODES } from '../../lib/Countries';
 import { useSettingsStore } from '../../stores/Settings';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 // import { Trial } from '../../lib/Trials';
@@ -240,10 +236,9 @@ export default defineComponent({
 
         const country = ref<Country>(null);
 
-        const isMoonpayAvailable = computed(() => { // eslint-disable-line arrow-body-style
-            return config.moonpay.enabled
-                && cryptoCurrency.value !== CryptoCurrency.NIM // not currently available for NIM
-                && (!country.value || MOONPAY_COUNTRY_CODES.includes(country.value.code));
+        const isCoinifyAvailable = computed(() => { // eslint-disable-line arrow-body-style
+            return config.coinify.enabled
+                && (!country.value || COINIFY_COUNTRY_CODES.includes(country.value.code));
         });
 
         const isSimplexAvailable = computed(() => { // eslint-disable-line arrow-body-style
@@ -251,7 +246,7 @@ export default defineComponent({
                 && (!country.value || SIMPLEX_COUNTRY_CODES.includes(country.value.code));
         });
 
-        const isCreditCardAvailable = computed(() => isMoonpayAvailable.value || isSimplexAvailable.value);
+        const isCreditCardAvailable = computed(() => isCoinifyAvailable.value || isSimplexAvailable.value);
 
         const i18nCountryName = new I18nDisplayNames('region');
 
@@ -271,7 +266,7 @@ export default defineComponent({
             CryptoCurrency,
             stablecoin,
             country,
-            isMoonpayAvailable,
+            isCoinifyAvailable,
             isSimplexAvailable,
             isCreditCardAvailable,
             cryptoCurrency,
@@ -420,10 +415,11 @@ header {
         }
     }
 
-    &.moonpay {
-        background-color: #7D00FF;
+    &.coinify {
+        background-color: #ff8200;
         .logo {
             width: 11.5rem;
+            height: auto;
         }
     }
 
@@ -458,7 +454,7 @@ header {
         }
     }
 
-    &.moonpay .fees .low {
+    &.coinify .fees .low {
         opacity: 0.7;
     }
 

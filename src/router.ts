@@ -90,6 +90,8 @@ const SimplexModal = () =>
     import(/* webpackChunkName: "simplex-modal" */ './components/modals/SimplexModal.vue');
 const CoinifyModal = () =>
     import(/* webpackChunkName: "coinify-modal" */ './components/modals/CoinifyModal.vue');
+const CoinifySellInfoModal = () =>
+    import(/* webpackChunkName: "coinify-modal" */ './components/modals/CoinifySellInfoModal.vue');
 
 // Staking Modals
 const StakingModal = () =>
@@ -143,6 +145,7 @@ export enum RouteName {
     MoonpaySellInfo = 'moonpay-sell-info',
     Moonpay = 'moonpay',
     Simplex = 'simplex',
+    CoinifySellInfo = 'coinify-sell-info',
     Coinify = 'coinify',
     RootReleaseNotes = 'root-release-notes',
     ExportHistory = 'export-history',
@@ -219,6 +222,13 @@ const sidebarModalRoutes = {
         path: '/moonpay-sell-info',
         components: {
             modal: MoonpaySellInfoModal,
+        },
+        meta: { column: Columns.DYNAMIC },
+    }),
+    coinifySellInfo: createContextRoutes(RouteName.CoinifySellInfo, {
+        path: '/coinify-sell-info',
+        components: {
+            modal: CoinifySellInfoModal,
         },
         meta: { column: Columns.DYNAMIC },
     }),
@@ -505,6 +515,7 @@ const routes: RouteConfig[] = [{
                 modal: CoinifyModal,
             },
             name: RouteName.Coinify,
+            props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/release-notes',
@@ -550,6 +561,7 @@ const routes: RouteConfig[] = [{
         sidebarModalRoutes.sellCrypto.base,
         sidebarModalRoutes.swap.base,
         sidebarModalRoutes.moonpaySellInfo.base,
+        sidebarModalRoutes.coinifySellInfo.base,
         ],
         beforeEnter: (to, from, next) => {
             if (from.fullPath === '/' && to.hash.startsWith('#_request/')) {
@@ -597,6 +609,7 @@ const routes: RouteConfig[] = [{
         sidebarModalRoutes.swap.settings,
         sidebarModalRoutes.sellCrypto.settings,
         sidebarModalRoutes.moonpaySellInfo.settings,
+        sidebarModalRoutes.coinifySellInfo.settings,
         ],
     }],
 }, {
@@ -626,6 +639,7 @@ const routes: RouteConfig[] = [{
     sidebarModalRoutes.swap.network,
     sidebarModalRoutes.sellCrypto.network,
     sidebarModalRoutes.moonpaySellInfo.network,
+    sidebarModalRoutes.coinifySellInfo.network,
     ],
 }];
 

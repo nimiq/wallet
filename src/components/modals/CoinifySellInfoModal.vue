@@ -58,17 +58,14 @@ import Modal from './Modal.vue';
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
 import UsdcIcon from '../icons/UsdcIcon.vue';
 import UsdtIcon from '../icons/UsdtIcon.vue';
-import { useFiatStore } from '../../stores/Fiat';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { CryptoCurrency, FiatCurrency } from '../../lib/Constants';
 
 export default defineComponent({
     setup() {
-        const { currency } = useFiatStore();
         const { stablecoin } = useAccountSettingsStore();
 
         return {
-            currency,
             FiatCurrency,
             stablecoin,
             CryptoCurrency,

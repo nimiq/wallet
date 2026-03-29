@@ -128,7 +128,7 @@ export default {
     coinify: {
         enabled: true,
         widgetUrl: 'https://trade-ui.sandbox.coinify.com',
-        partnerId: '', // sandbox partner ID
+        partnerId: '39f9f437-44b7-4a8b-a858-f512d14ec9c5', // sandbox partner ID
     },
 
     goCrypto: {

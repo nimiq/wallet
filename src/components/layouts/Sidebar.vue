@@ -353,8 +353,12 @@ export default defineComponent({
 
         const enabledSellProviders = computed(() => {
             const providers: SellProvider[] = [];
+
             if (canSellCryptoWithMoonpay.value) providers.push(SellProvider.Moonpay);
-            providers.push(SellProvider.Coinify); // Coinify can sell any wallet-supported currency
+
+            // Coinify can sell all wallet-supported cryptocurrencies
+            if (config.coinify.enabled) providers.push(SellProvider.Coinify);
+
             return providers;
         });
 

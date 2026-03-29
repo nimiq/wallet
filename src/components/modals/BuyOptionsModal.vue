@@ -121,21 +121,6 @@
                                 />
                             </i18n>
                         </div>
-
-                        <template v-if="country && country.code === 'BR'">
-                            <div>PIX</div>
-                            <div>2.95%</div>
-                        </template>
-
-                        <template v-if="country && country.code === 'GB'">
-                            <div>Faster Payments</div>
-                            <div>1%</div>
-                        </template>
-
-                        <template v-if="country && country.code === 'NG'">
-                            <div>YellowCard</div>
-                            <div>1.5%</div>
-                        </template>
                     </div>
 
                     <footer v-if="isCoinifyAvailable" class="flex-row">
@@ -145,10 +130,7 @@
                     </footer>
                     <footer v-else class="flex-row">
                         <ForbiddenIcon/>
-                        {{ cryptoCurrency === CryptoCurrency.NIM
-                            ? $t('Not available for NIM')
-                            : $t('Not available in your country')
-                        }}
+                        {{ $t('Not available in your country') }}
                     </footer>
                 </Component>
             </div>

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, onMounted, onUnmounted } from '@vue/composition-api';
 import { Tooltip, InfoCircleSmallIcon } from '@nimiq/vue-components';
 import { CryptoCurrency } from '@nimiq/utils';
 import router from '@/router';
@@ -53,45 +53,50 @@ export default defineComponent({
         const { availableExternalAddresses } = useBtcAddressStore();
         const { activeAddress: polygonActiveAddress } = usePolygonAddressStore();
 
+        // Construct widget iframe URL
         const widgetAddresses = new Map<string, string>();
+        const url = new URL(config.coinify.widgetUrl);
+        url.searchParams.set('partnerId', config.coinify.partnerId);
+        url.searchParams.set('partnerName', 'Nimiq');
+        url.searchParams.set('targetPage', props.flow);
+        url.searchParams.set(
+            'defaultCryptoCurrency',
+            activeCurrency.value === CryptoCurrency.USDC
+                ? 'USDCPOLYGON'
+                : activeCurrency.value === CryptoCurrency.USDT
+                    ? 'USDTPOLYGON'
+                    : activeCurrency.value.toUpperCase(),
+        );
+        url.searchParams.set('defaultFiatCurrency', currency.value.toUpperCase());
 
-        const widgetUrl = computed(() => {
-            const url = new URL(config.coinify.widgetUrl);
-            url.searchParams.set('partnerId', config.coinify.partnerId);
-            url.searchParams.set('partnerName', 'Nimiq');
-            url.searchParams.set('targetPage', props.flow);
-            url.searchParams.set('defaultCryptoCurrency', activeCurrency.value.toUpperCase());
-            url.searchParams.set('defaultFiatCurrency', currency.value.toUpperCase());
+        // Determine which cryptocurrencies to offer based on config and available addresses.
+        // NIM is always offered, BTC and Polygon options are conditional.
+        const cryptoCurrencies = ['NIM'];
+        if (config.enableBitcoin && hasBitcoinAddresses.value) cryptoCurrencies.push('BTC');
+        if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
+            // Coinify does not (yet) support USDT on Polygon, but passing it in does no harm, it's simply ignored.
+            cryptoCurrencies.push(`${stablecoin.value.toUpperCase()}POLYGON`);
+        }
+        url.searchParams.set('cryptoCurrencies', cryptoCurrencies.join(','));
 
-            // Determine which cryptocurrencies to offer based on config and available addresses.
-            // NIM is always offered, BTC and Polygon options are conditional.
-            const cryptoCurrencies = ['NIM'];
-            if (config.enableBitcoin && hasBitcoinAddresses.value) cryptoCurrencies.push('BTC');
-            if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
-                // Coinify does not (yet) support USDT on Polygon, but passing it in does no harm, it's simply ignored.
-                cryptoCurrencies.push(`${stablecoin.value.toUpperCase()}POLYGON`);
-            }
-            url.searchParams.set('cryptoCurrencies', cryptoCurrencies.join(','));
+        // Pass the relevant addresses for the selected cryptocurrencies, so the user doesn't have to enter
+        // them manually in the widget.
+        widgetAddresses.set('NIM', activeAddress.value!.replace(/\s/g, ''));
+        if (config.enableBitcoin && hasBitcoinAddresses.value && availableExternalAddresses.value.length) {
+            widgetAddresses.set('BTC', availableExternalAddresses.value[0]);
+        }
+        if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
+            widgetAddresses.set(`${stablecoin.value.toUpperCase()}POLYGON`, polygonActiveAddress.value!);
+        }
 
-            // Pass the relevant addresses for the selected cryptocurrencies, so the user doesn't have to enter
-            // them manually in the widget.
-            widgetAddresses.set('NIM', activeAddress.value!.replace(/\s/g, ''));
-            if (config.enableBitcoin && hasBitcoinAddresses.value && availableExternalAddresses.value.length) {
-                widgetAddresses.set('BTC', availableExternalAddresses.value[0]);
-            }
-            if (config.polygon.enabled && hasPolygonAddresses.value && stablecoin.value) {
-                widgetAddresses.set(`${stablecoin.value.toUpperCase()}POLYGON`, polygonActiveAddress.value!);
-            }
-
-            const addresses = [...widgetAddresses.entries()].map(([crypto, address]) => `${crypto}:${address}`);
-            const walletTypes = [...widgetAddresses.keys()].map((crypto) => `${crypto}:self_hosted`);
-            url.searchParams.set('address', addresses.join(','));
-            url.searchParams.set('walletType', walletTypes.join(','));
-            return url.toString();
-        });
+        const addresses = [...widgetAddresses.entries()].map(([crypto, address]) => `${crypto}:${address}`);
+        const walletTypes = [...widgetAddresses.keys()].map((crypto) => `${crypto}:self_hosted`);
+        url.searchParams.set('address', addresses.join(','));
+        url.searchParams.set('walletType', walletTypes.join(','));
+        const widgetUrl = url.toString();
 
         function onWidgetMessage(event: MessageEvent) {
-            if (event.origin !== config.coinify.widgetUrl) return;
+            if (event.origin !== new URL(config.coinify.widgetUrl).origin) return;
 
             const msg = event.data;
 
@@ -168,7 +173,7 @@ export default defineComponent({
 
         function close() {
             // Force navigation to home instead of using router.back()
-            // to avoid issues with Simplex widget interfering with browser history
+            // to avoid issues with Coinify widget interfering with browser history
             router.push('/');
         }
 

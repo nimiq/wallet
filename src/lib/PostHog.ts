@@ -39,6 +39,8 @@ export const enum PostHogEvent {
     TRANSACTION_SENT_USDC = 'transaction_sent_usdc',
     TRANSACTION_SENT_USDT = 'transaction_sent_usdt',
     SWAP_INITIATED = 'swap_initiated',
+    SWAP_COMPLETED = 'swap_completed',
+    SWAP_FAILED = 'swap_failed',
     ACCOUNT_SWITCHED = 'account_switched',
     APP_STARTED = 'app_started',
 }
@@ -118,6 +120,33 @@ export function trackSwapInitiated(fromAsset: string, toAsset: string) {
     posthog.capture(PostHogEvent.SWAP_INITIATED, {
         from_asset: fromAsset,
         to_asset: toAsset,
+    });
+}
+
+/**
+ * Fired when a swap reaches the COMPLETE state (both legs settled on-chain).
+ * @param fromAsset  The asset that was sold.
+ * @param toAsset    The asset that was received.
+ */
+export function trackSwapCompleted(fromAsset: string, toAsset: string) {
+    posthog.capture(PostHogEvent.SWAP_COMPLETED, {
+        from_asset: fromAsset,
+        to_asset: toAsset,
+    });
+}
+
+/**
+ * Fired when a swap fails – either because signing was rejected/errored, or because
+ * the swap expired before completion.
+ * @param fromAsset  The asset being sold (may be undefined if the assets are unknown).
+ * @param toAsset    The asset being bought.
+ * @param reason     A short string describing the failure: 'signing_error' | 'expired'.
+ */
+export function trackSwapFailed(fromAsset: string, toAsset: string, reason: 'signing_error' | 'expired') {
+    posthog.capture(PostHogEvent.SWAP_FAILED, {
+        from_asset: fromAsset,
+        to_asset: toAsset,
+        reason,
     });
 }
 

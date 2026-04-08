@@ -345,7 +345,7 @@ import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenG
 import ButtonGroup from '../ButtonGroup.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
 import { reportToSentry } from '../../lib/Sentry';
-import { trackSwapInitiated } from '../../lib/PostHog';
+import { trackSwapInitiated, trackSwapFailed } from '../../lib/PostHog';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -1963,6 +1963,7 @@ export default defineComponent({
             } catch (error: any) {
                 reportToSentry(error);
                 swapError.value = error.message;
+                trackSwapFailed(leftAsset.value, rightAsset.value, 'signing_error');
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();
@@ -1992,6 +1993,7 @@ export default defineComponent({
                 );
                 reportToSentry(error);
                 swapError.value = error.message;
+                trackSwapFailed(fund.type, redeem.type, 'signing_error');
                 cancelSwap({ id: (await hubRequest).swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();
@@ -2030,6 +2032,7 @@ export default defineComponent({
             } catch (error) {
                 reportToSentry(error);
                 swapError.value = $t('Invalid swap state, swap aborted!') as string;
+                trackSwapFailed(fund.type, redeem.type, 'signing_error');
                 cancelSwap({ id: swapId } as PreSwap);
                 currentlySigning.value = false;
                 updateEstimate();

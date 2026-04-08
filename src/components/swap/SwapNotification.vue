@@ -90,6 +90,7 @@ import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../
 import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../../stores/UsdtTransactions';
 import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { reportToSentry } from '../../lib/Sentry';
+import { trackSwapCompleted, trackSwapFailed } from '../../lib/PostHog';
 
 enum SwapError {
     EXPIRED = 'EXPIRED',
@@ -191,6 +192,11 @@ export default defineComponent({
             if (await isExpired()) {
                 if (swapHandler) swapHandler.stop(new Error(SwapError.EXPIRED));
                 cleanUp();
+                trackSwapFailed(
+                    activeSwap.value!.from.asset,
+                    activeSwap.value!.to.asset,
+                    'expired',
+                );
                 updateSwap({
                     state: SwapState.EXPIRED,
                 });
@@ -915,6 +921,7 @@ export default defineComponent({
                     currentError.value = null;
                 }
                 case SwapState.COMPLETE: {
+                    trackSwapCompleted(activeSwap.value!.from.asset, activeSwap.value!.to.asset);
                     if (Object.keys(swap$.swaps).length === 1) {
                         setPromoBoxVisible(true);
                     }

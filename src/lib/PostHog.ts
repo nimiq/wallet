@@ -184,9 +184,8 @@ export function trackAppStarted() {
 }
 
 /**
- * Fired when the stablecoin (USDC or USDT) selection is inferred from the account switch context.
- * Used internally to provide the correct currency label in {@link trackUsdcTransactionSent} /
- * {@link trackUsdtTransactionSent}.
+ * Convenience wrapper that calls either {@link trackUsdcTransactionSent} or {@link trackUsdtTransactionSent}
+ * depending on the stablecoin currency provided.
  */
 export function trackStablecoinTransactionSent(currency: CryptoCurrency.USDC | CryptoCurrency.USDT) {
     if (currency === CryptoCurrency.USDC) {

@@ -7,7 +7,11 @@ import { CryptoCurrency } from './Constants';
 
 // --------------- Initialisation ---------------
 
+let postHogInitialized = false;
+
 export function initPostHog(apiKey: string, apiHost: string) {
+    if (postHogInitialized) return;
+    postHogInitialized = true;
     posthog.init(apiKey, {
         api_host: apiHost,
         // Disable automatic capture of page views, clicks, etc. – we only track explicit events.
@@ -19,6 +23,10 @@ export function initPostHog(apiKey: string, apiHost: string) {
         // Do not send any device / browser metadata that could be used to fingerprint users.
         disable_session_recording: true,
     });
+}
+
+export function isPostHogInitialized() {
+    return postHogInitialized;
 }
 
 // --------------- Event names ---------------

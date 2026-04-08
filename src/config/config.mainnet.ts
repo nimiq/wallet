@@ -141,7 +141,7 @@ export default {
     },
 
     posthog: {
-        enabled: true,
+        enabled: false,
         // This is a publishable / client-side key – safe to commit.
         apiKey: '',
         apiHost: 'https://eu.i.posthog.com',

@@ -23,7 +23,7 @@ import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { CryptoCurrency, ENV_MAIN } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
-import { initPostHog, trackAppStarted } from './lib/PostHog';
+import { initPostHog, trackAppStarted, isPostHogInitialized } from './lib/PostHog';
 import { useConfig } from './composables/useConfig';
 import { initPwa } from './composables/usePwaInstallPrompt';
 import { useInactivityDetection } from './composables/useInactivityDetection';
@@ -178,7 +178,7 @@ async function start() {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }
 
-    trackAppStarted();
+    if (isPostHogInitialized()) trackAppStarted();
 }
 start();
 

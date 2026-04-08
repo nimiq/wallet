@@ -345,6 +345,7 @@ import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenG
 import ButtonGroup from '../ButtonGroup.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
 import { reportToSentry } from '../../lib/Sentry';
+import { trackSwapInitiated } from '../../lib/PostHog';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
@@ -2069,6 +2070,8 @@ export default defineComponent({
                     }),
                 nimiqProxySerializedTx: signedTransactions.nimProxy?.serializedTx,
             });
+
+            trackSwapInitiated(confirmedSwap.from.asset, confirmedSwap.to.asset);
 
             if (config.fastspot.watchtowerEndpoint) {
                 let settlementSerializedTx = swap.value!.settlementSerializedTx!;

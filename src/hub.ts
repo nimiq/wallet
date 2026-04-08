@@ -41,6 +41,7 @@ import {
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
+import { trackAccountSignup, trackAccountLogin } from './lib/PostHog';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
@@ -128,6 +129,11 @@ hubApi.on(HubApi.RequestType.ONBOARD, async (accounts) => {
     processAndStoreAccounts(accounts);
 
     const { requestType, type: accountType, btcAddresses } = accounts[0];
+    if (requestType === HubApi.RequestType.SIGNUP) {
+        trackAccountSignup();
+    } else if (requestType === HubApi.RequestType.LOGIN) {
+        trackAccountLogin();
+    }
     if (requestType === HubApi.RequestType.LOGIN && accountType !== AccountType.LEDGER) {
         // On login of a Keyguard account assume that the user had already seen the Welcome modal when crating the
         // account. Set the flag to not show it again to avoid annoying him. For Ledger accounts, we can't do the same
@@ -448,6 +454,11 @@ export async function onboard(asRedirect = false) {
     processAndStoreAccounts(accounts); // also enriches the added accounts with btc addresses already known to wallet
 
     const { requestType, type: accountType, btcAddresses, wordsExported, backupCodesExported } = accounts[0];
+    if (requestType === HubApi.RequestType.SIGNUP) {
+        trackAccountSignup();
+    } else if (requestType === HubApi.RequestType.LOGIN) {
+        trackAccountLogin();
+    }
     if (requestType === HubApi.RequestType.LOGIN && accountType !== AccountType.LEDGER) {
         // On login of a Keyguard account assume that the user had already seen the Welcome modal when crating the
         // account. Set the flag to not show it again to avoid annoying him. For Ledger accounts, we can't do the same

@@ -49,6 +49,7 @@
     "iban": "^0.0.14",
     "idb-keyval": "^6.1.0",
     "pinia": "^0.0.5",
+    "posthog-js": "1.365.3",
     "promise.allsettled": "^1.0.2",
     "register-service-worker": "^1.7.0",
     "safari-14-idb-fix": "^1.0.3",

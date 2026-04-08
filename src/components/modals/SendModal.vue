@@ -314,6 +314,7 @@ import {
     resolve as resolveUnstoppableDomain,
 } from '../../lib/UnstoppableDomains';
 import { reportToSentry } from '../../lib/Sentry';
+import { trackNimTransactionSent } from '../../lib/PostHog';
 
 export enum RecipientType {
     CONTACT,
@@ -874,6 +875,8 @@ export default defineComponent({
                 }
 
                 saveRecipientLabel();
+
+                trackNimTransactionSent();
 
                 // Show success screen
                 statusType.value = 'signing';

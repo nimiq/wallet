@@ -23,6 +23,7 @@ import router from './router';
 import { i18n, loadLanguage } from './i18n/i18n-setup';
 import { CryptoCurrency, ENV_MAIN } from './lib/Constants';
 import { startSentry } from './lib/Sentry';
+import { initPostHog, trackAppStarted } from './lib/PostHog';
 import { useConfig } from './composables/useConfig';
 import { initPwa } from './composables/usePwaInstallPrompt';
 import { useInactivityDetection } from './composables/useInactivityDetection';
@@ -123,6 +124,11 @@ async function start() {
         initMatomo(config.matomo.host, config.matomo.siteId);
     });
 
+    watch(() => {
+        if (!config.posthog.enabled || !config.posthog.apiKey) return;
+        initPostHog(config.posthog.apiKey, config.posthog.apiHost);
+    });
+
     // Make reactive config accessible in components
     Vue.prototype.$config = config;
 
@@ -171,6 +177,8 @@ async function start() {
     ) {
         useAccountStore().setActiveCurrency(CryptoCurrency.NIM);
     }
+
+    trackAppStarted();
 }
 start();
 

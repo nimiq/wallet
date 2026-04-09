@@ -192,11 +192,16 @@ export default defineComponent({
             if (await isExpired()) {
                 if (swapHandler) swapHandler.stop(new Error(SwapError.EXPIRED));
                 cleanUp();
-                trackSwapFailed(
-                    activeSwap.value!.from.asset,
-                    activeSwap.value!.to.asset,
-                    'expired',
-                );
+                // Only track on the transition into EXPIRED. `checkExpired` is called on every
+                // mount while a swap is still the activeSwap, so without this guard we would
+                // re-fire the event on every page reload of an already-expired swap.
+                if (activeSwap.value!.state !== SwapState.EXPIRED) {
+                    trackSwapFailed(
+                        activeSwap.value!.from.asset,
+                        activeSwap.value!.to.asset,
+                        'expired',
+                    );
+                }
                 updateSwap({
                     state: SwapState.EXPIRED,
                 });
@@ -324,6 +329,11 @@ export default defineComponent({
                 setActiveSwap(null);
                 return;
             }
+
+            // Capture the state at entry so the COMPLETE case below can distinguish a real
+            // state transition (fallthrough from SETTLE_INCOMING) from re-observing an
+            // already-COMPLETE swap on a page reload within the auto-dismiss window.
+            const initialState = activeSwap.value.state;
 
             console.info('Processing swap'); // eslint-disable-line no-console
 
@@ -921,7 +931,11 @@ export default defineComponent({
                     currentError.value = null;
                 }
                 case SwapState.COMPLETE: {
-                    trackSwapCompleted(activeSwap.value!.from.asset, activeSwap.value!.to.asset);
+                    // Only track on the actual transition into COMPLETE, not when
+                    // processSwap is re-invoked on mount with an already-COMPLETE swap.
+                    if (initialState !== SwapState.COMPLETE) {
+                        trackSwapCompleted(activeSwap.value!.from.asset, activeSwap.value!.to.asset);
+                    }
                     if (Object.keys(swap$.swaps).length === 1) {
                         setPromoBoxVisible(true);
                     }

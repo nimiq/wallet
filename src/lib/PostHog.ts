@@ -1,9 +1,74 @@
 import posthog from 'posthog-js';
+import type { BeforeSendFn } from 'posthog-js';
 import { useAccountStore } from '../stores/Account';
 import { useAddressStore } from '../stores/Address';
 import { useBtcAddressStore } from '../stores/BtcAddress';
 import { usePolygonAddressStore } from '../stores/PolygonAddress';
 import { CryptoCurrency } from './Constants';
+
+// --------------- Privacy: scrub sensitive path segments from URL-like properties ---------------
+
+// PostHog automatically attaches URL-like properties (e.g. `$current_url`, `$pathname`,
+// `$referrer`) to every event. Wallet routes can contain transaction hashes and addresses
+// (e.g. `/transaction/:hash`, `/nimiq:NQ07...`), which would otherwise leak into analytics.
+// The `before_send` hook below redacts any path segment that looks like a Nimiq address,
+// an EVM address / hash, or a raw hex identifier.
+const URL_LIKE_PROPERTIES = [
+    '$current_url',
+    '$pathname',
+    '$referrer',
+    '$initial_current_url',
+    '$initial_pathname',
+    '$initial_referrer',
+] as const;
+
+const REDACTED = '[redacted]';
+
+function isSensitivePathSegment(segment: string): boolean {
+    if (!segment) return false;
+    // Nimiq addresses: "NQxx ...", case-insensitive for safety.
+    if (/^NQ/i.test(segment)) return true;
+    // EVM addresses (0x + 40 hex) and tx hashes (0x + 64 hex).
+    if (/^0x/i.test(segment)) return true;
+    // URI-handoff routes: `/nimiq:NQ07...`, `/bitcoin:bc1...`, `/polygon:0x...`.
+    // These collapse to a single path segment whose prefix is the scheme, so the
+    // address/amount payload isn't caught by the NQ/0x/hex checks above.
+    if (/^(?:nimiq|bitcoin|polygon):/i.test(segment)) return true;
+    // Bare hex strings (e.g. NIM / BTC tx hashes). Require ≥ 8 chars to avoid
+    // matching short numeric ids or hex-shaped route names like `buy`.
+    if (/^[0-9a-fA-F]{8,}$/.test(segment)) return true;
+    return false;
+}
+
+function scrubPath(path: string): string {
+    return path
+        .split('/')
+        .map((seg) => (isSensitivePathSegment(seg) ? REDACTED : seg))
+        .join('/');
+}
+
+function scrubUrlLikeValue(value: unknown): unknown {
+    if (typeof value !== 'string' || !value) return value;
+    // `$current_url` is a full URL; `$pathname` is a bare path. Try URL parsing first,
+    // fall back to treating the string as a path.
+    try {
+        const url = new URL(value);
+        url.pathname = scrubPath(url.pathname);
+        return url.toString();
+    } catch {
+        return scrubPath(value);
+    }
+}
+
+const scrubSensitivePaths: BeforeSendFn = (captureResult) => {
+    if (!captureResult) return captureResult;
+    for (const key of URL_LIKE_PROPERTIES) {
+        if (key in captureResult.properties) {
+            captureResult.properties[key] = scrubUrlLikeValue(captureResult.properties[key]);
+        }
+    }
+    return captureResult;
+};
 
 // --------------- Initialisation ---------------
 
@@ -22,6 +87,8 @@ export function initPostHog(apiKey: string, apiHost: string) {
         persistence: 'memory',
         // Do not send any device / browser metadata that could be used to fingerprint users.
         disable_session_recording: true,
+        // Strip transaction hashes and addresses from URL-like properties before sending.
+        before_send: scrubSensitivePaths,
     });
 }
 

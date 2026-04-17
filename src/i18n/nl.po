@@ -1,4 +1,3 @@
-# 
 # Translators:
 # BlockchainShay <Shaylish@live.nl>, 2020
 # Jim <jimvendrig10@gmail.com>, 2021

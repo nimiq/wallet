@@ -1,4 +1,3 @@
-# 
 # Translators:
 # Daniel, 2022
 # Alexander Ivanov <saiv46.dev+transifex@gmail.com>, 2024

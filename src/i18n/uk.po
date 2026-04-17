@@ -1,4 +1,3 @@
-# 
 # Translators:
 # Daniel, 2022
 # Sören Schwert <hello@soerenschwert.de>, 2024

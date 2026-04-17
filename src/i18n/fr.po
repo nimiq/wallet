@@ -1,4 +1,3 @@
-# 
 # Translators:
 # Talleyrand, 2020
 # Daniel, 2022
@@ -2970,18 +2969,20 @@ msgstr "Synchronisation avec le réseau Bitcoin"
 
 #: src/components/modals/WelcomeModal.vue:75
 msgid "Take me to the Wallet"
-msgstr ""
+msgstr "Emmenez-moi au Wallet"
 
 #: src/components/modals/BackupModal.vue:43
 msgid "Takes a pen, a piece of paper and a safe place to store it."
 msgstr ""
-"Il faut un stylo, une feuille de papier et un endroit sûr pour les stocker."
+"Il vous faudra uniquement un stylo, une feuille de papier et un endroit sûr "
+"pour les stocker."
 
 #: src/components/modals/BackupModal.vue:24
 msgid "Takes two ways of writing to yourself, like a messenger + email."
 msgstr ""
-"Il existe deux façons de s'écrire à soi-même, comme une application de chat "
-"et une adresse e-mail."
+"Vous aurez besoin de deux moyens pour vous envoyer des messages à vous-même "
+": un système de messagerie instantanée (type application de chat) et une "
+"adresse e-mail."
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:31
 msgid "TEN31 Bank provides a bank account to lock your payment."

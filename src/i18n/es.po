@@ -1,4 +1,3 @@
-# 
 # Translators:
 # Rhody Lugo, 2021
 # Daniel, 2022

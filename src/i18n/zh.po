@@ -1,4 +1,3 @@
-# 
 # Translators:
 # Miao Yu <miaoyu319@gmail.com>, 2021
 # Daniel, 2022

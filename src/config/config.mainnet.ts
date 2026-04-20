@@ -139,4 +139,11 @@ export default {
         host: 'https://stats.nimiq-network.com',
         siteId: 214,
     },
+
+    posthog: {
+        enabled: false,
+        // This is a publishable / client-side key – safe to commit.
+        apiKey: '',
+        apiHost: 'https://eu.i.posthog.com',
+    },
 };

@@ -41,7 +41,7 @@ import {
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
 import type { RelayServerInfo } from './lib/usdc/OpenGSN';
-import { trackAccountSignup, trackAccountLogin } from './lib/PostHog';
+import { trackAccountSignup, trackAccountLogin, trackHubRequestAborted, trackHubError } from './lib/PostHog';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
@@ -223,9 +223,11 @@ function onError(error: 'Connection was closed' | Error) {
         || error.message === 'Request aborted' // Reject-on-back
         || error.message === 'CANCELED' // Cancelled by user action
     ) {
+        trackHubRequestAborted();
         return null;
     }
 
+    trackHubError(error);
     // TODO: Show user notification?
     throw error;
 }

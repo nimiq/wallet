@@ -108,6 +108,8 @@ export const enum PostHogEvent {
     SWAP_INITIATED = 'swap_initiated',
     SWAP_COMPLETED = 'swap_completed',
     SWAP_FAILED = 'swap_failed',
+    HUB_REQUEST_ABORTED = 'hub_request_aborted',
+    HUB_ERROR = 'hub_error',
     ACCOUNT_SWITCHED = 'account_switched',
     APP_STARTED = 'app_started',
 }
@@ -214,6 +216,23 @@ export function trackSwapFailed(fromAsset: string, toAsset: string, reason: 'sig
         from_asset: fromAsset,
         to_asset: toAsset,
         reason,
+    });
+}
+
+/**
+ * Fired when the user cancels/closes a Hub request before it completes.
+ */
+export function trackHubRequestAborted() {
+    posthog.capture(PostHogEvent.HUB_REQUEST_ABORTED);
+}
+
+/**
+ * Fired when the Hub returns an unexpected error (not a user-initiated abort).
+ * @param error  The error returned by the Hub.
+ */
+export function trackHubError(error: Error) {
+    posthog.capture(PostHogEvent.HUB_ERROR, {
+        error_message: error.message,
     });
 }
 

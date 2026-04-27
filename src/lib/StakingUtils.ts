@@ -1,7 +1,23 @@
 import { i18n } from '../i18n/i18n-setup';
 import { Transaction } from '../stores/Transactions';
-import { useStakingStore, AggregatedRestakingEvent } from '../stores/Staking';
+import { useStakingStore, AggregatedRestakingEvent, Validator } from '../stores/Staking';
 import { STAKING_CONTRACT_ADDRESS } from './Constants';
+
+export type ValidatorRef = {
+    address: string,
+    name?: string,
+    logo?: string,
+};
+
+export function toValidatorRef(validator: Validator): ValidatorRef {
+    return {
+        address: validator.address,
+        name: 'name' in validator ? validator.name : undefined,
+        logo: 'logo' in validator && !validator.hasDefaultLogo ? validator.logo : undefined,
+    };
+}
+
+export const validatorLabel = (v: ValidatorRef): string => v.name || v.address;
 
 export enum FilterState {
     TRUST = 'trustscore',

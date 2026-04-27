@@ -65,20 +65,17 @@ import ValidatorIcon from './ValidatorIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorScoreDetails from './ValidatorScoreDetails.vue';
 import { useAddressStore } from '../../stores/Address';
-import { sendStaking, signSwitchValidatorTransactions } from '../../hub';
+import { signSwitchValidatorTransactions } from '../../hub';
 import { sendTransaction as sendTx, getNetworkClient, waitForTransactionConfirmation } from '../../network';
 import { usePolicy } from '../../composables/usePolicy';
 import { useNetworkStore } from '../../stores/Network';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import { StakingOperationType } from '../../lib/StakingUtils';
+import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import { startSwitchValidator } from '../../lib/AlbatrossWatchtower';
+import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import BlueLink from '../BlueLink.vue';
 import { reportToSentry } from '../../lib/Sentry';
-
-const validatorName = (v: Validator): string | undefined => ('name' in v ? v.name : undefined);
-const validatorLogo = (v: Validator): string | undefined =>
-    ('logo' in v && !v.hasDefaultLogo ? v.logo : undefined);
 
 export default defineComponent({
     name: 'ValidatorDetailsOverlay',
@@ -179,14 +176,17 @@ export default defineComponent({
                 networkId,
             );
 
+            const target = toValidatorRef(props.validator);
+            const from = toValidatorRef(activeValidator.value);
+
             const signedTxs = await signSwitchValidatorTransactions({
                 transaction: [deactivateTx.serialize(), updateTx.serialize()],
-                senderLabel: validatorName(activeValidator.value) || activeValidator.value.address,
-                recipientLabel: validatorName(props.validator) || props.validator.address,
-                validatorAddress: props.validator.address,
-                validatorImageUrl: validatorLogo(props.validator),
-                fromValidatorAddress: activeValidator.value.address,
-                fromValidatorImageUrl: validatorLogo(activeValidator.value),
+                senderLabel: validatorLabel(from),
+                recipientLabel: validatorLabel(target),
+                validatorAddress: target.address,
+                validatorImageUrl: target.logo,
+                fromValidatorAddress: from.address,
+                fromValidatorImageUrl: from.logo,
                 amount: activeStake.value!.activeBalance + activeStake.value!.inactiveBalance,
             });
 
@@ -226,8 +226,8 @@ export default defineComponent({
             }
 
             setSwitchOperation(activeAddress.value!, {
-                targetValidatorAddress: props.validator.address,
-                targetValidatorName: validatorName(props.validator),
+                targetValidatorAddress: target.address,
+                targetValidatorName: target.name,
                 startedAtBlock: currentHeight,
                 deactivationTxHash,
             });
@@ -247,30 +247,14 @@ export default defineComponent({
                 title: $t('Changing validator') as string,
             });
 
-            const [{ Address, TransactionBuilder }, client] = await Promise.all([
-                import('@nimiq/core'),
-                getNetworkClient(),
-            ]);
-            const networkId = await client.getNetworkId();
+            const target = toValidatorRef(props.validator);
 
-            const transaction = TransactionBuilder.newUpdateStaker(
-                Address.fromUserFriendlyAddress(activeAddress.value!),
-                Address.fromUserFriendlyAddress(props.validator.address),
-                true, // reactivateAllStake
-                BigInt(0),
-                height.value,
-                networkId,
-            );
-
-            const txs = await sendStaking({
-                transaction: transaction.serialize(),
-                senderLabel: validatorName(activeValidator.value!) || activeValidator.value!.address,
-                recipientLabel: validatorName(props.validator) || props.validator.address,
-                validatorAddress: props.validator.address,
-                validatorImageUrl: validatorLogo(props.validator),
-                fromValidatorAddress: activeValidator.value!.address,
-                fromValidatorImageUrl: validatorLogo(activeValidator.value!),
+            const txs = await sendImmediateValidatorSwitch({
+                stakerAddress: activeAddress.value!,
+                height: height.value,
                 amount: activeStake.value!.inactiveBalance,
+                target,
+                from: toValidatorRef(activeValidator.value!),
             });
 
             if (!txs) {
@@ -288,7 +272,7 @@ export default defineComponent({
                 state: State.SUCCESS,
                 title: $t(
                     'Successfully changed validator to {validator}',
-                    { validator: validatorName(props.validator) || props.validator.address },
+                    { validator: validatorLabel(target) },
                 ),
             });
 

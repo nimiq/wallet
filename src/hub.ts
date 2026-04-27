@@ -649,6 +649,24 @@ export async function signUnstakingTransactions(request: {
     return signedTransactions;
 }
 
+/**
+ * Sign switch-validator transactions (set-active-stake + update-staker).
+ * Returns signed transactions without broadcasting - the caller handles
+ * broadcasting the deactivation and sending the update to the watchtower.
+ */
+export async function signSwitchValidatorTransactions(request: {
+    transaction: Uint8Array | Uint8Array[],
+    senderLabel?: string,
+    recipientLabel?: string,
+    validatorAddress?: string,
+    validatorImageUrl?: string,
+    fromValidatorAddress?: string,
+    fromValidatorImageUrl?: string,
+    amount?: number,
+}): Promise<SignedTransaction[] | null> {
+    return signStakingRaw(request) as Promise<SignedTransaction[] | null>;
+}
+
 export async function createCashlink(senderAddress: string, senderBalance?: number) {
     const cashlink = await hubApi.createCashlink({
         appName: APP_NAME,

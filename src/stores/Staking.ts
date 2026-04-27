@@ -88,6 +88,25 @@ export type RegisteredValidator = RawValidator & ApiValidator & {
 
 export type Validator = RawValidator | RegisteredValidator;
 
+export type SwitchValidatorRecord = {
+    targetValidatorAddress: string,
+    targetValidatorName?: string,
+    startedAtBlock: number,
+    deactivationTxHash: string,
+}
+
+const SWITCH_VALIDATOR_LS_PREFIX = 'switchValidator:';
+
+function getSwitchRecord(address: string): SwitchValidatorRecord | null {
+    try {
+        const raw = localStorage.getItem(`${SWITCH_VALIDATOR_LS_PREFIX}${address}`);
+        if (!raw) return null;
+        return JSON.parse(raw) as SwitchValidatorRecord;
+    } catch {
+        return null;
+    }
+}
+
 export type StakingScoringRules = any
 
 export const useStakingStore = createStore({
@@ -98,7 +117,10 @@ export const useStakingStore = createStore({
         stakeByAddress: {},
         stakingEventsByAddress: {},
         cachedMonthlyRewardsByAddress: {},
-    } as StakingState),
+        // Bumped on every switch-record write so `activeSwitchOperation` (which reads from
+        // localStorage) re-evaluates. Drop once switch records move into reactive state.
+        switchValidatorTrigger: 0,
+    } as StakingState & { switchValidatorTrigger: number }),
     getters: {
         validators: (state): Readonly<Record<string, Validator>> => {
             const validators: Record<string, Validator> = {};
@@ -216,6 +238,18 @@ export const useStakingStore = createStore({
             };
         },
 
+        activeSwitchOperation: (state): Readonly<SwitchValidatorRecord | null> => {
+            void state.switchValidatorTrigger; // eslint-disable-line no-void
+            const { activeAddress } = useAddressStore();
+            if (!activeAddress.value) return null;
+            return getSwitchRecord(activeAddress.value);
+        },
+        isSwitchingValidator: (state, { activeStake, activeSwitchOperation }): boolean => {
+            const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+            const stake = activeStake.value as Stake | null;
+            if (!record || !stake) return false;
+            return stake.activeBalance === 0 && stake.inactiveBalance > 0;
+        },
         stakingEvents: (state): Readonly<AggregatedRestakingEvent[] | null> => {
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
@@ -343,6 +377,7 @@ export const useStakingStore = createStore({
                 ...this.state.stakeByAddress,
                 [stake.address]: stake,
             };
+            this.checkSwitchCompletion(stake.address);
         },
         setStakes(stakes: Stake[]) {
             const newStakes: {[address: string]: Stake} = {};
@@ -352,6 +387,10 @@ export const useStakingStore = createStore({
             }
 
             this.state.stakeByAddress = newStakes;
+
+            for (const stake of stakes) {
+                this.checkSwitchCompletion(stake.address);
+            }
         },
         patchStake(address: string, patch: Partial<Omit<Stake, 'address'>>) {
             if (!this.state.stakeByAddress[address]) return;
@@ -393,6 +432,26 @@ export const useStakingStore = createStore({
 
             this.state.apiValidators = newApiValidators;
         },
+        setSwitchOperation(address: string, record: SwitchValidatorRecord) {
+            const key = `${SWITCH_VALIDATOR_LS_PREFIX}${address}`;
+            const serialized = JSON.stringify(record);
+            if (localStorage.getItem(key) === serialized) return;
+            localStorage.setItem(key, serialized);
+            this.state.switchValidatorTrigger++;
+        },
+        clearSwitchOperation(address: string) {
+            const key = `${SWITCH_VALIDATOR_LS_PREFIX}${address}`;
+            if (localStorage.getItem(key) === null) return;
+            localStorage.removeItem(key);
+            this.state.switchValidatorTrigger++;
+        },
+        checkSwitchCompletion(address: string) {
+            const stake = this.state.stakeByAddress[address];
+            if (!stake || stake.activeBalance === 0) return;
+            const record = getSwitchRecord(address);
+            if (record) this.clearSwitchOperation(address);
+        },
+
         setStakingEvents(address: string, events: AggregatedRestakingEvent[]) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new stake in Vue 3.

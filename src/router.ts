@@ -156,6 +156,9 @@ export enum RouteName {
     StakingRewards = 'staking-rewards',
 }
 
+/** Query passed to the Staking route to open the modal directly on the validator list page. */
+export const STAKING_QUERY_SHOW_VALIDATORS = { page: 'validators' } as const;
+
 /**
  * Helper function to create context-specific route variants for Settings and Network pages.
  * This allows modals opened from the sidebar to close back to the correct parent page.

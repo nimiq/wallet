@@ -4,7 +4,7 @@ import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
 import { useAddressStore } from './stores/Address';
-import { useTransactionsStore, TransactionState } from './stores/Transactions';
+import { useTransactionsStore, TransactionState, Transaction } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
@@ -12,6 +12,7 @@ import { useStakingStore, ApiValidator, RawValidator, AggregatedRestakingEvent }
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
+import { usePolicy } from './composables/usePolicy';
 
 let isLaunched = false;
 let clientPromise: Promise<Client>;
@@ -573,63 +574,93 @@ export async function sendTransaction(tx: SignedTransaction | string) {
     return plain;
 }
 
-export function waitForTransactionConfirmation(
+export async function waitForTransactionConfirmation(
     txHash: string,
     options?: Partial<{
         timeout: number,
-        /** Wait for macro-block confirmation (CONFIRMED state), not just micro-block inclusion */
+        /** Wait for macro-block confirmation, not just micro-block inclusion. */
         requireConfirmed: boolean,
     }>,
 ): Promise<void> {
-    const defaults = {
-        timeout: 120000, // 2 minutes (2 macro blocks in Albatross)
-        requireConfirmed: false,
-    };
-
-    const { timeout, requireConfirmed } = { ...defaults, ...options };
+    const { timeout, requireConfirmed } = { timeout: 120000, requireConfirmed: false, ...options };
     const transactionsStore = useTransactionsStore();
+    const networkStore = useNetworkStore();
 
-    return new Promise((resolve, reject) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const isReady = (tx: any) => {
-            if (!tx) return false;
-            if (requireConfirmed) {
-                return tx.state === TransactionState.CONFIRMED
-                    || tx.state === TransactionState.MINED;
-            }
-            return tx.state === TransactionState.INCLUDED
-                || tx.state === TransactionState.CONFIRMED
-                || tx.state === TransactionState.MINED;
-        };
+    const isIncluded = (tx: Transaction | undefined): boolean => !!tx && (
+        tx.state === TransactionState.INCLUDED
+        || tx.state === TransactionState.CONFIRMED
+        // @ts-expect-error MINED is not included in the types for PoS transactions
+        || tx.state === TransactionState.MINED
+    );
 
-        const currentTx = transactionsStore.state.transactions[txHash];
-        console.debug('waitForTransactionConfirmation: initial check', {
-            txHash, state: currentTx?.state, requireConfirmed,
+    if (!requireConfirmed) {
+        if (isIncluded(transactionsStore.state.transactions[txHash])) return;
+        await new Promise<void>((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+                stop();
+                reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
+            }, timeout);
+            const stop = watch(
+                () => transactionsStore.state.transactions[txHash]?.state,
+                () => {
+                    if (isIncluded(transactionsStore.state.transactions[txHash])) {
+                        clearTimeout(timeoutId);
+                        stop();
+                        resolve();
+                    }
+                },
+            );
         });
+        return;
+    }
 
-        if (isReady(currentTx)) {
-            console.debug('waitForTransactionConfirmation: already ready, resolving immediately');
-            resolve();
-            return;
-        }
+    // Macro-block confirmation: tx.state isn't reliable past `included` (it's mutated in
+    // place by `addTransactions` and Nimiq core doesn't always refire listeners). Instead,
+    // wait for `blockHeight`, compute the target macro block once, and watch the reactive
+    // chain height (which fires on every head-changed event).
+    const policy = await usePolicy();
 
-        // Set up timeout
+    const startTime = Date.now();
+    const remaining = () => Math.max(0, timeout - (Date.now() - startTime));
+
+    let tx = transactionsStore.state.transactions[txHash];
+    if (!tx || !tx.blockHeight) {
+        await new Promise<void>((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+                stop();
+                reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
+            }, remaining());
+            const stop = watch(
+                () => transactionsStore.state.transactions[txHash]?.blockHeight,
+                (blockHeight) => {
+                    if (blockHeight) {
+                        clearTimeout(timeoutId);
+                        stop();
+                        resolve();
+                    }
+                },
+            );
+        });
+        tx = transactionsStore.state.transactions[txHash];
+    }
+
+    const macroTarget = policy.macroBlockAfter(tx.blockHeight!);
+    if (networkStore.state.height >= macroTarget) return;
+
+    await new Promise<void>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
-            const tx = transactionsStore.state.transactions[txHash];
-            console.warn('waitForTransactionConfirmation: timeout', { txHash, currentState: tx?.state });
-            stopWatcher();
+            console.warn('waitForTransactionConfirmation: timeout', {
+                txHash, blockHeight: tx.blockHeight, macroTarget, height: networkStore.state.height,
+            });
+            stop();
             reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
-        }, timeout);
-
-        // Watch for transaction state changes
-        const stopWatcher = watch(
-            () => transactionsStore.state.transactions[txHash],
-            (tx) => {
-                console.debug('waitForTransactionConfirmation: state changed', { txHash, state: tx?.state });
-                if (isReady(tx)) {
-                    console.debug('waitForTransactionConfirmation: transaction ready, resolving');
+        }, remaining());
+        const stop = watch(
+            () => networkStore.state.height,
+            (h) => {
+                if (h >= macroTarget) {
                     clearTimeout(timeoutId);
-                    stopWatcher();
+                    stop();
                     resolve();
                 }
             },

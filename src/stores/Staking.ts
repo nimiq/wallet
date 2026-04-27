@@ -5,6 +5,7 @@ import { createStore } from 'pinia';
 import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
 import { useFiatStore } from './Fiat';
+import { useNetworkStore } from './Network';
 import { calculateStakingReward } from '../lib/AlbatrossMath';
 import {
     CryptoCurrency,
@@ -249,6 +250,15 @@ export const useStakingStore = createStore({
             const stake = activeStake.value as Stake | null;
             if (!record || !stake) return false;
             return stake.activeBalance === 0 && stake.inactiveBalance > 0;
+        },
+        canManuallyActivateSwitch: (state, { activeStake, activeSwitchOperation }) => {
+            const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+            const stake = activeStake.value as Stake | null;
+            const { state: networkState } = useNetworkStore();
+            if (!record || !stake) return false;
+            if (stake.activeBalance !== 0 || stake.inactiveBalance <= 0) return false;
+            if (!stake.inactiveRelease || stake.inactiveRelease > networkState.height) return false;
+            return stake.validator !== record.targetValidatorAddress;
         },
         stakingEvents: (state): Readonly<AggregatedRestakingEvent[] | null> => {
             const { activeAddress } = useAddressStore();

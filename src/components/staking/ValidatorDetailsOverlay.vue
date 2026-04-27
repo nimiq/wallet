@@ -180,7 +180,8 @@ export default defineComponent({
             const from = toValidatorRef(activeValidator.value);
 
             const signedTxs = await signSwitchValidatorTransactions({
-                transaction: [deactivateTx.serialize(), updateTx.serialize()],
+                sender: activeAddress.value!,
+                transactions: [deactivateTx.serialize(), updateTx.serialize()],
                 senderLabel: validatorLabel(from),
                 recipientLabel: validatorLabel(target),
                 validatorAddress: target.address,
@@ -190,7 +191,7 @@ export default defineComponent({
                 amount: activeStake.value!.activeBalance + activeStake.value!.inactiveBalance,
             });
 
-            if (!signedTxs || signedTxs.length < 2) {
+            if (!signedTxs) {
                 context.emit('statusChange', { type: StakingOperationType.NONE });
                 return;
             }

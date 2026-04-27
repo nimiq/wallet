@@ -90,7 +90,18 @@
                 <div class="scroll-mask bottom" v-if="stake && !stake.inactiveBalance && !stake.retiredBalance"></div>
             </div>
         </PageBody>
-        <PageFooter v-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
+        <PageFooter v-if="canManuallyActivateSwitch">
+            <div class="flex-row manual-activate">
+                <CircleExclamationMarkIcon />
+                <span class="flex-grow message">
+                    {{ $t('Manually activate the validator to re-activate staking.') }}
+                </span>
+                <button class="nq-button-pill light-blue" @click="manualActivateSwitch">
+                    {{ $t('Activate validator') }}
+                </button>
+            </div>
+        </PageFooter>
+        <PageFooter v-else-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
             <div class="flex-column footer-content">
                 <div class="flex-row unstaking nq-light-blue">
                     <CircleExclamationMarkIcon />
@@ -156,7 +167,7 @@ import Amount from '../Amount.vue';
 import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-import { StakingOperationType } from '../../lib/StakingUtils';
+import { StakingOperationType, toValidatorRef, validatorLabel, ValidatorRef } from '../../lib/StakingUtils';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StakingRewardsChart from './StakingRewardsChart.vue';
 
@@ -164,6 +175,7 @@ import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
 import { getNetworkClient } from '../../network';
 import { reportToSentry } from '../../lib/Sentry';
+import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
 import StakingRewardsListItem from './StakingRewardsListItem.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
@@ -183,9 +195,13 @@ export default defineComponent({
         const {
             activeStake: stake,
             activeValidator: validator,
+            activeSwitchOperation,
+            canManuallyActivateSwitch,
+            validators,
             restakingRewards,
             monthlyRewards,
             stakingEvents,
+            clearSwitchOperation,
         } = useStakingStore();
         const { height, consensus } = useNetworkStore();
         const { isMobile } = useWindowSize();
@@ -314,14 +330,13 @@ export default defineComponent({
                     );
 
                     const deactivatedAmount = stake.value!.activeBalance;
+                    const validatorRef = toValidatorRef(validator.value!);
 
                     const txs = await sendStaking({
                         transaction: transaction.serialize(),
-                        recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
-                        validatorAddress: validator.value!.address,
-                        validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultLogo
-                            ? validator.value.logo
-                            : undefined,
+                        recipientLabel: validatorRef.name || 'Validator',
+                        validatorAddress: validatorRef.address,
+                        validatorImageUrl: validatorRef.logo,
                         amount: Math.abs(stake.value.activeBalance),
                     });
 
@@ -400,13 +415,12 @@ export default defineComponent({
                     ? stake.value!.retiredBalance
                     : stake.value!.retiredBalance + stake.value!.inactiveBalance;
 
+                const validatorRef = toValidatorRef(validator.value!);
                 const txs = await sendStaking({
                     transaction: transactions.map((tx) => tx.serialize()),
-                    recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
-                    validatorAddress: validator.value!.address,
-                    validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultLogo
-                        ? validator.value.logo
-                        : undefined,
+                    recipientLabel: validatorRef.name || 'Validator',
+                    validatorAddress: validatorRef.address,
+                    validatorImageUrl: validatorRef.logo,
                 });
 
                 if (!txs) {
@@ -438,6 +452,63 @@ export default defineComponent({
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
                     message: `${error.message} - ${error.data}`,
+                });
+            }
+        }
+
+        async function manualActivateSwitch() {
+            const record = activeSwitchOperation.value;
+            if (!record || !stake.value || !validator.value) return;
+
+            context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
+                state: State.LOADING,
+                title: $t('Activating validator') as string,
+            });
+
+            try {
+                const known = validators.value[record.targetValidatorAddress];
+                const target: ValidatorRef = known
+                    ? toValidatorRef(known)
+                    : { address: record.targetValidatorAddress, name: record.targetValidatorName };
+
+                const txs = await sendImmediateValidatorSwitch({
+                    stakerAddress: activeAddress.value!,
+                    height: height.value,
+                    amount: stake.value.inactiveBalance,
+                    target,
+                    from: toValidatorRef(validator.value),
+                });
+
+                if (!txs) {
+                    context.emit('statusChange', { type: StakingOperationType.NONE });
+                    return;
+                }
+
+                if (txs.some((tx) => tx.executionResult === false)) {
+                    throw new Error('The transaction did not succeed');
+                }
+
+                clearSwitchOperation(activeAddress.value!);
+
+                context.emit('statusChange', {
+                    state: State.SUCCESS,
+                    title: $t(
+                        'Successfully changed validator to {validator}',
+                        { validator: validatorLabel(target) },
+                    ),
+                });
+
+                context.emit('statusChange', {
+                    type: StakingOperationType.NONE,
+                    timeout: SUCCESS_REDIRECT_DELAY,
+                });
+            } catch (error: any) {
+                reportToSentry(error);
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: $t('Something went wrong') as string,
+                    message: `${error.message}${error.data ? ` - ${error.data}` : ''}`,
                 });
             }
         }
@@ -477,14 +548,13 @@ export default defineComponent({
                 );
 
                 const deactivatedAmount = stake.value!.activeBalance;
+                const validatorRef = toValidatorRef(validator.value!);
 
                 const txs = await sendStaking({
                     transaction: transaction.serialize(),
-                    recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
-                    validatorAddress: validator.value!.address,
-                    validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultLogo
-                        ? validator.value.logo
-                        : undefined,
+                    recipientLabel: validatorRef.name || 'Validator',
+                    validatorAddress: validatorRef.address,
+                    validatorImageUrl: validatorRef.logo,
                     amount: deactivatedAmount,
                 });
 
@@ -539,6 +609,8 @@ export default defineComponent({
             unstakeAll,
             unstakeRest,
             canSwitchValidator,
+            canManuallyActivateSwitch,
+            manualActivateSwitch,
             consensus,
             selectedRange,
             rewards,
@@ -758,6 +830,31 @@ export default defineComponent({
             color: var(--text-50);
             text-align: left;
             line-height: 1.4;
+        }
+
+        .manual-activate {
+            align-items: flex-start;
+            gap: 0.75rem;
+            color: var(--nimiq-orange);
+            font-size: 2rem;
+            font-weight: 600;
+            line-height: 1.2;
+
+            svg {
+                flex-shrink: 0;
+                width: 2.25rem;
+                height: 2.25rem;
+                margin-top: 0.125rem;
+            }
+
+            .message {
+                margin-top: 0.125rem;
+            }
+
+            .nq-button-pill {
+                flex-shrink: 0;
+                align-self: center;
+            }
         }
     }
 

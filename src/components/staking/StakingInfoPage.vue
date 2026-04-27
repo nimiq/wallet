@@ -318,7 +318,6 @@ export default defineComponent({
                     const txs = await sendStaking({
                         transaction: transaction.serialize(),
                         recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
-                        // @ts-expect-error Not typed yet in Hub
                         validatorAddress: validator.value!.address,
                         validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultLogo
                             ? validator.value.logo
@@ -404,7 +403,6 @@ export default defineComponent({
                 const txs = await sendStaking({
                     transaction: transactions.map((tx) => tx.serialize()),
                     recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
-                    // @ts-expect-error Not typed yet in Hub
                     validatorAddress: validator.value!.address,
                     validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultLogo
                         ? validator.value.logo
@@ -483,7 +481,6 @@ export default defineComponent({
                 const txs = await sendStaking({
                     transaction: transaction.serialize(),
                     recipientLabel: 'name' in validator.value! ? validator.value.name : 'Validator',
-                    // @ts-expect-error Not typed yet in Hub
                     validatorAddress: validator.value!.address,
                     validatorImageUrl: 'logo' in validator.value! && !validator.value.hasDefaultLogo
                         ? validator.value.logo

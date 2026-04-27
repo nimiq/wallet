@@ -2,8 +2,8 @@
     <Modal v-bind="$attrs" v-on="$listeners" class="validator-details-modal large-modal">
         <ValidatorDetailsOverlay
             v-if="activeValidator"
-            :noButton="true"
             :validator="activeValidator"
+            @switch-validator="onSwitchValidator"
         />
     </Modal>
 </template>
@@ -13,7 +13,7 @@ import { defineComponent, watch, onMounted, ref } from '@vue/composition-api';
 import Modal from '../modals/Modal.vue';
 import { useStakingStore } from '../../stores/Staking';
 import ValidatorDetailsOverlay from './ValidatorDetailsOverlay.vue';
-import { useRouter } from '../../router';
+import { useRouter, RouteName, STAKING_QUERY_SHOW_VALIDATORS } from '../../router';
 
 export default defineComponent({
     setup() {
@@ -43,8 +43,14 @@ export default defineComponent({
             }
         });
 
+        function onSwitchValidator() {
+            router.push({ name: RouteName.Staking, query: STAKING_QUERY_SHOW_VALIDATORS })
+                .catch(() => { /* already at target */ });
+        }
+
         return {
             activeValidator,
+            onSwitchValidator,
         };
     },
     components: {

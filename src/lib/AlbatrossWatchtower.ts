@@ -1,15 +1,17 @@
 import { useConfig } from '@/composables/useConfig';
 
-/* eslint-disable camelcase */
-type StartUnstakePayload = {
-    staker_address: string,
-    transactions: {
-        inactive_stake_tx_hash: string,
-        retire_tx: string,
-        unstake_tx: string,
-    },
+type StartUnstakeInput = {
+    stakerAddress: string,
+    inactiveStakeTxHash: string,
+    retireTx: string,
+    unstakeTx: string,
 };
-/* eslint-enable camelcase */
+
+type StartSwitchValidatorInput = {
+    stakerAddress: string,
+    deactivationTxHash: string,
+    updateStakerTx: string,
+};
 
 function toBasicAuth(username: string, password: string): string {
     // btoa expects binary string; credentials are ASCII
@@ -21,46 +23,39 @@ function strip0x(hex: string | undefined): string | undefined {
     return hex.startsWith('0x') || hex.startsWith('0X') ? hex.slice(2) : hex;
 }
 
-export async function startUnstaking(payload: StartUnstakePayload): Promise<void> {
+function getWatchtowerEndpoint(): string | null {
     const { config } = useConfig();
-    const wt = (config as any).albatrossWatchtower as undefined | {
-        endpoint: string,
-    };
+    const wt = (config as any).albatrossWatchtower as undefined | { endpoint: string };
+    return wt?.endpoint?.replace(/\/$/, '') || null;
+}
 
-    if (!wt?.endpoint) {
-        // eslint-disable-next-line no-console
-        console.warn('watchtower: not configured, skipping startUnstaking');
-        return; // Fail silently if not configured
-    }
-
+function buildAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json' };
     const username = process.env.VUE_APP_WT_USERNAME || process.env.WT_USERNAME;
     const password = process.env.VUE_APP_WT_PASSWORD || process.env.WT_PASSWORD;
     if (username && password) headers.Authorization = toBasicAuth(username, password);
+    return headers;
+}
 
-    const url = `${wt.endpoint.replace(/\/$/, '')}/unstake`;
-    // eslint-disable-next-line no-console
-    console.debug('watchtower: POST /unstake', {
-        url,
-        staker: payload.staker_address,
-        hasRetire: !!payload.transactions?.retire_tx,
-        unstakeLen: payload.transactions?.unstake_tx?.length,
-        inactiveStakeTxHash: payload.transactions?.inactive_stake_tx_hash,
-    });
+/**
+ * POST a body to a watchtower endpoint, throwing on any non-2xx response.
+ * Returns silently (no throw) when the watchtower is not configured.
+ */
+async function postToWatchtower<T extends object>(path: string, body: T): Promise<void> {
+    const endpoint = getWatchtowerEndpoint();
+    if (!endpoint) {
+        // eslint-disable-next-line no-console
+        console.warn(`watchtower: not configured, skipping POST ${path}`);
+        return;
+    }
+
+    const url = `${endpoint}${path}`;
     let response: Response;
     try {
-        const normalized = {
-            staker_address: payload.staker_address,
-            transactions: {
-                inactive_stake_tx_hash: strip0x(payload.transactions.inactive_stake_tx_hash)!,
-                retire_tx: strip0x(payload.transactions.retire_tx)!,
-                unstake_tx: strip0x(payload.transactions.unstake_tx)!,
-            },
-        };
         response = await fetch(url, {
             method: 'POST',
-            headers,
-            body: JSON.stringify(normalized),
+            headers: buildAuthHeaders(),
+            body: JSON.stringify(body),
         });
     } catch (networkError: any) {
         // eslint-disable-next-line no-console
@@ -76,25 +71,29 @@ export async function startUnstaking(payload: StartUnstakePayload): Promise<void
         } catch (_) { /* ignore */ }
         // eslint-disable-next-line no-console
         console.error('watchtower: HTTP error', response.status, message);
-        if (response.status === 406) {
-            try {
-                const txHash = strip0x(payload.transactions.inactive_stake_tx_hash)!;
-                const statusRes = await fetch(`${wt.endpoint.replace(/\/$/, '')}/transaction/${txHash}`, {
-                    headers: { Accept: 'application/json' },
-                });
-                if (statusRes.ok) {
-                    const statusJson = await statusRes.json();
-                    // eslint-disable-next-line no-console
-                    console.debug('watchtower: transaction status', statusJson);
-                } else {
-                    // eslint-disable-next-line no-console
-                    console.debug('watchtower: transaction status HTTP', statusRes.status);
-                }
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.debug('watchtower: transaction status probe failed');
-            }
-        }
         throw new Error(`HTTP ${response.status}: ${message}`);
     }
 }
+
+/* eslint-disable camelcase */
+export async function startUnstaking(input: StartUnstakeInput): Promise<void> {
+    return postToWatchtower('/unstake', {
+        staker_address: input.stakerAddress,
+        transactions: {
+            inactive_stake_tx_hash: strip0x(input.inactiveStakeTxHash)!,
+            retire_tx: strip0x(input.retireTx)!,
+            unstake_tx: strip0x(input.unstakeTx)!,
+        },
+    });
+}
+
+export async function startSwitchValidator(input: StartSwitchValidatorInput): Promise<void> {
+    return postToWatchtower('/switch-validator', {
+        staker_address: input.stakerAddress,
+        transactions: {
+            inactive_stake_tx_hash: strip0x(input.deactivationTxHash)!,
+            update_tx: strip0x(input.updateStakerTx)!,
+        },
+    });
+}
+/* eslint-enable camelcase */

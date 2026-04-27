@@ -147,7 +147,6 @@ export default defineComponent({
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
                             recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                            // @ts-expect-error Not typed yet in Hub
                             validatorImageUrl: 'logo' in activeValidator.value!
                                 && !activeValidator.value.hasDefaultLogo
                                 ? activeValidator.value.logo
@@ -190,7 +189,6 @@ export default defineComponent({
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
                             recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                            // @ts-expect-error Not typed yet in Hub
                             validatorAddress: activeValidator.value!.address,
                             validatorImageUrl: ('logo' in activeValidator.value!
                                 && !activeValidator.value.hasDefaultLogo)
@@ -344,12 +342,10 @@ export default defineComponent({
                     // Send the retire and remove transactions to the watchtower
                     try {
                         await startUnstaking({
-                            staker_address: activeAddress.value!,
-                            transactions: {
-                                inactive_stake_tx_hash: signedTransactions[0].hash,
-                                retire_tx: signedTransactions[1].serializedTx,
-                                unstake_tx: signedTransactions[2].serializedTx,
-                            },
+                            stakerAddress: activeAddress.value!,
+                            inactiveStakeTxHash: signedTransactions[0].hash,
+                            retireTx: signedTransactions[1].serializedTx,
+                            unstakeTx: signedTransactions[2].serializedTx,
                         });
                     } catch (watchtowerError: any) {
                         // Log watchtower error but don't fail the unstaking operation

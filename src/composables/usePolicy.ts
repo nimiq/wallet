@@ -52,11 +52,11 @@ function computeBlocksPerEpoch(): number {
     return cachedBlocksPerBatch * cachedBatchesPerEpoch;
 }
 
-function electionBlockAfter(height: number, genesis: number, blocksPerEpoch: number): number {
+function nextBoundaryAfter(height: number, genesis: number, period: number): number {
     if (height < genesis) return genesis;
     const relative = height - genesis;
-    const k = Math.floor(relative / blocksPerEpoch) + 1;
-    return genesis + k * blocksPerEpoch;
+    const k = Math.floor(relative / period) + 1;
+    return genesis + k * period;
 }
 
 export async function usePolicy() {
@@ -70,7 +70,9 @@ export async function usePolicy() {
     const batchesPerEpoch = (): number => cachedBatchesPerEpoch;
     const blocksPerEpoch = (): number => computeBlocksPerEpoch();
     const electionBlockAfterBound = (height: number): number =>
-        electionBlockAfter(height, genesisBlockNumber, computeBlocksPerEpoch());
+        nextBoundaryAfter(height, genesisBlockNumber, computeBlocksPerEpoch());
+    const macroBlockAfterBound = (height: number): number =>
+        nextBoundaryAfter(height, genesisBlockNumber, cachedBlocksPerBatch);
 
     return {
         // Constants/getters
@@ -80,5 +82,6 @@ export async function usePolicy() {
         genesisBlockNumber,
         // Functions
         electionBlockAfter: electionBlockAfterBound,
+        macroBlockAfter: macroBlockAfterBound,
     };
 }

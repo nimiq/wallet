@@ -571,41 +571,6 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
     return txDetails;
 }
 
-export async function signStakingRaw(request: Omit<SignStakingRequest, 'appName'>)
-    : Promise<SignedTransaction | SignedTransaction[] | null> {
-    try {
-        const requestShape = Array.isArray((request as any).transaction) ? 'array' : 'single';
-        const txLen = Array.isArray((request as any).transaction)
-            ? (request as any).transaction.length
-            : ((request as any).transaction || '').length;
-        // eslint-disable-next-line no-console
-        console.debug('signStakingRaw: request', { requestShape, txLen });
-
-        const signedTransactions = await hubApi.signStaking({
-            appName: APP_NAME,
-            ...request,
-        });
-
-        if (!signedTransactions) {
-            // eslint-disable-next-line no-console
-            console.debug('signStakingRaw: no result (null)');
-            return null;
-        }
-
-        const resultShape = Array.isArray(signedTransactions) ? 'array' : 'single';
-        const resultCount = Array.isArray(signedTransactions) ? signedTransactions.length : 1;
-        // eslint-disable-next-line no-console
-        console.debug('signStakingRaw: result', { resultShape, resultCount });
-        return signedTransactions as SignedTransaction | SignedTransaction[];
-    } catch (error: any) {
-        // eslint-disable-next-line no-console
-        console.error('signStakingRaw: error', { message: error?.message });
-        const handled = onError(error);
-        if (handled === null) return null;
-        throw error;
-    }
-}
-
 /**
  * Sign multiple staking transactions for unstaking flow.
  * This function signs 3 transactions: deactivation, retire, and unstake.
@@ -650,21 +615,45 @@ export async function signUnstakingTransactions(request: {
 }
 
 /**
- * Sign switch-validator transactions (set-active-stake + update-staker).
- * Returns signed transactions without broadcasting - the caller handles
- * broadcasting the deactivation and sending the update to the watchtower.
+ * Returns signed transactions without broadcasting — the caller broadcasts the deactivation
+ * and forwards the update-staker to the watchtower.
  */
 export async function signSwitchValidatorTransactions(request: {
-    transaction: Uint8Array | Uint8Array[],
+    sender: string,
+    transactions: [Uint8Array, Uint8Array], // [set-active-stake, update-staker]
     senderLabel?: string,
     recipientLabel?: string,
-    validatorAddress?: string,
+    validatorAddress: string,
     validatorImageUrl?: string,
-    fromValidatorAddress?: string,
+    fromValidatorAddress: string,
     fromValidatorImageUrl?: string,
-    amount?: number,
+    amount: number,
 }): Promise<SignedTransaction[] | null> {
-    return signStakingRaw(request) as Promise<SignedTransaction[] | null>;
+    const signedTransactions = await hubApi.signTransaction({
+        appName: APP_NAME,
+        layout: 'switch-validator',
+        sender: request.sender,
+        senderLabel: request.senderLabel,
+        recipientLabel: request.recipientLabel,
+        transactions: request.transactions,
+        validatorAddress: request.validatorAddress,
+        validatorImageUrl: request.validatorImageUrl,
+        fromValidatorAddress: request.fromValidatorAddress,
+        fromValidatorImageUrl: request.fromValidatorImageUrl,
+        amount: request.amount,
+    } as any, getBehavior()).catch(onError);
+
+    if (!signedTransactions) return null;
+
+    if (!Array.isArray(signedTransactions)) {
+        throw new Error('Hub did not return an array of signed transactions for switch-validator flow');
+    }
+
+    if (signedTransactions.length !== 2) {
+        throw new Error(`Expected 2 signed transactions from Hub, got ${signedTransactions.length}`);
+    }
+
+    return signedTransactions;
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {

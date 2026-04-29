@@ -122,9 +122,9 @@ export default {
     },
 
     coinify: {
-        enabled: false, // enable once a production partner ID is available
+        enabled: false, // enable once a green light has been received from all involved parties
         widgetUrl: 'https://trade-ui.coinify.com',
-        partnerId: '',
+        partnerId: '39f9f437-44b7-4a8b-a858-f512d14ec9c5',
     },
 
     goCrypto: {

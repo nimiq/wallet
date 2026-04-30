@@ -133,8 +133,14 @@
         </PageFooter>
         <PageFooter v-else-if="stake && stake.inactiveBalance">
             <div class="flex-row unstaking nq-light-blue">
-                <CircleArrowDownIcon /> {{  $t('Unstaking') }}
-                <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
+                <CircleArrowDownIcon />
+                <span v-if="isSwitchingValidator" class="flex-grow">
+                    {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
+                </span>
+                <template v-else>
+                    {{ $t('Unstaking') }}
+                    <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
+                </template>
                 <button class="nq-button-s unstaking-progress">
                     {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
                     <!-- TODO: Add cancel function -->
@@ -198,6 +204,7 @@ export default defineComponent({
             activeSwitchOperation,
             canManuallyActivateSwitch,
             isSwitchingValidator,
+            switchTargetLabel,
             validators,
             restakingRewards,
             monthlyRewards,
@@ -613,6 +620,8 @@ export default defineComponent({
             unstakeRest,
             canSwitchValidator,
             canManuallyActivateSwitch,
+            isSwitchingValidator,
+            switchTargetLabel,
             manualActivateSwitch,
             consensus,
             selectedRange,

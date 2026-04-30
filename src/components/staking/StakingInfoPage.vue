@@ -197,6 +197,7 @@ export default defineComponent({
             activeValidator: validator,
             activeSwitchOperation,
             canManuallyActivateSwitch,
+            isSwitchingValidator,
             validators,
             restakingRewards,
             monthlyRewards,
@@ -296,6 +297,8 @@ export default defineComponent({
 
         const showDeactivateAll = computed(() => {
             if (!stake.value) return false;
+            // A second deactivate would orphan the watchtower's pending update-staker.
+            if (isSwitchingValidator.value) return false;
             if (stake.value?.activeBalance) return true;
 
             if (

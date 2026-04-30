@@ -459,7 +459,11 @@ export const useStakingStore = createStore({
             const stake = this.state.stakeByAddress[address];
             if (!stake || stake.activeBalance === 0) return;
             const record = getSwitchRecord(address);
-            if (record) this.clearSwitchOperation(address);
+            if (!record) return;
+            // Don't clear until active stake is at the target — the user's manual recovery
+            // handle would otherwise be lost if balance reappears at the old validator.
+            if (stake.validator !== record.targetValidatorAddress) return;
+            this.clearSwitchOperation(address);
         },
 
         setStakingEvents(address: string, events: AggregatedRestakingEvent[]) {

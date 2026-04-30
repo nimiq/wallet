@@ -126,16 +126,21 @@ export default defineComponent({
             if (successRedirectTimer !== null) clearTimeout(successRedirectTimer);
         });
 
+        function ensureActiveValidator(opName: string): Validator | null {
+            const validator = activeValidator.value;
+            if (validator) return validator;
+            reportToSentry(new Error(`Attempted ${opName} without activeValidator`));
+            context.emit('statusChange', {
+                state: State.WARNING,
+                title: $t('Something went wrong') as string,
+                message: $t('Validator information not available') as string,
+            });
+            return null;
+        }
+
         async function switchViaWatchtower() {
-            if (!activeValidator.value) {
-                reportToSentry(new Error('Attempted switchViaWatchtower without activeValidator'));
-                context.emit('statusChange', {
-                    state: State.WARNING,
-                    title: $t('Something went wrong') as string,
-                    message: $t('Validator information not available') as string,
-                });
-                return;
-            }
+            const fromValidator = ensureActiveValidator('switchViaWatchtower');
+            if (!fromValidator) return;
 
             context.emit('statusChange', {
                 type: StakingOperationType.VALIDATOR,
@@ -177,7 +182,7 @@ export default defineComponent({
             );
 
             const target = toValidatorRef(props.validator);
-            const from = toValidatorRef(activeValidator.value);
+            const from = toValidatorRef(fromValidator);
 
             const signedTxs = await signSwitchValidatorTransactions({
                 sender: activeAddress.value!,
@@ -242,6 +247,9 @@ export default defineComponent({
         }
 
         async function switchImmediate() {
+            const fromValidator = ensureActiveValidator('switchImmediate');
+            if (!fromValidator) return;
+
             context.emit('statusChange', {
                 type: StakingOperationType.VALIDATOR,
                 state: State.LOADING,
@@ -255,7 +263,7 @@ export default defineComponent({
                 height: height.value,
                 amount: activeStake.value!.inactiveBalance,
                 target,
-                from: toValidatorRef(activeValidator.value!),
+                from: toValidatorRef(fromValidator),
             });
 
             if (!txs) {

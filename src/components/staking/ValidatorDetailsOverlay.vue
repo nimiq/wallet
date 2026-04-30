@@ -193,7 +193,6 @@ export default defineComponent({
                 validatorImageUrl: target.logo,
                 fromValidatorAddress: from.address,
                 fromValidatorImageUrl: from.logo,
-                amount: activeStake.value!.activeBalance + activeStake.value!.inactiveBalance,
             });
 
             if (!signedTxs) {

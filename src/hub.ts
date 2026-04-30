@@ -628,7 +628,6 @@ export async function signSwitchValidatorTransactions(request: {
     validatorImageUrl?: string,
     fromValidatorAddress: string,
     fromValidatorImageUrl?: string,
-    amount: number,
 }): Promise<SignedTransaction[] | null> {
     const signedTransactions = await hubApi.signTransaction({
         appName: APP_NAME,
@@ -641,7 +640,6 @@ export async function signSwitchValidatorTransactions(request: {
         validatorImageUrl: request.validatorImageUrl,
         fromValidatorAddress: request.fromValidatorAddress,
         fromValidatorImageUrl: request.fromValidatorImageUrl,
-        amount: request.amount,
     } as any, getBehavior()).catch(onError);
 
     if (!signedTransactions) return null;

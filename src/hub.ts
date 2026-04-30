@@ -598,7 +598,7 @@ export async function signUnstakingTransactions(request: {
         transactions: request.transactions,
         validatorAddress: request.validatorAddress,
         validatorImageUrl: request.validatorImageUrl,
-    } as any, getBehavior()).catch(onError);
+    }, getBehavior()).catch(onError);
 
     if (!signedTransactions) return null;
 
@@ -640,7 +640,7 @@ export async function signSwitchValidatorTransactions(request: {
         validatorImageUrl: request.validatorImageUrl,
         fromValidatorAddress: request.fromValidatorAddress,
         fromValidatorImageUrl: request.fromValidatorImageUrl,
-    } as any, getBehavior()).catch(onError);
+    }, getBehavior()).catch(onError);
 
     if (!signedTransactions) return null;
 

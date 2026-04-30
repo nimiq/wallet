@@ -209,7 +209,7 @@ msgstr ""
 msgid "8M"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:366
+#: src/components/layouts/Settings.vue:370
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "Do you want to replace it?"
@@ -681,7 +681,7 @@ msgstr "Скасувати обмін"
 msgid "Cancelled Swap"
 msgstr "Обмін скасовано"
 
-#: src/components/layouts/Settings.vue:343
+#: src/components/layouts/Settings.vue:347
 msgid "Cannot import contacts, wrong file format."
 msgstr "Не вдається імпортувати контакти, неправильний формат файлу."
 
@@ -1009,7 +1009,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr "Ресурси для розробників"
 
-#: src/components/layouts/Settings.vue:281
+#: src/components/layouts/Settings.vue:285
 #: src/components/modals/DisclaimerModal.vue:4
 msgid "Disclaimer"
 msgstr "Застереження"
@@ -1024,7 +1024,7 @@ msgid ""
 "It controls a critical share of the total stake, making it a potential threat to the network."
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:103
+#: src/components/BtcAddressInput.vue:99
 #: src/components/modals/SendModal.vue:429
 #: src/components/modals/StablecoinSendModal.vue:422
 msgid "Domain does not resolve to a valid address"
@@ -1287,7 +1287,7 @@ msgstr "Завантаження"
 msgid "Fiat value unavailable"
 msgstr "Сума у валюті недоступна"
 
-#: src/components/layouts/Settings.vue:349
+#: src/components/layouts/Settings.vue:353
 msgid "File contains no contacts."
 msgstr "Файл не містить контактів."
 
@@ -1968,7 +1968,7 @@ msgstr "Комісія OASIS"
 msgid "Off"
 msgstr "Вимк."
 
-#: src/components/layouts/Settings.vue:377
+#: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
 msgstr "Контакти було додано успішно."
 
@@ -2535,7 +2535,7 @@ msgstr "Переказуйте, отримуйте і зберігайте BTC �
 msgid "Sending Staking Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:523
+#: src/components/modals/BtcSendModal.vue:520
 #: src/components/modals/SendModal.vue:847
 #: src/components/modals/StablecoinSendModal.vue:708
 msgid "Sending Transaction"
@@ -2551,11 +2551,11 @@ msgid ""
 "channels you use."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:573
+#: src/components/modals/BtcSendModal.vue:570
 msgid "Sent {btc} BTC"
 msgstr "Надіслано {btc} BTC"
 
-#: src/components/modals/BtcSendModal.vue:569
+#: src/components/modals/BtcSendModal.vue:566
 msgid "Sent {btc} BTC to {name}"
 msgstr "Надіслано {btc} BTC до {name}"
 
@@ -2688,7 +2688,7 @@ msgstr "Пропустити"
 msgid "Skip (not recommended)"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:587
+#: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:710
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
@@ -2916,6 +2916,10 @@ msgstr "TEN31 Pass не повернув очікуваних грантів."
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
 msgstr "TEN31 Перевірка"
+
+#: src/components/layouts/Settings.vue:282
+msgid "Terms & Conditions"
+msgstr ""
 
 #: src/components/AddressList.vue:210
 #: src/components/layouts/AccountOverview.vue:222

@@ -209,7 +209,7 @@ msgstr "首次购买后的72 小时，你的限额将自动更新。"
 msgid "8M"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:366
+#: src/components/layouts/Settings.vue:370
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "Do you want to replace it?"
@@ -657,7 +657,7 @@ msgstr "取消交换"
 msgid "Cancelled Swap"
 msgstr "取消交换"
 
-#: src/components/layouts/Settings.vue:343
+#: src/components/layouts/Settings.vue:347
 msgid "Cannot import contacts, wrong file format."
 msgstr "文件格式错误，无法导入联系人"
 
@@ -981,7 +981,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr "开发者资源"
 
-#: src/components/layouts/Settings.vue:281
+#: src/components/layouts/Settings.vue:285
 #: src/components/modals/DisclaimerModal.vue:4
 msgid "Disclaimer"
 msgstr "免责声明"
@@ -996,7 +996,7 @@ msgid ""
 "It controls a critical share of the total stake, making it a potential threat to the network."
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:103
+#: src/components/BtcAddressInput.vue:99
 #: src/components/modals/SendModal.vue:429
 #: src/components/modals/StablecoinSendModal.vue:422
 msgid "Domain does not resolve to a valid address"
@@ -1248,7 +1248,7 @@ msgstr "正在取得更新"
 msgid "Fiat value unavailable"
 msgstr "法币无法使用"
 
-#: src/components/layouts/Settings.vue:349
+#: src/components/layouts/Settings.vue:353
 msgid "File contains no contacts."
 msgstr "文件中没有任何联系人"
 
@@ -1906,7 +1906,7 @@ msgstr "OASIS服务费"
 msgid "Off"
 msgstr "关"
 
-#: src/components/layouts/Settings.vue:377
+#: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
 msgstr "好的，联系人已成功导入"
 
@@ -2465,7 +2465,7 @@ msgstr "从你的钱包中发送、接收和持有BTC"
 msgid "Sending Staking Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:523
+#: src/components/modals/BtcSendModal.vue:520
 #: src/components/modals/SendModal.vue:847
 #: src/components/modals/StablecoinSendModal.vue:708
 msgid "Sending Transaction"
@@ -2481,11 +2481,11 @@ msgid ""
 "channels you use."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:573
+#: src/components/modals/BtcSendModal.vue:570
 msgid "Sent {btc} BTC"
 msgstr "已发送{btc} 比特币"
 
-#: src/components/modals/BtcSendModal.vue:569
+#: src/components/modals/BtcSendModal.vue:566
 msgid "Sent {btc} BTC to {name}"
 msgstr "已发送{btc} BTC到 {name}"
 
@@ -2618,7 +2618,7 @@ msgstr "跳过"
 msgid "Skip (not recommended)"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:587
+#: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:710
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
@@ -2846,6 +2846,10 @@ msgstr "TEN31 通行证未返回预期的授权。"
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
 msgstr "TEN31 验证"
+
+#: src/components/layouts/Settings.vue:282
+msgid "Terms & Conditions"
+msgstr ""
 
 #: src/components/AddressList.vue:210
 #: src/components/layouts/AccountOverview.vue:222

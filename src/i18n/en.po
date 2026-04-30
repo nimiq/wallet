@@ -199,7 +199,7 @@ msgstr ""
 msgid "8M"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:366
+#: src/components/layouts/Settings.vue:370
 msgid ""
 "A contact with the address \"{address}\", but a different name already exists.\n"
 "Do you want to replace it?"
@@ -622,7 +622,7 @@ msgstr ""
 msgid "Cancelled Swap"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:343
+#: src/components/layouts/Settings.vue:347
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
@@ -942,7 +942,7 @@ msgstr ""
 msgid "Developer resources"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:281
+#: src/components/layouts/Settings.vue:285
 #: src/components/modals/DisclaimerModal.vue:4
 msgid "Disclaimer"
 msgstr ""
@@ -957,7 +957,7 @@ msgid ""
 "It controls a critical share of the total stake, making it a potential threat to the network."
 msgstr ""
 
-#: src/components/BtcAddressInput.vue:103
+#: src/components/BtcAddressInput.vue:99
 #: src/components/modals/SendModal.vue:429
 #: src/components/modals/StablecoinSendModal.vue:422
 msgid "Domain does not resolve to a valid address"
@@ -1205,7 +1205,7 @@ msgstr ""
 msgid "Fiat value unavailable"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:349
+#: src/components/layouts/Settings.vue:353
 msgid "File contains no contacts."
 msgstr ""
 
@@ -1834,7 +1834,7 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
-#: src/components/layouts/Settings.vue:377
+#: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
 msgstr ""
 
@@ -2370,7 +2370,7 @@ msgstr ""
 msgid "Sending Staking Transaction"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:523
+#: src/components/modals/BtcSendModal.vue:520
 #: src/components/modals/SendModal.vue:847
 #: src/components/modals/StablecoinSendModal.vue:708
 msgid "Sending Transaction"
@@ -2384,11 +2384,11 @@ msgstr ""
 msgid "Sending yourself backup codes is convenient but only as secure as the channels you use."
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:573
+#: src/components/modals/BtcSendModal.vue:570
 msgid "Sent {btc} BTC"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:569
+#: src/components/modals/BtcSendModal.vue:566
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
@@ -2520,7 +2520,7 @@ msgstr ""
 msgid "Skip (not recommended)"
 msgstr ""
 
-#: src/components/modals/BtcSendModal.vue:587
+#: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:710
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
@@ -2748,6 +2748,10 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:157
 msgid "TEN31 Verification"
+msgstr ""
+
+#: src/components/layouts/Settings.vue:282
+msgid "Terms & Conditions"
 msgstr ""
 
 #: src/components/AddressList.vue:210

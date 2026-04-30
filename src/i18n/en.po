@@ -250,7 +250,7 @@ msgstr ""
 msgid "Activate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:466
+#: src/components/staking/StakingInfoPage.vue:476
 msgid "Activating validator"
 msgstr ""
 
@@ -634,7 +634,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:312
+#: src/components/staking/ValidatorDetailsOverlay.vue:317
 msgid "Cannot switch yet"
 msgstr ""
 
@@ -667,7 +667,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:248
+#: src/components/staking/ValidatorDetailsOverlay.vue:253
 msgid "Changing validator"
 msgstr ""
 
@@ -932,11 +932,11 @@ msgstr ""
 msgid "Deactivate validator"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:534
+#: src/components/staking/StakingInfoPage.vue:544
 msgid "Deactivating remaining stake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:317
+#: src/components/staking/StakingInfoPage.vue:327
 msgid "Deactivating Stake"
 msgstr ""
 
@@ -1990,7 +1990,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:313
+#: src/components/staking/ValidatorDetailsOverlay.vue:318
 msgid "Please wait for the cooldown period to end."
 msgstr ""
 
@@ -2396,7 +2396,7 @@ msgstr ""
 msgid "Sending Transaction"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:385
+#: src/components/staking/StakingInfoPage.vue:395
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
@@ -2544,14 +2544,14 @@ msgstr ""
 #: src/components/modals/SendModal.vue:710
 #: src/components/modals/SendModal.vue:901
 #: src/components/modals/StablecoinSendModal.vue:758
-#: src/components/staking/StakingGraphPage.vue:380
-#: src/components/staking/StakingInfoPage.vue:372
-#: src/components/staking/StakingInfoPage.vue:453
-#: src/components/staking/StakingInfoPage.vue:510
-#: src/components/staking/StakingInfoPage.vue:525
-#: src/components/staking/StakingInfoPage.vue:588
+#: src/components/staking/StakingGraphPage.vue:381
+#: src/components/staking/StakingInfoPage.vue:382
+#: src/components/staking/StakingInfoPage.vue:463
+#: src/components/staking/StakingInfoPage.vue:520
+#: src/components/staking/StakingInfoPage.vue:535
+#: src/components/staking/StakingInfoPage.vue:598
 #: src/components/staking/ValidatorDetailsOverlay.vue:134
-#: src/components/staking/ValidatorDetailsOverlay.vue:319
+#: src/components/staking/ValidatorDetailsOverlay.vue:324
 msgid "Something went wrong"
 msgstr ""
 
@@ -2621,17 +2621,17 @@ msgstr ""
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:496
-#: src/components/staking/ValidatorDetailsOverlay.vue:274
+#: src/components/staking/StakingInfoPage.vue:506
+#: src/components/staking/ValidatorDetailsOverlay.vue:279
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:356
-#: src/components/staking/StakingInfoPage.vue:574
+#: src/components/staking/StakingInfoPage.vue:366
+#: src/components/staking/StakingInfoPage.vue:584
 msgid "Successfully deactivated {amount} NIM"
 msgstr ""
 
-#: src/components/staking/StakingGraphPage.vue:360
+#: src/components/staking/StakingGraphPage.vue:361
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr ""
 
@@ -2639,7 +2639,7 @@ msgstr ""
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:439
+#: src/components/staking/StakingInfoPage.vue:449
 msgid "Successfully unstaked {amount} NIM"
 msgstr ""
 
@@ -2737,7 +2737,12 @@ msgstr ""
 msgid "Switch validator"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:143
+#: src/components/staking/StakingInfoPage.vue:138
+#: src/components/staking/StakingOverview.vue:24
+msgid "Switching to {validator}"
+msgstr ""
+
+#: src/components/staking/ValidatorDetailsOverlay.vue:146
 msgid "Switching validator"
 msgstr ""
 
@@ -3105,7 +3110,7 @@ msgstr ""
 msgid "Type to search..."
 msgstr ""
 
-#: src/components/staking/StakingOverview.vue:48
+#: src/components/staking/StakingOverview.vue:52
 #: src/components/staking/StakingRewardsListItem.vue:56
 #: src/components/staking/ValidatorsListOverlay.vue:43
 msgid "unavailable"
@@ -3150,8 +3155,8 @@ msgstr ""
 msgid "Unstake rest"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:136
-#: src/components/staking/StakingOverview.vue:22
+#: src/components/staking/StakingInfoPage.vue:141
+#: src/components/staking/StakingOverview.vue:26
 msgid "Unstaking"
 msgstr ""
 
@@ -3223,12 +3228,12 @@ msgstr ""
 msgid "Use the slider to lock your NIM and earn rewards."
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:526
+#: src/components/staking/StakingInfoPage.vue:536
 #: src/components/staking/ValidatorDetailsOverlay.vue:135
 msgid "Validator information not available"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:238
+#: src/components/staking/ValidatorDetailsOverlay.vue:241
 msgid "Validator switch initiated"
 msgstr ""
 

@@ -19,7 +19,11 @@
                             <CircleExclamationMarkIcon /> {{ $t('Payout ready')}}
                         </template>
                         <template v-else-if="stake && stake.inactiveBalance">
-                            <CircleArrowDownIcon /> {{ $t('Unstaking')}}
+                            <CircleArrowDownIcon />
+                            <span v-if="isSwitchingValidator">
+                                {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
+                            </span>
+                            <span v-else>{{ $t('Unstaking') }}</span>
                             <span class="dot"></span>
                             <span>{{ inactiveReleaseTime }} left</span>
                         </template>
@@ -101,6 +105,8 @@ export default defineComponent({
             restakingRewards,
             monthlyRewards,
             stakingEvents,
+            isSwitchingValidator,
+            switchTargetLabel,
         } = useStakingStore();
         const router = useRouter();
         const { height } = useNetworkStore();
@@ -160,6 +166,8 @@ export default defineComponent({
             percentage,
             inactiveReleaseTime,
             hasUnstakableStake,
+            isSwitchingValidator,
+            switchTargetLabel,
             openStakingModal,
             openValidatorDetailsModal,
             totalRewardsFiatValue,

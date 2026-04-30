@@ -13,7 +13,13 @@ import {
     FIAT_API_PROVIDER_TX_HISTORY,
     FIAT_PRICE_UNAVAILABLE,
 } from '../lib/Constants';
-import { getEndOfMonthTimestamp, isCurrentMonthAndYear } from '../lib/StakingUtils';
+import {
+    getEndOfMonthTimestamp,
+    isCurrentMonthAndYear,
+    toValidatorRef,
+    validatorLabel,
+    ValidatorRef,
+} from '../lib/StakingUtils';
 
 export type StakingState = {
     chainValidators: Record<string, RawValidator>,
@@ -259,6 +265,15 @@ export const useStakingStore = createStore({
             if (stake.activeBalance !== 0 || stake.inactiveBalance <= 0) return false;
             if (!stake.inactiveRelease || stake.inactiveRelease > networkState.height) return false;
             return stake.validator !== record.targetValidatorAddress;
+        },
+        switchTargetLabel: (state, { activeSwitchOperation, validators }): string => {
+            const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+            if (!record) return '';
+            const known = (validators.value as Record<string, Validator>)[record.targetValidatorAddress];
+            const target: ValidatorRef = known
+                ? toValidatorRef(known)
+                : { address: record.targetValidatorAddress, name: record.targetValidatorName };
+            return validatorLabel(target);
         },
         stakingEvents: (state): Readonly<AggregatedRestakingEvent[] | null> => {
             const { activeAddress } = useAddressStore();

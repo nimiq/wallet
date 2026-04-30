@@ -278,6 +278,10 @@
             <strong>&middot;</strong>
             <router-link :to="{name: 'settings-release-notes'}">{{ $t('Release Notes') }}</router-link>
             <strong>&middot;</strong>
+            <a href="https://www.nimiq.com/wallet-terms-and-conditions/" target="_blank" rel="noopener">{{
+                $t('Terms & Conditions')
+            }}</a>
+            <strong>&middot;</strong>
             <router-link to="disclaimer">{{ $t('Disclaimer') }}</router-link>
         </div>
 

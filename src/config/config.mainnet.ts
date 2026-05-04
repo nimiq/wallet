@@ -122,7 +122,7 @@ export default {
     },
 
     coinify: {
-        enabled: false, // enable once a green light has been received from all involved parties
+        enabled: true,
         widgetUrl: 'https://trade-ui.coinify.com',
         partnerId: '39f9f437-44b7-4a8b-a858-f512d14ec9c5',
     },

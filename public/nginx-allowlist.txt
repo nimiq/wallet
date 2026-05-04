@@ -2,6 +2,7 @@
 ^\/swap(?:\/([^\/#\?]+?))?[\/#\?]?$
 ^\/sell-crypto[\/#\?]?$
 ^\/moonpay-sell-info[\/#\?]?$
+^\/coinify-sell-info[\/#\?]?$
 ^\/[\/#\?]?$
 ^\/transactions[\/#\?]?$
 ^\/accounts[\/#\?]?$
@@ -39,6 +40,7 @@
 ^\/stablecoin-selection[\/#\?]?$
 ^\/moonpay[\/#\?]?$
 ^\/simplex[\/#\?]?$
+^\/coinify[\/#\?]?$
 ^\/release-notes[\/#\?]?$
 ^\/staking[\/#\?]?$
 ^\/validator-details[\/#\?]?$

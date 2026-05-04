@@ -68,6 +68,7 @@ msgstr ""
 msgid "{perc}% of swap value."
 msgstr ""
 
+#: src/components/modals/CoinifySellInfoModal.vue:32
 #: src/components/modals/MoonpaySellInfoModal.vue:27
 msgid "{percentage} fees"
 msgstr ""
@@ -92,11 +93,12 @@ msgstr ""
 msgid "+ {count} more | + {count} more"
 msgstr ""
 
+#: src/components/modals/CoinifySellInfoModal.vue:43
 #: src/components/modals/MoonpaySellInfoModal.vue:40
 msgid "+ network fees"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:146
+#: src/components/modals/BuyOptionsModal.vue:127
 msgid "+ network fees, registration required"
 msgstr ""
 
@@ -380,7 +382,7 @@ msgstr ""
 msgid "Any funds sent will be refunded."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:114
+#: src/components/modals/BuyOptionsModal.vue:112
 #: src/components/modals/BuyOptionsModal.vue:44
 msgid "Apple/Google Pay"
 msgstr ""
@@ -560,7 +562,7 @@ msgstr ""
 msgid "Buy NIM & BTC"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:161
+#: src/components/modals/BuyOptionsModal.vue:139
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -725,7 +727,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: src/components/modals/CoinifySellInfoModal.vue:19
+#: src/components/modals/CoinifySellInfoModal.vue:18
 msgid "Coinify is a third-party service requiring registration and KYC."
 msgstr ""
 
@@ -816,7 +818,7 @@ msgstr ""
 msgid "Continue to Wallet"
 msgstr ""
 
-#: src/components/modals/CoinifySellInfoModal.vue:31
+#: src/components/modals/CoinifySellInfoModal.vue:48
 msgid "Continue with Coinify"
 msgstr ""
 
@@ -910,7 +912,7 @@ msgstr ""
 msgid "Created yesterday"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:111
 #: src/components/modals/BuyOptionsModal.vue:43
 msgid "Credit Card"
 msgstr ""
@@ -1646,10 +1648,11 @@ msgid "Max swappable amount is {amount}"
 msgstr ""
 
 #: src/components/modals/BuyOptionsModal.vue:102
-#: src/components/modals/BuyOptionsModal.vue:119
+#: src/components/modals/BuyOptionsModal.vue:117
 #: src/components/modals/BuyOptionsModal.vue:32
 #: src/components/modals/BuyOptionsModal.vue:49
 #: src/components/modals/BuyOptionsModal.vue:68
+#: src/components/modals/CoinifySellInfoModal.vue:36
 #: src/components/modals/MoonpaySellInfoModal.vue:31
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1805,15 +1808,11 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:153
-msgid "Not available for NIM"
-msgstr ""
-
 #: src/components/layouts/Sidebar.vue:159
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:154
+#: src/components/modals/BuyOptionsModal.vue:133
 #: src/components/modals/BuyOptionsModal.vue:87
 msgid "Not available in your country"
 msgstr ""
@@ -2303,7 +2302,7 @@ msgstr ""
 msgid "Sell max"
 msgstr ""
 
-#: src/components/modals/CoinifySellInfoModal.vue:17
+#: src/components/modals/CoinifySellInfoModal.vue:16
 msgid "Sell NIM & BTC"
 msgstr ""
 
@@ -2313,7 +2312,7 @@ msgid ""
 "SEPA bank account."
 msgstr ""
 
-#: src/components/modals/CoinifySellInfoModal.vue:15
+#: src/components/modals/CoinifySellInfoModal.vue:14
 msgid "Sell NIM, BTC and {ticker}"
 msgstr ""
 
@@ -3324,7 +3323,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:378
+#: src/components/layouts/Sidebar.vue:382
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"

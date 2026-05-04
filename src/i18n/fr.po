@@ -78,6 +78,7 @@ msgstr "{fee} de frais"
 msgid "{perc}% of swap value."
 msgstr "{perc}% de la valeur du swap."
 
+#: src/components/modals/CoinifySellInfoModal.vue:32
 #: src/components/modals/MoonpaySellInfoModal.vue:27
 msgid "{percentage} fees"
 msgstr "{percentage} de frais"
@@ -102,11 +103,12 @@ msgstr "{value} restant"
 msgid "+ {count} more | + {count} more"
 msgstr "+ {count} de plus | + {count} de plus"
 
+#: src/components/modals/CoinifySellInfoModal.vue:43
 #: src/components/modals/MoonpaySellInfoModal.vue:40
 msgid "+ network fees"
 msgstr "+ frais de réseau"
 
-#: src/components/modals/BuyOptionsModal.vue:146
+#: src/components/modals/BuyOptionsModal.vue:127
 msgid "+ network fees, registration required"
 msgstr "+ frais de réseau, inscription obligatoire"
 
@@ -427,7 +429,7 @@ msgstr "Chaque somme envoyée sera retournée dans un délai de 1 à 3 jours."
 msgid "Any funds sent will be refunded."
 msgstr "Tout fonds envoyés seront remboursés."
 
-#: src/components/modals/BuyOptionsModal.vue:114
+#: src/components/modals/BuyOptionsModal.vue:112
 #: src/components/modals/BuyOptionsModal.vue:44
 msgid "Apple/Google Pay"
 msgstr "Apple/Google Pay"
@@ -581,7 +583,7 @@ msgstr "Navigateur | {count} Navigateurs"
 msgid "BTC network fee"
 msgstr "frais de réseau BTC"
 
-#: src/components/layouts/Sidebar.vue:59
+#: src/components/layouts/Sidebar.vue:60
 msgid "Buy"
 msgstr "Acheter"
 
@@ -625,7 +627,7 @@ msgstr "Acheter des NIM"
 msgid "Buy NIM & BTC"
 msgstr "Acheter NIM et BTC"
 
-#: src/components/modals/BuyOptionsModal.vue:161
+#: src/components/modals/BuyOptionsModal.vue:139
 msgid "Buy NIM on a crypto exchange:"
 msgstr "Acheter du NIM sur une plateforme d'échange :"
 
@@ -796,6 +798,10 @@ msgstr "Cliquez sur \"Résolution des problèmes\" pour en apprendre plus."
 msgid "Close"
 msgstr "Fermer"
 
+#: src/components/modals/CoinifySellInfoModal.vue:18
+msgid "Coinify is a third-party service requiring registration and KYC."
+msgstr ""
+
 #: src/components/SendModalFooter.vue:9 src/components/swap/SwapModal.vue:194
 #: src/components/swap/SwapModal.vue:199 src/components/swap/SwapModal.vue:211
 msgid "Confirm"
@@ -880,6 +886,10 @@ msgstr "Continuer le Swap"
 #: src/components/staking/WelcomeStakingModal.vue:107
 msgid "Continue to Wallet"
 msgstr "Continuer vers le Wallet"
+
+#: src/components/modals/CoinifySellInfoModal.vue:48
+msgid "Continue with Coinify"
+msgstr ""
 
 #: src/components/modals/MoonpaySellInfoModal.vue:45
 msgid "Continue with Moonpay"
@@ -979,12 +989,12 @@ msgstr "Créé à l'instant"
 msgid "Created yesterday"
 msgstr "Créé hier"
 
-#: src/components/modals/BuyOptionsModal.vue:113
+#: src/components/modals/BuyOptionsModal.vue:111
 #: src/components/modals/BuyOptionsModal.vue:43
 msgid "Credit Card"
 msgstr "Carte de crédit"
 
-#: src/components/layouts/Sidebar.vue:147
+#: src/components/layouts/Sidebar.vue:149
 #: src/components/swap/SwapModal.vue:415
 msgid "Crypto swaps are currently under maintenance."
 msgstr "Les swaps de crypto sont actuellement en maintenance."
@@ -1796,10 +1806,11 @@ msgid "Max swappable amount is {amount}"
 msgstr "Le montant maximum Swappable est de {amount}"
 
 #: src/components/modals/BuyOptionsModal.vue:102
-#: src/components/modals/BuyOptionsModal.vue:119
+#: src/components/modals/BuyOptionsModal.vue:117
 #: src/components/modals/BuyOptionsModal.vue:32
 #: src/components/modals/BuyOptionsModal.vue:49
 #: src/components/modals/BuyOptionsModal.vue:68
+#: src/components/modals/CoinifySellInfoModal.vue:36
 #: src/components/modals/MoonpaySellInfoModal.vue:31
 #: src/components/swap/SwapFeesTooltip.vue:23
 msgid "min {amount}"
@@ -1860,7 +1871,7 @@ msgstr "Nommez ce destinataire..."
 msgid "Name your contact"
 msgstr "Nommez votre contact"
 
-#: src/components/layouts/Sidebar.vue:177
+#: src/components/layouts/Sidebar.vue:179
 msgid "Network"
 msgstr "Réseau"
 
@@ -1973,15 +1984,11 @@ msgstr ""
 "Tous les comptes fournis par cette banque ne supportent pas forcément les "
 "transactions instantanées."
 
-#: src/components/modals/BuyOptionsModal.vue:153
-msgid "Not available for NIM"
-msgstr "Non disponible pour NIM"
-
-#: src/components/layouts/Sidebar.vue:157
+#: src/components/layouts/Sidebar.vue:159
 msgid "Not available in your browser"
 msgstr "Non disponible avec votre navigateur"
 
-#: src/components/modals/BuyOptionsModal.vue:154
+#: src/components/modals/BuyOptionsModal.vue:133
 #: src/components/modals/BuyOptionsModal.vue:87
 msgid "Not available in your country"
 msgstr "Non disponible dans votre pays"
@@ -2120,7 +2127,7 @@ msgstr ""
 "Choisissez un Stablecoin pour votre wallet. Vous pourrez toujours passer de "
 "l'un à l'autre plus tard."
 
-#: src/components/layouts/Sidebar.vue:150
+#: src/components/layouts/Sidebar.vue:152
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -2170,8 +2177,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Veuillez transférer"
 
-#: src/components/layouts/Sidebar.vue:161
-#: src/components/layouts/Sidebar.vue:62
+#: src/components/layouts/Sidebar.vue:163
+#: src/components/layouts/Sidebar.vue:63
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 "Veuillez attendre que votre swap actuel soit terminé avant d'en commencer un"
@@ -2490,7 +2497,7 @@ msgstr "Sélectionner le validateur"
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr "Sélectionnez l'unité dans laquelle afficher les montants en Bitcoin."
 
-#: src/components/layouts/Sidebar.vue:81
+#: src/components/layouts/Sidebar.vue:83
 msgid "Sell"
 msgstr "Vendre"
 
@@ -2519,6 +2526,10 @@ msgstr "Vendre de la Crypto pour du Fiat"
 msgid "Sell max"
 msgstr "Vendre le maximum"
 
+#: src/components/modals/CoinifySellInfoModal.vue:16
+msgid "Sell NIM & BTC"
+msgstr ""
+
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
 "Sell NIM and BTC directly to your\n"
@@ -2528,12 +2539,16 @@ msgstr ""
 "sur votre compte bancaire avec un\n"
 "virement SEPA."
 
+#: src/components/modals/CoinifySellInfoModal.vue:14
+msgid "Sell NIM, BTC and {ticker}"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:78
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr ""
 "La vente et le remboursement ne fonctionnent pas avec un IBAN générique ! "
 
-#: src/components/layouts/Sidebar.vue:85
+#: src/components/layouts/Sidebar.vue:87
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 "La vente directe de NIM n'est actuellement pas disponible dans le Wallet."
@@ -2697,7 +2712,7 @@ msgstr "Configuration de l'Atomic Swap"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Configuration de la partie {currency} du Swap."
 
-#: src/components/layouts/Sidebar.vue:185
+#: src/components/layouts/Sidebar.vue:187
 msgid "Settings"
 msgstr "Réglages"
 
@@ -2867,7 +2882,7 @@ msgid "Super eco-friendly"
 msgstr " Très respectueux de l'environnement"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:144
+#: src/components/layouts/Sidebar.vue:146
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -3657,7 +3672,7 @@ msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 "Vous pourrez recevoir plus de NIM gratuitement dans {waitTime} heures."
 
-#: src/components/layouts/Sidebar.vue:373
+#: src/components/layouts/Sidebar.vue:382
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3671,7 +3686,7 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr "Vous ne pouvez pas ajuster votre staking pendant que vous dé-stakez"
 
-#: src/components/layouts/Sidebar.vue:153
+#: src/components/layouts/Sidebar.vue:155
 msgid "You currently have no balance to swap."
 msgstr "Vous n'avez actuellement aucun solde à swap."
 
@@ -3759,7 +3774,7 @@ msgstr "Votre banque n'est pas éligible ?"
 msgid "Your browser"
 msgstr "Votre navigateur"
 
-#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:160
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

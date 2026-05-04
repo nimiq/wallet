@@ -128,6 +128,10 @@
                         <div class="flex-grow"></div>
                         <CaretRightIcon/>
                     </footer>
+                    <footer v-else-if="!$config.coinify.enabled" class="flex-row">
+                        <ForbiddenIcon/>
+                        {{ $t('Currently in trial with select users') }}
+                    </footer>
                     <footer v-else class="flex-row">
                         <ForbiddenIcon/>
                         {{ $t('Not available in your country') }}

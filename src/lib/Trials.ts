@@ -18,6 +18,7 @@ window.digestMessage = async function (message: string): Promise<string> { // es
 export enum Trial {
     OASIS2 = 'OASIS2',
     TEN31Pass = 'TEN31Pass',
+    Coinify = 'Coinify',
 }
 
 export function init() {
@@ -28,6 +29,9 @@ export function init() {
         switch (trial) { // eslint-disable-line default-case
             case Trial.TEN31Pass:
                 config.ten31Pass.enabled = true;
+                break;
+            case Trial.Coinify:
+                config.coinify.enabled = true;
                 break;
         }
     }
@@ -46,6 +50,7 @@ export async function enableTrial(password: string): Promise<boolean> {
     const trialToEnable = {
         'a3c06b88640ae4a5344a94238aa12746b032634bba1431163137129fe6ee1230': Trial.OASIS2,
         'd8082502f1f6cf61125f9d87b1a848590a5c56aa593abcb59f5d3225afdfc8b0': Trial.TEN31Pass,
+        'ad781c87ddf8436b5200f73fb979ae4e387b13d893b8d1257e79530cb34c15cb': Trial.Coinify,
     }[hash];
     /* eslint-enable quote-props */
 

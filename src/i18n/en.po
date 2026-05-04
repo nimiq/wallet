@@ -562,7 +562,7 @@ msgstr ""
 msgid "Buy NIM & BTC"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:139
+#: src/components/modals/BuyOptionsModal.vue:143
 msgid "Buy NIM on a crypto exchange:"
 msgstr ""
 
@@ -920,6 +920,10 @@ msgstr ""
 #: src/components/layouts/Sidebar.vue:149
 #: src/components/swap/SwapModal.vue:415
 msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
+#: src/components/modals/BuyOptionsModal.vue:133
+msgid "Currently in trial with select users"
 msgstr ""
 
 #: src/components/FlaggedAddressWarning.vue:30
@@ -1812,7 +1816,7 @@ msgstr ""
 msgid "Not available in your browser"
 msgstr ""
 
-#: src/components/modals/BuyOptionsModal.vue:133
+#: src/components/modals/BuyOptionsModal.vue:137
 #: src/components/modals/BuyOptionsModal.vue:87
 msgid "Not available in your country"
 msgstr ""

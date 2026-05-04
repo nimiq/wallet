@@ -121,6 +121,12 @@ export default {
         apiKey: 'pk_live_c33fd2b9-39e7-472b-8330-f96a9ff07573',
     },
 
+    coinify: {
+        enabled: false, // enable once a green light has been received from all involved parties
+        widgetUrl: 'https://trade-ui.coinify.com',
+        partnerId: '39f9f437-44b7-4a8b-a858-f512d14ec9c5',
+    },
+
     goCrypto: {
         enabled: true,
         apiEndpoint: 'https://api.gocrypto.com/',

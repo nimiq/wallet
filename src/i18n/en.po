@@ -519,7 +519,7 @@ msgstr ""
 msgid "BTC network fee"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:59
+#: src/components/layouts/Sidebar.vue:60
 msgid "Buy"
 msgstr ""
 
@@ -725,6 +725,10 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: src/components/modals/CoinifySellInfoModal.vue:19
+msgid "Coinify is a third-party service requiring registration and KYC."
+msgstr ""
+
 #: src/components/SendModalFooter.vue:9
 #: src/components/swap/SwapModal.vue:194
 #: src/components/swap/SwapModal.vue:199
@@ -810,6 +814,10 @@ msgstr ""
 
 #: src/components/staking/WelcomeStakingModal.vue:107
 msgid "Continue to Wallet"
+msgstr ""
+
+#: src/components/modals/CoinifySellInfoModal.vue:31
+msgid "Continue with Coinify"
 msgstr ""
 
 #: src/components/modals/MoonpaySellInfoModal.vue:45
@@ -907,7 +915,7 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:147
+#: src/components/layouts/Sidebar.vue:149
 #: src/components/swap/SwapModal.vue:415
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
@@ -1697,7 +1705,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:177
+#: src/components/layouts/Sidebar.vue:179
 msgid "Network"
 msgstr ""
 
@@ -1801,7 +1809,7 @@ msgstr ""
 msgid "Not available for NIM"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:157
+#: src/components/layouts/Sidebar.vue:159
 msgid "Not available in your browser"
 msgstr ""
 
@@ -1941,7 +1949,7 @@ msgstr ""
 msgid "Pick a stable coin for your wallet. You can always switch between the two."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:150
+#: src/components/layouts/Sidebar.vue:152
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
@@ -1974,8 +1982,8 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:161
-#: src/components/layouts/Sidebar.vue:62
+#: src/components/layouts/Sidebar.vue:163
+#: src/components/layouts/Sidebar.vue:63
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
 
@@ -2266,7 +2274,7 @@ msgstr ""
 msgid "Select which unit to show Bitcoin amounts in."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:81
+#: src/components/layouts/Sidebar.vue:83
 msgid "Sell"
 msgstr ""
 
@@ -2295,17 +2303,25 @@ msgstr ""
 msgid "Sell max"
 msgstr ""
 
+#: src/components/modals/CoinifySellInfoModal.vue:17
+msgid "Sell NIM & BTC"
+msgstr ""
+
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
 "Sell NIM and BTC directly to your\n"
 "SEPA bank account."
 msgstr ""
 
+#: src/components/modals/CoinifySellInfoModal.vue:15
+msgid "Sell NIM, BTC and {ticker}"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:78
 msgid "Selling and refunds will not work with a generic IBAN!"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:85
+#: src/components/layouts/Sidebar.vue:87
 msgid "Selling NIM directly is currently unavailable in the Wallet."
 msgstr ""
 
@@ -2461,7 +2477,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:185
+#: src/components/layouts/Sidebar.vue:187
 msgid "Settings"
 msgstr ""
 
@@ -2625,7 +2641,7 @@ msgid "Super eco-friendly"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:144
+#: src/components/layouts/Sidebar.vue:146
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -3308,7 +3324,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:373
+#: src/components/layouts/Sidebar.vue:378
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3319,7 +3335,7 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:153
+#: src/components/layouts/Sidebar.vue:155
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -3392,7 +3408,7 @@ msgstr ""
 msgid "Your browser"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:158
+#: src/components/layouts/Sidebar.vue:160
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 

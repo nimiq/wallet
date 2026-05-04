@@ -41,7 +41,8 @@
                         && fastspotEnabledFiatSwapAssets.length
                     )
                     || $config.moonpay.enabled
-                    || $config.simplex.enabled"
+                    || $config.simplex.enabled
+                    || $config.coinify.enabled"
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -65,7 +66,8 @@
 
             <Tooltip
                 v-if="/* (fastspotEnabledCryptoSwapAssets.length && fastspotEnabledFiatSwapAssets.length)
-                    || */ $config.moonpay.enabled"
+                    || */ $config.moonpay.enabled
+                    || $config.coinify.enabled"
                 preferredPosition="top right"
                 :container="$parent"
                 theme="inverse"
@@ -216,6 +218,7 @@ import { ENV_TEST, ENV_DEV, CryptoCurrency, FIAT_CURRENCIES_OFFERED } from '../.
 enum SellProvider {
     Simplex = 'simplex',
     Moonpay = 'moonpay',
+    Coinify = 'coinify',
 }
 
 export default defineComponent({
@@ -350,7 +353,12 @@ export default defineComponent({
 
         const enabledSellProviders = computed(() => {
             const providers: SellProvider[] = [];
+
             if (canSellCryptoWithMoonpay.value) providers.push(SellProvider.Moonpay);
+
+            // Coinify can sell all wallet-supported cryptocurrencies
+            if (config.coinify.enabled) providers.push(SellProvider.Coinify);
+
             return providers;
         });
 
@@ -358,6 +366,7 @@ export default defineComponent({
 
         const sellModals = {
             [SellProvider.Moonpay]: RouteName.MoonpaySellInfo,
+            [SellProvider.Coinify]: RouteName.CoinifySellInfo,
             [SellProvider.Simplex]: RouteName.SellCrypto, // This is a fallback, should never be reached
         };
 

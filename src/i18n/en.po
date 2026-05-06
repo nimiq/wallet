@@ -639,7 +639,7 @@ msgstr ""
 msgid "Cannot import contacts, wrong file format."
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:311
+#: src/components/staking/ValidatorDetailsOverlay.vue:312
 msgid "Cannot switch yet"
 msgstr ""
 
@@ -672,7 +672,7 @@ msgstr ""
 msgid "Change your language setting."
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:247
+#: src/components/staking/ValidatorDetailsOverlay.vue:248
 msgid "Changing validator"
 msgstr ""
 
@@ -1964,7 +1964,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:312
+#: src/components/staking/ValidatorDetailsOverlay.vue:313
 msgid "Please wait for the cooldown period to end."
 msgstr ""
 
@@ -2523,7 +2523,7 @@ msgstr ""
 #: src/components/staking/StakingInfoPage.vue:525
 #: src/components/staking/StakingInfoPage.vue:588
 #: src/components/staking/ValidatorDetailsOverlay.vue:134
-#: src/components/staking/ValidatorDetailsOverlay.vue:318
+#: src/components/staking/ValidatorDetailsOverlay.vue:319
 msgid "Something went wrong"
 msgstr ""
 
@@ -2594,7 +2594,7 @@ msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:496
-#: src/components/staking/ValidatorDetailsOverlay.vue:273
+#: src/components/staking/ValidatorDetailsOverlay.vue:274
 msgid "Successfully changed validator to {validator}"
 msgstr ""
 
@@ -3176,7 +3176,7 @@ msgstr ""
 msgid "Validator information not available"
 msgstr ""
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:237
+#: src/components/staking/ValidatorDetailsOverlay.vue:238
 msgid "Validator switch initiated"
 msgstr ""
 

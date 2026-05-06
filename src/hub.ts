@@ -582,7 +582,7 @@ export async function signUnstakingTransactions(request: {
     senderLabel?: string,
     recipientLabel?: string,
     transactions: Uint8Array[], // Array of 3 serialized transactions: [deactivation, retire, unstake]
-    validatorAddress?: string,
+    validatorAddress: string,
     validatorImageUrl?: string,
 }): Promise<SignedTransaction[] | null> {
     if (request.transactions.length !== 3) {
@@ -591,6 +591,7 @@ export async function signUnstakingTransactions(request: {
 
     const signedTransactions = await hubApi.signTransaction({
         appName: APP_NAME,
+        layout: 'unstaking',
         sender: request.sender,
         senderLabel: request.senderLabel,
         recipientLabel: request.recipientLabel,

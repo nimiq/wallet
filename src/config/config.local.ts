@@ -38,7 +38,7 @@ export default {
     },
 
     albatrossWatchtower: {
-        endpoint: 'http://localhost:8082',
+        endpoint: 'https://watchtower.pos.nimiq-testnet.com',
     },
 
     polygon: {

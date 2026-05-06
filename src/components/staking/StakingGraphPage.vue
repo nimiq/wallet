@@ -291,8 +291,9 @@ export default defineComponent({
                     // Sign all 3 transactions at once using the SignTransaction API
                     const signedTransactions = await signUnstakingTransactions({
                         sender: activeAddress.value!,
-                        senderLabel: activeAddress.value!,
-                        recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                        // FROM = validator (rendered on the dashed "current" card in the keyguard).
+                        senderLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                        // TO = user wallet — let the keyguard fall back to keyLabel.
                         transactions: [
                             deactivationTx.serialize(),
                             retireTx.serialize(),

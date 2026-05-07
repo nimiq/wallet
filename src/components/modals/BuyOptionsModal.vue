@@ -152,21 +152,14 @@
                 <a href="https://ascendex.com" title="AscendEX (BitMax)" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/ascendex.png" alt="AscendEX">
                 </a>
-                <a href="https://hitbtc.com/NIM-to-BTC" title="HitBTC" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/hitbtc.svg" alt="HitBTC">
+                <a href="https://www.coinex.com/en/price/nim" title="CoinEx" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/coinex.svg" alt="CoinEx">
                 </a>
-                <a href="https://stealthex.io/?to=NIM" title="StealthEx" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/stealthex.svg" alt="StealthEx">
-                </a>
-                <a href="https://changelly.com/exchange/btc/nim?ref_id=v06xmpbqj5lpftuj"
-                    title="Changelly" target="_blank" rel="noopener"
-                ><img src="../../assets/exchanges/changelly.svg" alt="Changelly">
+                <a href="https://www.bitpanda.com/en/prices/nimiq-nim" title="Bitpanda" target="_blank" rel="noopener">
+                    <img src="../../assets/exchanges/bitpanda.png" alt="Bitpanda">
                 </a>
                 <a href="https://changehero.io/?to=NIM" title="Changehero" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/changehero.svg" alt="Changehero">
-                </a>
-                <a href="https://coinswitch.co/?to=nim&ref=7OTBVXHK23" title="Coinswitch" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/coinswitch.svg" alt="Coinswitch">
                 </a>
                 <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/swapzone.svg" alt="Swapzone">

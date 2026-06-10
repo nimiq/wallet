@@ -801,6 +801,8 @@ msgstr "Fermer"
 #: src/components/modals/CoinifySellInfoModal.vue:18
 msgid "Coinify is a third-party service requiring registration and KYC."
 msgstr ""
+"Coinify est un service tiers qui nécessite une inscription et une procédure "
+"de vérification d'identité."
 
 #: src/components/SendModalFooter.vue:9 src/components/swap/SwapModal.vue:194
 #: src/components/swap/SwapModal.vue:199 src/components/swap/SwapModal.vue:211
@@ -889,7 +891,7 @@ msgstr "Continuer vers le Wallet"
 
 #: src/components/modals/CoinifySellInfoModal.vue:48
 msgid "Continue with Coinify"
-msgstr ""
+msgstr "Continuer avec Coinify"
 
 #: src/components/modals/MoonpaySellInfoModal.vue:45
 msgid "Continue with Moonpay"
@@ -2528,7 +2530,7 @@ msgstr "Vendre le maximum"
 
 #: src/components/modals/CoinifySellInfoModal.vue:16
 msgid "Sell NIM & BTC"
-msgstr ""
+msgstr "Vendre des NIM & des BTC"
 
 #: src/components/modals/SellCryptoModal.vue:14
 msgid ""
@@ -2541,7 +2543,7 @@ msgstr ""
 
 #: src/components/modals/CoinifySellInfoModal.vue:14
 msgid "Sell NIM, BTC and {ticker}"
-msgstr ""
+msgstr "Vendre des NIM, des BTC et des {ticker}"
 
 #: src/components/BankCheckInput.vue:78
 msgid "Selling and refunds will not work with a generic IBAN!"
@@ -3014,7 +3016,7 @@ msgstr "Vérification TEN31"
 
 #: src/components/layouts/Settings.vue:282
 msgid "Terms & Conditions"
-msgstr ""
+msgstr "Conditions générales"
 
 #: src/components/AddressList.vue:210
 #: src/components/layouts/AccountOverview.vue:222

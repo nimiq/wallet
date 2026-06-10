@@ -89,7 +89,7 @@ export default defineComponent({
         const { $t, locale } = useI18n();
         const constants = { FIAT_PRICE_UNAVAILABLE };
 
-        const fiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
+        const fiatCurrency = computed(() => isHistorySupportedFiatCurrency(
             preferredFiatCurrency.value,
             FIAT_API_PROVIDER_TX_HISTORY,
         ) ? preferredFiatCurrency.value : FiatCurrency.USD);

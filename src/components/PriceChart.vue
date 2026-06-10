@@ -166,7 +166,7 @@ export default defineComponent({
                 chartFiatCurrency,
                 timestamps,
                 FIAT_API_PROVIDER_PRICE_CHART,
-                // @ts-expect-error provider check on purpose as we might want to change it in the future
+                // @ ts-expect-error provider check on purpose as we might want to change it in the future
                 ...(FIAT_API_PROVIDER_PRICE_CHART === Provider.CoinGecko
                     ? [{ disableMinutelyData: true }] as const
                     : [] as const

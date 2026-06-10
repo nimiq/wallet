@@ -26,7 +26,7 @@ export function useMonthlyRewardFiatValue(
     const { currency: preferredFiatCurrency, exchangeRates } = useFiatStore();
     const stakingStore = useStakingStore();
 
-    const fiatCurrency = computed<FiatCurrency>(() => isHistorySupportedFiatCurrency(
+    const fiatCurrency = computed(() => isHistorySupportedFiatCurrency(
         preferredFiatCurrency.value,
         FIAT_API_PROVIDER_TX_HISTORY,
     ) ? preferredFiatCurrency.value : FiatCurrency.USD);

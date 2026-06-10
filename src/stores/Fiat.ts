@@ -6,7 +6,7 @@ import {
     isProviderSupportedFiatCurrency,
     isBridgedFiatCurrency,
     isHistorySupportedFiatCurrency,
-    // setCoinGeckoApiUrl,
+    setCoinGeckoApiUrl,
 } from '@nimiq/utils';
 import {
     CryptoCurrency,
@@ -49,7 +49,7 @@ function areSetsEqual(a: Set<unknown>, b: Set<unknown>): boolean {
 }
 
 // Use CoinGecko via a proxy.
-// setCoinGeckoApiUrl('https://nq-coingecko-proxy.deno.dev/api/v3');
+setCoinGeckoApiUrl('https://coingecko-proxy.sisou.deno.net/api/v3');
 
 export function guessUserCurrency(regionOverwrite?: string) {
     // parse navigator.language which is formatted according to https://tools.ietf.org/html/bcp47#section-2.1

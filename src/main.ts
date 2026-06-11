@@ -48,6 +48,7 @@ Vue.use(VueVirtualScroller);
 Vue.use(VuePortal, { name: 'Portal' });
 
 async function start() {
+    startSentry(); // Init Sentry early, such that errors during the initialization, e.g. in initStorage, get reported
     initPwa(); // Must be called as soon as possible to catch early browser events related to PWA
     await initStorage(); // Must be awaited before starting Vue
     initTrials(); // Must be called after storage was initialized, can affect Config
@@ -94,8 +95,6 @@ async function start() {
     // Fetch language file
     const { language } = useSettingsStore();
     loadLanguage(language.value);
-
-    startSentry();
 
     const { config } = useConfig();
 

@@ -23,7 +23,9 @@ import { useSwapsStore } from './stores/Swaps';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
 import { useStakingStore } from './stores/Staking';
+import { useConfig } from './composables/useConfig';
 import { useGeoIp } from './composables/useGeoIp';
+import { ENV_TEST, ENV_DEV } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 
 const StorageKeys = {
@@ -52,6 +54,9 @@ const PersistentStorageKeys = {
     USDCCONTACTS: 'wallet_usdccontacts_v01',
     USDTCONTACTS: 'wallet_usdtcontacts_v01',
 };
+
+// Testnet version, identified by genesis date encoded as ISO string.
+const TESTNET_VERSION_LOCALSTORAGE_KEY = 'testnet-version';
 
 const unsubscriptions: (() => void)[] = [];
 
@@ -120,6 +125,8 @@ class LocalStorageStorage {
 let Storage: StorageBackend;
 
 export async function initStorage() {
+    const { config } = useConfig();
+
     try {
         await idbReady();
         await migrateToIdb();
@@ -134,6 +141,7 @@ export async function initStorage() {
     const usdcTransactionsStore = useUsdcTransactionsStore();
     const usdtTransactionsStore = useUsdtTransactionsStore();
     const proxyStore = useProxyStore();
+    const stakingStore = useStakingStore();
 
     await Promise.all([
         initStoreStore(
@@ -267,7 +275,7 @@ export async function initStorage() {
             (storedContacts) => ({ contacts: storedContacts }),
         ),
         initStoreStore(
-            useStakingStore(),
+            stakingStore,
             StorageKeys.STAKING,
             (state) => ({
                 // Only serialize persistable state (avoid nonReactive data)
@@ -298,12 +306,39 @@ export async function initStorage() {
         ),
     ]);
 
+    // Delete state related to outdated testnet versions that have been reset to a new genesis block.
+    const isTestnet = config.environment === ENV_TEST || config.environment === ENV_DEV;
+    const storedTestnetVersion = isTestnet ? localStorage.getItem(TESTNET_VERSION_LOCALSTORAGE_KEY) : null;
+    const currentGenesis = config.staking.genesis;
+    const currentTestnetVersion = currentGenesis.date.toISOString();
+    if (isTestnet && storedTestnetVersion !== currentTestnetVersion) {
+        // Outdated data is data later than the new genesis block's height, which is the height to which the testnet was
+        // reset via the new genesis block.
+        const hasOutdatedTransaction = Object.values(transactionsStore.state.transactions).some((transaction) =>
+            (transaction.blockHeight || transaction.validityStartHeight) > currentGenesis.height);
+
+        if (hasOutdatedTransaction) {
+            // While it would be sufficient to only delete data since the new genesis block height, we clear all storage
+            // nonetheless. Clearing only select data would not only require clearing the transactions after the genesis
+            // block height, but also associated swaps, staking events, cached balances, and the like, such that it's
+            // easier to simply clear and re-sync all data. It's also just testnet data after all.
+            // eslint-disable-next-line no-console
+            console.log(`Reset outdated testnet data for version ${storedTestnetVersion}`);
+            await clearStorage();
+            localStorage.setItem(TESTNET_VERSION_LOCALSTORAGE_KEY, currentTestnetVersion);
+            window.location.reload();
+            return;
+        }
+
+        localStorage.setItem(TESTNET_VERSION_LOCALSTORAGE_KEY, currentTestnetVersion);
+    }
+
     // Fetch missing exchange rates.
     transactionsStore.calculateFiatAmounts();
     btcTransactionsStore.calculateFiatAmounts();
     usdcTransactionsStore.calculateFiatAmounts();
     usdtTransactionsStore.calculateFiatAmounts();
-    useStakingStore().calculateMonthlyFiatValues();
+    stakingStore.calculateMonthlyFiatValues();
 }
 
 async function initStoreStore<State extends StateTree, StoredState>(

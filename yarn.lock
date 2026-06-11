@@ -1464,10 +1464,18 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core@^2.0.0", "@nimiq/core@^2.1.0", "@nimiq/core@^2.1.1":
+"@nimiq/core@^2.0.0", "@nimiq/core@^2.1.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.2.1.tgz#d027dea5a5db78eb08ca228cf9014ae6571064bb"
   integrity sha512-RrjZrSxR/1fBVhBddXABiQ2L/9QT7hRTBFpLYURcm2LX4mTgRIyz5YLpNEnzFrShNR2kITaa51KAl5X3JLfIZQ==
+  dependencies:
+    comlink "^4.4.1"
+    websocket "^1.0.34"
+
+"@nimiq/core@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.6.1.tgz#00b8f362725c5372a882d643ab351d26b65ffcfc"
+  integrity sha512-Wye2o2oSB8tpWwYzTEw8Mtte7SWM/cJ8NsBBb0lAYLL9OGx6lgBV0HOkruQWNBw9DBIPWrRo2oy4nVTQcy770A==
   dependencies:
     comlink "^4.4.1"
     websocket "^1.0.34"

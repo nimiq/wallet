@@ -181,7 +181,8 @@ export async function launchNetwork() {
         // TODO fetch only the data we're missing
         // eslint-disable-next-line prefer-template
         const url = endpoint.replace('ADDRESS', activeAddress.replaceAll(' ', '+'))
-            + `?from=2024-11-18&to=${new Date().toISOString()}`; // from PoS launch to now
+            // from genesis to now
+            + `?from=${config.staking.genesis.date.toISOString()}&to=${new Date().toISOString()}`;
         retry(
             () => fetch(url)
                 .then((res) => res.json())

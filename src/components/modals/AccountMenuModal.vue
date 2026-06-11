@@ -72,6 +72,7 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 import { backup, rename, changePassword, logout, onboard } from '../../hub';
 import { useWindowSize } from '../../composables/useWindowSize';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
+import { trackAccountSwitched } from '../../lib/PostHog';
 
 export default defineComponent({
     setup() {
@@ -90,6 +91,7 @@ export default defineComponent({
 
         function onAccountSelected(id: string) {
             selectAccount(id);
+            trackAccountSwitched();
 
             if (isMobile.value) {
                 router.replace({ name: RouteName.Root });

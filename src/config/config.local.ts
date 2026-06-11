@@ -29,9 +29,10 @@ export default {
         validatorsApiBase: 'https://validators-api-test.je-cf9.workers.dev',
         validatorsPath: '/api/v1/validators',
         stakeEventsEndpoint: 'https://v2.test.nimiqwatch.com/api/v2/staker/ADDRESS/events/restake-grouped',
+        // See https://github.com/nimiq/core-rs-albatross/blob/albatross/genesis/src/genesis/test-albatross.toml
         genesis: {
             height: 3032010,
-            date: new Date('2024-11-13T20:00:00Z'),
+            date: new Date('2026-06-10T05:00:00Z'),
             supply: 12_030_755_339_52899,
         },
     },

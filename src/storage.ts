@@ -324,9 +324,11 @@ export async function initStorage() {
             // easier to simply clear and re-sync all data. It's also just testnet data after all.
             // eslint-disable-next-line no-console
             console.log(`Reset outdated testnet data for version ${storedTestnetVersion}`);
-            await clearStorage();
-            localStorage.setItem(TESTNET_VERSION_LOCALSTORAGE_KEY, currentTestnetVersion);
-            window.location.reload();
+            if (await clearStorage()) {
+                // Ready for the new testnet version, if clearing succeeded.
+                localStorage.setItem(TESTNET_VERSION_LOCALSTORAGE_KEY, currentTestnetVersion);
+            }
+            window.location.reload(); // re-sync new testnet, or retry clearing storage if failed
             return;
         }
 
@@ -358,12 +360,26 @@ async function initStoreStore<State extends StateTree, StoredState>(
     return storedState;
 }
 
-export async function clearStorage() {
+export async function clearStorage(): Promise<boolean> {
     for (const unsub of unsubscriptions) {
         unsub();
     }
-    for (const key of Object.values(StorageKeys)) {
-        await Storage.del(key); // eslint-disable-line no-await-in-loop
+    // Delete transactions last, as initStorage's testnet reset detection is based on stored transactions, such that
+    // an interrupted or failed clearing still gets detected and retried on the next app start.
+    const keys = [
+        ...Object.values(StorageKeys).filter((key) => key !== StorageKeys.TRANSACTIONS),
+        StorageKeys.TRANSACTIONS,
+    ];
+    try {
+        for (const key of keys) {
+            await Storage.del(key); // eslint-disable-line no-await-in-loop
+        }
+        return true;
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to clear storage:', error);
+        reportToSentry(error);
+        return false;
     }
 }
 

@@ -1472,12 +1472,13 @@
     comlink "^4.4.1"
     websocket "^1.0.34"
 
-"@nimiq/core@^2.6.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.6.1.tgz#00b8f362725c5372a882d643ab351d26b65ffcfc"
-  integrity sha512-Wye2o2oSB8tpWwYzTEw8Mtte7SWM/cJ8NsBBb0lAYLL9OGx6lgBV0HOkruQWNBw9DBIPWrRo2oy4nVTQcy770A==
+"@nimiq/core@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.7.0.tgz#0f1520c3e50d3a22faa2f179722ab5a930525aa7"
+  integrity sha512-uPSgz7BwoBk3o7xb0E9KoertwCZyrfmU6M3Yczw74DjCDR9vEBzEXvCkIehwiyFQ6UpaFzwBIg7/ElHe6c0kVQ==
   dependencies:
     comlink "^4.4.1"
+    vite-plugin-wasm "^3.5.0"
     websocket "^1.0.34"
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
@@ -10344,6 +10345,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+vite-plugin-wasm@^3.5.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-wasm/-/vite-plugin-wasm-3.6.0.tgz#e67a544e22fffd4a6b5f925c47fd90a5530d277c"
+  integrity sha512-mL/QPziiIA4RAA6DkaZZzOstdwbW5jO4Vz7Zenj0wieKWBlNvIvX5L5ljum9lcUX0ShNfBgCNLKTjNkRVVqcsw==
 
 vue-chartjs@^4.0.0:
   version "4.1.2"

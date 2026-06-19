@@ -132,13 +132,6 @@ export default {
         partnerId: '39f9f437-44b7-4a8b-a858-f512d14ec9c5', // sandbox partner ID
     },
 
-    goCrypto: {
-        enabled: true,
-        apiEndpoint: 'https://api.staging.gocrypto.com/',
-        // This is a publishable key. This is the key from chapter 4 of the documentation.
-        apiKey: 'ae7344d0-3839-4732-bf57-c2489b92dc62',
-    },
-
     nimiqPay: {
         cosignerPublicKeys: [
             'c1534c708122968212c6709526801d18218ce9303590f2bca473213d99b24aaf',

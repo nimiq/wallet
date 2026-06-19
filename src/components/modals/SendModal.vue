@@ -170,7 +170,7 @@
                         </AmountInput>
                     </div>
 
-                    <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee+expiry">
+                    <span v-if="maxSendableAmount >= amount" class="secondary-amount" key="fiat+fee">
                         <span v-if="activeCurrency === CryptoCurrency.NIM" key="fiat-amount">
                             {{ amount > 0 ? '~' : '' }}<FiatConvertedAmount :amount="amount"/>
                             <span v-if="fee">
@@ -179,22 +179,6 @@
                         </span>
                         <span v-else key="nim-amount">
                             {{ $t('You will send {amount} NIM', { amount: amount / 1e5 }) }}
-                        </span>
-                        <span v-if="goCryptoExpiryEarlyCountdown" class="expiry-countdown"
-                            :class="{ 'same-line': activeCurrency === CryptoCurrency.NIM && !fee }">
-                            {{ $t('Pay within {countdown}', { countdown: goCryptoExpiryEarlyCountdown }) }}
-                            <Tooltip preferredPosition="top left" :styles="{ 'min-width': '35rem' }">
-                                <template #trigger>
-                                    <InfoCircleSmallIcon/>
-                                </template>
-                                <template #default>{{
-                                    $t('The GoCrypto payment request expires in {finalCountdown}. To ensure that your '
-                                        + 'payment is confirmed in time, send it within {earlyCountdown}.', {
-                                        earlyCountdown: goCryptoExpiryEarlyCountdown,
-                                        finalCountdown: goCryptoExpiryFinalCountdown,
-                                    })
-                                }}</template>
-                            </Tooltip>
                         </span>
                     </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
@@ -252,8 +236,8 @@
                 :title="statusTitle"
                 :state="statusState"
                 :message="statusMessage"
-                :mainAction="statusType === 'signing' ? $t('Retry') : $t('Cancel')"
-                :alternativeAction="statusType === 'signing' ? $t('Edit transaction') : undefined"
+                :mainAction="$t('Retry')"
+                :alternativeAction="$t('Edit transaction')"
                 @main-action="onStatusMainAction"
                 @alternative-action="onStatusAlternativeAction"
                 lightBlue
@@ -274,8 +258,6 @@ import {
     AddressDisplay,
     SelectBar,
     Amount,
-    Tooltip,
-    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { parseRequestLink, AddressBook, Utf8Tools, Currency, CurrencyInfo, ValidationUtils } from '@nimiq/utils';
 import { useRouter, RouteName } from '@/router';
@@ -298,14 +280,6 @@ import { useNetworkStore } from '../../stores/Network';
 import { useFiatStore } from '../../stores/Fiat';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED } from '../../lib/Constants';
 import { createCashlink, sendTransaction } from '../../hub';
-import { formatDuration } from '../../lib/Time';
-import {
-    GOCRYPTO_ID_PARAM,
-    fetchGoCryptoPaymentDetails,
-    goCryptoStatusToUserFriendlyMessage,
-    GoCryptoPaymentDetails,
-    GoCryptoPaymentApiError,
-} from '../../lib/GoCrypto';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { i18n } from '../../i18n/i18n-setup';
@@ -319,9 +293,6 @@ export enum RecipientType {
     CONTACT,
     OWN_ADDRESS,
     GLOBAL_ADDRESS,
-    // GoCrypto payments show a recipient label, which shouldn't be stored as contact as GoCrypto recycles addresses
-    // such that different addresses can be used for the same shop, and different shops can use the same address.
-    GO_CRYPTO,
     FLAGGED,
 }
 
@@ -611,8 +582,7 @@ export default defineComponent({
             consensus.value === 'established'
             && hasHeight.value
             && !!amount.value
-            && amount.value <= maxSendableAmount.value
-            && !isGoCryptoExpiryEarlyCountdownExpired(),
+            && amount.value <= maxSendableAmount.value,
         );
 
         /**
@@ -627,14 +597,6 @@ export default defineComponent({
             const parsedRequestLink = parseRequestLink(uri, { currencies: [Currency.NIM] });
             if (!parsedRequestLink) return;
 
-            let goCryptoId: string | null = null;
-            try {
-                goCryptoId = new URL(uri).searchParams.get(GOCRYPTO_ID_PARAM);
-            } catch (e) {
-                // Failed to parse uri as URL, e.g. due to missing protocol. Ignore as legit requests with gocrypto_id
-                // set should be coming from ScanQrModal and be well formatted.
-            }
-
             if (event) {
                 // Prevent paste event being applied to the recipient label field, that now became focussed.
                 event.preventDefault();
@@ -644,10 +606,6 @@ export default defineComponent({
             onAddressEntered(parsedRequestLink.recipient);
             if (!recipientInfo.value!.label && parsedRequestLink.label) {
                 recipientInfo.value!.label = parsedRequestLink.label;
-                if (goCryptoId) {
-                    recipientInfo.value!.type = RecipientType.GO_CRYPTO;
-                    recipientDetailsOpened.value = false; // hide recipient overlay as GoCrypto label isn't editable
-                }
             }
 
             if (parsedRequestLink.amount) {
@@ -659,128 +617,6 @@ export default defineComponent({
                 gotRequestUriMessage.value = true;
                 message.value = parsedRequestLink.message;
             }
-
-            if (goCryptoId) {
-                monitorGoCryptoRequest(goCryptoId);
-            }
-        }
-
-        let goCryptoMonitoringTimeout = -1;
-        let goCryptoPaymentDetails: GoCryptoPaymentDetails | GoCryptoPaymentApiError | null = null;
-        async function monitorGoCryptoRequest(paymentId: string) {
-            clearTimeout(goCryptoMonitoringTimeout); // avoid potential parallel monitoring
-            let endMonitoring = false;
-            try {
-                goCryptoPaymentDetails = await fetchGoCryptoPaymentDetails({ paymentId });
-                if (('recipient' in goCryptoPaymentDetails
-                        && goCryptoPaymentDetails.recipient !== recipientInfo.value?.address)
-                    || ('amount' in goCryptoPaymentDetails && goCryptoPaymentDetails.amount !== amount.value)) {
-                    // The GoCrypto payment request does not match the payment info.
-                    endMonitoring = true;
-                    return;
-                }
-                const userFriendlyStatus = goCryptoStatusToUserFriendlyMessage(goCryptoPaymentDetails);
-
-                if (userFriendlyStatus.paymentStatus === 'pending') {
-                    if (statusType.value === 'go-crypto') {
-                        // Hide previous status only if it was a go-crypto status before.
-                        statusType.value = 'none';
-                    }
-                    return;
-                }
-
-                statusType.value = 'go-crypto';
-                statusState.value = userFriendlyStatus.paymentStatus === 'accepted' ? State.SUCCESS : State.WARNING;
-                statusTitle.value = userFriendlyStatus.title;
-                statusMessage.value = 'message' in userFriendlyStatus ? userFriendlyStatus.message : '';
-
-                // Close modal automatically if success screen is shown.
-                if (statusState.value !== State.SUCCESS) return;
-                await new Promise<void>((resolve) => {
-                    successCloseTimeout = window.setTimeout(() => {
-                        resolve();
-                        if (statusType.value !== 'go-crypto' || statusState.value !== State.SUCCESS) return;
-                        endMonitoring = true;
-                        modal$.value!.forceClose();
-                    }, SUCCESS_REDIRECT_DELAY);
-                });
-            } catch (e) {
-                statusType.value = 'go-crypto';
-                statusState.value = State.WARNING;
-                statusTitle.value = $t('Something went wrong') as string;
-                statusMessage.value = e instanceof Error ? e.message : String(e);
-            } finally {
-                clearTimeout(goCryptoMonitoringTimeout); // end if requested, or clear to avoid parallel monitoring
-                if (!endMonitoring) {
-                    startGoCryptoExpiryCountdowns(); // Start countdowns if they're not started yet.
-                    goCryptoMonitoringTimeout = window.setTimeout(() => monitorGoCryptoRequest(paymentId), 10000);
-                } else {
-                    stopGoCryptoExpiryCountdowns(true);
-                }
-            }
-        }
-
-        let goCryptoExpiriesUpdateInterval = -1;
-        const goCryptoExpiryEarlyCountdown = ref('');
-        const goCryptoExpiryFinalCountdown = ref('');
-        function startGoCryptoExpiryCountdowns() {
-            if (goCryptoExpiriesUpdateInterval !== -1) return;
-            const updateCountdown = () => {
-                const {
-                    expiryEarly,
-                    expiryFinal,
-                } = goCryptoPaymentDetails && 'expiryFinal' in goCryptoPaymentDetails
-                    ? goCryptoPaymentDetails
-                    : { expiryEarly: -1, expiryFinal: -1 }; // goCryptoPaymentDetails is unknown or an error
-
-                const now = Date.now();
-                // Ceil durations such that they're only 0:00 once the payment request actually expired, for
-                // monitorGoCryptoRequest in stopGoCryptoExpiryCountdowns to show the warning screen immediately.
-                goCryptoExpiryEarlyCountdown.value = formatDuration(Math.max(expiryEarly - now, 0), 'ceil');
-                goCryptoExpiryFinalCountdown.value = formatDuration(Math.max(expiryFinal - now, 0), 'ceil');
-
-                if (isGoCryptoExpiryEarlyCountdownExpired()) {
-                    stopGoCryptoExpiryCountdowns();
-                    return false;
-                }
-
-                return true;
-            };
-            if (!updateCountdown()) return;
-            goCryptoExpiriesUpdateInterval = window.setInterval(updateCountdown, 500);
-        }
-
-        function stopGoCryptoExpiryCountdowns(clearExpiredCountdowns = false) {
-            // Stop countdowns.
-            clearInterval(goCryptoExpiriesUpdateInterval);
-            goCryptoExpiriesUpdateInterval = -1;
-
-            // Update UI.
-            // Remove countdowns if they didn't reach 0:00, of if removal was explicitly requested.
-            const isExpiryEarlyCountdownExpired = isGoCryptoExpiryEarlyCountdownExpired();
-            const isExpiryFinalCountdownExpired = isGoCryptoExpiryFinalCountdownExpired();
-            if (!isExpiryEarlyCountdownExpired || clearExpiredCountdowns) {
-                goCryptoExpiryEarlyCountdown.value = '';
-            }
-            if (!isExpiryFinalCountdownExpired || clearExpiredCountdowns) {
-                goCryptoExpiryFinalCountdown.value = '';
-            }
-
-            // Request an immediate monitoring update to show the expiry warning, if it's not shown already.
-            // The check whether the warning is already shown is also important for avoiding an infinite loop.
-            if (isExpiryEarlyCountdownExpired
-                && (goCryptoPaymentDetails && 'id' in goCryptoPaymentDetails)
-                && (statusType.value !== 'go-crypto' || statusState.value !== State.WARNING)) {
-                monitorGoCryptoRequest(goCryptoPaymentDetails.id);
-            }
-        }
-
-        function isGoCryptoExpiryEarlyCountdownExpired() {
-            return goCryptoExpiryEarlyCountdown.value === '0:00';
-        }
-
-        function isGoCryptoExpiryFinalCountdownExpired() {
-            return goCryptoExpiryFinalCountdown.value === '0:00';
         }
 
         if (props.requestUri) {
@@ -833,7 +669,7 @@ export default defineComponent({
         /**
          * Status Screen
          */
-        const statusType = ref<'none' | 'go-crypto' | 'signing'>('none');
+        const statusType = ref<'none' | 'signing'>('none');
         const statusState = ref<State>(State.LOADING);
         const statusTitle = ref('');
         const statusMessage = ref('');
@@ -848,11 +684,6 @@ export default defineComponent({
             statusMessage.value = '';
 
             try {
-                const abortController = new AbortController();
-                const unwatchGoCryptoExpiry = watch(() => {
-                    if (!isGoCryptoExpiryEarlyCountdownExpired()) return;
-                    abortController.abort();
-                });
                 const plainTx = await sendTransaction({
                     sender: activeAddressInfo.value!.address,
                     recipient: recipientInfo.value!.address,
@@ -862,8 +693,7 @@ export default defineComponent({
                     fee: fee.value,
                     extraData: message.value || undefined,
                     validityStartHeight: height.value,
-                }, abortController.signal);
-                unwatchGoCryptoExpiry();
+                });
 
                 if (!plainTx) {
                     if (statusType.value === 'signing') {
@@ -904,13 +734,8 @@ export default defineComponent({
         }
 
         function onStatusMainAction() {
-            if (statusType.value === 'signing') {
-                // Retry signing
-                sign();
-            } else {
-                // Close SendModal and potentially go back to previous modal, which should be the QrScanner for GoCrypto
-                back();
-            }
+            // Retry signing
+            sign();
         }
 
         function onStatusAlternativeAction() {
@@ -934,12 +759,7 @@ export default defineComponent({
                 // Do nothing when the loading or success status overlays are shown as they will be auto-closed.
                 return;
             }
-            if (statusType.value === 'go-crypto') {
-                // Close SendModal and potentially go back to previous modal, which should be the QrScanner for GoCrypto
-                back();
-            } else {
-                statusType.value = 'none'; // hide StatusScreen
-            }
+            statusType.value = 'none'; // hide StatusScreen
         }
 
         const router = useRouter();
@@ -952,8 +772,6 @@ export default defineComponent({
 
         onBeforeUnmount(() => {
             clearTimeout(successCloseTimeout);
-            clearTimeout(goCryptoMonitoringTimeout);
-            clearInterval(goCryptoExpiriesUpdateInterval);
         });
 
         return {
@@ -1003,8 +821,6 @@ export default defineComponent({
             fiatCurrency: fiat$.currency,
             otherFiatCurrencies,
             message,
-            goCryptoExpiryEarlyCountdown,
-            goCryptoExpiryFinalCountdown,
             canSend,
             sign,
             isValidRecipient,
@@ -1049,8 +865,6 @@ export default defineComponent({
         FiatConvertedAmount,
         SelectBar,
         Amount,
-        Tooltip,
-        InfoCircleSmallIcon,
         SendModalFooter,
         StatusScreen,
     },
@@ -1391,24 +1205,6 @@ export default defineComponent({
             .fiat-amount,
             .amount {
                 margin-left: -0.2em;
-            }
-
-            .expiry-countdown {
-                font-variant-numeric: tabular-nums;
-
-                &.same-line::before {
-                    content: '\00B7 '; // &middot;
-                }
-                &:not(.same-line)::before {
-                    content: '\000A'; // newline
-                    white-space: pre-line;
-                    line-height: 1.7;
-                }
-
-                .tooltip {
-                    contain: layout; // avoid jumping of the UI when showing tooltip for first time
-                    margin-bottom: -.25rem;
-                }
             }
         }
 

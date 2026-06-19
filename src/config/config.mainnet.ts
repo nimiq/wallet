@@ -128,13 +128,6 @@ export default {
         partnerId: '39f9f437-44b7-4a8b-a858-f512d14ec9c5',
     },
 
-    goCrypto: {
-        enabled: true,
-        apiEndpoint: 'https://api.gocrypto.com/',
-        // This is a publishable key.
-        apiKey: '606abde2-bc23-46c6-9f2e-a53307bae0bb',
-    },
-
     nimiqPay: {
         cosignerPublicKeys: [
             '91b21f4b100273bd7034f6369c29d1f7ba72dba7de6720ad3cd8b81916218913',

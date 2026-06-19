@@ -287,7 +287,7 @@ msgstr ""
 "Ajouter un libellé pour retrouver rapidement la transaction dans votre "
 "historique."
 
-#: src/components/modals/SendModal.vue:209
+#: src/components/modals/SendModal.vue:193
 msgid "Add a public message..."
 msgstr "Ajouter un message public..."
 
@@ -434,7 +434,7 @@ msgstr "Tout fonds envoyés seront remboursés."
 msgid "Apple/Google Pay"
 msgstr "Apple/Google Pay"
 
-#: src/components/modals/SendModal.vue:245
+#: src/components/modals/SendModal.vue:229
 msgid "Apply fee"
 msgstr "Appliquer les frais"
 
@@ -653,7 +653,7 @@ msgstr "Acheter avec une carte de crédit"
 msgid "Buy with Simplex"
 msgstr "Acheter avec Simplex"
 
-#: src/components/modals/SendModal.vue:234
+#: src/components/modals/SendModal.vue:218
 msgid ""
 "By adding a transaction fee, you can influence how fast your transaction "
 "will be processed."
@@ -675,7 +675,6 @@ msgstr ""
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr "En cliquant '{text}', vous acceptez les CGU de {Fastspot}."
 
-#: src/components/modals/SendModal.vue:255
 #: src/components/swap/SwapSepaFundingInstructions.vue:80
 msgid "Cancel"
 msgstr "Annuler"
@@ -762,7 +761,7 @@ msgstr "Choisir un Validateur"
 #: src/components/modals/AddressSelectorModal.vue:11
 #: src/components/modals/BuyCryptoModal.vue:286
 #: src/components/modals/SellCryptoModal.vue:250
-#: src/components/modals/SendModal.vue:224
+#: src/components/modals/SendModal.vue:208
 #: src/components/staking/SelectAccountOverlay.vue:4
 #: src/components/swap/SwapModal.vue:251
 msgid "Choose an Address"
@@ -1051,7 +1050,7 @@ msgstr ""
 "Il contrôle une part critique de l'enjeu total, ce qui en fait une menace potentielle pour le réseau."
 
 #: src/components/BtcAddressInput.vue:99
-#: src/components/modals/SendModal.vue:429
+#: src/components/modals/SendModal.vue:400
 #: src/components/modals/StablecoinSendModal.vue:422
 msgid "Domain does not resolve to a valid address"
 msgstr "Le domaine ne correspond pas à une adresse valide"
@@ -1131,7 +1130,7 @@ msgid "Edit the amount of decimals visible for NIM values."
 msgstr "Modifier le nombre de décimales visibles pour les valeurs en NIM."
 
 #: src/components/modals/BtcSendModal.vue:144
-#: src/components/modals/SendModal.vue:256
+#: src/components/modals/SendModal.vue:240
 #: src/components/modals/StablecoinSendModal.vue:243
 msgid "Edit transaction"
 msgstr "Éditer la transaction"
@@ -1175,14 +1174,6 @@ msgstr ""
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:9
 msgid "Enter your bank details"
 msgstr "Renseignez vos informations bancaires"
-
-#: src/lib/GoCrypto.ts:228
-msgid "Error {errorCode}"
-msgstr "Erreur {errorCode}"
-
-#: src/lib/GoCrypto.ts:227
-msgid "Error {errorCode}: {errorMessage}"
-msgstr "Erreur {errorCode} : {errorMessage}"
 
 #: src/components/swap/SwapAnimation.vue:335
 msgid "Error:"
@@ -1237,7 +1228,7 @@ msgstr "Exporter l'historique"
 msgid "Export your history"
 msgstr "Exporter votre historique"
 
-#: src/components/modals/SendModal.vue:550
+#: src/components/modals/SendModal.vue:521
 msgid "express"
 msgstr "express"
 
@@ -1359,7 +1350,7 @@ msgstr "Pour les débutants"
 msgid "For fast and low-fee crypto payments"
 msgstr "Pour des paiements crypto rapides et peu coûteux"
 
-#: src/components/modals/SendModal.vue:540
+#: src/components/modals/SendModal.vue:511
 msgid "free"
 msgstr "gratuit"
 
@@ -1546,18 +1537,6 @@ msgstr ""
 "Si cette erreur persiste, vérifiez votre connexion Internet ou rechargez la "
 "page pour vous reconnecter."
 
-#: src/lib/GoCrypto.ts:194
-msgid ""
-"If you already made a payment which was not accepted, please contact "
-"GoCrypto for a refund."
-msgstr ""
-"Si vous avez déjà effectué un paiement qui n'a pas été accepté, veuillez "
-"contacter GoCrypto pour obtenir un remboursement."
-
-#: src/lib/GoCrypto.ts:273
-msgid "If you already made a payment, wait for it to be confirmed instead."
-msgstr "Si vous avez déjà effectué un paiement, attendez qu'il soit confirmé."
-
 #: src/components/modals/WalletStatusModal.vue:37
 msgid "If you require further assistance, please reach out at {discordLink}"
 msgstr ""
@@ -1638,7 +1617,7 @@ msgstr "Installer l'application web"
 
 #: src/components/modals/BtcSendModal.vue:84
 #: src/components/modals/SellCryptoModal.vue:166
-#: src/components/modals/SendModal.vue:201
+#: src/components/modals/SendModal.vue:185
 #: src/components/modals/StablecoinSendModal.vue:222
 msgid "Insufficient balance."
 msgstr "Solde insuffisant."
@@ -1944,10 +1923,6 @@ msgstr "Aucune donnée de dominance n'est encore disponible."
 msgid "No funds were received so the swap expired."
 msgstr "Aucuns fonds reçus donc le Swap a expiré."
 
-#: src/lib/GoCrypto.ts:219
-msgid "No payment request found"
-msgstr "Aucune demande de paiement n'a été trouvée"
-
 #: src/components/modals/TradeModal.vue:50
 msgid "No registration"
 msgstr "Pas d'enregistrement"
@@ -1975,10 +1950,6 @@ msgstr "Aucune transaction trouvée"
 #: src/components/layouts/Settings.vue:70
 msgid "None"
 msgstr "Aucun"
-
-#: src/lib/GoCrypto.ts:206
-msgid "Not a pending payment request"
-msgstr "Pas de demande de paiement en attente"
 
 #: src/components/BankCheckInput.vue:57
 msgid "Not all accounts provided by this bank support instant transactions."
@@ -2078,14 +2049,6 @@ msgstr " en pause"
 msgid "Pay out"
 msgstr "Payer"
 
-#: src/components/modals/SendModal.vue:185
-msgid "Pay within {countdown}"
-msgstr "Payer avant {countdown}"
-
-#: src/lib/GoCrypto.ts:236
-msgid "Payment request has already been paid"
-msgstr "La demande de paiement a déjà été réglée"
-
 #: src/components/staking/StakingOverview.vue:19
 msgid "Payout ready"
 msgstr "Paiement prêt"
@@ -2136,11 +2099,6 @@ msgid ""
 msgstr ""
 "Veuillez d'abord activer BTC ou USDC sur votre compte pour pouvoir effectuer"
 " des échanges dans ces devises."
-
-#: src/lib/GoCrypto.ts:188
-msgid "Please ask the merchant to create a new payment request."
-msgstr ""
-"Veuillez demander au commerçant de créer une nouvelle demande de paiement."
 
 #: src/components/layouts/Sidebar.vue:18
 msgid "Please do not use your Mainnet accounts!"
@@ -2429,7 +2387,7 @@ msgid "Retire validator"
 msgstr "Retirer le validateur"
 
 #: src/components/modals/BtcSendModal.vue:143
-#: src/components/modals/SendModal.vue:255
+#: src/components/modals/SendModal.vue:239
 #: src/components/modals/StablecoinSendModal.vue:242
 msgid "Retry"
 msgstr "Réessayer"
@@ -2565,13 +2523,13 @@ msgid "Send"
 msgstr "Envoyer"
 
 #: src/components/modals/BtcSendModal.vue:124
-#: src/components/modals/SendModal.vue:220
+#: src/components/modals/SendModal.vue:204
 #: src/components/modals/StablecoinSendModal.vue:234
 msgid "Send {currency}"
 msgstr "Envoyer {currency}"
 
 #: src/components/AmountMenu.vue:25 src/components/modals/BtcSendModal.vue:86
-#: src/components/modals/SendModal.vue:202
+#: src/components/modals/SendModal.vue:186
 #: src/components/modals/StablecoinSendModal.vue:224
 msgid "Send all"
 msgstr "Tout envoyer"
@@ -2620,7 +2578,7 @@ msgid "Sending Staking Transaction"
 msgstr "Envoi de la transaction du staking"
 
 #: src/components/modals/BtcSendModal.vue:520
-#: src/components/modals/SendModal.vue:847
+#: src/components/modals/SendModal.vue:683
 #: src/components/modals/StablecoinSendModal.vue:708
 msgid "Sending Transaction"
 msgstr "Envoi de la transaction en cours"
@@ -2660,11 +2618,11 @@ msgstr "{coin} {ticker} envoyés à {name}"
 msgid "Sent {fromAsset} – Received {toAsset}"
 msgstr "Envoyé {fromAsset} – Recu {toAsset}"
 
-#: src/components/modals/SendModal.vue:886
+#: src/components/modals/SendModal.vue:716
 msgid "Sent {nim} NIM"
 msgstr "{nim} NIM envoyés"
 
-#: src/components/modals/SendModal.vue:882
+#: src/components/modals/SendModal.vue:712
 msgid "Sent {nim} NIM to {name}"
 msgstr "{nim} NIM envoyés à {name}"
 
@@ -2777,8 +2735,7 @@ msgid "Skip (not recommended)"
 msgstr "Passer (non recommandé)"
 
 #: src/components/modals/BtcSendModal.vue:584
-#: src/components/modals/SendModal.vue:710
-#: src/components/modals/SendModal.vue:901
+#: src/components/modals/SendModal.vue:731
 #: src/components/modals/StablecoinSendModal.vue:758
 #: src/components/staking/StakingGraphPage.vue:288
 #: src/components/staking/StakingInfoPage.vue:358
@@ -2793,7 +2750,7 @@ msgstr "Quelque chose s'est mal passé"
 msgid "Something went wrong with your transaction"
 msgstr "Un problème est survenu avec votre transaction"
 
-#: src/components/modals/SendModal.vue:232
+#: src/components/modals/SendModal.vue:216
 msgid "Speed up your Transaction"
 msgstr "Accélérer votre Transaction"
 
@@ -2843,7 +2800,7 @@ msgstr "Récompenses du staking"
 msgid "Staking Rewards"
 msgstr "Récompenses de staking"
 
-#: src/components/modals/SendModal.vue:545
+#: src/components/modals/SendModal.vue:516
 msgid "standard"
 msgstr "standard"
 
@@ -3051,14 +3008,6 @@ msgstr "Les frais (actuellement {amount}) déterminent le montant minimum."
 msgid "The fees determine the minimum amount."
 msgstr "Les frais déterminent le montant minimum."
 
-#: src/components/modals/SendModal.vue:191
-msgid ""
-"The GoCrypto payment request expires in {finalCountdown}. To ensure that "
-"your payment is confirmed in time, send it within {earlyCountdown}."
-msgstr ""
-"La demande de paiement GoCrypto expire dans {finalCountdown}. Pour que votre"
-" paiement soit confirmé à temps, envoyez-le avant {earlyCountdown}."
-
 #: src/components/TransactionDetailOasisPayoutStatus.vue:18
 msgid "The limit on your IBAN has been reached"
 msgstr "La limite de votre IBAN a été atteinte"
@@ -3101,19 +3050,6 @@ msgid "The Nimiq Wallet uses Polygon {ticker} for speed and low fees."
 msgstr ""
 "Le Wallet Nimiq utilise Polygon {ticker} pour sa rapidité et ses frais "
 "réduits."
-
-#: src/lib/GoCrypto.ts:264
-msgid "The payment request expired"
-msgstr "La demande de paiement a expiré"
-
-#: src/lib/GoCrypto.ts:270
-msgid "The payment request is about to expire"
-msgstr "La demande de paiement est sur le point d'expirer"
-
-#: src/lib/GoCrypto.ts:208
-msgid "The payment request might have been paid, expired, or cancelled."
-msgstr ""
-"Il se peut que la demande de paiement ait été payée, expirée ou annulée."
 
 #: src/components/staking/ValidatorScoreDetails.vue:127
 msgid "The pool sometimes fails to be available for block production."
@@ -3418,10 +3354,6 @@ msgstr "indisponible"
 #: src/composables/useTransactionInfo.ts:149
 msgid "Unclaimed Cashlink"
 msgstr "Cashlink non réclamé"
-
-#: src/lib/GoCrypto.ts:225
-msgid "Unexpected GoCrypto error"
-msgstr "Erreur inattendue de GoCrypto"
 
 #: src/swap-kyc-handler.ts:214
 msgid ""
@@ -3809,30 +3741,10 @@ msgstr ""
 "Vos NIM sont hébergés sur un ancien type de compte. Transférez-les sur un "
 "nouveau compte pour profiter des nouvelles fonctionnalités."
 
-#: src/lib/GoCrypto.ts:244
-msgid "Your payment failed"
-msgstr "Votre paiement a échoué"
-
 #: src/components/swap/SwapSepaFundingInstructions.vue:112
 msgid "Your payment has not been received yet. There might be an issue."
 msgstr ""
 "Votre paiement n'a pas encore été reçu. Il se peut qu'il y ait un problème."
-
-#: src/lib/GoCrypto.ts:240
-msgid "Your payment is being processed"
-msgstr "Votre paiement est en cours de traitement"
-
-#: src/lib/GoCrypto.ts:248
-msgid "Your payment is invalid"
-msgstr "Votre paiement est invalide"
-
-#: src/lib/GoCrypto.ts:257
-msgid "Your payment was cancelled"
-msgstr "Votre paiement a été annulé"
-
-#: src/lib/GoCrypto.ts:252
-msgid "Your payment was refunded"
-msgstr "Votre paiement a été remboursé"
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:9
 msgid "Your payout is on its way"

@@ -1,72 +1,57 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners" emitClose ref="$modal" @close="close">
+    <Modal v-bind="$attrs" v-on="$listeners" class="wallet-status-modal">
         <PageHeader>
-            {{ $t('We’re busy fixing the wallet but your NIM are safe') }}
-            <p slot="more" class="nq-text nq-light-blue">
-                {{ $t('The network and your NIM successfully migrated to Proof-of-Stake.'
-                    + ' ' + 'The wallet is not fully up to speed yet but we’re getting there.') }}
+            {{ $t('How can we help?') }}
+            <p slot="more" class="nq-text">
+                {{ $t('Get answers straight from the blockchain, or from the people who know Nimiq best.') }}
             </p>
         </PageHeader>
 
-        <PageBody>
-            <p class="nq-text">{{ $t('Please have patience while we fix:') }}</p>
+        <PageBody class="flex-column">
+            <a href="https://nimiq.watch" target="_blank" rel="noopener" class="destination-card">
+                <div class="icon-circle nq-light-blue-bg">
+                    <ViewIcon/>
+                </div>
+                <div class="card-text">
+                    <span class="card-title">{{ $t('Check the blockchain') }}</span>
+                    <span class="card-description">
+                        {{ $t('Look up any balance or transaction on the public block explorer.') }}
+                    </span>
+                    <span class="card-domain">nimiq.watch<ArrowRightSmallIcon/></span>
+                </div>
+            </a>
 
-            <ul>
-                <li>{{ $t('Syncing takes long and fails in certain cases.') }}</li>
-                <li>{{ $t('The transaction history does not update correctly.') }}</li>
-                <li>
-                    <span class="pill">{{ $t('Rare') }}</span>
-                    {{ $t('Problems with un-staking.') }}
-                </li>
-                <li>
-                    <span class="pill">{{ $t('Rare') }}</span>
-                    {{ $t('Incomplete balances being displayed.') }}
-                </li>
-            </ul>
+            <a href="https://discord.gg/nimiq" target="_blank" rel="noopener" class="destination-card">
+                <div class="icon-circle nq-purple-bg">
+                    <MessagesIcon/>
+                </div>
+                <div class="card-text">
+                    <span class="card-title">{{ $t('Ask the community') }}</span>
+                    <span class="card-description">
+                        {{ $t('The Nimiq team and community are on Discord, happy to help.') }}
+                    </span>
+                    <span class="card-domain">discord.gg/nimiq<ArrowRightSmallIcon/></span>
+                </div>
+            </a>
         </PageBody>
-
-        <PageFooter>
-            <i18n path="If in doubt, you can always check your balance at {nimiqWatchLink}" tag="p" class="nq-text">
-                <template v-slot:nimiqWatchLink>
-                    <a href="https://nimiq.watch" target="_blank">
-                        nimiq.watch
-                    </a>
-                </template>
-            </i18n>
-
-            <i18n path="If you require further assistance, please reach out at {discordLink}"
-                tag="p" class="nq-text">
-                <template v-slot:discordLink>
-                    <a href="https://discord.gg/nimiq" target="_blank">
-                        discord.gg/nimiq
-                    </a>
-                </template>
-            </i18n>
-        </PageFooter>
     </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import { defineComponent } from '@vue/composition-api';
+import { PageHeader, PageBody, ViewIcon, ArrowRightSmallIcon } from '@nimiq/vue-components';
 import Modal from './Modal.vue';
+import MessagesIcon from '../icons/MessagesIcon.vue';
 
 export default defineComponent({
-    name: 'WelcomeStakingModal',
-    setup() {
-        const $modal = ref<Modal | null>(null);
-
-        async function close() {
-            await $modal.value?.forceClose();
-        }
-
-        return { $modal, close };
-    },
+    name: 'WalletStatusModal',
     components: {
         Modal,
         PageHeader,
         PageBody,
-        PageFooter,
+        ViewIcon,
+        ArrowRightSmallIcon,
+        MessagesIcon,
     },
 });
 </script>
@@ -77,85 +62,140 @@ export default defineComponent({
 
 .modal {
     ::v-deep .small-page {
-        width: 63rem;
-        min-height: 67rem;
+        min-height: unset;
     }
 }
 
 .page-header {
-    padding: 4rem 7rem;
+    padding-bottom: 2rem;
     text-wrap: balance;
 
     p {
-        font-size: 2rem;
-        font-weight: 600;
         margin-bottom: 0;
     }
 }
 
 .page-body {
+    padding-top: 1rem;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.destination-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    gap: 2rem;
 
-    ul {
-        list-style-type: none;
-        width: 100%;
-        padding: 0;
-        margin: 0;
+    padding: 2.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 0 0 1.5px var(--text-20);
+    text-decoration: none;
 
-        border: 1px solid nimiq-blue(0.1);
-        border-radius: 1.5rem;
+    transition:
+        transform 0.3s var(--nimiq-ease),
+        box-shadow 0.3s var(--nimiq-ease);
+    will-change: transform, box-shadow;
 
-        font-size: 2rem;
-        font-weight: 600;
+    &:hover,
+    &:focus {
+        transform: translate3d(0, -0.25rem, 0);
+        box-shadow:
+            0 0 0 1.5px var(--text-30),
+            0px 18px 38px nimiq-blue(0.07),
+            0px 7px 8.5px nimiq-blue(0.04),
+            0px 2px 2.5px nimiq-blue(0.02);
 
-        li {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid nimiq-blue(0.1);
+        .card-domain {
+            color: var(--nimiq-light-blue-darkened);
 
-            .pill {
-                --color: #{nimiq-blue(.6)};
-
-                color: var(--color);
-                border: 1px solid var(--color);
-                border-radius: 5rem;
-
-                font-size: 1.5rem;
-                text-transform: uppercase;
-
-                padding: .2rem .8rem;
-                margin-right: .5rem;
+            .nq-icon {
+                transform: translateX(0.25rem);
             }
-
-            &:last-child { border-bottom: none }
         }
     }
 }
 
-.page-footer {
+.icon-circle {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    padding: 4rem;
-    padding-top: 0;
+    justify-content: center;
+    flex-shrink: 0;
 
-    p {
-        &, a, a:visited {
-            color: nimiq-blue(.6);
-        }
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    color: white;
 
-        &:first-child { font-weight: 600 }
-        &:last-child { margin-bottom: 0 }
+    .nq-icon {
+        font-size: 3rem;
     }
 
-    a { text-decoration: underline }
+    .messages-icon {
+        width: 3rem;
+        height: auto;
+    }
+}
+
+.card-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.card-title {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: var(--text-100);
+}
+
+.card-description {
+    margin-top: 0.5rem;
+    font-size: var(--small-size);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-60);
+}
+
+.card-domain {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+
+    margin-top: 1.25rem;
+    font-size: var(--small-size);
+    font-weight: bold;
+    color: var(--nimiq-light-blue);
+
+    transition: color 0.2s var(--nimiq-ease);
+
+    .nq-icon {
+        font-size: 0.8em;
+        margin-left: 0.75rem;
+        transition: transform 0.2s var(--nimiq-ease);
+    }
 }
 
 @media (max-width: $mobileBreakpoint) {
-    .page-header {
-        padding: 4rem 4.75rem;
+    .page-body {
+        padding: 1rem 2rem 2rem;
+    }
+
+    .destination-card {
+        padding: 2rem;
+    }
+
+    .icon-circle {
+        width: 5rem;
+        height: 5rem;
+
+        .nq-icon {
+            font-size: 2.5rem;
+        }
+
+        .messages-icon {
+            width: 2.5rem;
+        }
     }
 }
 </style>

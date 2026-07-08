@@ -66,9 +66,6 @@
                     <a href="https://www.mexc.com/exchange/NIM_USDT" title="MEXC" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/mexc.svg" alt="MEXC">
                     </a>
-                    <a href="https://ascendex.com" title="AscendEX (BitMax)" target="_blank" rel="noopener">
-                        <img src="../../assets/exchanges/ascendex.png" alt="AscendEX">
-                    </a>
                     <a href="https://www.coinex.com/en/price/nim" title="CoinEx" target="_blank" rel="noopener">
                         <img src="../../assets/exchanges/coinex.svg" alt="CoinEx">
                     </a>

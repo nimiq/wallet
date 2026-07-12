@@ -443,6 +443,10 @@ msgstr ""
 " Bij een probleem of een time-out wordt je betaling teruggestort op jouw "
 "bankrekening."
 
+#: src/components/modals/WalletStatusModal.vue:29
+msgid "Ask the community"
+msgstr ""
+
 #: src/components/PolygonWarningFooter.vue:18
 msgid "Ask the receiver to ensure they have a Polygon {ticker} address."
 msgstr "Vraag of de ontvanger een Polygon {ticker}-adres heeft."
@@ -728,6 +732,10 @@ msgstr "Validator wijzigen"
 #: src/components/modals/MultisigAnnouncementModal.vue:6
 msgid "Check out Nimiq Multisig Wallets"
 msgstr "Bekijk de Nimiq Multisig Wallets"
+
+#: src/components/modals/WalletStatusModal.vue:16
+msgid "Check the blockchain"
+msgstr ""
 
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:97
@@ -1383,6 +1391,12 @@ msgstr "Algemeen"
 msgid "Generic"
 msgstr "Generiek"
 
+#: src/components/modals/WalletStatusModal.vue:6
+msgid ""
+"Get answers straight from the blockchain, or from the people who know Nimiq "
+"best."
+msgstr ""
+
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
 msgid "Get NIM"
@@ -1452,6 +1466,10 @@ msgstr "Hogere transparantie en betere naleving van regelgeving."
 msgid "Historic value"
 msgstr "Historische waarde"
 
+#: src/components/modals/WalletStatusModal.vue:4
+msgid "How can we help?"
+msgstr ""
+
 #: src/components/modals/BtcTransactionModal.vue:474
 #: src/components/modals/TransactionModal.vue:542
 #: src/components/modals/UsdcTransactionModal.vue:409
@@ -1507,10 +1525,6 @@ msgstr "IBAN"
 msgid "ID document"
 msgstr "ID document"
 
-#: src/components/modals/WalletStatusModal.vue:29
-msgid "If in doubt, you can always check your balance at {nimiqWatchLink}"
-msgstr "Bij twijfel kan je je saldo altijd controleren op {nimiqWatchLink}."
-
 #: src/components/swap/SwapNotification.vue:229
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
@@ -1518,11 +1532,6 @@ msgid ""
 msgstr ""
 "Als deze fout zich blijft voordoen, controleer dan je internetverbinding of "
 "laadt de pagina opnieuw om opnieuw verbinding te maken."
-
-#: src/components/modals/WalletStatusModal.vue:37
-msgid "If you require further assistance, please reach out at {discordLink}"
-msgstr ""
-"Mocht je verdere hulp nodig hebben, neem dan contact op via {discordLink}."
 
 #: src/components/layouts/Settings.vue:78
 msgid "Import Contacts"
@@ -1571,10 +1580,6 @@ msgstr "Om uitbetalingen te ontvangen, moet je al uw stake terugnemen."
 #: src/components/staking/ValidatorDetailsOverlay.vue:22
 msgid "incl. pool fee"
 msgstr "incl. pool kosten"
-
-#: src/components/modals/WalletStatusModal.vue:23
-msgid "Incomplete balances being displayed."
-msgstr "Er worden onvolledige saldi weergegeven."
 
 #: src/components/modals/BtcSendModal.vue:103
 msgid ""
@@ -1741,6 +1746,10 @@ msgstr "Log uit"
 #: src/components/modals/StablecoinSendModal.vue:84
 msgid "Long press to confirm"
 msgstr "Ingedrukt houden om te bevestigen"
+
+#: src/components/modals/WalletStatusModal.vue:18
+msgid "Look up any balance or transaction on the public block explorer."
+msgstr ""
 
 #: src/components/modals/StablecoinReceiveModal.vue:17
 msgid "Make sure they are sending Polygon {ticker}."
@@ -2079,10 +2088,6 @@ msgstr "Gebruik alsjeblieft niet je Mainnet accounts!"
 msgid "Please ensure that you are sending an instant transaction!"
 msgstr "Zorg ervoor dat u een directe transactie verzendt!"
 
-#: src/components/modals/WalletStatusModal.vue:12
-msgid "Please have patience while we fix:"
-msgstr "Even geduld terwijl we dit oplossen:"
-
 #: src/components/swap/SwapAnimation.vue:38
 #: src/components/swap/SwapAnimation.vue:54
 msgid "Please keep your Swap ID for reference."
@@ -2130,10 +2135,6 @@ msgstr "PoS Testnet"
 msgid "Pre-staking Migration Address"
 msgstr "Pre-staking Migratie Adres"
 
-#: src/components/modals/WalletStatusModal.vue:19
-msgid "Problems with un-staking."
-msgstr "Problemen met unstaken."
-
 #: src/components/TransactionDetailOasisPayoutStatus.vue:30
 msgid "Proceed to the troubleshooting page to find out what to do next."
 msgstr ""
@@ -2150,11 +2151,6 @@ msgstr "Doel"
 #: src/components/kyc/KycOverlay.vue:5 src/components/kyc/KycPrompt.vue:5
 msgid "Raise your limits"
 msgstr "Verhoog je limieten"
-
-#: src/components/modals/WalletStatusModal.vue:18
-#: src/components/modals/WalletStatusModal.vue:22
-msgid "Rare"
-msgstr "Zeldzaam"
 
 #: src/components/staking/ValidatorScoreDetails.vue:33
 msgid ""
@@ -2894,10 +2890,6 @@ msgstr "Wisselen van validator"
 msgid "syncing"
 msgstr "synchroniseren"
 
-#: src/components/modals/WalletStatusModal.vue:15
-msgid "Syncing takes long and fails in certain cases."
-msgstr "Het synchroniseren duurt lang en mislukt in sommige gevallen."
-
 #: src/components/SendModalFooter.vue:69
 msgid "Syncing with Bitcoin network"
 msgstr "Synchroniseren met het Bitcoin-netwerk"
@@ -2971,14 +2963,6 @@ msgstr "De kosten bepalen het minimumbedrag."
 msgid "The limit on your IBAN has been reached"
 msgstr "De limiet op je IBAN is bereikt"
 
-#: src/components/modals/WalletStatusModal.vue:6
-msgid ""
-"The network and your NIM successfully migrated to Proof-of-Stake. The wallet"
-" is not fully up to speed yet but we’re getting there."
-msgstr ""
-"Het netwerk en je NIM zijn succesvol gemigreerd naar Proof-of-Stake. De "
-"wallet is bijna klaar voor gebruik."
-
 #: src/App.vue:11
 msgid ""
 "The network is temporarily not processing transactions or staking rewards, "
@@ -3002,6 +2986,10 @@ msgid ""
 msgstr ""
 "De nieuwe Login Files zijn een gemakkelijk en handige manier om toegang te "
 "krijgen tot je accounts en bijbehorende adressen."
+
+#: src/components/modals/WalletStatusModal.vue:31
+msgid "The Nimiq team and community are on Discord, happy to help."
+msgstr ""
 
 #: src/components/PolygonWarningPage.vue:8
 msgid "The Nimiq Wallet uses Polygon {ticker} for speed and low fees."
@@ -3032,10 +3020,6 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:19
 msgid "The swap expired"
 msgstr "De swap is verlopen"
-
-#: src/components/modals/WalletStatusModal.vue:16
-msgid "The transaction history does not update correctly."
-msgstr "De transactiegeschiedenis wordt niet correct bijgewerkt."
 
 #: src/components/staking/tooltips/ValidatorDescriptionTooltip.vue:15
 msgid "The validator is solely responsible for information provided above."
@@ -3453,11 +3437,6 @@ msgid "We added support for USDT, which you can now use instead of USDC."
 msgstr ""
 "We hebben ondersteuning toegevoegd voor USDT, deze kan nu gebruikt worden in"
 " plaats van USDC."
-
-#: src/components/modals/WalletStatusModal.vue:4
-msgid "We’re busy fixing the wallet but your NIM are safe"
-msgstr ""
-"We zijn druk bezig met het repareren van de wallet, maar je NIM is veilig."
 
 #: src/components/modals/BuyCryptoModal.vue:14
 msgid ""

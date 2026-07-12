@@ -621,6 +621,26 @@ export default defineComponent({
                 font-size: 2rem;
                 font-weight: bold;
 
+                &::before,
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    height: 100%;
+                    width: 4rem;
+                    pointer-events: none;
+                }
+
+                &::before {
+                    right: 100%;
+                    background: linear-gradient(270deg, white 16.67%, rgba(255, 255, 255, 0));
+                }
+
+                &::after {
+                    left: 100%;
+                    background: linear-gradient(90deg, white 16.67%, rgba(255, 255, 255, 0));
+                }
+
                 .right-suffix {
                     position: absolute;
                     right: 1.75rem;

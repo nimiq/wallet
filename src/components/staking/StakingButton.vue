@@ -17,7 +17,7 @@
         <Tooltip class="staking-button-tooltip" ref="$tooltip"
             preferredPosition="top"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
-            :disabled="$config.disableNetworkInteraction || !isCTATooltipDisabled"
+            :disabled="$config.disableNetworkInteraction || isMobile || !isCTATooltipDisabled"
         >
             <template #trigger>
                 <button class="stake"

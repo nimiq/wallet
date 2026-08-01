@@ -91,7 +91,7 @@ export default defineComponent({
     },
     setup(props, context) {
         const { $t } = useI18n();
-        const { activeAddress } = useAddressStore();
+        const { activeAddress, activeAddressInfo } = useAddressStore();
         const {
             activeStake, setStake, activeValidator,
             setSwitchOperation, clearSwitchOperation,
@@ -189,6 +189,8 @@ export default defineComponent({
                 transactions: [deactivateTx.serialize(), updateTx.serialize()],
                 senderLabel: validatorLabel(from),
                 recipientLabel: validatorLabel(target),
+                // The validator labels take sender/recipient, so the staking address is named here.
+                stakerLabel: activeAddressInfo.value?.label,
                 validatorAddress: target.address,
                 validatorImageUrl: target.logo,
                 fromValidatorAddress: from.address,

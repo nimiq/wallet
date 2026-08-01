@@ -624,6 +624,7 @@ export async function signSwitchValidatorTransactions(request: {
     transactions: [Uint8Array, Uint8Array], // [set-active-stake, update-staker]
     senderLabel?: string,
     recipientLabel?: string,
+    stakerLabel?: string,
     validatorAddress: string,
     validatorImageUrl?: string,
     fromValidatorAddress: string,
@@ -635,6 +636,7 @@ export async function signSwitchValidatorTransactions(request: {
         sender: request.sender,
         senderLabel: request.senderLabel,
         recipientLabel: request.recipientLabel,
+        stakerLabel: request.stakerLabel,
         transactions: request.transactions,
         validatorAddress: request.validatorAddress,
         validatorImageUrl: request.validatorImageUrl,

@@ -1464,7 +1464,7 @@
   dependencies:
     nanoid "^3.1.20"
 
-"@nimiq/core@^2.0.0", "@nimiq/core@^2.1.1":
+"@nimiq/core@^2.1.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.2.1.tgz#d027dea5a5db78eb08ca228cf9014ae6571064bb"
   integrity sha512-RrjZrSxR/1fBVhBddXABiQ2L/9QT7hRTBFpLYURcm2LX4mTgRIyz5YLpNEnzFrShNR2kITaa51KAl5X3JLfIZQ==
@@ -1472,14 +1472,21 @@
     comlink "^4.4.1"
     websocket "^1.0.34"
 
-"@nimiq/core@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.7.0.tgz#0f1520c3e50d3a22faa2f179722ab5a930525aa7"
-  integrity sha512-uPSgz7BwoBk3o7xb0E9KoertwCZyrfmU6M3Yczw74DjCDR9vEBzEXvCkIehwiyFQ6UpaFzwBIg7/ElHe6c0kVQ==
+"@nimiq/core@^2.20.0":
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/core/-/core-2.20.0.tgz#c923cfbfedc53d00d3be235e6c1b281e10c51323"
+  integrity sha512-JJYQJRVoI61rulUbeMH83HPv3o+vfaivjk93t50YbYTo5QY4zx/yrpmX1Xsvjk3i2nszaC6iql22g7CPd4tUSQ==
   dependencies:
     comlink "^4.4.1"
     vite-plugin-wasm "^3.5.0"
     websocket "^1.0.34"
+
+"@nimiq/electrum-client@git+https://github.com/nimiq/electrum-client.git#build":
+  version "0.3.0"
+  uid "04d8a29e92c63f65b6ccdd7585c173d24df8fe98"
+  resolved "git+https://github.com/nimiq/electrum-client.git#04d8a29e92c63f65b6ccdd7585c173d24df8fe98"
+  dependencies:
+    bitcoinjs-lib "^5.1.10"
 
 "@nimiq/electrum-client@https://github.com/nimiq/electrum-client#build":
   version "0.3.0"
@@ -1511,12 +1518,12 @@
   dependencies:
     dom-parser "^0.1.5"
 
-"@nimiq/libswap@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.5.1.tgz#f0aa47b66029f9b9c07ed64103f7e1c2f65faba3"
-  integrity sha512-twVFY3S+7030P+BiePvMZ7ppBZzHPX+XrHtPJH9Gux0j0ttwebU+3wCRXK5jxBzDU5P/rWjXNscNdc9D1ez/ew==
+"@nimiq/libswap@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@nimiq/libswap/-/libswap-1.5.2.tgz#ca933e1fb0cc90ece06f33d1b4ca5b3d1582a272"
+  integrity sha512-ta9AP4ltCj1YcwXhCy/WVgqu8W2F4uP2460MvgGKF/orsc1KG5TS+TDQUrdO/fvQQv1weEdfJRuFWATb4N96Ag==
   dependencies:
-    "@nimiq/core" "^2.0.0"
+    "@nimiq/core" "^2.20.0"
     "@nimiq/electrum-client" "https://github.com/nimiq/electrum-client#build"
     "@nimiq/oasis-api" "^1.0.1"
     ethers "^5.7.2"
@@ -3575,9 +3582,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001297, caniuse-lite@^1.0.30001688:
-  version "1.0.30001805"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001805.tgz"
-  integrity sha512-52noaS3DubycKSXaU30TwPGIp+POyQSUVa5jBEq3vkRkY0kjyb3LQgvhU6WGyCcyXqVLWO0Cw0Q6BSdD0kUfVA==
+  version "1.0.30001809"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001809.tgz"
+  integrity sha512-xxWVywk6a6Arlk+hymeycyn/VgqEfLDxupvhH/xiY5SJ/18kmi9o6MiO320DCUzypORHLtvh0I4i04tUhCNHNQ==
 
 case-sensitive-paths-webpack-plugin@^2.3.0:
   version "2.3.0"

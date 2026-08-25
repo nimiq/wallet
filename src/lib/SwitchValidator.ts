@@ -1,6 +1,6 @@
 import { sendStaking } from '../hub';
 import { getNetworkClient } from '../network';
-import { ValidatorRef } from './StakingUtils';
+import { ValidatorRef, validatorLabel } from './StakingUtils';
 
 export async function sendImmediateValidatorSwitch(params: {
     stakerAddress: string,
@@ -27,8 +27,8 @@ export async function sendImmediateValidatorSwitch(params: {
 
     return sendStaking({
         transaction: transaction.serialize(),
-        senderLabel: params.from.name || params.from.address,
-        recipientLabel: params.target.name || params.target.address,
+        senderLabel: validatorLabel(params.from),
+        recipientLabel: validatorLabel(params.target),
         validatorAddress: params.target.address,
         validatorImageUrl: params.target.logo,
         fromValidatorAddress: params.from.address,

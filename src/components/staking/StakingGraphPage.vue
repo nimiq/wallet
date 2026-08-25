@@ -94,7 +94,7 @@ import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import AmountSlider from './AmountSlider.vue';
-import { StakingOperationType } from '../../lib/StakingUtils';
+import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import MessageTransition from '../MessageTransition.vue';
 import StakingGraph from './StakingGraph.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -119,12 +119,11 @@ export default defineComponent({
         async function performStaking() {
             if (isStakeBelowMinimum.value) return;
 
-            const validatorLabelOrAddress = 'name' in activeValidator.value!
-                ? activeValidator.value.name
-                : activeValidator.value!.address;
-
             const { Address, TransactionBuilder } = await import('@nimiq/core');
             const client = await getNetworkClient();
+
+            const validatorRef = toValidatorRef(activeValidator.value!);
+            const validatorLabelOrAddress = validatorLabel(validatorRef);
 
             try {
                 if (stakeDelta.value > 0) {
@@ -138,7 +137,7 @@ export default defineComponent({
                         || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
                         const transaction = TransactionBuilder.newCreateStaker(
                             Address.fromUserFriendlyAddress(activeAddress.value!),
-                            Address.fromUserFriendlyAddress(activeValidator.value!.address),
+                            Address.fromUserFriendlyAddress(validatorRef.address),
                             BigInt(stakeDelta.value),
                             BigInt(0),
                             useNetworkStore().state.height,
@@ -146,12 +145,9 @@ export default defineComponent({
                         );
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
-                            recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                            validatorAddress: activeValidator.value!.address,
-                            validatorImageUrl: 'logo' in activeValidator.value!
-                                && !activeValidator.value.hasDefaultLogo
-                                ? activeValidator.value.logo
-                                : undefined,
+                            recipientLabel: validatorLabelOrAddress,
+                            validatorAddress: validatorRef.address,
+                            validatorImageUrl: validatorRef.logo,
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -189,12 +185,9 @@ export default defineComponent({
                         );
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
-                            recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                            validatorAddress: activeValidator.value!.address,
-                            validatorImageUrl: ('logo' in activeValidator.value!
-                                && !activeValidator.value.hasDefaultLogo)
-                                ? activeValidator.value.logo
-                                : undefined,
+                            recipientLabel: validatorLabelOrAddress,
+                            validatorAddress: validatorRef.address,
+                            validatorImageUrl: validatorRef.logo,
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -293,17 +286,15 @@ export default defineComponent({
                     const signedTransactions = await signUnstakingTransactions({
                         sender: activeAddress.value!,
                         // FROM = validator (rendered on the dashed "current" card in the keyguard).
-                        senderLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                        senderLabel: validatorLabelOrAddress,
                         // TO = user wallet — let the Hub fall back to the signer label.
                         transactions: [
                             deactivationTx.serialize(),
                             retireTx.serialize(),
                             removeTx.serialize(),
                         ],
-                        validatorAddress: activeValidator.value!.address,
-                        validatorImageUrl: 'logo' in activeValidator.value! && !activeValidator.value.hasDefaultLogo
-                            ? activeValidator.value.logo
-                            : undefined,
+                        validatorAddress: validatorRef.address,
+                        validatorImageUrl: validatorRef.logo,
                     }).catch((error) => {
                         throw new Error(error?.data || error?.message || error);
                     });

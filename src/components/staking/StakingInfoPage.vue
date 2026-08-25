@@ -344,7 +344,7 @@ export default defineComponent({
 
                     const txs = await sendStaking({
                         transaction: transaction.serialize(),
-                        recipientLabel: validatorRef.name || 'Validator',
+                        recipientLabel: validatorLabel(validatorRef),
                         validatorAddress: validatorRef.address,
                         validatorImageUrl: validatorRef.logo,
                         amount: Math.abs(stake.value.activeBalance),
@@ -428,7 +428,7 @@ export default defineComponent({
                 const validatorRef = toValidatorRef(validator.value!);
                 const txs = await sendStaking({
                     transaction: transactions.map((tx) => tx.serialize()),
-                    senderLabel: validatorRef.name || 'Validator',
+                    senderLabel: validatorLabel(validatorRef),
                     validatorAddress: validatorRef.address,
                     validatorImageUrl: validatorRef.logo,
                 });
@@ -562,7 +562,7 @@ export default defineComponent({
 
                 const txs = await sendStaking({
                     transaction: transaction.serialize(),
-                    recipientLabel: validatorRef.name || 'Validator',
+                    recipientLabel: validatorLabel(validatorRef),
                     validatorAddress: validatorRef.address,
                     validatorImageUrl: validatorRef.logo,
                     amount: deactivatedAmount,

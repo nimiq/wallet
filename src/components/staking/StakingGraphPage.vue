@@ -147,6 +147,7 @@ export default defineComponent({
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
                             recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
+                            validatorAddress: activeValidator.value!.address,
                             validatorImageUrl: 'logo' in activeValidator.value!
                                 && !activeValidator.value.hasDefaultLogo
                                 ? activeValidator.value.logo

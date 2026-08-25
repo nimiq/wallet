@@ -428,7 +428,7 @@ export default defineComponent({
                 const validatorRef = toValidatorRef(validator.value!);
                 const txs = await sendStaking({
                     transaction: transactions.map((tx) => tx.serialize()),
-                    recipientLabel: validatorRef.name || 'Validator',
+                    senderLabel: validatorRef.name || 'Validator',
                     validatorAddress: validatorRef.address,
                     validatorImageUrl: validatorRef.logo,
                 });

@@ -299,6 +299,7 @@ import Modal, { disableNextModalTransition } from './Modal.vue';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { useUsdtContactsStore } from '../../stores/UsdtContacts';
 import { reportToSentry } from '../../lib/Sentry';
+import { trackStablecoinTransactionSent } from '../../lib/PostHog';
 
 export enum RecipientType {
     CONTACT,
@@ -731,6 +732,8 @@ export default defineComponent({
                 } else {
                     useUsdtTransactionsStore().addTransactions([tx]);
                 }
+
+                trackStablecoinTransactionSent(stablecoin.value!);
 
                 // Show success screen
                 statusState.value = State.SUCCESS;

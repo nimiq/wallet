@@ -271,6 +271,14 @@ msgstr "Bitcoin aktivieren"
 msgid "Activate USDC/USDT"
 msgstr "Aktiviere USDC/USDT"
 
+#: src/components/staking/StakingInfoPage.vue:100
+msgid "Activate validator"
+msgstr ""
+
+#: src/components/staking/StakingInfoPage.vue:476
+msgid "Activating validator"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:229
 msgid "Add"
 msgstr "Hinzufügen"
@@ -316,7 +324,7 @@ msgstr ""
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
-#: src/lib/StakingUtils.ts:91
+#: src/lib/StakingUtils.ts:107
 msgid "Add stake"
 msgstr "Stake hinzufügen"
 
@@ -702,6 +710,10 @@ msgstr "Abgebrochener Tausch"
 msgid "Cannot import contacts, wrong file format."
 msgstr "Kontakte können nicht importiert werden, falsches Datei-Format"
 
+#: src/components/staking/ValidatorDetailsOverlay.vue:318
+msgid "Cannot switch yet"
+msgstr ""
+
 #: src/components/TransactionList.vue:60
 #: src/composables/useTransactionInfo.ts:148
 msgid "Cashlink"
@@ -731,7 +743,7 @@ msgstr "Passwort ändern"
 msgid "Change your language setting."
 msgstr "Ändere deine Spracheinstellung."
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:120
+#: src/components/staking/ValidatorDetailsOverlay.vue:254
 msgid "Changing validator"
 msgstr "Validator ändern"
 
@@ -800,7 +812,7 @@ msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Klicke auf 'Fehlerbehebung' um mehr zu erfahren."
 
 #: src/components/layouts/AddressOverview.vue:296
-#: src/components/staking/StakingModal.vue:205
+#: src/components/staking/StakingModal.vue:220
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
 msgstr "Schließen"
@@ -973,7 +985,7 @@ msgstr "Backup erstellen"
 msgid "Create request link"
 msgstr "Zahlungslink erstellen"
 
-#: src/lib/StakingUtils.ts:46
+#: src/lib/StakingUtils.ts:62
 msgid "Create validator"
 msgstr "Validator erstellen"
 
@@ -1011,19 +1023,19 @@ msgstr "Krypto-Swaps werden derzeit gewartet."
 msgid "Dataset: {name}"
 msgstr "Datensatz: {name}"
 
-#: src/lib/StakingUtils.ts:58
+#: src/lib/StakingUtils.ts:74
 msgid "Deactivate validator"
 msgstr "Validator deaktivieren"
 
-#: src/components/staking/StakingInfoPage.vue:465
+#: src/components/staking/StakingInfoPage.vue:544
 msgid "Deactivating remaining stake"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:301
+#: src/components/staking/StakingInfoPage.vue:327
 msgid "Deactivating Stake"
 msgstr "Deaktiviere Stake"
 
-#: src/lib/StakingUtils.ts:26
+#: src/lib/StakingUtils.ts:42
 msgid "Delete validator"
 msgstr "Validator löschen"
 
@@ -1584,7 +1596,7 @@ msgstr ""
 "unzureichende Beträge, funktioniert die automatische Rückerstattung nur für "
 "individuelle IBAN-Adressen."
 
-#: src/components/staking/StakingInfoPage.vue:119
+#: src/components/staking/StakingInfoPage.vue:130
 msgid "In order to pay out, unstake all."
 msgstr ""
 
@@ -1772,6 +1784,10 @@ msgstr "Vergewissere dich dass die Sender:innen Polygon {ticker} senden."
 #: src/components/FlaggedAddressWarning.vue:80
 msgid "malicious"
 msgstr "schädlich"
+
+#: src/components/staking/StakingInfoPage.vue:97
+msgid "Manually activate the validator to re-activate staking."
+msgstr ""
 
 #: src/components/modals/PolygonActivationModal.vue:19
 msgid ""
@@ -2040,7 +2056,7 @@ msgstr "Teilweise zurückgesetzt"
 msgid "paused"
 msgstr "pausiert"
 
-#: src/components/staking/StakingInfoPage.vue:111
+#: src/components/staking/StakingInfoPage.vue:122
 msgid "Pay out"
 msgstr ""
 
@@ -2129,6 +2145,10 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Bitte überweise"
 
+#: src/components/staking/ValidatorDetailsOverlay.vue:319
+msgid "Please wait for the cooldown period to end."
+msgstr ""
+
 #: src/components/layouts/Sidebar.vue:163
 #: src/components/layouts/Sidebar.vue:63
 msgid "Please wait for your current swap to finish before starting a new one."
@@ -2190,7 +2210,7 @@ msgstr ""
 "Bewertet das Potenzial des Pools, dem Netzwerk zu schaden, basierend auf "
 "seiner Größe."
 
-#: src/lib/StakingUtils.ts:65
+#: src/lib/StakingUtils.ts:81
 msgid "Reactivate validator"
 msgstr "Validator reaktivieren"
 
@@ -2206,7 +2226,7 @@ msgstr ""
 msgid "Read all about it in this {blog_post} or get right into it."
 msgstr "Lies alles darüber in diesem {blog_post} oder leg direkt los."
 
-#: src/components/staking/StakingInfoPage.vue:98
+#: src/components/staking/StakingInfoPage.vue:109
 msgid "ready for pay out"
 msgstr ""
 
@@ -2358,11 +2378,11 @@ msgstr "Auszahlungsprozess neu starten"
 msgid "Resulting BTC amount is too small."
 msgstr "Der resultierende BTC-Betrag ist zu klein."
 
-#: src/lib/StakingUtils.ts:123
+#: src/lib/StakingUtils.ts:139
 msgid "Retire stake"
 msgstr "Stake zurückziehen"
 
-#: src/lib/StakingUtils.ts:71
+#: src/lib/StakingUtils.ts:87
 msgid "Retire validator"
 msgstr "Validator stilllegen"
 
@@ -2429,7 +2449,7 @@ msgstr "Sicherheit"
 msgid "Select a currency and an amount."
 msgstr "Währung und Menge auswählen"
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:54
+#: src/components/staking/ValidatorDetailsOverlay.vue:109
 msgid "Select validator"
 msgstr "Validator auswählen"
 
@@ -2552,8 +2572,8 @@ msgstr "Sende zwei Backup-Codes an dich selbst."
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Sende, empfange und verwahre BTC in deiner Wallet."
 
-#: src/components/staking/StakingGraphPage.vue:132
-#: src/components/staking/StakingGraphPage.vue:227
+#: src/components/staking/StakingGraphPage.vue:133
+#: src/components/staking/StakingGraphPage.vue:221
 msgid "Sending Staking Transaction"
 msgstr "Staking-Transaktion wird gesendet"
 
@@ -2563,7 +2583,7 @@ msgstr "Staking-Transaktion wird gesendet"
 msgid "Sending Transaction"
 msgstr "Transaktion wird versendet"
 
-#: src/components/staking/StakingInfoPage.vue:371
+#: src/components/staking/StakingInfoPage.vue:395
 msgid "Sending Unstaking Transaction"
 msgstr "Unstaking-Transaktion wird gesendet"
 
@@ -2621,7 +2641,7 @@ msgstr "SEPA-Instant-Gebühr"
 msgid "SEPA Instant transaction"
 msgstr "SEPA-Echtzeitüberweisung"
 
-#: src/lib/StakingUtils.ts:114
+#: src/lib/StakingUtils.ts:130
 msgid "Set active stake"
 msgstr "Aktiven Stake festlegen"
 
@@ -2715,12 +2735,14 @@ msgstr "Überspringen (nicht empfohlen)"
 #: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:731
 #: src/components/modals/StablecoinSendModal.vue:758
-#: src/components/staking/StakingGraphPage.vue:288
-#: src/components/staking/StakingInfoPage.vue:358
-#: src/components/staking/StakingInfoPage.vue:441
-#: src/components/staking/StakingInfoPage.vue:456
-#: src/components/staking/StakingInfoPage.vue:521
-#: src/components/staking/ValidatorDetailsOverlay.vue:182
+#: src/components/staking/StakingGraphPage.vue:373
+#: src/components/staking/StakingInfoPage.vue:382
+#: src/components/staking/StakingInfoPage.vue:463
+#: src/components/staking/StakingInfoPage.vue:520
+#: src/components/staking/StakingInfoPage.vue:535
+#: src/components/staking/StakingInfoPage.vue:598
+#: src/components/staking/ValidatorDetailsOverlay.vue:135
+#: src/components/staking/ValidatorDetailsOverlay.vue:325
 msgid "Something went wrong"
 msgstr "Etwas ging schief"
 
@@ -2782,32 +2804,33 @@ msgstr ""
 msgid "standard"
 msgstr "Standard"
 
-#: src/lib/StakingUtils.ts:77
+#: src/lib/StakingUtils.ts:93
 msgid "Start staking"
 msgstr "Staken beginnen"
 
-#: src/components/staking/StakingGraphPage.vue:214
+#: src/components/staking/StakingGraphPage.vue:208
 msgid "Successfully added {amount} NIM to your stake with {validator}"
 msgstr "Erfolgreich {amount} NIM zu deinem Stake bei {validator} hinzugefügt"
 
-#: src/components/staking/ValidatorDetailsOverlay.vue:166
+#: src/components/staking/StakingInfoPage.vue:506
+#: src/components/staking/ValidatorDetailsOverlay.vue:280
 msgid "Successfully changed validator to {validator}"
 msgstr "Validator erfolgreich geändert zu {validator}"
 
-#: src/components/staking/StakingInfoPage.vue:342
-#: src/components/staking/StakingInfoPage.vue:507
+#: src/components/staking/StakingInfoPage.vue:366
+#: src/components/staking/StakingInfoPage.vue:584
 msgid "Successfully deactivated {amount} NIM"
 msgstr "Erfolgreich {amount} NIM deaktiviert"
 
-#: src/components/staking/StakingGraphPage.vue:263
+#: src/components/staking/StakingGraphPage.vue:353
 msgid "Successfully deactivated {amount} NIM from your stake with {validator}"
 msgstr "Erfolgreich {amount} NIM von deinem Stake bei {validator} deaktiviert"
 
-#: src/components/staking/StakingGraphPage.vue:170
+#: src/components/staking/StakingGraphPage.vue:168
 msgid "Successfully staked {amount} NIM with {validator}"
 msgstr "Erfolgreich {amount} NIM mit {validator} gestaket"
 
-#: src/components/staking/StakingInfoPage.vue:427
+#: src/components/staking/StakingInfoPage.vue:449
 msgid "Successfully unstaked {amount} NIM"
 msgstr "Erfolgreich {amount} NIM ungestaket"
 
@@ -2900,9 +2923,19 @@ msgstr "Wechsel zu USDC"
 msgid "Switch to USDT"
 msgstr "Wechsel zu USDT"
 
-#: src/lib/StakingUtils.ts:100
+#: src/components/staking/ValidatorDetailsOverlay.vue:108
+#: src/lib/StakingUtils.ts:116
 msgid "Switch validator"
 msgstr "Validator wechseln"
+
+#: src/components/staking/StakingInfoPage.vue:138
+#: src/components/staking/StakingOverview.vue:24
+msgid "Switching to {validator}"
+msgstr ""
+
+#: src/components/staking/ValidatorDetailsOverlay.vue:148
+msgid "Switching validator"
+msgstr ""
 
 #: src/components/layouts/Network.vue:119
 msgid "syncing"
@@ -3137,7 +3170,7 @@ msgstr "Das kann bis zu {min} Minuten dauern."
 #: src/components/UsdtTransactionList.vue:205
 #: src/components/UsdtTransactionList.vue:227
 #: src/composables/useTransactionList.ts:149
-#: src/composables/useTransactionList.ts:208 src/lib/StakingUtils.ts:163
+#: src/composables/useTransactionList.ts:208 src/lib/StakingUtils.ts:179
 msgid "This month"
 msgstr "Diesen Monat"
 
@@ -3306,7 +3339,7 @@ msgstr "Tx Zeit"
 msgid "Type to search..."
 msgstr "Tippe zum Suchen…"
 
-#: src/components/staking/StakingOverview.vue:48
+#: src/components/staking/StakingOverview.vue:52
 #: src/components/staking/StakingRewardsListItem.vue:56
 #: src/components/staking/ValidatorsListOverlay.vue:43
 msgid "unavailable"
@@ -3351,16 +3384,16 @@ msgstr ""
 "Jederzeit entsperren. Deine NIM werden innerhalb von etwa 24 Stunden "
 "verfügbar sein."
 
-#: src/lib/StakingUtils.ts:31
+#: src/lib/StakingUtils.ts:47
 msgid "Unstake"
 msgstr "Unstaken"
 
-#: src/components/staking/StakingInfoPage.vue:104
+#: src/components/staking/StakingInfoPage.vue:115
 msgid "Unstake rest"
 msgstr ""
 
-#: src/components/staking/StakingInfoPage.vue:125
-#: src/components/staking/StakingOverview.vue:22
+#: src/components/staking/StakingInfoPage.vue:141
+#: src/components/staking/StakingOverview.vue:26
 msgid "Unstaking"
 msgstr ""
 
@@ -3385,7 +3418,7 @@ msgstr "Update verfügbar"
 msgid "Update now"
 msgstr "Jetzt aktualisieren"
 
-#: src/lib/StakingUtils.ts:52
+#: src/lib/StakingUtils.ts:68
 msgid "Update validator"
 msgstr "Validator aktualisieren"
 
@@ -3436,8 +3469,13 @@ msgstr ""
 "Verwende den Schieberegler, um deine NIM zu sperren und Belohnungen zu "
 "verdienen."
 
-#: src/components/staking/StakingInfoPage.vue:457
+#: src/components/staking/StakingInfoPage.vue:536
+#: src/components/staking/ValidatorDetailsOverlay.vue:136
 msgid "Validator information not available"
+msgstr ""
+
+#: src/components/staking/ValidatorDetailsOverlay.vue:241
+msgid "Validator switch initiated"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:223
@@ -3591,7 +3629,7 @@ msgstr ""
 "zurückerstattet. Bitte beachte, dass Netzwerkgebühren von deinem Guthaben "
 "abgezogen werden können."
 
-#: src/components/staking/StakingInfoPage.vue:117
+#: src/components/staking/StakingInfoPage.vue:128
 msgid "You got some new rewards since you unstaked your funds."
 msgstr ""
 

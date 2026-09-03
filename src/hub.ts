@@ -580,7 +580,6 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
 export async function signUnstakingTransactions(request: {
     sender: string,
     senderLabel?: string,
-    recipientLabel?: string,
     transactions: Uint8Array[], // Array of 3 serialized transactions: [deactivation, retire, unstake]
     validatorAddress: string,
     validatorImageUrl?: string,
@@ -594,7 +593,6 @@ export async function signUnstakingTransactions(request: {
         layout: 'unstaking',
         sender: request.sender,
         senderLabel: request.senderLabel,
-        recipientLabel: request.recipientLabel,
         transactions: request.transactions,
         validatorAddress: request.validatorAddress,
         validatorImageUrl: request.validatorImageUrl,
@@ -624,8 +622,6 @@ export async function signSwitchValidatorTransactions(request: {
     transactions: [Uint8Array, Uint8Array], // [set-active-stake, update-staker]
     senderLabel?: string,
     recipientLabel?: string,
-    stakerLabel?: string,
-    validatorAddress: string,
     validatorImageUrl?: string,
     fromValidatorAddress: string,
     fromValidatorImageUrl?: string,
@@ -636,9 +632,7 @@ export async function signSwitchValidatorTransactions(request: {
         sender: request.sender,
         senderLabel: request.senderLabel,
         recipientLabel: request.recipientLabel,
-        stakerLabel: request.stakerLabel,
         transactions: request.transactions,
-        validatorAddress: request.validatorAddress,
         validatorImageUrl: request.validatorImageUrl,
         fromValidatorAddress: request.fromValidatorAddress,
         fromValidatorImageUrl: request.fromValidatorImageUrl,

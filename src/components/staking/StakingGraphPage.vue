@@ -287,7 +287,7 @@ export default defineComponent({
                         sender: activeAddress.value!,
                         // FROM = validator (rendered on the dashed "current" card in the keyguard).
                         senderLabel: validatorLabelOrAddress,
-                        // TO = user wallet — let the Hub fall back to the signer label.
+                        // TO = user wallet — the Hub sets the signer label.
                         transactions: [
                             deactivationTx.serialize(),
                             retireTx.serialize(),

@@ -27,7 +27,7 @@ export type WatchtowerJob = {
 };
 
 // The list endpoints answer with at most this many jobs, newest first (MAX_RETURN_ENTRIES in
-// albatross-watchtower/src/state/db_types.rs). A full list may have dropped an older job.
+// albatross-watchtower/src/state/db_types.rs). A full answer may have dropped an older job.
 const WATCHTOWER_LIST_CAP = 100;
 
 const OPERATION_PATHS: Record<WatchtowerOperationKind, string> = {
@@ -179,47 +179,37 @@ export async function fetchWatchtowerJob(kind: WatchtowerOperationKind, id: stri
     return isRawJob(raw) ? parseJob(kind, raw) : null;
 }
 
-type JobLists = { jobs: WatchtowerJob[], complete: boolean };
-
-// Several stakers of one account get their snapshots in the same burst; one download serves them all.
-let jobListsInFlight: Promise<JobLists | null> | null = null;
-
-async function fetchJobLists(): Promise<JobLists | null> {
-    if (!jobListsInFlight) {
-        jobListsInFlight = (async () => {
-            const [unstakeList, switchList] = await Promise.all([
-                getFromWatchtower<unknown[]>(OPERATION_PATHS.unstake),
-                getFromWatchtower<unknown[]>(OPERATION_PATHS.switch),
-            ]);
-            if (!unstakeList || !switchList) return null; // not configured
-            return {
-                jobs: [
-                    ...unstakeList.filter(isRawJob).map((raw) => parseJob('unstake', raw)),
-                    ...switchList.filter(isRawJob).map((raw) => parseJob('switch', raw)),
-                ],
-                complete: unstakeList.length < WATCHTOWER_LIST_CAP && switchList.length < WATCHTOWER_LIST_CAP,
-            };
-        })().finally(() => { jobListsInFlight = null; });
-    }
-    return jobListsInFlight;
-}
-
 const STATUS_RANK: Record<WatchtowerJobStatus, number> = { pending: 0, failed: 1, confirmed: 2 };
 
 /**
- * Every job the watchtower holds for a staker, pending ones first, then failed, then confirmed. The
- * watchtower has no per-staker route yet (the query exists server-side, only the route is missing),
- * so this scans both capped lists; `complete` is false when either came back full, in which case a
- * job for this staker may have fallen off it and "not found" proves nothing.
+ * Every job the watchtower holds for a staker, pending ones first, then failed, then confirmed. Asked
+ * for this staker via `?staker=`, so "not found" is conclusive; `complete` is false when there is no
+ * watchtower, or when one ignoring the parameter answered at the cap and a job may be missing.
  */
-export async function fetchWatchtowerJobsForStaker(stakerAddress: string): Promise<JobLists> {
-    const lists = await fetchJobLists();
-    if (!lists) return { jobs: [], complete: false };
+export async function fetchWatchtowerJobsForStaker(
+    stakerAddress: string,
+): Promise<{ jobs: WatchtowerJob[], complete: boolean }> {
     const wanted = ValidationUtils.normalizeAddress(stakerAddress);
-    const jobs = lists.jobs
+    // normalizeAddress spaces in blocks of four; the watchtower wants it unspaced
+    const query = `?staker=${encodeURIComponent(wanted.replace(/ /g, ''))}`;
+    const [unstakeList, switchList] = await Promise.all([
+        getFromWatchtower<unknown[]>(`${OPERATION_PATHS.unstake}${query}`),
+        getFromWatchtower<unknown[]>(`${OPERATION_PATHS.switch}${query}`),
+    ]);
+    if (!unstakeList || !switchList) return { jobs: [], complete: false }; // not configured
+    const parsed = [
+        ...unstakeList.filter(isRawJob).map((raw) => parseJob('unstake', raw)),
+        ...switchList.filter(isRawJob).map((raw) => parseJob('switch', raw)),
+    ];
+    const jobs = parsed
         .filter((job) => ValidationUtils.normalizeAddress(job.stakerAddress) === wanted)
         .sort((a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status]); // stable, keeps each list's order
-    return { jobs, complete: lists.complete };
+    // A watchtower predating `?staker=` ignores it and answers with every staker's jobs; only then can
+    // this staker's job lie beyond the cap. TODO: drop the filter and this check once every watchtower
+    // honours the parameter (albatross-watchtower 672a1f0).
+    const filterHonoured = jobs.length === parsed.length;
+    const withinCap = unstakeList.length < WATCHTOWER_LIST_CAP && switchList.length < WATCHTOWER_LIST_CAP;
+    return { jobs, complete: filterHonoured || withinCap };
 }
 
 /* eslint-disable camelcase */

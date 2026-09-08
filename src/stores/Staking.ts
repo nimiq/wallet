@@ -165,7 +165,7 @@ function currentDeactivationBlock(stake: Stake, policy: Policy): number | undefi
 }
 
 // Without the deactivation in our history the answer is "not yet" — the last answer stands, as for a
-// missing job or capped lists. (`inactiveFrom` alone is no anchor: it is the next election block,
+// missing job or an incomplete answer. (`inactiveFrom` alone is no anchor: it is the next election block,
 // up to an epoch after the deactivation.)
 function isDeactivationSettled(stake: Stake, policy: Policy): boolean {
     if (!stake.inactiveBalance) return true; // retired-only stake: its retire already went through
@@ -747,8 +747,8 @@ export const useStakingStore = createStore({
                     Vue.set(this.state.watchtowerJobByAddress, address, job);
                     return;
                 }
-                // Capped lists prove nothing — the job may have fallen off them — so the last answer
-                // stands in that case.
+                // An incomplete answer proves nothing (the job may lie beyond the cap), so the
+                // last answer stands.
                 if (!complete) return;
                 // Loaded only here: a job found above must not depend on the policy constants loading.
                 const policy = await usePolicy();

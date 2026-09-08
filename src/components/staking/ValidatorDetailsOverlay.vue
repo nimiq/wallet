@@ -218,6 +218,16 @@ export default defineComponent({
                 throw new Error('Deactivation transaction did not succeed');
             }
 
+            // From here on the user is mid-switch: record it before talking to the watchtower so the
+            // gates hold even if the registration below is rejected.
+            const switchRecord = {
+                targetValidatorAddress: target.address,
+                targetValidatorName: target.name,
+                startedAtBlock: currentHeight,
+                deactivationTxHash,
+            };
+            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), switchRecord);
+
             // Watchtower won't accept the request before the deactivation is finalized.
             try {
                 await waitForTransactionConfirmation(deactivationTxHash, { requireConfirmed: true });
@@ -229,24 +239,35 @@ export default defineComponent({
 
             // Watchtower failure is non-fatal: the deactivation is on-chain and the user can
             // still activate the new validator manually once the cooldown ends.
+            let watchtowerRegistered = false;
             try {
                 await startSwitchValidator({
                     stakerAddress: stakerAddress.toUserFriendlyAddress(),
                     deactivationTxHash,
                     updateStakerTx: signedTxs[1].serializedTx,
                 });
+                watchtowerRegistered = true;
             } catch (wtError: any) {
                 reportToSentry(wtError);
                 // eslint-disable-next-line no-console
                 console.warn('Watchtower registration failed:', wtError);
             }
 
-            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), {
-                targetValidatorAddress: target.address,
-                targetValidatorName: target.name,
-                startedAtBlock: currentHeight,
-                deactivationTxHash,
-            });
+            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), { ...switchRecord, watchtowerRegistered });
+
+            if (!watchtowerRegistered) {
+                // Close the overlay now, while the status screen still covers it, so dismissing the
+                // warning lands on the Info page's countdown footer. No success redirect: the warning
+                // stays until the user closes it.
+                context.emit('next');
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: $t('Validator switch needs a manual step') as string,
+                    message: $t('Your stake has been deactivated, but the automatic switch could not be scheduled. '
+                        + 'Come back once the countdown has ended and activate the validator manually.') as string,
+                });
+                return;
+            }
 
             context.emit('statusChange', {
                 state: State.SUCCESS,

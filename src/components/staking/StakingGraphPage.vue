@@ -324,11 +324,7 @@ export default defineComponent({
                     // Record before talking to the watchtower: the deactivation is on-chain and the retire/remove
                     // are signed, so the gates must hold even if the registration below fails.
                     const deactivationTxHash = signedTransactions[0].hash;
-                    const unstakingRecord = {
-                        startedAtBlock: currentHeight,
-                        deactivationTxHash,
-                        watchtowerRegistered: false,
-                    };
+                    const unstakingRecord = { startedAtBlock: currentHeight, deactivationTxHash };
                     setUnstakingOperation(stakerAddress, unstakingRecord);
 
                     // Wait for the deactivation transaction to be confirmed before sending to watchtower
@@ -345,6 +341,7 @@ export default defineComponent({
                     }
 
                     // Send the retire and remove transactions to the watchtower
+                    let watchtowerRegistered = false;
                     try {
                         await startUnstaking({
                             stakerAddress,
@@ -352,13 +349,27 @@ export default defineComponent({
                             retireTx: signedTransactions[1].serializedTx,
                             unstakeTx: signedTransactions[2].serializedTx,
                         });
-                        setUnstakingOperation(stakerAddress, { ...unstakingRecord, watchtowerRegistered: true });
+                        watchtowerRegistered = true;
                     } catch (watchtowerError: any) {
                         // Log watchtower error but don't fail the unstaking operation
                         // The deactivation was successful, watchtower is just for automation
                         reportToSentry(watchtowerError);
                         // eslint-disable-next-line no-console
                         console.warn('Watchtower registration failed:', watchtowerError);
+                    }
+                    setUnstakingOperation(stakerAddress, { ...unstakingRecord, watchtowerRegistered });
+
+                    if (!watchtowerRegistered) {
+                        // Switch to the Info page (its countdown footer repeats this notice) while the status
+                        // screen still covers it. No success redirect: the warning stays until the user closes it.
+                        context.emit('next');
+                        context.emit('statusChange', {
+                            state: State.WARNING,
+                            title: $t('Automatic payout could not be scheduled') as string,
+                            message: $t('The unstaking has started, but the automatic payout could not be scheduled. '
+                                + 'Come back once the countdown has ended and pay out manually.') as string,
+                        });
+                        return;
                     }
 
                     context.emit('statusChange', {

@@ -135,19 +135,31 @@
             </div>
         </PageFooter>
         <PageFooter v-else-if="stake && stake.inactiveBalance">
-            <div class="flex-row unstaking nq-light-blue">
-                <CircleArrowDownIcon />
-                <span v-if="isSwitchingValidator" class="flex-grow">
-                    {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
-                </span>
-                <template v-else>
-                    {{ $t('Unstaking') }}
-                    <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
-                </template>
-                <button class="nq-button-s unstaking-progress">
-                    {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
-                    <!-- TODO: Add cancel function -->
-                </button>
+            <div class="flex-column footer-content">
+                <div class="flex-row unstaking nq-light-blue">
+                    <CircleArrowDownIcon />
+                    <span v-if="isSwitchingValidator" class="flex-grow">
+                        {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
+                    </span>
+                    <template v-else>
+                        {{ $t('Unstaking') }}
+                        <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
+                    </template>
+                    <button class="nq-button-s unstaking-progress">
+                        {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
+                        <!-- TODO: Add cancel function -->
+                    </button>
+                </div>
+
+                <div v-if="pendingOperationNeedsManualStep" class="footer-notice nq-orange">
+                    <template v-if="isSwitchingValidator">
+                        {{ $t('Automatic activation is not scheduled. '
+                            + 'Activate the validator manually once the countdown has ended.') }}
+                    </template>
+                    <template v-else>
+                        {{ $t('Automatic payout is not scheduled. Pay out manually once the countdown has ended.') }}
+                    </template>
+                </div>
             </div>
         </PageFooter>
     </div>
@@ -208,6 +220,7 @@ export default defineComponent({
             canManuallyActivateSwitch,
             isSwitchingValidator,
             pendingOperation,
+            pendingOperationNeedsManualStep,
             switchTargetLabel,
             validators,
             restakingRewards,
@@ -626,6 +639,7 @@ export default defineComponent({
             canManuallyActivateSwitch,
             isSwitchingValidator,
             pendingOperation,
+            pendingOperationNeedsManualStep,
             switchTargetLabel,
             manualActivateSwitch,
             consensus,

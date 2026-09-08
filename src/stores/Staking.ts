@@ -96,19 +96,23 @@ export type RegisteredValidator = RawValidator & ApiValidator & {
 
 export type Validator = RawValidator | RegisteredValidator;
 
+// Both records are written as soon as the deactivation is on-chain, so the gates hold while the
+// watchtower is still being asked. `watchtowerRegistered` is the outcome of that request: `true`
+// once it accepted the queued follow-up, `false` when the request failed (rejected or never
+// answered), and left undefined while it is unknown — still in flight, or a record written before
+// the flag existed. Only an explicit `false` counts as a failed registration.
 export type SwitchValidatorRecord = {
     targetValidatorAddress: string,
     targetValidatorName?: string,
     startedAtBlock: number,
     deactivationTxHash: string,
+    watchtowerRegistered?: boolean,
 }
 
 export type UnstakingRecord = {
     startedAtBlock: number,
     deactivationTxHash: string,
-    // The deactivation is on-chain either way; this only says whether the watchtower accepted the
-    // queued retire/remove. A record with `false` still means "mid-unstake" for all gates.
-    watchtowerRegistered: boolean,
+    watchtowerRegistered?: boolean,
 }
 
 // Retired-but-not-removed stake (inactive 0, retired > 0) is still the watchtower's job: only a
@@ -351,6 +355,18 @@ export const useStakingStore = createStore({
                 if (!stake.inactiveRelease || stake.inactiveRelease > networkState.height) return 'switch';
             }
             return null;
+        },
+        // The registration of the pending operation's follow-up (retire/remove, or update-staker) failed,
+        // so once the cooldown ends the user has to send it by hand.
+        pendingOperationNeedsManualStep: (
+            state,
+            { pendingOperation, activeSwitchOperation, activeUnstakingOperation },
+        ): boolean => {
+            const operation = pendingOperation.value as 'switch' | 'unstake' | null;
+            if (!operation) return false;
+            const record = (operation === 'unstake' ? activeUnstakingOperation : activeSwitchOperation)
+                .value as UnstakingRecord | SwitchValidatorRecord | null;
+            return record?.watchtowerRegistered === false;
         },
         switchTargetLabel: (state, { activeSwitchOperation, validators }): string => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;

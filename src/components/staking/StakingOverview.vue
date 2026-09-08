@@ -26,9 +26,11 @@
                             </template>
                             <template v-else>
                                 <CircleArrowDownIcon />
-                                <span v-if="isSwitchingValidator">
+                                <!-- A switch only known from the watchtower (started elsewhere) has no target -->
+                                <span v-if="isSwitchingValidator && switchTargetLabel">
                                     {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
                                 </span>
+                                <span v-else-if="isSwitchingValidator">{{ $t('Switching validator') }}</span>
                                 <span v-else>{{ $t('Unstaking') }}</span>
                             </template>
                             <span class="dot"></span>

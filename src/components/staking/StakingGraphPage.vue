@@ -342,8 +342,9 @@ export default defineComponent({
 
                     // Send the retire and remove transactions to the watchtower
                     let watchtowerRegistered = false;
+                    let watchtowerJobId: string | undefined;
                     try {
-                        await startUnstaking({
+                        watchtowerJobId = await startUnstaking({
                             stakerAddress,
                             inactiveStakeTxHash: deactivationTxHash,
                             retireTx: signedTransactions[1].serializedTx,
@@ -357,7 +358,7 @@ export default defineComponent({
                         // eslint-disable-next-line no-console
                         console.warn('Watchtower registration failed:', watchtowerError);
                     }
-                    setUnstakingOperation(stakerAddress, { ...unstakingRecord, watchtowerRegistered });
+                    setUnstakingOperation(stakerAddress, { ...unstakingRecord, watchtowerRegistered, watchtowerJobId });
 
                     if (!watchtowerRegistered) {
                         // Switch to the Info page (its countdown footer repeats this notice) while the status

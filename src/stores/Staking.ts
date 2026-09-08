@@ -7,7 +7,9 @@ import { useAddressStore } from './Address';
 import { useFiatStore } from './Fiat';
 import { useNetworkStore } from './Network';
 import { TransactionState, useTransactionsStore } from './Transactions';
+import { usePolicy } from '../composables/usePolicy';
 import { calculateStakingReward } from '../lib/AlbatrossMath';
+import { fetchWatchtowerJob, fetchWatchtowerJobsForStaker, WatchtowerJob } from '../lib/AlbatrossWatchtower';
 import {
     CryptoCurrency,
     FiatCurrency,
@@ -28,6 +30,11 @@ export type StakingState = {
     stakeByAddress: Record<string, Stake>,
     stakingEventsByAddress: Record<string, AggregatedRestakingEvent[]>,
     cachedMonthlyRewardsByAddress: Record<string, Map<string, MonthlyReward>>,
+    // What the watchtower holds for a staker's pending payout: a job (possibly started from another
+    // browser, which then has no record of its own), or `null` once the watchtower conclusively
+    // holds none. Absent while not asked or inconclusive. Not persisted (see storage.ts): it is
+    // re-derived from the watchtower after every start.
+    watchtowerJobByAddress: Record<string, WatchtowerJob | null>,
 }
 
 export type AggregatedRestakingEvent = {
@@ -50,6 +57,9 @@ export type Stake = {
     activeBalance: number, // activeBalance (does not include inactiveBalance)
     inactiveBalance: number,
     inactiveRelease?: number,
+    // Election block at which the last deactivation takes effect (at or after its confirming macro
+    // block). Absent on stakes stored before it was recorded.
+    inactiveFrom?: number,
     validator?: string,
     retiredBalance: number,
 }
@@ -101,18 +111,22 @@ export type Validator = RawValidator | RegisteredValidator;
 // once it accepted the queued follow-up, `false` when the request failed (rejected or never
 // answered), and left undefined while it is unknown — still in flight, or a record written before
 // the flag existed. Only an explicit `false` counts as a failed registration.
+// `watchtowerJobId` is the job the watchtower answered with; `syncWatchtowerOperation` follows it
+// in `watchtowerJobByAddress`, as an accepted job can still fail on-chain.
 export type SwitchValidatorRecord = {
     targetValidatorAddress: string,
     targetValidatorName?: string,
     startedAtBlock: number,
     deactivationTxHash: string,
     watchtowerRegistered?: boolean,
+    watchtowerJobId?: string,
 }
 
 export type UnstakingRecord = {
     startedAtBlock: number,
     deactivationTxHash: string,
     watchtowerRegistered?: boolean,
+    watchtowerJobId?: string,
 }
 
 // Retired-but-not-removed stake (inactive 0, retired > 0) is still the watchtower's job: only a
@@ -125,6 +139,51 @@ function hasPendingPayout(stake: Stake): boolean {
 // persisted store state, see storage.ts) and are reconciled against every fresh chain snapshot.
 const SWITCH_VALIDATOR_LS_PREFIX = 'switchValidator:';
 const UNSTAKING_LS_PREFIX = 'unstaking:';
+
+// "No job for this staker" is only conclusive once every flow that could still register one has
+// had its chance. A flow registers when the deactivation is confirmed (the macro block after its
+// transaction) and gives up waiting for that 120 s after broadcast, registering anyway, so past the
+// confirming macro block plus this margin (blocks, at about one per second: the timeout, network
+// latency and slack) nothing more can arrive.
+const WATCHTOWER_REGISTRATION_MARGIN = 300;
+
+type Policy = Awaited<ReturnType<typeof usePolicy>>;
+
+// The current deactivation's transaction: the `set-active-stake` this address sent whose election
+// block is the stake's `inactiveFrom` — that is how the contract derives it — so a previous cycle's
+// transaction can't stand in while the current one is still missing from our history. A later
+// set-active-stake in the same epoch only moves the anchor later. A block height means included;
+// a failed one registers nothing and is skipped.
+function currentDeactivationBlock(stake: Stake, policy: Policy): number | undefined {
+    if (stake.inactiveFrom === undefined) return undefined;
+    const heights = Object.values(useTransactionsStore().state.transactions)
+        .filter((tx) => tx.sender === stake.address && tx.data.type === 'set-active-stake'
+            && tx.blockHeight !== undefined && tx.executionResult !== false
+            && policy.electionBlockAfter(tx.blockHeight) === stake.inactiveFrom)
+        .map((tx) => tx.blockHeight!);
+    return heights.length ? Math.max(...heights) : undefined;
+}
+
+// Without the deactivation in our history the answer is "not yet" — the last answer stands, as for a
+// missing job or capped lists. (`inactiveFrom` alone is no anchor: it is the next election block,
+// up to an epoch after the deactivation.)
+function isDeactivationSettled(stake: Stake, policy: Policy): boolean {
+    if (!stake.inactiveBalance) return true; // retired-only stake: its retire already went through
+    const deactivationBlock = currentDeactivationBlock(stake, policy);
+    if (deactivationBlock === undefined) return false;
+    return useNetworkStore().state.height > policy.macroBlockAfter(deactivationBlock) + WATCHTOWER_REGISTRATION_MARGIN;
+}
+
+// A job from an operation that is already over (the user re-delegated or paid out by hand, and its
+// queued transaction failed later) must not be taken for the payout pending now.
+function belongsToCurrentPayout(job: WatchtowerJob, stake: Stake): boolean {
+    if (job.status === 'pending') return true;
+    if (job.status !== 'failed' || job.atHeight === undefined || stake.inactiveFrom === undefined) return false;
+    return job.atHeight > stake.inactiveFrom;
+}
+
+// One sync per address at a time, so a slow answer can't overwrite a newer one.
+const syncingAddresses = new Set<string>();
 
 function readRecord<T>(prefix: string, address: string): T | null {
     try {
@@ -182,6 +241,7 @@ export const useStakingStore = createStore({
         stakeByAddress: {},
         stakingEventsByAddress: {},
         cachedMonthlyRewardsByAddress: {},
+        watchtowerJobByAddress: {},
         // Bumped on every switch/unstaking-record write so the getters reading those records from
         // localStorage re-evaluate. Drop once the records move into reactive state.
         operationRecordTrigger: 0,
@@ -303,20 +363,27 @@ export const useStakingStore = createStore({
             };
         },
 
+        activeWatchtowerJob: (state): WatchtowerJob | null | undefined => {
+            const { activeAddress } = useAddressStore();
+            if (!activeAddress.value) return undefined;
+            return state.watchtowerJobByAddress[activeAddress.value];
+        },
         activeSwitchOperation: (state): Readonly<SwitchValidatorRecord | null> => {
             void state.operationRecordTrigger; // eslint-disable-line no-void
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
             return readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, activeAddress.value);
         },
-        // Deactivated stake still delegated to the old validator, with the update-staker queued. Not
+        // Deactivated stake still at the old validator per our record, or with a watchtower switch job. Not
         // keyed on `activeBalance === 0`: a reward landing as active stake mid-cooldown must not read
         // as "switch done" (it makes the queued update-staker fail on-chain, the record stays relevant).
-        isSwitchingValidator: (state, { activeStake, activeSwitchOperation }): boolean => {
+        isSwitchingValidator: (state, { activeStake, activeSwitchOperation, activeWatchtowerJob }): boolean => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
             const stake = activeStake.value as Stake | null;
-            if (!record || !stake) return false;
-            return stake.inactiveBalance > 0 && stake.validator !== record.targetValidatorAddress;
+            if (!stake || stake.inactiveBalance <= 0) return false;
+            if (record) return stake.validator !== record.targetValidatorAddress;
+            // Started in another browser: no record here, only the watchtower's job.
+            return (activeWatchtowerJob.value as WatchtowerJob | null | undefined)?.kind === 'switch';
         },
         canManuallyActivateSwitch: (state, { activeStake, activeSwitchOperation }) => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
@@ -333,12 +400,14 @@ export const useStakingStore = createStore({
             if (!activeAddress.value) return null;
             return readRecord<UnstakingRecord>(UNSTAKING_LS_PREFIX, activeAddress.value);
         },
-        // True while the watchtower still owes the payout. The record alone is not enough — a
+        // True while the watchtower still owes the payout. The record or job alone is not enough — a
         // deactivation that never landed must not block anything.
-        isUnstaking: (state, { activeStake, activeUnstakingOperation }): boolean => {
+        isUnstaking: (state, { activeStake, activeUnstakingOperation, activeWatchtowerJob }): boolean => {
             const record = activeUnstakingOperation.value as UnstakingRecord | null;
             const stake = activeStake.value as Stake | null;
-            if (!record || !stake) return false;
+            if (!stake) return false;
+            const job = activeWatchtowerJob.value as WatchtowerJob | null | undefined;
+            if (!record && job?.kind !== 'unstake') return false;
             return hasPendingPayout(stake);
         },
         // The watchtower operation that currently owns the stake, if any. Starting another staking
@@ -356,12 +425,18 @@ export const useStakingStore = createStore({
             }
             return null;
         },
-        // The registration of the pending operation's follow-up (retire/remove, or update-staker) failed,
-        // so once the cooldown ends the user has to send it by hand.
+        // Nobody is going to send the queued follow-up (retire/remove, or update-staker), so once the
+        // cooldown ends the user has to: the registration with the watchtower failed, the watchtower
+        // conclusively holds no job for this stake (deactivated from another wallet, or by hand), or
+        // the job it accepted failed on-chain.
         pendingOperationNeedsManualStep: (
             state,
-            { pendingOperation, activeSwitchOperation, activeUnstakingOperation },
+            { pendingOperation, activeStake, activeWatchtowerJob, activeSwitchOperation, activeUnstakingOperation },
         ): boolean => {
+            const stake = activeStake.value as Stake | null;
+            if (!stake || !hasPendingPayout(stake)) return false;
+            const job = activeWatchtowerJob.value as WatchtowerJob | null | undefined;
+            if (job === null || job?.status === 'failed') return true;
             const operation = pendingOperation.value as 'switch' | 'unstake' | null;
             if (!operation) return false;
             const record = (operation === 'unstake' ? activeUnstakingOperation : activeSwitchOperation)
@@ -498,6 +573,7 @@ export const useStakingStore = createStore({
     },
     actions: {
         setStake(stake: Stake) {
+            const previous = this.state.stakeByAddress[stake.address] as Stake | undefined;
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new stake in Vue 3.
             this.state.stakeByAddress = {
@@ -505,6 +581,11 @@ export const useStakingStore = createStore({
                 [stake.address]: stake,
             };
             this.reconcileOperationRecords(stake.address, stake);
+            // A payout that just became pending is worth asking about right away (the periodic sync
+            // covers the rest): on a browser that did not start the operation, this is what reveals it.
+            if (hasPendingPayout(stake) && !(previous && hasPendingPayout(previous))) {
+                this.syncWatchtowerOperation(stake.address);
+            }
         },
         setStakes(stakes: Stake[]) {
             const newStakes: {[address: string]: Stake} = {};
@@ -565,6 +646,8 @@ export const useStakingStore = createStore({
             const clearedOther = removeRecord(UNSTAKING_LS_PREFIX, address);
             const written = writeRecord(SWITCH_VALIDATOR_LS_PREFIX, address, record);
             if (clearedOther || written) this.state.operationRecordTrigger++;
+            // An operation of our own supersedes whatever the watchtower said about the stake before.
+            Vue.delete(this.state.watchtowerJobByAddress, address);
         },
         clearSwitchOperation(address: string) {
             if (removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address)) this.state.operationRecordTrigger++;
@@ -573,6 +656,7 @@ export const useStakingStore = createStore({
             const clearedOther = removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address);
             const written = writeRecord(UNSTAKING_LS_PREFIX, address, record);
             if (clearedOther || written) this.state.operationRecordTrigger++;
+            Vue.delete(this.state.watchtowerJobByAddress, address);
         },
         clearUnstakingOperation(address: string) {
             if (removeRecord(UNSTAKING_LS_PREFIX, address)) this.state.operationRecordTrigger++;
@@ -580,6 +664,8 @@ export const useStakingStore = createStore({
         // `stake` is the latest chain snapshot; `null` means the staker no longer exists on chain (a full
         // unstake has paid out), so nothing can be pending anymore.
         reconcileOperationRecords(address: string, stake: Stake | null) {
+            // Nothing left to pay out means nothing the watchtower could still owe.
+            if (!stake || !hasPendingPayout(stake)) Vue.delete(this.state.watchtowerJobByAddress, address);
             if (!stake) {
                 this.clearSwitchOperation(address);
                 this.clearUnstakingOperation(address);
@@ -608,6 +694,78 @@ export const useStakingStore = createStore({
                 if (!isTransactionPending(unstakingRecord.deactivationTxHash)) {
                     this.clearUnstakingOperation(address);
                 }
+            }
+        },
+        // Two answers, in order: the fate of the job behind our own record (an accepted job can still
+        // fail on-chain), else a job another browser started, for which this one has no record. Never
+        // throws — on any error the last answer stands and the next sync retries.
+        async syncWatchtowerOperation(address: string) {
+            if (syncingAddresses.has(address)) return;
+            const stake = this.state.stakeByAddress[address];
+            if (!stake || !hasPendingPayout(stake)) return;
+
+            const unstakingRecord = readRecord<UnstakingRecord>(UNSTAKING_LS_PREFIX, address);
+            const switchRecord = readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, address);
+            const record = unstakingRecord || switchRecord;
+            // A record without a job id is either a flow in this browser still waiting for the
+            // watchtower's answer (querying now would only race it), a registration that failed, or a
+            // record from before job ids existed — in every case the outcome is known locally.
+            if (record && !record.watchtowerJobId) return;
+
+            // The payout may have gone through (and the entry been dropped) while a request was out,
+            // or a new deactivation landed: decisions are taken on the current snapshot.
+            const currentStake = () => this.state.stakeByAddress[address] as Stake | undefined;
+            const stillPending = () => {
+                const current = currentStake();
+                return !!current && hasPendingPayout(current);
+            };
+
+            syncingAddresses.add(address);
+            try {
+                if (record) {
+                    const kind = unstakingRecord ? 'unstake' : 'switch';
+                    const job = await fetchWatchtowerJob(kind, record.watchtowerJobId!);
+                    if (!stillPending()) return;
+                    // The watchtower answers 204 for an unknown id but also for its own internal
+                    // errors, so a missing job is inconclusive: the last answer stands.
+                    if (!job) return;
+                    if (job.status !== 'confirmed') {
+                        Vue.set(this.state.watchtowerJobByAddress, address, job);
+                        return;
+                    }
+                    // Our operation is over, yet a payout is pending: it was deactivated again from
+                    // elsewhere. The stale record would otherwise mask that forever.
+                    if (kind === 'unstake') this.clearUnstakingOperation(address);
+                    else this.clearSwitchOperation(address);
+                }
+
+                const { jobs, complete } = await fetchWatchtowerJobsForStaker(address);
+                if (!stillPending()) return;
+                // Only a job that belongs to the payout pending now (not a confirmed one from a previous cycle).
+                const job = jobs.find((candidate) => belongsToCurrentPayout(candidate, currentStake()!));
+                if (job) {
+                    Vue.set(this.state.watchtowerJobByAddress, address, job);
+                    return;
+                }
+                // Capped lists prove nothing — the job may have fallen off them — so the last answer
+                // stands in that case.
+                if (!complete) return;
+                // Loaded only here: a job found above must not depend on the policy constants loading.
+                const policy = await usePolicy();
+                if (!stillPending()) return;
+                if (isDeactivationSettled(currentStake()!, policy)) {
+                    Vue.set(this.state.watchtowerJobByAddress, address, null);
+                }
+            } catch (error) {
+                // eslint-disable-next-line no-console
+                console.warn('watchtower: sync failed for', address, error);
+            } finally {
+                syncingAddresses.delete(address);
+            }
+        },
+        syncWatchtowerOperations() {
+            for (const stake of Object.values(this.state.stakeByAddress) as Stake[]) {
+                if (hasPendingPayout(stake)) this.syncWatchtowerOperation(stake.address);
             }
         },
 

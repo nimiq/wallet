@@ -163,6 +163,7 @@ export async function launchNetwork() {
                     inactiveBalance: staker.inactiveBalance,
                     inactiveRelease: staker.inactiveRelease,
                     validator: staker.delegation,
+                    inactiveFrom: staker.inactiveFrom,
                     retiredBalance: staker.retiredBalance,
                 });
             } else {
@@ -245,6 +246,7 @@ export async function launchNetwork() {
         }
 
         if (consensus === 'established') {
+            stakingStore.syncWatchtowerOperations();
             const stop = watch(() => network$.fetchingTxHistory, (fetching) => {
                 if (fetching === 0) {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
@@ -293,13 +295,22 @@ export async function launchNetwork() {
     });
 
     let currentEpoch = 0;
+    let currentBatch = 0;
 
     client.addHeadChangedListener(async (hash) => {
         const block = await retry(() => client.getBlock(hash)).catch(reportFor('getBlock'));
         if (!block) return;
-        const { height, timestamp, epoch } = block;
+        const { height, timestamp, epoch, batch } = block;
         console.debug('Nimiq head is now at', height);
         patchNetworkStore({ height, timestamp });
+
+        // The events the watchtower sync is for (a job registered from another browser, a job failing
+        // over there) leave no trace on our stakers, so poll once per batch while a payout is pending.
+        // Heads also arrive while syncing up, against stakes not refreshed yet — wait for consensus.
+        if (batch > currentBatch && network$.consensus === 'established') {
+            currentBatch = batch;
+            stakingStore.syncWatchtowerOperations();
+        }
 
         // The NanoApi did recheck all balances on every block
         // I don't think we need to do this here, as wallet addresses are only expected to

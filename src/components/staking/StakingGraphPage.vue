@@ -103,7 +103,7 @@ export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress } = useAddressStore();
-        const { activeStake, activeValidator } = useStakingStore();
+        const { activeStake, activeValidator, setUnstakingOperation } = useStakingStore();
 
         const newStake = ref(activeStake.value ? activeStake.value.activeBalance : 0);
         const stakeDelta = ref(0);
@@ -230,6 +230,8 @@ export default defineComponent({
                     // This ensures our calculated heights are <= what the watchtower will calculate
                     // (since the actual block will be currentHeight or later)
                     const currentHeight = useNetworkStore().state.height;
+                    // Captured once: the flow spans a Hub round-trip during which the active address can change.
+                    const stakerAddress = activeAddress.value!;
 
                     // Calculate when the retire transaction can be broadcast (after inactivation period)
                     // This matches the watchtower's logic: election_block_after + blocks_per_epoch
@@ -252,7 +254,7 @@ export default defineComponent({
                     // Build all 3 transactions for the unstaking watchtower flow:
                     // 1. Deactivation: Move active stake to inactive
                     const deactivationTx = TransactionBuilder.newSetActiveStake(
-                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        Address.fromUserFriendlyAddress(stakerAddress),
                         BigInt(activeStake.value!.activeBalance + stakeDelta.value),
                         BigInt(0),
                         currentHeight,
@@ -263,7 +265,7 @@ export default defineComponent({
                     // Must specify the TOTAL inactive balance after deactivation
                     const totalInactiveAfterDeactivation = (activeStake.value!.inactiveBalance || 0) + unstakeAmount;
                     const retireTx = TransactionBuilder.newRetireStake(
-                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        Address.fromUserFriendlyAddress(stakerAddress),
                         BigInt(totalInactiveAfterDeactivation),
                         BigInt(0),
                         retireValidityStartHeight,
@@ -275,7 +277,7 @@ export default defineComponent({
                     const totalRetiredAfterRetire = (activeStake.value!.retiredBalance || 0)
                         + totalInactiveAfterDeactivation;
                     const removeTx = TransactionBuilder.newRemoveStake(
-                        Address.fromUserFriendlyAddress(activeAddress.value!),
+                        Address.fromUserFriendlyAddress(stakerAddress),
                         BigInt(totalRetiredAfterRetire),
                         BigInt(0),
                         unstakeValidityStartHeight,
@@ -284,7 +286,7 @@ export default defineComponent({
 
                     // Sign all 3 transactions at once using the SignTransaction API
                     const signedTransactions = await signUnstakingTransactions({
-                        sender: activeAddress.value!,
+                        sender: stakerAddress,
                         // FROM = validator (rendered on the dashed "current" card in the keyguard).
                         senderLabel: validatorLabelOrAddress,
                         // TO = user wallet — the Hub sets the signer label.
@@ -319,10 +321,20 @@ export default defineComponent({
                         throw new Error('Deactivation transaction failed');
                     }
 
+                    // Record before talking to the watchtower: the deactivation is on-chain and the retire/remove
+                    // are signed, so the gates must hold even if the registration below fails.
+                    const deactivationTxHash = signedTransactions[0].hash;
+                    const unstakingRecord = {
+                        startedAtBlock: currentHeight,
+                        deactivationTxHash,
+                        watchtowerRegistered: false,
+                    };
+                    setUnstakingOperation(stakerAddress, unstakingRecord);
+
                     // Wait for the deactivation transaction to be confirmed before sending to watchtower
                     // The watchtower requires the transaction to be confirmed on-chain
                     try {
-                        await waitForTransactionConfirmation(signedTransactions[0].hash, {
+                        await waitForTransactionConfirmation(deactivationTxHash, {
                             requireConfirmed: true,
                         });
                     } catch (confirmationError: any) {
@@ -335,11 +347,12 @@ export default defineComponent({
                     // Send the retire and remove transactions to the watchtower
                     try {
                         await startUnstaking({
-                            stakerAddress: activeAddress.value!,
-                            inactiveStakeTxHash: signedTransactions[0].hash,
+                            stakerAddress,
+                            inactiveStakeTxHash: deactivationTxHash,
                             retireTx: signedTransactions[1].serializedTx,
                             unstakeTx: signedTransactions[2].serializedTx,
                         });
+                        setUnstakingOperation(stakerAddress, { ...unstakingRecord, watchtowerRegistered: true });
                     } catch (watchtowerError: any) {
                         // Log watchtower error but don't fail the unstaking operation
                         // The deactivation was successful, watchtower is just for automation

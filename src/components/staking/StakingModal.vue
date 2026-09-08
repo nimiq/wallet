@@ -137,7 +137,7 @@ export default defineComponent({
     setup(props) {
         const { $t } = useI18n();
         const { activeAddressInfo } = useAddressStore();
-        const { activeValidator, activeStake, totalAccountStake, monthlyRewards } = useStakingStore();
+        const { activeValidator, activeStake, totalAccountStake, totalActiveStake, monthlyRewards } = useStakingStore();
 
         const router = useRouter();
 
@@ -309,7 +309,9 @@ export default defineComponent({
 
         /* Component Lifecycle */
         onBeforeUnmount(() => {
-            if (!activeStake.value?.activeBalance && !activeStake.value?.inactiveBalance) {
+            // Only drop the placeholder stake left behind by validator selection. Retired-but-not-removed
+            // stake is real (its payout may still be pending), so it stays.
+            if (!totalActiveStake.value) {
                 useStakingStore().removeStake(activeAddressInfo.value!.address);
             }
         });

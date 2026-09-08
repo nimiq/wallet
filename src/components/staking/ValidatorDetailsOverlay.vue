@@ -49,7 +49,7 @@
             </PageBody>
         </div>
         <div class="bottom-bar">
-            <button class="action-button" :disabled="isSubmitting" @click="onActionButtonClick">
+            <button class="action-button" :disabled="isActionDisabled" @click="onActionButtonClick">
                 {{ actionButtonLabel }}
             </button>
         </div>
@@ -91,24 +91,34 @@ export default defineComponent({
     },
     setup(props, context) {
         const { $t } = useI18n();
-        const { activeAddress, activeAddressInfo } = useAddressStore();
+        const { activeAddress } = useAddressStore();
         const {
-            activeStake, setStake, activeValidator,
+            activeStake, setStake, activeValidator, totalActiveStake,
+            pendingOperation,
             setSwitchOperation, clearSwitchOperation,
         } = useStakingStore();
         const { height } = useNetworkStore();
 
-        const hasExistingStake = computed(() => !!activeStake.value
-            && (activeStake.value.activeBalance > 0 || activeStake.value.inactiveBalance > 0));
+        // Retired stake counts too: a retired-only staker still exists on chain and must never be
+        // overwritten by the zero placeholder written for a first validator selection.
+        const hasExistingStake = computed(() => totalActiveStake.value > 0);
 
         const isCurrentValidator = computed(() => !!activeValidator.value
             && activeValidator.value.address === props.validator.address);
 
-        const actionButtonLabel = computed(() => (hasExistingStake.value
-            ? $t('Switch validator')
-            : $t('Select validator')));
+        // Every switch the user can start goes through this button, so a watchtower operation in flight
+        // (which chain balances alone can't reveal) disables it here, with the label giving the reason.
+        const actionButtonLabel = computed(() => {
+            if (pendingOperation.value === 'switch') return $t('Validator switch in progress');
+            if (pendingOperation.value === 'unstake') return $t('Unstaking in progress');
+            return hasExistingStake.value
+                ? $t('Switch validator')
+                : $t('Select validator');
+        });
 
         const isSubmitting = ref(false);
+
+        const isActionDisabled = computed(() => isSubmitting.value || !!pendingOperation.value);
 
         let successRedirectTimer: number | null = null;
         function scheduleSuccessRedirect() {
@@ -131,6 +141,7 @@ export default defineComponent({
             if (validator) return validator;
             reportToSentry(new Error(`Attempted ${opName} without activeValidator`));
             context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
                 state: State.WARNING,
                 title: $t('Something went wrong') as string,
                 message: $t('Validator information not available') as string,
@@ -155,6 +166,7 @@ export default defineComponent({
             ]);
             const networkId = await client.getNetworkId();
             const currentHeight = height.value;
+            // Captured once: the flow spans a Hub round-trip during which the active address can change.
             const stakerAddress = Address.fromUserFriendlyAddress(activeAddress.value!);
 
             // update-staker must be valid at the height the watchtower will broadcast it: one
@@ -185,7 +197,7 @@ export default defineComponent({
             const from = toValidatorRef(fromValidator);
 
             const signedTxs = await signSwitchValidatorTransactions({
-                sender: activeAddress.value!,
+                sender: stakerAddress.toUserFriendlyAddress(),
                 transactions: [deactivateTx.serialize(), updateTx.serialize()],
                 senderLabel: validatorLabel(from),
                 recipientLabel: validatorLabel(target),
@@ -219,7 +231,7 @@ export default defineComponent({
             // still activate the new validator manually once the cooldown ends.
             try {
                 await startSwitchValidator({
-                    stakerAddress: activeAddress.value!,
+                    stakerAddress: stakerAddress.toUserFriendlyAddress(),
                     deactivationTxHash,
                     updateStakerTx: signedTxs[1].serializedTx,
                 });
@@ -229,7 +241,7 @@ export default defineComponent({
                 console.warn('Watchtower registration failed:', wtError);
             }
 
-            setSwitchOperation(activeAddress.value!, {
+            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), {
                 targetValidatorAddress: target.address,
                 targetValidatorName: target.name,
                 startedAtBlock: currentHeight,
@@ -288,6 +300,8 @@ export default defineComponent({
 
         async function selectValidator() {
             try {
+                if (pendingOperation.value) return; // Defensive: the button is already disabled.
+
                 if (!hasExistingStake.value) {
                     setStake({
                         address: activeAddress.value!,
@@ -314,6 +328,7 @@ export default defineComponent({
 
                 // Stake is inactive but the cooldown has not yet ended.
                 context.emit('statusChange', {
+                    type: StakingOperationType.VALIDATOR,
                     state: State.WARNING,
                     title: $t('Cannot switch yet') as string,
                     message: $t('Please wait for the cooldown period to end.') as string,
@@ -329,7 +344,7 @@ export default defineComponent({
         }
 
         async function onActionButtonClick() {
-            if (isSubmitting.value) return;
+            if (isActionDisabled.value) return;
             if (isCurrentValidator.value) {
                 context.emit('switch-validator');
                 return;
@@ -345,7 +360,7 @@ export default defineComponent({
         return {
             onActionButtonClick,
             actionButtonLabel,
-            isSubmitting,
+            isActionDisabled,
         };
     },
     components: {

@@ -6,6 +6,7 @@ import { useAccountStore } from './Account';
 import { useAddressStore } from './Address';
 import { useFiatStore } from './Fiat';
 import { useNetworkStore } from './Network';
+import { TransactionState, useTransactionsStore } from './Transactions';
 import { calculateStakingReward } from '../lib/AlbatrossMath';
 import {
     CryptoCurrency,
@@ -102,16 +103,69 @@ export type SwitchValidatorRecord = {
     deactivationTxHash: string,
 }
 
-const SWITCH_VALIDATOR_LS_PREFIX = 'switchValidator:';
+export type UnstakingRecord = {
+    startedAtBlock: number,
+    deactivationTxHash: string,
+    // The deactivation is on-chain either way; this only says whether the watchtower accepted the
+    // queued retire/remove. A record with `false` still means "mid-unstake" for all gates.
+    watchtowerRegistered: boolean,
+}
 
-function getSwitchRecord(address: string): SwitchValidatorRecord | null {
+// Retired-but-not-removed stake (inactive 0, retired > 0) is still the watchtower's job: only a
+// snapshot with neither balance means the payout went through.
+function hasPendingPayout(stake: Stake): boolean {
+    return stake.inactiveBalance > 0 || stake.retiredBalance > 0;
+}
+
+// Watchtower operations in flight, keyed per staker address. They live in localStorage (not in the
+// persisted store state, see storage.ts) and are reconciled against every fresh chain snapshot.
+const SWITCH_VALIDATOR_LS_PREFIX = 'switchValidator:';
+const UNSTAKING_LS_PREFIX = 'unstaking:';
+
+function readRecord<T>(prefix: string, address: string): T | null {
     try {
-        const raw = localStorage.getItem(`${SWITCH_VALIDATOR_LS_PREFIX}${address}`);
+        const raw = localStorage.getItem(`${prefix}${address}`);
         if (!raw) return null;
-        return JSON.parse(raw) as SwitchValidatorRecord;
+        return JSON.parse(raw) as T;
     } catch {
         return null;
     }
+}
+
+// Both writers return whether anything changed, so callers bump the reactivity trigger — and re-run
+// every getter reading these records — only on a real change. A storage error (quota, private mode)
+// costs the record, never a staking flow whose transactions are already on-chain.
+function writeRecord<T>(prefix: string, address: string, record: T): boolean {
+    const key = `${prefix}${address}`;
+    const serialized = JSON.stringify(record);
+    try {
+        if (localStorage.getItem(key) === serialized) return false;
+        localStorage.setItem(key, serialized);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function removeRecord(prefix: string, address: string): boolean {
+    const key = `${prefix}${address}`;
+    try {
+        if (localStorage.getItem(key) === null) return false;
+        localStorage.removeItem(key);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function isTransactionPending(hash: string): boolean {
+    const tx = useTransactionsStore().state.transactions[hash];
+    return !!tx && (tx.state === TransactionState.NEW || tx.state === TransactionState.PENDING);
+}
+
+function hasTransactionFailed(hash: string): boolean {
+    const tx = useTransactionsStore().state.transactions[hash];
+    return !!tx && (tx.state === TransactionState.EXPIRED || tx.state === TransactionState.INVALIDATED);
 }
 
 export type StakingScoringRules = any
@@ -124,10 +178,10 @@ export const useStakingStore = createStore({
         stakeByAddress: {},
         stakingEventsByAddress: {},
         cachedMonthlyRewardsByAddress: {},
-        // Bumped on every switch-record write so `activeSwitchOperation` (which reads from
-        // localStorage) re-evaluates. Drop once switch records move into reactive state.
-        switchValidatorTrigger: 0,
-    } as StakingState & { switchValidatorTrigger: number }),
+        // Bumped on every switch/unstaking-record write so the getters reading those records from
+        // localStorage re-evaluate. Drop once the records move into reactive state.
+        operationRecordTrigger: 0,
+    } as StakingState & { operationRecordTrigger: number }),
     getters: {
         validators: (state): Readonly<Record<string, Validator>> => {
             const validators: Record<string, Validator> = {};
@@ -246,16 +300,19 @@ export const useStakingStore = createStore({
         },
 
         activeSwitchOperation: (state): Readonly<SwitchValidatorRecord | null> => {
-            void state.switchValidatorTrigger; // eslint-disable-line no-void
+            void state.operationRecordTrigger; // eslint-disable-line no-void
             const { activeAddress } = useAddressStore();
             if (!activeAddress.value) return null;
-            return getSwitchRecord(activeAddress.value);
+            return readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, activeAddress.value);
         },
+        // Deactivated stake still delegated to the old validator, with the update-staker queued. Not
+        // keyed on `activeBalance === 0`: a reward landing as active stake mid-cooldown must not read
+        // as "switch done" (it makes the queued update-staker fail on-chain, the record stays relevant).
         isSwitchingValidator: (state, { activeStake, activeSwitchOperation }): boolean => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
             const stake = activeStake.value as Stake | null;
             if (!record || !stake) return false;
-            return stake.activeBalance === 0 && stake.inactiveBalance > 0;
+            return stake.inactiveBalance > 0 && stake.validator !== record.targetValidatorAddress;
         },
         canManuallyActivateSwitch: (state, { activeStake, activeSwitchOperation }) => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
@@ -265,6 +322,35 @@ export const useStakingStore = createStore({
             if (stake.activeBalance !== 0 || stake.inactiveBalance <= 0) return false;
             if (!stake.inactiveRelease || stake.inactiveRelease > networkState.height) return false;
             return stake.validator !== record.targetValidatorAddress;
+        },
+        activeUnstakingOperation: (state): Readonly<UnstakingRecord | null> => {
+            void state.operationRecordTrigger; // eslint-disable-line no-void
+            const { activeAddress } = useAddressStore();
+            if (!activeAddress.value) return null;
+            return readRecord<UnstakingRecord>(UNSTAKING_LS_PREFIX, activeAddress.value);
+        },
+        // True while the watchtower still owes the payout. The record alone is not enough — a
+        // deactivation that never landed must not block anything.
+        isUnstaking: (state, { activeStake, activeUnstakingOperation }): boolean => {
+            const record = activeUnstakingOperation.value as UnstakingRecord | null;
+            const stake = activeStake.value as Stake | null;
+            if (!record || !stake) return false;
+            return hasPendingPayout(stake);
+        },
+        // The watchtower operation that currently owns the stake, if any. Starting another staking
+        // operation on top would orphan its queued transactions, and the watchtower does not reject
+        // overlapping requests itself — so this is what every such entry point must be gated on.
+        pendingOperation: (state, { activeStake, isSwitchingValidator, isUnstaking }): 'switch' | 'unstake' | null => {
+            if (isUnstaking.value) return 'unstake';
+            if (isSwitchingValidator.value) {
+                // Once the cooldown has elapsed the queued update-staker is due any block, and if the
+                // watchtower never sends it the user must be able to re-delegate by hand — an immediate
+                // switch supersedes it (the chain rejects whichever update-staker comes second).
+                const stake = activeStake.value as Stake;
+                const { state: networkState } = useNetworkStore();
+                if (!stake.inactiveRelease || stake.inactiveRelease > networkState.height) return 'switch';
+            }
+            return null;
         },
         switchTargetLabel: (state, { activeSwitchOperation, validators }): string => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
@@ -402,7 +488,7 @@ export const useStakingStore = createStore({
                 ...this.state.stakeByAddress,
                 [stake.address]: stake,
             };
-            this.checkSwitchCompletion(stake.address);
+            this.reconcileOperationRecords(stake.address, stake);
         },
         setStakes(stakes: Stake[]) {
             const newStakes: {[address: string]: Stake} = {};
@@ -414,7 +500,7 @@ export const useStakingStore = createStore({
             this.state.stakeByAddress = newStakes;
 
             for (const stake of stakes) {
-                this.checkSwitchCompletion(stake.address);
+                this.reconcileOperationRecords(stake.address, stake);
             }
         },
         patchStake(address: string, patch: Partial<Omit<Stake, 'address'>>) {
@@ -457,28 +543,56 @@ export const useStakingStore = createStore({
 
             this.state.apiValidators = newApiValidators;
         },
+        // At most one operation per staker: recording one kind supersedes whatever the other kind
+        // still held (e.g. a switch record kept as a manual-recovery handle).
         setSwitchOperation(address: string, record: SwitchValidatorRecord) {
-            const key = `${SWITCH_VALIDATOR_LS_PREFIX}${address}`;
-            const serialized = JSON.stringify(record);
-            if (localStorage.getItem(key) === serialized) return;
-            localStorage.setItem(key, serialized);
-            this.state.switchValidatorTrigger++;
+            const clearedOther = removeRecord(UNSTAKING_LS_PREFIX, address);
+            const written = writeRecord(SWITCH_VALIDATOR_LS_PREFIX, address, record);
+            if (clearedOther || written) this.state.operationRecordTrigger++;
         },
         clearSwitchOperation(address: string) {
-            const key = `${SWITCH_VALIDATOR_LS_PREFIX}${address}`;
-            if (localStorage.getItem(key) === null) return;
-            localStorage.removeItem(key);
-            this.state.switchValidatorTrigger++;
+            if (removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address)) this.state.operationRecordTrigger++;
         },
-        checkSwitchCompletion(address: string) {
-            const stake = this.state.stakeByAddress[address];
-            if (!stake || stake.activeBalance === 0) return;
-            const record = getSwitchRecord(address);
-            if (!record) return;
-            // Don't clear until active stake is at the target — the user's manual recovery
-            // handle would otherwise be lost if balance reappears at the old validator.
-            if (stake.validator !== record.targetValidatorAddress) return;
-            this.clearSwitchOperation(address);
+        setUnstakingOperation(address: string, record: UnstakingRecord) {
+            const clearedOther = removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address);
+            const written = writeRecord(UNSTAKING_LS_PREFIX, address, record);
+            if (clearedOther || written) this.state.operationRecordTrigger++;
+        },
+        clearUnstakingOperation(address: string) {
+            if (removeRecord(UNSTAKING_LS_PREFIX, address)) this.state.operationRecordTrigger++;
+        },
+        // `stake` is the latest chain snapshot; `null` means the staker no longer exists on chain (a full
+        // unstake has paid out), so nothing can be pending anymore.
+        reconcileOperationRecords(address: string, stake: Stake | null) {
+            if (!stake) {
+                this.clearSwitchOperation(address);
+                this.clearUnstakingOperation(address);
+                return;
+            }
+            const switchRecord = readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, address);
+            const unstakingRecord = readRecord<UnstakingRecord>(UNSTAKING_LS_PREFIX, address);
+            // An operation whose deactivation never made it on-chain never started: its record would
+            // otherwise outlive the flow and relabel the next plain deactivation as this operation.
+            if (switchRecord && hasTransactionFailed(switchRecord.deactivationTxHash)) {
+                this.clearSwitchOperation(address);
+            }
+            if (unstakingRecord && hasTransactionFailed(unstakingRecord.deactivationTxHash)) {
+                this.clearUnstakingOperation(address);
+            }
+            if (switchRecord && stake.activeBalance > 0) {
+                // Don't clear until active stake is at the target — the user's manual recovery
+                // handle would otherwise be lost if balance reappears at the old validator.
+                if (stake.validator === switchRecord.targetValidatorAddress) {
+                    this.clearSwitchOperation(address);
+                }
+            }
+            if (unstakingRecord && !hasPendingPayout(stake)) {
+                // A snapshot from before the deactivation landed looks just like a finished payout;
+                // don't clear while that transaction is still in the mempool.
+                if (!isTransactionPending(unstakingRecord.deactivationTxHash)) {
+                    this.clearUnstakingOperation(address);
+                }
+            }
         },
 
         setStakingEvents(address: string, events: AggregatedRestakingEvent[]) {

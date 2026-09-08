@@ -28,14 +28,17 @@
                     </div>
                 </div>
                 <div class="flex-column">
-                    <Tooltip :disabled="!isStakeDeactivating" preferredPosition="bottom left"
+                    <Tooltip :disabled="!isStakeDeactivating && !pendingOperation" preferredPosition="bottom left"
                         :container="this" class="adjust-stake">
                         <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
-                            :disabled="isStakeDeactivating">
+                            :disabled="isStakeDeactivating || !!pendingOperation">
                             <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
                             <span class="hidden sm-visible">{{ $t('Adjust') }}</span>
                         </button>
-                        <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
+                        <span v-if="pendingOperation === 'switch'">
+                            {{ $t('You can\'t adjust your stake during a validator switch') }}
+                        </span>
+                        <span v-else>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                     </Tooltip>
                 </div>
             </div>
@@ -204,6 +207,7 @@ export default defineComponent({
             activeSwitchOperation,
             canManuallyActivateSwitch,
             isSwitchingValidator,
+            pendingOperation,
             switchTargetLabel,
             validators,
             restakingRewards,
@@ -621,6 +625,7 @@ export default defineComponent({
             canSwitchValidator,
             canManuallyActivateSwitch,
             isSwitchingValidator,
+            pendingOperation,
             switchTargetLabel,
             manualActivateSwitch,
             consensus,

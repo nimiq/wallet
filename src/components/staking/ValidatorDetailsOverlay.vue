@@ -240,8 +240,9 @@ export default defineComponent({
             // Watchtower failure is non-fatal: the deactivation is on-chain and the user can
             // still activate the new validator manually once the cooldown ends.
             let watchtowerRegistered = false;
+            let watchtowerJobId: string | undefined;
             try {
-                await startSwitchValidator({
+                watchtowerJobId = await startSwitchValidator({
                     stakerAddress: stakerAddress.toUserFriendlyAddress(),
                     deactivationTxHash,
                     updateStakerTx: signedTxs[1].serializedTx,
@@ -253,7 +254,11 @@ export default defineComponent({
                 console.warn('Watchtower registration failed:', wtError);
             }
 
-            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), { ...switchRecord, watchtowerRegistered });
+            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), {
+                ...switchRecord,
+                watchtowerRegistered,
+                watchtowerJobId,
+            });
 
             if (!watchtowerRegistered) {
                 // Close the overlay now, while the status screen still covers it, so dismissing the

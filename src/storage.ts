@@ -302,6 +302,7 @@ export async function initStorage() {
                 chainValidators: {},
                 apiValidators: {},
                 stakingEventsByAddress: {},
+                watchtowerJobByAddress: {},
             }),
         ),
     ]);

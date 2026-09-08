@@ -138,9 +138,11 @@
             <div class="flex-column footer-content">
                 <div class="flex-row unstaking nq-light-blue">
                     <CircleArrowDownIcon />
-                    <span v-if="isSwitchingValidator" class="flex-grow">
+                    <!-- A switch only known from the watchtower (started in another browser) has no target -->
+                    <span v-if="isSwitchingValidator && switchTargetLabel" class="flex-grow">
                         {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
                     </span>
+                    <span v-else-if="isSwitchingValidator" class="flex-grow">{{ $t('Switching validator') }}</span>
                     <template v-else>
                         {{ $t('Unstaking') }}
                         <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>

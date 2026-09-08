@@ -167,6 +167,7 @@ export async function launchNetwork() {
                 });
             } else {
                 // Staker does not exist (anymore)
+                stakingStore.reconcileOperationRecords(address, null);
                 stakingStore.removeStake(address);
             }
         });

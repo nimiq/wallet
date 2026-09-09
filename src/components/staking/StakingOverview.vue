@@ -13,7 +13,15 @@
                     <div class="details-row flex-row" :class="{
                         'full-opacity': stake && (stake.inactiveBalance || stake.retiredBalance),
                     }">
-                        <template v-if="stake && (
+                        <!-- Both switch-recovery states come first, for the same reason as in the
+                             Info page footer: they read as "Payout ready" otherwise. -->
+                        <template v-if="switchStall === 'activation'">
+                            <CircleExclamationMarkIcon /> {{ $t('Manual activation needed') }}
+                        </template>
+                        <template v-else-if="switchStall === 'interrupted'">
+                            <CircleExclamationMarkIcon /> {{ $t('Validator switch interrupted') }}
+                        </template>
+                        <template v-else-if="stake && (
                             (stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance
                         )">
                             <CircleExclamationMarkIcon /> {{ $t('Payout ready')}}
@@ -116,6 +124,7 @@ export default defineComponent({
             stakingEvents,
             isSwitchingValidator,
             pendingOperationNeedsManualStep,
+            switchStall,
             switchTargetLabel,
         } = useStakingStore();
         const router = useRouter();
@@ -178,6 +187,7 @@ export default defineComponent({
             hasUnstakableStake,
             isSwitchingValidator,
             pendingOperationNeedsManualStep,
+            switchStall,
             switchTargetLabel,
             openStakingModal,
             openValidatorDetailsModal,

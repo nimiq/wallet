@@ -407,14 +407,61 @@ export const useStakingStore = createStore({
             // Started in another browser: no record here, only the watchtower's job.
             return (activeWatchtowerJob.value as WatchtowerJob | null | undefined)?.kind === 'switch';
         },
-        canManuallyActivateSwitch: (state, { activeStake, activeSwitchOperation }) => {
+        // Why a switch can no longer complete by itself, if it can't:
+        // - 'activation': the cooldown is over and the stake still sits at the old validator, so the
+        //   update-staker is due, and has to be sent by hand if the watchtower never sends it;
+        // - 'interrupted': active stake reappeared after the deactivation (a pool restaking into a zero
+        //   active balance). `update_staker` rejects *any* non-zero active stake, and active stake only
+        //   grows until the user deactivates again, so the queued update-staker is doomed from that
+        //   moment and nothing self-heals. Deliberately not gated on the cooldown: waiting it out first
+        //   would cost the user a second full one for nothing.
+        switchStall: (
+            state,
+            { activeStake, activeSwitchOperation, isSwitchingValidator },
+        ): 'activation' | 'interrupted' | null => {
+            if (!isSwitchingValidator.value) return null;
+            const stake = activeStake.value as Stake;
+            if (stake.activeBalance > 0) {
+                // A record is written as soon as its deactivation is broadcast, while the snapshot is
+                // still the one from before it, which has exactly this active stake. Reading that as
+                // interrupted would let the user supersede a switch that is going fine, orphaning the job
+                // just registered for it. 'activation' is not exposed to this: no switch starts from zero
+                // active stake.
+                const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+                if (record && isTransactionPending(record.deactivationTxHash)) return null;
+                return 'interrupted';
+            }
+            return isInactiveStakeReleased(stake) ? 'activation' : null;
+        },
+        // What is known of the switch target, which decides how a stalled switch is finished: towards the
+        // recorded target while it is 'active' (in the chain's validator list, which only holds active
+        // ones), or by choosing a validator when it is 'inactive' (a jailed or deactivated one earns
+        // nothing, a deleted one fails the update-staker) or 'unknown' (no record: a switch started in
+        // another browser, whose target this one never learnt). A list that has not loaded, or failed to,
+        // leaves the recorded target in place rather than a footer with nothing to press; the action then
+        // loads the list before signing, since a jailed target would lock the stake until its jail ends.
+        switchTargetStatus: (
+            state,
+            { activeSwitchOperation, validators, validatorsList },
+        ): 'active' | 'inactive' | 'unknown' => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
-            const stake = activeStake.value as Stake | null;
-            const { state: networkState } = useNetworkStore();
-            if (!record || !stake) return false;
-            if (stake.activeBalance !== 0 || stake.inactiveBalance <= 0) return false;
-            if (!stake.inactiveRelease || stake.inactiveRelease > networkState.height) return false;
-            return stake.validator !== record.targetValidatorAddress;
+            if (!record) return 'unknown';
+            if (!(validatorsList.value as Validator[]).length) return 'active';
+            const known = (validators.value as Record<string, Validator>)[record.targetValidatorAddress];
+            return known ? 'active' : 'inactive';
+        },
+        // Whether a switch to another validator can replace the stalled one without racing it. An interrupted
+        // switch's queued update-staker is doomed only while active stake sits at the old validator. The new
+        // switch's deactivation clears that, and landing before the stake's election block (`inactiveFrom`) it
+        // keeps the release height, so the old transaction becomes valid again at the very block the new one is
+        // due and the stake may end up at the validator the user moved away from. Landing after it moves the
+        // release past that transaction's validity. A restart towards the same target is not affected: it signs
+        // that same transaction. A due switch keeps the earlier rule: an immediate switch supersedes it, the
+        // chain rejecting whichever update-staker comes second.
+        canReplaceStalledSwitch: (state, { activeStake, switchStall }): boolean => {
+            if (switchStall.value !== 'interrupted') return switchStall.value === 'activation';
+            const { inactiveFrom } = activeStake.value as Stake;
+            return inactiveFrom !== undefined && useNetworkStore().state.height >= inactiveFrom;
         },
         activeUnstakingOperation: (state): Readonly<UnstakingRecord | null> => {
             void state.operationRecordTrigger; // eslint-disable-line no-void
@@ -437,7 +484,10 @@ export const useStakingStore = createStore({
         // overlapping requests itself — so this is what every such entry point must be gated on.
         pendingOperation: (
             state,
-            { activeStake, activeUnstakingOperation, activeWatchtowerJob, isSwitchingValidator, isUnstaking },
+            {
+                activeStake, activeUnstakingOperation, activeWatchtowerJob,
+                canReplaceStalledSwitch, isSwitchingValidator, isUnstaking,
+            },
         ): 'switch' | 'unstake' | null => {
             if (isUnstaking.value) {
                 // An unstaking still queued with the watchtower keeps blocking. One nobody is going to finish
@@ -449,12 +499,8 @@ export const useStakingStore = createStore({
                     return 'unstake';
                 }
             }
-            if (isSwitchingValidator.value) {
-                // Once the cooldown has elapsed the queued update-staker is due any block, and if the
-                // watchtower never sends it the user must be able to re-delegate by hand — an immediate
-                // switch supersedes it (the chain rejects whichever update-staker comes second).
-                if (!isInactiveStakeReleased(activeStake.value as Stake)) return 'switch';
-            }
+            // A stalled switch another switch can replace holds nothing back (see `canReplaceStalledSwitch`).
+            if (isSwitchingValidator.value && !canReplaceStalledSwitch.value) return 'switch';
             return null;
         },
         // Nobody is going to send the queued follow-up (see `isFollowUpUnscheduled`), so once the cooldown
@@ -474,14 +520,19 @@ export const useStakingStore = createStore({
             }
             return isFollowUpUnscheduled(record, activeWatchtowerJob.value as WatchtowerJob | null | undefined);
         },
-        switchTargetLabel: (state, { activeSwitchOperation, validators }): string => {
+        // The validator the pending switch is heading for. Falls back to the name recorded when the
+        // switch started, for a target that is not (or no longer) in the validator list.
+        switchTarget: (state, { activeSwitchOperation, validators }): ValidatorRef | null => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
-            if (!record) return '';
+            if (!record) return null;
             const known = (validators.value as Record<string, Validator>)[record.targetValidatorAddress];
-            const target: ValidatorRef = known
+            return known
                 ? toValidatorRef(known)
                 : { address: record.targetValidatorAddress, name: record.targetValidatorName };
-            return validatorLabel(target);
+        },
+        switchTargetLabel: (state, { switchTarget }): string => {
+            const target = switchTarget.value as ValidatorRef | null;
+            return target ? validatorLabel(target) : '';
         },
         stakingEvents: (state): Readonly<AggregatedRestakingEvent[] | null> => {
             const { activeAddress } = useAddressStore();
@@ -685,6 +736,10 @@ export const useStakingStore = createStore({
             if (clearedOther || written) this.state.operationRecordTrigger++;
             // An operation of our own supersedes whatever the watchtower said about the stake before.
             Vue.delete(this.state.watchtowerJobByAddress, address);
+        },
+        // By address, for a flow that captured its staker before the Hub round-trip.
+        getSwitchOperation(address: string): SwitchValidatorRecord | null {
+            return readRecord<SwitchValidatorRecord>(SWITCH_VALIDATOR_LS_PREFIX, address);
         },
         clearSwitchOperation(address: string) {
             if (removeRecord(SWITCH_VALIDATOR_LS_PREFIX, address)) this.state.operationRecordTrigger++;

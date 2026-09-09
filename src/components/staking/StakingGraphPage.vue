@@ -81,10 +81,9 @@ import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nim
 import { useI18n } from '@/lib/useI18n';
 import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
-import { getNetworkClient, sendTransaction as sendTx, waitForTransactionConfirmation } from '../../network';
-import { usePolicy } from '../../composables/usePolicy';
-import { sendStaking, signUnstakingTransactions } from '../../hub';
-import { startUnstaking } from '../../lib/AlbatrossWatchtower';
+import { getNetworkClient } from '../../network';
+import { sendStaking } from '../../hub';
+import { startWatchtowerUnstaking } from '../../lib/WatchtowerOperations';
 
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
@@ -103,7 +102,7 @@ export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress } = useAddressStore();
-        const { activeStake, activeValidator, setUnstakingOperation } = useStakingStore();
+        const { activeStake, activeValidator } = useStakingStore();
 
         const newStake = ref(activeStake.value ? activeStake.value.activeBalance : 0);
         const stakeDelta = ref(0);
@@ -119,14 +118,16 @@ export default defineComponent({
         async function performStaking() {
             if (isStakeBelowMinimum.value) return;
 
-            const { Address, TransactionBuilder } = await import('@nimiq/core');
-            const client = await getNetworkClient();
-
             const validatorRef = toValidatorRef(activeValidator.value!);
             const validatorLabelOrAddress = validatorLabel(validatorRef);
 
             try {
                 if (stakeDelta.value > 0) {
+                    // Only the staking branches build transactions here; unstaking is handled by
+                    // `startWatchtowerUnstaking`, which loads both itself.
+                    const { Address, TransactionBuilder } = await import('@nimiq/core');
+                    const client = await getNetworkClient();
+
                     context.emit('statusChange', {
                         type: StakingOperationType.STAKING,
                         state: State.LOADING,
@@ -223,144 +224,18 @@ export default defineComponent({
 
                     const unstakeAmount = Math.abs(stakeDelta.value);
 
-                    // Load policy to calculate correct validity heights for retire/unstake transactions
-                    const policy = await usePolicy();
-
-                    // Use current height as the basis for validity height calculations
-                    // This ensures our calculated heights are <= what the watchtower will calculate
-                    // (since the actual block will be currentHeight or later)
-                    const currentHeight = useNetworkStore().state.height;
-                    // Captured once: the flow spans a Hub round-trip during which the active address can change.
-                    const stakerAddress = activeAddress.value!;
-
-                    // Calculate when the retire transaction can be broadcast (after inactivation period)
-                    // This matches the watchtower's logic: election_block_after + blocks_per_epoch
-                    const nextElectionBlock = policy.electionBlockAfter(currentHeight);
-                    const retireValidityStartHeight = nextElectionBlock + policy.blocksPerEpoch();
-
-                    // Unstake must be valid 1 block after retire
-                    const unstakeValidityStartHeight = retireValidityStartHeight + 1;
-
-                    // eslint-disable-next-line no-console
-                    console.debug('Unstaking transaction validity heights:', {
-                        currentHeight,
-                        nextElectionBlock,
-                        retireValidityStartHeight,
-                        unstakeValidityStartHeight,
-                        blocksPerEpoch: policy.blocksPerEpoch(),
-                        genesisBlockNumber: policy.genesisBlockNumber,
+                    const result = await startWatchtowerUnstaking({
+                        stake: activeStake.value!,
+                        validator: validatorRef,
+                        activeBalanceAfter: newStake.value,
                     });
 
-                    // Build all 3 transactions for the unstaking watchtower flow:
-                    // 1. Deactivation: Move active stake to inactive
-                    const deactivationTx = TransactionBuilder.newSetActiveStake(
-                        Address.fromUserFriendlyAddress(stakerAddress),
-                        BigInt(activeStake.value!.activeBalance + stakeDelta.value),
-                        BigInt(0),
-                        currentHeight,
-                        await client.getNetworkId(),
-                    );
-
-                    // 2. Retire: Move inactive stake to retired (will be broadcast after epoch boundary)
-                    // Must specify the TOTAL inactive balance after deactivation
-                    const totalInactiveAfterDeactivation = (activeStake.value!.inactiveBalance || 0) + unstakeAmount;
-                    const retireTx = TransactionBuilder.newRetireStake(
-                        Address.fromUserFriendlyAddress(stakerAddress),
-                        BigInt(totalInactiveAfterDeactivation),
-                        BigInt(0),
-                        retireValidityStartHeight,
-                        await client.getNetworkId(),
-                    );
-
-                    // 3. Remove: Remove retired stake and send funds back (will be broadcast after retire)
-                    // Must remove TOTAL retired balance (existing retired + newly retired)
-                    const totalRetiredAfterRetire = (activeStake.value!.retiredBalance || 0)
-                        + totalInactiveAfterDeactivation;
-                    const removeTx = TransactionBuilder.newRemoveStake(
-                        Address.fromUserFriendlyAddress(stakerAddress),
-                        BigInt(totalRetiredAfterRetire),
-                        BigInt(0),
-                        unstakeValidityStartHeight,
-                        await client.getNetworkId(),
-                    );
-
-                    // Sign all 3 transactions at once using the SignTransaction API
-                    const signedTransactions = await signUnstakingTransactions({
-                        sender: stakerAddress,
-                        // FROM = validator (rendered on the dashed "current" card in the keyguard).
-                        senderLabel: validatorLabelOrAddress,
-                        // TO = user wallet — the Hub sets the signer label.
-                        transactions: [
-                            deactivationTx.serialize(),
-                            retireTx.serialize(),
-                            removeTx.serialize(),
-                        ],
-                        validatorAddress: validatorRef.address,
-                        validatorImageUrl: validatorRef.logo,
-                    }).catch((error) => {
-                        throw new Error(error?.data || error?.message || error);
-                    });
-
-                    if (!signedTransactions) {
-                        context.emit('statusChange', {
-                            type: StakingOperationType.NONE,
-                        });
+                    if (result === 'cancelled') {
+                        context.emit('statusChange', { type: StakingOperationType.NONE });
                         return;
                     }
 
-                    // Validate that we received 3 signed transactions
-                    if (!Array.isArray(signedTransactions) || signedTransactions.length !== 3) {
-                        const got = Array.isArray(signedTransactions) ? signedTransactions.length : 'non-array';
-                        throw new Error(`Expected 3 signed transactions, got ${got}`);
-                    }
-
-                    // Broadcast the deactivation transaction immediately
-                    const deactivationResult = await sendTx(signedTransactions[0]);
-
-                    if (!deactivationResult || deactivationResult.executionResult === false) {
-                        throw new Error('Deactivation transaction failed');
-                    }
-
-                    // Record before talking to the watchtower: the deactivation is on-chain and the retire/remove
-                    // are signed, so the gates must hold even if the registration below fails.
-                    const deactivationTxHash = signedTransactions[0].hash;
-                    const unstakingRecord = { startedAtBlock: currentHeight, deactivationTxHash };
-                    setUnstakingOperation(stakerAddress, unstakingRecord);
-
-                    // Wait for the deactivation transaction to be confirmed before sending to watchtower
-                    // The watchtower requires the transaction to be confirmed on-chain
-                    try {
-                        await waitForTransactionConfirmation(deactivationTxHash, {
-                            requireConfirmed: true,
-                        });
-                    } catch (confirmationError: any) {
-                        // Log confirmation timeout but continue - watchtower is optional
-                        reportToSentry(confirmationError);
-                        // eslint-disable-next-line no-console
-                        console.warn('Transaction confirmation timeout:', confirmationError);
-                    }
-
-                    // Send the retire and remove transactions to the watchtower
-                    let watchtowerRegistered = false;
-                    let watchtowerJobId: string | undefined;
-                    try {
-                        watchtowerJobId = await startUnstaking({
-                            stakerAddress,
-                            inactiveStakeTxHash: deactivationTxHash,
-                            retireTx: signedTransactions[1].serializedTx,
-                            unstakeTx: signedTransactions[2].serializedTx,
-                        });
-                        watchtowerRegistered = true;
-                    } catch (watchtowerError: any) {
-                        // Log watchtower error but don't fail the unstaking operation
-                        // The deactivation was successful, watchtower is just for automation
-                        reportToSentry(watchtowerError);
-                        // eslint-disable-next-line no-console
-                        console.warn('Watchtower registration failed:', watchtowerError);
-                    }
-                    setUnstakingOperation(stakerAddress, { ...unstakingRecord, watchtowerRegistered, watchtowerJobId });
-
-                    if (!watchtowerRegistered) {
+                    if (result === 'manual') {
                         // Switch to the Info page (its countdown footer repeats this notice) while the status
                         // screen still covers it. No success redirect: the warning stays until the user closes it.
                         context.emit('next');

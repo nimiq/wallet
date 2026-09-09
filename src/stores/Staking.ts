@@ -394,6 +394,26 @@ export const useStakingStore = createStore({
             if (!stake.inactiveRelease || stake.inactiveRelease > networkState.height) return false;
             return stake.validator !== record.targetValidatorAddress;
         },
+        // The mirror of `canManuallyActivateSwitch`, for a switch whose queued update-staker can no
+        // longer be sent because active stake reappeared after the deactivation (a pool restaking
+        // into a zero active balance). `update_staker` rejects *any* non-zero active stake, and
+        // active stake only ever grows until the user deactivates again, so from that moment the
+        // watchtower's transaction is doomed and nothing self-heals. Deliberately not gated on the
+        // cooldown: waiting it out first would cost the user a second full one for nothing.
+        // A switch known only from the watchtower has no record, and so no target to resume to.
+        canResumeSwitch: (state, { activeStake, activeSwitchOperation }): boolean => {
+            const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
+            const stake = activeStake.value as Stake | null;
+            if (!record || !stake) return false;
+            // The record is written as soon as its deactivation is broadcast, while the snapshot is
+            // still the one from before it — which has exactly the active stake this getter looks
+            // for. Offering the restart there would let the user supersede a switch that is going
+            // fine, orphaning the job just registered for it. `canManuallyActivateSwitch` is not
+            // exposed to this, as no pre-deactivation snapshot has zero active stake.
+            if (isTransactionPending(record.deactivationTxHash)) return false;
+            if (stake.activeBalance <= 0 || stake.inactiveBalance <= 0) return false;
+            return stake.validator !== record.targetValidatorAddress;
+        },
         activeUnstakingOperation: (state): Readonly<UnstakingRecord | null> => {
             void state.operationRecordTrigger; // eslint-disable-line no-void
             const { activeAddress } = useAddressStore();
@@ -443,14 +463,19 @@ export const useStakingStore = createStore({
                 .value as UnstakingRecord | SwitchValidatorRecord | null;
             return record?.watchtowerRegistered === false;
         },
-        switchTargetLabel: (state, { activeSwitchOperation, validators }): string => {
+        // The validator the pending switch is heading for. Falls back to the name recorded when the
+        // switch started, for a target that is not (or no longer) in the validator list.
+        switchTarget: (state, { activeSwitchOperation, validators }): ValidatorRef | null => {
             const record = activeSwitchOperation.value as SwitchValidatorRecord | null;
-            if (!record) return '';
+            if (!record) return null;
             const known = (validators.value as Record<string, Validator>)[record.targetValidatorAddress];
-            const target: ValidatorRef = known
+            return known
                 ? toValidatorRef(known)
                 : { address: record.targetValidatorAddress, name: record.targetValidatorName };
-            return validatorLabel(target);
+        },
+        switchTargetLabel: (state, { switchTarget }): string => {
+            const target = switchTarget.value as ValidatorRef | null;
+            return target ? validatorLabel(target) : '';
         },
         stakingEvents: (state): Readonly<AggregatedRestakingEvent[] | null> => {
             const { activeAddress } = useAddressStore();

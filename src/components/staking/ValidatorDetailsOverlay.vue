@@ -65,14 +65,11 @@ import ValidatorIcon from './ValidatorIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorScoreDetails from './ValidatorScoreDetails.vue';
 import { useAddressStore } from '../../stores/Address';
-import { signSwitchValidatorTransactions } from '../../hub';
-import { sendTransaction as sendTx, getNetworkClient, waitForTransactionConfirmation } from '../../network';
-import { usePolicy } from '../../composables/usePolicy';
 import { useNetworkStore } from '../../stores/Network';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
-import { startSwitchValidator } from '../../lib/AlbatrossWatchtower';
 import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
+import { startWatchtowerSwitch } from '../../lib/WatchtowerOperations';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import BlueLink from '../BlueLink.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -95,7 +92,7 @@ export default defineComponent({
         const {
             activeStake, setStake, activeValidator, totalActiveStake,
             pendingOperation,
-            setSwitchOperation, clearSwitchOperation,
+            clearSwitchOperation,
         } = useStakingStore();
         const { height } = useNetworkStore();
 
@@ -159,108 +156,18 @@ export default defineComponent({
                 title: $t('Switching validator') as string,
             });
 
-            const [{ Address, TransactionBuilder }, client, policy] = await Promise.all([
-                import('@nimiq/core'),
-                getNetworkClient(),
-                usePolicy(),
-            ]);
-            const networkId = await client.getNetworkId();
-            const currentHeight = height.value;
-            // Captured once: the flow spans a Hub round-trip during which the active address can change.
-            const stakerAddress = Address.fromUserFriendlyAddress(activeAddress.value!);
-
-            // update-staker must be valid at the height the watchtower will broadcast it: one
-            // full epoch after the deactivation lands (matching the watchtower's
-            // `must_be_valid_at = electionBlockAfter(deactivation_block) + blocksPerEpoch`).
-            // Without a future validity height the watchtower rejects with a misleading
-            // "Transaction has invalid value" error.
-            const updateValidityStartHeight = policy.electionBlockAfter(currentHeight) + policy.blocksPerEpoch();
-
-            const deactivateTx = TransactionBuilder.newSetActiveStake(
-                stakerAddress,
-                BigInt(0),
-                BigInt(0),
-                currentHeight,
-                networkId,
-            );
-
-            const updateTx = TransactionBuilder.newUpdateStaker(
-                stakerAddress,
-                Address.fromUserFriendlyAddress(props.validator.address),
-                true, // reactivateAllStake
-                BigInt(0),
-                updateValidityStartHeight,
-                networkId,
-            );
-
-            const target = toValidatorRef(props.validator);
-            const from = toValidatorRef(fromValidator);
-
-            const signedTxs = await signSwitchValidatorTransactions({
-                sender: stakerAddress.toUserFriendlyAddress(),
-                transactions: [deactivateTx.serialize(), updateTx.serialize()],
-                senderLabel: validatorLabel(from),
-                recipientLabel: validatorLabel(target),
-                validatorImageUrl: target.logo,
-                fromValidatorAddress: from.address,
-                fromValidatorImageUrl: from.logo,
+            const result = await startWatchtowerSwitch({
+                stakerAddress: activeAddress.value!,
+                from: toValidatorRef(fromValidator),
+                target: toValidatorRef(props.validator),
             });
 
-            if (!signedTxs) {
+            if (result === 'cancelled') {
                 context.emit('statusChange', { type: StakingOperationType.NONE });
                 return;
             }
 
-            const deactivationTxHash = signedTxs[0].hash;
-
-            const deactivateResult = await sendTx(signedTxs[0]);
-            if (deactivateResult.executionResult === false) {
-                throw new Error('Deactivation transaction did not succeed');
-            }
-
-            // From here on the user is mid-switch: record it before talking to the watchtower so the
-            // gates hold even if the registration below is rejected.
-            const switchRecord = {
-                targetValidatorAddress: target.address,
-                targetValidatorName: target.name,
-                startedAtBlock: currentHeight,
-                deactivationTxHash,
-            };
-            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), switchRecord);
-
-            // Watchtower won't accept the request before the deactivation is finalized.
-            try {
-                await waitForTransactionConfirmation(deactivationTxHash, { requireConfirmed: true });
-            } catch (confirmationError: any) {
-                reportToSentry(confirmationError);
-                // eslint-disable-next-line no-console
-                console.warn('Transaction confirmation timeout:', confirmationError);
-            }
-
-            // Watchtower failure is non-fatal: the deactivation is on-chain and the user can
-            // still activate the new validator manually once the cooldown ends.
-            let watchtowerRegistered = false;
-            let watchtowerJobId: string | undefined;
-            try {
-                watchtowerJobId = await startSwitchValidator({
-                    stakerAddress: stakerAddress.toUserFriendlyAddress(),
-                    deactivationTxHash,
-                    updateStakerTx: signedTxs[1].serializedTx,
-                });
-                watchtowerRegistered = true;
-            } catch (wtError: any) {
-                reportToSentry(wtError);
-                // eslint-disable-next-line no-console
-                console.warn('Watchtower registration failed:', wtError);
-            }
-
-            setSwitchOperation(stakerAddress.toUserFriendlyAddress(), {
-                ...switchRecord,
-                watchtowerRegistered,
-                watchtowerJobId,
-            });
-
-            if (!watchtowerRegistered) {
+            if (result === 'manual') {
                 // Close the overlay now, while the status screen still covers it, so dismissing the
                 // warning lands on the Info page's countdown footer. No success redirect: the warning
                 // stays until the user closes it.

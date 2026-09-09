@@ -94,13 +94,14 @@ async function requestWatchtower(path: string, init: RequestInit): Promise<Respo
 }
 
 /**
- * POST a body to a watchtower endpoint, throwing on any non-2xx response. Resolves with the id of
- * the created job, or `undefined` when the watchtower answered without one (queued, but not
- * followable) or is not configured, in which case nothing was sent.
+ * POST a body to a watchtower endpoint, throwing on any non-2xx response. Three outcomes, and the
+ * caller has to tell them apart: the id of the created job, `undefined` when the watchtower queued
+ * it but answered without an id (queued, just not followable), and `null` when the watchtower is
+ * not configured — nothing was sent at all, so nobody is going to broadcast the follow-up.
  */
-async function postToWatchtower<T extends object>(path: string, body: T): Promise<string | undefined> {
+async function postToWatchtower<T extends object>(path: string, body: T): Promise<string | undefined | null> {
     const response = await requestWatchtower(path, { method: 'POST', body: JSON.stringify(body) });
-    if (!response) return undefined;
+    if (!response) return null;
 
     if (!response.ok) {
         let message = 'Watchtower request failed';
@@ -223,7 +224,7 @@ export async function fetchWatchtowerJobsForStaker(stakerAddress: string): Promi
 }
 
 /* eslint-disable camelcase */
-export async function startUnstaking(input: StartUnstakeInput): Promise<string | undefined> {
+export async function startUnstaking(input: StartUnstakeInput): Promise<string | undefined | null> {
     return postToWatchtower(OPERATION_PATHS.unstake, {
         staker_address: input.stakerAddress,
         transactions: {
@@ -234,7 +235,7 @@ export async function startUnstaking(input: StartUnstakeInput): Promise<string |
     });
 }
 
-export async function startSwitchValidator(input: StartSwitchValidatorInput): Promise<string | undefined> {
+export async function startSwitchValidator(input: StartSwitchValidatorInput): Promise<string | undefined | null> {
     return postToWatchtower(OPERATION_PATHS.switch, {
         staker_address: input.stakerAddress,
         transactions: {

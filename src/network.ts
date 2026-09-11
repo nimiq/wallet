@@ -226,8 +226,11 @@ export async function launchNetwork() {
     // Start as true, since at app start everything is already invalidated and unconnected
     let txHistoryWasInvalidatedSinceLastConsensus = true;
     let networkWasReconnectedSinceLastConsensus = true;
+    let consensusChangeCount = 0;
     client.addConsensusChangedListener(async (consensus) => {
-        network$.consensus = consensus;
+        const consensusChangeId = ++consensusChangeCount;
+
+        // Measure timing of various consensus states.
         if (clientStartTimestamp) {
             // @ts-expect-error Matomo action queue is not typed
             window._paq?.push([
@@ -244,6 +247,17 @@ export async function launchNetwork() {
         }
 
         if (consensus === 'established') {
+            // Make sure the head block is updated in tandem with the consensus, to ensure a consistent state. This is
+            // especially relevant for the network stall check in Network.ts, which is based on the head block timestamp
+            // at consensus. With an outdated, old enough head block, the warning would otherwise wrongly show until the
+            // actual head block is retrieved.
+            const headBlock = await client.getHeadBlock().catch(reportFor('getHeadBlock'));
+            // Ignore this event if the consensus changed again in the meantime.
+            if (consensusChangeId !== consensusChangeCount) return;
+            patchNetworkStore(headBlock
+                ? { consensus, height: headBlock.height, timestamp: headBlock.timestamp }
+                : { consensus });
+
             const stop = watch(() => network$.fetchingTxHistory, (fetching) => {
                 if (fetching === 0) {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
@@ -251,7 +265,9 @@ export async function launchNetwork() {
                 }
             }, { lazy: true });
             networkWasReconnectedSinceLastConsensus = false;
-        } else if (!txHistoryWasInvalidatedSinceLastConsensus) {
+        } else {
+            network$.consensus = consensus;
+            if (txHistoryWasInvalidatedSinceLastConsensus) return;
             invalidateTransactionHistory(true);
             updateBalances();
             updateStakes();

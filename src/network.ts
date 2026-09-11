@@ -230,7 +230,7 @@ export async function launchNetwork() {
         network$.consensus = consensus;
         if (clientStartTimestamp) {
             // @ts-expect-error Matomo action queue is not typed
-            window._paq.push([
+            window._paq?.push([
                 'trackEvent',
                 'Network', // Category
                 'Consensus', // Action

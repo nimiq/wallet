@@ -129,6 +129,7 @@ module.exports = {
                     /settings.*?\.(js|css)$/,
                     /(migration-)?welcome-modal.*?\.(js|css)$/,
                     /disclaimer-modal.*?\.(js|css)$/,
+                    /warning-modal.*?\.(js|css)$/, // only needed in exceptional cases
                     /country-names-.+?\.js$/, // only needed for Intl.DisplayNames polyfill and only one of them needed
                     /lang-[^-]+-po.*?\.js$/, // only one of them needed
                 ];

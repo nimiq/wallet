@@ -33,9 +33,11 @@ export function assetToCurrency(asset: SupportedSwapAsset): CryptoCurrency | Fia
 export function getWalletEnabledSwapAssets(): SwapAsset[] {
     const { config } = useConfig();
     return [
-        SwapAsset.NIM,
+        ...(!config.disableNetworkInteraction ? [SwapAsset.NIM] : []),
         ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
-        ...(config.polygon.enabled ? [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC] : []),
+        ...(config.polygon.enabled && !config.polygon.isGasAbstractionUnderMaintenance
+            ? [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC]
+            : []),
     ];
 }
 

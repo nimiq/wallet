@@ -1840,6 +1840,10 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
+#: src/components/modals/WarningModal.vue:25
+msgid "Ok"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
 msgstr ""
@@ -2236,6 +2240,10 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
+msgstr ""
+
+#: src/components/modals/WarningModal.vue:20
+msgid "See latest updates"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:20

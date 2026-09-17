@@ -75,7 +75,7 @@ export default {
         enabled: true, // Set to false to hide the swap feature.
         // List all assets that are supported and not currently under maintenance. Set to an empty list to keep the swap
         // feature visible, but show a maintenance warning.
-        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC],
+        enabledSwapAssets: [SwapAsset.NIM, SwapAsset.BTC] as SwapAsset[],
         apiEndpoint: 'https://api.test.fastspot.io/fast/v1',
         // This is a publishable key
         apiKey: 'd011aeea-41cf-4c05-a31d-436495bed9b7',

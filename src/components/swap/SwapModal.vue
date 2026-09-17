@@ -323,7 +323,8 @@ import { useKycStore } from '../../stores/Kyc';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
-import { assetToCurrency, SupportedSwapAsset } from '../../lib/swap/utils/Assets';
+import { assetToCurrency, getWalletEnabledSwapAssets, SupportedSwapAsset }
+    from '../../lib/swap/utils/Assets';
 import AddressList from '../AddressList.vue';
 import SwapAnimation from './SwapAnimation.vue';
 import SendModalFooter from '../SendModalFooter.vue';
@@ -348,25 +349,13 @@ import { reportToSentry } from '../../lib/Sentry';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
-// Swap assets enabled in the Wallet, which are to be displayed. These might differ from the swap assets enabled in
-// Fastspot, see Config.fastspot.enabledSwapAssets. For currencies enabled in the Wallet but disabled in Fastspot, a
-// maintenance message is shown. As a method instead of a const, to use latest config values.
-function getWalletEnabledAssets() {
-    const { config } = useConfig();
-    return [
-        SwapAsset.NIM,
-        ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
-        ...(config.polygon.enabled ? [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC] : []),
-    ];
-}
-
 export default defineComponent({
     name: 'swap-modal',
     props: {
         pair: {
             type: String,
             default() {
-                const walletEnabledAssets = getWalletEnabledAssets();
+                const walletEnabledAssets = getWalletEnabledSwapAssets();
                 const fastspotEnabledAssets = useConfig().config.fastspot.enabledSwapAssets;
                 const overallEnabledAssets = walletEnabledAssets.filter((a) => fastspotEnabledAssets.includes(a));
                 if (overallEnabledAssets.length < 2) return `${SwapAsset.NIM}-${SwapAsset.BTC}`; // fallback
@@ -374,7 +363,7 @@ export default defineComponent({
             },
             validator(value) {
                 const [left, right] = value.split('-');
-                const walletEnabledAssets = getWalletEnabledAssets();
+                const walletEnabledAssets = getWalletEnabledSwapAssets();
                 return walletEnabledAssets.includes(left) && walletEnabledAssets.includes(right);
             },
         },
@@ -2166,7 +2155,7 @@ export default defineComponent({
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SupportedSwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
-            return getWalletEnabledAssets().reduce((result, asset) => {
+            return getWalletEnabledSwapAssets().reduce((result, asset) => {
                 if (asset === SwapAsset.USDC_MATIC && stablecoin.value !== CryptoCurrency.USDC) return result;
                 if (asset === SwapAsset.USDT_MATIC && stablecoin.value !== CryptoCurrency.USDT) return result;
 

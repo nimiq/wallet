@@ -5,6 +5,9 @@ import { Component } from 'vue-router/types/router.d';
 
 import { provide, inject } from '@vue/composition-api';
 
+import { i18n } from './i18n/i18n-setup';
+import { areSwapsUnderMaintenance } from './lib/swap/utils/Assets';
+
 // Start views
 import Groundfloor from './components/layouts/Groundfloor.vue';
 import AccountOverview from './components/layouts/AccountOverview.vue';
@@ -76,7 +79,14 @@ const UsdtAddedModal = () =>
     import(/* webpackChunkName: "usdt-added-modal" */ './components/modals/UsdtAddedModal.vue');
 
 // Swap Modals
-const SwapModal = () => import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue');
+const SwapModal = () => (areSwapsUnderMaintenance()
+    ? import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
+        .then(({ createWarningModal }) => createWarningModal(() => ({
+            title: i18n.t('Swaps are under maintenance') as string,
+            message: i18n.t('Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance '
+                + 'is completed.') as string,
+        })))
+    : import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue'));
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>

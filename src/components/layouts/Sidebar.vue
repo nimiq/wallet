@@ -122,8 +122,7 @@
         <Tooltip v-if="$config.fastspot.enabled && !isLegacyAccount"
             preferredPosition="bottom right"
             :container="$parent"
-            :disabled="fastspotEnabledCryptoSwapAssets.length > 1
-                && walletActivatedCurrencies.length > 1
+            :disabled="walletActivatedCurrencies.length > 1
                 && hasSwappableBalance
                 && canUseSwaps
                 && !hasActiveSwap"
@@ -135,7 +134,6 @@
             <template #trigger>
                 <button
                     :disabled="($config.disableNetworkInteraction && activeCurrency === CryptoCurrency.NIM)
-                        || fastspotEnabledCryptoSwapAssets.length <= 1
                         || walletActivatedCurrencies.length <= 1
                         || !hasSwappableBalance
                         || !canUseSwaps
@@ -145,10 +143,7 @@
                     @mousedown.prevent="hideTooltips"
                 >{{ $t('Swap') }}</button>
             </template>
-            <template v-if="fastspotEnabledCryptoSwapAssets.length <= 1" #default>{{
-                $t('Crypto swaps are currently under maintenance.')
-            }}</template>
-            <template v-else-if="walletActivatedCurrencies.length <= 1" #default>{{
+            <template v-if="walletActivatedCurrencies.length <= 1" #default>{{
                 $t('Please activate BTC or USDC in your account first to be able to swap to these currencies.')
             }}</template>
             <template v-else-if="!hasSwappableBalance" #default>{{

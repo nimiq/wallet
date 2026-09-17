@@ -929,6 +929,10 @@ msgstr ""
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
+#: src/router.ts:86
+msgid "Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance is completed."
+msgstr ""
+
 #: src/components/FlaggedAddressWarning.vue:30
 msgid "Dataset: {name}"
 msgstr ""
@@ -2673,6 +2677,10 @@ msgstr ""
 
 #: src/components/kyc/KycPrompt.vue:11
 msgid "Swap up to {limit} per 30 days."
+msgstr ""
+
+#: src/router.ts:85
+msgid "Swaps are under maintenance"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:187

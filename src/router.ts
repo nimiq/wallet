@@ -4,6 +4,7 @@ import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType
 import { Component } from 'vue-router/types/router.d';
 
 import { provide, inject } from '@vue/composition-api';
+import Config from 'config';
 
 import { i18n } from './i18n/i18n-setup';
 import { areSwapsUnderMaintenance } from './lib/swap/utils/Assets';
@@ -67,8 +68,15 @@ const BtcTransactionModal = () =>
 // Stablecoin Modals
 const PolygonActivationModal = () =>
     import(/* webpackChunkName: "polygon-activation-modal" */ './components/modals/PolygonActivationModal.vue');
-const StablecoinSendModal = () =>
-    import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue');
+const StablecoinSendModal = () => (Config.polygon.isGasAbstractionUnderMaintenance
+    ? import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
+        .then(({ createWarningModal }) => createWarningModal(() => ({
+            title: i18n.t('Gas abstraction is under maintenance') as string,
+            message: i18n.t('Sending USDC and USDT is temporarily unavailable. It will be back as soon as the '
+                + 'maintenance is completed.') as string,
+            link: 'https://x.com/nimiq/status/2100661471789412565',
+        })))
+    : import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue'));
 const StablecoinReceiveModal = () =>
     import(/* webpackChunkName: "stablecoin-receive-modal" */ './components/modals/StablecoinReceiveModal.vue');
 const UsdcTransactionModal = () =>
@@ -745,13 +753,19 @@ router.beforeEach(createActivationNavigationGuard(
 ));
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
-    new Set([StablecoinSendModal, StablecoinReceiveModal]),
+    new Set([
+        ...(Config.polygon.isGasAbstractionUnderMaintenance ? [] : [StablecoinSendModal]),
+        StablecoinReceiveModal,
+    ]),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasPolygonAddresses.value,
 ));
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDT,
-    new Set([StablecoinSendModal, StablecoinReceiveModal]),
+    new Set([
+        ...(Config.polygon.isGasAbstractionUnderMaintenance ? [] : [StablecoinSendModal]),
+        StablecoinReceiveModal,
+    ]),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasPolygonAddresses.value,
 ));

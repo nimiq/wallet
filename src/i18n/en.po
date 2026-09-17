@@ -1289,6 +1289,10 @@ msgstr ""
 msgid "Funds sent to non-Polygon {ticker} versions could be permanently lost!"
 msgstr ""
 
+#: src/router.ts:74
+msgid "Gas abstraction is under maintenance"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr ""
@@ -2363,6 +2367,10 @@ msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:371
 msgid "Sending Unstaking Transaction"
+msgstr ""
+
+#: src/router.ts:75
+msgid "Sending USDC and USDT is temporarily unavailable. It will be back as soon as the maintenance is completed."
 msgstr ""
 
 #: src/components/modals/BackupModal.vue:30

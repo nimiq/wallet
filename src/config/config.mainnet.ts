@@ -49,6 +49,8 @@ export default {
 
     polygon: {
         enabled: true,
+        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
+        isGasAbstractionUnderMaintenance: true,
         networkId: 137,
         rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?

@@ -436,6 +436,12 @@ show_deployment_recap
 # Pre-deployment tasks
 echo -e "${BLUE}Running pre-deployment tasks...${NC}"
 
+# Install dependencies as locked in yarn.lock, such that we don't build with outdated node_modules, e.g. after pulling
+# dependency updates. With --frozen-lockfile, yarn fails instead of updating yarn.lock if it's out of sync with
+# package.json.
+echo -e "${CYAN}Installing dependencies...${NC}"
+run_command "yarn install --frozen-lockfile" "Failed to install dependencies"
+
 if [ "$SYNC_TRANSLATIONS" = "true" ]; then
     echo -e "${CYAN}Syncing translations...${NC}"
     run_command "yarn i18n:sync" "Failed to sync translations"

@@ -65,7 +65,7 @@ msgstr "Paiement {currency} non versé"
 msgid "{currency} payout pending"
 msgstr "Paiement {currency} en attente"
 
-#: src/components/swap/SwapModal.vue:419
+#: src/components/swap/SwapModal.vue:408
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr "Les swaps de {disabledAsset} sont actuellement en maintenance."
 
@@ -450,7 +450,7 @@ msgstr ""
 
 #: src/components/modals/WalletStatusModal.vue:29
 msgid "Ask the community"
-msgstr ""
+msgstr "Demander à la communauté"
 
 #: src/components/PolygonWarningFooter.vue:18
 msgid "Ask the receiver to ensure they have a Polygon {ticker} address."
@@ -741,7 +741,7 @@ msgstr "Découvrez les portefeuilles multisignatures Nimiq"
 
 #: src/components/modals/WalletStatusModal.vue:16
 msgid "Check the blockchain"
-msgstr ""
+msgstr "Consulter la blockchain"
 
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:97
@@ -1003,10 +1003,15 @@ msgstr "Créé hier"
 msgid "Credit Card"
 msgstr "Carte de crédit"
 
-#: src/components/layouts/Sidebar.vue:149
-#: src/components/swap/SwapModal.vue:415
+#: src/components/swap/SwapModal.vue:404
 msgid "Crypto swaps are currently under maintenance."
 msgstr "Les swaps de crypto sont actuellement en maintenance."
+
+#: src/router.ts:94
+msgid ""
+"Crypto swaps are temporarily unavailable. They will be back as soon as the "
+"maintenance is completed."
+msgstr ""
 
 #: src/components/FlaggedAddressWarning.vue:30
 msgid "Dataset: {name}"
@@ -1251,7 +1256,7 @@ msgstr ""
 "Échec de la récupération des frais de l'{ticker}. Nouvelle tentative... "
 "(Erreur : {message})"
 
-#: src/components/swap/SwapModal.vue:1005
+#: src/components/swap/SwapModal.vue:994
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
 "Échec de la récupération des frais de Polygon. Nouvel essai en cours... "
@@ -1399,6 +1404,10 @@ msgstr ""
 "Les fonds envoyés à des versions de l'{ticker} autres que Polygon pourraient"
 " être définitivement perdus !"
 
+#: src/router.ts:74
+msgid "Gas abstraction is under maintenance"
+msgstr ""
+
 #: src/components/layouts/Settings.vue:44
 msgid "General"
 msgstr "Général"
@@ -1412,6 +1421,8 @@ msgid ""
 "Get answers straight from the blockchain, or from the people who know Nimiq "
 "best."
 msgstr ""
+"Obtenez des réponses directement depuis la blockchain ou auprès des "
+"personnes qui connaissent le mieux Nimiq."
 
 #: src/components/modals/TradeModal.vue:26
 #: src/components/modals/TradeModal.vue:46
@@ -1484,7 +1495,7 @@ msgstr "Valeur historique"
 
 #: src/components/modals/WalletStatusModal.vue:4
 msgid "How can we help?"
-msgstr ""
+msgstr "Comment pouvons-nous vous aider ?"
 
 #: src/components/modals/BtcTransactionModal.vue:474
 #: src/components/modals/TransactionModal.vue:542
@@ -1629,7 +1640,7 @@ msgstr "Solde insuffisant."
 msgid "invalid"
 msgstr "invalide"
 
-#: src/components/swap/SwapModal.vue:2031
+#: src/components/swap/SwapModal.vue:2020
 msgid "Invalid swap state, swap aborted!"
 msgstr "État du Swap invalide : Swap abandonné !"
 
@@ -1769,6 +1780,8 @@ msgstr "Appui long pour confirmer"
 #: src/components/modals/WalletStatusModal.vue:18
 msgid "Look up any balance or transaction on the public block explorer."
 msgstr ""
+"Consultez n'importe quel solde ou transaction sur l'explorateur de "
+"blockchain public."
 
 #: src/components/modals/StablecoinReceiveModal.vue:17
 msgid "Make sure they are sending Polygon {ticker}."
@@ -1858,7 +1871,7 @@ msgstr "Nommez ce destinataire..."
 msgid "Name your contact"
 msgstr "Nommez votre contact"
 
-#: src/components/layouts/Sidebar.vue:179
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr "Réseau"
 
@@ -1963,7 +1976,7 @@ msgstr ""
 "Tous les comptes fournis par cette banque ne supportent pas forcément les "
 "transactions instantanées."
 
-#: src/components/layouts/Sidebar.vue:159
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr "Non disponible avec votre navigateur"
 
@@ -1995,6 +2008,10 @@ msgstr "frais de service OASIS"
 #: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr "Inactif"
+
+#: src/components/modals/WarningModal.vue:25
+msgid "Ok"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
@@ -2098,7 +2115,7 @@ msgstr ""
 "Choisissez un Stablecoin pour votre wallet. Vous pourrez toujours passer de "
 "l'un à l'autre plus tard."
 
-#: src/components/layouts/Sidebar.vue:152
+#: src/components/layouts/Sidebar.vue:147
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -2139,7 +2156,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr "Veuillez transférer"
 
-#: src/components/layouts/Sidebar.vue:163
+#: src/components/layouts/Sidebar.vue:158
 #: src/components/layouts/Sidebar.vue:63
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
@@ -2367,7 +2384,7 @@ msgstr "Résolution du domaine Unstoppable"
 msgid "Restart payout process"
 msgstr "Relancer le processus de paiement"
 
-#: src/components/swap/SwapModal.vue:1098
+#: src/components/swap/SwapModal.vue:1087
 msgid "Resulting BTC amount is too small."
 msgstr "Le montant de BTC obtenu est trop faible."
 
@@ -2436,6 +2453,10 @@ msgstr "Rechercher des transactions via vos contacts, adresses, etc..."
 #: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
 msgstr "Sécurité"
+
+#: src/components/modals/WarningModal.vue:20
+msgid "See latest updates"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:20
 #: src/components/modals/SellCryptoModal.vue:19
@@ -2580,6 +2601,12 @@ msgstr "Envoi de la transaction en cours"
 msgid "Sending Unstaking Transaction"
 msgstr "Envoi de la transaction du dé-stake"
 
+#: src/router.ts:75
+msgid ""
+"Sending USDC and USDT is temporarily unavailable. It will be back as soon as"
+" the maintenance is completed."
+msgstr ""
+
 #: src/components/modals/BackupModal.vue:30
 msgid ""
 "Sending yourself backup codes is convenient but only as secure as the "
@@ -2665,7 +2692,7 @@ msgstr "Configuration de l'Atomic Swap"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Configuration de la partie {currency} du Swap."
 
-#: src/components/layouts/Sidebar.vue:187
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr "Réglages"
 
@@ -2834,7 +2861,7 @@ msgid "Super eco-friendly"
 msgstr " Très respectueux de l'environnement"
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:146
+#: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2903,6 +2930,10 @@ msgstr "Swap vers {address}"
 #: src/components/kyc/KycPrompt.vue:11
 msgid "Swap up to {limit} per 30 days."
 msgstr "Swappez jusqu'à {limit} par période de 30 jours."
+
+#: src/router.ts:93
+msgid "Swaps are under maintenance"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:187
 msgid "Swiping Gestures"
@@ -2992,7 +3023,7 @@ msgstr "La banque traite votre transaction."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Les frais (actuellement {amount}) déterminent le montant minimum."
 
-#: src/components/swap/SwapModal.vue:1092 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1081 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Les frais déterminent le montant minimum."
@@ -3029,6 +3060,8 @@ msgstr ""
 #: src/components/modals/WalletStatusModal.vue:31
 msgid "The Nimiq team and community are on Discord, happy to help."
 msgstr ""
+"L'équipe et la communauté Nimiq sont présentes sur Discord et se feront un "
+"plaisir de vous aider."
 
 #: src/components/PolygonWarningPage.vue:8
 msgid "The Nimiq Wallet uses Polygon {ticker} for speed and low fees."
@@ -3582,7 +3615,7 @@ msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 "Vous pourrez recevoir plus de NIM gratuitement dans {waitTime} heures."
 
-#: src/components/layouts/Sidebar.vue:382
+#: src/components/layouts/Sidebar.vue:377
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3596,7 +3629,7 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr "Vous ne pouvez pas ajuster votre staking pendant que vous dé-stakez"
 
-#: src/components/layouts/Sidebar.vue:155
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr "Vous n'avez actuellement aucun solde à swap."
 
@@ -3684,7 +3717,7 @@ msgstr "Votre banque n'est pas éligible ?"
 msgid "Your browser"
 msgstr "Votre navigateur"
 
-#: src/components/layouts/Sidebar.vue:160
+#: src/components/layouts/Sidebar.vue:155
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

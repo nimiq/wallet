@@ -55,7 +55,7 @@ msgstr ""
 msgid "{currency} payout pending"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:419
+#: src/components/swap/SwapModal.vue:408
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
@@ -924,12 +924,11 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:149
-#: src/components/swap/SwapModal.vue:415
+#: src/components/swap/SwapModal.vue:404
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
-#: src/router.ts:86
+#: src/router.ts:94
 msgid "Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance is completed."
 msgstr ""
 
@@ -1156,7 +1155,7 @@ msgstr ""
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1005
+#: src/components/swap/SwapModal.vue:994
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1494,7 +1493,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:2031
+#: src/components/swap/SwapModal.vue:2020
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1707,7 +1706,7 @@ msgstr ""
 msgid "Name your contact"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:179
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr ""
 
@@ -1799,7 +1798,7 @@ msgstr ""
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:159
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr ""
 
@@ -1935,7 +1934,7 @@ msgstr ""
 msgid "Pick a stable coin for your wallet. You can always switch between the two."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:152
+#: src/components/layouts/Sidebar.vue:147
 msgid "Please activate BTC or USDC in your account first to be able to swap to these currencies."
 msgstr ""
 
@@ -1960,7 +1959,7 @@ msgstr ""
 msgid "Please transfer"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:163
+#: src/components/layouts/Sidebar.vue:158
 #: src/components/layouts/Sidebar.vue:63
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
@@ -2161,7 +2160,7 @@ msgstr ""
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1098
+#: src/components/swap/SwapModal.vue:1087
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2454,7 +2453,7 @@ msgstr ""
 msgid "Setting up the {currency} side of the swap."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:187
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr ""
 
@@ -2617,7 +2616,7 @@ msgid "Super eco-friendly"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:146
+#: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2687,7 +2686,7 @@ msgstr ""
 msgid "Swap up to {limit} per 30 days."
 msgstr ""
 
-#: src/router.ts:85
+#: src/router.ts:93
 msgid "Swaps are under maintenance"
 msgstr ""
 
@@ -2770,7 +2769,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1092
+#: src/components/swap/SwapModal.vue:1081
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -3272,7 +3271,7 @@ msgstr ""
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:382
+#: src/components/layouts/Sidebar.vue:377
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3283,7 +3282,7 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:155
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr ""
 
@@ -3356,7 +3355,7 @@ msgstr ""
 msgid "Your browser"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:160
+#: src/components/layouts/Sidebar.vue:155
 msgid "Your browser does not support Keyguard popups, or they are disabled in the Settings."
 msgstr ""
 

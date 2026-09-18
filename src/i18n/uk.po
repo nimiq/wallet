@@ -63,7 +63,7 @@ msgstr "Кошти в {currency} не виплачені"
 msgid "{currency} payout pending"
 msgstr "Очікується платіж в {currency}"
 
-#: src/components/swap/SwapModal.vue:419
+#: src/components/swap/SwapModal.vue:408
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
@@ -1001,9 +1001,14 @@ msgstr "Створено вчора"
 msgid "Credit Card"
 msgstr "Кредитна карта"
 
-#: src/components/layouts/Sidebar.vue:149
-#: src/components/swap/SwapModal.vue:415
+#: src/components/swap/SwapModal.vue:404
 msgid "Crypto swaps are currently under maintenance."
+msgstr ""
+
+#: src/router.ts:94
+msgid ""
+"Crypto swaps are temporarily unavailable. They will be back as soon as the "
+"maintenance is completed."
 msgstr ""
 
 #: src/components/FlaggedAddressWarning.vue:30
@@ -1246,7 +1251,7 @@ msgstr ""
 "Не вдалося отримати {ticker} комісії. Повторна спроба... (Помилка: "
 "{message})"
 
-#: src/components/swap/SwapModal.vue:1005
+#: src/components/swap/SwapModal.vue:994
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1389,6 +1394,10 @@ msgid "Funds sent to non-Polygon {ticker} versions could be permanently lost!"
 msgstr ""
 "Кошти, надіслані на {ticker} версії, що не належать до мережі Polygon, "
 "можуть бути безповоротно втрачені!"
+
+#: src/router.ts:74
+msgid "Gas abstraction is under maintenance"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:44
 msgid "General"
@@ -1618,7 +1627,7 @@ msgstr "Недостатньо коштів."
 msgid "invalid"
 msgstr "некоректний"
 
-#: src/components/swap/SwapModal.vue:2031
+#: src/components/swap/SwapModal.vue:2020
 msgid "Invalid swap state, swap aborted!"
 msgstr "Невірний стан обміну, обмін перервано!"
 
@@ -1841,7 +1850,7 @@ msgstr "Вкажіть ім'я відправника..."
 msgid "Name your contact"
 msgstr "Назвіть контакт"
 
-#: src/components/layouts/Sidebar.vue:179
+#: src/components/layouts/Sidebar.vue:174
 msgid "Network"
 msgstr "Мережа"
 
@@ -1941,7 +1950,7 @@ msgstr "Ні"
 msgid "Not all accounts provided by this bank support instant transactions."
 msgstr "Не всі рахунки, надані цим банком, підтримують миттєві операції."
 
-#: src/components/layouts/Sidebar.vue:159
+#: src/components/layouts/Sidebar.vue:154
 msgid "Not available in your browser"
 msgstr "Недоступно у вашому веб-оглядачі"
 
@@ -1973,6 +1982,10 @@ msgstr "Комісія OASIS"
 #: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr "Вимк."
+
+#: src/components/modals/WarningModal.vue:25
+msgid "Ok"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
@@ -2074,7 +2087,7 @@ msgid ""
 "Pick a stable coin for your wallet. You can always switch between the two."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:152
+#: src/components/layouts/Sidebar.vue:147
 msgid ""
 "Please activate BTC or USDC in your account first to be able to swap to "
 "these currencies."
@@ -2116,7 +2129,7 @@ msgstr "Будь ласка, перекажіть"
 msgid "Please wait for the cooldown period to end."
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:163
+#: src/components/layouts/Sidebar.vue:158
 #: src/components/layouts/Sidebar.vue:63
 msgid "Please wait for your current swap to finish before starting a new one."
 msgstr ""
@@ -2330,7 +2343,7 @@ msgstr "Вирішення незупинного домену..."
 msgid "Restart payout process"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1098
+#: src/components/swap/SwapModal.vue:1087
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2399,6 +2412,10 @@ msgstr "Пошук переказів за контактами, адресам�
 #: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
 msgstr "Безпека"
+
+#: src/components/modals/WarningModal.vue:20
+msgid "See latest updates"
+msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:20
 #: src/components/modals/SellCryptoModal.vue:19
@@ -2538,6 +2555,12 @@ msgstr "Відправляється"
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
+#: src/router.ts:75
+msgid ""
+"Sending USDC and USDT is temporarily unavailable. It will be back as soon as"
+" the maintenance is completed."
+msgstr ""
+
 #: src/components/modals/BackupModal.vue:30
 msgid ""
 "Sending yourself backup codes is convenient but only as secure as the "
@@ -2621,7 +2644,7 @@ msgstr "Атомарний обмін налаштовується"
 msgid "Setting up the {currency} side of the swap."
 msgstr "Налаштування сторони обміну {currency}."
 
-#: src/components/layouts/Sidebar.vue:187
+#: src/components/layouts/Sidebar.vue:182
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -2788,7 +2811,7 @@ msgid "Super eco-friendly"
 msgstr ""
 
 #. avoid displaying the proxy address until we know related peer address
-#: src/components/layouts/Sidebar.vue:146
+#: src/components/layouts/Sidebar.vue:144
 #: src/components/modals/BtcTransactionModal.vue:9
 #: src/components/modals/TransactionModal.vue:7
 #: src/components/modals/UsdcTransactionModal.vue:9
@@ -2857,6 +2880,10 @@ msgstr "Обмін на {address}"
 #: src/components/kyc/KycPrompt.vue:11
 msgid "Swap up to {limit} per 30 days."
 msgstr "Обмінюйте до {limit} протягом 30 днів."
+
+#: src/router.ts:93
+msgid "Swaps are under maintenance"
+msgstr ""
 
 #: src/components/layouts/Settings.vue:187
 msgid "Swiping Gestures"
@@ -2950,7 +2977,7 @@ msgstr "Банк обробляє вашу операцію."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "Комісія (наразі {amount}) є мінімальною сумою."
 
-#: src/components/swap/SwapModal.vue:1092 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1081 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "Комісія визначає мінімальну суму."
@@ -3514,7 +3541,7 @@ msgstr "Ви можете отримувати тільки від Polygon {tick
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Ви можете отримати безкоштовні NIM через {waitTime} години."
 
-#: src/components/layouts/Sidebar.vue:382
+#: src/components/layouts/Sidebar.vue:377
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3525,7 +3552,7 @@ msgstr ""
 msgid "You can't adjust your stake while you're unstaking"
 msgstr ""
 
-#: src/components/layouts/Sidebar.vue:155
+#: src/components/layouts/Sidebar.vue:150
 msgid "You currently have no balance to swap."
 msgstr "Наразі у вас немає коштів для обміну."
 
@@ -3609,7 +3636,7 @@ msgstr "Ваш банк не відповідає вимогам?"
 msgid "Your browser"
 msgstr "Ваш веб-оглядач"
 
-#: src/components/layouts/Sidebar.vue:160
+#: src/components/layouts/Sidebar.vue:155
 msgid ""
 "Your browser does not support Keyguard popups, or they are disabled in the "
 "Settings."

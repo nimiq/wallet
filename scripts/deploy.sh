@@ -31,6 +31,7 @@ DEPLOYER=""
 EXCLUDE_RELEASE=""
 SYNC_TRANSLATIONS=true
 ALLOW_UNTRACKED_FILES=false
+ALLOW_MAINNET_VERSION_BELOW_TESTNET_VERSION=false
 BUILD_ENV=""
 DEPLOY_ONLY=false
 SAME_AS=""
@@ -71,6 +72,9 @@ show_usage() {
     echo "  --allow-untracked-files"
     echo "                         Don't abort on untracked files, i.e. files that are not part"
     echo "                         of the repository."
+    echo "  --allow-mainnet-version-below-testnet-version"
+    echo "                         Allow a mainnet version below the latest testnet version."
+    echo "                         It still has to be above the latest mainnet version."
     echo "  --deploy-only          Only run the deployment step (ssh)"
     echo "                         Useful for retrying a failed deployment"
     echo "  --same-as=ENV          Use same version as specified environment"
@@ -264,6 +268,7 @@ show_deployment_recap() {
     echo -e "${CYAN}Exclude Release:${NC} $([ -n "$EXCLUDE_RELEASE" ] && echo "Yes" || echo "No")"
     echo -e "${CYAN}Sync Translations:${NC} $SYNC_TRANSLATIONS"
     echo -e "${CYAN}Allow Untracked Files:${NC} $ALLOW_UNTRACKED_FILES"
+    echo -e "${CYAN}Allow Mainnet Version Below Testnet Version:${NC} $ALLOW_MAINNET_VERSION_BELOW_TESTNET_VERSION"
     echo -e "${CYAN}Commit Message:${NC}"
     echo "$COMMIT_MSG" | sed 's/^/  /'
     echo
@@ -342,6 +347,9 @@ for arg in "${ARGS[@]}"; do
         --allow-untracked-files)
             ALLOW_UNTRACKED_FILES=true
             ;;
+        --allow-mainnet-version-below-testnet-version)
+            ALLOW_MAINNET_VERSION_BELOW_TESTNET_VERSION=true
+            ;;
         --mainnet)
             BUILD_ENV="mainnet"
             DEPLOY_SERVERS=("${MAINNET_SERVERS[@]}")
@@ -394,6 +402,10 @@ fi
 # Always require environment specification
 if [ -z "$BUILD_ENV" ]; then
     show_usage "Either --mainnet or --testnet must be specified"
+fi
+
+if [ "$ALLOW_MAINNET_VERSION_BELOW_TESTNET_VERSION" = true ] && [ "$BUILD_ENV" != "mainnet" ]; then
+    show_usage "--allow-mainnet-version-below-testnet-version can only be used with --mainnet"
 fi
 
 # After parsing arguments and before validation, handle --same-as
@@ -485,12 +497,28 @@ if [ -z "$SAME_AS" ]; then
     echo -e "${BLUE}Checking version against existing tags in ${APP_NAME} repo...${NC}"
     EXISTING_TAGS=$(git tag | grep "^v[0-9]" | sed 's/^v//')
     LATEST_TAG=$(echo "$EXISTING_TAGS" | sort -V | tail -n 1)
-    for tag in $EXISTING_TAGS; do
-        if ! version_gt "$VERSION" "$tag"; then
-            echo -e "${RED}Error: Version $VERSION is not greater than latest version $LATEST_TAG${NC}"
+    if [ "$ALLOW_MAINNET_VERSION_BELOW_TESTNET_VERSION" = true ]; then
+        # The version may be below testnet versions, but has to be new and above the latest mainnet version. This is a
+        # preliminary check upfront. A final check against the updated deployment repository is done below.
+        LATEST_MAINNET_VERSION=$(git -C "$DEPLOYMENT_REPO" tag --list 'v[0-9]*-main-*' | sed 's/^v\([0-9][^-]*\).*/\1/' | sort -V | tail -n 1)
+        if git rev-parse -q --verify "refs/tags/v$VERSION" > /dev/null; then
+            echo -e "${RED}Error: Version $VERSION already exists as tag v$VERSION in ${APP_NAME} repo${NC}"
+            exit 1
+        elif ! version_gt "$VERSION" "$LATEST_MAINNET_VERSION"; then
+            echo -e "${RED}Error: Version $VERSION is not greater than latest mainnet version $LATEST_MAINNET_VERSION${NC}"
             exit 1
         fi
-    done
+    else
+        for tag in $EXISTING_TAGS; do
+            if ! version_gt "$VERSION" "$tag"; then
+                echo -e "${RED}Error: Version $VERSION is not greater than latest version $LATEST_TAG${NC}"
+                if [ "$BUILD_ENV" = "mainnet" ]; then
+                    echo -e "${YELLOW}A mainnet version below the latest testnet version can be allowed via --allow-mainnet-version-below-testnet-version.${NC}"
+                fi
+                exit 1
+            fi
+        done
+    fi
 else
     echo -e "${BLUE}Skipping version comparison check since --same-as is used${NC}"
 fi

@@ -49,7 +49,7 @@
             </PageBody>
         </div>
         <div class="bottom-bar">
-            <button class="action-button" :disabled="isSubmitting" @click="onActionButtonClick">
+            <button class="action-button" :disabled="isActionDisabled" @click="onActionButtonClick">
                 {{ actionButtonLabel }}
             </button>
         </div>
@@ -65,14 +65,11 @@ import ValidatorIcon from './ValidatorIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorScoreDetails from './ValidatorScoreDetails.vue';
 import { useAddressStore } from '../../stores/Address';
-import { signSwitchValidatorTransactions } from '../../hub';
-import { sendTransaction as sendTx, getNetworkClient, waitForTransactionConfirmation } from '../../network';
-import { usePolicy } from '../../composables/usePolicy';
 import { useNetworkStore } from '../../stores/Network';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
 import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
-import { startSwitchValidator } from '../../lib/AlbatrossWatchtower';
 import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
+import { startWatchtowerSwitch } from '../../lib/WatchtowerOperations';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import BlueLink from '../BlueLink.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -91,24 +88,34 @@ export default defineComponent({
     },
     setup(props, context) {
         const { $t } = useI18n();
-        const { activeAddress, activeAddressInfo } = useAddressStore();
+        const { activeAddress } = useAddressStore();
         const {
-            activeStake, setStake, activeValidator,
-            setSwitchOperation, clearSwitchOperation,
+            activeStake, setStake, activeValidator, totalActiveStake,
+            pendingOperation,
+            clearSwitchOperation,
         } = useStakingStore();
         const { height } = useNetworkStore();
 
-        const hasExistingStake = computed(() => !!activeStake.value
-            && (activeStake.value.activeBalance > 0 || activeStake.value.inactiveBalance > 0));
+        // Retired stake counts too: a retired-only staker still exists on chain and must never be
+        // overwritten by the zero placeholder written for a first validator selection.
+        const hasExistingStake = computed(() => totalActiveStake.value > 0);
 
         const isCurrentValidator = computed(() => !!activeValidator.value
             && activeValidator.value.address === props.validator.address);
 
-        const actionButtonLabel = computed(() => (hasExistingStake.value
-            ? $t('Switch validator')
-            : $t('Select validator')));
+        // Every switch the user can start goes through this button, so a watchtower operation in flight
+        // (which chain balances alone can't reveal) disables it here, with the label giving the reason.
+        const actionButtonLabel = computed(() => {
+            if (pendingOperation.value === 'switch') return $t('Validator switch in progress');
+            if (pendingOperation.value === 'unstake') return $t('Unstaking in progress');
+            return hasExistingStake.value
+                ? $t('Switch validator')
+                : $t('Select validator');
+        });
 
         const isSubmitting = ref(false);
+
+        const isActionDisabled = computed(() => isSubmitting.value || !!pendingOperation.value);
 
         let successRedirectTimer: number | null = null;
         function scheduleSuccessRedirect() {
@@ -131,6 +138,7 @@ export default defineComponent({
             if (validator) return validator;
             reportToSentry(new Error(`Attempted ${opName} without activeValidator`));
             context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
                 state: State.WARNING,
                 title: $t('Something went wrong') as string,
                 message: $t('Validator information not available') as string,
@@ -148,93 +156,30 @@ export default defineComponent({
                 title: $t('Switching validator') as string,
             });
 
-            const [{ Address, TransactionBuilder }, client, policy] = await Promise.all([
-                import('@nimiq/core'),
-                getNetworkClient(),
-                usePolicy(),
-            ]);
-            const networkId = await client.getNetworkId();
-            const currentHeight = height.value;
-            const stakerAddress = Address.fromUserFriendlyAddress(activeAddress.value!);
-
-            // update-staker must be valid at the height the watchtower will broadcast it: one
-            // full epoch after the deactivation lands (matching the watchtower's
-            // `must_be_valid_at = electionBlockAfter(deactivation_block) + blocksPerEpoch`).
-            // Without a future validity height the watchtower rejects with a misleading
-            // "Transaction has invalid value" error.
-            const updateValidityStartHeight = policy.electionBlockAfter(currentHeight) + policy.blocksPerEpoch();
-
-            const deactivateTx = TransactionBuilder.newSetActiveStake(
-                stakerAddress,
-                BigInt(0),
-                BigInt(0),
-                currentHeight,
-                networkId,
-            );
-
-            const updateTx = TransactionBuilder.newUpdateStaker(
-                stakerAddress,
-                Address.fromUserFriendlyAddress(props.validator.address),
-                true, // reactivateAllStake
-                BigInt(0),
-                updateValidityStartHeight,
-                networkId,
-            );
-
-            const target = toValidatorRef(props.validator);
-            const from = toValidatorRef(fromValidator);
-
-            const signedTxs = await signSwitchValidatorTransactions({
-                sender: activeAddress.value!,
-                transactions: [deactivateTx.serialize(), updateTx.serialize()],
-                senderLabel: validatorLabel(from),
-                recipientLabel: validatorLabel(target),
-                validatorImageUrl: target.logo,
-                fromValidatorAddress: from.address,
-                fromValidatorImageUrl: from.logo,
+            const result = await startWatchtowerSwitch({
+                stakerAddress: activeAddress.value!,
+                from: toValidatorRef(fromValidator),
+                target: toValidatorRef(props.validator),
             });
 
-            if (!signedTxs) {
+            if (result === 'cancelled') {
                 context.emit('statusChange', { type: StakingOperationType.NONE });
                 return;
             }
 
-            const deactivationTxHash = signedTxs[0].hash;
-
-            const deactivateResult = await sendTx(signedTxs[0]);
-            if (deactivateResult.executionResult === false) {
-                throw new Error('Deactivation transaction did not succeed');
-            }
-
-            // Watchtower won't accept the request before the deactivation is finalized.
-            try {
-                await waitForTransactionConfirmation(deactivationTxHash, { requireConfirmed: true });
-            } catch (confirmationError: any) {
-                reportToSentry(confirmationError);
-                // eslint-disable-next-line no-console
-                console.warn('Transaction confirmation timeout:', confirmationError);
-            }
-
-            // Watchtower failure is non-fatal: the deactivation is on-chain and the user can
-            // still activate the new validator manually once the cooldown ends.
-            try {
-                await startSwitchValidator({
-                    stakerAddress: activeAddress.value!,
-                    deactivationTxHash,
-                    updateStakerTx: signedTxs[1].serializedTx,
+            if (result === 'manual') {
+                // Close the overlay now, while the status screen still covers it, so dismissing the
+                // warning lands on the Info page's countdown footer. No success redirect: the warning
+                // stays until the user closes it.
+                context.emit('next');
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: $t('Validator switch needs a manual step') as string,
+                    message: $t('Your stake has been deactivated, but the automatic switch could not be scheduled. '
+                        + 'Come back once the countdown has ended and activate the validator manually.') as string,
                 });
-            } catch (wtError: any) {
-                reportToSentry(wtError);
-                // eslint-disable-next-line no-console
-                console.warn('Watchtower registration failed:', wtError);
+                return;
             }
-
-            setSwitchOperation(activeAddress.value!, {
-                targetValidatorAddress: target.address,
-                targetValidatorName: target.name,
-                startedAtBlock: currentHeight,
-                deactivationTxHash,
-            });
 
             context.emit('statusChange', {
                 state: State.SUCCESS,
@@ -288,6 +233,8 @@ export default defineComponent({
 
         async function selectValidator() {
             try {
+                if (pendingOperation.value) return; // Defensive: the button is already disabled.
+
                 if (!hasExistingStake.value) {
                     setStake({
                         address: activeAddress.value!,
@@ -314,6 +261,7 @@ export default defineComponent({
 
                 // Stake is inactive but the cooldown has not yet ended.
                 context.emit('statusChange', {
+                    type: StakingOperationType.VALIDATOR,
                     state: State.WARNING,
                     title: $t('Cannot switch yet') as string,
                     message: $t('Please wait for the cooldown period to end.') as string,
@@ -329,7 +277,7 @@ export default defineComponent({
         }
 
         async function onActionButtonClick() {
-            if (isSubmitting.value) return;
+            if (isActionDisabled.value) return;
             if (isCurrentValidator.value) {
                 context.emit('switch-validator');
                 return;
@@ -345,7 +293,7 @@ export default defineComponent({
         return {
             onActionButtonClick,
             actionButtonLabel,
-            isSubmitting,
+            isActionDisabled,
         };
     },
     components: {

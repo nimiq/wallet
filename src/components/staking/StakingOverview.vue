@@ -13,17 +13,34 @@
                     <div class="details-row flex-row" :class="{
                         'full-opacity': stake && (stake.inactiveBalance || stake.retiredBalance),
                     }">
-                        <template v-if="stake && (
+                        <!-- Both switch-recovery states come first, for the same reason as in the
+                             Info page footer: they read as "Payout ready" otherwise. -->
+                        <template v-if="switchStall === 'activation'">
+                            <CircleExclamationMarkIcon /> {{ $t('Manual activation needed') }}
+                        </template>
+                        <template v-else-if="switchStall === 'interrupted'">
+                            <CircleExclamationMarkIcon /> {{ $t('Validator switch interrupted') }}
+                        </template>
+                        <template v-else-if="stake && (
                             (stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance
                         )">
                             <CircleExclamationMarkIcon /> {{ $t('Payout ready')}}
                         </template>
                         <template v-else-if="stake && stake.inactiveBalance">
-                            <CircleArrowDownIcon />
-                            <span v-if="isSwitchingValidator">
-                                {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
-                            </span>
-                            <span v-else>{{ $t('Unstaking') }}</span>
+                            <template v-if="pendingOperationNeedsManualStep">
+                                <CircleExclamationMarkIcon />
+                                <span v-if="isSwitchingValidator">{{ $t('Manual activation needed') }}</span>
+                                <span v-else>{{ $t('Manual payout needed') }}</span>
+                            </template>
+                            <template v-else>
+                                <CircleArrowDownIcon />
+                                <!-- A switch only known from the watchtower (started elsewhere) has no target -->
+                                <span v-if="isSwitchingValidator && switchTargetLabel">
+                                    {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
+                                </span>
+                                <span v-else-if="isSwitchingValidator">{{ $t('Switching validator') }}</span>
+                                <span v-else>{{ $t('Unstaking') }}</span>
+                            </template>
                             <span class="dot"></span>
                             <span>{{ inactiveReleaseTime }} left</span>
                         </template>
@@ -106,6 +123,8 @@ export default defineComponent({
             monthlyRewards,
             stakingEvents,
             isSwitchingValidator,
+            pendingOperationNeedsManualStep,
+            switchStall,
             switchTargetLabel,
         } = useStakingStore();
         const router = useRouter();
@@ -167,6 +186,8 @@ export default defineComponent({
             inactiveReleaseTime,
             hasUnstakableStake,
             isSwitchingValidator,
+            pendingOperationNeedsManualStep,
+            switchStall,
             switchTargetLabel,
             openStakingModal,
             openValidatorDetailsModal,

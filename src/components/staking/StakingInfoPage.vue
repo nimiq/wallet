@@ -28,14 +28,17 @@
                     </div>
                 </div>
                 <div class="flex-column">
-                    <Tooltip :disabled="!isStakeDeactivating" preferredPosition="bottom left"
+                    <Tooltip :disabled="!isStakeDeactivating && !pendingOperation" preferredPosition="bottom left"
                         :container="this" class="adjust-stake">
                         <button slot="trigger" class="nq-button-s" @click="$emit('adjust-stake')"
-                            :disabled="isStakeDeactivating">
+                            :disabled="isStakeDeactivating || !!pendingOperation">
                             <span class="sm-hidden">{{ $t('Adjust Stake') }}</span>
                             <span class="hidden sm-visible">{{ $t('Adjust') }}</span>
                         </button>
-                        <span>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
+                        <span v-if="isSwitchingValidator">
+                            {{ $t('You can\'t adjust your stake during a validator switch') }}
+                        </span>
+                        <span v-else>{{ $t('You can\'t adjust your stake while you\'re unstaking') }}</span>
                     </Tooltip>
                 </div>
             </div>
@@ -90,15 +93,76 @@
                 <div class="scroll-mask bottom" v-if="stake && !stake.inactiveBalance && !stake.retiredBalance"></div>
             </div>
         </PageBody>
-        <PageFooter v-if="canManuallyActivateSwitch">
+        <!-- Both stalled-switch footers come ahead of the pay-out footer: the same state would otherwise
+             offer "Unstake rest" or "Pay out", both of which abandon the switch and withdraw the stake. -->
+        <PageFooter v-if="switchStall === 'activation'">
             <div class="flex-row manual-activate">
                 <CircleExclamationMarkIcon />
                 <span class="flex-grow message">
-                    {{ $t('Manually activate the validator to re-activate staking.') }}
+                    <template v-if="switchTargetStatus === 'unknown'">
+                        {{ $t('Choose a validator to re-activate staking.') }}
+                    </template>
+                    <template v-else-if="switchTargetStatus === 'inactive'">
+                        {{ $t('{validator} is no longer an active validator. '
+                            + 'Choose another one to re-activate staking.', { validator: switchTargetLabel }) }}
+                    </template>
+                    <template v-else>
+                        {{ $t('Manually activate the validator to re-activate staking.') }}
+                    </template>
                 </span>
-                <button class="nq-button-pill light-blue" @click="manualActivateSwitch">
+                <button v-if="switchTargetStatus === 'active'" class="nq-button-pill light-blue"
+                    @click="manualActivateSwitch">
                     {{ $t('Activate validator') }}
                 </button>
+                <button v-else-if="choosesValidator" class="nq-button-pill light-blue"
+                    @click="$emit('switch-validator')">
+                    {{ $t('Choose validator') }}
+                </button>
+            </div>
+        </PageFooter>
+        <PageFooter v-else-if="switchStall === 'interrupted'">
+            <div class="flex-column footer-content">
+                <div class="flex-row unstaking nq-light-blue">
+                    <CircleExclamationMarkIcon />
+                    <span class="flex-grow">{{ $t('Validator switch interrupted') }}</span>
+                    <button v-if="switchTargetStatus === 'active'" class="nq-button-pill light-blue"
+                        @click="resumeSwitch">
+                        {{ $t('Restart switch') }} <ArrowRightSmallIcon />
+                    </button>
+                    <button v-else-if="choosesValidator && canReplaceStalledSwitch" class="nq-button-pill light-blue"
+                        @click="$emit('switch-validator')">
+                        {{ $t('Choose validator') }} <ArrowRightSmallIcon />
+                    </button>
+                </div>
+
+                <div class="footer-notice">
+                    <template v-if="switchTargetStatus === 'unknown'">
+                        {{ $t('New staking rewards arrived before the validator switch could complete.') }}
+                    </template>
+                    <template v-else-if="switchTargetStatus === 'inactive'">
+                        {{ $t('New staking rewards arrived before the switch to {validator} could complete, '
+                            + 'and it is no longer an active validator.', { validator: switchTargetLabel }) }}
+                    </template>
+                    <template v-else>
+                        {{ $t('New staking rewards arrived before the switch to {validator} could complete.',
+                            { validator: switchTargetLabel }) }}
+                    </template>
+                    <!-- Before the stake's election block (see `canReplaceStalledSwitch`) a restart keeps the release
+                         and the watchtower job, while choosing another validator would race them -->
+                    <br />
+                    <template v-if="!choosesValidator && !canReplaceStalledSwitch">
+                        {{ $t('Restart it now to switch on the original schedule.') }}
+                    </template>
+                    <template v-else-if="!choosesValidator">
+                        {{ $t('Restart it to switch after another cooldown.') }}
+                    </template>
+                    <template v-else-if="canReplaceStalledSwitch">
+                        {{ $t('Choose a validator to switch after another cooldown.') }}
+                    </template>
+                    <template v-else>
+                        {{ $t('You can choose another validator in {time}.', { time: replaceableTime }) }}
+                    </template>
+                </div>
             </div>
         </PageFooter>
         <PageFooter v-else-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
@@ -132,19 +196,38 @@
             </div>
         </PageFooter>
         <PageFooter v-else-if="stake && stake.inactiveBalance">
-            <div class="flex-row unstaking nq-light-blue">
-                <CircleArrowDownIcon />
-                <span v-if="isSwitchingValidator" class="flex-grow">
-                    {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
-                </span>
-                <template v-else>
-                    {{ $t('Unstaking') }}
-                    <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
-                </template>
-                <button class="nq-button-s unstaking-progress">
-                    {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
-                    <!-- TODO: Add cancel function -->
-                </button>
+            <div class="flex-column footer-content">
+                <div class="flex-row unstaking nq-light-blue">
+                    <CircleArrowDownIcon />
+                    <!-- A switch only known from the watchtower (started in another browser) has no target -->
+                    <span v-if="isSwitchingValidator && switchTargetLabel" class="flex-grow">
+                        {{ $t('Switching to {validator}', { validator: switchTargetLabel }) }}
+                    </span>
+                    <span v-else-if="isSwitchingValidator" class="flex-grow">{{ $t('Switching validator') }}</span>
+                    <template v-else>
+                        {{ $t('Unstaking') }}
+                        <Amount :amount="stake.inactiveBalance" value-mask class="flex-grow"/>
+                    </template>
+                    <button class="nq-button-s unstaking-progress">
+                        {{ inactiveReleaseTime }} <!-- <span>Cancel</span> -->
+                        <!-- TODO: Add cancel function -->
+                    </button>
+                </div>
+
+                <!-- Without a known, active switch target there is nothing to activate: the user chooses one -->
+                <div v-if="pendingOperationNeedsManualStep" class="footer-notice nq-orange">
+                    <template v-if="!isSwitchingValidator">
+                        {{ $t('Automatic payout is not scheduled. Pay out manually once the countdown has ended.') }}
+                    </template>
+                    <template v-else-if="choosesValidator">
+                        {{ $t('Automatic activation is not scheduled. '
+                            + 'Choose a validator once the countdown has ended.') }}
+                    </template>
+                    <template v-else>
+                        {{ $t('Automatic activation is not scheduled. '
+                            + 'Activate the validator manually once the countdown has ended.') }}
+                    </template>
+                </div>
             </div>
         </PageFooter>
     </div>
@@ -173,15 +256,16 @@ import Amount from '../Amount.vue';
 import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-import { StakingOperationType, toValidatorRef, validatorLabel, ValidatorRef } from '../../lib/StakingUtils';
+import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StakingRewardsChart from './StakingRewardsChart.vue';
 
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
-import { getNetworkClient } from '../../network';
+import { getNetworkClient, updateValidators } from '../../network';
 import { reportToSentry } from '../../lib/Sentry';
 import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
+import { startWatchtowerSwitch, startWatchtowerUnstaking } from '../../lib/WatchtowerOperations';
 import CircleArrowDownIcon from '../icons/Staking/CircleArrowDownIcon.vue';
 import StakingRewardsListItem from './StakingRewardsListItem.vue';
 import CircleExclamationMarkIcon from '../icons/Staking/CircleExclamationMarkIcon.vue';
@@ -201,11 +285,15 @@ export default defineComponent({
         const {
             activeStake: stake,
             activeValidator: validator,
-            activeSwitchOperation,
-            canManuallyActivateSwitch,
+            canReplaceStalledSwitch,
             isSwitchingValidator,
+            pendingOperation,
+            pendingOperationNeedsManualStep,
+            switchStall,
+            switchTarget,
             switchTargetLabel,
-            validators,
+            switchTargetStatus,
+            validatorsList,
             restakingRewards,
             monthlyRewards,
             stakingEvents,
@@ -235,23 +323,25 @@ export default defineComponent({
             return total > 0 ? Math.round((stakedBalance.value / total) * 100) : 0;
         });
 
-        const inactiveReleaseTime = computed(() => {
-            if (stake.value?.inactiveRelease) {
-                // TODO: Take validator jail release into account
-                const secondsRemaining = Math.max(0, stake.value.inactiveRelease - height.value);
-                const date = new Date(Date.UTC(0, 0, 0, 0, 0, secondsRemaining));
-                const hours = date.getUTCHours().toString().padStart(2, '0');
-                const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-                const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-                return [
-                    ...(hours !== '' ? [hours] : []),
-                    minutes,
-                    seconds,
-                ].join(':');
-            }
+        // Blocks come about a second apart, so the blocks left until `block` read as hours, minutes and seconds.
+        function timeUntil(block: number | undefined) {
+            if (!block) return '00:00';
+            const secondsRemaining = Math.max(0, block - height.value);
+            const date = new Date(Date.UTC(0, 0, 0, 0, 0, secondsRemaining));
+            const hours = date.getUTCHours().toString().padStart(2, '0');
+            const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+            const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+            return [
+                ...(hours !== '' ? [hours] : []),
+                minutes,
+                seconds,
+            ].join(':');
+        }
 
-            return '00:00';
-        });
+        // TODO: Take validator jail release into account
+        const inactiveReleaseTime = computed(() => timeUntil(stake.value?.inactiveRelease));
+        // Until another validator can be chosen for an interrupted switch (see `canReplaceStalledSwitch`).
+        const replaceableTime = computed(() => timeUntil(stake.value?.inactiveFrom));
 
         const rewards = computed(() => {
             const rew: Reward[] = [];
@@ -292,6 +382,10 @@ export default defineComponent({
 
             return hasReadyFunds && hasBlockingStake;
         });
+
+        // A stalled switch the user finishes by choosing a validator (see `switchTargetStatus`).
+        const choosesValidator = computed(() => switchTargetStatus.value === 'unknown'
+            || switchTargetStatus.value === 'inactive');
 
         const isStakeDeactivating = computed(() =>
             !!(stake.value?.inactiveBalance && stake.value.inactiveBalance > 0),
@@ -467,23 +561,20 @@ export default defineComponent({
         }
 
         async function manualActivateSwitch() {
-            const record = activeSwitchOperation.value;
-            if (!record || !stake.value || !validator.value) return;
+            const address = activeAddress.value;
+            const target = switchTarget.value;
+            if (!address || !target || !stake.value || !validator.value) return;
 
             context.emit('statusChange', {
                 type: StakingOperationType.VALIDATOR,
                 state: State.LOADING,
                 title: $t('Activating validator') as string,
             });
+            if (!await ensureTargetActive(address)) return;
 
             try {
-                const known = validators.value[record.targetValidatorAddress];
-                const target: ValidatorRef = known
-                    ? toValidatorRef(known)
-                    : { address: record.targetValidatorAddress, name: record.targetValidatorName };
-
                 const txs = await sendImmediateValidatorSwitch({
-                    stakerAddress: activeAddress.value!,
+                    stakerAddress: address,
                     height: height.value,
                     amount: stake.value.inactiveBalance,
                     target,
@@ -499,7 +590,7 @@ export default defineComponent({
                     throw new Error('The transaction did not succeed');
                 }
 
-                clearSwitchOperation(activeAddress.value!);
+                clearSwitchOperation(address);
 
                 context.emit('statusChange', {
                     state: State.SUCCESS,
@@ -523,20 +614,55 @@ export default defineComponent({
             }
         }
 
-        async function unstakeRest() {
-            if (!stake.value?.activeBalance) return;
+        // The flows below name the current validator to the Hub, so without one there is nothing to sign.
+        function ensureValidator(operation: string) {
+            if (validator.value) return validator.value;
+            reportToSentry(new Error(`Attempted ${operation} without validator`));
+            context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
+                state: State.WARNING,
+                title: $t('Something went wrong') as string,
+                message: $t('Validator information not available') as string,
+            });
+            return null;
+        }
 
-            // Guard against validator being null
-            if (!validator.value) {
-                reportToSentry(new Error('Attempted unstakeRest without validator'));
+        // Re-delegating to a jailed validator would lock the stake until its jail ends, and only the validator
+        // list tells an active target from a jailed one. A list that has not loaded, or failed to, is loaded
+        // first. Called with the loading status up; resolves whether to go on and sign, and otherwise closes or
+        // replaces that status: not for a target the list shows inactive (the footer then offers "Choose
+        // validator"), not without the list, and not once the user has moved to another address meanwhile.
+        async function ensureTargetActive(address: string) {
+            if (!validatorsList.value.length) {
+                try {
+                    await updateValidators(await getNetworkClient());
+                } catch {
+                    // A list that fails to load stays empty, which the warning below reports.
+                }
+            }
+            const sameAddress = activeAddress.value === address;
+            if (sameAddress && validatorsList.value.length && switchTargetStatus.value === 'active') return true;
+            if (sameAddress && !validatorsList.value.length) {
                 context.emit('statusChange', {
-                    type: StakingOperationType.NONE,
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
                     message: $t('Validator information not available') as string,
                 });
-                return;
+            } else {
+                context.emit('statusChange', { type: StakingOperationType.NONE });
             }
+            return false;
+        }
+
+        // The remaining active stake is below the minimum, so the retire that would pay the rest out is
+        // rejected until it is deactivated. Deactivating on its own would leave the user to come back a
+        // cooldown later and finish by hand, so the whole payout goes through the watchtower — the same
+        // three signed transactions the staking graph's unstaking uses.
+        async function unstakeRest() {
+            const currentStake = stake.value;
+            if (!currentStake?.activeBalance) return;
+            const currentValidator = ensureValidator('unstakeRest');
+            if (!currentValidator) return;
 
             context.emit('statusChange', {
                 type: StakingOperationType.DEACTIVATING,
@@ -545,44 +671,35 @@ export default defineComponent({
             });
 
             try {
-                const { Address, TransactionBuilder } = await import('@nimiq/core');
-                const client = await getNetworkClient();
-
-                // Set active stake to 0 to deactivate all remaining stake
-                const transaction = TransactionBuilder.newSetActiveStake(
-                    Address.fromUserFriendlyAddress(activeAddress.value!),
-                    BigInt(0),
-                    BigInt(0),
-                    useNetworkStore().state.height,
-                    await client.getNetworkId(),
-                );
-
-                const deactivatedAmount = stake.value!.activeBalance;
-                const validatorRef = toValidatorRef(validator.value!);
-
-                const txs = await sendStaking({
-                    transaction: transaction.serialize(),
-                    recipientLabel: validatorLabel(validatorRef),
-                    validatorAddress: validatorRef.address,
-                    validatorImageUrl: validatorRef.logo,
-                    amount: deactivatedAmount,
+                const result = await startWatchtowerUnstaking({
+                    stake: currentStake,
+                    validator: toValidatorRef(currentValidator),
+                    activeBalanceAfter: 0,
                 });
 
-                if (!txs) {
+                if (result === 'cancelled') {
                     context.emit('statusChange', {
                         type: StakingOperationType.NONE,
                     });
                     return;
                 }
 
-                if (txs.some((tx) => tx.executionResult === false)) {
-                    throw new Error('The transaction did not succeed');
+                if (result === 'manual') {
+                    // The countdown footer repeats this notice. No success redirect: the warning stays
+                    // until the user closes it.
+                    context.emit('statusChange', {
+                        state: State.WARNING,
+                        title: $t('Automatic payout could not be scheduled') as string,
+                        message: $t('The unstaking has started, but the automatic payout could not be scheduled. '
+                            + 'Come back once the countdown has ended and pay out manually.') as string,
+                    });
+                    return;
                 }
 
                 context.emit('statusChange', {
                     state: State.SUCCESS,
                     title: $t('Successfully deactivated {amount} NIM', {
-                        amount: deactivatedAmount / 1e5,
+                        amount: currentStake.activeBalance / 1e5,
                     }),
                 });
 
@@ -601,6 +718,67 @@ export default defineComponent({
             }
         }
 
+        // Deactivate the stake that came back and sign the switch again. While active stake sits at the old
+        // validator, the update-staker the watchtower holds is rejected (see `switchStall`). A restart within the
+        // epoch of the deactivation it replaces leaves the release height unchanged, so that transaction is valid
+        // again and its job is kept (see `startWatchtowerSwitch`); a later one gets a job of its own. Either way
+        // the new record supersedes the old one.
+        async function resumeSwitch() {
+            const address = activeAddress.value;
+            const target = switchTarget.value;
+            if (!address || !target) return;
+            const currentValidator = ensureValidator('resumeSwitch');
+            if (!currentValidator) return;
+
+            context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
+                state: State.LOADING,
+                title: $t('Switching validator') as string,
+            });
+            if (!await ensureTargetActive(address)) return;
+
+            try {
+                const result = await startWatchtowerSwitch({
+                    stakerAddress: address,
+                    from: toValidatorRef(currentValidator),
+                    target,
+                });
+
+                if (result === 'cancelled') {
+                    context.emit('statusChange', { type: StakingOperationType.NONE });
+                    return;
+                }
+
+                if (result === 'manual') {
+                    context.emit('statusChange', {
+                        state: State.WARNING,
+                        title: $t('Validator switch needs a manual step') as string,
+                        message: $t('Your stake has been deactivated, but the automatic switch could not be scheduled. '
+                            + 'Come back once the countdown has ended and activate the validator manually.') as string,
+                    });
+                    return;
+                }
+
+                context.emit('statusChange', {
+                    state: State.SUCCESS,
+                    title: $t('Validator switch initiated') as string,
+                });
+
+                context.emit('statusChange', {
+                    type: StakingOperationType.NONE,
+                    timeout: SUCCESS_REDIRECT_DELAY,
+                });
+            } catch (error: any) {
+                reportToSentry(error);
+
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: $t('Something went wrong') as string,
+                    message: `${error.message}${error.data ? ` - ${error.data}` : ''}`,
+                });
+            }
+        }
+
         return {
             // NOW,
             // MONTH,
@@ -611,6 +789,7 @@ export default defineComponent({
             stakedBalance,
             percentage,
             inactiveReleaseTime,
+            replaceableTime,
             hasUnstakableStake,
             hasSubMinimumStakeBlockingPayout,
             isStakeDeactivating,
@@ -618,10 +797,16 @@ export default defineComponent({
             deactivateAll,
             unstakeAll,
             unstakeRest,
+            resumeSwitch,
+            canReplaceStalledSwitch,
             canSwitchValidator,
-            canManuallyActivateSwitch,
+            choosesValidator,
             isSwitchingValidator,
+            pendingOperation,
+            pendingOperationNeedsManualStep,
+            switchStall,
             switchTargetLabel,
+            switchTargetStatus,
             manualActivateSwitch,
             consensus,
             selectedRange,

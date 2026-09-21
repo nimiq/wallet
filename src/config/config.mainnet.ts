@@ -48,7 +48,7 @@ export default {
     },
 
     albatrossWatchtower: {
-        endpoint: 'https://watchtower.pos.nimiq.com',
+        endpoint: 'https://aegis.watchtower.nimiq.systems',
     },
 
     polygon: {

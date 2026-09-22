@@ -1,5 +1,5 @@
 <template>
-    <div class="validator-details-overlay" :class="{ 'no-button': noButton }">
+    <div class="validator-details-overlay">
         <div class="scroll-container">
             <PageHeader :backArrow="showBackArrow" @back="$emit('back')">
                 <ValidatorIcon :validator="validator" />
@@ -48,30 +48,28 @@
                 </p>
             </PageBody>
         </div>
-        <PageFooter>
-            <div class="confirm-button" v-if="!noButton">
-                <button class="nq-button light-blue" @click="selectValidator">
-                    {{ $t('Select validator') }}
-                </button>
-            </div>
-        </PageFooter>
+        <div class="bottom-bar">
+            <button class="action-button" :disabled="isActionDisabled" @click="onActionButtonClick">
+                {{ actionButtonLabel }}
+            </button>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
-import { PageHeader, PageBody, PageFooter } from '@nimiq/vue-components';
+import { defineComponent, computed, ref, onBeforeUnmount } from '@vue/composition-api';
+import { PageHeader, PageBody } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { Validator, useStakingStore } from '../../stores/Staking';
 import ValidatorIcon from './ValidatorIcon.vue';
 import ShortAddress from '../ShortAddress.vue';
 import ValidatorScoreDetails from './ValidatorScoreDetails.vue';
 import { useAddressStore } from '../../stores/Address';
-import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import { StakingOperationType } from '../../lib/StakingUtils';
-import { getNetworkClient } from '../../network';
+import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
+import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
+import { startWatchtowerSwitch } from '../../lib/WatchtowerOperations';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import BlueLink from '../BlueLink.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -83,10 +81,6 @@ export default defineComponent({
             type: Object as () => Validator,
             required: true,
         },
-        noButton: {
-            type: Boolean,
-            default: true,
-        },
         showBackArrow: {
             type: Boolean,
             default: false,
@@ -95,15 +89,153 @@ export default defineComponent({
     setup(props, context) {
         const { $t } = useI18n();
         const { activeAddress } = useAddressStore();
-        const { activeStake, setStake, activeValidator } = useStakingStore();
+        const {
+            activeStake, setStake, activeValidator, totalActiveStake,
+            pendingOperation,
+            clearSwitchOperation,
+        } = useStakingStore();
+        const { height } = useNetworkStore();
+
+        // Retired stake counts too: a retired-only staker still exists on chain and must never be
+        // overwritten by the zero placeholder written for a first validator selection.
+        const hasExistingStake = computed(() => totalActiveStake.value > 0);
+
+        const isCurrentValidator = computed(() => !!activeValidator.value
+            && activeValidator.value.address === props.validator.address);
+
+        // Every switch the user can start goes through this button, so a watchtower operation in flight
+        // (which chain balances alone can't reveal) disables it here, with the label giving the reason.
+        const actionButtonLabel = computed(() => {
+            if (pendingOperation.value === 'switch') return $t('Validator switch in progress');
+            if (pendingOperation.value === 'unstake') return $t('Unstaking in progress');
+            return hasExistingStake.value
+                ? $t('Switch validator')
+                : $t('Select validator');
+        });
+
+        const isSubmitting = ref(false);
+
+        const isActionDisabled = computed(() => isSubmitting.value || !!pendingOperation.value);
+
+        let successRedirectTimer: number | null = null;
+        function scheduleSuccessRedirect() {
+            if (successRedirectTimer !== null) clearTimeout(successRedirectTimer);
+            successRedirectTimer = window.setTimeout(() => {
+                successRedirectTimer = null;
+                // Emit `next` before clearing the status type so the parent closes the overlay
+                // before the StatusScreen disappears — otherwise the v-show-hidden overlay
+                // briefly flashes back into view.
+                context.emit('next');
+                context.emit('statusChange', { type: StakingOperationType.NONE });
+            }, SUCCESS_REDIRECT_DELAY);
+        }
+        onBeforeUnmount(() => {
+            if (successRedirectTimer !== null) clearTimeout(successRedirectTimer);
+        });
+
+        function ensureActiveValidator(opName: string): Validator | null {
+            const validator = activeValidator.value;
+            if (validator) return validator;
+            reportToSentry(new Error(`Attempted ${opName} without activeValidator`));
+            context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
+                state: State.WARNING,
+                title: $t('Something went wrong') as string,
+                message: $t('Validator information not available') as string,
+            });
+            return null;
+        }
+
+        async function switchViaWatchtower() {
+            const fromValidator = ensureActiveValidator('switchViaWatchtower');
+            if (!fromValidator) return;
+
+            context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
+                state: State.LOADING,
+                title: $t('Switching validator') as string,
+            });
+
+            const result = await startWatchtowerSwitch({
+                stakerAddress: activeAddress.value!,
+                from: toValidatorRef(fromValidator),
+                target: toValidatorRef(props.validator),
+            });
+
+            if (result === 'cancelled') {
+                context.emit('statusChange', { type: StakingOperationType.NONE });
+                return;
+            }
+
+            if (result === 'manual') {
+                // Close the overlay now, while the status screen still covers it, so dismissing the
+                // warning lands on the Info page's countdown footer. No success redirect: the warning
+                // stays until the user closes it.
+                context.emit('next');
+                context.emit('statusChange', {
+                    state: State.WARNING,
+                    title: $t('Validator switch needs a manual step') as string,
+                    message: $t('Your stake has been deactivated, but the automatic switch could not be scheduled. '
+                        + 'Come back once the countdown has ended and activate the validator manually.') as string,
+                });
+                return;
+            }
+
+            context.emit('statusChange', {
+                state: State.SUCCESS,
+                title: $t('Validator switch initiated') as string,
+            });
+
+            scheduleSuccessRedirect();
+        }
+
+        async function switchImmediate() {
+            const fromValidator = ensureActiveValidator('switchImmediate');
+            if (!fromValidator) return;
+
+            context.emit('statusChange', {
+                type: StakingOperationType.VALIDATOR,
+                state: State.LOADING,
+                title: $t('Changing validator') as string,
+            });
+
+            const target = toValidatorRef(props.validator);
+
+            const txs = await sendImmediateValidatorSwitch({
+                stakerAddress: activeAddress.value!,
+                height: height.value,
+                amount: activeStake.value!.inactiveBalance,
+                target,
+                from: toValidatorRef(fromValidator),
+            });
+
+            if (!txs) {
+                context.emit('statusChange', { type: StakingOperationType.NONE });
+                return;
+            }
+
+            if (txs.some((tx) => tx.executionResult === false)) {
+                throw new Error('The transaction did not succeed');
+            }
+
+            clearSwitchOperation(activeAddress.value!);
+
+            context.emit('statusChange', {
+                state: State.SUCCESS,
+                title: $t(
+                    'Successfully changed validator to {validator}',
+                    { validator: validatorLabel(target) },
+                ),
+            });
+
+            scheduleSuccessRedirect();
+        }
 
         async function selectValidator() {
-            const validatorLabelOrAddress = 'name' in props.validator
-                ? props.validator.name
-                : props.validator.address;
-
             try {
-                if (!activeStake.value || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
+                if (pendingOperation.value) return; // Defensive: the button is already disabled.
+
+                if (!hasExistingStake.value) {
                     setStake({
                         address: activeAddress.value!,
                         activeBalance: 0,
@@ -111,88 +243,62 @@ export default defineComponent({
                         validator: props.validator.address,
                         retiredBalance: 0,
                     });
-
                     context.emit('next');
-                } else {
-                    context.emit('statusChange', {
-                        type: StakingOperationType.VALIDATOR,
-                        state: State.LOADING,
-                        title: $t('Changing validator') as string,
-                    });
-
-                    const { Address, TransactionBuilder } = await import('@nimiq/core');
-                    const client = await getNetworkClient();
-
-                    const transaction = TransactionBuilder.newUpdateStaker(
-                        Address.fromUserFriendlyAddress(activeAddress.value!),
-                        Address.fromUserFriendlyAddress(props.validator.address),
-                        true,
-                        BigInt(0),
-                        useNetworkStore().state.height,
-                        await client.getNetworkId(),
-                    );
-
-                    const txs = await sendStaking({
-                        transaction: transaction.serialize(),
-                        senderLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                        recipientLabel: 'name' in props.validator ? props.validator.name : 'Validator',
-                        // @ts-expect-error Not typed yet in Hub
-                        validatorAddress: props.validator.address,
-                        validatorImageUrl: 'logo' in props.validator && !props.validator.hasDefaultLogo
-                            ? props.validator.logo
-                            : undefined,
-                        fromValidatorAddress: activeValidator.value!.address,
-                        fromValidatorImageUrl: 'logo' in activeValidator.value! && !activeValidator.value.hasDefaultLogo
-                            ? activeValidator.value.logo
-                            : undefined,
-                        amount: activeStake.value.inactiveBalance,
-                    }).catch((error) => {
-                        throw new Error(error.data);
-                    });
-
-                    if (!txs) {
-                        context.emit('statusChange', {
-                            type: StakingOperationType.NONE,
-                        });
-                        return;
-                    }
-
-                    if (txs.some((tx) => tx.executionResult === false)) {
-                        throw new Error('The transaction did not succeed');
-                    }
-
-                    context.emit('statusChange', {
-                        state: State.SUCCESS,
-                        title: $t(
-                            'Successfully changed validator to {validator}',
-                            { validator: validatorLabelOrAddress },
-                        ),
-                    });
-
-                    window.setTimeout(() => {
-                        context.emit('statusChange', { type: StakingOperationType.NONE });
-                        context.emit('next');
-                    }, SUCCESS_REDIRECT_DELAY);
+                    return;
                 }
+
+                if (activeStake.value!.activeBalance > 0) {
+                    await switchViaWatchtower();
+                    return;
+                }
+
+                if (activeStake.value!.inactiveBalance > 0
+                    && activeStake.value!.inactiveRelease
+                    && activeStake.value!.inactiveRelease <= height.value) {
+                    await switchImmediate();
+                    return;
+                }
+
+                // Stake is inactive but the cooldown has not yet ended.
+                context.emit('statusChange', {
+                    type: StakingOperationType.VALIDATOR,
+                    state: State.WARNING,
+                    title: $t('Cannot switch yet') as string,
+                    message: $t('Please wait for the cooldown period to end.') as string,
+                });
             } catch (error: any) {
                 reportToSentry(error);
-
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
-                    message: `${error.message} - ${error.data}`,
+                    message: `${error.message}${error.data ? ` - ${error.data}` : ''}`,
                 });
             }
         }
 
+        async function onActionButtonClick() {
+            if (isActionDisabled.value) return;
+            if (isCurrentValidator.value) {
+                context.emit('switch-validator');
+                return;
+            }
+            isSubmitting.value = true;
+            try {
+                await selectValidator();
+            } finally {
+                isSubmitting.value = false;
+            }
+        }
+
         return {
-            selectValidator,
+            onActionButtonClick,
+            actionButtonLabel,
+            isActionDisabled,
         };
     },
     components: {
         PageHeader,
         PageBody,
-        PageFooter,
         ValidatorIcon,
         ShortAddress,
         ValidatorScoreDetails,
@@ -206,15 +312,15 @@ export default defineComponent({
 @import '../../scss/mixins.scss';
 
 .validator-details-overlay {
-    max-height: calc(100% - 12rem);
-
-    &.no-button {
-        max-height: 100%;
-    }
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 .scroll-container {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
 
     @extend %custom-scrollbar;
@@ -307,24 +413,55 @@ hr {
     color: var(--text-50);
 }
 
-.confirm-button {
-    position: fixed;
-    bottom: 0rem;
-    left: 50%;
-    transform: translateX(-50%);
+.bottom-bar {
+    flex-shrink: 0;
 
-    --border-radius: 1.25rem;
-    border-bottom-right-radius: var(--border-radius);
-    border-bottom-left-radius: var(--border-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    width: 100%;
+    height: 9rem;
+    padding: 2.75rem 0;
 
     background-color: white;
-    box-shadow: 0 -40px 19px -15px white; // TODO: find a better solution (scroll mask?)
+    border-bottom-left-radius: 1.25rem;
+    border-bottom-right-radius: 1.25rem;
+    box-shadow:
+        0 0 4.125px rgba(31, 35, 72, 0.03),
+        0 0 12.519px rgba(31, 35, 72, 0.05),
+        0 0 32px rgba(31, 35, 72, 0.06),
+        0 0 80px rgba(31, 35, 72, 0.07);
+}
 
-    button {
-        margin: 0 auto;
-        width: 80%;
+.action-button {
+    border: none;
+    cursor: pointer;
+
+    padding: 0.625rem 1.5rem;
+    border-radius: 10rem;
+
+    background-color: rgba(31, 35, 72, 0.06);
+    color: var(--nimiq-blue);
+
+    font-family: 'Mulish', sans-serif;
+    font-size: 1.75rem;
+    font-weight: bold;
+    line-height: 1.22;
+
+    transition: background-color 200ms var(--nimiq-ease), opacity 200ms var(--nimiq-ease);
+
+    &:hover:not(:disabled),
+    &:focus:not(:disabled) {
+        background-color: rgba(31, 35, 72, 0.1);
+    }
+
+    &:active:not(:disabled) {
+        background-color: rgba(31, 35, 72, 0.14);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
     }
 }
 </style>

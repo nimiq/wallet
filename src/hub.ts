@@ -180,7 +180,14 @@ hubApi.on(HubApi.RequestType.MIGRATE, () => {
 
 hubApi.on(HubApi.RequestType.SIGN_TRANSACTION, async (tx) => {
     // TODO: Show status notification
-    await sendTx(tx);
+    // Handle both single transaction and multi-transaction responses
+    if (Array.isArray(tx)) {
+        for (const signedTx of tx) {
+            await sendTx(signedTx); // eslint-disable-line no-await-in-loop
+        }
+    } else {
+        await sendTx(tx);
+    }
 });
 
 hubApi.on(HubApi.RequestType.SIGN_BTC_TRANSACTION, async (tx) => {
@@ -510,13 +517,34 @@ export async function backup(accountId: string, exportMethod: 'fileOnly' | 'word
     return true;
 }
 
-export async function sendTransaction(request: Omit<SignTransactionRequest, 'appName'>, abortSignal?: AbortSignal) {
+// Type for sendTransaction that accepts both single and multi-transaction formats
+type SendTransactionParams = Omit<SignTransactionRequest, 'appName'> & {
+    // Allow any additional properties for compatibility
+    [key: string]: any,
+};
+
+export async function sendTransaction(
+    request: SendTransactionParams,
+    abortSignal?: AbortSignal,
+): Promise<PlainTransactionDetails | null> {
     const signedTransaction = await hubApi.signTransaction({
         appName: APP_NAME,
         ...request,
-    }, getBehavior({ abortSignal })).catch(onError);
+    } as SignTransactionRequest, getBehavior({ abortSignal })).catch(onError);
     if (!signedTransaction) return null;
 
+    // Handle both single transaction and multi-transaction responses
+    if (Array.isArray(signedTransaction)) {
+        // Multi-transaction: send all sequentially and return the last result
+        let lastResult: PlainTransactionDetails | undefined;
+        for (const tx of signedTransaction) {
+            lastResult = await sendTx(tx); // eslint-disable-line no-await-in-loop
+            if (lastResult.executionResult === false) break;
+        }
+        return lastResult || null;
+    }
+
+    // Single transaction
     return sendTx(signedTransaction);
 }
 
@@ -541,6 +569,86 @@ export async function sendStaking(request: Omit<SignStakingRequest, 'appName'>) 
     }
 
     return txDetails;
+}
+
+/**
+ * Sign multiple staking transactions for unstaking flow.
+ * This function signs 3 transactions: deactivation, retire, and unstake.
+ * The deactivation transaction is broadcast immediately, while retire and unstake
+ * are sent to the watchtower for later broadcasting.
+ */
+export async function signUnstakingTransactions(request: {
+    sender: string,
+    senderLabel?: string,
+    transactions: Uint8Array[], // Array of 3 serialized transactions: [deactivation, retire, unstake]
+    validatorAddress: string,
+    validatorImageUrl?: string,
+}): Promise<SignedTransaction[] | null> {
+    if (request.transactions.length !== 3) {
+        throw new Error('Expected exactly 3 transactions for unstaking flow: deactivation, retire, unstake');
+    }
+
+    const signedTransactions = await hubApi.signTransaction({
+        appName: APP_NAME,
+        layout: 'unstaking',
+        sender: request.sender,
+        senderLabel: request.senderLabel,
+        transactions: request.transactions,
+        validatorAddress: request.validatorAddress,
+        validatorImageUrl: request.validatorImageUrl,
+    }, getBehavior()).catch(onError);
+
+    if (!signedTransactions) return null;
+
+    if (!Array.isArray(signedTransactions)) {
+        // eslint-disable-next-line no-console
+        console.error('Hub returned non-array for multi-transaction request:', signedTransactions);
+        throw new Error('Hub did not return an array of signed transactions for unstaking flow');
+    }
+
+    if (signedTransactions.length !== 3) {
+        throw new Error(`Expected 3 signed transactions from Hub, got ${signedTransactions.length}`);
+    }
+
+    return signedTransactions;
+}
+
+/**
+ * Returns signed transactions without broadcasting — the caller broadcasts the deactivation
+ * and forwards the update-staker to the watchtower.
+ */
+export async function signSwitchValidatorTransactions(request: {
+    sender: string,
+    transactions: [Uint8Array, Uint8Array], // [set-active-stake, update-staker]
+    senderLabel?: string,
+    recipientLabel?: string,
+    validatorImageUrl?: string,
+    fromValidatorAddress: string,
+    fromValidatorImageUrl?: string,
+}): Promise<SignedTransaction[] | null> {
+    const signedTransactions = await hubApi.signTransaction({
+        appName: APP_NAME,
+        layout: 'switch-validator',
+        sender: request.sender,
+        senderLabel: request.senderLabel,
+        recipientLabel: request.recipientLabel,
+        transactions: request.transactions,
+        validatorImageUrl: request.validatorImageUrl,
+        fromValidatorAddress: request.fromValidatorAddress,
+        fromValidatorImageUrl: request.fromValidatorImageUrl,
+    }, getBehavior()).catch(onError);
+
+    if (!signedTransactions) return null;
+
+    if (!Array.isArray(signedTransactions)) {
+        throw new Error('Hub did not return an array of signed transactions for switch-validator flow');
+    }
+
+    if (signedTransactions.length !== 2) {
+        throw new Error(`Expected 2 signed transactions from Hub, got ${signedTransactions.length}`);
+    }
+
+    return signedTransactions;
 }
 
 export async function createCashlink(senderAddress: string, senderBalance?: number) {

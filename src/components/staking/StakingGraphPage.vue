@@ -83,6 +83,7 @@ import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { getNetworkClient } from '../../network';
 import { sendStaking } from '../../hub';
+import { startWatchtowerUnstaking } from '../../lib/WatchtowerOperations';
 
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
@@ -92,7 +93,7 @@ import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import AmountSlider from './AmountSlider.vue';
-import { StakingOperationType } from '../../lib/StakingUtils';
+import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import MessageTransition from '../MessageTransition.vue';
 import StakingGraph from './StakingGraph.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -117,15 +118,16 @@ export default defineComponent({
         async function performStaking() {
             if (isStakeBelowMinimum.value) return;
 
-            const validatorLabelOrAddress = 'name' in activeValidator.value!
-                ? activeValidator.value.name
-                : activeValidator.value!.address;
-
-            const { Address, TransactionBuilder } = await import('@nimiq/core');
-            const client = await getNetworkClient();
+            const validatorRef = toValidatorRef(activeValidator.value!);
+            const validatorLabelOrAddress = validatorLabel(validatorRef);
 
             try {
                 if (stakeDelta.value > 0) {
+                    // Only the staking branches build transactions here; unstaking is handled by
+                    // `startWatchtowerUnstaking`, which loads both itself.
+                    const { Address, TransactionBuilder } = await import('@nimiq/core');
+                    const client = await getNetworkClient();
+
                     context.emit('statusChange', {
                         type: StakingOperationType.STAKING,
                         state: State.LOADING,
@@ -136,7 +138,7 @@ export default defineComponent({
                         || (!activeStake.value.activeBalance && !activeStake.value.inactiveBalance)) {
                         const transaction = TransactionBuilder.newCreateStaker(
                             Address.fromUserFriendlyAddress(activeAddress.value!),
-                            Address.fromUserFriendlyAddress(activeValidator.value!.address),
+                            Address.fromUserFriendlyAddress(validatorRef.address),
                             BigInt(stakeDelta.value),
                             BigInt(0),
                             useNetworkStore().state.height,
@@ -144,12 +146,9 @@ export default defineComponent({
                         );
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
-                            recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                            // @ts-expect-error Not typed yet in Hub
-                            validatorImageUrl: 'logo' in activeValidator.value!
-                                && !activeValidator.value.hasDefaultLogo
-                                ? activeValidator.value.logo
-                                : undefined,
+                            recipientLabel: validatorLabelOrAddress,
+                            validatorAddress: validatorRef.address,
+                            validatorImageUrl: validatorRef.logo,
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -187,13 +186,9 @@ export default defineComponent({
                         );
                         const txs = await sendStaking({
                             transaction: transaction.serialize(),
-                            recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                            // @ts-expect-error Not typed yet in Hub
-                            validatorAddress: activeValidator.value!.address,
-                            validatorImageUrl: ('logo' in activeValidator.value!
-                                && !activeValidator.value.hasDefaultLogo)
-                                ? activeValidator.value.logo
-                                : undefined,
+                            recipientLabel: validatorLabelOrAddress,
+                            validatorAddress: validatorRef.address,
+                            validatorImageUrl: validatorRef.logo,
                         }).catch((error) => {
                             throw new Error(error.data);
                         });
@@ -227,35 +222,30 @@ export default defineComponent({
                         title: $t('Sending Staking Transaction') as string,
                     });
 
-                    const transaction = TransactionBuilder.newSetActiveStake(
-                        Address.fromUserFriendlyAddress(activeAddress.value!),
-                        BigInt(activeStake.value!.activeBalance + stakeDelta.value),
-                        BigInt(0),
-                        useNetworkStore().state.height,
-                        await client.getNetworkId(),
-                    );
-                    const txs = await sendStaking({
-                        transaction: transaction.serialize(),
-                        recipientLabel: 'name' in activeValidator.value! ? activeValidator.value.name : 'Validator',
-                        // @ts-expect-error Not typed yet in Hub
-                        validatorAddress: activeValidator.value!.address,
-                        validatorImageUrl: 'logo' in activeValidator.value! && !activeValidator.value.hasDefaultLogo
-                            ? activeValidator.value.logo
-                            : undefined,
-                        amount: Math.abs(stakeDelta.value),
-                    }).catch((error) => {
-                        throw new Error(error.data);
+                    const unstakeAmount = Math.abs(stakeDelta.value);
+
+                    const result = await startWatchtowerUnstaking({
+                        stake: activeStake.value!,
+                        validator: validatorRef,
+                        activeBalanceAfter: newStake.value,
                     });
 
-                    if (!txs) {
-                        context.emit('statusChange', {
-                            type: StakingOperationType.NONE,
-                        });
+                    if (result === 'cancelled') {
+                        context.emit('statusChange', { type: StakingOperationType.NONE });
                         return;
                     }
 
-                    if (txs.some((tx) => tx.executionResult === false)) {
-                        throw new Error('The transaction did not succeed');
+                    if (result === 'manual') {
+                        // Switch to the Info page (its countdown footer repeats this notice) while the status
+                        // screen still covers it. No success redirect: the warning stays until the user closes it.
+                        context.emit('next');
+                        context.emit('statusChange', {
+                            state: State.WARNING,
+                            title: $t('Automatic payout could not be scheduled') as string,
+                            message: $t('The unstaking has started, but the automatic payout could not be scheduled. '
+                                + 'Come back once the countdown has ended and pay out manually.') as string,
+                        });
+                        return;
                     }
 
                     context.emit('statusChange', {
@@ -263,16 +253,11 @@ export default defineComponent({
                         title: $t(
                             'Successfully deactivated {amount} NIM from your stake with {validator}',
                             {
-                                amount: Math.abs((activeStake.value!.inactiveBalance - stakeDelta.value) / 1e5),
+                                amount: Math.abs(unstakeAmount / 1e5),
                                 validator: validatorLabelOrAddress,
                             },
                         ),
                     });
-
-                    // if (Math.abs(stakeDelta.value) === activeStake.value!.activeBalance) {
-                    //     // Close staking modal
-                    //     router.back();
-                    // }
                 }
 
                 window.setTimeout(() => {

@@ -4,7 +4,7 @@ import { SignedTransaction } from '@nimiq/hub-api';
 import type { Client, PlainStakingContract, PlainTransactionDetails } from '@nimiq/core';
 
 import { useAddressStore } from './stores/Address';
-import { useTransactionsStore, TransactionState } from './stores/Transactions';
+import { useTransactionsStore, TransactionState, Transaction } from './stores/Transactions';
 import { useNetworkStore } from './stores/Network';
 import { useProxyStore } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
@@ -12,6 +12,7 @@ import { useStakingStore, ApiValidator, RawValidator, AggregatedRestakingEvent }
 import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
+import { usePolicy } from './composables/usePolicy';
 
 let isLaunched = false;
 let clientPromise: Promise<Client>;
@@ -162,10 +163,12 @@ export async function launchNetwork() {
                     inactiveBalance: staker.inactiveBalance,
                     inactiveRelease: staker.inactiveRelease,
                     validator: staker.delegation,
+                    inactiveFrom: staker.inactiveFrom,
                     retiredBalance: staker.retiredBalance,
                 });
             } else {
                 // Staker does not exist (anymore)
+                stakingStore.reconcileOperationRecords(address, null);
                 stakingStore.removeStake(address);
             }
         });
@@ -257,6 +260,7 @@ export async function launchNetwork() {
                 ? { consensus, height: headBlock.height, timestamp: headBlock.timestamp }
                 : { consensus });
 
+            stakingStore.syncWatchtowerOperations();
             const stop = watch(() => network$.fetchingTxHistory, (fetching) => {
                 if (fetching === 0) {
                     txHistoryWasInvalidatedSinceLastConsensus = false;
@@ -307,13 +311,22 @@ export async function launchNetwork() {
     });
 
     let currentEpoch = 0;
+    let currentBatch = 0;
 
     client.addHeadChangedListener(async (hash) => {
         const block = await retry(() => client.getBlock(hash)).catch(reportFor('getBlock'));
         if (!block) return;
-        const { height, timestamp, epoch } = block;
+        const { height, timestamp, epoch, batch } = block;
         console.debug('Nimiq head is now at', height);
         patchNetworkStore({ height, timestamp });
+
+        // The events the watchtower sync is for (a job registered from another browser, a job failing
+        // over there) leave no trace on our stakers, so poll once per batch while a payout is pending.
+        // Heads also arrive while syncing up, against stakes not refreshed yet — wait for consensus.
+        if (batch > currentBatch && network$.consensus === 'established') {
+            currentBatch = batch;
+            stakingStore.syncWatchtowerOperations();
+        }
 
         // The NanoApi did recheck all balances on every block
         // I don't think we need to do this here, as wallet addresses are only expected to
@@ -588,6 +601,100 @@ export async function sendTransaction(tx: SignedTransaction | string) {
     const plain = await client.sendTransaction(typeof tx === 'string' ? tx : tx.serializedTx);
     useTransactionsStore().addTransactions([plain]);
     return plain;
+}
+
+export async function waitForTransactionConfirmation(
+    txHash: string,
+    options?: Partial<{
+        timeout: number,
+        /** Wait for macro-block confirmation, not just micro-block inclusion. */
+        requireConfirmed: boolean,
+    }>,
+): Promise<void> {
+    const { timeout, requireConfirmed } = { timeout: 120000, requireConfirmed: false, ...options };
+    const transactionsStore = useTransactionsStore();
+    const networkStore = useNetworkStore();
+
+    const isIncluded = (tx: Transaction | undefined): boolean => !!tx && (
+        tx.state === TransactionState.INCLUDED
+        || tx.state === TransactionState.CONFIRMED
+        // @ts-expect-error MINED is not included in the types for PoS transactions
+        || tx.state === TransactionState.MINED
+    );
+
+    if (!requireConfirmed) {
+        if (isIncluded(transactionsStore.state.transactions[txHash])) return;
+        await new Promise<void>((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+                stop();
+                reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
+            }, timeout);
+            const stop = watch(
+                () => transactionsStore.state.transactions[txHash]?.state,
+                () => {
+                    if (isIncluded(transactionsStore.state.transactions[txHash])) {
+                        clearTimeout(timeoutId);
+                        stop();
+                        resolve();
+                    }
+                },
+            );
+        });
+        return;
+    }
+
+    // Macro-block confirmation: tx.state isn't reliable past `included` (it's mutated in
+    // place by `addTransactions` and Nimiq core doesn't always refire listeners). Instead,
+    // wait for `blockHeight`, compute the target macro block once, and watch the reactive
+    // chain height (which fires on every head-changed event).
+    const policy = await usePolicy();
+
+    const startTime = Date.now();
+    const remaining = () => Math.max(0, timeout - (Date.now() - startTime));
+
+    let tx = transactionsStore.state.transactions[txHash];
+    if (!tx || !tx.blockHeight) {
+        await new Promise<void>((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+                stop();
+                reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
+            }, remaining());
+            const stop = watch(
+                () => transactionsStore.state.transactions[txHash]?.blockHeight,
+                (blockHeight) => {
+                    if (blockHeight) {
+                        clearTimeout(timeoutId);
+                        stop();
+                        resolve();
+                    }
+                },
+            );
+        });
+        tx = transactionsStore.state.transactions[txHash];
+    }
+
+    const macroTarget = policy.macroBlockAfter(tx.blockHeight!);
+    if (networkStore.state.height >= macroTarget) return;
+
+    await new Promise<void>((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+            console.warn('waitForTransactionConfirmation: timeout', {
+                txHash, blockHeight: tx.blockHeight, macroTarget, height: networkStore.state.height,
+            });
+            stop();
+            reject(new Error(`Transaction confirmation timeout after ${timeout}ms for tx ${txHash}`));
+        }, remaining());
+        const stop = watch(
+            () => networkStore.state.height,
+            (h) => {
+                if (h >= macroTarget) {
+                    clearTimeout(timeoutId);
+                    stop();
+                    resolve();
+                }
+            },
+        );
+    });
 }
 
 async function retry<T>(func: (...args: any[]) => T | Promise<T>, options?: Partial<{

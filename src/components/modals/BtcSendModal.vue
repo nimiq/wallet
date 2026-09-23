@@ -183,6 +183,7 @@ import { useWindowSize } from '../../composables/useWindowSize';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { selectOutputs, estimateFees, normalizeAddress, validateAddress } from '../../lib/BitcoinTransactionUtils';
 import { getElectrumClient } from '../../electrum';
+import { trackBtcTransactionSent } from '../../lib/PostHog';
 import DoubleInput from '../DoubleInput.vue';
 
 export enum RecipientType {
@@ -559,6 +560,8 @@ export default defineComponent({
                 }
 
                 saveRecipientLabel();
+
+                trackBtcTransactionSent();
 
                 // Show success screen
                 statusState.value = State.SUCCESS;

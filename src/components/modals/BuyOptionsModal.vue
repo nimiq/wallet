@@ -146,14 +146,8 @@
                 <a href="https://www.gate.io/de/trade/NIM_USDT" title="Gate.io" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/gateio.svg" alt="Gate.io">
                 </a>
-                <a href="https://www.coinex.com/en/price/nim" title="CoinEx" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/coinex.svg" alt="CoinEx">
-                </a>
                 <a href="https://www.bitpanda.com/en/prices/nimiq-nim" title="Bitpanda" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/bitpanda.png" alt="Bitpanda">
-                </a>
-                <a href="https://changehero.io/?to=NIM" title="Changehero" target="_blank" rel="noopener">
-                    <img src="../../assets/exchanges/changehero.svg" alt="Changehero">
                 </a>
                 <a href="https://swapzone.io/?to=nim" title="Swapzone" target="_blank" rel="noopener">
                     <img src="../../assets/exchanges/swapzone.svg" alt="Swapzone">

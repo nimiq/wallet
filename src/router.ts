@@ -35,7 +35,6 @@ const AddressSelectorModal = () =>
     import(/* webpackChunkName: "address-selector-modal" */ './components/modals/AddressSelectorModal.vue');
 const TransactionModal = () =>
     import(/* webpackChunkName: "transaction-modal" */ './components/modals/TransactionModal.vue');
-const TradeModal = () => import(/* webpackChunkName: "trade-modal" */ './components/modals/TradeModal.vue');
 const BuyOptionsModal = () =>
     import(/* webpackChunkName: "buy-options-modal" */ './components/modals/BuyOptionsModal.vue');
 const ScanQrModal = () => import(/* webpackChunkName: "scan-qr-modal" */ './components/modals/ScanQrModal.vue');
@@ -138,7 +137,6 @@ export enum RouteName {
     ReceiveBtc = 'receive-btc',
     ReceiveUsdc = 'receive-usdc',
     Transaction = 'transaction',
-    Trade = 'trade',
     Buy = 'buy',
     BuyCrypto = 'buy-crypto',
     SellCrypto = 'sell-crypto',
@@ -360,14 +358,6 @@ const routes: RouteConfig[] = [{
             props: { modal: true },
             meta: { column: Columns.ADDRESS },
         }, {
-            path: '/trade',
-            components: {
-                modal: TradeModal,
-            },
-            name: RouteName.Trade,
-            meta: { column: Columns.DYNAMIC },
-        },
-        {
             path: '/buy-crypto',
             components: {
                 modal: BuyCryptoModal,

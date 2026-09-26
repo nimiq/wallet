@@ -166,10 +166,6 @@ msgstr ""
 msgid "20 sec"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:29
-msgid "24/7 Support"
-msgstr ""
-
 #: src/components/modals/BuyCryptoModal.vue:22
 #: src/components/modals/SellCryptoModal.vue:21
 msgid "3"
@@ -380,10 +376,6 @@ msgstr ""
 
 #: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:30
-msgid "Android and iOS App"
 msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:23
@@ -974,7 +966,7 @@ msgstr ""
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
-#: src/router.ts:94
+#: src/router.ts:93
 msgid "Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance is completed."
 msgstr ""
 
@@ -1296,10 +1288,6 @@ msgstr ""
 msgid "For a USD-pegged store of value"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:49
-msgid "For beginners"
-msgstr ""
-
 #: src/components/modals/WelcomeModal.vue:41
 msgid "For fast and low-fee crypto payments"
 msgstr ""
@@ -1334,7 +1322,7 @@ msgstr ""
 msgid "Funds sent to non-Polygon {ticker} versions could be permanently lost!"
 msgstr ""
 
-#: src/router.ts:74
+#: src/router.ts:73
 msgid "Gas abstraction is under maintenance"
 msgstr ""
 
@@ -1348,11 +1336,6 @@ msgstr ""
 
 #: src/components/modals/WalletStatusModal.vue:6
 msgid "Get answers straight from the blockchain, or from the people who know Nimiq best."
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:26
-#: src/components/modals/TradeModal.vue:46
-msgid "Get NIM"
 msgstr ""
 
 #: src/components/kyc/KycPrompt.vue:19
@@ -1835,10 +1818,6 @@ msgstr ""
 
 #: src/components/swap/SwapAnimation.vue:21
 msgid "No funds were received so the swap expired."
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:50
-msgid "No registration"
 msgstr ""
 
 #: src/components/staking/ValidatorScoreDetails.vue:135
@@ -2455,7 +2434,7 @@ msgstr ""
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
-#: src/router.ts:75
+#: src/router.ts:74
 msgid "Sending USDC and USDT is temporarily unavailable. It will be back as soon as the maintenance is completed."
 msgstr ""
 
@@ -2778,7 +2757,7 @@ msgstr ""
 msgid "Swap up to {limit} per 30 days."
 msgstr ""
 
-#: src/router.ts:93
+#: src/router.ts:92
 msgid "Swaps are under maintenance"
 msgstr ""
 
@@ -2945,10 +2924,6 @@ msgstr ""
 msgid "There are currently no free NIM available."
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:8
-msgid "There are many options, use a credit card or trade crypto. You can find more exchanges on {link}"
-msgstr ""
-
 #: src/components/layouts/AccountOverview.vue:24
 msgid "There is no ‘forgot password’"
 msgstr ""
@@ -3092,11 +3067,6 @@ msgstr ""
 msgid "Timeframe"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
-msgid "To {exchange}"
-msgstr ""
-
 #: src/components/layouts/AccountOverview.vue:129
 #: src/components/layouts/AccountOverview.vue:200
 #: src/components/swap/SwapModal.vue:37
@@ -3109,10 +3079,6 @@ msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:69
 msgid "Total fees"
-msgstr ""
-
-#: src/components/modals/TradeModal.vue:7
-msgid "Trade NIM and BTC"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:42

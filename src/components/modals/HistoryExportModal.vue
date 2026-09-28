@@ -17,6 +17,7 @@
                     <option v-for="year of years" :key="year">{{ year }}</option>
                 </select>
             </section>
+            <p v-if="exportError" class="export-error nq-red" role="alert">{{ exportError }}</p>
         </PageBody>
         <PageFooter>
             <button class="nq-button light-blue" :disabled="isExporting" @click="download" @mousedown.prevent>
@@ -57,8 +58,11 @@ export default defineComponent({
         const selectedYear = ref((new Date().getFullYear() - 1).toString());
 
         const isExporting = ref(false);
+        const exportError = ref('');
 
         async function download() {
+            if (isExporting.value) return;
+            exportError.value = '';
             const { activeAccountInfo } = useAccountStore();
             if (!activeAccountInfo.value) return;
 
@@ -98,17 +102,21 @@ export default defineComponent({
 
             isExporting.value = true;
 
-            await exportTransactions(
-                nimAddresses,
-                btcAddresses,
-                usdcAddresses,
-                usdtAddresses,
-                parseInt(selectedYear.value, 10),
-                format.value,
-                filename,
-            );
-
-            isExporting.value = false;
+            try {
+                await exportTransactions(
+                    nimAddresses,
+                    btcAddresses,
+                    usdcAddresses,
+                    usdtAddresses,
+                    parseInt(selectedYear.value, 10),
+                    format.value,
+                    filename,
+                );
+            } catch (error) {
+                exportError.value = $t('Could not export your history. Please try again.') as string;
+            } finally {
+                isExporting.value = false;
+            }
         }
 
         return {
@@ -118,6 +126,7 @@ export default defineComponent({
             selectedYear,
             download,
             isExporting,
+            exportError,
         };
     },
     components: {
@@ -145,6 +154,11 @@ export default defineComponent({
 
 .page-body {
     padding-top: 0;
+}
+
+.export-error {
+    margin: 2rem 0 0;
+    font-size: var(--body-size);
 }
 
 .button-group {

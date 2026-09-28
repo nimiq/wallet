@@ -912,6 +912,10 @@ msgid ""
 "the Simplex interface below."
 msgstr ""
 
+#: src/components/modals/HistoryExportModal.vue:116
+msgid "Could not export your history. Please try again."
+msgstr ""
+
 #: src/components/modals/SendModal.vue:53
 msgid "Create a Cashlink"
 msgstr ""
@@ -1052,7 +1056,7 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
-#: src/components/modals/HistoryExportModal.vue:24
+#: src/components/modals/HistoryExportModal.vue:25
 msgid "Download .csv file"
 msgstr ""
 
@@ -1342,7 +1346,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: src/components/modals/HistoryExportModal.vue:52
+#: src/components/modals/HistoryExportModal.vue:53
 msgid "Generic"
 msgstr ""
 

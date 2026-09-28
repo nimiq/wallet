@@ -1,4 +1,3 @@
-import { shim as shimAllSettled } from 'promise.allsettled';
 import { isHistorySupportedFiatCurrency } from '@nimiq/utils';
 import { getNetworkClient } from '../../network';
 import { useBtcTransactionsStore } from '../../stores/BtcTransactions';
@@ -15,6 +14,60 @@ export enum ExportFormat {
     GENERIC = 'generic',
     BLOCKPIT = 'blockpit',
 }
+
+const RECEIPTS_TIMEOUT = 15000;
+const NETWORK_TIMEOUT = 30000;
+const TRANSACTION_CONCURRENCY = 5;
+type Receipt = { block_height: number, hash: string }; // eslint-disable-line camelcase
+
+async function withTimeout<T>(promise: Promise<T>, milliseconds: number, onTimeout?: () => void): Promise<T> {
+    let timer: number | undefined;
+    try {
+        return await Promise.race([
+            promise,
+            new Promise<never>((_, reject) => {
+                timer = window.setTimeout(() => {
+                    reject(new Error('Transaction history request timed out'));
+                    onTimeout?.();
+                }, milliseconds);
+            }),
+        ]);
+    } finally {
+        window.clearTimeout(timer);
+    }
+}
+
+async function getReceipts(address: string, year: number): Promise<Receipt[]> {
+    // nimiq.watch is on adblocker lists, so use nimiqwatch.com to avoid getting blocked.
+    const apiUrl = `https://v2.${useConfig().config.environment === ENV_MAIN ? '' : 'test.'}nimiqwatch.com`;
+    for (let attempt = 0; attempt <= 4; attempt++) {
+        // Keep the existing retry delays: 0, 1, 2, 3 and 4 seconds.
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => { window.setTimeout(resolve, 1000 * attempt); });
+        const controller = new AbortController();
+        try {
+            // Include reading the body in the timeout: response headers alone do not complete a request.
+            // eslint-disable-next-line no-await-in-loop
+            const receipts: unknown = await withTimeout((async () => {
+                const response = await fetch(`${apiUrl}/api/v1/account-receipts/${address}/${year}`, {
+                    signal: controller.signal,
+                });
+                if (!response.ok) throw new Error('Could not retrieve transaction receipts');
+                return response.json();
+            })(), RECEIPTS_TIMEOUT, () => controller.abort());
+            if (!Array.isArray(receipts) || !receipts.every((receipt) => receipt
+                && typeof receipt.hash === 'string' && /^[a-f\d]{64}$/i.test(receipt.hash)
+                && Number.isInteger(receipt.block_height) && receipt.block_height >= 0)) {
+                throw new Error('Invalid transaction receipts');
+            }
+            return receipts;
+        } catch (error) {
+            if (attempt === 4) throw error;
+        }
+    }
+    throw new Error('Could not retrieve transaction receipts');
+}
+
 export async function exportTransactions(
     nimAddresses: string[],
     btcAddresses: { internal: string[], external: string[] },
@@ -49,38 +102,29 @@ export async function exportTransactions(
 
     /* eslint-disable no-await-in-loop */
     // Get receipts from block explorer and compare if we have all transactions
-    type Receipt = { block_height: number, hash: string }; // eslint-disable-line camelcase
-    const receiptsByAddress: Record<string, Receipt[]> = {};
-    for (const address of nimAddresses) {
-        for (let i = 0; i <= 4; i++) {
-            // Wait 1 second more for each retry, starting at 0 seconds, up to 4 seconds
-            await new Promise((res) => { window.setTimeout(res, 1000 * i); });
-            // nimiq.watch is on adblocker lists, so use nimiqwatch.com to avoid getting blocked
-            const apiUrl = `https://v2.${useConfig().config.environment === ENV_MAIN ? '' : 'test.'}nimiqwatch.com`;
-            const receipts = await fetch(`${apiUrl}/api/v1/account-receipts/${address}/${year}`)
-                .then((res) => res.json() as Promise<Receipt[]>)
-                .catch(() => undefined);
-            if (!receipts) continue;
-
-            receiptsByAddress[address] = receipts;
-            break;
-        }
-    }
     const presentTxHashes = new Set(nimTransactions.map((tx) => tx.transactionHash));
     const missingTxHashes = new Set<string>();
-    for (const receipts of Object.values(receiptsByAddress)) {
+    for (const address of nimAddresses) {
+        const receipts = await getReceipts(address, year);
         for (const receipt of receipts) {
             if (presentTxHashes.has(receipt.hash)) continue;
             missingTxHashes.add(receipt.hash);
         }
     }
     if (missingTxHashes.size) {
-        const client = await getNetworkClient();
-        shimAllSettled();
+        const client = await withTimeout(getNetworkClient(), NETWORK_TIMEOUT);
+        await withTimeout(client.waitForConsensusEstablished(), NETWORK_TIMEOUT);
         const newTxs: Transaction[] = [];
-        await Promise.allSettled([...missingTxHashes.values()].map(async (hash) => {
-            newTxs.push(await client.getTransaction(hash));
-        }));
+        const hashes = [...missingTxHashes];
+        for (let offset = 0; offset < hashes.length; offset += TRANSACTION_CONCURRENCY) {
+            const batch = hashes.slice(offset, offset + TRANSACTION_CONCURRENCY);
+            newTxs.push(...await Promise.all(batch.map(async (hash) => {
+                const transaction = await withTimeout(client.getTransaction(hash), NETWORK_TIMEOUT);
+                if (transaction.transactionHash !== hash) throw new Error('Invalid transaction returned');
+                return transaction;
+            })));
+        }
+        // Only update the store and produce a CSV once every required transaction has been retrieved.
         addTransactions(newTxs);
 
         if (format === ExportFormat.GENERIC) {
@@ -90,15 +134,18 @@ export async function exportTransactions(
                 ? fiatCurrency
                 : FiatCurrency.USD;
             for (let i = 0; i < 100; i++) {
+                const allFiatValuesReady = newTxs.every(({ transactionHash }) => {
+                    const transaction = nimTransactions$.transactions[transactionHash];
+                    return transaction?.fiatValue?.[fiatCurrency] !== undefined
+                        || transaction?.fiatValue?.[historyFiatCurrency] !== undefined;
+                });
+                if (allFiatValuesReady) break;
                 // Wait 100 milliseconds between each retry, 10 seconds maximum
                 await new Promise((res) => { window.setTimeout(res, 100); });
-                const hashToCheck = newTxs[Math.floor(Math.random() * newTxs.length)].transactionHash;
-                const transaction = nimTransactions$.transactions[hashToCheck];
-                if (transaction.fiatValue?.[fiatCurrency] || transaction.fiatValue?.[historyFiatCurrency]) break;
             }
         }
 
-        nimTransactions.push(...newTxs);
+        nimTransactions.push(...newTxs.map((tx) => nimTransactions$.transactions[tx.transactionHash] || tx));
     }
     /* eslint-enable no-await-in-loop */
 

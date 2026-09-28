@@ -176,10 +176,6 @@ msgstr "2-4 год."
 msgid "20 sec"
 msgstr "20 сек."
 
-#: src/components/modals/TradeModal.vue:29
-msgid "24/7 Support"
-msgstr "Підтримка 24/7"
-
 #: src/components/modals/BuyCryptoModal.vue:22
 #: src/components/modals/SellCryptoModal.vue:21
 msgid "3"
@@ -419,10 +415,6 @@ msgstr "Доступне оновлення до кошилька!"
 #: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
 msgstr "Доступне оновлення додатку гаманця."
-
-#: src/components/modals/TradeModal.vue:30
-msgid "Android and iOS App"
-msgstr "Android і iOS додаток"
 
 #: src/components/swap/SwapAnimation.vue:23
 msgid "Any funds sent will be refunded within 1-3 days."
@@ -981,6 +973,10 @@ msgstr ""
 "Скопіюйте та вставте свою адресу в\n"
 "Simplex інтерфейс нижче."
 
+#: src/components/modals/HistoryExportModal.vue:116
+msgid "Could not export your history. Please try again."
+msgstr ""
+
 #: src/components/modals/SendModal.vue:53
 msgid "Create a Cashlink"
 msgstr "Створити чек"
@@ -1047,7 +1043,7 @@ msgstr "Кредитна карта"
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
-#: src/router.ts:94
+#: src/router.ts:93
 msgid ""
 "Crypto swaps are temporarily unavailable. They will be back as soon as the "
 "maintenance is completed."
@@ -1128,7 +1124,7 @@ msgstr "Не використовуйте загальний IBAN!"
 msgid "Done"
 msgstr "Готово"
 
-#: src/components/modals/HistoryExportModal.vue:24
+#: src/components/modals/HistoryExportModal.vue:25
 msgid "Download .csv file"
 msgstr "Завантажити .csv файл"
 
@@ -1388,10 +1384,6 @@ msgstr ""
 msgid "For a USD-pegged store of value"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:49
-msgid "For beginners"
-msgstr "Для початківців"
-
 #: src/components/modals/WelcomeModal.vue:41
 msgid "For fast and low-fee crypto payments"
 msgstr ""
@@ -1437,7 +1429,7 @@ msgstr ""
 "Кошти, надіслані на {ticker} версії, що не належать до мережі Polygon, "
 "можуть бути безповоротно втрачені!"
 
-#: src/router.ts:74
+#: src/router.ts:73
 msgid "Gas abstraction is under maintenance"
 msgstr ""
 
@@ -1445,7 +1437,7 @@ msgstr ""
 msgid "General"
 msgstr "Загальні"
 
-#: src/components/modals/HistoryExportModal.vue:52
+#: src/components/modals/HistoryExportModal.vue:53
 msgid "Generic"
 msgstr "Загальний"
 
@@ -1454,11 +1446,6 @@ msgid ""
 "Get answers straight from the blockchain, or from the people who know Nimiq "
 "best."
 msgstr ""
-
-#: src/components/modals/TradeModal.vue:26
-#: src/components/modals/TradeModal.vue:46
-msgid "Get NIM"
-msgstr "Отримати NIM"
 
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
@@ -1984,10 +1971,6 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:21
 msgid "No funds were received so the swap expired."
 msgstr "Кошти не надійшли, тому термін дії обміну закінчився."
-
-#: src/components/modals/TradeModal.vue:50
-msgid "No registration"
-msgstr "Без реєстрації"
 
 #: src/components/staking/ValidatorScoreDetails.vue:135
 msgid "No reliability data available yet."
@@ -2634,7 +2617,7 @@ msgstr "Відправляється"
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
-#: src/router.ts:75
+#: src/router.ts:74
 msgid ""
 "Sending USDC and USDT is temporarily unavailable. It will be back as soon as"
 " the maintenance is completed."
@@ -2962,7 +2945,7 @@ msgstr "Обмін на {address}"
 msgid "Swap up to {limit} per 30 days."
 msgstr "Обмінюйте до {limit} протягом 30 днів."
 
-#: src/router.ts:93
+#: src/router.ts:92
 msgid "Swaps are under maintenance"
 msgstr ""
 
@@ -3145,14 +3128,6 @@ msgstr ""
 msgid "There are currently no free NIM available."
 msgstr "Безкоштовні NIM наразі недоступні."
 
-#: src/components/modals/TradeModal.vue:8
-msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
-" exchanges on {link}"
-msgstr ""
-"Існує багато варіантів - купуйте за допомогою банківської карти, або через біржу.\n"
-"Ви можете знайти більше крипто-бірж за посиланням: {link}"
-
 #: src/components/layouts/AccountOverview.vue:24
 msgid "There is no ‘forgot password’"
 msgstr "Функція \"відновлення паролю\" НЕ існує"
@@ -3309,11 +3284,6 @@ msgstr ""
 msgid "Timeframe"
 msgstr "Часовий проміжок"
 
-#: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
-msgid "To {exchange}"
-msgstr "До {exchange}"
-
 #: src/components/layouts/AccountOverview.vue:129
 #: src/components/layouts/AccountOverview.vue:200
 #: src/components/swap/SwapModal.vue:37
@@ -3327,10 +3297,6 @@ msgstr "Баланс"
 #: src/components/swap/SwapFeesTooltip.vue:69
 msgid "Total fees"
 msgstr "Сумарна комісія"
-
-#: src/components/modals/TradeModal.vue:7
-msgid "Trade NIM and BTC"
-msgstr "Торгуйте NIM і BTC"
 
 #: src/components/modals/BtcTransactionModal.vue:42
 #: src/components/modals/TransactionModal.vue:55

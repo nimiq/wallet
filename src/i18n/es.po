@@ -179,10 +179,6 @@ msgstr "2-4h"
 msgid "20 sec"
 msgstr "20 seg"
 
-#: src/components/modals/TradeModal.vue:29
-msgid "24/7 Support"
-msgstr "Soporte 24/7"
-
 #: src/components/modals/BuyCryptoModal.vue:22
 #: src/components/modals/SellCryptoModal.vue:21
 msgid "3"
@@ -428,10 +424,6 @@ msgstr "¡Hay una actualización de la billetera disponible, actualice ahora!"
 #: src/components/UpdateNotification.vue:7
 msgid "An update to the Wallet is available."
 msgstr "Hay una actualización disponible para la billetera."
-
-#: src/components/modals/TradeModal.vue:30
-msgid "Android and iOS App"
-msgstr "App de Android y iOS."
 
 #: src/components/swap/SwapAnimation.vue:23
 msgid "Any funds sent will be refunded within 1-3 days."
@@ -992,6 +984,10 @@ msgstr ""
 "Copie y pegue la información de su dirección en\n"
 "la interfaz Simplex debajo."
 
+#: src/components/modals/HistoryExportModal.vue:116
+msgid "Could not export your history. Please try again."
+msgstr ""
+
 #: src/components/modals/SendModal.vue:53
 msgid "Create a Cashlink"
 msgstr "Crear un Cashlink"
@@ -1058,7 +1054,7 @@ msgstr "Tarjeta de Crédito"
 msgid "Crypto swaps are currently under maintenance."
 msgstr "Intercambios de cripto estan actualmente en mantenimiento."
 
-#: src/router.ts:94
+#: src/router.ts:93
 msgid ""
 "Crypto swaps are temporarily unavailable. They will be back as soon as the "
 "maintenance is completed."
@@ -1139,7 +1135,7 @@ msgstr "No utilice IBAN genéricos!"
 msgid "Done"
 msgstr "Listo"
 
-#: src/components/modals/HistoryExportModal.vue:24
+#: src/components/modals/HistoryExportModal.vue:25
 msgid "Download .csv file"
 msgstr "Descargar archivo .csv"
 
@@ -1397,10 +1393,6 @@ msgstr ""
 msgid "For a USD-pegged store of value"
 msgstr ""
 
-#: src/components/modals/TradeModal.vue:49
-msgid "For beginners"
-msgstr "Para novatos"
-
 #: src/components/modals/WelcomeModal.vue:41
 msgid "For fast and low-fee crypto payments"
 msgstr ""
@@ -1446,7 +1438,7 @@ msgstr ""
 "Los fondos que se envían hacia versiones de {ticker} que no sean en Polygon "
 "podrían perderse permanentemente."
 
-#: src/router.ts:74
+#: src/router.ts:73
 msgid "Gas abstraction is under maintenance"
 msgstr ""
 
@@ -1454,7 +1446,7 @@ msgstr ""
 msgid "General"
 msgstr "General"
 
-#: src/components/modals/HistoryExportModal.vue:52
+#: src/components/modals/HistoryExportModal.vue:53
 msgid "Generic"
 msgstr "Genérico"
 
@@ -1463,11 +1455,6 @@ msgid ""
 "Get answers straight from the blockchain, or from the people who know Nimiq "
 "best."
 msgstr ""
-
-#: src/components/modals/TradeModal.vue:26
-#: src/components/modals/TradeModal.vue:46
-msgid "Get NIM"
-msgstr "Obtener NIM"
 
 #: src/components/kyc/KycPrompt.vue:19
 msgid "Get started"
@@ -1996,10 +1983,6 @@ msgstr ""
 #: src/components/swap/SwapAnimation.vue:21
 msgid "No funds were received so the swap expired."
 msgstr "No se han recibido fondos, entonces el intercambio ha espirado."
-
-#: src/components/modals/TradeModal.vue:50
-msgid "No registration"
-msgstr "No registro"
 
 #: src/components/staking/ValidatorScoreDetails.vue:135
 msgid "No reliability data available yet."
@@ -2661,7 +2644,7 @@ msgstr "Enviando Transacción"
 msgid "Sending Unstaking Transaction"
 msgstr ""
 
-#: src/router.ts:75
+#: src/router.ts:74
 msgid ""
 "Sending USDC and USDT is temporarily unavailable. It will be back as soon as"
 " the maintenance is completed."
@@ -2993,7 +2976,7 @@ msgstr "Intercambio a {address}"
 msgid "Swap up to {limit} per 30 days."
 msgstr "Haga intercambios de hasta  {limit} cada 30 días."
 
-#: src/router.ts:93
+#: src/router.ts:92
 msgid "Swaps are under maintenance"
 msgstr ""
 
@@ -3181,14 +3164,6 @@ msgstr ""
 msgid "There are currently no free NIM available."
 msgstr "Actualmente no hay NIM gratis disponibles."
 
-#: src/components/modals/TradeModal.vue:8
-msgid ""
-"There are many options, use a credit card or trade crypto. You can find more"
-" exchanges on {link}"
-msgstr ""
-"Existen muchas opciones, use una tarjeta de credito o intercambie sus "
-"criptomonedas. Puede encontrar mas casas de cambio en {link}"
-
 #: src/components/layouts/AccountOverview.vue:24
 msgid "There is no ‘forgot password’"
 msgstr "No hay opción de \"Olvidé mi contraseña\""
@@ -3345,11 +3320,6 @@ msgstr ""
 msgid "Timeframe"
 msgstr "Periodo de tiempo"
 
-#: src/components/modals/TradeModal.vue:36
-#: src/components/modals/TradeModal.vue:56
-msgid "To {exchange}"
-msgstr "Hacia {exchange}"
-
 #: src/components/layouts/AccountOverview.vue:129
 #: src/components/layouts/AccountOverview.vue:200
 #: src/components/swap/SwapModal.vue:37
@@ -3363,10 +3333,6 @@ msgstr "Balance Total"
 #: src/components/swap/SwapFeesTooltip.vue:69
 msgid "Total fees"
 msgstr "Cuotas totales"
-
-#: src/components/modals/TradeModal.vue:7
-msgid "Trade NIM and BTC"
-msgstr "Intercambie NIM y BTC"
 
 #: src/components/modals/BtcTransactionModal.vue:42
 #: src/components/modals/TransactionModal.vue:55

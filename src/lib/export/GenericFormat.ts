@@ -90,6 +90,12 @@ export class GenericFormat extends Format {
         if (txIn) this.assertAndSetCryptoAsset(txIn);
         if (txOut) this.assertAndSetCryptoAsset(txOut);
 
+        let message = messageOverride || '';
+        if (!message && ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
+            || (txOut && txOut.asset === 'NIM' && !txIn))) {
+            message = this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn);
+        }
+
         this.rows.push([
             // (txIn || txOut)!.transactionHash,
             ...Object.values(this.formatDate(timestamp)),
@@ -100,10 +106,7 @@ export class GenericFormat extends Format {
             txOut && valueOut ? this.formatAmount(txOut.asset, valueOut) : '',
             txOut && feeOut ? txOut.asset : '',
             txOut && feeOut ? this.formatAmount(txOut.asset, feeOut) : '',
-            messageOverride || ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
-                || (txOut && txOut.asset === 'NIM' && !txIn))
-                ? this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn)
-                : '',
+            message,
             txIn && fiatIn ? this.referenceAsset.toUpperCase() : '',
             txIn && fiatIn ? fiatIn.toFixed(this.referenceDecimals) : '',
             txOut && fiatOut ? this.referenceAsset.toUpperCase() : '',

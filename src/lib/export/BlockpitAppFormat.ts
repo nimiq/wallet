@@ -99,6 +99,12 @@ export class BlockpitAppFormat extends Format {
             ({ value: valueOut, outgoingFee: feeOut } = this.getValue(txOut, false));
         }
 
+        let message = messageOverride || '';
+        if (!message && ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
+            || (txOut && txOut.asset === 'NIM' && !txIn))) {
+            message = this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn);
+        }
+
         this.rows.push([
             (++this.id).toString(),
             this.EXCHANGE_NAME,
@@ -111,10 +117,7 @@ export class BlockpitAppFormat extends Format {
             txOut && feeOut ? txOut.asset : '',
             txOut && feeOut ? this.formatAmount(txOut.asset, feeOut) : '',
             txIn && txOut ? 'trade' : txIn ? 'deposit' : 'withdrawal',
-            messageOverride || ((txIn && this.getTxAsset(txIn) === 'NIM' && !txOut)
-                || (txOut && txOut.asset === 'NIM' && !txIn))
-                ? this.formatNimiqData((txIn || txOut!) as NimTx, !!txIn)
-                : '',
+            message,
             '', // linkedTransaction ? linkedTransaction.toString() : '',
         ]);
     }

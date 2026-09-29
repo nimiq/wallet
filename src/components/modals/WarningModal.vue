@@ -1,6 +1,8 @@
 <template>
-    <Modal ref="modal$" class="warning-modal" :class="color" :closeButtonInverse="!!color">
-        <PageHeader :backArrow="backArrow !== undefined ? backArrow : !!$route.params.canUserGoBack" @back="back">
+    <component :is="embedded ? 'div' : 'Modal'" ref="modal$" class="warning-modal"
+        :class="[color, { 'page flex-column': embedded }]" v-bind="embedded ? {} : { closeButtonInverse: !!color }">
+        <PageHeader @back="back"
+            :backArrow="backArrow !== undefined ? backArrow : !embedded && !!$route.params.canUserGoBack">
             <div v-if="$slots.icon || icon !== 'none'" class="icon">
                 <slot name="icon">
                     <MaintenanceIcon v-if="icon === 'maintenance'"/>
@@ -25,7 +27,7 @@
                 {{ closeLabel || $t('Got it') }}
             </button>
         </PageFooter>
-    </Modal>
+    </component>
 </template>
 
 <script lang="ts">
@@ -84,8 +86,14 @@ const WarningModal = defineComponent({
             type: Boolean,
             default: undefined, // such that we can fall back to the canUserGoBack route param if it's not set
         },
+        // Render without the Modal wrapper, e.g. as overlay page of another modal, which then has to handle the close
+        // and back events.
+        embedded: {
+            type: Boolean,
+            default: false,
+        },
     },
-    setup(props) {
+    setup(props, { emit }) {
         const router = useRouter();
         const modal$ = ref<Modal>(null);
 
@@ -93,12 +101,20 @@ const WarningModal = defineComponent({
         const buttonClasses = computed(() => (props.color ? [props.color, 'inverse'] : ['light-blue']));
 
         function back() {
-            disableNextModalTransition();
-            router.back();
+            if (props.embedded) {
+                emit('back');
+            } else {
+                disableNextModalTransition();
+                router.back();
+            }
         }
 
         function close() {
-            modal$.value!.forceClose();
+            if (props.embedded) {
+                emit('close');
+            } else {
+                modal$.value!.forceClose();
+            }
         }
 
         return {
@@ -152,6 +168,13 @@ export function createWarningModal(props: () => WarningModalProps) {
     display: none;
 }
 
+// If embedded, fill the containing page, including its rounded corners, for colored backgrounds.
+.page {
+    max-height: 100%;
+    flex-grow: 1;
+    border-radius: inherit;
+}
+
 .subtitle {
     font-size: var(--body-size);
     font-weight: 600;
@@ -162,7 +185,6 @@ export function createWarningModal(props: () => WarningModalProps) {
 
 .page-body {
     align-items: center;
-    justify-content: center;
     padding: 0 4rem 2rem;
 }
 
@@ -196,7 +218,8 @@ export function createWarningModal(props: () => WarningModalProps) {
 
 @each $color in ('orange', 'red', 'gold', 'green', 'light-blue') {
     .warning-modal.#{$color} {
-        ::v-deep .small-page {
+        ::v-deep .small-page,
+        &.page { // if embedded
             background: var(--nimiq-#{$color});
             background-image: var(--nimiq-#{$color}-bg);
             color: white;

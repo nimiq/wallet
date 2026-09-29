@@ -45,6 +45,7 @@
 ^\/validator-details[\/#\?]?$
 ^\/staking\/rewards(?:\/([^\/#\?]+?))?[\/#\?]?$
 ^\/wallet-status[\/#\?]?$
+^\/swap(?:\/(.*USD[CT]_MATIC.*))[\/#\?]?$
 ^\/settings[\/#\?]?$
 ^\/accounts[\/#\?]?$
 ^\/disclaimer[\/#\?]?$

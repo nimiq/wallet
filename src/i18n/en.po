@@ -2607,6 +2607,14 @@ msgstr ""
 msgid "Stability"
 msgstr ""
 
+#: src/router.ts:108
+msgid "Stablecoin swaps are currently disabled"
+msgstr ""
+
+#: src/router.ts:109
+msgid "Stablecoin swaps are temporarily disabled. A vulnerability was exploited in the Polygon contract that powers gas-free USDC/USDT transactions, so we've paused them while we fix it. Your wallet is non-custodial, so your funds stay under your control. If you need to move them now, you can import your account into another Polygon wallet like MetaMask. NIM and BTC swaps are not affected."
+msgstr ""
+
 #: src/components/staking/StakingButton.vue:33
 msgid "Stake"
 msgstr ""

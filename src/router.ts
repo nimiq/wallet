@@ -101,6 +101,18 @@ const SwapModal = () => (areSwapsUnderMaintenance()
                 + 'is completed.') as string,
         })))
     : import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue'));
+const StablecoinSwapMaintenanceModal = () =>
+    import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
+        .then(({ createWarningModal }) => createWarningModal(() => ({
+            icon: 'warning',
+            title: i18n.t('Stablecoin swaps are currently disabled') as string,
+            message: i18n.t('Stablecoin swaps are temporarily disabled. A vulnerability was exploited in the Polygon '
+                + 'contract that powers gas-free USDC/USDT transactions, so we\'ve paused them while we fix it. Your '
+                + 'wallet is non-custodial, so your funds stay under your control. If you need to move them now, you '
+                + 'can import your account into another Polygon wallet like MetaMask. NIM and BTC '
+                + 'swaps are not affected.') as string,
+            link: 'https://x.com/nimiq/status/2100661471789412565',
+        })));
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>
@@ -165,6 +177,7 @@ export enum RouteName {
     MultisigAnnouncement = 'multisig-announcement',
     Backup = 'backup',
     Swap = 'swap',
+    StablecoinSwapMaintenance = 'stablecoin-swap-maintenance',
     MoonpaySellInfo = 'moonpay-sell-info',
     Moonpay = 'moonpay',
     Simplex = 'simplex',
@@ -574,6 +587,20 @@ const routes: RouteConfig[] = [{
             name: RouteName.WalletStatus,
             meta: { column: Columns.DYNAMIC },
         },
+        // While the gas abstraction is under maintenance, show a warning instead of the SwapModal for swaps with USDC
+        // or USDT. Registered before the regular swap route to take precedence, as paths are matched in registration
+        // order. This covers paths like /swap/NIM-USDC_MATIC as opened by AccountOverview, deep links and history
+        // navigation, but not named navigation to RouteName.Swap, which is fine as the SwapModal doesn't offer USDC or
+        // USDT during the maintenance, see getWalletEnabledSwapAssets. Parentheses aren't supported within param
+        // patterns.
+        ...(Config.polygon.isGasAbstractionUnderMaintenance ? [{
+            path: '/swap/:pair(.*USD[CT]_MATIC.*)',
+            components: {
+                modal: StablecoinSwapMaintenanceModal,
+            },
+            name: RouteName.StablecoinSwapMaintenance,
+            meta: { column: Columns.ACCOUNT },
+        }] : []),
         // Sidebar modals - base routes
         sidebarModalRoutes.buy.base,
         sidebarModalRoutes.sellCrypto.base,

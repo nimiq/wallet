@@ -1,28 +1,28 @@
 <template>
     <Modal ref="modal$" class="warning-modal" :class="color" :closeButtonInverse="!!color">
         <PageHeader :backArrow="backArrow !== undefined ? backArrow : !!$route.params.canUserGoBack" @back="back">
-            {{ title }}
-            <template v-if="subtitle" #more>
-                <div class="subtitle">{{ subtitle }}</div>
-            </template>
-        </PageHeader>
-        <PageBody class="flex-column">
             <div v-if="$slots.icon || icon !== 'none'" class="icon">
                 <slot name="icon">
                     <MaintenanceIcon v-if="icon === 'maintenance'"/>
                     <AlertTriangleIcon v-else-if="icon === 'warning'"/>
                 </slot>
             </div>
+            {{ title }}
+            <template v-if="subtitle" #more>
+                <div class="subtitle">{{ subtitle }}</div>
+            </template>
+        </PageHeader>
+        <PageBody class="flex-column">
             <slot>
                 <p v-if="message" class="nq-text">{{ message }}</p>
             </slot>
             <a v-if="link" class="nq-link" :href="link" target="_blank" rel="noopener">
-                {{ linkLabel || $t('See latest updates') }}
+                {{ linkLabel || $t('More info') }}
             </a>
         </PageBody>
         <PageFooter>
             <button class="nq-button" :class="buttonClasses" @click="close" @mousedown.prevent>
-                {{ closeLabel || $t('Ok') }}
+                {{ closeLabel || $t('Got it') }}
             </button>
         </PageFooter>
     </Modal>
@@ -163,18 +163,19 @@ export function createWarningModal(props: () => WarningModalProps) {
 .page-body {
     align-items: center;
     justify-content: center;
-    padding: 1rem 4rem 2rem;
+    padding: 0 4rem 2rem;
 }
 
 .icon {
-    flex-shrink: 0;
-    margin-bottom: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 4rem;
     color: var(--text-30);
 
     ::v-deep svg {
         display: block;
         width: 16rem;
         height: 16rem;
+        margin: auto;
         fill: currentColor;
     }
 }

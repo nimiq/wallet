@@ -1357,6 +1357,7 @@ msgstr ""
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
+#: src/components/modals/WarningModal.vue:25
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1714,6 +1715,10 @@ msgstr ""
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr ""
 
+#: src/components/modals/WarningModal.vue:20
+msgid "More info"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
 msgstr ""
@@ -1883,10 +1888,6 @@ msgstr ""
 
 #: src/components/layouts/Settings.vue:196
 msgid "Off"
-msgstr ""
-
-#: src/components/modals/WarningModal.vue:25
-msgid "Ok"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:381
@@ -2297,10 +2298,6 @@ msgstr ""
 
 #: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
-msgstr ""
-
-#: src/components/modals/WarningModal.vue:20
-msgid "See latest updates"
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:20

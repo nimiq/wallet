@@ -970,7 +970,7 @@ msgstr ""
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
-#: src/router.ts:93
+#: src/router.ts:100
 msgid "Crypto swaps are temporarily unavailable. They will be back as soon as the maintenance is completed."
 msgstr ""
 
@@ -1326,8 +1326,8 @@ msgstr ""
 msgid "Funds sent to non-Polygon {ticker} versions could be permanently lost!"
 msgstr ""
 
-#: src/router.ts:73
-msgid "Gas abstraction is under maintenance"
+#: src/router.ts:74
+msgid "Gas abstraction is currently disabled"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:44
@@ -2420,6 +2420,10 @@ msgstr ""
 msgid "Send, receive and hold BTC in your wallet."
 msgstr ""
 
+#: src/router.ts:75
+msgid "Sending and receiving USDC/USDT is temporarily disabled due to a security issue with our Polygon gas abstraction contract. Stablecoins sent to you will still arrive, but you can't move them here until it's fixed, so please avoid receiving them for now. Your funds stay under your control. If you need to move them now, you can import your account into another Polygon wallet like MetaMask."
+msgstr ""
+
 #: src/components/staking/StakingGraphPage.vue:134
 #: src/components/staking/StakingGraphPage.vue:222
 msgid "Sending Staking Transaction"
@@ -2433,10 +2437,6 @@ msgstr ""
 
 #: src/components/staking/StakingInfoPage.vue:489
 msgid "Sending Unstaking Transaction"
-msgstr ""
-
-#: src/router.ts:74
-msgid "Sending USDC and USDT is temporarily unavailable. It will be back as soon as the maintenance is completed."
 msgstr ""
 
 #: src/components/modals/BackupModal.vue:30
@@ -2758,7 +2758,7 @@ msgstr ""
 msgid "Swap up to {limit} per 30 days."
 msgstr ""
 
-#: src/router.ts:92
+#: src/router.ts:99
 msgid "Swaps are under maintenance"
 msgstr ""
 

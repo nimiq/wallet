@@ -265,6 +265,17 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     const client = await getPolygonClient();
     const store = useGaslessPaymentsStore();
 
+    if (!corrects) {
+        // A payment of the same token to the same recipient that failed as far as the user was told might still
+        // execute. Sending again is therefore a correction of it, which keeps its nonce, not a new payment.
+        corrects = Object.values(store.state.payments)
+            .filter(({ latest, status }) => status !== GaslessPaymentStatus.SUBMITTED
+                && core.sameAddress(latest.from, from)
+                && core.sameAddress(latest.token, token)
+                && core.sameAddress(latest.to, to))
+            .sort((a, b) => b.signedAt - a.signedAt)[0]?.latest;
+    }
+
     if (corrects) {
         // Before signing a new version of the payment, make sure that no version executed yet.
         const used = await contract.nonceUsed(corrects.from, corrects.nonce) as boolean;
@@ -273,8 +284,13 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
             const outcome = await waitForTransferOutcome(client.provider, contract, pins, corrects, id, { relay });
             store.settle(corrects);
             if (outcome.status === 'executed' || outcome.status === 'other_version_executed') {
-                // The payment went through. Never sign again for it.
-                return transactionFromOutcome(outcome);
+                // The payment went through after all. Never sign again for it.
+                const tx = await transactionFromOutcome(outcome);
+                if (tx) tokenTransactionsStore(tx.token!).addTransactions([tx]);
+                throw new GaslessTransferError(
+                    'Your earlier payment to this recipient went through after all. No new payment was made.',
+                    null,
+                );
             }
             // The sender invalidated the nonce: no version can execute, and a new payment is safe.
             corrects = undefined;
@@ -328,74 +344,80 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     // Record the version as the payment's latest before submitting it
     store.recordSigned(request, id);
 
-    // Submit. After an unclear answer, post the identical body again: the relay answers a body it stored with 200.
-    let unclear = false;
-    for (let attempt = 1; ; attempt++) {
-        try {
-            await relay.submitTransfer(body, { repost: unclear }); // eslint-disable-line no-await-in-loop
-            store.setStatus(request, GaslessPaymentStatus.SUBMITTED);
-            break;
-        } catch (error) {
-            if (error instanceof relayModule.RelayApiError) {
-                if (error.code === 'conflict' || error.code === 'nonce_used') {
-                    // Another version of this payment is stored or executed. Its outcome decides.
-                    settleInBackground(request, id);
-                    throw new GaslessTransferError(
-                        'Another version of this payment is pending. Please wait a few minutes before retrying.',
-                        request,
-                    );
-                }
-                if (!RETRYABLE_RELAY_ERRORS.includes(error.code)) {
-                    // The relay refused this version and did not store it
-                    store.setStatus(request, GaslessPaymentStatus.REFUSED);
-                    settleInBackground(request, id);
-                    throw new GaslessTransferError(`The relay refused the transfer: ${error.message}`, request);
-                }
-                if (error.code === 'internal_error') unclear = true;
-            } else if (error instanceof relayModule.RelayClientError) {
-                if (error.code === 'pin_mismatch') {
-                    settleInBackground(request, id);
-                    throw new GaslessTransferError('The relay does not match the Wallet\'s configuration', request);
-                }
-                unclear = true;
-            } else {
-                // Validation errors before sending: nothing was sent in this attempt
-                settleInBackground(request, id);
-                throw new GaslessTransferError(error instanceof Error ? error.message : String(error), request);
-            }
-            if (attempt >= MAX_SUBMIT_ATTEMPTS) {
-                settleInBackground(request, id);
-                throw new GaslessTransferError(`Could not reach the relay: ${(error as Error).message}`, request);
-            }
-            await new Promise((resolve) => { window.setTimeout(resolve, 2000 * attempt); }); // eslint-disable-line
-        }
-    }
-
-    let txHash: string | null;
     try {
-        const state = await relay.waitForRequest(id as `0x${string}`, { until: 'mined', timeoutMs: 3 * 60e3 });
-        txHash = state.txHash;
-    } catch (error) {
-        settleInBackground(request, id);
-        if (error instanceof relayModule.RelayRequestFailedError) {
+        // Submit. After an unclear answer, post the identical body again: the relay answers a body it stored with 200.
+        let unclear = false;
+        for (let attempt = 1; ; attempt++) {
+            try {
+                await relay.submitTransfer(body, { repost: unclear }); // eslint-disable-line no-await-in-loop
+                store.setStatus(request, GaslessPaymentStatus.SUBMITTED);
+                break;
+            } catch (error) {
+                if (error instanceof relayModule.RelayApiError) {
+                    if (error.code === 'conflict' || error.code === 'nonce_used') {
+                        // Another version of this payment is stored or executed. Its outcome decides.
+                        settleInBackground(request, id);
+                        throw new GaslessTransferError(
+                            'Another version of this payment is pending. Please wait a few minutes before retrying.',
+                            request,
+                        );
+                    }
+                    if (!RETRYABLE_RELAY_ERRORS.includes(error.code)) {
+                        // The relay refused this version and did not store it
+                        settleInBackground(request, id);
+                        throw new GaslessTransferError(`The relay refused the transfer: ${error.message}`, request);
+                    }
+                    if (error.code === 'internal_error') unclear = true;
+                } else if (error instanceof relayModule.RelayClientError) {
+                    if (error.code === 'pin_mismatch') {
+                        settleInBackground(request, id);
+                        throw new GaslessTransferError('The relay does not match the Wallet\'s configuration', request);
+                    }
+                    unclear = true;
+                } else {
+                    // Validation errors before sending: nothing was sent in this attempt
+                    settleInBackground(request, id);
+                    throw new GaslessTransferError(error instanceof Error ? error.message : String(error), request);
+                }
+                if (attempt >= MAX_SUBMIT_ATTEMPTS) {
+                    settleInBackground(request, id);
+                    throw new GaslessTransferError(`Could not reach the relay: ${(error as Error).message}`, request);
+                }
+                await new Promise((resolve) => { window.setTimeout(resolve, 2000 * attempt); }); // eslint-disable-line
+            }
+        }
+
+        let txHash: string | null;
+        try {
+            const state = await relay.waitForRequest(id as `0x${string}`, { until: 'mined', timeoutMs: 3 * 60e3 });
+            txHash = state.txHash;
+        } catch (error) {
+            settleInBackground(request, id);
+            if (error instanceof relayModule.RelayRequestFailedError) {
+                throw new GaslessTransferError(
+                    `The transfer failed: ${error.state.error?.message || error.relayCode || error.message}`,
+                    request,
+                );
+            }
             throw new GaslessTransferError(
-                `The transfer failed: ${error.state.error?.message || error.relayCode || error.message}`,
+                'The transfer is still pending. It shows up in your history once it is included.',
                 request,
             );
         }
-        throw new GaslessTransferError(
-            'The transfer is still pending. It shows up in your history once it is included.',
-            request,
-        );
-    }
 
-    // Settle the payment once its block is final
-    settleInBackground(request, id);
+        // Settle the payment once its block is final
+        settleInBackground(request, id);
 
-    const receipt = txHash ? await client.provider.getTransactionReceipt(txHash) : null;
-    if (!receipt) {
-        throw new GaslessTransferError('The transfer was sent, but its receipt is not available yet', request);
+        const receipt = txHash ? await client.provider.getTransactionReceipt(txHash) : null;
+        if (!receipt) {
+            throw new GaslessTransferError('The transfer was sent, but its receipt is not available yet', request);
+        }
+        updatePolygonBalances(token, [from]);
+        return gaslessReceiptToTransaction(receipt, from);
+    } catch (error) {
+        if (error instanceof GaslessTransferError && error.payment) {
+            store.setStatus(error.payment, GaslessPaymentStatus.FAILED);
+        }
+        throw error;
     }
-    updatePolygonBalances(token, [from]);
-    return gaslessReceiptToTransaction(receipt, from);
 }

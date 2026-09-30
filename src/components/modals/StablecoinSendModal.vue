@@ -733,13 +733,13 @@ export default defineComponent({
                     feeQuote.value || undefined,
                     corrects,
                 );
-                failedPayment.value = null;
 
                 if (!tx) {
                     statusScreenOpened.value = false;
                     return;
                 }
 
+                failedPayment.value = null;
                 saveRecipientLabel();
 
                 if (stablecoin.value === CryptoCurrency.USDC) {
@@ -768,7 +768,8 @@ export default defineComponent({
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 reportToSentry(error);
-                if (error instanceof GaslessTransferError && error.payment) {
+                if (error instanceof GaslessTransferError) {
+                    // Null if the payment's outcome is final
                     failedPayment.value = error.payment;
                 }
 

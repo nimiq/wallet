@@ -166,10 +166,14 @@ export default defineComponent({
             }
 
             if (config.polygon.enabled && stablecoin.value && isGaslessTransferConfigured()) {
-                const quote = await quoteGaslessFee(stablecoin.value === CryptoCurrency.USDC
-                    ? config.polygon.usdc.tokenContract
-                    : config.polygon.usdt_bridged.tokenContract);
-                polygonFee.value = Number(quote.fee);
+                try {
+                    const quote = await quoteGaslessFee(stablecoin.value === CryptoCurrency.USDC
+                        ? config.polygon.usdc.tokenContract
+                        : config.polygon.usdt_bridged.tokenContract);
+                    polygonFee.value = Number(quote.fee);
+                } catch (error) {
+                    console.warn('Failed to fetch the gasless transfer fee', error); // eslint-disable-line no-console
+                }
             }
         }
 

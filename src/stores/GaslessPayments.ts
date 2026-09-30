@@ -13,10 +13,13 @@ import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 export enum GaslessPaymentStatus {
     /** Signed, but not (yet) known to be stored by the relay. */
     SIGNED = 'signed',
-    /** Stored by the relay. */
+    /** Stored by the relay, and on its way to be executed. */
     SUBMITTED = 'submitted',
-    /** The relay refused this version and did not store it. A retry must be a correction with the same nonce. */
-    REFUSED = 'refused',
+    /**
+     * Sending this version failed, as far as the user was told. It might still execute, though. The next send of the
+     * same token to the same recipient is therefore a correction of it, with the same nonce.
+     */
+    FAILED = 'failed',
 }
 
 export interface GaslessPayment {

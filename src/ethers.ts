@@ -605,27 +605,16 @@ export async function launchPolygon() {
 
         const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
-        const MAX_ALLOWANCE = client.ethers
-            .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-
-        // The minimum allowance that should remain so we can be certain the max allowance was ever given.
-        // If the current allowance is below this number, we ignore allowance counting for the history sync.
-        const MIN_ALLOWANCE = client.ethers
-            .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
-
         Promise.all([
             client.usdcBridgedToken.balanceOf(address) as Promise<BigNumber>,
             client.usdcBridgedToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            client.usdcBridgedToken.allowance(address, config.polygon.usdc_bridged.transferContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
-            client.usdcBridgedToken.allowance(address, config.polygon.usdc_bridged.htlcContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
+            getLegacyAllowanceUsed(
+                client,
+                client.usdcBridgedToken,
+                address,
+                config.polygon.usdc_bridged.transferContract,
+            ),
+            getLegacyAllowanceUsed(client, client.usdcBridgedToken, address, config.polygon.usdc_bridged.htlcContract),
         ]).then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
             let blockHeight = await getPolygonBlockNumber();
 
@@ -913,27 +902,11 @@ export async function launchPolygon() {
 
         const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
-        const MAX_ALLOWANCE = client.ethers
-            .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-
-        // The minimum allowance that should remain so we can be certain the max allowance was ever given.
-        // If the current allowance is below this number, we ignore allowance counting for the history sync.
-        const MIN_ALLOWANCE = client.ethers
-            .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
-
         Promise.all([
             client.usdcToken.balanceOf(address) as Promise<BigNumber>,
             client.usdcToken.nonces(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            client.usdcToken.allowance(address, config.polygon.usdc.transferContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
-            client.usdcToken.allowance(address, config.polygon.usdc.htlcContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
+            getLegacyAllowanceUsed(client, client.usdcToken, address, config.polygon.usdc.transferContract),
+            getLegacyAllowanceUsed(client, client.usdcToken, address, config.polygon.usdc.htlcContract),
         ]).then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
             let blockHeight = await getPolygonBlockNumber();
 
@@ -1189,27 +1162,16 @@ export async function launchPolygon() {
 
         const STEP_BLOCKS = config.polygon.rpcMaxBlockRange;
 
-        const MAX_ALLOWANCE = client.ethers
-            .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-
-        // The minimum allowance that should remain so we can be certain the max allowance was ever given.
-        // If the current allowance is below this number, we ignore allowance counting for the history sync.
-        const MIN_ALLOWANCE = client.ethers
-            .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
-
         Promise.all([
             client.usdtBridgedToken.balanceOf(address) as Promise<BigNumber>,
             client.usdtBridgedToken.getNonce(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
-            client.usdtBridgedToken.allowance(address, config.polygon.usdt_bridged.transferContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
-            client.usdtBridgedToken.allowance(address, config.polygon.usdt_bridged.htlcContract)
-                .then((allowance: BigNumber) => {
-                    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
-                    return MAX_ALLOWANCE.sub(allowance);
-                }) as Promise<BigNumber>,
+            getLegacyAllowanceUsed(
+                client,
+                client.usdtBridgedToken,
+                address,
+                config.polygon.usdt_bridged.transferContract,
+            ),
+            getLegacyAllowanceUsed(client, client.usdtBridgedToken, address, config.polygon.usdt_bridged.htlcContract),
         ]).then(async ([balance, nonce, transferAllowanceUsed, htlcAllowanceUsed]) => {
             let blockHeight = await getPolygonBlockNumber();
 
@@ -1654,6 +1616,28 @@ export async function getUsdtBridgedHtlcContract() {
         provider,
     );
     return usdtBridgedHtlcContract;
+}
+
+/**
+ * How much of the max allowance that was given to a legacy OpenGSN-based contract was used, for the history sync. Zero
+ * if the contract is not configured or no max allowance was given.
+ */
+async function getLegacyAllowanceUsed(
+    client: PolygonClient,
+    tokenContract: Contract,
+    owner: string,
+    spender: string,
+): Promise<BigNumber> {
+    if (!spender) return client.ethers.BigNumber.from(0);
+    const MAX_ALLOWANCE = client.ethers
+        .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+    // The minimum allowance that should remain so we can be certain the max allowance was ever given.
+    // If the current allowance is below this number, we ignore allowance counting for the history sync.
+    const MIN_ALLOWANCE = client.ethers
+        .BigNumber.from('0x1000000000000000000000000000000000000000000000000000000000000000');
+    const allowance = await tokenContract.allowance(owner, spender) as BigNumber;
+    if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
+    return MAX_ALLOWANCE.sub(allowance);
 }
 
 const legacyFeePoolAddresses = new Map<string, string>();

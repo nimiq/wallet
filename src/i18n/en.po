@@ -12,7 +12,7 @@ msgstr ""
 
 #: src/components/modals/StablecoinSendModal.vue:185
 #: src/components/modals/StablecoinSendModal.vue:211
-#: src/components/swap/SwapModal.vue:57
+#: src/components/swap/SwapModal.vue:66
 msgid "{amount} fee"
 msgstr ""
 
@@ -29,8 +29,8 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:321
 #: src/components/modals/TransactionModal.vue:333
-#: src/components/modals/UsdcTransactionModal.vue:263
-#: src/components/modals/UsdtTransactionModal.vue:244
+#: src/components/modals/UsdcTransactionModal.vue:266
+#: src/components/modals/UsdtTransactionModal.vue:247
 msgid "{count} Confirmation | {count} Confirmations"
 msgstr ""
 
@@ -55,7 +55,7 @@ msgstr ""
 msgid "{currency} payout pending"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:381
+#: src/components/swap/SwapModal.vue:408
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
@@ -64,7 +64,7 @@ msgid "{fee} fee"
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:22
-#: src/components/swap/SwapFeesTooltip.vue:49
+#: src/components/swap/SwapFeesTooltip.vue:63
 msgid "{perc}% of swap value."
 msgstr ""
 
@@ -89,7 +89,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:110
 #: src/components/modals/BuyCryptoModal.vue:83
 #: src/components/modals/SellCryptoModal.vue:86
-#: src/components/swap/SwapModal.vue:94
+#: src/components/swap/SwapModal.vue:103
 msgid "{value} remaining"
 msgstr ""
 
@@ -124,7 +124,7 @@ msgstr ""
 
 #: src/components/modals/StablecoinSendModal.vue:179
 #: src/components/modals/StablecoinSendModal.vue:205
-#: src/components/swap/SwapModal.vue:51
+#: src/components/swap/SwapModal.vue:60
 msgid "< {amount} fee"
 msgstr ""
 
@@ -173,7 +173,7 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:103
 #: src/components/modals/SellCryptoModal.vue:79
-#: src/components/swap/SwapModal.vue:89
+#: src/components/swap/SwapModal.vue:98
 msgid "30-day Limit"
 msgstr ""
 
@@ -235,8 +235,8 @@ msgstr ""
 msgid "Accounts"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:161
-#: src/components/layouts/AccountOverview.vue:276
+#: src/components/layouts/AccountOverview.vue:160
+#: src/components/layouts/AccountOverview.vue:274
 msgid "Activate"
 msgstr ""
 
@@ -345,12 +345,12 @@ msgstr ""
 msgid "All countries"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:284
+#: src/components/layouts/AccountOverview.vue:282
 #: src/components/LegacyAccountNotice.vue:37
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:282
+#: src/components/layouts/AddressOverview.vue:294
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -494,7 +494,7 @@ msgid "BIC works, too."
 msgstr ""
 
 #: src/components/AddressList.vue:191
-#: src/components/layouts/AccountOverview.vue:142
+#: src/components/layouts/AccountOverview.vue:141
 #: src/components/layouts/AddressOverview.vue:118
 #: src/components/layouts/Settings.vue:119
 #: src/components/LegacyAccountNotice.vue:21
@@ -519,15 +519,15 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:318
 #: src/components/modals/TransactionModal.vue:330
-#: src/components/modals/UsdcTransactionModal.vue:260
-#: src/components/modals/UsdtTransactionModal.vue:241
+#: src/components/modals/UsdcTransactionModal.vue:263
+#: src/components/modals/UsdtTransactionModal.vue:244
 msgid "Block #{height}"
 msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:329
 #: src/components/modals/TransactionModal.vue:343
-#: src/components/modals/UsdcTransactionModal.vue:273
-#: src/components/modals/UsdtTransactionModal.vue:254
+#: src/components/modals/UsdcTransactionModal.vue:276
+#: src/components/modals/UsdtTransactionModal.vue:257
 #: src/components/swap/SwapAnimation.vue:196
 #: src/components/swap/SwapAnimation.vue:276
 msgid "Block explorer"
@@ -619,13 +619,13 @@ msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:201
 #: src/components/modals/SellCryptoModal.vue:182
-#: src/components/swap/SwapModal.vue:187
+#: src/components/swap/SwapModal.vue:196
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot} and {FastspotGO}."
 msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:215
 #: src/components/modals/SellCryptoModal.vue:196
-#: src/components/swap/SwapModal.vue:199
+#: src/components/swap/SwapModal.vue:208
 msgid "By clicking '{text}', you agree to the ToS of {Fastspot}."
 msgstr ""
 
@@ -729,15 +729,15 @@ msgid "Choose a validator to switch after another cooldown."
 msgstr ""
 
 #: src/components/modals/AddressSelectorModal.vue:11
-#: src/components/modals/BuyCryptoModal.vue:285
-#: src/components/modals/SellCryptoModal.vue:249
+#: src/components/modals/BuyCryptoModal.vue:286
+#: src/components/modals/SellCryptoModal.vue:250
 #: src/components/modals/SendModal.vue:208
 #: src/components/staking/SelectAccountOverlay.vue:4
-#: src/components/swap/SwapModal.vue:240
+#: src/components/swap/SwapModal.vue:251
 msgid "Choose an Address"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:232
+#: src/components/layouts/AccountOverview.vue:230
 msgid "Choose Stablecoin"
 msgstr ""
 
@@ -766,7 +766,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:284
+#: src/components/layouts/AddressOverview.vue:296
 #: src/components/staking/StakingModal.vue:220
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
@@ -777,9 +777,9 @@ msgid "Coinify is a third-party service requiring registration and KYC."
 msgstr ""
 
 #: src/components/SendModalFooter.vue:9
-#: src/components/swap/SwapModal.vue:185
-#: src/components/swap/SwapModal.vue:190
-#: src/components/swap/SwapModal.vue:202
+#: src/components/swap/SwapModal.vue:194
+#: src/components/swap/SwapModal.vue:199
+#: src/components/swap/SwapModal.vue:211
 msgid "Confirm"
 msgstr ""
 
@@ -879,7 +879,15 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:393
+#: src/components/layouts/AddressOverview.vue:255
+msgid "Convert to USDC"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:248
+msgid "Convert your USDC.e to the new standard."
+msgstr ""
+
+#: src/components/modals/UsdcTransactionModal.vue:413
 #: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
@@ -958,7 +966,7 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:377
+#: src/components/swap/SwapModal.vue:404
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
@@ -1146,7 +1154,7 @@ msgstr ""
 msgid "Euro"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:73
+#: src/components/swap/SwapModal.vue:82
 msgid "Exchange rate"
 msgstr ""
 
@@ -1185,8 +1193,12 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:857
+#: src/components/modals/StablecoinSendModal.vue:858
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:994
+msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
 
 #: src/components/TransactionList.vue:39
@@ -1392,8 +1404,8 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:474
 #: src/components/modals/TransactionModal.vue:542
-#: src/components/modals/UsdcTransactionModal.vue:389
-#: src/components/modals/UsdtTransactionModal.vue:366
+#: src/components/modals/UsdcTransactionModal.vue:409
+#: src/components/modals/UsdtTransactionModal.vue:388
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:193
 #: src/composables/useUsdcTransactionInfo.ts:148
@@ -1405,8 +1417,8 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:474
 #: src/components/modals/TransactionModal.vue:557
 #: src/components/modals/TransactionModal.vue:563
-#: src/components/modals/UsdcTransactionModal.vue:389
-#: src/components/modals/UsdtTransactionModal.vue:366
+#: src/components/modals/UsdcTransactionModal.vue:409
+#: src/components/modals/UsdtTransactionModal.vue:388
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:208
 #: src/composables/useTransactionInfo.ts:214
@@ -1446,7 +1458,7 @@ msgstr ""
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:213
+#: src/components/swap/SwapNotification.vue:229
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1514,7 +1526,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1429
+#: src/components/swap/SwapModal.vue:2020
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1550,6 +1562,7 @@ msgstr ""
 msgid "Learn about the new Nimiq"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:250
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:18
@@ -1568,7 +1581,7 @@ msgstr ""
 msgid "Legacy USDC (USDC.e)"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:269
+#: src/components/layouts/AddressOverview.vue:281
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -1598,7 +1611,7 @@ msgstr ""
 msgid "Loading chart..."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:107
+#: src/components/swap/SwapModal.vue:116
 msgid "Loading fees and limits"
 msgstr ""
 
@@ -1609,7 +1622,7 @@ msgstr ""
 #: src/components/modals/BuyCryptoModal.vue:108
 #: src/components/modals/BuyCryptoModal.vue:92
 #: src/components/modals/SellCryptoModal.vue:84
-#: src/components/swap/SwapModal.vue:92
+#: src/components/swap/SwapModal.vue:101
 msgid "loading..."
 msgstr ""
 
@@ -1770,7 +1783,7 @@ msgstr ""
 msgid "NIM"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:39
+#: src/components/swap/SwapFeesTooltip.vue:53
 msgid "NIM network fee"
 msgstr ""
 
@@ -1794,7 +1807,7 @@ msgstr ""
 msgid "No availability data available yet."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:212
+#: src/components/swap/SwapNotification.vue:228
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -2144,7 +2157,14 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:311
 #: src/components/modals/TransactionModal.vue:323
+#: src/components/modals/UsdcTransactionModal.vue:256
+#: src/components/modals/UsdtTransactionModal.vue:237
 msgid "Refund"
+msgstr ""
+
+#: src/components/modals/UsdcTransactionModal.vue:578
+#: src/components/modals/UsdtTransactionModal.vue:546
+msgid "Refund failed: "
 msgstr ""
 
 #: src/components/swap/SwapSepaFundingInstructions.vue:72
@@ -2202,11 +2222,15 @@ msgstr ""
 msgid "Restart it to switch after another cooldown."
 msgstr ""
 
+#: src/components/swap/SwapAnimation.vue:650
+msgid "Restart payout process"
+msgstr ""
+
 #: src/components/staking/StakingInfoPage.vue:130
 msgid "Restart switch"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:854
+#: src/components/swap/SwapModal.vue:1087
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2540,11 +2564,11 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:270
+#: src/components/layouts/AddressOverview.vue:282
 msgid "Signup"
 msgstr ""
 
-#: src/components/modals/BuyCryptoModal.vue:263
+#: src/components/modals/BuyCryptoModal.vue:264
 msgid "Simulate EUR payment"
 msgstr ""
 
@@ -2560,7 +2584,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:731
-#: src/components/modals/StablecoinSendModal.vue:777
+#: src/components/modals/StablecoinSendModal.vue:778
 #: src/components/staking/StakingGraphPage.vue:273
 #: src/components/staking/StakingInfoPage.vue:476
 #: src/components/staking/StakingInfoPage.vue:557
@@ -2679,7 +2703,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:197
+#: src/components/layouts/AccountOverview.vue:195
 msgid "Swap BTC {arrowIcon} {ticker}"
 msgstr ""
 
@@ -2687,7 +2711,7 @@ msgstr ""
 msgid "Swap Currencies"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:45
+#: src/components/swap/SwapFeesTooltip.vue:59
 msgid "Swap fee"
 msgstr ""
 
@@ -2706,7 +2730,7 @@ msgstr ""
 msgid "Swap more per 30 days."
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:125
+#: src/components/layouts/AccountOverview.vue:124
 msgid "Swap NIM {arrowIcon} {ticker}"
 msgstr ""
 
@@ -2714,7 +2738,11 @@ msgstr ""
 msgid "Swap NIM {arrowIcon} BTC"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:37
+#: src/components/swap/SwapModal.vue:44
+msgid "Swap not possible. Ledger accounts are not supported."
+msgstr ""
+
+#: src/components/swap/SwapModal.vue:41
 msgid "Swap not possible. Your balance is lower than the fee."
 msgstr ""
 
@@ -2806,7 +2834,7 @@ msgid "Terms & Conditions"
 msgstr ""
 
 #: src/components/AddressList.vue:210
-#: src/components/layouts/AccountOverview.vue:224
+#: src/components/layouts/AccountOverview.vue:222
 #: src/components/layouts/AddressOverview.vue:124
 #: src/components/swap/SwapBalanceBar.vue:29
 #: src/components/swap/SwapBalanceBar.vue:55
@@ -2829,7 +2857,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:848
+#: src/components/swap/SwapModal.vue:1081
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
@@ -3043,8 +3071,9 @@ msgstr ""
 msgid "Timeframe"
 msgstr ""
 
-#: src/components/layouts/AccountOverview.vue:130
-#: src/components/layouts/AccountOverview.vue:202
+#: src/components/layouts/AccountOverview.vue:129
+#: src/components/layouts/AccountOverview.vue:200
+#: src/components/swap/SwapModal.vue:37
 msgid "To swap with USDC/USDT, choose a stablecoin."
 msgstr ""
 
@@ -3052,7 +3081,7 @@ msgstr ""
 msgid "Total Balance"
 msgstr ""
 
-#: src/components/swap/SwapFeesTooltip.vue:55
+#: src/components/swap/SwapFeesTooltip.vue:69
 msgid "Total fees"
 msgstr ""
 
@@ -3180,7 +3209,7 @@ msgid "Update validator"
 msgstr ""
 
 #: src/components/AddressList.vue:200
-#: src/components/layouts/AccountOverview.vue:221
+#: src/components/layouts/AccountOverview.vue:219
 #: src/components/layouts/AddressOverview.vue:121
 #: src/components/modals/WelcomeModal.vue:57
 #: src/components/swap/SwapBalanceBar.vue:24
@@ -3191,8 +3220,12 @@ msgstr ""
 msgid "USD Coin"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:279
-msgid "USDC/USDT swaps are no longer supported."
+#: src/components/swap/SwapFeesTooltip.vue:39
+msgid "USDC network fee"
+msgstr ""
+
+#: src/components/swap/SwapFeesTooltip.vue:46
+msgid "USDT network fee"
 msgstr ""
 
 #: src/components/TransactionDetailOasisPayoutStatus.vue:11
@@ -3366,6 +3399,10 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:512
+msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
+msgstr ""
+
 #: src/components/swap/SwapAnimation.vue:50
 msgid "You exceeded the 30-day limit of your bank account and will be refunded. Please note that network fees may be deducted from your funds."
 msgstr ""
@@ -3467,7 +3504,7 @@ msgstr ""
 msgid "Your stake has been deactivated, but the automatic switch could not be scheduled. Come back once the countdown has ended and activate the validator manually."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:278
+#: src/components/layouts/AddressOverview.vue:290
 msgid "Your swap was successful!"
 msgstr ""
 

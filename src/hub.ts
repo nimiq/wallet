@@ -7,9 +7,11 @@ import HubApi, {
     type SetupSwapRequest,
     type SetupSwapResult,
     type RefundSwapRequest,
+    type SignPolygonTransactionRequest,
     type RequestType,
     type ResultByRequestType,
     type PopupRequestBehavior,
+    type SignedPolygonTransaction,
     type SignedTransaction,
 } from '@nimiq/hub-api';
 import type { PlainTransactionDetails } from '@nimiq/core';
@@ -952,8 +954,24 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
     return hubApi.setupSwap(requestWithAppNamePromise, getBehavior()).catch(onError);
 }
 
+export async function swapBridgedUsdcToNative(requestPromise: Promise<Omit<SignPolygonTransactionRequest, 'appName'>>)
+    : Promise<SignedPolygonTransaction | null | void> {
+    const requestWithAppNamePromise = requestPromise.then((request) => ({
+        ...request,
+        appName: APP_NAME,
+    }));
+    return hubApi.signPolygonTransaction(requestWithAppNamePromise, getBehavior()).catch(onError);
+}
+
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
     return hubApi.refundSwap(
+        requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
+        getBehavior(),
+    ).catch(onError);
+}
+
+export async function signPolygonTransaction(requestPromise: Promise<Omit<SignPolygonTransactionRequest, 'appName'>>) {
+    return hubApi.signPolygonTransaction(
         requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
         getBehavior(),
     ).catch(onError);

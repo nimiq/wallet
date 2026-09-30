@@ -109,6 +109,12 @@ export type ActiveSwap = SwapObject & {
     settlementTx?: PlainTransactionDetails | BtcTransactionDetails | OasisHtlc
         | UsdcTransaction | UsdtTransaction,
     error?: string,
+    errorAction?: SwapErrorAction,
+}
+
+export enum SwapErrorAction {
+    USDC_RESIGN_REDEEM = 'usdc-resign-redeem',
+    USDT_RESIGN_REDEEM = 'usdt-resign-redeem',
 }
 
 export type SwapsState = {

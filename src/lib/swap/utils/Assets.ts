@@ -35,8 +35,9 @@ export function getWalletEnabledSwapAssets(): SwapAsset[] {
     return [
         ...(!config.disableNetworkInteraction ? [SwapAsset.NIM] : []),
         ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
-        // USDC_MATIC and USDT_MATIC are not offered for swapping (anymore), but remain in SupportedSwapAsset for
-        // displaying historic swaps.
+        ...(config.polygon.enabled && !config.polygon.isGasAbstractionUnderMaintenance
+            ? [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC]
+            : []),
     ];
 }
 

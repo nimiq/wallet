@@ -34,6 +34,20 @@
             <!-- <p class="explainer">{{ $t('Banking network fee') }}</p> -->
         </template>
 
+        <template v-if="usdcFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('USDC network fee') }}</label>
+                <FiatAmount :amount="usdcFeeFiat" :currency="currency"/>
+            </div>
+        </template>
+
+        <template v-if="usdtFeeFiat !== undefined">
+            <div class="price-breakdown">
+                <label>{{ $t('USDT network fee') }}</label>
+                <FiatAmount :amount="usdtFeeFiat" :currency="currency"/>
+            </div>
+        </template>
+
         <template v-if="nimFeeFiat !== undefined">
             <div class="price-breakdown">
                 <label>{{ $t('NIM network fee') }}</label>
@@ -60,6 +74,8 @@
                     + (oasisFeeFiat || 0)
                     + (sepaFeeFiat || 0)
                     + (nimFeeFiat || 0)
+                    + (usdcFeeFiat || 0)
+                    + (usdtFeeFiat || 0)
                     + serviceSwapFeeFiat"
                 :currency="currency" :hideDecimals="false"/>
         </div>
@@ -96,6 +112,14 @@ export default defineComponent({
             required: false,
         },
         nimFeeFiat: {
+            type: Number,
+            required: false,
+        },
+        usdcFeeFiat: {
+            type: Number,
+            required: false,
+        },
+        usdtFeeFiat: {
             type: Number,
             required: false,
         },

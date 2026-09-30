@@ -46,11 +46,6 @@ export const BTC_MAX_COPYABLE_ADDRESSES = 5; // TODO: Update to 10 when BTC_ADDR
 export const BTC_UNCOPYABLE_ADDRESS_GAP = 1;
 export const BTC_DUST_LIMIT = 546; // satoshis
 
-/**
- * Polygon has 2-second blocks
- */
-export const POLYGON_BLOCKS_PER_MINUTE = 60 / 2;
-
 export const OASIS_EUR_DETECTION_DELAY = 5; // minutes
 
 // LocalStorage flag used to determine whether the new welcome screen should be shown, ignoring whether the

@@ -2,7 +2,7 @@
 import type { Contract } from 'ethers';
 import type { ChainPins, TransferRequest } from '@nimiq/gasless-sdk/core';
 import type { FeeResponse, RelayClient, SubmitTransferBody } from '@nimiq/gasless-sdk/relay';
-import type { SignedPolygonTransaction, SignPolygonTransactionRequest } from '@nimiq/hub-api';
+import type { SignedPolygonGaslessTransfer, SignPolygonGaslessTransferRequest } from '@nimiq/hub-api';
 import { useConfig } from '../../composables/useConfig';
 import { ENV_MAIN } from '../Constants';
 import { getPolygonClient, gaslessReceiptToTransaction, updatePolygonBalances } from '../../ethers';
@@ -249,8 +249,8 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     recipientLabel?: string,
     quote?: GaslessFeeQuote,
     corrects?: TransferRequest,
-    sign: (request: Omit<SignPolygonTransactionRequest, 'appName'>)
-        => Promise<SignedPolygonTransaction | null | void>,
+    sign: (request: Omit<SignPolygonGaslessTransferRequest, 'appName'>)
+        => Promise<SignedPolygonGaslessTransfer | null | void>,
 }): Promise<Transaction | null> {
     const addressInfo = usePolygonAddressStore().addressInfo.value;
     if (!addressInfo) throw new Error('No active Polygon address');

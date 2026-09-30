@@ -43,13 +43,16 @@ export default {
 
     polygon: {
         enabled: false,
+        // Set to true to keep stablecoin swaps visible, but show a maintenance warning. Swaps are still relayed via
+        // OpenGSN.
+        isGasAbstractionUnderMaintenance: false,
         // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
         isGaslessTransferUnderMaintenance: false,
-        // The local Anvil stack of https://github.com/NimiqToolbox/gas-abstraction (`make stack-up`), with the Anvil
-        // and relay ports made reachable from the host. Its deployment addresses are deterministic on a fresh chain.
-        networkId: 31337,
+        networkId: 31337, // The local Anvil stack of the gas abstraction, see `gasless` below
         rpcEndpoint: 'http://localhost:8545',
-        rpcMaxBlockRange: 648_000,
+        rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
+        // eslint-disable-next-line max-len
+        // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
         usdc_bridged: {
             /** @deprecated */
             tokenContract: '',
@@ -72,34 +75,38 @@ export default {
              *
              * Set to `0` to disable early stopping.
              */
-            earliestHistoryScanHeight: 0,
+            earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
         },
         usdc: {
             tokenContract: '0x5FbDB2315678afecb367f032d93F642f64180aa3', // MockUSDC
-            transferContract: '', // Legacy OpenGSN contract, only for parsing past transactions
-            htlcContract: '', // Legacy OpenGSN contract, only for parsing past transactions
+            transferContract: '', // v1
+            htlcContract: '',
             earliestHistoryScanHeight: 0,
         },
         usdt_bridged: {
             tokenContract: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', // MockUSDT0
-            transferContract: '', // Legacy OpenGSN contract, only for parsing past transactions
-            htlcContract: '', // Legacy OpenGSN contract, only for parsing past transactions
+            transferContract: '',
+            htlcContract: '',
             earliestHistoryScanHeight: 0,
         },
-        // Gasless USDC/USDT0 transfers, see https://github.com/NimiqToolbox/gas-abstraction
+        // Gasless USDC/USDT0 transfers on the local Anvil stack of https://github.com/NimiqToolbox/gas-abstraction
+        // (`make stack-up`, with the Anvil and relay ports made reachable from the host), see networkId, rpcEndpoint
+        // and the token addresses above. The deployment addresses are deterministic on a fresh chain.
         gasless: {
             relayUrl: 'http://localhost:8080',
             transferContract: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-            // Relay addresses the user may sign for. More than one allows a relay key rotation.
             relays: ['0xBcd4042DE499D14e55001CcbB24a551F3b954096'] as string[], // Anvil account 10
             deployBlock: 0,
-            maxFee: 5e6, // The contract's MAX_FEE: 5.00 USDC/USDT
-            maxAcceptableFee: 0.5e6, // The highest relay fee the user is asked to sign, same as in the Keyguard
+            maxFee: 5e6,
+            maxAcceptableFee: 0.5e6,
         },
-        // Legacy OpenGSN-based contracts, only for parsing past transactions
         usdcConversion: {
             swapContract: '',
+            swapPoolContract: '',
         },
+        openGsnRelayHubContract: '',
+        uniswapQuoterContract: '',
+        wpolContract: '0xA5733b3A8e62A8faF43b0376d5fAF46E89B3033E',
     },
 
     fastspot: {

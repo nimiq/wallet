@@ -1,7 +1,6 @@
 import VueRouter, { RouteConfig, Route, NavigationGuardNext } from 'vue-router';
 import Vue from 'vue';
 import { createNimiqRequestLink, parseNimiqSafeRequestLink, NimiqRequestLinkType } from '@nimiq/utils';
-import { Component } from 'vue-router/types/router.d';
 
 import { provide, inject } from '@vue/composition-api';
 import Config from 'config';
@@ -755,16 +754,18 @@ const router = new VueRouter({
 // Offer to activate Bitcoin or USDC if a route requires it, but it's not activated yet
 function createActivationNavigationGuard(
     currency: CryptoCurrency.BTC | CryptoCurrency.USDC | CryptoCurrency.USDT,
-    viewsRequiringActivation: Set<Component>,
+    // Identified by name rather than by component, as vue-router replaces lazily loaded components in the route
+    // records with the loaded components, after which they wouldn't match anymore.
+    routesRequiringActivation: Set<RouteName>,
     // As method instead of just passing AccountType[] of supported types because AccountType is not available for
     // passing in the top level yet due to a webpack bug (https://github.com/webpack/webpack/issues/3509).
     isAccountTypeSupported: (type: AccountType) => boolean,
     isCurrencyActivated: () => boolean,
 ) {
     return (to: Route, from: Route, next: NavigationGuardNext) => {
-        const requiresCurrencyActivation = to.matched.some(({ components }) =>
-            Object.values(components).some((view) => viewsRequiringActivation.has(view)
-                || (view === SwapModal && !!to.params.pair?.includes(currency.toUpperCase()))));
+        const requiresCurrencyActivation = routesRequiringActivation.has(to.name as RouteName)
+            || (to.name === getContextRouteName(RouteName.Swap, to)
+                && !!to.params.pair?.includes(currency.toUpperCase()));
         const { activeAccountInfo: { value: activeAccount } } = useAccountStore();
         const isUnsupportedAccount = !!activeAccount && !isAccountTypeSupported(activeAccount.type);
         const isUnsupportedActivation = to.name === `${currency}-activation` && isUnsupportedAccount;
@@ -793,19 +794,22 @@ function createActivationNavigationGuard(
 }
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.BTC,
-    new Set([BtcSendModal, BtcReceiveModal]),
+    new Set([RouteName.SendBtc, RouteName.SendViaBtcUri, RouteName.ReceiveBtc]),
     (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
     () => useAccountStore().hasBitcoinAddresses.value,
 ));
+const stablecoinRoutesRequiringActivation = Config.polygon.isGasAbstractionUnderMaintenance
+    ? []
+    : [RouteName.SendUsdc, RouteName.SendViaPolygonUri, RouteName.ReceiveUsdc];
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
-    new Set(Config.polygon.isGasAbstractionUnderMaintenance ? [] : [StablecoinSendModal, StablecoinReceiveModal]),
+    new Set(stablecoinRoutesRequiringActivation),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasPolygonAddresses.value,
 ));
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDT,
-    new Set(Config.polygon.isGasAbstractionUnderMaintenance ? [] : [StablecoinSendModal, StablecoinReceiveModal]),
+    new Set(stablecoinRoutesRequiringActivation),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasPolygonAddresses.value,
 ));

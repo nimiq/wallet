@@ -32,24 +32,15 @@
                             {{ option.label }}
                         </option>
                     </select>
-                    <Tooltip v-if="!stablecoin" class="stablecoin-tooltip" preferredPosition="bottom left">
-                        <InfoCircleSmallIcon slot="trigger" />
-                        {{ $t('To swap with USDC/USDT, choose a stablecoin.') }}
-                    </Tooltip>
                 </div>
                 <div v-if="disabledSwap" class="swap-disabled-text">
                     {{ $t('Swap not possible. Your balance is lower than the fee.') }}
-                </div>
-                <div v-else-if="swapIsNotSupported"  class="swap-disabled-text">
-                    {{ $t('Swap not possible. Ledger accounts are not supported.') }}
                 </div>
                 <div v-else-if="!feeIsLoading && limits" class="swap-info flex-row" >
                     <SwapFeesTooltip
                         preferredPosition="bottom left"
                         :nimFeeFiat="nimFeeFiat"
                         :btcFeeFiat="btcFeeFiat"
-                        :usdcFeeFiat="usdcFeeFiat"
-                        :usdtFeeFiat="usdtFeeFiat"
                         :serviceSwapFeeFiat="serviceSwapFeeFiat"
                         :serviceSwapFeePercentage="serviceSwapFeePercentage"
                         :currency="currency"
@@ -187,7 +178,7 @@
             :assets="[assetToCurrency(leftAsset), assetToCurrency(rightAsset)]"
             :buttonColor="kycUser ? 'purple' : 'light-blue'"
             :disabled="!canSign || currentlySigning"
-            :error="disabledAssetError || estimateError || swapError || polygonFeeError"
+            :error="disabledAssetError || estimateError || swapError"
             requireCompleteBtcHistory
             @click="sign"
         >
@@ -236,10 +227,8 @@
                     :fromFundingDurationMins="swap.from.asset === SwapAsset.BTC ? 10 : 0"
                     :switchSides="swap.from.asset === rightAsset"
                     :stateEnteredAt="swap.stateEnteredAt"
-                    :errorAction="swap.errorAction"
                     @finished="finishSwap"
                     @cancel="finishSwap"
-                    @error-action="handleSwapErrorAction"
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
@@ -259,14 +248,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch, onBeforeUnmount } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, watch } from '@vue/composition-api';
 import {
     PageHeader,
     PageBody,
     Tooltip,
     FiatAmount,
     CircleSpinner,
-    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import {
     SetupSwapRequest,
@@ -275,8 +263,6 @@ import {
     SetupSwapResult,
     SignedTransaction,
     SignedBtcTransaction,
-    SignedPolygonTransaction,
-    SignPolygonTransactionRequest,
 } from '@nimiq/hub-api';
 import {
     cancelSwap,
@@ -292,9 +278,6 @@ import {
     Swap,
     Contract,
 } from '@nimiq/fastspot-api';
-import type { BigNumber } from 'ethers';
-import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
-import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
 import { RouteName, useRouter } from '@/router';
 
@@ -312,16 +295,15 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { BTC_DUST_LIMIT, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { i18n } from '../../i18n/i18n-setup';
-import { setupSwap, signPolygonTransaction } from '../../hub';
+import { setupSwap } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
-import { SwapState, SwapDirection, useSwapsStore, SwapErrorAction } from '../../stores/Swaps';
+import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
 import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { useAccountSettingsStore } from '../../stores/AccountSettings';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
 import { assetToCurrency, getWalletEnabledSwapAssets, SupportedSwapAsset }
     from '../../lib/swap/utils/Assets';
@@ -335,40 +317,35 @@ import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
-import {
-    getPolygonClient,
-    calculateFee as calculatePolygonFee,
-    getUsdcHtlcContract,
-    getUsdtBridgedHtlcContract,
-    getPolygonBlockNumber,
-} from '../../ethers';
-import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
 import ButtonGroup from '../ButtonGroup.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
 import { reportToSentry } from '../../lib/Sentry';
 
 const ESTIMATE_UPDATE_DEBOUNCE_DURATION = 500; // ms
 
+function getDefaultPair() {
+    const walletEnabledAssets = getWalletEnabledSwapAssets();
+    const fastspotEnabledAssets = useConfig().config.fastspot.enabledSwapAssets;
+    const overallEnabledAssets = walletEnabledAssets.filter((a) => fastspotEnabledAssets.includes(a));
+    if (overallEnabledAssets.length < 2) return `${SwapAsset.NIM}-${SwapAsset.BTC}`; // fallback
+    return `${overallEnabledAssets[0]}-${overallEnabledAssets[1]}`;
+}
+
+function isValidPair(pair: string) {
+    const [left, right] = pair.split('-');
+    const walletEnabledAssets = getWalletEnabledSwapAssets();
+    return walletEnabledAssets.includes(left as SwapAsset) && walletEnabledAssets.includes(right as SwapAsset);
+}
+
 export default defineComponent({
     name: 'swap-modal',
     props: {
         pair: {
             type: String,
-            default() {
-                const walletEnabledAssets = getWalletEnabledSwapAssets();
-                const fastspotEnabledAssets = useConfig().config.fastspot.enabledSwapAssets;
-                const overallEnabledAssets = walletEnabledAssets.filter((a) => fastspotEnabledAssets.includes(a));
-                if (overallEnabledAssets.length < 2) return `${SwapAsset.NIM}-${SwapAsset.BTC}`; // fallback
-                return `${overallEnabledAssets[0]}-${overallEnabledAssets[1]}`;
-            },
-            validator(value) {
-                const [left, right] = value.split('-');
-                const walletEnabledAssets = getWalletEnabledSwapAssets();
-                return walletEnabledAssets.includes(left) && walletEnabledAssets.includes(right);
-            },
+            default: getDefaultPair,
+            validator: isValidPair,
         },
     },
-    // @ts-expect-error Parameters 'props', 'context' implicitly have an 'any' type.
     setup(props, context) {
         const { config } = useConfig();
 
@@ -379,24 +356,20 @@ export default defineComponent({
 
         const { activeAccountInfo } = useAccountStore();
 
+        // Fall back to the default pair for pairs with assets that are not swappable (anymore), e.g. USDC/USDT.
+        const initialPair: string = isValidPair(props.pair) ? props.pair : getDefaultPair();
         const leftAsset = ref(
             activeAccountInfo.value?.type === AccountType.LEDGER
                 ? SwapAsset.NIM
-                : props.pair.split('-')[0] as SupportedSwapAsset,
+                : initialPair.split('-')[0] as SupportedSwapAsset,
         );
         const rightAsset = ref(
             activeAccountInfo.value?.type === AccountType.LEDGER
                 ? SwapAsset.BTC
-                : props.pair.split('-')[1] as SupportedSwapAsset,
+                : initialPair.split('-')[1] as SupportedSwapAsset,
         );
 
         const swapHasBtc = computed(() => leftAsset.value === SwapAsset.BTC || rightAsset.value === SwapAsset.BTC);
-        const swapHasUsdc = computed(
-            () => leftAsset.value === SwapAsset.USDC_MATIC || rightAsset.value === SwapAsset.USDC_MATIC,
-        );
-        const swapHasUsdt = computed(
-            () => leftAsset.value === SwapAsset.USDT_MATIC || rightAsset.value === SwapAsset.USDT_MATIC,
-        );
 
         const fixedAsset = ref<SupportedSwapAsset>(leftAsset.value);
 
@@ -417,12 +390,7 @@ export default defineComponent({
 
         const { accountBalance: accountBtcBalance, accountUtxos } = useBtcAddressStore();
         const { activeAddressInfo, selectAddress, activeAddress } = useAddressStore();
-        const {
-            activeAddress: activePolygonAddress,
-            accountUsdcBalance,
-            accountUsdtBridgedBalance,
-        } = usePolygonAddressStore();
-        const { stablecoin } = useAccountSettingsStore();
+        const { activeAddress: activePolygonAddress } = usePolygonAddressStore();
         const { exchangeRates, currency, state: fiat$ } = useFiatStore();
         const { connectedUser: kycUser } = useKycStore();
 
@@ -653,15 +621,12 @@ export default defineComponent({
             }
             if (fee) return fee;
 
-            if (asset === SwapAsset.USDT_MATIC) asset = SwapAsset.USDC_MATIC;
             if (assets.value) fee = assets.value[asset].feePerUnit;
             if (fee) return fee;
 
-            return asset === SwapAsset.NIM
-                ? 0 // 0 NIM
-                : asset === SwapAsset.BTC
-                    ? 1 // 1 sat
-                    : 200e9; // 200 Gwei - For USDC/T it doesn't matter, since we get the fee from the network anyway
+            return asset === SwapAsset.BTC
+                ? 1 // 1 sat
+                : 0; // 0 NIM
         }
 
         // 48 extra weight units for BTC HTLC funding tx
@@ -670,17 +635,12 @@ export default defineComponent({
         const btcMaxSendableAmount = computed(() =>
             Math.max(accountBtcBalance.value - btcFeeForSendingAll.value, 0));
 
-        function calculateMyFees(feesPerUnit?: { nim: number, btc: number }): {
+        function calculateMyFees(feesPerUnit = { nim: 0, btc: 0 }): {
             fundingFee: number,
             settlementFee: number,
-        };
-        function calculateMyFees(feesPerUnit: { nim: number, btc: number } | undefined, asPromise: true): {
-            fundingFee: number | Promise<number>,
-            settlementFee: number | Promise<number>,
-        };
-        function calculateMyFees(feesPerUnit = { nim: 0, btc: 0 }, asPromise = false) {
-            let fundingFee: number | Promise<number> | null = null;
-            let settlementFee: number | Promise<number> | null = null;
+        } {
+            let fundingFee: number | null = null;
+            let settlementFee: number | null = null;
 
             const fundingAsset = direction.value === SwapDirection.LEFT_TO_RIGHT
                 ? leftAsset.value
@@ -717,18 +677,6 @@ export default defineComponent({
                         fundingFee = estimateFees(1, 2, feesPerUnit.btc || fundingFeePerUnit, 48);
                     }
                     break;
-                case SwapAsset.USDC_MATIC:
-                case SwapAsset.USDT_MATIC:
-                    if (polygonFeeStuff.value) fundingFee = polygonFeeStuff.value.fee;
-                    else if (!asPromise) fundingFee = 0;
-                    else fundingFee = new Promise<number>((resolve) => { // eslint-disable-line curly
-                        const stop = watch(polygonFeeStuff, (stuff) => {
-                            if (!stuff) return;
-                            resolve(stuff.fee);
-                            stop();
-                        });
-                    });
-                    break;
                 default:
                     throw new Error(`Fee calculation not implemented for funding ${fundingAsset}`);
             }
@@ -741,18 +689,6 @@ export default defineComponent({
                 case SwapAsset.BTC:
                     // 135 extra weight units for BTC HTLC settlement tx
                     settlementFee = estimateFees(1, 1, feesPerUnit.btc || settlementFeePerUnit, 135);
-                    break;
-                case SwapAsset.USDC_MATIC:
-                case SwapAsset.USDT_MATIC:
-                    if (polygonFeeStuff.value) settlementFee = polygonFeeStuff.value.fee;
-                    else if (!asPromise) settlementFee = 0;
-                    else settlementFee = new Promise<number>((resolve) => { // eslint-disable-line curly
-                        const stop = watch(polygonFeeStuff, (stuff) => {
-                            if (!stuff) return;
-                            resolve(stuff.fee);
-                            stop();
-                        });
-                    });
                     break;
                 default:
                     throw new Error(`Fee calculation not implemented for settling ${settlementAsset}`);
@@ -791,10 +727,6 @@ export default defineComponent({
                     fundingFee = 154 * (feesPerUnit.btc || fundingFeePerUnit);
                     break;
                 }
-                case SwapAsset.USDC_MATIC:
-                case SwapAsset.USDT_MATIC:
-                    fundingFee = 0; // TODO
-                    break;
                 default:
                     throw new Error(`Service fee calculation not implemented for funding ${fundingAsset}`);
             }
@@ -807,10 +739,6 @@ export default defineComponent({
                 case SwapAsset.BTC:
                     // 135 extra weight units for BTC HTLC settlement tx
                     settlementFee = estimateFees(1, 1, feesPerUnit.btc || settlementFeePerUnit, 135);
-                    break;
-                case SwapAsset.USDC_MATIC:
-                case SwapAsset.USDT_MATIC:
-                    settlementFee = 0; // TODO
                     break;
                 default:
                     throw new Error(`Service fee calculation not implemented for settling ${settlementAsset}`);
@@ -870,163 +798,6 @@ export default defineComponent({
             };
         }
 
-        let polygonRelay = {
-            relay: undefined as RelayServerInfo | undefined,
-            timestamp: 0,
-        };
-
-        type PolygonFees = {
-            /** Fee in USDC units */
-            fee: number,
-            /** Gas limit in MATIC units */
-            gasLimit: BigNumber,
-            /** Gas price in MATIC units */
-            gasPrice: BigNumber,
-            /** Relay details */
-            relay: RelayServerInfo,
-            /** The method that these fees were calculated for */
-            method: 'open' | 'openWithPermit' | 'openWithApproval' | 'redeemWithSecretInData',
-        };
-
-        const polygonFeeStuff = ref<PolygonFees>(null);
-        const polygonFeeError = ref<string>(null);
-
-        // Used for Fastspot service fee calculation
-        const stableUsdPriceInWei = ref<number>(null);
-        const polygonGasPrice = ref<number>(null);
-
-        async function calculatePolygonHtlcFee(forOpening: boolean, prevPolygonFees: PolygonFees | null) {
-            const prevMethod = prevPolygonFees?.method;
-
-            // Use the existing relay if it was selected in the last 5 minutes
-            const forceRelay = polygonRelay.timestamp > Date.now() - 5 * 60 * 1e3
-                ? polygonRelay.relay
-                : undefined;
-
-            let method: 'open' | 'openWithPermit' | 'openWithApproval' | 'redeemWithSecretInData' = forOpening
-                ? (stablecoin.value === CryptoCurrency.USDC ? 'openWithPermit' : 'openWithApproval')
-                : 'redeemWithSecretInData';
-
-            if (forOpening) {
-                if (prevMethod === 'open' || prevMethod === 'openWithPermit' || prevMethod === 'openWithApproval') {
-                    // Allowance was already checked at the last fee calculation, reuse the previous result
-                    method = prevMethod;
-                } else {
-                    // // Otherwise check allowance now
-                    // const client = await getPolygonClient();
-                    // const allowance = await client.usdcToken.allowance(
-                    //     activePolygonAddress.value!,
-                    //     config.polygon.usdc.htlcContract,
-                    // ) as BigNumber;
-                    // if (allowance.gte(accountUsdcBalance.value)) method = 'open';
-                }
-            }
-
-            const htlcContract = stablecoin.value === CryptoCurrency.USDC
-                ? await getUsdcHtlcContract()
-                : await getUsdtBridgedHtlcContract();
-
-            const {
-                fee,
-                gasLimit,
-                gasPrice,
-                relay,
-                usdPrice,
-            } = await calculatePolygonFee(
-                stablecoin.value === CryptoCurrency.USDC
-                    ? config.polygon.usdc.tokenContract
-                    : config.polygon.usdt_bridged.tokenContract,
-                method,
-                forceRelay,
-                htlcContract,
-            );
-
-            if (!forceRelay) {
-                // Store the new relay
-                polygonRelay = {
-                    relay,
-                    timestamp: Date.now(),
-                };
-            }
-
-            stableUsdPriceInWei.value = usdPrice.toNumber();
-            polygonGasPrice.value = gasPrice.toNumber();
-
-            return {
-                fee: fee.toNumber(),
-                gasLimit,
-                gasPrice,
-                relay,
-                method,
-            };
-        }
-
-        let polygonFeeUpdateTimeout = -1; // -1: stopped; 0: to be started; >0: timer id
-        async function startPolygonFeeUpdates() {
-            window.clearTimeout(polygonFeeUpdateTimeout); // Reset potentially existing update timeout.
-            polygonFeeUpdateTimeout = 0; // 0: timer is to be started after the initial update
-            if (!swapHasUsdc.value && !swapHasUsdt.value) {
-                stopPolygonFeeUpdates();
-                return false;
-            }
-            try {
-                if (!currentlySigning.value) {
-                    // Update USDC/T fees if not already signing a swap suggestion.
-                    const forOpening = [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC].includes(
-                        (direction.value === SwapDirection.LEFT_TO_RIGHT ? leftAsset : rightAsset).value,
-                    );
-                    const prevPolygonFeeStuff = polygonFeeStuff.value;
-                    polygonFeeStuff.value = null;
-                    polygonFeeStuff.value = await calculatePolygonHtlcFee(forOpening, prevPolygonFeeStuff);
-                    polygonFeeError.value = null;
-                }
-                if (polygonFeeUpdateTimeout === 0) {
-                    // Schedule next update in 30s if timer is still to be started and has not been started yet.
-                    polygonFeeUpdateTimeout = window.setTimeout(startPolygonFeeUpdates, 30e3);
-                }
-                return true; // return true if USDC/T was successfully updated on first attempt.
-            } catch (e: unknown) {
-                if (!swapHasUsdc.value && !swapHasUsdt.value) {
-                    // USDC/T is not selected anymore.
-                    stopPolygonFeeUpdates();
-                    return false;
-                }
-                polygonFeeError.value = $t(
-                    'Failed to fetch Polygon fees. Retrying... (Error: {message})',
-                    { message: e instanceof Error ? e.message : String(e) },
-                ) as string;
-                if (polygonFeeUpdateTimeout === 0) {
-                    // Retry in 10s if timer is still to be started and has not been started yet.
-                    polygonFeeUpdateTimeout = window.setTimeout(startPolygonFeeUpdates, 10e3);
-                }
-                return false;
-            }
-        }
-
-        function stopPolygonFeeUpdates() {
-            window.clearTimeout(polygonFeeUpdateTimeout);
-            polygonFeeUpdateTimeout = -1; // -1: timer stopped
-            polygonFeeStuff.value = null;
-            polygonFeeError.value = null;
-        }
-
-        watch([leftAsset, rightAsset], () => {
-            if (swapHasUsdc.value || swapHasUsdt.value) {
-                // (Re)start USDC fee updates if USDC was selected or the USDC swap direction switched.
-                startPolygonFeeUpdates();
-            } else {
-                stopPolygonFeeUpdates();
-            }
-        });
-
-        onBeforeUnmount(stopPolygonFeeUpdates);
-
-        // watch(
-        //     polygonFeeStuff,
-        //     (stuff) => console.log('Got new USDC fee:', stuff?.fee),
-        //     { lazy: true },
-        // );
-
         const fetchingEstimate = ref(false);
 
         let debounce: number | null = null;
@@ -1047,11 +818,7 @@ export default defineComponent({
             fetchingEstimate.value = true;
 
             try {
-                const fees = calculateMyFees(undefined, true);
-                const { to, from } = calculateRequestData({
-                    fundingFee: await fees.fundingFee,
-                    settlementFee: await fees.settlementFee,
-                });
+                const { to, from } = calculateRequestData(calculateMyFees());
 
                 const newEstimate = await getEstimate(
                     from as RequestAsset<SwapAsset>, // Need to force one of the function signatures
@@ -1070,10 +837,10 @@ export default defineComponent({
                         : newEstimate.to.asset === SwapAsset.BTC
                             ? newEstimate.to.feePerUnit!
                             : 0,
-                }, true);
+                });
 
-                newEstimate.from.fee = await fundingFee;
-                newEstimate.to.fee = await settlementFee;
+                newEstimate.from.fee = fundingFee;
+                newEstimate.to.fee = settlementFee;
 
                 // Check against minimums
                 if (!newEstimate.from.amount || (newEstimate.to.amount - newEstimate.to.fee) <= 0) {
@@ -1109,8 +876,8 @@ export default defineComponent({
                 case SwapAsset.NIM: return activeAddressInfo.value?.balance ?? 0;
                 case SwapAsset.BTC: return accountBtcBalance.value;
                 case SwapAsset.USDC: return 0; // not supported for swapping
-                case SwapAsset.USDC_MATIC: return accountUsdcBalance.value;
-                case SwapAsset.USDT_MATIC: return accountUsdtBridgedBalance.value;
+                case SwapAsset.USDC_MATIC: return 0; // not supported for swapping
+                case SwapAsset.USDT_MATIC: return 0; // not supported for swapping
                 case SwapAsset.EUR: return 0;
             }
         }
@@ -1225,12 +992,8 @@ export default defineComponent({
         const myLeftFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                if (leftAsset.value === SwapAsset.USDC_MATIC || leftAsset.value === SwapAsset.USDT_MATIC) {
-                    fee = polygonFeeStuff.value?.fee || 0;
-                } else {
-                    const { fundingFee, settlementFee } = calculateMyFees();
-                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? fundingFee : settlementFee;
-                }
+                const { fundingFee, settlementFee } = calculateMyFees();
+                fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? fundingFee : settlementFee;
             } else {
                 const data = swap.value || estimate.value;
                 fee = data.from.asset === leftAsset.value ? data.from.fee : data.to.fee;
@@ -1242,12 +1005,8 @@ export default defineComponent({
         const myRightFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                if (rightAsset.value === SwapAsset.USDC_MATIC || rightAsset.value === SwapAsset.USDT_MATIC) {
-                    fee = polygonFeeStuff.value?.fee || 0;
-                } else {
-                    const { fundingFee, settlementFee } = calculateMyFees();
-                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? settlementFee : fundingFee;
-                }
+                const { fundingFee, settlementFee } = calculateMyFees();
+                fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? settlementFee : fundingFee;
             } else {
                 const data = swap.value || estimate.value;
                 fee = data.from.asset === rightAsset.value ? data.from.fee : data.to.fee;
@@ -1260,21 +1019,8 @@ export default defineComponent({
         const serviceLeftFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                if (leftAsset.value === SwapAsset.USDC_MATIC || leftAsset.value === SwapAsset.USDT_MATIC) {
-                    if (
-                        !(polygonGasPrice.value || assets.value?.[leftAsset.value].feePerUnit)
-                        || !stableUsdPriceInWei.value
-                    ) {
-                        return 0;
-                    }
-                    const gasPrice = assets.value?.[leftAsset.value].feePerUnit || polygonGasPrice.value!;
-
-                    const serviceGasLimit = direction.value === SwapDirection.LEFT_TO_RIGHT ? 72548 : 227456;
-                    fee = Math.ceil((gasPrice * serviceGasLimit) / stableUsdPriceInWei.value);
-                } else {
-                    const { fundingFee, settlementFee } = calculateServiceFees();
-                    fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? settlementFee : fundingFee;
-                }
+                const { fundingFee, settlementFee } = calculateServiceFees();
+                fee = direction.value === SwapDirection.LEFT_TO_RIGHT ? settlementFee : fundingFee;
             } else {
                 const data = swap.value || estimate.value;
                 fee = data.from.asset === leftAsset.value
@@ -1288,22 +1034,8 @@ export default defineComponent({
         const serviceRightFeeFiat = computed(() => {
             let fee: number;
             if (!estimate.value) {
-                if (rightAsset.value === SwapAsset.USDC_MATIC || rightAsset.value === SwapAsset.USDT_MATIC) {
-                    if (
-                        !(polygonGasPrice.value || assets.value?.[rightAsset.value].feePerUnit)
-
-                        || !stableUsdPriceInWei.value
-                    ) {
-                        return 0;
-                    }
-                    const gasPrice = assets.value?.[rightAsset.value].feePerUnit || polygonGasPrice.value!;
-
-                    const serviceGasLimit = direction.value === SwapDirection.RIGHT_TO_LEFT ? 72548 : 227456;
-                    fee = Math.ceil((gasPrice * serviceGasLimit) / stableUsdPriceInWei.value);
-                } else {
-                    const { fundingFee, settlementFee } = calculateServiceFees();
-                    fee = direction.value === SwapDirection.RIGHT_TO_LEFT ? settlementFee : fundingFee;
-                }
+                const { fundingFee, settlementFee } = calculateServiceFees();
+                fee = direction.value === SwapDirection.RIGHT_TO_LEFT ? settlementFee : fundingFee;
             } else {
                 const data = swap.value || estimate.value;
                 fee = data.from.asset === rightAsset.value
@@ -1343,22 +1075,13 @@ export default defineComponent({
         };
         const nimFeeFiat = computed(() => feeFiat(SwapAsset.NIM));
         const btcFeeFiat = computed(() => feeFiat(SwapAsset.BTC));
-        const usdcFeeFiat = computed(() => feeFiat(SwapAsset.USDC_MATIC));
-        const usdtFeeFiat = computed(() => feeFiat(SwapAsset.USDT_MATIC));
         const totalFeeFiat = computed(() =>
             (nimFeeFiat.value || 0)
             + (btcFeeFiat.value || 0)
-            + (usdcFeeFiat.value || 0)
-            + (usdtFeeFiat.value || 0)
             + serviceSwapFeeFiat.value,
         );
 
-        const feeIsLoading = computed(() => {
-            if (swapHasBtc.value && btcFeeFiat.value === undefined) return true;
-            if (swapHasUsdc.value && usdcFeeFiat.value === undefined) return true;
-            if (swapHasUsdt.value && usdtFeeFiat.value === undefined) return true;
-            return false;
-        });
+        const feeIsLoading = computed(() => swapHasBtc.value && btcFeeFiat.value === undefined);
 
         const isHighRelativeFees = computed(() => {
             if (!estimate.value) return false;
@@ -1400,19 +1123,15 @@ export default defineComponent({
             //             + `(disabledAssetError: ${disabledAssetError.value})\n`
             //         + `!estimateError: ${!estimateError.value} (estimateError: ${estimateError.value})\n`
             //         + `!swapError: ${!swapError.value} (swapError: ${swapError.value})\n`
-            //         + `!polygonFeeError: ${!polygonFeeError.value} (polygonFeeError: ${polygonFeeError.value})\n`
             //         + `!!estimate: ${!!estimate.value} (estimate: ${estimate.value})\n`
             //         + `!!limits.current.usd: ${!!limits.value?.current.usd} (limits: ${limits.value})\n`
             //         + `!fetchingEstimate: ${!fetchingEstimate.value} (fetchingEstimate: ${fetchingEstimate.value})\n`
             //         + `newLeftBalance>=0: ${newLeftBalance.value>=0} (newLeftBalance: ${newLeftBalance.value})\n`
             //         + `newRightBalance>=0: ${newRightBalance.value>=0} (newRightBalance: ${newRightBalance.value})`,
             // );
-            // Don't need to wait for fees because they're calculated from the estimate and swapSuggestion for NIM and
-            // BTC, and for USDC waiting for polygonFeeStuff is covered by fetchingEstimate via calculateMyFees in
-            // updateEstimate, which waits for polygonFeeStuff (but polygonFeeStuff is also re-fetched in sign()
-            // anyways).
+            // Don't need to wait for fees because they're calculated from the estimate and swapSuggestion.
             return config.fastspot.enabled
-                && !disabledAssetError.value && !estimateError.value && !swapError.value && !polygonFeeError.value
+                && !disabledAssetError.value && !estimateError.value && !swapError.value
                 && estimate.value
                 && limits.value?.current.usd
                 && !fetchingEstimate.value
@@ -1426,49 +1145,14 @@ export default defineComponent({
         async function sign() {
             if (!canSign.value) return;
 
-            // Get up-to-date fees for USDC
-            let wasFeeUpdateSuccessful = Promise.resolve(true);
-            if ((swapHasUsdc.value || swapHasUsdt.value) && polygonFeeStuff.value) {
-                // Fetch new fees, if no update is currently in process already (in which case polygonFeeStuff would be
-                // null as it's cleared in startPolygonFeeUpdates). If an update is already in process, the result is
-                // being awaited via the promises returned by calculateMyFees.
-                wasFeeUpdateSuccessful = startPolygonFeeUpdates();
-            }
-
             currentlySigning.value = true;
 
             // eslint-disable-next-line no-async-promise-executor
             const hubRequest = new Promise<Omit<SetupSwapRequest, 'appName'>>(async (resolve, reject) => {
                 let swapSuggestion: PreSwap;
 
-                if (!await wasFeeUpdateSuccessful) {
-                    // If first attempt to update fee was not successful, abort signing. An error message will be shown
-                    // in the UI via polygonFeeError.
-                    reject(new Error(polygonFeeError.value || undefined));
-                }
-
                 try {
-                    const fees = calculateMyFees(undefined, true);
-                    const { from, to } = calculateRequestData({
-                        fundingFee: await fees.fundingFee,
-                        settlementFee: await fees.settlementFee,
-                    });
-
-                    if (typeof from !== 'string' && 'USDC_MATIC' in from) {
-                        // Ensure we send only what's possible with the updated fee
-                        from[SwapAsset.USDC_MATIC] = Math.min(
-                            from[SwapAsset.USDC_MATIC]!,
-                            (accountUsdcBalance.value - await fees.fundingFee) / 1e6,
-                        );
-                    }
-
-                    if (typeof from !== 'string' && 'USDT_MATIC' in from) {
-                        // Ensure we send only what's possible with the updated fee
-                        from[SwapAsset.USDT_MATIC] = Math.min(
-                            from[SwapAsset.USDT_MATIC]!,
-                            (accountUsdtBridgedBalance.value - await fees.fundingFee) / 1e6,
-                        );
-                    }
+                    const { from, to } = calculateRequestData(calculateMyFees());
 
                     swapSuggestion = await createSwap(
                         from as RequestAsset<SupportedSwapAsset>, // Need to force one of the function signatures
@@ -1487,10 +1171,10 @@ export default defineComponent({
                             : swapSuggestion.to.asset === SwapAsset.BTC
                                 ? swapSuggestion.to.feePerUnit!
                                 : 0,
-                    }, true);
+                    });
 
-                    swapSuggestion.from.fee = await fundingFee;
-                    swapSuggestion.to.fee = await settlementFee;
+                    swapSuggestion.from.fee = fundingFee;
+                    swapSuggestion.to.fee = settlementFee;
 
                     if (swapSuggestion.to.amount - swapSuggestion.to.fee <= 0) {
                         throw new Error(`${swapSuggestion.to.asset} output value is 0`);
@@ -1587,166 +1271,6 @@ export default defineComponent({
                     };
                 }
 
-                if (swapSuggestion.from.asset === SwapAsset.USDC_MATIC) {
-                    const [client, htlcContract] = await Promise.all([
-                        getPolygonClient(),
-                        getUsdcHtlcContract(),
-                    ]);
-                    const fromAddress = activePolygonAddress.value!;
-
-                    const [
-                        usdcNonce,
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        client.usdcToken.nonces(fromAddress) as Promise<BigNumber>,
-                        htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'open' && method !== 'openWithPermit') {
-                        throw new Error('Wrong USDC contract method');
-                    }
-
-                    // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
-                    // Keyguard's SwapIFrameApi.
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address token */ config.polygon.usdc.tokenContract,
-                        /* uint256 amount */ swapSuggestion.from.amount,
-                        /* address refundAddress */ fromAddress,
-                        /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
-                        /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* uint256 timeout */ 0,
-                        /* uint256 fee */ fee,
-                        ...(method === 'openWithPermit' ? [
-                            // // Approve the maximum possible amount so afterwards we can use the `open` method for
-                            // // lower fees
-                            // /* uint256 value */ client.ethers
-                            //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-                            /* uint256 value */ swapSuggestion.from.amount + fee,
-
-                            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* uint8 sigV */ 0,
-                        ] : []),
-                    ]);
-
-                    const relayRequest: RelayRequest = {
-                        request: {
-                            from: fromAddress,
-                            to: config.polygon.usdc.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdc.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdc.htlcContract,
-                        },
-                    };
-
-                    fund = {
-                        type: SwapAsset.USDC_MATIC,
-                        ...relayRequest,
-                        ...(method === 'openWithPermit' ? {
-                            permit: {
-                                tokenNonce: usdcNonce.toNumber(),
-                            },
-                        } : null),
-                    };
-                }
-
-                if (swapSuggestion.from.asset === SwapAsset.USDT_MATIC) {
-                    const [client, htlcContract] = await Promise.all([
-                        getPolygonClient(),
-                        getUsdtBridgedHtlcContract(),
-                    ]);
-                    const fromAddress = activePolygonAddress.value!;
-
-                    const [
-                        usdtNonce,
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        client.usdtBridgedToken.getNonce(fromAddress) as Promise<BigNumber>,
-                        htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'open' && method !== 'openWithApproval') {
-                        throw new Error('Wrong USDT contract method');
-                    }
-
-                    // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
-                    // Keyguard's SwapIFrameApi.
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address token */ config.polygon.usdt_bridged.tokenContract,
-                        /* uint256 amount */ swapSuggestion.from.amount,
-                        /* address refundAddress */ fromAddress,
-                        /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
-                        /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* uint256 timeout */ 0,
-                        /* uint256 fee */ fee,
-                        ...(method === 'openWithApproval' ? [
-                            // // Approve the maximum possible amount so afterwards we can use the `open` method for
-                            // // lower fees
-                            // /* uint256 approval */ client.ethers
-                            //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-                            /* uint256 approval */ swapSuggestion.from.amount + fee,
-
-                            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* uint8 sigV */ 0,
-                        ] : []),
-                    ]);
-
-                    const relayRequest: RelayRequest = {
-                        request: {
-                            from: fromAddress,
-                            to: config.polygon.usdt_bridged.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdt_bridged.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdt_bridged.htlcContract,
-                        },
-                    };
-
-                    fund = {
-                        type: SwapAsset.USDT_MATIC,
-                        ...relayRequest,
-                        ...(method === 'openWithApproval' ? {
-                            approval: {
-                                tokenNonce: usdtNonce.toNumber(),
-                            },
-                        } : null),
-                    };
-                }
-
                 if (swapSuggestion.to.asset === SwapAsset.NIM) {
                     const nimiqClient = await getNetworkClient();
                     await nimiqClient.waitForConsensusEstablished();
@@ -1782,112 +1306,6 @@ export default defineComponent({
                             address: btcAddress, // My address, must be redeem address of HTLC
                             value: swapSuggestion.to.amount - swapSuggestion.to.fee, // Sats
                         },
-                    };
-                }
-
-                if (swapSuggestion.to.asset === SwapAsset.USDC_MATIC) {
-                    const htlcContract = await getUsdcHtlcContract();
-                    const toAddress = activePolygonAddress.value!;
-
-                    const [
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'redeemWithSecretInData') {
-                        throw new Error('Wrong USDC contract method');
-                    }
-
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address target */ toAddress,
-                        /* uint256 fee */ fee,
-                    ]);
-
-                    const relayRequest: RelayRequest = {
-                        request: {
-                            from: toAddress,
-                            to: config.polygon.usdc.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdc.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdc.htlcContract,
-                        },
-                    };
-
-                    redeem = {
-                        type: SwapAsset.USDC_MATIC,
-                        ...relayRequest,
-                        amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
-                    };
-                }
-
-                if (swapSuggestion.to.asset === SwapAsset.USDT_MATIC) {
-                    const htlcContract = await getUsdtBridgedHtlcContract();
-                    const toAddress = activePolygonAddress.value!;
-
-                    const [
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'redeemWithSecretInData') {
-                        throw new Error('Wrong USDT contract method');
-                    }
-
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address target */ toAddress,
-                        /* uint256 fee */ fee,
-                    ]);
-
-                    const relayRequest: RelayRequest = {
-                        request: {
-                            from: toAddress,
-                            to: config.polygon.usdt_bridged.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdt_bridged.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdt_bridged.htlcContract,
-                        },
-                    };
-
-                    redeem = {
-                        type: SwapAsset.USDT_MATIC,
-                        ...relayRequest,
-                        amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
                     };
                 }
 
@@ -1934,11 +1352,6 @@ export default defineComponent({
                     bitcoinAccount: {
                         balance: accountBtcBalance.value,
                     },
-                    polygonAddresses: activePolygonAddress.value ? [{
-                        address: activePolygonAddress.value,
-                        usdcBalance: accountUsdcBalance.value,
-                        usdtBalance: accountUsdtBridgedBalance.value,
-                    }] : [],
                 };
 
                 resolve(request);
@@ -1969,10 +1382,10 @@ export default defineComponent({
 
             const fundingSignedTx = signedTransactions[
                 assetToCurrency(fund.type as SupportedSwapAsset) as keyof SetupSwapResult
-            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
+            ] as SignedTransaction | SignedBtcTransaction;
             const redeemingSignedTx = signedTransactions[
                 assetToCurrency(redeem.type as SupportedSwapAsset) as keyof SetupSwapResult
-            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
+            ] as SignedTransaction | SignedBtcTransaction;
 
             if (!fundingSignedTx || !redeemingSignedTx) {
                 const error = new Error(
@@ -2005,16 +1418,12 @@ export default defineComponent({
                         ? fund.inputs.reduce((sum, input) => sum + input.value, 0)
                             - fund.output.value
                             - (fund.changeOutput?.value || 0)
-                        : fund.type === SwapAsset.USDC_MATIC || fund.type === SwapAsset.USDT_MATIC
-                            ? polygonFeeStuff.value!.fee
-                            : 0;
+                        : 0;
                 confirmedSwap.to.fee = redeem.type === SwapAsset.NIM
                     ? redeem.fee
                     : redeem.type === SwapAsset.BTC
                         ? redeem.input.value - redeem.output.value
-                        : redeem.type === SwapAsset.USDC_MATIC || redeem.type === SwapAsset.USDT_MATIC
-                            ? polygonFeeStuff.value!.fee
-                            : 0;
+                        : 0;
             } catch (error) {
                 reportToSentry(error);
                 swapError.value = $t('Invalid swap state, swap aborted!') as string;
@@ -2042,20 +1451,8 @@ export default defineComponent({
                 state: SwapState.AWAIT_INCOMING,
                 stateEnteredAt: Date.now(),
                 watchtowerNotified: false,
-                fundingSerializedTx: 'serializedTx' in fundingSignedTx
-                    ? fundingSignedTx.serializedTx // NIM & BTC
-                    : JSON.stringify({ // USDC/T
-                        request: fundingSignedTx.message,
-                        signature: fundingSignedTx.signature,
-                        relayUrl: polygonFeeStuff.value!.relay.url,
-                    }),
-                settlementSerializedTx: 'serializedTx' in redeemingSignedTx
-                    ? redeemingSignedTx.serializedTx // NIM & BTC
-                    : JSON.stringify({ // USDC/T
-                        request: redeemingSignedTx.message,
-                        signature: redeemingSignedTx.signature,
-                        relayUrl: polygonFeeStuff.value!.relay.url,
-                    }),
+                fundingSerializedTx: fundingSignedTx.serializedTx,
+                settlementSerializedTx: redeemingSignedTx.serializedTx,
                 nimiqProxySerializedTx: signedTransactions.nimProxy?.serializedTx,
             });
 
@@ -2068,23 +1465,6 @@ export default defineComponent({
                         '66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925',
                         `${confirmedSwap.hash}`,
                     );
-                }
-
-                // In case of a Polygon signed message, we need to restructure the `request` format
-                if (
-                    confirmedSwap.to.asset === SwapAsset.USDC_MATIC
-                    || confirmedSwap.to.asset === SwapAsset.USDT_MATIC
-                ) {
-                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
-                    const { relayData, ...relayRequest } = request;
-                    settlementSerializedTx = JSON.stringify({
-                        request: {
-                            request: relayRequest as ForwardRequest,
-                            relayData,
-                        },
-                        signature,
-                        relayUrl,
-                    });
                 }
 
                 // Send redeem transaction to watchtower
@@ -2150,34 +1530,27 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
-        const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
+        const { hasBitcoinAddresses } = useAccountStore();
 
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
         function getButtonGroupOptions(otherSide: SupportedSwapAsset) {
             const otherAssetBalance = accountBalance(otherSide);
-            return getWalletEnabledSwapAssets().reduce((result, asset) => {
-                if (asset === SwapAsset.USDC_MATIC && stablecoin.value !== CryptoCurrency.USDC) return result;
-                if (asset === SwapAsset.USDT_MATIC && stablecoin.value !== CryptoCurrency.USDT) return result;
-
-                return {
-                    ...result,
-                    [asset]: {
-                        label: assetToCurrency(asset as SupportedSwapAsset).toUpperCase(),
-                        // Note that currencies which are disabled in Fastspot, are not disabled in the button group,
-                        // but instead show a maintenance message in the footer.
-                        disabled: (
-                            // The asset is not activated in the active account.
-                            (asset === SwapAsset.NIM && config.disableNetworkInteraction)
-                            || (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
-                            || (asset === SwapAsset.USDC_MATIC && !hasPolygonAddresses.value)
-                            || (asset === SwapAsset.USDT_MATIC && !hasPolygonAddresses.value)
-                        ) || (
-                            // Asset pair has no balance to swap.
-                            !otherAssetBalance && !accountBalance(asset as SupportedSwapAsset)
-                        ),
-                    },
-                };
-            }, {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
+            return getWalletEnabledSwapAssets().reduce((result, asset) => ({
+                ...result,
+                [asset]: {
+                    label: assetToCurrency(asset as SupportedSwapAsset).toUpperCase(),
+                    // Note that currencies which are disabled in Fastspot, are not disabled in the button group,
+                    // but instead show a maintenance message in the footer.
+                    disabled: (
+                        // The asset is not activated in the active account.
+                        (asset === SwapAsset.NIM && config.disableNetworkInteraction)
+                        || (asset === SwapAsset.BTC && !hasBitcoinAddresses.value)
+                    ) || (
+                        // Asset pair has no balance to swap.
+                        !otherAssetBalance && !accountBalance(asset as SupportedSwapAsset)
+                    ),
+                },
+            }), {} as { [asset in SwapAsset]: { label: string, disabled: boolean } });
         }
 
         const leftButtonGroupOptions = computed(() => getButtonGroupOptions(rightAsset.value));
@@ -2205,9 +1578,6 @@ export default defineComponent({
             });
         }
 
-        const swapIsNotSupported = computed(() => activeAccountInfo.value?.type === AccountType.LEDGER
-            && (swapHasUsdc.value || swapHasUsdt.value));
-
         const disabledSwap = computed(() => {
             const leftRate = exchangeRates.value[assetToCurrency(leftAsset.value)][currency.value]!;
             const rightRate = exchangeRates.value[assetToCurrency(rightAsset.value)][currency.value]!;
@@ -2220,302 +1590,6 @@ export default defineComponent({
 
             return false;
         });
-
-        function handleSwapErrorAction() {
-            if (swap.value?.errorAction === SwapErrorAction.USDC_RESIGN_REDEEM) {
-                resignUsdcRedeemTransaction();
-            }
-            if (swap.value?.errorAction === SwapErrorAction.USDT_RESIGN_REDEEM) {
-                resignUsdtRedeemTransaction();
-            }
-        }
-
-        async function resignUsdcRedeemTransaction() {
-            if (!swap.value) {
-                console.warn('No swap found'); // eslint-disable-line no-console
-                return;
-            }
-            const usdcHtlc = swap.value.contracts[SwapAsset.USDC_MATIC] as Contract<SwapAsset.USDC_MATIC> | undefined;
-            if (!usdcHtlc) {
-                console.warn('No USDC HTLC found in swap', swap.value); // eslint-disable-line no-console
-                return;
-            }
-            if (usdcHtlc.direction !== 'receive') {
-                console.warn('USDC HTLC is not a receive HTLC', usdcHtlc); // eslint-disable-line no-console
-                return;
-            }
-
-            let relayUrl: string;
-
-            // eslint-disable-next-line no-async-promise-executor
-            const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve) => {
-                const htlcContract = await getUsdcHtlcContract(); // This promise is already resolved
-                const toAddress = usdcHtlc.redeemAddress;
-
-                // Unset stored relay so we can select a new one that hopefully works then
-                polygonRelay = {
-                    relay: undefined,
-                    timestamp: 0,
-                };
-
-                const [
-                    forwarderNonce,
-                    blockHeight,
-                    { fee, gasLimit, gasPrice, relay, method },
-                ] = await Promise.all([
-                    htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                    getPolygonBlockNumber(),
-                    calculatePolygonHtlcFee(false, null),
-                ]);
-
-                if (method !== 'redeemWithSecretInData') {
-                    throw new Error('Wrong USDC contract method');
-                }
-
-                relayUrl = relay.url;
-
-                const data = htlcContract.interface.encodeFunctionData(method, [
-                    /* bytes32 id */ usdcHtlc.htlc.address,
-                    /* address target */ toAddress,
-                    /* uint256 fee */ fee,
-                ]);
-
-                const relayRequest: RelayRequest = {
-                    request: {
-                        from: toAddress,
-                        to: config.polygon.usdc.htlcContract,
-                        data,
-                        value: '0',
-                        nonce: forwarderNonce.toString(),
-                        gas: gasLimit.toString(),
-                        validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                            .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                    },
-                    relayData: {
-                        gasPrice: gasPrice.toString(),
-                        pctRelayFee: relay.pctRelayFee.toString(),
-                        baseRelayFee: relay.baseRelayFee.toString(),
-                        relayWorker: relay.relayWorkerAddress,
-                        paymaster: config.polygon.usdc.htlcContract,
-                        paymasterData: '0x',
-                        clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        forwarder: config.polygon.usdc.htlcContract,
-                    },
-                };
-
-                resolve({
-                    ...relayRequest,
-                    amount: swap.value!.to.amount - swap.value!.to.fee,
-                    senderLabel: 'Swap HTLC',
-                });
-            });
-
-            const signedTransaction = await signPolygonTransaction(request);
-            if (!signedTransaction) return;
-
-            if (!swap.value) {
-                console.warn('No swap found after signing'); // eslint-disable-line no-console
-                return;
-            }
-
-            useSwapsStore().setActiveSwap({
-                ...swap.value,
-                settlementSerializedTx: JSON.stringify({
-                    request: signedTransaction.message,
-                    signature: signedTransaction.signature,
-                    relayUrl: relayUrl!,
-                }),
-                error: undefined,
-                errorAction: undefined,
-            });
-
-            if (config.fastspot.watchtowerEndpoint) {
-                let settlementSerializedTx = swap.value.settlementSerializedTx!;
-
-                // In case of a Polygon signed message, we need to restructure the `request` format
-                if (swap.value.to.asset === SwapAsset.USDC_MATIC) {
-                    // eslint-disable-next-line @typescript-eslint/no-shadow
-                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
-                    const { relayData, ...relayRequest } = request;
-                    settlementSerializedTx = JSON.stringify({
-                        request: {
-                            request: relayRequest as ForwardRequest,
-                            relayData,
-                        },
-                        signature,
-                        relayUrl,
-                    });
-                }
-
-                // Send redeem transaction to watchtower
-                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: swap.value.id,
-                        endpoint: new URL(config.fastspot.apiEndpoint).host,
-                        apikey: config.fastspot.apiKey,
-                        redeem: settlementSerializedTx,
-                    }),
-                }).then(async (response) => {
-                    if (!response.ok) {
-                        throw new Error((await response.json()).message);
-                    }
-
-                    setActiveSwap({
-                        ...swap.value!,
-                        watchtowerNotified: true,
-                    });
-                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
-                }).catch((error) => {
-                    reportToSentry(error);
-                });
-            }
-        }
-
-        async function resignUsdtRedeemTransaction() {
-            if (!swap.value) {
-                console.warn('No swap found'); // eslint-disable-line no-console
-                return;
-            }
-            const usdtHtlc = swap.value.contracts[SwapAsset.USDT_MATIC] as Contract<SwapAsset.USDT_MATIC> | undefined;
-            if (!usdtHtlc) {
-                console.warn('No USDT HTLC found in swap', swap.value); // eslint-disable-line no-console
-                return;
-            }
-            if (usdtHtlc.direction !== 'receive') {
-                console.warn('USDT HTLC is not a receive HTLC', usdtHtlc); // eslint-disable-line no-console
-                return;
-            }
-
-            let relayUrl: string;
-
-            // eslint-disable-next-line no-async-promise-executor
-            const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve) => {
-                const htlcContract = await getUsdtBridgedHtlcContract(); // This promise is already resolved
-                const toAddress = usdtHtlc.redeemAddress;
-
-                // Unset stored relay so we can select a new one that hopefully works then
-                polygonRelay = {
-                    relay: undefined,
-                    timestamp: 0,
-                };
-
-                const [
-                    forwarderNonce,
-                    blockHeight,
-                    { fee, gasLimit, gasPrice, relay, method },
-                ] = await Promise.all([
-                    htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                    getPolygonBlockNumber(),
-                    calculatePolygonHtlcFee(false, null),
-                ]);
-
-                if (method !== 'redeemWithSecretInData') {
-                    throw new Error('Wrong USDT contract method');
-                }
-
-                relayUrl = relay.url;
-
-                const data = htlcContract.interface.encodeFunctionData(method, [
-                    /* bytes32 id */ usdtHtlc.htlc.address,
-                    /* address target */ toAddress,
-                    /* uint256 fee */ fee,
-                ]);
-
-                const relayRequest: RelayRequest = {
-                    request: {
-                        from: toAddress,
-                        to: config.polygon.usdt_bridged.htlcContract,
-                        data,
-                        value: '0',
-                        nonce: forwarderNonce.toString(),
-                        gas: gasLimit.toString(),
-                        validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                            .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                    },
-                    relayData: {
-                        gasPrice: gasPrice.toString(),
-                        pctRelayFee: relay.pctRelayFee.toString(),
-                        baseRelayFee: relay.baseRelayFee.toString(),
-                        relayWorker: relay.relayWorkerAddress,
-                        paymaster: config.polygon.usdt_bridged.htlcContract,
-                        paymasterData: '0x',
-                        clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        forwarder: config.polygon.usdt_bridged.htlcContract,
-                    },
-                };
-
-                resolve({
-                    ...relayRequest,
-                    amount: swap.value!.to.amount - swap.value!.to.fee,
-                    senderLabel: 'Swap HTLC',
-                    token: config.polygon.usdt_bridged.tokenContract,
-                });
-            });
-
-            const signedTransaction = await signPolygonTransaction(request);
-            if (!signedTransaction) return;
-
-            if (!swap.value) {
-                console.warn('No swap found after signing'); // eslint-disable-line no-console
-                return;
-            }
-
-            useSwapsStore().setActiveSwap({
-                ...swap.value,
-                settlementSerializedTx: JSON.stringify({
-                    request: signedTransaction.message,
-                    signature: signedTransaction.signature,
-                    relayUrl: relayUrl!,
-                }),
-                error: undefined,
-                errorAction: undefined,
-            });
-
-            if (config.fastspot.watchtowerEndpoint) {
-                let settlementSerializedTx = swap.value.settlementSerializedTx!;
-
-                // In case of a Polygon signed message, we need to restructure the `request` format
-                if (swap.value.to.asset === SwapAsset.USDT_MATIC) {
-                    // eslint-disable-next-line @typescript-eslint/no-shadow
-                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
-                    const { relayData, ...relayRequest } = request;
-                    settlementSerializedTx = JSON.stringify({
-                        request: {
-                            request: relayRequest as ForwardRequest,
-                            relayData,
-                        },
-                        signature,
-                        relayUrl,
-                    });
-                }
-
-                // Send redeem transaction to watchtower
-                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: swap.value.id,
-                        endpoint: new URL(config.fastspot.apiEndpoint).host,
-                        apikey: config.fastspot.apiKey,
-                        redeem: settlementSerializedTx,
-                    }),
-                }).then(async (response) => {
-                    if (!response.ok) {
-                        throw new Error((await response.json()).message);
-                    }
-
-                    setActiveSwap({
-                        ...swap.value!,
-                        watchtowerNotified: true,
-                    });
-                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
-                }).catch((error) => {
-                    reportToSentry(error);
-                });
-            }
-        }
 
         return {
             onClose,
@@ -2541,8 +1615,6 @@ export default defineComponent({
             isHighRelativeFees,
             nimFeeFiat,
             btcFeeFiat,
-            usdcFeeFiat,
-            usdtFeeFiat,
             totalFeeFiat,
             feeSmallerThanSmUnit,
             fiatSmUnit,
@@ -2562,7 +1634,6 @@ export default defineComponent({
             estimateError,
             swap,
             swapError,
-            polygonFeeError,
             canSign,
             sign,
             cancel,
@@ -2584,10 +1655,7 @@ export default defineComponent({
             kycOverlayOpened,
             setLeftAsset,
             setRightAsset,
-            swapIsNotSupported,
             assetToCurrency,
-            handleSwapErrorAction,
-            stablecoin,
         };
     },
     components: {
@@ -2600,7 +1668,6 @@ export default defineComponent({
         Tooltip,
         FiatAmount,
         CircleSpinner,
-        InfoCircleSmallIcon,
         SwapBalanceBar,
         MinimizeIcon,
         // LimitIcon,
@@ -2684,21 +1751,6 @@ export default defineComponent({
         background-repeat: no-repeat;
         background-position-x: calc(100% - 1.75rem);
         background-position-y: 55%;
-    }
-
-    .stablecoin-tooltip {
-        margin-left: 1.5rem;
-        align-self: center;
-
-        ::v-deep .trigger svg {
-            height: 2rem;
-            margin: 0;
-        }
-
-        ::v-deep .tooltip-box {
-            text-align: left;
-            width: 30rem;
-        }
     }
 }
 

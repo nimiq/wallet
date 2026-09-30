@@ -288,7 +288,7 @@ export default defineComponent({
                 }
 
                 const { accountUsdcBalance } = usePolygonAddressStore();
-                // TODO: Preselect a relay to be able to check balance against the fee as well
+                // The relay fee is checked against the balance when sending
                 if (accountUsdcBalance.value < value) {
                     throw new Error('Insufficient USDC balance');
                 }
@@ -298,7 +298,6 @@ export default defineComponent({
                     normalizedDepositAddress,
                     value,
                     'Moonpay',
-                    // relay,
                 );
 
                 if (!tx) {
@@ -336,7 +335,7 @@ export default defineComponent({
                 }
 
                 const { accountUsdtBridgedBalance } = usePolygonAddressStore();
-                // TODO: Preselect a relay to be able to check balance against the fee as well
+                // The relay fee is checked against the balance when sending
                 if (accountUsdtBridgedBalance.value < value) {
                     throw new Error('Insufficient USDT balance');
                 }
@@ -346,7 +345,6 @@ export default defineComponent({
                     normalizedDepositAddress,
                     value,
                     'Moonpay',
-                    // relay,
                 );
 
                 if (!tx) {

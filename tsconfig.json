@@ -20,6 +20,9 @@
       "@/*": [
         "src/*"
       ],
+      "@nimiq/gasless-sdk/*": [
+        "node_modules/@nimiq/gasless-sdk/dist/*/index.d.ts"
+      ],
       "config": [
         "src/config/config.local.ts"
       ]

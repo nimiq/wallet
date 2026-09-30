@@ -54,10 +54,13 @@ export default {
     polygon: {
         enabled: true,
         // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
-        isGasAbstractionUnderMaintenance: true,
+        // TODO: Set to false once the relay address and URL are configured below.
+        isGaslessTransferUnderMaintenance: true,
         networkId: 137,
         rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
+        // The tokens' transferContract and htlcContract are the legacy OpenGSN-based contracts. They are only used to
+        // parse past transactions.
         usdc_bridged: {
             tokenContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
             transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
@@ -76,13 +79,20 @@ export default {
             htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
             earliestHistoryScanHeight: 63189500, // Block when USDT was added to the Wallet
         },
+        // Gasless USDC/USDT0 transfers, see https://github.com/NimiqToolbox/gas-abstraction
+        gasless: {
+            relayUrl: '', // TODO: Add the production relay URL
+            transferContract: '0xA0df3CdF124d7101a67ebE5b1b97D222505De9D6',
+            // Relay addresses the user may sign for. More than one allows a relay key rotation.
+            relays: [] as string[], // TODO: Add the production relay address
+            deployBlock: 94577424,
+            maxFee: 5e6, // The contract's MAX_FEE: 5.00 USDC/USDT
+            maxAcceptableFee: 0.5e6, // The highest relay fee the user is asked to sign, same as in the Keyguard
+        },
+        // Legacy OpenGSN-based contracts, only for parsing past transactions
         usdcConversion: {
             swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
-            swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',
         },
-        openGsnRelayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
-        uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-        wpolContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     },
 
     fastspot: {

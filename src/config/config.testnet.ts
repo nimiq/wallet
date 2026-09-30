@@ -42,10 +42,12 @@ export default {
     polygon: {
         enabled: false,
         // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
-        isGasAbstractionUnderMaintenance: false,
+        isGaslessTransferUnderMaintenance: false,
         networkId: 80002,
         rpcEndpoint: 'wss://polygon-amoy.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
+        // The tokens' transferContract and htlcContract are the legacy OpenGSN-based contracts. They are only used to
+        // parse past transactions.
         usdc_bridged: {
             tokenContract: '',
             transferContract: '', // v3
@@ -64,13 +66,19 @@ export default {
             htlcContract: '',
             earliestHistoryScanHeight: 13320830, // Block when USDT was added to the Wallet
         },
-        usdcConversion: {
-            swapContract: '', // v2
-            swapPoolContract: '',
+        // Gasless transfers are not deployed on Amoy
+        gasless: {
+            relayUrl: '',
+            transferContract: '',
+            relays: [] as string[],
+            deployBlock: 0,
+            maxFee: 5e6,
+            maxAcceptableFee: 0.5e6,
         },
-        openGsnRelayHubContract: '',
-        uniswapQuoterContract: '',
-        wpolContract: '0xA5733b3A8e62A8faF43b0376d5fAF46E89B3033E',
+        // Legacy OpenGSN-based contracts, only for parsing past transactions
+        usdcConversion: {
+            swapContract: '',
+        },
     },
 
     fastspot: {

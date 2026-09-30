@@ -238,7 +238,6 @@
                     :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
-                    :errorAction="swap.errorAction"
                     :manualFunding="true"
                     :oasisLimitExceeded="oasisBuyLimitExceeded"
                     @finished="finishSwap"

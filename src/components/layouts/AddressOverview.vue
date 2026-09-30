@@ -242,18 +242,6 @@
                     <div class="flex-grow"></div>
                     <Amount :amount="accountUsdcBridgedBalance" currency="usdc.e" value-mask/>
                 </div>
-                <div class="flex-row">
-                    <span class="description">
-                        <InfoCircleSmallIcon />
-                        {{ $t('Convert your USDC.e to the new standard.') }}
-                        <a href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
-                            target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
-                    </span>
-                    <button
-                        @click="convertBridgedUsdcToNative"
-                        class="nq-button-pill light-blue"
-                    >{{ $t('Convert to USDC') }}</button>
-                </div>
             </div>
             <div class="scroll-mask top"></div>
             <TransactionList
@@ -325,12 +313,7 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
-    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
-import { BigNumber } from 'ethers';
-import { SignPolygonTransactionRequest } from '@nimiq/hub-api';
-import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
-import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { RouteName } from '@/router';
 
 import BitcoinIcon from '../icons/BitcoinIcon.vue';
@@ -353,25 +336,14 @@ import { useAccountStore, AccountType } from '../../stores/Account';
 import { useAddressStore } from '../../stores/Address';
 import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { usePolygonAddressStore } from '../../stores/PolygonAddress';
-import { onboard, rename, swapBridgedUsdcToNative } from '../../hub';
+import { onboard, rename } from '../../hub';
 import { useElementResize } from '../../composables/useElementResize';
 import { useWindowSize } from '../../composables/useWindowSize';
-import { BTC_ADDRESS_GAP, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
+import { BTC_ADDRESS_GAP, CryptoCurrency } from '../../lib/Constants';
 import { checkHistory } from '../../electrum';
 import HighFiveIcon from '../icons/HighFiveIcon.vue';
 import { useSwapsStore } from '../../stores/Swaps';
 import BoxedArrowUpIcon from '../icons/BoxedArrowUpIcon.vue';
-import { useConfig } from '../../composables/useConfig';
-import {
-    calculateFee,
-    getPolygonBlockNumber,
-    getPolygonClient,
-    getConversionSwapContract,
-    sendTransaction as sendPolygonTransaction,
-} from '../../ethers';
-import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
-import { i18n } from '../../i18n/i18n-setup';
-import { useUsdcTransactionsStore } from '../../stores/UsdcTransactions';
 import StakingIcon from '../icons/Staking/StakingIcon.vue';
 import { useStakingStore } from '../../stores/Staking';
 import { Stablecoin, useAccountSettingsStore } from '../../stores/AccountSettings';
@@ -472,145 +444,6 @@ export default defineComponent({
             showUnclaimedCashlinkList.value = !showUnclaimedCashlinkList.value;
         }
 
-        const { config } = useConfig();
-
-        async function convertBridgedUsdcToNative() {
-            let relayUrl: string;
-
-            // Note that this is an on-chain swap, with no involvement of Fastspot.
-            // eslint-disable-next-line no-async-promise-executor
-            const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve, reject) => {
-                try {
-                    const [client, swapContract] = await Promise.all([
-                        getPolygonClient(),
-                        getConversionSwapContract(),
-                    ]);
-                    const fromAddress = usdcAddressInfo.value!.address;
-
-                    const [
-                        usdcNonce,
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        client.usdcBridgedToken.nonces(fromAddress) as Promise<BigNumber>,
-                        swapContract.getNonce(fromAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    // eslint-disable-next-line @typescript-eslint/prefer-as-const
-                    const method:/* 'swap' | */'swapWithApproval' = 'swapWithApproval';
-
-                    const {
-                        fee,
-                        gasLimit,
-                        gasPrice,
-                        relay,
-                    } = await calculateFee(config.polygon.usdc_bridged.tokenContract, method, undefined, swapContract);
-                    relayUrl = relay.url;
-
-                    if (fee.toNumber() >= usdcAddressInfo.value!.balanceUsdcBridged!) {
-                        reject(new Error(i18n.t(
-                            'You do not have enough USDC.e to pay conversion fees ({fee})',
-                            { fee: `${fee.toNumber() / 1e6} USDC.e` },
-                        ) as string));
-                        return;
-                    }
-
-                    // Limit swap amount to 100k USDC.e, to not unbalance the pool too much
-                    const amount = Math.min(100_000e6, usdcAddressInfo.value!.balanceUsdcBridged! - fee.toNumber());
-
-                    // Only allow 0.5% slippage on mainnet, but up to 5% on testnet
-                    const minTargetAmountPercentage = config.environment === ENV_MAIN ? 0.995 : 0.95;
-
-                    const data = swapContract.interface.encodeFunctionData(method, [
-                        /* address token */ config.polygon.usdc_bridged.tokenContract,
-                        /* uint256 amount */ amount,
-                        /* address pool */ config.polygon.usdcConversion.swapPoolContract,
-                        /* uint256 targetAmount */ Math.floor(amount * minTargetAmountPercentage),
-                        /* uint256 fee */ fee,
-                        ...(method === 'swapWithApproval' ? [
-                            // // Approve the maximum possible amount so afterwards we can use the `swap` method for
-                            // // lower fees
-                            // /* uint256 approval */ client.ethers
-                            //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-                            /* uint256 approval */ amount + fee.toNumber(),
-
-                            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* uint8 sigV */ 0,
-                        ] : []),
-                    ]);
-
-                    const relayRequest: RelayRequest = {
-                        request: {
-                            from: fromAddress,
-                            to: config.polygon.usdcConversion.swapContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdcConversion.swapContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdcConversion.swapContract,
-                        },
-                    };
-
-                    resolve({
-                        ...relayRequest,
-                        ...(method === 'swapWithApproval' ? {
-                            approval: {
-                                tokenNonce: usdcNonce.toNumber(),
-                            },
-                        } : null),
-                    });
-                } catch (e) {
-                    reject(e);
-                }
-            }).catch((error) => {
-                // Trigger alert only after popup closed, as otherwise the popup is visually blocking the alert
-                // and the UI seems frozen
-                window.setTimeout(() => {
-                    alert(error.message); // eslint-disable-line no-alert
-                }, 200);
-                throw error;
-            });
-
-            const signedTransaction = await swapBridgedUsdcToNative(request).catch((error) => {
-                // Trigger alert only after popup closed, as otherwise the popup is visually blocking the alert
-                // and the UI seems frozen
-                window.setTimeout(() => {
-                    alert(error.message); // eslint-disable-line no-alert
-                }, 200);
-                throw error;
-            });
-            if (!signedTransaction) return false;
-
-            const { relayData, ...relayRequest } = signedTransaction.message;
-            const tx = await sendPolygonTransaction(
-                config.polygon.usdc_bridged.tokenContract,
-                { request: relayRequest as ForwardRequest, relayData },
-                signedTransaction.signature,
-                relayUrl!,
-            ).catch((error) => {
-                alert(error.message); // eslint-disable-line no-alert
-            });
-
-            if (tx) {
-                useUsdcTransactionsStore().addTransactions([tx]);
-            }
-
-            return tx;
-        }
-
         function switchStablecoin(event: PointerEvent, stablecoin: Stablecoin) {
             useAccountSettingsStore().setStablecoin(stablecoin);
             useAccountStore().setActiveCurrency(stablecoin);
@@ -654,8 +487,6 @@ export default defineComponent({
             address$,
             addressMasked,
             toggleUnclaimedCashlinkList,
-            config,
-            convertBridgedUsdcToNative,
             switchStablecoin,
             totalActiveStake,
             windowWidth,
@@ -666,7 +497,6 @@ export default defineComponent({
     },
     components: {
         ArrowRightSmallIcon,
-        InfoCircleSmallIcon,
         Identicon,
         BitcoinIcon,
         GearIcon,
@@ -1044,11 +874,6 @@ export default defineComponent({
     .flex-row {
         gap: 1rem;
         align-items: center;
-
-        + .flex-row {
-            margin-top: 1.5rem;
-            justify-content: space-between;
-        }
     }
 
     svg.usdc {
@@ -1058,29 +883,6 @@ export default defineComponent({
 
     .amount {
         font-weight: bold;
-    }
-
-    .description {
-        font-size: var(--small-size);
-        opacity: 0.6;
-
-        svg {
-            display: inline;
-            width: 2rem;
-            height: 2rem;
-            vertical-align: text-top;
-            margin-top: 0.125rem;
-            margin-right: 0.5rem;
-        }
-
-        .nq-link {
-            color: inherit;
-            text-decoration: underline;
-        }
-    }
-
-    .nq-button-pill {
-        white-space: nowrap;
     }
 }
 

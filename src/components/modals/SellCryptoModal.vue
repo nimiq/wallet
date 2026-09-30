@@ -219,7 +219,6 @@
                     :toAddress="swap.contracts[swap.to.asset].htlc.address"
                     :nimAddress="activeAddressInfo.address"
                     :error="swap.error"
-                    :errorAction="swap.errorAction"
                     :toFundingDurationMins="isMainnet ? OASIS_EUR_DETECTION_DELAY : 0"
                     :oasisLimitExceeded="oasisSellLimitExceeded"
                     :stateEnteredAt="swap.stateEnteredAt"

@@ -93,6 +93,7 @@
                 <Tooltip
                     v-if="!$config.disableNetworkInteraction
                         && $config.fastspot.enabled
+                        && areStablecoinSwapsEnabled
                         && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasPolygonAddresses && $config.polygon.enabled
                         && (
@@ -163,6 +164,7 @@
 
                 <Tooltip
                     v-if="$config.fastspot.enabled
+                        && areStablecoinSwapsEnabled
                         && activeAccountInfo && activeAccountInfo.type !== AccountType.LEDGER
                         && hasBitcoinAddresses && $config.enableBitcoin
                         && hasPolygonAddresses && $config.polygon.enabled
@@ -340,6 +342,7 @@ import DoubleArrowIcon from '../icons/DoubleArrowIcon.vue';
 import LinkedDoubleArrowIcon from '../icons/LinkedDoubleArrowIcon.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
+import { getWalletEnabledSwapAssets } from '../../lib/swap/utils/Assets';
 // import { useStakingStore } from '../../stores/Staking';
 // import AccountStake from '../staking/AccountStake.vue';
 
@@ -470,7 +473,12 @@ export default defineComponent({
 
         // const { totalAccountStake } = useStakingStore();
 
+        // USDC/USDT swaps are currently not offered, see getWalletEnabledSwapAssets
+        const areStablecoinSwapsEnabled = computed(() => getWalletEnabledSwapAssets().some(
+            (asset) => asset === SwapAsset.USDC_MATIC || asset === SwapAsset.USDT_MATIC));
+
         return {
+            areStablecoinSwapsEnabled,
             stablecoin,
             activeAccountInfo,
             AccountType,

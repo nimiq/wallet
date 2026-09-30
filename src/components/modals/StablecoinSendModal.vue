@@ -266,13 +266,14 @@ import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vu
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
+import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { sendPolygonTransaction } from '../../hub';
-import { loadEthersLibrary, calculateFee } from '../../ethers';
+import { loadEthersLibrary } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
-import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
+import { quoteGaslessFee, GaslessFeeQuote, GaslessTransferError } from '../../lib/usdc/Gasless';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
@@ -513,7 +514,11 @@ export default defineComponent({
         const feeLoading = ref(true); // Only true for first fee loading, not for updates.
         const feeError = ref<string>(null);
 
-        const relay = ref<RelayServerInfo | null>(null);
+        const feeQuote = ref<GaslessFeeQuote | null>(null);
+        /**
+         * A payment that failed. Retrying it must keep its nonce (a correction), so that at most one version executes.
+         */
+        const failedPayment = ref<TransferRequest | null>(null);
 
         // Use 2.00 USDC/T as safe fallback fee
         const maxSendableAmount = computed(() => {
@@ -708,16 +713,27 @@ export default defineComponent({
             statusTitle.value = $t('Sending Transaction') as string;
             statusMessage.value = '';
 
+            const token = stablecoin.value === CryptoCurrency.USDC
+                ? config.polygon.usdc.tokenContract
+                : config.polygon.usdt_bridged.tokenContract;
+            const recipient = recipientInfo.value!.address;
+            // A correction must pay the same token to the same recipient. Otherwise, it is a new payment.
+            const corrects = failedPayment.value
+                && failedPayment.value.token.toLowerCase() === token.toLowerCase()
+                && failedPayment.value.to.toLowerCase() === recipient.toLowerCase()
+                ? failedPayment.value
+                : undefined;
+
             try {
                 const tx = await sendPolygonTransaction(
-                    stablecoin.value === CryptoCurrency.USDC
-                        ? config.polygon.usdc.tokenContract
-                        : config.polygon.usdt_bridged.tokenContract,
-                    recipientInfo.value!.address,
+                    token,
+                    recipient,
                     amount.value,
                     recipientInfo.value!.label,
-                    relay.value || undefined,
+                    feeQuote.value || undefined,
+                    corrects,
                 );
+                failedPayment.value = null;
 
                 if (!tx) {
                     statusScreenOpened.value = false;
@@ -752,6 +768,9 @@ export default defineComponent({
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 reportToSentry(error);
+                if (error instanceof GaslessTransferError && error.payment) {
+                    failedPayment.value = error.payment;
+                }
 
                 // Show error screen
                 statusState.value = State.WARNING;
@@ -820,20 +839,18 @@ export default defineComponent({
             window.clearTimeout(feeUpdateTimeout); // Reset potentially existing update timeout.
             feeUpdateTimeout = 0; // 0: timer is to be started after the initial update
             try {
-                const method = stablecoin.value === CryptoCurrency.USDC ? 'transferWithPermit' : 'transferWithApproval';
-                const feeInformation = await calculateFee(
+                const quote = await quoteGaslessFee(
                     stablecoin.value === CryptoCurrency.USDC
                         ? config.polygon.usdc.tokenContract
                         : config.polygon.usdt_bridged.tokenContract,
-                    method,
-                    relay.value || undefined,
                 );
-                fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
-                relay.value = feeInformation.relay;
+                fee.value = Number(quote.fee);
+                feeQuote.value = quote;
                 feeLoading.value = false;
                 feeError.value = null;
                 if (feeUpdateTimeout === 0) {
-                    // Schedule next update in 20s if timer is still to be started and has not been started yet.
+                    // Schedule next update in 20s if timer is still to be started and has not been started yet. The
+                    // relay's quotes are valid for 120s.
                     feeUpdateTimeout = window.setTimeout(startFeeUpdates, 20e3);
                 }
             } catch (e: unknown) {

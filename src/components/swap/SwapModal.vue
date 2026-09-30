@@ -299,7 +299,7 @@ import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
-import { RouteName, useRouter, stablecoinSwapMaintenanceWarning } from '@/router';
+import { useRouter, stablecoinSwapMaintenanceWarning } from '@/router';
 
 import { useI18n } from '@/lib/useI18n';
 import Modal from '../modals/Modal.vue';
@@ -2205,7 +2205,7 @@ export default defineComponent({
             }
             leftAsset.value = asset;
             router.replace({
-                name: RouteName.Swap,
+                name: router.currentRoute.name!, // keep the route's context, e.g. settings-swap, see sidebarModalRoutes
                 params: { pair: `${leftAsset.value}-${rightAsset.value}` },
             });
         }
@@ -2219,7 +2219,7 @@ export default defineComponent({
             }
             rightAsset.value = asset;
             router.replace({
-                name: RouteName.Swap,
+                name: router.currentRoute.name!, // keep the route's context, e.g. settings-swap, see sidebarModalRoutes
                 params: { pair: `${leftAsset.value}-${rightAsset.value}` },
             });
         }

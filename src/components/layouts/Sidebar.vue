@@ -189,7 +189,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { GearIcon, Tooltip, InfoCircleIcon } from '@nimiq/vue-components';
-import { RouteName, useRouter } from '@/router';
+import { RouteName, useRouter, getContextRouteName } from '@/router';
 import AnnouncementBox from '../AnnouncementBox.vue';
 import AccountMenu from '../AccountMenu.vue';
 import PriceChart, { TimeRange } from '../PriceChart.vue';
@@ -231,32 +231,17 @@ export default defineComponent({
         }
 
         async function openModal(routeName: RouteName, params: Record<string, string> = {}) {
-            // Try to find a context-specific variant of the modal for Settings or Network pages.
-            // For example, if we're on Settings and trying to open 'buy', try 'settings-buy' first.
-            let targetRouteName = routeName;
-            const currentRouteName = router.currentRoute.name;
-
-            if (currentRouteName === RouteName.Settings || currentRouteName === RouteName.Network) {
-                const prefix = currentRouteName === RouteName.Settings ? 'settings' : 'network';
-                const contextRouteName = `${prefix}-${routeName}` as RouteName;
-
-                // Check if this context-specific route exists
-                try {
-                    const contextRoute = router.resolve({ name: contextRouteName });
-                    if (contextRoute && contextRoute.route.matched.length > 0) {
-                        targetRouteName = contextRouteName;
-                    }
-                } catch (e) {
-                    // Route doesn't exist, fall back to original
-                }
-            }
+            // Use the variant of the modal for the current page, e.g. settings-swap on the Settings page.
+            const targetRouteName = getContextRouteName(routeName);
 
             // Each modal is expected to be sitting above a specific parent route / background page. If we're not
             // currently on that route, navigate to it first, such that the modal can be closed later by a simple back
             // navigation leading to that parent route. If we wouldn't do that, a back navigation would lead back to our
             // current route, but with the modal still open on top.
             const modalRoute = router.resolve({ name: targetRouteName }).route;
-            const expectedParentRoute = modalRoute.matched.find(({ name }) => !!name && name !== targetRouteName);
+            // Search for the closest parent, as the outermost route is named root also for the Settings page.
+            const expectedParentRoute = [...modalRoute.matched].reverse()
+                .find(({ name }) => !!name && name !== targetRouteName);
             if (expectedParentRoute && router.currentRoute.name !== expectedParentRoute.name) {
                 // Don't keep the sidebar open for this navigation on mobile because closing it would be a back
                 // navigation on the parent page, leading back to the route we're currently on, instead of closing the

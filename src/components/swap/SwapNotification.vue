@@ -1,7 +1,7 @@
 <template>
     <transition :name="swapIsComplete ? 'slide' : 'minimize'">
         <button
-            v-if="activeSwap && $route.name !== 'swap' && $route.name !== 'buy-crypto' && $route.name !== 'sell-crypto'"
+            v-if="activeSwap && !isSwapModalRoute($route)"
             class="reset swap-notification flex-row" :class="{
                 'complete': swapIsComplete,
                 'expired': swapIsExpired,
@@ -66,7 +66,8 @@ import {
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
-import { useRouter, RouteName } from '@/router';
+import type { Route } from 'vue-router';
+import { useRouter, RouteName, getContextRouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import MaximizeIcon from '../icons/MaximizeIcon.vue';
 import { useSwapsStore, SwapState, ActiveSwap, SwapEurData, SwapErrorAction } from '../../stores/Swaps';
@@ -920,7 +921,7 @@ export default defineComponent({
                     }
                     setTimeout(() => {
                         // Hide notification after a timeout, if not in a swap modal
-                        if (['swap', 'buy-crypto', 'sell-crypto'].includes(router.currentRoute.name!)) return;
+                        if (isSwapModalRoute(router.currentRoute)) return;
                         setActiveSwap(null);
                     }, 4 * 1000); // 4 seconds
                 }
@@ -930,6 +931,12 @@ export default defineComponent({
             }
 
             cleanUp();
+        }
+
+        // Whether the route is one of the swap modals, in the variant for the current page, see getContextRouteName.
+        function isSwapModalRoute(route: Route) {
+            return [RouteName.Swap, RouteName.BuyCrypto, RouteName.SellCrypto]
+                .some((routeName) => route.name === getContextRouteName(routeName, route));
         }
 
         function openSwap() {
@@ -951,11 +958,11 @@ export default defineComponent({
             const toAsset = activeSwap.value.to.asset as SwapAsset;
 
             if (cryptoCurrencies.includes(fromAsset) && cryptoCurrencies.includes(toAsset)) {
-                router.push({ name: RouteName.Swap });
+                router.push({ name: getContextRouteName(RouteName.Swap) });
             } else if (fiatCurrencies.includes(fromAsset)) {
-                router.push({ name: RouteName.BuyCrypto });
+                router.push({ name: getContextRouteName(RouteName.BuyCrypto) });
             } else if (fiatCurrencies.includes(toAsset)) {
-                router.push({ name: RouteName.SellCrypto });
+                router.push({ name: getContextRouteName(RouteName.SellCrypto) });
             } else {
                 throw new Error('Unhandled swap type, cannot open correct swap modal');
             }
@@ -968,6 +975,7 @@ export default defineComponent({
             swapIsErrored,
             oasisLimitExceeded,
             oasisPayoutFailed,
+            isSwapModalRoute,
             openSwap,
         };
     },

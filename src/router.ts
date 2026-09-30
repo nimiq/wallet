@@ -280,6 +280,18 @@ const sidebarModalRoutes = {
     }),
 };
 
+/**
+ * Get the name of the variant of a sidebar modal route for the context of the given route, i.e. the variant for the
+ * Settings or Network page if the given route is on one of those. Falls back to the base route name otherwise, or if
+ * the route has no such variants.
+ */
+export function getContextRouteName(baseRouteName: RouteName, route: Route = router.currentRoute): RouteName {
+    const context = route.matched.find(({ name }) => name === RouteName.Settings || name === RouteName.Network);
+    const hasContextVariants = Object.values(sidebarModalRoutes).some(({ base }) => base.name === baseRouteName);
+    if (!context || !hasContextVariants) return baseRouteName;
+    return `${context.name}-${baseRouteName}` as RouteName; // see createContextRoutes
+}
+
 const routes: RouteConfig[] = [{
     path: '/',
     name: RouteName.Root,

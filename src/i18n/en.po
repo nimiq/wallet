@@ -1021,7 +1021,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:99
 #: src/components/modals/SendModal.vue:400
-#: src/components/modals/StablecoinSendModal.vue:422
+#: src/components/modals/StablecoinSendModal.vue:423
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -1193,7 +1193,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:840
+#: src/components/modals/StablecoinSendModal.vue:858
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -2430,7 +2430,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:520
 #: src/components/modals/SendModal.vue:683
-#: src/components/modals/StablecoinSendModal.vue:708
+#: src/components/modals/StablecoinSendModal.vue:713
 msgid "Sending Transaction"
 msgstr ""
 
@@ -2454,11 +2454,11 @@ msgstr ""
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:743
+#: src/components/modals/StablecoinSendModal.vue:759
 msgid "Sent {coin} {ticker}"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:738
+#: src/components/modals/StablecoinSendModal.vue:754
 msgid "Sent {coin} {ticker} to {name}"
 msgstr ""
 
@@ -2584,7 +2584,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:731
-#: src/components/modals/StablecoinSendModal.vue:758
+#: src/components/modals/StablecoinSendModal.vue:778
 #: src/components/staking/StakingGraphPage.vue:273
 #: src/components/staking/StakingInfoPage.vue:476
 #: src/components/staking/StakingInfoPage.vue:557

@@ -1495,6 +1495,9 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.3.tgz#9a4b6c5594708f3dd76f8bf1b0fd189ca886dbce"
   integrity sha512-CUkIAcF7R3OlN45idB+yC9Wnuz2YXTPx25xYswCdmbMGu/EGZFNnGHLIe6HkbHd8Eh+uBrwqBmLZGm8jyQ9+6A==
 
+"@nimiq/gasless-sdk@file:../gas-abstraction/sdk":
+  version "0.1.0"
+
 "@nimiq/hub-api@^1.15.0":
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.15.0.tgz#d655a6554c6710d63d772ed3492c5b1145d04574"

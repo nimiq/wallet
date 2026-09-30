@@ -28,6 +28,7 @@
     "@nimiq/core": "^2.21.0",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",
     "@nimiq/fastspot-api": "^1.10.3",
+    "@nimiq/gasless-sdk": "file:../gas-abstraction/sdk",
     "@nimiq/hub-api": "^1.15.0",
     "@nimiq/iqons": "^1.5.2",
     "@nimiq/libswap": "^1.5.2",

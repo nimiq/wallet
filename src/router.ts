@@ -67,7 +67,7 @@ const BtcTransactionModal = () =>
 // Stablecoin Modals
 const PolygonActivationModal = () =>
     import(/* webpackChunkName: "polygon-activation-modal" */ './components/modals/PolygonActivationModal.vue');
-const StablecoinSendModal = () => (Config.polygon.isGasAbstractionUnderMaintenance
+const StablecoinSendModal = () => (Config.polygon.isGaslessTransferUnderMaintenance
     ? import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
         .then(({ createWarningModal }) => createWarningModal(() => ({
             title: i18n.t('Gas abstraction is under maintenance') as string,
@@ -747,7 +747,7 @@ router.beforeEach(createActivationNavigationGuard(
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
     new Set([
-        ...(Config.polygon.isGasAbstractionUnderMaintenance ? [] : [StablecoinSendModal]),
+        ...(Config.polygon.isGaslessTransferUnderMaintenance ? [] : [StablecoinSendModal]),
         StablecoinReceiveModal,
     ]),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
@@ -756,7 +756,7 @@ router.beforeEach(createActivationNavigationGuard(
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDT,
     new Set([
-        ...(Config.polygon.isGasAbstractionUnderMaintenance ? [] : [StablecoinSendModal]),
+        ...(Config.polygon.isGaslessTransferUnderMaintenance ? [] : [StablecoinSendModal]),
         StablecoinReceiveModal,
     ]),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),

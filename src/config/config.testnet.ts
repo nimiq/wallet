@@ -41,8 +41,11 @@ export default {
 
     polygon: {
         enabled: false,
-        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
+        // Set to true to keep stablecoin swaps visible, but show a maintenance warning. Swaps are still relayed via
+        // OpenGSN.
         isGasAbstractionUnderMaintenance: false,
+        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
+        isGaslessTransferUnderMaintenance: false,
         networkId: 80002,
         rpcEndpoint: 'wss://polygon-amoy.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
@@ -63,6 +66,15 @@ export default {
             transferContract: '',
             htlcContract: '',
             earliestHistoryScanHeight: 13320830, // Block when USDT was added to the Wallet
+        },
+        // Gasless transfers are not deployed on Amoy
+        gasless: {
+            relayUrl: '',
+            transferContract: '',
+            relays: [] as string[],
+            deployBlock: 0,
+            maxFee: 5e6,
+            maxAcceptableFee: 0.5e6,
         },
         usdcConversion: {
             swapContract: '', // v2

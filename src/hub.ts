@@ -16,8 +16,8 @@ import HubApi, {
 } from '@nimiq/hub-api';
 import type { PlainTransactionDetails } from '@nimiq/core';
 import type { RequestBehavior, BehaviorType } from '@nimiq/hub-api/dist/src/RequestBehavior.d';
-import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import Config from 'config';
+import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { useAccountStore, AccountInfo, AccountType } from './stores/Account';
 import { useAddressStore, AddressInfo, AddressType } from './stores/Address';
 import { useBtcAddressStore, BtcAddressInfo } from './stores/BtcAddress';
@@ -28,7 +28,7 @@ import { useProxyStore, Cashlink } from './stores/Proxy';
 import { useConfig } from './composables/useConfig';
 import { sendTransaction as sendTx } from './network';
 import { sendTransaction as sendBtcTx } from './electrum';
-import { createTransactionRequest, sendTransaction as sendPolygonTx } from './ethers';
+import { sendGaslessTransfer, GaslessFeeQuote } from './lib/usdc/Gasless';
 import { isProxyData, ProxyTransactionDirection } from './lib/ProxyDetection';
 import router, { RouteName } from './router';
 import { useSettingsStore } from './stores/Settings';
@@ -40,7 +40,6 @@ import {
 } from './lib/Constants';
 import { usePwaInstallPrompt } from './composables/usePwaInstallPrompt';
 import type { SetupSwapWithKycResult, SWAP_KYC_HANDLER_STORAGE_KEY } from './swap-kyc-handler'; // avoid bundling
-import type { RelayServerInfo } from './lib/usdc/OpenGSN';
 
 export function shouldUseRedirects(ignoreSettings = false): boolean {
     if (!ignoreSettings) {
@@ -852,58 +851,32 @@ export async function activatePolygon(accountId: string) {
     return true;
 }
 
+/**
+ * Sends a gasless USDC or USDT0 transfer from the active Polygon address. Resolves to the mined transaction, or to
+ * false if the user cancelled. Throws a GaslessTransferError on failure; to retry that payment, pass its `payment` as
+ * `corrects`, so that the retry keeps the payment's nonce and at most one version of it can execute.
+ */
 export async function sendPolygonTransaction(
     tokenAddress: string,
     recipient: string,
     amount: number,
     recipientLabel?: string,
-    forceRelay?: RelayServerInfo,
+    quote?: GaslessFeeQuote,
+    corrects?: TransferRequest,
 ) {
-    // eslint-disable-next-line no-async-promise-executor
-
-    let relayUrl: string;
-
-    // eslint-disable-next-line no-async-promise-executor
-    const request = new Promise<SignPolygonTransactionRequest>(async (resolve, reject) => {
-        try {
-            const {
-                relayRequest,
-                permit,
-                approval,
-                relay,
-            } = await createTransactionRequest(tokenAddress, recipient, amount, forceRelay);
-            relayUrl = relay.url;
-            resolve({
-                ...relayRequest,
-                appName: APP_NAME,
-                recipientLabel,
-
-                ...(permit ? {
-                    permit: {
-                        tokenNonce: permit.tokenNonce,
-                    },
-                } : null),
-
-                ...(approval ? {
-                    approval: {
-                        tokenNonce: approval.tokenNonce,
-                    },
-                } : null),
-            });
-        } catch (e) {
-            reject(e);
-        }
+    const tx = await sendGaslessTransfer({
+        token: tokenAddress,
+        to: recipient,
+        amount,
+        recipientLabel,
+        quote,
+        corrects,
+        sign: (request) => hubApi.signPolygonTransaction({
+            ...request,
+            appName: APP_NAME,
+        }, getBehavior()).catch(onError),
     });
-    const signedTransaction = await hubApi.signPolygonTransaction(request, getBehavior()).catch(onError);
-    if (!signedTransaction) return false;
-
-    const { relayData, ...relayRequest } = signedTransaction.message;
-    return sendPolygonTx(
-        tokenAddress,
-        { request: relayRequest as ForwardRequest, relayData },
-        signedTransaction.signature,
-        relayUrl!,
-    );
+    return tx || false;
 }
 
 export async function addBtcAddresses(accountId: string, chain: 'internal' | 'external', count?: number) {

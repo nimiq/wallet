@@ -293,7 +293,7 @@ export default defineComponent({
                     throw new Error('Invalid network ID given by Moonpay');
                 }
 
-                const { tokenContract } = config.polygon.usdt_bridged;
+                const { tokenContract } = config.polygon.usdc;
 
                 if (properties.cryptoCurrency.contractAddress !== tokenContract.toLowerCase()) {
                     throw new Error('Invalid USDC contract address given by Moonpay');

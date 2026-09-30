@@ -68,18 +68,21 @@ const BtcTransactionModal = () =>
 // Stablecoin Modals
 const PolygonActivationModal = () =>
     import(/* webpackChunkName: "polygon-activation-modal" */ './components/modals/PolygonActivationModal.vue');
+export function gasAbstractionMaintenanceWarning(): WarningModalProps {
+    return {
+        icon: 'warning',
+        title: i18n.t('Gas abstraction is currently disabled') as string,
+        message: i18n.t('Sending and receiving USDC/USDT is temporarily disabled due to a security issue with '
+            + 'our Polygon gas abstraction contract. Stablecoins sent to you will still arrive, but you can\'t '
+            + 'move them here until it\'s fixed, so please avoid receiving them for now. Your funds stay under '
+            + 'your control. If you need to move them now, you can import your account into another Polygon '
+            + 'wallet like MetaMask.') as string,
+        link: 'https://x.com/nimiq/status/2100661471789412565',
+    };
+}
 const GasAbstractionMaintenanceModal = () =>
     import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
-        .then(({ createWarningModal }) => createWarningModal(() => ({
-            icon: 'warning',
-            title: i18n.t('Gas abstraction is currently disabled') as string,
-            message: i18n.t('Sending and receiving USDC/USDT is temporarily disabled due to a security issue with '
-                + 'our Polygon gas abstraction contract. Stablecoins sent to you will still arrive, but you can\'t '
-                + 'move them here until it\'s fixed, so please avoid receiving them for now. Your funds stay under '
-                + 'your control. If you need to move them now, you can import your account into another Polygon '
-                + 'wallet like MetaMask.') as string,
-            link: 'https://x.com/nimiq/status/2100661471789412565',
-        })));
+        .then(({ createWarningModal }) => createWarningModal(gasAbstractionMaintenanceWarning));
 const StablecoinSendModal = () => (Config.polygon.isGasAbstractionUnderMaintenance
     ? GasAbstractionMaintenanceModal()
     : import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue'));

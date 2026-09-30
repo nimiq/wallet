@@ -443,7 +443,8 @@ export default defineComponent({
             // funded but not redeemed htlc which is now expired
             && (swapInfo.value?.in?.asset === SwapAsset.USDT_MATIC)
             && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
-            && !swapInfo.value.out,
+            && !swapInfo.value.out
+            && !config.polygon.isGasAbstractionUnderMaintenance,
             // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
             // && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );

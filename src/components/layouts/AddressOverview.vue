@@ -250,6 +250,7 @@
                             target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
                     </span>
                     <button
+                        v-if="!$config.polygon.isGasAbstractionUnderMaintenance"
                         @click="convertBridgedUsdcToNative"
                         class="nq-button-pill light-blue"
                     >{{ $t('Convert to USDC') }}</button>

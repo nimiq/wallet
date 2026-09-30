@@ -47,6 +47,7 @@ import {
 import { loadEthersLibrary } from '../../ethers';
 
 import { sendBtcTransaction, sendPolygonTransaction } from '../../hub';
+import { gasAbstractionMaintenanceWarning } from '../../router';
 import { useAccountSettingsStore } from '../../stores/AccountSettings';
 
 declare global {
@@ -94,6 +95,10 @@ export default defineComponent({
         if (defaultCurrencyCode === CryptoCurrency.NIM && config.disableNetworkInteraction) {
             defaultCurrencyCode = CryptoCurrency.BTC;
         }
+        if ((defaultCurrencyCode === CryptoCurrency.USDC || defaultCurrencyCode === CryptoCurrency.USDT)
+            && config.polygon.isGasAbstractionUnderMaintenance) {
+            defaultCurrencyCode = CryptoCurrency.BTC;
+        }
         if (defaultCurrencyCode === CryptoCurrency.USDC) defaultCurrencyCode = 'usdc_polygon';
         if (defaultCurrencyCode === CryptoCurrency.USDT) defaultCurrencyCode = 'usdt_polygon';
 
@@ -112,13 +117,13 @@ export default defineComponent({
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = stablecoin.value === CryptoCurrency.USDC
+        const usdcAddress = stablecoin.value === CryptoCurrency.USDC && !config.polygon.isGasAbstractionUnderMaintenance
             ? usePolygonAddressStore().activeAddress.value
             : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdtAddress = stablecoin.value === CryptoCurrency.USDT
+        const usdtAddress = stablecoin.value === CryptoCurrency.USDT && !config.polygon.isGasAbstractionUnderMaintenance
             ? usePolygonAddressStore().activeAddress.value
             : undefined;
 
@@ -161,6 +166,13 @@ export default defineComponent({
                     handlers: {
                         async onInitiateDeposit(properties: InitiateDepositProperties) {
                             console.debug({ properties }); // eslint-disable-line no-console
+
+                            if (config.polygon.isGasAbstractionUnderMaintenance
+                                && ['usdc_polygon', 'usdt_polygon'].includes(properties.cryptoCurrency.code)) {
+                                const { title, message } = gasAbstractionMaintenanceWarning();
+                                alert(`${title}\n\n${message}`); // eslint-disable-line no-alert
+                                return;
+                            }
 
                             if (properties.cryptoCurrency.code === CryptoCurrency.BTC) {
                                 useAccountStore().setActiveCurrency(CryptoCurrency.BTC);

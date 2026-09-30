@@ -1,6 +1,6 @@
 <template>
     <Modal class="swap-modal"
-        :showOverlay="!!swap || addressListOverlayOpened || kycOverlayOpened"
+        :showOverlay="!!swap || addressListOverlayOpened || kycOverlayOpened || stablecoinMaintenanceOverlayOpened"
         :emitClose="true" @close="onClose" @close-overlay="onClose"
     >
         <PageHeader>
@@ -255,6 +255,9 @@
         </div>
 
         <KycOverlay v-else-if="kycOverlayOpened" slot="overlay" @connected="kycOverlayOpened = false" />
+
+        <WarningModal v-else-if="stablecoinMaintenanceOverlayOpened" slot="overlay" embedded
+            v-bind="stablecoinSwapMaintenanceWarning()" @close="stablecoinMaintenanceOverlayOpened = false" />
     </Modal>
 </template>
 
@@ -296,10 +299,11 @@ import type { BigNumber } from 'ethers';
 import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
-import { RouteName, useRouter } from '@/router';
+import { RouteName, useRouter, stablecoinSwapMaintenanceWarning } from '@/router';
 
 import { useI18n } from '@/lib/useI18n';
 import Modal from '../modals/Modal.vue';
+import WarningModal from '../modals/WarningModal.vue';
 import Amount from '../Amount.vue';
 import AmountInput from '../AmountInput.vue';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
@@ -1387,6 +1391,8 @@ export default defineComponent({
                 addressListOverlayOpened.value = false;
             } else if (kycOverlayOpened.value === true) {
                 kycOverlayOpened.value = false;
+            } else if (stablecoinMaintenanceOverlayOpened.value === true) {
+                stablecoinMaintenanceOverlayOpened.value = false;
             } else {
                 router.back();
             }
@@ -2150,6 +2156,13 @@ export default defineComponent({
 
         const kycOverlayOpened = ref(false);
 
+        const stablecoinMaintenanceOverlayOpened = ref(false);
+
+        function isUnderGasAbstractionMaintenance(asset: SupportedSwapAsset) {
+            return config.polygon.isGasAbstractionUnderMaintenance
+                && (asset === SwapAsset.USDC_MATIC || asset === SwapAsset.USDT_MATIC);
+        }
+
         const { hasBitcoinAddresses, hasPolygonAddresses } = useAccountStore();
 
         // Only allow swapping between assets that have a balance in one of the sides of the swap.
@@ -2184,6 +2197,9 @@ export default defineComponent({
         const rightButtonGroupOptions = computed(() => getButtonGroupOptions(leftAsset.value));
 
         function setLeftAsset(asset: SupportedSwapAsset) {
+            if (isUnderGasAbstractionMaintenance(asset)) {
+                stablecoinMaintenanceOverlayOpened.value = true;
+            }
             if (rightAsset.value === asset) {
                 rightAsset.value = leftAsset.value;
             }
@@ -2195,6 +2211,9 @@ export default defineComponent({
         }
 
         function setRightAsset(asset: SupportedSwapAsset) {
+            if (isUnderGasAbstractionMaintenance(asset)) {
+                stablecoinMaintenanceOverlayOpened.value = true;
+            }
             if (leftAsset.value === asset) {
                 leftAsset.value = rightAsset.value;
             }
@@ -2582,6 +2601,8 @@ export default defineComponent({
             activeAddressInfo,
             kycUser,
             kycOverlayOpened,
+            stablecoinMaintenanceOverlayOpened,
+            stablecoinSwapMaintenanceWarning,
             setLeftAsset,
             setRightAsset,
             swapIsNotSupported,
@@ -2612,6 +2633,7 @@ export default defineComponent({
         SendModalFooter,
         KycPrompt,
         KycOverlay,
+        WarningModal,
         ButtonGroup,
         SwapIcon,
     },
@@ -3004,7 +3026,8 @@ export default defineComponent({
     }
 }
 
-.modal ::v-deep .overlay .animation-overlay + .close-button {
+.modal ::v-deep .overlay .animation-overlay + .close-button,
+.modal ::v-deep .overlay .warning-modal + .close-button {
     display: none;
 }
 

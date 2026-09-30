@@ -8,6 +8,7 @@ import Config from 'config';
 
 import { i18n } from './i18n/i18n-setup';
 import { areSwapsUnderMaintenance } from './lib/swap/utils/Assets';
+import type { WarningModalProps } from './components/modals/WarningModal.vue';
 
 // Start views
 import Groundfloor from './components/layouts/Groundfloor.vue';
@@ -101,18 +102,21 @@ const SwapModal = () => (areSwapsUnderMaintenance()
                 + 'is completed.') as string,
         })))
     : import(/* webpackChunkName: "swap-modal" */ './components/swap/SwapModal.vue'));
+export function stablecoinSwapMaintenanceWarning(): WarningModalProps {
+    return {
+        icon: 'warning',
+        title: i18n.t('Stablecoin swaps are currently disabled') as string,
+        message: i18n.t('Stablecoin swaps are temporarily disabled. A vulnerability was exploited in the Polygon '
+            + 'contract that powers gas-free USDC/USDT transactions, so we\'ve paused them while we fix it. Your '
+            + 'wallet is non-custodial, so your funds stay under your control. If you need to move them now, you '
+            + 'can import your account into another Polygon wallet like MetaMask. NIM and BTC '
+            + 'swaps are not affected.') as string,
+        link: 'https://x.com/nimiq/status/2100661471789412565',
+    };
+}
 const StablecoinSwapMaintenanceModal = () =>
     import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
-        .then(({ createWarningModal }) => createWarningModal(() => ({
-            icon: 'warning',
-            title: i18n.t('Stablecoin swaps are currently disabled') as string,
-            message: i18n.t('Stablecoin swaps are temporarily disabled. A vulnerability was exploited in the Polygon '
-                + 'contract that powers gas-free USDC/USDT transactions, so we\'ve paused them while we fix it. Your '
-                + 'wallet is non-custodial, so your funds stay under your control. If you need to move them now, you '
-                + 'can import your account into another Polygon wallet like MetaMask. NIM and BTC '
-                + 'swaps are not affected.') as string,
-            link: 'https://x.com/nimiq/status/2100661471789412565',
-        })));
+        .then(({ createWarningModal }) => createWarningModal(stablecoinSwapMaintenanceWarning));
 const BuyCryptoModal = () =>
     import(/* webpackChunkName: "buy-crypto-modal" */ './components/modals/BuyCryptoModal.vue');
 const SellCryptoModal = () =>
@@ -590,9 +594,9 @@ const routes: RouteConfig[] = [{
         // While the gas abstraction is under maintenance, show a warning instead of the SwapModal for swaps with USDC
         // or USDT. Registered before the regular swap route to take precedence, as paths are matched in registration
         // order. This covers paths like /swap/NIM-USDC_MATIC as opened by AccountOverview, deep links and history
-        // navigation, but not named navigation to RouteName.Swap, which is fine as the SwapModal doesn't offer USDC or
-        // USDT during the maintenance, see getWalletEnabledSwapAssets. Parentheses aren't supported within param
-        // patterns.
+        // navigation, but not named navigation to RouteName.Swap, which is fine as the SwapModal itself shows the
+        // warning as overlay instead of navigating, if USDC or USDT get selected. Parentheses aren't supported within
+        // param patterns.
         ...(Config.polygon.isGasAbstractionUnderMaintenance ? [{
             path: '/swap/:pair(.*USD[CT]_MATIC.*)',
             components: {

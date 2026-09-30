@@ -35,9 +35,7 @@ export function getWalletEnabledSwapAssets(): SwapAsset[] {
     return [
         ...(!config.disableNetworkInteraction ? [SwapAsset.NIM] : []),
         ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
-        ...(config.polygon.enabled && !config.polygon.isGasAbstractionUnderMaintenance
-            ? [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC]
-            : []),
+        ...(config.polygon.enabled ? [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC] : []),
     ];
 }
 

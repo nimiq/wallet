@@ -62,7 +62,7 @@ msgstr "{currency} não paga"
 msgid "{currency} payout pending"
 msgstr "{currency} pendente de pagamento"
 
-#: src/components/swap/SwapModal.vue:408
+#: src/components/swap/SwapModal.vue:412
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr "{disabledAsset}trocas estão de momento em manutenção"
 
@@ -385,7 +385,7 @@ msgstr ""
 "Todas as novas funcionalidades são exclusivas a novas contas. Atualiza "
 "agora, demora apenas uns segundos."
 
-#: src/components/layouts/AddressOverview.vue:294
+#: src/components/layouts/AddressOverview.vue:295
 msgid ""
 "All swaps are part of your transaction history and feature a small swap "
 "icon."
@@ -842,7 +842,7 @@ msgstr "Clicar para mais informações"
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr "Clicar em 'Troubleshooting' para saber mais."
 
-#: src/components/layouts/AddressOverview.vue:296
+#: src/components/layouts/AddressOverview.vue:297
 #: src/components/staking/StakingModal.vue:220
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
@@ -953,7 +953,7 @@ msgstr "Conversão de USDC.e"
 msgid "Conversion from USDC.e to USDC"
 msgstr "Conversão de USDC.e para USDC"
 
-#: src/components/layouts/AddressOverview.vue:255
+#: src/components/layouts/AddressOverview.vue:256
 msgid "Convert to USDC"
 msgstr "Converte para USDC"
 
@@ -1046,11 +1046,11 @@ msgstr "Criado ontem"
 msgid "Credit Card"
 msgstr "Cartão de Crédito"
 
-#: src/components/swap/SwapModal.vue:404
+#: src/components/swap/SwapModal.vue:408
 msgid "Crypto swaps are currently under maintenance."
 msgstr "Trocas de crypto estão de momento em manutenção."
 
-#: src/router.ts:93
+#: src/router.ts:103
 msgid ""
 "Crypto swaps are temporarily unavailable. They will be back as soon as the "
 "maintenance is completed."
@@ -1298,7 +1298,7 @@ msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 "Falha ao encontrar taxas {ticker}. A tentar novamente... (Erro: {message})"
 
-#: src/components/swap/SwapModal.vue:994
+#: src/components/swap/SwapModal.vue:998
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
 "Erro ao buscar taxas de Polygon. A tentar novamente... (Error: {message})"
@@ -1441,7 +1441,7 @@ msgstr ""
 "permanentemente!"
 
 #: src/router.ts:73
-msgid "Gas abstraction is under maintenance"
+msgid "Gas abstraction is currently disabled"
 msgstr ""
 
 #: src/components/layouts/Settings.vue:44
@@ -1477,6 +1477,7 @@ msgstr ""
 #: src/components/BankCheckInput.vue:94
 #: src/components/modals/BtcActivationModal.vue:20
 #: src/components/modals/PolygonActivationModal.vue:98
+#: src/components/modals/WarningModal.vue:27
 #: src/components/PolygonWarningPage.vue:25
 #: src/components/swap/OasisLaunchModal.vue:26
 msgid "Got it"
@@ -1581,7 +1582,7 @@ msgstr "IBAN"
 msgid "ID document"
 msgstr "Documento de identificação"
 
-#: src/components/swap/SwapNotification.vue:229
+#: src/components/swap/SwapNotification.vue:230
 msgid ""
 "If this error persists, check your internet connection or reload the page to"
 " reconnect."
@@ -1669,7 +1670,7 @@ msgstr "Saldo insuficiente"
 msgid "invalid"
 msgstr "Inválido"
 
-#: src/components/swap/SwapModal.vue:2020
+#: src/components/swap/SwapModal.vue:2026
 msgid "Invalid swap state, swap aborted!"
 msgstr "Estado de Troca inválido, Troca interrompida!"
 
@@ -1724,7 +1725,7 @@ msgstr "Sabe mais aqui"
 msgid "Legacy USDC (USDC.e)"
 msgstr "Legacy USDC (USDC.e)"
 
-#: src/components/layouts/AddressOverview.vue:281
+#: src/components/layouts/AddressOverview.vue:282
 msgid "Let's get started! Create your Nimiq account:"
 msgstr "Vamos começar! Cria a tua conta Nimiq:"
 
@@ -1863,6 +1864,10 @@ msgstr "Número de telemóvel"
 msgid "MoonPay is a third-party service requiring registration and KYC."
 msgstr "A MoonPay é um serviço de terceiros que requer registo e KYC."
 
+#: src/components/modals/WarningModal.vue:22
+msgid "More info"
+msgstr ""
+
 #: src/components/BankCheckInput.vue:9
 msgid "More locations will be supported in the future."
 msgstr "Mais localizações vão ser suportadas no futuro."
@@ -1974,7 +1979,7 @@ msgstr "Nenhuma ação necessária."
 msgid "No availability data available yet."
 msgstr "Dados ainda não disponíveis."
 
-#: src/components/swap/SwapNotification.vue:228
+#: src/components/swap/SwapNotification.vue:229
 msgid "No connection to {chain} network."
 msgstr "Sem conexão à rede {chain}."
 
@@ -2053,10 +2058,6 @@ msgstr "taxa de serviço OASIS"
 #: src/components/layouts/Settings.vue:196
 msgid "Off"
 msgstr "Desligado"
-
-#: src/components/modals/WarningModal.vue:25
-msgid "Ok"
-msgstr ""
 
 #: src/components/layouts/Settings.vue:381
 msgid "OK! Contacts imported successfully."
@@ -2368,8 +2369,8 @@ msgstr "Recarregar a página para continuar."
 msgid "Refund"
 msgstr "Reembolso"
 
-#: src/components/modals/UsdcTransactionModal.vue:578
-#: src/components/modals/UsdtTransactionModal.vue:546
+#: src/components/modals/UsdcTransactionModal.vue:579
+#: src/components/modals/UsdtTransactionModal.vue:547
 msgid "Refund failed: "
 msgstr "Falha no reembolso:"
 
@@ -2440,7 +2441,7 @@ msgstr "Reiniciar o processo de pagamento"
 msgid "Restart switch"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1087
+#: src/components/swap/SwapModal.vue:1091
 msgid "Resulting BTC amount is too small."
 msgstr "O valor resultante de BTC é demasiado baixo."
 
@@ -2509,10 +2510,6 @@ msgstr "Procurar transações por contacto, endereço, etc."
 #: src/components/modals/WelcomeModal.vue:30
 msgid "Security"
 msgstr "Segurança"
-
-#: src/components/modals/WarningModal.vue:20
-msgid "See latest updates"
-msgstr ""
 
 #: src/components/modals/BuyCryptoModal.vue:20
 #: src/components/modals/SellCryptoModal.vue:19
@@ -2639,6 +2636,16 @@ msgstr "Envia para ti dois códigos de backup"
 msgid "Send, receive and hold BTC in your wallet."
 msgstr "Enviar, receber e manter BTC na tua wallet."
 
+#: src/router.ts:74
+msgid ""
+"Sending and receiving USDC/USDT is temporarily disabled due to a security "
+"issue with our Polygon gas abstraction contract. Stablecoins sent to you "
+"will still arrive, but you can't move them here until it's fixed, so please "
+"avoid receiving them for now. Your funds stay under your control. If you "
+"need to move them now, you can import your account into another Polygon "
+"wallet like MetaMask."
+msgstr ""
+
 #: src/components/staking/StakingGraphPage.vue:134
 #: src/components/staking/StakingGraphPage.vue:222
 msgid "Sending Staking Transaction"
@@ -2653,12 +2660,6 @@ msgstr "A enviar Transação"
 #: src/components/staking/StakingInfoPage.vue:489
 msgid "Sending Unstaking Transaction"
 msgstr "Enviar transação de retirar a participação"
-
-#: src/router.ts:74
-msgid ""
-"Sending USDC and USDT is temporarily unavailable. It will be back as soon as"
-" the maintenance is completed."
-msgstr ""
 
 #: src/components/modals/BackupModal.vue:30
 msgid ""
@@ -2787,7 +2788,7 @@ msgstr "Mostrar decimais"
 msgid "Show Link"
 msgstr "Mostrar Link"
 
-#: src/components/layouts/AddressOverview.vue:282
+#: src/components/layouts/AddressOverview.vue:283
 msgid "Signup"
 msgstr "Inscreve-te"
 
@@ -2832,6 +2833,20 @@ msgstr "Torna a tua transação mais rápida"
 #: src/components/modals/WelcomeModal.vue:31
 msgid "Stability"
 msgstr "Estabilidade"
+
+#: src/router.ts:110
+msgid "Stablecoin swaps are currently disabled"
+msgstr ""
+
+#: src/router.ts:111
+msgid ""
+"Stablecoin swaps are temporarily disabled. A vulnerability was exploited in "
+"the Polygon contract that powers gas-free USDC/USDT transactions, so we've "
+"paused them while we fix it. Your wallet is non-custodial, so your funds "
+"stay under your control. If you need to move them now, you can import your "
+"account into another Polygon wallet like MetaMask. NIM and BTC swaps are not"
+" affected."
+msgstr ""
 
 #: src/components/staking/StakingButton.vue:33
 msgid "Stake"
@@ -2986,7 +3001,7 @@ msgstr "Troca para {address}"
 msgid "Swap up to {limit} per 30 days."
 msgstr "Troca até {limit} por 30 dias."
 
-#: src/router.ts:92
+#: src/router.ts:102
 msgid "Swaps are under maintenance"
 msgstr ""
 
@@ -3087,7 +3102,7 @@ msgstr "O banco está a processar a tua transação."
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr "As taxas (de momento a {amount}) determinam o valor mínimo."
 
-#: src/components/swap/SwapModal.vue:1081 src/lib/swap/utils/BuyUtils.ts:95
+#: src/components/swap/SwapModal.vue:1085 src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."
 msgstr "As taxas determinam o valor mínimo."
@@ -3680,7 +3695,7 @@ msgstr "Podes receber apenas de endereços Polygon {ticker}!"
 msgid "You can receive more free NIM in {waitTime} hours."
 msgstr "Podes receber mais NIM gratuitamente em {waitTime} horas."
 
-#: src/components/layouts/Sidebar.vue:377
+#: src/components/layouts/Sidebar.vue:362
 msgid ""
 "You can sell NIM\n"
 "- in the Wallet by swapping NIM to BTC or USDC first, which can then be sold.\n"
@@ -3704,7 +3719,7 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr "Atualmente não tens saldo para troca."
 
-#: src/components/layouts/AddressOverview.vue:512
+#: src/components/layouts/AddressOverview.vue:513
 msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
 msgstr "Não tens USDC.e suficiente para pagar as taxas de conversão ({fee})"
 
@@ -3841,7 +3856,7 @@ msgid ""
 " manually."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:290
+#: src/components/layouts/AddressOverview.vue:291
 msgid "Your swap was successful!"
 msgstr "A tua troca foi bem sucedida!"
 

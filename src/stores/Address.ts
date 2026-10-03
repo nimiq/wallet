@@ -104,6 +104,14 @@ export const useAddressStore = createStore({
         selectAddress(address: string) {
             this.state.activeAddress = address;
         },
+        // The active address must be one of the active account's addresses. That is not guaranteed after loading the
+        // stores, as the active account and the active address are persisted separately, each by whichever tab wrote
+        // last, nor by setAddressInfos, which may fall back to an address of another account.
+        ensureActiveAddressInActiveAccount() {
+            if (this.activeAddressInfo.value) return;
+            const [firstAddressInfo] = this.addressInfos.value;
+            if (firstAddressInfo) this.selectAddress(firstAddressInfo.address);
+        },
         addAddressInfo(addressInfo: AddressInfo, selectIt = true) {
             // Need to assign whole object for change detection of new addresses.
             // TODO: Simply set new addressInfo in Vue 3.

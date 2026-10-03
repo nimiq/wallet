@@ -307,6 +307,10 @@ export async function initStorage() {
         ),
     ]);
 
+    // The account store and the address store have been loaded independently of each other. Ensure they are in a
+    // consistent state.
+    useAddressStore().ensureActiveAddressInActiveAccount();
+
     // Delete state related to outdated testnet versions that have been reset to a new genesis block.
     const isTestnet = config.environment === ENV_TEST || config.environment === ENV_DEV;
     const storedTestnetVersion = isTestnet ? localStorage.getItem(TESTNET_VERSION_LOCALSTORAGE_KEY) : null;

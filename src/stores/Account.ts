@@ -101,6 +101,11 @@ export const useAccountStore = createStore({
                     this.state.activeAccountId = null;
                 }
             }
+
+            // Ensure active account and active address are in a consistent state.
+            // Even an account that was already selected might be inconsistent to the selected address. It might for
+            // example have changed to a different account's address in a second tab.
+            useAddressStore().ensureActiveAddressInActiveAccount();
         },
         patchAccount(accountId, patch: Partial<AccountInfo>) {
             this.state.accountInfos[accountId] = {

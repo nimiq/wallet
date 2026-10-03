@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, onUnmounted, onActivated, watch } from '@vue/composition-api';
 import { FiatAmount } from '@nimiq/vue-components';
 import { nextTick } from '@/lib/nextTick';
 import PrivacyOffIcon from './icons/PrivacyOffIcon.vue';
@@ -102,8 +102,12 @@ export default defineComponent({
         const fiatAmountMinSize = 1; // rem
         const fiatAmountFontSize = ref(fiatAmountMaxSize.value);
 
+        let isFontSizeUpdatePending = false;
         async function updateFontSize() {
+            if (isFontSizeUpdatePending) return;
+            isFontSizeUpdatePending = true;
             await nextTick();
+            isFontSizeUpdatePending = false;
             if (!fiatAmount$.value) return;
 
             if (!fiatAmountContainer$.value || !fiatAmount$.value) return;
@@ -126,12 +130,18 @@ export default defineComponent({
 
         onMounted(() => {
             window.addEventListener('resize', updateFontSize);
+            // The amount is displayed in a fallback font, until its font is loaded.
+            document.fonts.addEventListener('loadingdone', updateFontSize);
+            updateFontSize();
         });
-        onUnmounted(() => window.removeEventListener('resize', updateFontSize));
+        onUnmounted(() => {
+            window.removeEventListener('resize', updateFontSize);
+            document.fonts.removeEventListener('loadingdone', updateFontSize);
+        });
+        // The window might have been resized while the account overview was not displayed.
+        onActivated(updateFontSize);
 
-        watch(fiatAmount$, () => {
-            if (!fiatAmount$.value) updateFontSize();
-        }, { lazy: true });
+        watch([fiatAmount, fiatCurrency], updateFontSize, { lazy: true });
 
         watch(amountsHidden, (hidden) => {
             if (!hidden) updateFontSize();

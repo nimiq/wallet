@@ -95,8 +95,11 @@ export default defineComponent({
         const fiatAmountContainer$ = ref<HTMLDivElement>(null);
         const fiatAmount$ = ref<FiatAmount>(null);
 
+        const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
         const { isFullDesktop } = useWindowSize();
         const fiatAmountMaxSize = computed(() => isFullDesktop.value ? 7 : 5.5); // rem
+        // Minimum size to ensure that the amount always keeps a measurable width, by which it can be scaled up again.
+        const fiatAmountMinSize = 1; // rem
         const fiatAmountFontSize = ref(fiatAmountMaxSize.value);
 
         async function updateFontSize() {
@@ -105,12 +108,19 @@ export default defineComponent({
 
             if (!fiatAmountContainer$.value || !fiatAmount$.value) return;
 
+            // Don't try to update while amounts are hidden.
+            if (amountsHidden.value) return;
+
             const availableWidth = fiatAmountContainer$.value!.offsetWidth;
             const referenceWidth = (fiatAmount$.value!.$el as HTMLElement).offsetWidth;
+            if (!availableWidth || !referenceWidth) return;
             const scaleFactor = Math.round((availableWidth / referenceWidth) * 100) / 100;
 
             if (scaleFactor > 1.02 || scaleFactor < 0.98) { // needed for safari
-                fiatAmountFontSize.value = Math.min(fiatAmountMaxSize.value, fiatAmountFontSize.value * scaleFactor);
+                fiatAmountFontSize.value = Math.max(
+                    fiatAmountMinSize,
+                    Math.min(fiatAmountMaxSize.value, fiatAmountFontSize.value * scaleFactor),
+                );
             }
         }
 
@@ -123,7 +133,9 @@ export default defineComponent({
             if (!fiatAmount$.value) updateFontSize();
         }, { lazy: true });
 
-        const { amountsHidden, toggleAmountsHidden } = useSettingsStore();
+        watch(amountsHidden, (hidden) => {
+            if (!hidden) updateFontSize();
+        }, { lazy: true });
 
         return {
             fiatAmount,

@@ -19,6 +19,10 @@ export function toValidatorRef(validator: Validator): ValidatorRef {
 
 export const validatorLabel = (v: ValidatorRef): string => v.name || v.address;
 
+export function stakingErrorMessage(error: { message?: string, data?: unknown }): string {
+    return `${error.message}${error.data ? ` - ${error.data}` : ''}`;
+}
+
 export enum FilterState {
     TRUST = 'trustscore',
     PAYOUT = 'payoutTime',

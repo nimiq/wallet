@@ -51,14 +51,19 @@
             <div>
                 <button
                     class="nq-button light-blue stake-button"
-                    :disabled="!stakeDelta || isStakeBelowMinimum"
+                    :disabled="!stakeDelta || isStakeBelowMinimum || !!networkNotice"
                     @click="performStaking"
                 >
                     {{ $t('Confirm stake') }}
                 </button>
 
                 <MessageTransition>
-                    <div class="disclaimer minimum-stake-disclaimer" v-if="newStake !== 0 && isStakeBelowMinimum">
+                    <div class="disclaimer network-notice flex-row" v-if="networkNotice">
+                        <CircleSpinner />
+                        {{ networkNotice }}
+                    </div>
+                    <div class="disclaimer minimum-stake-disclaimer"
+                        v-else-if="newStake !== 0 && isStakeBelowMinimum">
                         {{ $t('Stake must be at least {minStake}.', { minStake: `${MIN_STAKE / 1e5} NIM` }) }}
                     </div>
                     <div class="disclaimer stake-disclaimer" v-else-if="stakeDelta >= 0">
@@ -76,24 +81,23 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from '@vue/composition-api';
-import { InfoCircleSmallIcon, Amount, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
+import { InfoCircleSmallIcon, Amount, CircleSpinner, PageHeader, PageBody, Tooltip } from '@nimiq/vue-components';
 
 import { useI18n } from '@/lib/useI18n';
 import { CryptoCurrency, MIN_STAKE } from '../../lib/Constants';
 import { calculateDisplayedDecimals } from '../../lib/NumberFormatting';
-import { getNetworkClient } from '../../network';
+import { getNetworkClient, getValidityStartHeight, nimiqNetworkNotice } from '../../network';
 import { sendStaking } from '../../hub';
 import { startWatchtowerUnstaking } from '../../lib/WatchtowerOperations';
 
 import { useAddressStore } from '../../stores/Address';
 import { useStakingStore } from '../../stores/Staking';
-import { useNetworkStore } from '../../stores/Network';
 
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
 import AmountSlider from './AmountSlider.vue';
-import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
+import { StakingOperationType, stakingErrorMessage, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import MessageTransition from '../MessageTransition.vue';
 import StakingGraph from './StakingGraph.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -141,7 +145,7 @@ export default defineComponent({
                             Address.fromUserFriendlyAddress(validatorRef.address),
                             BigInt(stakeDelta.value),
                             BigInt(0),
-                            useNetworkStore().state.height,
+                            getValidityStartHeight(),
                             await client.getNetworkId(),
                         );
                         const txs = await sendStaking({
@@ -181,7 +185,7 @@ export default defineComponent({
                             Address.fromUserFriendlyAddress(activeAddress.value!),
                             BigInt(stakeDelta.value),
                             BigInt(0),
-                            useNetworkStore().state.height,
+                            getValidityStartHeight(),
                             await client.getNetworkId(),
                         );
                         const txs = await sendStaking({
@@ -271,12 +275,13 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
-                    message: `${error.message} - ${error.data}`,
+                    message: stakingErrorMessage(error),
                 });
             }
         }
 
         const isStakeBelowMinimum = computed(() => newStake.value < MIN_STAKE && newStake.value > 0);
+        const networkNotice = computed(nimiqNetworkNotice);
 
         return {
             // NOW,
@@ -289,6 +294,7 @@ export default defineComponent({
             updateStaked,
             performStaking,
             isStakeBelowMinimum,
+            networkNotice,
             MIN_STAKE,
             tooltipContainer,
         };
@@ -302,6 +308,7 @@ export default defineComponent({
         Amount,
         Tooltip,
         InfoCircleSmallIcon,
+        CircleSpinner,
         MessageTransition,
     },
 });
@@ -327,7 +334,7 @@ export default defineComponent({
     }
 
     .page-body {
-        padding: 0 0 2rem 0;
+        padding: 0 0 1.75rem 0;
         position: relative;
         justify-content: space-between;
         flex-grow: 1;
@@ -365,13 +372,24 @@ export default defineComponent({
             z-index: 0;
         }
 
-        .stake-button { width: 40.5rem }
+        .stake-button {
+            width: 40.5rem;
+            margin-bottom: 0;
+        }
 
         .disclaimer {
-            margin-top: 1.5rem;
+            margin-top: 1.25rem;
             font-weight: 600;
             font-size: var(--small-size);
             text-align: center;
+        }
+
+        .network-notice {
+            justify-content: center;
+            align-items: center;
+            color: var(--nimiq-light-blue);
+
+            ::v-deep .circle-spinner { margin-right: 1rem }
         }
 
         .minimum-stake-disclaimer { color: var(--nimiq-orange) }

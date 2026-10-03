@@ -2,8 +2,12 @@ import { type SignedTransaction } from '@nimiq/hub-api';
 
 import { usePolicy } from '../composables/usePolicy';
 import { signSwitchValidatorTransactions, signUnstakingTransactions } from '../hub';
-import { getNetworkClient, sendTransaction as sendTx, waitForTransactionConfirmation } from '../network';
-import { useNetworkStore } from '../stores/Network';
+import {
+    getNetworkClient,
+    getValidityStartHeight,
+    sendTransaction as sendTx,
+    waitForTransactionConfirmation,
+} from '../network';
 import { Stake, useStakingStore } from '../stores/Staking';
 import { useTransactionsStore } from '../stores/Transactions';
 import { startSwitchValidator, startUnstaking } from './AlbatrossWatchtower';
@@ -42,7 +46,7 @@ async function prepare(stakerAddress: string) {
         usePolicy(),
     ]);
     // Read after the awaits so the height is the one the transactions are actually built against.
-    const currentHeight = useNetworkStore().state.height;
+    const currentHeight = getValidityStartHeight();
 
     return {
         Address,

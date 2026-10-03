@@ -1,10 +1,9 @@
 import { sendStaking } from '../hub';
-import { getNetworkClient } from '../network';
+import { getNetworkClient, getValidityStartHeight } from '../network';
 import { ValidatorRef, validatorLabel } from './StakingUtils';
 
 export async function sendImmediateValidatorSwitch(params: {
     stakerAddress: string,
-    height: number,
     amount: number,
     target: ValidatorRef,
     from: ValidatorRef,
@@ -21,7 +20,7 @@ export async function sendImmediateValidatorSwitch(params: {
         Address.fromUserFriendlyAddress(params.target.address),
         reactivateAllStake,
         BigInt(0),
-        params.height,
+        getValidityStartHeight(),
         networkId,
     );
 

@@ -52,13 +52,19 @@
             <button class="action-button" :disabled="isActionDisabled" @click="onActionButtonClick">
                 {{ actionButtonLabel }}
             </button>
+            <MessageTransition>
+                <div v-if="networkNotice" class="network-notice flex-row">
+                    <CircleSpinner />
+                    {{ networkNotice }}
+                </div>
+            </MessageTransition>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, onBeforeUnmount } from '@vue/composition-api';
-import { PageHeader, PageBody } from '@nimiq/vue-components';
+import { CircleSpinner, PageHeader, PageBody } from '@nimiq/vue-components';
 import { useI18n } from '@/lib/useI18n';
 import { Validator, useStakingStore } from '../../stores/Staking';
 import ValidatorIcon from './ValidatorIcon.vue';
@@ -66,12 +72,14 @@ import ShortAddress from '../ShortAddress.vue';
 import ValidatorScoreDetails from './ValidatorScoreDetails.vue';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
+import { nimiqNetworkNotice } from '../../network';
 import { State, SUCCESS_REDIRECT_DELAY } from '../StatusScreen.vue';
-import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
+import { StakingOperationType, stakingErrorMessage, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
 import { startWatchtowerSwitch } from '../../lib/WatchtowerOperations';
 import ValidatorReward from './tooltips/ValidatorReward.vue';
 import BlueLink from '../BlueLink.vue';
+import MessageTransition from '../MessageTransition.vue';
 import { reportToSentry } from '../../lib/Sentry';
 
 export default defineComponent({
@@ -103,6 +111,11 @@ export default defineComponent({
         const isCurrentValidator = computed(() => !!activeValidator.value
             && activeValidator.value.address === props.validator.address);
 
+        // Only a switch signs; not opening the list from the current validator, nor a first selection.
+        const networkNotice = computed(() => (hasExistingStake.value && !isCurrentValidator.value
+            ? nimiqNetworkNotice()
+            : null));
+
         // Every switch the user can start goes through this button, so a watchtower operation in flight
         // (which chain balances alone can't reveal) disables it here, with the label giving the reason.
         const actionButtonLabel = computed(() => {
@@ -115,7 +128,8 @@ export default defineComponent({
 
         const isSubmitting = ref(false);
 
-        const isActionDisabled = computed(() => isSubmitting.value || !!pendingOperation.value);
+        const isActionDisabled = computed(() => isSubmitting.value || !!pendingOperation.value
+            || !!networkNotice.value);
 
         let successRedirectTimer: number | null = null;
         function scheduleSuccessRedirect() {
@@ -203,7 +217,6 @@ export default defineComponent({
 
             const txs = await sendImmediateValidatorSwitch({
                 stakerAddress: activeAddress.value!,
-                height: height.value,
                 amount: activeStake.value!.inactiveBalance,
                 target,
                 from: toValidatorRef(fromValidator),
@@ -271,7 +284,7 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
-                    message: `${error.message}${error.data ? ` - ${error.data}` : ''}`,
+                    message: stakingErrorMessage(error),
                 });
             }
         }
@@ -294,9 +307,11 @@ export default defineComponent({
             onActionButtonClick,
             actionButtonLabel,
             isActionDisabled,
+            networkNotice,
         };
     },
     components: {
+        CircleSpinner,
         PageHeader,
         PageBody,
         ValidatorIcon,
@@ -304,6 +319,7 @@ export default defineComponent({
         ValidatorScoreDetails,
         ValidatorReward,
         BlueLink,
+        MessageTransition,
     },
 });
 </script>
@@ -417,11 +433,12 @@ hr {
     flex-shrink: 0;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    height: 9rem;
-    padding: 2.75rem 0;
+    min-height: 9rem;
+    padding: 2.75rem 0 1.75rem;
 
     background-color: white;
     border-bottom-left-radius: 1.25rem;
@@ -436,6 +453,7 @@ hr {
 .action-button {
     border: none;
     cursor: pointer;
+    margin-bottom: 1rem;
 
     padding: 0.625rem 1.5rem;
     border-radius: 10rem;
@@ -463,5 +481,21 @@ hr {
         cursor: not-allowed;
         opacity: 0.5;
     }
+}
+
+// Full width, or the leaving message (positioned at 100% of it) wraps when the container shrinks.
+.bottom-bar .message-transition {
+    align-self: stretch;
+}
+
+.network-notice {
+    padding-top: 0.25rem;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--small-size);
+    font-weight: 600;
+    color: var(--nimiq-light-blue);
+
+    ::v-deep .circle-spinner { margin-right: 1rem }
 }
 </style>

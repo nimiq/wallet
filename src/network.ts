@@ -13,6 +13,7 @@ import { ENV_MAIN, STAKING_CONTRACT_ADDRESS } from './lib/Constants';
 import { reportToSentry } from './lib/Sentry';
 import { useAccountStore } from './stores/Account';
 import { usePolicy } from './composables/usePolicy';
+import { i18n } from './i18n/i18n-setup';
 
 let isLaunched = false;
 let clientPromise: Promise<Client>;
@@ -40,6 +41,22 @@ export async function getNetworkClient() {
     })();
 
     return clientPromise;
+}
+
+// The raw consensus, not the store getter: its 'stalled' also fires for a device clock running ahead.
+export function nimiqNetworkNotice(): string | null {
+    const { consensus, height } = useNetworkStore().state;
+    if (consensus !== 'established') return i18n.t('Connecting to Nimiq network') as string;
+    if (!height) return i18n.t('Waiting for Nimiq network information') as string;
+    return null;
+}
+
+export function getValidityStartHeight(): number {
+    if (nimiqNetworkNotice()) {
+        throw new Error(i18n.t('Not connected to the Nimiq network yet. '
+            + 'Wait until it is connected and try again.') as string);
+    }
+    return useNetworkStore().state.height;
 }
 
 async function reconnectNetwork() {

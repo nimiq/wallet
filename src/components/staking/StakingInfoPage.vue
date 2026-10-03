@@ -111,13 +111,17 @@
                     </template>
                 </span>
                 <button v-if="switchTargetStatus === 'active'" class="nq-button-pill light-blue"
-                    @click="manualActivateSwitch">
+                    :disabled="!!networkNotice" @click="manualActivateSwitch">
                     {{ $t('Activate validator') }}
                 </button>
                 <button v-else-if="choosesValidator" class="nq-button-pill light-blue"
                     @click="$emit('switch-validator')">
                     {{ $t('Choose validator') }}
                 </button>
+            </div>
+            <div v-if="networkNotice && switchTargetStatus === 'active'" class="footer-notice network-notice flex-row">
+                <CircleSpinner />
+                {{ networkNotice }}
             </div>
         </PageFooter>
         <PageFooter v-else-if="switchStall === 'interrupted'">
@@ -126,7 +130,7 @@
                     <CircleExclamationMarkIcon />
                     <span class="flex-grow">{{ $t('Validator switch interrupted') }}</span>
                     <button v-if="switchTargetStatus === 'active'" class="nq-button-pill light-blue"
-                        @click="resumeSwitch">
+                        :disabled="!!networkNotice" @click="resumeSwitch">
                         {{ $t('Restart switch') }} <ArrowRightSmallIcon />
                     </button>
                     <button v-else-if="choosesValidator && canReplaceStalledSwitch" class="nq-button-pill light-blue"
@@ -163,6 +167,11 @@
                         {{ $t('You can choose another validator in {time}.', { time: replaceableTime }) }}
                     </template>
                 </div>
+                <div v-if="networkNotice && switchTargetStatus === 'active'"
+                    class="footer-notice network-notice flex-row">
+                    <CircleSpinner />
+                    {{ networkNotice }}
+                </div>
             </div>
         </PageFooter>
         <PageFooter v-else-if="stake && ((stake.inactiveBalance && hasUnstakableStake) || stake.retiredBalance)">
@@ -175,6 +184,7 @@
                     <!-- Show "Unstake rest" if there's blocking sub-minimum stake -->
                     <button v-if="hasSubMinimumStakeBlockingPayout"
                         class="nq-button-pill light-blue"
+                        :disabled="!!networkNotice"
                         @click="unstakeRest">
                         {{ $t('Unstake rest') }} <ArrowRightSmallIcon />
                     </button>
@@ -182,6 +192,7 @@
                     <!-- Otherwise show normal "Pay out" button -->
                     <button v-else
                         class="nq-button-pill light-blue"
+                        :disabled="!!networkNotice"
                         @click="() => unstakeAll(!!stake.retiredBalance)">
                         {{ $t('Pay out') }} <ArrowRightSmallIcon />
                     </button>
@@ -192,6 +203,10 @@
                     {{ $t('You got some new rewards since you unstaked your funds.') }}
                     <br />
                     {{ $t('In order to pay out, unstake all.') }}
+                </div>
+                <div v-if="networkNotice" class="footer-notice network-notice flex-row">
+                    <CircleSpinner />
+                    {{ networkNotice }}
                 </div>
             </div>
         </PageFooter>
@@ -237,6 +252,7 @@
 import { computed, defineComponent, ref } from '@vue/composition-api';
 import {
     ArrowRightSmallIcon,
+    CircleSpinner,
     FiatAmount,
     PageBody,
     PageFooter,
@@ -256,13 +272,13 @@ import Amount from '../Amount.vue';
 import RoundStakingIcon from '../icons/Staking/RoundStakingIcon.vue';
 import ValidatorInfoBar from './tooltips/ValidatorInfoBar.vue';
 import { SUCCESS_REDIRECT_DELAY, State } from '../StatusScreen.vue';
-import { StakingOperationType, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
+import { StakingOperationType, stakingErrorMessage, toValidatorRef, validatorLabel } from '../../lib/StakingUtils';
 import FiatConvertedAmount from '../FiatConvertedAmount.vue';
 import StakingRewardsChart from './StakingRewardsChart.vue';
 
 import { sendStaking } from '../../hub';
 import { useNetworkStore } from '../../stores/Network';
-import { getNetworkClient, updateValidators } from '../../network';
+import { getNetworkClient, getValidityStartHeight, nimiqNetworkNotice, updateValidators } from '../../network';
 import { reportToSentry } from '../../lib/Sentry';
 import { sendImmediateValidatorSwitch } from '../../lib/SwitchValidator';
 import { startWatchtowerSwitch, startWatchtowerUnstaking } from '../../lib/WatchtowerOperations';
@@ -300,6 +316,7 @@ export default defineComponent({
             clearSwitchOperation,
         } = useStakingStore();
         const { height, consensus } = useNetworkStore();
+        const networkNotice = computed(nimiqNetworkNotice);
         const { isMobile } = useWindowSize();
 
         // Height of items in pixel
@@ -429,7 +446,7 @@ export default defineComponent({
                         Address.fromUserFriendlyAddress(activeAddress.value!),
                         BigInt(0),
                         BigInt(0),
-                        useNetworkStore().state.height,
+                        getValidityStartHeight(),
                         await client.getNetworkId(),
                     );
 
@@ -474,7 +491,7 @@ export default defineComponent({
                     context.emit('statusChange', {
                         state: State.WARNING,
                         title: $t('Something went wrong') as string,
-                        message: `${error.message} - ${error.data}`,
+                        message: stakingErrorMessage(error),
                     });
                 }
             } else {
@@ -492,6 +509,7 @@ export default defineComponent({
             try {
                 const { Address, TransactionBuilder } = await import('@nimiq/core');
                 const client = await getNetworkClient();
+                const validityStartHeight = getValidityStartHeight();
 
                 const transactions = [
                     ...(removeOnly ? [] : [
@@ -499,7 +517,7 @@ export default defineComponent({
                             Address.fromUserFriendlyAddress(activeAddress.value!),
                             BigInt(stake.value!.inactiveBalance),
                             BigInt(0),
-                            useNetworkStore().state.height,
+                            validityStartHeight,
                             await client.getNetworkId(),
                         ),
                     ]),
@@ -510,7 +528,7 @@ export default defineComponent({
                             ? stake.value!.retiredBalance
                             : stake.value!.retiredBalance + stake.value!.inactiveBalance),
                         BigInt(0),
-                        useNetworkStore().state.height,
+                        validityStartHeight,
                         await client.getNetworkId(),
                     ),
                 ];
@@ -555,7 +573,7 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
-                    message: `${error.message} - ${error.data}`,
+                    message: stakingErrorMessage(error),
                 });
             }
         }
@@ -575,7 +593,6 @@ export default defineComponent({
             try {
                 const txs = await sendImmediateValidatorSwitch({
                     stakerAddress: address,
-                    height: height.value,
                     amount: stake.value.inactiveBalance,
                     target,
                     from: toValidatorRef(validator.value),
@@ -609,7 +626,7 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
-                    message: `${error.message}${error.data ? ` - ${error.data}` : ''}`,
+                    message: stakingErrorMessage(error),
                 });
             }
         }
@@ -713,7 +730,7 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
-                    message: `${error.message} - ${error.data}`,
+                    message: stakingErrorMessage(error),
                 });
             }
         }
@@ -774,7 +791,7 @@ export default defineComponent({
                 context.emit('statusChange', {
                     state: State.WARNING,
                     title: $t('Something went wrong') as string,
-                    message: `${error.message}${error.data ? ` - ${error.data}` : ''}`,
+                    message: stakingErrorMessage(error),
                 });
             }
         }
@@ -809,6 +826,7 @@ export default defineComponent({
             switchTargetStatus,
             manualActivateSwitch,
             consensus,
+            networkNotice,
             selectedRange,
             rewards,
             itemSize,
@@ -829,6 +847,7 @@ export default defineComponent({
         CircleArrowDownIcon,
         CircleExclamationMarkIcon,
         ArrowRightSmallIcon,
+        CircleSpinner,
         ValidatorInfoBar,
         FiatConvertedAmount,
         FiatAmount,
@@ -1029,6 +1048,20 @@ export default defineComponent({
             line-height: 1.4;
         }
 
+        .network-notice {
+            margin-top: 1rem;
+            align-items: center;
+            color: var(--nimiq-light-blue);
+
+            ::v-deep .circle-spinner { margin-right: 0.5rem }
+        }
+
+        .manual-activate + .network-notice {
+            margin-top: 2rem;
+
+            ::v-deep .circle-spinner { margin-right: 0.75rem }
+        }
+
         .manual-activate {
             align-items: flex-start;
             gap: 0.75rem;
@@ -1050,7 +1083,7 @@ export default defineComponent({
 
             .nq-button-pill {
                 flex-shrink: 0;
-                align-self: center;
+                align-self: flex-start;
             }
         }
     }

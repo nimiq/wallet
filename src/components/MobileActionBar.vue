@@ -63,7 +63,11 @@ export default defineComponent({
                 router.push({ name: RouteName.Receive });
             } else {
                 router.push({
-                    name: nimOrBtcOrStable(RouteName.ReceiveNim, RouteName.ReceiveBtc, RouteName.ReceiveUsdc),
+                    name: nimOrBtcOrStable(
+                        RouteName.ReceiveNim,
+                        RouteName.ReceiveBtc,
+                        stablecoin.value === CryptoCurrency.USDT ? RouteName.ReceiveUsdt : RouteName.ReceiveUsdc,
+                    ),
                 });
             }
         }
@@ -80,7 +84,11 @@ export default defineComponent({
                 router.push({ name: RouteName.Send });
             } else {
                 router.push({
-                    name: nimOrBtcOrStable(RouteName.SendNim, RouteName.SendBtc, RouteName.SendUsdc),
+                    name: nimOrBtcOrStable(
+                        RouteName.SendNim,
+                        RouteName.SendBtc,
+                        stablecoin.value === CryptoCurrency.USDT ? RouteName.SendUsdt : RouteName.SendUsdc,
+                    ),
                 });
             }
         }

@@ -176,7 +176,7 @@ export enum RouteName {
     BtcActivation = 'btc-activation',
     BtcTransaction = 'btc-transaction',
     SendViaBtcUri = 'send-via-btc-uri',
-    UsdcActivation = 'usdc-activation',
+    PolygonActivation = 'polygon-activation',
     UsdcTransaction = 'usdc-transaction',
     UsdtTransaction = 'usdt-transaction',
     SendViaPolygonUri = 'send-via-polygon-uri',
@@ -507,7 +507,7 @@ const routes: RouteConfig[] = [{
             components: {
                 modal: PolygonActivationModal,
             },
-            name: RouteName.UsdcActivation,
+            name: RouteName.PolygonActivation,
             props: {
                 modal: parseActivationRedirect,
             },
@@ -782,13 +782,14 @@ function createActivationNavigationGuard(
     isAccountTypeSupported: (type: AccountType) => boolean,
     isCurrencyActivated: () => boolean,
 ) {
+    const activationRoute = currency === CryptoCurrency.BTC ? RouteName.BtcActivation : RouteName.PolygonActivation;
     return (to: Route, from: Route, next: NavigationGuardNext) => {
         const requiresCurrencyActivation = routesRequiringActivation.has(to.name as RouteName)
             || (to.name === getContextRouteName(RouteName.Swap, to)
                 && !!to.params.pair?.includes(currency.toUpperCase()));
         const { activeAccountInfo: { value: activeAccount } } = useAccountStore();
         const isUnsupportedAccount = !!activeAccount && !isAccountTypeSupported(activeAccount.type);
-        const isUnsupportedActivation = to.name === `${currency}-activation` && isUnsupportedAccount;
+        const isUnsupportedActivation = to.name === activationRoute && isUnsupportedAccount;
         if ((!requiresCurrencyActivation && !isUnsupportedActivation) || isCurrencyActivated() || !activeAccount) {
             // Can continue to the requested view, or is not logged-in into any account yet, in which case we want to
             // preserve the original route to be redirected back to after login.
@@ -802,7 +803,9 @@ function createActivationNavigationGuard(
         } else {
             // open currency activation modal; store original target route in hash
             next({
-                name: `${currency}-activation`,
+                // By path instead of by the name of activationRoute, such that the /usdt-activation alias appears in
+                // the address bar for USDT.
+                path: `/${currency}-activation`,
                 // Path including query and hash, but not origin. Encoded because the hash is parsed as URLSearchParams
                 // in parseActivationRedirect and also by the RPC api in case that the Hub activation request is
                 // executed as redirect.
@@ -818,24 +821,21 @@ router.beforeEach(createActivationNavigationGuard(
     (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
     () => useAccountStore().hasBitcoinAddresses.value,
 ));
-const stablecoinRoutesRequiringActivation = Config.polygon.isGasAbstractionUnderMaintenance
+const usdcRoutesRequiringActivation = Config.polygon.isGasAbstractionUnderMaintenance
     ? []
-    : [
-        RouteName.SendUsdc,
-        RouteName.SendUsdt,
-        RouteName.SendViaPolygonUri,
-        RouteName.ReceiveUsdc,
-        RouteName.ReceiveUsdt,
-    ];
+    : [RouteName.SendUsdc, RouteName.ReceiveUsdc, /* covers USDC and USDT */ RouteName.SendViaPolygonUri];
+const usdtRoutesRequiringActivation = Config.polygon.isGasAbstractionUnderMaintenance
+    ? []
+    : [RouteName.SendUsdt, RouteName.ReceiveUsdt];
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
-    new Set(stablecoinRoutesRequiringActivation),
+    new Set(usdcRoutesRequiringActivation),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasPolygonAddresses.value,
 ));
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDT,
-    new Set(stablecoinRoutesRequiringActivation),
+    new Set(usdtRoutesRequiringActivation),
     (accountType: AccountType) => [AccountType.BIP39].includes(accountType),
     () => useAccountStore().hasPolygonAddresses.value,
 ));

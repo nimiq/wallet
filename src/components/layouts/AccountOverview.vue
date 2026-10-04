@@ -270,7 +270,7 @@
                         </div>
                         <button v-else
                             class="nq-button-pill light-blue"
-                            @click.stop="$router.push({ name: RouteName.UsdcActivation })" @mousedown.prevent
+                            @click.stop="$router.push({ name: RouteName.PolygonActivation })" @mousedown.prevent
                         >{{ $t('Activate') }}</button>
                     </div>
                 </button>

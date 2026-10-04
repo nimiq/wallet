@@ -419,7 +419,7 @@ export async function syncFromHub() {
         && config.polygon.enabled
     ) {
         // Prompt for USDC activation, which then leads into the new welcome modal if not shown yet.
-        router.push({ name: RouteName.UsdcActivation });
+        router.push({ name: RouteName.PolygonActivation });
     } else {
         const welcomeModalAlreadyShown = window.localStorage.getItem(
             WELCOME_MODAL_LOCALSTORAGE_KEY,

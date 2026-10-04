@@ -157,10 +157,12 @@ export enum RouteName {
     SendNim = 'send-nim',
     SendBtc = 'send-btc',
     SendUsdc = 'send-usdc',
+    SendUsdt = 'send-usdt',
     Receive = 'receive',
     ReceiveNim = 'receive-nim',
     ReceiveBtc = 'receive-btc',
     ReceiveUsdc = 'receive-usdc',
+    ReceiveUsdt = 'receive-usdt',
     Transaction = 'transaction',
     Buy = 'buy',
     BuyCrypto = 'buy-crypto',
@@ -351,11 +353,22 @@ const routes: RouteConfig[] = [{
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/send/usdc',
-            alias: '/send/usdt',
             components: {
                 modal: StablecoinSendModal,
             },
             name: RouteName.SendUsdc,
+            props: { modal: true },
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            // Same as /send/usdc, but we still define a separate named route instead of an alias of /send/usdc, because
+            // an alias can only be navigated to by path or by shared route name. When navigating by path, no additional
+            // params like canUserGoBack can be passed. When navigating by shared route name, /send/usdc appears in the
+            // address bar.
+            path: '/send/usdt',
+            components: {
+                modal: StablecoinSendModal,
+            },
+            name: RouteName.SendUsdt,
             props: { modal: true },
             meta: { column: Columns.DYNAMIC },
         }, {
@@ -381,11 +394,18 @@ const routes: RouteConfig[] = [{
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/receive/usdc',
-            alias: '/receive/usdt',
             components: {
                 modal: StablecoinReceiveModal,
             },
             name: RouteName.ReceiveUsdc,
+            meta: { column: Columns.DYNAMIC },
+        }, {
+            // Not an alias of /receive/usdc, see note on /send/usdt.
+            path: '/receive/usdt',
+            components: {
+                modal: StablecoinReceiveModal,
+            },
+            name: RouteName.ReceiveUsdt,
             meta: { column: Columns.DYNAMIC },
         }, {
             path: '/transaction/:hash',
@@ -800,7 +820,13 @@ router.beforeEach(createActivationNavigationGuard(
 ));
 const stablecoinRoutesRequiringActivation = Config.polygon.isGasAbstractionUnderMaintenance
     ? []
-    : [RouteName.SendUsdc, RouteName.SendViaPolygonUri, RouteName.ReceiveUsdc];
+    : [
+        RouteName.SendUsdc,
+        RouteName.SendUsdt,
+        RouteName.SendViaPolygonUri,
+        RouteName.ReceiveUsdc,
+        RouteName.ReceiveUsdt,
+    ];
 router.beforeEach(createActivationNavigationGuard(
     CryptoCurrency.USDC,
     new Set(stablecoinRoutesRequiringActivation),

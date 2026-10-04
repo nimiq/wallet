@@ -67,8 +67,9 @@ function getWatchtowerEndpoint(): string | null {
 
 function buildAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = { Accept: 'application/json' };
-    const username = process.env.VUE_APP_WT_USERNAME || process.env.WT_USERNAME;
-    const password = process.env.VUE_APP_WT_PASSWORD || process.env.WT_PASSWORD;
+    // Set in vue.config.js
+    const username = process.env.VUE_APP_ALBATROSS_WATCHTOWER_USERNAME;
+    const password = process.env.VUE_APP_ALBATROSS_WATCHTOWER_PASSWORD;
     if (username && password) headers.Authorization = toBasicAuth(username, password);
     return headers;
 }

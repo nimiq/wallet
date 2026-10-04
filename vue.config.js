@@ -31,6 +31,22 @@ if (!release) {
     throw new Error('The current commit must be tagged with the release version name.');
 }
 
+let watchtowerUsername, watchtowerPassword;
+if (buildName === 'mainnet') {
+    watchtowerUsername = process.env.ALBATROSS_WATCHTOWER_USERNAME_MAINNET;
+    watchtowerPassword = process.env.ALBATROSS_WATCHTOWER_PASSWORD_MAINNET;
+} else {
+    watchtowerUsername = process.env.ALBATROSS_WATCHTOWER_USERNAME_TESTNET;
+    watchtowerPassword = process.env.ALBATROSS_WATCHTOWER_PASSWORD_TESTNET;
+}
+if (!watchtowerUsername || !watchtowerPassword) {
+    const network = buildName === 'mainnet' ? 'MAINNET' : 'TESTNET';
+    const message = `No watchtower credentials found. Please set ALBATROSS_WATCHTOWER_USERNAME_${network} and `
+        + `ALBATROSS_WATCHTOWER_PASSWORD_${network}, for example via an .env.local file.`;
+    if (process.env.NODE_ENV === 'production' && !process.env.CI) throw new Error(message);
+    console.warn(message);
+}
+
 /**
  * Generate a subresource integrity (SRI) hash
  * @param {Buffer} asset
@@ -43,7 +59,13 @@ function sri(asset) {
 
 // Accessible within client code via process.env.VUE_APP_*,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
+// Note that these variables will be visible in the client code, therefore do not use this for credentials or API keys
+// that really need to remain secret.
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
+if (watchtowerUsername && watchtowerPassword) {
+    process.env.VUE_APP_ALBATROSS_WATCHTOWER_USERNAME = watchtowerUsername;
+    process.env.VUE_APP_ALBATROSS_WATCHTOWER_PASSWORD = watchtowerPassword;
+}
 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 

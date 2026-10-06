@@ -31,22 +31,6 @@ if (!release) {
     throw new Error('The current commit must be tagged with the release version name.');
 }
 
-let watchtowerUsername, watchtowerPassword;
-if (buildName === 'mainnet') {
-    watchtowerUsername = process.env.ALBATROSS_WATCHTOWER_USERNAME_MAINNET;
-    watchtowerPassword = process.env.ALBATROSS_WATCHTOWER_PASSWORD_MAINNET;
-} else {
-    watchtowerUsername = process.env.ALBATROSS_WATCHTOWER_USERNAME_TESTNET;
-    watchtowerPassword = process.env.ALBATROSS_WATCHTOWER_PASSWORD_TESTNET;
-}
-if (!watchtowerUsername || !watchtowerPassword) {
-    const network = buildName === 'mainnet' ? 'MAINNET' : 'TESTNET';
-    const message = `No watchtower credentials found. Please set ALBATROSS_WATCHTOWER_USERNAME_${network} and `
-        + `ALBATROSS_WATCHTOWER_PASSWORD_${network}, for example via an .env.local file.`;
-    if (process.env.NODE_ENV === 'production' && !process.env.CI) throw new Error(message);
-    console.warn(message);
-}
-
 /**
  * Generate a subresource integrity (SRI) hash
  * @param {Buffer} asset
@@ -59,15 +43,39 @@ function sri(asset) {
 
 // Accessible within client code via process.env.VUE_APP_*,
 // see https://cli.vuejs.org/guide/mode-and-env.html#using-env-variables-in-client-side-code
-// Note that these variables will be visible in the client code, therefore do not use this for credentials or API keys
-// that really need to remain secret.
 process.env.VUE_APP_COPYRIGHT_YEAR = new Date().getUTCFullYear().toString(); // year at build time
-if (watchtowerUsername && watchtowerPassword) {
-    process.env.VUE_APP_ALBATROSS_WATCHTOWER_USERNAME = watchtowerUsername;
-    process.env.VUE_APP_ALBATROSS_WATCHTOWER_PASSWORD = watchtowerPassword;
-}
 
 console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
+
+// Inject credentials defined on node's process.env, for example via an .env.local file, into the code, for use in the
+// effective build config. We define constants for all environments, mainnet, testnet and local, such that the configs
+// can choose which variant they actually want to use, for example config.local.ts could use mainnet credentials for
+// local mainnet testing.
+// We define these as plain constants via DefinePlugin, not via process.env.VUE_APP_* and also not via DefinePlugin on
+// 'process.env.*', as otherwise they can be injected into the client code's process.env object, regardless of whether
+// they're used. By not putting them on a parent object like 'process.env.*', only credentials that are actually used in
+// a build are injected by DefinePlugin. For this, they should be only accessed by the effective config file, not other
+// shared code imported across testnet and mainnet.
+// For each injected constant, a type must also be registered in credentials.d.ts.
+//
+// Note that the injected values will be visible in the client code, therefore do not use this for credentials or API
+// keys that actually need to remain secret.
+const credentialNames = ['ALBATROSS_WATCHTOWER_PASSWORD']
+    .flatMap((baseName) => [`${baseName}_LOCAL`, `${baseName}_TESTNET`, `${baseName}_MAINNET`]);
+const credentialInjections = credentialNames.reduce((injections, credentialName) => ({
+    ...injections,
+    [credentialName]: webpack.DefinePlugin.runtimeValue(() => {
+        // Only evaluated if a file that is part of the build uses the constant.
+        const credentialValue = process.env[credentialName];
+        if (typeof credentialValue !== 'undefined') return JSON.stringify(credentialValue); // Empty values are allowed.
+        // Value is missing.
+        const warning = `process.env.${credentialName} is unset. Please set it, for example via an .env.local file.`;
+        if (!process.env.CI) throw new Error(warning); // Throw at build time.
+        // Only for CI, allow to build, but at least generate a build that throws at runtime.
+        console.warn(warning);
+        return `(() => { throw new Error(${JSON.stringify(warning)}); })()`;
+    }, true),
+}), {});
 
 module.exports = {
     pages: {
@@ -87,6 +95,7 @@ module.exports = {
             new webpack.DefinePlugin({
                 'process.env.SENTRY_RELEASE': `"wallet-${release}"`,
                 'process.env.VERSION': `"${release}"`,
+                ...credentialInjections,
             }),
             new webpack.ProvidePlugin({
                 Buffer: ['buffer', 'Buffer'],

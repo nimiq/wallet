@@ -49,6 +49,8 @@ export default {
 
     albatrossWatchtower: {
         endpoint: 'https://aegis.watchtower.nimiq.systems',
+        username: 'watchtower',
+        password: ALBATROSS_WATCHTOWER_PASSWORD_MAINNET, // defined in vue.config.js
     },
 
     polygon: {

@@ -37,6 +37,8 @@ export default {
 
     albatrossWatchtower: {
         endpoint: 'https://watchtower.pos.nimiq-testnet.com',
+        username: 'nimiq',
+        password: ALBATROSS_WATCHTOWER_PASSWORD_TESTNET, // defined in vue.config.js
     },
 
     polygon: {

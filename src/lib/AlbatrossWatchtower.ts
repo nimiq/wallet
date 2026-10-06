@@ -60,16 +60,13 @@ function strip0x(hex: string | undefined): string | undefined {
 }
 
 function getWatchtowerEndpoint(): string | null {
-    const { config } = useConfig();
-    const wt = (config as any).albatrossWatchtower as undefined | { endpoint: string };
-    return wt?.endpoint?.replace(/\/$/, '') || null;
+    const { config: { albatrossWatchtower: { endpoint } } } = useConfig();
+    return endpoint.replace(/\/$/, '') || null;
 }
 
 function buildAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = { Accept: 'application/json' };
-    // Set in vue.config.js
-    const username = process.env.VUE_APP_ALBATROSS_WATCHTOWER_USERNAME;
-    const password = process.env.VUE_APP_ALBATROSS_WATCHTOWER_PASSWORD;
+    const { config: { albatrossWatchtower: { username, password } } } = useConfig();
     if (username && password) headers.Authorization = toBasicAuth(username, password);
     return headers;
 }

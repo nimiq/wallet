@@ -1,6 +1,5 @@
 import type Resolution from '@unstoppabledomains/resolution';
 import config from 'config';
-import { replaceKey } from './KeyReplacer';
 import { ENV_MAIN } from './Constants';
 
 let importPromise: Promise<typeof Resolution> | undefined;
@@ -32,13 +31,11 @@ async function getResolver() {
                 uns: {
                     locations: {
                         Layer1: {
-                            url: await replaceKey(`https://eth-${
-                                config.environment === ENV_MAIN ? 'mainnet' : 'goerli'
-                            }.g.alchemy.com/v2/#ALCHEMY_ETH_API_KEY#`),
+                            url: config.unstoppableDomains.ethereumRpcEndpoint,
                             network: config.environment === ENV_MAIN ? 'mainnet' : 'goerli',
                         },
                         Layer2: {
-                            url: await replaceKey(config.polygon.rpcEndpoint.replace('wss', 'https')),
+                            url: config.polygon.rpcEndpoint.replace('wss', 'https'),
                             network: config.environment === ENV_MAIN ? 'polygon-mainnet' : 'polygon-amoy',
                         },
                     },

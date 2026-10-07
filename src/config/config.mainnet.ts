@@ -50,7 +50,7 @@ export default {
     albatrossWatchtower: {
         endpoint: 'https://aegis.watchtower.nimiq.systems',
         username: 'watchtower',
-        password: ALBATROSS_WATCHTOWER_PASSWORD_MAINNET, // defined in vue.config.js
+        password: ALBATROSS_WATCHTOWER_PASSWORD_MAINNET, // injected in vue.config.js
     },
 
     polygon: {
@@ -58,7 +58,7 @@ export default {
         // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
         isGasAbstractionUnderMaintenance: true,
         networkId: 137,
-        rpcEndpoint: 'wss://polygon-mainnet.g.alchemy.com/v2/#ALCHEMY_API_KEY#',
+        rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vue.config.js
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
         usdc_bridged: {
             tokenContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -85,6 +85,11 @@ export default {
         openGsnRelayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
         uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
         wpolContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+    },
+
+    unstoppableDomains: {
+        // Ethereum RPC endpoint for resolving Unstoppable Domains. The API key is injected in vue.config.js.
+        ethereumRpcEndpoint: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_ETH_API_KEY_MAINNET}`,
     },
 
     fastspot: {

@@ -36,7 +36,6 @@ import {
     RelayServerInfo,
 } from './lib/usdc/OpenGSN';
 import { getPoolAddress, getUsdPrice } from './lib/usdc/Uniswap';
-import { replaceKey } from './lib/KeyReplacer';
 import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useAccountSettingsStore } from './stores/AccountSettings';
 
@@ -105,10 +104,8 @@ export async function getPolygonClient(): Promise<PolygonClient> {
     }, { lazy: true });
 
     let provider: providers.BaseProvider;
-    const [ethers, rpcEndpoint] = await Promise.all([
-        loadEthersLibrary(),
-        replaceKey(config.polygon.rpcEndpoint),
-    ]);
+    const ethers = await loadEthersLibrary();
+    const { rpcEndpoint } = config.polygon;
     if (rpcEndpoint.substring(0, 4) === 'http') {
         provider = new ethers.providers.StaticJsonRpcProvider(
             rpcEndpoint,

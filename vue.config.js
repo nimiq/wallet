@@ -60,7 +60,7 @@ console.log('Building for:', buildName, ', release:', `"wallet-${release}"`);
 //
 // Note that the injected values will be visible in the client code, therefore do not use this for credentials or API
 // keys that actually need to remain secret.
-const credentialNames = ['ALBATROSS_WATCHTOWER_PASSWORD']
+const credentialNames = ['ALBATROSS_WATCHTOWER_PASSWORD', 'ALCHEMY_API_KEY', 'ALCHEMY_ETH_API_KEY']
     .flatMap((baseName) => [`${baseName}_LOCAL`, `${baseName}_TESTNET`, `${baseName}_MAINNET`]);
 const credentialInjections = credentialNames.reduce((injections, credentialName) => ({
     ...injections,
@@ -255,11 +255,6 @@ module.exports = {
         workboxOptions: {
             exclude: [
                 /^server-time$/, // File needs to be fetched from server in Time.ts
-                // Don't cache API key files (see KeyReplacer.ts). We don't want outdated versions to be sitting in the
-                // cache, but also not all API keys in the public / dist folder are actually copied to all deployments,
-                // see the deployment repository's .gitignore. Precaching a file that is not deployed would fail the SRI
-                // check and with it the entire service worker installation.
-                /^(dev|test|main)_k_/,
                 // Defaults set by @vue/cli-plugin-pwa, which is in line with the recommendation to not cache icons,
                 // developer.chrome.com/docs/workbox/precaching-dos-and-donts/#dont-precache-responsive-images-or-favicons
                 /\.map$/,

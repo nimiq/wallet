@@ -159,4 +159,10 @@ export default {
         host: '',
         siteId: 0,
     },
+
+    posthog: {
+        enabled: false,
+        apiKey: '',
+        apiHost: 'https://eu.i.posthog.com',
+    },
 };

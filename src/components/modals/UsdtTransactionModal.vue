@@ -274,10 +274,7 @@ import {
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
-import { RefundSwapRequest, SignedPolygonTransaction } from '@nimiq/hub-api';
-import type { BigNumber } from 'ethers';
-import { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
-import { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
+import { RefundSwapRequest, SignedPolygonHtlcSettlement } from '@nimiq/hub-api';
 import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
@@ -306,15 +303,10 @@ import { useTransactionsStore, Transaction as NimTransaction } from '../../store
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
 import { useAddressStore } from '../../stores/Address';
-import {
-    calculateFee,
-    getUsdtBridgedHtlcContract,
-    getPolygonBlockNumber,
-    sendTransaction,
-} from '../../ethers';
+import { getPolygonBlockNumber } from '../../ethers';
 import { useConfig } from '../../composables/useConfig';
 import { useUsdtTransactionInfo } from '../../composables/useUsdtTransactionInfo';
-import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
+import { quoteGaslessHtlcFee, sendGaslessHtlcRefund } from '../../lib/usdc/GaslessHtlc';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
 
 import { refundSwap } from '../../hub';
@@ -444,99 +436,47 @@ export default defineComponent({
             && (swapInfo.value?.in?.asset === SwapAsset.USDT_MATIC)
             && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
             && !swapInfo.value.out
-            && !config.polygon.maintenance.swaps,
+            && !config.polygon.maintenance.swaps
+            // Only HTLCs of the GaslessHTLC contract can be refunded. HTLCs of the former OpenGSN contracts would
+            // need a refund transaction paid in POL.
+            && !!config.polygon.gasless.htlcContract
+            && transaction.value.recipient.toLowerCase() === config.polygon.gasless.htlcContract.toLowerCase(),
             // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
             // && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );
 
         async function refundHtlc() {
-            const htlcDetails = (swapInfo.value?.in as SwapErc20Data | undefined)?.htlc;
-            if (!htlcDetails) {
+            const htlcId = (swapInfo.value?.in as SwapErc20Data | undefined)?.htlc?.address;
+            if (!htlcId) {
                 alert('Unexpected: unknown HTLC refund details'); // eslint-disable-line no-alert
                 return;
             }
 
-            let relayUrl: string;
-
-            // eslint-disable-next-line no-async-promise-executor
-            const requestPromise = new Promise<Omit<RefundSwapRequest, 'appName'>>(async (resolve, reject) => {
-                try {
-                    const myAddress = transaction.value.sender;
-
-                    const method = 'refund';
-
-                    const htlcContract = await getUsdtBridgedHtlcContract();
-
-                    const [
-                        forwarderNonce,
-                        { fee, gasPrice, gasLimit, relay },
-                    ] = await Promise.all([
-                        htlcContract.getNonce(myAddress) as Promise<BigNumber>,
-                        calculateFee(
-                            transaction.value.token || config.polygon.usdt_bridged.tokenContract,
-                            method,
-                            undefined,
-                            htlcContract,
-                        ),
-                    ]);
-
-                    relayUrl = relay.url;
-
-                    const functionData = htlcContract.interface.encodeFunctionData(method, [
-                        /** bytes32 id */ htlcDetails.address,
-                        /** address target */ myAddress,
-                        /** uint256 fee */ fee,
-                    ]);
-
-                    const relayRequest: RelayRequest = {
+            const token = config.polygon.usdt_bridged.tokenContract;
+            const requestPromise = quoteGaslessHtlcFee('htlc.refund', token).then(({ fee, relay }) => {
+                const myAddress = transaction.value.sender;
+                const request: Omit<RefundSwapRequest, 'appName'> = {
+                    accountId: useAccountStore().activeAccountId.value!,
+                    refund: {
+                        type: SwapAsset.USDT_MATIC,
                         request: {
                             from: myAddress,
-                            to: htlcContract.address,
-                            data: functionData,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (await getPolygonBlockNumber() + 2 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10),
+                            id: htlcId,
+                            target: myAddress,
+                            fee,
+                            relay,
                         },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: htlcContract.address,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: htlcContract.address,
-                        },
-                    };
-
-                    const request: Omit<RefundSwapRequest, 'appName'> = {
-                        accountId: useAccountStore().activeAccountId.value!,
-                        refund: {
-                            type: SwapAsset.USDT_MATIC,
-                            ...relayRequest,
-                            amount: transaction.value.value - fee.toNumber(),
-                            token: config.polygon.usdt_bridged.tokenContract,
-                        },
-                    };
-
-                    resolve(request);
-                } catch (e) {
-                    reject(e);
-                }
+                        amount: transaction.value.value - Number(fee),
+                        token,
+                    },
+                };
+                return request;
             });
 
             try {
                 const tx = await refundSwap(requestPromise);
                 if (!tx) return;
-                const { relayData, ...relayRequest } = (tx as SignedPolygonTransaction).message;
-                const plainTx = await sendTransaction(
-                    config.polygon.usdt_bridged.tokenContract,
-                    { request: relayRequest as ForwardRequest, relayData },
-                    (tx as SignedPolygonTransaction).signature,
-                    relayUrl!,
-                );
+                const plainTx = await sendGaslessHtlcRefund(tx as SignedPolygonHtlcSettlement, token);
                 await nextTick();
                 router.replace({
                     name: RouteName.UsdtTransaction,

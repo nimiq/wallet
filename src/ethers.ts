@@ -4,7 +4,6 @@ import type { BigNumber, Contract, ethers, Event, EventFilter, providers } from 
 import type { Result } from 'ethers/lib/utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Block, Log, TransactionReceipt } from '@ethersproject/abstract-provider';
-import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
 import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { PolygonAddressInfo, usePolygonAddressStore } from './stores/PolygonAddress';
 import { usePolygonNetworkStore } from './stores/PolygonNetwork';
@@ -24,18 +23,11 @@ import {
     USDC_TOKEN_CONTRACT_ABI,
     USDC_TRANSFER_CONTRACT_ABI,
     USDC_HTLC_CONTRACT_ABI,
-    CONVERSION_SWAP_CONTRACT_ABI,
     USDT_BRIDGED_TOKEN_CONTRACT_ABI,
     USDT_BRIDGED_TRANSFER_CONTRACT_ABI,
     USDT_BRIDGED_HTLC_CONTRACT_ABI,
 } from './lib/usdc/ContractABIs';
-import {
-    getBestRelay,
-    getRelayAddr,
-    getRelayHub,
-    RelayServerInfo,
-} from './lib/usdc/OpenGSN';
-import { getPoolAddress, getUsdPrice } from './lib/usdc/Uniswap';
+import { getPoolAddress } from './lib/usdc/Uniswap';
 import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useAccountSettingsStore } from './stores/AccountSettings';
 
@@ -398,6 +390,7 @@ async function usdcTransactionListener(from: string, to: string, value: BigNumbe
         log.getBlock(),
         // Handle HTLC redeem/refund events by watchtower
         from === config.polygon.usdc_bridged.htlcContract || from === config.polygon.usdc.htlcContract
+            || isGaslessHtlcContract(from)
             ? log.getTransactionReceipt()
             : Promise.resolve(null),
     ]);
@@ -441,7 +434,7 @@ async function usdtTransactionListener(from: string, to: string, value: BigNumbe
     const [block, receipt] = await Promise.all([
         log.getBlock(),
         // Handle HTLC redeem/refund events by watchtower
-        from === config.polygon.usdt_bridged.htlcContract
+        from === config.polygon.usdt_bridged.htlcContract || isGaslessHtlcContract(from)
             ? log.getTransactionReceipt()
             : Promise.resolve(null),
     ]);
@@ -1018,13 +1011,15 @@ export async function launchPolygon() {
                         return false;
                     }
 
-                    if (log.args.to === config.polygon.usdc.htlcContract) {
+                    // The GaslessHTLC contract emits the same events as the former OpenGSN HTLC contract
+                    if (log.args.to === config.polygon.usdc.htlcContract || isGaslessHtlcContract(log.args.to)) {
+                        const htlcAddress = log.args.to;
                         // Get Open event log
                         const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
                             const htlcContract = await getUsdcHtlcContract();
 
                             for (const innerLog of receipt.logs) {
-                                if (innerLog.address === config.polygon.usdc.htlcContract) {
+                                if (innerLog.address === htlcAddress) {
                                     try {
                                         const { args, name } = htlcContract.interface.parseLog(innerLog);
                                         if (name === 'Open') {
@@ -1047,13 +1042,15 @@ export async function launchPolygon() {
                         htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
                     }
 
-                    if (log.args.from === config.polygon.usdc.htlcContract) {
+                    // The GaslessHTLC contract emits the same events as the former OpenGSN HTLC contract
+                    if (log.args.from === config.polygon.usdc.htlcContract || isGaslessHtlcContract(log.args.from)) {
+                        const htlcAddress = log.args.from;
                         // Get Redeem or Refund event log
                         const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
                             const htlcContract = await getUsdcHtlcContract();
 
                             for (const innerLog of receipt.logs) {
-                                if (innerLog.address === config.polygon.usdc.htlcContract) {
+                                if (innerLog.address === htlcAddress) {
                                     try {
                                         const { args, name } = htlcContract.interface.parseLog(innerLog);
                                         if (name === 'Redeem') {
@@ -1284,13 +1281,15 @@ export async function launchPolygon() {
                         return false;
                     }
 
-                    if (log.args.to === config.polygon.usdt_bridged.htlcContract) {
+                    // The GaslessHTLC contract emits the same events as the former OpenGSN HTLC contract
+                    if (log.args.to === config.polygon.usdt_bridged.htlcContract || isGaslessHtlcContract(log.args.to)) {
+                        const htlcAddress = log.args.to;
                         // Get Open event log
                         const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
                             const htlcContract = await getUsdtBridgedHtlcContract();
 
                             for (const innerLog of receipt.logs) {
-                                if (innerLog.address !== config.polygon.usdt_bridged.htlcContract) continue;
+                                if (innerLog.address !== htlcAddress) continue;
                                 try {
                                     const { args, name } = htlcContract.interface.parseLog(innerLog);
                                     if (name === 'Open') {
@@ -1312,13 +1311,15 @@ export async function launchPolygon() {
                         htlcEventsByTransactionHash.set(log.transactionHash, htlcEventPromise);
                     }
 
-                    if (log.args.from === config.polygon.usdt_bridged.htlcContract) {
+                    // The GaslessHTLC contract emits the same events as the former OpenGSN HTLC contract
+                    if (log.args.from === config.polygon.usdt_bridged.htlcContract || isGaslessHtlcContract(log.args.from)) {
+                        const htlcAddress = log.args.from;
                         // Get Redeem or Refund event log
                         const htlcEventPromise = log.getTransactionReceipt().then(async (receipt) => {
                             const htlcContract = await getUsdtBridgedHtlcContract();
 
                             for (const innerLog of receipt.logs) {
-                                if (innerLog.address !== config.polygon.usdt_bridged.htlcContract) continue;
+                                if (innerLog.address !== htlcAddress) continue;
                                 try {
                                     const { args, name } = htlcContract.interface.parseLog(innerLog);
                                     if (name === 'Redeem') {
@@ -1402,195 +1403,6 @@ function logAndBlockToPlain(
     };
 }
 
-type ContractMethods =
-    'transfer'
-    | 'transferWithPermit'
-    | 'transferWithApproval'
-    | 'open'
-    | 'openWithPermit'
-    | 'openWithApproval'
-    | 'redeemWithSecretInData'
-    | 'refund'
-    // | 'swap'
-    | 'swapWithApproval';
-
-export async function calculateFee(
-    token: string, // Contract address
-    method: ContractMethods,
-    forceRelay?: RelayServerInfo,
-    contract?: Contract,
-) {
-    const client = await getPolygonClient();
-    const { config } = useConfig();
-    if (!contract) {
-        if (token === config.polygon.usdc.tokenContract) contract = client.usdcTransfer;
-        else if (token === config.polygon.usdc_bridged.tokenContract) contract = client.usdcBridgedTransfer;
-        else if (token === config.polygon.usdt_bridged.tokenContract) contract = client.usdtBridgedTransfer;
-        else throw new Error(`No transfer contract available for token ${token}`);
-    }
-
-    // The byte size of `data` of the wrapper relay transaction, plus 4 bytes for the `relayCall` method identifier
-    const dataSize = {
-        transfer: 1092,
-        transferWithPermit: 1220,
-        transferWithApproval: 1220,
-        open: 1220,
-        openWithPermit: 1348, // TODO: Recheck this value
-        openWithApproval: 1348, // TODO: Recheck this value
-        redeemWithSecretInData: 1092,
-        refund: 1092,
-        // swap: 0,
-        swapWithApproval: 1252,
-    }[method];
-
-    if (!dataSize) throw new Error(`No dataSize set yet for ${method} method!`);
-
-    // Update minGasPrice if relay was forcedRelay, as it is most likely outdated.
-    // Also checks for `ready` status to avoid retrying with a non-ready relay
-    let relay = await (forceRelay
-        ? getRelayAddr(forceRelay.url).then((addr) => {
-            if (!addr || !addr.ready) return undefined;
-            return <RelayServerInfo>{
-                ...forceRelay,
-                minGasPrice: client.ethers.BigNumber.from(addr.minGasPrice),
-            };
-        })
-        : Promise.resolve(undefined)
-    );
-
-    const [
-        networkGasPrice,
-        gasLimit,
-        [acceptanceBudget],
-        dataGasCost,
-        usdPrice,
-    ] = await Promise.all([
-        client.provider.getGasPrice(),
-        contract.getRequiredRelayGas(contract.interface.getSighash(method)) as Promise<BigNumber>,
-        relay
-            ? Promise.resolve([client.ethers.BigNumber.from(0)])
-            : contract.getGasAndDataLimits() as Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>,
-        relay
-            ? Promise.resolve(client.ethers.BigNumber.from(0))
-            : getRelayHub(client).calldataGasCost(dataSize) as Promise<BigNumber>,
-        getUsdPrice(token, client),
-    ]);
-
-    function calculateChainTokenFee(baseRelayFee: BigNumber, pctRelayFee: BigNumber, minGasPrice: BigNumber) {
-        let gasPrice = networkGasPrice.gte(minGasPrice) ? networkGasPrice : minGasPrice;
-
-        // For swap redeem txs, add 50% to cover network fee changes until the end of the swap.
-        // Otherwise, in mainnet, add 10%; in testnet add 25% as it is more volatile.
-        const gasPriceBufferPercentage = method === 'redeemWithSecretInData'
-            ? 150
-            : useConfig().config.environment === ENV_MAIN ? 110 : 125;
-        gasPrice = gasPrice.mul(gasPriceBufferPercentage).div(100);
-
-        // (gasPrice * gasLimit) * (1 + pctRelayFee) + baseRelayFee
-        const chainTokenFee = gasPrice.mul(gasLimit).mul(pctRelayFee.add(100)).div(100).add(baseRelayFee);
-
-        return { gasPrice, chainTokenFee };
-    }
-
-    if (!relay) {
-        const requiredMaxAcceptanceBudget = acceptanceBudget.add(dataGasCost);
-        relay = await getBestRelay(client, requiredMaxAcceptanceBudget, calculateChainTokenFee);
-    }
-
-    const { baseRelayFee, pctRelayFee, minGasPrice } = relay;
-
-    const { gasPrice, chainTokenFee } = calculateChainTokenFee(baseRelayFee, pctRelayFee, minGasPrice);
-
-    // main 10%, test 25% as it is more volatile
-    const uniswapBufferPercentage = useConfig().config.environment === ENV_MAIN ? 110 : 125;
-    const fee = chainTokenFee.div(usdPrice).mul(uniswapBufferPercentage).div(100);
-
-    return {
-        chainTokenFee,
-        fee,
-        gasPrice,
-        gasLimit,
-        relay,
-        usdPrice,
-    };
-}
-
-export async function sendTransaction(
-    token: string,
-    relayRequest: RelayRequest,
-    signature: string,
-    relayUrl: string,
-    approvalData = '0x',
-) {
-    const { config } = useConfig();
-    const client = await getPolygonClient();
-
-    const [{ HttpClient, HttpWrapper }, relayNonce] = await Promise.all([
-        import('@opengsn/common'),
-        client.provider.getTransactionCount(relayRequest.relayData.relayWorker),
-    ]);
-    const httpClient = new HttpClient(new HttpWrapper(), console);
-
-    const relayNonceMaxGap = config.environment === ENV_MAIN ? 3 : 5;
-
-    const relayTx = await httpClient.relayTransaction(relayUrl, {
-        relayRequest,
-        metadata: {
-            approvalData,
-            relayHubAddress: config.polygon.openGsnRelayHubContract,
-            relayMaxNonce: relayNonce + relayNonceMaxGap,
-            signature,
-        },
-    });
-
-    // TODO: Audit and validate transaction like in
-    // https://github.com/opengsn/gsn/blob/v2.2.5/packages/provider/src/RelayClient.ts#L270
-
-    let txResponse = await client.provider.sendTransaction(relayTx)
-        .catch((error) => {
-            console.debug('Failed to also send relay transaction:', error);
-        });
-
-    while (!txResponse) {
-        const tx = client.ethers.utils.parseTransaction(relayTx);
-        // eslint-disable-next-line no-await-in-loop
-        txResponse = await client.provider.getTransaction(tx.hash!);
-        // eslint-disable-next-line no-await-in-loop
-        await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    }
-
-    // If `approvalData` is present, this is a redeem transaction
-    const isHtlcRedeemTx = approvalData.length > 2;
-    const isHtlcRefundTx = relayRequest.request.data.startsWith(
-        relayRequest.request.to === config.polygon.usdc.htlcContract
-            ? (await getUsdcHtlcContract()).interface.getSighash('refund')
-            // The contract and sighash is the same for bridged USDC and bridged USDT
-            : (await getUsdtBridgedHtlcContract()).interface.getSighash('refund'),
-    );
-
-    const isIncomingTx = isHtlcRedeemTx || isHtlcRefundTx;
-
-    const tx = await receiptToTransaction(
-        token,
-        await txResponse.wait(1),
-        // Do not filter by sender for incoming txs
-        isIncomingTx ? undefined : relayRequest.request.from,
-    );
-
-    if (!isIncomingTx) {
-        // Trigger manual balance update for outgoing transactions
-        if (token === config.polygon.usdc.tokenContract) {
-            updateUsdcBalances([relayRequest.request.from]);
-        } else if (token === config.polygon.usdc_bridged.tokenContract) {
-            updateUsdcBridgedBalances([relayRequest.request.from]);
-        } else {
-            updateUsdtBridgedBalances([relayRequest.request.from]);
-        }
-    }
-
-    return tx;
-}
-
 export async function receiptToTransaction(
     token: string,
     receipt: TransactionReceipt,
@@ -1635,7 +1447,8 @@ export async function receiptToTransaction(
             }
         }
 
-        if (log.address === htlcContractAddress) {
+        // The GaslessHTLC contract emits the same events as the former OpenGSN HTLC contracts
+        if (log.address === htlcContractAddress || isGaslessHtlcContract(log.address)) {
             try {
                 const { args, name } = htlcContract.interface.parseLog(log);
                 return {
@@ -1662,9 +1475,11 @@ export async function receiptToTransaction(
         if (log.name === 'Transfer') {
             if (filterByFromAddress && log.args.from !== filterByFromAddress) return;
 
-            // Transfers to the Uniswap pool are the fees paid to OpenGSN
+            // Transfers to the Uniswap pool are the fees paid to OpenGSN, transfers to a gasless relay the fees paid
+            // to the relay
             if (
                 log.args.to === poolAddress
+                || isGaslessRelay(log.args.to)
                 || (
                     // Before v3, transfers to the transferContract were the fees paid to OpenGSN
                     config.environment !== ENV_MAIN
@@ -1762,6 +1577,11 @@ export async function receiptToTransaction(
     );
 }
 
+/**
+ * Polygon has 2-second blocks
+ */
+export const POLYGON_BLOCKS_PER_MINUTE = 60 / 2;
+
 export async function getPolygonBlockNumber() {
     const client = await getPolygonClient();
     const blockNumber = await client.provider.getBlockNumber();
@@ -1812,20 +1632,6 @@ export async function getUsdtBridgedHtlcContract() {
     return usdtBridgedHtlcContract;
 }
 
-let swapContract: Contract | undefined;
-export async function getConversionSwapContract() {
-    if (swapContract) return swapContract;
-
-    const { ethers, provider } = await getPolygonClient();
-    const { config } = useConfig();
-    swapContract = new ethers.Contract(
-        config.polygon.usdcConversion.swapContract,
-        CONVERSION_SWAP_CONTRACT_ABI,
-        provider,
-    );
-    return swapContract;
-}
-
 /**
  * How much of the max allowance that was given to an OpenGSN-based contract was used, for the history sync. Zero if
  * the contract is not configured or no max allowance was given.
@@ -1852,6 +1658,13 @@ async function getLegacyAllowanceUsed(
 async function getLegacyFeePoolAddress(transferContract: Contract, token: string): Promise<string | undefined> {
     if (!transferContract.address) return undefined;
     return getPoolAddress(transferContract, token);
+}
+
+/** Whether the address is the GaslessHTLC contract for swaps, if configured. */
+function isGaslessHtlcContract(address: string) {
+    const { config } = useConfig();
+    const { htlcContract } = config.polygon.gasless;
+    return !!htlcContract && address.toLowerCase() === htlcContract.toLowerCase();
 }
 
 function isGaslessRelay(address: string) {

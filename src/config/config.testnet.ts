@@ -47,7 +47,7 @@ export default {
         maintenance: {
             // Sending and receiving USDC and USDT, including Moonpay
             transfers: false,
-            // Stablecoin swaps and refunds of their HTLCs, which are still relayed via OpenGSN
+            // Stablecoin swaps and refunds of their HTLCs
             swaps: false,
         },
         networkId: 80002,
@@ -78,14 +78,13 @@ export default {
             relays: [] as string[],
             deployBlock: 0,
             maxAcceptableFee: 0.5e6,
+            // Gasless HTLCs for swaps. PROVISIONAL: the GaslessHTLC contract is not deployed yet.
+            htlcContract: '',
         },
+        // The former USDC.e to USDC conversion, for the transaction history
         usdcConversion: {
-            swapContract: '', // v2
-            swapPoolContract: '',
+            swapContract: '',
         },
-        openGsnRelayHubContract: '',
-        uniswapQuoterContract: '',
-        wpolContract: '0xA5733b3A8e62A8faF43b0376d5fAF46E89B3033E',
     },
 
     unstoppableDomains: {

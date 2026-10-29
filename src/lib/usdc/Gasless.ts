@@ -193,7 +193,8 @@ export async function quoteGaslessFee(token: string): Promise<GaslessFeeQuote> {
     };
 }
 
-async function readPermitNonceAndCheckDomain(token: string, owner: string): Promise<number> {
+/** The owner's permit nonce in the token contract, after checking that the token's domain is still the pinned one. */
+export async function readPermitNonceAndCheckDomain(token: string, owner: string): Promise<number> {
     const [{ core }, pins, client] = await Promise.all([loadSdk(), getGaslessPins(), getPolygonClient()]);
     const pinned = core.findPinnedToken(pins, token);
     if (!pinned) throw new Error(`Token ${token} is not supported for gasless transfers`);

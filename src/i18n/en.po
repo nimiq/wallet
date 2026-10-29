@@ -55,7 +55,7 @@ msgstr ""
 msgid "{currency} payout pending"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:412
+#: src/components/swap/SwapModal.vue:404
 msgid "{disabledAsset} swaps are currently under maintenance."
 msgstr ""
 
@@ -880,7 +880,7 @@ msgstr ""
 msgid "Conversion from USDC.e to USDC"
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:413
+#: src/components/modals/UsdcTransactionModal.vue:404
 #: src/composables/useUsdcTransactionInfo.ts:158
 msgid "Converted {amount1} USDC.e to {amount2} USDC"
 msgstr ""
@@ -959,7 +959,7 @@ msgstr ""
 msgid "Credit Card"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:408
+#: src/components/swap/SwapModal.vue:400
 msgid "Crypto swaps are currently under maintenance."
 msgstr ""
 
@@ -1190,7 +1190,7 @@ msgstr ""
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:998
+#: src/components/swap/SwapModal.vue:935
 msgid "Failed to fetch Polygon fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1398,8 +1398,8 @@ msgstr ""
 
 #: src/components/modals/BtcTransactionModal.vue:474
 #: src/components/modals/TransactionModal.vue:542
-#: src/components/modals/UsdcTransactionModal.vue:409
-#: src/components/modals/UsdtTransactionModal.vue:388
+#: src/components/modals/UsdcTransactionModal.vue:400
+#: src/components/modals/UsdtTransactionModal.vue:380
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:193
 #: src/composables/useUsdcTransactionInfo.ts:148
@@ -1411,8 +1411,8 @@ msgstr ""
 #: src/components/modals/BtcTransactionModal.vue:474
 #: src/components/modals/TransactionModal.vue:557
 #: src/components/modals/TransactionModal.vue:563
-#: src/components/modals/UsdcTransactionModal.vue:409
-#: src/components/modals/UsdtTransactionModal.vue:388
+#: src/components/modals/UsdcTransactionModal.vue:400
+#: src/components/modals/UsdtTransactionModal.vue:380
 #: src/composables/useBtcTransactionInfo.ts:193
 #: src/composables/useTransactionInfo.ts:208
 #: src/composables/useTransactionInfo.ts:214
@@ -1452,7 +1452,7 @@ msgstr ""
 msgid "ID document"
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:230
+#: src/components/swap/SwapNotification.vue:228
 msgid "If this error persists, check your internet connection or reload the page to reconnect."
 msgstr ""
 
@@ -1520,7 +1520,7 @@ msgstr ""
 msgid "invalid"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:2026
+#: src/components/swap/SwapModal.vue:1746
 msgid "Invalid swap state, swap aborted!"
 msgstr ""
 
@@ -1800,7 +1800,7 @@ msgstr ""
 msgid "No availability data available yet."
 msgstr ""
 
-#: src/components/swap/SwapNotification.vue:229
+#: src/components/swap/SwapNotification.vue:227
 msgid "No connection to {chain} network."
 msgstr ""
 
@@ -2155,8 +2155,8 @@ msgstr ""
 msgid "Refund"
 msgstr ""
 
-#: src/components/modals/UsdcTransactionModal.vue:579
-#: src/components/modals/UsdtTransactionModal.vue:547
+#: src/components/modals/UsdcTransactionModal.vue:514
+#: src/components/modals/UsdtTransactionModal.vue:487
 msgid "Refund failed: "
 msgstr ""
 
@@ -2223,7 +2223,7 @@ msgstr ""
 msgid "Restart switch"
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1091
+#: src/components/swap/SwapModal.vue:1028
 msgid "Resulting BTC amount is too small."
 msgstr ""
 
@@ -2854,7 +2854,7 @@ msgstr ""
 msgid "The fees (currently {amount}) determine the minimum amount."
 msgstr ""
 
-#: src/components/swap/SwapModal.vue:1085
+#: src/components/swap/SwapModal.vue:1022
 #: src/lib/swap/utils/BuyUtils.ts:95
 #: src/lib/swap/utils/SellUtils.ts:115
 msgid "The fees determine the minimum amount."

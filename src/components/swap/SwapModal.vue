@@ -278,8 +278,9 @@ import {
     SetupSwapResult,
     SignedTransaction,
     SignedBtcTransaction,
-    SignedPolygonTransaction,
-    SignPolygonTransactionRequest,
+    SignedPolygonHtlcOpen,
+    SignedPolygonHtlcSettlement,
+    SignPolygonHtlcSettlementRequest,
 } from '@nimiq/hub-api';
 import {
     cancelSwap,
@@ -295,9 +296,6 @@ import {
     Swap,
     Contract,
 } from '@nimiq/fastspot-api';
-import type { BigNumber } from 'ethers';
-import type { RelayRequest } from '@opengsn/common/dist/EIP712/RelayRequest';
-import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
 import { CurrencyInfo } from '@nimiq/utils';
 import { useRouter, stablecoinSwapMaintenanceWarning } from '@/router';
 
@@ -339,14 +337,8 @@ import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
-import {
-    getPolygonClient,
-    calculateFee as calculatePolygonFee,
-    getUsdcHtlcContract,
-    getUsdtBridgedHtlcContract,
-    getPolygonBlockNumber,
-} from '../../ethers';
-import { POLYGON_BLOCKS_PER_MINUTE, RelayServerInfo } from '../../lib/usdc/OpenGSN';
+import { readPermitNonceAndCheckDomain } from '../../lib/usdc/Gasless';
+import { quoteGaslessHtlcFee } from '../../lib/usdc/GaslessHtlc';
 import ButtonGroup from '../ButtonGroup.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -874,22 +866,13 @@ export default defineComponent({
             };
         }
 
-        let polygonRelay = {
-            relay: undefined as RelayServerInfo | undefined,
-            timestamp: 0,
-        };
-
         type PolygonFees = {
-            /** Fee in USDC units */
+            /** Fee in USDC/T units */
             fee: number,
-            /** Gas limit in MATIC units */
-            gasLimit: BigNumber,
-            /** Gas price in MATIC units */
-            gasPrice: BigNumber,
-            /** Relay details */
-            relay: RelayServerInfo,
-            /** The method that these fees were calculated for */
-            method: 'open' | 'openWithPermit' | 'openWithApproval' | 'redeemWithSecretInData',
+            /** The relay address of the fee quote */
+            relay: string,
+            /** The HTLC operation that this fee was quoted for */
+            operation: 'htlc.open' | 'htlc.redeem',
         };
 
         const polygonFeeStuff = ref<PolygonFees>(null);
@@ -899,69 +882,24 @@ export default defineComponent({
         const stableUsdPriceInWei = ref<number>(null);
         const polygonGasPrice = ref<number>(null);
 
-        async function calculatePolygonHtlcFee(forOpening: boolean, prevPolygonFees: PolygonFees | null) {
-            const prevMethod = prevPolygonFees?.method;
+        function stablecoinTokenContract() {
+            return stablecoin.value === CryptoCurrency.USDC
+                ? config.polygon.usdc.tokenContract
+                : config.polygon.usdt_bridged.tokenContract;
+        }
 
-            // Use the existing relay if it was selected in the last 5 minutes
-            const forceRelay = polygonRelay.timestamp > Date.now() - 5 * 60 * 1e3
-                ? polygonRelay.relay
-                : undefined;
+        async function calculatePolygonHtlcFee(forOpening: boolean): Promise<PolygonFees> {
+            const operation = forOpening ? 'htlc.open' : 'htlc.redeem';
+            const { fee, relay, gasPrice, polUsd } = await quoteGaslessHtlcFee(operation, stablecoinTokenContract());
 
-            let method: 'open' | 'openWithPermit' | 'openWithApproval' | 'redeemWithSecretInData' = forOpening
-                ? (stablecoin.value === CryptoCurrency.USDC ? 'openWithPermit' : 'openWithApproval')
-                : 'redeemWithSecretInData';
-
-            if (forOpening) {
-                if (prevMethod === 'open' || prevMethod === 'openWithPermit' || prevMethod === 'openWithApproval') {
-                    // Allowance was already checked at the last fee calculation, reuse the previous result
-                    method = prevMethod;
-                } else {
-                    // // Otherwise check allowance now
-                    // const client = await getPolygonClient();
-                    // const allowance = await client.usdcToken.allowance(
-                    //     activePolygonAddress.value!,
-                    //     config.polygon.usdc.htlcContract,
-                    // ) as BigNumber;
-                    // if (allowance.gte(accountUsdcBalance.value)) method = 'open';
-                }
-            }
-
-            const htlcContract = stablecoin.value === CryptoCurrency.USDC
-                ? await getUsdcHtlcContract()
-                : await getUsdtBridgedHtlcContract();
-
-            const {
-                fee,
-                gasLimit,
-                gasPrice,
-                relay,
-                usdPrice,
-            } = await calculatePolygonFee(
-                stablecoin.value === CryptoCurrency.USDC
-                    ? config.polygon.usdc.tokenContract
-                    : config.polygon.usdt_bridged.tokenContract,
-                method,
-                forceRelay,
-                htlcContract,
-            );
-
-            if (!forceRelay) {
-                // Store the new relay
-                polygonRelay = {
-                    relay,
-                    timestamp: Date.now(),
-                };
-            }
-
-            stableUsdPriceInWei.value = usdPrice.toNumber();
-            polygonGasPrice.value = gasPrice.toNumber();
+            // The POL amount in wei that is worth one smallest unit (1e-6) of USDC/T
+            stableUsdPriceInWei.value = Math.round(1e12 / Number(polUsd));
+            polygonGasPrice.value = Number(gasPrice);
 
             return {
-                fee: fee.toNumber(),
-                gasLimit,
-                gasPrice,
+                fee: Number(fee),
                 relay,
-                method,
+                operation,
             };
         }
 
@@ -979,9 +917,8 @@ export default defineComponent({
                     const forOpening = [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC].includes(
                         (direction.value === SwapDirection.LEFT_TO_RIGHT ? leftAsset : rightAsset).value,
                     );
-                    const prevPolygonFeeStuff = polygonFeeStuff.value;
                     polygonFeeStuff.value = null;
-                    polygonFeeStuff.value = await calculatePolygonHtlcFee(forOpening, prevPolygonFeeStuff);
+                    polygonFeeStuff.value = await calculatePolygonHtlcFee(forOpening);
                     polygonFeeError.value = null;
                 }
                 if (polygonFeeUpdateTimeout === 0) {
@@ -1593,163 +1530,32 @@ export default defineComponent({
                     };
                 }
 
-                if (swapSuggestion.from.asset === SwapAsset.USDC_MATIC) {
-                    const [client, htlcContract] = await Promise.all([
-                        getPolygonClient(),
-                        getUsdcHtlcContract(),
-                    ]);
+                if (
+                    swapSuggestion.from.asset === SwapAsset.USDC_MATIC
+                    || swapSuggestion.from.asset === SwapAsset.USDT_MATIC
+                ) {
                     const fromAddress = activePolygonAddress.value!;
-
-                    const [
-                        usdcNonce,
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        client.usdcToken.nonces(fromAddress) as Promise<BigNumber>,
-                        htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'open' && method !== 'openWithPermit') {
-                        throw new Error('Wrong USDC contract method');
+                    const { fee, relay, operation } = polygonFeeStuff.value!;
+                    if (operation !== 'htlc.open') {
+                        throw new Error('Wrong Polygon fee operation');
                     }
 
-                    // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
-                    // Keyguard's SwapIFrameApi.
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address token */ config.polygon.usdc.tokenContract,
-                        /* uint256 amount */ swapSuggestion.from.amount,
-                        /* address refundAddress */ fromAddress,
-                        /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
-                        /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* uint256 timeout */ 0,
-                        /* uint256 fee */ fee,
-                        ...(method === 'openWithPermit' ? [
-                            // // Approve the maximum possible amount so afterwards we can use the `open` method for
-                            // // lower fees
-                            // /* uint256 value */ client.ethers
-                            //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-                            /* uint256 value */ swapSuggestion.from.amount + fee,
-
-                            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* uint8 sigV */ 0,
-                        ] : []),
-                    ]);
-
-                    const relayRequest: RelayRequest = {
+                    // The HTLC's id, recipient, hash and timeout are taken from Fastspot's proposed HTLC data (passed
+                    // in from Hub) in Keyguard's SwapIFrameApi.
+                    fund = {
+                        type: swapSuggestion.from.asset,
                         request: {
                             from: fromAddress,
-                            to: config.polygon.usdc.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                            amount: swapSuggestion.from.amount.toString(),
+                            fee: fee.toString(),
+                            relay,
                         },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdc.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdc.htlcContract,
-                        },
-                    };
-
-                    fund = {
-                        type: SwapAsset.USDC_MATIC,
-                        ...relayRequest,
-                        ...(method === 'openWithPermit' ? {
-                            permit: {
-                                tokenNonce: usdcNonce.toNumber(),
-                            },
-                        } : null),
-                    };
-                }
-
-                if (swapSuggestion.from.asset === SwapAsset.USDT_MATIC) {
-                    const [client, htlcContract] = await Promise.all([
-                        getPolygonClient(),
-                        getUsdtBridgedHtlcContract(),
-                    ]);
-                    const fromAddress = activePolygonAddress.value!;
-
-                    const [
-                        usdtNonce,
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        client.usdtBridgedToken.getNonce(fromAddress) as Promise<BigNumber>,
-                        htlcContract.getNonce(fromAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'open' && method !== 'openWithApproval') {
-                        throw new Error('Wrong USDT contract method');
-                    }
-
-                    // Zeroed data fields are replaced by Fastspot's proposed data (passed in from Hub) in
-                    // Keyguard's SwapIFrameApi.
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address token */ config.polygon.usdt_bridged.tokenContract,
-                        /* uint256 amount */ swapSuggestion.from.amount,
-                        /* address refundAddress */ fromAddress,
-                        /* address recipientAddress */ '0x0000000000000000000000000000000000000000',
-                        /* bytes32 hash */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* uint256 timeout */ 0,
-                        /* uint256 fee */ fee,
-                        ...(method === 'openWithApproval' ? [
-                            // // Approve the maximum possible amount so afterwards we can use the `open` method for
-                            // // lower fees
-                            // /* uint256 approval */ client.ethers
-                            //    .BigNumber.from('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'),
-                            /* uint256 approval */ swapSuggestion.from.amount + fee,
-
-                            /* bytes32 sigR */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* bytes32 sigS */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                            /* uint8 sigV */ 0,
-                        ] : []),
-                    ]);
-
-                    const relayRequest: RelayRequest = {
-                        request: {
-                            from: fromAddress,
-                            to: config.polygon.usdt_bridged.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdt_bridged.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdt_bridged.htlcContract,
-                        },
-                    };
-
-                    fund = {
-                        type: SwapAsset.USDT_MATIC,
-                        ...relayRequest,
-                        ...(method === 'openWithApproval' ? {
-                            approval: {
-                                tokenNonce: usdtNonce.toNumber(),
-                            },
-                        } : null),
+                        tokenNonce: await readPermitNonceAndCheckDomain(
+                            swapSuggestion.from.asset === SwapAsset.USDC_MATIC
+                                ? config.polygon.usdc.tokenContract
+                                : config.polygon.usdt_bridged.tokenContract,
+                            fromAddress,
+                        ),
                     };
                 }
 
@@ -1791,108 +1597,22 @@ export default defineComponent({
                     };
                 }
 
-                if (swapSuggestion.to.asset === SwapAsset.USDC_MATIC) {
-                    const htlcContract = await getUsdcHtlcContract();
-                    const toAddress = activePolygonAddress.value!;
-
-                    const [
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'redeemWithSecretInData') {
-                        throw new Error('Wrong USDC contract method');
+                if (
+                    swapSuggestion.to.asset === SwapAsset.USDC_MATIC
+                    || swapSuggestion.to.asset === SwapAsset.USDT_MATIC
+                ) {
+                    const { fee, relay, operation } = polygonFeeStuff.value!;
+                    if (operation !== 'htlc.redeem') {
+                        throw new Error('Wrong Polygon fee operation');
                     }
 
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address target */ toAddress,
-                        /* uint256 fee */ fee,
-                    ]);
-
-                    const relayRequest: RelayRequest = {
-                        request: {
-                            from: toAddress,
-                            to: config.polygon.usdc.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                        },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdc.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdc.htlcContract,
-                        },
-                    };
-
                     redeem = {
-                        type: SwapAsset.USDC_MATIC,
-                        ...relayRequest,
-                        amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
-                    };
-                }
-
-                if (swapSuggestion.to.asset === SwapAsset.USDT_MATIC) {
-                    const htlcContract = await getUsdtBridgedHtlcContract();
-                    const toAddress = activePolygonAddress.value!;
-
-                    const [
-                        forwarderNonce,
-                        blockHeight,
-                    ] = await Promise.all([
-                        htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                        getPolygonBlockNumber(),
-                    ]);
-
-                    const { fee, gasLimit, gasPrice, relay, method } = polygonFeeStuff.value!;
-                    if (method !== 'redeemWithSecretInData') {
-                        throw new Error('Wrong USDT contract method');
-                    }
-
-                    const data = htlcContract.interface.encodeFunctionData(method, [
-                        /* bytes32 id */ '0x0000000000000000000000000000000000000000000000000000000000000000',
-                        /* address target */ toAddress,
-                        /* uint256 fee */ fee,
-                    ]);
-
-                    const relayRequest: RelayRequest = {
+                        type: swapSuggestion.to.asset,
                         request: {
-                            from: toAddress,
-                            to: config.polygon.usdt_bridged.htlcContract,
-                            data,
-                            value: '0',
-                            nonce: forwarderNonce.toString(),
-                            gas: gasLimit.toString(),
-                            validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                                .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                            from: activePolygonAddress.value!, // My address, must be redeem address of HTLC
+                            fee: fee.toString(),
+                            relay,
                         },
-                        relayData: {
-                            gasPrice: gasPrice.toString(),
-                            pctRelayFee: relay.pctRelayFee.toString(),
-                            baseRelayFee: relay.baseRelayFee.toString(),
-                            relayWorker: relay.relayWorkerAddress,
-                            paymaster: config.polygon.usdt_bridged.htlcContract,
-                            paymasterData: '0x',
-                            clientId: Math.floor(Math.random() * 1e6).toString(10),
-                            forwarder: config.polygon.usdt_bridged.htlcContract,
-                        },
-                    };
-
-                    redeem = {
-                        type: SwapAsset.USDT_MATIC,
-                        ...relayRequest,
                         amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
                     };
                 }
@@ -1975,10 +1695,10 @@ export default defineComponent({
 
             const fundingSignedTx = signedTransactions[
                 assetToCurrency(fund.type as SupportedSwapAsset) as keyof SetupSwapResult
-            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
+            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonHtlcOpen;
             const redeemingSignedTx = signedTransactions[
                 assetToCurrency(redeem.type as SupportedSwapAsset) as keyof SetupSwapResult
-            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonTransaction;
+            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonHtlcSettlement;
 
             if (!fundingSignedTx || !redeemingSignedTx) {
                 const error = new Error(
@@ -2050,18 +1770,10 @@ export default defineComponent({
                 watchtowerNotified: false,
                 fundingSerializedTx: 'serializedTx' in fundingSignedTx
                     ? fundingSignedTx.serializedTx // NIM & BTC
-                    : JSON.stringify({ // USDC/T
-                        request: fundingSignedTx.message,
-                        signature: fundingSignedTx.signature,
-                        relayUrl: polygonFeeStuff.value!.relay.url,
-                    }),
+                    : JSON.stringify(fundingSignedTx), // USDC/T: the signed gasless HTLC opening
                 settlementSerializedTx: 'serializedTx' in redeemingSignedTx
                     ? redeemingSignedTx.serializedTx // NIM & BTC
-                    : JSON.stringify({ // USDC/T
-                        request: redeemingSignedTx.message,
-                        signature: redeemingSignedTx.signature,
-                        relayUrl: polygonFeeStuff.value!.relay.url,
-                    }),
+                    : JSON.stringify(redeemingSignedTx), // USDC/T: the signed gasless HTLC redeem
                 nimiqProxySerializedTx: signedTransactions.nimProxy?.serializedTx,
             });
 
@@ -2076,22 +1788,9 @@ export default defineComponent({
                     );
                 }
 
-                // In case of a Polygon signed message, we need to restructure the `request` format
-                if (
-                    confirmedSwap.to.asset === SwapAsset.USDC_MATIC
-                    || confirmedSwap.to.asset === SwapAsset.USDT_MATIC
-                ) {
-                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
-                    const { relayData, ...relayRequest } = request;
-                    settlementSerializedTx = JSON.stringify({
-                        request: {
-                            request: relayRequest as ForwardRequest,
-                            relayData,
-                        },
-                        signature,
-                        relayUrl,
-                    });
-                }
+                // For USDC/T, this is the signed gasless HTLC redeem (request and signature), which needs to be
+                // submitted to the relay with the secret. PROVISIONAL: the watchtower does not support gasless HTLC
+                // redeems yet.
 
                 // Send redeem transaction to watchtower
                 fetch(`${config.fastspot.watchtowerEndpoint}/`, {
@@ -2159,7 +1858,7 @@ export default defineComponent({
         const stablecoinMaintenanceOverlayOpened = ref(false);
 
         function isUnderGasAbstractionMaintenance(asset: SupportedSwapAsset) {
-            return config.polygon.isGasAbstractionUnderMaintenance
+            return config.polygon.maintenance.swaps
                 && (asset === SwapAsset.USDC_MATIC || asset === SwapAsset.USDT_MATIC);
         }
 
@@ -2242,91 +1941,47 @@ export default defineComponent({
 
         function handleSwapErrorAction() {
             if (swap.value?.errorAction === SwapErrorAction.USDC_RESIGN_REDEEM) {
-                resignUsdcRedeemTransaction();
+                resignStablecoinRedeemTransaction(SwapAsset.USDC_MATIC);
             }
             if (swap.value?.errorAction === SwapErrorAction.USDT_RESIGN_REDEEM) {
-                resignUsdtRedeemTransaction();
+                resignStablecoinRedeemTransaction(SwapAsset.USDT_MATIC);
             }
         }
 
-        async function resignUsdcRedeemTransaction() {
+        async function resignStablecoinRedeemTransaction(asset: SwapAsset.USDC_MATIC | SwapAsset.USDT_MATIC) {
             if (!swap.value) {
                 console.warn('No swap found'); // eslint-disable-line no-console
                 return;
             }
-            const usdcHtlc = swap.value.contracts[SwapAsset.USDC_MATIC] as Contract<SwapAsset.USDC_MATIC> | undefined;
-            if (!usdcHtlc) {
-                console.warn('No USDC HTLC found in swap', swap.value); // eslint-disable-line no-console
+            const htlc = swap.value.contracts[asset] as Contract<typeof asset> | undefined;
+            if (!htlc) {
+                console.warn(`No ${asset} HTLC found in swap`, swap.value); // eslint-disable-line no-console
                 return;
             }
-            if (usdcHtlc.direction !== 'receive') {
-                console.warn('USDC HTLC is not a receive HTLC', usdcHtlc); // eslint-disable-line no-console
+            if (htlc.direction !== 'receive') {
+                console.warn(`${asset} HTLC is not a receive HTLC`, htlc); // eslint-disable-line no-console
                 return;
             }
 
-            let relayUrl: string;
-
-            // eslint-disable-next-line no-async-promise-executor
-            const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve) => {
-                const htlcContract = await getUsdcHtlcContract(); // This promise is already resolved
-                const toAddress = usdcHtlc.redeemAddress;
-
-                // Unset stored relay so we can select a new one that hopefully works then
-                polygonRelay = {
-                    relay: undefined,
-                    timestamp: 0,
-                };
-
-                const [
-                    forwarderNonce,
-                    blockHeight,
-                    { fee, gasLimit, gasPrice, relay, method },
-                ] = await Promise.all([
-                    htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                    getPolygonBlockNumber(),
-                    calculatePolygonHtlcFee(false, null),
-                ]);
-
-                if (method !== 'redeemWithSecretInData') {
-                    throw new Error('Wrong USDC contract method');
-                }
-
-                relayUrl = relay.url;
-
-                const data = htlcContract.interface.encodeFunctionData(method, [
-                    /* bytes32 id */ usdcHtlc.htlc.address,
-                    /* address target */ toAddress,
-                    /* uint256 fee */ fee,
-                ]);
-
-                const relayRequest: RelayRequest = {
+            const request = calculatePolygonHtlcFee(false).then(({ fee, relay }) => {
+                const toAddress = htlc.redeemAddress;
+                const settlement: Omit<SignPolygonHtlcSettlementRequest, 'appName'> = {
+                    operation: 'redeem',
                     request: {
                         from: toAddress,
-                        to: config.polygon.usdc.htlcContract,
-                        data,
-                        value: '0',
-                        nonce: forwarderNonce.toString(),
-                        gas: gasLimit.toString(),
-                        validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                            .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
+                        id: htlc.htlc.address,
+                        target: toAddress,
+                        fee: fee.toString(),
+                        relay,
                     },
-                    relayData: {
-                        gasPrice: gasPrice.toString(),
-                        pctRelayFee: relay.pctRelayFee.toString(),
-                        baseRelayFee: relay.baseRelayFee.toString(),
-                        relayWorker: relay.relayWorkerAddress,
-                        paymaster: config.polygon.usdc.htlcContract,
-                        paymasterData: '0x',
-                        clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        forwarder: config.polygon.usdc.htlcContract,
-                    },
-                };
-
-                resolve({
-                    ...relayRequest,
-                    amount: swap.value!.to.amount - swap.value!.to.fee,
+                    token: asset === SwapAsset.USDC_MATIC
+                        ? config.polygon.usdc.tokenContract
+                        : config.polygon.usdt_bridged.tokenContract,
+                    // The HTLC pays out its amount minus the new fee
+                    amount: (swap.value!.to.amount - fee).toString(),
                     senderLabel: 'Swap HTLC',
-                });
+                };
+                return settlement;
             });
 
             const signedTransaction = await signPolygonTransaction(request);
@@ -2339,34 +1994,14 @@ export default defineComponent({
 
             useSwapsStore().setActiveSwap({
                 ...swap.value,
-                settlementSerializedTx: JSON.stringify({
-                    request: signedTransaction.message,
-                    signature: signedTransaction.signature,
-                    relayUrl: relayUrl!,
-                }),
+                settlementSerializedTx: JSON.stringify(signedTransaction),
                 error: undefined,
                 errorAction: undefined,
             });
 
             if (config.fastspot.watchtowerEndpoint) {
-                let settlementSerializedTx = swap.value.settlementSerializedTx!;
-
-                // In case of a Polygon signed message, we need to restructure the `request` format
-                if (swap.value.to.asset === SwapAsset.USDC_MATIC) {
-                    // eslint-disable-next-line @typescript-eslint/no-shadow
-                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
-                    const { relayData, ...relayRequest } = request;
-                    settlementSerializedTx = JSON.stringify({
-                        request: {
-                            request: relayRequest as ForwardRequest,
-                            relayData,
-                        },
-                        signature,
-                        relayUrl,
-                    });
-                }
-
-                // Send redeem transaction to watchtower
+                // Send redeem transaction to watchtower. PROVISIONAL: the watchtower does not support gasless HTLC
+                // redeems yet.
                 fetch(`${config.fastspot.watchtowerEndpoint}/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -2374,151 +2009,7 @@ export default defineComponent({
                         id: swap.value.id,
                         endpoint: new URL(config.fastspot.apiEndpoint).host,
                         apikey: config.fastspot.apiKey,
-                        redeem: settlementSerializedTx,
-                    }),
-                }).then(async (response) => {
-                    if (!response.ok) {
-                        throw new Error((await response.json()).message);
-                    }
-
-                    setActiveSwap({
-                        ...swap.value!,
-                        watchtowerNotified: true,
-                    });
-                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
-                }).catch((error) => {
-                    reportToSentry(error);
-                });
-            }
-        }
-
-        async function resignUsdtRedeemTransaction() {
-            if (!swap.value) {
-                console.warn('No swap found'); // eslint-disable-line no-console
-                return;
-            }
-            const usdtHtlc = swap.value.contracts[SwapAsset.USDT_MATIC] as Contract<SwapAsset.USDT_MATIC> | undefined;
-            if (!usdtHtlc) {
-                console.warn('No USDT HTLC found in swap', swap.value); // eslint-disable-line no-console
-                return;
-            }
-            if (usdtHtlc.direction !== 'receive') {
-                console.warn('USDT HTLC is not a receive HTLC', usdtHtlc); // eslint-disable-line no-console
-                return;
-            }
-
-            let relayUrl: string;
-
-            // eslint-disable-next-line no-async-promise-executor
-            const request = new Promise<Omit<SignPolygonTransactionRequest, 'appName'>>(async (resolve) => {
-                const htlcContract = await getUsdtBridgedHtlcContract(); // This promise is already resolved
-                const toAddress = usdtHtlc.redeemAddress;
-
-                // Unset stored relay so we can select a new one that hopefully works then
-                polygonRelay = {
-                    relay: undefined,
-                    timestamp: 0,
-                };
-
-                const [
-                    forwarderNonce,
-                    blockHeight,
-                    { fee, gasLimit, gasPrice, relay, method },
-                ] = await Promise.all([
-                    htlcContract.getNonce(toAddress) as Promise<BigNumber>,
-                    getPolygonBlockNumber(),
-                    calculatePolygonHtlcFee(false, null),
-                ]);
-
-                if (method !== 'redeemWithSecretInData') {
-                    throw new Error('Wrong USDT contract method');
-                }
-
-                relayUrl = relay.url;
-
-                const data = htlcContract.interface.encodeFunctionData(method, [
-                    /* bytes32 id */ usdtHtlc.htlc.address,
-                    /* address target */ toAddress,
-                    /* uint256 fee */ fee,
-                ]);
-
-                const relayRequest: RelayRequest = {
-                    request: {
-                        from: toAddress,
-                        to: config.polygon.usdt_bridged.htlcContract,
-                        data,
-                        value: '0',
-                        nonce: forwarderNonce.toString(),
-                        gas: gasLimit.toString(),
-                        validUntil: (blockHeight + 3000 + 3 * 60 * POLYGON_BLOCKS_PER_MINUTE)
-                            .toString(10), // 3 hours + 3000 blocks (minimum relay expectancy)
-                    },
-                    relayData: {
-                        gasPrice: gasPrice.toString(),
-                        pctRelayFee: relay.pctRelayFee.toString(),
-                        baseRelayFee: relay.baseRelayFee.toString(),
-                        relayWorker: relay.relayWorkerAddress,
-                        paymaster: config.polygon.usdt_bridged.htlcContract,
-                        paymasterData: '0x',
-                        clientId: Math.floor(Math.random() * 1e6).toString(10),
-                        forwarder: config.polygon.usdt_bridged.htlcContract,
-                    },
-                };
-
-                resolve({
-                    ...relayRequest,
-                    amount: swap.value!.to.amount - swap.value!.to.fee,
-                    senderLabel: 'Swap HTLC',
-                    token: config.polygon.usdt_bridged.tokenContract,
-                });
-            });
-
-            const signedTransaction = await signPolygonTransaction(request);
-            if (!signedTransaction) return;
-
-            if (!swap.value) {
-                console.warn('No swap found after signing'); // eslint-disable-line no-console
-                return;
-            }
-
-            useSwapsStore().setActiveSwap({
-                ...swap.value,
-                settlementSerializedTx: JSON.stringify({
-                    request: signedTransaction.message,
-                    signature: signedTransaction.signature,
-                    relayUrl: relayUrl!,
-                }),
-                error: undefined,
-                errorAction: undefined,
-            });
-
-            if (config.fastspot.watchtowerEndpoint) {
-                let settlementSerializedTx = swap.value.settlementSerializedTx!;
-
-                // In case of a Polygon signed message, we need to restructure the `request` format
-                if (swap.value.to.asset === SwapAsset.USDT_MATIC) {
-                    // eslint-disable-next-line @typescript-eslint/no-shadow
-                    const { request, signature, relayUrl } = JSON.parse(settlementSerializedTx);
-                    const { relayData, ...relayRequest } = request;
-                    settlementSerializedTx = JSON.stringify({
-                        request: {
-                            request: relayRequest as ForwardRequest,
-                            relayData,
-                        },
-                        signature,
-                        relayUrl,
-                    });
-                }
-
-                // Send redeem transaction to watchtower
-                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: swap.value.id,
-                        endpoint: new URL(config.fastspot.apiEndpoint).host,
-                        apikey: config.fastspot.apiKey,
-                        redeem: settlementSerializedTx,
+                        redeem: swap.value.settlementSerializedTx!,
                     }),
                 }).then(async (response) => {
                     if (!response.ok) {

@@ -350,7 +350,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:295
+#: src/components/layouts/AddressOverview.vue:271
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -766,7 +766,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:297
+#: src/components/layouts/AddressOverview.vue:273
 #: src/components/staking/StakingModal.vue:220
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
@@ -878,14 +878,6 @@ msgstr ""
 
 #: src/composables/useUsdcTransactionInfo.ts:112
 msgid "Conversion from USDC.e to USDC"
-msgstr ""
-
-#: src/components/layouts/AddressOverview.vue:256
-msgid "Convert to USDC"
-msgstr ""
-
-#: src/components/layouts/AddressOverview.vue:248
-msgid "Convert your USDC.e to the new standard."
 msgstr ""
 
 #: src/components/modals/UsdcTransactionModal.vue:413
@@ -1564,7 +1556,6 @@ msgstr ""
 msgid "Learn about the new Nimiq"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:250
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:18
@@ -1579,11 +1570,7 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:241
-msgid "Legacy USDC (USDC.e)"
-msgstr ""
-
-#: src/components/layouts/AddressOverview.vue:282
+#: src/components/layouts/AddressOverview.vue:258
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -2566,7 +2553,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:283
+#: src/components/layouts/AddressOverview.vue:259
 msgid "Signup"
 msgstr ""
 
@@ -3410,10 +3397,6 @@ msgstr ""
 msgid "You currently have no balance to swap."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:513
-msgid "You do not have enough USDC.e to pay conversion fees ({fee})"
-msgstr ""
-
 #: src/components/swap/SwapAnimation.vue:50
 msgid "You exceeded the 30-day limit of your bank account and will be refunded. Please note that network fees may be deducted from your funds."
 msgstr ""
@@ -3515,7 +3498,7 @@ msgstr ""
 msgid "Your stake has been deactivated, but the automatic switch could not be scheduled. Come back once the countdown has ended and activate the validator manually."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:291
+#: src/components/layouts/AddressOverview.vue:267
 msgid "Your swap was successful!"
 msgstr ""
 

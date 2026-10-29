@@ -7,7 +7,6 @@ import HubApi, {
     type SetupSwapRequest,
     type SetupSwapResult,
     type RefundSwapRequest,
-    type SignPolygonTransactionRequest,
     type RequestType,
     type ResultByRequestType,
     type PopupRequestBehavior,
@@ -955,13 +954,6 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
     return hubApi.refundSwap(
-        requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
-        getBehavior(),
-    ).catch(onError);
-}
-
-export async function signPolygonTransaction(requestPromise: Promise<Omit<SignPolygonTransactionRequest, 'appName'>>) {
-    return hubApi.signPolygonTransaction(
         requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
         getBehavior(),
     ).catch(onError);

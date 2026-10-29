@@ -49,7 +49,7 @@ export default {
         maintenance: {
             // Sending and receiving USDC and USDT, including Moonpay
             transfers: false,
-            // Stablecoin swaps and refunds of their HTLCs, which are still relayed via OpenGSN
+            // Stablecoin swaps and refunds of their HTLCs
             swaps: false,
         },
         networkId: 31337, // The local Anvil stack of the gas abstraction, see `gasless` below
@@ -103,13 +103,10 @@ export default {
             deployBlock: 0,
             maxAcceptableFee: 0.5e6,
         },
+        // The former USDC.e to USDC conversion, for the transaction history
         usdcConversion: {
             swapContract: '',
-            swapPoolContract: '',
         },
-        openGsnRelayHubContract: '',
-        uniswapQuoterContract: '',
-        wpolContract: '0xA5733b3A8e62A8faF43b0376d5fAF46E89B3033E',
     },
 
     unstoppableDomains: {

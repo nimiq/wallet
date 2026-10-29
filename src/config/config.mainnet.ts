@@ -60,7 +60,7 @@ export default {
             // Sending and receiving USDC and USDT, including Moonpay
             // TODO: Set to false once the gasless relay address and URL are configured below.
             transfers: true,
-            // Stablecoin swaps and refunds of their HTLCs, which are still relayed via OpenGSN
+            // Stablecoin swaps and refunds of their HTLCs
             swaps: true,
         },
         networkId: 137,
@@ -95,13 +95,10 @@ export default {
             // fee.
             maxAcceptableFee: 0.5e6,
         },
+        // The former USDC.e to USDC conversion, for the transaction history
         usdcConversion: {
             swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
-            swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',
         },
-        openGsnRelayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
-        uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-        wpolContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     },
 
     unstoppableDomains: {

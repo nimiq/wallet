@@ -2159,7 +2159,7 @@ export default defineComponent({
         const stablecoinMaintenanceOverlayOpened = ref(false);
 
         function isUnderGasAbstractionMaintenance(asset: SupportedSwapAsset) {
-            return config.polygon.isGasAbstractionUnderMaintenance
+            return config.polygon.maintenance.swaps
                 && (asset === SwapAsset.USDC_MATIC || asset === SwapAsset.USDT_MATIC);
         }
 

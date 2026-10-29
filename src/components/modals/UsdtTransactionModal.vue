@@ -444,7 +444,7 @@ export default defineComponent({
             && (swapInfo.value?.in?.asset === SwapAsset.USDT_MATIC)
             && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
             && !swapInfo.value.out
-            && !config.polygon.isGasAbstractionUnderMaintenance,
+            && !config.polygon.maintenance.swaps,
             // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
             // && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
         );

@@ -55,8 +55,14 @@ export default {
 
     polygon: {
         enabled: true,
-        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
-        isGasAbstractionUnderMaintenance: true,
+        // Set a feature to true to keep it visible, but show a maintenance warning instead.
+        maintenance: {
+            // Sending and receiving USDC and USDT, including Moonpay
+            // TODO: Set to false once the gasless relay address and URL are configured below.
+            transfers: true,
+            // Stablecoin swaps and refunds of their HTLCs, which are still relayed via OpenGSN
+            swaps: true,
+        },
         networkId: 137,
         rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vue.config.js
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
@@ -77,6 +83,17 @@ export default {
             transferContract: '0x98E69a6927747339d5E543586FC0262112eBe4BD',
             htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
             earliestHistoryScanHeight: 63189500, // Block when USDT was added to the Wallet
+        },
+        // Gasless USDC/USDT0 transfers, see https://github.com/NimiqToolbox/gas-abstraction
+        gasless: {
+            relayUrl: '', // TODO: Add the production relay URL
+            transferContract: '0x5A3a650fCf35639153aA6bA9aa3e870DAED56199', // v3
+            // Relay addresses the user may sign for. More than one allows a relay key rotation.
+            relays: [] as string[], // TODO: Add the production relay address
+            deployBlock: 95893586,
+            // The highest relay fee the user is asked to sign, same as in the Keyguard. The contract does not cap the
+            // fee.
+            maxAcceptableFee: 0.5e6,
         },
         usdcConversion: {
             swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',

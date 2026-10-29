@@ -43,8 +43,13 @@ export default {
 
     polygon: {
         enabled: false,
-        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
-        isGasAbstractionUnderMaintenance: false,
+        // Set a feature to true to keep it visible, but show a maintenance warning instead.
+        maintenance: {
+            // Sending and receiving USDC and USDT, including Moonpay
+            transfers: false,
+            // Stablecoin swaps and refunds of their HTLCs, which are still relayed via OpenGSN
+            swaps: false,
+        },
         networkId: 80002,
         rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_TESTNET}`, // injected in vue.config.js
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
@@ -65,6 +70,14 @@ export default {
             transferContract: '',
             htlcContract: '',
             earliestHistoryScanHeight: 13320830, // Block when USDT was added to the Wallet
+        },
+        // Gasless transfers are not deployed on Amoy
+        gasless: {
+            relayUrl: '',
+            transferContract: '',
+            relays: [] as string[],
+            deployBlock: 0,
+            maxAcceptableFee: 0.5e6,
         },
         usdcConversion: {
             swapContract: '', // v2

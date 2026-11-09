@@ -58,7 +58,7 @@ export default {
         // Set a feature to true to keep it visible, but show a maintenance warning instead.
         maintenance: {
             // Sending and receiving USDC and USDT, including Moonpay
-            // TODO: Set to false once the gasless relay address and URL are configured below.
+            // TODO: Set to false once the gasless relay URL is configured below.
             transfers: true,
             // Stablecoin swaps and refunds of their HTLCs
             swaps: true,
@@ -89,11 +89,13 @@ export default {
             relayUrl: '', // TODO: Add the production relay URL
             transferContract: '0x5A3a650fCf35639153aA6bA9aa3e870DAED56199', // v3
             // Relay addresses the user may sign for. More than one allows a relay key rotation.
-            relays: [] as string[], // TODO: Add the production relay address
+            relays: ['0x6465e47837DB340D8Ac465E2F58cD6c08b275965'] as string[],
             deployBlock: 95893586,
             // The highest relay fee the user is asked to sign, same as in the Keyguard. The contract does not cap the
             // fee.
             maxAcceptableFee: 0.5e6,
+            // Only for test deployments: mainnet pins the SDK's POLYGON_TOKENS
+            testTokens: null as { usdcDomainName: string, usdt0Contract: string } | null,
             // Gasless HTLCs for swaps. PROVISIONAL: the GaslessHTLC contract is not deployed yet.
             htlcContract: '', // TODO: Add the GaslessHTLC contract address
         },

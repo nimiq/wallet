@@ -52,8 +52,8 @@ export default {
             // Stablecoin swaps and refunds of their HTLCs
             swaps: false,
         },
-        networkId: 31337, // The local Anvil stack of the gas abstraction, see `gasless` below
-        rpcEndpoint: 'http://localhost:8545',
+        networkId: 80002,
+        rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_LOCAL}`, // injected in vue.config.js
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
         // eslint-disable-next-line max-len
         // rpcEndpoint: 'wss://shy-sparkling-wind.matic-testnet.discover.quiknode.pro/4461ca78cea96dd6a168a58d8fc30a021cabf01d/',
@@ -82,26 +82,33 @@ export default {
             earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
         },
         usdc: {
-            tokenContract: '0x5FbDB2315678afecb367f032d93F642f64180aa3', // MockUSDC
+            tokenContract: '0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582',
             transferContract: '', // v1
             htlcContract: '',
-            earliestHistoryScanHeight: 0,
+            earliestHistoryScanHeight: 13320830, // Block when Wallet was switched to Amoy testnet
         },
         usdt_bridged: {
-            tokenContract: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', // MockUSDT0
+            tokenContract: '0x1616d425Cd540B256475cBfb604586C8598eC0FB',
             transferContract: '',
             htlcContract: '',
-            earliestHistoryScanHeight: 0,
+            earliestHistoryScanHeight: 13320830, // Block when USDT was added to the Wallet
         },
-        // Gasless USDC/USDT0 transfers on the local Anvil stack of https://github.com/NimiqToolbox/gas-abstraction
-        // (`make stack-up`, with the Anvil and relay ports made reachable from the host), see networkId, rpcEndpoint
-        // and the token addresses above. The deployment addresses are deterministic on a fresh chain.
+        // Gasless USDC transfers on the Amoy deployment of https://github.com/NimiqToolbox/gas-abstraction
         gasless: {
-            relayUrl: 'http://localhost:8080',
-            transferContract: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-            relays: ['0xBcd4042DE499D14e55001CcbB24a551F3b954096'] as string[], // Anvil account 10
-            deployBlock: 0,
+            relayUrl: 'https://relayer76578h-productionsada-a8e3.up.railway.app',
+            transferContract: '0xe5D40efb4a89F6D3aDd07D8881F4b372f02c8075',
+            relays: ['0x6465e47837DB340D8Ac465E2F58cD6c08b275965'] as string[],
+            deployBlock: 51892077,
             maxAcceptableFee: 0.5e6,
+            // The tokens of the test deployment, which the relay has to list exactly. Mainnet pins the SDK's
+            // POLYGON_TOKENS instead.
+            testTokens: {
+                // Circle's test USDC (`usdc.tokenContract`), whose EIP-712 domain is named `USDC`, unlike on mainnet
+                usdcDomainName: 'USDC',
+                // The deployment's mock USDT0. It is not the Wallet's USDT (`usdt_bridged.tokenContract`), which
+                // therefore cannot be sent, and which the Keyguard rejects on this network.
+                usdt0Contract: '0xfA9Dabbf3C68a126a627ad48098700DFc6F27c82',
+            } as { usdcDomainName: string, usdt0Contract: string } | null,
             // Gasless HTLCs for swaps. PROVISIONAL: the GaslessHTLC contract is not deployed yet.
             htlcContract: '',
         },

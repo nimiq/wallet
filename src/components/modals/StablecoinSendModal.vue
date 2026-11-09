@@ -777,6 +777,11 @@ export default defineComponent({
                 statusState.value = State.WARNING;
                 statusTitle.value = $t('Something went wrong') as string;
                 statusMessage.value = error.message.split(' req={')[0]; // eslint-disable-line prefer-destructuring
+                if (failedPayment.value) {
+                    // The Keyguard's confirm page does not tell, as it does not know about the failed attempt
+                    statusMessage.value += ` ${$t('A retry replaces the failed attempt: at most one of them can '
+                        + 'go through.')}`;
+                }
             }
         }
 

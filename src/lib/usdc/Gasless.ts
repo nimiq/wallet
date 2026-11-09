@@ -86,6 +86,8 @@ export async function getGaslessPins(): Promise<ChainPins> {
         const { core } = await loadSdk();
         const { config } = useConfig();
         const chainId = config.polygon.networkId;
+        const { testTokens } = config.polygon.gasless;
+        if (config.environment !== ENV_MAIN && !testTokens) throw new Error('No gasless test tokens configured');
         return core.definePins({
             chainId,
             transfer: config.polygon.gasless.transferContract,
@@ -99,20 +101,22 @@ export async function getGaslessPins(): Promise<ChainPins> {
                     decimals: 6,
                     authModes: ['permit', 'none'],
                     domain: {
-                        name: 'USD Coin',
+                        name: testTokens!.usdcDomainName,
                         version: '2',
                         chainId,
                         verifyingContract: config.polygon.usdc.tokenContract as `0x${string}`,
                     },
                 }, {
+                    // Not the Wallet's USDT on test networks, see `gasless.testTokens` in the config. Sending USDT
+                    // there fails, as it is not pinned.
                     symbol: 'USDT0',
-                    address: config.polygon.usdt_bridged.tokenContract,
+                    address: testTokens!.usdt0Contract,
                     decimals: 6,
                     authModes: ['permit', 'metaTxApprove', 'none'],
                     domain: {
                         name: 'USDT0',
                         version: '1',
-                        verifyingContract: config.polygon.usdt_bridged.tokenContract as `0x${string}`,
+                        verifyingContract: testTokens!.usdt0Contract as `0x${string}`,
                         salt: core.chainIdSalt(chainId),
                     },
                 }],
@@ -179,7 +183,9 @@ async function readIntentNonce(from: string): Promise<bigint> {
  * `maxAcceptableFee`; the Keyguard applies the same limit when signing.
  */
 export async function quoteGaslessFee(token: string): Promise<GaslessFeeQuote> {
-    const relay = await getRelayClient();
+    const [{ core }, pins, relay] = await Promise.all([loadSdk(), getGaslessPins(), getRelayClient()]);
+    // E.g. USDT on test networks, see `gasless.testTokens` in the config
+    if (!core.findPinnedToken(pins, token)) throw new Error('This token cannot be sent on this network');
     const { config } = useConfig();
     const quote = await relay.fee({
         token: token as `0x${string}`,

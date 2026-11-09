@@ -29,7 +29,9 @@ import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
  *   that at most one version executes.
  * - Every signed version of a payment is recorded before it is submitted, and kept until the payment's outcome is
  *   final.
- * - Before a correction is signed, the chain is checked for whether the payment's nonce was used already.
+ * - Before a correction is signed, the chain is checked for whether the payment's nonce was used already. The Hub and
+ *   Keyguard do not know about earlier versions of a payment, so a signed correction is checked against the version it
+ *   corrects here (`checkCorrection`) before it is recorded.
  */
 
 export type GaslessFeeQuote = Pick<FeeResponse, 'token' | 'fee' | 'relay' | 'quoteId' | 'expiresAt'>;
@@ -398,7 +400,6 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
             nonce: intentNonce,
         },
         tokenNonce,
-        corrects,
         recipientLabel,
     });
     if (!signed) return null;
@@ -409,6 +410,18 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
         || !core.sameAddress(request.to, to) || request.amount !== amount.toString() || request.fee !== quote.fee
         || !core.sameAddress(request.relay, quote.relay) || request.nonce !== intentNonce) {
         throw new Error('The signed transfer does not match the requested transfer');
+    }
+    if (corrects) {
+        // A correction keeps from, nonce, token and recipient, and a deadline at least as late as the version it
+        // corrects, so that once the latest version expired, no version can execute anymore. The Keyguard does not
+        // check this, as it does not know the earlier version. Discard the signature unsubmitted if it does not hold.
+        const correction = core.checkCorrection(corrects, request);
+        if (!correction.ok) {
+            throw new GaslessTransferError(
+                `The new signature cannot replace the failed attempt (${correction.message}). Please try again.`,
+                corrects,
+            );
+        }
     }
     const authorization = core.normalizeTokenAuthorization(signed.authorization as TokenAuthorization);
     const body: SubmitTransferBody = core.buildSubmitTransferBody({

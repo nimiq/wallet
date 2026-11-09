@@ -853,7 +853,8 @@ export async function activatePolygon(accountId: string) {
 /**
  * Sends a gasless USDC or USDT0 transfer from the active Polygon address. Resolves to the mined transaction, or to
  * false if the user cancelled. Throws a GaslessTransferError on failure; to retry that payment, pass its `payment` as
- * `corrects`, so that the retry keeps the payment's nonce and at most one version of it can execute.
+ * `corrects`, so that the retry keeps the payment's nonce and at most one version of it can execute. `corrects` is not
+ * passed on to the Hub: the signed retry is checked against it here, see sendGaslessTransfer.
  */
 export async function sendPolygonTransaction(
     tokenAddress: string,

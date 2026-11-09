@@ -217,6 +217,10 @@ msgid ""
 "click anywhere to bring it back to the front."
 msgstr ""
 
+#: src/components/modals/StablecoinSendModal.vue:782
+msgid "A retry replaces the failed attempt: at most one of them can go through."
+msgstr ""
+
 #: src/components/FlaggedAddressWarning.vue:37
 msgid "Abort"
 msgstr ""
@@ -1186,7 +1190,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:858
+#: src/components/modals/StablecoinSendModal.vue:863
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 

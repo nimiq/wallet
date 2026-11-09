@@ -64,7 +64,7 @@ import {
     SettlementStatus,
 } from '@nimiq/oasis-api';
 import { SwapHandler, Swap as GenericSwap, SwapAsset, Client, Transaction } from '@nimiq/libswap';
-import type { ForwardRequest } from '@opengsn/common/dist/EIP712/ForwardRequest';
+import type { SignedPolygonHtlcOpen, SignedPolygonHtlcSettlement } from '@nimiq/hub-api';
 import { Event as PolygonEvent, EventType as PolygonEventType } from '@nimiq/libswap/dist/src/Erc20AssetAdapter';
 import type { Route } from 'vue-router';
 import { useRouter, RouteName, getContextRouteName } from '@/router';
@@ -80,16 +80,14 @@ import { getNetworkClient } from '../../network';
 import { getServerTime } from '../../lib/Time';
 import { usePolygonNetworkStore } from '../../stores/PolygonNetwork';
 import {
-    getUsdcHtlcContract,
-    getUsdtBridgedHtlcContract,
     getPolygonBlockNumber,
     getPolygonClient,
     receiptToTransaction,
-    sendTransaction as sendPolygonTransaction,
+    POLYGON_BLOCKS_PER_MINUTE,
 } from '../../ethers';
+import { getGaslessHtlcContract, sendGaslessHtlcOpen, sendGaslessHtlcRedeem } from '../../lib/usdc/GaslessHtlc';
 import { useUsdcTransactionsStore, Transaction as UsdcTransaction } from '../../stores/UsdcTransactions';
 import { useUsdtTransactionsStore, Transaction as UsdtTransaction } from '../../stores/UsdtTransactions';
-import { POLYGON_BLOCKS_PER_MINUTE } from '../../lib/usdc/OpenGSN';
 import { reportToSentry } from '../../lib/Sentry';
 
 enum SwapError {
@@ -289,9 +287,7 @@ export default defineComponent({
                     const blockHeightAtStart = blockHeightAtTimeout - blocksOfValidity;
 
                     return {
-                        htlcContract: asset === SwapAsset.USDC_MATIC
-                            ? await getUsdcHtlcContract()
-                            : await getUsdtBridgedHtlcContract(),
+                        htlcContract: await getGaslessHtlcContract(),
                         currentBlock: () => getPolygonBlockNumber(),
                         startBlock: blockHeightAtStart,
                         endBlock: blockHeightAtTimeout > currentHeight ? undefined : blockHeightAtTimeout,
@@ -482,17 +478,13 @@ export default defineComponent({
                                 return tx as PolygonEvent<PolygonEventType.OPEN>;
                             });
 
-                            const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
-                            const { relayData, ...relayRequest } = request;
+                            const signedOpen = JSON.parse(
+                                activeSwap.value.fundingSerializedTx!,
+                            ) as SignedPolygonHtlcOpen;
 
                             let fundingTx: UsdcTransaction;
                             try {
-                                fundingTx = await sendPolygonTransaction(
-                                    config.polygon.usdc.tokenContract,
-                                    { request: relayRequest as ForwardRequest, relayData },
-                                    signature,
-                                    relayUrl,
-                                );
+                                fundingTx = await sendGaslessHtlcOpen(signedOpen);
                                 currentError.value = null;
                             } catch (error) {
                                 if (isPolygonListenerResolved) {
@@ -538,17 +530,13 @@ export default defineComponent({
                                 return tx as PolygonEvent<PolygonEventType.OPEN>;
                             });
 
-                            const { request, signature, relayUrl } = JSON.parse(activeSwap.value.fundingSerializedTx!);
-                            const { relayData, ...relayRequest } = request;
+                            const signedOpen = JSON.parse(
+                                activeSwap.value.fundingSerializedTx!,
+                            ) as SignedPolygonHtlcOpen;
 
                             let fundingTx: UsdtTransaction;
                             try {
-                                fundingTx = await sendPolygonTransaction(
-                                    config.polygon.usdt_bridged.tokenContract,
-                                    { request: relayRequest as ForwardRequest, relayData },
-                                    signature,
-                                    relayUrl,
-                                );
+                                fundingTx = await sendGaslessHtlcOpen(signedOpen);
                                 currentError.value = null;
                             } catch (error) {
                                 if (isPolygonListenerResolved) {
@@ -665,21 +653,16 @@ export default defineComponent({
                                 return tx as PolygonEvent<PolygonEventType.REDEEM>;
                             });
 
-                            const {
-                                request,
-                                signature,
-                                relayUrl,
-                            } = JSON.parse(activeSwap.value.settlementSerializedTx!);
-                            const { relayData, ...relayRequest } = request;
+                            const signedRedeem = JSON.parse(
+                                activeSwap.value.settlementSerializedTx!,
+                            ) as SignedPolygonHtlcSettlement;
 
                             let settlementTx: UsdcTransaction;
                             try {
-                                settlementTx = await sendPolygonTransaction(
+                                settlementTx = await sendGaslessHtlcRedeem(
+                                    signedRedeem,
+                                    `0x${activeSwap.value.secret}`,
                                     config.polygon.usdc.tokenContract,
-                                    { request: relayRequest as ForwardRequest, relayData },
-                                    signature,
-                                    relayUrl,
-                                    `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
                                 );
                                 currentError.value = null;
                             } catch (error) {
@@ -727,21 +710,16 @@ export default defineComponent({
                                 return tx as PolygonEvent<PolygonEventType.REDEEM>;
                             });
 
-                            const {
-                                request,
-                                signature,
-                                relayUrl,
-                            } = JSON.parse(activeSwap.value.settlementSerializedTx!);
-                            const { relayData, ...relayRequest } = request;
+                            const signedRedeem = JSON.parse(
+                                activeSwap.value.settlementSerializedTx!,
+                            ) as SignedPolygonHtlcSettlement;
 
                             let settlementTx: UsdtTransaction;
                             try {
-                                settlementTx = await sendPolygonTransaction(
+                                settlementTx = await sendGaslessHtlcRedeem(
+                                    signedRedeem,
+                                    `0x${activeSwap.value.secret}`,
                                     config.polygon.usdt_bridged.tokenContract,
-                                    { request: relayRequest as ForwardRequest, relayData },
-                                    signature,
-                                    relayUrl,
-                                    `0x${activeSwap.value.secret}`, // <- Pass the secret as approvalData
                                 );
                                 currentError.value = null;
                             } catch (error) {

@@ -20,6 +20,7 @@ import { useUsdcTransactionsStore } from './stores/UsdcTransactions';
 import { useUsdtContactsStore } from './stores/UsdtContacts';
 import { useUsdtTransactionsStore } from './stores/UsdtTransactions';
 import { useSwapsStore } from './stores/Swaps';
+import { useGaslessPaymentsStore } from './stores/GaslessPayments';
 import { useBankStore } from './stores/Bank';
 import { useKycStore } from './stores/Kyc';
 import { useStakingStore } from './stores/Staking';
@@ -43,6 +44,7 @@ const StorageKeys = {
     USDCTRANSACTIONS: 'wallet_usdctransactions_v01',
     USDTTRANSACTIONS: 'wallet_usdttransactions_v01',
     SWAPS: 'wallet_swaps_v01',
+    GASLESSPAYMENTS: 'wallet_gaslesspayments_v00',
     BANK: 'wallet_bank_v01',
     KYC: 'wallet_kyc_v00',
     STAKING: 'wallet_staking_v00',
@@ -188,6 +190,7 @@ export async function initStorage() {
             });
         }),
         initStoreStore(useSwapsStore(), StorageKeys.SWAPS),
+        initStoreStore(useGaslessPaymentsStore(), StorageKeys.GASLESSPAYMENTS),
         initStoreStore(useBankStore(), StorageKeys.BANK),
         initStoreStore(
             useKycStore(),

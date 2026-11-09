@@ -55,8 +55,13 @@ export default {
 
     polygon: {
         enabled: true,
-        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
-        isGasAbstractionUnderMaintenance: true,
+        // Set a feature to true to keep it visible, but show a maintenance warning instead.
+        maintenance: {
+            // Sending and receiving USDC and USDT, including Moonpay
+            transfers: false,
+            // Stablecoin swaps and refunds of their HTLCs
+            swaps: true,
+        },
         networkId: 137,
         rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vue.config.js
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
@@ -78,13 +83,25 @@ export default {
             htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
             earliestHistoryScanHeight: 63189500, // Block when USDT was added to the Wallet
         },
+        // Gasless USDC/USDT0 transfers, see https://github.com/NimiqToolbox/gas-abstraction
+        gasless: {
+            relayUrl: 'https://relayer-polygon-production.up.railway.app',
+            transferContract: '0x5A3a650fCf35639153aA6bA9aa3e870DAED56199', // v3
+            // Relay addresses the user may sign for. More than one allows a relay key rotation.
+            relays: ['0x6465e47837DB340D8Ac465E2F58cD6c08b275965'] as string[],
+            deployBlock: 95893586,
+            // The highest relay fee the user is asked to sign, same as in the Keyguard. The contract does not cap the
+            // fee.
+            maxAcceptableFee: 0.5e6,
+            // Only for test deployments: mainnet pins the SDK's POLYGON_TOKENS
+            testTokens: null as { usdcDomainName: string, usdt0Contract: string } | null,
+            // Gasless HTLCs for swaps. PROVISIONAL: the GaslessHTLC contract is not deployed yet.
+            htlcContract: '', // TODO: Add the GaslessHTLC contract address
+        },
+        // The former USDC.e to USDC conversion, for the transaction history
         usdcConversion: {
             swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
-            swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',
         },
-        openGsnRelayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
-        uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-        wpolContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     },
 
     unstoppableDomains: {

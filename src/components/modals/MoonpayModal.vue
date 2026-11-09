@@ -96,7 +96,7 @@ export default defineComponent({
             defaultCurrencyCode = CryptoCurrency.BTC;
         }
         if ((defaultCurrencyCode === CryptoCurrency.USDC || defaultCurrencyCode === CryptoCurrency.USDT)
-            && config.polygon.isGasAbstractionUnderMaintenance) {
+            && config.polygon.maintenance.transfers) {
             defaultCurrencyCode = CryptoCurrency.BTC;
         }
         if (defaultCurrencyCode === CryptoCurrency.USDC) defaultCurrencyCode = 'usdc_polygon';
@@ -117,13 +117,13 @@ export default defineComponent({
 
         // Having a USDC address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdcAddress = stablecoin.value === CryptoCurrency.USDC && !config.polygon.isGasAbstractionUnderMaintenance
+        const usdcAddress = stablecoin.value === CryptoCurrency.USDC && !config.polygon.maintenance.transfers
             ? usePolygonAddressStore().activeAddress.value
             : undefined;
 
         // Having a USDT address must be optional, so that the widget also works
         // for legacy or non-polygon-activated accounts.
-        const usdtAddress = stablecoin.value === CryptoCurrency.USDT && !config.polygon.isGasAbstractionUnderMaintenance
+        const usdtAddress = stablecoin.value === CryptoCurrency.USDT && !config.polygon.maintenance.transfers
             ? usePolygonAddressStore().activeAddress.value
             : undefined;
 
@@ -167,7 +167,7 @@ export default defineComponent({
                         async onInitiateDeposit(properties: InitiateDepositProperties) {
                             console.debug({ properties }); // eslint-disable-line no-console
 
-                            if (config.polygon.isGasAbstractionUnderMaintenance
+                            if (config.polygon.maintenance.transfers
                                 && ['usdc_polygon', 'usdt_polygon'].includes(properties.cryptoCurrency.code)) {
                                 const { title, message } = gasAbstractionMaintenanceWarning();
                                 alert(`${title}\n\n${message}`); // eslint-disable-line no-alert
@@ -300,7 +300,7 @@ export default defineComponent({
                 }
 
                 const { accountUsdcBalance } = usePolygonAddressStore();
-                // TODO: Preselect a relay to be able to check balance against the fee as well
+                // The relay fee is checked against the balance when sending
                 if (accountUsdcBalance.value < value) {
                     throw new Error('Insufficient USDC balance');
                 }
@@ -310,7 +310,6 @@ export default defineComponent({
                     normalizedDepositAddress,
                     value,
                     'Moonpay',
-                    // relay,
                 );
 
                 if (!tx) {
@@ -348,7 +347,7 @@ export default defineComponent({
                 }
 
                 const { accountUsdtBridgedBalance } = usePolygonAddressStore();
-                // TODO: Preselect a relay to be able to check balance against the fee as well
+                // The relay fee is checked against the balance when sending
                 if (accountUsdtBridgedBalance.value < value) {
                     throw new Error('Insufficient USDT balance');
                 }
@@ -358,7 +357,6 @@ export default defineComponent({
                     normalizedDepositAddress,
                     value,
                     'Moonpay',
-                    // relay,
                 );
 
                 if (!tx) {

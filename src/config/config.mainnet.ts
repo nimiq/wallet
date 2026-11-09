@@ -58,8 +58,7 @@ export default {
         // Set a feature to true to keep it visible, but show a maintenance warning instead.
         maintenance: {
             // Sending and receiving USDC and USDT, including Moonpay
-            // TODO: Set to false once the gasless relay URL is configured below.
-            transfers: true,
+            transfers: false,
             // Stablecoin swaps and refunds of their HTLCs
             swaps: true,
         },
@@ -86,7 +85,7 @@ export default {
         },
         // Gasless USDC/USDT0 transfers, see https://github.com/NimiqToolbox/gas-abstraction
         gasless: {
-            relayUrl: '', // TODO: Add the production relay URL
+            relayUrl: 'https://relayer-polygon-production.up.railway.app',
             transferContract: '0x5A3a650fCf35639153aA6bA9aa3e870DAED56199', // v3
             // Relay addresses the user may sign for. More than one allows a relay key rotation.
             relays: ['0x6465e47837DB340D8Ac465E2F58cD6c08b275965'] as string[],

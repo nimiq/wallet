@@ -87,6 +87,8 @@ export default {
                 // therefore cannot be sent, and which the Keyguard rejects on this network.
                 usdt0Contract: '0xfA9Dabbf3C68a126a627ad48098700DFc6F27c82',
             } as { usdcDomainName: string, usdt0Contract: string } | null,
+            // Gasless HTLCs for swaps. PROVISIONAL: the GaslessHTLC contract is not deployed yet.
+            htlcContract: '',
             // Contracts that cannot move tokens sent to them, in addition to the ones in this config
             deniedRecipients: [] as string[],
         },

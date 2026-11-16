@@ -35,7 +35,10 @@ export function getWalletEnabledSwapAssets(): SwapAsset[] {
     return [
         ...(!config.disableNetworkInteraction ? [SwapAsset.NIM] : []),
         ...(config.enableBitcoin ? [SwapAsset.BTC] : []),
-        // No stablecoin swaps until they are signed as gasless HTLCs, which the Keyguard does not support yet
+        // Stablecoin swaps need the GaslessHTLC contract
+        ...(config.polygon.enabled && !!config.polygon.gasless.htlcContract
+            ? [SwapAsset.USDC_MATIC, SwapAsset.USDT_MATIC]
+            : []),
     ];
 }
 

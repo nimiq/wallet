@@ -7,6 +7,7 @@ import HubApi, {
     type SetupSwapRequest,
     type SetupSwapResult,
     type RefundSwapRequest,
+    type SignPolygonHtlcSettlementRequest,
     type RequestType,
     type ResultByRequestType,
     type PopupRequestBehavior,
@@ -955,6 +956,16 @@ export async function setupSwap(requestPromise: Promise<Omit<SetupSwapRequest, '
 
 export async function refundSwap(requestPromise: Promise<Omit<RefundSwapRequest, 'appName'>>) {
     return hubApi.refundSwap(
+        requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
+        getBehavior(),
+    ).catch(onError);
+}
+
+/** Signs the redeem or refund of a gasless HTLC, e.g. to re-sign the redeem of a swap. */
+export async function signPolygonTransaction(
+    requestPromise: Promise<Omit<SignPolygonHtlcSettlementRequest, 'appName'>>,
+) {
+    return hubApi.signPolygonTransaction(
         requestPromise.then((request) => ({ ...request, appName: APP_NAME })),
         getBehavior(),
     ).catch(onError);

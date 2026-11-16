@@ -239,6 +239,7 @@
                     :errorAction="swap.errorAction"
                     @finished="finishSwap"
                     @cancel="finishSwap"
+                    @error-action="handleSwapErrorAction"
                 />
             </PageBody>
             <button class="nq-button-s minimize-button top-right" @click="onClose" @mousedown.prevent>
@@ -277,6 +278,9 @@ import {
     SetupSwapResult,
     SignedTransaction,
     SignedBtcTransaction,
+    SignedPolygonHtlcOpen,
+    SignedPolygonHtlcSettlement,
+    SignPolygonHtlcSettlementRequest,
 } from '@nimiq/hub-api';
 import {
     cancelSwap,
@@ -310,11 +314,11 @@ import { useBtcAddressStore } from '../../stores/BtcAddress';
 import { useFiatStore } from '../../stores/Fiat';
 import { BTC_DUST_LIMIT, CryptoCurrency, ENV_MAIN } from '../../lib/Constants';
 import { i18n } from '../../i18n/i18n-setup';
-import { setupSwap } from '../../hub';
+import { setupSwap, signPolygonTransaction } from '../../hub';
 import { selectOutputs, estimateFees } from '../../lib/BitcoinTransactionUtils';
 import { useAddressStore } from '../../stores/Address';
 import { useNetworkStore } from '../../stores/Network';
-import { SwapState, SwapDirection, useSwapsStore } from '../../stores/Swaps';
+import { SwapState, SwapDirection, useSwapsStore, SwapErrorAction } from '../../stores/Swaps';
 import { AccountType, useAccountStore } from '../../stores/Account';
 import { useSettingsStore } from '../../stores/Settings';
 import { useKycStore } from '../../stores/Kyc';
@@ -333,6 +337,8 @@ import { getNetworkClient } from '../../network';
 import { getElectrumClient } from '../../electrum';
 import KycPrompt from '../kyc/KycPrompt.vue';
 import KycOverlay from '../kyc/KycOverlay.vue';
+import { readPermitNonceAndCheckDomain } from '../../lib/usdc/Gasless';
+import { quoteGaslessHtlcFee } from '../../lib/usdc/GaslessHtlc';
 import ButtonGroup from '../ButtonGroup.vue';
 import SwapIcon from '../icons/SwapIcon.vue';
 import { reportToSentry } from '../../lib/Sentry';
@@ -876,9 +882,25 @@ export default defineComponent({
         const stableUsdPriceInWei = ref<number>(null);
         const polygonGasPrice = ref<number>(null);
 
-        // Stablecoin swaps need gasless HTLCs, which the Keyguard does not sign yet, and are not offered
+        function stablecoinTokenContract() {
+            return stablecoin.value === CryptoCurrency.USDC
+                ? config.polygon.usdc.tokenContract
+                : config.polygon.usdt_bridged.tokenContract;
+        }
+
         async function calculatePolygonHtlcFee(forOpening: boolean): Promise<PolygonFees> {
-            throw new Error(`Stablecoin swaps are not supported yet (${forOpening ? 'htlc.open' : 'htlc.redeem'})`);
+            const operation = forOpening ? 'htlc.open' : 'htlc.redeem';
+            const { fee, relay, gasPrice, polUsd } = await quoteGaslessHtlcFee(operation, stablecoinTokenContract());
+
+            // The POL amount in wei that is worth one smallest unit (1e-6) of USDC/T
+            stableUsdPriceInWei.value = Math.round(1e12 / Number(polUsd));
+            polygonGasPrice.value = Number(gasPrice);
+
+            return {
+                fee: Number(fee),
+                relay,
+                operation,
+            };
         }
 
         let polygonFeeUpdateTimeout = -1; // -1: stopped; 0: to be started; >0: timer id
@@ -1512,7 +1534,29 @@ export default defineComponent({
                     swapSuggestion.from.asset === SwapAsset.USDC_MATIC
                     || swapSuggestion.from.asset === SwapAsset.USDT_MATIC
                 ) {
-                    throw new Error('Stablecoin swaps are not supported yet');
+                    const fromAddress = activePolygonAddress.value!;
+                    const { fee, relay, operation } = polygonFeeStuff.value!;
+                    if (operation !== 'htlc.open') {
+                        throw new Error('Wrong Polygon fee operation');
+                    }
+
+                    // The HTLC's id, recipient, hash and timeout are taken from Fastspot's proposed HTLC data (passed
+                    // in from Hub) in Keyguard's SwapIFrameApi.
+                    fund = {
+                        type: swapSuggestion.from.asset,
+                        request: {
+                            from: fromAddress,
+                            amount: swapSuggestion.from.amount.toString(),
+                            fee: fee.toString(),
+                            relay,
+                        },
+                        tokenNonce: await readPermitNonceAndCheckDomain(
+                            swapSuggestion.from.asset === SwapAsset.USDC_MATIC
+                                ? config.polygon.usdc.tokenContract
+                                : config.polygon.usdt_bridged.tokenContract,
+                            fromAddress,
+                        ),
+                    };
                 }
 
                 if (swapSuggestion.to.asset === SwapAsset.NIM) {
@@ -1557,7 +1601,20 @@ export default defineComponent({
                     swapSuggestion.to.asset === SwapAsset.USDC_MATIC
                     || swapSuggestion.to.asset === SwapAsset.USDT_MATIC
                 ) {
-                    throw new Error('Stablecoin swaps are not supported yet');
+                    const { fee, relay, operation } = polygonFeeStuff.value!;
+                    if (operation !== 'htlc.redeem') {
+                        throw new Error('Wrong Polygon fee operation');
+                    }
+
+                    redeem = {
+                        type: swapSuggestion.to.asset,
+                        request: {
+                            from: activePolygonAddress.value!, // My address, must be redeem address of HTLC
+                            fee: fee.toString(),
+                            relay,
+                        },
+                        amount: swapSuggestion.to.amount - swapSuggestion.to.fee,
+                    };
                 }
 
                 if (!fund || !redeem) {
@@ -1638,10 +1695,10 @@ export default defineComponent({
 
             const fundingSignedTx = signedTransactions[
                 assetToCurrency(fund.type as SupportedSwapAsset) as keyof SetupSwapResult
-            ] as SignedTransaction | SignedBtcTransaction;
+            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonHtlcOpen;
             const redeemingSignedTx = signedTransactions[
                 assetToCurrency(redeem.type as SupportedSwapAsset) as keyof SetupSwapResult
-            ] as SignedTransaction | SignedBtcTransaction;
+            ] as SignedTransaction | SignedBtcTransaction | SignedPolygonHtlcSettlement;
 
             if (!fundingSignedTx || !redeemingSignedTx) {
                 const error = new Error(
@@ -1882,6 +1939,94 @@ export default defineComponent({
             return false;
         });
 
+        function handleSwapErrorAction() {
+            if (swap.value?.errorAction === SwapErrorAction.USDC_RESIGN_REDEEM) {
+                resignStablecoinRedeemTransaction(SwapAsset.USDC_MATIC);
+            }
+            if (swap.value?.errorAction === SwapErrorAction.USDT_RESIGN_REDEEM) {
+                resignStablecoinRedeemTransaction(SwapAsset.USDT_MATIC);
+            }
+        }
+
+        async function resignStablecoinRedeemTransaction(asset: SwapAsset.USDC_MATIC | SwapAsset.USDT_MATIC) {
+            if (!swap.value) {
+                console.warn('No swap found'); // eslint-disable-line no-console
+                return;
+            }
+            const htlc = swap.value.contracts[asset] as Contract<typeof asset> | undefined;
+            if (!htlc) {
+                console.warn(`No ${asset} HTLC found in swap`, swap.value); // eslint-disable-line no-console
+                return;
+            }
+            if (htlc.direction !== 'receive') {
+                console.warn(`${asset} HTLC is not a receive HTLC`, htlc); // eslint-disable-line no-console
+                return;
+            }
+
+            const request = calculatePolygonHtlcFee(false).then(({ fee, relay }) => {
+                const toAddress = htlc.redeemAddress;
+                const settlement: Omit<SignPolygonHtlcSettlementRequest, 'appName'> = {
+                    operation: 'redeem',
+                    request: {
+                        from: toAddress,
+                        id: htlc.htlc.address,
+                        target: toAddress,
+                        fee: fee.toString(),
+                        relay,
+                    },
+                    token: asset === SwapAsset.USDC_MATIC
+                        ? config.polygon.usdc.tokenContract
+                        : config.polygon.usdt_bridged.tokenContract,
+                    // The HTLC pays out its amount minus the new fee
+                    amount: (swap.value!.to.amount - fee).toString(),
+                    senderLabel: 'Swap HTLC',
+                };
+                return settlement;
+            });
+
+            const signedTransaction = await signPolygonTransaction(request);
+            if (!signedTransaction) return;
+
+            if (!swap.value) {
+                console.warn('No swap found after signing'); // eslint-disable-line no-console
+                return;
+            }
+
+            useSwapsStore().setActiveSwap({
+                ...swap.value,
+                settlementSerializedTx: JSON.stringify(signedTransaction),
+                error: undefined,
+                errorAction: undefined,
+            });
+
+            if (config.fastspot.watchtowerEndpoint) {
+                // Send redeem transaction to watchtower. PROVISIONAL: the watchtower does not support gasless HTLC
+                // redeems yet.
+                fetch(`${config.fastspot.watchtowerEndpoint}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: swap.value.id,
+                        endpoint: new URL(config.fastspot.apiEndpoint).host,
+                        apikey: config.fastspot.apiKey,
+                        redeem: swap.value.settlementSerializedTx!,
+                    }),
+                }).then(async (response) => {
+                    if (!response.ok) {
+                        throw new Error((await response.json()).message);
+                    }
+
+                    setActiveSwap({
+                        ...swap.value!,
+                        watchtowerNotified: true,
+                    });
+                    console.debug('Swap watchtower notified'); // eslint-disable-line no-console
+                }).catch((error) => {
+                    reportToSentry(error);
+                });
+            }
+        }
+
         return {
             onClose,
             leftAsset,
@@ -1953,6 +2098,7 @@ export default defineComponent({
             setRightAsset,
             swapIsNotSupported,
             assetToCurrency,
+            handleSwapErrorAction,
             stablecoin,
         };
     },

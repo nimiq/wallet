@@ -95,6 +95,8 @@ export default {
             maxAcceptableFee: 0.5e6,
             // Only for test deployments: mainnet pins the SDK's POLYGON_TOKENS
             testTokens: null as { usdcDomainName: string, usdt0Contract: string } | null,
+            // Gasless HTLCs for swaps. PROVISIONAL: the GaslessHTLC contract is not deployed yet.
+            htlcContract: '', // TODO: Add the GaslessHTLC contract address
             // Contracts that cannot move tokens sent to them, in addition to the ones in this config (as in the
             // Keyguard)
             deniedRecipients: [

@@ -119,7 +119,7 @@
                         <Avatar v-else :label="!isCancelledSwap ? peerLabel || '' : ''"/>
                         <SwapMediumIcon/>
                     </div>
-                    <span class="label">{{ peerLabel || '&nbsp;' }}</span>
+                    <span class="label">{{ peerLabel || (showRefundButton ? $t('Expired HTLC') : '&nbsp;') }}</span>
                     <InteractiveShortAddress :address="peerAddress" copyable tooltipPosition="bottom left"/>
                 </div>
                 <UsdcAddressInfo v-else-if="transaction.event && transaction.event.name === 'Swap'"
@@ -252,7 +252,10 @@
                 <div v-if="data" class="message">{{ data }}</div>
             </div>
 
-            <div class="flex-spacer"></div>
+            <button v-if="showRefundButton" class="nq-button-s" @click="refundHtlc" @mousedown.prevent>
+                {{ $t('Refund') }}
+            </button>
+            <div v-else class="flex-spacer"></div>
 
             <Tooltip preferredPosition="bottom right" class="info-tooltip">
                 <InfoCircleSmallIcon slot="trigger"/>
@@ -290,14 +293,17 @@ import {
 } from '@nimiq/vue-components';
 import { SwapAsset } from '@nimiq/fastspot-api';
 import { SettlementStatus } from '@nimiq/oasis-api';
+import { RefundSwapRequest, SignedPolygonHtlcSettlement } from '@nimiq/hub-api';
 import { explorerTxLink } from '@/lib/ExplorerUtils';
 import { twoDigit } from '@/lib/NumberFormatting';
 import { CryptoCurrency, FIAT_PRICE_UNAVAILABLE } from '@/lib/Constants';
+import { useAccountStore } from '@/stores/Account';
 import { useUsdcTransactionsStore, TransactionState } from '@/stores/UsdcTransactions';
 import { useUsdcContactsStore } from '@/stores/UsdcContacts';
 import { usePolygonNetworkStore } from '@/stores/PolygonNetwork';
-import { RouteName } from '@/router';
+import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
+import { nextTick } from '@/lib/nextTick';
 import Amount from '../Amount.vue';
 import BlueLink from '../BlueLink.vue';
 import Modal from './Modal.vue';
@@ -311,6 +317,7 @@ import GroundedArrowDownIcon from '../icons/GroundedArrowDownIcon.vue';
 import Avatar from '../Avatar.vue';
 import InteractiveShortAddress from '../InteractiveShortAddress.vue';
 import TransactionDetailOasisPayoutStatus from '../TransactionDetailOasisPayoutStatus.vue';
+import { SwapErc20Data } from '../../stores/Swaps';
 import { useTransactionsStore, Transaction as NimTransaction } from '../../stores/Transactions';
 import { useBtcTransactionsStore, Transaction as BtcTransaction } from '../../stores/BtcTransactions';
 import { isProxyData, ProxyType } from '../../lib/ProxyDetection';
@@ -318,7 +325,10 @@ import { useAddressStore } from '../../stores/Address';
 import { getPolygonBlockNumber } from '../../ethers';
 import { useConfig } from '../../composables/useConfig';
 import { useUsdcTransactionInfo } from '../../composables/useUsdcTransactionInfo';
+import { quoteGaslessHtlcFee, sendGaslessHtlcRefund } from '../../lib/usdc/GaslessHtlc';
 import { assetToCurrency } from '../../lib/swap/utils/Assets';
+
+import { refundSwap } from '../../hub';
 
 export default defineComponent({
     name: 'usdc-transaction-modal',
@@ -329,6 +339,7 @@ export default defineComponent({
         },
     },
     setup(props) {
+        const router = useRouter();
         const { $t } = useI18n();
 
         const constants = { FIAT_PRICE_UNAVAILABLE };
@@ -447,6 +458,63 @@ export default defineComponent({
         const blockExplorerLink = computed(() =>
             explorerTxLink(CryptoCurrency.USDC, transaction.value.transactionHash));
 
+        const showRefundButton = computed(() => !isIncoming.value
+            // funded but not redeemed htlc which is now expired
+            && (swapInfo.value?.in?.asset === SwapAsset.USDC || swapInfo.value?.in?.asset === SwapAsset.USDC_MATIC)
+            && (swapInfo.value.in.htlc?.timeoutTimestamp || Number.POSITIVE_INFINITY) <= Date.now() / 1e3
+            && !swapInfo.value.out
+            && !config.polygon.maintenance.swaps
+            // Only HTLCs of the GaslessHTLC contract can be refunded. HTLCs of the former OpenGSN contracts would
+            // need a refund transaction paid in POL.
+            && !!config.polygon.gasless.htlcContract
+            && transaction.value.recipient.toLowerCase() === config.polygon.gasless.htlcContract.toLowerCase(),
+            // // Only display the refund button for Ledger accounts as the Keyguard signs automatic refund transaction.
+            // && useAccountStore().activeAccountInfo.value?.type === AccountType.LEDGER,
+        );
+
+        async function refundHtlc() {
+            const htlcId = (swapInfo.value?.in as SwapErc20Data | undefined)?.htlc?.address;
+            if (!htlcId) {
+                alert('Unexpected: unknown HTLC refund details'); // eslint-disable-line no-alert
+                return;
+            }
+
+            const token = config.polygon.usdc.tokenContract;
+            const requestPromise = quoteGaslessHtlcFee('htlc.refund', token).then(({ fee, relay }) => {
+                const myAddress = transaction.value.sender;
+                const request: Omit<RefundSwapRequest, 'appName'> = {
+                    accountId: useAccountStore().activeAccountId.value!,
+                    refund: {
+                        type: SwapAsset.USDC_MATIC,
+                        request: {
+                            from: myAddress,
+                            id: htlcId,
+                            target: myAddress,
+                            fee,
+                            relay,
+                        },
+                        amount: transaction.value.value - Number(fee),
+                        token,
+                    },
+                };
+                return request;
+            });
+
+            try {
+                const tx = await refundSwap(requestPromise);
+                if (!tx) return;
+                const plainTx = await sendGaslessHtlcRefund(tx as SignedPolygonHtlcSettlement, token);
+                await nextTick();
+                router.replace({
+                    name: RouteName.UsdcTransaction,
+                    params: { hash: plainTx.transactionHash },
+                });
+            } catch (e) {
+                const errorMessage = e instanceof Error ? e.message : String(e);
+                alert($t('Refund failed: ') + errorMessage); // eslint-disable-line no-alert
+            }
+        }
+
         const ticker = computed(() => {
             // If the swap had a positive slippage, the ticker should be the asset we received.
             if (transaction.value.event?.name === 'Swap' && isIncoming.value) {
@@ -482,6 +550,8 @@ export default defineComponent({
             data,
             SettlementStatus,
             constants,
+            showRefundButton,
+            refundHtlc,
             ticker,
             assetToCurrency,
             RouteName,

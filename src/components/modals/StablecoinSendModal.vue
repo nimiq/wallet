@@ -123,7 +123,12 @@
                 </section>
 
                 <section v-if="!isValidRecipient" class="invalid-recipient-section">
-                    <span class="nq-notice warning" key="invalid-recipient">
+                    <span v-if="isDeniedRecipient" class="nq-notice warning" key="denied-recipient">
+                        {{ $t('This is a contract address. {ticker} sent to it would be lost.', {
+                            ticker: stablecoin.toUpperCase(),
+                        }) }}
+                    </span>
+                    <span v-else class="nq-notice warning" key="invalid-recipient">
                         {{ $t('The sender and recipient cannot be identical.') }}
                     </span>
                 </section>
@@ -273,7 +278,12 @@ import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/us
 import { sendPolygonTransaction } from '../../hub';
 import { loadEthersLibrary } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
-import { quoteGaslessFee, GaslessFeeQuote, GaslessTransferError } from '../../lib/usdc/Gasless';
+import {
+    quoteGaslessFee,
+    isDeniedGaslessRecipient,
+    GaslessFeeQuote,
+    GaslessTransferError,
+} from '../../lib/usdc/Gasless';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
@@ -475,7 +485,11 @@ export default defineComponent({
             }
         }
 
-        const isValidRecipient = computed(() => recipientInfo.value?.address !== addressInfo.value?.address);
+        // The Keyguard refuses to sign transfers to these addresses
+        const isDeniedRecipient = computed(() => !!recipientInfo.value
+            && isDeniedGaslessRecipient(recipientInfo.value.address));
+        const isValidRecipient = computed(() => recipientInfo.value?.address !== addressInfo.value?.address
+            && !isDeniedRecipient.value);
         useFlaggedAddressCheck(recipientInfo, RecipientType, 'evm');
 
         watch(
@@ -585,6 +599,7 @@ export default defineComponent({
 
         const canSend = computed(() =>
             network$.consensus === 'established'
+            && isValidRecipient.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value
             && !feeLoading.value
@@ -959,6 +974,7 @@ export default defineComponent({
             canSend,
             sign,
             isValidRecipient,
+            isDeniedRecipient,
             // onboard,
 
             // DOM refs for autofocus

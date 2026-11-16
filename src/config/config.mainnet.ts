@@ -95,6 +95,13 @@ export default {
             maxAcceptableFee: 0.5e6,
             // Only for test deployments: mainnet pins the SDK's POLYGON_TOKENS
             testTokens: null as { usdcDomainName: string, usdt0Contract: string } | null,
+            // Contracts that cannot move tokens sent to them, in addition to the ones in this config (as in the
+            // Keyguard)
+            deniedRecipients: [
+                '0x3c870b039BF82D2F883b6E89D41d06d26b9F4486', // OpenGSN USDT cashlink, never used
+                '0xbfbE31E6c57B09A8130d427B9E3E23ed5aB6cd1D', // GaslessTransfer v2
+                '0xA0df3CdF124d7101a67ebE5b1b97D222505De9D6', // GaslessTransfer v1
+            ] as string[],
         },
         // The former USDC.e to USDC conversion, for the transaction history
         usdcConversion: {

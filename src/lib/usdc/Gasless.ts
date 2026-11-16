@@ -74,6 +74,27 @@ export function isGaslessTransferConfigured() {
     return !!gasless.relayUrl && !!gasless.transferContract && gasless.relays.length > 0;
 }
 
+/**
+ * Whether tokens sent to the address would be lost, as it is the zero address, a token or a Nimiq contract that cannot
+ * move them. The Keyguard refuses to sign transfers to them.
+ */
+export function isDeniedGaslessRecipient(address: string) {
+    const { config } = useConfig();
+    const { polygon } = config;
+    return [
+        '0x0000000000000000000000000000000000000000',
+        ...[polygon.usdc_bridged, polygon.usdc, polygon.usdt_bridged].flatMap((token) => [
+            token.tokenContract,
+            token.transferContract,
+            token.htlcContract,
+        ]),
+        polygon.gasless.transferContract,
+        polygon.gasless.testTokens?.usdt0Contract || '',
+        polygon.usdcConversion.swapContract,
+        ...polygon.gasless.deniedRecipients,
+    ].some((denied) => !!denied && denied.toLowerCase() === address.toLowerCase());
+}
+
 let pinsPromise: Promise<ChainPins> | null = null;
 /**
  * The deployment the Wallet trusts: contract, relay addresses and token domains. The relay's /v1/info must match them.

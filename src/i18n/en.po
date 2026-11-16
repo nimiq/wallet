@@ -10,8 +10,8 @@ msgstr ""
 msgid "{addresses} send and receive transactions."
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:185
-#: src/components/modals/StablecoinSendModal.vue:211
+#: src/components/modals/StablecoinSendModal.vue:190
+#: src/components/modals/StablecoinSendModal.vue:216
 #: src/components/swap/SwapModal.vue:66
 msgid "{amount} fee"
 msgstr ""
@@ -122,8 +122,8 @@ msgstr ""
 msgid "+{validatorCount} more"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:179
-#: src/components/modals/StablecoinSendModal.vue:205
+#: src/components/modals/StablecoinSendModal.vue:184
+#: src/components/modals/StablecoinSendModal.vue:210
 #: src/components/swap/SwapModal.vue:60
 msgid "< {amount} fee"
 msgstr ""
@@ -217,7 +217,7 @@ msgid ""
 "click anywhere to bring it back to the front."
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:782
+#: src/components/modals/StablecoinSendModal.vue:797
 msgid "A retry replaces the failed attempt: at most one of them can go through."
 msgstr ""
 
@@ -1018,7 +1018,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:99
 #: src/components/modals/SendModal.vue:400
-#: src/components/modals/StablecoinSendModal.vue:423
+#: src/components/modals/StablecoinSendModal.vue:433
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -1088,7 +1088,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:144
 #: src/components/modals/SendModal.vue:240
-#: src/components/modals/StablecoinSendModal.vue:243
+#: src/components/modals/StablecoinSendModal.vue:248
 msgid "Edit transaction"
 msgstr ""
 
@@ -1185,7 +1185,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:863
+#: src/components/modals/StablecoinSendModal.vue:878
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1510,7 +1510,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:84
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:185
-#: src/components/modals/StablecoinSendModal.vue:222
+#: src/components/modals/StablecoinSendModal.vue:227
 msgid "Insufficient balance."
 msgstr ""
 
@@ -2229,7 +2229,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:143
 #: src/components/modals/SendModal.vue:239
-#: src/components/modals/StablecoinSendModal.vue:242
+#: src/components/modals/StablecoinSendModal.vue:247
 msgid "Retry"
 msgstr ""
 
@@ -2359,14 +2359,14 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:124
 #: src/components/modals/SendModal.vue:204
-#: src/components/modals/StablecoinSendModal.vue:234
+#: src/components/modals/StablecoinSendModal.vue:239
 msgid "Send {currency}"
 msgstr ""
 
 #: src/components/AmountMenu.vue:25
 #: src/components/modals/BtcSendModal.vue:86
 #: src/components/modals/SendModal.vue:186
-#: src/components/modals/StablecoinSendModal.vue:224
+#: src/components/modals/StablecoinSendModal.vue:229
 msgid "Send all"
 msgstr ""
 
@@ -2415,7 +2415,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:520
 #: src/components/modals/SendModal.vue:683
-#: src/components/modals/StablecoinSendModal.vue:713
+#: src/components/modals/StablecoinSendModal.vue:728
 msgid "Sending Transaction"
 msgstr ""
 
@@ -2435,11 +2435,11 @@ msgstr ""
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:759
+#: src/components/modals/StablecoinSendModal.vue:774
 msgid "Sent {coin} {ticker}"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:754
+#: src/components/modals/StablecoinSendModal.vue:769
 msgid "Sent {coin} {ticker} to {name}"
 msgstr ""
 
@@ -2565,7 +2565,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:731
-#: src/components/modals/StablecoinSendModal.vue:778
+#: src/components/modals/StablecoinSendModal.vue:793
 #: src/components/staking/StakingGraphPage.vue:277
 #: src/components/staking/StakingInfoPage.vue:493
 #: src/components/staking/StakingInfoPage.vue:575
@@ -2888,7 +2888,7 @@ msgid "The rate might change depending on the swap volume."
 msgstr ""
 
 #: src/components/modals/SendModal.vue:134
-#: src/components/modals/StablecoinSendModal.vue:127
+#: src/components/modals/StablecoinSendModal.vue:132
 msgid "The sender and recipient cannot be identical."
 msgstr ""
 
@@ -2943,6 +2943,10 @@ msgstr ""
 
 #: src/components/modals/overlays/SellCryptoBankCheckOverlay.vue:53
 msgid "This IBAN is for a different country than the bank"
+msgstr ""
+
+#: src/components/modals/StablecoinSendModal.vue:127
+msgid "This is a contract address. {ticker} sent to it would be lost."
 msgstr ""
 
 #: src/components/modals/LegacyAccountNoticeModal.vue:7
@@ -3420,7 +3424,7 @@ msgstr ""
 msgid "You will send {amount}"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:195
+#: src/components/modals/StablecoinSendModal.vue:200
 msgid "You will send {amount} {ticker}"
 msgstr ""
 

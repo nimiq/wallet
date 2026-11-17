@@ -246,7 +246,7 @@
                     <span class="description">
                         <InfoCircleSmallIcon />
                         {{ $t('USDC.e can no longer be sent from the Nimiq Wallet. To move it, import your '
-                            + 'recovery words into another Polygon wallet, which also needs POL for fees.') }}
+                            + 'recovery words into another Polygon wallet, which may need POL for fees.') }}
                         <a href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
                             target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
                     </span>

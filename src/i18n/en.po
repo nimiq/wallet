@@ -3223,7 +3223,7 @@ msgid "USDC network fee"
 msgstr ""
 
 #: src/components/layouts/AddressOverview.vue:248
-msgid "USDC.e can no longer be sent from the Nimiq Wallet. To move it, import your recovery words into another Polygon wallet, which also needs POL for fees."
+msgid "USDC.e can no longer be sent from the Nimiq Wallet. To move it, import your recovery words into another Polygon wallet, which may need POL for fees."
 msgstr ""
 
 #: src/components/swap/SwapFeesTooltip.vue:46

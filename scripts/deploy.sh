@@ -460,7 +460,7 @@ echo -e "${BLUE}Running pre-deployment tasks...${NC}"
 # dependency updates. With --frozen-lockfile, yarn fails instead of updating yarn.lock if it's out of sync with
 # package.json.
 echo -e "${CYAN}Installing dependencies...${NC}"
-run_command "yarn install --frozen-lockfile" "Failed to install dependencies"
+run_command "yarn install --ignore-engines --frozen-lockfile" "Failed to install dependencies"
 
 if [ "$SYNC_TRANSLATIONS" = "true" ]; then
     echo -e "${CYAN}Syncing translations...${NC}"

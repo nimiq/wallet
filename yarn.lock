@@ -1468,13 +1468,15 @@
   resolved "https://registry.yarnpkg.com/@nimiq/fastspot-api/-/fastspot-api-1.10.3.tgz#9a4b6c5594708f3dd76f8bf1b0fd189ca886dbce"
   integrity sha512-CUkIAcF7R3OlN45idB+yC9Wnuz2YXTPx25xYswCdmbMGu/EGZFNnGHLIe6HkbHd8Eh+uBrwqBmLZGm8jyQ9+6A==
 
-"@nimiq/gasless-sdk@file:../gas-abstraction/sdk":
+"@nimiq/gasless-sdk@^0.2.0":
   version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/gasless-sdk/-/gasless-sdk-0.2.0.tgz#7fcef674bc51a52646a9999599d1acfec11413e4"
+  integrity sha512-exT17eAqMz8xpfVmVir2smmG0C7cY9fUOr8P/1igdeOsqCj63I0p+n/Whh73/6f/xlbyDsBy5Ymd19ZEFmlW+A==
 
-"@nimiq/hub-api@^1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.15.0.tgz#d655a6554c6710d63d772ed3492c5b1145d04574"
-  integrity sha512-36RWx5624SOClClvcCGzhnD9kLHxskRXeLIsy+2GWNy7rH73FH+rEU1iW+H2Rm/T//+1g+/BSJHITS8QxuUiGA==
+"@nimiq/hub-api@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@nimiq/hub-api/-/hub-api-1.17.0.tgz#929cb5b3ff6db3b87e7a981fa40fc3f4551c7ff0"
+  integrity sha512-zD6tgpB2+f4acA/sMlhrQzlnj3BzLGzM76BJObMmAoju1iWlhdLTEnHY7cEF8nwz2Ige3S5q0kuNaZ0dgqzhfw==
   dependencies:
     "@nimiq/core" "^2.21.0"
     "@nimiq/fastspot-api" "^1.10.3"

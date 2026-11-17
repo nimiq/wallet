@@ -166,6 +166,8 @@ export async function getPolygonClient(): Promise<PolygonClient> {
 }
 
 async function getUsdcBridgedBalance(address: string) {
+    // Bridged USDC is not configured on testnet, where it therefore has no balance
+    if (!useConfig().config.polygon.usdc_bridged.tokenContract) return 0;
     const client = await getPolygonClient();
     const balance = await client.usdcBridgedToken.balanceOf(address) as BigNumber;
     return balance.toNumber(); // With Javascript numbers we can represent up to 9,007,199,254 USDC, enough for now
@@ -341,12 +343,17 @@ let currentUsdtBridgedSubscriptionFilter: EventFilter | undefined;
 function subscribe(addresses: string[]) {
     getPolygonClient().then((client) => {
         // Only subscribe to incoming logs
-        const newUsdcBridgedFilterIncoming = client.usdcBridgedToken.filters.Transfer(null, [...subscribedAddresses]);
-        client.usdcBridgedToken.on(newUsdcBridgedFilterIncoming, usdcTransactionListener);
-        if (currentUsdcBridgedSubscriptionFilter) {
-            client.usdcBridgedToken.off(currentUsdcBridgedSubscriptionFilter, usdcTransactionListener);
+        if (client.usdcBridgedToken.address) { // Not configured on testnet
+            const newUsdcBridgedFilterIncoming = client.usdcBridgedToken.filters.Transfer(
+                null,
+                [...subscribedAddresses],
+            );
+            client.usdcBridgedToken.on(newUsdcBridgedFilterIncoming, usdcTransactionListener);
+            if (currentUsdcBridgedSubscriptionFilter) {
+                client.usdcBridgedToken.off(currentUsdcBridgedSubscriptionFilter, usdcTransactionListener);
+            }
+            currentUsdcBridgedSubscriptionFilter = newUsdcBridgedFilterIncoming;
         }
-        currentUsdcBridgedSubscriptionFilter = newUsdcBridgedFilterIncoming;
 
         const newUsdcFilterIncoming = client.usdcToken.filters.Transfer(null, [...subscribedAddresses]);
         client.usdcToken.on(newUsdcFilterIncoming, usdcTransactionListener);
@@ -567,6 +574,8 @@ export async function launchPolygon() {
     ]) => {
         const address = (addressInfo as PolygonAddressInfo | null)?.address;
         if (!address || fetchedUsdcBridgedAddresses.has(address)) return;
+        // Bridged USDC is not configured on testnet
+        if (!config.polygon.usdc_bridged.tokenContract) return;
         fetchedUsdcBridgedAddresses.add(address);
 
         console.debug('Scheduling bridged USDC transaction fetch for', address);
@@ -1161,7 +1170,14 @@ export async function launchPolygon() {
 
         Promise.all([
             client.usdtBridgedToken.balanceOf(address) as Promise<BigNumber>,
-            client.usdtBridgedToken.getNonce(address).then((nonce: BigNumber) => nonce.toNumber()) as Promise<number>,
+            (client.usdtBridgedToken.getNonce(address) as Promise<BigNumber>).then(
+                (nonce) => nonce.toNumber(),
+                (error) => {
+                    // The testnet USDT token has no meta transaction nonces
+                    if (error?.code === 'CALL_EXCEPTION') return 0;
+                    throw error;
+                },
+            ),
             getLegacyAllowanceUsed(
                 client,
                 client.usdtBridgedToken,

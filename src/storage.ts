@@ -241,12 +241,12 @@ export async function initStorage() {
                     address: ai.address,
                     // Map old properties to new properties
                     // @ts-expect-error Old property no longer typed
-                    balanceUsdcBridged: ai.balanceUsdcBridged ?? ai.balance,
+                    balanceUsdcBridged: ai.balanceUsdcBridged ?? ai.balance ?? null,
                     // @ts-expect-error Old property no longer typed
-                    balanceUsdc: ai.balanceUsdc ?? ai.nativeBalance,
+                    balanceUsdc: ai.balanceUsdc ?? ai.nativeBalance ?? null,
                     balanceUsdtBridged: ai.balanceUsdtBridged ?? null,
                     // @ts-expect-error Old property no longer typed
-                    pol: ai.pol ?? ai.matic,
+                    pol: ai.pol ?? ai.matic ?? null,
                 }] as [string, typeof ai]);
                 return {
                     addressInfos: Object.fromEntries(mapped),

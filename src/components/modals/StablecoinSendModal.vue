@@ -123,7 +123,12 @@
                 </section>
 
                 <section v-if="!isValidRecipient" class="invalid-recipient-section">
-                    <span class="nq-notice warning" key="invalid-recipient">
+                    <span v-if="isDeniedRecipient" class="nq-notice warning" key="denied-recipient">
+                        {{ $t('This is a contract address. {ticker} sent to it would be lost.', {
+                            ticker: stablecoin.toUpperCase(),
+                        }) }}
+                    </span>
+                    <span v-else class="nq-notice warning" key="invalid-recipient">
                         {{ $t('The sender and recipient cannot be identical.') }}
                     </span>
                 </section>
@@ -218,6 +223,19 @@
                             </div>
                         </div>
                     </span>
+                    <span v-else-if="exceedsTransferLimit" class="insufficient-balance-warning nq-orange"
+                        key="transfer-limit">
+                        {{ $t('During the test phase, at most {amount} {ticker} can be sent per transfer.', {
+                            amount: maxSendableAmount / 1e6,
+                            ticker: stablecoin.toUpperCase(),
+                        }) }}
+                        <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
+                            {{ $t('Send {amount} {ticker}', {
+                                amount: maxSendableAmount / 1e6,
+                                ticker: stablecoin.toUpperCase(),
+                            }) }}
+                        </a>
+                    </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
                         <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
@@ -266,13 +284,19 @@ import { computed, defineComponent, onBeforeUnmount, ref, Ref, watch } from '@vu
 import { useRouter, RouteName } from '@/router';
 import { useI18n } from '@/lib/useI18n';
 import { nextTick } from '@/lib/nextTick';
+import type { TransferRequest } from '@nimiq/gasless-sdk/core';
 import { useConfig } from '../../composables/useConfig';
 import { useWindowSize } from '../../composables/useWindowSize';
 import { useFlaggedAddressCheck, FlaggedAddressInfo } from '../../composables/useFlaggedAddressCheck';
 import { sendPolygonTransaction } from '../../hub';
-import { loadEthersLibrary, calculateFee } from '../../ethers';
+import { loadEthersLibrary } from '../../ethers';
 import { CryptoCurrency, FiatCurrency, FIAT_CURRENCIES_OFFERED, ENV_MAIN } from '../../lib/Constants';
-import type { RelayServerInfo } from '../../lib/usdc/OpenGSN';
+import {
+    quoteGaslessFee,
+    isDeniedGaslessRecipient,
+    GaslessFeeQuote,
+    GaslessTransferError,
+} from '../../lib/usdc/Gasless';
 import {
     isValidDomain as isValidUnstoppableDomain,
     resolve as resolveUnstoppableDomain,
@@ -474,7 +498,11 @@ export default defineComponent({
             }
         }
 
-        const isValidRecipient = computed(() => recipientInfo.value?.address !== addressInfo.value?.address);
+        // The Keyguard refuses to sign transfers to these addresses
+        const isDeniedRecipient = computed(() => !!recipientInfo.value
+            && isDeniedGaslessRecipient(recipientInfo.value.address));
+        const isValidRecipient = computed(() => recipientInfo.value?.address !== addressInfo.value?.address
+            && !isDeniedRecipient.value);
         useFlaggedAddressCheck(recipientInfo, RecipientType, 'evm');
 
         watch(
@@ -513,15 +541,25 @@ export default defineComponent({
         const feeLoading = ref(true); // Only true for first fee loading, not for updates.
         const feeError = ref<string>(null);
 
-        const relay = ref<RelayServerInfo | null>(null);
+        const feeQuote = ref<GaslessFeeQuote | null>(null);
+        /**
+         * A payment that failed. Retrying it must keep its nonce (a correction), so that at most one version executes.
+         */
+        const failedPayment = ref<TransferRequest | null>(null);
 
         // Use 2.00 USDC/T as safe fallback fee
-        const maxSendableAmount = computed(() => {
+        const maxSendableBalance = computed(() => {
             const balance = stablecoin.value === CryptoCurrency.USDC
                 ? addressInfo.value!.balanceUsdc
                 : addressInfo.value!.balanceUsdtBridged;
             return Math.max((balance || 0) - (fee.value || 2e6), 0);
         });
+        const { maxTransferAmount } = config.polygon.gasless;
+        const maxSendableAmount = computed(() => (maxTransferAmount !== null
+            ? Math.min(maxSendableBalance.value, maxTransferAmount)
+            : maxSendableBalance.value));
+        const exceedsTransferLimit = computed(() => maxTransferAmount !== null && amount.value > maxTransferAmount
+            && amount.value <= maxSendableBalance.value);
 
         const amountMenuOpened = ref(false);
 
@@ -580,6 +618,7 @@ export default defineComponent({
 
         const canSend = computed(() =>
             network$.consensus === 'established'
+            && isValidRecipient.value
             && !!amount.value
             && amount.value <= maxSendableAmount.value
             && !feeLoading.value
@@ -708,15 +747,25 @@ export default defineComponent({
             statusTitle.value = $t('Sending Transaction') as string;
             statusMessage.value = '';
 
+            const token = stablecoin.value === CryptoCurrency.USDC
+                ? config.polygon.usdc.tokenContract
+                : config.polygon.usdt_bridged.tokenContract;
+            const recipient = recipientInfo.value!.address;
+            // A correction must pay the same token to the same recipient. Otherwise, it is a new payment.
+            const corrects = failedPayment.value
+                && failedPayment.value.token.toLowerCase() === token.toLowerCase()
+                && failedPayment.value.to.toLowerCase() === recipient.toLowerCase()
+                ? failedPayment.value
+                : undefined;
+
             try {
                 const tx = await sendPolygonTransaction(
-                    stablecoin.value === CryptoCurrency.USDC
-                        ? config.polygon.usdc.tokenContract
-                        : config.polygon.usdt_bridged.tokenContract,
-                    recipientInfo.value!.address,
+                    token,
+                    recipient,
                     amount.value,
                     recipientInfo.value!.label,
-                    relay.value || undefined,
+                    feeQuote.value || undefined,
+                    corrects,
                 );
 
                 if (!tx) {
@@ -724,6 +773,7 @@ export default defineComponent({
                     return;
                 }
 
+                failedPayment.value = null;
                 saveRecipientLabel();
 
                 if (stablecoin.value === CryptoCurrency.USDC) {
@@ -752,11 +802,20 @@ export default defineComponent({
                 }, SUCCESS_REDIRECT_DELAY);
             } catch (error: any) {
                 reportToSentry(error);
+                if (error instanceof GaslessTransferError) {
+                    // Null if the payment's outcome is final
+                    failedPayment.value = error.payment;
+                }
 
                 // Show error screen
                 statusState.value = State.WARNING;
                 statusTitle.value = $t('Something went wrong') as string;
                 statusMessage.value = error.message.split(' req={')[0]; // eslint-disable-line prefer-destructuring
+                if (failedPayment.value) {
+                    // The Keyguard's confirm page does not tell, as it does not know about the failed attempt
+                    statusMessage.value += ` ${$t('A retry replaces the failed attempt: at most one of them can '
+                        + 'go through.')}`;
+                }
             }
         }
 
@@ -820,20 +879,18 @@ export default defineComponent({
             window.clearTimeout(feeUpdateTimeout); // Reset potentially existing update timeout.
             feeUpdateTimeout = 0; // 0: timer is to be started after the initial update
             try {
-                const method = stablecoin.value === CryptoCurrency.USDC ? 'transferWithPermit' : 'transferWithApproval';
-                const feeInformation = await calculateFee(
+                const quote = await quoteGaslessFee(
                     stablecoin.value === CryptoCurrency.USDC
                         ? config.polygon.usdc.tokenContract
                         : config.polygon.usdt_bridged.tokenContract,
-                    method,
-                    relay.value || undefined,
                 );
-                fee.value = Math.max(feeInformation.fee.toNumber(), 0.01);
-                relay.value = feeInformation.relay;
+                fee.value = Number(quote.fee);
+                feeQuote.value = quote;
                 feeLoading.value = false;
                 feeError.value = null;
                 if (feeUpdateTimeout === 0) {
-                    // Schedule next update in 20s if timer is still to be started and has not been started yet.
+                    // Schedule next update in 20s if timer is still to be started and has not been started yet. The
+                    // relay's quotes are valid for 120s.
                     feeUpdateTimeout = window.setTimeout(startFeeUpdates, 20e3);
                 }
             } catch (e: unknown) {
@@ -925,6 +982,7 @@ export default defineComponent({
             feeSmallerThanSmUnit,
             fiatSmUnit,
             maxSendableAmount,
+            exceedsTransferLimit,
             amountMenuOpened,
             activeCurrency,
             stablecoin,
@@ -936,6 +994,7 @@ export default defineComponent({
             canSend,
             sign,
             isValidRecipient,
+            isDeniedRecipient,
             // onboard,
 
             // DOM refs for autofocus

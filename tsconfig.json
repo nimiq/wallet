@@ -20,6 +20,15 @@
       "@/*": [
         "src/*"
       ],
+      "@nimiq/gasless-sdk/viem": [
+        "types/shims/gasless-sdk-viem.d.ts"
+      ],
+      "@nimiq/gasless-sdk/*": [
+        "node_modules/@nimiq/gasless-sdk/dist/*/index.d.ts"
+      ],
+      "viem": [
+        "types/shims/viem.d.ts"
+      ],
       "config": [
         "src/config/config.local.ts"
       ]

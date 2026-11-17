@@ -45,8 +45,13 @@ export default {
 
     polygon: {
         enabled: false,
-        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
-        isGasAbstractionUnderMaintenance: false,
+        // Set a feature to true to keep it visible, but show a maintenance warning instead.
+        maintenance: {
+            // Sending and receiving USDC and USDT, including Moonpay
+            transfers: false,
+            // Stablecoin swaps and refunds of their HTLCs
+            swaps: false,
+        },
         networkId: 80002,
         rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_LOCAL}`, // injected in vue.config.js
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
@@ -88,13 +93,33 @@ export default {
             htlcContract: '',
             earliestHistoryScanHeight: 13320830, // Block when USDT was added to the Wallet
         },
+        // Gasless USDC transfers on the Amoy deployment of https://github.com/NimiqToolbox/gas-abstraction
+        gasless: {
+            relayUrl: 'https://relayer76578h-productionsada-a8e3.up.railway.app',
+            transferContract: '0xe5D40efb4a89F6D3aDd07D8881F4b372f02c8075',
+            relays: ['0x6465e47837DB340D8Ac465E2F58cD6c08b275965'] as string[],
+            deployBlock: 51892077,
+            maxAcceptableFee: 0.5e6,
+            // The most that can be sent per transfer, in token units (6 decimals), or null for no limit. Limited to 20
+            // USDC/USDT during the test phase, until the contract audit is complete and the contract and relay are set
+            // up with the Nimiq organization.
+            maxTransferAmount: 20e6 as number | null,
+            // The tokens of the test deployment, which the relay has to list exactly. Mainnet pins the SDK's
+            // POLYGON_TOKENS instead.
+            testTokens: {
+                // Circle's test USDC (`usdc.tokenContract`), whose EIP-712 domain is named `USDC`, unlike on mainnet
+                usdcDomainName: 'USDC',
+                // The deployment's mock USDT0. It is not the Wallet's USDT (`usdt_bridged.tokenContract`), which
+                // therefore cannot be sent, and which the Keyguard rejects on this network.
+                usdt0Contract: '0xfA9Dabbf3C68a126a627ad48098700DFc6F27c82',
+            } as { usdcDomainName: string, usdt0Contract: string } | null,
+            // Contracts that cannot move tokens sent to them, in addition to the ones in this config
+            deniedRecipients: [] as string[],
+        },
+        // The former USDC.e to USDC conversion, for the transaction history
         usdcConversion: {
             swapContract: '',
-            swapPoolContract: '',
         },
-        openGsnRelayHubContract: '',
-        uniswapQuoterContract: '',
-        wpolContract: '0xA5733b3A8e62A8faF43b0376d5fAF46E89B3033E',
     },
 
     unstoppableDomains: {

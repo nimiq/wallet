@@ -82,10 +82,10 @@ export function gasAbstractionMaintenanceWarning(): WarningModalProps {
 const GasAbstractionMaintenanceModal = () =>
     import(/* webpackChunkName: "warning-modal" */ './components/modals/WarningModal.vue')
         .then(({ createWarningModal }) => createWarningModal(gasAbstractionMaintenanceWarning));
-const StablecoinSendModal = () => (Config.polygon.isGasAbstractionUnderMaintenance
+const StablecoinSendModal = () => (Config.polygon.maintenance.transfers
     ? GasAbstractionMaintenanceModal()
     : import(/* webpackChunkName: "stablecoin-send-modal" */ './components/modals/StablecoinSendModal.vue'));
-const StablecoinReceiveModal = () => (Config.polygon.isGasAbstractionUnderMaintenance
+const StablecoinReceiveModal = () => (Config.polygon.maintenance.transfers
     ? GasAbstractionMaintenanceModal()
     : import(/* webpackChunkName: "stablecoin-receive-modal" */ './components/modals/StablecoinReceiveModal.vue'));
 const UsdcTransactionModal = () =>
@@ -625,13 +625,13 @@ const routes: RouteConfig[] = [{
             name: RouteName.WalletStatus,
             meta: { column: Columns.DYNAMIC },
         },
-        // While the gas abstraction is under maintenance, show a warning instead of the SwapModal for swaps with USDC
+        // While stablecoin swaps are under maintenance, show a warning instead of the SwapModal for swaps with USDC
         // or USDT. Registered before the regular swap route to take precedence, as paths are matched in registration
         // order. This covers paths like /swap/NIM-USDC_MATIC as opened by AccountOverview, deep links and history
         // navigation, but not named navigation to RouteName.Swap, which is fine as the SwapModal itself shows the
         // warning as overlay instead of navigating, if USDC or USDT get selected. Parentheses aren't supported within
         // param patterns.
-        ...(Config.polygon.isGasAbstractionUnderMaintenance ? [{
+        ...(Config.polygon.maintenance.swaps ? [{
             path: '/swap/:pair(.*USD[CT]_MATIC.*)',
             components: {
                 modal: StablecoinSwapMaintenanceModal,
@@ -821,10 +821,10 @@ router.beforeEach(createActivationNavigationGuard(
     (accountType: AccountType) => [AccountType.BIP39, AccountType.LEDGER].includes(accountType),
     () => useAccountStore().hasBitcoinAddresses.value,
 ));
-const usdcRoutesRequiringActivation = Config.polygon.isGasAbstractionUnderMaintenance
+const usdcRoutesRequiringActivation = Config.polygon.maintenance.transfers
     ? []
     : [RouteName.SendUsdc, RouteName.ReceiveUsdc, /* covers USDC and USDT */ RouteName.SendViaPolygonUri];
-const usdtRoutesRequiringActivation = Config.polygon.isGasAbstractionUnderMaintenance
+const usdtRoutesRequiringActivation = Config.polygon.maintenance.transfers
     ? []
     : [RouteName.SendUsdt, RouteName.ReceiveUsdt];
 router.beforeEach(createActivationNavigationGuard(

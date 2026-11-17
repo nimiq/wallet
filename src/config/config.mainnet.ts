@@ -55,8 +55,13 @@ export default {
 
     polygon: {
         enabled: true,
-        // Set to true to keep sending visible, but show a maintenance warning instead of the send modal.
-        isGasAbstractionUnderMaintenance: true,
+        // Set a feature to true to keep it visible, but show a maintenance warning instead.
+        maintenance: {
+            // Sending and receiving USDC and USDT, including Moonpay
+            transfers: false,
+            // Stablecoin swaps and refunds of their HTLCs
+            swaps: true,
+        },
         networkId: 137,
         rpcEndpoint: `wss://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_MAINNET}`, // injected in vue.config.js
         rpcMaxBlockRange: 648_000, // 15 days - Maximum supported range by Alchemy?
@@ -78,13 +83,34 @@ export default {
             htlcContract: '0xF615bD7EA00C4Cc7F39Faad0895dB5f40891359f',
             earliestHistoryScanHeight: 63189500, // Block when USDT was added to the Wallet
         },
+        // Gasless USDC/USDT0 transfers, see https://github.com/NimiqToolbox/gas-abstraction
+        gasless: {
+            relayUrl: 'https://relayer-polygon-production.up.railway.app',
+            transferContract: '0x5A3a650fCf35639153aA6bA9aa3e870DAED56199', // v3
+            // Relay addresses the user may sign for. More than one allows a relay key rotation.
+            relays: ['0x6465e47837DB340D8Ac465E2F58cD6c08b275965'] as string[],
+            deployBlock: 95893586,
+            // The highest relay fee the user is asked to sign, same as in the Keyguard. The contract does not cap the
+            // fee.
+            maxAcceptableFee: 0.5e6,
+            // The most that can be sent per transfer, in token units (6 decimals), or null for no limit. Limited to 20
+            // USDC/USDT during the test phase, until the contract audit is complete and the contract and relay are set
+            // up with the Nimiq organization.
+            maxTransferAmount: 20e6 as number | null,
+            // Only for test deployments: mainnet pins the SDK's POLYGON_TOKENS
+            testTokens: null as { usdcDomainName: string, usdt0Contract: string } | null,
+            // Contracts that cannot move tokens sent to them, in addition to the ones in this config (as in the
+            // Keyguard)
+            deniedRecipients: [
+                '0x3c870b039BF82D2F883b6E89D41d06d26b9F4486', // OpenGSN USDT cashlink, never used
+                '0xbfbE31E6c57B09A8130d427B9E3E23ed5aB6cd1D', // GaslessTransfer v2
+                '0xA0df3CdF124d7101a67ebE5b1b97D222505De9D6', // GaslessTransfer v1
+            ] as string[],
+        },
+        // The former USDC.e to USDC conversion, for the transaction history
         usdcConversion: {
             swapContract: '0xfAbBed813017bF535b40013c13b8702638aC25CD',
-            swapPoolContract: '0xD36ec33c8bed5a9F7B6630855f1533455b98a418',
         },
-        openGsnRelayHubContract: '0x6C28AfC105e65782D9Ea6F2cA68df84C9e7d750d',
-        uniswapQuoterContract: '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6',
-        wpolContract: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     },
 
     unstoppableDomains: {

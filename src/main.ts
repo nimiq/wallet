@@ -15,6 +15,7 @@ import { initHubApi, syncFromHub } from './hub';
 import { launchNetwork } from './network';
 import { launchElectrum } from './electrum';
 import { launchPolygon } from './ethers';
+import { resumePendingGaslessPayments } from './lib/usdc/Gasless';
 import { initMatomo } from './matomo';
 import { useAccountStore } from './stores/Account';
 import { useFiatStore } from './stores/Fiat';
@@ -143,6 +144,8 @@ async function start() {
     watch(() => {
         if (!config.polygon.enabled) return;
         launchPolygon();
+        // Untracked, so that changes to the pending payments do not re-run this effect
+        setTimeout(resumePendingGaslessPayments);
     });
 
     // Watch for currency and address changes to recalculate staking fiat values

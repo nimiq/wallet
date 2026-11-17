@@ -25,8 +25,8 @@ import { useUsdtTransactionsStore } from '../../stores/UsdtTransactions';
  *
  * Rules followed here to never let the user pay twice (sdk/README.md, "Failures, retries and replacements"):
  * - One payment, one intent nonce. A new payment takes the sender's on-chain `nonces(from)`, and only once the
- *   sender's previous payment is decided. A retry of a payment is a correction that keeps the nonce (`corrects`), so
- *   that at most one version executes.
+ *   sender's previous payment is decided or its nonce is used. A retry of a payment is a correction that keeps the
+ *   nonce (`corrects`), so that at most one version executes.
  * - Every signed version of a payment is recorded before it is submitted, and kept until the payment's outcome is
  *   final.
  * - Before a correction is signed, the chain is checked for whether the payment's nonce was used already. The Hub and
@@ -320,6 +320,13 @@ const RETRYABLE_RELAY_ERRORS = ['rate_limited', 'unavailable', 'internal_error',
 const MAX_SUBMIT_ATTEMPTS = 4;
 /** How long to wait for the outcome of the sender's previous payment before a new signature, once its nonce is used. */
 const DECIDE_TIMEOUT_MS = 3 * 60e3;
+/**
+ * After how long a payment whose nonce is used, but whose outcome cannot be determined (e.g. the SDK reports it as
+ * `unresolved`), stops blocking new payments. The user is then asked to check the transaction history instead.
+ */
+const UNDECIDABLE_AFTER_MS = 60 * 60e3;
+/** How long a fee quote must still be valid before asking the user to sign with it. */
+const QUOTE_MIN_VALIDITY_SECONDS = 90;
 
 /**
  * Sends a gasless transfer from the active Polygon address.
@@ -366,12 +373,27 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     corrects = isCorrectable ? open!.latest.request : undefined;
 
     let nonce = await readIntentNonce(from);
-    if (open && nonce > BigInt(open.latest.request.nonce)) {
+    if (open && nonce > BigInt(open.latest.request.nonce) && !corrects) {
+        // The open payment's nonce is used, so none of its versions can execute anymore. A payment of another token or
+        // to another recipient (or one the user was not told failed) is a new payment, which is safe to sign. The open
+        // payment is decided in the background, once its block is final.
+        settleInBackground(open.latest.request);
+    } else if (open && nonce > BigInt(open.latest.request.nonce)) {
         // The open payment's nonce is used: it is decided once its block is final. Never sign a correction for it.
         let outcome: TransferOutcome | null;
         try {
             outcome = await decidePayment(open, DECIDE_TIMEOUT_MS);
         } catch (error) {
+            if (Date.now() - open.signedAt > UNDECIDABLE_AFTER_MS) {
+                // The outcome cannot be determined, e.g. as the RPC node does not serve the history of the block that
+                // used the nonce. Stop blocking new payments, but let the user check whether it went through first.
+                store.settle(open.latest.request, nonce);
+                throw new GaslessTransferError(
+                    'It could not be determined whether your earlier payment to this recipient went through. Please '
+                        + 'check your transaction history before sending again.',
+                    null,
+                );
+            }
             throw new GaslessTransferError(
                 'Your previous payment is still being confirmed. Please try again in a few minutes.',
                 corrects || null,
@@ -401,7 +423,9 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     }
     const intentNonce = corrects ? corrects.nonce : nonce.toString();
 
-    if (!quote || quote.token.toLowerCase() !== token.toLowerCase() || quote.expiresAt < Date.now() / 1000 + 10) {
+    if (!quote || quote.token.toLowerCase() !== token.toLowerCase()
+        || quote.expiresAt < Date.now() / 1000 + QUOTE_MIN_VALIDITY_SECONDS) {
+        // Leave the user time to confirm in the Keyguard while the quote is still valid
         quote = await quoteGaslessFee(token);
     }
     const fee = Number(quote.fee);
@@ -454,7 +478,9 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
         request,
         signature: signed.signature,
         authorization,
-        quoteId: quote.quoteId,
+        // The quote id is only a hint for the relay and not signed. Omit it once the quote expired, e.g. because the
+        // user took long to confirm, so that the relay checks the fee against its current price instead.
+        ...(quote.expiresAt > Date.now() / 1000 ? { quoteId: quote.quoteId } : {}),
     });
     const id = core.transferDigest(pins.chainId, pins.transfer.address, request, authorization);
 

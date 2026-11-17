@@ -2759,6 +2759,10 @@ msgstr ""
 msgid "Swaps are under maintenance"
 msgstr ""
 
+#: src/components/swap/SwapNotification.vue:294
+msgid "Swaps with USDC or USDT are currently unavailable. This swap cannot be processed by this version of the Wallet."
+msgstr ""
+
 #: src/components/layouts/Settings.vue:187
 msgid "Swiping Gestures"
 msgstr ""

@@ -144,7 +144,8 @@ async function start() {
     watch(() => {
         if (!config.polygon.enabled) return;
         launchPolygon();
-        resumePendingGaslessPayments();
+        // Untracked, so that changes to the pending payments do not re-run this effect
+        setTimeout(resumePendingGaslessPayments);
     });
 
     // Watch for currency and address changes to recalculate staking fiat values

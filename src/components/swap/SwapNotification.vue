@@ -288,6 +288,13 @@ export default defineComponent({
             const swapsBtc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.BTC);
             const swapsUsdc = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.USDC_MATIC);
             const swapsUsdt = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.USDT_MATIC);
+            if (swapsUsdc || swapsUsdt) {
+                // Stablecoin HTLCs were funded, redeemed and refunded via OpenGSN, which is no longer supported. They
+                // return once they are signed as gasless HTLCs.
+                currentError.value = $t('Swaps with USDC or USDT are currently unavailable. This swap cannot be '
+                    + 'processed by this version of the Wallet.') as string;
+                return;
+            }
             // const swapsEur = [activeSwap.value!.from.asset, activeSwap.value!.to.asset].includes(SwapAsset.EUR);
 
             // Await Nimiq and Bitcoin consensus

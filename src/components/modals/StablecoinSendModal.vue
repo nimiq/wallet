@@ -223,6 +223,19 @@
                             </div>
                         </div>
                     </span>
+                    <span v-else-if="exceedsTransferLimit" class="insufficient-balance-warning nq-orange"
+                        key="transfer-limit">
+                        {{ $t('During the test phase, at most {amount} {ticker} can be sent per transfer.', {
+                            amount: maxSendableAmount / 1e6,
+                            ticker: stablecoin.toUpperCase(),
+                        }) }}
+                        <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
+                            {{ $t('Send {amount} {ticker}', {
+                                amount: maxSendableAmount / 1e6,
+                                ticker: stablecoin.toUpperCase(),
+                            }) }}
+                        </a>
+                    </span>
                     <span v-else class="insufficient-balance-warning nq-orange" key="insufficient">
                         {{ $t('Insufficient balance.') }}
                         <a v-if="!gotRequestUriAmount" class="send-all" @click="sendMax">
@@ -535,12 +548,18 @@ export default defineComponent({
         const failedPayment = ref<TransferRequest | null>(null);
 
         // Use 2.00 USDC/T as safe fallback fee
-        const maxSendableAmount = computed(() => {
+        const maxSendableBalance = computed(() => {
             const balance = stablecoin.value === CryptoCurrency.USDC
                 ? addressInfo.value!.balanceUsdc
                 : addressInfo.value!.balanceUsdtBridged;
             return Math.max((balance || 0) - (fee.value || 2e6), 0);
         });
+        const { maxTransferAmount } = config.polygon.gasless;
+        const maxSendableAmount = computed(() => (maxTransferAmount !== null
+            ? Math.min(maxSendableBalance.value, maxTransferAmount)
+            : maxSendableBalance.value));
+        const exceedsTransferLimit = computed(() => maxTransferAmount !== null && amount.value > maxTransferAmount
+            && amount.value <= maxSendableBalance.value);
 
         const amountMenuOpened = ref(false);
 
@@ -963,6 +982,7 @@ export default defineComponent({
             feeSmallerThanSmUnit,
             fiatSmUnit,
             maxSendableAmount,
+            exceedsTransferLimit,
             amountMenuOpened,
             activeCurrency,
             stablecoin,

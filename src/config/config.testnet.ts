@@ -48,7 +48,7 @@ export default {
             // Sending and receiving USDC and USDT, including Moonpay
             transfers: false,
             // Stablecoin swaps and refunds of their HTLCs
-            swaps: false,
+            swaps: true,
         },
         networkId: 80002,
         rpcEndpoint: `wss://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY_TESTNET}`, // injected in vue.config.js
@@ -78,6 +78,10 @@ export default {
             relays: ['0x6465e47837DB340D8Ac465E2F58cD6c08b275965'] as string[],
             deployBlock: 51892077,
             maxAcceptableFee: 0.5e6,
+            // The most that can be sent per transfer, in token units (6 decimals), or null for no limit. Limited to 20
+            // USDC/USDT during the test phase, until the contract audit is complete and the contract and relay are set
+            // up with the Nimiq organization.
+            maxTransferAmount: 20e6 as number | null,
             // The tokens of the test deployment, which the relay has to list exactly. Mainnet pins the SDK's
             // POLYGON_TOKENS instead.
             testTokens: {

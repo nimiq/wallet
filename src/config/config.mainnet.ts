@@ -93,6 +93,10 @@ export default {
             // The highest relay fee the user is asked to sign, same as in the Keyguard. The contract does not cap the
             // fee.
             maxAcceptableFee: 0.5e6,
+            // The most that can be sent per transfer, in token units (6 decimals), or null for no limit. Limited to 20
+            // USDC/USDT during the test phase, until the contract audit is complete and the contract and relay are set
+            // up with the Nimiq organization.
+            maxTransferAmount: 20e6 as number | null,
             // Only for test deployments: mainnet pins the SDK's POLYGON_TOKENS
             testTokens: null as { usdcDomainName: string, usdt0Contract: string } | null,
             // Contracts that cannot move tokens sent to them, in addition to the ones in this config (as in the

@@ -217,7 +217,7 @@ msgid ""
 "click anywhere to bring it back to the front."
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:797
+#: src/components/modals/StablecoinSendModal.vue:816
 msgid "A retry replaces the failed attempt: at most one of them can go through."
 msgstr ""
 
@@ -1018,7 +1018,7 @@ msgstr ""
 
 #: src/components/BtcAddressInput.vue:99
 #: src/components/modals/SendModal.vue:400
-#: src/components/modals/StablecoinSendModal.vue:433
+#: src/components/modals/StablecoinSendModal.vue:446
 msgid "Domain does not resolve to a valid address"
 msgstr ""
 
@@ -1061,6 +1061,10 @@ msgstr ""
 msgid "Duration and fees are estimates."
 msgstr ""
 
+#: src/components/modals/StablecoinSendModal.vue:228
+msgid "During the test phase, at most {amount} {ticker} can be sent per transfer."
+msgstr ""
+
 #: src/components/staking/WelcomeStakingModal.vue:94
 msgid "Earn new NIM by staking"
 msgstr ""
@@ -1088,7 +1092,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:144
 #: src/components/modals/SendModal.vue:240
-#: src/components/modals/StablecoinSendModal.vue:248
+#: src/components/modals/StablecoinSendModal.vue:261
 msgid "Edit transaction"
 msgstr ""
 
@@ -1185,7 +1189,7 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:878
+#: src/components/modals/StablecoinSendModal.vue:897
 msgid "Failed to fetch {ticker} fees. Retrying... (Error: {message})"
 msgstr ""
 
@@ -1510,7 +1514,7 @@ msgstr ""
 #: src/components/modals/BtcSendModal.vue:84
 #: src/components/modals/SellCryptoModal.vue:166
 #: src/components/modals/SendModal.vue:185
-#: src/components/modals/StablecoinSendModal.vue:227
+#: src/components/modals/StablecoinSendModal.vue:240
 msgid "Insufficient balance."
 msgstr ""
 
@@ -2234,7 +2238,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:143
 #: src/components/modals/SendModal.vue:239
-#: src/components/modals/StablecoinSendModal.vue:247
+#: src/components/modals/StablecoinSendModal.vue:260
 msgid "Retry"
 msgstr ""
 
@@ -2362,16 +2366,20 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
+#: src/components/modals/StablecoinSendModal.vue:233
+msgid "Send {amount} {ticker}"
+msgstr ""
+
 #: src/components/modals/BtcSendModal.vue:124
 #: src/components/modals/SendModal.vue:204
-#: src/components/modals/StablecoinSendModal.vue:239
+#: src/components/modals/StablecoinSendModal.vue:252
 msgid "Send {currency}"
 msgstr ""
 
 #: src/components/AmountMenu.vue:25
 #: src/components/modals/BtcSendModal.vue:86
 #: src/components/modals/SendModal.vue:186
-#: src/components/modals/StablecoinSendModal.vue:229
+#: src/components/modals/StablecoinSendModal.vue:242
 msgid "Send all"
 msgstr ""
 
@@ -2420,7 +2428,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:520
 #: src/components/modals/SendModal.vue:683
-#: src/components/modals/StablecoinSendModal.vue:728
+#: src/components/modals/StablecoinSendModal.vue:747
 msgid "Sending Transaction"
 msgstr ""
 
@@ -2440,11 +2448,11 @@ msgstr ""
 msgid "Sent {btc} BTC to {name}"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:774
+#: src/components/modals/StablecoinSendModal.vue:793
 msgid "Sent {coin} {ticker}"
 msgstr ""
 
-#: src/components/modals/StablecoinSendModal.vue:769
+#: src/components/modals/StablecoinSendModal.vue:788
 msgid "Sent {coin} {ticker} to {name}"
 msgstr ""
 
@@ -2570,7 +2578,7 @@ msgstr ""
 
 #: src/components/modals/BtcSendModal.vue:584
 #: src/components/modals/SendModal.vue:731
-#: src/components/modals/StablecoinSendModal.vue:793
+#: src/components/modals/StablecoinSendModal.vue:812
 #: src/components/staking/StakingGraphPage.vue:277
 #: src/components/staking/StakingInfoPage.vue:493
 #: src/components/staking/StakingInfoPage.vue:575

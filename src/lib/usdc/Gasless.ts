@@ -349,6 +349,14 @@ export async function sendGaslessTransfer({ token, to, amount, recipientLabel, q
     if (!addressInfo) throw new Error('No active Polygon address');
     const from = addressInfo.address;
 
+    const { maxTransferAmount } = useConfig().config.polygon.gasless;
+    if (maxTransferAmount !== null && amount > maxTransferAmount) {
+        throw new GaslessTransferError(
+            `During the test phase, at most ${maxTransferAmount / 1e6} USDC or USDT can be sent per transfer.`,
+            corrects || null,
+        );
+    }
+
     const [{ core, relay: relayModule }, pins, relay] = await Promise.all([
         loadSdk(),
         getGaslessPins(),

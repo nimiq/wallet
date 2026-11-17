@@ -178,6 +178,8 @@ export const USDT_BRIDGED_TOKEN_CONTRACT_ABI = [
     // 'function increaseAllowance(address spender, uint256 addedValue) returns (bool)',
     // 'function initialize(string name_, string symbol_, uint8 decimals_, address childChainManager)',
     // 'function name() view returns (string)',
+    // EIP-2612 permit nonces of USDT0, which the token was upgraded to, as used by gasless transfers
+    'function nonces(address owner) view returns (uint256)',
     // 'function renounceRole(bytes32 role, address account)',
     // 'function revokeRole(bytes32 role, address account)',
     // 'function symbol() view returns (string)',

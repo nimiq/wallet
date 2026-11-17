@@ -1170,14 +1170,12 @@ export async function launchPolygon() {
 
         Promise.all([
             client.usdtBridgedToken.balanceOf(address) as Promise<BigNumber>,
-            (client.usdtBridgedToken.getNonce(address) as Promise<BigNumber>).then(
-                (nonce) => nonce.toNumber(),
-                (error) => {
-                    // The testnet USDT token has no meta transaction nonces
-                    if (error?.code === 'CALL_EXCEPTION') return 0;
-                    throw error;
-                },
-            ),
+            // Outgoing transfers use one of two nonces: the meta transaction nonce for OpenGSN transfers, and the
+            // permit nonce for gasless transfers.
+            Promise.all([
+                readOptionalNonce(client.usdtBridgedToken.getNonce(address)),
+                readOptionalNonce(client.usdtBridgedToken.nonces(address)),
+            ]).then(([metaTxNonce, permitNonce]) => metaTxNonce + permitNonce),
             getLegacyAllowanceUsed(
                 client,
                 client.usdtBridgedToken,
@@ -1656,6 +1654,16 @@ async function getLegacyAllowanceUsed(
     const allowance = await tokenContract.allowance(owner, spender) as BigNumber;
     if (allowance.lt(MIN_ALLOWANCE)) return client.ethers.BigNumber.from(0);
     return MAX_ALLOWANCE.sub(allowance);
+}
+
+/** A nonce that the token might not have, like the testnet USDT, which then counts as 0. */
+async function readOptionalNonce(nonce: Promise<BigNumber>): Promise<number> {
+    try {
+        return (await nonce).toNumber();
+    } catch (error: any) {
+        if (error?.code === 'CALL_EXCEPTION') return 0;
+        throw error;
+    }
 }
 
 /** The Uniswap pool that received the OpenGSN relay fees of a transfer contract, if that contract is configured. */

@@ -44,7 +44,7 @@ export default {
     },
 
     polygon: {
-        enabled: false,
+        enabled: true,
         // Set a feature to true to keep it visible, but show a maintenance warning instead.
         maintenance: {
             // Sending and receiving USDC and USDT, including Moonpay

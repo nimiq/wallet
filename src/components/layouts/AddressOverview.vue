@@ -232,6 +232,26 @@
                     </button>
                 </div>
             </div>
+            <div
+                v-if="activeCurrency === CryptoCurrency.USDC && accountUsdcBridgedBalance >= 0.1e6"
+                class="bridged-usdc-notice"
+            >
+                <div class="flex-row">
+                    <UsdcIcon />
+                    {{ $t('Legacy USDC (USDC.e)') }}
+                    <div class="flex-grow"></div>
+                    <Amount :amount="accountUsdcBridgedBalance" currency="usdc.e" value-mask/>
+                </div>
+                <div class="flex-row">
+                    <span class="description">
+                        <InfoCircleSmallIcon />
+                        {{ $t('USDC.e can no longer be sent from the Nimiq Wallet. To move it, import your '
+                            + 'recovery words into another Polygon wallet, which also needs POL for fees.') }}
+                        <a href="https://www.circle.com/blog/what-you-need-to-know-native-usdc-on-polygon-pos"
+                            target="_blank" rel="noopener" class="nq-link">{{ $t('Learn more') }}</a>
+                    </span>
+                </div>
+            </div>
             <div class="scroll-mask top"></div>
             <TransactionList
                 v-if="activeCurrency === CryptoCurrency.NIM"
@@ -302,6 +322,7 @@ import {
     ArrowRightSmallIcon,
     ArrowLeftIcon,
     MenuDotsIcon,
+    InfoCircleSmallIcon,
 } from '@nimiq/vue-components';
 import { RouteName } from '@/router';
 
@@ -490,6 +511,7 @@ export default defineComponent({
     },
     components: {
         ArrowRightSmallIcon,
+        InfoCircleSmallIcon,
         Identicon,
         BitcoinIcon,
         GearIcon,
@@ -854,6 +876,52 @@ export default defineComponent({
 .active-address .identicon-wrapper .identicon-menu .popup-menu {
     top: -0.25rem;
     left: -0.25rem;
+}
+
+.bridged-usdc-notice {
+    background: var(--nimiq-highlight-bg);
+    border-radius: 1.25rem;
+    padding: 2rem;
+    margin: 2rem calc(var(--padding) + 3rem) 0 calc(var(--padding) + 2rem);
+    font-size: var(--body-size);
+    font-weight: 600;
+
+    .flex-row {
+        gap: 1rem;
+        align-items: center;
+
+        + .flex-row {
+            margin-top: 1.5rem;
+        }
+    }
+
+    svg.usdc {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .amount {
+        font-weight: bold;
+    }
+
+    .description {
+        font-size: var(--small-size);
+        opacity: 0.6;
+
+        svg {
+            display: inline;
+            width: 2rem;
+            height: 2rem;
+            vertical-align: text-top;
+            margin-top: 0.125rem;
+            margin-right: 0.5rem;
+        }
+
+        .nq-link {
+            color: inherit;
+            text-decoration: underline;
+        }
+    }
 }
 
 .send, .receive {

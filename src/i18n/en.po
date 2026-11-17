@@ -354,7 +354,7 @@ msgstr ""
 msgid "All new features are exclusive to new accounts. Upgrade now, it only takes seconds."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:271
+#: src/components/layouts/AddressOverview.vue:291
 msgid "All swaps are part of your transaction history and feature a small swap icon."
 msgstr ""
 
@@ -770,7 +770,7 @@ msgstr ""
 msgid "Click on ‘Troubleshooting’ to learn more."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:273
+#: src/components/layouts/AddressOverview.vue:293
 #: src/components/staking/StakingModal.vue:220
 #: src/components/swap/SwapAnimation.vue:111
 msgid "Close"
@@ -1555,6 +1555,7 @@ msgstr ""
 msgid "Learn about the new Nimiq"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:251
 #: src/components/modals/NetworkInfoModal.vue:20
 #: src/components/modals/StablecoinSelectionModal.vue:24
 #: src/components/modals/UsdtAddedModal.vue:18
@@ -1569,7 +1570,11 @@ msgstr ""
 msgid "Learn more here"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:258
+#: src/components/layouts/AddressOverview.vue:241
+msgid "Legacy USDC (USDC.e)"
+msgstr ""
+
+#: src/components/layouts/AddressOverview.vue:278
 msgid "Let's get started! Create your Nimiq account:"
 msgstr ""
 
@@ -2545,7 +2550,7 @@ msgstr ""
 msgid "Show Link"
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:259
+#: src/components/layouts/AddressOverview.vue:279
 msgid "Signup"
 msgstr ""
 
@@ -3217,6 +3222,10 @@ msgstr ""
 msgid "USDC network fee"
 msgstr ""
 
+#: src/components/layouts/AddressOverview.vue:248
+msgid "USDC.e can no longer be sent from the Nimiq Wallet. To move it, import your recovery words into another Polygon wallet, which also needs POL for fees."
+msgstr ""
+
 #: src/components/swap/SwapFeesTooltip.vue:46
 msgid "USDT network fee"
 msgstr ""
@@ -3494,7 +3503,7 @@ msgstr ""
 msgid "Your stake has been deactivated, but the automatic switch could not be scheduled. Come back once the countdown has ended and activate the validator manually."
 msgstr ""
 
-#: src/components/layouts/AddressOverview.vue:267
+#: src/components/layouts/AddressOverview.vue:287
 msgid "Your swap was successful!"
 msgstr ""
 

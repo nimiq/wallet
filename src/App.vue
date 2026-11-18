@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import './scss/mixins.scss';
+@use './scss/mixins.scss' as *;
 
 #app {
     @include flex-full-height;
@@ -431,7 +431,7 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-@import './scss/variables.scss'; // Import the variables
+@use './scss/variables.scss' as *; // Import the variables
 
 html, body {
     // Disable viewport overscrolling on iOS

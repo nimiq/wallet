@@ -131,7 +131,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 
 @media (min-width: $mobileBreakpoint) { // Full mobile breakpoint
     .menu {

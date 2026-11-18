@@ -178,7 +178,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 svg {
     display: block;

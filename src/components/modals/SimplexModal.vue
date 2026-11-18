@@ -354,7 +354,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
+@use '../../scss/functions.scss' as *;
 
 .modal ::v-deep .small-page {
     height: 83.25rem; /* Height to fit Simplex confirmation page without iframe scrollbar, with two-line disclaimer */

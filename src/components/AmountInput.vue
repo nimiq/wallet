@@ -193,7 +193,7 @@ export default AmountInput;
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/functions.scss';
+@use '../scss/functions.scss' as *;
 
 .label-input {
     position: relative;

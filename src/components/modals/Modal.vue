@@ -216,8 +216,8 @@ export default Modal;
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
-@import '../../scss/functions.scss';
+@use "../../scss/variables.scss" as *;
+@use '../../scss/functions.scss' as *;
 
 .backdrop {
     position: fixed;
@@ -250,7 +250,7 @@ export default Modal;
     overscroll-behavior: contain; // Disable scroll-chaining to the app
 
     height: auto;
-    min-height: unquote("min(70.5rem, 96vh)"); // Uses unquote() to prevent SASS from falsely parsing the min() function
+    min-height: min(70.5rem, 96vh);
 
     &.smallen {
         transform: scale(0.942857143) translateY(1.5rem);
@@ -339,8 +339,8 @@ export default Modal;
 </style>
 
 <style lang="scss">
-@import "../../scss/variables.scss";
-@import '../../scss/functions.scss';
+@use "../../scss/variables.scss" as *;
+@use '../../scss/functions.scss' as *;
 
 :root {
     --modal-transition-time: 0.45s;

@@ -196,7 +196,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
+@use '../../scss/functions.scss' as *;
 
 .validator-score-details {
     --border-color: #{nimiq-blue(0.1)};

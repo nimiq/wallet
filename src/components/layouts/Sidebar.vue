@@ -415,7 +415,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 // Breakpoints at which the price charts and balance distribution are shown via v-if. We use v-if and not display: none
 // to avoid unnecessarily mounting and updating them while they're not displayed.
 $price-chart-display-breakpoint: 520px;
@@ -476,10 +476,6 @@ $balance-distribution-display-breakpoint: 450px;
             padding: 1.25rem 1.5rem;
         }
     }
-}
-
-> * {
-    margin: 1rem 0;
 }
 
 .logo {

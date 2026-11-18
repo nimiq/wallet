@@ -1,5 +1,5 @@
 @use "sass:string";
-@import '../variables.scss';
+@use '../variables.scss' as *;
 
 /**
  * This file should only be imported in JavaScript or TypeScript files.
@@ -9,13 +9,13 @@
  */
 
 :export {
-    mobileBreakpoint: str-slice(#{$mobileBreakpoint}, 0, -3);
-    tabletBreakpoint: str-slice(#{$tabletBreakpoint}, 0, -3);
-    halfMobileBreakpoint: str-slice(#{$halfMobileBreakpoint}, 0, -3);
-    smallDesktopBreakpoint: str-slice(#{$smallDesktopBreakpoint}, 0, -3);
-    mediumDesktopBreakpoint: str-slice(#{$mediumDesktopBreakpoint}, 0, -3);
-    largeDesktopBreakpoint: str-slice(#{$largeDesktopBreakpoint}, 0, -3);
-    extraLargeDesktopBreakpoint: str-slice(#{$extraLargeDesktopBreakpoint}, 0, -3);
-    veryLargeDesktopBreakpoint: str-slice(#{$veryLargeDesktopBreakpoint}, 0, -3);
-    ultraLargeDesktopBreakpoint: str-slice(#{$ultraLargeDesktopBreakpoint}, 0, -3);
+    mobileBreakpoint: string.slice(#{$mobileBreakpoint}, 0, -3);
+    tabletBreakpoint: string.slice(#{$tabletBreakpoint}, 0, -3);
+    halfMobileBreakpoint: string.slice(#{$halfMobileBreakpoint}, 0, -3);
+    smallDesktopBreakpoint: string.slice(#{$smallDesktopBreakpoint}, 0, -3);
+    mediumDesktopBreakpoint: string.slice(#{$mediumDesktopBreakpoint}, 0, -3);
+    largeDesktopBreakpoint: string.slice(#{$largeDesktopBreakpoint}, 0, -3);
+    extraLargeDesktopBreakpoint: string.slice(#{$extraLargeDesktopBreakpoint}, 0, -3);
+    veryLargeDesktopBreakpoint: string.slice(#{$veryLargeDesktopBreakpoint}, 0, -3);
+    ultraLargeDesktopBreakpoint: string.slice(#{$ultraLargeDesktopBreakpoint}, 0, -3);
 }

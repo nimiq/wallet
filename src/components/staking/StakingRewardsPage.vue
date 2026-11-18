@@ -195,9 +195,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../scss/variables.scss";
-@import "../../scss/mixins.scss";
-@import '../../scss/functions.scss';
+@use "../../scss/variables.scss" as *;
+@use "../../scss/mixins.scss" as *;
+@use '../../scss/functions.scss' as *;
 
 .staking-rewards-page {
     flex-grow: 1;

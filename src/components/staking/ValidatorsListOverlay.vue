@@ -282,8 +282,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/mixins.scss';
-@import '../../scss/functions.scss';
+@use '../../scss/mixins.scss' as *;
+@use '../../scss/functions.scss' as *;
 
 .validators-list-overlay {
     height: 100%;

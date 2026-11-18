@@ -860,8 +860,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import '../../scss/mixins.scss';
-    @import '../../scss/variables.scss';
+    @use '../../scss/mixins.scss' as *;
+    @use '../../scss/variables.scss' as *;
 
     @include scroll-mask(false, true, true);
 

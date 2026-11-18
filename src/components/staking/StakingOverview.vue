@@ -213,9 +213,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
-@import '../../scss/mixins.scss';
-@import '../../scss/variables.scss';
+@use '../../scss/functions.scss' as *;
+@use '../../scss/mixins.scss' as *;
+@use '../../scss/variables.scss' as *;
 
 .staking-overview {
     display: flex;

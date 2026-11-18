@@ -111,7 +111,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/variables.scss";
+@use "../scss/variables.scss" as *;
 
 .usdc-address-info {
     align-items: center;

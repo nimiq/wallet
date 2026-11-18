@@ -95,7 +95,7 @@ export default BtcCopiedAddress;
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/mixins.scss';
+@use '../scss/mixins.scss' as *;
 
 .btc-copied-address {
     position: relative;

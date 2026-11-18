@@ -83,8 +83,8 @@
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
     "path-to-regexp": "^6.3.0",
     "readable-stream": "^4.8.0",
-    "sass": "^1.46.0",
-    "sass-loader": "^8.0.2",
+    "sass": "^1.108.2",
+    "sass-loader": "^17.1.0",
     "typescript": "~5.9.3",
     "vue-template-compiler": "^2.7.16"
   },

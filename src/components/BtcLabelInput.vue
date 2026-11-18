@@ -132,7 +132,7 @@ export default BtcLabelInput;
 </script>
 
 <style lang="scss" scoped>
-    @import '../scss/mixins.scss';
+    @use '../scss/mixins.scss' as *;
 
     .btc-label-input {
         position: relative;

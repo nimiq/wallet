@@ -86,8 +86,8 @@ export default defineComponent({
 
 <!-- eslint-disable max-len -->
 <style lang="scss" scoped>
-@import '../../scss/variables.scss';
-@import '../../scss/functions.scss';
+@use '../../scss/variables.scss' as *;
+@use '../../scss/functions.scss' as *;
 
 .kyc-overlay {
     flex-grow: 1;

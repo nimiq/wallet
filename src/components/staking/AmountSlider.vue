@@ -517,7 +517,7 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss' as *;
 
 .slider-container {
     padding-top: 2.5rem;

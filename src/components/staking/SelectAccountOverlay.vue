@@ -74,7 +74,7 @@ export default defineComponent({
         }
     }
 
-    // @import '../../scss/mixins.scss';
+    // @use '../../scss/mixins.scss' as *;
 
     // .overlay,
     // .overlay .page-body {

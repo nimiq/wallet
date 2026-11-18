@@ -45,8 +45,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/variables.scss';
-@import '../../scss/functions.scss';
+@use '../../scss/variables.scss' as *;
+@use '../../scss/functions.scss' as *;
 
 .groundfloor {
     background: var(--bg-base);

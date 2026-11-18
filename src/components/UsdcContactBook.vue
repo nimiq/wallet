@@ -137,7 +137,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/mixins.scss';
+@use '../scss/mixins.scss' as *;
 
 // TODO: Extract into SCSS mixin or global style
 .scroll-mask {

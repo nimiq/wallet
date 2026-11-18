@@ -471,7 +471,7 @@ export default BankCheckInput;
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/mixins.scss';
+@use '../scss/mixins.scss' as *;
 
 .bank-check-input {
     width: 35.5rem;

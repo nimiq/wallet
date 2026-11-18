@@ -145,8 +145,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "../../scss/variables.scss";
-@import "../../scss/mixins.scss";
+@use "../../scss/variables.scss" as *;
+@use "../../scss/mixins.scss" as *;
 
 .staking-reward-item {
     display: flex;

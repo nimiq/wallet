@@ -1992,8 +1992,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/variables.scss';
-@import '../../scss/functions.scss';
+@use '../../scss/variables.scss' as *;
+@use '../../scss/functions.scss' as *;
 
 .modal ::v-deep .small-page {
     width: 63.5rem;

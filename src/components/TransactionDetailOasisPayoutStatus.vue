@@ -69,7 +69,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-    @import '../scss/functions.scss';
+    @use '../scss/functions.scss' as *;
 
     .flex-row {
         justify-content: center;

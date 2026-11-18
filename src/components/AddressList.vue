@@ -277,7 +277,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-    @import '../scss/mixins.scss';
+    @use '../scss/mixins.scss' as *;
 
     @include scroll-mask(true, true, true);
 

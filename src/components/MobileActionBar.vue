@@ -124,7 +124,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/variables.scss';
+@use '../scss/variables.scss' as *;
 
 .mobile-action-bar {
     justify-content: space-between;

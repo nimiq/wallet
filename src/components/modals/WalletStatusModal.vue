@@ -57,8 +57,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/functions.scss';
-@import '../../scss/variables.scss';
+@use '../../scss/functions.scss' as *;
+@use '../../scss/variables.scss' as *;
 
 .modal {
     ::v-deep .small-page {

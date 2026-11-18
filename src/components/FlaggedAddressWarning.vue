@@ -108,7 +108,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../scss/variables.scss";
+@use "../scss/variables.scss" as *;
 
 .flagged-address-warning {
     contain: size layout style paint;

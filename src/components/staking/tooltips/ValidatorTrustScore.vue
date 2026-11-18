@@ -53,7 +53,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../scss/functions.scss';
+@use '../../../scss/functions.scss' as *;
 
 .validator-trust-score {
     white-space: nowrap;

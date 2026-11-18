@@ -22,7 +22,7 @@
             <span class="validator-search-icon">
                 <FatSearchIcon />
             </span>
-            <input type="text" ref="$search" class="validator-search-box"
+            <input type="text" ref="search$" class="validator-search-box"
                 :placeholder="$t('Type to search...')" v-model="searchValue" />
             <button class="validator-search-close-icon" @click="state = FilterState.TRUST">
                 <XCloseIcon />
@@ -42,14 +42,14 @@ import XCloseIcon from '../icons/Staking/XCloseIcon.vue';
 export default defineComponent({
     setup(props, context) {
         const state = ref(FilterState.TRUST);
-        const $search = ref<HTMLInputElement>();
+        const search$ = ref<HTMLInputElement>();
         const searchValue = ref('');
 
         watch(state, () => {
             context.emit('changed', state.value);
 
             if (state.value === FilterState.SEARCH) {
-                nextTick(() => $search.value?.focus());
+                nextTick(() => search$.value?.focus());
             }
         }, { immediate: true });
 
@@ -60,7 +60,7 @@ export default defineComponent({
         return {
             state,
             FilterState,
-            $search,
+            search$,
             searchValue,
         };
     },

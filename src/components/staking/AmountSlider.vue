@@ -1,11 +1,11 @@
 <template>
-    <div class="amount-slider slider-container" ref="$container" :class="{ animate: animate }">
+    <div class="amount-slider slider-container" ref="container$" :class="{ animate: animate }">
         <div class="slider-body">
             <div class="slider-background">
-                <div class="background-one" ref="$backgroundLinesLeft" />
-                <div class="background-two" ref="$backgroundMiddlePlant" />
-                <div class="background-three" ref="$backgroundLinesRight" />
-                <div class="background-four" ref="$backgroundRightPlant" />
+                <div class="background-one" ref="backgroundLinesLeft$" />
+                <div class="background-two" ref="backgroundMiddlePlant$" />
+                <div class="background-three" ref="backgroundLinesRight$" />
+                <div class="background-four" ref="backgroundRightPlant$" />
                 <div class="scalar-amount left">
                     0 NIM
                 </div>
@@ -15,12 +15,12 @@
                 </div>
             </div>
             <div class="slider-gradation">
-                <div class="scalar-amount-text" ref="$stakedNIMText"
-                    @click="$stakedNIMAmount.focus()"
+                <div class="scalar-amount-text" ref="stakedNIMText$"
+                    @click="stakedNIMAmount$.focus()"
                 >
                     <input class="nq-input"
                         type="text"
-                        ref="$stakedNIMAmount"
+                        ref="stakedNIMAmount$"
                         @input="onInput"
                         @blur="updateAmount"
                         @keydown.enter="$event.target.blur()"
@@ -32,18 +32,18 @@
                         NIM
                     </div>
                 </div>
-                <div class="percent-amount-text" ref="$percentText">
+                <div class="percent-amount-text" ref="percentText$">
                     {{ Math.floor(currentPercentage) }}%
                 </div>
                 <VerticalLineIcon v-for="(x, index) in Array(11)" :key="index" class="bottom-indicator"
                     :style="`left: calc(2rem + 2px + (100% - 4rem - 4px) * (${index} / 10) - 1px)`" />
-                <div v-if="alreadyStaked" class="stake-dot-indicator" ref="$dotIndicator" />
+                <div v-if="alreadyStaked" class="stake-dot-indicator" ref="dotIndicator$" />
             </div>
-            <div class="slider-controls" ref="$slide" @click="onMove($event);">
+            <div class="slider-controls" ref="slide$" @click="onMove($event);">
                 <div class="slider-controls-wrapper">
-                    <div class="slider-progress-bar" ref="$progressBar" />
+                    <div class="slider-progress-bar" ref="progressBar$" />
                     <div class="slider-knob"
-                        ref="$knob"
+                        ref="knob$"
                         @touchstart="atClick"
                         @mousedown="atClick">
                         <!-- The percentages below should also match in StakingPreview.vue -->
@@ -173,7 +173,7 @@ export default defineComponent({
 
         function updateInputWidth(value?: string) {
             inputAmountWidth.value = estimateTextWidth(
-                value || $stakedNIMAmount.value?.value || '0',
+                value || stakedNIMAmount$.value?.value || '0',
                 9,
             ) + 69;
         }
@@ -212,25 +212,25 @@ export default defineComponent({
         let amountBox:DOMRect;
         let pivotPoint: Point;
 
-        const $container = ref<HTMLElement | null>(null);
-        const $knob = ref<HTMLElement | null>(null);
-        const $slide = ref<HTMLElement | null>(null);
-        const $backgroundLinesLeft = ref<HTMLElement | null>(null);
-        const $backgroundMiddlePlant = ref<HTMLElement | null>(null);
-        const $backgroundLinesRight = ref<HTMLElement | null>(null);
-        const $backgroundRightPlant = ref<HTMLElement | null>(null);
-        const $progressBar = ref<HTMLElement | null>(null);
-        const $percentText = ref<HTMLElement | null>(null);
-        const $stakedNIMText = ref<HTMLElement | null>(null);
-        const $stakedNIMAmount = ref<HTMLInputElement | null>(null);
-        const $dotIndicator = ref<HTMLElement | null>(null);
+        const container$ = ref<HTMLElement | null>(null);
+        const knob$ = ref<HTMLElement | null>(null);
+        const slide$ = ref<HTMLElement | null>(null);
+        const backgroundLinesLeft$ = ref<HTMLElement | null>(null);
+        const backgroundMiddlePlant$ = ref<HTMLElement | null>(null);
+        const backgroundLinesRight$ = ref<HTMLElement | null>(null);
+        const backgroundRightPlant$ = ref<HTMLElement | null>(null);
+        const progressBar$ = ref<HTMLElement | null>(null);
+        const percentText$ = ref<HTMLElement | null>(null);
+        const stakedNIMText$ = ref<HTMLElement | null>(null);
+        const stakedNIMAmount$ = ref<HTMLInputElement | null>(null);
+        const dotIndicator$ = ref<HTMLElement | null>(null);
 
         const atClick = (e: MouseEvent | TouchEvent) => {
             e.preventDefault();
 
             pivotPoint = extractEventPosition(e);
             if (!pivotPoint) return;
-            pivotPoint.x -= $knob.value!.getBoundingClientRect().x;
+            pivotPoint.x -= knob$.value!.getBoundingClientRect().x;
             if (e.type === 'touchstart') {
                 window.addEventListener('touchmove', onMove);
                 window.addEventListener('touchend', atEndTouch);
@@ -291,24 +291,24 @@ export default defineComponent({
         };
 
         const updatePosition = (offsetX: number) => {
-            amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
-            $knob.value!.style.left = `${offsetX}px`;
+            amountBox = stakedNIMAmount$.value!.getBoundingClientRect();
+            knob$.value!.style.left = `${offsetX}px`;
             if (currentPercentage.value <= 0) {
-                $progressBar.value!.style.width = '40px';
+                progressBar$.value!.style.width = '40px';
             } else {
-                $progressBar.value!.style.width = `${offsetX + knobBox.width + 2}px`;
+                progressBar$.value!.style.width = `${offsetX + knobBox.width + 2}px`;
             }
-            $percentText.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 20}px`;
+            percentText$.value!.style.left = `${offsetX - (knobBox.width / 2.0) + 20}px`;
             offsetX -= (inputAmountWidth.value / 2.0) - (knobBox.width / 2.0);
             const maxXPos = containerBox.width - amountBox.width;
             if (offsetX <= 0) {
-                $stakedNIMText.value!.style.right = `${containerBox.width - amountBox.width}px`;
+                stakedNIMText$.value!.style.right = `${containerBox.width - amountBox.width}px`;
             } else if (offsetX < maxXPos) {
-                $stakedNIMText.value!.style.right = `${containerBox.width - offsetX - amountBox.width}px`;
+                stakedNIMText$.value!.style.right = `${containerBox.width - offsetX - amountBox.width}px`;
             } else {
-                $stakedNIMText.value!.style.right = '0px';
+                stakedNIMText$.value!.style.right = '0px';
             }
-            $stakedNIMAmount.value!.value = formatNumber(parseFloat(currentFormattedAmount.value));
+            stakedNIMAmount$.value!.value = formatNumber(parseFloat(currentFormattedAmount.value));
             updateInputWidth();
             context.emit('amount-chosen', 0);
         };
@@ -317,7 +317,7 @@ export default defineComponent({
             const position = extractEventPosition(e);
             if (!position || !pivotPoint) return;
 
-            position.x += $container.value?.closest('.small-page')?.scrollLeft || 0;
+            position.x += container$.value?.closest('.small-page')?.scrollLeft || 0;
 
             const percent = Math.min(100, Math.max(0,
                 (100 * (position.x - pivotPoint.x - sliderBox.x)) / (sliderBox.width - knobBox.width),
@@ -349,10 +349,10 @@ export default defineComponent({
 
         const fillBackground = (lo: number, hi: number) => {
             const map = [
-                [0, 46.2, $backgroundLinesLeft, 5.9, 9.5],
-                [46.2, 54.95, $backgroundMiddlePlant],
-                [54.95, 90.89, $backgroundLinesRight],
-                [90.89, 100, $backgroundRightPlant],
+                [0, 46.2, backgroundLinesLeft$, 5.9, 9.5],
+                [46.2, 54.95, backgroundMiddlePlant$],
+                [54.95, 90.89, backgroundLinesRight$],
+                [90.89, 100, backgroundRightPlant$],
             ];
             let start = NaN;
             let end = NaN;
@@ -405,10 +405,10 @@ export default defineComponent({
         };
 
         function updateBoundingBoxes() {
-            containerBox = $container.value!.getBoundingClientRect();
-            sliderBox = $slide.value!.getBoundingClientRect();
-            knobBox = $knob.value!.getBoundingClientRect();
-            amountBox = $stakedNIMAmount.value!.getBoundingClientRect();
+            containerBox = container$.value!.getBoundingClientRect();
+            sliderBox = slide$.value!.getBoundingClientRect();
+            knobBox = knob$.value!.getBoundingClientRect();
+            amountBox = stakedNIMAmount$.value!.getBoundingClientRect();
             updatePosition(getPointAtPercent(currentPercentage.value));
             pivotPoint = { x: 0, y: knobBox.y } as Point;
         }
@@ -418,10 +418,10 @@ export default defineComponent({
             updateBoundingBoxes();
             window.addEventListener('resize', updateBoundingBoxes);
 
-            if ($stakedNIMAmount.value) updateAmount({ target: $stakedNIMAmount.value });
+            if (stakedNIMAmount$.value) updateAmount({ target: stakedNIMAmount$.value });
 
             if (alreadyStaked.value) {
-                $dotIndicator.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value)
+                dotIndicator$.value!.style.left = `${getPointAtPercent(alreadyStakedPercentage.value)
                         + (knobBox.width / 2) - 2}px`;
                 fillBackground(0, alreadyStakedPercentage.value);
             }
@@ -491,18 +491,18 @@ export default defineComponent({
             availableAmount,
             currentFormattedAmount,
             inputAmountWidth,
-            $container,
-            $knob,
-            $slide,
-            $percentText,
-            $stakedNIMText,
-            $stakedNIMAmount,
-            $backgroundLinesLeft,
-            $backgroundMiddlePlant,
-            $backgroundLinesRight,
-            $backgroundRightPlant,
-            $progressBar,
-            $dotIndicator,
+            container$,
+            knob$,
+            slide$,
+            percentText$,
+            stakedNIMText$,
+            stakedNIMAmount$,
+            backgroundLinesLeft$,
+            backgroundMiddlePlant$,
+            backgroundLinesRight$,
+            backgroundRightPlant$,
+            progressBar$,
+            dotIndicator$,
             buildSVG,
             animate,
             onInput,

@@ -1,5 +1,5 @@
 <template>
-    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="$modal">
+    <Modal v-bind="$attrs" v-on="$listeners" emitClose :swipeToClose="false" ref="modal$">
         <PageHeader>
             {{ $t('Welcome to the new Nimiq') }}
             <p slot="more">
@@ -123,12 +123,12 @@ import {
 export default defineComponent({
     name: 'WelcomeStakingModal',
     setup() {
-        const $modal = ref<Modal | null>(null);
+        const modal$ = ref<Modal | null>(null);
         const router = useRouter();
 
         async function close() {
             window.localStorage.setItem(WELCOME_STAKING_MODAL_LOCALSTORAGE_KEY, '1');
-            await $modal.value?.forceClose();
+            await modal$.value?.forceClose();
 
             const multisigModalAlreadyShown = window.localStorage.getItem(
                 MULTISIG_ANNOUNCEMENT_MODAL_LOCALSTORAGE_KEY,
@@ -139,7 +139,7 @@ export default defineComponent({
             }
         }
 
-        return { $modal, close };
+        return { modal$, close };
     },
     components: {
         Modal,

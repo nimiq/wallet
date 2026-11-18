@@ -3,7 +3,7 @@
         @click.capture="!totalAccountStake && customClickHandler($event)"
         :class="{ 'show-text': showText }"
     >
-        <Tooltip class="staking-feature-tip" ref="$CTATooltip"
+        <Tooltip class="staking-feature-tip" ref="CTATooltip$"
             v-if="!totalActiveStake && activeAddressInfo && activeAddressInfo.balance"
             preferredPosition="bottom"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
@@ -14,7 +14,7 @@
                 {{ $t('Earn NIM every month by staking your NIM') }}
             </template>
         </Tooltip>
-        <Tooltip class="staking-button-tooltip" ref="$tooltip"
+        <Tooltip class="staking-button-tooltip" ref="tooltip$"
             preferredPosition="top"
             :container="$parent.$el ? { $el: $parent.$el } : undefined"
             :disabled="$config.disableNetworkInteraction || isMobile || !isCTATooltipDisabled"
@@ -67,8 +67,8 @@ export default defineComponent({
         const { totalAccountStake, totalActiveStake } = storeToRefs(useStakingStore());
         const { isMobile } = useWindowSize();
 
-        const $CTATooltip = ref<Tooltip | null>(null);
-        const $tooltip = ref<Tooltip | null>(null);
+        const CTATooltip$ = ref<Tooltip | null>(null);
+        const tooltip$ = ref<Tooltip | null>(null);
 
         /**
          * The user can stake if they have a balance of at least MIN_STAKE.
@@ -98,20 +98,20 @@ export default defineComponent({
          * - If the tooltip is shown, the user is staking or cannot stake => hide the tooltip.
          */
         function updateTooltipVisibility() {
-            if (!$CTATooltip.value) return;
+            if (!CTATooltip$.value) return;
 
-            if (!totalActiveStake.value && canStake.value && !$CTATooltip.value.isShown) {
-                $CTATooltip.value.show();
-            } else if ($CTATooltip.value.isShown && (totalActiveStake.value || !canStake.value)) {
-                $CTATooltip.value.hide();
+            if (!totalActiveStake.value && canStake.value && !CTATooltip$.value.isShown) {
+                CTATooltip$.value.show();
+            } else if (CTATooltip$.value.isShown && (totalActiveStake.value || !canStake.value)) {
+                CTATooltip$.value.hide();
             }
         }
 
-        watch([$CTATooltip, activeAddressInfo, totalActiveStake], async () => {
+        watch([CTATooltip$, activeAddressInfo, totalActiveStake], async () => {
             if (!isMobile.value) {
                 updateTooltipVisibility();
-            } else if (isMobile.value && $CTATooltip.value?.isShown) {
-                $CTATooltip.value.hide();
+            } else if (isMobile.value && CTATooltip$.value?.isShown) {
+                CTATooltip$.value.hide();
             }
         }, { immediate: true, flush: 'post' });
 
@@ -133,8 +133,8 @@ export default defineComponent({
             isMobile,
 
             // DOM References / Vue Components
-            $CTATooltip,
-            $tooltip,
+            CTATooltip$,
+            tooltip$,
 
             // Functions / ref & computed
             canStake,

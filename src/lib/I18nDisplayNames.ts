@@ -1,6 +1,8 @@
 import { watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill';
+// The package's exports field requires the .js file extension.
+// eslint-disable-next-line import/extensions
+import { shouldPolyfill as shouldPolyFillIntlDisplayNames } from '@formatjs/intl-displaynames/should-polyfill.js';
 
 import type {
     DisplayNames as IntlDisplayNames,
@@ -21,9 +23,24 @@ declare namespace Intl {
     };
 }
 
+/* eslint-disable import/extensions */
 const intlDisplayNamesReadyPromise = !Intl.DisplayNames?.polyfilled && shouldPolyFillIntlDisplayNames()
-    ? import('@formatjs/intl-displaynames/polyfill')
+    ? import('@formatjs/intl-displaynames/polyfill.js')
     : Promise.resolve();
+
+// Polyfill locale data for the languages supported by the Wallet, see i18n-setup.ts.
+const polyfillLocaleData: Record<string, () => Promise<unknown>> = {
+    en: () => import(/* webpackChunkName: "country-names-en" */ '@formatjs/intl-displaynames/locale-data/en.js'),
+    es: () => import(/* webpackChunkName: "country-names-es" */ '@formatjs/intl-displaynames/locale-data/es.js'),
+    zh: () => import(/* webpackChunkName: "country-names-zh" */ '@formatjs/intl-displaynames/locale-data/zh.js'),
+    de: () => import(/* webpackChunkName: "country-names-de" */ '@formatjs/intl-displaynames/locale-data/de.js'),
+    fr: () => import(/* webpackChunkName: "country-names-fr" */ '@formatjs/intl-displaynames/locale-data/fr.js'),
+    pt: () => import(/* webpackChunkName: "country-names-pt" */ '@formatjs/intl-displaynames/locale-data/pt.js'),
+    ru: () => import(/* webpackChunkName: "country-names-ru" */ '@formatjs/intl-displaynames/locale-data/ru.js'),
+    uk: () => import(/* webpackChunkName: "country-names-uk" */ '@formatjs/intl-displaynames/locale-data/uk.js'),
+    nl: () => import(/* webpackChunkName: "country-names-nl" */ '@formatjs/intl-displaynames/locale-data/nl.js'),
+};
+/* eslint-enable import/extensions */
 
 const { language } = storeToRefs(useSettingsStore());
 
@@ -43,10 +60,7 @@ export default class I18nDisplayNames {
         await intlDisplayNamesReadyPromise;
         if (Intl.DisplayNames!.polyfilled) {
             // has to be imported after the polyfill is ready
-            await import(
-                /* webpackChunkName: "country-names-[request]" */
-                /* webpackInclude: /\/\w{2}\.js$/ */
-                `@formatjs/intl-displaynames/locale-data/${language.value}`);
+            await polyfillLocaleData[language.value]?.();
         }
         this.intlDisplayNames = new Intl.DisplayNames!(language.value, { type: this.type });
     }

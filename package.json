@@ -22,7 +22,7 @@
   "main": "src/main.ts",
   "dependencies": {
     "@adapttive/vue-markdown": "^4.0.2",
-    "@formatjs/intl-displaynames": "^3.3.4",
+    "@formatjs/intl-displaynames": "^8.0.3",
     "@linusborg/vue-simple-portal": "^0.1.4",
     "@nimiq/core": "^2.23.0",
     "@nimiq/electrum-client": "https://github.com/nimiq/electrum-client#build",

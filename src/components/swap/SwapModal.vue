@@ -345,21 +345,20 @@ export default defineComponent({
     props: {
         pair: {
             type: String,
-            default() {
+            default: (): string => {
                 const walletEnabledAssets = getWalletEnabledSwapAssets();
                 const fastspotEnabledAssets = useConfig().config.fastspot.enabledSwapAssets;
                 const overallEnabledAssets = walletEnabledAssets.filter((a) => fastspotEnabledAssets.includes(a));
                 if (overallEnabledAssets.length < 2) return `${SwapAsset.NIM}-${SwapAsset.BTC}`; // fallback
                 return `${overallEnabledAssets[0]}-${overallEnabledAssets[1]}`;
             },
-            validator(value: string) {
+            validator: (value: string) => {
                 const [left, right] = value.split('-') as SwapAsset[];
                 const walletEnabledAssets = getWalletEnabledSwapAssets();
                 return walletEnabledAssets.includes(left) && walletEnabledAssets.includes(right);
             },
         },
     },
-    // @ts-expect-error Parameters 'props', 'context' implicitly have an 'any' type.
     setup(props) {
         const { config } = useConfig();
 

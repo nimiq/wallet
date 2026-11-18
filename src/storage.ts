@@ -357,7 +357,8 @@ async function initStoreStore<State extends StateTree, StoredState>(
     store: Store<string, State>,
     storageKey: string,
     writeTransform: (state: State) => StoredState = (state: State) => state,
-    readTransform: (storedState: StoredState) => Partial<State> = (storedState: StoredState) => storedState,
+    // By default, the state is stored as is, i.e. StoredState is State.
+    readTransform: (storedState: StoredState) => Partial<State> = (storedState) => storedState as Partial<State>,
 ): Promise<StoredState | undefined> {
     const storedState = await Storage.get<StoredState>(storageKey);
     if (storedState) {

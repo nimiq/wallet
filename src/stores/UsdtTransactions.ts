@@ -284,7 +284,7 @@ async function detectSwap(transaction: Transaction, knownTransactions: Transacti
             new Uint8Array(
                 await crypto.subtle.digest( // eslint-disable-line no-await-in-loop
                     'SHA-256',
-                    hexToBytes(secret),
+                    hexToBytes(secret) as Uint8Array<ArrayBuffer>, // a new array, not backed by a SharedArrayBuffer
                 ),
             ),
         );
